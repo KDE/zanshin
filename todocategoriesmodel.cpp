@@ -29,8 +29,6 @@
 #include "todocategoriesattribute.h"
 #include "todoflatmodel.h"
 
-#include <kdebug.h>
-
 class TodoCategoryTreeNode
 {
 public:
@@ -476,7 +474,6 @@ void TodoCategoriesModel::deserializeCategories()
 
     TodoCategoriesAttribute *attribute = m_collection.attribute<TodoCategoriesAttribute>();
     QStringList parentList = attribute->parentList();
-    kDebug() << parentList;
 
     QHash<QString, TodoCategoryTreeNode*> categoryMap;
     QList<TodoCategoryTreeNode*> roots;
