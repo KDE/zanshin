@@ -48,7 +48,7 @@ private:
     QFile m_testFile;
 };
 
-Q_DECLARE_METATYPE(QModelIndex);
+Q_DECLARE_METATYPE(QModelIndex)
 
 
 #endif
