@@ -29,6 +29,8 @@
 #include "todocategoriesattribute.h"
 #include "todoflatmodel.h"
 
+#include <KDebug>
+
 class TodoCategoryTreeNode
 {
 public:
