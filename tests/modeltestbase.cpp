@@ -38,14 +38,13 @@ ModelTestBase::ModelTestBase()
     unsetenv("XDG_CONFIG_HOME");
 }
 
-void ModelTestBase::sleepAndProcessEvents(int ms)
+void ModelTestBase::flushNotifications()
 {
-    int amount = ms/10;
-
-    for (int i=0; i<amount; i++) {
-        QTest::qSleep(10);
-        QCoreApplication::processEvents(QEventLoop::AllEvents);
-    }
+    QDBusInterface notifications("org.freedesktop.Akonadi",
+                                 "/notifications/debug",
+                                 "org.freedesktop.Akonadi.NotificationManager");
+    notifications.call("emitPendingNotifications");
+    QTest::qWait(250);
 }
 
 void ModelTestBase::initTestCase()
@@ -73,7 +72,7 @@ void ModelTestBase::initTestCase()
     settings.call("setPath", m_testFile.fileName());
     m_agentInstance.reconfigure();
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     Akonadi::CollectionFetchJob *colJob = new Akonadi::CollectionFetchJob(Akonadi::Collection::root());
     colJob->setResource(m_agentInstance.identifier());

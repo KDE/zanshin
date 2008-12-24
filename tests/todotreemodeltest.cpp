@@ -53,7 +53,7 @@ void TodoTreeModelTest::initTestCase()
     ModelTestBase::initTestCase();
     m_model.setSourceModel(&m_flatModel);
     m_model.setCollection(m_collection);
-    sleepAndProcessEvents(250);
+    flushNotifications();
 
     m_flatSortedModel.setSourceModel(&m_flatModel);
     m_flatSortedModel.sort(TodoFlatModel::RemoteId);
@@ -144,7 +144,7 @@ void TodoTreeModelTest::testSingleModification()
 
     QVERIFY(m_model.setData(index, "Learn something"));
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     QCOMPARE(m_model.data(index).toString(), QString("Learn something"));
 
@@ -172,7 +172,7 @@ void TodoTreeModelTest::testReparentModification()
 
     QVERIFY(m_model.setData(index, "fake-10"));
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     QCOMPARE(rowsRemoved.count(), 1);
     QVariantList signal = rowsRemoved.takeFirst();
@@ -193,7 +193,7 @@ void TodoTreeModelTest::testReparentModification()
     index = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
     QVERIFY(m_model.setData(index, "fake-01"));
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     QCOMPARE(rowsRemoved.count(), 1);
     signal = rowsRemoved.takeFirst();

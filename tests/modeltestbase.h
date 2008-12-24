@@ -36,7 +36,7 @@ public:
     ModelTestBase();
 
 protected:
-    void sleepAndProcessEvents(int ms);
+    void flushNotifications();
     Akonadi::Collection m_collection;
 
 protected slots:

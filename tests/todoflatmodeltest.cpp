@@ -49,7 +49,7 @@ void TodoFlatModelTest::initTestCase()
 {
     ModelTestBase::initTestCase();
     m_model.setCollection(m_collection);
-    sleepAndProcessEvents(250);
+    flushNotifications();
 
     m_sortedModel.setSourceModel(&m_model);
     m_sortedModel.sort(TodoFlatModel::RemoteId);
@@ -155,7 +155,7 @@ void TodoFlatModelTest::testItemModification()
     bool result = m_sortedModel.setData(index, newData);
     QCOMPARE(result, expected);
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     if (!expected) {
         QCOMPARE(spy.count(), 0);

@@ -54,7 +54,7 @@ void TodoCategoriesModelTest::initTestCase()
     ModelTestBase::initTestCase();
     m_model.setSourceModel(&m_flatModel);
     m_model.setCollection(m_collection);
-    sleepAndProcessEvents(250);
+    flushNotifications();
 
     m_flatSortedModel.setSourceModel(&m_flatModel);
     m_flatSortedModel.sort(TodoFlatModel::RemoteId);
@@ -152,7 +152,7 @@ void TodoCategoriesModelTest::testSingleModification()
 
     QVERIFY(m_model.setData(indexes.first(), "Feed the cat"));
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     foreach (const QModelIndex &index, indexes) {
         QCOMPARE(m_model.data(index).toString(), QString("Feed the cat"));
@@ -204,7 +204,7 @@ void TodoCategoriesModelTest::testReparentModification()
     // we should get an insert event for it too!
     QVERIFY(m_model.setData(indexes.first(), "Home, Errands, Foo"));
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     QCOMPARE(rowsRemoved.count(), 2);
     while (!rowsRemoved.isEmpty()) {
@@ -270,7 +270,7 @@ void TodoCategoriesModelTest::testSeveralReparentModification()
 
     QVERIFY(m_model.setData(index, "Errands"));
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     QCOMPARE(rowsRemoved.count(), 1);
     QVariantList signal = rowsRemoved.takeFirst();
@@ -293,7 +293,7 @@ void TodoCategoriesModelTest::testSeveralReparentModification()
 
     QVERIFY(m_model.setData(index, "Home"));
 
-    sleepAndProcessEvents(1000);
+    flushNotifications();
 
     QCOMPARE(rowsRemoved.count(), 1);
     signal = rowsRemoved.takeFirst();
