@@ -208,7 +208,7 @@ void TodoTreeModel::onSourceRemoveRows(const QModelIndex &/*Id*/, int begin, int
 void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end)
 {
     for (int row = begin.row(); row <= end.row(); ++row) {
-        QModelIndex sourceIndex = flatModel()->index(row, 0);
+        QModelIndex sourceIndex = flatModel()->index(row, TodoFlatModel::RemoteId);
 
         QModelIndex proxyIndex = mapFromSource(sourceIndex);
         emit dataChanged(index(proxyIndex.row(), 0, proxyIndex.parent()),
