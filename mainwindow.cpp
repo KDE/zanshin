@@ -37,13 +37,14 @@
 
 #include <QtGui/QDockWidget>
 
+#include "contextsmodel.h"
 #include "todocategoriesattribute.h"
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : KXmlGuiWindow(parent), m_globalModel(0), m_projectModel(0), m_contextModel(0)
+    : KXmlGuiWindow(parent), m_globalModel(0), m_projectModel(0), m_categoriesModel(0)
 {
     Akonadi::Control::start();
     Akonadi::AttributeFactory::registerAttribute<TodoCategoriesAttribute>();
@@ -59,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     collectionList->setItemDelegate(collectionDelegate);
 
     QDockWidget *dock = new QDockWidget(i18n("Resources"), this);
+    dock->setObjectName("ResourcesDock");
     dock->setWidget(collectionList);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
@@ -74,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_projectModel = new TodoTreeModel(this);
     m_projectModel->setSourceModel(m_globalModel);
 
-    m_contextModel = new TodoCategoriesModel(this);
-    m_contextModel->setSourceModel(m_globalModel);
+    m_categoriesModel = new TodoCategoriesModel(this);
+    m_categoriesModel->setSourceModel(m_globalModel);
 
     KTabWidget *tab = new KTabWidget(this);
     setCentralWidget(tab);
@@ -89,10 +91,21 @@ MainWindow::MainWindow(QWidget *parent)
     projectTree->setModel(m_projectModel);
     tab->addTab(projectTree, i18n("Project Tree"));
 
-    Akonadi::ItemView *contextTree = new Akonadi::ItemView(tab);
-    contextTree->setRootIsDecorated(true);
-    contextTree->setModel(m_contextModel);
-    tab->addTab(contextTree, i18n("Context Tree"));
+    Akonadi::ItemView *categoriesTree = new Akonadi::ItemView(tab);
+    categoriesTree->setRootIsDecorated(true);
+    categoriesTree->setModel(m_categoriesModel);
+    tab->addTab(categoriesTree, i18n("Categories Tree"));
+
+
+    QTreeView *contextTree = new QTreeView(this);
+    ContextsModel *contextsModel = new ContextsModel(this);
+    contextsModel->setSourceModel(m_categoriesModel);
+    contextTree->setModel(contextsModel);
+
+    dock = new QDockWidget(i18n("Contexts"), this);
+    dock->setObjectName("ContextsDock");
+    dock->setWidget(contextTree);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
 
     setupGUI();
 }

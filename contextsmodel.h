@@ -18,32 +18,29 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_CONTEXTSMODEL_H
+#define ZANSHIN_CONTEXTSMODEL_H
 
-#include <KDE/KXmlGuiWindow>
+#include <QtGui/QSortFilterProxyModel>
 
-#include <akonadi/collection.h>
-
-class TodoFlatModel;
 class TodoCategoriesModel;
-class TodoTreeModel;
 
-class MainWindow : public KXmlGuiWindow
+class ContextsModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    ContextsModel(QObject *parent = 0);
+    virtual ~ContextsModel();
 
-private slots:
-    void collectionClicked(const Akonadi::Collection &collection);
+    virtual void setSourceModel(TodoCategoriesModel *sourceModel);
+
+protected:
+    virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
 private:
-    Akonadi::Collection m_currentCollection;
-    TodoFlatModel *m_globalModel;
-    TodoTreeModel *m_projectModel;
-    TodoCategoriesModel *m_categoriesModel;
+    TodoCategoriesModel *categoriesModel() const;
 };
 
 #endif

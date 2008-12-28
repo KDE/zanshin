@@ -5,6 +5,7 @@ add_subdirectory(tests)
 ########### next target ###############
 
 set(zanshin_SRCS
+   contextsmodel.cpp
    main.cpp
    mainwindow.cpp
    todocategoriesattribute.cpp
