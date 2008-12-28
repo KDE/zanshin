@@ -22,6 +22,7 @@
 
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
+#include <akonadi/itemdeletejob.h>
 
 #include "todoflatmodel.h"
 
@@ -39,9 +40,8 @@ QModelIndex TodoTreeModel::index(int row, int column, const QModelIndex &parent)
 {
     if (row < 0 || column < 0
      || row >= rowCount(parent)
-     || column >= columnCount(parent)) {
+     || column >= columnCount(parent))
         return QModelIndex();
-    }
 
     Akonadi::Entity::Id parentId = idForIndex(parent);
     Akonadi::Entity::Id id = m_childrenMap[parentId].at(row);
@@ -52,25 +52,23 @@ QModelIndex TodoTreeModel::index(int row, int column, const QModelIndex &parent)
 QModelIndex TodoTreeModel::parent(const QModelIndex &index) const
 {
     if (!index.isValid()
-     || !m_parentMap.contains(index.internalId())) {
+     || !m_parentMap.contains(index.internalId()))
         return QModelIndex();
-    }
 
     Akonadi::Entity::Id id = idForIndex(index);
     Akonadi::Entity::Id parentId = m_parentMap[id];
 
-    if (parentId==-1) {
+    if (parentId==-1)
         return QModelIndex();
-    }
 
     return indexForId(parentId);
 }
 
 int TodoTreeModel::rowCount(const QModelIndex &parent) const
 {
-    if (!parent.isValid()) {
+    if (!parent.isValid())
         return m_childrenMap[-1].count();
-    } else if (parent.column() == 0) { // Only one set of children per row
+    else if (parent.column() == 0) { // Only one set of children per row
         Akonadi::Entity::Id id = idForIndex(parent);
         return m_childrenMap[id].count();
     }
@@ -80,7 +78,7 @@ int TodoTreeModel::rowCount(const QModelIndex &parent) const
 
 int TodoTreeModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return TodoFlatModel::LastColumn+1;
+    return TodoFlatModel::LastColumn + 1;
 }
 
 QVariant TodoTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -102,14 +100,13 @@ QModelIndex TodoTreeModel::mapFromSource(const QModelIndex &sourceIndex) const
 
 void TodoTreeModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
-    if (flatModel()) {
+    if (flatModel())
         disconnect(flatModel());
-    }
 
-    Q_ASSERT(sourceModel==0 || qobject_cast<TodoFlatModel*>(sourceModel)!=0);
+    Q_ASSERT(sourceModel == 0 || qobject_cast<TodoFlatModel*>(sourceModel) != 0);
     QAbstractProxyModel::setSourceModel(sourceModel);
 
-    onSourceInsertRows(QModelIndex(), 0, flatModel()->rowCount()-1);
+    onSourceInsertRows(QModelIndex(), 0, flatModel()->rowCount() - 1);
 
     connect(flatModel(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
             this, SLOT(onSourceDataChanged(const QModelIndex&, const QModelIndex&)));
@@ -123,7 +120,7 @@ void TodoTreeModel::setSourceModel(QAbstractItemModel *sourceModel)
 
 void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int begin, int end)
 {
-    for (int i=begin; i <= end; i++) {
+    for (int i = begin; i <= end; i++) {
         // Retrieve the item from the source model
         Akonadi::Item item = flatModel()->itemForIndex(flatModel()->index(i, 0));
         QString remoteId = flatModel()->data(flatModel()->index(i, TodoFlatModel::RemoteId)).toString();
@@ -131,7 +128,7 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int b
         m_remoteIdReverseMap[remoteId] = item.id();
     }
 
-    for (int i=end; i >= begin; i--) {
+    for (int i = end; i >= begin; i--) {
         // Retrieve the item from the source model
         Akonadi::Item item = flatModel()->itemForIndex(flatModel()->index(i, 0));
         Akonadi::Entity::Id id = item.id();
@@ -139,9 +136,8 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int b
         QModelIndex parentIdIndex = flatModel()->index(i, TodoFlatModel::ParentRemoteId);
         QString remoteParentId = flatModel()->data(parentIdIndex).toString();
         Akonadi::Entity::Id parentId = -1;
-        if (!remoteParentId.isEmpty()) {
-              parentId = m_remoteIdReverseMap[remoteParentId];
-        }
+        if (!remoteParentId.isEmpty())
+            parentId = m_remoteIdReverseMap[remoteParentId];
 
         QModelIndex parentIndex = flatModel()->indexForItem(Akonadi::Item(parentId), 0);
         QModelIndex parentParentIdIndex = flatModel()->indexForItem(Akonadi::Item(parentId),
@@ -152,9 +148,9 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int b
          */
         int row = m_childrenMap[parentId].count();
         QModelIndex proxyParentIndex;
-        if (parentId!=-1) {
+        if (parentId!=-1)
             proxyParentIndex = indexForId(parentId);
-        }
+
         beginInsertRows(proxyParentIndex, row, row);
         m_childrenMap[parentId] << id;
         m_parentMap[id] = parentId;
@@ -162,14 +158,53 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int b
     }
 }
 
-void TodoTreeModel::onSourceRemoveRows(const QModelIndex &/*sourceIndex*/, int begin, int end)
+void TodoTreeModel::onSourceRemoveRows(const QModelIndex &/*Id*/, int begin, int end)
 {
+    for (int i = begin; i <= end; ++i) {
+       QModelIndex sourceIndex = flatModel()->index(i, 0);
+       QModelIndex proxyIndex = mapFromSource(sourceIndex);
+       Akonadi::Item item = flatModel()->itemForIndex(sourceIndex);
+       QString remoteId = flatModel()->data(flatModel()->index(i, TodoFlatModel::RemoteId)).toString();
 
+       QHash<Akonadi::Entity::Id, QList<Akonadi::Entity::Id> >::iterator it = m_childrenMap.find(item.id());
+       if (it != m_childrenMap.end()) {
+           Akonadi::Entity::Id idKey = it.key();
+           QList<Akonadi::Entity::Id> idList = it.value();
+	   while (!idList.isEmpty()) {
+	       beginRemoveRows(proxyIndex.child(0, 0), 0, 0);
+               Akonadi::Entity::Id id = idList.takeFirst();
+               endRemoveRows();
+
+               beginInsertRows(QModelIndex(), 0, 0);
+	       QList<Akonadi::Entity::Id> idEmpty;
+               m_childrenMap[id] = idEmpty;
+               endInsertRows();
+	   }
+	   m_childrenMap[idKey] = idList;
+	   //TODO : notify insertion
+
+       }
+
+       beginRemoveRows(proxyIndex.parent(), proxyIndex.row(), proxyIndex.row());
+
+       m_remoteIdMap.remove(item.id());
+       m_remoteIdReverseMap.remove(remoteId);
+
+       Akonadi::Entity::Id parent = m_parentMap[item.id()];
+       QList<Akonadi::Entity::Id> idList = m_childrenMap[parent];
+       idList.removeOne(item.id());
+       m_childrenMap[parent] = idList;
+
+       m_childrenMap.remove(item.id());
+       m_parentMap.remove(item.id());
+
+       endRemoveRows();
+    }
 }
 
 void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end)
 {
-    for (int row=begin.row(); row<=end.row(); ++row) {
+    for (int row = begin.row(); row <= end.row(); ++row) {
         QModelIndex sourceIndex = flatModel()->index(row, 0);
 
         QModelIndex proxyIndex = mapFromSource(sourceIndex);
@@ -179,21 +214,19 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
         QModelIndex parentRemoteIdIndex = flatModel()->index(row, TodoFlatModel::ParentRemoteId);
         QString parentRemoteId = flatModel()->data(parentRemoteIdIndex).toString();
         Akonadi::Entity::Id newParentId = -1;
-        if (!parentRemoteId.isEmpty()) {
+        if (!parentRemoteId.isEmpty())
             newParentId = m_remoteIdReverseMap[parentRemoteId];
-        }
 
         QString itemRemoteId = flatModel()->data(sourceIndex).toString();
         Akonadi::Entity::Id itemId = -1;
-        if (!itemRemoteId.isEmpty()) {
+        if (!itemRemoteId.isEmpty())
             itemId = m_remoteIdReverseMap[itemRemoteId];
-        }
-        Akonadi::Entity::Id oldParentId = -1;
-        if (m_parentMap.contains(itemId)) {
-            oldParentId = m_parentMap[itemId];
-        }
 
-        if (oldParentId!=newParentId) {
+        Akonadi::Entity::Id oldParentId = -1;
+        if (m_parentMap.contains(itemId))
+            oldParentId = m_parentMap[itemId];
+
+        if (oldParentId != newParentId) {
             int oldRow = m_childrenMap[oldParentId].indexOf(itemId);
             beginRemoveRows(indexForId(oldParentId), oldRow, oldRow);
             m_childrenMap[oldParentId].removeAll(itemId);
@@ -228,9 +261,8 @@ Akonadi::Entity::Id TodoTreeModel::idForIndex(const QModelIndex &index) const
 
 QModelIndex TodoTreeModel::indexForId(Akonadi::Entity::Id id, int column) const
 {
-    if (id==-1) {
+    if (id==-1)
         return QModelIndex();
-    }
 
     Akonadi::Entity::Id parentId = m_parentMap[id];
     int row = m_childrenMap[parentId].indexOf(id);

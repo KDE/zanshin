@@ -22,6 +22,8 @@
 #include <qtest_kde.h>
 
 #include <akonadi/collection.h>
+#include <akonadi/item.h>
+#include <akonadi/itemdeletejob.h>
 
 #include <QtGui/QSortFilterProxyModel>
 
@@ -37,6 +39,7 @@ private slots:
     void testInitialState();
     void testItemModification_data();
     void testItemModification();
+    void testSingleRemoved();
 
 private:
     TodoFlatModel m_model;
@@ -170,5 +173,30 @@ void TodoFlatModelTest::testItemModification()
     QCOMPARE(signal.at(0).value<QModelIndex>(), m_sortedModel.index(row, 0));
     QCOMPARE(signal.at(1).value<QModelIndex>(), m_sortedModel.index(row, TodoFlatModel::LastColumn));
 }
+
+void TodoFlatModelTest::testSingleRemoved()
+{
+    Akonadi::Item item = m_model.itemForIndex(m_sortedModel.mapToSource(m_sortedModel.index(1, 0)));
+
+    int count = m_model.rowCount();
+
+    QSignalSpy spy(&m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
+
+    Akonadi::ItemDeleteJob *job = new Akonadi::ItemDeleteJob(item);
+    QVERIFY(job->exec());
+
+    flushNotifications();
+
+    QCOMPARE(m_model.rowCount(), count - 1);
+
+    QCOMPARE(spy.count(), 1);
+    QVariantList signal = spy.takeFirst();
+    QCOMPARE(signal.count(), 3);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), QModelIndex());
+    QCOMPARE(signal.at(1).toInt(), 1);
+    QCOMPARE(signal.at(1).toInt(), 1);
+
+}
+
 
 #include "todoflatmodeltest.moc"

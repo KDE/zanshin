@@ -57,20 +57,18 @@ TodoFlatModelImpl::~TodoFlatModelImpl()
 
 int TodoFlatModelImpl::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid()) {
+    if (parent.isValid())
         return 0;
-    } else {
-        return TodoFlatModel::LastColumn+1;
-    }
+    else
+        return TodoFlatModel::LastColumn + 1;
 }
 
 int TodoFlatModelImpl::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid()) {
+    if (parent.isValid())
         return 0;
-    } else {
+    else
         return ItemModel::rowCount(parent);
-    }
 }
 
 QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
@@ -94,20 +92,18 @@ QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
         case TodoFlatModel::Summary:
             return incidence->summary();
         case TodoFlatModel::Categories:
-            if (role==Qt::EditRole) {
+            if (role == Qt::EditRole)
                 return incidence->categories().join(", ");
-            } else {
+            else
                 return incidence->categories();
-            }
         case TodoFlatModel::ParentRemoteId:
             return incidence->relatedToUid();
         case TodoFlatModel::DueDate: {
             KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
-            if (todo) {
+            if (todo)
                 return todo->dtDue().toString();
-            } else {
+            else
                 return QVariant();
-            }
         }
         case TodoFlatModel::FlagImportant:
             return QVariant();
@@ -195,7 +191,7 @@ bool TodoFlatModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePar
 
 void TodoFlatModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
-    Q_ASSERT(sourceModel==0 || qobject_cast<Akonadi::ItemModel*>(sourceModel)!=0);
+    Q_ASSERT(sourceModel == 0 || qobject_cast<Akonadi::ItemModel*>(sourceModel) != 0);
     QSortFilterProxyModel::setSourceModel(sourceModel);
 
     connect(itemModel(), SIGNAL(collectionChanged(const Akonadi::Collection&)),
@@ -216,12 +212,12 @@ Qt::ItemFlags TodoFlatModel::flags(const QModelIndex &index) const
 
     switch(index.column()) {
     case TodoFlatModel::Summary:
-        f|= Qt::ItemIsEditable|Qt::ItemIsUserCheckable;
+        f |= Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
         break;
     case TodoFlatModel::Categories:
     case TodoFlatModel::ParentRemoteId:
     case TodoFlatModel::DueDate:
-        f|= Qt::ItemIsEditable;
+        f |= Qt::ItemIsEditable;
         break;
     default:
         break;
@@ -246,25 +242,21 @@ static bool modifyItemHelper(const Akonadi::Item &item)
 
 bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!index.isValid() || index.row() >= rowCount()) {
+    if (!index.isValid() || index.row() >= rowCount())
         return false;
-    }
 
     const Akonadi::Item item = itemForIndex(index);
 
-    if (!item.hasPayload<IncidencePtr>()) {
+    if (!item.hasPayload<IncidencePtr>())
         return false;
-    }
 
     const IncidencePtr incidence = item.payload<IncidencePtr>();
     KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
 
-    if (!todo) {
+    if (!todo)
         return false;
-    }
 
     switch( role ) {
-
     case Qt::EditRole:
         switch(index.column()) {
         case TodoFlatModel::Summary:
@@ -278,16 +270,14 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
         }
         case TodoFlatModel::ParentRemoteId: {
             QSet<QString> ids;
-            for (int i=0; i<rowCount(); i++) {
+            for (int i=0; i<rowCount(); i++)
                 ids << data(this->index(i, TodoFlatModel::RemoteId)).toString();
-            }
 
             if (ids.contains(value.toString())) {
                 todo->setRelatedToUid(value.toString());
                 return modifyItemHelper(item);
-            } else {
+            } else
                 return false;
-            }
         }
         case TodoFlatModel::DueDate: {
             QDate date = QDate::fromString(value.toString(), Qt::ISODate);
@@ -296,9 +286,8 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
                 todo->setHasDueDate(true);
                 todo->setAllDay(true);
                 return modifyItemHelper(item);
-            } else {
+            } else
                 return false;
-            }
         }
         default:
             break;
