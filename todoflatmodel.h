@@ -36,13 +36,13 @@ class TodoFlatModel : public QSortFilterProxyModel
 
 public:
     enum Column {
-        RemoteId = 0,
-        Summary,
+        Summary = 0,
         Categories,
-        ParentRemoteId,
         DueDate,
         FlagImportant,
-        LastColumn = FlagImportant
+        RemoteId,
+        ParentRemoteId,
+        LastColumn = ParentRemoteId
     };
 
     TodoFlatModel(QObject *parent = 0);
