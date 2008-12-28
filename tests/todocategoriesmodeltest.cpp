@@ -343,12 +343,17 @@ void TodoCategoriesModelTest::testSingleRemoved()
 
 void TodoCategoriesModelTest::testMultipleRemoved()
 {
-    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(5, 0)));
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(4, 0)));
     QModelIndexList indexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
 
-    QCOMPARE(indexes.size(), 1);
+    QCOMPARE(indexes.size(), 3);
     QModelIndex index = indexes.takeFirst();
+    QModelIndex index2 = indexes.takeFirst();
+    QModelIndex index3 = indexes.takeFirst();
+
     QModelIndex parent = index.parent();
+    QModelIndex parent2 = index2.parent();
+    QModelIndex parent3 = index3.parent();
     int count = m_model.rowCount(parent);
 
     QSignalSpy spy(&m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
@@ -360,12 +365,26 @@ void TodoCategoriesModelTest::testMultipleRemoved()
 
     QCOMPARE(m_model.rowCount(parent), count - 1);
 
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.count(), 3);
     QVariantList signal = spy.takeFirst();
     QCOMPARE(signal.count(), 3);
     QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
+    QCOMPARE(signal.at(1).toInt(), 0);
+    QCOMPARE(signal.at(1).toInt(), 0);
+
+    QCOMPARE(spy.count(), 2);
+    signal = spy.takeFirst();
+    QCOMPARE(signal.count(), 3);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), parent2);
     QCOMPARE(signal.at(1).toInt(), 1);
     QCOMPARE(signal.at(1).toInt(), 1);
+
+    QCOMPARE(spy.count(), 1);
+    signal = spy.takeFirst();
+    QCOMPARE(signal.count(), 3);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), parent3);
+    QCOMPARE(signal.at(1).toInt(), 0);
+    QCOMPARE(signal.at(1).toInt(), 0);
 }
 
 #include "todocategoriesmodeltest.moc"
