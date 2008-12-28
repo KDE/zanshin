@@ -40,7 +40,6 @@ private slots:
     void testSingleModification();
     void testReparentModification();
     void testSingleRemoved();
-    void testMultipleRemoved();
 
 private:
     TodoFlatModel m_flatModel;
@@ -237,31 +236,6 @@ void TodoTreeModelTest::testSingleRemoved()
     QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
     QCOMPARE(signal.at(1).toInt(), 2);
     QCOMPARE(signal.at(1).toInt(), 2);
-}
-
-void TodoTreeModelTest::testMultipleRemoved()
-{
-    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(1, 0)));
-    QModelIndex index = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
-
-    QModelIndex parent = index.parent();
-    int count = m_model.rowCount(parent);
-
-    QSignalSpy spy(&m_model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
-
-    Akonadi::ItemDeleteJob *job = new Akonadi::ItemDeleteJob(item);
-    QVERIFY(job->exec());
-
-    flushNotifications();
-
-    QCOMPARE(m_model.rowCount(parent), count - 1);
-
-    QCOMPARE(spy.count(), 1);
-    QVariantList signal = spy.takeFirst();
-    QCOMPARE(signal.count(), 3);
-    QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
-    QCOMPARE(signal.at(1).toInt(), 1);
-    QCOMPARE(signal.at(1).toInt(), 1);
 }
 
 #include "todotreemodeltest.moc"
