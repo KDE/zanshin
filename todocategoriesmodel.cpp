@@ -63,30 +63,33 @@ QModelIndex TodoCategoriesModel::index(int row, int column, const QModelIndex &p
 {
     if (row < 0 || column < 0
      || row >= rowCount(parent)
-     || column >= columnCount(parent))
+     || column >= columnCount(parent)) {
         return QModelIndex();
+    }
 
     return createIndex(row, column, nodeForIndex(parent));
 }
 
 QModelIndex TodoCategoriesModel::parent(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QModelIndex();
+    }
 
     TodoCategoryTreeNode *parent = nodeForIndex(index)->parent;
 
-    if (parent == 0)
+    if (parent == 0) {
         return QModelIndex();
-    else
+    } else {
         return indexForNode(parent);
+    }
 }
 
 int TodoCategoriesModel::rowCount(const QModelIndex &parent) const
 {
-    if (!parent.isValid())
+    if (!parent.isValid()) {
         return m_roots.count();
-    else if (parent.column() == 0) { // Only one set of children per row
+    } else if (parent.column() == 0) { // Only one set of children per row
         TodoCategoryTreeNode *node = nodeForIndex(parent);
         return node->children.count();
     }
@@ -103,17 +106,20 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
 {
     TodoCategoryTreeNode *node = nodeForIndex(index);
 
-    if (node == 0)
+    if (node == 0) {
         return QVariant();
+    }
 
-    if (node->id != -1)
+    if (node->id != -1) {
         return QAbstractProxyModel::data(index, role);
+    }
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
-        if (index.column() == TodoFlatModel::Summary)
+        if (index.column() == TodoFlatModel::Summary) {
             return node->category;
-        else if (index.column() == TodoFlatModel::Categories && node->parent != 0)
+        } else if (index.column() == TodoFlatModel::Categories && node->parent != 0) {
             return QStringList() << node->parent->category;
+        }
     }
 
     return QVariant();
@@ -145,8 +151,9 @@ QModelIndex TodoCategoriesModel::mapToSource(const QModelIndex &proxyIndex) cons
 {
     TodoCategoryTreeNode *node = nodeForIndex(proxyIndex);
 
-    if (!node || node->id == -1)
+    if (!node || node->id == -1) {
         return QModelIndex();
+    }
 
     return flatModel()->indexForItem(Akonadi::Item(node->id),
                                      proxyIndex.column());
@@ -158,8 +165,9 @@ QList<QModelIndex> TodoCategoriesModel::mapFromSourceAll(const QModelIndex &sour
 
     Akonadi::Entity::Id id = item.id();
 
-    if (!m_itemMap.contains(id))
+    if (!m_itemMap.contains(id)) {
         return QList<QModelIndex>();
+    }
 
     QList<TodoCategoryTreeNode*> nodes = m_itemMap[id];
     QList<QModelIndex> res;
@@ -178,8 +186,9 @@ QModelIndex TodoCategoriesModel::mapFromSource(const QModelIndex &sourceIndex) c
 
 void TodoCategoriesModel::setSourceModel(TodoFlatModel *sourceModel)
 {
-    if (flatModel())
+    if (flatModel()) {
         disconnect(flatModel());
+    }
 
     Q_ASSERT(sourceModel == 0 || qobject_cast<TodoFlatModel*>(sourceModel) != 0);
     QAbstractProxyModel::setSourceModel(sourceModel);
@@ -246,7 +255,7 @@ void TodoCategoriesModel::onSourceRemoveRows(const QModelIndex &/*sourceIndex*/,
             beginRemoveRows(proxyIndex.parent(), proxyIndex.row(), proxyIndex.row());
             m_itemMap.remove(itemForIndex(proxyIndex).id());
             parentNode->children.removeAll(node);
-	    delete node;
+            delete node;
             endRemoveRows();
         }
     }
@@ -332,27 +341,31 @@ void TodoCategoriesModel::onSourceCollectionChanged(const Akonadi::Collection &c
 
 TodoCategoryTreeNode *TodoCategoriesModel::nodeForIndex(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if (!index.isValid()) {
         return 0;
+    }
 
     TodoCategoryTreeNode *parentNode = static_cast<TodoCategoryTreeNode*>(index.internalPointer());
-    if (parentNode != 0)
+    if (parentNode != 0) {
         return parentNode->children.at(index.row());
-    else
+    } else {
         return m_roots.at(index.row());
+    }
 }
 
 QModelIndex TodoCategoriesModel::indexForNode(TodoCategoryTreeNode *node, int column) const
 {
-    if (node == 0)
+    if (node == 0) {
         return QModelIndex();
+    }
 
     TodoCategoryTreeNode *parentNode = node->parent;
     int row;
-    if (parentNode != 0)
+    if (parentNode != 0) {
         row = parentNode->children.indexOf(node);
-    else
+    } else {
         row = m_roots.indexOf(node);
+    }
 
     return createIndex(row, column, parentNode);
 }
@@ -370,10 +383,11 @@ QList<QModelIndex> TodoCategoriesModel::indexesForItem(const Akonadi::Item &item
 QString TodoCategoriesModel::categoryForIndex(const QModelIndex &index) const
 {
     TodoCategoryTreeNode *node = nodeForIndex(index);
-    if (node != 0 && node->id == -1)
+    if (node != 0 && node->id == -1) {
         return node->category;
-    else
+    } else {
         return QString();
+    }
 }
 
 QModelIndex TodoCategoriesModel::indexForCategory(const QString &category, int column) const
@@ -414,8 +428,9 @@ void TodoCategoriesModel::loadDefaultCategories()
     QList<TodoCategoryTreeNode*> roots;
     roots << home << office << errands << computer << phone;
 
-    foreach (TodoCategoryTreeNode *node, roots)
+    foreach (TodoCategoryTreeNode *node, roots) {
         loadCategory(node);
+    }
 
     serializeCategories();
 }
@@ -425,9 +440,9 @@ void TodoCategoriesModel::loadCategory(TodoCategoryTreeNode *node)
     m_categoryMap[node->category] = node;
 
     int row;
-    if (node->parent != 0)
+    if (node->parent != 0) {
         row = node->parent->children.indexOf(node);
-    else {
+    } else {
         m_roots << node;
         row = m_roots.indexOf(node);
     }
@@ -436,8 +451,9 @@ void TodoCategoriesModel::loadCategory(TodoCategoryTreeNode *node)
     beginInsertRows(parentIndex, row, row);
     endInsertRows();
 
-    foreach (TodoCategoryTreeNode *child, node->children)
+    foreach (TodoCategoryTreeNode *child, node->children) {
         loadCategory(child);
+    }
 }
 
 void TodoCategoriesModel::serializeCategories()
@@ -449,8 +465,9 @@ void TodoCategoriesModel::serializeCategories()
     foreach (TodoCategoryTreeNode *node, m_categoryMap.values()) {
         QString key = node->category;
         QString value;
-        if (node->parent != 0)
+        if (node->parent != 0) {
             value = node->parent->category;
+        }
         parentList << key << value;
     }
 
@@ -464,7 +481,7 @@ void TodoCategoriesModel::deserializeCategories()
 {
     if (!m_collection.isValid()) return;
 
-    if (!m_collection.hasAttribute < TodoCategoriesAttribute>()) {
+    if (!m_collection.hasAttribute <TodoCategoriesAttribute>()) {
         loadDefaultCategories();
         return;
     }
@@ -478,8 +495,9 @@ void TodoCategoriesModel::deserializeCategories()
     for (int i = 0; i < parentList.size(); i += 2) {
         QString child = parentList.at(i);
         QString parent;
-        if (i + 1 < parentList.size())
+        if (i + 1 < parentList.size()) {
             parent = parentList.at(i + 1);
+        }
 
         if (!categoryMap.contains(child)) {
             TodoCategoryTreeNode *node = new TodoCategoryTreeNode(child);

@@ -57,29 +57,33 @@ TodoFlatModelImpl::~TodoFlatModelImpl()
 
 int TodoFlatModelImpl::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
-    else
+    } else {
         return TodoFlatModel::LastColumn + 1;
+    }
 }
 
 int TodoFlatModelImpl::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
-    else
+    } else {
         return ItemModel::rowCount(parent);
+    }
 }
 
 QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= rowCount())
+    if (!index.isValid() || index.row() >= rowCount()) {
         return QVariant();
+    }
 
     const Akonadi::Item item = itemForIndex(index);
 
-    if (!item.hasPayload<IncidencePtr>())
+    if (!item.hasPayload<IncidencePtr>()) {
         return QVariant();
+    }
 
     const IncidencePtr incidence = item.payload<IncidencePtr>();
 
@@ -92,18 +96,20 @@ QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
         case TodoFlatModel::Summary:
             return incidence->summary();
         case TodoFlatModel::Categories:
-            if (role == Qt::EditRole)
+            if (role == Qt::EditRole) {
                 return incidence->categories().join(", ");
-            else
+            } else {
                 return incidence->categories();
+            }
         case TodoFlatModel::ParentRemoteId:
             return incidence->relatedToUid();
         case TodoFlatModel::DueDate: {
             KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
-            if (todo)
+            if (todo) {
                 return todo->dtDue().toString();
-            else
+            } else {
                 return QVariant();
+            }
         }
         case TodoFlatModel::FlagImportant:
             return QVariant();
@@ -205,8 +211,9 @@ Akonadi::ItemModel *TodoFlatModel::itemModel() const
 
 Qt::ItemFlags TodoFlatModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid() || index.row() >= rowCount())
+    if (!index.isValid() || index.row() >= rowCount()) {
         return Qt::NoItemFlags;
+    }
 
     Qt::ItemFlags f = Qt::ItemIsEnabled|Qt::ItemIsSelectable;
 
@@ -242,19 +249,22 @@ static bool modifyItemHelper(const Akonadi::Item &item)
 
 bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!index.isValid() || index.row() >= rowCount())
+    if (!index.isValid() || index.row() >= rowCount()) {
         return false;
+    }
 
     const Akonadi::Item item = itemForIndex(index);
 
-    if (!item.hasPayload<IncidencePtr>())
+    if (!item.hasPayload<IncidencePtr>()) {
         return false;
+    }
 
     const IncidencePtr incidence = item.payload<IncidencePtr>();
     KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
 
-    if (!todo)
+    if (!todo) {
         return false;
+    }
 
     switch( role ) {
     case Qt::EditRole:
@@ -270,14 +280,16 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
         }
         case TodoFlatModel::ParentRemoteId: {
             QSet<QString> ids;
-            for (int i=0; i<rowCount(); i++)
+            for (int i=0; i<rowCount(); i++) {
                 ids << data(this->index(i, TodoFlatModel::RemoteId)).toString();
+            }
 
             if (ids.contains(value.toString())) {
                 todo->setRelatedToUid(value.toString());
                 return modifyItemHelper(item);
-            } else
+            } else {
                 return false;
+            }
         }
         case TodoFlatModel::DueDate: {
             QDate date = QDate::fromString(value.toString(), Qt::ISODate);
@@ -286,8 +298,9 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
                 todo->setHasDueDate(true);
                 todo->setAllDay(true);
                 return modifyItemHelper(item);
-            } else
+            } else {
                 return false;
+            }
         }
         default:
             break;
