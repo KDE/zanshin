@@ -33,7 +33,7 @@ ProjectsModel::~ProjectsModel()
 {
 }
 
-void ProjectsModel::setSourceModel(TodoTreeModel *sourceModel)
+void ProjectsModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
     if (treeModel()) {
         disconnect(treeModel());

@@ -33,7 +33,7 @@ ContextsModel::~ContextsModel()
 {
 }
 
-void ContextsModel::setSourceModel(TodoCategoriesModel *sourceModel)
+void ContextsModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
     Q_ASSERT(sourceModel==0 || qobject_cast<TodoCategoriesModel*>(sourceModel)!=0);
     QSortFilterProxyModel::setSourceModel(sourceModel);

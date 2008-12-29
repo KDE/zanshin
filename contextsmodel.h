@@ -33,7 +33,7 @@ public:
     ContextsModel(QObject *parent = 0);
     virtual ~ContextsModel();
 
-    virtual void setSourceModel(TodoCategoriesModel *sourceModel);
+    virtual void setSourceModel(QAbstractItemModel *sourceModel);
 
 protected:
     virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;

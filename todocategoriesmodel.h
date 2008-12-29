@@ -55,7 +55,7 @@ public:
     virtual QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
     QList<QModelIndex> mapFromSourceAll(const QModelIndex &sourceIndex) const;
 
-    virtual void setSourceModel(TodoFlatModel *sourceModel);
+    virtual void setSourceModel(QAbstractItemModel *sourceModel);
 
     Akonadi::Item itemForIndex (const QModelIndex &index) const;
     QList<QModelIndex> indexesForItem (const Akonadi::Item &item, int column = 0) const;

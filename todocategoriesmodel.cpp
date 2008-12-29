@@ -178,13 +178,13 @@ QList<QModelIndex> TodoCategoriesModel::mapFromSourceAll(const QModelIndex &sour
     return res;
 }
 
-QModelIndex TodoCategoriesModel::mapFromSource(const QModelIndex &sourceIndex) const
+QModelIndex TodoCategoriesModel::mapFromSource(const QModelIndex &/*sourceIndex*/) const
 {
     kError() << "Never call mapFromSource() on TodoCategoriesModel";
     return QModelIndex();
 }
 
-void TodoCategoriesModel::setSourceModel(TodoFlatModel *sourceModel)
+void TodoCategoriesModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
     if (flatModel()) {
         disconnect(flatModel());
@@ -192,7 +192,7 @@ void TodoCategoriesModel::setSourceModel(TodoFlatModel *sourceModel)
 
     Q_ASSERT(sourceModel == 0 || qobject_cast<TodoFlatModel*>(sourceModel) != 0);
     QAbstractProxyModel::setSourceModel(sourceModel);
-    m_collection = sourceModel->collection();
+    m_collection = flatModel()->collection();
 
     onSourceInsertRows(QModelIndex(), 0, flatModel()->rowCount() - 1);
 

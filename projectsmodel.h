@@ -35,7 +35,7 @@ public:
 
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-    virtual void setSourceModel(TodoTreeModel *sourceModel);
+    virtual void setSourceModel(QAbstractItemModel *sourceModel);
 
 protected:
     virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
