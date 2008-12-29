@@ -123,33 +123,43 @@ void TodoTreeModel::setSourceModel(QAbstractItemModel *sourceModel)
 
 void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int begin, int end)
 {
+    QList<Akonadi::Entity::Id> idToEmit;
+
+    // Storing the akonadi id vs remote id mapping
     for (int i = begin; i <= end; i++) {
         // Retrieve the item from the source model
         Akonadi::Item item = flatModel()->itemForIndex(flatModel()->index(i, 0));
         QString remoteId = flatModel()->data(flatModel()->index(i, TodoFlatModel::RemoteId)).toString();
         m_remoteIdMap[item.id()] = remoteId;
         m_remoteIdReverseMap[remoteId] = item.id();
+        idToEmit << item.id();
     }
 
+    // Filling the global tree maps, also store a partial one only for this bunch of updates
+    QHash<Akonadi::Entity::Id, QList<Akonadi::Entity::Id> > partialChildrenMap;
+    QHash<Akonadi::Entity::Id, Akonadi::Entity::Id> partialParentMap;
+    QList<Akonadi::Entity::Id> partialRoots;
     for (int i = end; i >= begin; i--) {
-        // Retrieve the item from the source model
         Akonadi::Item item = flatModel()->itemForIndex(flatModel()->index(i, 0));
-        Akonadi::Entity::Id id = item.id();
-
-        QModelIndex parentIdIndex = flatModel()->index(i, TodoFlatModel::ParentRemoteId);
-        QString remoteParentId = flatModel()->data(parentIdIndex).toString();
+        QString parentRemoteId = flatModel()->data(flatModel()->index(i, TodoFlatModel::ParentRemoteId)).toString();
         Akonadi::Entity::Id parentId = -1;
-        if (!remoteParentId.isEmpty()) {
-            parentId = m_remoteIdReverseMap[remoteParentId];
+        if (!parentRemoteId.isEmpty()) {
+            parentId = m_remoteIdReverseMap[parentRemoteId];
         }
+        partialChildrenMap[parentId] << item.id();
+        partialParentMap[item.id()] = parentId;
+        if (parentId==-1 || !idToEmit.contains(parentId)) {
+            partialRoots << item.id();
+        }
+    }
 
-        QModelIndex parentIndex = flatModel()->indexForItem(Akonadi::Item(parentId), 0);
-        QModelIndex parentParentIdIndex = flatModel()->indexForItem(Akonadi::Item(parentId),
-                                                                    TodoFlatModel::ParentRemoteId);
+    // Use the partial map and roots list to emit the insertions in the correct order
+    idToEmit = partialRoots;
+    while (!idToEmit.isEmpty()) {
+        Akonadi::Entity::Id id = idToEmit.takeFirst();
+        idToEmit+=partialChildrenMap[id];
 
-        /*
-         * Fill in the tree maps
-         */
+        Akonadi::Entity::Id parentId = partialParentMap[id];
         int row = m_childrenMap[parentId].count();
         QModelIndex proxyParentIndex;
         if (parentId!=-1) {
@@ -157,8 +167,8 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int b
         }
 
         beginInsertRows(proxyParentIndex, row, row);
-        m_childrenMap[parentId] << id;
         m_parentMap[id] = parentId;
+        m_childrenMap[parentId] << id;
         endInsertRows();
     }
 }
@@ -271,8 +281,10 @@ QModelIndex TodoTreeModel::indexForId(Akonadi::Entity::Id id, int column) const
         return QModelIndex();
     }
 
+    Q_ASSERT(m_parentMap.contains(id));
     Akonadi::Entity::Id parentId = m_parentMap[id];
     int row = m_childrenMap[parentId].indexOf(id);
+    Q_ASSERT(row>=0);
 
     return createIndex(row, column, (void*)id);
 }
