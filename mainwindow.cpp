@@ -38,13 +38,14 @@
 #include <QtGui/QDockWidget>
 
 #include "contextsmodel.h"
+#include "projectsmodel.h"
 #include "todocategoriesattribute.h"
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : KXmlGuiWindow(parent), m_globalModel(0), m_projectModel(0), m_categoriesModel(0)
+    : KXmlGuiWindow(parent), m_globalModel(0), m_treeModel(0), m_categoriesModel(0)
 {
     Akonadi::Control::start();
     Akonadi::AttributeFactory::registerAttribute<TodoCategoriesAttribute>();
@@ -73,8 +74,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_globalModel = new TodoFlatModel(this);
 
-    m_projectModel = new TodoTreeModel(this);
-    m_projectModel->setSourceModel(m_globalModel);
+    m_treeModel = new TodoTreeModel(this);
+    m_treeModel->setSourceModel(m_globalModel);
 
     m_categoriesModel = new TodoCategoriesModel(this);
     m_categoriesModel->setSourceModel(m_globalModel);
@@ -86,10 +87,10 @@ MainWindow::MainWindow(QWidget *parent)
     globalList->setModel(m_globalModel);
     tab->addTab(globalList, i18n("All Actions"));
 
-    Akonadi::ItemView *projectTree = new Akonadi::ItemView(tab);
-    projectTree->setRootIsDecorated(true);
-    projectTree->setModel(m_projectModel);
-    tab->addTab(projectTree, i18n("Project Tree"));
+    Akonadi::ItemView *todoTree = new Akonadi::ItemView(tab);
+    todoTree->setRootIsDecorated(true);
+    todoTree->setModel(m_treeModel);
+    tab->addTab(todoTree, i18n("Todo Tree"));
 
     Akonadi::ItemView *categoriesTree = new Akonadi::ItemView(tab);
     categoriesTree->setRootIsDecorated(true);
@@ -105,6 +106,17 @@ MainWindow::MainWindow(QWidget *parent)
     dock = new QDockWidget(i18n("Contexts"), this);
     dock->setObjectName("ContextsDock");
     dock->setWidget(contextTree);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
+
+
+    QTreeView *projectTree = new QTreeView(this);
+    ProjectsModel *projectsModel = new ProjectsModel(this);
+    projectsModel->setSourceModel(m_treeModel);
+    projectTree->setModel(projectsModel);
+
+    dock = new QDockWidget(i18n("Projects"), this);
+    dock->setObjectName("ProjectsDock");
+    dock->setWidget(projectTree);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
     setupGUI();

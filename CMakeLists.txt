@@ -8,6 +8,7 @@ set(zanshin_SRCS
    contextsmodel.cpp
    main.cpp
    mainwindow.cpp
+   projectsmodel.cpp
    todocategoriesattribute.cpp
    todocategoriesmodel.cpp
    todoflatmodel.cpp
