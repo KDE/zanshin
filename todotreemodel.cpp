@@ -173,7 +173,7 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &/*sourceIndex*/, int b
     }
 }
 
-void TodoTreeModel::onSourceRemoveRows(const QModelIndex &/*Id*/, int begin, int end)
+void TodoTreeModel::onSourceRemoveRows(const QModelIndex &/*sourceIndex*/, int begin, int end)
 {
     for (int i = begin; i <= end; ++i) {
         QModelIndex sourceIndex = flatModel()->index(i, 0);
