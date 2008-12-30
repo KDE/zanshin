@@ -18,26 +18,26 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_GLOBALMODEL_H
+#define ZANSHIN_GLOBALMODEL_H
 
-#include <KDE/KXmlGuiWindow>
+class TodoFlatModel;
+class TodoTreeModel;
+class TodoCategoriesModel;
+class ContextsModel;
+class ProjectsModel;
 
-#include <akonadi/collection.h>
-
-class MainWindow : public KXmlGuiWindow
+namespace GlobalModel
 {
-    Q_OBJECT
+    // Internal models
+    TodoFlatModel *todoFlat();
+    TodoTreeModel *todoTree();
+    TodoCategoriesModel *todoCategories();
 
-public:
-    MainWindow(QWidget *parent = 0);
-
-private slots:
-    void collectionClicked(const Akonadi::Collection &collection);
-
-private:
-    Akonadi::Collection m_currentCollection;
-};
+    // User orienter models
+    ContextsModel *contexts();
+    ProjectsModel *projects();
+}
 
 #endif
 

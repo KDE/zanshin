@@ -6,6 +6,7 @@ add_subdirectory(tests)
 
 set(zanshin_SRCS
    contextsmodel.cpp
+   globalmodel.cpp
    main.cpp
    mainwindow.cpp
    projectsmodel.cpp

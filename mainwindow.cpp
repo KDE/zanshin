@@ -20,8 +20,6 @@
 
 #include "mainwindow.h"
 
-#include <akonadi/attributefactory.h>
-
 #include <akonadi/collectionfilterproxymodel.h>
 #include <akonadi/collectionstatisticsdelegate.h>
 #include <akonadi/collectionstatisticsmodel.h>
@@ -38,17 +36,16 @@
 #include <QtGui/QDockWidget>
 
 #include "contextsmodel.h"
+#include "globalmodel.h"
 #include "projectsmodel.h"
-#include "todocategoriesattribute.h"
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : KXmlGuiWindow(parent), m_globalModel(0), m_treeModel(0), m_categoriesModel(0)
+    : KXmlGuiWindow(parent)
 {
     Akonadi::Control::start();
-    Akonadi::AttributeFactory::registerAttribute<TodoCategoriesAttribute>();
 
     Akonadi::CollectionView *collectionList = new Akonadi::CollectionView(this);
     connect(collectionList, SIGNAL(clicked(const Akonadi::Collection &)),
@@ -72,36 +69,26 @@ MainWindow::MainWindow(QWidget *parent)
 
     collectionList->setModel(collectionProxyModel);
 
-    m_globalModel = new TodoFlatModel(this);
-
-    m_treeModel = new TodoTreeModel(this);
-    m_treeModel->setSourceModel(m_globalModel);
-
-    m_categoriesModel = new TodoCategoriesModel(this);
-    m_categoriesModel->setSourceModel(m_globalModel);
-
     KTabWidget *tab = new KTabWidget(this);
     setCentralWidget(tab);
 
     Akonadi::ItemView *globalList = new Akonadi::ItemView(tab);
-    globalList->setModel(m_globalModel);
+    globalList->setModel(GlobalModel::todoFlat());
     tab->addTab(globalList, i18n("All Actions"));
 
     Akonadi::ItemView *todoTree = new Akonadi::ItemView(tab);
     todoTree->setRootIsDecorated(true);
-    todoTree->setModel(m_treeModel);
+    todoTree->setModel(GlobalModel::todoTree());
     tab->addTab(todoTree, i18n("Todo Tree"));
 
     Akonadi::ItemView *categoriesTree = new Akonadi::ItemView(tab);
     categoriesTree->setRootIsDecorated(true);
-    categoriesTree->setModel(m_categoriesModel);
+    categoriesTree->setModel(GlobalModel::todoCategories());
     tab->addTab(categoriesTree, i18n("Categories Tree"));
 
 
     QTreeView *contextTree = new QTreeView(this);
-    ContextsModel *contextsModel = new ContextsModel(this);
-    contextsModel->setSourceModel(m_categoriesModel);
-    contextTree->setModel(contextsModel);
+    contextTree->setModel(GlobalModel::contexts());
 
     dock = new QDockWidget(i18n("Contexts"), this);
     dock->setObjectName("ContextsDock");
@@ -110,9 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     QTreeView *projectTree = new QTreeView(this);
-    ProjectsModel *projectsModel = new ProjectsModel(this);
-    projectsModel->setSourceModel(m_treeModel);
-    projectTree->setModel(projectsModel);
+    projectTree->setModel(GlobalModel::projects());
 
     dock = new QDockWidget(i18n("Projects"), this);
     dock->setObjectName("ProjectsDock");
@@ -125,6 +110,6 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::collectionClicked(const Akonadi::Collection &collection)
 {
     m_currentCollection = collection;
-    m_globalModel->setCollection(collection);
+    GlobalModel::todoFlat()->setCollection(collection);
 }
 
