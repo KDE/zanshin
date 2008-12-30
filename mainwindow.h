@@ -23,7 +23,14 @@
 
 #include <KDE/KXmlGuiWindow>
 
+#include <QtCore/QModelIndex>
+
 #include <akonadi/collection.h>
+
+namespace Akonadi
+{
+    class ItemView;
+}
 
 class MainWindow : public KXmlGuiWindow
 {
@@ -34,9 +41,11 @@ public:
 
 private slots:
     void collectionClicked(const Akonadi::Collection &collection);
+    void onProjectChanged(const QModelIndex &current);
+    void onContextChanged(const QModelIndex &current);
 
 private:
-    Akonadi::Collection m_currentCollection;
+    Akonadi::ItemView *m_view;
 };
 
 #endif

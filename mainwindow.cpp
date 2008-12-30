@@ -69,26 +69,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     collectionList->setModel(collectionProxyModel);
 
-    KTabWidget *tab = new KTabWidget(this);
-    setCentralWidget(tab);
-
-    Akonadi::ItemView *globalList = new Akonadi::ItemView(tab);
-    globalList->setModel(GlobalModel::todoFlat());
-    tab->addTab(globalList, i18n("All Actions"));
-
-    Akonadi::ItemView *todoTree = new Akonadi::ItemView(tab);
-    todoTree->setRootIsDecorated(true);
-    todoTree->setModel(GlobalModel::todoTree());
-    tab->addTab(todoTree, i18n("Todo Tree"));
-
-    Akonadi::ItemView *categoriesTree = new Akonadi::ItemView(tab);
-    categoriesTree->setRootIsDecorated(true);
-    categoriesTree->setModel(GlobalModel::todoCategories());
-    tab->addTab(categoriesTree, i18n("Categories Tree"));
-
+    m_view = new Akonadi::ItemView(this);
+    m_view->setModel(GlobalModel::todoFlat());
+    setCentralWidget(m_view);
 
     QTreeView *contextTree = new QTreeView(this);
     contextTree->setModel(GlobalModel::contexts());
+    connect(contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(onContextChanged(QModelIndex)));
 
     dock = new QDockWidget(i18n("Contexts"), this);
     dock->setObjectName("ContextsDock");
@@ -98,6 +86,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTreeView *projectTree = new QTreeView(this);
     projectTree->setModel(GlobalModel::projects());
+    connect(projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(onProjectChanged(QModelIndex)));
 
     dock = new QDockWidget(i18n("Projects"), this);
     dock->setObjectName("ProjectsDock");
@@ -109,7 +99,22 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::collectionClicked(const Akonadi::Collection &collection)
 {
-    m_currentCollection = collection;
     GlobalModel::todoFlat()->setCollection(collection);
+}
+
+void MainWindow::onProjectChanged(const QModelIndex &current)
+{
+    m_view->setModel(GlobalModel::todoTree());
+    QModelIndex projIndex = GlobalModel::projects()->mapToSource(current);
+    m_view->setRootIsDecorated(true);
+    m_view->setRootIndex(projIndex);
+}
+
+void MainWindow::onContextChanged(const QModelIndex &current)
+{
+    m_view->setModel(GlobalModel::todoCategories());
+    QModelIndex catIndex = GlobalModel::contexts()->mapToSource(current);
+    m_view->setRootIsDecorated(true);
+    m_view->setRootIndex(catIndex);
 }
 
