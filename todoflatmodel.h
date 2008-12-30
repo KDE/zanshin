@@ -21,13 +21,14 @@
 #ifndef ZANSHIN_TODOFLATMODEL_H
 #define ZANSHIN_TODOFLATMODEL_H
 
+#include <akonadi/entity.h>
 #include <QtGui/QSortFilterProxyModel>
 
 namespace Akonadi
 {
+    class Collection;    
     class Item;
     class ItemModel;
-    class Collection;
 }
 
 class TodoFlatModel : public QSortFilterProxyModel
@@ -60,12 +61,20 @@ public:
 signals:
     void collectionChanged(const Akonadi::Collection &collection);
 
+private slots:
+    void onSourceInsertRows(const QModelIndex&, int, int);
+    void onSourceRemoveRows(const QModelIndex&, int, int);
+
 protected:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
 private:
     void setSourceModel(QAbstractItemModel *sourceModel);
     Akonadi::ItemModel *itemModel() const;
+    bool hasCycle(Akonadi::Entity::Id parent, Akonadi::Entity::Id child);
+
+    QHash<Akonadi::Entity::Id, Akonadi::Entity::Id> m_parentMap;
+    QHash<QString, Akonadi::Entity::Id> m_remoteIdReverseMap;
 };
 
 #endif

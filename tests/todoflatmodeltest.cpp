@@ -143,6 +143,7 @@ void TodoFlatModelTest::testItemModification_data()
     QTest::newRow("New Categories") <<  3 << (int)TodoFlatModel::Categories << "Computer, Office" << true;
     QTest::newRow("New Due Date") <<  6 << (int)TodoFlatModel::DueDate << "2009-03-14" << true;
     QTest::newRow("Wrong Due Date") <<  6 << (int)TodoFlatModel::DueDate << "2009-42-21" << false;
+    QTest::newRow("cycle") <<  11 << (int)TodoFlatModel::ParentRemoteId << "fake-02" << false;
 }
 
 void TodoFlatModelTest::testItemModification()
@@ -197,6 +198,5 @@ void TodoFlatModelTest::testSingleRemoved()
     QCOMPARE(signal.at(1).toInt(), 1);
 
 }
-
 
 #include "todoflatmodeltest.moc"
