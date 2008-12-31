@@ -326,16 +326,13 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
             return modifyItemHelper(item);
         }
         case TodoFlatModel::ParentRemoteId: {
-            QHash<QString, Akonadi::Entity::Id>::iterator it = m_remoteIdReverseMap.find(value.toString());
-            if (it != m_remoteIdReverseMap.end()) {
-                // test cycle
-                if (isAncestorOf(item.id(), it.value()))
-                    return false;
-                todo->setRelatedToUid(value.toString());
-                return modifyItemHelper(item);
-            } else {
+            // test existence and cycle
+            if (!m_parentMap.contains(value.toString())
+             || isAncestorOf(incidence->uid(), value.toString())) {
                 return false;
             }
+            todo->setRelatedToUid(value.toString());
+            return modifyItemHelper(item);
         }
         case TodoFlatModel::DueDate: {
             QDate date = QDate::fromString(value.toString(), Qt::ISODate);
@@ -372,21 +369,17 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
         // Retrieve the item from the source model
         Akonadi::Item item = itemForIndex(index(i, 0));
         QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
-        m_remoteIdReverseMap[remoteId] = item.id();
+        m_remoteIdMap[item.id()] = remoteId;
     }
 
     for (int i = begin; i <= end; i++) {
         Akonadi::Item item = itemForIndex(index(i, 0));
         Akonadi::Entity::Id id = item.id();
-        QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
 
+        QString remoteId = m_remoteIdMap[item.id()];
         QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
-        Akonadi::Entity::Id parentId = -1;
-        if (!parentRemoteId.isEmpty()) {
-            parentId = m_remoteIdReverseMap[parentRemoteId];
-        }
 
-        m_parentMap[id] = parentId;
+        m_parentMap[remoteId] = parentRemoteId;
         m_childrenMap[parentRemoteId] << remoteId;
     }
 
@@ -397,19 +390,19 @@ void TodoFlatModel::onSourceRemoveRows(const QModelIndex&/*sourceIndex*/, int be
     for (int i = begin; i <= end; ++i) {
         QModelIndex sourceIndex = index(i, 0);
         Akonadi::Item item = itemForIndex(sourceIndex);
-        m_parentMap.remove(item.id());
 
+        QString remoteId = m_remoteIdMap.take(item.id());
         QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
-        QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
-        m_remoteIdReverseMap.remove(parentRemoteId);
+
+        m_parentMap.remove(remoteId);
         m_childrenMap[parentRemoteId].removeAll(remoteId);
     }
 }
 
-bool TodoFlatModel::isAncestorOf(Akonadi::Entity::Id child, Akonadi::Entity::Id parent)
+bool TodoFlatModel::isAncestorOf(const QString &child, const QString &parent)
 {
-    Akonadi::Entity::Id p = m_parentMap[parent];
-    if (p == -1)
+    QString p = m_parentMap[parent];
+    if (p.isEmpty())
         return false;
     if (p == child)
         return true;

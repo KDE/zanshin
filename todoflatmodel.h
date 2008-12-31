@@ -81,11 +81,11 @@ private:
     Akonadi::ItemModel *itemModel() const;
 
     TodoType todoType(const QString &remoteId) const;
-    bool isAncestorOf(Akonadi::Entity::Id child, Akonadi::Entity::Id parent);
+    bool isAncestorOf(const QString &child, const QString &parent);
 
-    QHash<Akonadi::Entity::Id, Akonadi::Entity::Id> m_parentMap;
+    QHash<QString, QString> m_parentMap;
     QHash<QString, QStringList> m_childrenMap;
-    QHash<QString, Akonadi::Entity::Id> m_remoteIdReverseMap;
+    QHash<Akonadi::Entity::Id, QString> m_remoteIdMap;
 };
 
 #endif
