@@ -29,6 +29,7 @@
 
 #include <kcal/todo.h>
 
+#include <KIcon>
 #include <KLocale>
 #include <KDebug>
 
@@ -112,14 +113,6 @@ QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
             }
         }
         case TodoFlatModel::FlagImportant:
-            return QVariant();
-        }
-        break;
-    case Qt::CheckStateRole:
-        switch(index.column()) {
-        case TodoFlatModel::Summary:
-            return Qt::Unchecked;
-        default:
             return QVariant();
         }
         break;
@@ -222,9 +215,23 @@ Qt::ItemFlags TodoFlatModel::flags(const QModelIndex &index) const
     Qt::ItemFlags f = Qt::ItemIsEnabled|Qt::ItemIsSelectable;
 
     switch(index.column()) {
-    case TodoFlatModel::Summary:
-        f |= Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+    case TodoFlatModel::Summary: {
+        f |= Qt::ItemIsEditable;
+
+        const Akonadi::Item item = itemForIndex(index);
+
+        if (!item.hasPayload<IncidencePtr>()) {
+            break;
+        }
+
+        const IncidencePtr incidence = item.payload<IncidencePtr>();
+        TodoType type = todoType(incidence->uid());
+
+        if (type==StandardTodo) {
+            f |= Qt::ItemIsUserCheckable;
+        }
         break;
+    }
     case TodoFlatModel::Categories:
     case TodoFlatModel::ParentRemoteId:
     case TodoFlatModel::DueDate:
@@ -235,6 +242,42 @@ Qt::ItemFlags TodoFlatModel::flags(const QModelIndex &index) const
     }
 
     return f;
+}
+
+QVariant TodoFlatModel::data(const QModelIndex &index, int role) const
+{
+    if (role==Qt::DecorationRole && index.column()==Summary) {
+        const Akonadi::Item item = itemForIndex(index);
+
+        if (!item.hasPayload<IncidencePtr>()) {
+            return QVariant();
+        }
+
+        const IncidencePtr incidence = item.payload<IncidencePtr>();
+        TodoType type = todoType(incidence->uid());
+        if (type==ProjectTodo) {
+            return KIcon("view-pim-tasks");
+        } else if (type==FolderTodo) {
+            return KIcon("folder");
+        } else {
+            return QVariant();
+        }
+    } else if (role==Qt::CheckStateRole && index.column()==Summary) {
+        const Akonadi::Item item = itemForIndex(index);
+
+        if (!item.hasPayload<IncidencePtr>()) {
+            return QVariant();
+        }
+
+        const IncidencePtr incidence = item.payload<IncidencePtr>();
+        TodoType type = todoType(incidence->uid());
+
+        if (type==StandardTodo) {
+            return Qt::Unchecked;
+        }
+    }
+
+    return QSortFilterProxyModel::data(index, role);
 }
 
 static bool modifyItemHelper(const Akonadi::Item &item)
@@ -335,6 +378,7 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
     for (int i = begin; i <= end; i++) {
         Akonadi::Item item = itemForIndex(index(i, 0));
         Akonadi::Entity::Id id = item.id();
+        QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
 
         QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
         Akonadi::Entity::Id parentId = -1;
@@ -343,6 +387,7 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
         }
 
         m_parentMap[id] = parentId;
+        m_childrenMap[parentRemoteId] << remoteId;
     }
 
 }
@@ -353,6 +398,10 @@ void TodoFlatModel::onSourceRemoveRows(const QModelIndex&/*sourceIndex*/, int be
         QModelIndex sourceIndex = index(i, 0);
         Akonadi::Item item = itemForIndex(sourceIndex);
         m_parentMap.remove(item.id());
+
+        QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
+        QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
+        m_childrenMap[parentRemoteId].removeAll(remoteId);
     }
 }
 
@@ -364,5 +413,23 @@ bool TodoFlatModel::hasCycle(Akonadi::Entity::Id parent, Akonadi::Entity::Id chi
     if (p == child)
         return true;
     return hasCycle(p, child);
+}
+
+TodoFlatModel::TodoType TodoFlatModel::todoType(const QString &remoteId) const
+{
+    //TODO: no child and incidence marked as project => todo is project type
+
+    const QStringList children = m_childrenMap[remoteId];
+    if (children.size()>0) {
+        foreach (const QString &child, children) {
+            if (todoType(child) == ProjectTodo) {
+                return FolderTodo;
+            }
+        }
+
+        return ProjectTodo;
+    }
+
+    return StandardTodo;
 }
 

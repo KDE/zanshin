@@ -24,12 +24,13 @@
 #include <akonadi/collectionmodifyjob.h>
 #include <akonadi/item.h>
 
+#include <KDebug>
+#include <KIcon>
+
 #include <QtCore/QStringList>
 
 #include "todocategoriesattribute.h"
 #include "todoflatmodel.h"
-
-#include <KDebug>
 
 class TodoCategoryTreeNode
 {
@@ -120,6 +121,8 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
         } else if (index.column() == TodoFlatModel::Categories && node->parent != 0) {
             return QStringList() << node->parent->category;
         }
+    } else if (role == Qt::DecorationRole && index.column() == TodoFlatModel::Summary) {
+        return KIcon("view-pim-notes");
     }
 
     return QVariant();

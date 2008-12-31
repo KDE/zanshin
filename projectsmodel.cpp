@@ -64,23 +64,3 @@ bool ProjectsModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePar
     return treeModel()->rowCount(index)>0;
 }
 
-Qt::ItemFlags ProjectsModel::flags(const QModelIndex &index) const
-{
-    Qt::ItemFlags f = treeModel()->flags(mapToSource(index));
-
-    if (f & Qt::ItemIsUserCheckable) {
-        f^= Qt::ItemIsUserCheckable;
-    }
-
-    return f;
-}
-
-QVariant ProjectsModel::data(const QModelIndex &index, int role) const
-{
-    if (role==Qt::CheckStateRole) {
-        return QVariant();
-    }
-
-    return QSortFilterProxyModel::data(index, role);
-}
-

@@ -26,7 +26,7 @@
 
 namespace Akonadi
 {
-    class Collection;    
+    class Collection;
     class Item;
     class ItemModel;
 }
@@ -50,6 +50,7 @@ public:
     virtual ~TodoFlatModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     Akonadi::Item itemForIndex (const QModelIndex &index) const;
@@ -69,11 +70,20 @@ protected:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
 private:
+    enum TodoType
+    {
+        StandardTodo = 0,
+        ProjectTodo,
+        FolderTodo
+    };
+
     void setSourceModel(QAbstractItemModel *sourceModel);
     Akonadi::ItemModel *itemModel() const;
+    TodoType todoType(const QString &remoteId) const;
     bool hasCycle(Akonadi::Entity::Id parent, Akonadi::Entity::Id child);
 
     QHash<Akonadi::Entity::Id, Akonadi::Entity::Id> m_parentMap;
+    QHash<QString, QStringList> m_childrenMap;
     QHash<QString, Akonadi::Entity::Id> m_remoteIdReverseMap;
 };
 
