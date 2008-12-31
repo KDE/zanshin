@@ -81,7 +81,7 @@ private:
     Akonadi::ItemModel *itemModel() const;
 
     TodoType todoType(const QString &remoteId) const;
-    bool isAncestorOf(const QString &child, const QString &parent);
+    bool isAncestorOf(const QString &ancestor, const QString &child);
 
     QHash<QString, QString> m_parentMap;
     QHash<QString, QStringList> m_childrenMap;

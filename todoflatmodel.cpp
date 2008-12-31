@@ -399,14 +399,14 @@ void TodoFlatModel::onSourceRemoveRows(const QModelIndex&/*sourceIndex*/, int be
     }
 }
 
-bool TodoFlatModel::isAncestorOf(const QString &child, const QString &parent)
+bool TodoFlatModel::isAncestorOf(const QString &ancestor, const QString &child)
 {
-    QString p = m_parentMap[parent];
-    if (p.isEmpty())
+    QString parent = m_parentMap[child];
+    if (parent.isEmpty())
         return false;
-    if (p == child)
+    if (parent == ancestor)
         return true;
-    return isAncestorOf(child, p);
+    return isAncestorOf(ancestor, parent);
 }
 
 TodoFlatModel::TodoType TodoFlatModel::todoType(const QString &remoteId) const
