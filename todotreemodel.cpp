@@ -23,7 +23,12 @@
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
 
+#include <qmimedata.h>
+#include <qstringlist.h>
+
 #include "todoflatmodel.h"
+
+#include <kdebug.h>
 
 TodoTreeModel::TodoTreeModel(QObject *parent)
     : QAbstractProxyModel(parent)
@@ -81,6 +86,39 @@ int TodoTreeModel::rowCount(const QModelIndex &parent) const
 int TodoTreeModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return TodoFlatModel::LastColumn + 1;
+}
+
+QMimeData * TodoTreeModel::mimeData(const QModelIndexList &indexes) const
+{
+    QModelIndexList proxyIndexes;
+    foreach (const QModelIndex &sourceIndex, indexes) {
+        QModelIndex proxyIndex = mapToSource(sourceIndex);
+        proxyIndexes << proxyIndex;
+    }
+    
+    return flatModel()->mimeData(proxyIndexes);
+}
+
+bool TodoTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent)
+{
+    if (action != Qt::MoveAction)
+        return false;
+
+    QStringList list = data->text().split(", ");
+    Akonadi::Item item = itemForIndex(parent);
+    QModelIndex parentIndex = indexForItem(item, TodoFlatModel::RemoteId);
+    QString remoteId = flatModel()->data(parentIndex).toString();
+    foreach(const QString id, list) {
+        QHash<QString, Akonadi::Entity::Id>::iterator it = m_remoteIdReverseMap.find(id);
+        if (it == m_remoteIdReverseMap.end())
+            return false;
+        Akonadi::Entity::Id akoId = it.value();
+        QModelIndex proxyIndex = indexForId(akoId, TodoFlatModel::ParentRemoteId);
+        if (!setData(proxyIndex, QVariant(remoteId))) {
+            return false;
+        }
+    }
+    return true;
 }
 
 QVariant TodoTreeModel::headerData(int section, Qt::Orientation orientation, int role) const

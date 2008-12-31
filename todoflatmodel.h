@@ -52,6 +52,7 @@ public:
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    virtual QMimeData * mimeData ( const QModelIndexList & indexes ) const;
 
     Akonadi::Item itemForIndex (const QModelIndex &index) const;
     QModelIndex indexForItem (const Akonadi::Item &item, const int column) const;

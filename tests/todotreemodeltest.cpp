@@ -40,6 +40,7 @@ private slots:
     void testSingleModification();
     void testReparentModification();
     void testSingleRemoved();
+    void testDragAndDrop();
 
 private:
     TodoFlatModel m_flatModel;
@@ -236,6 +237,26 @@ void TodoTreeModelTest::testSingleRemoved()
     QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
     QCOMPARE(signal.at(1).toInt(), 2);
     QCOMPARE(signal.at(1).toInt(), 2);
+}
+
+void TodoTreeModelTest::testDragAndDrop()
+{
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(5, 0)));
+    QModelIndex index = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
+    
+    QCOMPARE(m_model.data(index).toString(), QString("fake-01"));
+    QModelIndex parent = index.parent();
+    QModelIndex parentIndex = m_model.mapToSource(index);
+
+    QModelIndexList indexes;
+    indexes << index;
+    QMimeData *mimeData = m_model.mimeData(indexes);
+    QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, QModelIndex()));
+
+    index = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
+    QCOMPARE(m_model.data(index).toString(), QString(""));
+
+    indexes.clear();
 }
 
 #include "todotreemodeltest.moc"

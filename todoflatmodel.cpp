@@ -33,6 +33,8 @@
 #include <KLocale>
 #include <KDebug>
 
+#include <qmimedata.h>
+
 typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
 class TodoFlatModelImpl : public Akonadi::ItemModel
@@ -363,6 +365,21 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
     return false;
 }
 
+QMimeData *TodoFlatModel::mimeData(const QModelIndexList &indexes) const
+{
+    QString ids;
+    foreach (const QModelIndex &index, indexes) {
+        if (!ids.isEmpty())
+            ids += ", ";
+        Akonadi::Item item = itemForIndex(index);
+        QModelIndex id = indexForItem(item, TodoFlatModel::RemoteId);
+        ids += data(id).toString();
+    }
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setText(ids);
+    return mimeData;
+}
+
 void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int begin, int end)
 {
     for (int i = begin; i <= end; i++) {
@@ -374,7 +391,6 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
 
     for (int i = begin; i <= end; i++) {
         Akonadi::Item item = itemForIndex(index(i, 0));
-        Akonadi::Entity::Id id = item.id();
 
         QString remoteId = m_remoteIdMap[item.id()];
         QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
@@ -426,4 +442,5 @@ TodoFlatModel::TodoType TodoFlatModel::todoType(const QString &remoteId) const
 
     return StandardTodo;
 }
+
 
