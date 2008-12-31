@@ -70,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
     collectionList->setModel(collectionProxyModel);
 
     m_view = new Akonadi::ItemView(this);
+    m_view->setIconSize(QSize(24, 24));
     m_view->setModel(GlobalModel::todoFlat());
     setCentralWidget(m_view);
 
