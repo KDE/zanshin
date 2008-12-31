@@ -329,7 +329,7 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
             QHash<QString, Akonadi::Entity::Id>::iterator it = m_remoteIdReverseMap.find(value.toString());
             if (it != m_remoteIdReverseMap.end()) {
                 // test cycle
-                if (hasCycle(it.value(), item.id()))
+                if (isAncestorOf(item.id(), it.value()))
                     return false;
                 todo->setRelatedToUid(value.toString());
                 return modifyItemHelper(item);
@@ -401,18 +401,19 @@ void TodoFlatModel::onSourceRemoveRows(const QModelIndex&/*sourceIndex*/, int be
 
         QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
         QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
+        m_remoteIdReverseMap.remove(parentRemoteId);
         m_childrenMap[parentRemoteId].removeAll(remoteId);
     }
 }
 
-bool TodoFlatModel::hasCycle(Akonadi::Entity::Id parent, Akonadi::Entity::Id child)
+bool TodoFlatModel::isAncestorOf(Akonadi::Entity::Id child, Akonadi::Entity::Id parent)
 {
     Akonadi::Entity::Id p = m_parentMap[parent];
     if (p == -1)
         return false;
     if (p == child)
         return true;
-    return hasCycle(p, child);
+    return isAncestorOf(child, p);
 }
 
 TodoFlatModel::TodoType TodoFlatModel::todoType(const QString &remoteId) const

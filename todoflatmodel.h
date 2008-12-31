@@ -63,8 +63,8 @@ signals:
     void collectionChanged(const Akonadi::Collection &collection);
 
 private slots:
-    void onSourceInsertRows(const QModelIndex&, int, int);
-    void onSourceRemoveRows(const QModelIndex&, int, int);
+    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
+    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
 
 protected:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
@@ -79,8 +79,9 @@ private:
 
     void setSourceModel(QAbstractItemModel *sourceModel);
     Akonadi::ItemModel *itemModel() const;
+
     TodoType todoType(const QString &remoteId) const;
-    bool hasCycle(Akonadi::Entity::Id parent, Akonadi::Entity::Id child);
+    bool isAncestorOf(Akonadi::Entity::Id child, Akonadi::Entity::Id parent);
 
     QHash<Akonadi::Entity::Id, Akonadi::Entity::Id> m_parentMap;
     QHash<QString, QStringList> m_childrenMap;
