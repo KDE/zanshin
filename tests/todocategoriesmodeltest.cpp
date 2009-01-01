@@ -42,6 +42,7 @@ private slots:
     void testSeveralReparentModification();
     void testSingleRemoved();
     void testMultipleRemoved();
+    void testDragAndDrop();
 
 private:
     TodoFlatModel m_flatModel;
@@ -386,5 +387,25 @@ void TodoCategoriesModelTest::testMultipleRemoved()
     QCOMPARE(signal.at(1).toInt(), 0);
     QCOMPARE(signal.at(1).toInt(), 0);
 }
+
+void TodoCategoriesModelTest::testDragAndDrop()
+{
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(2, 0)));
+    QModelIndexList indexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
+ 
+    QCOMPARE(indexes.size(), 1);
+    QModelIndex index = indexes.first();
+    QCOMPARE(m_model.data(index).toString(), QString("Errands"));
+    QModelIndex parent = m_model.indexForCategory("Phone");
+
+    QMimeData *mimeData = m_model.mimeData(indexes);
+    QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, parent));
+
+    indexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
+    QCOMPARE(m_model.data(indexes.first()).toString(), QString("Phone"));
+
+    indexes.clear();
+}
+
 
 #include "todocategoriesmodeltest.moc"

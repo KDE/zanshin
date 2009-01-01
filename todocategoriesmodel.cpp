@@ -24,6 +24,8 @@
 #include <akonadi/collectionmodifyjob.h>
 #include <akonadi/item.h>
 
+#include <qmimedata.h>
+
 #include <KDebug>
 #include <KIcon>
 
@@ -126,6 +128,35 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
+}
+
+QMimeData * TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
+{
+    QModelIndexList proxyIndexes;
+    foreach (const QModelIndex &sourceIndex, indexes) {
+        QModelIndex proxyIndex = mapToSource(sourceIndex);
+        proxyIndexes << proxyIndex;
+    }
+    
+    return flatModel()->mimeData(proxyIndexes);
+}
+
+bool TodoCategoriesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent)
+{
+    if (action != Qt::MoveAction)
+        return false;
+
+    QStringList list = data->text().split(", ");
+    QString parentCategory = categoryForIndex(parent);
+    foreach(const QString remoteId, list) {
+        QModelIndex index = flatModel()->indexForRemoteId(remoteId);
+        Akonadi::Item item = flatModel()->itemForIndex(index);
+        QModelIndex id = flatModel()->indexForItem(item, TodoFlatModel::Categories);
+        if (!flatModel()->setData(id, QVariant(parentCategory))) {
+            return false;
+        }
+    }
+    return true;
 }
 
 QVariant TodoCategoriesModel::headerData(int section, Qt::Orientation orientation, int role) const

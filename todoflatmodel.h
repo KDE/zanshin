@@ -56,6 +56,7 @@ public:
 
     Akonadi::Item itemForIndex (const QModelIndex &index) const;
     QModelIndex indexForItem (const Akonadi::Item &item, const int column) const;
+    QModelIndex indexForRemoteId(const QString &remoteId) const;
 
     void setCollection(const Akonadi::Collection &collection);
     Akonadi::Collection collection() const;
@@ -87,6 +88,7 @@ private:
     QHash<QString, QString> m_parentMap;
     QHash<QString, QStringList> m_childrenMap;
     QHash<Akonadi::Entity::Id, QString> m_remoteIdMap;
+    QHash<QString, Akonadi::Entity::Id> m_reverseRemoteIdMap;
 };
 
 #endif

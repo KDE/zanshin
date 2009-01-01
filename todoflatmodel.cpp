@@ -170,6 +170,12 @@ QModelIndex TodoFlatModel::indexForItem(const Akonadi::Item &item, const int col
     return mapFromSource(itemModel()->indexForItem(item, column));
 }
 
+QModelIndex TodoFlatModel::indexForRemoteId(const QString &remoteId) const
+{
+    Akonadi::Item item(m_reverseRemoteIdMap[remoteId]);
+    return indexForItem(item, 0);
+}
+
 void TodoFlatModel::setCollection(const Akonadi::Collection &collection)
 {
     itemModel()->setCollection(collection);
@@ -387,6 +393,7 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
         Akonadi::Item item = itemForIndex(index(i, 0));
         QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
         m_remoteIdMap[item.id()] = remoteId;
+        m_reverseRemoteIdMap[remoteId] = item.id();
     }
 
     for (int i = begin; i <= end; i++) {
@@ -412,6 +419,7 @@ void TodoFlatModel::onSourceRemoveRows(const QModelIndex&/*sourceIndex*/, int be
 
         m_parentMap.remove(remoteId);
         m_childrenMap[parentRemoteId].removeAll(remoteId);
+        m_reverseRemoteIdMap.remove(remoteId);
     }
 }
 
