@@ -140,7 +140,8 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
     return flatModel()->mimeData(sourceIndexes);
 }
 
-bool TodoCategoriesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent)
+bool TodoCategoriesModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                       int /*row*/, int /*column*/, const QModelIndex &parent)
 {
     if (action != Qt::MoveAction)
         return false;
@@ -150,8 +151,8 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *data, Qt::DropAction act
     foreach(const QString remoteId, list) {
         QModelIndex index = flatModel()->indexForRemoteId(remoteId);
         Akonadi::Item item = flatModel()->itemForIndex(index);
-        QModelIndex id = flatModel()->indexForItem(item, TodoFlatModel::Categories);
-        if (!flatModel()->setData(id, QVariant(parentCategory))) {
+        QModelIndex catIndex = flatModel()->indexForItem(item, TodoFlatModel::Categories);
+        if (!flatModel()->setData(catIndex, parentCategory)) {
             return false;
         }
     }

@@ -96,22 +96,22 @@ QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const
     return flatModel()->mimeData(sourceIndexes);
 }
 
-bool TodoTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent)
+bool TodoTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                 int /*row*/, int /*column*/, const QModelIndex &parent)
 {
     if (action != Qt::MoveAction)
         return false;
 
     QStringList list = data->text().split(", ");
-    Akonadi::Item item = itemForIndex(parent);
-    QModelIndex parentIndex = indexForItem(item, TodoFlatModel::RemoteId);
-    QString remoteId = flatModel()->data(parentIndex).toString();
+    QString parentRemoteId = flatModel()->data(
+        parent.sibling(parent.row(), TodoFlatModel::RemoteId)).toString();
     foreach(const QString id, list) {
         QHash<QString, Akonadi::Entity::Id>::iterator it = m_remoteIdReverseMap.find(id);
         if (it == m_remoteIdReverseMap.end())
             return false;
         Akonadi::Entity::Id akoId = it.value();
-        QModelIndex proxyIndex = indexForId(akoId, TodoFlatModel::ParentRemoteId);
-        if (!setData(proxyIndex, QVariant(remoteId))) {
+        QModelIndex index = indexForId(akoId, TodoFlatModel::ParentRemoteId);
+        if (!setData(index, parentRemoteId)) {
             return false;
         }
     }
