@@ -243,7 +243,7 @@ void TodoTreeModelTest::testDragAndDrop()
 {
     Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(5, 0)));
     QModelIndex index = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
-    
+
     QCOMPARE(m_model.data(index).toString(), QString("fake-01"));
     QModelIndex parent = index.parent();
     QModelIndex parentIndex = m_model.mapToSource(index);
@@ -254,7 +254,7 @@ void TodoTreeModelTest::testDragAndDrop()
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, QModelIndex()));
 
     index = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
-    QCOMPARE(m_model.data(index).toString(), QString(""));
+    QCOMPARE(m_model.data(index).toString(), QString());
 
     indexes.clear();
 }
