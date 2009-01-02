@@ -52,18 +52,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(collectionList, SIGNAL(clicked(const Akonadi::Collection &)),
             this, SLOT(collectionClicked(const Akonadi::Collection &)));
 
-    Akonadi::CollectionStatisticsDelegate *collectionDelegate
-        = new Akonadi::CollectionStatisticsDelegate(collectionList);
-    collectionDelegate->setUnreadCountShown(true);
-
-    collectionList->setItemDelegate(collectionDelegate);
-
     QDockWidget *dock = new QDockWidget(i18n("Resources"), this);
     dock->setObjectName("ResourcesDock");
     dock->setWidget(collectionList);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
-    Akonadi::CollectionModel *collectionModel = new Akonadi::CollectionStatisticsModel(this);
+    Akonadi::CollectionModel *collectionModel = new Akonadi::CollectionModel(this);
     Akonadi::CollectionFilterProxyModel *collectionProxyModel = new Akonadi::CollectionFilterProxyModel(this);
     collectionProxyModel->setSourceModel(collectionModel);
     collectionProxyModel->addMimeTypeFilter("application/x-vnd.akonadi.calendar.todo");
