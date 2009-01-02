@@ -28,6 +28,7 @@
 
 #include <KDebug>
 #include <KIcon>
+#include <KUrl>
 
 #include <QtCore/QStringList>
 
@@ -143,19 +144,24 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
 bool TodoCategoriesModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                                        int /*row*/, int /*column*/, const QModelIndex &parent)
 {
-    if (action != Qt::MoveAction)
+    if (action != Qt::MoveAction || !KUrl::List::canDecode(data)) {
         return false;
+    }
 
-    QStringList list = data->text().split(", ");
+    KUrl::List urls = KUrl::List::fromMimeData(data);
     QString parentCategory = categoryForIndex(parent);
-    foreach(const QString remoteId, list) {
-        QModelIndex index = flatModel()->indexForRemoteId(remoteId);
-        Akonadi::Item item = flatModel()->itemForIndex(index);
-        QModelIndex catIndex = flatModel()->indexForItem(item, TodoFlatModel::Categories);
-        if (!flatModel()->setData(catIndex, parentCategory)) {
-            return false;
+
+    foreach (const KUrl &url, urls) {
+        const Akonadi::Item item = Akonadi::Item::fromUrl(url);
+
+        if (item.isValid()) {
+            QModelIndex index = flatModel()->indexForItem(item, TodoFlatModel::Categories);
+            if (!flatModel()->setData(index, parentCategory)) {
+                return false;
+            }
         }
     }
+
     return true;
 }
 

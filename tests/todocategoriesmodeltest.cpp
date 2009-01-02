@@ -391,20 +391,20 @@ void TodoCategoriesModelTest::testMultipleRemoved()
 void TodoCategoriesModelTest::testDragAndDrop()
 {
     Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(2, 0)));
-    QModelIndexList indexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
- 
+    QModelIndexList indexes = m_model.indexesForItem(item);
+    QModelIndexList catIndexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
+
     QCOMPARE(indexes.size(), 1);
     QModelIndex index = indexes.first();
-    QCOMPARE(m_model.data(index).toString(), QString("Errands"));
+    QModelIndex catIndex = catIndexes.first();
+    QCOMPARE(m_model.data(catIndex).toString(), QString("Errands"));
     QModelIndex parent = m_model.indexForCategory("Phone");
 
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, parent));
 
-    indexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
-    QCOMPARE(m_model.data(indexes.first()).toString(), QString("Phone"));
-
-    indexes.clear();
+    catIndexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
+    QCOMPARE(m_model.data(catIndexes.first()).toString(), QString("Phone"));
 }
 
 

@@ -371,21 +371,6 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
     return false;
 }
 
-QMimeData *TodoFlatModel::mimeData(const QModelIndexList &indexes) const
-{
-    QString ids;
-    foreach (const QModelIndex &index, indexes) {
-        if (!ids.isEmpty())
-            ids += ", ";
-        Akonadi::Item item = itemForIndex(index);
-        QModelIndex id = indexForItem(item, TodoFlatModel::RemoteId);
-        ids += data(id).toString();
-    }
-    QMimeData *mimeData = new QMimeData();
-    mimeData->setText(ids);
-    return mimeData;
-}
-
 void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int begin, int end)
 {
     for (int i = begin; i <= end; i++) {

@@ -23,8 +23,10 @@
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
 
-#include <qmimedata.h>
-#include <qstringlist.h>
+#include <KUrl>
+
+#include <QtCore/QMimeData>
+#include <QtCore/QStringList>
 
 #include "todoflatmodel.h"
 
@@ -99,22 +101,25 @@ QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const
 bool TodoTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                                  int /*row*/, int /*column*/, const QModelIndex &parent)
 {
-    if (action != Qt::MoveAction)
+    if (action != Qt::MoveAction || !KUrl::List::canDecode(data)) {
         return false;
+    }
 
-    QStringList list = data->text().split(", ");
+    KUrl::List urls = KUrl::List::fromMimeData(data);
     QString parentRemoteId = flatModel()->data(
         parent.sibling(parent.row(), TodoFlatModel::RemoteId)).toString();
-    foreach(const QString id, list) {
-        QHash<QString, Akonadi::Entity::Id>::iterator it = m_remoteIdReverseMap.find(id);
-        if (it == m_remoteIdReverseMap.end())
-            return false;
-        Akonadi::Entity::Id akoId = it.value();
-        QModelIndex index = indexForId(akoId, TodoFlatModel::ParentRemoteId);
-        if (!setData(index, parentRemoteId)) {
-            return false;
+
+    foreach (const KUrl &url, urls) {
+        const Akonadi::Item item = Akonadi::Item::fromUrl(url);
+
+        if (item.isValid()) {
+            QModelIndex index = flatModel()->indexForItem(item, TodoFlatModel::ParentRemoteId);
+            if (!flatModel()->setData(index, parentRemoteId)) {
+                return false;
+            }
         }
     }
+
     return true;
 }
 
