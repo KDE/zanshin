@@ -66,10 +66,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_view = new Akonadi::ItemView(this);
     m_view->setItemDelegate(new ActionListDelegate(m_view));
+    m_view->setAnimated(true);
     m_view->setModel(GlobalModel::todoFlat());
     setCentralWidget(m_view);
 
     QTreeView *contextTree = new QTreeView(this);
+    contextTree->setAnimated(true);
     contextTree->setModel(GlobalModel::contexts());
     connect(contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onContextChanged(QModelIndex)));
@@ -81,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     QTreeView *projectTree = new QTreeView(this);
+    projectTree->setAnimated(true);
     projectTree->setModel(GlobalModel::projects());
     connect(projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onProjectChanged(QModelIndex)));
