@@ -114,14 +114,6 @@ bool TodoTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
         if (!setData(proxyIndex, QVariant(remoteId))) {
             return false;
         }
-        m_parentMap[akoId] = item.id();
-        Akonadi::Item parentItem = itemForIndex(proxyIndex.parent());
-        QList<Akonadi::Entity::Id> childList = m_childrenMap[parentItem.id()];
-        childList.removeAll(akoId);
-
-        QList<Akonadi::Entity::Id> newChildList = m_childrenMap[item.id()];
-        newChildList << akoId;
-        m_childrenMap[item.id()] = newChildList;
     }
     return true;
 }
