@@ -130,14 +130,14 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QMimeData * TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
+QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList proxyIndexes;
     foreach (const QModelIndex &sourceIndex, indexes) {
         QModelIndex proxyIndex = mapToSource(sourceIndex);
         proxyIndexes << proxyIndex;
     }
-    
+
     return flatModel()->mimeData(proxyIndexes);
 }
 

@@ -28,8 +28,6 @@
 
 #include "todoflatmodel.h"
 
-#include <kdebug.h>
-
 TodoTreeModel::TodoTreeModel(QObject *parent)
     : QAbstractProxyModel(parent)
 {
@@ -88,14 +86,14 @@ int TodoTreeModel::columnCount(const QModelIndex &/*parent*/) const
     return TodoFlatModel::LastColumn + 1;
 }
 
-QMimeData * TodoTreeModel::mimeData(const QModelIndexList &indexes) const
+QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList proxyIndexes;
     foreach (const QModelIndex &sourceIndex, indexes) {
         QModelIndex proxyIndex = mapToSource(sourceIndex);
         proxyIndexes << proxyIndex;
     }
-    
+
     return flatModel()->mimeData(proxyIndexes);
 }
 
