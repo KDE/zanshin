@@ -88,13 +88,12 @@ int TodoTreeModel::columnCount(const QModelIndex &/*parent*/) const
 
 QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const
 {
-    QModelIndexList proxyIndexes;
-    foreach (const QModelIndex &sourceIndex, indexes) {
-        QModelIndex proxyIndex = mapToSource(sourceIndex);
-        proxyIndexes << proxyIndex;
+    QModelIndexList sourceIndexes;
+    foreach (const QModelIndex &proxyIndex, indexes) {
+        sourceIndexes << mapToSource(proxyIndex);
     }
 
-    return flatModel()->mimeData(proxyIndexes);
+    return flatModel()->mimeData(sourceIndexes);
 }
 
 bool TodoTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent)

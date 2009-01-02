@@ -132,13 +132,12 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
 
 QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
 {
-    QModelIndexList proxyIndexes;
-    foreach (const QModelIndex &sourceIndex, indexes) {
-        QModelIndex proxyIndex = mapToSource(sourceIndex);
-        proxyIndexes << proxyIndex;
+    QModelIndexList sourceIndexes;
+    foreach (const QModelIndex &proxyIndex, indexes) {
+        sourceIndexes << mapToSource(proxyIndex);
     }
 
-    return flatModel()->mimeData(proxyIndexes);
+    return flatModel()->mimeData(sourceIndexes);
 }
 
 bool TodoCategoriesModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent)
