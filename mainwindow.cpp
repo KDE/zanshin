@@ -28,14 +28,13 @@
 #include <akonadi/control.h>
 
 #include <akonadi/itemmodel.h>
-#include <akonadi/itemview.h>
 
 #include <KDE/KLocale>
 #include <KDE/KTabWidget>
 
 #include <QtGui/QDockWidget>
 
-#include "actionlistdelegate.h"
+#include "actionlistview.h"
 #include "contextsmodel.h"
 #include "globalmodel.h"
 #include "projectsmodel.h"
@@ -64,9 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     collectionList->setModel(collectionProxyModel);
 
-    m_view = new Akonadi::ItemView(this);
-    m_view->setItemDelegate(new ActionListDelegate(m_view));
-    m_view->setAnimated(true);
+    m_view = new ActionListView(this);
     m_view->setModel(GlobalModel::todoFlat());
     setCentralWidget(m_view);
 
@@ -105,7 +102,6 @@ void MainWindow::onProjectChanged(const QModelIndex &current)
 {
     m_view->setModel(GlobalModel::todoTree());
     QModelIndex projIndex = GlobalModel::projects()->mapToSource(current);
-    m_view->setRootIsDecorated(true);
     m_view->setRootIndex(projIndex);
 }
 
@@ -113,7 +109,6 @@ void MainWindow::onContextChanged(const QModelIndex &current)
 {
     m_view->setModel(GlobalModel::todoCategories());
     QModelIndex catIndex = GlobalModel::contexts()->mapToSource(current);
-    m_view->setRootIsDecorated(true);
     m_view->setRootIndex(catIndex);
 }
 
