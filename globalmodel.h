@@ -25,6 +25,7 @@ class TodoFlatModel;
 class TodoTreeModel;
 class TodoCategoriesModel;
 class ContextsModel;
+class LibraryModel;
 class ProjectsModel;
 
 namespace GlobalModel
@@ -34,9 +35,12 @@ namespace GlobalModel
     TodoTreeModel *todoTree();
     TodoCategoriesModel *todoCategories();
 
-    // User orienter models
+    // User oriented models
     ContextsModel *contexts();
     ProjectsModel *projects();
+
+    LibraryModel *contextsLibrary();
+    LibraryModel *projectsLibrary();
 }
 
 #endif

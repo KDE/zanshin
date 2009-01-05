@@ -8,6 +8,7 @@ macro(zanshin_add_unit_test _testname _extra_sources)
     add_definitions(-DTEST_DATA="\\"${CMAKE_CURRENT_SOURCE_DIR}/testdata.ics\\"")
 endmacro(zanshin_add_unit_test)
 
+zanshin_add_unit_test(librarymodeltest modeltestbase.cpp ../librarymodel.cpp ../todotreemodel.cpp ../todoflatmodel.cpp)
 zanshin_add_unit_test(todoflatmodeltest modeltestbase.cpp ../todoflatmodel.cpp)
 zanshin_add_unit_test(todotreemodeltest modeltestbase.cpp ../todotreemodel.cpp ../todoflatmodel.cpp)
 zanshin_add_unit_test(todocategoriesmodeltest modeltestbase.cpp ../todocategoriesmodel.cpp ../todocategoriesattribute.cpp ../todoflatmodel.cpp)

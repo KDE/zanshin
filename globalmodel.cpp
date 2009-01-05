@@ -25,6 +25,7 @@
 #include <kglobal.h>
 
 #include "contextsmodel.h"
+#include "librarymodel.h"
 #include "projectsmodel.h"
 #include "todocategoriesattribute.h"
 #include "todocategoriesmodel.h"
@@ -51,10 +52,18 @@ public:
 
         projects = new ProjectsModel();
         projects->setSourceModel(todoTree);
+
+        contextsLibrary = new LibraryModel();
+        contextsLibrary->setSourceModel(contexts);
+
+        projectsLibrary = new LibraryModel();
+        projectsLibrary->setSourceModel(projects);
     }
 
     ~GlobalModelPrivate()
     {
+        delete projectsLibrary;
+        delete contextsLibrary;
         delete projects;
         delete contexts;
         delete todoCategories;
@@ -68,6 +77,9 @@ public:
 
     ContextsModel *contexts;
     ProjectsModel *projects;
+
+    LibraryModel *contextsLibrary;
+    LibraryModel *projectsLibrary;
 };
 
 K_GLOBAL_STATIC(GlobalModelPrivate, globalModel)
@@ -95,4 +107,14 @@ ContextsModel *GlobalModel::contexts()
 ProjectsModel *GlobalModel::projects()
 {
     return globalModel->projects;
+}
+
+LibraryModel *GlobalModel::contextsLibrary()
+{
+    return globalModel->contextsLibrary;
+}
+
+LibraryModel *GlobalModel::projectsLibrary()
+{
+    return globalModel->projectsLibrary;
 }

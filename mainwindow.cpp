@@ -37,6 +37,7 @@
 #include "actionlistview.h"
 #include "contextsmodel.h"
 #include "globalmodel.h"
+#include "librarymodel.h"
 #include "projectsmodel.h"
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
@@ -69,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTreeView *contextTree = new QTreeView(this);
     contextTree->setAnimated(true);
-    contextTree->setModel(GlobalModel::contexts());
+    contextTree->setModel(GlobalModel::contextsLibrary());
     connect(contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onContextChanged(QModelIndex)));
 
@@ -81,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTreeView *projectTree = new QTreeView(this);
     projectTree->setAnimated(true);
-    projectTree->setModel(GlobalModel::projects());
+    projectTree->setModel(GlobalModel::projectsLibrary());
     connect(projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onProjectChanged(QModelIndex)));
 
@@ -101,14 +102,18 @@ void MainWindow::collectionClicked(const Akonadi::Collection &collection)
 void MainWindow::onProjectChanged(const QModelIndex &current)
 {
     m_view->setModel(GlobalModel::todoTree());
-    QModelIndex projIndex = GlobalModel::projects()->mapToSource(current);
-    m_view->setRootIndex(projIndex);
+    QModelIndex projIndex = GlobalModel::projectsLibrary()->mapToSource(current);
+    if (projIndex.isValid()) {
+        m_view->setRootIndex(GlobalModel::projects()->mapToSource(projIndex));
+    }
 }
 
 void MainWindow::onContextChanged(const QModelIndex &current)
 {
     m_view->setModel(GlobalModel::todoCategories());
-    QModelIndex catIndex = GlobalModel::contexts()->mapToSource(current);
-    m_view->setRootIndex(catIndex);
+    QModelIndex catIndex = GlobalModel::contextsLibrary()->mapToSource(current);
+    if (catIndex.isValid()) {
+        m_view->setRootIndex(GlobalModel::contexts()->mapToSource(catIndex));
+    }
 }
 

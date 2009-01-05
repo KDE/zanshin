@@ -9,6 +9,7 @@ set(zanshin_SRCS
    actionlistview.cpp
    contextsmodel.cpp
    globalmodel.cpp
+   librarymodel.cpp
    main.cpp
    mainwindow.cpp
    projectsmodel.cpp
