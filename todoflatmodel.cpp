@@ -111,11 +111,11 @@ QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
             if (todo) {
                 return todo->dtDue().toString();
             } else {
-                return QVariant();
+                return QString();
             }
         }
         case TodoFlatModel::FlagImportant:
-            return QVariant();
+            return QString();
         }
         break;
     }

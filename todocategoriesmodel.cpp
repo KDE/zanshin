@@ -123,6 +123,8 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
             return node->category;
         } else if (index.column() == TodoFlatModel::Categories && node->parent != 0) {
             return QStringList() << node->parent->category;
+        } else {
+            return QStringList();
         }
     } else if (role == Qt::DecorationRole && index.column() == TodoFlatModel::Summary) {
         return KIcon("view-pim-notes");
@@ -173,7 +175,7 @@ QVariant TodoCategoriesModel::headerData(int section, Qt::Orientation orientatio
 Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
 {
     TodoCategoryTreeNode *node = nodeForIndex(index);
-    if (node->id==-1) {
+    if (node && node->id==-1) {
         switch (index.column()) {
         case TodoFlatModel::Summary:
         case TodoFlatModel::Categories:
@@ -181,7 +183,7 @@ Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
         default:
             break;
         }
-    } else if (node->id!=-1)
+    } else if (node && node->id!=-1)
         return QAbstractProxyModel::flags(index);
 
     return Qt::NoItemFlags;
@@ -274,8 +276,6 @@ void TodoCategoriesModel::onSourceInsertRows(const QModelIndex &sourceIndex, int
             m_itemMap[id] << child;
 
             endInsertRows();
-
-            emit layoutChanged();
         }
     }
 
@@ -461,39 +461,37 @@ void TodoCategoriesModel::loadDefaultCategories()
     TodoCategoryTreeNode *home = new TodoCategoryTreeNode("Home");
     TodoCategoryTreeNode *office = new TodoCategoryTreeNode("Office");
     TodoCategoryTreeNode *computer = new TodoCategoryTreeNode("Computer");
-    TodoCategoryTreeNode *online = new TodoCategoryTreeNode("Online", computer);
-    computer->children << online;
+    TodoCategoryTreeNode *online = new TodoCategoryTreeNode("Online");
     TodoCategoryTreeNode *phone = new TodoCategoryTreeNode("Phone");
 
-    QList<TodoCategoryTreeNode*> roots;
-    roots << home << office << errands << computer << phone;
-
-    foreach (TodoCategoryTreeNode *node, roots) {
-        loadCategory(node);
-    }
+    loadCategory(home);
+    loadCategory(office);
+    loadCategory(errands);
+    loadCategory(computer);
+    loadCategory(online, computer);
+    loadCategory(phone);
 
     serializeCategories();
 }
 
-void TodoCategoriesModel::loadCategory(TodoCategoryTreeNode *node)
+void TodoCategoriesModel::loadCategory(TodoCategoryTreeNode *node, TodoCategoryTreeNode *parent)
 {
-    m_categoryMap[node->category] = node;
-
     int row;
-    if (node->parent != 0) {
-        row = node->parent->children.indexOf(node);
+    if (parent != 0) {
+        row = parent->children.size();
+    } else {
+        row = m_roots.size();
+    }
+
+    beginInsertRows(indexForNode(parent), row, row);
+    m_categoryMap[node->category] = node;
+    if (parent != 0) {
+        node->parent = parent;
+        parent->children << node;
     } else {
         m_roots << node;
-        row = m_roots.indexOf(node);
     }
-
-    QModelIndex parentIndex = indexForNode(node->parent);
-    beginInsertRows(parentIndex, row, row);
     endInsertRows();
-
-    foreach (TodoCategoryTreeNode *child, node->children) {
-        loadCategory(child);
-    }
 }
 
 void TodoCategoriesModel::serializeCategories()
@@ -559,15 +557,10 @@ void TodoCategoriesModel::deserializeCategories()
 
         TodoCategoryTreeNode *node = categoryMap[child];
         if (parent.isEmpty()) {
-            roots << node;
+            loadCategory(node);
         } else {
             TodoCategoryTreeNode *parentNode = categoryMap[parent];
-            node->parent = parentNode;
-            parentNode->children << node;
+            loadCategory(node, parentNode);
         }
-    }
-
-    foreach (TodoCategoryTreeNode *node, roots) {
-        loadCategory(node);
     }
 }

@@ -55,6 +55,6 @@ bool ContextsModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePar
                                                  TodoFlatModel::RemoteId,
                                                  sourceParent);
 
-    return !categoriesModel()->data(index).isValid();
+    return categoriesModel()->data(index).toString().isEmpty();
 }
 

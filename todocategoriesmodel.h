@@ -84,7 +84,7 @@ private:
     virtual QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
 
     void loadDefaultCategories();
-    void loadCategory(TodoCategoryTreeNode *node);
+    void loadCategory(TodoCategoryTreeNode *node, TodoCategoryTreeNode *parent = 0);
 
     void serializeCategories();
     void deserializeCategories();
