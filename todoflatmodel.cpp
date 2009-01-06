@@ -133,6 +133,8 @@ QVariant TodoFlatModelImpl::headerData(int section, Qt::Orientation orientation,
             return i18n("Summary");
         case TodoFlatModel::Categories:
             return i18n("Categories");
+        case TodoFlatModel::ParentSummary:
+            return i18n("Parent Summary");
         case TodoFlatModel::ParentRemoteId:
             return i18n("Parent Id");
         case TodoFlatModel::DueDate:
@@ -277,6 +279,22 @@ QVariant TodoFlatModel::data(const QModelIndex &index, int role) const
         if (type==StandardTodo) {
             return Qt::Unchecked;
         }
+    } else if (index.column()==ParentSummary) {
+        if (role!=Qt::DisplayRole) {
+            return QString();
+        }
+
+        const Akonadi::Item item = itemForIndex(index);
+
+        if (!item.hasPayload<IncidencePtr>()) {
+            return QVariant();
+        }
+
+        const IncidencePtr incidence = item.payload<IncidencePtr>();
+
+        Akonadi::Item parentItem(m_reverseRemoteIdMap[incidence->relatedToUid()]);
+        QModelIndex parent = indexForItem(parentItem, TodoFlatModel::Summary);
+        return data(parent, role);
     }
 
     return QSortFilterProxyModel::data(index, role);

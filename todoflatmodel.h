@@ -39,6 +39,7 @@ public:
     enum Column {
         Summary = 0,
         Categories,
+        ParentSummary,
         DueDate,
         FlagImportant,
         RemoteId,
