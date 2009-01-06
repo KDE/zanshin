@@ -170,12 +170,6 @@ QModelIndex TodoFlatModel::indexForItem(const Akonadi::Item &item, const int col
     return mapFromSource(itemModel()->indexForItem(item, column));
 }
 
-QModelIndex TodoFlatModel::indexForRemoteId(const QString &remoteId) const
-{
-    Akonadi::Item item(m_reverseRemoteIdMap[remoteId]);
-    return indexForItem(item, 0);
-}
-
 void TodoFlatModel::setCollection(const Akonadi::Collection &collection)
 {
     itemModel()->setCollection(collection);

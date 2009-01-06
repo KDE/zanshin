@@ -55,7 +55,6 @@ public:
 
     Akonadi::Item itemForIndex (const QModelIndex &index) const;
     QModelIndex indexForItem (const Akonadi::Item &item, const int column) const;
-    QModelIndex indexForRemoteId(const QString &remoteId) const;
 
     void setCollection(const Akonadi::Collection &collection);
     Akonadi::Collection collection() const;
