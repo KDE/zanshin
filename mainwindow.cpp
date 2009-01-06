@@ -101,19 +101,25 @@ void MainWindow::collectionClicked(const Akonadi::Collection &collection)
 
 void MainWindow::onProjectChanged(const QModelIndex &current)
 {
-    m_view->setModel(GlobalModel::todoTree());
-    QModelIndex projIndex = GlobalModel::projectsLibrary()->mapToSource(current);
-    if (projIndex.isValid()) {
+    if (GlobalModel::projectsLibrary()->isInbox(current)) {
+        // TODO: Use a proper inbox model
+        m_view->setModel(GlobalModel::todoFlat());
+    } else {
+        m_view->setModel(GlobalModel::todoTree());
+        QModelIndex projIndex = GlobalModel::projectsLibrary()->mapToSource(current);
         m_view->setRootIndex(GlobalModel::projects()->mapToSource(projIndex));
     }
 }
 
 void MainWindow::onContextChanged(const QModelIndex &current)
 {
-    m_view->setModel(GlobalModel::todoCategories());
-    QModelIndex catIndex = GlobalModel::contextsLibrary()->mapToSource(current);
-    if (catIndex.isValid()) {
-        m_view->setRootIndex(GlobalModel::contexts()->mapToSource(catIndex));
+    if (GlobalModel::contextsLibrary()->isInbox(current)) {
+        // TODO: Use a proper inbox model
+        m_view->setModel(GlobalModel::todoFlat());
+    } else {
+        m_view->setModel(GlobalModel::todoCategories());
+        QModelIndex projIndex = GlobalModel::contextsLibrary()->mapToSource(current);
+        m_view->setRootIndex(GlobalModel::contexts()->mapToSource(projIndex));
     }
 }
 
