@@ -53,13 +53,8 @@ QModelIndex LibraryModel::index(int row, int column, const QModelIndex &parent) 
 
 QModelIndex LibraryModel::parent(const QModelIndex &index) const
 {
-    if (index.column()!=0 || !index.isValid()) return QModelIndex();
-
-    if (index.internalId()==m_inboxToken) {
-        return QModelIndex();
-    }
-
-    if (index.internalId()==m_libraryToken) {
+    if (index.column()!=0 || !index.isValid()
+     || isInbox(index) || isLibraryRoot(index)) {
         return QModelIndex();
     }
 
@@ -74,11 +69,11 @@ int LibraryModel::rowCount(const QModelIndex &parent) const
 
     if (parent.column()!=0) return -1;
 
-    if (parent.internalId()==m_inboxToken) {
+    if (isInbox(parent)) {
         return 0;
     }
 
-    if (parent.internalId()==m_libraryToken) {
+    if (isLibraryRoot(parent)) {
         return sourceModel()->rowCount();
     }
 
@@ -92,8 +87,7 @@ int LibraryModel::columnCount(const QModelIndex &/*parent*/) const
 
 Qt::ItemFlags LibraryModel::flags(const QModelIndex &index) const
 {
-    if (index.internalId()==m_inboxToken
-     || index.internalId()==m_libraryToken) {
+    if (isInbox(index) || isLibraryRoot(index)) {
         return Qt::ItemIsEnabled|Qt::ItemIsSelectable;
     }
 
@@ -104,7 +98,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 {
     if (index.column()!=0 || !index.isValid()) return QVariant();
 
-    if (index.internalId()==m_inboxToken) {
+    if (isInbox(index)) {
         switch (role) {
         case Qt::DisplayRole:
             return i18n("Inbox");
@@ -115,7 +109,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
         }
     }
 
-    if (index.internalId()==m_libraryToken) {
+    if (isLibraryRoot(index)) {
         switch (role) {
         case Qt::DisplayRole:
             return i18n("Library");
@@ -134,15 +128,21 @@ QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int 
     return sourceModel()->headerData(section, orientation, role);
 }
 
+bool LibraryModel::isInbox(const QModelIndex &index) const
+{
+    return index.internalId()==m_inboxToken;
+}
+
+bool LibraryModel::isLibraryRoot(const QModelIndex &index) const
+{
+    return index.internalId()==m_libraryToken;
+}
+
 QModelIndex LibraryModel::mapToSource(const QModelIndex &proxyIndex) const
 {
-    if (proxyIndex.column()!=0) return QModelIndex();
-
-    if (proxyIndex.internalId()==m_inboxToken) {
-        return QModelIndex();
-    }
-
-    if (proxyIndex.internalId()==m_libraryToken) {
+    if (proxyIndex.column()!=0
+     || isInbox(proxyIndex)
+     || isLibraryRoot(proxyIndex)) {
         return QModelIndex();
     }
 

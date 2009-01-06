@@ -42,6 +42,9 @@ public:
     virtual QVariant headerData(int section, Qt::Orientation orientation,
                                 int role = Qt::DisplayRole) const;
 
+    bool isInbox(const QModelIndex &index) const;
+    bool isLibraryRoot(const QModelIndex &index) const;
+
     virtual void setSourceModel(QAbstractItemModel *sourceModel);
 
     virtual QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
