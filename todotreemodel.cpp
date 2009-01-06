@@ -98,15 +98,16 @@ QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const
     return flatModel()->mimeData(sourceIndexes);
 }
 
-bool TodoTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action,
                                  int /*row*/, int /*column*/, const QModelIndex &parent)
 {
-    if (action != Qt::MoveAction || !KUrl::List::canDecode(data)) {
+    if (action != Qt::MoveAction || !KUrl::List::canDecode(mimeData)) {
         return false;
     }
 
-    KUrl::List urls = KUrl::List::fromMimeData(data);
-    QString parentRemoteId = flatModel()->data(
+    KUrl::List urls = KUrl::List::fromMimeData(mimeData);
+    
+    QString parentRemoteId = data(
         parent.sibling(parent.row(), TodoFlatModel::RemoteId)).toString();
 
     foreach (const KUrl &url, urls) {
