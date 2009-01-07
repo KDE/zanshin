@@ -96,7 +96,7 @@ void TodoFlatModelTest::testInitialState()
     QFETCH(bool, isImportant);
 
     QCOMPARE(m_sortedModel.rowCount(), 12);
-    QCOMPARE(m_sortedModel.columnCount(), 7);
+    QCOMPARE(m_sortedModel.columnCount(), 8);
 
     QModelIndex index = m_sortedModel.index(row, TodoFlatModel::RemoteId);
     QCOMPARE(m_sortedModel.data(index).toString(), remoteId);

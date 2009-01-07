@@ -34,14 +34,27 @@ namespace Akonadi
 class TodoFlatModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_ENUMS(ItemType Column)
+    Q_FLAGS(ItemTypes)
 
 public:
+    enum ItemType
+    {
+        StandardTodo = 0,
+        ProjectTodo,
+        FolderTodo,
+        Category
+    };
+
+    Q_DECLARE_FLAGS(ItemTypes, ItemType)
+
     enum Column {
         Summary = 0,
         Categories,
         ParentSummary,
         DueDate,
         FlagImportant,
+        RowType,
         RemoteId,
         ParentRemoteId,
         LastColumn = ParentRemoteId
@@ -71,17 +84,10 @@ protected:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
 private:
-    enum TodoType
-    {
-        StandardTodo = 0,
-        ProjectTodo,
-        FolderTodo
-    };
-
     void setSourceModel(QAbstractItemModel *sourceModel);
     Akonadi::ItemModel *itemModel() const;
 
-    TodoType todoType(const QString &remoteId) const;
+    ItemType todoType(const QString &remoteId) const;
     bool isAncestorOf(const QString &ancestor, const QString &child);
 
     QHash<QString, QString> m_parentMap;
@@ -89,6 +95,8 @@ private:
     QHash<Akonadi::Entity::Id, QString> m_remoteIdMap;
     QHash<QString, Akonadi::Entity::Id> m_reverseRemoteIdMap;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(TodoFlatModel::ItemTypes)
 
 #endif
 

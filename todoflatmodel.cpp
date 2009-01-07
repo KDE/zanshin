@@ -140,7 +140,9 @@ QVariant TodoFlatModelImpl::headerData(int section, Qt::Orientation orientation,
         case TodoFlatModel::DueDate:
             return i18n("Due Date");
         case TodoFlatModel::FlagImportant:
-            return QString();
+            return i18n("Important");
+        case TodoFlatModel::RowType:
+            return i18n("Row Type");
         }
     }
 
@@ -229,7 +231,7 @@ Qt::ItemFlags TodoFlatModel::flags(const QModelIndex &index) const
         }
 
         const IncidencePtr incidence = item.payload<IncidencePtr>();
-        TodoType type = todoType(incidence->uid());
+        ItemType type = todoType(incidence->uid());
 
         if (type==StandardTodo) {
             f |= Qt::ItemIsUserCheckable;
@@ -258,7 +260,7 @@ QVariant TodoFlatModel::data(const QModelIndex &index, int role) const
         }
 
         const IncidencePtr incidence = item.payload<IncidencePtr>();
-        TodoType type = todoType(incidence->uid());
+        ItemType type = todoType(incidence->uid());
         if (type==ProjectTodo) {
             return KIcon("view-pim-tasks");
         } else if (type==FolderTodo) {
@@ -274,7 +276,7 @@ QVariant TodoFlatModel::data(const QModelIndex &index, int role) const
         }
 
         const IncidencePtr incidence = item.payload<IncidencePtr>();
-        TodoType type = todoType(incidence->uid());
+        ItemType type = todoType(incidence->uid());
 
         if (type==StandardTodo) {
             return Qt::Unchecked;
@@ -295,6 +297,19 @@ QVariant TodoFlatModel::data(const QModelIndex &index, int role) const
         Akonadi::Item parentItem(m_reverseRemoteIdMap[incidence->relatedToUid()]);
         QModelIndex parent = indexForItem(parentItem, TodoFlatModel::Summary);
         return data(parent, role);
+    } else if (index.column()==RowType) {
+        if (role!=Qt::DisplayRole) {
+            return QString();
+        }
+
+        const Akonadi::Item item = itemForIndex(index);
+
+        if (!item.hasPayload<IncidencePtr>()) {
+            return QVariant();
+        }
+
+        const IncidencePtr incidence = item.payload<IncidencePtr>();
+        return todoType(incidence->uid());
     }
 
     return QSortFilterProxyModel::data(index, role);
@@ -430,7 +445,7 @@ bool TodoFlatModel::isAncestorOf(const QString &ancestor, const QString &child)
     return isAncestorOf(ancestor, parent);
 }
 
-TodoFlatModel::TodoType TodoFlatModel::todoType(const QString &remoteId) const
+TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId) const
 {
     //TODO: no child and incidence marked as project => todo is project type
 

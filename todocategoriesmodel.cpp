@@ -121,6 +121,8 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         if (index.column() == TodoFlatModel::Summary) {
             return node->category;
+        } else if (index.column() == TodoFlatModel::RowType) {
+            return TodoFlatModel::Category;
         } else if (index.column() == TodoFlatModel::Categories && node->parent != 0) {
             return QStringList() << node->parent->category;
         } else {
