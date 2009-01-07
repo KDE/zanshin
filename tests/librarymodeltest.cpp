@@ -116,6 +116,7 @@ void LibraryModelTest::testInitialState()
 
     tree << TreeNode("Inbox")
          << (TreeNode("Library")
+             << TreeNode("Choose a kitty")
              << (TreeNode("First Folder")
                  << (TreeNode("Becoming Astronaut")
                      << TreeNode("Learn the constellations")

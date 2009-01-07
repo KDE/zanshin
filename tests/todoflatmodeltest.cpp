@@ -83,6 +83,7 @@ void TodoFlatModelTest::testInitialState_data()
     QTest::newRow("9") <<  9 << "fake-10" << "Pet Project" << QStringList() << "fake-04" << "" << false;
     QTest::newRow("10") << 10 << "fake-11" << "Becoming more relaxed" << QStringList() << "fake-12" << "" << false;
     QTest::newRow("11") << 11 << "fake-12" << "First Folder" << QStringList() << "" << "" << false;
+    QTest::newRow("12") << 12 << "fake-14" << "Choose a kitty" << QStringList() << "" << "" << false;
 }
 
 void TodoFlatModelTest::testInitialState()
@@ -95,7 +96,7 @@ void TodoFlatModelTest::testInitialState()
     QFETCH(QString, dueDate);
     QFETCH(bool, isImportant);
 
-    QCOMPARE(m_sortedModel.rowCount(), 12);
+    QCOMPARE(m_sortedModel.rowCount(), 13);
     QCOMPARE(m_sortedModel.columnCount(), 8);
 
     QModelIndex index = m_sortedModel.index(row, TodoFlatModel::RemoteId);

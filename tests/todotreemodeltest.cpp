@@ -116,7 +116,8 @@ void TodoTreeModelTest::testInitialState()
 {
     QList<TreeNode> tree;
 
-    tree << (TreeNode("fake-12", "First Folder")
+    tree << TreeNode("fake-14", "Choose a kitty")
+         << (TreeNode("fake-12", "First Folder")
              << (TreeNode("fake-01", "Becoming Astronaut")
                  << TreeNode("fake-07", "Learn the constellations")
                  << TreeNode("fake-02", "Look at the stars")
@@ -282,7 +283,7 @@ void TodoTreeModelTest::testDragAndDrop()
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 
     parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
-    
+
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), remoteId);
 
     parentRemoteIndex = m_model.indexForItem(item2, TodoFlatModel::ParentRemoteId);
@@ -304,7 +305,7 @@ void TodoTreeModelTest::testDragAndDrop()
     indexes << index;
     mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, RemoteIndex));
-    
+
 }
 
 #include "todotreemodeltest.moc"
