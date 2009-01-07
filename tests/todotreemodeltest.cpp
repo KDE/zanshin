@@ -289,6 +289,22 @@ void TodoTreeModelTest::testDragAndDrop()
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), remoteId);
 
     indexes.clear();
+
+    //test cycle
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(9, 0)));
+    index = m_model.indexForItem(item);
+    parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
+
+    QCOMPARE(m_model.data(parentRemoteIndex).toString(), QString("fake-12"));
+
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(7, 0)));
+    QModelIndex RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-09"));
+
+    indexes << index;
+    mimeData = m_model.mimeData(indexes);
+    QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, RemoteIndex));
+    
 }
 
 #include "todotreemodeltest.moc"
