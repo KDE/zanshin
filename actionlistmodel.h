@@ -18,37 +18,27 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_ACTIONLISTMODEL_H
+#define ZANSHIN_ACTIONLISTMODEL_H
 
-#include <KDE/KXmlGuiWindow>
+#include <QtGui/QSortFilterProxyModel>
 
-#include <QtCore/QModelIndex>
-
-#include <akonadi/collection.h>
-
-namespace Akonadi
-{
-    class ItemView;
-}
-
-class ActionListModel;
-
-class MainWindow : public KXmlGuiWindow
+class ActionListModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    ActionListModel(QObject *parent = 0);
+    virtual ~ActionListModel();
 
-private slots:
-    void collectionClicked(const Akonadi::Collection &collection);
-    void onProjectChanged(const QModelIndex &current);
-    void onContextChanged(const QModelIndex &current);
+    void setSourceFocusIndex(const QModelIndex &sourceIndex);
+
+protected:
+    virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
 private:
-    Akonadi::ItemView *m_view;
-    ActionListModel *m_actionList;
+    QPersistentModelIndex m_sourceFocusIndex;
 };
 
 #endif

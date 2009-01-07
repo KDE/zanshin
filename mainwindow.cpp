@@ -29,11 +29,13 @@
 
 #include <akonadi/itemmodel.h>
 
+#include <KDE/KDebug>
 #include <KDE/KLocale>
 #include <KDE/KTabWidget>
 
 #include <QtGui/QDockWidget>
 
+#include "actionlistmodel.h"
 #include "actionlistview.h"
 #include "contextsmodel.h"
 #include "globalmodel.h"
@@ -65,7 +67,10 @@ MainWindow::MainWindow(QWidget *parent)
     collectionList->setModel(collectionProxyModel);
 
     m_view = new ActionListView(this);
-    m_view->setModel(GlobalModel::todoFlat());
+    m_actionList = new ActionListModel(this);
+    m_view->setModel(m_actionList);
+    m_actionList->setSourceModel(GlobalModel::todoFlat());
+    m_view->setRootIsDecorated(false);
     setCentralWidget(m_view);
 
     QTreeView *contextTree = new QTreeView(this);
@@ -101,25 +106,37 @@ void MainWindow::collectionClicked(const Akonadi::Collection &collection)
 
 void MainWindow::onProjectChanged(const QModelIndex &current)
 {
+    delete m_actionList;
+    m_actionList = new ActionListModel(this);
+    m_view->setModel(m_actionList);
     if (GlobalModel::projectsLibrary()->isInbox(current)) {
         // TODO: Use a proper inbox model
-        m_view->setModel(GlobalModel::todoFlat());
+        m_actionList->setSourceModel(GlobalModel::todoFlat());
+        m_view->setRootIsDecorated(false);
     } else {
-        m_view->setModel(GlobalModel::todoTree());
+        m_actionList->setSourceModel(GlobalModel::todoTree());
         QModelIndex projIndex = GlobalModel::projectsLibrary()->mapToSource(current);
-        m_view->setRootIndex(GlobalModel::projects()->mapToSource(projIndex));
+        QModelIndex focusIndex = GlobalModel::projects()->mapToSource(projIndex);
+        m_actionList->setSourceFocusIndex(focusIndex);
+        m_view->setRootIsDecorated(true);
     }
 }
 
 void MainWindow::onContextChanged(const QModelIndex &current)
 {
+    delete m_actionList;
+    m_actionList = new ActionListModel(this);
+    m_view->setModel(m_actionList);
     if (GlobalModel::contextsLibrary()->isInbox(current)) {
         // TODO: Use a proper inbox model
-        m_view->setModel(GlobalModel::todoFlat());
+        m_actionList->setSourceModel(GlobalModel::todoFlat());
+        m_view->setRootIsDecorated(false);
     } else {
-        m_view->setModel(GlobalModel::todoCategories());
-        QModelIndex projIndex = GlobalModel::contextsLibrary()->mapToSource(current);
-        m_view->setRootIndex(GlobalModel::contexts()->mapToSource(projIndex));
+        m_actionList->setSourceModel(GlobalModel::todoCategories());
+        QModelIndex catIndex = GlobalModel::contextsLibrary()->mapToSource(current);
+        QModelIndex focusIndex = GlobalModel::contexts()->mapToSource(catIndex);
+        m_actionList->setSourceFocusIndex(focusIndex);
+        m_view->setRootIsDecorated(true);
     }
 }
 

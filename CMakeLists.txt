@@ -6,6 +6,7 @@ add_subdirectory(tests)
 
 set(zanshin_SRCS
    actionlistdelegate.cpp
+   actionlistmodel.cpp
    actionlistview.cpp
    contextsmodel.cpp
    globalmodel.cpp
