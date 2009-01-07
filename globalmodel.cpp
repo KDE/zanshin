@@ -55,6 +55,7 @@ public:
 
         contextsLibrary = new LibraryModel();
         contextsLibrary->setSourceModel(contexts);
+        contextsLibrary->setType(LibraryModel::Contexts);
 
         projectsLibrary = new LibraryModel();
         projectsLibrary->setSourceModel(projects);

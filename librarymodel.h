@@ -29,8 +29,17 @@ class LibraryModel : public QAbstractProxyModel
     Q_OBJECT
 
 public:
+    enum LibraryType {
+        Projects = 0,
+        Contexts
+    };
+
+
     LibraryModel(QObject *parent = 0);
     virtual ~LibraryModel();
+
+    LibraryType type() const;
+    void setType(LibraryType type);
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &index) const;
@@ -63,6 +72,7 @@ private:
     const qint64 m_libraryToken;
     const qint64 m_tokenShift;
     mutable QList<QPersistentModelIndex> m_sourceIndexesList;
+    LibraryType m_type;
 };
 
 #endif

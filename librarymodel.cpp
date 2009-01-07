@@ -24,13 +24,24 @@
 #include <KLocale>
 
 LibraryModel::LibraryModel(QObject *parent)
-    : QAbstractProxyModel(parent), m_inboxToken(1), m_libraryToken(2), m_tokenShift(m_libraryToken+1)
+    : QAbstractProxyModel(parent), m_inboxToken(1), m_libraryToken(2),
+      m_tokenShift(m_libraryToken+1), m_type(Projects)
 {
 }
 
 LibraryModel::~LibraryModel()
 {
 
+}
+
+LibraryModel::LibraryType LibraryModel::type() const
+{
+    return m_type;
+}
+
+void LibraryModel::setType(LibraryType type)
+{
+    m_type = type;
 }
 
 QModelIndex LibraryModel::index(int row, int column, const QModelIndex &parent) const
@@ -101,7 +112,12 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
     if (isInbox(index)) {
         switch (role) {
         case Qt::DisplayRole:
-            return i18n("Inbox");
+            switch (m_type) {
+            case Contexts:
+                return i18n("No Context");
+            default:
+                return i18n("Inbox");
+            }
         case Qt::DecorationRole:
             return KIcon("mail-folder-inbox");
         default:
@@ -112,7 +128,12 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
     if (isLibraryRoot(index)) {
         switch (role) {
         case Qt::DisplayRole:
-            return i18n("Library");
+            switch (m_type) {
+            case Contexts:
+                return i18n("Contexts");
+            default:
+                return i18n("Library");
+            }
         case Qt::DecorationRole:
             return KIcon("document-multiple");
         default:
