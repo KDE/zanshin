@@ -20,16 +20,24 @@
 
 #include "actionlistmodel.h"
 
+#include <QtCore/QStringList>
+
 #include "todoflatmodel.h"
 
 ActionListModel::ActionListModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
+    : QSortFilterProxyModel(parent), m_mode(StandardMode)
 {
     setDynamicSortFilter(true);
 }
 
 ActionListModel::~ActionListModel()
 {
+}
+
+void ActionListModel::setMode(Mode mode)
+{
+    m_mode = mode;
+    invalidate();
 }
 
 void ActionListModel::setSourceFocusIndex(const QModelIndex &sourceIndex)
@@ -40,12 +48,41 @@ void ActionListModel::setSourceFocusIndex(const QModelIndex &sourceIndex)
 
 bool ActionListModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &/*sourceParent*/) const
 {
-    return sourceColumn!=TodoFlatModel::RemoteId && sourceColumn!=TodoFlatModel::ParentRemoteId;
+    return sourceColumn!=TodoFlatModel::RemoteId
+        && sourceColumn!=TodoFlatModel::ParentRemoteId
+        && sourceColumn!=TodoFlatModel::RowType;
 }
 
 bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     QModelIndex sourceIndex = sourceModel()->index(sourceRow, 0, sourceParent);
+
+    switch (m_mode) {
+    case StandardMode:
+        break;
+    case NoProjectMode:
+        sourceIndex = sourceModel()->index(sourceRow, TodoFlatModel::RowType, sourceParent);
+        if (sourceModel()->data(sourceIndex).toInt()!=TodoFlatModel::StandardTodo) {
+            return false;
+        }
+        sourceIndex = sourceModel()->index(sourceRow, TodoFlatModel::ParentRemoteId, sourceParent);
+        if (!sourceModel()->data(sourceIndex).toString().isEmpty()) {
+            return false;
+        }
+        break;
+    case NoContextMode:
+        sourceIndex = sourceModel()->index(sourceRow, TodoFlatModel::RowType, sourceParent);
+        if (sourceModel()->data(sourceIndex).toInt()!=TodoFlatModel::StandardTodo) {
+            return false;
+        }
+        sourceIndex = sourceModel()->index(sourceRow, TodoFlatModel::Categories, sourceParent);
+        if (!sourceModel()->data(sourceIndex).toStringList().isEmpty()) {
+            return false;
+        }
+        break;
+    }
+
+    sourceIndex = sourceModel()->index(sourceRow, 0, sourceParent);
 
     QModelIndex i = sourceIndex;
     while (i.isValid()) {

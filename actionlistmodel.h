@@ -28,9 +28,16 @@ class ActionListModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
+    enum Mode {
+        StandardMode = 0,
+        NoProjectMode,
+        NoContextMode
+    };
+
     ActionListModel(QObject *parent = 0);
     virtual ~ActionListModel();
 
+    void setMode(Mode mode);
     void setSourceFocusIndex(const QModelIndex &sourceIndex);
 
 protected:
@@ -39,6 +46,7 @@ protected:
 
 private:
     QPersistentModelIndex m_sourceFocusIndex;
+    Mode m_mode;
 };
 
 #endif

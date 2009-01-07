@@ -110,8 +110,8 @@ void MainWindow::onProjectChanged(const QModelIndex &current)
     m_actionList = new ActionListModel(this);
     m_view->setModel(m_actionList);
     if (GlobalModel::projectsLibrary()->isInbox(current)) {
-        // TODO: Use a proper inbox model
         m_actionList->setSourceModel(GlobalModel::todoFlat());
+        m_actionList->setMode(ActionListModel::NoProjectMode);
         m_view->setRootIsDecorated(false);
     } else {
         m_actionList->setSourceModel(GlobalModel::todoTree());
@@ -128,8 +128,8 @@ void MainWindow::onContextChanged(const QModelIndex &current)
     m_actionList = new ActionListModel(this);
     m_view->setModel(m_actionList);
     if (GlobalModel::contextsLibrary()->isInbox(current)) {
-        // TODO: Use a proper inbox model
         m_actionList->setSourceModel(GlobalModel::todoFlat());
+        m_actionList->setMode(ActionListModel::NoContextMode);
         m_view->setRootIsDecorated(false);
     } else {
         m_actionList->setSourceModel(GlobalModel::todoCategories());
