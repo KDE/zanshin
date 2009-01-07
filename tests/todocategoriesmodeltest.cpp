@@ -390,6 +390,7 @@ void TodoCategoriesModelTest::testMultipleRemoved()
 
 void TodoCategoriesModelTest::testDragAndDrop()
 {
+    // move 1 item
     Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(2, 0)));
     QModelIndexList indexes = m_model.indexesForItem(item);
     QModelIndexList catIndexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
@@ -405,6 +406,36 @@ void TodoCategoriesModelTest::testDragAndDrop()
 
     catIndexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
     QCOMPARE(m_model.data(catIndexes.first()).toString(), QString("Phone"));
+
+
+    //move 2 new items
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(4, 0)));
+    index = m_flatModel.indexForItem(item, 0);
+    catIndex = m_flatModel.indexForItem(item, TodoFlatModel::Categories);
+    QCOMPARE(m_flatModel.data(catIndex).toString(), QString(""));
+    
+    Akonadi::Item item2 = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(5, 0)));
+    QModelIndex index2 = m_flatModel.indexForItem(item2, 0);
+    QModelIndex catIndex2 = m_flatModel.indexForItem(item2, TodoFlatModel::Categories);
+    QCOMPARE(m_flatModel.data(catIndex2).toString(), QString(""));
+
+    indexes.clear();
+
+    indexes << index;
+    indexes << index2;
+
+    parent = m_model.indexForCategory("Office");
+
+    mimeData = m_flatModel.mimeData(indexes);
+    QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, parent));
+
+    flushNotifications();
+
+    catIndexes = m_model.indexesForItem(item, TodoFlatModel::Categories);
+    QCOMPARE(m_model.data(catIndexes.first()).toString(), QString("Office"));
+
+    catIndexes = m_model.indexesForItem(item2, TodoFlatModel::Categories);
+    QCOMPARE(m_model.data(catIndexes.first()).toString(), QString("Office"));
 }
 
 
