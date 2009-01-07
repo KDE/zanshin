@@ -59,6 +59,10 @@ bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceP
 
     switch (m_mode) {
     case StandardMode:
+        sourceIndex = sourceModel()->index(sourceRow, TodoFlatModel::RowType, sourceParent);
+        if (!sourceParent.isValid() && sourceModel()->data(sourceIndex).toInt()==TodoFlatModel::StandardTodo) {
+            return false;
+        }
         break;
     case NoProjectMode:
         sourceIndex = sourceModel()->index(sourceRow, TodoFlatModel::RowType, sourceParent);
