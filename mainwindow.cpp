@@ -70,7 +70,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_actionList = new ActionListModel(this);
     m_view->setModel(m_actionList);
     m_actionList->setSourceModel(GlobalModel::todoFlat());
-    m_view->setRootIsDecorated(false);
     setCentralWidget(m_view);
 
     QTreeView *contextTree = new QTreeView(this);
@@ -112,14 +111,12 @@ void MainWindow::onProjectChanged(const QModelIndex &current)
     if (GlobalModel::projectsLibrary()->isInbox(current)) {
         m_actionList->setSourceModel(GlobalModel::todoFlat());
         m_actionList->setMode(ActionListModel::NoProjectMode);
-        m_view->setRootIsDecorated(false);
     } else {
         m_actionList->setSourceModel(GlobalModel::todoTree());
         m_actionList->setMode(ActionListModel::ProjectMode);
         QModelIndex projIndex = GlobalModel::projectsLibrary()->mapToSource(current);
         QModelIndex focusIndex = GlobalModel::projects()->mapToSource(projIndex);
         m_actionList->setSourceFocusIndex(focusIndex);
-        m_view->setRootIsDecorated(true);
     }
 }
 
@@ -131,14 +128,12 @@ void MainWindow::onContextChanged(const QModelIndex &current)
     if (GlobalModel::contextsLibrary()->isInbox(current)) {
         m_actionList->setSourceModel(GlobalModel::todoFlat());
         m_actionList->setMode(ActionListModel::NoContextMode);
-        m_view->setRootIsDecorated(false);
     } else {
         m_actionList->setSourceModel(GlobalModel::todoCategories());
         m_actionList->setMode(ActionListModel::ContextMode);
         QModelIndex catIndex = GlobalModel::contextsLibrary()->mapToSource(current);
         QModelIndex focusIndex = GlobalModel::contexts()->mapToSource(catIndex);
         m_actionList->setSourceFocusIndex(focusIndex);
-        m_view->setRootIsDecorated(true);
     }
 }
 
