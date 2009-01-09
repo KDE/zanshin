@@ -28,6 +28,7 @@ ActionListModel::ActionListModel(QObject *parent)
     : QSortFilterProxyModel(parent), m_mode(StandardMode)
 {
     setDynamicSortFilter(true);
+    sort(0);
 }
 
 ActionListModel::~ActionListModel()
@@ -109,4 +110,13 @@ bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceP
     }
 
     return !m_sourceFocusIndex.isValid();
+}
+
+bool ActionListModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    if (left.column()==0 && right.column()==0) {
+        return sourceModel()->rowCount(right)!=0 && sourceModel()->rowCount(left)==0;
+    }
+
+    return QSortFilterProxyModel::lessThan(left, right);
 }

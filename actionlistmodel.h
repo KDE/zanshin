@@ -45,6 +45,7 @@ public:
 protected:
     virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
 private:
     QPersistentModelIndex m_sourceFocusIndex;
