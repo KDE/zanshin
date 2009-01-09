@@ -47,6 +47,11 @@ void ActionListModel::setSourceFocusIndex(const QModelIndex &sourceIndex)
     invalidate();
 }
 
+QModelIndex ActionListModel::sourceFocusIndex() const
+{
+    return m_sourceFocusIndex;
+}
+
 bool ActionListModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &/*sourceParent*/) const
 {
     return sourceColumn!=TodoFlatModel::RemoteId

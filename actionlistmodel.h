@@ -41,6 +41,7 @@ public:
 
     void setMode(Mode mode);
     void setSourceFocusIndex(const QModelIndex &sourceIndex);
+    QModelIndex sourceFocusIndex() const;
 
 protected:
     virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
