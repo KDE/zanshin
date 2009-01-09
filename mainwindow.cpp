@@ -115,6 +115,7 @@ void MainWindow::onProjectChanged(const QModelIndex &current)
         m_view->setRootIsDecorated(false);
     } else {
         m_actionList->setSourceModel(GlobalModel::todoTree());
+        m_actionList->setMode(ActionListModel::ProjectMode);
         QModelIndex projIndex = GlobalModel::projectsLibrary()->mapToSource(current);
         QModelIndex focusIndex = GlobalModel::projects()->mapToSource(projIndex);
         m_actionList->setSourceFocusIndex(focusIndex);
@@ -133,6 +134,7 @@ void MainWindow::onContextChanged(const QModelIndex &current)
         m_view->setRootIsDecorated(false);
     } else {
         m_actionList->setSourceModel(GlobalModel::todoCategories());
+        m_actionList->setMode(ActionListModel::ContextMode);
         QModelIndex catIndex = GlobalModel::contextsLibrary()->mapToSource(current);
         QModelIndex focusIndex = GlobalModel::contexts()->mapToSource(catIndex);
         m_actionList->setSourceFocusIndex(focusIndex);

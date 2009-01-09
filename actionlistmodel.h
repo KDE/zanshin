@@ -30,6 +30,8 @@ class ActionListModel : public QSortFilterProxyModel
 public:
     enum Mode {
         StandardMode = 0,
+        ProjectMode,
+        ContextMode,
         NoProjectMode,
         NoContextMode
     };

@@ -50,7 +50,9 @@ bool ActionListModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &/
 {
     return sourceColumn!=TodoFlatModel::RemoteId
         && sourceColumn!=TodoFlatModel::ParentRemoteId
-        && sourceColumn!=TodoFlatModel::RowType;
+        && sourceColumn!=TodoFlatModel::RowType
+        && (sourceColumn!=TodoFlatModel::Categories || m_mode!=ContextMode)
+        && (sourceColumn!=TodoFlatModel::ParentSummary || m_mode!=ProjectMode);
 }
 
 bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -59,6 +61,8 @@ bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceP
 
     switch (m_mode) {
     case StandardMode:
+    case ContextMode:
+    case ProjectMode:
         sourceIndex = sourceModel()->index(sourceRow, TodoFlatModel::RowType, sourceParent);
         if (!sourceParent.isValid() && sourceModel()->data(sourceIndex).toInt()==TodoFlatModel::StandardTodo) {
             return false;
