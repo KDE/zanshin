@@ -20,6 +20,8 @@
 
 #include "actionlistdelegate.h"
 
+#include "actionlistmodel.h"
+
 ActionListDelegate::ActionListDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
@@ -36,13 +38,12 @@ QSize ActionListDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     QSize res = QStyledItemDelegate::sizeHint(option, index);
 
-    if (index.model()->rowCount(index.sibling(index.row(), 0))>0
-     && index.row()>0) {
-        res.setHeight(res.height()*2);
+    if (res.height() < 28) {
+        res.setHeight(28);
     }
 
-    if (res.height()<28) {
-        res.setHeight(28);
+    if (rowType(index)==TodoFlatModel::FolderTodo || !isInFocus(index)) {
+        res.setHeight(1);
     }
 
     return res;
@@ -52,14 +53,66 @@ void ActionListDelegate::paint(QPainter *painter,
                                const QStyleOptionViewItem &option,
                                const QModelIndex &index) const
 {
+    TodoFlatModel::ItemType type = rowType(index);
+
+    if (type==TodoFlatModel::FolderTodo || !isInFocus(index)) {
+        return;
+    }
+
     QStyleOptionViewItemV4 opt = option;
     opt.decorationSize = QSize(24, 24);
 
-    if (index.model()->rowCount(index.sibling(index.row(), 0))>0) {
+    if (type!=TodoFlatModel::StandardTodo) {
         opt.font.setWeight(QFont::Bold);
-        opt.decorationAlignment = Qt::AlignBottom;
-        opt.displayAlignment = Qt::AlignBottom;
+    } else if (index.column()==0 && index.parent().isValid()) {
+        opt.rect.adjust(40, 0, 0, 0);
     }
 
     QStyledItemDelegate::paint(painter, opt, index);
+}
+
+TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index) const
+{
+    const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
+
+    if (model==0) {
+        return TodoFlatModel::StandardTodo;
+    }
+
+    QModelIndex sourceIndex = model->mapToSource(index);
+    QModelIndex rowTypeIndex = sourceIndex.sibling(sourceIndex.row(), TodoFlatModel::RowType);
+
+    QVariant value = model->sourceModel()->data(rowTypeIndex);
+    if (!value.isValid()) {
+        return TodoFlatModel::StandardTodo;
+    }
+
+    return (TodoFlatModel::ItemType)value.toInt();
+}
+
+bool ActionListDelegate::isInFocus(const QModelIndex &index) const
+{
+    const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
+
+    if (model==0) {
+        return true;
+    }
+
+    QModelIndex focusIndex = model->sourceFocusIndex();
+
+    if (!focusIndex.isValid()) {
+        return true;
+    }
+
+    QModelIndex sourceIndex = model->mapToSource(index);
+    sourceIndex = sourceIndex.sibling(sourceIndex.row(), 0);
+
+    while (sourceIndex.isValid()) {
+        if (focusIndex==sourceIndex) {
+            return true;
+        }
+        sourceIndex = sourceIndex.parent();
+    }
+
+    return false;
 }

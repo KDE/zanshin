@@ -25,9 +25,11 @@
 ActionListView::ActionListView(QWidget *parent)
     : Akonadi::ItemView(parent)
 {
-    setRootIsDecorated(true);
+    setRootIsDecorated(false);
     setItemDelegate(new ActionListDelegate(this));
     setAnimated(true);
+    setIndentation(0);
+    setStyleSheet("QTreeView::branch { background: palette(base) }");
 }
 
 ActionListView::~ActionListView()

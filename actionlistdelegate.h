@@ -23,6 +23,8 @@
 
 #include <QtGui/QStyledItemDelegate>
 
+#include "todoflatmodel.h"
+
 class ActionListDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -37,6 +39,10 @@ public:
     virtual void paint(QPainter *painter,
                        const QStyleOptionViewItem &option,
                        const QModelIndex &index) const;
+
+private:
+    TodoFlatModel::ItemType rowType(const QModelIndex &index) const;
+    bool isInFocus(const QModelIndex &index) const;
 };
 #endif
 
