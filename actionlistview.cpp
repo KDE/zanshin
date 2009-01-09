@@ -20,6 +20,8 @@
 
 #include "actionlistview.h"
 
+#include <QtGui/QHeaderView>
+
 #include "actionlistdelegate.h"
 
 ActionListView::ActionListView(QWidget *parent)
@@ -39,9 +41,13 @@ ActionListView::~ActionListView()
 
 void ActionListView::setModel(QAbstractItemModel *model)
 {
+    QByteArray headerState = header()->saveState();
+
     Akonadi::ItemView::setModel(model);
     expandAll();
     connectModel(model);
+
+    header()->restoreState(headerState);
 }
 
 void ActionListView::setRootIndex(const QModelIndex &index)

@@ -29,11 +29,13 @@
 
 #include <akonadi/itemmodel.h>
 
+#include <KDE/KConfigGroup>
 #include <KDE/KDebug>
 #include <KDE/KLocale>
 #include <KDE/KTabWidget>
 
 #include <QtGui/QDockWidget>
+#include <QtGui/QHeaderView>
 
 #include "actionlistmodel.h"
 #include "actionlistview.h"
@@ -96,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
     setupGUI();
+    restoreColumnState();
 }
 
 void MainWindow::collectionClicked(const Akonadi::Collection &collection)
@@ -134,6 +137,35 @@ void MainWindow::onContextChanged(const QModelIndex &current)
         QModelIndex catIndex = GlobalModel::contextsLibrary()->mapToSource(current);
         QModelIndex focusIndex = GlobalModel::contexts()->mapToSource(catIndex);
         m_actionList->setSourceFocusIndex(focusIndex);
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    saveColumnsState();
+    KXmlGuiWindow::closeEvent(event);
+}
+
+void MainWindow::saveAutoSaveSettings()
+{
+    saveColumnsState();
+    KXmlGuiWindow::saveAutoSaveSettings();
+}
+
+void MainWindow::saveColumnsState()
+{
+    KConfigGroup cg = autoSaveConfigGroup();
+    QByteArray state = m_view->header()->saveState();
+    cg.writeEntry("MainHeaderState", state.toBase64());
+}
+
+void MainWindow::restoreColumnState()
+{
+    KConfigGroup cg = autoSaveConfigGroup();
+    QByteArray state;
+    if (cg.hasKey("MainHeaderState")) {
+        state = cg.readEntry("MainHeaderState", state);
+        m_view->header()->restoreState(QByteArray::fromBase64(state));
     }
 }
 

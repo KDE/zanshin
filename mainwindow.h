@@ -46,7 +46,16 @@ private slots:
     void onProjectChanged(const QModelIndex &current);
     void onContextChanged(const QModelIndex &current);
 
+protected slots:
+    void saveAutoSaveSettings();
+
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+
 private:
+    void saveColumnsState();
+    void restoreColumnState();
+
     Akonadi::ItemView *m_view;
     ActionListModel *m_actionList;
 };
