@@ -106,7 +106,7 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
     }
 
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
-    
+
     QString parentRemoteId = data(
         parent.sibling(parent.row(), TodoFlatModel::RemoteId)).toString();
 

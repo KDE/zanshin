@@ -306,6 +306,29 @@ void TodoTreeModelTest::testDragAndDrop()
     mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, RemoteIndex));
 
+    indexes.clear();
+    //test add new item
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(11, 0)));
+    index = m_flatModel.indexForItem(item, 0);
+    parentRemoteIndex = m_flatModel.indexForItem(item, TodoFlatModel::ParentRemoteId);
+    RemoteIndex = m_flatModel.indexForItem(item, TodoFlatModel::RemoteId);
+
+    QCOMPARE(m_flatModel.data(parentRemoteIndex).toString(), QString(""));
+
+    newParentItem = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(10, 0)));
+    newParentIndex = m_model.indexForItem(newParentItem);
+    newParentRemoteIndex = m_model.indexForItem(newParentItem, TodoFlatModel::RemoteId);
+
+
+    indexes << index;
+    mimeData = m_flatModel.mimeData(indexes);
+    QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
+
+    QCOMPARE(m_model.data(parentRemoteIndex).toString(), m_model.data(newParentRemoteIndex).toString());
+
+    indexes.clear();
 }
 
 #include "todotreemodeltest.moc"
