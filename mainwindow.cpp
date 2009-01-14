@@ -27,15 +27,22 @@
 
 #include <akonadi/control.h>
 
+#include <akonadi/itemcreatejob.h>
 #include <akonadi/itemmodel.h>
+
+#include <boost/shared_ptr.hpp>
+
+#include <kcal/todo.h>
 
 #include <KDE/KConfigGroup>
 #include <KDE/KDebug>
+#include <KDE/KLineEdit>
 #include <KDE/KLocale>
 #include <KDE/KTabWidget>
 
 #include <QtGui/QDockWidget>
 #include <QtGui/QHeaderView>
+#include <QtGui/QVBoxLayout>
 
 #include "actionlistmodel.h"
 #include "actionlistview.h"
@@ -46,6 +53,8 @@
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
+
+typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
 MainWindow::MainWindow(QWidget *parent)
     : KXmlGuiWindow(parent)
@@ -68,11 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     collectionList->setModel(collectionProxyModel);
 
-    m_view = new ActionListView(this);
-    m_actionList = new ActionListModel(this);
-    m_view->setModel(m_actionList);
-    m_actionList->setSourceModel(GlobalModel::todoFlat());
-    setCentralWidget(m_view);
+    setupCentralWidget();
 
     QTreeView *contextTree = new QTreeView(this);
     contextTree->setAnimated(true);
@@ -107,6 +112,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupGUI();
     restoreColumnState();
+}
+
+void MainWindow::setupCentralWidget()
+{
+    QWidget *centralWidget = new QWidget(this);
+    centralWidget->setLayout(new QVBoxLayout(centralWidget));
+
+    m_view = new ActionListView(centralWidget);
+    centralWidget->layout()->addWidget(m_view);
+    m_actionList = new ActionListModel(this);
+    m_view->setModel(m_actionList);
+    m_actionList->setSourceModel(GlobalModel::todoFlat());
+
+    m_addActionEdit = new KLineEdit(centralWidget);
+    centralWidget->layout()->addWidget(m_addActionEdit);
+    m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
+    m_addActionEdit->setClearButtonShown(true);
+    connect(m_addActionEdit, SIGNAL(returnPressed()),
+            this, SLOT(onAddActionRequested()));
+
+    setCentralWidget(centralWidget);
 }
 
 void MainWindow::collectionClicked(const Akonadi::Collection &collection)
@@ -146,6 +172,50 @@ void MainWindow::onContextChanged(const QModelIndex &current)
         QModelIndex focusIndex = GlobalModel::contexts()->mapToSource(catIndex);
         m_actionList->setSourceFocusIndex(focusIndex);
     }
+}
+
+void MainWindow::onAddActionRequested()
+{
+    QString summary = m_addActionEdit->text().trimmed();
+    m_addActionEdit->setText(QString());
+
+    if (summary.isEmpty()) return;
+
+    QModelIndex current = m_actionList->mapToSource(m_view->currentIndex());
+    int type = current.sibling(current.row(), TodoFlatModel::RowType).data().toInt();
+    if (type==TodoFlatModel::StandardTodo) {
+        current = current.parent();
+    }
+
+    QString parentRemoteId;
+    if (m_actionList->sourceModel()==GlobalModel::todoTree()) {
+        QModelIndex parentIndex = current.sibling(current.row(), TodoFlatModel::RemoteId);
+        parentRemoteId = GlobalModel::todoTree()->data(parentIndex).toString();
+    }
+
+    QString category;
+    if (m_actionList->sourceModel()==GlobalModel::todoCategories()) {
+        QModelIndex categoryIndex = current.sibling(current.row(), TodoFlatModel::Summary);
+        category = GlobalModel::todoCategories()->data(categoryIndex).toString();
+    }
+
+    KCal::Todo *todo = new KCal::Todo();
+    todo->setSummary(summary);
+    if (!parentRemoteId.isEmpty()) {
+        todo->setRelatedToUid(parentRemoteId);
+    }
+    if (!category.isEmpty()) {
+        todo->setCategories(category);
+    }
+
+    IncidencePtr incidence(todo);
+    Akonadi::Item item;
+    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setPayload<IncidencePtr>(incidence);
+
+    Akonadi::Collection collection = GlobalModel::todoFlat()->collection();
+    Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
+    job->start();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

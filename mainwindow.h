@@ -33,6 +33,7 @@ namespace Akonadi
 }
 
 class ActionListModel;
+class KLineEdit;
 
 class MainWindow : public KXmlGuiWindow
 {
@@ -45,6 +46,7 @@ private slots:
     void collectionClicked(const Akonadi::Collection &collection);
     void onProjectChanged(const QModelIndex &current);
     void onContextChanged(const QModelIndex &current);
+    void onAddActionRequested();
 
 protected slots:
     void saveAutoSaveSettings();
@@ -53,10 +55,13 @@ protected:
     virtual void closeEvent(QCloseEvent *event);
 
 private:
+    void setupCentralWidget();
     void saveColumnsState();
     void restoreColumnState();
 
     Akonadi::ItemView *m_view;
+    KLineEdit *m_addActionEdit;
+
     ActionListModel *m_actionList;
 };
 
