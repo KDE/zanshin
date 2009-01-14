@@ -81,6 +81,7 @@ signals:
 private slots:
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
+    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
 
 protected:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
@@ -89,7 +90,7 @@ private:
     void setSourceModel(QAbstractItemModel *sourceModel);
     Akonadi::ItemModel *itemModel() const;
 
-    ItemType todoType(const QString &remoteId) const;
+    ItemType todoType(const QString &remoteId, bool examinateSiblings = true) const;
     bool isAncestorOf(const QString &ancestor, const QString &child);
 
     QHash<QString, QString> m_parentMap;

@@ -205,6 +205,8 @@ void TodoFlatModel::setSourceModel(QAbstractItemModel *sourceModel)
             this, SLOT(onSourceInsertRows(const QModelIndex&, int, int)));
     connect(itemModel(), SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)),
             this, SLOT(onSourceRemoveRows(const QModelIndex&, int, int)));
+    connect(itemModel(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+            this, SLOT(onSourceDataChanged(const QModelIndex&, const QModelIndex&)));
 }
 
 Akonadi::ItemModel *TodoFlatModel::itemModel() const
@@ -441,8 +443,17 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
         QString remoteId = m_remoteIdMap[item.id()];
         QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
 
+        bool shouldEmit = !m_childrenMap.contains(parentRemoteId);
+
         m_parentMap[remoteId] = parentRemoteId;
         m_childrenMap[parentRemoteId] << remoteId;
+
+        if (shouldEmit) {
+            Akonadi::Item item(m_reverseRemoteIdMap[parentRemoteId]);
+            QModelIndex start = indexForItem(item, 0);
+            QModelIndex end = indexForItem(item, LastColumn);
+            emit dataChanged(start, end);
+        }
     }
 
 }
@@ -462,6 +473,25 @@ void TodoFlatModel::onSourceRemoveRows(const QModelIndex&/*sourceIndex*/, int be
     }
 }
 
+void TodoFlatModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end)
+{
+    for (int row = begin.row(); row <= end.row(); ++row) {
+        QModelIndex remoteIdIndex = itemModel()->index(row, TodoFlatModel::RemoteId);
+        QString remoteId = itemModel()->data(remoteIdIndex).toString();
+
+        QModelIndex parentRemoteIdIndex = itemModel()->index(row, TodoFlatModel::ParentRemoteId);
+        QString newParentRemoteId = itemModel()->data(parentRemoteIdIndex).toString();
+
+        QString oldParentRemoteId = m_parentMap[remoteId];
+
+        if (newParentRemoteId!=oldParentRemoteId) {
+            m_parentMap[remoteId] = newParentRemoteId;
+            m_childrenMap[newParentRemoteId] << remoteId;
+            m_childrenMap[oldParentRemoteId].removeAll(remoteId);
+        }
+    }
+}
+
 bool TodoFlatModel::isAncestorOf(const QString &ancestor, const QString &child)
 {
     QString parent = m_parentMap[child];
@@ -472,9 +502,8 @@ bool TodoFlatModel::isAncestorOf(const QString &ancestor, const QString &child)
     return isAncestorOf(ancestor, parent);
 }
 
-TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId) const
+TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId, bool examinateSiblings) const
 {
-    //TODO: no child and incidence marked as project => todo is project type
     const QStringList children = m_childrenMap[remoteId];
     if (children.size()>0) {
         foreach (const QString &child, children) {
@@ -501,7 +530,18 @@ TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId) const
         }
     }
 
+    //FIXME: That's definitely expensive, optimize this one
+    if (examinateSiblings) {
+        const QStringList siblings = m_childrenMap[m_parentMap[remoteId]];
+        foreach (const QString &sibling, siblings) {
+            if (sibling == remoteId) continue;
+
+            if (todoType(sibling, false) != StandardTodo) {
+                return ProjectTodo;
+            }
+        }
+    }
+
     return StandardTodo;
 }
-
 
