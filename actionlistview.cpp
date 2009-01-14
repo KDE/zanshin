@@ -30,6 +30,10 @@ ActionListView::ActionListView(QWidget *parent)
     setRootIsDecorated(false);
     setItemDelegate(new ActionListDelegate(this));
     setAnimated(true);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+    setDragEnabled(true);
+    viewport()->setAcceptDrops(true);
+    setDropIndicatorShown(true);
     setIndentation(0);
     setStyleSheet("QTreeView::branch { background: palette(base) }");
 }

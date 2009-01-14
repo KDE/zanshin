@@ -77,6 +77,10 @@ MainWindow::MainWindow(QWidget *parent)
     QTreeView *contextTree = new QTreeView(this);
     contextTree->setAnimated(true);
     contextTree->setModel(GlobalModel::contextsLibrary());
+    contextTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    contextTree->setDragEnabled(true);
+    contextTree->viewport()->setAcceptDrops(true);
+    contextTree->setDropIndicatorShown(true);
     connect(contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onContextChanged(QModelIndex)));
 
@@ -89,6 +93,10 @@ MainWindow::MainWindow(QWidget *parent)
     QTreeView *projectTree = new QTreeView(this);
     projectTree->setAnimated(true);
     projectTree->setModel(GlobalModel::projectsLibrary());
+    projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    projectTree->setDragEnabled(true);
+    projectTree->viewport()->setAcceptDrops(true);
+    projectTree->setDropIndicatorShown(true);
     connect(projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onProjectChanged(QModelIndex)));
 

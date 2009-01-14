@@ -96,6 +96,16 @@ int LibraryModel::columnCount(const QModelIndex &/*parent*/) const
     return 1;
 }
 
+QStringList LibraryModel::mimeTypes() const
+{
+    return sourceModel()->mimeTypes();
+}
+
+Qt::DropActions LibraryModel::supportedDropActions() const
+{
+    return sourceModel()->supportedDropActions();
+}
+
 Qt::ItemFlags LibraryModel::flags(const QModelIndex &index) const
 {
     if (isInbox(index) || isLibraryRoot(index)) {
@@ -103,6 +113,23 @@ Qt::ItemFlags LibraryModel::flags(const QModelIndex &index) const
     }
 
     return QAbstractProxyModel::flags(index);
+}
+
+QMimeData *LibraryModel::mimeData(const QModelIndexList &indexes) const
+{
+    QModelIndexList sourceIndexes;
+    foreach (const QModelIndex &proxyIndex, indexes) {
+        sourceIndexes << mapToSource(proxyIndex);
+    }
+
+    return sourceModel()->mimeData(sourceIndexes);
+}
+
+bool LibraryModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action,
+                                int row, int column, const QModelIndex &parent)
+{
+    QModelIndex sourceParent = mapToSource(parent);
+    return sourceModel()->dropMimeData(mimeData, action, row, column, sourceParent);
 }
 
 QVariant LibraryModel::data(const QModelIndex &index, int role) const
@@ -241,7 +268,7 @@ void LibraryModel::onSourceRowsAboutToBeRemoved(const QModelIndex &sourceIndex, 
     }
 }
 
-void LibraryModel::onSourceRowsRemoved(const QModelIndex &sourceIndex, int begin, int end)
+void LibraryModel::onSourceRowsRemoved(const QModelIndex &/*sourceIndex*/, int /*begin*/, int /*end*/)
 {
     endRemoveRows();
 }

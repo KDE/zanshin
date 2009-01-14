@@ -135,6 +135,16 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+QStringList TodoCategoriesModel::mimeTypes() const
+{
+    return flatModel()->mimeTypes();
+}
+
+Qt::DropActions TodoCategoriesModel::supportedDropActions() const
+{
+    return flatModel()->supportedDropActions();
+}
+
 QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList sourceIndexes;
@@ -181,7 +191,7 @@ Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
         switch (index.column()) {
         case TodoFlatModel::Summary:
         case TodoFlatModel::Categories:
-            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
         default:
             break;
         }

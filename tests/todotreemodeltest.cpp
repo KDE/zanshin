@@ -40,7 +40,15 @@ private slots:
     void testSingleModification();
     void testReparentModification();
     void testSingleRemoved();
-    void testDragAndDrop();
+    void testDragAndDropSimpleItemMove();
+    void testDragAndDropMoveTwoItem();
+    void testDragAndDropCycleTest();
+    void testDragAndDropAddNewItem();
+    void testDragAndDropMoveProjectInProject();
+    void testDragAndDropMoveProjectInItem();
+    void testDragAndDropMoveItemInFolder();
+    void testDragAndDropMoveFolderInProject();
+    void testDragAndDropMoveFolderInItem();
 
 private:
     TodoFlatModel m_flatModel;
@@ -240,9 +248,8 @@ void TodoTreeModelTest::testSingleRemoved()
     QCOMPARE(signal.at(1).toInt(), 2);
 }
 
-void TodoTreeModelTest::testDragAndDrop()
+void TodoTreeModelTest::testDragAndDropSimpleItemMove()
 {
-    // test simple move
     Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(5, 0)));
     QModelIndex index = m_model.indexForItem(item);
     QModelIndex parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
@@ -258,11 +265,13 @@ void TodoTreeModelTest::testDragAndDrop()
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), QString());
 
     indexes.clear();
+}
 
-    // test move of 2 items
-    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(3, 0)));
-    index = m_model.indexForItem(item);
-    parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
+void TodoTreeModelTest::testDragAndDropMoveTwoItem()
+{
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(3, 0)));
+    QModelIndex index = m_model.indexForItem(item);
+    QModelIndex parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
 
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), QString("fake-10"));
 
@@ -277,9 +286,10 @@ void TodoTreeModelTest::testDragAndDrop()
     QModelIndex newParentRemoteIndex = m_model.indexForItem(newParentItem, TodoFlatModel::RemoteId);
     QString remoteId = m_model.data(newParentRemoteIndex).toString();
 
+    QModelIndexList indexes;
     indexes << index;
     indexes << index2;
-    mimeData = m_model.mimeData(indexes);
+    QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 
     parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
@@ -290,11 +300,14 @@ void TodoTreeModelTest::testDragAndDrop()
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), remoteId);
 
     indexes.clear();
+}
 
+void TodoTreeModelTest::testDragAndDropCycleTest()
+{
     //test cycle
-    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(9, 0)));
-    index = m_model.indexForItem(item);
-    parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(9, 0)));
+    QModelIndex index = m_model.indexForItem(item);
+    QModelIndex parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
 
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), QString("fake-12"));
 
@@ -302,26 +315,30 @@ void TodoTreeModelTest::testDragAndDrop()
     QModelIndex RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
     QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-09"));
 
+    QModelIndexList indexes;
     indexes << index;
-    mimeData = m_model.mimeData(indexes);
+    QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, RemoteIndex));
 
     indexes.clear();
-    //test add new item
-    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(11, 0)));
-    index = m_flatModel.indexForItem(item, 0);
-    parentRemoteIndex = m_flatModel.indexForItem(item, TodoFlatModel::ParentRemoteId);
-    RemoteIndex = m_flatModel.indexForItem(item, TodoFlatModel::RemoteId);
+}
+
+void TodoTreeModelTest::testDragAndDropAddNewItem()
+{
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(11, 0)));
+    QModelIndex index = m_flatModel.indexForItem(item, 0);
+    QModelIndex parentRemoteIndex = m_flatModel.indexForItem(item, TodoFlatModel::ParentRemoteId);
+    QModelIndex RemoteIndex = m_flatModel.indexForItem(item, TodoFlatModel::RemoteId);
 
     QCOMPARE(m_flatModel.data(parentRemoteIndex).toString(), QString(""));
 
-    newParentItem = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(10, 0)));
-    newParentIndex = m_model.indexForItem(newParentItem);
-    newParentRemoteIndex = m_model.indexForItem(newParentItem, TodoFlatModel::RemoteId);
+    Akonadi::Item newParentItem = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(10, 0)));
+    QModelIndex newParentIndex = m_model.indexForItem(newParentItem);
+    QModelIndex newParentRemoteIndex = m_model.indexForItem(newParentItem, TodoFlatModel::RemoteId);
 
-
+    QModelIndexList indexes;
     indexes << index;
-    mimeData = m_flatModel.mimeData(indexes);
+    QMimeData *mimeData = m_flatModel.mimeData(indexes);
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 
     parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
@@ -329,6 +346,132 @@ void TodoTreeModelTest::testDragAndDrop()
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), m_model.data(newParentRemoteIndex).toString());
 
     indexes.clear();
+}
+
+void TodoTreeModelTest::testDragAndDropMoveProjectInProject()
+{
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(9, 0)));
+    QModelIndex index = m_model.indexForItem(item);
+    QModelIndex RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    QModelIndex TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::ProjectTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-11"));
+
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(0, 0)));
+    QModelIndex newParentIndex = m_model.indexForItem(item);
+    RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::ProjectTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-01"));
+
+    QModelIndexList indexes;
+    indexes << index;
+    QMimeData *mimeData = m_model.mimeData(indexes);
+    QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    indexes.clear();
+}
+
+void TodoTreeModelTest::testDragAndDropMoveProjectInItem()
+{
+    //move project in item
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(9, 0)));
+    QModelIndex index = m_model.indexForItem(item);
+    QModelIndex RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    QModelIndex TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::ProjectTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-11"));
+
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(1, 0)));
+    QModelIndex newParentIndex = m_model.indexForItem(item);
+    RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::StandardTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-02"));
+
+    QModelIndexList indexes;
+    indexes << index;
+    QMimeData *mimeData = m_model.mimeData(indexes);
+    QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    indexes.clear();
+}
+
+void TodoTreeModelTest::testDragAndDropMoveItemInFolder()
+{
+    //move item in folder
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(4, 0)));
+    QModelIndex index = m_model.indexForItem(item);
+    QModelIndex RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    QModelIndex TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::StandardTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-06"));
+
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(10, 0)));
+    QModelIndex newParentIndex = m_model.indexForItem(item);
+    RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::FolderTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-12"));
+
+    QModelIndexList indexes;
+    indexes << index;
+    QMimeData *mimeData = m_model.mimeData(indexes);
+    QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(4, 0)));
+    RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-06"));
+    TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::ProjectTodo));
+
+    indexes.clear();
+}
+
+void TodoTreeModelTest::testDragAndDropMoveFolderInProject()
+{
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(2, 0)));
+    QModelIndex index = m_model.indexForItem(item);
+    QModelIndex RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    QModelIndex TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::FolderTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-04"));
+
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(4, 0)));
+    QModelIndex newParentIndex = m_model.indexForItem(item);
+    RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::ProjectTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-06"));
+
+    QModelIndexList indexes;
+    indexes << index;
+    QMimeData *mimeData = m_model.mimeData(indexes);
+    QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    indexes.clear();
+}
+
+void TodoTreeModelTest::testDragAndDropMoveFolderInItem()
+{
+    Akonadi::Item item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(2, 0)));
+    QModelIndex index = m_model.indexForItem(item);
+    QModelIndex RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    QModelIndex TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::FolderTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-04"));
+
+    item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(7, 0)));
+    QModelIndex newParentIndex = m_model.indexForItem(item);
+    RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
+    TypeIndex = m_model.indexForItem(item, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(TypeIndex).toString(), QString::number(TodoFlatModel::StandardTodo));
+    QCOMPARE(m_model.data(RemoteIndex).toString(), QString("fake-09"));
+
+    QModelIndexList indexes;
+    indexes << index;
+    QMimeData *mimeData = m_model.mimeData(indexes);
+    QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 }
 
 #include "todotreemodeltest.moc"

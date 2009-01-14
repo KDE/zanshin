@@ -47,6 +47,8 @@ public:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+    virtual QStringList mimeTypes() const;
+    Qt::DropActions supportedDropActions() const;
     virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
     virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 

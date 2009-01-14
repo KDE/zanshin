@@ -212,13 +212,25 @@ Akonadi::ItemModel *TodoFlatModel::itemModel() const
     return qobject_cast<Akonadi::ItemModel*>(sourceModel());
 }
 
+QStringList TodoFlatModel::mimeTypes() const
+{
+    QStringList list;
+    list << "text/uri-list";
+    return list;
+}
+
+Qt::DropActions TodoFlatModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
 Qt::ItemFlags TodoFlatModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid() || index.row() >= rowCount()) {
         return Qt::NoItemFlags;
     }
 
-    Qt::ItemFlags f = Qt::ItemIsEnabled|Qt::ItemIsSelectable;
+    Qt::ItemFlags f = Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled;
 
     switch(index.column()) {
     case TodoFlatModel::Summary: {
@@ -362,11 +374,26 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
         }
         case TodoFlatModel::ParentRemoteId: {
             // test existence and cycle
+            TodoFlatModel::ItemType itemType = todoType(incidence->uid());
+            TodoFlatModel::ItemType parentType = StandardTodo;
+            if (!value.toString().isEmpty()) {
+                parentType = todoType(value.toString());
+            }
             if (!m_parentMap.contains(value.toString())
-             || isAncestorOf(incidence->uid(), value.toString())) {
+             || isAncestorOf(incidence->uid(), value.toString())
+             || (itemType == ProjectTodo && parentType == ProjectTodo)
+             || (itemType == ProjectTodo && parentType == StandardTodo)
+             || (itemType == FolderTodo && parentType == ProjectTodo)
+             || (itemType == FolderTodo && parentType == StandardTodo)) {
                 return false;
             }
             todo->setRelatedToUid(value.toString());
+
+            if (itemType == StandardTodo
+             && parentType == FolderTodo
+             && !todo->comments().contains("X-Zanshin-Project")) {
+                    todo->addComment("X-Zanshin-Project");
+            }
             return modifyItemHelper(item);
         }
         case TodoFlatModel::DueDate: {
@@ -448,7 +475,6 @@ bool TodoFlatModel::isAncestorOf(const QString &ancestor, const QString &child)
 TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId) const
 {
     //TODO: no child and incidence marked as project => todo is project type
-
     const QStringList children = m_childrenMap[remoteId];
     if (children.size()>0) {
         foreach (const QString &child, children) {
@@ -458,6 +484,21 @@ TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId) const
         }
 
         return ProjectTodo;
+    }
+
+    if (m_reverseRemoteIdMap.contains(remoteId)) {
+        const Akonadi::Item it(m_reverseRemoteIdMap[remoteId]);
+        QModelIndex index = indexForItem(it, 0);
+        if (index != QModelIndex()) {
+            const Akonadi::Item item = itemForIndex(index);
+            const IncidencePtr incidence = item.payload<IncidencePtr>();
+            KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
+            QStringList comments = todo->comments();
+            if (comments.contains("X-Zanshin-Project"))
+                return ProjectTodo;
+            else if (comments.contains("X-Zanshin-Folder"))
+                return FolderTodo;
+        }
     }
 
     return StandardTodo;

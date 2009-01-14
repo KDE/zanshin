@@ -88,6 +88,21 @@ int TodoTreeModel::columnCount(const QModelIndex &/*parent*/) const
     return TodoFlatModel::LastColumn + 1;
 }
 
+QStringList TodoTreeModel::mimeTypes() const
+{
+    return flatModel()->mimeTypes();
+}
+
+Qt::DropActions TodoTreeModel::supportedDropActions() const
+{
+    return flatModel()->supportedDropActions();
+}
+
+Qt::ItemFlags TodoTreeModel::flags(const QModelIndex &index) const
+{
+    return flatModel()->flags(mapToSource(index));
+}
+
 QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList sourceIndexes;
