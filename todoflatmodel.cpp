@@ -531,7 +531,7 @@ TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId, bool ex
     }
 
     //FIXME: That's definitely expensive, optimize this one
-    if (examinateSiblings) {
+    if (examinateSiblings && !m_parentMap[remoteId].isEmpty()) {
         const QStringList siblings = m_childrenMap[m_parentMap[remoteId]];
         foreach (const QString &sibling, siblings) {
             if (sibling == remoteId) continue;
