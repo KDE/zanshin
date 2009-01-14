@@ -261,6 +261,8 @@ void TodoTreeModelTest::testDragAndDropSimpleItemMove()
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, QModelIndex()));
 
+    flushNotifications();
+
     parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), QString());
 
@@ -292,6 +294,8 @@ void TodoTreeModelTest::testDragAndDropMoveTwoItem()
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 
+    flushNotifications();
+
     parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
 
     QCOMPARE(m_model.data(parentRemoteIndex).toString(), remoteId);
@@ -320,6 +324,7 @@ void TodoTreeModelTest::testDragAndDropCycleTest()
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, RemoteIndex));
 
+    flushNotifications();
     indexes.clear();
 }
 
@@ -340,6 +345,8 @@ void TodoTreeModelTest::testDragAndDropAddNewItem()
     indexes << index;
     QMimeData *mimeData = m_flatModel.mimeData(indexes);
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    flushNotifications();
 
     parentRemoteIndex = m_model.indexForItem(item, TodoFlatModel::ParentRemoteId);
 
@@ -369,6 +376,7 @@ void TodoTreeModelTest::testDragAndDropMoveProjectInProject()
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 
+    flushNotifications();
     indexes.clear();
 }
 
@@ -394,6 +402,7 @@ void TodoTreeModelTest::testDragAndDropMoveProjectInItem()
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 
+    flushNotifications();
     indexes.clear();
 }
 
@@ -418,6 +427,8 @@ void TodoTreeModelTest::testDragAndDropMoveItemInFolder()
     indexes << index;
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    flushNotifications();
 
     item = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(4, 0)));
     RemoteIndex = m_model.indexForItem(item, TodoFlatModel::RemoteId);
@@ -449,6 +460,7 @@ void TodoTreeModelTest::testDragAndDropMoveFolderInProject()
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
 
+    flushNotifications();
     indexes.clear();
 }
 
@@ -472,6 +484,9 @@ void TodoTreeModelTest::testDragAndDropMoveFolderInItem()
     indexes << index;
     QMimeData *mimeData = m_model.mimeData(indexes);
     QVERIFY(!m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex));
+
+    flushNotifications();
+    indexes.clear();
 }
 
 #include "todotreemodeltest.moc"
