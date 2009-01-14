@@ -46,6 +46,8 @@ void ProjectsModel::setSourceModel(QAbstractItemModel *sourceModel)
             this, SLOT(invalidate()));
     connect(treeModel(), SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
             this, SLOT(invalidate()));
+    connect(treeModel(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+            this, SLOT(invalidate()));
 }
 
 TodoTreeModel *ProjectsModel::treeModel() const
@@ -60,7 +62,7 @@ bool ProjectsModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &/*s
 
 bool ProjectsModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
-    QModelIndex index = treeModel()->index(sourceRow, 0, sourceParent);
-    return treeModel()->rowCount(index)>0;
+    QModelIndex index = treeModel()->index(sourceRow, TodoFlatModel::RowType, sourceParent);
+    return treeModel()->data(index).toInt()!=TodoFlatModel::StandardTodo;
 }
 
