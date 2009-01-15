@@ -37,6 +37,13 @@ void ContextsModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
     Q_ASSERT(sourceModel==0 || qobject_cast<TodoCategoriesModel*>(sourceModel)!=0);
     QSortFilterProxyModel::setSourceModel(sourceModel);
+
+    connect(categoriesModel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+            this, SLOT(invalidate()));
+    connect(categoriesModel(), SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
+            this, SLOT(invalidate()));
+    connect(categoriesModel(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+            this, SLOT(invalidate()));
 }
 
 TodoCategoriesModel *ContextsModel::categoriesModel() const
