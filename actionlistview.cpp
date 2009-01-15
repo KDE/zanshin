@@ -1,6 +1,7 @@
 /* This file is part of Zanshin Todo.
 
    Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
