@@ -177,6 +177,10 @@ QModelIndex TodoFlatModel::indexForItem(const Akonadi::Item &item, const int col
 
 void TodoFlatModel::setCollection(const Akonadi::Collection &collection)
 {
+    m_reverseRemoteIdMap.clear();
+    m_remoteIdMap.clear();
+    m_parentMap.clear();
+    m_childrenMap.clear();
     itemModel()->setCollection(collection);
 }
 
