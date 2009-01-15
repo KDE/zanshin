@@ -37,6 +37,10 @@ int main(int argc, char **argv)
                     ki18n("Lead Developer"),
                     "ervin@kde.org");
 
+    about.addAuthor(ki18n("Mario Bensi"),
+                    ki18n("Developer"),
+                    "nef@ipsquad.net");
+
     KCmdLineArgs::init(argc, argv, &about);
 
     KApplication app;
