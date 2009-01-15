@@ -195,7 +195,13 @@ QModelIndex LibraryModel::mapToSource(const QModelIndex &proxyIndex) const
         return QModelIndex();
     }
 
-    return m_sourceIndexesList[proxyIndex.internalId()-m_tokenShift];
+    int pos = proxyIndex.internalId()-m_tokenShift;
+
+    if (pos>=m_sourceIndexesList.size()) {
+        return QModelIndex();
+    }
+
+    return m_sourceIndexesList[pos];
 }
 
 QModelIndex LibraryModel::mapFromSource(const QModelIndex &sourceIndex) const
