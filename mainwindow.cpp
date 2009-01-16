@@ -254,7 +254,7 @@ void MainWindow::showConfigDialog()
     dialog->show();
 }
 
-void MainWindow::onSettingsChanged()
+void MainWindow::applySettings()
 {
     Akonadi::Collection collection(GlobalSettings::collectionId());
     GlobalModel::todoFlat()->setCollection(collection);
