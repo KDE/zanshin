@@ -30,14 +30,17 @@
 
 #include <kcal/todo.h>
 
+#include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfigGroup>
 #include <KDE/KDebug>
+#include <KDE/KIcon>
 #include <KDE/KLineEdit>
 #include <KDE/KLocale>
 #include <KDE/KTabWidget>
 
 #include <QtGui/QDockWidget>
+#include <QtGui/QStackedWidget>
 #include <QtGui/QHeaderView>
 #include <QtGui/QVBoxLayout>
 
@@ -60,41 +63,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     Akonadi::Control::start();
 
-    setupCentralWidget();
-
-    QTreeView *contextTree = new QTreeView(this);
-    contextTree->setAnimated(true);
-    contextTree->setModel(GlobalModel::contextsLibrary());
-    contextTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    contextTree->setDragEnabled(true);
-    contextTree->viewport()->setAcceptDrops(true);
-    contextTree->setDropIndicatorShown(true);
-    connect(contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onContextChanged(QModelIndex)));
-
-    QDockWidget *dock = new QDockWidget(i18n("Contexts"), this);
-    dock->setObjectName("ContextsDock");
-    dock->setWidget(contextTree);
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
-
-
-    QTreeView *projectTree = new QTreeView(this);
-    projectTree->setAnimated(true);
-    projectTree->setModel(GlobalModel::projectsLibrary());
-    projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    projectTree->setDragEnabled(true);
-    projectTree->viewport()->setAcceptDrops(true);
-    projectTree->setDropIndicatorShown(true);
-    connect(projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onProjectChanged(QModelIndex)));
-
-    dock = new QDockWidget(i18n("Projects"), this);
-    dock->setObjectName("ProjectsDock");
-    dock->setWidget(projectTree);
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
-
     setupActions();
+    setupCentralWidget();
+    setupSideBar();
+
     setupGUI();
+
     restoreColumnState();
     applySettings();
 }
@@ -120,10 +94,76 @@ void MainWindow::setupCentralWidget()
     setCentralWidget(centralWidget);
 }
 
+void MainWindow::setupSideBar()
+{
+    m_sidebar = new QStackedWidget(this);
+
+    m_projectTree = new QTreeView(m_sidebar);
+    m_projectTree->setAnimated(true);
+    m_projectTree->setModel(GlobalModel::projectsLibrary());
+    m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_projectTree->setDragEnabled(true);
+    m_projectTree->viewport()->setAcceptDrops(true);
+    m_projectTree->setDropIndicatorShown(true);
+    connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(onProjectChanged(QModelIndex)));
+    m_sidebar->addWidget(m_projectTree);
+
+    m_contextTree = new QTreeView(m_sidebar);
+    m_contextTree->setAnimated(true);
+    m_contextTree->setModel(GlobalModel::contextsLibrary());
+    m_contextTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_contextTree->setDragEnabled(true);
+    m_contextTree->viewport()->setAcceptDrops(true);
+    m_contextTree->setDropIndicatorShown(true);
+    connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(onContextChanged(QModelIndex)));
+    m_sidebar->addWidget(m_contextTree);
+
+    QDockWidget *dock = new QDockWidget(this);
+    dock->setObjectName("SideBar");
+    dock->setFeatures(dock->features() & ~QDockWidget::DockWidgetClosable);
+    dock->setWidget(m_sidebar);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
+}
+
 void MainWindow::setupActions()
 {
     KActionCollection *ac = actionCollection();
+
+    QActionGroup *modeGroup = new QActionGroup(this);
+    modeGroup->setExclusive(true);
+
+    KAction *action = ac->addAction("project_mode", this, SLOT(switchToProjectMode()));
+    action->setText(i18n("Project Mode"));
+    action->setIcon(KIcon("view-pim-tasks"));
+    action->setCheckable(true);
+    modeGroup->addAction(action);
+
+    action = ac->addAction("context_mode", this, SLOT(switchToContextMode()));
+    action->setText(i18n("Context Mode"));
+    action->setIcon(KIcon("view-pim-notes"));
+    action->setCheckable(true);
+    modeGroup->addAction(action);
+
+    action = ac->addAction("folder_new", this, SLOT(addNewFolder()));
+    action->setText(i18n("New Folder"));
+    action->setIcon(KIcon("folder-new"));
+
+    action = ac->addAction("project_new", this, SLOT(addNewProject()));
+    action->setText(i18n("New Project"));
+    action->setIcon(KIcon("list-add"));
+
+    action = ac->addAction("context_new", this, SLOT(addNewContext()));
+    action->setText(i18n("New Context"));
+    action->setIcon(KIcon("list-add"));
+
+    action = ac->addAction("remove_selected", this, SLOT(removeSelected()));
+    action->setText(i18n("Remove"));
+    action->setIcon(KIcon("list-remove"));
+
     ac->addAction(KStandardAction::Preferences, this, SLOT(showConfigDialog()));
+    ac->addAction(KStandardAction::Quit, this, SLOT(close()));
 }
 
 
@@ -258,4 +298,16 @@ void MainWindow::applySettings()
 {
     Akonadi::Collection collection(GlobalSettings::collectionId());
     GlobalModel::todoFlat()->setCollection(collection);
+}
+
+void MainWindow::switchToProjectMode()
+{
+    m_sidebar->setCurrentIndex(ProjectPageIndex);
+    onProjectChanged(m_projectTree->currentIndex());
+}
+
+void MainWindow::switchToContextMode()
+{
+    m_sidebar->setCurrentIndex(ContextPageIndex);
+    onContextChanged(m_contextTree->currentIndex());
 }

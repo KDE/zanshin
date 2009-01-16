@@ -1,0 +1,19 @@
+<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+<kpartgui name="zanshin" version="1">
+ <MenuBar>
+  <Menu name="file">
+   <Action name="project_mode" />
+   <Action name="context_mode" />
+   <Separator />
+   <Action name="folder_new" />
+   <Action name="project_new" />
+   <Action name="context_new" />
+  </Menu>
+ </MenuBar>
+ <ToolBar noMerge="1" name="mainToolBar" >
+  <text context="@title:menu">Main Toolbar</text>
+  <Action name="project_mode" />
+  <Action name="context_mode" />
+  <Separator name="separator_0" />
+ </ToolBar>
+</kpartgui>
