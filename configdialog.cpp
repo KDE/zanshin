@@ -54,6 +54,7 @@ ConfigDialog::ConfigDialog(QWidget *parent, const QString &name, GlobalSettings 
 void ConfigDialog::updateSettings()
 {
     m_settings->setCollectionId(selectedCollection());
+    m_settings->writeConfig();
     emit settingsChanged(objectName());
 }
 
