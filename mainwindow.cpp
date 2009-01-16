@@ -42,6 +42,7 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QHeaderView>
+#include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
 #include "actionlistmodel.h"
@@ -100,7 +101,11 @@ void MainWindow::setupSideBar()
 {
     m_sidebar = new QStackedWidget(this);
 
-    m_projectTree = new QTreeView(m_sidebar);
+    QWidget *projectPage = new QWidget(m_sidebar);
+    projectPage->setLayout(new QVBoxLayout(projectPage));
+
+    m_projectTree = new QTreeView(projectPage);
+    projectPage->layout()->addWidget(m_projectTree);
     m_projectTree->setAnimated(true);
     m_projectTree->setModel(GlobalModel::projectsLibrary());
     m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -112,9 +117,22 @@ void MainWindow::setupSideBar()
             m_projectTree, SLOT(expand(const QModelIndex&)));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onProjectChanged(QModelIndex)));
-    m_sidebar->addWidget(m_projectTree);
 
-    m_contextTree = new QTreeView(m_sidebar);
+    QToolBar *projectBar = new QToolBar(projectPage);
+    projectPage->layout()->addWidget(projectBar);
+    projectBar->addAction(actionCollection()->action("project_new"));
+    projectBar->addAction(actionCollection()->action("remove_selected"));
+    projectBar->addAction(actionCollection()->action("folder_new"));
+
+    m_sidebar->addWidget(projectPage);
+
+
+
+    QWidget *contextPage = new QWidget(m_sidebar);
+    contextPage->setLayout(new QVBoxLayout(contextPage));
+
+    m_contextTree = new QTreeView(contextPage);
+    contextPage->layout()->addWidget(m_contextTree);
     m_contextTree->setAnimated(true);
     m_contextTree->setModel(GlobalModel::contextsLibrary());
     m_contextTree->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -126,7 +144,16 @@ void MainWindow::setupSideBar()
             m_contextTree, SLOT(expand(const QModelIndex&)));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onContextChanged(QModelIndex)));
-    m_sidebar->addWidget(m_contextTree);
+
+    QToolBar *contextBar = new QToolBar(contextPage);
+    contextPage->layout()->addWidget(contextBar);
+    contextBar->addAction(actionCollection()->action("context_new"));
+    contextBar->addAction(actionCollection()->action("remove_selected"));
+
+
+    m_sidebar->addWidget(contextPage);
+
+
 
     QDockWidget *dock = new QDockWidget(this);
     dock->setObjectName("SideBar");
