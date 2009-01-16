@@ -71,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     restoreColumnState();
     applySettings();
+
+    actionCollection()->action("project_mode")->trigger();
 }
 
 void MainWindow::setupCentralWidget()
@@ -105,6 +107,9 @@ void MainWindow::setupSideBar()
     m_projectTree->setDragEnabled(true);
     m_projectTree->viewport()->setAcceptDrops(true);
     m_projectTree->setDropIndicatorShown(true);
+    m_projectTree->setCurrentIndex(m_projectTree->model()->index(0, 0));
+    connect(m_projectTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+            m_projectTree, SLOT(expand(const QModelIndex&)));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onProjectChanged(QModelIndex)));
     m_sidebar->addWidget(m_projectTree);
@@ -116,6 +121,9 @@ void MainWindow::setupSideBar()
     m_contextTree->setDragEnabled(true);
     m_contextTree->viewport()->setAcceptDrops(true);
     m_contextTree->setDropIndicatorShown(true);
+    m_contextTree->setCurrentIndex(m_contextTree->model()->index(0, 0));
+    connect(m_contextTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+            m_contextTree, SLOT(expand(const QModelIndex&)));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onContextChanged(QModelIndex)));
     m_sidebar->addWidget(m_contextTree);
