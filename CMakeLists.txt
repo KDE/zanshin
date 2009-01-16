@@ -10,6 +10,7 @@ set(zanshin_SRCS
    actionlistdelegate.cpp
    actionlistmodel.cpp
    actionlistview.cpp
+   configdialog.cpp
    contextsmodel.cpp
    globalmodel.cpp
    librarymodel.cpp
@@ -21,6 +22,8 @@ set(zanshin_SRCS
    todoflatmodel.cpp
    todotreemodel.cpp
 )
+
+kde4_add_kcfg_files(zanshin_SRCS globalsettings.kcfgc)
 
 kde4_add_executable(zanshin ${zanshin_SRCS})
 

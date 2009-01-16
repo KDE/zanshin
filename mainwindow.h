@@ -50,12 +50,16 @@ private slots:
 
 protected slots:
     void saveAutoSaveSettings();
+    void showConfigDialog();
+    void applySettings();
 
 protected:
     virtual void closeEvent(QCloseEvent *event);
 
 private:
     void setupCentralWidget();
+    void setupActions();
+
     void saveColumnsState();
     void restoreColumnState();
 

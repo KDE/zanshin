@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2009 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -18,32 +18,40 @@
    USA.
 */
 
-#ifndef ZANSHIN_GLOBALMODEL_H
-#define ZANSHIN_GLOBALMODEL_H
+#ifndef ZANSHIN_CONFIGDIALOG_H
+#define ZANSHIN_CONFIGDIALOG_H
 
-class TodoFlatModel;
-class TodoTreeModel;
-class TodoCategoriesModel;
-class ContextsModel;
-class LibraryModel;
-class ProjectsModel;
-class QAbstractItemModel;
+#include <akonadi/collection.h>
 
-namespace GlobalModel
+#include <KDE/KConfigDialog>
+
+namespace Akonadi
 {
-    // Internal models
-    TodoFlatModel *todoFlat();
-    TodoTreeModel *todoTree();
-    TodoCategoriesModel *todoCategories();
-    QAbstractItemModel *todoCollections();
-
-    // User oriented models
-    ContextsModel *contexts();
-    ProjectsModel *projects();
-
-    LibraryModel *contextsLibrary();
-    LibraryModel *projectsLibrary();
+    class CollectionView;
 }
+
+class GlobalSettings;
+
+class ConfigDialog : public KConfigDialog
+{
+    Q_OBJECT
+
+public:
+    ConfigDialog(QWidget *parent, const QString &name, GlobalSettings *settings);
+
+protected slots:
+    virtual void updateSettings();
+    virtual void updateWidgets();
+    virtual void updateWidgetsDefault();
+
+protected:
+    virtual bool hasChanged();
+    virtual bool isDefault();
+private:
+    Akonadi::Collection::Id selectedCollection();
+    Akonadi::CollectionView *m_collectionList;
+    GlobalSettings *m_settings;
+};
 
 #endif
 

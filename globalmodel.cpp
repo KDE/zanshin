@@ -21,6 +21,8 @@
 #include "globalmodel.h"
 
 #include <akonadi/attributefactory.h>
+#include <akonadi/collectionmodel.h>
+#include <akonadi/collectionfilterproxymodel.h>
 
 #include <kglobal.h>
 
@@ -59,6 +61,11 @@ public:
 
         projectsLibrary = new LibraryModel();
         projectsLibrary->setSourceModel(projects);
+
+        todoCollections = new Akonadi::CollectionFilterProxyModel();
+        Akonadi::CollectionModel *collectionModel = new Akonadi::CollectionModel(todoCollections);
+        todoCollections->setSourceModel(collectionModel);
+        todoCollections->addMimeTypeFilter("application/x-vnd.akonadi.calendar.todo");
     }
 
     ~GlobalModelPrivate()
@@ -70,6 +77,7 @@ public:
         delete todoCategories;
         delete todoTree;
         delete todoFlat;
+        delete todoCollections;
     }
 
     TodoFlatModel *todoFlat;
@@ -81,6 +89,8 @@ public:
 
     LibraryModel *contextsLibrary;
     LibraryModel *projectsLibrary;
+
+    Akonadi::CollectionFilterProxyModel *todoCollections;
 };
 
 K_GLOBAL_STATIC(GlobalModelPrivate, globalModel)
@@ -98,6 +108,11 @@ TodoTreeModel *GlobalModel::todoTree()
 TodoCategoriesModel *GlobalModel::todoCategories()
 {
     return globalModel->todoCategories;
+}
+
+QAbstractItemModel *GlobalModel::todoCollections()
+{
+    return globalModel->todoCollections;
 }
 
 ContextsModel *GlobalModel::contexts()

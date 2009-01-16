@@ -21,11 +21,6 @@
 
 #include "mainwindow.h"
 
-#include <akonadi/collectionfilterproxymodel.h>
-#include <akonadi/collectionstatisticsdelegate.h>
-#include <akonadi/collectionstatisticsmodel.h>
-#include <akonadi/collectionview.h>
-
 #include <akonadi/control.h>
 
 #include <akonadi/itemcreatejob.h>
@@ -35,6 +30,7 @@
 
 #include <kcal/todo.h>
 
+#include <KDE/KActionCollection>
 #include <KDE/KConfigGroup>
 #include <KDE/KDebug>
 #include <KDE/KLineEdit>
@@ -47,8 +43,10 @@
 
 #include "actionlistmodel.h"
 #include "actionlistview.h"
+#include "configdialog.h"
 #include "contextsmodel.h"
 #include "globalmodel.h"
+#include "globalsettings.h"
 #include "librarymodel.h"
 #include "projectsmodel.h"
 #include "todocategoriesmodel.h"
@@ -62,22 +60,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     Akonadi::Control::start();
 
-    Akonadi::CollectionView *collectionList = new Akonadi::CollectionView(this);
-    connect(collectionList, SIGNAL(clicked(const Akonadi::Collection &)),
-            this, SLOT(collectionClicked(const Akonadi::Collection &)));
-
-    QDockWidget *dock = new QDockWidget(i18n("Resources"), this);
-    dock->setObjectName("ResourcesDock");
-    dock->setWidget(collectionList);
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
-
-    Akonadi::CollectionModel *collectionModel = new Akonadi::CollectionModel(this);
-    Akonadi::CollectionFilterProxyModel *collectionProxyModel = new Akonadi::CollectionFilterProxyModel(this);
-    collectionProxyModel->setSourceModel(collectionModel);
-    collectionProxyModel->addMimeTypeFilter("application/x-vnd.akonadi.calendar.todo");
-
-    collectionList->setModel(collectionProxyModel);
-
     setupCentralWidget();
 
     QTreeView *contextTree = new QTreeView(this);
@@ -90,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onContextChanged(QModelIndex)));
 
-    dock = new QDockWidget(i18n("Contexts"), this);
+    QDockWidget *dock = new QDockWidget(i18n("Contexts"), this);
     dock->setObjectName("ContextsDock");
     dock->setWidget(contextTree);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
@@ -111,8 +93,10 @@ MainWindow::MainWindow(QWidget *parent)
     dock->setWidget(projectTree);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
+    setupActions();
     setupGUI();
     restoreColumnState();
+    applySettings();
 }
 
 void MainWindow::setupCentralWidget()
@@ -135,6 +119,13 @@ void MainWindow::setupCentralWidget()
 
     setCentralWidget(centralWidget);
 }
+
+void MainWindow::setupActions()
+{
+    KActionCollection *ac = actionCollection();
+    ac->addAction(KStandardAction::Preferences, this, SLOT(showConfigDialog()));
+}
+
 
 void MainWindow::collectionClicked(const Akonadi::Collection &collection)
 {
@@ -248,3 +239,23 @@ void MainWindow::restoreColumnState()
     }
 }
 
+void MainWindow::showConfigDialog()
+{
+    if (KConfigDialog::showDialog("settings")) {
+        return;
+    }
+
+    ConfigDialog *dialog = new ConfigDialog(this, "settings",
+                                            GlobalSettings::self());
+
+    connect(dialog, SIGNAL(settingsChanged(const QString&)),
+            this, SLOT(applySettings()));
+
+    dialog->show();
+}
+
+void MainWindow::onSettingsChanged()
+{
+    Akonadi::Collection collection(GlobalSettings::collectionId());
+    GlobalModel::todoFlat()->setCollection(collection);
+}
