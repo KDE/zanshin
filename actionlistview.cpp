@@ -77,4 +77,12 @@ void ActionListView::connectModel(QAbstractItemModel *model) const
             this, SLOT(expandBranch(const QModelIndex&)));
 }
 
+void ActionListView::startDrag(Qt::DropActions supportedActions)
+{
+    ActionListDelegate *delegate = qobject_cast<ActionListDelegate*>(itemDelegate());
+    if (delegate) {
+        delegate->setDragModeCount(selectedIndexes().size());
+    }
 
+    Akonadi::ItemView::startDrag(supportedActions);
+}

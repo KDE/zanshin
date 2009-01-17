@@ -36,6 +36,9 @@ public:
 public slots:
     virtual void setRootIndex(const QModelIndex &index);
 
+protected:
+    virtual void startDrag(Qt::DropActions supportedActions);
+
 private slots:
     void expandBranch(const QModelIndex& parent);
 

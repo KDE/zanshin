@@ -33,6 +33,8 @@ public:
     ActionListDelegate(QObject *parent = 0);
     virtual ~ActionListDelegate();
 
+    void setDragModeCount(int count);
+
     virtual QSize sizeHint(const QStyleOptionViewItem &option,
                            const QModelIndex &index) const;
 
@@ -43,6 +45,8 @@ public:
 private:
     TodoFlatModel::ItemType rowType(const QModelIndex &index) const;
     bool isInFocus(const QModelIndex &index) const;
+
+    mutable int m_dragModeCount;
 };
 #endif
 

@@ -23,7 +23,7 @@
 #include "actionlistmodel.h"
 
 ActionListDelegate::ActionListDelegate(QObject *parent)
-    : QStyledItemDelegate(parent)
+    : QStyledItemDelegate(parent), m_dragModeCount(0)
 {
 
 }
@@ -36,6 +36,14 @@ ActionListDelegate::~ActionListDelegate()
 QSize ActionListDelegate::sizeHint(const QStyleOptionViewItem &option,
                                    const QModelIndex &index) const
 {
+    if (m_dragModeCount>0) {
+        if (index.column()==0) {
+            return QStyledItemDelegate::sizeHint(option, index);
+        } else {
+            return QSize();
+        }
+    }
+
     QSize res = QStyledItemDelegate::sizeHint(option, index);
 
     if (res.height() < 28) {
@@ -53,6 +61,17 @@ void ActionListDelegate::paint(QPainter *painter,
                                const QStyleOptionViewItem &option,
                                const QModelIndex &index) const
 {
+    if (m_dragModeCount>0) {
+        QStyleOptionViewItemV4 opt = option;
+        opt.rect.setHeight(sizeHint(option, index).height());
+        m_dragModeCount--;
+        if (index.column()==0) {
+            return QStyledItemDelegate::paint(painter, opt, index);
+        } else {
+            return;
+        }
+    }
+
     TodoFlatModel::ItemType type = rowType(index);
 
     if (type==TodoFlatModel::FolderTodo || !isInFocus(index)) {
@@ -116,3 +135,9 @@ bool ActionListDelegate::isInFocus(const QModelIndex &index) const
 
     return false;
 }
+
+void ActionListDelegate::setDragModeCount(int count)
+{
+    m_dragModeCount = count;
+}
+
