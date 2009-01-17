@@ -401,6 +401,11 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
              && !todo->comments().contains("X-Zanshin-Project")) {
                     todo->addComment("X-Zanshin-Project");
             }
+	    if (itemType == StandardTodo 
+	     && value.toString().isEmpty()) {
+	         todo->addComment("X-Zanshin-Project");
+	    }
+
             return modifyItemHelper(item);
         }
         case TodoFlatModel::DueDate: {

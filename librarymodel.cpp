@@ -110,7 +110,7 @@ Qt::DropActions LibraryModel::supportedDropActions() const
 Qt::ItemFlags LibraryModel::flags(const QModelIndex &index) const
 {
     if (isInbox(index) || isLibraryRoot(index)) {
-        return Qt::ItemIsEnabled|Qt::ItemIsSelectable;
+        return Qt::ItemIsEnabled|Qt::ItemIsSelectable|Qt::ItemIsDropEnabled;
     }
 
     return QAbstractProxyModel::flags(index);
