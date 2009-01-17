@@ -56,6 +56,7 @@
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
+#include "sidebar.h"
 
 typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
@@ -64,9 +65,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     Akonadi::Control::start();
 
-    setupActions();
     setupCentralWidget();
     setupSideBar();
+    setupActions();
 
     setupGUI();
 
@@ -99,61 +100,12 @@ void MainWindow::setupCentralWidget()
 
 void MainWindow::setupSideBar()
 {
-    m_sidebar = new QStackedWidget(this);
+    m_sidebar = new SideBar(this, actionCollection());
 
-    QWidget *projectPage = new QWidget(m_sidebar);
-    projectPage->setLayout(new QVBoxLayout(projectPage));
-
-    m_projectTree = new QTreeView(projectPage);
-    projectPage->layout()->addWidget(m_projectTree);
-    m_projectTree->setAnimated(true);
-    m_projectTree->setModel(GlobalModel::projectsLibrary());
-    m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_projectTree->setDragEnabled(true);
-    m_projectTree->viewport()->setAcceptDrops(true);
-    m_projectTree->setDropIndicatorShown(true);
-    m_projectTree->setCurrentIndex(m_projectTree->model()->index(0, 0));
-    connect(m_projectTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-            m_projectTree, SLOT(expand(const QModelIndex&)));
-    connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onProjectChanged(QModelIndex)));
-
-    QToolBar *projectBar = new QToolBar(projectPage);
-    projectPage->layout()->addWidget(projectBar);
-    projectBar->addAction(actionCollection()->action("project_new"));
-    projectBar->addAction(actionCollection()->action("remove_selected"));
-    projectBar->addAction(actionCollection()->action("folder_new"));
-
-    m_sidebar->addWidget(projectPage);
-
-
-
-    QWidget *contextPage = new QWidget(m_sidebar);
-    contextPage->setLayout(new QVBoxLayout(contextPage));
-
-    m_contextTree = new QTreeView(contextPage);
-    contextPage->layout()->addWidget(m_contextTree);
-    m_contextTree->setAnimated(true);
-    m_contextTree->setModel(GlobalModel::contextsLibrary());
-    m_contextTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_contextTree->setDragEnabled(true);
-    m_contextTree->viewport()->setAcceptDrops(true);
-    m_contextTree->setDropIndicatorShown(true);
-    m_contextTree->setCurrentIndex(m_contextTree->model()->index(0, 0));
-    connect(m_contextTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-            m_contextTree, SLOT(expand(const QModelIndex&)));
-    connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onContextChanged(QModelIndex)));
-
-    QToolBar *contextBar = new QToolBar(contextPage);
-    contextPage->layout()->addWidget(contextBar);
-    contextBar->addAction(actionCollection()->action("context_new"));
-    contextBar->addAction(actionCollection()->action("remove_selected"));
-
-
-    m_sidebar->addWidget(contextPage);
-
-
+    connect(m_sidebar, SIGNAL(projectChanged(const QModelIndex&)),
+            this, SLOT(onProjectChanged(const QModelIndex&)));
+    connect(m_sidebar, SIGNAL(contextChanged(const QModelIndex&)),
+            this, SLOT(onContextChanged(const QModelIndex&)));
 
     QDockWidget *dock = new QDockWidget(this);
     dock->setObjectName("SideBar");
@@ -169,33 +121,17 @@ void MainWindow::setupActions()
     QActionGroup *modeGroup = new QActionGroup(this);
     modeGroup->setExclusive(true);
 
-    KAction *action = ac->addAction("project_mode", this, SLOT(switchToProjectMode()));
+    KAction *action = ac->addAction("project_mode", m_sidebar, SLOT(switchToProjectMode()));
     action->setText(i18n("Project Mode"));
     action->setIcon(KIcon("view-pim-tasks"));
     action->setCheckable(true);
     modeGroup->addAction(action);
 
-    action = ac->addAction("context_mode", this, SLOT(switchToContextMode()));
+    action = ac->addAction("context_mode", m_sidebar, SLOT(switchToContextMode()));
     action->setText(i18n("Context Mode"));
     action->setIcon(KIcon("view-pim-notes"));
     action->setCheckable(true);
     modeGroup->addAction(action);
-
-    action = ac->addAction("folder_new", this, SLOT(addNewFolder()));
-    action->setText(i18n("New Folder"));
-    action->setIcon(KIcon("folder-new"));
-
-    action = ac->addAction("project_new", this, SLOT(addNewProject()));
-    action->setText(i18n("New Project"));
-    action->setIcon(KIcon("list-add"));
-
-    action = ac->addAction("context_new", this, SLOT(addNewContext()));
-    action->setText(i18n("New Context"));
-    action->setIcon(KIcon("list-add"));
-
-    action = ac->addAction("remove_selected", this, SLOT(removeSelected()));
-    action->setText(i18n("Remove"));
-    action->setIcon(KIcon("list-remove"));
 
     ac->addAction(KStandardAction::Preferences, this, SLOT(showConfigDialog()));
     ac->addAction(KStandardAction::Quit, this, SLOT(close()));
@@ -333,16 +269,4 @@ void MainWindow::applySettings()
 {
     Akonadi::Collection collection(GlobalSettings::collectionId());
     GlobalModel::todoFlat()->setCollection(collection);
-}
-
-void MainWindow::switchToProjectMode()
-{
-    m_sidebar->setCurrentIndex(ProjectPageIndex);
-    onProjectChanged(m_projectTree->currentIndex());
-}
-
-void MainWindow::switchToContextMode()
-{
-    m_sidebar->setCurrentIndex(ContextPageIndex);
-    onContextChanged(m_contextTree->currentIndex());
 }

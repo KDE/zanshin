@@ -21,6 +21,7 @@ set(zanshin_SRCS
    todocategoriesmodel.cpp
    todoflatmodel.cpp
    todotreemodel.cpp
+   sidebar.cpp
 )
 
 kde4_add_kcfg_files(zanshin_SRCS globalsettings.kcfgc)

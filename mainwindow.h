@@ -33,9 +33,9 @@ namespace Akonadi
 }
 
 class ActionListModel;
-class QStackedWidget;
 class QTreeView;
 class KLineEdit;
+class SideBar;
 
 class MainWindow : public KXmlGuiWindow
 {
@@ -49,9 +49,6 @@ private slots:
     void onProjectChanged(const QModelIndex &current);
     void onContextChanged(const QModelIndex &current);
     void onAddActionRequested();
-
-    void switchToProjectMode();
-    void switchToContextMode();
 
 protected slots:
     void saveAutoSaveSettings();
@@ -69,14 +66,7 @@ private:
     void saveColumnsState();
     void restoreColumnState();
 
-    enum {
-        ProjectPageIndex = 0,
-        ContextPageIndex = 1
-    };
-
-    QStackedWidget *m_sidebar;
-    QTreeView *m_projectTree;
-    QTreeView *m_contextTree;
+    SideBar *m_sidebar;
 
     Akonadi::ItemView *m_view;
     KLineEdit *m_addActionEdit;

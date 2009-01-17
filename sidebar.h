@@ -1,0 +1,67 @@
+/* This file is part of Zanshin Todo.
+
+   Copyright 2008-2009 Kevin Ottens <ervin@kde.org>
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+   USA.
+*/
+
+#ifndef ZANSHIN_SIDEBAR_H
+#define ZANSHIN_SIDEBAR_H
+
+#include <QtCore/QModelIndex>
+#include <QtGui/QWidget>
+
+class KAction;
+class KActionCollection;
+class QStackedWidget;
+class QTreeView;
+
+class SideBar : public QWidget
+{
+    Q_OBJECT
+
+public:
+    SideBar(QWidget *parent, KActionCollection *ac);
+
+public slots:
+    void switchToProjectMode();
+    void switchToContextMode();
+
+signals:
+    void projectChanged(const QModelIndex &index);
+    void contextChanged(const QModelIndex &index);
+
+private:
+    void setupProjectPage();
+    void setupContextPage();
+    void setupActions(KActionCollection *ac);
+
+    enum {
+        ProjectPageIndex = 0,
+        ContextPageIndex = 1
+    };
+
+    QStackedWidget *m_stack;
+    QTreeView *m_projectTree;
+    QTreeView *m_contextTree;
+
+    KAction *m_add;
+    KAction *m_addFolder;
+    KAction *m_remove;
+};
+
+#endif
+
