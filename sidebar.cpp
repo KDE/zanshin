@@ -34,6 +34,8 @@
 #include "globalmodel.h"
 #include "librarymodel.h"
 #include "projectsmodel.h"
+#include "todoflatmodel.h"
+#include "todotreemodel.h"
 
 SideBar::SideBar(QWidget *parent, KActionCollection *ac)
     : QWidget(parent)
@@ -66,6 +68,8 @@ void SideBar::setupProjectPage()
             m_projectTree, SLOT(expand(const QModelIndex&)));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SIGNAL(projectChanged(QModelIndex)));
+    connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
 
     QToolBar *projectBar = new QToolBar(projectPage);
     projectPage->layout()->addWidget(projectBar);
@@ -94,6 +98,8 @@ void SideBar::setupContextPage()
             m_contextTree, SLOT(expand(const QModelIndex&)));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SIGNAL(contextChanged(QModelIndex)));
+    connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
 
     QToolBar *contextBar = new QToolBar(contextPage);
     contextPage->layout()->addWidget(contextBar);
@@ -105,15 +111,15 @@ void SideBar::setupContextPage()
 
 void SideBar::setupActions(KActionCollection *ac)
 {
-    m_addFolder = ac->addAction("sidebar_new_folder", this, SLOT(addFolder()));
+    m_addFolder = ac->addAction("sidebar_new_folder", this, SLOT(onAddFolder()));
     m_addFolder->setText(i18n("New Folder"));
     m_addFolder->setIcon(KIcon("folder-new"));
 
-    m_add = ac->addAction("sidebar_new", this, SLOT(add()));
+    m_add = ac->addAction("sidebar_new", this, SLOT(onAddItem()));
     m_add->setText(i18n("New"));
     m_add->setIcon(KIcon("list-add"));
 
-    m_remove = ac->addAction("sidebar_remove", this, SLOT(remove()));
+    m_remove = ac->addAction("sidebar_remove", this, SLOT(onRemoveItem()));
     m_remove->setText(i18n("Remove"));
     m_remove->setIcon(KIcon("list-remove"));
 }
@@ -123,7 +129,7 @@ void SideBar::switchToProjectMode()
     m_stack->setCurrentIndex(ProjectPageIndex);
     m_add->setText("New Project");
     m_remove->setText("Remove Project/Folder");
-    m_addFolder->setEnabled(true);
+    updateActions(m_projectTree->currentIndex());
     emit projectChanged(m_projectTree->currentIndex());
 }
 
@@ -132,6 +138,88 @@ void SideBar::switchToContextMode()
     m_stack->setCurrentIndex(ContextPageIndex);
     m_add->setText("New Context");
     m_remove->setText("Remove Context");
-    m_addFolder->setEnabled(false);
+    updateActions(m_contextTree->currentIndex());
     emit contextChanged(m_contextTree->currentIndex());
+}
+
+void SideBar::updateActions(const QModelIndex &index)
+{
+    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+
+    if (model==GlobalModel::projectsLibrary()) {
+        m_addFolder->setEnabled(true);
+    } else {
+        m_addFolder->setEnabled(false);
+    }
+
+    if (model->isInbox(index)) {
+        m_addFolder->setEnabled(false);
+        m_add->setEnabled(false);
+        m_remove->setEnabled(false);
+    } else {
+        m_add->setEnabled(true);
+        m_remove->setEnabled(true);
+
+        QModelIndex sourceIndex = model->mapToSource(index); // into "projects"
+        if (m_addFolder->isEnabled() && sourceIndex.isValid()) { // Shouldn't be enabled on projects
+            sourceIndex = GlobalModel::projects()->mapToSource(sourceIndex); // into "todoTree"
+            sourceIndex = sourceIndex.sibling(sourceIndex.row(), TodoFlatModel::RowType); // we want the row type
+            if (GlobalModel::todoTree()->data(sourceIndex).toInt()!=TodoFlatModel::FolderTodo) {
+                m_addFolder->setEnabled(false);
+            }
+        }
+    }
+}
+
+void SideBar::onAddFolder()
+{
+
+}
+
+void SideBar::onAddItem()
+{
+    switch (m_stack->currentIndex()) {
+    case ProjectPageIndex:
+        addNewProject();
+        break;
+    case ContextPageIndex:
+        addNewContext();
+        break;
+    default:
+        Q_ASSERT(false);
+    }
+}
+
+void SideBar::onRemoveItem()
+{
+    switch (m_stack->currentIndex()) {
+    case ProjectPageIndex:
+        removeCurrentProject();
+        break;
+    case ContextPageIndex:
+        removeCurrentContext();
+        break;
+    default:
+        Q_ASSERT(false);
+    }
+}
+
+void SideBar::addNewProject()
+{
+
+}
+
+void SideBar::removeCurrentProject()
+{
+
+}
+
+void SideBar::addNewContext()
+{
+
+}
+
+void SideBar::removeCurrentContext()
+{
+
 }

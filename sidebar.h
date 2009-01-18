@@ -44,10 +44,21 @@ signals:
     void projectChanged(const QModelIndex &index);
     void contextChanged(const QModelIndex &index);
 
+private slots:
+    void updateActions(const QModelIndex &index);
+    void onAddFolder();
+    void onAddItem();
+    void onRemoveItem();
+
 private:
     void setupProjectPage();
     void setupContextPage();
     void setupActions(KActionCollection *ac);
+
+    void addNewProject();
+    void removeCurrentProject();
+    void addNewContext();
+    void removeCurrentContext();
 
     enum {
         ProjectPageIndex = 0,
