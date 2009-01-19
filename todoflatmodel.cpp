@@ -386,7 +386,7 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
             if (!value.toString().isEmpty()) {
                 parentType = todoType(value.toString());
             }
-            if (!m_parentMap.contains(value.toString())
+            if (!m_reverseRemoteIdMap.contains(value.toString())
              || isAncestorOf(incidence->uid(), value.toString())
              || (itemType == ProjectTodo && parentType == ProjectTodo)
              || (itemType == ProjectTodo && parentType == StandardTodo)
