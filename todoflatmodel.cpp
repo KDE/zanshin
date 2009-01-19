@@ -401,7 +401,7 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
              && !todo->comments().contains("X-Zanshin-Project")) {
                     todo->addComment("X-Zanshin-Project");
             }
-	    if (itemType == StandardTodo 
+	    if (itemType == StandardTodo
 	     && value.toString().isEmpty()) {
 	         todo->addComment("X-Zanshin-Project");
 	    }
@@ -441,17 +441,17 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
 {
     for (int i = begin; i <= end; i++) {
         // Retrieve the item from the source model
-        Akonadi::Item item = itemForIndex(index(i, 0));
-        QString remoteId = data(index(i, TodoFlatModel::RemoteId)).toString();
+        Akonadi::Item item = itemModel()->itemForIndex(itemModel()->index(i, 0));
+        QString remoteId = itemModel()->data(itemModel()->index(i, TodoFlatModel::RemoteId)).toString();
         m_remoteIdMap[item.id()] = remoteId;
         m_reverseRemoteIdMap[remoteId] = item.id();
     }
 
     for (int i = begin; i <= end; i++) {
-        Akonadi::Item item = itemForIndex(index(i, 0));
+        Akonadi::Item item = itemModel()->itemForIndex(itemModel()->index(i, 0));
 
         QString remoteId = m_remoteIdMap[item.id()];
-        QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
+        QString parentRemoteId = itemModel()->data(itemModel()->index(i, TodoFlatModel::ParentRemoteId)).toString();
 
         bool shouldEmit = !m_childrenMap.contains(parentRemoteId);
 
@@ -471,11 +471,11 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
 void TodoFlatModel::onSourceRemoveRows(const QModelIndex&/*sourceIndex*/, int begin, int end)
 {
     for (int i = begin; i <= end; ++i) {
-        QModelIndex sourceIndex = index(i, 0);
-        Akonadi::Item item = itemForIndex(sourceIndex);
+        QModelIndex sourceIndex = itemModel()->index(i, 0);
+        Akonadi::Item item = itemModel()->itemForIndex(sourceIndex);
 
         QString remoteId = m_remoteIdMap.take(item.id());
-        QString parentRemoteId = data(index(i, TodoFlatModel::ParentRemoteId)).toString();
+        QString parentRemoteId = itemModel()->data(itemModel()->index(i, TodoFlatModel::ParentRemoteId)).toString();
 
         m_parentMap.remove(remoteId);
         m_childrenMap[parentRemoteId].removeAll(remoteId);
