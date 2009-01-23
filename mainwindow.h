@@ -27,14 +27,7 @@
 
 #include <akonadi/collection.h>
 
-namespace Akonadi
-{
-    class ItemView;
-}
-
 class ActionListEditor;
-class QTreeView;
-class KLineEdit;
 class SideBar;
 
 class MainWindow : public KXmlGuiWindow
@@ -43,9 +36,6 @@ class MainWindow : public KXmlGuiWindow
 
 public:
     MainWindow(QWidget *parent = 0);
-
-private slots:
-    void collectionClicked(const Akonadi::Collection &collection);
 
 protected slots:
     void saveAutoSaveSettings();

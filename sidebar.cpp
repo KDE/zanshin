@@ -20,7 +20,6 @@
 
 #include "sidebar.h"
 
-#include <akonadi/collection.h>
 #include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemdeletejob.h>

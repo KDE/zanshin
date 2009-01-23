@@ -24,41 +24,23 @@
 #include <akonadi/control.h>
 
 #include <akonadi/collectionfetchjob.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemmodel.h>
-
-#include <boost/shared_ptr.hpp>
-
-#include <kcal/todo.h>
 
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfigGroup>
-#include <KDE/KDebug>
 #include <KDE/KIcon>
 #include <KDE/KLocale>
-#include <KDE/KTabWidget>
 
 #include <QtGui/QDockWidget>
-#include <QtGui/QStackedWidget>
 #include <QtGui/QHeaderView>
-#include <QtGui/QToolBar>
-#include <QtGui/QVBoxLayout>
 
 #include "actionlisteditor.h"
 #include "actionlistview.h"
 #include "configdialog.h"
-#include "contextsmodel.h"
 #include "globalmodel.h"
 #include "globalsettings.h"
-#include "librarymodel.h"
-#include "projectsmodel.h"
-#include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
-#include "todotreemodel.h"
 #include "sidebar.h"
-
-typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
 MainWindow::MainWindow(QWidget *parent)
     : KXmlGuiWindow(parent)
@@ -125,12 +107,6 @@ void MainWindow::setupActions()
 
     ac->addAction(KStandardAction::Preferences, this, SLOT(showConfigDialog()));
     ac->addAction(KStandardAction::Quit, this, SLOT(close()));
-}
-
-
-void MainWindow::collectionClicked(const Akonadi::Collection &collection)
-{
-    GlobalModel::todoFlat()->setCollection(collection);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
