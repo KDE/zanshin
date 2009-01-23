@@ -468,6 +468,21 @@ TodoFlatModel *TodoCategoriesModel::flatModel() const
     return qobject_cast<TodoFlatModel*>(sourceModel());
 }
 
+bool TodoCategoriesModel::addCategory(const QString &name, const QModelIndex &parent)
+{
+    if (m_categoryMap.contains(name)) {
+        return false;
+    }
+
+    TodoCategoryTreeNode *parentNode = nodeForIndex(parent);
+    TodoCategoryTreeNode *node = new TodoCategoryTreeNode(name);
+
+    loadCategory(node, parentNode);
+    serializeCategories();
+
+    return true;
+}
+
 void TodoCategoriesModel::loadDefaultCategories()
 {
     TodoCategoryTreeNode *errands = new TodoCategoryTreeNode("Errands");
@@ -532,7 +547,7 @@ void TodoCategoriesModel::deserializeCategories()
 {
     if (!m_collection.isValid()) return;
 
-    if (!m_collection.hasAttribute <TodoCategoriesAttribute>()) {
+    if (!m_collection.hasAttribute<TodoCategoriesAttribute>()) {
         loadDefaultCategories();
         return;
     }

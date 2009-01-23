@@ -43,6 +43,8 @@ public:
     TodoCategoriesModel(QObject *parent = 0);
     virtual ~TodoCategoriesModel();
 
+    bool addCategory(const QString &name, const QModelIndex &parent = QModelIndex());
+
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &index) const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;

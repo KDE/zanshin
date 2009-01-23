@@ -44,6 +44,8 @@ private slots:
     void testSingleRemoved();
     void testMultipleRemoved();
     void testDragAndDrop();
+    void testAddCategory_data();
+    void testAddCategory();
 
 private:
     TodoFlatModel m_flatModel;
@@ -414,7 +416,7 @@ void TodoCategoriesModelTest::testDragAndDrop()
     index = m_flatModel.indexForItem(item, 0);
     catIndex = m_flatModel.indexForItem(item, TodoFlatModel::Categories);
     QCOMPARE(m_flatModel.data(catIndex).toString(), QString(""));
-    
+
     Akonadi::Item item2 = m_flatModel.itemForIndex(m_flatSortedModel.mapToSource(m_flatSortedModel.index(5, 0)));
     QModelIndex index2 = m_flatModel.indexForItem(item2, 0);
     QModelIndex catIndex2 = m_flatModel.indexForItem(item2, TodoFlatModel::Categories);
@@ -439,5 +441,49 @@ void TodoCategoriesModelTest::testDragAndDrop()
     QCOMPARE(m_model.data(catIndexes.first()).toString(), QString("Office"));
 }
 
+void TodoCategoriesModelTest::testAddCategory_data()
+{
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<QModelIndex>("parent");
+    QTest::addColumn<bool>("expected");
+
+    QTest::newRow("Adding root category") <<  "Baz" << QModelIndex() << true;
+    QTest::newRow("Adding sub-category") <<  "FooBar" << m_model.indexForCategory("Baz") << true;
+    QTest::newRow("Adding existing root category") <<  "Foo" << QModelIndex() << false;
+    QTest::newRow("Adding existing category, deeper") <<  "Foo" << m_model.indexForCategory("Baz") << false;
+}
+
+void TodoCategoriesModelTest::testAddCategory()
+{
+    QFETCH(QString, name);
+    QFETCH(QModelIndex, parent);
+    QFETCH(bool, expected);
+
+    int row = m_model.rowCount(parent);
+    QSignalSpy spy(&m_model, SIGNAL(rowsInserted(QModelIndex, int, int)));
+
+    bool result = m_model.addCategory(name, parent);
+    QCOMPARE(result, expected);
+
+    flushNotifications();
+
+    if (!expected) {
+        QCOMPARE(spy.count(), 0);
+        return;
+    }
+
+    QCOMPARE(spy.count(), 1);
+    QVariantList signal = spy.takeFirst();
+    QCOMPARE(signal.count(), 3);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
+    QCOMPARE(signal.at(1).toInt(), row);
+    QCOMPARE(signal.at(2).toInt(), row);
+
+    QCOMPARE(m_model.rowCount(), row+1);
+
+    QModelIndex index = m_model.index(row, 0, parent);
+    QCOMPARE(m_model.data(index).toString(), name);
+    QCOMPARE(m_model.rowCount(index), 0);
+}
 
 #include "todocategoriesmodeltest.moc"
