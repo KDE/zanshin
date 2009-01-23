@@ -46,6 +46,7 @@
 #include "globalmodel.h"
 #include "librarymodel.h"
 #include "projectsmodel.h"
+#include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
 
@@ -329,7 +330,20 @@ void SideBar::removeCurrentProject()
 
 void SideBar::addNewContext()
 {
+    bool ok;
+    QString summary = KInputDialog::getText(i18n("New Context"),
+                                            i18n("Enter context name:"),
+                                            QString(), &ok, this);
+    summary = summary.trimmed();
 
+    if (!ok || summary.isEmpty()) return;
+
+    QModelIndex parent = m_contextTree->currentIndex();
+    parent = GlobalModel::contextsLibrary()->mapToSource(parent);
+    parent = GlobalModel::contexts()->mapToSource(parent);
+    parent = parent.sibling(parent.row(), TodoFlatModel::Summary);
+
+    GlobalModel::todoCategories()->addCategory(summary, parent);
 }
 
 void SideBar::removeCurrentContext()
