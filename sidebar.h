@@ -41,14 +41,19 @@ public slots:
     void switchToContextMode();
 
 signals:
-    void projectChanged(const QModelIndex &index);
-    void contextChanged(const QModelIndex &index);
+    void noProjectInboxActivated();
+    void noContextInboxActivated();
+
+    void projectActivated(const QModelIndex &index);
+    void contextActivated(const QModelIndex &index);
 
 private slots:
     void updateActions(const QModelIndex &index);
     void onAddFolder();
     void onAddItem();
     void onRemoveItem();
+    void onCurrentProjectChanged(const QModelIndex &index);
+    void onCurrentContextChanged(const QModelIndex &index);
 
 private:
     void setupProjectPage();

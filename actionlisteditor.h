@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2009 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -18,53 +18,46 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
-
-#include <KDE/KXmlGuiWindow>
+#ifndef ZANSHIN_ACTIONLISTEDITOR_H
+#define ZANSHIN_ACTIONLISTEDITOR_H
 
 #include <QtCore/QModelIndex>
+#include <QtGui/QWidget>
 
-#include <akonadi/collection.h>
-
-namespace Akonadi
-{
-    class ItemView;
-}
-
-class ActionListEditor;
-class QTreeView;
+class ActionListModel;
+class ActionListView;
+class KAction;
+class KActionCollection;
 class KLineEdit;
-class SideBar;
 
-class MainWindow : public KXmlGuiWindow
+class ActionListEditor : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    ActionListEditor(QWidget *parent, KActionCollection *ac);
+
+    ActionListView *view() const;
+
+public slots:
+    void showNoProjectInbox();
+    void focusOnProject(const QModelIndex &index);
+
+    void showNoContextInbox();
+    void focusOnContext(const QModelIndex &index);
 
 private slots:
-    void collectionClicked(const Akonadi::Collection &collection);
-
-protected slots:
-    void saveAutoSaveSettings();
-    void showConfigDialog();
-    void applySettings();
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
+    void onAddActionRequested();
 
 private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
+    void setupActions(KActionCollection *ac);
 
-    void saveColumnsState();
-    void restoreColumnState();
+    ActionListView *m_view;
+    KLineEdit *m_addActionEdit;
 
-    SideBar *m_sidebar;
-    ActionListEditor *m_editor;
+    ActionListModel *m_model;
+
+    KAction *m_remove;
 };
 
 #endif

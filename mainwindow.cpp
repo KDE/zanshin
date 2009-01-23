@@ -36,7 +36,6 @@
 #include <KDE/KConfigGroup>
 #include <KDE/KDebug>
 #include <KDE/KIcon>
-#include <KDE/KLineEdit>
 #include <KDE/KLocale>
 #include <KDE/KTabWidget>
 
@@ -46,7 +45,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
-#include "actionlistmodel.h"
+#include "actionlisteditor.h"
 #include "actionlistview.h"
 #include "configdialog.h"
 #include "contextsmodel.h"
@@ -66,8 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     Akonadi::Control::start();
 
-    setupCentralWidget();
     setupSideBar();
+    setupCentralWidget();
     setupActions();
 
     setupGUI();
@@ -80,33 +79,23 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::setupCentralWidget()
 {
-    QWidget *centralWidget = new QWidget(this);
-    centralWidget->setLayout(new QVBoxLayout(centralWidget));
+    m_editor = new ActionListEditor(this, actionCollection());
 
-    m_view = new ActionListView(centralWidget);
-    centralWidget->layout()->addWidget(m_view);
-    m_actionList = new ActionListModel(this);
-    m_view->setModel(m_actionList);
-    m_actionList->setSourceModel(GlobalModel::todoFlat());
+    connect(m_sidebar, SIGNAL(noProjectInboxActivated()),
+            m_editor, SLOT(showNoProjectInbox()));
+    connect(m_sidebar, SIGNAL(projectActivated(QModelIndex)),
+            m_editor, SLOT(focusOnProject(QModelIndex)));
+    connect(m_sidebar, SIGNAL(noContextInboxActivated()),
+            m_editor, SLOT(showNoContextInbox()));
+    connect(m_sidebar, SIGNAL(contextActivated(QModelIndex)),
+            m_editor, SLOT(focusOnContext(QModelIndex)));
 
-    m_addActionEdit = new KLineEdit(centralWidget);
-    centralWidget->layout()->addWidget(m_addActionEdit);
-    m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
-    m_addActionEdit->setClearButtonShown(true);
-    connect(m_addActionEdit, SIGNAL(returnPressed()),
-            this, SLOT(onAddActionRequested()));
-
-    setCentralWidget(centralWidget);
+    setCentralWidget(m_editor);
 }
 
 void MainWindow::setupSideBar()
 {
     m_sidebar = new SideBar(this, actionCollection());
-
-    connect(m_sidebar, SIGNAL(projectChanged(const QModelIndex&)),
-            this, SLOT(onProjectChanged(const QModelIndex&)));
-    connect(m_sidebar, SIGNAL(contextChanged(const QModelIndex&)),
-            this, SLOT(onContextChanged(const QModelIndex&)));
 
     QDockWidget *dock = new QDockWidget(this);
     dock->setObjectName("SideBar");
@@ -144,84 +133,6 @@ void MainWindow::collectionClicked(const Akonadi::Collection &collection)
     GlobalModel::todoFlat()->setCollection(collection);
 }
 
-void MainWindow::onProjectChanged(const QModelIndex &current)
-{
-    delete m_actionList;
-    m_actionList = new ActionListModel(this);
-    m_view->setModel(m_actionList);
-    if (GlobalModel::projectsLibrary()->isInbox(current)) {
-        m_actionList->setSourceModel(GlobalModel::todoFlat());
-        m_actionList->setMode(ActionListModel::NoProjectMode);
-    } else {
-        m_actionList->setSourceModel(GlobalModel::todoTree());
-        m_actionList->setMode(ActionListModel::ProjectMode);
-        QModelIndex projIndex = GlobalModel::projectsLibrary()->mapToSource(current);
-        QModelIndex focusIndex = GlobalModel::projects()->mapToSource(projIndex);
-        m_actionList->setSourceFocusIndex(focusIndex);
-    }
-}
-
-void MainWindow::onContextChanged(const QModelIndex &current)
-{
-    delete m_actionList;
-    m_actionList = new ActionListModel(this);
-    m_view->setModel(m_actionList);
-    if (GlobalModel::contextsLibrary()->isInbox(current)) {
-        m_actionList->setSourceModel(GlobalModel::todoFlat());
-        m_actionList->setMode(ActionListModel::NoContextMode);
-    } else {
-        m_actionList->setSourceModel(GlobalModel::todoCategories());
-        m_actionList->setMode(ActionListModel::ContextMode);
-        QModelIndex catIndex = GlobalModel::contextsLibrary()->mapToSource(current);
-        QModelIndex focusIndex = GlobalModel::contexts()->mapToSource(catIndex);
-        m_actionList->setSourceFocusIndex(focusIndex);
-    }
-}
-
-void MainWindow::onAddActionRequested()
-{
-    QString summary = m_addActionEdit->text().trimmed();
-    m_addActionEdit->setText(QString());
-
-    if (summary.isEmpty()) return;
-
-    QModelIndex current = m_actionList->mapToSource(m_view->currentIndex());
-    int type = current.sibling(current.row(), TodoFlatModel::RowType).data().toInt();
-    if (type==TodoFlatModel::StandardTodo) {
-        current = current.parent();
-    }
-
-    QString parentRemoteId;
-    if (m_actionList->sourceModel()==GlobalModel::todoTree()) {
-        QModelIndex parentIndex = current.sibling(current.row(), TodoFlatModel::RemoteId);
-        parentRemoteId = GlobalModel::todoTree()->data(parentIndex).toString();
-    }
-
-    QString category;
-    if (m_actionList->sourceModel()==GlobalModel::todoCategories()) {
-        QModelIndex categoryIndex = current.sibling(current.row(), TodoFlatModel::Summary);
-        category = GlobalModel::todoCategories()->data(categoryIndex).toString();
-    }
-
-    KCal::Todo *todo = new KCal::Todo();
-    todo->setSummary(summary);
-    if (!parentRemoteId.isEmpty()) {
-        todo->setRelatedToUid(parentRemoteId);
-    }
-    if (!category.isEmpty()) {
-        todo->setCategories(category);
-    }
-
-    IncidencePtr incidence(todo);
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<IncidencePtr>(incidence);
-
-    Akonadi::Collection collection = GlobalModel::todoFlat()->collection();
-    Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
-    job->start();
-}
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     saveColumnsState();
@@ -237,7 +148,7 @@ void MainWindow::saveAutoSaveSettings()
 void MainWindow::saveColumnsState()
 {
     KConfigGroup cg = autoSaveConfigGroup();
-    QByteArray state = m_view->header()->saveState();
+    QByteArray state = m_editor->view()->header()->saveState();
     cg.writeEntry("MainHeaderState", state.toBase64());
 }
 
@@ -247,7 +158,7 @@ void MainWindow::restoreColumnState()
     QByteArray state;
     if (cg.hasKey("MainHeaderState")) {
         state = cg.readEntry("MainHeaderState", state);
-        m_view->header()->restoreState(QByteArray::fromBase64(state));
+        m_editor->view()->header()->restoreState(QByteArray::fromBase64(state));
     }
 }
 

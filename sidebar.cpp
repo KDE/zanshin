@@ -82,7 +82,7 @@ void SideBar::setupProjectPage()
     connect(m_projectTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             m_projectTree, SLOT(expand(const QModelIndex&)));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SIGNAL(projectChanged(QModelIndex)));
+            this, SLOT(onCurrentProjectChanged(QModelIndex)));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
@@ -112,7 +112,7 @@ void SideBar::setupContextPage()
     connect(m_contextTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             m_contextTree, SLOT(expand(const QModelIndex&)));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SIGNAL(contextChanged(QModelIndex)));
+            this, SLOT(onCurrentContextChanged(QModelIndex)));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
@@ -145,7 +145,10 @@ void SideBar::switchToProjectMode()
     m_add->setText("New Project");
     m_remove->setText("Remove Project/Folder");
     updateActions(m_projectTree->currentIndex());
-    emit projectChanged(m_projectTree->currentIndex());
+
+    QModelIndex index = m_projectTree->currentIndex();
+    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+    emit projectActivated(model->mapToSource(index));
 }
 
 void SideBar::switchToContextMode()
@@ -154,7 +157,10 @@ void SideBar::switchToContextMode()
     m_add->setText("New Context");
     m_remove->setText("Remove Context");
     updateActions(m_contextTree->currentIndex());
-    emit contextChanged(m_contextTree->currentIndex());
+
+    QModelIndex index = m_contextTree->currentIndex();
+    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+    emit contextActivated(model->mapToSource(index));
 }
 
 void SideBar::updateActions(const QModelIndex &index)
@@ -349,4 +355,26 @@ void SideBar::addNewContext()
 void SideBar::removeCurrentContext()
 {
 
+}
+
+void SideBar::onCurrentProjectChanged(const QModelIndex &index)
+{
+    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+
+    if (model->isInbox(index)) {
+        emit noProjectInboxActivated();
+    } else {
+        emit projectActivated(model->mapToSource(index));
+    }
+}
+
+void SideBar::onCurrentContextChanged(const QModelIndex &index)
+{
+    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+
+    if (model->isInbox(index)) {
+        emit noContextInboxActivated();
+    } else {
+        emit contextActivated(model->mapToSource(index));
+    }
 }
