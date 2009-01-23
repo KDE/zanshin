@@ -23,6 +23,7 @@
 
 #include <akonadi/control.h>
 
+#include <akonadi/collectionfetchjob.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemmodel.h>
 
@@ -268,5 +269,7 @@ void MainWindow::showConfigDialog()
 void MainWindow::applySettings()
 {
     Akonadi::Collection collection(GlobalSettings::collectionId());
-    GlobalModel::todoFlat()->setCollection(collection);
+    Akonadi::CollectionFetchJob *job =  new Akonadi::CollectionFetchJob(collection, Akonadi::CollectionFetchJob::Base);
+    job->exec();
+    GlobalModel::todoFlat()->setCollection(job->collections().first());
 }
