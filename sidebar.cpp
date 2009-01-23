@@ -145,9 +145,7 @@ void SideBar::switchToProjectMode()
     m_remove->setText("Remove Project/Folder");
     updateActions(m_projectTree->currentIndex());
 
-    QModelIndex index = m_projectTree->currentIndex();
-    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
-    emit projectActivated(model->mapToSource(index));
+    onCurrentProjectChanged(m_projectTree->currentIndex());
 }
 
 void SideBar::switchToContextMode()
@@ -157,9 +155,7 @@ void SideBar::switchToContextMode()
     m_remove->setText("Remove Context");
     updateActions(m_contextTree->currentIndex());
 
-    QModelIndex index = m_contextTree->currentIndex();
-    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
-    emit contextActivated(model->mapToSource(index));
+    onCurrentContextChanged(m_contextTree->currentIndex());
 }
 
 void SideBar::updateActions(const QModelIndex &index)
