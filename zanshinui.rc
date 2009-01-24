@@ -8,6 +8,9 @@
    <Action name="sidebar_new_folder" />
    <Action name="sidebar_new" />
    <Action name="sidebar_remove" />
+   <Separator />
+   <Action name="editor_add_action" />
+   <Action name="editor_remove_action" />
   </Menu>
  </MenuBar>
  <ToolBar noMerge="1" name="mainToolBar" >
@@ -15,5 +18,6 @@
   <Action name="project_mode" />
   <Action name="context_mode" />
   <Separator name="separator_0" />
+  <Action name="editor_add_action" />
  </ToolBar>
 </kpartgui>

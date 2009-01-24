@@ -47,7 +47,9 @@ public slots:
     void focusOnContext(const QModelIndex &index);
 
 private slots:
+    void updateActions(const QModelIndex &index);
     void onAddActionRequested();
+    void onRemoveAction();
 
 private:
     void setupActions(KActionCollection *ac);
@@ -57,6 +59,7 @@ private:
 
     ActionListModel *m_model;
 
+    KAction *m_add;
     KAction *m_remove;
 };
 

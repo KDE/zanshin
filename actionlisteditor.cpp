@@ -22,11 +22,15 @@
 
 #include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
+#include <akonadi/itemdeletejob.h>
 
 #include <boost/shared_ptr.hpp>
 
 #include <kcal/todo.h>
 
+#include <KDE/KAction>
+#include <KDE/KActionCollection>
+#include <KDE/KIcon>
 #include <KDE/KLineEdit>
 #include <KDE/KLocale>
 
@@ -46,8 +50,6 @@ typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     : QWidget(parent)
 {
-    setupActions(ac);
-
     setLayout(new QVBoxLayout(this));
 
     m_view = new ActionListView(this);
@@ -56,12 +58,18 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     m_view->setModel(m_model);
     m_model->setSourceModel(GlobalModel::todoFlat());
 
+    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
+
     m_addActionEdit = new KLineEdit(this);
     layout()->addWidget(m_addActionEdit);
     m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
     m_addActionEdit->setClearButtonShown(true);
     connect(m_addActionEdit, SIGNAL(returnPressed()),
             this, SLOT(onAddActionRequested()));
+
+    setupActions(ac);
+    updateActions(QModelIndex());
 }
 
 ActionListView *ActionListEditor::view() const
@@ -71,7 +79,24 @@ ActionListView *ActionListEditor::view() const
 
 void ActionListEditor::setupActions(KActionCollection *ac)
 {
+    m_add = ac->addAction("editor_add_action", m_addActionEdit, SLOT(setFocus()));
+    m_add->setText(i18n("New Action"));
+    m_add->setIcon(KIcon("list-add"));
 
+    m_remove = ac->addAction("editor_remove_action", this, SLOT(onRemoveAction()));
+    m_remove->setText(i18n("Remove Action"));
+    m_remove->setIcon(KIcon("list-remove"));
+}
+
+void ActionListEditor::updateActions(const QModelIndex &index)
+{
+    if (!index.isValid()) {
+        m_add->setEnabled(false);
+        m_remove->setEnabled(false);
+    } else {
+        m_add->setEnabled(true);
+        m_remove->setEnabled(true);
+    }
 }
 
 void ActionListEditor::onAddActionRequested()
@@ -118,6 +143,39 @@ void ActionListEditor::onAddActionRequested()
     job->start();
 }
 
+void ActionListEditor::onRemoveAction()
+{
+    QModelIndex current = m_view->currentIndex();
+
+    if (m_model->rowCount(current)>0) {
+        return;
+    }
+
+    Akonadi::Item item;
+    QAbstractItemModel *source = m_model->sourceModel();
+
+    TodoFlatModel *flat = dynamic_cast<TodoFlatModel*>(source);
+    if (flat != 0) {
+        item = flat->itemForIndex(m_model->mapToSource(current));
+    }
+
+    TodoTreeModel *tree = dynamic_cast<TodoTreeModel*>(source);
+    if (tree != 0) {
+        item = tree->itemForIndex(m_model->mapToSource(current));
+    }
+
+    TodoCategoriesModel *categories = dynamic_cast<TodoCategoriesModel*>(source);
+    if (categories != 0) {
+        item = categories->itemForIndex(m_model->mapToSource(current));
+    }
+
+    if (!item.isValid()) {
+        return;
+    }
+
+    new Akonadi::ItemDeleteJob(item, this);
+}
+
 void ActionListEditor::showNoProjectInbox()
 {
     delete m_model;
@@ -127,6 +185,9 @@ void ActionListEditor::showNoProjectInbox()
     m_model->setMode(ActionListModel::NoProjectMode);
 
     m_view->setModel(m_model);
+    updateActions(QModelIndex());
+    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
 }
 
 void ActionListEditor::focusOnProject(const QModelIndex &index)
@@ -140,6 +201,9 @@ void ActionListEditor::focusOnProject(const QModelIndex &index)
     m_model->setSourceFocusIndex(focusIndex);
 
     m_view->setModel(m_model);
+    updateActions(QModelIndex());
+    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
 }
 
 void ActionListEditor::showNoContextInbox()
@@ -151,6 +215,9 @@ void ActionListEditor::showNoContextInbox()
     m_model->setMode(ActionListModel::NoContextMode);
 
     m_view->setModel(m_model);
+    updateActions(QModelIndex());
+    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
 }
 
 void ActionListEditor::focusOnContext(const QModelIndex &index)
@@ -164,4 +231,7 @@ void ActionListEditor::focusOnContext(const QModelIndex &index)
     m_model->setSourceFocusIndex(focusIndex);
 
     m_view->setModel(m_model);
+    updateActions(QModelIndex());
+    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
 }
