@@ -446,20 +446,22 @@ void TodoCategoriesModelTest::testDragAndDrop()
 void TodoCategoriesModelTest::testAddCategory_data()
 {
     QTest::addColumn<QString>("name");
-    QTest::addColumn<QModelIndex>("parent");
+    QTest::addColumn<QString>("parentName");
     QTest::addColumn<bool>("expected");
 
-    QTest::newRow("Adding root category") <<  "Baz" << QModelIndex() << true;
-    QTest::newRow("Adding sub-category") <<  "FooBar" << m_model.indexForCategory("Baz") << true;
-    QTest::newRow("Adding existing root category") <<  "Foo" << QModelIndex() << false;
-    QTest::newRow("Adding existing category, deeper") <<  "Foo" << m_model.indexForCategory("Baz") << false;
+    QTest::newRow("Adding root category") <<  "Baz" << QString() << true;
+    QTest::newRow("Adding sub-category") <<  "FooBar" << "Baz" << true;
+    QTest::newRow("Adding existing root category") <<  "Foo" << QString() << false;
+    QTest::newRow("Adding existing category, deeper") <<  "Foo" << "Baz" << false;
 }
 
 void TodoCategoriesModelTest::testAddCategory()
 {
     QFETCH(QString, name);
-    QFETCH(QModelIndex, parent);
+    QFETCH(QString, parentName);
     QFETCH(bool, expected);
+
+    QModelIndex parent = m_model.indexForCategory(parentName);
 
     int row = m_model.rowCount(parent);
     QSignalSpy spy(&m_model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -481,7 +483,7 @@ void TodoCategoriesModelTest::testAddCategory()
     QCOMPARE(signal.at(1).toInt(), row);
     QCOMPARE(signal.at(2).toInt(), row);
 
-    QCOMPARE(m_model.rowCount(), row+1);
+    QCOMPARE(m_model.rowCount(parent), row+1);
 
     QModelIndex index = m_model.index(row, 0, parent);
     QCOMPARE(m_model.data(index).toString(), name);
