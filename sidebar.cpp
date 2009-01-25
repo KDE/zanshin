@@ -373,7 +373,7 @@ void SideBar::removeCurrentContext()
 
 void SideBar::onCurrentProjectChanged(const QModelIndex &index)
 {
-    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());
 
     if (model->isInbox(index)) {
         emit noProjectInboxActivated();
@@ -384,7 +384,7 @@ void SideBar::onCurrentProjectChanged(const QModelIndex &index)
 
 void SideBar::onCurrentContextChanged(const QModelIndex &index)
 {
-    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());
 
     if (model->isInbox(index)) {
         emit noContextInboxActivated();
