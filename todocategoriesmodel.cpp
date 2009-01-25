@@ -136,6 +136,52 @@ QVariant TodoCategoriesModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    TodoCategoryTreeNode *node = nodeForIndex(index);
+
+    if (node == 0) {
+        return false;
+    }
+
+    if (node->id != -1) {
+        return QAbstractProxyModel::setData(index, value, role);
+    }
+
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
+        if (index.column() == TodoFlatModel::Summary) {
+            QString oldName = node->category;
+            QString newName = value.toString().trimmed();
+
+            if (newName.isEmpty() || m_categoryMap.contains(newName)) {
+                return false;
+            }
+
+            m_categoryMap.remove(oldName);
+            node->category = newName;
+            m_categoryMap[newName] = node;
+
+            serializeCategories();
+            emit dataChanged(index.sibling(index.row(), 0),
+                             index.sibling(index.row(), TodoFlatModel::LastColumn));
+
+            foreach (TodoCategoryTreeNode *child, node->children) {
+                QModelIndex childCatIndex = indexForNode(child, TodoFlatModel::Categories);
+                QStringList categories = data(childCatIndex).toStringList();
+                categories.removeAll(oldName);
+                categories << newName;
+                setData(childCatIndex, categories);
+            }
+
+            return true;
+        } else if (index.column() == TodoFlatModel::Categories) {
+
+        }
+    }
+
+    return false;
+}
+
 QStringList TodoCategoriesModel::mimeTypes() const
 {
     return flatModel()->mimeTypes();

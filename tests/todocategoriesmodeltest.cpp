@@ -46,6 +46,8 @@ private slots:
     void testDragAndDrop();
     void testAddCategory_data();
     void testAddCategory();
+    void testCategoryRename_data();
+    void testCategoryRename();
 
 private:
     TodoFlatModel m_flatModel;
@@ -484,6 +486,76 @@ void TodoCategoriesModelTest::testAddCategory()
     QModelIndex index = m_model.index(row, 0, parent);
     QCOMPARE(m_model.data(index).toString(), name);
     QCOMPARE(m_model.rowCount(index), 0);
+}
+
+void TodoCategoriesModelTest::testCategoryRename_data()
+{
+    QTest::addColumn<QString>("oldName");
+    QTest::addColumn<QString>("newName");
+    QTest::addColumn<bool>("expected");
+
+    QTest::newRow("Nominal case") <<  "Office" << "Office renamed" << true;
+    QTest::newRow("Go back to original name") <<  "Office renamed" << "Office" << true;
+    QTest::newRow("Invalid name") <<  "Office" << "   " << false;
+    QTest::newRow("Already exists") <<  "Office" << "Home" << false;
+}
+
+void TodoCategoriesModelTest::testCategoryRename()
+{
+    QFETCH(QString, oldName);
+    QFETCH(QString, newName);
+    QFETCH(bool, expected);
+
+    QModelIndex index = m_model.indexForCategory(oldName);
+
+    QCOMPARE(m_model.data(index).toString(), oldName);
+    int rowCount = m_model.rowCount(index);
+    QSignalSpy spy(&m_model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
+
+    bool result = m_model.setData(index, newName);
+    QCOMPARE(result, expected);
+    flushNotifications();
+
+    if (!expected) {
+        QCOMPARE(spy.count(), 0);
+        return;
+    }
+
+    QCOMPARE(m_model.data(index).toString(), newName);
+    QCOMPARE(m_model.rowCount(index), rowCount);
+
+    for (int row = 0; row<rowCount; row++) {
+        QModelIndex childCatIndex = index.child(row, TodoFlatModel::Categories);
+        QStringList categories = m_model.data(childCatIndex).toStringList();
+
+        QVERIFY(!categories.contains(oldName));
+        QVERIFY(categories.contains(newName));
+    }
+
+    QCOMPARE(spy.count(), rowCount+1);
+
+    QVariantList signal = spy.takeFirst();
+    QCOMPARE(signal.size(), 2);
+    QModelIndex begin = signal.first().value<QModelIndex>();
+    QModelIndex end = signal.last().value<QModelIndex>();
+    QCOMPARE(begin, index);
+    QCOMPARE(begin.row(), end.row());
+    QCOMPARE(begin.column(), 0);
+    QCOMPARE(end.column(), (int)TodoFlatModel::LastColumn);
+
+    for (int row = 0; row<rowCount; row++) {
+        signal = spy.takeFirst();
+        QCOMPARE(signal.size(), 2);
+        begin = signal.first().value<QModelIndex>();
+        end = signal.last().value<QModelIndex>();
+        QCOMPARE(begin.parent(), index);
+        QCOMPARE(begin.row(), row);
+
+        QCOMPARE(begin.parent(), end.parent());
+        QCOMPARE(begin.row(), end.row());
+        QCOMPARE(begin.column(), 0);
+        QCOMPARE(end.column(), (int)TodoFlatModel::LastColumn);
+    }
 }
 
 #include "todocategoriesmodeltest.moc"
