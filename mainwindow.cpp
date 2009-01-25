@@ -161,5 +161,8 @@ void MainWindow::applySettings()
 
     Akonadi::CollectionFetchJob *job =  new Akonadi::CollectionFetchJob(collection, Akonadi::CollectionFetchJob::Base);
     job->exec();
+
+    if (job->collections().isEmpty()) return;
+
     GlobalModel::todoFlat()->setCollection(job->collections().first());
 }
