@@ -156,6 +156,9 @@ void MainWindow::showConfigDialog()
 void MainWindow::applySettings()
 {
     Akonadi::Collection collection(GlobalSettings::collectionId());
+
+    if (!collection.isValid()) return;
+
     Akonadi::CollectionFetchJob *job =  new Akonadi::CollectionFetchJob(collection, Akonadi::CollectionFetchJob::Base);
     job->exec();
     GlobalModel::todoFlat()->setCollection(job->collections().first());
