@@ -349,7 +349,26 @@ void SideBar::addNewContext()
 
 void SideBar::removeCurrentContext()
 {
+    QModelIndex current = m_contextTree->currentIndex();
+    current = GlobalModel::contextsLibrary()->mapToSource(current);
+    current = GlobalModel::contexts()->mapToSource(current);
+    current = current.sibling(current.row(), 0);
 
+    bool canRemove = true;
+
+    QString summary = GlobalModel::todoCategories()->data(current).toString();
+
+    if (GlobalModel::todoCategories()->rowCount(current)>0) {
+        QString message = i18n("Do you really want to delete the context '%1', with all its sub-contexts? All actions won't be associated to those contexts anymore.", summary);
+        QString caption = i18n("Delete Context");
+        int button = KMessageBox::questionYesNo(this, message, caption);
+
+        canRemove = (button==KMessageBox::Yes);
+    }
+
+    if (!canRemove) return;
+
+    GlobalModel::todoCategories()->removeCategory(summary);
 }
 
 void SideBar::onCurrentProjectChanged(const QModelIndex &index)

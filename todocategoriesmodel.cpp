@@ -529,6 +529,56 @@ bool TodoCategoriesModel::addCategory(const QString &name, const QModelIndex &pa
     return true;
 }
 
+bool TodoCategoriesModel::removeCategory(const QString &name)
+{
+    if (!m_categoryMap.contains(name)) {
+        return false;
+    }
+
+    QModelIndex index = indexForCategory(name);
+
+    while (rowCount(index)>0) {
+        TodoCategoryTreeNode *child = nodeForIndex(index.child(0, 0));
+
+        if (child->id==-1) {
+            removeCategory(child->category);
+        } else {
+            beginRemoveRows(index, 0, 0);
+
+            QModelIndex childCatIndex = index.child(0, TodoFlatModel::Categories);
+            QStringList categories = data(childCatIndex).toStringList();
+            categories.removeAll(name);
+            setData(childCatIndex, categories);
+
+            m_itemMap[child->id].removeAll(child);
+            child->parent->children.removeAll(child);
+            child->parent = 0;
+            delete child;
+
+            endRemoveRows();
+        }
+    }
+
+    QModelIndex parent = index.parent();
+    int row = index.row();
+
+    beginRemoveRows(parent, row, row);
+    TodoCategoryTreeNode *node = m_categoryMap.take(name);
+
+    if (node->parent!=0) {
+        node->parent->children.removeAll(node);
+        node->parent = 0;
+    } else {
+        m_roots.removeAll(node);
+    }
+
+    delete node;
+    endRemoveRows();
+
+    serializeCategories();
+    return true;
+}
+
 void TodoCategoriesModel::loadDefaultCategories()
 {
     TodoCategoryTreeNode *errands = new TodoCategoryTreeNode("Errands");

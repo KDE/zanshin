@@ -48,6 +48,8 @@ private slots:
     void testAddCategory();
     void testCategoryRename_data();
     void testCategoryRename();
+    void testRemoveCategory_data();
+    void testRemoveCategory();
 
 private:
     TodoFlatModel m_flatModel;
@@ -558,6 +560,63 @@ void TodoCategoriesModelTest::testCategoryRename()
         QCOMPARE(begin.column(), 0);
         QCOMPARE(end.column(), (int)TodoFlatModel::LastColumn);
     }
+}
+
+void TodoCategoriesModelTest::testRemoveCategory_data()
+{
+    QTest::addColumn<QString>("name");
+    QTest::addColumn<bool>("expected");
+
+    QTest::newRow("Removing isolated category") <<  "Home" <<  true;
+    QTest::newRow("Removing non existant category") <<  "Plop" <<  false;
+    QTest::newRow("Removing category with sub-category") <<  "Computer" <<  true;
+    QTest::newRow("Removing category with actions") <<  "Office" <<  true;
+}
+
+void TodoCategoriesModelTest::testRemoveCategory()
+{
+    QFETCH(QString, name);
+    QFETCH(bool, expected);
+
+    QModelIndex index = m_model.indexForCategory(name);
+    QModelIndex parent = index.parent();
+    int row = index.row();
+
+    if (expected) {
+        QCOMPARE(m_model.data(index).toString(), name);
+    }
+    int rowCount = m_model.rowCount(index);
+    QSignalSpy spy(&m_model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
+    QSignalSpy flatSpy(&m_flatModel, SIGNAL(rowsRemoved(QModelIndex, int, int)));
+
+    bool result = m_model.removeCategory(name);
+    QCOMPARE(result, expected);
+    flushNotifications();
+
+    QCOMPARE(flatSpy.count(), 0);
+    if (!expected) {
+        QCOMPARE(spy.count(), 0);
+        return;
+    }
+
+    QVERIFY(!m_model.indexForCategory(name).isValid());
+
+    QCOMPARE(spy.count(), rowCount+1);
+
+    for (int i=0; i<rowCount; i++) {
+        QVariantList signal = spy.takeFirst();
+        QCOMPARE(signal.size(), 3);
+        QCOMPARE(signal.at(0).value<QModelIndex>(), index);
+        QCOMPARE(signal.at(1).toInt(), 0);
+        QCOMPARE(signal.at(2).toInt(), 0);
+    }
+
+    QVariantList signal = spy.takeFirst();
+    QCOMPARE(signal.size(), 3);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
+    QCOMPARE(signal.at(1).toInt(), row);
+    QCOMPARE(signal.at(2).toInt(), row);
+
 }
 
 #include "todocategoriesmodeltest.moc"

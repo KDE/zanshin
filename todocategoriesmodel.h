@@ -43,8 +43,6 @@ public:
     TodoCategoriesModel(QObject *parent = 0);
     virtual ~TodoCategoriesModel();
 
-    bool addCategory(const QString &name, const QModelIndex &parent = QModelIndex());
-
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &index) const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -74,6 +72,9 @@ public:
 
     void setCollection(const Akonadi::Collection &collection);
     Akonadi::Collection collection() const;
+
+    bool addCategory(const QString &name, const QModelIndex &parent = QModelIndex());
+    bool removeCategory(const QString &name);
 
 signals:
     void collectionChanged(const Akonadi::Collection &collection);
