@@ -137,6 +137,14 @@ void SideBar::setupActions(KActionCollection *ac)
     m_remove = ac->addAction("sidebar_remove", this, SLOT(onRemoveItem()));
     m_remove->setText(i18n("Remove"));
     m_remove->setIcon(KIcon("list-remove"));
+
+    m_previous = ac->addAction("sidebar_go_previous", this, SLOT(onPreviousItem()));
+    m_previous->setText(i18n("Previous"));
+    m_previous->setIcon(KIcon("go-previous"));
+
+    m_next = ac->addAction("sidebar_go_next", this, SLOT(onNextItem()));
+    m_next->setText(i18n("Next"));
+    m_next->setIcon(KIcon("go-next"));
 }
 
 void SideBar::switchToProjectMode()

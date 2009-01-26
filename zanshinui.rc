@@ -12,6 +12,14 @@
    <Action name="editor_add_action" />
    <Action name="editor_remove_action" />
   </Menu>
+  <Menu name="go">
+   <text>&amp;Go</text>
+   <Action name="sidebar_go_next" />
+   <Action name="sidebar_go_previous" />
+   <Separator />
+   <Action name="editor_go_next" />
+   <Action name="editor_go_previous" />
+  </Menu>
  </MenuBar>
  <ToolBar noMerge="1" name="mainToolBar" >
   <text context="@title:menu">Main Toolbar</text>

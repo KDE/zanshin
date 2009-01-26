@@ -86,6 +86,14 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_remove = ac->addAction("editor_remove_action", this, SLOT(onRemoveAction()));
     m_remove->setText(i18n("Remove Action"));
     m_remove->setIcon(KIcon("list-remove"));
+
+    m_previous = ac->addAction("editor_go_previous", this, SLOT(onPreviousAction()));
+    m_previous->setText(i18n("Previous Action"));
+    m_previous->setIcon(KIcon("go-previous"));
+
+    m_next = ac->addAction("editor_go_next", this, SLOT(onNextAction()));
+    m_next->setText(i18n("Next Action"));
+    m_next->setIcon(KIcon("go-next"));
 }
 
 void ActionListEditor::updateActions(const QModelIndex &index)

@@ -79,6 +79,8 @@ private:
     KAction *m_add;
     KAction *m_addFolder;
     KAction *m_remove;
+    KAction *m_previous;
+    KAction *m_next;
 };
 
 #endif
