@@ -98,7 +98,7 @@ void TodoFlatModelTest::testInitialState()
     QFETCH(bool, isImportant);
 
     QCOMPARE(m_sortedModel.rowCount(), 13);
-    QCOMPARE(m_sortedModel.columnCount(), 8);
+    QCOMPARE(m_sortedModel.columnCount(), 7);
 
     QModelIndex index = m_sortedModel.index(row, TodoFlatModel::RemoteId);
     QCOMPARE(m_sortedModel.data(index).toString(), remoteId);
@@ -122,11 +122,6 @@ void TodoFlatModelTest::testInitialState()
 
     index = m_sortedModel.index(row, TodoFlatModel::DueDate);
     QCOMPARE(m_sortedModel.data(index).toString(), dueDate);
-    QCOMPARE(m_sortedModel.rowCount(index), 0);
-    QCOMPARE(m_sortedModel.columnCount(index), 0);
-
-    index = m_sortedModel.index(row, TodoFlatModel::FlagImportant);
-    QCOMPARE(m_sortedModel.data(index).toBool(), isImportant);
     QCOMPARE(m_sortedModel.rowCount(index), 0);
     QCOMPARE(m_sortedModel.columnCount(index), 0);
 }

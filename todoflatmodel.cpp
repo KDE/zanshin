@@ -115,9 +115,7 @@ QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
                 return QString();
             }
         }
-        case TodoFlatModel::FlagImportant:
-            return QString();
-        }
+	}
         break;
     }
 
@@ -140,8 +138,6 @@ QVariant TodoFlatModelImpl::headerData(int section, Qt::Orientation orientation,
             return i18n("Parent Id");
         case TodoFlatModel::DueDate:
             return i18n("Due Date");
-        case TodoFlatModel::FlagImportant:
-            return i18n("Important");
         case TodoFlatModel::RowType:
             return i18n("Row Type");
         }

@@ -54,7 +54,6 @@ public:
         Categories,
         ParentSummary,
         DueDate,
-        FlagImportant,
         RowType,
         RemoteId,
         ParentRemoteId,
