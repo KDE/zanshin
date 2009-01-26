@@ -52,8 +52,10 @@ private slots:
     void onAddFolder();
     void onAddItem();
     void onRemoveItem();
-    void onCurrentProjectChanged(const QModelIndex &index);
-    void onCurrentContextChanged(const QModelIndex &index);
+    void onCurrentProjectChangeDetected();
+    void applyCurrentProjectChange();
+    void onCurrentContextChangeDetected();
+    void applyCurrentContextChange();
 
 private:
     void setupProjectPage();

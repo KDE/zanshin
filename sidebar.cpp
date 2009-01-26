@@ -36,6 +36,7 @@
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
 
+#include <QtCore/QTimer>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QToolBar>
 #include <QtGui/QTreeView>
@@ -81,7 +82,7 @@ void SideBar::setupProjectPage()
     connect(m_projectTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             m_projectTree, SLOT(expand(const QModelIndex&)));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onCurrentProjectChanged(QModelIndex)));
+            this, SLOT(onCurrentProjectChangeDetected()));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
@@ -111,7 +112,7 @@ void SideBar::setupContextPage()
     connect(m_contextTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             m_contextTree, SLOT(expand(const QModelIndex&)));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onCurrentContextChanged(QModelIndex)));
+            this, SLOT(onCurrentContextChangeDetected()));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
@@ -145,7 +146,7 @@ void SideBar::switchToProjectMode()
     m_remove->setText("Remove Project/Folder");
     updateActions(m_projectTree->currentIndex());
 
-    onCurrentProjectChanged(m_projectTree->currentIndex());
+    applyCurrentProjectChange();
 }
 
 void SideBar::switchToContextMode()
@@ -155,7 +156,7 @@ void SideBar::switchToContextMode()
     m_remove->setText("Remove Context");
     updateActions(m_contextTree->currentIndex());
 
-    onCurrentContextChanged(m_contextTree->currentIndex());
+    applyCurrentProjectChange();
 }
 
 void SideBar::updateActions(const QModelIndex &index)
@@ -371,8 +372,14 @@ void SideBar::removeCurrentContext()
     GlobalModel::todoCategories()->removeCategory(summary);
 }
 
-void SideBar::onCurrentProjectChanged(const QModelIndex &index)
+void SideBar::onCurrentProjectChangeDetected()
 {
+    QTimer::singleShot(0, this, SLOT(applyCurrentProjectChange()));
+}
+
+void SideBar::applyCurrentProjectChange()
+{
+    QModelIndex index = m_projectTree->currentIndex();
     const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());
 
     if (model->isInbox(index)) {
@@ -382,8 +389,14 @@ void SideBar::onCurrentProjectChanged(const QModelIndex &index)
     }
 }
 
-void SideBar::onCurrentContextChanged(const QModelIndex &index)
+void SideBar::onCurrentContextChangeDetected()
 {
+    QTimer::singleShot(0, this, SLOT(applyCurrentContextChange()));
+}
+
+void SideBar::applyCurrentContextChange()
+{
+    QModelIndex index = m_contextTree->currentIndex();
     const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());
 
     if (model->isInbox(index)) {
