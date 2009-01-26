@@ -33,6 +33,7 @@
 #include <KDE/KIcon>
 #include <KDE/KLineEdit>
 #include <KDE/KLocale>
+#include <KDE/KPassivePopup>
 
 #include <QtGui/QVBoxLayout>
 
@@ -79,7 +80,7 @@ ActionListView *ActionListEditor::view() const
 
 void ActionListEditor::setupActions(KActionCollection *ac)
 {
-    m_add = ac->addAction("editor_add_action", m_addActionEdit, SLOT(setFocus()));
+    m_add = ac->addAction("editor_add_action", this, SLOT(focusActionEdit()));
     m_add->setText(i18n("New Action"));
     m_add->setIcon(KIcon("list-add"));
 
@@ -242,4 +243,14 @@ void ActionListEditor::focusOnContext(const QModelIndex &index)
     updateActions(QModelIndex());
     connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
+}
+
+void ActionListEditor::focusActionEdit()
+{
+    QPoint pos = m_addActionEdit->geometry().topLeft();
+    pos = m_addActionEdit->parentWidget()->mapToGlobal(pos);
+
+    KPassivePopup *popup = KPassivePopup::message(i18n("Type and press enter to add an action"), m_addActionEdit);
+    popup->move(pos-QPoint(0, popup->height()));
+    m_addActionEdit->setFocus();
 }
