@@ -93,10 +93,10 @@ QModelIndex TodoCategoriesModel::parent(const QModelIndex &index) const
 int TodoCategoriesModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        return m_roots.count();
+        return m_roots.size();
     } else if (parent.column() == 0) { // Only one set of children per row
         TodoCategoryTreeNode *node = nodeForIndex(parent);
-        return node->children.count();
+        return node->children.size();
     }
 
     return 0;
@@ -652,7 +652,9 @@ void TodoCategoriesModel::deserializeCategories()
     QStringList parentList = attribute->parentList();
 
     QHash<QString, TodoCategoryTreeNode*> categoryMap;
-    QList<TodoCategoryTreeNode*> roots;
+    QList<QString> roots;
+    QHash<QString, QStringList> childrenMap;
+    QHash<QString, QString> parentMap;
 
     for (int i = 0; i < parentList.size(); i += 2) {
         QString child = parentList.at(i);
@@ -670,16 +672,23 @@ void TodoCategoriesModel::deserializeCategories()
             TodoCategoryTreeNode *node = new TodoCategoryTreeNode(parent);
             categoryMap[parent] = node;
         }
+
+        if (parent.isEmpty()) {
+            roots << child;
+        } else {
+            parentMap[child] = parent;
+            childrenMap[parent] << child;
+        }
     }
 
-    for (int i = 0; i < parentList.size(); i += 2) {
-        QString child = parentList.at(i);
-        QString parent;
-        if (i + 1 < parentList.size()) {
-            parent = parentList.at(i + 1);
-        }
+    QStringList catToLoad = roots;
+    while (!catToLoad.isEmpty()) {
+        QString category = catToLoad.takeFirst();
+        catToLoad+=childrenMap[category];
 
-        TodoCategoryTreeNode *node = categoryMap[child];
+        TodoCategoryTreeNode *node = categoryMap[category];
+
+        QString parent = parentMap[category];
         if (parent.isEmpty()) {
             loadCategory(node);
         } else {
