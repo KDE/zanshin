@@ -57,8 +57,8 @@ bool ActionListModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &/
     return sourceColumn!=TodoFlatModel::RemoteId
         && sourceColumn!=TodoFlatModel::ParentRemoteId
         && sourceColumn!=TodoFlatModel::RowType
-        && (sourceColumn!=TodoFlatModel::Categories || m_mode!=ContextMode)
-        && (sourceColumn!=TodoFlatModel::ParentSummary || m_mode!=ProjectMode);
+        && (sourceColumn!=TodoFlatModel::Categories || (m_mode!=ContextMode && m_mode!=NoContextMode))
+        && (sourceColumn!=TodoFlatModel::ParentSummary || (m_mode!=ProjectMode && m_mode!=NoProjectMode));
 }
 
 bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
