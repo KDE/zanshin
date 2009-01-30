@@ -1,6 +1,6 @@
 add_subdirectory(tests)
 
-########### next target ###############
+########### zanshin ###############
 
 set(zanshin_SRCS
    actionlistdelegate.cpp
@@ -27,10 +27,9 @@ kde4_add_executable(zanshin ${zanshin_SRCS})
 
 target_link_libraries(zanshin ${KDE4_KDEUI_LIBS} ${KDE4_AKONADI_LIBS} ${KDE4_KCAL_LIBS})
 
-install(TARGETS zanshin DESTINATION ${BIN_INSTALL_DIR})
-install(FILES zanshinui.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin)
-
 ########### install files ###############
 
-
+install(TARGETS zanshin DESTINATION ${BIN_INSTALL_DIR})
+install(FILES zanshinui.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin)
+install(FILES zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 

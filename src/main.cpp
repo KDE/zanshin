@@ -41,6 +41,9 @@ int main(int argc, char **argv)
                     ki18n("Developer"),
                     "nef@ipsquad.net");
 
+    //TODO: Remove once we have a proper icon
+    about.setProgramIconName("korganizer");
+
     KCmdLineArgs::init(argc, argv, &about);
 
     KApplication app;
