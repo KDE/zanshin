@@ -182,6 +182,12 @@ bool ActionListDelegate::isOverdue(const QModelIndex &index) const
         return false;
     }
 
+    TodoFlatModel::ItemType type = rowType(index);
+
+    if (type==TodoFlatModel::Category) {
+        return false;
+    }
+
     Akonadi::Item item = model->itemForIndex(index);
     const IncidencePtr incidence = item.payload<IncidencePtr>();
     KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
