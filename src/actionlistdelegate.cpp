@@ -150,23 +150,7 @@ bool ActionListDelegate::isInFocus(const QModelIndex &index) const
         return true;
     }
 
-    QModelIndex focusIndex = model->sourceFocusIndex();
-
-    if (!focusIndex.isValid()) {
-        return true;
-    }
-
-    QModelIndex sourceIndex = model->mapToSource(index);
-    sourceIndex = sourceIndex.sibling(sourceIndex.row(), 0);
-
-    while (sourceIndex.isValid()) {
-        if (focusIndex==sourceIndex) {
-            return true;
-        }
-        sourceIndex = sourceIndex.parent();
-    }
-
-    return false;
+    return model->isInFocus(index);
 }
 
 bool ActionListDelegate::isCompleted(const QModelIndex &index) const
