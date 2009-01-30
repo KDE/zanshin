@@ -297,7 +297,8 @@ QVariant TodoFlatModel::data(const QModelIndex &index, int role) const
         ItemType type = todoType(incidence->uid());
 
         if (type==StandardTodo) {
-            return Qt::Unchecked;
+            KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
+            return (todo->isCompleted() ? Qt::Checked : Qt::Unchecked);
         }
     } else if (index.column()==ParentSummary) {
         if (role!=Qt::DisplayRole) {
@@ -425,8 +426,16 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
 
     case Qt::CheckStateRole:
         switch(index.column()) {
-        case TodoFlatModel::Summary:
-            return Qt::Unchecked;
+        case TodoFlatModel::Summary: {
+            bool completed = false;
+            if (value.toInt()==Qt::Checked) {
+                completed = true;
+            }
+            if (completed!=todo->isCompleted()) {
+                todo->setCompleted(completed);
+                return modifyItemHelper(item);
+            }
+        }
         default:
             break;
         }
