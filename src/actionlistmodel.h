@@ -49,9 +49,13 @@ public:
 
     Akonadi::Item itemForIndex(const QModelIndex &index) const;
 
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+
     void setMode(Mode mode);
     void setSourceFocusIndex(const QModelIndex &sourceIndex);
     QModelIndex sourceFocusIndex() const;
+
+    bool isInFocus(const QModelIndex &index) const;
 
 protected:
     virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;

@@ -57,6 +57,19 @@ Akonadi::Item ActionListModel::itemForIndex(const QModelIndex &index) const
     return Akonadi::Item();
 }
 
+Qt::ItemFlags ActionListModel::flags(const QModelIndex &index) const
+{
+    QModelIndex sourceIndex = mapToSource(index);
+    QModelIndex rowTypeIndex = sourceIndex.sibling(sourceIndex.row(), TodoFlatModel::RowType);
+    int rowType = sourceModel()->data(rowTypeIndex).toInt();
+
+    if (rowType==TodoFlatModel::FolderTodo || !isInFocus(index)) {
+        return 0;
+    } else {
+        return QSortFilterProxyModel::flags(index);
+    }
+}
+
 void ActionListModel::setMode(Mode mode)
 {
     m_mode = mode;
@@ -146,4 +159,23 @@ bool ActionListModel::lessThan(const QModelIndex &left, const QModelIndex &right
     }
 
     return QSortFilterProxyModel::lessThan(left, right);
+}
+
+bool ActionListModel::isInFocus(const QModelIndex &index) const
+{
+    if (!m_sourceFocusIndex.isValid()) {
+        return true;
+    }
+
+    QModelIndex sourceIndex = mapToSource(index);
+    sourceIndex = sourceIndex.sibling(sourceIndex.row(), 0);
+
+    while (sourceIndex.isValid()) {
+        if (m_sourceFocusIndex==sourceIndex) {
+            return true;
+        }
+        sourceIndex = sourceIndex.parent();
+    }
+
+    return false;
 }
