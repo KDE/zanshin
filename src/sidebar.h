@@ -55,6 +55,8 @@ private slots:
     void onAddFolder();
     void onAddItem();
     void onRemoveItem();
+    void onPreviousItem();
+    void onNextItem();
     void onCurrentProjectChangeDetected();
     void applyCurrentProjectChange();
     void onCurrentContextChangeDetected();

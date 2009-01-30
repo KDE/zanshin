@@ -53,6 +53,8 @@ private slots:
     void updateActions(const QModelIndex &index);
     void onAddActionRequested();
     void onRemoveAction();
+    void onPreviousAction();
+    void onNextAction();
     void focusActionEdit();
 
 private:

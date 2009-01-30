@@ -257,3 +257,17 @@ void ActionListEditor::focusActionEdit()
     popup->move(pos-QPoint(0, popup->height()));
     m_addActionEdit->setFocus();
 }
+
+void ActionListEditor::onPreviousAction()
+{
+    QModelIndex index = m_view->currentIndex();
+    index = m_view->indexAbove(index);
+    m_view->setCurrentIndex(index);
+}
+
+void ActionListEditor::onNextAction()
+{
+    QModelIndex index = m_view->currentIndex();
+    index = m_view->indexBelow(index);
+    m_view->setCurrentIndex(index);
+}

@@ -155,6 +155,8 @@ void SideBar::switchToProjectMode()
     m_stack->setCurrentIndex(ProjectPageIndex);
     m_add->setText("New Project");
     m_remove->setText("Remove Project/Folder");
+    m_previous->setText("Previous Project");
+    m_next->setText("Next Project");
     updateActions(m_projectTree->currentIndex());
 
     applyCurrentProjectChange();
@@ -165,6 +167,8 @@ void SideBar::switchToContextMode()
     m_stack->setCurrentIndex(ContextPageIndex);
     m_add->setText("New Context");
     m_remove->setText("Remove Context");
+    m_previous->setText("Previous Context");
+    m_next->setText("Next Context");
     updateActions(m_contextTree->currentIndex());
 
     applyCurrentProjectChange();
@@ -261,6 +265,47 @@ void SideBar::onRemoveItem()
     default:
         Q_ASSERT(false);
     }
+}
+
+void SideBar::onPreviousItem()
+{
+    QTreeView *tree;
+
+    switch (m_stack->currentIndex()) {
+    case ProjectPageIndex:
+        tree = m_projectTree;
+        break;
+    case ContextPageIndex:
+        tree = m_contextTree;
+        break;
+    default:
+        Q_ASSERT(false);
+    }
+
+    QModelIndex index = tree->currentIndex();
+    index = tree->indexAbove(index);
+    tree->setCurrentIndex(index);
+}
+
+void SideBar::onNextItem()
+{
+    QTreeView *tree;
+
+    switch (m_stack->currentIndex()) {
+    case ProjectPageIndex:
+        tree = m_projectTree;
+        break;
+    case ContextPageIndex:
+        tree = m_contextTree;
+        break;
+    default:
+        Q_ASSERT(false);
+    }
+
+    QModelIndex index = tree->currentIndex();
+    tree->expand(index);
+    index = tree->indexBelow(index);
+    tree->setCurrentIndex(index);
 }
 
 void SideBar::addNewProject()
