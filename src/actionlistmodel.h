@@ -26,6 +26,11 @@
 
 #include <QtGui/QSortFilterProxyModel>
 
+namespace Akonadi
+{
+    class Item;
+}
+
 class ActionListModel : public QSortFilterProxyModel
 {
     Q_OBJECT
@@ -41,6 +46,8 @@ public:
 
     ActionListModel(QObject *parent = 0);
     virtual ~ActionListModel();
+
+    Akonadi::Item itemForIndex(const QModelIndex &index) const;
 
     void setMode(Mode mode);
     void setSourceFocusIndex(const QModelIndex &sourceIndex);

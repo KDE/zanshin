@@ -23,9 +23,13 @@
 
 #include "actionlistmodel.h"
 
+#include <akonadi/item.h>
+
 #include <QtCore/QStringList>
 
+#include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
+#include "todotreemodel.h"
 
 ActionListModel::ActionListModel(QObject *parent)
     : QSortFilterProxyModel(parent), m_mode(StandardMode)
@@ -36,6 +40,21 @@ ActionListModel::ActionListModel(QObject *parent)
 
 ActionListModel::~ActionListModel()
 {
+}
+
+Akonadi::Item ActionListModel::itemForIndex(const QModelIndex &index) const
+{
+    QAbstractItemModel *source = sourceModel();
+
+    if (TodoFlatModel *flat = qobject_cast<TodoFlatModel*>(source)) {
+        return flat->itemForIndex(mapToSource(index));
+    } else if (TodoTreeModel *tree = qobject_cast<TodoTreeModel*>(source)) {
+        return tree->itemForIndex(mapToSource(index));
+    } else if (TodoCategoriesModel *categories = qobject_cast<TodoCategoriesModel*>(source)) {
+        return categories->itemForIndex(mapToSource(index));
+    }
+
+    return Akonadi::Item();
 }
 
 void ActionListModel::setMode(Mode mode)
