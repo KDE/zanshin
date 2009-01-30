@@ -49,6 +49,10 @@ public:
                                       const QStyleOptionViewItem &option,
                                       const QModelIndex &index) const;
 
+    virtual bool editorEvent(QEvent *event, QAbstractItemModel *model,
+                             const QStyleOptionViewItem &option,
+                             const QModelIndex &index);
+
 private:
     TodoFlatModel::ItemType rowType(const QModelIndex &index) const;
     bool isInFocus(const QModelIndex &index) const;

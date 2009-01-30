@@ -123,6 +123,23 @@ void ActionListDelegate::updateEditorGeometry(QWidget *editor,
     }
 }
 
+bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
+                                     const QStyleOptionViewItem &option,
+                                     const QModelIndex &index)
+{
+    QStyleOptionViewItemV4 opt = option;
+
+    TodoFlatModel::ItemType type = rowType(index);
+
+    if (type==TodoFlatModel::StandardTodo
+     && index.column()==0
+     && index.parent().isValid()) {
+        opt.rect.adjust(40, 0, 0, 0);
+    }
+
+    QStyledItemDelegate::editorEvent(event, model, opt, index);
+}
+
 TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index) const
 {
     const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
@@ -183,4 +200,3 @@ void ActionListDelegate::setDragModeCount(int count)
 {
     m_dragModeCount = count;
 }
-
