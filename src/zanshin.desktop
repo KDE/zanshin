@@ -3,5 +3,5 @@ Type=Application
 Categories=Qt;KDE;Utility;X-KDE-Utilities-PIM;
 Exec=zanshin
 Name=Zanshin
-Icon=korganizer
+Icon=office-calendar
 GenericName=TODO Management Application

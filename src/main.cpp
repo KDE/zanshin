@@ -45,7 +45,7 @@ int main(int argc, char **argv)
                     "nef@ipsquad.net");
 
     //TODO: Remove once we have a proper icon
-    about.setProgramIconName("korganizer");
+    about.setProgramIconName("office-calendar");
 
     KCmdLineArgs::init(argc, argv, &about);
 
