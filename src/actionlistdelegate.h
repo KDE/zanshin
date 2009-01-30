@@ -48,6 +48,8 @@ public:
 private:
     TodoFlatModel::ItemType rowType(const QModelIndex &index) const;
     bool isInFocus(const QModelIndex &index) const;
+    bool isCompleted(const QModelIndex &index) const;
+    bool isOverdue(const QModelIndex &index) const;
 
     mutable int m_dragModeCount;
 };

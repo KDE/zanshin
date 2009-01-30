@@ -23,7 +23,13 @@
 
 #include "actionlistdelegate.h"
 
+#include <akonadi/item.h>
+#include <boost/shared_ptr.hpp>
+#include <kcal/todo.h>
+
 #include "actionlistmodel.h"
+
+typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
 ActionListDelegate::ActionListDelegate(QObject *parent)
     : QStyledItemDelegate(parent), m_dragModeCount(0)
@@ -90,8 +96,17 @@ void ActionListDelegate::paint(QPainter *painter,
         opt.rect.adjust(40, 0, 0, 0);
     }
 
+    if (isCompleted(index)) {
+        opt.font.setStrikeOut(true);
+    } else if (isOverdue(index)) {
+        opt.palette.setColor(QPalette::Text, QColor(Qt::red));
+        opt.palette.setColor(QPalette::HighlightedText, QColor(Qt::red));
+    }
+
     QStyledItemDelegate::paint(painter, opt, index);
 }
+
+
 
 TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index) const
 {
@@ -137,6 +152,26 @@ bool ActionListDelegate::isInFocus(const QModelIndex &index) const
     }
 
     return false;
+}
+
+bool ActionListDelegate::isCompleted(const QModelIndex &index) const
+{
+    return index.model()->data(index.sibling(index.row(), 0), Qt::CheckStateRole).toInt()==Qt::Checked;
+}
+
+bool ActionListDelegate::isOverdue(const QModelIndex &index) const
+{
+    const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
+
+    if (model==0) {
+        return false;
+    }
+
+    Akonadi::Item item = model->itemForIndex(index);
+    const IncidencePtr incidence = item.payload<IncidencePtr>();
+    KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
+
+    return todo->isOverdue();
 }
 
 void ActionListDelegate::setDragModeCount(int count)
