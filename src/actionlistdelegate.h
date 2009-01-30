@@ -45,6 +45,10 @@ public:
                        const QStyleOptionViewItem &option,
                        const QModelIndex &index) const;
 
+    virtual void updateEditorGeometry(QWidget *editor,
+                                      const QStyleOptionViewItem &option,
+                                      const QModelIndex &index) const;
+
 private:
     TodoFlatModel::ItemType rowType(const QModelIndex &index) const;
     bool isInFocus(const QModelIndex &index) const;

@@ -106,7 +106,22 @@ void ActionListDelegate::paint(QPainter *painter,
     QStyledItemDelegate::paint(painter, opt, index);
 }
 
+void ActionListDelegate::updateEditorGeometry(QWidget *editor,
+                                              const QStyleOptionViewItem &option,
+                                              const QModelIndex &index) const
+{
+    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
 
+    TodoFlatModel::ItemType type = rowType(index);
+
+    if (type==TodoFlatModel::StandardTodo
+     && index.column()==0
+     && index.parent().isValid()) {
+        QRect r = editor->geometry();
+        r.adjust(40, 0, 0, 0);
+        editor->setGeometry(r);
+    }
+}
 
 TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index) const
 {
