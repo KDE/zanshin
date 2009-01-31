@@ -146,10 +146,12 @@ void SideBar::setupActions(KActionCollection *ac)
     m_previous = ac->addAction("sidebar_go_previous", this, SLOT(onPreviousItem()));
     m_previous->setText(i18n("Previous"));
     m_previous->setIcon(KIcon("go-previous"));
+    m_previous->setShortcut(Qt::ALT | Qt::Key_Up);
 
     m_next = ac->addAction("sidebar_go_next", this, SLOT(onNextItem()));
     m_next->setText(i18n("Next"));
     m_next->setIcon(KIcon("go-next"));
+    m_next->setShortcut(Qt::ALT | Qt::Key_Down);
 }
 
 void SideBar::switchToProjectMode()
@@ -286,7 +288,10 @@ void SideBar::onPreviousItem()
 
     QModelIndex index = tree->currentIndex();
     index = tree->indexAbove(index);
-    tree->setCurrentIndex(index);
+
+    if (index.isValid()) {
+        tree->setCurrentIndex(index);
+    }
 }
 
 void SideBar::onNextItem()
@@ -307,7 +312,10 @@ void SideBar::onNextItem()
     QModelIndex index = tree->currentIndex();
     tree->expand(index);
     index = tree->indexBelow(index);
-    tree->setCurrentIndex(index);
+
+    if (index.isValid()) {
+        tree->setCurrentIndex(index);
+    }
 }
 
 void SideBar::addNewProject()

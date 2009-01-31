@@ -95,10 +95,12 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_previous = ac->addAction("editor_go_previous", this, SLOT(onPreviousAction()));
     m_previous->setText(i18n("Previous Action"));
     m_previous->setIcon(KIcon("go-previous"));
+    m_previous->setShortcut(Qt::Key_Up);
 
     m_next = ac->addAction("editor_go_next", this, SLOT(onNextAction()));
     m_next->setText(i18n("Next Action"));
     m_next->setIcon(KIcon("go-next"));
+    m_next->setShortcut(Qt::Key_Down);
 }
 
 void ActionListEditor::updateActions(const QModelIndex &index)
@@ -263,12 +265,18 @@ void ActionListEditor::onPreviousAction()
 {
     QModelIndex index = m_view->currentIndex();
     index = m_view->indexAbove(index);
-    m_view->setCurrentIndex(index);
+
+    if (index.isValid()) {
+        m_view->setCurrentIndex(index);
+    }
 }
 
 void ActionListEditor::onNextAction()
 {
     QModelIndex index = m_view->currentIndex();
     index = m_view->indexBelow(index);
-    m_view->setCurrentIndex(index);
+
+    if (index.isValid()) {
+        m_view->setCurrentIndex(index);
+    }
 }
