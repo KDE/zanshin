@@ -137,7 +137,7 @@ bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
         opt.rect.adjust(40, 0, 0, 0);
     }
 
-    QStyledItemDelegate::editorEvent(event, model, opt, index);
+    return QStyledItemDelegate::editorEvent(event, model, opt, index);
 }
 
 TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index) const
