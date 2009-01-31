@@ -276,6 +276,17 @@ void ActionListEditor::focusActionEdit()
 void ActionListEditor::onPreviousAction()
 {
     QModelIndex index = m_view->currentIndex();
+
+    if (!index.isValid()) {
+        QModelIndex focusIndex = m_model->sourceFocusIndex();
+        if (focusIndex.isValid()) {
+            m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
+        } else {
+            m_view->setCurrentIndex(m_model->index(m_model->rowCount()-1, 0));
+        }
+        return;
+    }
+
     index = m_view->indexAbove(index);
 
     if (index.isValid()) {
@@ -286,6 +297,16 @@ void ActionListEditor::onPreviousAction()
 void ActionListEditor::onNextAction()
 {
     QModelIndex index = m_view->currentIndex();
+
+    if (!index.isValid()) {
+        QModelIndex focusIndex = m_model->sourceFocusIndex();
+        if (focusIndex.isValid()) {
+            m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
+        } else {
+            m_view->setCurrentIndex(m_model->index(0, 0));
+        }
+    }
+
     index = m_view->indexBelow(index);
 
     if (index.isValid()) {
