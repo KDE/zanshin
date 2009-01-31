@@ -127,10 +127,8 @@ void ActionListEditor::setupActions(KActionCollection *ac)
 void ActionListEditor::updateActions(const QModelIndex &index)
 {
     if (!index.isValid()) {
-        m_add->setEnabled(false);
         m_remove->setEnabled(false);
     } else {
-        m_add->setEnabled(true);
         m_remove->setEnabled(true);
     }
 }
@@ -286,6 +284,10 @@ void ActionListEditor::focusOnContext(const QModelIndex &index)
 
 void ActionListEditor::focusActionEdit()
 {
+    if (!m_view->currentIndex().isValid()) {
+        onNextAction();
+    }
+
     QPoint pos = m_addActionEdit->geometry().topLeft();
     pos = m_addActionEdit->parentWidget()->mapToGlobal(pos);
 
