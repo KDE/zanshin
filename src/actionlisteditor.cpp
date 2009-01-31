@@ -91,6 +91,7 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_remove = ac->addAction("editor_remove_action", this, SLOT(onRemoveAction()));
     m_remove->setText(i18n("Remove Action"));
     m_remove->setIcon(KIcon("list-remove"));
+    m_remove->setShortcut(Qt::Key_Delete);
 
     m_previous = ac->addAction("editor_go_previous", this, SLOT(onPreviousAction()));
     m_previous->setText(i18n("Previous Action"));

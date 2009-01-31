@@ -99,12 +99,14 @@ void MainWindow::setupActions()
     KAction *action = ac->addAction("project_mode", m_sidebar, SLOT(switchToProjectMode()));
     action->setText(i18n("Project Mode"));
     action->setIcon(KIcon("view-pim-tasks"));
+    action->setShortcut(Qt::CTRL | Qt::Key_P);
     action->setCheckable(true);
     modeGroup->addAction(action);
 
     action = ac->addAction("context_mode", m_sidebar, SLOT(switchToContextMode()));
     action->setText(i18n("Context Mode"));
     action->setIcon(KIcon("view-pim-notes"));
+    action->setShortcut(Qt::CTRL | Qt::Key_O);
     action->setCheckable(true);
     modeGroup->addAction(action);
 
