@@ -53,6 +53,7 @@ private slots:
     void testCategoryRename();
     void testRemoveCategory_data();
     void testRemoveCategory();
+    void testDnDCategory();
 
 private:
     TodoFlatModel m_flatModel;
@@ -619,6 +620,41 @@ void TodoCategoriesModelTest::testRemoveCategory()
     QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
     QCOMPARE(signal.at(1).toInt(), row);
     QCOMPARE(signal.at(2).toInt(), row);
+
+}
+
+void TodoCategoriesModelTest::testDnDCategory()
+{
+    QModelIndex index = m_model.index(1, 0);
+    QModelIndex parent = m_model.indexForCategory("Office");
+
+    QCOMPARE(m_model.data(parent).toString(), QString(""));
+
+    QSignalSpy rowsInserted(&m_model, SIGNAL(rowsInserted(QModelIndex, int, int)));
+    QSignalSpy rowsRemoved(&m_model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
+
+    QModelIndexList indexes;
+    indexes << index;
+    QMimeData *mimeData = m_model.mimeData(indexes);
+
+    QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, parent));
+
+    flushNotifications();
+
+    QCOMPARE(rowsRemoved.count(), 1);
+    QVariantList signal = rowsRemoved.takeFirst();
+    QCOMPARE(signal.count(), 3);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), QModelIndex());
+    QCOMPARE(signal.at(1).toInt(), 1);
+    QCOMPARE(signal.at(2).toInt(), 1);
+
+    
+    QCOMPARE(rowsInserted.count(), 1);
+    signal = rowsInserted.takeFirst();
+    QCOMPARE(signal.count(), 3);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
+    QCOMPARE(signal.at(1).toInt(), 0);
+    QCOMPARE(signal.at(2).toInt(), 0);
 
 }
 

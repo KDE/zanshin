@@ -178,8 +178,37 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
 
             return true;
         } else if (index.column() == TodoFlatModel::Categories) {
+	    QModelIndex parentIndex;
+	    TodoCategoryTreeNode *newParent = NULL;
+	    int row = 0;
+	    if(!value.toString().isEmpty()) {
+                parentIndex = indexForCategory(value.toString());
+                newParent = nodeForIndex(parentIndex);
+                row = newParent->children.size();
+            }
+            TodoCategoryTreeNode *oldParent = node->parent;
 
+            beginRemoveRows(index.parent(), index.row(), index.row());
+            if (oldParent) {
+                oldParent->children.removeAll(node);
+            } else {
+                m_roots.removeAll(node);
+            }
+            endRemoveRows();
+
+            beginInsertRows(parentIndex, row, row);
+            node->parent = newParent;
+            if (newParent)
+                newParent->children.append(node);
+            else
+	        m_roots.append(node);
+            endInsertRows();
+	    
+            serializeCategories();
+
+            return true;
         }
+
     }
 
     return false;
@@ -187,7 +216,10 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
 
 QStringList TodoCategoriesModel::mimeTypes() const
 {
-    return flatModel()->mimeTypes();
+    QStringList types;
+    types << flatModel()->mimeTypes();
+    types << "application/x-vnd.zanshin.category";
+    return types;
 }
 
 Qt::DropActions TodoCategoriesModel::supportedDropActions() const
@@ -198,32 +230,53 @@ Qt::DropActions TodoCategoriesModel::supportedDropActions() const
 QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList sourceIndexes;
+    QByteArray categoriesList;
     foreach (const QModelIndex &proxyIndex, indexes) {
-        sourceIndexes << mapToSource(proxyIndex);
+        TodoCategoryTreeNode *node = nodeForIndex(proxyIndex);
+        QModelIndex index = indexForNode(node, TodoFlatModel::RowType);
+        if (data(index).toInt() == TodoFlatModel::StandardTodo) {
+            sourceIndexes << mapToSource(proxyIndex);
+        } else {
+            categoriesList.append(data(proxyIndex).toByteArray());
+        }
     }
 
-    return flatModel()->mimeData(sourceIndexes);
+    if (!sourceIndexes.isEmpty()) {
+        return flatModel()->mimeData(sourceIndexes);
+    } else {
+        QMimeData *mimeData = new QMimeData(); 
+	mimeData->setData("application/x-vnd.zanshin.category", categoriesList);
+	return mimeData;
+    }
 }
 
 bool TodoCategoriesModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
                                        int /*row*/, int /*column*/, const QModelIndex &parent)
 {
-    if (action != Qt::MoveAction || !KUrl::List::canDecode(data)) {
+    if (action != Qt::MoveAction || (!KUrl::List::canDecode(data) && !data->hasFormat("application/x-vnd.zanshin.category"))) {
         return false;
     }
 
-    KUrl::List urls = KUrl::List::fromMimeData(data);
     QString parentCategory = categoryForIndex(parent);
 
-    foreach (const KUrl &url, urls) {
-        const Akonadi::Item item = Akonadi::Item::fromUrl(url);
+    if (KUrl::List::canDecode(data)) {
+        KUrl::List urls = KUrl::List::fromMimeData(data);
 
-        if (item.isValid()) {
-            QModelIndex index = flatModel()->indexForItem(item, TodoFlatModel::Categories);
-            if (!flatModel()->setData(index, parentCategory)) {
-                return false;
+        foreach (const KUrl &url, urls) {
+            const Akonadi::Item item = Akonadi::Item::fromUrl(url);
+
+            if (item.isValid()) {
+                QModelIndex index = flatModel()->indexForItem(item, TodoFlatModel::Categories);
+                if (!flatModel()->setData(index, parentCategory)) {
+                    return false;
+                }
             }
         }
+    } else {
+        QByteArray categories = data->data("application/x-vnd.zanshin.category");
+        QString category = categories.data();
+        QModelIndex index = indexForCategory(category, TodoFlatModel::Categories);
+        setData(index, parentCategory);
     }
 
     return true;
@@ -241,7 +294,12 @@ Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
         switch (index.column()) {
         case TodoFlatModel::Summary:
         case TodoFlatModel::Categories:
-            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+            return Qt::ItemIsEnabled
+                 | Qt::ItemIsSelectable
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsDragEnabled
+                 | Qt::ItemIsDropEnabled;
+
         default:
             break;
         }
