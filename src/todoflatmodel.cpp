@@ -420,6 +420,7 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
                     todo->setDtDue(KDateTime());
 		    todo->setHasDueDate(false);
                     todo->setAllDay(false);
+		    return modifyItemHelper(item);
                 }
                 return false;
             }
