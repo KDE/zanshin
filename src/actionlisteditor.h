@@ -49,6 +49,9 @@ public slots:
     void showNoContextInbox();
     void focusOnContext(const QModelIndex &index);
 
+protected:
+    virtual bool eventFilter(QObject *watched, QEvent *event);
+
 private slots:
     void updateActions(const QModelIndex &index);
     void onAddActionRequested();
@@ -66,6 +69,7 @@ private:
     ActionListModel *m_model;
 
     KAction *m_add;
+    KAction *m_cancelAdd;
     KAction *m_remove;
     KAction *m_previous;
     KAction *m_next;

@@ -38,6 +38,9 @@
 #include <KDE/KLocale>
 #include <KDE/KPassivePopup>
 
+#include <QtCore/QEvent>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
 #include "actionlistmodel.h"
@@ -57,7 +60,6 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     setLayout(new QVBoxLayout(this));
 
     m_view = new ActionListView(this);
-    m_view->setFocusPolicy(Qt::NoFocus);
     layout()->addWidget(m_view);
     m_model = new ActionListModel(this);
     m_view->setModel(m_model);
@@ -66,14 +68,25 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
-    m_addActionEdit = new KLineEdit(this);
-    layout()->addWidget(m_addActionEdit);
+    QWidget *bottomBar = new QWidget(this);
+    layout()->addWidget(bottomBar);
+    bottomBar->setLayout(new QHBoxLayout(bottomBar));
+
+    m_addActionEdit = new KLineEdit(bottomBar);
+    m_addActionEdit->installEventFilter(this);
+    bottomBar->layout()->addWidget(m_addActionEdit);
     m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
     m_addActionEdit->setClearButtonShown(true);
     connect(m_addActionEdit, SIGNAL(returnPressed()),
             this, SLOT(onAddActionRequested()));
 
     setupActions(ac);
+
+    QToolBar *toolBar = new QToolBar(bottomBar);
+    bottomBar->layout()->addWidget(toolBar);
+    toolBar->addAction(m_cancelAdd);
+
+    m_cancelAdd->setEnabled(false);
     updateActions(QModelIndex());
 }
 
@@ -87,6 +100,13 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_add = ac->addAction("editor_add_action", this, SLOT(focusActionEdit()));
     m_add->setText(i18n("New Action"));
     m_add->setIcon(KIcon("list-add"));
+    m_add->setShortcut(Qt::CTRL | Qt::Key_N);
+
+    m_cancelAdd = ac->addAction("editor_cancel_action", m_view, SLOT(setFocus()));
+    connect(m_cancelAdd, SIGNAL(activated()), m_addActionEdit, SLOT(clear()));
+    m_cancelAdd->setText(i18n("Cancel New Action"));
+    m_cancelAdd->setIcon(KIcon("edit-undo"));
+    m_cancelAdd->setShortcut(Qt::Key_Escape);
 
     m_remove = ac->addAction("editor_remove_action", this, SLOT(onRemoveAction()));
     m_remove->setText(i18n("Remove Action"));
@@ -313,4 +333,17 @@ void ActionListEditor::onNextAction()
     if (index.isValid()) {
         m_view->setCurrentIndex(index);
     }
+}
+
+bool ActionListEditor::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched==m_addActionEdit) {
+        if (event->type()==QEvent::FocusIn) {
+            m_cancelAdd->setEnabled(true);
+        } else  if (event->type()==QEvent::FocusOut) {
+            m_cancelAdd->setEnabled(false);
+        }
+    }
+
+    return QWidget::eventFilter(watched, event);
 }
