@@ -200,6 +200,7 @@ void ActionListEditor::showNoProjectInbox()
     m_model->setMode(ActionListModel::NoProjectMode);
 
     m_view->setModel(m_model);
+    m_view->setCurrentIndex(m_model->index(0, 0));
     updateActions(QModelIndex());
     connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
@@ -216,6 +217,11 @@ void ActionListEditor::focusOnProject(const QModelIndex &index)
     m_model->setSourceFocusIndex(focusIndex);
 
     m_view->setModel(m_model);
+    if (focusIndex.isValid()) {
+        m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
+    } else {
+        m_view->setCurrentIndex(m_model->index(0, 0));
+    }
     updateActions(QModelIndex());
     connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
@@ -230,6 +236,7 @@ void ActionListEditor::showNoContextInbox()
     m_model->setMode(ActionListModel::NoContextMode);
 
     m_view->setModel(m_model);
+    m_view->setCurrentIndex(m_model->index(0, 0));
     updateActions(QModelIndex());
     connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
@@ -246,6 +253,11 @@ void ActionListEditor::focusOnContext(const QModelIndex &index)
     m_model->setSourceFocusIndex(focusIndex);
 
     m_view->setModel(m_model);
+    if (focusIndex.isValid()) {
+        m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
+    } else {
+        m_view->setCurrentIndex(m_model->index(0, 0));
+    }
     updateActions(QModelIndex());
     connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
