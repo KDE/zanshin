@@ -74,6 +74,7 @@ void SideBar::setupProjectPage()
     projectPage->setLayout(new QVBoxLayout(projectPage));
 
     m_projectTree = new QTreeView(projectPage);
+    m_projectTree->setFocusPolicy(Qt::NoFocus);
     projectPage->layout()->addWidget(m_projectTree);
     m_projectTree->setAnimated(true);
     m_projectTree->setModel(GlobalModel::projectsLibrary());
@@ -104,6 +105,7 @@ void SideBar::setupContextPage()
     contextPage->setLayout(new QVBoxLayout(contextPage));
 
     m_contextTree = new QTreeView(contextPage);
+    m_contextTree->setFocusPolicy(Qt::NoFocus);
     contextPage->layout()->addWidget(m_contextTree);
     m_contextTree->setAnimated(true);
     m_contextTree->setModel(GlobalModel::contextsLibrary());

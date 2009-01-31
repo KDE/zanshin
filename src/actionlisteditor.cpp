@@ -57,6 +57,7 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     setLayout(new QVBoxLayout(this));
 
     m_view = new ActionListView(this);
+    m_view->setFocusPolicy(Qt::NoFocus);
     layout()->addWidget(m_view);
     m_model = new ActionListModel(this);
     m_view->setModel(m_model);
