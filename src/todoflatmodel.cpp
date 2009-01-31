@@ -416,6 +416,11 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
                 todo->setAllDay(true);
                 return modifyItemHelper(item);
             } else {
+                if (value.toString().isEmpty()) {
+                    todo->setDtDue(KDateTime());
+		    todo->setHasDueDate(false);
+                    todo->setAllDay(false);
+                }
                 return false;
             }
         }
