@@ -284,10 +284,6 @@ void ActionListEditor::focusOnContext(const QModelIndex &index)
 
 void ActionListEditor::focusActionEdit()
 {
-    if (!m_view->currentIndex().isValid()) {
-        onNextAction();
-    }
-
     QPoint pos = m_addActionEdit->geometry().topLeft();
     pos = m_addActionEdit->parentWidget()->mapToGlobal(pos);
 
@@ -342,6 +338,10 @@ bool ActionListEditor::eventFilter(QObject *watched, QEvent *event)
     if (watched==m_addActionEdit) {
         if (event->type()==QEvent::FocusIn) {
             m_cancelAdd->setEnabled(true);
+
+            if (!m_view->currentIndex().isValid()) {
+                onNextAction();
+            }
         } else  if (event->type()==QEvent::FocusOut) {
             m_cancelAdd->setEnabled(false);
         }
