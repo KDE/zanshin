@@ -118,7 +118,7 @@ QVariant TodoFlatModelImpl::data(const QModelIndex &index, int role) const
                 return QString();
             }
         }
-	}
+        }
         break;
     }
 
@@ -418,9 +418,9 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
             } else {
                 if (value.toString().isEmpty()) {
                     todo->setDtDue(KDateTime());
-		    todo->setHasDueDate(false);
+                    todo->setHasDueDate(false);
                     todo->setAllDay(false);
-		    return modifyItemHelper(item);
+                    return modifyItemHelper(item);
                 }
                 return false;
             }
