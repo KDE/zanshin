@@ -175,7 +175,7 @@ void SideBar::switchToContextMode()
     m_next->setText("Next Context");
     updateActions(m_contextTree->currentIndex());
 
-    applyCurrentProjectChange();
+    applyCurrentContextChange();
 }
 
 void SideBar::updateActions(const QModelIndex &index)
