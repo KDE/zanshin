@@ -180,12 +180,6 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
         } else if (index.column() == TodoFlatModel::Categories) {
 	    QModelIndex parentIndex;
 	    TodoCategoryTreeNode *newParent = NULL;
-	    int row = 0;
-	    if(!value.toString().isEmpty()) {
-                parentIndex = indexForCategory(value.toString());
-                newParent = nodeForIndex(parentIndex);
-                row = newParent->children.size();
-            }
             TodoCategoryTreeNode *oldParent = node->parent;
 
             beginRemoveRows(index.parent(), index.row(), index.row());
@@ -196,12 +190,20 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
             }
             endRemoveRows();
 
+	    int row = 0;
+	    if(!value.toString().isEmpty()) {
+                parentIndex = indexForCategory(value.toString());
+                newParent = nodeForIndex(parentIndex);
+                row = newParent->children.size();
+            }
+            
             beginInsertRows(parentIndex, row, row);
             node->parent = newParent;
-            if (newParent)
+            if (newParent) {
                 newParent->children.append(node);
-            else
+            } else {
 	        m_roots.append(node);
+            }
             endInsertRows();
 	    
             serializeCategories();
