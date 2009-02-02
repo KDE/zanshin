@@ -178,8 +178,8 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
 
             return true;
         } else if (index.column() == TodoFlatModel::Categories) {
-	    QModelIndex parentIndex;
-	    TodoCategoryTreeNode *newParent = NULL;
+            QModelIndex parentIndex;
+            TodoCategoryTreeNode *newParent = 0;
             TodoCategoryTreeNode *oldParent = node->parent;
 
             beginRemoveRows(index.parent(), index.row(), index.row());
@@ -190,22 +190,22 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
             }
             endRemoveRows();
 
-	    int row = 0;
-	    if(!value.toString().isEmpty()) {
+            int row = 0;
+            if(!value.toString().isEmpty()) {
                 parentIndex = indexForCategory(value.toString());
                 newParent = nodeForIndex(parentIndex);
                 row = newParent->children.size();
             }
-            
+
             beginInsertRows(parentIndex, row, row);
             node->parent = newParent;
             if (newParent) {
                 newParent->children.append(node);
             } else {
-	        m_roots.append(node);
+                m_roots.append(node);
             }
             endInsertRows();
-	    
+
             serializeCategories();
 
             return true;
@@ -247,8 +247,8 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
         return flatModel()->mimeData(sourceIndexes);
     } else {
         QMimeData *mimeData = new QMimeData(); 
-	mimeData->setData("application/x-vnd.zanshin.category", categoriesList);
-	return mimeData;
+        mimeData->setData("application/x-vnd.zanshin.category", categoriesList);
+        return mimeData;
     }
 }
 
