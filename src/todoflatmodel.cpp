@@ -203,6 +203,12 @@ void TodoFlatModel::setSourceModel(QAbstractItemModel *sourceModel)
     Q_ASSERT(sourceModel == 0 || qobject_cast<Akonadi::ItemModel*>(sourceModel) != 0);
     QSortFilterProxyModel::setSourceModel(sourceModel);
 
+    // HACK PART 1: Disconnect the slot from QSortFilterProxyModel which
+    // is supposed to process rowsInserted() signals. It is done because
+    // we want to make sure our own slots is called first.
+    disconnect(itemModel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+               this, SLOT(_q_sourceRowsInserted(const QModelIndex&, int, int)));
+
     connect(itemModel(), SIGNAL(collectionChanged(const Akonadi::Collection&)),
             this, SIGNAL(collectionChanged(const Akonadi::Collection&)));
     connect(itemModel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
@@ -451,7 +457,7 @@ bool TodoFlatModel::setData(const QModelIndex &index, const QVariant &value, int
     return false;
 }
 
-void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int begin, int end)
+void TodoFlatModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end)
 {
     for (int i = begin; i <= end; i++) {
         // Retrieve the item from the source model
@@ -460,6 +466,16 @@ void TodoFlatModel::onSourceInsertRows(const QModelIndex&/*sourceIndex*/, int be
         m_remoteIdMap[item.id()] = remoteId;
         m_reverseRemoteIdMap[remoteId] = item.id();
     }
+
+    // HACK PART 2: Invoke the slot from QSortFilterProxyModel by hand.
+    // This way we make sure that our internal maps got updated before
+    // we tell the outside world that a new row appeared (and this way
+    // we're sure the row type is immediately right, not only once we
+    // reenter the event loop.
+    QMetaObject::invokeMethod(this, "_q_sourceRowsInserted",
+                              Q_ARG(QModelIndex, sourceIndex),
+                              Q_ARG(int, begin),
+                              Q_ARG(int, end));
 
     for (int i = begin; i <= end; i++) {
         Akonadi::Item item = itemModel()->itemForIndex(itemModel()->index(i, 0));

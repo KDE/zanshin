@@ -27,11 +27,18 @@
 
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
+#include <akonadi/itemcreatejob.h>
 #include <akonadi/itemdeletejob.h>
+
+#include <boost/shared_ptr.hpp>
+
+#include <kcal/todo.h>
 
 #include <QtGui/QSortFilterProxyModel>
 
 #include "todoflatmodel.h"
+
+typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
 class TodoFlatModelTest : public ModelTestBase
 {
@@ -44,7 +51,9 @@ private slots:
     void testItemModification_data();
     void testItemModification();
     void testSingleRemoved();
+    void testRowTypeDuringInsert();
 
+    void onInsertRows(const QModelIndex &parent, int begin, int end);
 private:
     TodoFlatModel m_model;
     QSortFilterProxyModel m_sortedModel;
@@ -197,6 +206,43 @@ void TodoFlatModelTest::testSingleRemoved()
     QCOMPARE(signal.at(1).toInt(), 1);
     QCOMPARE(signal.at(1).toInt(), 1);
 
+}
+
+void TodoFlatModelTest::testRowTypeDuringInsert()
+{
+    int count = m_model.rowCount();
+
+    connect(&m_model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+            this, SLOT(onInsertRows(QModelIndex, int, int)));
+
+    KCal::Todo *todo = new KCal::Todo();
+    todo->setSummary("foo folder");
+    todo->addComment("X-Zanshin-Folder");
+    IncidencePtr incidence(todo);
+
+    Akonadi::Item item;
+    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setPayload<IncidencePtr>(incidence);
+
+    Akonadi::Collection collection = m_model.collection();
+    Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
+    QVERIFY(job->exec());
+
+    flushNotifications();
+
+    QCOMPARE(m_model.rowCount(), count+1);
+
+    disconnect(&m_model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+               this, SLOT(onInsertRows(QModelIndex, int, int)));
+}
+
+void TodoFlatModelTest::onInsertRows(const QModelIndex &parent, int begin, int end)
+{
+    QVERIFY(!parent.isValid());
+    QVERIFY(begin==end);
+
+    QModelIndex index = m_model.index(begin, TodoFlatModel::RowType);
+    QCOMPARE(m_model.data(index).toInt(), (int)TodoFlatModel::FolderTodo);
 }
 
 #include "todoflatmodeltest.moc"
