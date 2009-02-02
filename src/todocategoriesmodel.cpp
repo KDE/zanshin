@@ -195,6 +195,8 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
                 parentIndex = indexForCategory(value.toString());
                 newParent = nodeForIndex(parentIndex);
                 row = newParent->children.size();
+            } else {
+                row = m_roots.size();
             }
 
             beginInsertRows(parentIndex, row, row);
@@ -246,7 +248,7 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
     if (!sourceIndexes.isEmpty()) {
         return flatModel()->mimeData(sourceIndexes);
     } else {
-        QMimeData *mimeData = new QMimeData(); 
+        QMimeData *mimeData = new QMimeData();
         mimeData->setData("application/x-vnd.zanshin.category", categoriesList);
         return mimeData;
     }

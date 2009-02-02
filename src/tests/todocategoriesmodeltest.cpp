@@ -53,6 +53,7 @@ private slots:
     void testCategoryRename();
     void testRemoveCategory_data();
     void testRemoveCategory();
+    void testDnDCategory_data();
     void testDnDCategory();
 
 private:
@@ -623,39 +624,60 @@ void TodoCategoriesModelTest::testRemoveCategory()
 
 }
 
+void TodoCategoriesModelTest::testDnDCategory_data()
+{
+    QTest::addColumn<QString>("category");
+    QTest::addColumn<QString>("oldParent");
+    QTest::addColumn<QString>("newParent");
+    QTest::addColumn<bool>("expected");
+
+    QTest::newRow("Moving root category to sub-category") <<  "Phone" << QString() << "Errands" << true;
+    QTest::newRow("Moving sub-category to root") <<  "Phone" << "Errands" << QString() << true;
+}
 void TodoCategoriesModelTest::testDnDCategory()
 {
-    QModelIndex index = m_model.index(1, 0);
-    QModelIndex parent = m_model.indexForCategory("Office");
+    QFETCH(QString, category);
+    QFETCH(QString, oldParent);
+    QFETCH(QString, newParent);
+    QFETCH(bool, expected);
 
-    QCOMPARE(m_model.data(parent).toString(), QString(""));
+    QModelIndex index = m_model.indexForCategory(category);
+    QModelIndex oldParentIndex = m_model.indexForCategory(oldParent);
+    QModelIndex newParentIndex = m_model.indexForCategory(newParent);
+
+    int oldRow = index.row();
+    int newRow = m_model.rowCount(newParentIndex);
 
     QSignalSpy rowsInserted(&m_model, SIGNAL(rowsInserted(QModelIndex, int, int)));
     QSignalSpy rowsRemoved(&m_model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
 
-    QModelIndexList indexes;
-    indexes << index;
-    QMimeData *mimeData = m_model.mimeData(indexes);
+    QMimeData *mimeData = m_model.mimeData(QModelIndexList() << index);
 
-    QVERIFY(m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, parent));
+    bool result = m_model.dropMimeData(mimeData, Qt::MoveAction, 0, 0, newParentIndex);
+    QCOMPARE(result, expected);
 
     flushNotifications();
+
+    if (!expected) {
+        QCOMPARE(rowsRemoved.count(), 0);
+        QCOMPARE(rowsInserted.count(), 0);
+        return;
+    }
 
     QCOMPARE(rowsRemoved.count(), 1);
     QVariantList signal = rowsRemoved.takeFirst();
     QCOMPARE(signal.count(), 3);
-    QCOMPARE(signal.at(0).value<QModelIndex>(), QModelIndex());
-    QCOMPARE(signal.at(1).toInt(), 1);
-    QCOMPARE(signal.at(2).toInt(), 1);
+    QCOMPARE(signal.at(0).value<QModelIndex>(), oldParentIndex);
+    QCOMPARE(signal.at(1).toInt(), oldRow);
+    QCOMPARE(signal.at(2).toInt(), oldRow);
 
-    
+
     QCOMPARE(rowsInserted.count(), 1);
     signal = rowsInserted.takeFirst();
     QCOMPARE(signal.count(), 3);
-    QCOMPARE(signal.at(0).value<QModelIndex>(), parent);
-    QCOMPARE(signal.at(1).toInt(), 0);
-    QCOMPARE(signal.at(2).toInt(), 0);
-
+    QCOMPARE(signal.at(0).value<QModelIndex>(), newParentIndex);
+    QCOMPARE(signal.at(1).toInt(), newRow);
+    QCOMPARE(signal.at(2).toInt(), newRow);
 }
 
 #include "todocategoriesmodeltest.moc"
