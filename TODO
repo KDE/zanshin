@@ -6,3 +6,5 @@
   extra mode to take a look at those actions).
 * Proper error handling
 * Undo/redo support
+* Add a count of the items in the Inbox for LibraryModel
+* Allow filtering of the central view.

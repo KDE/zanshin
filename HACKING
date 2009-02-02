@@ -1,0 +1,55 @@
+* Coding style: http://techbase.kde.org/Policies/Kdelibs_Coding_Style
+  It's basically the same than the kdelibs coding style as linked above.
+
+* Design
+
+  Model Layer:
+  ------------
+  The application is built around a set of item models and views. GlobalModel
+  is a singleton in charge of creating all the models used in the application.
+
+  - At the there's TodoFlatModel, which lists all the todo contained in a
+    resource.
+  - Above it there's TodoTreeModel, which exposes a tree of todo based on their
+    relateToUid property.
+  - There's also TodoCategoriesModel, which exposes a tree of todo based on
+    their categories (a todo can have several categories, then it appears
+    several times in the tree).
+  - ProjectsModel and ContextsModel expose only the non-todo subset of the two
+    previous models.
+  - LibraryModel which wraps a model and add two entries to it: Inbox and
+    Library (Inbox is empty, and Library contains the source model).
+
+  So inside GlobalModel the link between models is the following:
+
+              tree model --------- projects model --- library model
+             /
+            /
+  flat model
+            \
+             \
+              categories model --- contexts model --- library model
+
+
+  View Layer:
+  -----------
+  Also we have a special model to show action lists, this model should be
+  considered as being part of the view layer since it has no other feature
+  than ensuring a proper layout of our lists. It can be used on top of:
+    - TodoFlatModel
+    - TodoTreeModel
+    - TodoCategoriesModel
+
+  This model works along with with ActionListView and ActionListDelegate to
+  visually obtain a nice action list with sections. It is part of the central
+  view.
+
+  The mainwindow is split into a sidebar and the action list editor. They both
+  provide the actions you can use with them.
+
+  - SideBar allows to display the contexts LibraryModel or the projects
+    LibraryModel depending on which mode the application is on.
+  - ActionListEditor allows to display action lists and add (or remove) items
+    to them.
+
+
