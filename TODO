@@ -1,0 +1,8 @@
+* Better date handling (e.g. typing "tomorrow" or "next monday" does the right thing).
+* Complete the configuration dialog to allow adding/removing resources.
+* Anti-procrastination feature (if you postpone a task too many times popup a dialog asking what to do)
+* Allows for task/project/context sorting
+* Use the start date field, and hide actions which have a start date in the future (probably requires an
+  extra mode to take a look at those actions).
+* Proper error handling
+* Undo/redo support
