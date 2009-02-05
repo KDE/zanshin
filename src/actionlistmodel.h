@@ -50,6 +50,7 @@ public:
     Akonadi::Item itemForIndex(const QModelIndex &index) const;
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant data(const QModelIndex &index, int role) const;
 
     void setMode(Mode mode);
     void setSourceFocusIndex(const QModelIndex &sourceIndex);

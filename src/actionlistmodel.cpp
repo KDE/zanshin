@@ -25,11 +25,17 @@
 
 #include <akonadi/item.h>
 
+#include <boost/shared_ptr.hpp>
+
+#include <kcal/todo.h>
+
 #include <QtCore/QStringList>
 
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
+
+typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
 ActionListModel::ActionListModel(QObject *parent)
     : QSortFilterProxyModel(parent), m_mode(StandardMode)
@@ -68,6 +74,32 @@ Qt::ItemFlags ActionListModel::flags(const QModelIndex &index) const
     } else {
         return QSortFilterProxyModel::flags(index);
     }
+}
+
+QVariant ActionListModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid() || index.row() >= rowCount()) {
+        return QVariant();
+    }
+
+    const Akonadi::Item item = itemForIndex(index);
+
+    if (!item.hasPayload<IncidencePtr>()) {
+        return QVariant();
+    }
+
+    const IncidencePtr incidence = item.payload<IncidencePtr>();
+
+    switch( role ) {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        switch(index.column()) {
+        case TodoFlatModel::Categories:
+            return incidence->categories().join(", ");
+        }
+    }
+    
+    return sourceModel()->data(index, role);
 }
 
 void ActionListModel::setMode(Mode mode)
