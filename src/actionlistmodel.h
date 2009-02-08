@@ -51,6 +51,8 @@ public:
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
     void setMode(Mode mode);
     void setSourceFocusIndex(const QModelIndex &sourceIndex);
     QModelIndex sourceFocusIndex() const;
