@@ -64,6 +64,7 @@ SideBar::SideBar(QWidget *parent, KActionCollection *ac)
     setLayout(new QVBoxLayout(this));
     m_stack = new QStackedWidget(this);
     layout()->addWidget(m_stack);
+    layout()->setContentsMargins(0, 0, 0, 0);
 
     setupProjectPage();
     setupContextPage();
