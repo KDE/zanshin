@@ -86,6 +86,8 @@ void SideBar::setupProjectPage()
     m_projectTree->viewport()->setAcceptDrops(true);
     m_projectTree->setDropIndicatorShown(true);
     m_projectTree->setCurrentIndex(m_projectTree->model()->index(0, 0));
+    m_projectTree->setRootIsDecorated(false);
+    m_projectTree->setStyleSheet("QTreeView { background: transparent; border-style: none; }");
     connect(m_projectTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             m_projectTree, SLOT(expand(const QModelIndex&)));
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
@@ -118,6 +120,8 @@ void SideBar::setupContextPage()
     m_contextTree->viewport()->setAcceptDrops(true);
     m_contextTree->setDropIndicatorShown(true);
     m_contextTree->setCurrentIndex(m_contextTree->model()->index(0, 0));
+    m_contextTree->setRootIsDecorated(false);
+    m_contextTree->setStyleSheet("QTreeView { background: transparent; border-style: none; }");
     connect(m_contextTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
             m_contextTree, SLOT(expand(const QModelIndex&)));
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
