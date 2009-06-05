@@ -44,6 +44,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QTreeView>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QHeaderView>
 
 #include "contextsmodel.h"
 #include "globalmodel.h"
@@ -75,6 +76,7 @@ void SideBar::setupProjectPage()
 
     m_projectTree = new QTreeView(projectPage);
     m_projectTree->setFocusPolicy(Qt::NoFocus);
+    m_projectTree->header()->hide();
     projectPage->layout()->addWidget(m_projectTree);
     m_projectTree->setAnimated(true);
     m_projectTree->setModel(GlobalModel::projectsLibrary());
@@ -106,6 +108,7 @@ void SideBar::setupContextPage()
 
     m_contextTree = new QTreeView(contextPage);
     m_contextTree->setFocusPolicy(Qt::NoFocus);
+    m_contextTree->header()->hide();
     contextPage->layout()->addWidget(m_contextTree);
     m_contextTree->setAnimated(true);
     m_contextTree->setModel(GlobalModel::contextsLibrary());
