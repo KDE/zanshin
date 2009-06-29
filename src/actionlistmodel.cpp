@@ -73,12 +73,11 @@ Qt::ItemFlags ActionListModel::flags(const QModelIndex &index) const
 QVariant ActionListModel::data(const QModelIndex &index, int role) const
 {
     QModelIndex sourceIndex = mapToSource(index);
-    QModelIndex columnIndex = sourceIndex.sibling(sourceIndex.row(), index.column());
-    if (columnIndex.column()==TodoFlatModel::Categories && role==Qt::DisplayRole) {
-        return sourceModel()->data(columnIndex, Qt::EditRole);
+    if (sourceIndex.column()==TodoFlatModel::Categories && role==Qt::DisplayRole) {
+        return sourceModel()->data(sourceIndex, Qt::EditRole);
     }
 
-    return sourceModel()->data(columnIndex, role);
+    return sourceModel()->data(sourceIndex, role);
 }
 
 void ActionListModel::setMode(Mode mode)
