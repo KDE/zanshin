@@ -50,6 +50,12 @@ protected slots:
 protected:
     virtual bool hasChanged();
     virtual bool isDefault();
+
+private slots:
+    void addResource();
+    void removeResource();
+    void configureResource();
+
 private:
     Akonadi::Collection::Id selectedCollection();
     Akonadi::CollectionView *m_collectionList;

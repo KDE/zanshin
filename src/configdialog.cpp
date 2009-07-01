@@ -23,12 +23,21 @@
 
 #include "configdialog.h"
 
+#include <akonadi/agentfilterproxymodel.h>
+#include <akonadi/agentinstance.h>
+#include <akonadi/agentinstancecreatejob.h>
+#include <akonadi/agentmanager.h>
+#include <akonadi/agenttypedialog.h>
 #include <akonadi/collectionmodel.h>
 #include <akonadi/collectionview.h>
 
+#include <KDE/KAction>
 #include <KDE/KLocale>
+#include <KDE/KMessageBox>
+#include <KDE/KStandardGuiItem>
 
 #include <QtGui/QLayout>
+#include <QtGui/QToolBar>
 
 #include "globalmodel.h"
 #include "globalsettings.h"
@@ -48,6 +57,33 @@ ConfigDialog::ConfigDialog(QWidget *parent, const QString &name, GlobalSettings 
             this, SLOT(_k_updateButtons()));
 
     m_collectionList->setModel(GlobalModel::todoCollections());
+
+    QHBoxLayout *toolbarLayout = new QHBoxLayout;
+    toolbarLayout->setAlignment(Qt::AlignRight);
+
+    QToolBar *toolbar = new QToolBar(page);
+    toolbarLayout->addWidget(toolbar);
+
+    KAction *add = new KAction( KStandardGuiItem::add().icon(),
+                                KStandardGuiItem::add().text(),
+                                this);
+    connect(add, SIGNAL(triggered(bool)), this, SLOT(addResource()));
+
+    KAction *remove = new KAction( KStandardGuiItem::remove().icon(),
+                                   KStandardGuiItem::remove().text(),
+                                   this);
+    connect(remove, SIGNAL(triggered(bool)), this, SLOT(removeResource()));
+
+    KAction *configure = new KAction( KStandardGuiItem::configure().icon(),
+                                      KStandardGuiItem::configure().text(),
+                                      this);
+    connect(configure, SIGNAL(triggered(bool)), this, SLOT(configureResource()));
+
+    toolbar->addAction(add);
+    toolbar->addAction(remove);
+    toolbar->addAction(configure);
+
+    page->layout()->addItem(toolbarLayout);
 
     addPage(page, i18n("Resources"), QString(), QString(), false);
 
@@ -96,4 +132,50 @@ bool ConfigDialog::isDefault()
 {
     QModelIndex current = m_collectionList->currentIndex();
     return current.isValid() && (current.row()==0);
+}
+
+void ConfigDialog::addResource()
+{
+    Akonadi::AgentTypeDialog dlg(this);
+    dlg.agentFilterProxyModel()->addMimeTypeFilter("application/x-vnd.akonadi.calendar.todo");
+    if (dlg.exec()) {
+        const Akonadi::AgentType agentType = dlg.agentType();
+
+        if (agentType.isValid()) {
+            Akonadi::AgentInstanceCreateJob *job = new Akonadi::AgentInstanceCreateJob(agentType, this);
+            job->configure(this);
+            job->start(); // TODO: check result
+        }
+    }
+}
+
+void ConfigDialog::removeResource()
+{
+    const QModelIndex current = m_collectionList->currentIndex();
+    const Akonadi::Collection collection = m_collectionList->model()->data(current, Akonadi::CollectionModel::CollectionRole).value<Akonadi::Collection>();
+    Akonadi::AgentInstance agent = Akonadi::AgentManager::self()->instance(collection.resource());
+
+    if ( agent.isValid() ) {
+        if ( KMessageBox::questionYesNo( this,
+                                         i18n( "Do you really want to delete agent instance %1?", agent.name() ),
+                                         i18n( "Agent Deletion" ),
+                                         KStandardGuiItem::del(),
+                                         KStandardGuiItem::cancel(),
+                                         QString(),
+                                         KMessageBox::Dangerous )
+             == KMessageBox::Yes )
+        {
+            Akonadi::AgentManager::self()->removeInstance( agent );
+        }
+    }
+}
+
+void ConfigDialog::configureResource()
+{
+    const QModelIndex current = m_collectionList->currentIndex();
+    const Akonadi::Collection collection = m_collectionList->model()->data(current, Akonadi::CollectionModel::CollectionRole).value<Akonadi::Collection>();
+    Akonadi::AgentInstance agent = Akonadi::AgentManager::self()->instance(collection.resource());
+
+    if ( agent.isValid() )
+        agent.configure(this);
 }
