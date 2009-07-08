@@ -22,11 +22,11 @@
 */
 
 #include "modeltestbase.h"
-#include <qtest_kde.h>
 
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
 #include <akonadi/itemdeletejob.h>
+#include <akonadi/qtest_akonadi.h>
 
 #include <QtGui/QSortFilterProxyModel>
 
@@ -50,7 +50,7 @@ private:
     LibraryModel m_model;
 };
 
-QTEST_KDEMAIN(LibraryModelTest, GUI)
+QTEST_AKONADIMAIN(LibraryModelTest, GUI)
 
 void LibraryModelTest::initTestCase()
 {

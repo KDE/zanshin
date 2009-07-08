@@ -23,11 +23,11 @@
 */
 
 #include "modeltestbase.h"
-#include <qtest_kde.h>
 
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
 #include <akonadi/itemdeletejob.h>
+#include <akonadi/qtest_akonadi.h>
 
 #include <QtGui/QSortFilterProxyModel>
 
@@ -63,7 +63,7 @@ private:
     QSortFilterProxyModel m_sortedModel;
 };
 
-QTEST_KDEMAIN(TodoCategoriesModelTest, GUI)
+QTEST_AKONADIMAIN(TodoCategoriesModelTest, GUI)
 
 void TodoCategoriesModelTest::initTestCase()
 {

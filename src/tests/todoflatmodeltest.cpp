@@ -23,12 +23,12 @@
 */
 
 #include "modeltestbase.h"
-#include <qtest_kde.h>
 
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemdeletejob.h>
+#include <akonadi/qtest_akonadi.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -59,7 +59,7 @@ private:
     QSortFilterProxyModel m_sortedModel;
 };
 
-QTEST_KDEMAIN(TodoFlatModelTest, GUI)
+QTEST_AKONADIMAIN(TodoFlatModelTest, GUI)
 
 void TodoFlatModelTest::initTestCase()
 {

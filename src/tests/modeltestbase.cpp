@@ -23,12 +23,8 @@
 
 #include "modeltestbase.h"
 
-#include <qtest_kde.h>
-
-#include <akonadi/agentinstancecreatejob.h>
-#include <akonadi/agentmanager.h>
-#include <akonadi/agenttype.h>
 #include <akonadi/collectionfetchjob.h>
+#include <akonadi/qtest_akonadi.h>
 
 #include <KDebug>
 #include <KTemporaryFile>
@@ -38,7 +34,6 @@
 ModelTestBase::ModelTestBase()
     : QObject()
 {
-    unsetenv("XDG_CONFIG_HOME");
 }
 
 void ModelTestBase::flushNotifications()
@@ -54,41 +49,11 @@ void ModelTestBase::initTestCase()
 {
     qRegisterMetaType<QModelIndex>();
 
-    Akonadi::AgentType type = Akonadi::AgentManager::self()->type("akonadi_ical_resource");
-    Akonadi::AgentInstanceCreateJob *resJob = new Akonadi::AgentInstanceCreateJob(type);
-    QVERIFY2(resJob->exec(), resJob->errorString().toLatin1().data());
-
-    QFile originalFile(TEST_DATA);
-    KTemporaryFile temp;
-    temp.setAutoRemove(false);
-    temp.setSuffix(".ics");
-    QVERIFY(temp.open());
-    m_testFile.setFileName(temp.fileName());
-    temp.close();
-    temp.remove();
-
-    QVERIFY2(originalFile.copy(m_testFile.fileName()), originalFile.errorString().toLatin1().constData());
-
-    m_agentInstance = resJob->instance();
-    QDBusInterface settings(QString("org.freedesktop.Akonadi.Resource.")+m_agentInstance.identifier(),
-                            "/Settings", "org.kde.Akonadi.ICal.Settings");
-    settings.call("setPath", m_testFile.fileName());
-    m_agentInstance.reconfigure();
-
-    flushNotifications();
-
     Akonadi::CollectionFetchJob *colJob = new Akonadi::CollectionFetchJob(Akonadi::Collection::root());
-    colJob->setResource(m_agentInstance.identifier());
+    colJob->setResource("akonadi_ical_resource_0");
     QVERIFY2(colJob->exec(), colJob->errorString().toLatin1().data());
     QCOMPARE(colJob->collections().size(), 1);
     m_collection = colJob->collections()[0];
-}
-
-void ModelTestBase::cleanupTestCase()
-{
-    QString identifier = m_agentInstance.identifier();
-    Akonadi::AgentManager::self()->removeInstance(m_agentInstance);
-    m_testFile.remove();
 }
 
 #include "modeltestbase.moc"

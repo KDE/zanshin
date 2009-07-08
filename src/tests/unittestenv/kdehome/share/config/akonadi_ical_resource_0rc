@@ -1,0 +1,4 @@
+[General]
+Path[$e]=$KDEHOME/testdata.ics
+FileWatchingEnabled=false
+

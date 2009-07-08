@@ -44,7 +44,6 @@ protected:
 
 protected slots:
     virtual void initTestCase();
-    virtual void cleanupTestCase();
 
 private:
     Akonadi::AgentInstance m_agentInstance;
