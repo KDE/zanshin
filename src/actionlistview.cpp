@@ -27,12 +27,14 @@
 #include <QtGui/QHeaderView>
 
 #include "actionlistdelegate.h"
+#include "actionduedatedelegate.h"
 
 ActionListView::ActionListView(QWidget *parent)
     : Akonadi::ItemView(parent)
 {
     setRootIsDecorated(false);
     setItemDelegate(new ActionListDelegate(this));
+    setItemDelegateForColumn(2, new ActionDueDateDelegate(this));
     setAnimated(true);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setDragEnabled(true);

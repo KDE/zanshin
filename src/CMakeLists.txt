@@ -3,6 +3,7 @@ add_subdirectory(tests)
 ########### zanshin ###############
 
 set(zanshin_SRCS
+   actionduedatedelegate.cpp
    actionlistdelegate.cpp
    actionlisteditor.cpp
    actionlistmodel.cpp
@@ -10,6 +11,8 @@ set(zanshin_SRCS
    configdialog.cpp
    contextsmodel.cpp
    globalmodel.cpp
+   kdateedit.cpp
+   kdatepickerpopup.cpp
    librarymodel.cpp
    main.cpp
    mainwindow.cpp
