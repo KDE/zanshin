@@ -35,7 +35,6 @@ ActionListModel::ActionListModel(QObject *parent)
     : QSortFilterProxyModel(parent), m_mode(StandardMode)
 {
     setDynamicSortFilter(true);
-    sort(0);
 }
 
 ActionListModel::~ActionListModel()
