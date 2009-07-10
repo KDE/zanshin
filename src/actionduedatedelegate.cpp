@@ -29,6 +29,8 @@
 #include <kcal/todo.h>
 #include "kdateedit.h"
 
+#include <QtGui/QLineEdit>
+
 #include "actionlistmodel.h"
 
 using namespace KPIM;
@@ -60,6 +62,7 @@ void ActionDueDateDelegate::setEditorData(QWidget *editor, const QModelIndex &in
     KDateEdit *dateEdit = static_cast<KDateEdit*>(editor);
 
     dateEdit->setDate(index.data(Qt::EditRole).toDate());
+    dateEdit->lineEdit()->selectAll();
 }
 
 void ActionDueDateDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
