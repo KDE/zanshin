@@ -143,7 +143,7 @@ bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     return QStyledItemDelegate::editorEvent(event, model, opt, index);
 }
 
-TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index) const
+TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index)
 {
     const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
 

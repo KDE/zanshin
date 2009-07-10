@@ -53,8 +53,8 @@ public:
                              const QStyleOptionViewItem &option,
                              const QModelIndex &index);
 
+    static TodoFlatModel::ItemType rowType(const QModelIndex &index);
 private:
-    TodoFlatModel::ItemType rowType(const QModelIndex &index) const;
     bool isInFocus(const QModelIndex &index) const;
     bool isCompleted(const QModelIndex &index) const;
     bool isOverdue(const QModelIndex &index) const;

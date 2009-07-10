@@ -44,6 +44,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
+#include "actionlistdelegate.h"
 #include "actionlistmodel.h"
 #include "actionlistview.h"
 #include "contextsmodel.h"
@@ -302,16 +303,13 @@ void ActionListEditor::onPreviousAction()
     QModelIndex index = m_view->currentIndex();
 
     if (!index.isValid()) {
-        QModelIndex focusIndex = m_model->sourceFocusIndex();
-        if (focusIndex.isValid()) {
-            m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
-        } else {
-            m_view->setCurrentIndex(m_model->index(m_model->rowCount()-1, 0));
-        }
+        onNextAction();
         return;
     }
 
-    index = m_view->indexAbove(index);
+    do {
+        index = m_view->indexAbove(index);
+    } while (index.isValid() && (ActionListDelegate::rowType(index)==TodoFlatModel::FolderTodo || !m_model->isInFocus(index)));
 
     if (index.isValid()) {
         m_view->setCurrentIndex(index);
@@ -325,13 +323,15 @@ void ActionListEditor::onNextAction()
     if (!index.isValid()) {
         QModelIndex focusIndex = m_model->sourceFocusIndex();
         if (focusIndex.isValid()) {
-            m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
+            index = m_model->mapFromSource(focusIndex);
         } else {
-            m_view->setCurrentIndex(m_model->index(0, 0));
+            index = m_model->index(0, 0);
         }
     }
 
-    index = m_view->indexBelow(index);
+    do {
+        index = m_view->indexBelow(index);
+    } while (index.isValid() && (ActionListDelegate::rowType(index)==TodoFlatModel::FolderTodo || !m_model->isInFocus(index)));
 
     if (index.isValid()) {
         m_view->setCurrentIndex(index);
