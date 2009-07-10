@@ -94,22 +94,28 @@ void ActionListView::startDrag(Qt::DropActions supportedActions)
 
 QModelIndex ActionListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
 {
+    QModelIndex index = currentIndex();
+    QModelIndex newIndex;
+
     switch (cursorAction) {
     case MoveLeft:
-        if (currentIndex().column()==0) {
-            return currentIndex();
+        if (index.column()==0) {
+            return index;
         }
 
-        setCurrentIndex(currentIndex().sibling(currentIndex().row(), currentIndex().column()-1));
-        return currentIndex();
+        return index.sibling(index.row(), index.column()-1);
 
     case MoveRight:
-        if (currentIndex().column()==model()->columnCount(currentIndex())-1) {
-            return currentIndex();
+        if (index.column()==model()->columnCount(index)-1) {
+            return index;
         }
 
-        setCurrentIndex(currentIndex().sibling(currentIndex().row(), currentIndex().column()+1));
-        return currentIndex();
+        return index.sibling(index.row(), index.column()+1);
+
+    case MoveUp:
+    case MoveDown:
+        newIndex = Akonadi::ItemView::moveCursor(cursorAction, modifiers);
+        return newIndex.sibling(newIndex.row(), index.column());
 
     default:
         return Akonadi::ItemView::moveCursor(cursorAction, modifiers);

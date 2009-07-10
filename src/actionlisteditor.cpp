@@ -118,18 +118,6 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_remove->setText(i18n("Remove Action"));
     m_remove->setIcon(KIcon("list-remove"));
     m_remove->setShortcut(Qt::Key_Delete);
-
-    m_previous = ac->addAction("editor_go_previous", this, SLOT(onPreviousAction()));
-    m_previous->setText(i18n("Previous Action"));
-    m_previous->setIcon(KIcon("go-previous"));
-    m_previous->setShortcut(Qt::Key_Up);
-    m_previous->setShortcutContext(Qt::WidgetShortcut);
-
-    m_next = ac->addAction("editor_go_next", this, SLOT(onNextAction()));
-    m_next->setText(i18n("Next Action"));
-    m_next->setIcon(KIcon("go-next"));
-    m_next->setShortcut(Qt::Key_Down);
-    m_next->setShortcutContext(Qt::WidgetShortcut);
 }
 
 void ActionListEditor::updateActions(const QModelIndex &index)
@@ -300,55 +288,11 @@ void ActionListEditor::focusActionEdit()
     m_addActionEdit->setFocus();
 }
 
-void ActionListEditor::onPreviousAction()
-{
-    QModelIndex index = m_view->currentIndex();
-
-    if (!index.isValid()) {
-        onNextAction();
-        return;
-    }
-
-    do {
-        index = m_view->indexAbove(index);
-    } while (index.isValid() && (ActionListDelegate::rowType(index)==TodoFlatModel::FolderTodo || !m_model->isInFocus(index)));
-
-    if (index.isValid()) {
-        m_view->setCurrentIndex(index);
-    }
-}
-
-void ActionListEditor::onNextAction()
-{
-    QModelIndex index = m_view->currentIndex();
-
-    if (!index.isValid()) {
-        QModelIndex focusIndex = m_model->sourceFocusIndex();
-        if (focusIndex.isValid()) {
-            index = m_model->mapFromSource(focusIndex);
-        } else {
-            index = m_model->index(0, 0);
-        }
-    }
-
-    do {
-        index = m_view->indexBelow(index);
-    } while (index.isValid() && (ActionListDelegate::rowType(index)==TodoFlatModel::FolderTodo || !m_model->isInFocus(index)));
-
-    if (index.isValid()) {
-        m_view->setCurrentIndex(index);
-    }
-}
-
 bool ActionListEditor::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched==m_addActionEdit) {
         if (event->type()==QEvent::FocusIn) {
             m_cancelAdd->setEnabled(true);
-
-            if (!m_view->currentIndex().isValid()) {
-                onNextAction();
-            }
         } else  if (event->type()==QEvent::FocusOut) {
             m_cancelAdd->setEnabled(false);
         }

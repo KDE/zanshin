@@ -56,8 +56,6 @@ private slots:
     void updateActions(const QModelIndex &index);
     void onAddActionRequested();
     void onRemoveAction();
-    void onPreviousAction();
-    void onNextAction();
     void focusActionEdit();
 
 private:
@@ -71,8 +69,6 @@ private:
     KAction *m_add;
     KAction *m_cancelAdd;
     KAction *m_remove;
-    KAction *m_previous;
-    KAction *m_next;
 };
 
 #endif
