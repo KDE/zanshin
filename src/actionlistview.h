@@ -41,6 +41,7 @@ public slots:
 
 protected:
     virtual void startDrag(Qt::DropActions supportedActions);
+    virtual QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers);
 
 private slots:
     void expandBranch(const QModelIndex& parent);

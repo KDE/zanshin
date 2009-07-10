@@ -36,7 +36,7 @@ ActionListView::ActionListView(QWidget *parent)
     setItemDelegate(new ActionListDelegate(this));
     setItemDelegateForColumn(2, new ActionDueDateDelegate(this));
     setAnimated(true);
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(true);
     viewport()->setAcceptDrops(true);
     setDropIndicatorShown(true);
@@ -90,4 +90,28 @@ void ActionListView::startDrag(Qt::DropActions supportedActions)
     }
 
     Akonadi::ItemView::startDrag(supportedActions);
+}
+
+QModelIndex ActionListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+{
+    switch (cursorAction) {
+    case MoveLeft:
+        if (currentIndex().column()==0) {
+            return currentIndex();
+        }
+
+        setCurrentIndex(currentIndex().sibling(currentIndex().row(), currentIndex().column()-1));
+        return currentIndex();
+
+    case MoveRight:
+        if (currentIndex().column()==model()->columnCount(currentIndex())-1) {
+            return currentIndex();
+        }
+
+        setCurrentIndex(currentIndex().sibling(currentIndex().row(), currentIndex().column()+1));
+        return currentIndex();
+
+    default:
+        return Akonadi::ItemView::moveCursor(cursorAction, modifiers);
+    }
 }
