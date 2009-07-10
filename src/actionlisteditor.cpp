@@ -123,11 +123,13 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_previous->setText(i18n("Previous Action"));
     m_previous->setIcon(KIcon("go-previous"));
     m_previous->setShortcut(Qt::Key_Up);
+    m_previous->setShortcutContext(Qt::WidgetShortcut);
 
     m_next = ac->addAction("editor_go_next", this, SLOT(onNextAction()));
     m_next->setText(i18n("Next Action"));
     m_next->setIcon(KIcon("go-next"));
     m_next->setShortcut(Qt::Key_Down);
+    m_next->setShortcutContext(Qt::WidgetShortcut);
 }
 
 void ActionListEditor::updateActions(const QModelIndex &index)
