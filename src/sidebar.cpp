@@ -97,8 +97,12 @@ void SideBar::setupProjectPage()
     connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
+    QHBoxLayout *toolbarLayout = new QHBoxLayout;
+    toolbarLayout->setAlignment(Qt::AlignRight);
+
     QToolBar *projectBar = new QToolBar(projectPage);
-    projectPage->layout()->addWidget(projectBar);
+    toolbarLayout->addWidget(projectBar);
+    projectPage->layout()->addItem(toolbarLayout);
     projectBar->addAction(m_add);
     projectBar->addAction(m_remove);
     projectBar->addAction(m_addFolder);
@@ -133,8 +137,12 @@ void SideBar::setupContextPage()
     connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
+    QHBoxLayout *toolbarLayout = new QHBoxLayout;
+    toolbarLayout->setAlignment(Qt::AlignRight);
+
     QToolBar *contextBar = new QToolBar(contextPage);
-    contextPage->layout()->addWidget(contextBar);
+    toolbarLayout->addWidget(contextBar);
+    contextPage->layout()->addItem(toolbarLayout);
     contextBar->addAction(m_add);
     contextBar->addAction(m_remove);
 
