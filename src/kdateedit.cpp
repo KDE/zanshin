@@ -88,7 +88,6 @@ KDateEdit::KDateEdit( QWidget *parent, const char *name )
 
   addItem( today );
   setCurrentIndex( 0 );
-  setSizeAdjustPolicy( AdjustToContents );
 
   connect( lineEdit(), SIGNAL( returnPressed() ),
            this, SLOT( lineEnterPressed() ) );
@@ -236,7 +235,9 @@ QDate KDateEdit::parseDate( bool *replaced ) const
   } else if ( mKeywordMap.contains( text.toLower() ) ) {
     QDate today = QDate::currentDate();
     int i = mKeywordMap[ text.toLower() ];
-    if ( i >= 100 ) {
+    if ( i == 30 ) {
+      today = today.addMonths( 1 );
+    } else if ( i >= 100 ) {
       /* A day name has been entered. Convert to offset from today.
        * This uses some math tricks to figure out the offset in days
        * to the next date the given day of the week occurs. There
@@ -367,6 +368,8 @@ void KDateEdit::setupKeywords()
   mKeywordMap.insert( i18nc( "the day after today", "tomorrow" ), 1 );
   mKeywordMap.insert( i18nc( "this day", "today" ), 0 );
   mKeywordMap.insert( i18nc( "the day before today", "yesterday" ), -1 );
+  mKeywordMap.insert( i18nc( "the week after this week", "next week" ), 7 );
+  mKeywordMap.insert( i18nc( "the month after this month", "next month" ), 30 );
 
   QString dayName;
   for ( int i = 1; i <= 7; ++i ) {
