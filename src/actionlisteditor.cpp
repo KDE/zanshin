@@ -40,6 +40,7 @@
 
 #include <QtCore/QEvent>
 #include <QtGui/QHBoxLayout>
+#include <QtGui/QHeaderView>
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
@@ -67,6 +68,10 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
 
     connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
+
+    m_view->header()->setSortIndicatorShown(true);
+    m_view->setSortingEnabled(true);
+    m_view->sortByColumn(0, Qt::AscendingOrder);
 
     QWidget *bottomBar = new QWidget(this);
     layout()->addWidget(bottomBar);

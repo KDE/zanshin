@@ -165,7 +165,8 @@ bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceP
 bool ActionListModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     if (left.column()==0 && right.column()==0) {
-        return sourceModel()->rowCount(right)!=0 && sourceModel()->rowCount(left)==0;
+        return (sourceModel()->rowCount(right)!=0 && sourceModel()->rowCount(left)==0)
+            || QSortFilterProxyModel::lessThan(left, right);
     }
 
     return QSortFilterProxyModel::lessThan(left, right);
