@@ -97,6 +97,16 @@ QModelIndex ActionListView::moveCursor(CursorAction cursorAction, Qt::KeyboardMo
     QModelIndex index = currentIndex();
     QModelIndex newIndex;
 
+    if (!index.isValid()) {
+        index = model()->index(0, 0);
+
+        while (index.isValid() && (model()->flags(index) & Qt::ItemIsEnabled) == 0) {
+            index = indexBelow(index);
+        }
+
+        return index;
+    }
+
     switch (cursorAction) {
     case MoveLeft:
         if (index.column()==0) {
