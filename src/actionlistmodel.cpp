@@ -164,8 +164,15 @@ bool ActionListModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceP
 bool ActionListModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     if (left.column()==0 && right.column()==0) {
-        return (sourceModel()->rowCount(right)!=0 && sourceModel()->rowCount(left)==0)
-            || QSortFilterProxyModel::lessThan(left, right);
+        QModelIndex leftRowType = left.sibling(left.row(), TodoFlatModel::RowType);
+        QModelIndex rightRowType = right.sibling(right.row(), TodoFlatModel::RowType);
+
+        if (sourceModel()->data(rightRowType).toInt()==TodoFlatModel::FolderTodo
+         && sourceModel()->data(leftRowType).toInt()!=TodoFlatModel::FolderTodo) {
+            return true;
+        } else {
+            return QSortFilterProxyModel::lessThan(left, right);
+        }
     }
 
     return QSortFilterProxyModel::lessThan(left, right);
