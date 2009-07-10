@@ -310,7 +310,7 @@ Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
     } else if (node && node->id!=-1)
         return QAbstractProxyModel::flags(index);
 
-    return Qt::NoItemFlags;
+    return Qt::ItemIsEnabled|Qt::ItemIsSelectable;
 }
 
 QModelIndex TodoCategoriesModel::mapToSource(const QModelIndex &proxyIndex) const
