@@ -288,3 +288,8 @@ void LibraryModel::onSourceLayoutChanged()
     m_sourceIndexesList.clear();
     emit layoutChanged();
 }
+
+void LibraryModel::sort(int column, Qt::SortOrder order)
+{
+    sourceModel()->sort(column, order);
+}

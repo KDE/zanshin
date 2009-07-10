@@ -67,6 +67,8 @@ public:
     virtual QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
     virtual QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
 
+    virtual void sort(int column, Qt::SortOrder order=Qt::AscendingOrder);
+
 private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceRowsAboutToBeInserted(const QModelIndex &sourceIndex, int begin, int end);
