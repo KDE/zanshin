@@ -277,24 +277,40 @@ void KDateEdit::focusOutEvent( QFocusEvent *e )
 
 void KDateEdit::keyPressEvent(QKeyEvent* e)
 {
-      int step = 0;
-      if ( e->key() == Qt::Key_Up ) {
-        step = 1;
-      } else if ( e->key() == Qt::Key_Down ) {
-        step = -1;
-      }
-      if ( step && !mReadOnly ) {
-        QDate date = parseDate();
-        if ( date.isValid() ) {
-          date = date.addDays( step );
-          if ( assignDate( date ) ) {
-            updateView();
-            emit dateChanged( date );
-            emit dateEntered( date );
-          }
-        }
-      }
-      QComboBox::keyPressEvent( e );
+  QDate date;
+
+  if ( !mReadOnly ) {
+    switch ( e->key() ) {
+    case Qt::Key_Up:
+      date = parseDate();
+      if (!date.isValid()) break;
+      date = date.addDays( 1 );
+      break;
+    case Qt::Key_Down:
+      date = parseDate();
+      if (!date.isValid()) break;
+      date = date.addDays( -1 );
+      break;
+    case Qt::Key_PageUp:
+      date = parseDate();
+      if (!date.isValid()) break;
+      date = date.addMonths( 1 );
+      break;
+    case Qt::Key_PageDown:
+      date = parseDate();
+      if (!date.isValid()) break;
+      date = date.addMonths( -1 );
+      break;
+    }
+
+    if ( date.isValid() && assignDate( date ) ) {
+      updateView();
+      emit dateChanged( date );
+      emit dateEntered( date );
+    }
+  }
+
+  QComboBox::keyPressEvent( e );
 }
 
 bool KDateEdit::eventFilter( QObject *object, QEvent *event )
