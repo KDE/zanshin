@@ -8,6 +8,7 @@
    <Separator />
    <Action name="editor_add_action" />
    <Action name="editor_remove_action" />
+   <Action name="editor_move_action" />
   </Menu>
   <Menu name="go">
    <text>&amp;Go</text>

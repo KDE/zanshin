@@ -118,14 +118,20 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_remove->setText(i18n("Remove Action"));
     m_remove->setIcon(KIcon("list-remove"));
     m_remove->setShortcut(Qt::Key_Delete);
+
+    m_move = ac->addAction("editor_move_action", this, SLOT(onMoveAction()));
+    m_move->setText(i18n("Move Action..."));
+    m_move->setShortcut(Qt::Key_M);
 }
 
 void ActionListEditor::updateActions(const QModelIndex &index)
 {
     if (!index.isValid()) {
         m_remove->setEnabled(false);
+        m_move->setEnabled(false);
     } else {
         m_remove->setEnabled(true);
+        m_move->setEnabled(true);
     }
 }
 
@@ -204,6 +210,11 @@ void ActionListEditor::onRemoveAction()
     }
 
     new Akonadi::ItemDeleteJob(item, this);
+}
+
+void ActionListEditor::onMoveAction()
+{
+    qDebug("ActionListEditor::onMoveAction() triggered");
 }
 
 void ActionListEditor::showNoProjectInbox()
