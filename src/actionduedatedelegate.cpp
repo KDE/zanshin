@@ -62,6 +62,9 @@ void ActionDueDateDelegate::setEditorData(QWidget *editor, const QModelIndex &in
     KDateEdit *dateEdit = static_cast<KDateEdit*>(editor);
 
     dateEdit->setDate(index.data(Qt::EditRole).toDate());
+    if (dateEdit->lineEdit()->text().isEmpty()) {
+        dateEdit->setDate(QDate::currentDate());
+    }
     dateEdit->lineEdit()->selectAll();
 }
 
