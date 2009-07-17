@@ -55,8 +55,13 @@ QSize ActionListDelegate::sizeHint(const QStyleOptionViewItem &option,
 
     QSize res = QStyledItemDelegate::sizeHint(option, index);
 
-    if (rowType(index)==TodoFlatModel::FolderTodo || !isInFocus(index)) {
+    TodoFlatModel::ItemType type = rowType(index);
+
+    if (type==TodoFlatModel::FolderTodo || !isInFocus(index)) {
         res.setHeight(32);
+
+    } else if (type!=TodoFlatModel::StandardTodo) {
+        res.setHeight(24);
     }
 
     return res;
@@ -88,7 +93,7 @@ void ActionListDelegate::paint(QPainter *painter,
         opt.font.setPointSizeF(opt.font.pointSizeF()*0.75);
 
     } else if (type!=TodoFlatModel::StandardTodo) {
-        opt.decorationSize = QSize(24, 24);
+        opt.decorationSize = QSize(22, 22);
         opt.font.setWeight(QFont::Bold);
 
     } else if (index.parent().isValid()) {
