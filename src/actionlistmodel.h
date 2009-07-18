@@ -55,6 +55,8 @@ public:
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     void setMode(Mode mode);
+    Mode mode() const;
+
     void setSourceFocusIndex(const QModelIndex &sourceIndex);
     QModelIndex sourceFocusIndex() const;
 

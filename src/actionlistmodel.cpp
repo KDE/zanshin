@@ -105,6 +105,11 @@ void ActionListModel::setMode(Mode mode)
     invalidate();
 }
 
+ActionListModel::Mode ActionListModel::mode() const
+{
+    return m_mode;
+}
+
 void ActionListModel::setSourceFocusIndex(const QModelIndex &sourceIndex)
 {
     m_sourceFocusIndex = sourceIndex;
