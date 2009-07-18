@@ -50,6 +50,7 @@
 #include "contextsmodel.h"
 #include "globalmodel.h"
 #include "projectsmodel.h"
+#include "quickselectdialog.h"
 #include "todocategoriesmodel.h"
 #include "todoflatmodel.h"
 #include "todotreemodel.h"
@@ -214,7 +215,52 @@ void ActionListEditor::onRemoveAction()
 
 void ActionListEditor::onMoveAction()
 {
-    qDebug("ActionListEditor::onMoveAction() triggered");
+    QModelIndex current = m_view->currentIndex();
+
+    if (m_model->rowCount(current)>0) {
+        return;
+    }
+
+    QAbstractItemModel *source = m_model->sourceModel();
+    QModelIndex movedIndex;
+
+    TodoFlatModel *flat = dynamic_cast<TodoFlatModel*>(source);
+    if (flat != 0) {
+        movedIndex = m_model->mapToSource(current);
+    }
+
+    TodoTreeModel *tree = dynamic_cast<TodoTreeModel*>(source);
+    if (tree != 0) {
+        movedIndex = m_model->mapToSource(current);
+    }
+
+    TodoCategoriesModel *categories = dynamic_cast<TodoCategoriesModel*>(source);
+    if (categories != 0) {
+        movedIndex = m_model->mapToSource(current);
+    }
+
+    if (!movedIndex.isValid()) {
+        return;
+    }
+
+    QuickSelectDialog::Mode mode = QuickSelectDialog::ProjectMode;
+    if (m_model->mode()==ActionListModel::NoContextMode
+     || m_model->mode()==ActionListModel::ContextMode) {
+        mode = QuickSelectDialog::ContextMode;
+    }
+
+    QuickSelectDialog dlg(this, mode,
+                          QuickSelectDialog::MoveAction);
+    if (dlg.exec()==QDialog::Accepted) {
+        QString selectedId = dlg.selectedId();
+        if (mode==QuickSelectDialog::ProjectMode) {
+            QModelIndex index = movedIndex.sibling(movedIndex.row(), TodoFlatModel::ParentRemoteId);
+            source->setData(index, selectedId);
+        } else {
+            QModelIndex index = movedIndex.sibling(movedIndex.row(), TodoFlatModel::Categories);
+            source->setData(index, selectedId);
+        }
+    }
 }
 
 void ActionListEditor::showNoProjectInbox()
