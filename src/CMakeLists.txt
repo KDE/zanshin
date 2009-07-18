@@ -17,6 +17,7 @@ set(zanshin_SRCS
    main.cpp
    mainwindow.cpp
    projectsmodel.cpp
+   quickselectdialog.cpp
    todocategoriesattribute.cpp
    todocategoriesmodel.cpp
    todoflatmodel.cpp
