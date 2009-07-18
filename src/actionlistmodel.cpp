@@ -25,6 +25,8 @@
 
 #include <akonadi/item.h>
 
+#include <KDE/KLocale>
+
 #include <QtCore/QStringList>
 
 #include "todocategoriesmodel.h"
@@ -77,6 +79,24 @@ QVariant ActionListModel::data(const QModelIndex &index, int role) const
     }
 
     return sourceModel()->data(sourceIndex, role);
+}
+
+QVariant ActionListModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (role==Qt::DisplayRole && orientation == Qt::Horizontal) {
+        QModelIndex sourceIndex = mapToSource(index(0, section));
+
+        switch(sourceIndex.column()) {
+        case TodoFlatModel::Categories:
+            return i18n("Contexts");
+        case TodoFlatModel::ParentSummary:
+            return i18n("Project");
+        default:
+            break;
+        }
+    }
+
+    return QSortFilterProxyModel::headerData(section, orientation, role);
 }
 
 void ActionListModel::setMode(Mode mode)
