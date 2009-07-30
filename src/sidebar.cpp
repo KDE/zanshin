@@ -101,6 +101,7 @@ void SideBar::setupProjectPage()
     toolbarLayout->setAlignment(Qt::AlignRight);
 
     QToolBar *projectBar = new QToolBar(projectPage);
+    projectBar->setIconSize(QSize(16, 16));
     toolbarLayout->addWidget(projectBar);
     projectPage->layout()->addItem(toolbarLayout);
     projectBar->addAction(m_add);
@@ -141,6 +142,7 @@ void SideBar::setupContextPage()
     toolbarLayout->setAlignment(Qt::AlignRight);
 
     QToolBar *contextBar = new QToolBar(contextPage);
+    contextBar->setIconSize(QSize(16, 16));
     toolbarLayout->addWidget(contextBar);
     contextPage->layout()->addItem(toolbarLayout);
     contextBar->addAction(m_add);

@@ -90,6 +90,7 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     setupActions(ac);
 
     QToolBar *toolBar = new QToolBar(bottomBar);
+    toolBar->setIconSize(QSize(16, 16));
     bottomBar->layout()->addWidget(toolBar);
     toolBar->addAction(m_cancelAdd);
 
