@@ -55,6 +55,7 @@ private slots:
     void onAddFolder();
     void onAddItem();
     void onRemoveItem();
+    void onRenameItem();
     void onPreviousItem();
     void onNextItem();
     void onCurrentProjectChangeDetected();
@@ -84,6 +85,7 @@ private:
     KAction *m_add;
     KAction *m_addFolder;
     KAction *m_remove;
+    KAction *m_rename;
     KAction *m_previous;
     KAction *m_next;
 };

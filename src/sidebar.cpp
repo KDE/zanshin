@@ -104,9 +104,16 @@ void SideBar::setupProjectPage()
     projectBar->setIconSize(QSize(16, 16));
     toolbarLayout->addWidget(projectBar);
     projectPage->layout()->addItem(toolbarLayout);
+    projectBar->addAction(m_addFolder);
     projectBar->addAction(m_add);
     projectBar->addAction(m_remove);
-    projectBar->addAction(m_addFolder);
+
+    m_projectTree->setContextMenuPolicy(Qt::ActionsContextMenu);
+    m_projectTree->addActions(projectBar->actions());
+    QAction *separator = new QAction(m_projectTree);
+    separator->setSeparator(true);
+    m_projectTree->addAction(separator);
+    m_projectTree->addAction(m_rename);
 
     m_stack->addWidget(projectPage);
 }
@@ -148,6 +155,13 @@ void SideBar::setupContextPage()
     contextBar->addAction(m_add);
     contextBar->addAction(m_remove);
 
+    m_contextTree->setContextMenuPolicy(Qt::ActionsContextMenu);
+    m_contextTree->addActions(contextBar->actions());
+    QAction *separator = new QAction(m_contextTree);
+    separator->setSeparator(true);
+    m_contextTree->addAction(separator);
+    m_contextTree->addAction(m_rename);
+
     m_stack->addWidget(contextPage);
 }
 
@@ -165,6 +179,10 @@ void SideBar::setupActions(KActionCollection *ac)
     m_remove->setText(i18n("Remove"));
     m_remove->setIcon(KIcon("list-remove"));
 
+    m_rename = ac->addAction("sidebar_rename", this, SLOT(onRenameItem()));
+    m_rename->setText(i18n("Rename"));
+    m_rename->setIcon(KIcon("edit-rename"));
+
     m_previous = ac->addAction("sidebar_go_previous", this, SLOT(onPreviousItem()));
     m_previous->setText(i18n("Previous"));
     m_previous->setIcon(KIcon("go-previous"));
@@ -181,6 +199,7 @@ void SideBar::switchToProjectMode()
     m_stack->setCurrentIndex(ProjectPageIndex);
     m_add->setText("New Project");
     m_remove->setText("Remove Project/Folder");
+    m_rename->setText("Rename Project/Folder");
     m_previous->setText("Previous Project");
     m_next->setText("Next Project");
     updateActions(m_projectTree->currentIndex());
@@ -193,6 +212,7 @@ void SideBar::switchToContextMode()
     m_stack->setCurrentIndex(ContextPageIndex);
     m_add->setText("New Context");
     m_remove->setText("Remove Context");
+    m_rename->setText("Rename Context");
     m_previous->setText("Previous Context");
     m_next->setText("Next Context");
     updateActions(m_contextTree->currentIndex());
@@ -214,9 +234,11 @@ void SideBar::updateActions(const QModelIndex &index)
         m_addFolder->setEnabled(false);
         m_add->setEnabled(false);
         m_remove->setEnabled(false);
+        m_rename->setEnabled(false);
     } else {
         m_add->setEnabled(true);
         m_remove->setEnabled(!model->isLibraryRoot(index));
+        m_rename->setEnabled(!model->isLibraryRoot(index));
 
         QModelIndex sourceIndex = model->mapToSource(index); // into "projects"
         if (m_addFolder->isEnabled() && sourceIndex.isValid()) { // Shouldn't be enabled on projects
@@ -287,6 +309,20 @@ void SideBar::onRemoveItem()
         break;
     case ContextPageIndex:
         removeCurrentContext();
+        break;
+    default:
+        Q_ASSERT(false);
+    }
+}
+
+void SideBar::onRenameItem()
+{
+    switch (m_stack->currentIndex()) {
+    case ProjectPageIndex:
+        m_projectTree->edit(m_projectTree->currentIndex());
+        break;
+    case ContextPageIndex:
+        m_contextTree->edit(m_contextTree->currentIndex());
         break;
     default:
         Q_ASSERT(false);
