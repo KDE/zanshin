@@ -162,12 +162,18 @@ void MainWindow::applySettings()
 {
     Akonadi::Collection collection(GlobalSettings::collectionId());
 
-    if (!collection.isValid()) return;
+    if (!collection.isValid()) {
+        showConfigDialog();
+        return;
+    }
 
     Akonadi::CollectionFetchJob *job =  new Akonadi::CollectionFetchJob(collection, Akonadi::CollectionFetchJob::Base);
     job->exec();
 
-    if (job->collections().isEmpty()) return;
+    if (job->collections().isEmpty()) {
+        showConfigDialog();
+        return;
+    }
 
     GlobalModel::todoFlat()->setCollection(job->collections().first());
 }
