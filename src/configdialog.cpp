@@ -62,6 +62,7 @@ ConfigDialog::ConfigDialog(QWidget *parent, const QString &name, GlobalSettings 
     toolbarLayout->setAlignment(Qt::AlignRight);
 
     QToolBar *toolbar = new QToolBar(page);
+    toolbar->setIconSize(QSize(16, 16));
     toolbarLayout->addWidget(toolbar);
 
     KAction *add = new KAction( KStandardGuiItem::add().icon(),
