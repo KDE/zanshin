@@ -57,6 +57,7 @@ private slots:
     void configureResource();
 
 private:
+    bool selectCollection(Akonadi::Collection::Id id, const QModelIndex &parentIndex=QModelIndex());
     Akonadi::Collection::Id selectedCollection();
     Akonadi::CollectionView *m_collectionList;
     GlobalSettings *m_settings;

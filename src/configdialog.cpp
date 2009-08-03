@@ -36,6 +36,7 @@
 #include <KDE/KMessageBox>
 #include <KDE/KStandardGuiItem>
 
+#include <QtCore/QTimer>
 #include <QtGui/QLayout>
 #include <QtGui/QToolBar>
 
@@ -57,6 +58,7 @@ ConfigDialog::ConfigDialog(QWidget *parent, const QString &name, GlobalSettings 
             this, SLOT(_k_updateButtons()));
 
     m_collectionList->setModel(GlobalModel::todoCollections());
+    m_collectionList->expandAll();
 
     QHBoxLayout *toolbarLayout = new QHBoxLayout;
     toolbarLayout->setAlignment(Qt::AlignRight);
@@ -101,21 +103,31 @@ void ConfigDialog::updateSettings()
 void ConfigDialog::updateWidgets()
 {
     Akonadi::Collection::Id id = m_settings->collectionId();
-
-    QAbstractItemModel *model = m_collectionList->model();
-    for (int row=0; row<model->rowCount(); row++) {
-        QModelIndex index = model->index(row, 0);
-        if (model->data(index, Akonadi::CollectionModel::CollectionIdRole).toInt()==id) {
-            m_collectionList->setCurrentIndex(index);
-            break;
-        }
-    }
+    selectCollection(id);
 }
 
 void ConfigDialog::updateWidgetsDefault()
 {
     QModelIndex index = m_collectionList->model()->index(0, 0);
     m_collectionList->setCurrentIndex(index);
+}
+
+bool ConfigDialog::selectCollection(Akonadi::Collection::Id id, const QModelIndex &parentIndex)
+{
+    const QAbstractItemModel *model = m_collectionList->model();
+
+    for (int row=0; row<model->rowCount(parentIndex); row++) {
+        QModelIndex index = model->index(row, 0, parentIndex);
+        if (model->data(index, Akonadi::CollectionModel::CollectionIdRole).toInt()==id) {
+            m_collectionList->setCurrentIndex(index);
+            return true;
+        } else if (model->rowCount(index)>0
+                && selectCollection(id, index)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 Akonadi::Collection::Id ConfigDialog::selectedCollection()
