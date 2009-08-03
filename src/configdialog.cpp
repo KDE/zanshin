@@ -37,6 +37,7 @@
 #include <KDE/KStandardGuiItem>
 
 #include <QtCore/QTimer>
+#include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtGui/QToolBar>
 
@@ -50,6 +51,11 @@ ConfigDialog::ConfigDialog(QWidget *parent, const QString &name, GlobalSettings 
 
     QWidget *page = new QWidget(this);
     page->setLayout(new QVBoxLayout(page));
+
+    QLabel *description = new QLabel(page);
+    page->layout()->addWidget(description);
+    description->setWordWrap(true);
+    description->setText(i18n("Please select or create a resource which will be used by the application to store and query its TODOs."));
 
     m_collectionList = new Akonadi::CollectionView(page);
     page->layout()->addWidget(m_collectionList);
