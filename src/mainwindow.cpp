@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     setupCentralWidget();
     setupActions();
 
-    setupGUI();
+    setupGUI(ToolBar | Keys | Save | Create);
 
     restoreColumnState();
     applySettings();

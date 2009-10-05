@@ -74,6 +74,7 @@ void SideBar::setupProjectPage()
 {
     QWidget *projectPage = new QWidget(m_stack);
     projectPage->setLayout(new QVBoxLayout(projectPage));
+    projectPage->layout()->setContentsMargins(0, 0, 0, 0);
 
     m_projectTree = new QTreeView(projectPage);
     m_projectTree->setFocusPolicy(Qt::NoFocus);
@@ -122,6 +123,7 @@ void SideBar::setupContextPage()
 {
     QWidget *contextPage = new QWidget(m_stack);
     contextPage->setLayout(new QVBoxLayout(contextPage));
+    contextPage->layout()->setContentsMargins(0, 0, 0, 0);
 
     m_contextTree = new QTreeView(contextPage);
     m_contextTree->setFocusPolicy(Qt::NoFocus);

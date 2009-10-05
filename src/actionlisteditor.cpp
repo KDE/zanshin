@@ -64,6 +64,7 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
 
     m_view = new ActionListView(this);
     layout()->addWidget(m_view);
+    layout()->setContentsMargins(0, 0, 0, 0);
     m_model = new ActionListModel(this);
     m_view->setModel(m_model);
     m_model->setSourceModel(GlobalModel::todoFlat());
@@ -78,6 +79,7 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     QWidget *bottomBar = new QWidget(this);
     layout()->addWidget(bottomBar);
     bottomBar->setLayout(new QHBoxLayout(bottomBar));
+    bottomBar->layout()->setContentsMargins(0, 0, 0, 0);
 
     m_addActionEdit = new KLineEdit(bottomBar);
     m_addActionEdit->installEventFilter(this);
