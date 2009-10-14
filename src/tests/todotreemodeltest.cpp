@@ -142,6 +142,10 @@ void TodoTreeModelTest::testInitialState()
                 )
             )
 
+         << (TreeNode("fake-15", "MotherFolder")
+             << TreeNode("fake-16", "ChildFolder")
+            )
+
          << (TreeNode("fake-04", "Second Folder")
              << (TreeNode("fake-10", "Pet Project")
                  << TreeNode("fake-08", "Choose a puppy")

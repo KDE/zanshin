@@ -80,23 +80,26 @@ void TodoFlatModelTest::testInitialState_data()
     QTest::addColumn<QString>("parentRemoteId");
     QTest::addColumn<QString>("dueDate");
     QTest::addColumn<bool>("isImportant");
+    QTest::addColumn<int>("rowType");
 
-    QTest::newRow("0") <<  0 << "fake-01" << "Becoming Astronaut" << QStringList() << "fake-12" << "" << false;
-    QTest::newRow("1") <<  1 << "fake-02" << "Look at the stars" << QStringList() << "fake-01" << "" << false;
+    QTest::newRow("0") <<  0 << "fake-01" << "Becoming Astronaut" << QStringList() << "fake-12" << "" << false << (int)TodoFlatModel::ProjectTodo;
+    QTest::newRow("1") <<  1 << "fake-02" << "Look at the stars" << QStringList() << "fake-01" << "" << false << (int)TodoFlatModel::StandardTodo;
     QTest::newRow("2") <<  2 << "fake-03" << "Walk around with the dog"
-                       << (QStringList() << "Errands") << "fake-10" << "2008-12-25" << false;
-    QTest::newRow("3") <<  3 << "fake-04" << "Second Folder" << QStringList() << "" << "" << false;
+                       << (QStringList() << "Errands") << "fake-10" << "2008-12-25" << false << (int)TodoFlatModel::StandardTodo;
+    QTest::newRow("3") <<  3 << "fake-04" << "Second Folder" << QStringList() << "" << "" << false << (int)TodoFlatModel::FolderTodo;
     QTest::newRow("4") <<  4 << "fake-05" << "Feed the dog"
-                       << (QStringList() << "Home") << "fake-10" << "" << false;
+                       << (QStringList() << "Home") << "fake-10" << "" << false << (int)TodoFlatModel::StandardTodo;
     QTest::newRow("5") <<  5 << "fake-06" << "Read magazine"
-                       << (QStringList() << "Office" << "Computer") << "fake-11" << "" << false;
-    QTest::newRow("6") <<  6 << "fake-07" << "Learn the constellations" << QStringList() << "fake-01" << "" << false;
-    QTest::newRow("7") <<  7 << "fake-08" << "Choose a puppy" << QStringList() << "fake-10" << "" << false;
-    QTest::newRow("8") <<  8 << "fake-09" << "Listen new age album 2" << QStringList() << "fake-11" << "" << false;
-    QTest::newRow("9") <<  9 << "fake-10" << "Pet Project" << QStringList() << "fake-04" << "" << false;
-    QTest::newRow("10") << 10 << "fake-11" << "Becoming more relaxed" << QStringList() << "fake-12" << "" << false;
-    QTest::newRow("11") << 11 << "fake-12" << "First Folder" << QStringList() << "" << "" << false;
-    QTest::newRow("12") << 12 << "fake-14" << "Choose a kitty" << QStringList() << "" << "" << false;
+                       << (QStringList() << "Office" << "Computer") << "fake-11" << "" << false << (int)TodoFlatModel::StandardTodo;
+    QTest::newRow("6") <<  6 << "fake-07" << "Learn the constellations" << QStringList() << "fake-01" << "" << false << (int)TodoFlatModel::StandardTodo;
+    QTest::newRow("7") <<  7 << "fake-08" << "Choose a puppy" << QStringList() << "fake-10" << "" << false << (int)TodoFlatModel::StandardTodo;
+    QTest::newRow("8") <<  8 << "fake-09" << "Listen new age album 2" << QStringList() << "fake-11" << "" << false << (int)TodoFlatModel::StandardTodo;
+    QTest::newRow("9") <<  9 << "fake-10" << "Pet Project" << QStringList() << "fake-04" << "" << false << (int)TodoFlatModel::ProjectTodo;
+    QTest::newRow("10") << 10 << "fake-11" << "Becoming more relaxed" << QStringList() << "fake-12" << "" << false << (int)TodoFlatModel::ProjectTodo;
+    QTest::newRow("11") << 11 << "fake-12" << "First Folder" << QStringList() << "" << "" << false << (int)TodoFlatModel::FolderTodo;
+    QTest::newRow("12") << 12 << "fake-14" << "Choose a kitty" << QStringList() << "" << "" << false << (int)TodoFlatModel::StandardTodo;
+    QTest::newRow("13") << 13 << "fake-15" << "MotherFolder" << QStringList() << "" << "" << false << (int)TodoFlatModel::FolderTodo;
+    QTest::newRow("14") << 14 << "fake-16" << "ChildFolder" << QStringList() << "fake-15" << "" << false << (int)TodoFlatModel::FolderTodo;
 }
 
 void TodoFlatModelTest::testInitialState()
@@ -108,8 +111,9 @@ void TodoFlatModelTest::testInitialState()
     QFETCH(QString, parentRemoteId);
     QFETCH(QString, dueDate);
     QFETCH(bool, isImportant);
+    QFETCH(int, rowType);
 
-    QCOMPARE(m_sortedModel.rowCount(), 13);
+    QCOMPARE(m_sortedModel.rowCount(), 15);
     QCOMPARE(m_sortedModel.columnCount(), 7);
 
     QModelIndex index = m_sortedModel.index(row, TodoFlatModel::RemoteId);
@@ -136,6 +140,9 @@ void TodoFlatModelTest::testInitialState()
     QCOMPARE(m_sortedModel.data(index).toString(), dueDate);
     QCOMPARE(m_sortedModel.rowCount(index), 0);
     QCOMPARE(m_sortedModel.columnCount(index), 0);
+
+    index = m_sortedModel.index(row, TodoFlatModel::RowType);
+    QCOMPARE(m_sortedModel.data(index).toInt(), rowType);
 }
 
 void TodoFlatModelTest::testItemModification_data()

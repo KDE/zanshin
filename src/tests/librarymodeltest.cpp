@@ -131,6 +131,10 @@ void LibraryModelTest::testInitialState()
                     )
                 )
 
+             << (TreeNode("MotherFolder")
+                 << TreeNode("ChildFolder")
+                )
+
              << (TreeNode("Second Folder")
                  << (TreeNode("Pet Project")
                      << TreeNode("Choose a puppy")
