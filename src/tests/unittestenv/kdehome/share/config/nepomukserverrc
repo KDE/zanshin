@@ -1,0 +1,13 @@
+[Basic Settings]
+Configured repositories=main
+Start Nepomuk=false
+
+[Service-nepomukmigration1]
+autostart=false
+
+[Service-nepomukstrigiservice]
+autostart=false
+
+[main Settings]
+Used Soprano Backend=sesame2
+rebuilt index for type indexing=true
