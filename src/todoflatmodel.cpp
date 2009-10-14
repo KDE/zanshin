@@ -548,7 +548,7 @@ TodoFlatModel::ItemType TodoFlatModel::todoType(const QString &remoteId, bool ex
     const QStringList children = m_childrenMap[remoteId];
     if (children.size()>0) {
         foreach (const QString &child, children) {
-            if (todoType(child) == ProjectTodo) {
+            if (todoType(child) != StandardTodo) {
                 return FolderTodo;
             }
         }
