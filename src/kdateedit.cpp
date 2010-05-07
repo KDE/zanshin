@@ -34,6 +34,7 @@
 
 #include <QAbstractItemView>
 #include <QApplication>
+#include <QCompleter>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QLineEdit>
@@ -75,10 +76,9 @@ class DateValidator : public QValidator
     QStringList mKeywords;
 };
 
-KDateEdit::KDateEdit( QWidget *parent, const char *name )
+KDateEdit::KDateEdit( QWidget *parent )
   : QComboBox( parent ), mReadOnly( false ), mDiscardNextMousePress( false )
 {
-  setObjectName( name );
   // need at least one entry for popup to work
   setMaxCount( 1 );
   setEditable( true );
@@ -291,22 +291,29 @@ void KDateEdit::keyPressEvent(QKeyEvent* e)
       if (!date.isValid()) break;
       date = date.addDays( -1 );
       break;
+    case Qt::Key_Plus:
     case Qt::Key_PageUp:
       date = parseDate();
       if (!date.isValid()) break;
       date = date.addMonths( 1 );
       break;
+    case Qt::Key_Minus:
     case Qt::Key_PageDown:
       date = parseDate();
       if (!date.isValid()) break;
       date = date.addMonths( -1 );
       break;
+    case Qt::Key_Equal:
+      date = QDate::currentDate();
+      break;
     }
 
     if ( date.isValid() && assignDate( date ) ) {
+      e->accept();
       updateView();
       emit dateChanged( date );
       emit dateEntered( date );
+      return;
     }
   }
 
@@ -325,7 +332,7 @@ bool KDateEdit::eventFilter( QObject *object, QEvent *event )
       // Up and down arrow keys step the date
       QKeyEvent *keyEvent = (QKeyEvent *)event;
 
-      if ( keyEvent->key() == Qt::Key_Return ) {
+      if ( keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter ) {
         lineEnterPressed();
         return true;
       }
@@ -392,6 +399,11 @@ void KDateEdit::setupKeywords()
     dayName = KGlobal::locale()->calendar()->weekDayName( i ).toLower();
     mKeywordMap.insert( dayName, i + 100 );
   }
+
+  QCompleter *comp = new QCompleter( mKeywordMap.keys(), this );
+  comp->setCaseSensitivity( Qt::CaseInsensitive );
+  comp->setCompletionMode( QCompleter::InlineCompletion );
+  setCompleter( comp );
 }
 
 bool KDateEdit::assignDate( const QDate &date )

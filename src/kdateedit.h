@@ -56,9 +56,10 @@ namespace KPIM {
 class KDateEdit : public QComboBox
 {
   Q_OBJECT
+  Q_PROPERTY( QDate date READ date WRITE setDate )
 
   public:
-    explicit KDateEdit( QWidget *parent = 0, const char *name = 0 );
+    explicit KDateEdit( QWidget *parent = 0 );
     virtual ~KDateEdit();
 
     /**
