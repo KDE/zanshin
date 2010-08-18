@@ -1,31 +1,20 @@
-add_subdirectory(tests)
-
 ########### zanshin ###############
 
 set(zanshin_SRCS
+   main.cpp
    actionduedatedelegate.cpp
    actionlistdelegate.cpp
-   actionlisteditor.cpp
-   actionlistmodel.cpp
-   actionlistview.cpp
-   configdialog.cpp
-   contextsmodel.cpp
-   globalmodel.cpp
    kdateedit.cpp
    kdatepickerpopup.cpp
-   librarymodel.cpp
-   main.cpp
-   mainwindow.cpp
-   projectsmodel.cpp
-   quickselectdialog.cpp
-   todocategoriesattribute.cpp
+   selectionproxymodel.cpp
+   sidebarmodel.cpp
    todocategoriesmodel.cpp
-   todoflatmodel.cpp
+   todoproxymodelbase.cpp
    todotreemodel.cpp
-   sidebar.cpp
+   todomodel.cpp
+   todonode.cpp
+   todonodemanager.cpp
 )
-
-kde4_add_kcfg_files(zanshin_SRCS globalsettings.kcfgc)
 
 kde4_add_executable(zanshin ${zanshin_SRCS})
 

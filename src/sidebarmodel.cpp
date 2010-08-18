@@ -22,33 +22,45 @@
    USA.
 */
 
-#ifndef ZANSHIN_TODOCATEGORIESMODEL_H
-#define ZANSHIN_TODOCATEGORIESMODEL_H
+#include "sidebarmodel.h"
 
-#include <QtGui/QAbstractProxyModel>
+#include <kcal/todo.h>
 
-#include "todonode.h"
-#include "todoproxymodelbase.h"
+#include <KDebug>
+#include <KIcon>
 
-class TodoCategoriesModel : public TodoProxyModelBase
+#include "todomodel.h"
+
+SideBarModel::SideBarModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
 {
-    Q_OBJECT
+    setDynamicSortFilter(true);
+}
 
-public:
-    TodoCategoriesModel(QObject *parent = 0);
-    virtual ~TodoCategoriesModel();
+SideBarModel::~SideBarModel()
+{
+}
 
-private slots:
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
-    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
+bool SideBarModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    if (left.data(TodoModel::ItemTypeRole).toInt()==TodoModel::Inbox) {
+        return true;
 
-private:
-    virtual TodoNode *createInbox() const;
-    TodoNode *createCategoryNode(const QString &category);
+    } else if (right.data(TodoModel::ItemTypeRole).toInt()==TodoModel::Inbox) {
+        return false;
 
-    QMap<QString, TodoNode*> m_categoryMap;
-};
+    } else {
+        return QSortFilterProxyModel::lessThan(left, right);
+    }
+}
 
-#endif
+bool SideBarModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &/*sourceParent*/) const
+{
+    return sourceColumn==0;
+}
 
+bool SideBarModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+{
+    QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
+    return sourceChild.data(TodoModel::ItemTypeRole).toInt()!=TodoModel::StandardTodo;
+}

@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -26,15 +26,65 @@
 #include <KDE/KCmdLineArgs>
 #include <KDE/KLocale>
 
-#include "mainwindow.h"
+#include <KDE/Akonadi/ChangeRecorder>
+#include <KDE/Akonadi/Session>
+#include <KDE/Akonadi/CollectionFetchScope>
+#include <KDE/Akonadi/EntityTreeModel>
+#include <KDE/Akonadi/EntityTreeView>
+#include <KDE/Akonadi/ItemFetchScope>
+
+#include "actionlistdelegate.h"
+#include "todomodel.h"
+#include "todocategoriesmodel.h"
+#include "todotreemodel.h"
+#include "selectionproxymodel.h"
+#include "sidebarmodel.h"
+
+template<class ProxyModel>
+void createViews(TodoModel *baseModel)
+{
+    ProxyModel *proxy = new ProxyModel;
+    proxy->setSourceModel(baseModel);
+
+    SideBarModel *sidebarModel = new SideBarModel;
+    sidebarModel->setSourceModel(proxy);
+
+    QString className = proxy->metaObject()->className();
+
+    Akonadi::EntityTreeView *sidebar = new Akonadi::EntityTreeView;
+    sidebar->setWindowTitle(className+"/SideBar");
+    sidebar->setModel(sidebarModel);
+    sidebar->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    sidebar->show();
+
+    SelectionProxyModel *selectionProxy = new SelectionProxyModel(sidebar->selectionModel());
+    selectionProxy->setSourceModel(proxy);
+
+    Akonadi::EntityTreeView *mainView = new Akonadi::EntityTreeView;
+    mainView->setItemsExpandable(false);
+    mainView->setWindowTitle(className);
+    mainView->setModel(selectionProxy);
+
+    QObject::connect(selectionProxy, SIGNAL(modelReset()),
+                     mainView, SLOT(expandAll()));
+    QObject::connect(selectionProxy, SIGNAL(layoutChanged()),
+                     mainView, SLOT(expandAll()));
+    QObject::connect(selectionProxy, SIGNAL(rowsInserted(QModelIndex, int, int)),
+                     mainView, SLOT(expandAll()));
+
+    mainView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    mainView->setItemDelegate(new ActionListDelegate(mainView));
+
+    mainView->show();
+}
 
 int main(int argc, char **argv)
 {
-    KAboutData about("zanshin", "zanshin",
-                     ki18n("Zanshin Todo"), "0.1",
+    KAboutData about("zanshin2", "zanshin2",
+                     ki18n("Zanshin Todo"), "0.2",
                      ki18n("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutData::License_GPL_V3,
-                     ki18n("Copyright 2008, Kevin Ottens <ervin@kde.org>"));
+                     ki18n("Copyright 2008-2010, Kevin Ottens <ervin@kde.org>"));
 
     about.addAuthor(ki18n("Kevin Ottens"),
                     ki18n("Lead Developer"),
@@ -51,8 +101,30 @@ int main(int argc, char **argv)
 
     KApplication app;
 
-    QWidget *widget = new MainWindow;
-    widget->show();
+    Akonadi::Session *session = new Akonadi::Session( "zanshin2" );
+
+    Akonadi::ItemFetchScope itemScope;
+    itemScope.fetchFullPayload();
+    itemScope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
+
+    Akonadi::CollectionFetchScope collectionScope;
+    collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
+
+    Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder;
+    changeRecorder->setCollectionMonitored( Akonadi::Collection::root() );
+    changeRecorder->setMimeTypeMonitored( "application/x-vnd.akonadi.calendar.todo" );
+    changeRecorder->setCollectionFetchScope( collectionScope );
+    changeRecorder->setItemFetchScope( itemScope );
+    changeRecorder->setSession( session );
+
+    TodoModel *todoModel = new TodoModel( changeRecorder );
+    Akonadi::EntityTreeView *view = new Akonadi::EntityTreeView;
+    view->setWindowTitle("TodoModel");
+    view->setModel(todoModel);
+    view->show();
+
+    createViews<TodoTreeModel>(todoModel);
+    createViews<TodoCategoriesModel>(todoModel);
 
     return app.exec();
 }

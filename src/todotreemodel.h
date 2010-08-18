@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
    Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
@@ -25,19 +25,10 @@
 #ifndef ZANSHIN_TODOTREEMODEL_H
 #define ZANSHIN_TODOTREEMODEL_H
 
-#include <QtGui/QAbstractProxyModel>
+#include "todonode.h"
+#include "todoproxymodelbase.h"
 
-#include <akonadi/entity.h>
-
-namespace Akonadi
-{
-    class Item;
-    class Collection;
-}
-
-class TodoFlatModel;
-
-class TodoTreeModel : public QAbstractProxyModel
+class TodoTreeModel : public TodoProxyModelBase
 {
     Q_OBJECT
 
@@ -45,49 +36,16 @@ public:
     TodoTreeModel(QObject *parent = 0);
     virtual ~TodoTreeModel();
 
-    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    virtual QModelIndex parent(const QModelIndex &index) const;
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-
-    virtual QStringList mimeTypes() const;
-    Qt::DropActions supportedDropActions() const;
-    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-    virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
-    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
-    virtual QVariant headerData(int section, Qt::Orientation orientation,
-                                int role = Qt::DisplayRole) const;
-
-    virtual QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
-    virtual QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
-
-    virtual void setSourceModel(QAbstractItemModel *sourceModel);
-
-    Akonadi::Item itemForIndex (const QModelIndex &index) const;
-    QModelIndex indexForItem (const Akonadi::Item &item, const int column = 0) const;
-
-    void setCollection(const Akonadi::Collection &collection);
-    Akonadi::Collection collection() const;
-
-signals:
-    void collectionChanged(const Akonadi::Collection &collection);
-
 private slots:
-    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
-    void onSourceCollectionChanged(const Akonadi::Collection &collection);
+    virtual void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
+    virtual void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
+    virtual void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
 
 private:
-    TodoFlatModel *flatModel() const;
-    Akonadi::Entity::Id idForIndex(const QModelIndex &index) const;
-    QModelIndex indexForId(Akonadi::Entity::Id id, int column = 0) const;
+    virtual TodoNode *createInbox() const;
+    void destroyBranch(TodoNode *root);
 
-    QHash<Akonadi::Entity::Id, QList<Akonadi::Entity::Id> > m_childrenMap;
-    QHash<Akonadi::Entity::Id, Akonadi::Entity::Id> m_parentMap;
-
-    QHash<Akonadi::Entity::Id, QString> m_remoteIdMap;
-    QHash<QString, Akonadi::Entity::Id> m_remoteIdReverseMap;
+    QHash<TodoNode*, QHash<QString, TodoNode*> > m_collectionToRemoteIdsHash;
 };
 
 #endif

@@ -31,11 +31,7 @@
 
 #include <QtGui/QLineEdit>
 
-#include "actionlistmodel.h"
-
 using namespace KPIM;
-
-typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
 
 ActionDueDateDelegate::ActionDueDateDelegate(QObject *parent)
     : ActionListDelegate(parent)

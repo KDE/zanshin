@@ -1,4 +1,0 @@
-File=globalsettings.kcfg
-ClassName=GlobalSettings
-Singleton=true
-Mutators=true

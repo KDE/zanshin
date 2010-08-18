@@ -1,6 +1,7 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,32 +22,26 @@
    USA.
 */
 
-#ifndef ZANSHIN_GLOBALMODEL_H
-#define ZANSHIN_GLOBALMODEL_H
+#ifndef ZANSHIN_SIDEBARMODEL_H
+#define ZANSHIN_SIDEBARMODEL_H
 
-class TodoFlatModel;
-class TodoTreeModel;
-class TodoCategoriesModel;
-class ContextsModel;
-class LibraryModel;
-class ProjectsModel;
-class QAbstractItemModel;
+#include <QtGui/QSortFilterProxyModel>
 
-namespace GlobalModel
+#include <KDE/Akonadi/EntityTreeModel>
+#include <KDE/KCal/Todo>
+
+class SideBarModel : public QSortFilterProxyModel
 {
-    // Internal models
-    TodoFlatModel *todoFlat();
-    TodoTreeModel *todoTree();
-    TodoCategoriesModel *todoCategories();
-    QAbstractItemModel *todoCollections();
+    Q_OBJECT
 
-    // User oriented models
-    ContextsModel *contexts();
-    ProjectsModel *projects();
+public:
+    SideBarModel(QObject *parent = 0);
+    virtual ~SideBarModel();
 
-    LibraryModel *contextsLibrary();
-    LibraryModel *projectsLibrary();
-}
+    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+    virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+};
 
 #endif
 

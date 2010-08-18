@@ -23,16 +23,15 @@
 
 #include "actionlistdelegate.h"
 
-#include <akonadi/item.h>
-#include <boost/shared_ptr.hpp>
-#include <kcal/todo.h>
+#include <QtGui/QLineEdit>
 
-#include "actionlistmodel.h"
+#include "kdateedit.h"
+#include "todomodel.h"
 
-typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
+using namespace KPIM;
 
 ActionListDelegate::ActionListDelegate(QObject *parent)
-    : QStyledItemDelegate(parent), m_dragModeCount(0)
+    : QStyledItemDelegate(parent)
 {
 
 }
@@ -45,22 +44,13 @@ ActionListDelegate::~ActionListDelegate()
 QSize ActionListDelegate::sizeHint(const QStyleOptionViewItem &option,
                                    const QModelIndex &index) const
 {
-    if (m_dragModeCount>0) {
-        if (index.column()==0) {
-            return QStyledItemDelegate::sizeHint(option, index);
-        } else {
-            return QSize();
-        }
-    }
-
     QSize res = QStyledItemDelegate::sizeHint(option, index);
 
-    TodoFlatModel::ItemType type = rowType(index);
+    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
 
-    if (type==TodoFlatModel::FolderTodo || !isInFocus(index)) {
+    if (!isInFocus(index)) {
         res.setHeight(32);
-
-    } else if (type!=TodoFlatModel::StandardTodo) {
+    } else if (type!=TodoModel::StandardTodo) {
         res.setHeight(24);
     }
 
@@ -71,35 +61,21 @@ void ActionListDelegate::paint(QPainter *painter,
                                const QStyleOptionViewItem &option,
                                const QModelIndex &index) const
 {
-    if (m_dragModeCount>0) {
-        QStyleOptionViewItemV4 opt = option;
-        opt.rect.setHeight(sizeHint(option, index).height());
-        m_dragModeCount--;
-        if (index.column()==0) {
-            return QStyledItemDelegate::paint(painter, opt, index);
-        } else {
-            return;
-        }
-    }
-
-    TodoFlatModel::ItemType type = rowType(index);
+    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
 
     QStyleOptionViewItemV4 opt = option;
 
-    if (type==TodoFlatModel::FolderTodo || !isInFocus(index)) {
+    if (!isInFocus(index)) {
         opt.decorationSize = QSize(1, 1);
         opt.displayAlignment = Qt::AlignHCenter|Qt::AlignBottom;
         opt.font.setItalic(true);
         opt.font.setPointSizeF(opt.font.pointSizeF()*0.75);
 
-    } else if (type!=TodoFlatModel::StandardTodo) {
+    } else if (type!=TodoModel::StandardTodo) {
         opt.decorationSize = QSize(22, 22);
         opt.font.setWeight(QFont::Bold);
 
     } else if (index.parent().isValid()) {
-        if (index.column()==0) {
-            opt.rect.adjust(40, 0, 0, 0);
-        }
         if (index.row()%2==0) {
             opt.features|= QStyleOptionViewItemV4::Alternate;
         }
@@ -115,97 +91,84 @@ void ActionListDelegate::paint(QPainter *painter,
     QStyledItemDelegate::paint(painter, opt, index);
 }
 
-void ActionListDelegate::updateEditorGeometry(QWidget *editor,
-                                              const QStyleOptionViewItem &option,
-                                              const QModelIndex &index) const
+KCal::Todo::Ptr ActionListDelegate::todoFromIndex(const QModelIndex &index) const
 {
-    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
+    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
 
-    TodoFlatModel::ItemType type = rowType(index);
-
-    if (type==TodoFlatModel::StandardTodo
-     && index.column()==0
-     && index.parent().isValid()) {
-        QRect r = editor->geometry();
-        r.adjust(40, 0, 0, 0);
-        editor->setGeometry(r);
-    }
-}
-
-bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
-                                     const QStyleOptionViewItem &option,
-                                     const QModelIndex &index)
-{
-    QStyleOptionViewItemV4 opt = option;
-
-    TodoFlatModel::ItemType type = rowType(index);
-
-    if (type==TodoFlatModel::StandardTodo
-     && index.column()==0
-     && index.parent().isValid()) {
-        opt.rect.adjust(40, 0, 0, 0);
+    if (type!=TodoModel::StandardTodo) {
+        return KCal::Todo::Ptr();
     }
 
-    return QStyledItemDelegate::editorEvent(event, model, opt, index);
-}
-
-TodoFlatModel::ItemType ActionListDelegate::rowType(const QModelIndex &index)
-{
-    const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
-
-    if (model==0) {
-        return TodoFlatModel::StandardTodo;
+    Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    if (!item.isValid() || !item.hasPayload<KCal::Todo::Ptr>()) {
+        return KCal::Todo::Ptr();
     }
 
-    QModelIndex sourceIndex = model->mapToSource(index);
-    QModelIndex rowTypeIndex = sourceIndex.sibling(sourceIndex.row(), TodoFlatModel::RowType);
-
-    QVariant value = model->sourceModel()->data(rowTypeIndex);
-    if (!value.isValid()) {
-        return TodoFlatModel::StandardTodo;
-    }
-
-    return (TodoFlatModel::ItemType)value.toInt();
+    return item.payload<KCal::Todo::Ptr>();
 }
 
 bool ActionListDelegate::isInFocus(const QModelIndex &index) const
 {
-    const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
-
-    if (model==0) {
-        return true;
-    }
-
-    return model->isInFocus(index);
+    return true;
 }
 
 bool ActionListDelegate::isCompleted(const QModelIndex &index) const
 {
-    return index.model()->data(index.sibling(index.row(), 0), Qt::CheckStateRole).toInt()==Qt::Checked;
+    KCal::Todo::Ptr todo = todoFromIndex(index);
+
+    if (todo) {
+        return todo->isCompleted();
+    } else {
+        return false;
+    }
 }
 
 bool ActionListDelegate::isOverdue(const QModelIndex &index) const
 {
-    const ActionListModel *model = qobject_cast<const ActionListModel*>(index.model());
+    KCal::Todo::Ptr todo = todoFromIndex(index);
 
-    if (model==0) {
+    if (todo) {
+        return todo->isOverdue();
+    } else {
         return false;
     }
-
-    TodoFlatModel::ItemType type = rowType(index);
-
-    if (type==TodoFlatModel::Category) {
-        return false;
-    }
-
-    Akonadi::Item item = model->itemForIndex(index);
-    const IncidencePtr incidence = item.payload<IncidencePtr>();
-    KCal::Todo *todo = dynamic_cast<KCal::Todo*>(incidence.get());
-
-    return todo->isOverdue();
 }
 
-void ActionListDelegate::setDragModeCount(int count)
+QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                                          const QModelIndex &index) const
 {
-    m_dragModeCount = count;
+    if (index.data(Qt::EditRole).type()==QVariant::Date) {
+        return new KDateEdit(parent);
+    } else {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
+}
+
+void ActionListDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    KDateEdit *dateEdit = qobject_cast<KDateEdit*>(editor);
+
+    if (dateEdit) {
+        dateEdit->setDate(index.data(Qt::EditRole).toDate());
+        if (dateEdit->lineEdit()->text().isEmpty()) {
+            dateEdit->setDate(QDate::currentDate());
+        }
+        dateEdit->lineEdit()->selectAll();
+
+    } else {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
+}
+
+void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+                                      const QModelIndex &index) const
+{
+    KDateEdit *dateEdit = qobject_cast<KDateEdit*>(editor);
+
+    if (dateEdit) {
+        model->setData(index, dateEdit->date());
+
+    } else {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }

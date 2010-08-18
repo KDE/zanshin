@@ -26,7 +26,7 @@
 
 #include <QtGui/QStyledItemDelegate>
 
-#include "todoflatmodel.h"
+#include <KDE/KCal/Todo>
 
 class ActionListDelegate : public QStyledItemDelegate
 {
@@ -36,8 +36,6 @@ public:
     ActionListDelegate(QObject *parent = 0);
     virtual ~ActionListDelegate();
 
-    void setDragModeCount(int count);
-
     virtual QSize sizeHint(const QStyleOptionViewItem &option,
                            const QModelIndex &index) const;
 
@@ -45,21 +43,20 @@ public:
                        const QStyleOptionViewItem &option,
                        const QModelIndex &index) const;
 
-    virtual void updateEditorGeometry(QWidget *editor,
-                                      const QStyleOptionViewItem &option,
-                                      const QModelIndex &index) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model,
+                      const QModelIndex &index) const;
 
-    virtual bool editorEvent(QEvent *event, QAbstractItemModel *model,
-                             const QStyleOptionViewItem &option,
-                             const QModelIndex &index);
 
-    static TodoFlatModel::ItemType rowType(const QModelIndex &index);
+protected:
+    KCal::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
+
 private:
     bool isInFocus(const QModelIndex &index) const;
     bool isCompleted(const QModelIndex &index) const;
     bool isOverdue(const QModelIndex &index) const;
-
-    mutable int m_dragModeCount;
 };
 #endif
 

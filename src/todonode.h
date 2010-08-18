@@ -1,6 +1,7 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,29 +22,43 @@
    USA.
 */
 
-#ifndef ZANSHIN_CONTEXTSMODEL_H
-#define ZANSHIN_CONTEXTSMODEL_H
+#ifndef ZANSHIN_TODONODE_H
+#define ZANSHIN_TODONODE_H
 
-#include <QtGui/QSortFilterProxyModel>
+#include <QtCore/QChar>
+#include <QtCore/QPersistentModelIndex>
+#include <QtCore/QVariant>
 
-class TodoCategoriesModel;
-
-class ContextsModel : public QSortFilterProxyModel
+class TodoNode
 {
-    Q_OBJECT
-
 public:
-    ContextsModel(QObject *parent = 0);
-    virtual ~ContextsModel();
+    static const QChar pathSeparator;
 
-    virtual void setSourceModel(QAbstractItemModel *sourceModel);
+    explicit TodoNode(const QModelIndex &rowSourceIndex, TodoNode *parent = 0);
+    explicit TodoNode(TodoNode *parent = 0);
+    ~TodoNode();
 
-protected:
-    virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
-    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    TodoNode *parent() const;
+    QList<TodoNode*> children() const;
+
+    QModelIndex rowSourceIndex() const;
+
+    QVariant data(int column, int role) const;
+    void setData(const QVariant &value, int column, int role);
+    void setRowData(const QVariant &value, int role);
+
+    Qt::ItemFlags flags() const;
+    void setFlags(Qt::ItemFlags flags);
 
 private:
-    TodoCategoriesModel *categoriesModel() const;
+    void init();
+
+    TodoNode *m_parent;
+    QList<TodoNode*> m_children;
+
+    QPersistentModelIndex m_rowSourceIndex;
+    QHash< QPair<int, int>, QVariant> m_data;
+    Qt::ItemFlags m_flags;
 };
 
 #endif

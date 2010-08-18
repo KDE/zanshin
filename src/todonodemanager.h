@@ -22,32 +22,40 @@
    USA.
 */
 
-#ifndef ZANSHIN_TODOCATEGORIESMODEL_H
-#define ZANSHIN_TODOCATEGORIESMODEL_H
+#ifndef ZANSHIN_TODONODEMANAGER_H
+#define ZANSHIN_TODONODEMANAGER_H
 
-#include <QtGui/QAbstractProxyModel>
+#include <QtCore/QPersistentModelIndex>
 
-#include "todonode.h"
-#include "todoproxymodelbase.h"
+class TodoNode;
+class TodoProxyModelBase;
 
-class TodoCategoriesModel : public TodoProxyModelBase
+class TodoNodeManager
 {
-    Q_OBJECT
-
 public:
-    TodoCategoriesModel(QObject *parent = 0);
-    virtual ~TodoCategoriesModel();
+    explicit TodoNodeManager(TodoProxyModelBase *model, bool multiMapping = false);
 
-private slots:
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
-    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
+    QModelIndex index(int row, int column, TodoNode *parent) const;
+    QModelIndex index(int row, int column, const QModelIndex &parent) const;
 
-private:
-    virtual TodoNode *createInbox() const;
-    TodoNode *createCategoryNode(const QString &category);
+    QModelIndex indexForNode(TodoNode *node, int column) const;
+    TodoNode *nodeForIndex(const QModelIndex &index) const;
 
-    QMap<QString, TodoNode*> m_categoryMap;
+    TodoNode *nodeForSourceIndex(const QModelIndex &sourceIndex) const;
+    QList<TodoNode*> nodesForSourceIndex(const QModelIndex &sourceIndex) const;
+
+    void insertNode(TodoNode *node);
+    void removeNode(TodoNode *node);
+
+    QList<TodoNode*> roots() const;
+
+    bool isMultiMapping() const;
+
+protected:
+    TodoProxyModelBase *m_model;
+    bool m_multiMapping;
+    QList<TodoNode*> m_roots;
+    QMultiHash<QPersistentModelIndex, TodoNode*> m_nodes;
 };
 
 #endif

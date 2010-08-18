@@ -26,7 +26,6 @@
 #define ZANSHIN_ACTIONDUEDATEDELEGATE_H
 
 #include "actionlistdelegate.h"
-#include "todoflatmodel.h"
 
 class ActionDueDateDelegate : public ActionListDelegate
 {
