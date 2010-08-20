@@ -1,7 +1,7 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008 Kevin Ottens <ervin@kde.org>
-   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
+   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2008,2009 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -24,10 +24,6 @@
 
 #include "mainwindow.h"
 
-#include <akonadi/control.h>
-
-#include <akonadi/collectionfetchjob.h>
-
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfigGroup>
@@ -38,49 +34,36 @@
 #include <QtGui/QHeaderView>
 
 #include "actionlisteditor.h"
-#include "actionlistview.h"
-#include "configdialog.h"
-#include "globalmodel.h"
-#include "globalsettings.h"
-#include "todoflatmodel.h"
+#include "globaldefs.h"
 #include "sidebar.h"
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(ModelStack *models, QWidget *parent)
     : KXmlGuiWindow(parent)
 {
-    Akonadi::Control::start();
-
-    setupSideBar();
-    setupCentralWidget();
+    setupSideBar(models);
+    setupCentralWidget(models);
     setupActions();
 
     setupGUI(ToolBar | Keys | Save | Create);
 
-    restoreColumnState();
-    applySettings();
+    restoreColumnsState();
 
     actionCollection()->action("project_mode")->trigger();
 }
 
-void MainWindow::setupCentralWidget()
+void MainWindow::setupCentralWidget(ModelStack *models)
 {
-    m_editor = new ActionListEditor(this, actionCollection());
-
-    connect(m_sidebar, SIGNAL(noProjectInboxActivated()),
-            m_editor, SLOT(showNoProjectInbox()));
-    connect(m_sidebar, SIGNAL(projectActivated(QModelIndex)),
-            m_editor, SLOT(focusOnProject(QModelIndex)));
-    connect(m_sidebar, SIGNAL(noContextInboxActivated()),
-            m_editor, SLOT(showNoContextInbox()));
-    connect(m_sidebar, SIGNAL(contextActivated(QModelIndex)),
-            m_editor, SLOT(focusOnContext(QModelIndex)));
-
+    m_editor = new ActionListEditor(models,
+                                    m_sidebar->projectSelection(),
+                                    m_sidebar->categoriesSelection(),
+                                    actionCollection(),
+                                    this);
     setCentralWidget(m_editor);
 }
 
-void MainWindow::setupSideBar()
+void MainWindow::setupSideBar(ModelStack *models)
 {
-    m_sidebar = new SideBar(this, actionCollection());
+    m_sidebar = new SideBar(models, actionCollection(), this);
 
     QDockWidget *dock = new QDockWidget(this);
     dock->setObjectName("SideBar");
@@ -96,21 +79,22 @@ void MainWindow::setupActions()
     QActionGroup *modeGroup = new QActionGroup(this);
     modeGroup->setExclusive(true);
 
-    KAction *action = ac->addAction("project_mode", m_sidebar, SLOT(switchToProjectMode()));
+    KAction *action = ac->addAction("project_mode", this, SLOT(onModeSwitch()));
     action->setText(i18n("Project View"));
     action->setIcon(KIcon("view-pim-tasks"));
     action->setShortcut(Qt::CTRL | Qt::Key_P);
     action->setCheckable(true);
+    action->setData(Zanshin::ProjectMode);
     modeGroup->addAction(action);
 
-    action = ac->addAction("context_mode", m_sidebar, SLOT(switchToContextMode()));
-    action->setText(i18n("Context View"));
+    action = ac->addAction("categories_mode", this, SLOT(onModeSwitch()));
+    action->setText(i18n("Categories View"));
     action->setIcon(KIcon("view-pim-notes"));
     action->setShortcut(Qt::CTRL | Qt::Key_O);
     action->setCheckable(true);
+    action->setData(Zanshin::CategoriesMode);
     modeGroup->addAction(action);
 
-    ac->addAction(KStandardAction::Preferences, this, SLOT(showConfigDialog()));
     ac->addAction(KStandardAction::Quit, this, SLOT(close()));
 }
 
@@ -129,51 +113,18 @@ void MainWindow::saveAutoSaveSettings()
 void MainWindow::saveColumnsState()
 {
     KConfigGroup cg = autoSaveConfigGroup();
-    QByteArray state = m_editor->view()->header()->saveState();
-    cg.writeEntry("MainHeaderState", state.toBase64());
+    m_editor->saveColumnsState(cg);
 }
 
-void MainWindow::restoreColumnState()
+void MainWindow::restoreColumnsState()
 {
     KConfigGroup cg = autoSaveConfigGroup();
-    QByteArray state;
-    if (cg.hasKey("MainHeaderState")) {
-        state = cg.readEntry("MainHeaderState", state);
-        m_editor->view()->header()->restoreState(QByteArray::fromBase64(state));
-    }
+    m_editor->restoreColumnsState(cg);
 }
 
-void MainWindow::showConfigDialog()
+void MainWindow::onModeSwitch()
 {
-    if (KConfigDialog::showDialog("settings")) {
-        return;
-    }
-
-    ConfigDialog *dialog = new ConfigDialog(this, "settings",
-                                            GlobalSettings::self());
-
-    connect(dialog, SIGNAL(settingsChanged(const QString&)),
-            this, SLOT(applySettings()));
-
-    dialog->show();
-}
-
-void MainWindow::applySettings()
-{
-    Akonadi::Collection collection(GlobalSettings::collectionId());
-
-    if (!collection.isValid()) {
-        showConfigDialog();
-        return;
-    }
-
-    Akonadi::CollectionFetchJob *job =  new Akonadi::CollectionFetchJob(collection, Akonadi::CollectionFetchJob::Base);
-    job->exec();
-
-    if (job->collections().isEmpty()) {
-        showConfigDialog();
-        return;
-    }
-
-    GlobalModel::todoFlat()->setCollection(job->collections().first());
+    KAction *action = static_cast<KAction*>(sender());
+    m_editor->setMode((Zanshin::ApplicationMode)action->data().toInt());
+    m_sidebar->setMode((Zanshin::ApplicationMode)action->data().toInt());
 }

@@ -2,7 +2,6 @@
 <kpartgui name="zanshin" version="1">
  <MenuBar>
   <Menu name="file">
-   <Action name="sidebar_new_folder" />
    <Action name="sidebar_new" />
    <Action name="sidebar_remove" />
    <Separator />
@@ -13,7 +12,7 @@
   <Menu name="go">
    <text>&amp;Go</text>
    <Action name="project_mode" />
-   <Action name="context_mode" />
+   <Action name="categories_mode" />
    <Separator />
    <Action name="sidebar_go_next" />
    <Action name="sidebar_go_previous" />
@@ -22,7 +21,7 @@
  <ToolBar noMerge="1" name="mainToolBar" >
   <text context="@title:menu">Main Toolbar</text>
   <Action name="project_mode" />
-  <Action name="context_mode" />
+  <Action name="categories_mode" />
   <Separator name="separator_0" />
   <Action name="editor_add_action" />
  </ToolBar>

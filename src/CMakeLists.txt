@@ -4,9 +4,14 @@ set(zanshin_SRCS
    main.cpp
    actionduedatedelegate.cpp
    actionlistdelegate.cpp
+   actionlisteditor.cpp
+   debugwindow.cpp
    kdateedit.cpp
    kdatepickerpopup.cpp
+   mainwindow.cpp
+   modelstack.cpp
    selectionproxymodel.cpp
+   sidebar.cpp
    sidebarmodel.cpp
    todocategoriesmodel.cpp
    todoproxymodelbase.cpp

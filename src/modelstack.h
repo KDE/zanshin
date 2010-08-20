@@ -21,41 +21,41 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_MODELSTACK_H
+#define ZANSHIN_MODELSTACK_H
 
-#include <KDE/KXmlGuiWindow>
+#include <QtCore/QObject>
 
-class ActionListEditor;
-class ModelStack;
-class SideBar;
+class QItemSelectionModel;
+class QAbstractItemModel;
 
-class MainWindow : public KXmlGuiWindow
+class ModelStack : public QObject
 {
     Q_OBJECT
 
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+    explicit ModelStack(QObject *parent = 0);
 
-protected slots:
-    void saveAutoSaveSettings();
+    QAbstractItemModel *baseModel();
 
-protected:
-    virtual void closeEvent(QCloseEvent *event);
+    QAbstractItemModel *treeModel();
+    QAbstractItemModel *treeSideBarModel();
+    QAbstractItemModel *treeSelectionModel(QItemSelectionModel *selection = 0);
 
-private slots:
-    void onModeSwitch();
+    QAbstractItemModel *categoriesModel();
+    QAbstractItemModel *categoriesSideBarModel();
+    QAbstractItemModel *categoriesSelectionModel(QItemSelectionModel *selection = 0);
 
 private:
-    void setupCentralWidget(ModelStack *models);
-    void setupSideBar(ModelStack *models);
-    void setupActions();
+    QAbstractItemModel *m_baseModel;
 
-    void saveColumnsState();
-    void restoreColumnsState();
+    QAbstractItemModel *m_treeModel;
+    QAbstractItemModel *m_treeSideBarModel;
+    QAbstractItemModel *m_treeSelectionModel;
 
-    SideBar *m_sidebar;
-    ActionListEditor *m_editor;
+    QAbstractItemModel *m_categoriesModel;
+    QAbstractItemModel *m_categoriesSideBarModel;
+    QAbstractItemModel *m_categoriesSelectionModel;
 };
 
 #endif

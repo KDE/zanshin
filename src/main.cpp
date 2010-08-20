@@ -26,20 +26,11 @@
 #include <KDE/KCmdLineArgs>
 #include <KDE/KLocale>
 
-#include <KDE/Akonadi/ChangeRecorder>
-#include <KDE/Akonadi/Session>
-#include <KDE/Akonadi/CollectionFetchScope>
-#include <KDE/Akonadi/EntityTreeModel>
-#include <KDE/Akonadi/EntityTreeView>
-#include <KDE/Akonadi/ItemFetchScope>
+#include "debugwindow.h"
+#include "mainwindow.h"
+#include "modelstack.h"
 
-#include "actionlistdelegate.h"
-#include "todomodel.h"
-#include "todocategoriesmodel.h"
-#include "todotreemodel.h"
-#include "selectionproxymodel.h"
-#include "sidebarmodel.h"
-
+/*
 template<class ProxyModel>
 void createViews(TodoModel *baseModel)
 {
@@ -77,10 +68,11 @@ void createViews(TodoModel *baseModel)
 
     mainView->show();
 }
+*/
 
 int main(int argc, char **argv)
 {
-    KAboutData about("zanshin2", "zanshin2",
+    KAboutData about("zanshin", "zanshin",
                      ki18n("Zanshin Todo"), "0.2",
                      ki18n("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutData::License_GPL_V3,
@@ -101,22 +93,15 @@ int main(int argc, char **argv)
 
     KApplication app;
 
-    Akonadi::Session *session = new Akonadi::Session( "zanshin2" );
+    ModelStack models;
 
-    Akonadi::ItemFetchScope itemScope;
-    itemScope.fetchFullPayload();
-    itemScope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
+    DebugWindow *debugWindow = new DebugWindow(&models);
+    debugWindow->show();
 
-    Akonadi::CollectionFetchScope collectionScope;
-    collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
+    MainWindow *mainWindow = new MainWindow(&models);
+    mainWindow->show();
 
-    Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder;
-    changeRecorder->setCollectionMonitored( Akonadi::Collection::root() );
-    changeRecorder->setMimeTypeMonitored( "application/x-vnd.akonadi.calendar.todo" );
-    changeRecorder->setCollectionFetchScope( collectionScope );
-    changeRecorder->setItemFetchScope( itemScope );
-    changeRecorder->setSession( session );
-
+    /*
     TodoModel *todoModel = new TodoModel( changeRecorder );
     Akonadi::EntityTreeView *view = new Akonadi::EntityTreeView;
     view->setWindowTitle("TodoModel");
@@ -125,6 +110,7 @@ int main(int argc, char **argv)
 
     createViews<TodoTreeModel>(todoModel);
     createViews<TodoCategoriesModel>(todoModel);
+    */
 
     return app.exec();
 }

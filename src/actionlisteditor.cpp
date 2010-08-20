@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2009 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -23,6 +23,7 @@
 
 #include "actionlisteditor.h"
 
+#if 0
 #include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemdeletejob.h>
@@ -30,9 +31,12 @@
 #include <boost/shared_ptr.hpp>
 
 #include <kcal/todo.h>
+#endif
 
+#include <KDE/Akonadi/EntityTreeView>
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
+#include <KDE/KConfigGroup>
 #include <KDE/KIcon>
 #include <KDE/KLineEdit>
 #include <KDE/KLocale>
@@ -43,38 +47,72 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QStackedWidget>
 
 #include "actionlistdelegate.h"
-#include "actionlistmodel.h"
-#include "actionlistview.h"
-#include "contextsmodel.h"
-#include "globalmodel.h"
-#include "projectsmodel.h"
+#include "modelstack.h"
+#if 0
 #include "quickselectdialog.h"
-#include "todocategoriesmodel.h"
-#include "todoflatmodel.h"
-#include "todotreemodel.h"
+#endif
 
-typedef boost::shared_ptr<KCal::Incidence> IncidencePtr;
-
-ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
+ActionListEditor::ActionListEditor(ModelStack *models,
+                                   QItemSelectionModel *projectSelection,
+                                   QItemSelectionModel *categoriesSelection,
+                                   KActionCollection *ac,
+                                   QWidget *parent)
     : QWidget(parent)
 {
     setLayout(new QVBoxLayout(this));
 
-    m_view = new ActionListView(this);
-    layout()->addWidget(m_view);
+    m_stack = new QStackedWidget(this);
+    layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
-    m_model = new ActionListModel(this);
-    m_view->setModel(m_model);
-    m_model->setSourceModel(GlobalModel::todoFlat());
 
-    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+    m_projectView = new Akonadi::EntityTreeView(m_stack);
+    m_projectView->setModel(models->treeSelectionModel(projectSelection));
+    m_projectView->setItemDelegate(new ActionListDelegate(m_projectView));
+
+    m_projectView->header()->setSortIndicatorShown(true);
+    m_projectView->setSortingEnabled(true);
+    m_projectView->sortByColumn(0, Qt::AscendingOrder);
+
+    m_projectView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    m_projectView->setItemsExpandable(false);
+
+    connect(m_projectView->model(), SIGNAL(modelReset()),
+            m_projectView, SLOT(expandAll()));
+    connect(m_projectView->model(), SIGNAL(layoutChanged()),
+            m_projectView, SLOT(expandAll()));
+    connect(m_projectView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+            m_projectView, SLOT(expandAll()));
+
+    connect(m_projectView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
-    m_view->header()->setSortIndicatorShown(true);
-    m_view->setSortingEnabled(true);
-    m_view->sortByColumn(0, Qt::AscendingOrder);
+    m_stack->addWidget(m_projectView);
+
+    m_categoriesView = new Akonadi::EntityTreeView(m_stack);
+    m_categoriesView->setModel(models->categoriesSelectionModel(categoriesSelection));
+    m_categoriesView->setItemDelegate(new ActionListDelegate(m_categoriesView));
+
+    m_categoriesView->header()->setSortIndicatorShown(true);
+    m_categoriesView->setSortingEnabled(true);
+    m_categoriesView->sortByColumn(0, Qt::AscendingOrder);
+
+    m_categoriesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    m_categoriesView->setItemsExpandable(false);
+
+    connect(m_categoriesView->model(), SIGNAL(modelReset()),
+            m_categoriesView, SLOT(expandAll()));
+    connect(m_categoriesView->model(), SIGNAL(layoutChanged()),
+            m_categoriesView, SLOT(expandAll()));
+    connect(m_categoriesView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+            m_categoriesView, SLOT(expandAll()));
+
+    connect(m_categoriesView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
+    m_stack->addWidget(m_categoriesView);
+
 
     QWidget *bottomBar = new QWidget(this);
     layout()->addWidget(bottomBar);
@@ -100,9 +138,16 @@ ActionListEditor::ActionListEditor(QWidget *parent, KActionCollection *ac)
     updateActions(QModelIndex());
 }
 
-ActionListView *ActionListEditor::view() const
+void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
 {
-    return m_view;
+    switch (mode) {
+    case Zanshin::ProjectMode:
+        m_stack->setCurrentIndex(0);
+        break;
+    case Zanshin::CategoriesMode:
+        m_stack->setCurrentIndex(1);
+        break;
+    }
 }
 
 void ActionListEditor::setupActions(KActionCollection *ac)
@@ -112,7 +157,7 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_add->setIcon(KIcon("list-add"));
     m_add->setShortcut(Qt::CTRL | Qt::Key_N);
 
-    m_cancelAdd = ac->addAction("editor_cancel_action", m_view, SLOT(setFocus()));
+    m_cancelAdd = ac->addAction("editor_cancel_action", m_stack, SLOT(setFocus()));
     connect(m_cancelAdd, SIGNAL(activated()), m_addActionEdit, SLOT(clear()));
     m_cancelAdd->setText(i18n("Cancel New Action"));
     m_cancelAdd->setIcon(KIcon("edit-undo"));
@@ -145,7 +190,7 @@ void ActionListEditor::onAddActionRequested()
     m_addActionEdit->setText(QString());
 
     if (summary.isEmpty()) return;
-
+#if 0
     QModelIndex current = m_model->mapToSource(m_view->currentIndex());
     int type = current.sibling(current.row(), TodoFlatModel::RowType).data().toInt();
     if (type==TodoFlatModel::StandardTodo) {
@@ -181,10 +226,12 @@ void ActionListEditor::onAddActionRequested()
     Akonadi::Collection collection = GlobalModel::todoFlat()->collection();
     Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
     job->start();
+#endif
 }
 
 void ActionListEditor::onRemoveAction()
 {
+#if 0
     QModelIndex current = m_view->currentIndex();
 
     if (m_model->rowCount(current)>0) {
@@ -214,10 +261,12 @@ void ActionListEditor::onRemoveAction()
     }
 
     new Akonadi::ItemDeleteJob(item, this);
+#endif
 }
 
 void ActionListEditor::onMoveAction()
 {
+#if 0
     QModelIndex current = m_view->currentIndex();
 
     if (m_model->rowCount(current)>0) {
@@ -264,78 +313,7 @@ void ActionListEditor::onMoveAction()
             source->setData(index, selectedId);
         }
     }
-}
-
-void ActionListEditor::showNoProjectInbox()
-{
-    delete m_model;
-    m_model = new ActionListModel(this);
-
-    m_model->setSourceModel(GlobalModel::todoFlat());
-    m_model->setMode(ActionListModel::NoProjectMode);
-
-    m_view->setModel(m_model);
-    m_view->setCurrentIndex(m_model->index(0, 0));
-    updateActions(QModelIndex());
-    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
-}
-
-void ActionListEditor::focusOnProject(const QModelIndex &index)
-{
-    delete m_model;
-    m_model = new ActionListModel(this);
-
-    m_model->setSourceModel(GlobalModel::todoTree());
-    m_model->setMode(ActionListModel::ProjectMode);
-    QModelIndex focusIndex = GlobalModel::projects()->mapToSource(index);
-    m_model->setSourceFocusIndex(focusIndex);
-
-    m_view->setModel(m_model);
-    if (focusIndex.isValid()) {
-        m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
-    } else {
-        m_view->setCurrentIndex(m_model->index(0, 0));
-    }
-    updateActions(QModelIndex());
-    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
-}
-
-void ActionListEditor::showNoContextInbox()
-{
-    delete m_model;
-    m_model = new ActionListModel(this);
-
-    m_model->setSourceModel(GlobalModel::todoFlat());
-    m_model->setMode(ActionListModel::NoContextMode);
-
-    m_view->setModel(m_model);
-    m_view->setCurrentIndex(m_model->index(0, 0));
-    updateActions(QModelIndex());
-    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
-}
-
-void ActionListEditor::focusOnContext(const QModelIndex &index)
-{
-    delete m_model;
-    m_model = new ActionListModel(this);
-
-    m_model->setSourceModel(GlobalModel::todoCategories());
-    m_model->setMode(ActionListModel::ContextMode);
-    QModelIndex focusIndex = GlobalModel::contexts()->mapToSource(index);
-    m_model->setSourceFocusIndex(focusIndex);
-
-    m_view->setModel(m_model);
-    if (focusIndex.isValid()) {
-        m_view->setCurrentIndex(m_model->mapFromSource(focusIndex));
-    } else {
-        m_view->setCurrentIndex(m_model->index(0, 0));
-    }
-    updateActions(QModelIndex());
-    connect(m_view->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
+#endif
 }
 
 void ActionListEditor::focusActionEdit()
@@ -359,4 +337,28 @@ bool ActionListEditor::eventFilter(QObject *watched, QEvent *event)
     }
 
     return QWidget::eventFilter(watched, event);
+}
+
+void ActionListEditor::saveColumnsState(KConfigGroup &config) const
+{
+    QByteArray state = m_projectView->header()->saveState();
+    config.writeEntry("ProjectHeaderState", state.toBase64());
+
+    state = m_categoriesView->header()->saveState();
+    config.writeEntry("CategoriesHeaderState", state.toBase64());
+}
+
+void ActionListEditor::restoreColumnsState(const KConfigGroup &config)
+{
+    QByteArray state;
+
+    if (config.hasKey("ProjectHeaderState")) {
+        state = config.readEntry("ProjectHeaderState", state);
+        m_projectView->header()->restoreState(QByteArray::fromBase64(state));
+    }
+
+    if (config.hasKey("CategoriesHeaderState")) {
+        state = config.readEntry("CategoriesHeaderState", state);
+        m_categoriesView->header()->restoreState(QByteArray::fromBase64(state));
+    }
 }

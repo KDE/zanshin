@@ -1,6 +1,7 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2008 Kevin Ottens <ervin@kde.org>
+   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,42 +22,29 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#include "debugwindow.h"
 
-#include <KDE/KXmlGuiWindow>
+#include <Akonadi/EntityTreeView>
 
-class ActionListEditor;
-class ModelStack;
-class SideBar;
+#include "modelstack.h"
 
-class MainWindow : public KXmlGuiWindow
+DebugWindow::DebugWindow(ModelStack *models, QWidget *parent)
+    : QTabWidget(parent)
 {
-    Q_OBJECT
+    Akonadi::EntityTreeView *view = new Akonadi::EntityTreeView(this);
+    view->setModel(models->baseModel());
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    addTab(view, "TodoModel");
 
-public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+    view = new Akonadi::EntityTreeView(this);
+    view->setModel(models->categoriesModel());
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    addTab(view, "TodoCategoriesModel");
 
-protected slots:
-    void saveAutoSaveSettings();
+    view = new Akonadi::EntityTreeView(this);
+    view->setModel(models->treeModel());
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    addTab(view, "TodoTreeModel");
 
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
-private slots:
-    void onModeSwitch();
-
-private:
-    void setupCentralWidget(ModelStack *models);
-    void setupSideBar(ModelStack *models);
-    void setupActions();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    SideBar *m_sidebar;
-    ActionListEditor *m_editor;
-};
-
-#endif
-
+    resize(800, 600);
+}

@@ -21,41 +21,15 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_GLOBALDEFS_H
+#define ZANSHIN_GLOBALDEFS_H
 
-#include <KDE/KXmlGuiWindow>
-
-class ActionListEditor;
-class ModelStack;
-class SideBar;
-
-class MainWindow : public KXmlGuiWindow
+namespace Zanshin
 {
-    Q_OBJECT
-
-public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
-
-protected slots:
-    void saveAutoSaveSettings();
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
-private slots:
-    void onModeSwitch();
-
-private:
-    void setupCentralWidget(ModelStack *models);
-    void setupSideBar(ModelStack *models);
-    void setupActions();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    SideBar *m_sidebar;
-    ActionListEditor *m_editor;
+    enum ApplicationMode {
+        ProjectMode = 0,
+        CategoriesMode = 1
+    };
 };
 
 #endif

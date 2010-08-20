@@ -27,28 +27,31 @@
 #include <QtCore/QModelIndex>
 #include <QtGui/QWidget>
 
+#include "globaldefs.h"
+
 class KAction;
 class KActionCollection;
+class QItemSelectionModel;
 class QStackedWidget;
 class QTreeView;
+class ModelStack;
+
+namespace Akonadi
+{
+    class EntityTreeView;
+}
 
 class SideBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    SideBar(QWidget *parent, KActionCollection *ac);
+    SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent=0);
 
-public slots:
-    void switchToProjectMode();
-    void switchToContextMode();
+    void setMode(Zanshin::ApplicationMode mode);
 
-signals:
-    void noProjectInboxActivated();
-    void noContextInboxActivated();
-
-    void projectActivated(const QModelIndex &index);
-    void contextActivated(const QModelIndex &index);
+    QItemSelectionModel *projectSelection() const;
+    QItemSelectionModel *categoriesSelection() const;
 
 private slots:
     void updateActions(const QModelIndex &index);
@@ -64,8 +67,8 @@ private slots:
     void applyCurrentContextChange();
 
 private:
-    void setupProjectPage();
-    void setupContextPage();
+    void setupProjectPage(ModelStack *models);
+    void setupContextPage(ModelStack *models);
     void setupActions(KActionCollection *ac);
 
     void addNewProject();
@@ -73,14 +76,9 @@ private:
     void addNewContext();
     void removeCurrentContext();
 
-    enum {
-        ProjectPageIndex = 0,
-        ContextPageIndex = 1
-    };
-
     QStackedWidget *m_stack;
-    QTreeView *m_projectTree;
-    QTreeView *m_contextTree;
+    Akonadi::EntityTreeView *m_projectTree;
+    Akonadi::EntityTreeView *m_contextTree;
 
     KAction *m_add;
     KAction *m_addFolder;

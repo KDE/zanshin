@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2009 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -27,27 +27,37 @@
 #include <QtCore/QModelIndex>
 #include <QtGui/QWidget>
 
+#include "globaldefs.h"
+
 class ActionListModel;
 class ActionListView;
 class KAction;
 class KActionCollection;
+class KConfigGroup;
 class KLineEdit;
+class QItemSelectionModel;
+class QStackedWidget;
+class ModelStack;
+
+namespace Akonadi
+{
+    class EntityTreeView;
+}
 
 class ActionListEditor : public QWidget
 {
     Q_OBJECT
 
 public:
-    ActionListEditor(QWidget *parent, KActionCollection *ac);
+    ActionListEditor(ModelStack *models,
+                     QItemSelectionModel *projectSelection,
+                     QItemSelectionModel *categoriesSelection,
+                     KActionCollection *ac, QWidget *parent=0);
 
-    ActionListView *view() const;
+    void setMode(Zanshin::ApplicationMode mode);
 
-public slots:
-    void showNoProjectInbox();
-    void focusOnProject(const QModelIndex &index);
-
-    void showNoContextInbox();
-    void focusOnContext(const QModelIndex &index);
+    void saveColumnsState(KConfigGroup &config) const;
+    void restoreColumnsState(const KConfigGroup &config);
 
 protected:
     virtual bool eventFilter(QObject *watched, QEvent *event);
@@ -62,10 +72,11 @@ private slots:
 private:
     void setupActions(KActionCollection *ac);
 
-    ActionListView *m_view;
-    KLineEdit *m_addActionEdit;
+    QStackedWidget *m_stack;
+    Akonadi::EntityTreeView *m_projectView;
+    Akonadi::EntityTreeView *m_categoriesView;
 
-    ActionListModel *m_model;
+    KLineEdit *m_addActionEdit;
 
     KAction *m_add;
     KAction *m_cancelAdd;

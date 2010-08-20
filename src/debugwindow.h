@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2008 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,41 +21,19 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_DEBUGWINDOW_H
+#define ZANSHIN_DEBUGWINDOW_H
 
-#include <KDE/KXmlGuiWindow>
+#include <QtGui/QTabWidget>
 
-class ActionListEditor;
 class ModelStack;
-class SideBar;
 
-class MainWindow : public KXmlGuiWindow
+class DebugWindow : public QTabWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
-
-protected slots:
-    void saveAutoSaveSettings();
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
-private slots:
-    void onModeSwitch();
-
-private:
-    void setupCentralWidget(ModelStack *models);
-    void setupSideBar(ModelStack *models);
-    void setupActions();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    SideBar *m_sidebar;
-    ActionListEditor *m_editor;
+    DebugWindow(ModelStack *models, QWidget *parent = 0);
 };
 
 #endif
