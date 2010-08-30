@@ -24,16 +24,21 @@
 #include "actionlistdelegate.h"
 
 #include <QtGui/QLineEdit>
+#include <QtGui/QAbstractItemView>
+#include <QtGui/QStyledItemDelegate>
 
+#include "combomodel.h"
 #include "kdateedit.h"
+#include "modelstack.h"
 #include "todomodel.h"
+
 
 using namespace KPIM;
 
-ActionListDelegate::ActionListDelegate(QObject *parent)
+ActionListDelegate::ActionListDelegate(ModelStack *models, QObject *parent)
     : QStyledItemDelegate(parent)
+    , m_models(models)
 {
-
 }
 
 ActionListDelegate::~ActionListDelegate()
@@ -139,9 +144,27 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 {
     if (index.data(Qt::EditRole).type()==QVariant::Date) {
         return new KDateEdit(parent);
+    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
+        return createComboBox(m_models->categoriesComboModel(), parent, index);
+    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
+        return createComboBox(m_models->treeComboModel(), parent, index);
     } else {
         return QStyledItemDelegate::createEditor(parent, option, index);
     }
+}
+
+QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex) const
+{
+    QComboBox *comboBox = new QComboBox(parent);
+    comboBox->view()->setTextElideMode(Qt::ElideNone);
+    comboBox->setStyleSheet("* { combobox-popup: true; }");
+    comboBox->setItemDelegate(new QStyledItemDelegate(comboBox));
+    ComboModel *comboModel = static_cast<ComboModel*>(model);
+    if (comboModel) {
+        comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
+        comboBox->setModel(model);
+    }
+    return comboBox;
 }
 
 void ActionListDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const

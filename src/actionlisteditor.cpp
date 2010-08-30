@@ -70,7 +70,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     m_projectView = new Akonadi::EntityTreeView(m_stack);
     m_projectView->setModel(models->treeSelectionModel(projectSelection));
-    m_projectView->setItemDelegate(new ActionListDelegate(m_projectView));
+    m_projectView->setItemDelegate(new ActionListDelegate(models, m_projectView));
 
     m_projectView->header()->setSortIndicatorShown(true);
     m_projectView->setSortingEnabled(true);
@@ -94,7 +94,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     m_categoriesView = new Akonadi::EntityTreeView(m_stack);
     m_categoriesView->setModel(models->categoriesSelectionModel(categoriesSelection));
-    m_categoriesView->setItemDelegate(new ActionListDelegate(m_categoriesView));
+    m_categoriesView->setItemDelegate(new ActionListDelegate(models, m_categoriesView));
 
     m_categoriesView->header()->setSortIndicatorShown(true);
     m_categoriesView->setSortingEnabled(true);

@@ -28,12 +28,14 @@
 
 #include <KDE/KCal/Todo>
 
+class ModelStack;
+
 class ActionListDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
-    ActionListDelegate(QObject *parent = 0);
+    ActionListDelegate(ModelStack *models, QObject *parent = 0);
     virtual ~ActionListDelegate();
 
     virtual QSize sizeHint(const QStyleOptionViewItem &option,
@@ -57,6 +59,9 @@ private:
     bool isInFocus(const QModelIndex &index) const;
     bool isCompleted(const QModelIndex &index) const;
     bool isOverdue(const QModelIndex &index) const;
+    QWidget *createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex) const;
+
+    ModelStack *m_models;
 };
 #endif
 

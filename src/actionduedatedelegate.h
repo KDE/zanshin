@@ -32,7 +32,7 @@ class ActionDueDateDelegate : public ActionListDelegate
     Q_OBJECT
 
 public:
-    ActionDueDateDelegate(QObject *parent = 0);
+    ActionDueDateDelegate(ModelStack *models, QObject *parent = 0);
     virtual ~ActionDueDateDelegate();
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,

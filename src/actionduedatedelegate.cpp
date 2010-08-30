@@ -33,8 +33,8 @@
 
 using namespace KPIM;
 
-ActionDueDateDelegate::ActionDueDateDelegate(QObject *parent)
-    : ActionListDelegate(parent)
+ActionDueDateDelegate::ActionDueDateDelegate(ModelStack *models, QObject *parent)
+    : ActionListDelegate(models, parent)
 {
 }
 
