@@ -33,6 +33,45 @@
 #include "todomodel.h"
 
 
+class ActionListComboBox : public QComboBox
+{
+public:
+    ActionListComboBox(QWidget *parent = 0)
+        : QComboBox(parent) { }
+
+public slots:
+    virtual void showPopup()
+    {
+        QComboBox::showPopup();
+
+        int width = 0;
+        const int itemCount = count();
+        const int iconWidth = iconSize().width() + 4;
+        const QFontMetrics &fm = fontMetrics();
+
+        for (int i = 0; i < itemCount; ++i) {
+            const int textWidth = fm.width(itemText(i));
+            if (itemIcon(i).isNull()) {
+                width = (qMax(width, textWidth));
+            } else {
+                width = (qMax(width, textWidth + iconWidth));
+            }
+        }
+
+        QStyleOptionComboBox opt;
+        initStyleOption(&opt);
+        QSize tmp(width, 0);
+        tmp = style()->sizeFromContents(QStyle::CT_ComboBox, &opt, tmp, this);
+        width = tmp.width();
+
+        if (width>view()->width()) {
+            QSize size = view()->parentWidget()->size();
+            size.setWidth(width + 10);
+            view()->parentWidget()->resize(size);
+        }
+    }
+};
+
 using namespace KPIM;
 
 ActionListDelegate::ActionListDelegate(ModelStack *models, QObject *parent)
@@ -155,10 +194,8 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
 QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex) const
 {
-    QComboBox *comboBox = new QComboBox(parent);
+    QComboBox *comboBox = new ActionListComboBox(parent);
     comboBox->view()->setTextElideMode(Qt::ElideNone);
-    comboBox->setStyleSheet("* { combobox-popup: true; }");
-    comboBox->setItemDelegate(new QStyledItemDelegate(comboBox));
     ComboModel *comboModel = static_cast<ComboModel*>(model);
     if (comboModel) {
         comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
