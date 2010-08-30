@@ -29,11 +29,14 @@
 #include <KDE/Akonadi/CollectionFetchScope>
 #include <KDE/Akonadi/ItemFetchScope>
 
+#include "combomodel.h"
 #include "sidebarmodel.h"
 #include "selectionproxymodel.h"
 #include "todocategoriesmodel.h"
 #include "todomodel.h"
 #include "todotreemodel.h"
+
+#include "kdescendantsproxymodel.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -41,9 +44,11 @@ ModelStack::ModelStack(QObject *parent)
       m_treeModel(0),
       m_treeSideBarModel(0),
       m_treeSelectionModel(0),
+      m_treeComboModel(0),
       m_categoriesModel(0),
       m_categoriesSideBarModel(0),
-      m_categoriesSelectionModel(0)
+      m_categoriesSelectionModel(0),
+      m_categoriesComboModel(0)
 {
 }
 
@@ -103,6 +108,21 @@ QAbstractItemModel *ModelStack::treeSelectionModel(QItemSelectionModel *selectio
     return m_treeSelectionModel;
 }
 
+QAbstractItemModel *ModelStack::treeComboModel()
+{
+    if (!m_treeComboModel) {
+        ComboModel *treeComboModel = new ComboModel(false, this);
+
+        KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(treeComboModel);
+        descendantProxyModel->setSourceModel(treeSideBarModel());
+        descendantProxyModel->setDisplayAncestorData(true);
+
+        treeComboModel->setSourceModel(descendantProxyModel);
+        m_treeComboModel = treeComboModel;
+    }
+    return m_treeComboModel;
+}
+
 QAbstractItemModel *ModelStack::categoriesModel()
 {
     if (!m_categoriesModel) {
@@ -133,4 +153,19 @@ QAbstractItemModel *ModelStack::categoriesSelectionModel(QItemSelectionModel *se
         m_categoriesSelectionModel = categoriesSelectionModel;
     }
     return m_categoriesSelectionModel;
+}
+
+QAbstractItemModel *ModelStack::categoriesComboModel()
+{
+    if (!m_categoriesComboModel) {
+        ComboModel *categoriesComboModel = new ComboModel(true, this);
+
+        KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(categoriesComboModel);
+        descendantProxyModel->setSourceModel(categoriesSideBarModel());
+        descendantProxyModel->setDisplayAncestorData(true);
+
+        categoriesComboModel->setSourceModel(descendantProxyModel);
+        m_categoriesComboModel = categoriesComboModel;
+    }
+    return m_categoriesComboModel;
 }

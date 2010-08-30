@@ -41,10 +41,12 @@ public:
     QAbstractItemModel *treeModel();
     QAbstractItemModel *treeSideBarModel();
     QAbstractItemModel *treeSelectionModel(QItemSelectionModel *selection = 0);
+    QAbstractItemModel *treeComboModel();
 
     QAbstractItemModel *categoriesModel();
     QAbstractItemModel *categoriesSideBarModel();
     QAbstractItemModel *categoriesSelectionModel(QItemSelectionModel *selection = 0);
+    QAbstractItemModel *categoriesComboModel();
 
 private:
     QAbstractItemModel *m_baseModel;
@@ -52,10 +54,12 @@ private:
     QAbstractItemModel *m_treeModel;
     QAbstractItemModel *m_treeSideBarModel;
     QAbstractItemModel *m_treeSelectionModel;
+    QAbstractItemModel *m_treeComboModel;
 
     QAbstractItemModel *m_categoriesModel;
     QAbstractItemModel *m_categoriesSideBarModel;
     QAbstractItemModel *m_categoriesSelectionModel;
+    QAbstractItemModel *m_categoriesComboModel;
 };
 
 #endif
