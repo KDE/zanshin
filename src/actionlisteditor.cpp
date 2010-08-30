@@ -78,6 +78,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     m_projectView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_projectView->setItemsExpandable(false);
+    m_projectView->setEditTriggers(m_projectView->editTriggers() | QAbstractItemView::SelectedClicked);
 
     connect(m_projectView->model(), SIGNAL(modelReset()),
             m_projectView, SLOT(expandAll()));
@@ -101,6 +102,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     m_categoriesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_categoriesView->setItemsExpandable(false);
+    m_categoriesView->setEditTriggers(m_categoriesView->editTriggers() | QAbstractItemView::SelectedClicked);
 
     connect(m_categoriesView->model(), SIGNAL(modelReset()),
             m_categoriesView, SLOT(expandAll()));
