@@ -197,10 +197,9 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
     QComboBox *comboBox = new ActionListComboBox(parent);
     comboBox->view()->setTextElideMode(Qt::ElideNone);
     ComboModel *comboModel = static_cast<ComboModel*>(model);
-    if (comboModel) {
-        comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
-        comboBox->setModel(model);
-    }
+    comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
+    comboBox->setModel(model);
+
     return comboBox;
 }
 
