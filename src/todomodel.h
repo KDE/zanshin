@@ -50,7 +50,14 @@ public:
         AncestorsRemoteIdRole,
         CategoriesRole,
         ItemTypeRole,
+        DataTypeRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
+    };
+
+    enum DataType {
+        StandardType = 0,
+        CategoryType,
+        ProjectType
     };
 
     TodoModel(Akonadi::ChangeRecorder *monitor, QObject *parent = 0);

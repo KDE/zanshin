@@ -129,6 +129,15 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
         return itemTypeFromItem(item);
     case CategoriesRole:
         return categoriesFromItem(item);
+    case DataTypeRole:
+        switch (column) {
+            case 1 :
+                return ProjectType;
+            case 2 :
+                return CategoryType;
+            default:
+                return StandardType;
+        }
     default:
         return EntityTreeModel::entityData(item, column, role);
     }
