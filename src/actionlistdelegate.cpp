@@ -36,8 +36,21 @@
 class ActionListComboBox : public QComboBox
 {
 public:
-    ActionListComboBox(QWidget *parent = 0)
-        : QComboBox(parent) { }
+    ActionListComboBox(bool isFiltered, QWidget *parent = 0)
+        : QComboBox(parent) 
+    {
+        if (isFiltered) {
+            view()->viewport()->installEventFilter(this);
+        }
+    }
+
+    bool eventFilter(QObject *object, QEvent *event)
+    {
+        if (event->type() == QEvent::MouseButtonRelease && object==view()->viewport()) {
+            return true;
+        }
+        return QComboBox::eventFilter(object,event);
+    }
 
 public slots:
     virtual void showPopup()
@@ -184,17 +197,18 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
     if (index.data(Qt::EditRole).type()==QVariant::Date) {
         return new KDateEdit(parent);
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
-        return createComboBox(m_models->categoriesComboModel(), parent, index);
+        return createComboBox(m_models->categoriesComboModel(), parent, index, true);
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
-        return createComboBox(m_models->treeComboModel(), parent, index);
+        return createComboBox(m_models->treeComboModel(), parent, index, false);
     } else {
         return QStyledItemDelegate::createEditor(parent, option, index);
     }
 }
 
-QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex) const
+QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex, bool isFiltered) const
 {
-    QComboBox *comboBox = new ActionListComboBox(parent);
+    QComboBox *comboBox = new ActionListComboBox(isFiltered, parent);
+    comboBox->setEditable(true);
     comboBox->view()->setTextElideMode(Qt::ElideNone);
     ComboModel *comboModel = static_cast<ComboModel*>(model);
     comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
