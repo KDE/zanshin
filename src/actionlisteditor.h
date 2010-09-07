@@ -70,6 +70,7 @@ private slots:
     void onRemoveAction();
     void onMoveAction();
     void focusActionEdit();
+    void hideColumns();
 
 private:
     void createPage(QAbstractItemModel *model, ModelStack *models);

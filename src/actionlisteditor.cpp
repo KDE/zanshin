@@ -43,6 +43,7 @@
 #include <KDE/KPassivePopup>
 
 #include <QtCore/QEvent>
+#include <QtCore/QTimer>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QToolBar>
@@ -327,4 +328,14 @@ ActionListEditorPage *ActionListEditor::currentPage() const
 ActionListEditorPage *ActionListEditor::page(int idx) const
 {
     return static_cast<ActionListEditorPage*>(m_stack->widget(idx));
+}
+
+void ActionListEditor::hideColumns()
+{
+    if (!m_projectView->isColumnHidden(1)) {
+        m_projectView->hideColumn(1);
+    }
+    if (!m_categoriesView->isColumnHidden(2)) {
+        m_categoriesView->hideColumn(2);
+    }
 }
