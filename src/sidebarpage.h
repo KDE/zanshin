@@ -21,67 +21,39 @@
    USA.
 */
 
-#ifndef ZANSHIN_SIDEBAR_H
-#define ZANSHIN_SIDEBAR_H
+#ifndef ZANSHIN_SIDEBARPAGE_H
+#define ZANSHIN_SIDEBARPAGE_H
 
-#include <QtCore/QModelIndex>
 #include <QtGui/QWidget>
 
-#include "globaldefs.h"
-
-class KAction;
-class KActionCollection;
-class QAbstractItemModel;
 class QItemSelectionModel;
-class QStackedWidget;
-class ModelStack;
-class SideBarPage;
+class QAbstractItemModel;
 
 namespace Akonadi
 {
     class EntityTreeView;
 }
 
-class SideBar : public QWidget
+class SideBarPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent=0);
+    SideBarPage(QAbstractItemModel *model,
+                const QList<QAction*> &contextActions,
+                QWidget *parent=0);
 
-    void setMode(Zanshin::ApplicationMode mode);
+    QItemSelectionModel *selectionModel() const;
 
-    QItemSelectionModel *projectSelection() const;
-    QItemSelectionModel *categoriesSelection() const;
-
-private slots:
-    void updateActions(const QModelIndex &index);
-    void onAddItem();
-    void onRemoveItem();
-    void onRenameItem();
-    void onPreviousItem();
-    void onNextItem();
+public slots:
+    void addNewItem();
+    void removeCurrentItem();
+    void renameCurrentItem();
+    void selectPreviousItem();
+    void selectNextItem();
 
 private:
-    void createPage(QAbstractItemModel *model);
-    void setupToolBar();
-    void setupActions(KActionCollection *ac);
-
-    SideBarPage *currentPage() const;
-    SideBarPage *page(int idx) const;
-
-    void addNewProject();
-    void removeCurrentProject();
-    void addNewContext();
-    void removeCurrentContext();
-
-    QStackedWidget *m_stack;
-
-    KAction *m_add;
-    KAction *m_remove;
-    KAction *m_rename;
-    KAction *m_previous;
-    KAction *m_next;
+    Akonadi::EntityTreeView *m_treeView;
 };
 
 #endif

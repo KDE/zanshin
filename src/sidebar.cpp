@@ -38,18 +38,15 @@
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KIcon>
-#include <KDE/KInputDialog>
 #include <KDE/KLocale>
-#include <KDE/KMessageBox>
 
-#include <QtCore/QTimer>
 #include <QtGui/QStackedWidget>
 #include <QtGui/QToolBar>
-#include <QtGui/QTreeView>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QHeaderView>
 
 #include "modelstack.h"
+#include "sidebarpage.h"
+#include "todomodel.h"
 
 
 SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)
@@ -62,104 +59,41 @@ SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    setupProjectPage(models);
-    setupContextPage(models);
+    createPage(models->treeSideBarModel());
+    createPage(models->categoriesSideBarModel());
+
+    setupToolBar();
 }
 
-void SideBar::setupProjectPage(ModelStack *models)
+void SideBar::createPage(QAbstractItemModel *model)
 {
-    QWidget *projectPage = new QWidget(m_stack);
-    projectPage->setLayout(new QVBoxLayout(projectPage));
-    projectPage->layout()->setContentsMargins(0, 0, 0, 0);
+    QAction *separator = new QAction(this);
+    separator->setSeparator(true);
 
-    m_projectTree = new Akonadi::EntityTreeView(projectPage);
-    m_projectTree->setFocusPolicy(Qt::NoFocus);
-    m_projectTree->header()->hide();
-    m_projectTree->setSortingEnabled(true);
-    m_projectTree->sortByColumn(0, Qt::AscendingOrder);
-    projectPage->layout()->addWidget(m_projectTree);
-    m_projectTree->setAnimated(true);
-    m_projectTree->setModel(models->treeSideBarModel());
-    m_projectTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_projectTree->setDragEnabled(true);
-    m_projectTree->viewport()->setAcceptDrops(true);
-    m_projectTree->setDropIndicatorShown(true);
-    m_projectTree->setCurrentIndex(m_projectTree->model()->index(0, 0));
-    m_projectTree->setRootIsDecorated(false);
-    m_projectTree->setStyleSheet("QTreeView { background: transparent; border-style: none; }");
-    connect(m_projectTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-            m_projectTree, SLOT(expand(const QModelIndex&)));
-    connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onCurrentProjectChangeDetected()));
-    connect(m_projectTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+    QList<QAction*> contextActions;
+    contextActions << m_add
+                   << m_remove
+                   << separator
+                   << m_rename;
+
+    SideBarPage *page = new SideBarPage(model, contextActions, m_stack);
+
+    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
+    m_stack->addWidget(page);
+}
+
+void SideBar::setupToolBar()
+{
     QHBoxLayout *toolbarLayout = new QHBoxLayout;
     toolbarLayout->setAlignment(Qt::AlignRight);
 
-    QToolBar *projectBar = new QToolBar(projectPage);
+    QToolBar *projectBar = new QToolBar(this);
     projectBar->setIconSize(QSize(16, 16));
-    toolbarLayout->addWidget(projectBar);
-    projectPage->layout()->addItem(toolbarLayout);
+    layout()->addWidget(projectBar);
     projectBar->addAction(m_add);
     projectBar->addAction(m_remove);
-
-    m_projectTree->setContextMenuPolicy(Qt::ActionsContextMenu);
-    m_projectTree->addActions(projectBar->actions());
-    QAction *separator = new QAction(m_projectTree);
-    separator->setSeparator(true);
-    m_projectTree->addAction(separator);
-    m_projectTree->addAction(m_rename);
-
-    m_stack->addWidget(projectPage);
-}
-
-void SideBar::setupContextPage(ModelStack *models)
-{
-    QWidget *contextPage = new QWidget(m_stack);
-    contextPage->setLayout(new QVBoxLayout(contextPage));
-    contextPage->layout()->setContentsMargins(0, 0, 0, 0);
-
-    m_contextTree = new Akonadi::EntityTreeView(contextPage);
-    m_contextTree->setFocusPolicy(Qt::NoFocus);
-    m_contextTree->header()->hide();
-    m_contextTree->setSortingEnabled(true);
-    m_contextTree->sortByColumn(0, Qt::AscendingOrder);
-    contextPage->layout()->addWidget(m_contextTree);
-    m_contextTree->setAnimated(true);
-    m_contextTree->setModel(models->categoriesSideBarModel());
-    m_contextTree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_contextTree->setDragEnabled(true);
-    m_contextTree->viewport()->setAcceptDrops(true);
-    m_contextTree->setDropIndicatorShown(true);
-    m_contextTree->setCurrentIndex(m_contextTree->model()->index(0, 0));
-    m_contextTree->setRootIsDecorated(false);
-    m_contextTree->setStyleSheet("QTreeView { background: transparent; border-style: none; }");
-    connect(m_contextTree->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-            m_contextTree, SLOT(expand(const QModelIndex&)));
-    connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(onCurrentContextChangeDetected()));
-    connect(m_contextTree->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
-
-    QHBoxLayout *toolbarLayout = new QHBoxLayout;
-    toolbarLayout->setAlignment(Qt::AlignRight);
-
-    QToolBar *contextBar = new QToolBar(contextPage);
-    contextBar->setIconSize(QSize(16, 16));
-    toolbarLayout->addWidget(contextBar);
-    contextPage->layout()->addItem(toolbarLayout);
-    contextBar->addAction(m_add);
-    contextBar->addAction(m_remove);
-
-    m_contextTree->setContextMenuPolicy(Qt::ActionsContextMenu);
-    m_contextTree->addActions(contextBar->actions());
-    QAction *separator = new QAction(m_contextTree);
-    separator->setSeparator(true);
-    m_contextTree->addAction(separator);
-    m_contextTree->addAction(m_rename);
-
-    m_stack->addWidget(contextPage);
 }
 
 void SideBar::setupActions(KActionCollection *ac)
@@ -197,203 +131,79 @@ void SideBar::setMode(Zanshin::ApplicationMode mode)
         m_rename->setText("Rename Project");
         m_previous->setText("Previous Project");
         m_next->setText("Next Project");
-        updateActions(m_projectTree->currentIndex());
-
-        applyCurrentProjectChange();
         break;
 
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
-        m_add->setText("New Context");
-        m_remove->setText("Remove Context");
-        m_rename->setText("Rename Context");
-        m_previous->setText("Previous Context");
-        m_next->setText("Next Context");
-        updateActions(m_contextTree->currentIndex());
-
-        applyCurrentContextChange();
+        m_add->setText("New Category");
+        m_remove->setText("Remove Category");
+        m_rename->setText("Rename Category");
+        m_previous->setText("Previous Category");
+        m_next->setText("Next Category");
         break;
     }
+
+    updateActions(currentPage()->selectionModel()->currentIndex());
 }
 
 QItemSelectionModel *SideBar::projectSelection() const
 {
-    return m_projectTree->selectionModel();
+    return static_cast<SideBarPage*>(m_stack->widget(0))->selectionModel();
 }
 
 QItemSelectionModel *SideBar::categoriesSelection() const
 {
-    return m_contextTree->selectionModel();
+    return static_cast<SideBarPage*>(m_stack->widget(1))->selectionModel();
 }
 
 void SideBar::updateActions(const QModelIndex &index)
 {
-#if 0
-    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());;
+    TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
 
-    if (model==GlobalModel::projectsLibrary()) {
-        m_addFolder->setEnabled(true);
-    } else {
-        m_addFolder->setEnabled(false);
-    }
+    m_add->setEnabled( type == TodoModel::Collection
+                    || type == TodoModel::ProjectTodo
+                    || type == TodoModel::Category );
 
-    if (model->isInbox(index)) {
-        m_addFolder->setEnabled(false);
-        m_add->setEnabled(false);
-        m_remove->setEnabled(false);
-        m_rename->setEnabled(false);
-    } else {
-        m_add->setEnabled(true);
-        m_remove->setEnabled(!model->isLibraryRoot(index));
-        m_rename->setEnabled(!model->isLibraryRoot(index));
+    m_remove->setEnabled( type == TodoModel::ProjectTodo
+                       || type == TodoModel::Category );
 
-        QModelIndex sourceIndex = model->mapToSource(index); // into "projects"
-        if (m_addFolder->isEnabled() && sourceIndex.isValid()) { // Shouldn't be enabled on projects
-            sourceIndex = GlobalModel::projects()->mapToSource(sourceIndex); // into "todoTree"
-            sourceIndex = sourceIndex.sibling(sourceIndex.row(), TodoFlatModel::RowType); // we want the row type
-            if (GlobalModel::todoTree()->data(sourceIndex).toInt()!=TodoFlatModel::FolderTodo) {
-                m_addFolder->setEnabled(false);
-                m_add->setEnabled(false);
-            }
-        }
-    }
-#endif
-}
-
-void SideBar::onAddFolder()
-{
-#if 0
-    bool ok;
-    QString summary = KInputDialog::getText(i18n("New Folder"),
-                                            i18n("Enter folder name:"),
-                                            QString(), &ok, this);
-    summary = summary.trimmed();
-
-    if (!ok || summary.isEmpty()) return;
-
-    QModelIndex parent = m_projectTree->currentIndex();
-    parent = GlobalModel::projectsLibrary()->mapToSource(parent);
-    parent = GlobalModel::projects()->mapToSource(parent);
-    parent = parent.sibling(parent.row(), TodoFlatModel::RemoteId);
-
-    QString parentRemoteId = GlobalModel::todoTree()->data(parent).toString();
-
-    KCal::Todo *todo = new KCal::Todo();
-    todo->setSummary(summary);
-    todo->addComment("X-Zanshin-Folder");
-
-    if (!parentRemoteId.isEmpty()) {
-        todo->setRelatedToUid(parentRemoteId);
-    }
-
-    IncidencePtr incidence(todo);
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<IncidencePtr>(incidence);
-
-    Akonadi::Collection collection = GlobalModel::todoFlat()->collection();
-    Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
-    job->start();
-#endif
+    m_rename->setEnabled( type == TodoModel::ProjectTodo
+                       || type == TodoModel::Category );
 }
 
 void SideBar::onAddItem()
 {
-#if 0
-    switch (m_stack->currentIndex()) {
-    case ProjectPageIndex:
-        addNewProject();
-        break;
-    case ContextPageIndex:
-        addNewContext();
-        break;
-    default:
-        Q_ASSERT(false);
-    }
-#endif
+    currentPage()->addNewItem();
 }
 
 void SideBar::onRemoveItem()
 {
-#if 0
-    switch (m_stack->currentIndex()) {
-    case ProjectPageIndex:
-        removeCurrentProject();
-        break;
-    case ContextPageIndex:
-        removeCurrentContext();
-        break;
-    default:
-        Q_ASSERT(false);
-    }
-#endif
+    currentPage()->removeCurrentItem();
 }
 
 void SideBar::onRenameItem()
 {
-#if 0
-    switch (m_stack->currentIndex()) {
-    case ProjectPageIndex:
-        m_projectTree->edit(m_projectTree->currentIndex());
-        break;
-    case ContextPageIndex:
-        m_contextTree->edit(m_contextTree->currentIndex());
-        break;
-    default:
-        Q_ASSERT(false);
-    }
-#endif
+    currentPage()->renameCurrentItem();
 }
 
 void SideBar::onPreviousItem()
 {
-#if 0
-    QTreeView *tree;
-
-    switch (m_stack->currentIndex()) {
-    case ProjectPageIndex:
-        tree = m_projectTree;
-        break;
-    case ContextPageIndex:
-        tree = m_contextTree;
-        break;
-    default:
-        Q_ASSERT(false);
-    }
-
-    QModelIndex index = tree->currentIndex();
-    index = tree->indexAbove(index);
-
-    if (index.isValid()) {
-        tree->setCurrentIndex(index);
-    }
-#endif
+    currentPage()->selectPreviousItem();
 }
 
 void SideBar::onNextItem()
 {
-#if 0
-    QTreeView *tree;
+    currentPage()->selectNextItem();
+}
 
-    switch (m_stack->currentIndex()) {
-    case ProjectPageIndex:
-        tree = m_projectTree;
-        break;
-    case ContextPageIndex:
-        tree = m_contextTree;
-        break;
-    default:
-        Q_ASSERT(false);
-    }
+SideBarPage *SideBar::currentPage() const
+{
+    return static_cast<SideBarPage*>(m_stack->currentWidget());
+}
 
-    QModelIndex index = tree->currentIndex();
-    tree->expand(index);
-    index = tree->indexBelow(index);
-
-    if (index.isValid()) {
-        tree->setCurrentIndex(index);
-    }
-#endif
+SideBarPage *SideBar::page(int idx) const
+{
+    return static_cast<SideBarPage*>(m_stack->widget(idx));
 }
 
 void SideBar::addNewProject()
@@ -523,44 +333,6 @@ void SideBar::removeCurrentContext()
     if (!canRemove) return;
 
     GlobalModel::todoCategories()->removeCategory(summary);
-#endif
-}
-
-void SideBar::onCurrentProjectChangeDetected()
-{
-    QTimer::singleShot(0, this, SLOT(applyCurrentProjectChange()));
-}
-
-void SideBar::applyCurrentProjectChange()
-{
-#if 0
-    QModelIndex index = m_projectTree->currentIndex();
-    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());
-
-    if (model->isInbox(index)) {
-        emit noProjectInboxActivated();
-    } else {
-        emit projectActivated(model->mapToSource(index));
-    }
-#endif
-}
-
-void SideBar::onCurrentContextChangeDetected()
-{
-    QTimer::singleShot(0, this, SLOT(applyCurrentContextChange()));
-}
-
-void SideBar::applyCurrentContextChange()
-{
-#if 0
-    QModelIndex index = m_contextTree->currentIndex();
-    const LibraryModel *model = qobject_cast<const LibraryModel*>(index.model());
-
-    if (model->isInbox(index)) {
-        emit noContextInboxActivated();
-    } else {
-        emit contextActivated(model->mapToSource(index));
-    }
 #endif
 }
 

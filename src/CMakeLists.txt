@@ -14,6 +14,7 @@ set(zanshin_SRCS
    selectionproxymodel.cpp
    sidebar.cpp
    sidebarmodel.cpp
+   sidebarpage.cpp
    todocategoriesmodel.cpp
    todoproxymodelbase.cpp
    todotreemodel.cpp
