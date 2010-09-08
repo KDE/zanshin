@@ -23,67 +23,16 @@
 
 #include "actionlistdelegate.h"
 
+#include <QtGui/QCompleter>
 #include <QtGui/QLineEdit>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QStyledItemDelegate>
 
+#include "actionlistcombobox.h"
 #include "combomodel.h"
 #include "kdateedit.h"
 #include "modelstack.h"
 #include "todomodel.h"
-
-
-class ActionListComboBox : public QComboBox
-{
-public:
-    ActionListComboBox(bool isFiltered, QWidget *parent = 0)
-        : QComboBox(parent) 
-    {
-        if (isFiltered) {
-            view()->viewport()->installEventFilter(this);
-        }
-    }
-
-    bool eventFilter(QObject *object, QEvent *event)
-    {
-        if (event->type() == QEvent::MouseButtonRelease && object==view()->viewport()) {
-            return true;
-        }
-        return QComboBox::eventFilter(object,event);
-    }
-
-public slots:
-    virtual void showPopup()
-    {
-        QComboBox::showPopup();
-
-        int width = 0;
-        const int itemCount = count();
-        const int iconWidth = iconSize().width() + 4;
-        const QFontMetrics &fm = fontMetrics();
-
-        for (int i = 0; i < itemCount; ++i) {
-            const int textWidth = fm.width(itemText(i));
-            if (itemIcon(i).isNull()) {
-                width = (qMax(width, textWidth));
-            } else {
-                width = (qMax(width, textWidth + iconWidth));
-            }
-        }
-
-        QStyleOptionComboBox opt;
-        initStyleOption(&opt);
-        QSize tmp(width, 0);
-        tmp = style()->sizeFromContents(QStyle::CT_ComboBox, &opt, tmp, this);
-        width = tmp.width();
-
-        if (width>view()->width()) {
-            QSize size = view()->parentWidget()->size();
-            size.setWidth(width + 10);
-            view()->parentWidget()->resize(size);
-        }
-    }
-};
 
 using namespace KPIM;
 

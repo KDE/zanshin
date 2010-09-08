@@ -3,6 +3,7 @@
 set(zanshin_SRCS
    main.cpp
    actionduedatedelegate.cpp
+   actionlistcombobox.cpp
    actionlistdelegate.cpp
    actionlisteditor.cpp
    actionlisteditorpage.cpp
