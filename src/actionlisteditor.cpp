@@ -50,6 +50,7 @@
 #include <QtGui/QStackedWidget>
 
 #include "actionlistdelegate.h"
+#include "actionlisteditorpage.h"
 #include "modelstack.h"
 #if 0
 #include "quickselectdialog.h"
@@ -68,53 +69,8 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    m_projectView = new Akonadi::EntityTreeView(m_stack);
-    m_projectView->setModel(models->treeSelectionModel(projectSelection));
-    m_projectView->setItemDelegate(new ActionListDelegate(models, m_projectView));
-
-    m_projectView->header()->setSortIndicatorShown(true);
-    m_projectView->setSortingEnabled(true);
-    m_projectView->sortByColumn(0, Qt::AscendingOrder);
-
-    m_projectView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    m_projectView->setItemsExpandable(false);
-    m_projectView->setEditTriggers(m_projectView->editTriggers() | QAbstractItemView::SelectedClicked);
-
-    connect(m_projectView->model(), SIGNAL(modelReset()),
-            m_projectView, SLOT(expandAll()));
-    connect(m_projectView->model(), SIGNAL(layoutChanged()),
-            m_projectView, SLOT(expandAll()));
-    connect(m_projectView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
-            m_projectView, SLOT(expandAll()));
-
-    connect(m_projectView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
-
-    m_stack->addWidget(m_projectView);
-
-    m_categoriesView = new Akonadi::EntityTreeView(m_stack);
-    m_categoriesView->setModel(models->categoriesSelectionModel(categoriesSelection));
-    m_categoriesView->setItemDelegate(new ActionListDelegate(models, m_categoriesView));
-
-    m_categoriesView->header()->setSortIndicatorShown(true);
-    m_categoriesView->setSortingEnabled(true);
-    m_categoriesView->sortByColumn(0, Qt::AscendingOrder);
-
-    m_categoriesView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    m_categoriesView->setItemsExpandable(false);
-    m_categoriesView->setEditTriggers(m_categoriesView->editTriggers() | QAbstractItemView::SelectedClicked);
-
-    connect(m_categoriesView->model(), SIGNAL(modelReset()),
-            m_categoriesView, SLOT(expandAll()));
-    connect(m_categoriesView->model(), SIGNAL(layoutChanged()),
-            m_categoriesView, SLOT(expandAll()));
-    connect(m_categoriesView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
-            m_categoriesView, SLOT(expandAll()));
-
-    connect(m_categoriesView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
-    m_stack->addWidget(m_categoriesView);
-
+    createPage(models->treeSelectionModel(projectSelection), models);
+    createPage(models->categoriesSelectionModel(categoriesSelection), models);
 
     QWidget *bottomBar = new QWidget(this);
     layout()->addWidget(bottomBar);
@@ -150,6 +106,16 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
         m_stack->setCurrentIndex(1);
         break;
     }
+}
+
+void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models)
+{
+    ActionListEditorPage *page = new ActionListEditorPage(model, models, m_stack);
+
+    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(updateActions(QModelIndex)));
+
+    m_stack->addWidget(page);
 }
 
 void ActionListEditor::setupActions(KActionCollection *ac)
@@ -343,24 +309,22 @@ bool ActionListEditor::eventFilter(QObject *watched, QEvent *event)
 
 void ActionListEditor::saveColumnsState(KConfigGroup &config) const
 {
-    QByteArray state = m_projectView->header()->saveState();
-    config.writeEntry("ProjectHeaderState", state.toBase64());
-
-    state = m_categoriesView->header()->saveState();
-    config.writeEntry("CategoriesHeaderState", state.toBase64());
+    page(0)->saveColumnsState(config, "ProjectHeaderState");
+    page(1)->saveColumnsState(config, "CategoriesHeaderState");
 }
 
 void ActionListEditor::restoreColumnsState(const KConfigGroup &config)
 {
-    QByteArray state;
+    page(0)->restoreColumnsState(config, "ProjectHeaderState");
+    page(1)->restoreColumnsState(config, "CategoriesHeaderState");
+}
 
-    if (config.hasKey("ProjectHeaderState")) {
-        state = config.readEntry("ProjectHeaderState", state);
-        m_projectView->header()->restoreState(QByteArray::fromBase64(state));
-    }
+ActionListEditorPage *ActionListEditor::currentPage() const
+{
+    return static_cast<ActionListEditorPage*>(m_stack->currentWidget());
+}
 
-    if (config.hasKey("CategoriesHeaderState")) {
-        state = config.readEntry("CategoriesHeaderState", state);
-        m_categoriesView->header()->restoreState(QByteArray::fromBase64(state));
-    }
+ActionListEditorPage *ActionListEditor::page(int idx) const
+{
+    return static_cast<ActionListEditorPage*>(m_stack->widget(idx));
 }

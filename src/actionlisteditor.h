@@ -29,12 +29,14 @@
 
 #include "globaldefs.h"
 
+class ActionListEditorPage;
 class ActionListModel;
 class ActionListView;
 class KAction;
 class KActionCollection;
 class KConfigGroup;
 class KLineEdit;
+class QAbstractItemModel;
 class QItemSelectionModel;
 class QStackedWidget;
 class ModelStack;
@@ -70,11 +72,15 @@ private slots:
     void focusActionEdit();
 
 private:
+    void createPage(QAbstractItemModel *model, ModelStack *models);
     void setupActions(KActionCollection *ac);
 
+    ActionListEditorPage *currentPage() const;
+    ActionListEditorPage *page(int idx) const;
+
     QStackedWidget *m_stack;
-    Akonadi::EntityTreeView *m_projectView;
-    Akonadi::EntityTreeView *m_categoriesView;
+    //Akonadi::EntityTreeView *m_projectView;
+    //Akonadi::EntityTreeView *m_categoriesView;
 
     KLineEdit *m_addActionEdit;
 

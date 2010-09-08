@@ -5,6 +5,7 @@ set(zanshin_SRCS
    actionduedatedelegate.cpp
    actionlistdelegate.cpp
    actionlisteditor.cpp
+   actionlisteditorpage.cpp
    combomodel.cpp
    debugwindow.cpp
    kdateedit.cpp
