@@ -35,7 +35,7 @@
 #include "todonodemanager.h"
 
 TodoCategoriesModel::TodoCategoriesModel(QObject *parent)
-    : TodoProxyModelBase(MultiMapping, parent)
+    : TodoProxyModelBase(MultiMapping, parent), m_categoryRootNode(0)
 {
 }
 
@@ -140,6 +140,25 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
     }
 }
 
+void TodoCategoriesModel::init()
+{
+    TodoProxyModelBase::init();
+
+    if (!m_categoryRootNode) {
+        beginInsertRows(QModelIndex(), 1, 1);
+
+        TodoNode *node = new TodoNode;
+        node->setData(i18n("Categories"), 0, Qt::DisplayRole);
+        node->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
+        node->setRowData(TodoModel::CategoryRoot, TodoModel::ItemTypeRole);
+
+        m_categoryRootNode = node;
+        m_manager->insertNode(m_categoryRootNode);
+
+        endInsertRows();
+    }
+}
+
 TodoNode *TodoCategoriesModel::createInbox() const
 {
     TodoNode *node = new TodoNode;
@@ -154,17 +173,19 @@ TodoNode *TodoCategoriesModel::createInbox() const
 TodoNode *TodoCategoriesModel::createCategoryNode(const QString &category)
 {
     //TODO: Order them along a tree
-    TodoNode *node = new TodoNode;
+    int row = m_categoryRootNode->children().size();
+
+    beginInsertRows(m_manager->indexForNode(m_categoryRootNode, 0), row, row);
+
+    TodoNode *node = new TodoNode(m_categoryRootNode);
     node->setData(category, 0, Qt::DisplayRole);
     node->setData(category, 0, Qt::EditRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
     node->setRowData(TodoModel::Category, TodoModel::ItemTypeRole);
 
-    int row = m_manager->roots().size();
-
-    beginInsertRows(QModelIndex(), row, row);
     m_categoryMap[category] = node;
     m_manager->insertNode(node);
+
     endInsertRows();
 
     return node;

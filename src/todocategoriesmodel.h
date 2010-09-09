@@ -44,9 +44,11 @@ private slots:
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
 
 private:
+    virtual void init();
     virtual TodoNode *createInbox() const;
     TodoNode *createCategoryNode(const QString &category);
 
+    TodoNode *m_categoryRootNode;
     QMap<QString, TodoNode*> m_categoryMap;
 };
 

@@ -64,11 +64,10 @@ private slots:
     virtual void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end) = 0;
     virtual void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end) = 0;
 
-private:
-    void init();
+protected:
+    virtual void init();
     virtual TodoNode *createInbox() const = 0;
 
-protected:
     TodoNode *addChildNode(const QModelIndex &sourceIndex, TodoNode *parent);
 
     friend class TodoNodeManager;

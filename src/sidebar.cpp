@@ -162,7 +162,7 @@ void SideBar::updateActions(const QModelIndex &index)
 
     m_add->setEnabled( type == TodoModel::Collection
                     || type == TodoModel::ProjectTodo
-                    || type == TodoModel::Category );
+                    || type == TodoModel::CategoryRoot );
 
     m_remove->setEnabled( type == TodoModel::ProjectTodo
                        || type == TodoModel::Category );

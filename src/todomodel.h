@@ -42,7 +42,8 @@ public:
         ProjectTodo,
         Category,
         Collection,
-        Inbox
+        Inbox,
+        CategoryRoot
     };
 
     enum Roles {
