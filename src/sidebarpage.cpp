@@ -24,12 +24,16 @@
 #include "sidebarpage.h"
 
 #include <KDE/Akonadi/EntityTreeView>
+#include <KDE/KDebug>
 #include <KDE/KInputDialog>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
+
+#include "todohelpers.h"
+#include "todomodel.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
                          const QList<QAction*> &contextActions,
@@ -70,7 +74,48 @@ QItemSelectionModel *SideBarPage::selectionModel() const
 
 void SideBarPage::addNewItem()
 {
+    QModelIndex parentItem = selectionModel()->currentIndex();
+    TodoModel::ItemType type = (TodoModel::ItemType) parentItem.data(TodoModel::ItemTypeRole).toInt();
 
+    QString title;
+    QString text;
+
+    if (type==TodoModel::Collection
+     || type==TodoModel::ProjectTodo) {
+        title = i18n("New Project");
+        text = i18n("Enter project name:");
+
+    } else if (type==TodoModel::CategoryRoot) {
+        title = i18n("New Category");
+        text = i18n("Enter category name:");
+
+    } else {
+        kFatal() << "We should never, ever, get in this case...";
+    }
+
+
+    bool ok;
+    QString summary = KInputDialog::getText(title, text,
+                                            QString(), &ok, this);
+    summary = summary.trimmed();
+
+    if (!ok || summary.isEmpty()) return;
+
+
+    if (type==TodoModel::Collection) {
+        Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        TodoHelpers::addProject(summary, collection);
+
+    } else if (type==TodoModel::ProjectTodo) {
+        Akonadi::Item parentProject = parentItem.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        TodoHelpers::addProject(summary, parentProject);
+
+    } else if (type==TodoModel::CategoryRoot) {
+        TodoHelpers::addCategory(summary);
+
+    } else {
+        kFatal() << "We should never, ever, get in this case...";
+    }
 }
 
 void SideBarPage::removeCurrentItem()

@@ -17,6 +17,7 @@ set(zanshin_SRCS
    sidebarmodel.cpp
    sidebarpage.cpp
    todocategoriesmodel.cpp
+   todohelpers.cpp
    todoproxymodelbase.cpp
    todotreemodel.cpp
    todomodel.cpp
