@@ -26,6 +26,8 @@
 
 #include <QtGui/QWidget>
 
+#include "globaldefs.h"
+
 class KConfigGroup;
 class QAbstractItemModel;
 class QItemSelectionModel;
@@ -43,6 +45,7 @@ class ActionListEditorPage : public QWidget
 public:
     ActionListEditorPage(QAbstractItemModel *model,
                          ModelStack *models,
+                         Zanshin::ApplicationMode mode,
                          QWidget *parent=0);
 
     QItemSelectionModel *selectionModel() const;
@@ -50,12 +53,15 @@ public:
     void saveColumnsState(KConfigGroup &config, const QString &key) const;
     void restoreColumnsState(const KConfigGroup &config, const QString &key);
 
+    Zanshin::ApplicationMode mode();
+    void hideColumn(int column);
 public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();
 
 private:
     Akonadi::EntityTreeView *m_treeView;
+    Zanshin::ApplicationMode m_mode;
 };
 
 #endif

@@ -33,8 +33,9 @@
 
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
+                                           Zanshin::ApplicationMode mode,
                                            QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), m_mode(mode)
 {
     setLayout(new QVBoxLayout(this));
     layout()->setContentsMargins(0, 0, 0, 0);
@@ -90,4 +91,16 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
 void ActionListEditorPage::removeCurrentTodo()
 {
 
+}
+
+Zanshin::ApplicationMode ActionListEditorPage::mode()
+{
+    return m_mode;
+}
+
+void ActionListEditorPage::hideColumn(int column)
+{
+    if (!m_treeView->isColumnHidden(column)) {
+        m_treeView->hideColumn(column);
+    }
 }

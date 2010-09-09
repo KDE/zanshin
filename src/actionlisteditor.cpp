@@ -70,8 +70,8 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    createPage(models->treeSelectionModel(projectSelection), models);
-    createPage(models->categoriesSelectionModel(categoriesSelection), models);
+    createPage(models->treeSelectionModel(projectSelection), models, Zanshin::ProjectMode);
+    createPage(models->categoriesSelectionModel(categoriesSelection), models, Zanshin::CategoriesMode);
 
     QWidget *bottomBar = new QWidget(this);
     layout()->addWidget(bottomBar);
@@ -109,9 +109,9 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     }
 }
 
-void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models)
+void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode)
 {
-    ActionListEditorPage *page = new ActionListEditorPage(model, models, m_stack);
+    ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, m_stack);
 
     connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
@@ -332,10 +332,12 @@ ActionListEditorPage *ActionListEditor::page(int idx) const
 
 void ActionListEditor::hideColumns()
 {
-    if (!m_projectView->isColumnHidden(1)) {
-        m_projectView->hideColumn(1);
-    }
-    if (!m_categoriesView->isColumnHidden(2)) {
-        m_categoriesView->hideColumn(2);
+    for (int i = 0; i < m_stack->count(); ++i) {
+       ActionListEditorPage *page = static_cast<ActionListEditorPage*>(m_stack->widget(i));
+       if (page->mode() == Zanshin::ProjectMode) {
+           page->hideColumn(1);
+       } else {
+           page->hideColumn(2);
+       }
     }
 }

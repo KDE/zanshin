@@ -73,7 +73,7 @@ private slots:
     void hideColumns();
 
 private:
-    void createPage(QAbstractItemModel *model, ModelStack *models);
+    void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode);
     void setupActions(KActionCollection *ac);
 
     ActionListEditorPage *currentPage() const;
