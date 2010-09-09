@@ -47,8 +47,9 @@ public:
     };
 
     enum Roles {
-        ParentRemoteIdRole = Akonadi::EntityTreeModel::UserRole + 1,
-        AncestorsRemoteIdRole,
+        UidRole = Akonadi::EntityTreeModel::UserRole + 1,
+        ParentUidRole,
+        AncestorsUidRole,
         CategoriesRole,
         ItemTypeRole,
         DataTypeRole,
@@ -82,8 +83,9 @@ private:
     KCal::Todo::Ptr todoFromItem(const Akonadi::Item &item) const;
 
     ItemType itemTypeFromItem(const Akonadi::Item &item) const;
-    QString relatedRemoteIdFromItem(const Akonadi::Item &item) const;
-    QStringList ancestorsRemoteIdFromItem(const Akonadi::Item &item) const;
+    QString uidFromItem(const Akonadi::Item &item) const;
+    QString relatedUidFromItem(const Akonadi::Item &item) const;
+    QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
     QStringList categoriesFromItem(const Akonadi::Item &item) const;
 
     QHash<QString, QString> m_summaryMap;

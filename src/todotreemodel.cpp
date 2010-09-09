@@ -64,14 +64,14 @@ bool _k_indexLessThan(const QModelIndex &left, const QModelIndex &right)
         return leftId<rightId;
 
     } else if (leftType==TodoModel::ProjectTodo) {
-        QStringList leftAncestors = left.data(TodoModel::AncestorsRemoteIdRole).toStringList();
-        QStringList rightAncestors = right.data(TodoModel::AncestorsRemoteIdRole).toStringList();
+        QStringList leftAncestors = left.data(TodoModel::AncestorsUidRole).toStringList();
+        QStringList rightAncestors = right.data(TodoModel::AncestorsUidRole).toStringList();
 
         return leftAncestors.size()<rightAncestors.size();
 
     } else if (leftType==TodoModel::StandardTodo) {
-        QString leftId = left.data(Akonadi::EntityTreeModel::RemoteIdRole).toString();
-        QString rightId = right.data(Akonadi::EntityTreeModel::RemoteIdRole).toString();
+        QString leftId = left.data(TodoModel::UidRole).toString();
+        QString rightId = right.data(TodoModel::UidRole).toString();
         return leftId<rightId;
 
     } else {
@@ -97,7 +97,7 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
 
     // Now we're sure to add them in the right order, so let's do that!
     TodoNode *collectionNode = m_manager->nodeForSourceIndex(sourceIndex);
-    QHash<QString, TodoNode*> remoteIdHash = m_collectionToRemoteIdsHash[collectionNode];
+    QHash<QString, TodoNode*> uidHash = m_collectionToUidsHash[collectionNode];
 
     foreach (const QModelIndex &sourceChildIndex, sourceChildIndexes) {
         TodoModel::ItemType type = (TodoModel::ItemType) sourceChildIndex.data(TodoModel::ItemTypeRole).toInt();
@@ -108,11 +108,11 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
             onSourceInsertRows(sourceChildIndex, 0, sourceModel()->rowCount(sourceChildIndex)-1);
 
         } else {
-            QString parentRemoteId = sourceChildIndex.data(TodoModel::ParentRemoteIdRole).toString();
+            QString parentUid = sourceChildIndex.data(TodoModel::ParentUidRole).toString();
             TodoNode *parentNode = 0;
 
-            if (remoteIdHash.contains(parentRemoteId)) {
-                parentNode = remoteIdHash[parentRemoteId];
+            if (uidHash.contains(parentUid)) {
+                parentNode = uidHash[parentUid];
 
             } else {
                 if (type==TodoModel::ProjectTodo) {
@@ -125,13 +125,13 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
             }
 
             TodoNode *child = addChildNode(sourceChildIndex, parentNode);
-            QString remoteId = child->data(0, Akonadi::EntityTreeModel::RemoteIdRole).toString();
-            //kDebug() << "Adding node:" << remoteId << parentRemoteId;
-            remoteIdHash[remoteId] = child;
+            QString uid = child->data(0, TodoModel::UidRole).toString();
+            //kDebug() << "Adding node:" << uid << parentUid;
+            uidHash[uid] = child;
         }
     }
 
-    m_collectionToRemoteIdsHash[collectionNode] = remoteIdHash;
+    m_collectionToUidsHash[collectionNode] = uidHash;
 }
 
 void TodoTreeModel::onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end)
@@ -163,11 +163,11 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
             continue;
         }
 
-        QString oldParentRemoteId = node->parent()->data(0, Akonadi::EntityTreeModel::RemoteIdRole).toString();
-        QString newParentRemoteId = sourceChildIndex.data(TodoModel::ParentRemoteIdRole).toString();
+        QString oldParentUid = node->parent()->data(0, TodoModel::UidRole).toString();
+        QString newParentUid = sourceChildIndex.data(TodoModel::ParentUidRole).toString();
 
         // If the parent didn't change we just reemit
-        if (oldParentRemoteId==newParentRemoteId) {
+        if (oldParentUid==newParentUid) {
             emit dataChanged(mapFromSource(sourceChildIndex), mapFromSource(sourceChildIndex));
             continue;
         }

@@ -121,10 +121,12 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
         } else {
             return EntityTreeModel::entityData(item, column, role);
         }
-    case ParentRemoteIdRole:
-        return relatedRemoteIdFromItem(item);
-    case AncestorsRemoteIdRole:
-        return ancestorsRemoteIdFromItem(item);
+    case UidRole:
+        return uidFromItem(item);
+    case ParentUidRole:
+        return relatedUidFromItem(item);
+    case AncestorsUidRole:
+        return ancestorsUidFromItem(item);
     case ItemTypeRole:
         return itemTypeFromItem(item);
     case CategoriesRole:
@@ -207,18 +209,18 @@ void TodoModel::onSourceInsertRows(const QModelIndex &parent, int begin, int end
             continue;
         }
 
-        QString remoteId = todo->uid();
+        QString uid = todo->uid();
 
-        m_summaryMap[remoteId] = todo->summary();
+        m_summaryMap[uid] = todo->summary();
 
-        QString relatedRemoteId = todo->relatedToUid();
+        QString relatedUid = todo->relatedToUid();
 
-        if (relatedRemoteId.isEmpty()) {
+        if (relatedUid.isEmpty()) {
             continue;
         }
 
-        m_parentMap[remoteId] = relatedRemoteId;
-        m_childrenMap[relatedRemoteId] << remoteId;
+        m_parentMap[uid] = relatedUid;
+        m_childrenMap[relatedUid] << uid;
     }
 }
 
@@ -232,14 +234,14 @@ void TodoModel::onSourceRemoveRows(const QModelIndex &parent, int begin, int end
             continue;
         }
 
-        QString remoteId = todo->uid();
+        QString uid = todo->uid();
 
-        m_summaryMap.remove(remoteId);
+        m_summaryMap.remove(uid);
 
-        QString relatedRemoteId = todo->relatedToUid();
+        QString relatedUid = todo->relatedToUid();
 
-        m_parentMap.remove(remoteId);
-        m_childrenMap[relatedRemoteId].removeAll(remoteId);
+        m_parentMap.remove(uid);
+        m_childrenMap[relatedUid].removeAll(uid);
     }
 }
 
@@ -253,17 +255,17 @@ void TodoModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex 
                 continue;
             }
 
-            QString remoteId = todo->uid();
+            QString uid = todo->uid();
 
-            m_summaryMap[remoteId] = todo->summary();
+            m_summaryMap[uid] = todo->summary();
 
-            QString newRelatedRemoteId = todo->relatedToUid();
-            QString oldRelatedRemoteId = m_parentMap[remoteId];
+            QString newRelatedUid = todo->relatedToUid();
+            QString oldRelatedUid = m_parentMap[uid];
 
-            if (newRelatedRemoteId!=oldRelatedRemoteId) {
-                m_parentMap[remoteId] = newRelatedRemoteId;
-                m_childrenMap[newRelatedRemoteId] << remoteId;
-                m_childrenMap[oldRelatedRemoteId].removeAll(remoteId);
+            if (newRelatedUid!=oldRelatedUid) {
+                m_parentMap[uid] = newRelatedUid;
+                m_childrenMap[newRelatedUid] << uid;
+                m_childrenMap[oldRelatedUid].removeAll(uid);
             }
         }
     }
@@ -297,7 +299,17 @@ TodoModel::ItemType TodoModel::itemTypeFromItem(const Akonadi::Item &item) const
     }
 }
 
-QString TodoModel::relatedRemoteIdFromItem(const Akonadi::Item &item) const
+QString TodoModel::uidFromItem(const Akonadi::Item &item) const
+{
+    KCal::Todo::Ptr todo = todoFromItem(item);
+    if (todo) {
+        return todo->uid();
+    } else {
+        return QString();
+    }
+}
+
+QString TodoModel::relatedUidFromItem(const Akonadi::Item &item) const
 {
     KCal::Todo::Ptr todo = todoFromItem(item);
     if (todo) {
@@ -307,7 +319,7 @@ QString TodoModel::relatedRemoteIdFromItem(const Akonadi::Item &item) const
     }
 }
 
-QStringList TodoModel::ancestorsRemoteIdFromItem(const Akonadi::Item &item) const
+QStringList TodoModel::ancestorsUidFromItem(const Akonadi::Item &item) const
 {
     QStringList result;
     KCal::Todo::Ptr todo = todoFromItem(item);

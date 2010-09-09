@@ -45,7 +45,7 @@ private:
     virtual TodoNode *createInbox() const;
     void destroyBranch(TodoNode *root);
 
-    QHash<TodoNode*, QHash<QString, TodoNode*> > m_collectionToRemoteIdsHash;
+    QHash<TodoNode*, QHash<QString, TodoNode*> > m_collectionToUidsHash;
 };
 
 #endif
