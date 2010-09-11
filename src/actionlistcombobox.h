@@ -24,7 +24,6 @@
 #ifndef ZANSHIN_ACTIONLISTCOMBOBOX_H
 #define ZANSHIN_ACTIONLISTCOMBOBOX_H
 
-#include <QtGui/QCompleter>
 #include <QtGui/QComboBox>
 
 class ActionListComboBox : public QComboBox

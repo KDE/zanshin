@@ -61,11 +61,27 @@ QVariant ComboModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::CheckStateRole && m_isCheckable) {
         if (!m_selectedItems.isEmpty()) {
-            if (m_selectedItems.contains(index.data(Qt::DisplayRole).toString())) {
-                return Qt::Checked;
+            foreach (QString item, m_selectedItems) {
+                if (index.data(Qt::DisplayRole).toString().contains(item)) {
+                    return Qt::Checked;
+                }
             }
         }
         return Qt::Unchecked;
+    }
+    if (role == LastPathPartRole) {
+        if (m_selectedItems.isEmpty()) {
+            QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
+            return path.last();
+        } else {
+            foreach (QString item, m_selectedItems) {
+                if (index.data(Qt::DisplayRole).toString().contains(item)) {
+                    return QVariant();
+                }
+            }
+            QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
+            return  m_selectedItems.join(", ") + ", " + path.last();
+        }
     }
     return QSortFilterProxyModel::data(index, role);
 }

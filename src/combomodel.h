@@ -27,14 +27,20 @@
 
 #include <QtGui/QSortFilterProxyModel>
 
-#include <KDE/Akonadi/EntityTreeModel>
-#include <KDE/KCal/Todo>
+#include "todomodel.h"
 
 class ComboModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
+
+    // Add role for completion
+    enum Roles {
+        LastPathPartRole = TodoModel::UserRole + 1,
+        UserRole = TodoModel::UserRole + 2
+    };
+
     ComboModel(bool isCheckable, QObject *parent = 0);
     virtual ~ComboModel();
 

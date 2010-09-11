@@ -154,14 +154,28 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
     }
 }
 
-QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex, bool isFiltered) const
+QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex, bool isCategory) const
 {
-    QComboBox *comboBox = new ActionListComboBox(isFiltered, parent);
+    QComboBox *comboBox = new ActionListComboBox(isCategory, parent);
     comboBox->setEditable(true);
     comboBox->view()->setTextElideMode(Qt::ElideNone);
     ComboModel *comboModel = static_cast<ComboModel*>(model);
     comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
     comboBox->setModel(model);
+    QCompleter *completer = new QCompleter(comboBox);
+    completer->setModel(model);
+    completer->setWidget(comboBox);
+    completer->setCompletionMode(QCompleter::PopupCompletion);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    comboBox->setCompleter(completer);
+    if (isCategory) {
+        ActionListComboBox *completerBox = new ActionListComboBox(isCategory, parent);
+        completer->setPopup(completerBox->view());
+        completer->setCompletionRole(ComboModel::LastPathPartRole);
+        connect(comboBox, SIGNAL(activated(int)), model, SLOT(checkItem(int)));
+        connect(completer->popup(), SIGNAL(activated(const QModelIndex&)), model, SLOT(checkItem(const QModelIndex&)));
+        connect(completer->popup(), SIGNAL(clicked(const QModelIndex&)), comboBox, SLOT(showItem(const QModelIndex&)));
+    }
 
     return comboBox;
 }

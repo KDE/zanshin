@@ -23,8 +23,8 @@
 
 #include "actionlistcombobox.h"
 
-#include <QtGui/QAbstractItemView>
 #include <QtCore/QEvent>
+#include <QtGui/QAbstractItemView>
 
 ActionListComboBox::ActionListComboBox(bool isFiltered, QWidget *parent)
     : QComboBox(parent) 
