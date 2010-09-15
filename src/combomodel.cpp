@@ -60,9 +60,6 @@ Qt::ItemFlags ComboModel::flags(const QModelIndex &index) const
 
 QVariant ComboModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::EditRole) {
-        return m_selectedItems.join(", ");
-    }
     if (role == Qt::CheckStateRole && m_isCheckable) {
         if (!m_selectedItems.isEmpty()) {
             foreach (QString item, m_selectedItems) {

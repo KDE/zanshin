@@ -38,7 +38,7 @@ public slots:
     virtual void showPopup();
     virtual void hidePopup();
 
-    void showItem(const QModelIndex &index);
+    void showItem();
 
 private:
     bool m_isReleaseEvent;

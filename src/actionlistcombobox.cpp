@@ -99,10 +99,8 @@ void ActionListComboBox::hidePopup()
     QComboBox::hidePopup();
 }
 
-void ActionListComboBox::showItem(const QModelIndex &index)
+void ActionListComboBox::showItem()
 {
-    if (!index.isValid()) {
-        ComboModel *comboModel = static_cast<ComboModel*>(model());
-        setEditText(comboModel->selectedItems().join(", "));
-    }
+    ComboModel *comboModel = static_cast<ComboModel*>(model());
+    setEditText(comboModel->selectedItems().join(", "));
 }

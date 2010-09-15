@@ -176,9 +176,11 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         ActionListComboBox *completerBox = new ActionListComboBox(isCategory, parent);
         completer->setPopup(completerBox->view());
         completer->setCompletionRole(ComboModel::LastPathPartRole);
+        comboBox->setEditText(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>().join(", "));
         connect(comboBox, SIGNAL(activated(int)), model, SLOT(checkItem(int)));
+        connect(comboBox, SIGNAL(activated(int)), comboBox, SLOT(showItem()));
         connect(completer->popup(), SIGNAL(activated(const QModelIndex&)), model, SLOT(checkItem(const QModelIndex&)));
-        connect(completer->popup(), SIGNAL(clicked(const QModelIndex&)), comboBox, SLOT(showItem(const QModelIndex&)));
+        connect(completer->popup(), SIGNAL(clicked(const QModelIndex&)), comboBox, SLOT(showItem()));
     }
 
     return comboBox;
