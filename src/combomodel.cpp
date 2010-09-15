@@ -32,8 +32,7 @@
 #include "todomodel.h"
 
 ComboModel::ComboModel(bool isCheckable, QObject *parent)
-    : QSortFilterProxyModel(parent)
-    , m_isCheckable(isCheckable)
+    : QSortFilterProxyModel(parent), m_isCheckable(isCheckable)
 {
     setDynamicSortFilter(true);
 }
@@ -45,7 +44,9 @@ ComboModel::~ComboModel()
 bool ComboModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
-    return sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::Inbox;
+    return sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::Inbox
+        && sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::Collection
+        && sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::CategoryRoot;
 }
 
 Qt::ItemFlags ComboModel::flags(const QModelIndex &index) const
