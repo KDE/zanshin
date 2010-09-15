@@ -113,7 +113,7 @@ KCal::Todo::Ptr ActionListDelegate::todoFromIndex(const QModelIndex &index) cons
     return item.payload<KCal::Todo::Ptr>();
 }
 
-bool ActionListDelegate::isInFocus(const QModelIndex &index) const
+bool ActionListDelegate::isInFocus(const QModelIndex &/*index*/) const
 {
     return true;
 }
