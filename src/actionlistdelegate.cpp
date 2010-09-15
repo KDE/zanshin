@@ -156,11 +156,15 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
 QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex, bool isCategory) const
 {
-    QComboBox *comboBox = new ActionListComboBox(isCategory, parent);
+    ActionListComboBox *comboBox = new ActionListComboBox(isCategory, parent);
     comboBox->setEditable(true);
     comboBox->view()->setTextElideMode(Qt::ElideNone);
     ComboModel *comboModel = static_cast<ComboModel*>(model);
-    comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
+    if (isCategory) {
+        comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
+    } else {
+        comboModel->setSelectedItems(QStringList(selectedIndex.data(Qt::DisplayRole).value<QString>()));
+    }
     comboBox->setModel(model);
     QCompleter *completer = new QCompleter(comboBox);
     completer->setModel(model);

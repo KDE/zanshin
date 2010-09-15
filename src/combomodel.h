@@ -48,9 +48,14 @@ public:
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role=Qt::EditRole);
 
     void setSelectedItems(const QStringList &selectedItems);
     QStringList selectedItems() const;
+
+public slots:
+    void checkItem(int row);
+    void checkItem(const QModelIndex &index);
 
 private:
     QStringList m_selectedItems;

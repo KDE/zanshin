@@ -22,12 +22,13 @@
 */
 
 #include "actionlistcombobox.h"
+#include "combomodel.h"
 
 #include <QtCore/QEvent>
 #include <QtGui/QAbstractItemView>
 
 ActionListComboBox::ActionListComboBox(bool isFiltered, QWidget *parent)
-    : QComboBox(parent) 
+    : QComboBox(parent), m_isReleaseEvent(false)
 {
     if (isFiltered) {
         view()->viewport()->installEventFilter(this);
@@ -37,7 +38,7 @@ ActionListComboBox::ActionListComboBox(bool isFiltered, QWidget *parent)
 bool ActionListComboBox::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonRelease && object==view()->viewport()) {
-        return true;
+        m_isReleaseEvent = true;
     }
     return QComboBox::eventFilter(object,event);
 }
@@ -73,3 +74,19 @@ void ActionListComboBox::showPopup()
     }
 }
 
+void ActionListComboBox::hidePopup()
+{
+    if (m_isReleaseEvent) {
+        m_isReleaseEvent = false;
+        return;
+    }
+    QComboBox::hidePopup();
+}
+
+void ActionListComboBox::showItem(const QModelIndex &index)
+{
+    if (!index.isValid()) {
+        ComboModel *comboModel = static_cast<ComboModel*>(model());
+        setEditText(comboModel->selectedItems().join(", "));
+    }
+}

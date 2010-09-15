@@ -54,11 +54,14 @@ Qt::ItemFlags ComboModel::flags(const QModelIndex &index) const
         return QSortFilterProxyModel::flags(index);
     }
 
-    return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable;
+    return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
 }
 
 QVariant ComboModel::data(const QModelIndex &index, int role) const
 {
+    if (role == Qt::EditRole) {
+        return m_selectedItems.join(", ");
+    }
     if (role == Qt::CheckStateRole && m_isCheckable) {
         if (!m_selectedItems.isEmpty()) {
             foreach (QString item, m_selectedItems) {
@@ -86,6 +89,24 @@ QVariant ComboModel::data(const QModelIndex &index, int role) const
     return QSortFilterProxyModel::data(index, role);
 }
 
+bool ComboModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (index.isValid() && role == Qt::CheckStateRole) {
+        QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
+        if (value.toInt() == Qt::Checked) {
+            m_selectedItems << path.last();
+        } else {
+            m_selectedItems.removeOne(path.last());
+        }
+        QModelIndex idx = this->index(0, 0);
+
+        emit(dataChanged(index, index));
+
+        return true;
+    }
+    return QSortFilterProxyModel::setData(index, value, role);
+}
+
 void ComboModel::setSelectedItems(const QStringList &selectedItems)
 {
     m_selectedItems = selectedItems;
@@ -94,4 +115,20 @@ void ComboModel::setSelectedItems(const QStringList &selectedItems)
 QStringList ComboModel::selectedItems() const
 {
     return m_selectedItems;
+}
+
+void ComboModel::checkItem(int row)
+{
+    QModelIndex idx = index(row, 0);
+    checkItem(idx);
+}
+
+void ComboModel::checkItem(const QModelIndex &index)
+{
+    int checkState = index.data(Qt::CheckStateRole).toInt();
+    if (checkState == Qt::Checked) {
+        setData(index, Qt::Unchecked, Qt::CheckStateRole);
+    } else {
+        setData(index, Qt::Checked, Qt::CheckStateRole);
+    }
 }

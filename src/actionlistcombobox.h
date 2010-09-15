@@ -28,6 +28,7 @@
 
 class ActionListComboBox : public QComboBox
 {
+    Q_OBJECT
 public:
     ActionListComboBox(bool isFiltered, QWidget *parent = 0);
 
@@ -35,6 +36,12 @@ public:
 
 public slots:
     virtual void showPopup();
+    virtual void hidePopup();
+
+    void showItem(const QModelIndex &index);
+
+private:
+    bool m_isReleaseEvent;
 };
 
 #endif //ZANSHIN_ACTIONLISTCOMBOBOX_H

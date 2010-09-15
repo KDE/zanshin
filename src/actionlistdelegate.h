@@ -51,7 +51,6 @@ public:
     void setModelData(QWidget *editor, QAbstractItemModel *model,
                       const QModelIndex &index) const;
 
-
 protected:
     KCal::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
 
