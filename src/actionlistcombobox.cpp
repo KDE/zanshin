@@ -26,6 +26,8 @@
 
 #include <QtCore/QEvent>
 #include <QtGui/QAbstractItemView>
+#include <QtGui/QApplication>
+#include <QtGui/QDesktopWidget>
 
 ActionListComboBox::ActionListComboBox(bool isFiltered, QWidget *parent)
     : QComboBox(parent), m_isReleaseEvent(false)
@@ -67,10 +69,24 @@ void ActionListComboBox::showPopup()
     tmp = style()->sizeFromContents(QStyle::CT_ComboBox, &opt, tmp, this);
     width = tmp.width();
 
+    const int screenWidth = QApplication::desktop()->width();
+    if ( width>screenWidth/2 ) {
+        width = screenWidth/2;
+    }
+
     if (width>view()->width()) {
         QSize size = view()->parentWidget()->size();
         size.setWidth(width + 10);
         view()->parentWidget()->resize(size);
+    }
+
+    const int viewRight = view()->parentWidget()->mapToGlobal(view()->parentWidget()->rect().bottomRight()).x();
+    const int dx = screenWidth - viewRight;
+
+    if (dx<0) {
+        const int x = view()->parentWidget()->geometry().x() + dx;
+        const int y = view()->parentWidget()->geometry().y();
+        view()->parentWidget()->move( x, y );
     }
 }
 
