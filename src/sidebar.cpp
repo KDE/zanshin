@@ -31,7 +31,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <kcal/todo.h>
+#include <KDE/KCalCore/Todo>
 #endif
 
 #include <KDE/Akonadi/EntityTreeView>
@@ -224,12 +224,12 @@ void SideBar::addNewProject()
 
     QString parentRemoteId = GlobalModel::todoTree()->data(parent).toString();
 
-    KCal::Todo *todo = new KCal::Todo();
+    KCalCore::Todo *todo = new KCalCore::Todo();
     todo->setSummary(summary);
     todo->addComment("X-Zanshin-Project");
 
     if (!parentRemoteId.isEmpty()) {
-        todo->setRelatedToUid(parentRemoteId);
+        todo->setRelatedTo(parentRemoteId);
     }
 
     IncidencePtr incidence(todo);

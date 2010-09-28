@@ -24,7 +24,7 @@
 
 #include "todomodel.h"
 
-#include <kcal/todo.h>
+#include <KDE/KCalCore/Todo>
 
 #include <KDebug>
 #include <KIcon>
@@ -92,7 +92,7 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
         case 0:
             return todoFromItem(item)->summary();
         case 1:
-            return m_summaryMap[todoFromItem(item)->relatedToUid()];
+            return m_summaryMap[todoFromItem(item)->relatedTo()];
         case 2:
             return todoFromItem(item)->categories().join(", ");
         case 3:
@@ -105,7 +105,7 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
         case 0:
             return todoFromItem(item)->summary();
         case 1:
-            return m_summaryMap[todoFromItem(item)->relatedToUid()];
+            return m_summaryMap[todoFromItem(item)->relatedTo()];
         case 2:
             return todoFromItem(item)->categories();
         case 3:
@@ -162,13 +162,13 @@ bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
     Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
 
-    if (!item.isValid() || !item.hasPayload<KCal::Todo::Ptr>()) {
+    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
         return EntityTreeModel::setData(index, value, role);
     }
 
     bool shouldModifyItem = false;
 
-    KCal::Todo::Ptr todo = todoFromItem(item);
+    KCalCore::Todo::Ptr todo = todoFromItem(item);
 
     switch (index.column()) {
     case 0:
@@ -203,7 +203,7 @@ void TodoModel::onSourceInsertRows(const QModelIndex &parent, int begin, int end
         QModelIndex child = index(i, 0, parent);
         onSourceInsertRows(child, 0, rowCount(child)-1);
 
-        KCal::Todo::Ptr todo = todoFromIndex(child);
+        KCalCore::Todo::Ptr todo = todoFromIndex(child);
 
         if (!todo) {
             continue;
@@ -213,7 +213,7 @@ void TodoModel::onSourceInsertRows(const QModelIndex &parent, int begin, int end
 
         m_summaryMap[uid] = todo->summary();
 
-        QString relatedUid = todo->relatedToUid();
+        QString relatedUid = todo->relatedTo();
 
         if (relatedUid.isEmpty()) {
             continue;
@@ -228,7 +228,7 @@ void TodoModel::onSourceRemoveRows(const QModelIndex &parent, int begin, int end
 {
     for (int i = begin; i <= end; ++i) {
         QModelIndex child = index(i, 0, parent);
-        KCal::Todo::Ptr todo = todoFromIndex(child);
+        KCalCore::Todo::Ptr todo = todoFromIndex(child);
 
         if (!todo) {
             continue;
@@ -238,7 +238,7 @@ void TodoModel::onSourceRemoveRows(const QModelIndex &parent, int begin, int end
 
         m_summaryMap.remove(uid);
 
-        QString relatedUid = todo->relatedToUid();
+        QString relatedUid = todo->relatedTo();
 
         m_parentMap.remove(uid);
         m_childrenMap[relatedUid].removeAll(uid);
@@ -249,7 +249,7 @@ void TodoModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex 
 {
     for (int row = begin.row(); row <= end.row(); ++row) {
         for (int column = begin.column(); column <= end.column(); ++column) {
-            KCal::Todo::Ptr todo = todoFromIndex( index(row, column, begin.parent()) );
+            KCalCore::Todo::Ptr todo = todoFromIndex( index(row, column, begin.parent()) );
 
             if (!todo) {
                 continue;
@@ -259,7 +259,7 @@ void TodoModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex 
 
             m_summaryMap[uid] = todo->summary();
 
-            QString newRelatedUid = todo->relatedToUid();
+            QString newRelatedUid = todo->relatedTo();
             QString oldRelatedUid = m_parentMap[uid];
 
             if (newRelatedUid!=oldRelatedUid) {
@@ -271,24 +271,24 @@ void TodoModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex 
     }
 }
 
-KCal::Todo::Ptr TodoModel::todoFromIndex(const QModelIndex &index) const
+KCalCore::Todo::Ptr TodoModel::todoFromIndex(const QModelIndex &index) const
 {
     Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
     return todoFromItem(item);
 }
 
-KCal::Todo::Ptr TodoModel::todoFromItem(const Akonadi::Item &item) const
+KCalCore::Todo::Ptr TodoModel::todoFromItem(const Akonadi::Item &item) const
 {
-    if (!item.isValid() || !item.hasPayload<KCal::Todo::Ptr>()) {
-        return KCal::Todo::Ptr();
+    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
+        return KCalCore::Todo::Ptr();
     } else {
-        return item.payload<KCal::Todo::Ptr>();
+        return item.payload<KCalCore::Todo::Ptr>();
     }
 }
 
 TodoModel::ItemType TodoModel::itemTypeFromItem(const Akonadi::Item &item) const
 {
-    KCal::Todo::Ptr todo = todoFromItem(item);
+    KCalCore::Todo::Ptr todo = todoFromItem(item);
 
     QStringList comments = todo->comments();
     if (comments.contains("X-Zanshin-Project")
@@ -301,7 +301,7 @@ TodoModel::ItemType TodoModel::itemTypeFromItem(const Akonadi::Item &item) const
 
 QString TodoModel::uidFromItem(const Akonadi::Item &item) const
 {
-    KCal::Todo::Ptr todo = todoFromItem(item);
+    KCalCore::Todo::Ptr todo = todoFromItem(item);
     if (todo) {
         return todo->uid();
     } else {
@@ -311,9 +311,9 @@ QString TodoModel::uidFromItem(const Akonadi::Item &item) const
 
 QString TodoModel::relatedUidFromItem(const Akonadi::Item &item) const
 {
-    KCal::Todo::Ptr todo = todoFromItem(item);
+    KCalCore::Todo::Ptr todo = todoFromItem(item);
     if (todo) {
-        return todo->relatedToUid();
+        return todo->relatedTo();
     } else {
         return QString();
     }
@@ -322,7 +322,7 @@ QString TodoModel::relatedUidFromItem(const Akonadi::Item &item) const
 QStringList TodoModel::ancestorsUidFromItem(const Akonadi::Item &item) const
 {
     QStringList result;
-    KCal::Todo::Ptr todo = todoFromItem(item);
+    KCalCore::Todo::Ptr todo = todoFromItem(item);
 
     if (todo) {
         QString id = todo->uid();
@@ -339,7 +339,7 @@ QStringList TodoModel::ancestorsUidFromItem(const Akonadi::Item &item) const
 
 QStringList TodoModel::categoriesFromItem(const Akonadi::Item &item) const
 {
-    KCal::Todo::Ptr todo = todoFromItem(item);
+    KCalCore::Todo::Ptr todo = todoFromItem(item);
     if (todo) {
         return todo->categories();
     } else {

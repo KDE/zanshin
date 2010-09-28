@@ -28,7 +28,7 @@ set(zanshin_SRCS
 
 kde4_add_executable(zanshin ${zanshin_SRCS})
 
-target_link_libraries(zanshin ${KDE4_KDEUI_LIBS} ${KDE4_AKONADI_LIBS} ${KDE4_KCAL_LIBS})
+target_link_libraries(zanshin ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS})
 
 ########### install files ###############
 

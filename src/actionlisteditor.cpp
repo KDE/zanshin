@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <kcal/todo.h>
+#include <KDE/KCalCore/Todo>
 #endif
 
 #include <KDE/Akonadi/EntityTreeView>
@@ -199,10 +199,10 @@ void ActionListEditor::onAddActionRequested()
         category = GlobalModel::todoCategories()->data(categoryIndex).toString();
     }
 
-    KCal::Todo *todo = new KCal::Todo();
+    KCalCore::Todo *todo = new KCalCore::Todo();
     todo->setSummary(summary);
     if (!parentRemoteId.isEmpty()) {
-        todo->setRelatedToUid(parentRemoteId);
+        todo->setRelatedTo(parentRemoteId);
     }
     if (!category.isEmpty()) {
         todo->setCategories(category);

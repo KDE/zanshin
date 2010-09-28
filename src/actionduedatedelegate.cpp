@@ -26,7 +26,7 @@
 
 #include <akonadi/item.h>
 #include <boost/shared_ptr.hpp>
-#include <kcal/todo.h>
+#include <KDE/KCalCore/Todo>
 #include "kdateedit.h"
 
 #include <QtGui/QLineEdit>

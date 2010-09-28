@@ -24,7 +24,7 @@
 
 #include "sidebarmodel.h"
 
-#include <kcal/todo.h>
+#include <KDE/KCalCore/Todo>
 
 #include <KDebug>
 #include <KIcon>

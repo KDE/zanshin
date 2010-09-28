@@ -25,17 +25,17 @@
 #include "todohelpers.h"
 
 #include <KDE/Akonadi/ItemCreateJob>
-#include <KDE/KCal/Todo>
+#include <KDE/KCalCore/Todo>
 
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
 {
-    KCal::Todo::Ptr todo(new KCal::Todo());
+    KCalCore::Todo::Ptr todo(new KCalCore::Todo());
     todo->setSummary(summary);
     todo->addComment("X-Zanshin-Project");
 
     Akonadi::Item item;
     item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCal::Todo::Ptr>(todo);
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
 
     Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
     job->start();
@@ -43,16 +43,16 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &
 
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Item &parentProject)
 {
-    KCal::Todo::Ptr todo(new KCal::Todo());
+    KCalCore::Todo::Ptr todo(new KCalCore::Todo());
     todo->setSummary(summary);
     todo->addComment("X-Zanshin-Project");
 
-    KCal::Todo::Ptr parentTodo = parentProject.payload<KCal::Todo::Ptr>();
-    todo->setRelatedToUid(parentTodo->uid());
+    KCalCore::Todo::Ptr parentTodo = parentProject.payload<KCalCore::Todo::Ptr>();
+    todo->setRelatedTo(parentTodo->uid());
 
     Akonadi::Item item;
     item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCal::Todo::Ptr>(todo);
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
 
     Akonadi::Collection collection = parentProject.parentCollection();
 

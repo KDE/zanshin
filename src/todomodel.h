@@ -28,7 +28,7 @@
 #include <QtGui/QSortFilterProxyModel>
 
 #include <KDE/Akonadi/EntityTreeModel>
-#include <KDE/KCal/Todo>
+#include <KDE/KCalCore/Todo>
 
 class TodoModel : public Akonadi::EntityTreeModel
 {
@@ -79,8 +79,8 @@ private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
 
 private:
-    KCal::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
-    KCal::Todo::Ptr todoFromItem(const Akonadi::Item &item) const;
+    KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
+    KCalCore::Todo::Ptr todoFromItem(const Akonadi::Item &item) const;
 
     ItemType itemTypeFromItem(const Akonadi::Item &item) const;
     QString uidFromItem(const Akonadi::Item &item) const;

@@ -26,7 +26,7 @@
 
 #include <QtGui/QStyledItemDelegate>
 
-#include <KDE/KCal/Todo>
+#include <KDE/KCalCore/Todo>
 
 class ModelStack;
 
@@ -52,7 +52,7 @@ public:
                       const QModelIndex &index) const;
 
 protected:
-    KCal::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
+    KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
 
 private:
     bool isInFocus(const QModelIndex &index) const;

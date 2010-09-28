@@ -97,20 +97,20 @@ void ActionListDelegate::paint(QPainter *painter,
     QStyledItemDelegate::paint(painter, opt, index);
 }
 
-KCal::Todo::Ptr ActionListDelegate::todoFromIndex(const QModelIndex &index) const
+KCalCore::Todo::Ptr ActionListDelegate::todoFromIndex(const QModelIndex &index) const
 {
     TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
 
     if (type!=TodoModel::StandardTodo) {
-        return KCal::Todo::Ptr();
+        return KCalCore::Todo::Ptr();
     }
 
     Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    if (!item.isValid() || !item.hasPayload<KCal::Todo::Ptr>()) {
-        return KCal::Todo::Ptr();
+    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
+        return KCalCore::Todo::Ptr();
     }
 
-    return item.payload<KCal::Todo::Ptr>();
+    return item.payload<KCalCore::Todo::Ptr>();
 }
 
 bool ActionListDelegate::isInFocus(const QModelIndex &/*index*/) const
@@ -120,7 +120,7 @@ bool ActionListDelegate::isInFocus(const QModelIndex &/*index*/) const
 
 bool ActionListDelegate::isCompleted(const QModelIndex &index) const
 {
-    KCal::Todo::Ptr todo = todoFromIndex(index);
+    KCalCore::Todo::Ptr todo = todoFromIndex(index);
 
     if (todo) {
         return todo->isCompleted();
@@ -131,7 +131,7 @@ bool ActionListDelegate::isCompleted(const QModelIndex &index) const
 
 bool ActionListDelegate::isOverdue(const QModelIndex &index) const
 {
-    KCal::Todo::Ptr todo = todoFromIndex(index);
+    KCalCore::Todo::Ptr todo = todoFromIndex(index);
 
     if (todo) {
         return todo->isOverdue();
