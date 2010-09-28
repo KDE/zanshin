@@ -27,6 +27,7 @@
 #include <KDE/Akonadi/ChangeRecorder>
 #include <KDE/Akonadi/Session>
 #include <KDE/Akonadi/CollectionFetchScope>
+#include <KDE/Akonadi/EntityMimeTypeFilterModel>
 #include <KDE/Akonadi/ItemFetchScope>
 
 #include "combomodel.h"
@@ -41,6 +42,7 @@
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
       m_baseModel(0),
+      m_collectionsModel(0),
       m_treeModel(0),
       m_treeSideBarModel(0),
       m_treeSelectionModel(0),
@@ -74,6 +76,17 @@ QAbstractItemModel *ModelStack::baseModel()
         m_baseModel = new TodoModel(changeRecorder, this);
     }
     return m_baseModel;
+}
+
+QAbstractItemModel *ModelStack::collectionsModel()
+{
+    if (!m_collectionsModel) {
+        Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
+        collectionsModel->addMimeTypeInclusionFilter( Akonadi::Collection::mimeType() );
+        collectionsModel->setSourceModel(baseModel());
+        m_collectionsModel = collectionsModel;
+    }
+    return m_collectionsModel;
 }
 
 QAbstractItemModel *ModelStack::treeModel()

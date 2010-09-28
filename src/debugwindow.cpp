@@ -46,5 +46,10 @@ DebugWindow::DebugWindow(ModelStack *models, QWidget *parent)
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
     addTab(view, "TodoTreeModel");
 
+    view = new Akonadi::EntityTreeView(this);
+    view->setModel(models->collectionsModel());
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    addTab(view, "Collections Model");
+
     resize(800, 600);
 }

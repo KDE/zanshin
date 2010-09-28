@@ -38,6 +38,8 @@ public:
 
     QAbstractItemModel *baseModel();
 
+    QAbstractItemModel *collectionsModel();
+
     QAbstractItemModel *treeModel();
     QAbstractItemModel *treeSideBarModel();
     QAbstractItemModel *treeSelectionModel(QItemSelectionModel *selection = 0);
@@ -50,6 +52,7 @@ public:
 
 private:
     QAbstractItemModel *m_baseModel;
+    QAbstractItemModel *m_collectionsModel;
 
     QAbstractItemModel *m_treeModel;
     QAbstractItemModel *m_treeSideBarModel;
