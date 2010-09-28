@@ -25,7 +25,6 @@
 
 #if 0
 #include <akonadi/item.h>
-#include <akonadi/itemcreatejob.h>
 #include <akonadi/itemdeletejob.h>
 
 #include <boost/shared_ptr.hpp>
@@ -34,9 +33,12 @@
 #endif
 
 #include <KDE/Akonadi/EntityTreeView>
+#include <KDE/Akonadi/ItemCreateJob>
+
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfigGroup>
+#include <KDE/KDebug>
 #include <kdescendantsproxymodel.h>
 #include <KDE/KIcon>
 #include <KDE/KLineEdit>
@@ -55,6 +57,7 @@
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
 #include "modelstack.h"
+#include "todomodel.h"
 #if 0
 #include "quickselectdialog.h"
 #endif
@@ -180,43 +183,63 @@ void ActionListEditor::onAddActionRequested()
     m_addActionEdit->setText(QString());
 
     if (summary.isEmpty()) return;
-#if 0
-    QModelIndex current = m_model->mapToSource(m_view->currentIndex());
-    int type = current.sibling(current.row(), TodoFlatModel::RowType).data().toInt();
-    if (type==TodoFlatModel::StandardTodo) {
+
+    QModelIndex current = currentPage()->selectionModel()->currentIndex();
+
+    if (!current.isValid()) {
+        kWarning() << "Oops, nothing selected in the list!";
+        return;
+    }
+
+    int type = current.data(TodoModel::ItemTypeRole).toInt();
+
+    while (current.isValid() && type==TodoModel::StandardTodo) {
         current = current.parent();
+        type = current.data(TodoModel::ItemTypeRole).toInt();
     }
 
-    QString parentRemoteId;
-    if (m_model->sourceModel()==GlobalModel::todoTree()) {
-        QModelIndex parentIndex = current.sibling(current.row(), TodoFlatModel::RemoteId);
-        parentRemoteId = GlobalModel::todoTree()->data(parentIndex).toString();
-    }
-
+    Akonadi::Collection collection;
+    QString parentUid;
     QString category;
-    if (m_model->sourceModel()==GlobalModel::todoCategories()) {
-        QModelIndex categoryIndex = current.sibling(current.row(), TodoFlatModel::Summary);
-        category = GlobalModel::todoCategories()->data(categoryIndex).toString();
+
+    switch (type) {
+    case TodoModel::StandardTodo:
+        kFatal() << "Can't possibly happen!";
+        break;
+
+    case TodoModel::ProjectTodo:
+        parentUid = current.data(TodoModel::UidRole).toString();
+        collection = current.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+        break;
+
+    case TodoModel::Collection:
+        collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        break;
+
+    case TodoModel::Category:
+        category = current.data(Qt::EditRole).toString();
+        // fallthrough
+    case TodoModel::Inbox:
+    case TodoModel::CategoryRoot:
+        QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
+        collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        break;
     }
 
-    KCalCore::Todo *todo = new KCalCore::Todo();
+    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
     todo->setSummary(summary);
-    if (!parentRemoteId.isEmpty()) {
-        todo->setRelatedTo(parentRemoteId);
+    if (!parentUid.isEmpty()) {
+        todo->setRelatedTo(parentUid);
     }
     if (!category.isEmpty()) {
         todo->setCategories(category);
     }
 
-    IncidencePtr incidence(todo);
     Akonadi::Item item;
     item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<IncidencePtr>(incidence);
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
 
-    Akonadi::Collection collection = GlobalModel::todoFlat()->collection();
-    Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
-    job->start();
-#endif
+    new Akonadi::ItemCreateJob(item, collection);
 }
 
 void ActionListEditor::onRemoveAction()
