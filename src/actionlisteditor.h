@@ -37,6 +37,7 @@ class KActionCollection;
 class KConfigGroup;
 class KLineEdit;
 class QAbstractItemModel;
+class QComboBox;
 class QItemSelectionModel;
 class QStackedWidget;
 class ModelStack;
@@ -84,6 +85,7 @@ private:
     //Akonadi::EntityTreeView *m_categoriesView;
 
     KLineEdit *m_addActionEdit;
+    QComboBox *m_comboBox;
 
     KAction *m_add;
     KAction *m_cancelAdd;

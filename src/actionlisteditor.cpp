@@ -37,6 +37,7 @@
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfigGroup>
+#include <kdescendantsproxymodel.h>
 #include <KDE/KIcon>
 #include <KDE/KLineEdit>
 #include <KDE/KLocale>
@@ -50,6 +51,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QStackedWidget>
 
+#include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
 #include "modelstack.h"
@@ -86,6 +88,20 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     connect(m_addActionEdit, SIGNAL(returnPressed()),
             this, SLOT(onAddActionRequested()));
 
+    m_comboBox = new ActionListComboBox(bottomBar);
+    m_comboBox->view()->setTextElideMode(Qt::ElideLeft);
+    m_comboBox->setMinimumContentsLength(20);
+    m_comboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+
+    KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
+    descendantProxyModel->setSourceModel(models->collectionsModel());
+    descendantProxyModel->setDisplayAncestorData(true);
+
+    m_comboBox->setModel(descendantProxyModel);
+    bottomBar->layout()->addWidget(m_comboBox);
+
+    m_comboBox->hide();
+
     setupActions(ac);
 
     QToolBar *toolBar = new QToolBar(bottomBar);
@@ -102,9 +118,14 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     switch (mode) {
     case Zanshin::ProjectMode:
         m_stack->setCurrentIndex(0);
+        m_comboBox->hide();
         break;
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
+        // No need to show it if there's only one item to choose from
+        if (m_comboBox->model()->rowCount() > 1) {
+            m_comboBox->show();
+        }
         break;
     }
 }
