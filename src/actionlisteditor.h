@@ -72,6 +72,7 @@ private slots:
     void onMoveAction();
     void focusActionEdit();
     void hideColumns();
+    void onSideBarSelectionChanged(const QModelIndex &index);
 
 private:
     void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode);
@@ -81,8 +82,8 @@ private:
     ActionListEditorPage *page(int idx) const;
 
     QStackedWidget *m_stack;
-    //Akonadi::EntityTreeView *m_projectView;
-    //Akonadi::EntityTreeView *m_categoriesView;
+    QItemSelectionModel *m_projectSelection;
+    QItemSelectionModel *m_categoriesSelection;
 
     KLineEdit *m_addActionEdit;
     QComboBox *m_comboBox;

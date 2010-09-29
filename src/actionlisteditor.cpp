@@ -67,13 +67,20 @@ ActionListEditor::ActionListEditor(ModelStack *models,
                                    QItemSelectionModel *categoriesSelection,
                                    KActionCollection *ac,
                                    QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+      m_projectSelection(projectSelection),
+      m_categoriesSelection(categoriesSelection)
 {
     setLayout(new QVBoxLayout(this));
 
     m_stack = new QStackedWidget(this);
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
+
+    connect(projectSelection, SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(onSideBarSelectionChanged(QModelIndex)));
+    connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+            this, SLOT(onSideBarSelectionChanged(QModelIndex)));
 
     createPage(models->treeSelectionModel(projectSelection), models, Zanshin::ProjectMode);
     createPage(models->categoriesSelectionModel(categoriesSelection), models, Zanshin::CategoriesMode);
@@ -103,8 +110,6 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     m_comboBox->setModel(descendantProxyModel);
     bottomBar->layout()->addWidget(m_comboBox);
 
-    m_comboBox->hide();
-
     setupActions(ac);
 
     QToolBar *toolBar = new QToolBar(bottomBar);
@@ -113,7 +118,9 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     toolBar->addAction(m_cancelAdd);
 
     m_cancelAdd->setEnabled(false);
+
     updateActions(QModelIndex());
+    setMode(Zanshin::ProjectMode);
 }
 
 void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
@@ -121,16 +128,22 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     switch (mode) {
     case Zanshin::ProjectMode:
         m_stack->setCurrentIndex(0);
-        m_comboBox->hide();
+        onSideBarSelectionChanged(m_projectSelection->currentIndex());
         break;
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
-        // No need to show it if there's only one item to choose from
-        if (m_comboBox->model()->rowCount() > 1) {
-            m_comboBox->show();
-        }
+        onSideBarSelectionChanged(m_categoriesSelection->currentIndex());
         break;
     }
+}
+
+void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
+{
+    int type = index.data(TodoModel::ItemTypeRole).toInt();
+
+    m_comboBox->setVisible(type == TodoModel::Inbox
+                        || type == TodoModel::Category
+                        || type == TodoModel::CategoryRoot);
 }
 
 void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode)
