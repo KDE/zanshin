@@ -25,7 +25,6 @@
 
 #if 0
 #include <akonadi/item.h>
-#include <akonadi/itemdeletejob.h>
 
 #include <boost/shared_ptr.hpp>
 
@@ -34,6 +33,7 @@
 
 #include <KDE/Akonadi/EntityTreeView>
 #include <KDE/Akonadi/ItemCreateJob>
+#include <KDE/Akonadi/ItemDeleteJob>
 
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
@@ -181,13 +181,10 @@ void ActionListEditor::setupActions(KActionCollection *ac)
 
 void ActionListEditor::updateActions(const QModelIndex &index)
 {
-    if (!index.isValid()) {
-        m_remove->setEnabled(false);
-        m_move->setEnabled(false);
-    } else {
-        m_remove->setEnabled(true);
-        m_move->setEnabled(true);
-    }
+    int type = index.data(TodoModel::ItemTypeRole).toInt();
+
+    m_remove->setEnabled(index.isValid() && (type==TodoModel::StandardTodo));
+    m_move->setEnabled(index.isValid() && (type==TodoModel::StandardTodo));
 }
 
 void ActionListEditor::onAddActionRequested()
@@ -257,37 +254,19 @@ void ActionListEditor::onAddActionRequested()
 
 void ActionListEditor::onRemoveAction()
 {
-#if 0
-    QModelIndex current = m_view->currentIndex();
+    QModelIndex current = currentPage()->selectionModel()->currentIndex();
+    int type = current.data(TodoModel::ItemTypeRole).toInt();
 
-    if (m_model->rowCount(current)>0) {
+    if (!current.isValid() || type!=TodoModel::StandardTodo) {
         return;
     }
 
-    Akonadi::Item item;
-    QAbstractItemModel *source = m_model->sourceModel();
-
-    TodoFlatModel *flat = dynamic_cast<TodoFlatModel*>(source);
-    if (flat != 0) {
-        item = flat->itemForIndex(m_model->mapToSource(current));
-    }
-
-    TodoTreeModel *tree = dynamic_cast<TodoTreeModel*>(source);
-    if (tree != 0) {
-        item = tree->itemForIndex(m_model->mapToSource(current));
-    }
-
-    TodoCategoriesModel *categories = dynamic_cast<TodoCategoriesModel*>(source);
-    if (categories != 0) {
-        item = categories->itemForIndex(m_model->mapToSource(current));
-    }
-
+    Akonadi::Item item = current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     if (!item.isValid()) {
         return;
     }
 
     new Akonadi::ItemDeleteJob(item, this);
-#endif
 }
 
 void ActionListEditor::onMoveAction()
