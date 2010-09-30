@@ -23,14 +23,6 @@
 
 #include "actionlisteditor.h"
 
-#if 0
-#include <akonadi/item.h>
-
-#include <boost/shared_ptr.hpp>
-
-#include <KDE/KCalCore/Todo>
-#endif
-
 #include <KDE/Akonadi/EntityTreeView>
 #include <KDE/Akonadi/ItemCreateJob>
 #include <KDE/Akonadi/ItemDeleteJob>
