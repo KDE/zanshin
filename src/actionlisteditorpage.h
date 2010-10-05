@@ -59,6 +59,9 @@ public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();
 
+private slots:
+    void onAutoHideColumns();
+
 private:
     Akonadi::EntityTreeView *m_treeView;
     Zanshin::ApplicationMode m_mode;

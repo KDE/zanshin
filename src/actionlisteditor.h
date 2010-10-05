@@ -71,7 +71,6 @@ private slots:
     void onRemoveAction();
     void onMoveAction();
     void focusActionEdit();
-    void hideColumns();
     void onSideBarSelectionChanged(const QModelIndex &index);
 
 private:

@@ -38,7 +38,6 @@
 #include <KDE/KPassivePopup>
 
 #include <QtCore/QEvent>
-#include <QtCore/QTimer>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QToolBar>
@@ -356,16 +355,4 @@ ActionListEditorPage *ActionListEditor::currentPage() const
 ActionListEditorPage *ActionListEditor::page(int idx) const
 {
     return static_cast<ActionListEditorPage*>(m_stack->widget(idx));
-}
-
-void ActionListEditor::hideColumns()
-{
-    for (int i = 0; i < m_stack->count(); ++i) {
-       ActionListEditorPage *page = static_cast<ActionListEditorPage*>(m_stack->widget(i));
-       if (page->mode() == Zanshin::ProjectMode) {
-           page->hideColumn(1);
-       } else {
-           page->hideColumn(2);
-       }
-    }
 }

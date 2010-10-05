@@ -26,6 +26,7 @@
 #include <KDE/Akonadi/EntityTreeView>
 #include <KDE/KConfigGroup>
 
+#include <QtCore/QTimer>
 #include <QtGui/QHeaderView>
 #include <QtGui/QVBoxLayout>
 
@@ -60,6 +61,8 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
             m_treeView, SLOT(expandAll()));
 
     layout()->addWidget(m_treeView);
+
+    QTimer::singleShot(0, this, SLOT(onAutoHideColumns()));
 }
 
 QItemSelectionModel *ActionListEditorPage::selectionModel() const
@@ -96,6 +99,18 @@ void ActionListEditorPage::removeCurrentTodo()
 Zanshin::ApplicationMode ActionListEditorPage::mode()
 {
     return m_mode;
+}
+
+void ActionListEditorPage::onAutoHideColumns()
+{
+    switch (m_mode) {
+    case Zanshin::ProjectMode:
+        hideColumn(1);
+        break;
+    case Zanshin::CategoriesMode:
+        hideColumn(2);
+        break;
+    }
 }
 
 void ActionListEditorPage::hideColumn(int column)
