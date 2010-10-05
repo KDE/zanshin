@@ -72,6 +72,7 @@ private slots:
     void onMoveAction();
     void focusActionEdit();
     void onSideBarSelectionChanged(const QModelIndex &index);
+    void onComboBoxChanged();
 
 private:
     void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode);

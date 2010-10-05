@@ -24,6 +24,9 @@
 #include "actionlisteditorpage.h"
 
 #include <KDE/Akonadi/EntityTreeView>
+#include <KDE/Akonadi/ItemCreateJob>
+#include <KDE/Akonadi/ItemDeleteJob>
+
 #include <KDE/KConfigGroup>
 
 #include <QtCore/QTimer>
@@ -31,6 +34,7 @@
 #include <QtGui/QVBoxLayout>
 
 #include "actionlistdelegate.h"
+#include "todomodel.h"
 
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
@@ -98,12 +102,80 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
 
 void ActionListEditorPage::addNewTodo(const QString &summary)
 {
+    if (summary.isEmpty()) return;
 
+    QModelIndex current = m_treeView->selectionModel()->currentIndex();
+
+    if (!current.isValid()) {
+        kWarning() << "Oops, nothing selected in the list!";
+        return;
+    }
+
+    int type = current.data(TodoModel::ItemTypeRole).toInt();
+
+    while (current.isValid() && type==TodoModel::StandardTodo) {
+        current = current.parent();
+        type = current.data(TodoModel::ItemTypeRole).toInt();
+    }
+
+    Akonadi::Collection collection;
+    QString parentUid;
+    QString category;
+
+    switch (type) {
+    case TodoModel::StandardTodo:
+        kFatal() << "Can't possibly happen!";
+        break;
+
+    case TodoModel::ProjectTodo:
+        parentUid = current.data(TodoModel::UidRole).toString();
+        collection = current.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+        break;
+
+    case TodoModel::Collection:
+        collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        break;
+
+    case TodoModel::Category:
+        category = current.data(Qt::EditRole).toString();
+        // fallthrough
+    case TodoModel::Inbox:
+    case TodoModel::CategoryRoot:
+        collection = m_defaultCollection;
+        break;
+    }
+
+    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+    todo->setSummary(summary);
+    if (!parentUid.isEmpty()) {
+        todo->setRelatedTo(parentUid);
+    }
+    if (!category.isEmpty()) {
+        todo->setCategories(category);
+    }
+
+    Akonadi::Item item;
+    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+    new Akonadi::ItemCreateJob(item, collection);
 }
 
 void ActionListEditorPage::removeCurrentTodo()
 {
+    QModelIndex current = m_treeView->selectionModel()->currentIndex();
+    int type = current.data(TodoModel::ItemTypeRole).toInt();
 
+    if (!current.isValid() || type!=TodoModel::StandardTodo) {
+        return;
+    }
+
+    Akonadi::Item item = current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    if (!item.isValid()) {
+        return;
+    }
+
+    new Akonadi::ItemDeleteJob(item, this);
 }
 
 Zanshin::ApplicationMode ActionListEditorPage::mode()
@@ -148,4 +220,9 @@ void ActionListEditorPage::onColumnsGeometryChanged()
     } else {
         m_noCollectionStateCache = m_treeView->header()->saveState();
     }
+}
+
+void ActionListEditorPage::setDefaultCollection(const Akonadi::Collection &collection)
+{
+    m_defaultCollection = collection;
 }

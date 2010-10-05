@@ -24,6 +24,8 @@
 #ifndef ZANSHIN_ACTIONLISTEDITORPAGE_H
 #define ZANSHIN_ACTIONLISTEDITORPAGE_H
 
+#include <KDE/Akonadi/Collection>
+
 #include <QtGui/QWidget>
 
 #include "globaldefs.h"
@@ -58,6 +60,8 @@ public:
 
     void setCollectionColumnHidden(bool hidden);
 
+    void setDefaultCollection(const Akonadi::Collection &collection);
+
 public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();
@@ -72,6 +76,8 @@ private:
 
     QByteArray m_normalStateCache;
     QByteArray m_noCollectionStateCache;
+
+    Akonadi::Collection m_defaultCollection;
 };
 
 #endif

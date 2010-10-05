@@ -24,8 +24,6 @@
 #include "actionlisteditor.h"
 
 #include <KDE/Akonadi/EntityTreeView>
-#include <KDE/Akonadi/ItemCreateJob>
-#include <KDE/Akonadi/ItemDeleteJob>
 
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
@@ -94,6 +92,9 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     m_comboBox->setMinimumContentsLength(20);
     m_comboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
 
+    connect(m_comboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onComboBoxChanged()));
+
     KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
     descendantProxyModel->setSourceModel(models->collectionsModel());
     descendantProxyModel->setDisplayAncestorData(true);
@@ -112,6 +113,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     updateActions(QModelIndex());
     setMode(Zanshin::ProjectMode);
+    onComboBoxChanged();
 }
 
 void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
@@ -137,6 +139,16 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
                         || type == TodoModel::CategoryRoot);
 
     currentPage()->setCollectionColumnHidden(type!=TodoModel::Inbox);
+}
+
+void ActionListEditor::onComboBoxChanged()
+{
+    QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
+    Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+
+    for (int i=0; i<m_stack->count(); i++) {
+        page(i)->setDefaultCollection(collection);
+    }
 }
 
 void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode)
@@ -185,81 +197,12 @@ void ActionListEditor::onAddActionRequested()
     QString summary = m_addActionEdit->text().trimmed();
     m_addActionEdit->setText(QString());
 
-    if (summary.isEmpty()) return;
-
-    QModelIndex current = currentPage()->selectionModel()->currentIndex();
-
-    if (!current.isValid()) {
-        kWarning() << "Oops, nothing selected in the list!";
-        return;
-    }
-
-    int type = current.data(TodoModel::ItemTypeRole).toInt();
-
-    while (current.isValid() && type==TodoModel::StandardTodo) {
-        current = current.parent();
-        type = current.data(TodoModel::ItemTypeRole).toInt();
-    }
-
-    Akonadi::Collection collection;
-    QString parentUid;
-    QString category;
-
-    switch (type) {
-    case TodoModel::StandardTodo:
-        kFatal() << "Can't possibly happen!";
-        break;
-
-    case TodoModel::ProjectTodo:
-        parentUid = current.data(TodoModel::UidRole).toString();
-        collection = current.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
-        break;
-
-    case TodoModel::Collection:
-        collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        break;
-
-    case TodoModel::Category:
-        category = current.data(Qt::EditRole).toString();
-        // fallthrough
-    case TodoModel::Inbox:
-    case TodoModel::CategoryRoot:
-        QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
-        collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        break;
-    }
-
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary(summary);
-    if (!parentUid.isEmpty()) {
-        todo->setRelatedTo(parentUid);
-    }
-    if (!category.isEmpty()) {
-        todo->setCategories(category);
-    }
-
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
-
-    new Akonadi::ItemCreateJob(item, collection);
+    currentPage()->addNewTodo(summary);
 }
 
 void ActionListEditor::onRemoveAction()
 {
-    QModelIndex current = currentPage()->selectionModel()->currentIndex();
-    int type = current.data(TodoModel::ItemTypeRole).toInt();
-
-    if (!current.isValid() || type!=TodoModel::StandardTodo) {
-        return;
-    }
-
-    Akonadi::Item item = current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    if (!item.isValid()) {
-        return;
-    }
-
-    new Akonadi::ItemDeleteJob(item, this);
+    currentPage()->removeCurrentTodo();
 }
 
 void ActionListEditor::onMoveAction()
