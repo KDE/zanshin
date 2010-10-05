@@ -28,13 +28,16 @@
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QStyledItemDelegate>
 
+#include "actionlistcheckablemodel.h"
 #include "actionlistcombobox.h"
 #include "combomodel.h"
+#include "kdescendantsproxymodel.h"
 #include "kdateedit.h"
 #include "modelstack.h"
 #include "todomodel.h"
 
 using namespace KPIM;
+Q_DECLARE_METATYPE(QItemSelectionModel*);
 
 ActionListDelegate::ActionListDelegate(ModelStack *models, QObject *parent)
     : QStyledItemDelegate(parent)
@@ -156,16 +159,34 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
 QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex, bool isCategory) const
 {
-    ActionListComboBox *comboBox = new ActionListComboBox(isCategory, parent);
+    ActionListComboBox *comboBox = new ActionListComboBox(parent);
     comboBox->setEditable(true);
     comboBox->view()->setTextElideMode(Qt::ElideNone);
-    ComboModel *comboModel = static_cast<ComboModel*>(model);
+
     if (isCategory) {
-        comboModel->setSelectedItems(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>());
+        comboBox->setAutoHidePopupEnabled(true);
+        QItemSelectionModel *checkModel = new QItemSelectionModel(model, comboBox);
+        ActionListCheckableModel *checkable = new ActionListCheckableModel(comboBox);
+        checkable->setSourceModel(model);
+        checkable->setSelectionModel(checkModel);
+
+        QStringList categories = selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>();
+        for (int i = 0; i < model->rowCount(); ++i) {
+            QModelIndex index = model->index(i, 0);
+            foreach (QString item, categories) {
+                if (index.data(Qt::DisplayRole).toString().contains(item)) {
+                    checkModel->select(index, QItemSelectionModel::Toggle);
+                }
+            }
+        }
+        QVariant var;
+        var.setValue(checkModel);
+        comboBox->setProperty("selectionModel", var);
+        comboBox->setModel(checkable);
     } else {
-        comboModel->setSelectedItems(QStringList(selectedIndex.data(Qt::DisplayRole).value<QString>()));
+        comboBox->setModel(model);
     }
-    comboBox->setModel(model);
+
     QCompleter *completer = new QCompleter(comboBox);
     completer->setModel(model);
     completer->setWidget(comboBox);
@@ -173,14 +194,10 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     comboBox->setCompleter(completer);
     if (isCategory) {
-        ActionListComboBox *completerBox = new ActionListComboBox(isCategory, parent);
+        ActionListComboBox *completerBox = new ActionListComboBox(parent);
         completer->setPopup(completerBox->view());
         completer->setCompletionRole(ComboModel::LastPathPartRole);
         comboBox->setEditText(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>().join(", "));
-        connect(comboBox, SIGNAL(activated(int)), model, SLOT(checkItem(int)));
-        connect(comboBox, SIGNAL(activated(int)), comboBox, SLOT(showItem()));
-        connect(completer->popup(), SIGNAL(activated(const QModelIndex&)), model, SLOT(checkItem(const QModelIndex&)));
-        connect(completer->popup(), SIGNAL(clicked(const QModelIndex&)), comboBox, SLOT(showItem()));
     }
 
     return comboBox;
@@ -205,11 +222,15 @@ void ActionListDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                       const QModelIndex &index) const
 {
-    KDateEdit *dateEdit = qobject_cast<KDateEdit*>(editor);
-
-    if (dateEdit) {
+    if (index.data(Qt::EditRole).type()==QVariant::Date) {
+        KDateEdit *dateEdit = static_cast<KDateEdit*>(editor);
         model->setData(index, dateEdit->date());
-
+    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
+        QComboBox *comboBox = static_cast<QComboBox*>(editor);
+        kDebug() << comboBox->currentText();
+        QStyledItemDelegate::setModelData(editor, model, index);
     } else {
         QStyledItemDelegate::setModelData(editor, model, index);
     }

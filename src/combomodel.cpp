@@ -31,8 +31,8 @@
 
 #include "todomodel.h"
 
-ComboModel::ComboModel(bool isCheckable, QObject *parent)
-    : QSortFilterProxyModel(parent), m_isCheckable(isCheckable)
+ComboModel::ComboModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
 {
     setDynamicSortFilter(true);
 }
@@ -49,29 +49,11 @@ bool ComboModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent
         && sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::CategoryRoot;
 }
 
-Qt::ItemFlags ComboModel::flags(const QModelIndex &index) const
-{
-    if (!index.isValid() || !m_isCheckable) {
-        return QSortFilterProxyModel::flags(index);
-    }
-
-    return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
-}
-
 QVariant ComboModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::CheckStateRole && m_isCheckable) {
-        if (!m_selectedItems.isEmpty()) {
-            foreach (QString item, m_selectedItems) {
-                if (index.data(Qt::DisplayRole).toString().contains(item)) {
-                    return Qt::Checked;
-                }
-            }
-        }
-        return Qt::Unchecked;
-    }
+    // FIXME : must be removed and move in another model
     if (role == LastPathPartRole) {
-        if (m_selectedItems.isEmpty()) {
+        /*if (m_selectedItems.isEmpty()) {
             QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
             return path.last();
         } else {
@@ -82,51 +64,7 @@ QVariant ComboModel::data(const QModelIndex &index, int role) const
             }
             QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
             return  m_selectedItems.join(", ") + ", " + path.last();
-        }
+        }*/
     }
     return QSortFilterProxyModel::data(index, role);
-}
-
-bool ComboModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    if (index.isValid() && role == Qt::CheckStateRole) {
-        QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
-        if (value.toInt() == Qt::Checked) {
-            m_selectedItems << path.last();
-        } else {
-            m_selectedItems.removeOne(path.last());
-        }
-        QModelIndex idx = this->index(0, 0);
-
-        emit(dataChanged(index, index));
-
-        return true;
-    }
-    return QSortFilterProxyModel::setData(index, value, role);
-}
-
-void ComboModel::setSelectedItems(const QStringList &selectedItems)
-{
-    m_selectedItems = selectedItems;
-}
-
-QStringList ComboModel::selectedItems() const
-{
-    return m_selectedItems;
-}
-
-void ComboModel::checkItem(int row)
-{
-    QModelIndex idx = index(row, 0);
-    checkItem(idx);
-}
-
-void ComboModel::checkItem(const QModelIndex &index)
-{
-    int checkState = index.data(Qt::CheckStateRole).toInt();
-    if (checkState == Qt::Checked) {
-        setData(index, Qt::Unchecked, Qt::CheckStateRole);
-    } else {
-        setData(index, Qt::Checked, Qt::CheckStateRole);
-    }
 }

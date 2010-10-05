@@ -124,7 +124,7 @@ QAbstractItemModel *ModelStack::treeSelectionModel(QItemSelectionModel *selectio
 QAbstractItemModel *ModelStack::treeComboModel()
 {
     if (!m_treeComboModel) {
-        ComboModel *treeComboModel = new ComboModel(false, this);
+        ComboModel *treeComboModel = new ComboModel(this);
 
         KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(treeComboModel);
         descendantProxyModel->setSourceModel(treeSideBarModel());
@@ -171,7 +171,7 @@ QAbstractItemModel *ModelStack::categoriesSelectionModel(QItemSelectionModel *se
 QAbstractItemModel *ModelStack::categoriesComboModel()
 {
     if (!m_categoriesComboModel) {
-        ComboModel *categoriesComboModel = new ComboModel(true, this);
+        ComboModel *categoriesComboModel = new ComboModel(this);
 
         KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(categoriesComboModel);
         descendantProxyModel->setSourceModel(categoriesSideBarModel());

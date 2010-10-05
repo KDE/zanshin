@@ -29,6 +29,7 @@
 #include <KDE/KCalCore/Todo>
 
 class ModelStack;
+class QItemSelection;
 
 class ActionListDelegate : public QStyledItemDelegate
 {

@@ -21,26 +21,28 @@
    USA.
 */
 
-#ifndef ZANSHIN_ACTIONLISTCOMBOBOX_H
-#define ZANSHIN_ACTIONLISTCOMBOBOX_H
+#include <actionlistcheckablemodel.h>
+#include <QStringList>
+#include <KDebug>
 
-#include <QtGui/QComboBox>
-
-class ActionListComboBox : public QComboBox
+ActionListCheckableModel::ActionListCheckableModel(QObject *parent)
+    : KCheckableProxyModel(parent)
 {
-    Q_OBJECT
-public:
-    ActionListComboBox(QWidget *parent = 0);
+}
 
-    void setAutoHidePopupEnabled(bool autoHidePopupEnabled);
+QVariant ActionListCheckableModel::data(const QModelIndex& id, int role) const
+{
+    if (role ==  Qt::EditRole) {
+        QStringList categories;
+        QModelIndexList indexes = selectionModel()->selectedIndexes();
+        foreach (const QModelIndex &index, indexes) {
+            QString category = index.data(Qt::DisplayRole).toString();
+            QStringList path = category.split(" / ");
+            categories << path.last();
+        }
+        return categories.join(", ");
+    }
 
-    bool eventFilter(QObject *object, QEvent *event);
-
-public slots:
-    virtual void showPopup();
-
-private:
-    bool m_autoHidePopupEnabled;
-};
-
-#endif //ZANSHIN_ACTIONLISTCOMBOBOX_H
+    QVariant var = KCheckableProxyModel::data(id, role);
+    return var;
+}

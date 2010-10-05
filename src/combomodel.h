@@ -41,25 +41,13 @@ public:
         UserRole = TodoModel::UserRole + 2
     };
 
-    ComboModel(bool isCheckable, QObject *parent = 0);
+    ComboModel(QObject *parent = 0);
     virtual ~ComboModel();
 
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
-    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role=Qt::EditRole);
 
-    void setSelectedItems(const QStringList &selectedItems);
-    QStringList selectedItems() const;
-
-public slots:
-    void checkItem(int row);
-    void checkItem(const QModelIndex &index);
-
-private:
-    QStringList m_selectedItems;
-    bool m_isCheckable;
 };
 
 #endif

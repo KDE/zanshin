@@ -21,26 +21,19 @@
    USA.
 */
 
-#ifndef ZANSHIN_ACTIONLISTCOMBOBOX_H
-#define ZANSHIN_ACTIONLISTCOMBOBOX_H
+#ifndef ZANSHIN_ACTIONLISTCHECKALBEMODEL_H
+#define ZANSHIN_ACTIONLISTCHECKABLEMODEL_H
 
-#include <QtGui/QComboBox>
+#include <kcheckableproxymodel.h>
 
-class ActionListComboBox : public QComboBox
+class ActionListCheckableModel : public KCheckableProxyModel
 {
     Q_OBJECT
 public:
-    ActionListComboBox(QWidget *parent = 0);
+    ActionListCheckableModel(QObject *parent = 0);
 
-    void setAutoHidePopupEnabled(bool autoHidePopupEnabled);
+    QVariant data(const QModelIndex& index, int role) const;
 
-    bool eventFilter(QObject *object, QEvent *event);
-
-public slots:
-    virtual void showPopup();
-
-private:
-    bool m_autoHidePopupEnabled;
 };
 
 #endif //ZANSHIN_ACTIONLISTCOMBOBOX_H

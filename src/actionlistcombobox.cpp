@@ -24,23 +24,39 @@
 #include "actionlistcombobox.h"
 #include "combomodel.h"
 
+#include <QtGui/QApplication>
 #include <QtCore/QEvent>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QMouseEvent>
 
-ActionListComboBox::ActionListComboBox(bool isFiltered, QWidget *parent)
-    : QComboBox(parent), m_isReleaseEvent(false)
+ActionListComboBox::ActionListComboBox(QWidget *parent)
+    : QComboBox(parent), m_autoHidePopupEnabled(false)
 {
-    if (isFiltered) {
-        view()->viewport()->installEventFilter(this);
-    }
 }
 
+void ActionListComboBox::setAutoHidePopupEnabled(bool autoHidePopupEnabled)
+{
+    if (autoHidePopupEnabled == m_autoHidePopupEnabled) {
+        return;
+    }
+    if (autoHidePopupEnabled) {
+        view()->removeEventFilter(view()->parentWidget());
+        view()->viewport()->removeEventFilter(view()->parentWidget());
+        view()->viewport()->installEventFilter(this);
+    } else {
+        view()->viewport()->removeEventFilter(this);
+        view()->installEventFilter(view()->parentWidget());
+        view()->viewport()->installEventFilter(view()->parentWidget());
+    }
+}
 bool ActionListComboBox::eventFilter(QObject *object, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonRelease && object==view()->viewport()) {
-        m_isReleaseEvent = true;
+        QMouseEvent *ev = static_cast<QMouseEvent*>(event);
+        QModelIndex index = view()->indexAt(ev->pos());
+        setCurrentIndex(index.row());
     }
     return QComboBox::eventFilter(object,event);
 }
@@ -88,19 +104,4 @@ void ActionListComboBox::showPopup()
         const int y = view()->parentWidget()->geometry().y();
         view()->parentWidget()->move( x, y );
     }
-}
-
-void ActionListComboBox::hidePopup()
-{
-    if (m_isReleaseEvent) {
-        m_isReleaseEvent = false;
-        return;
-    }
-    QComboBox::hidePopup();
-}
-
-void ActionListComboBox::showItem()
-{
-    ComboModel *comboModel = static_cast<ComboModel*>(model());
-    setEditText(comboModel->selectedItems().join(", "));
 }
