@@ -55,16 +55,23 @@ public:
 
     Zanshin::ApplicationMode mode();
     void hideColumn(int column);
+
+    void setCollectionColumnHidden(bool hidden);
+
 public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();
 
 private slots:
     void onAutoHideColumns();
+    void onColumnsGeometryChanged();
 
 private:
     Akonadi::EntityTreeView *m_treeView;
     Zanshin::ApplicationMode m_mode;
+
+    QByteArray m_normalStateCache;
+    QByteArray m_noCollectionStateCache;
 };
 
 #endif

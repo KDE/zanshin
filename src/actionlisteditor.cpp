@@ -135,6 +135,8 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
     m_comboBox->setVisible(type == TodoModel::Inbox
                         || type == TodoModel::Category
                         || type == TodoModel::CategoryRoot);
+
+    currentPage()->setCollectionColumnHidden(type!=TodoModel::Inbox);
 }
 
 void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode)
