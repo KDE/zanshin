@@ -29,6 +29,7 @@
 #include <QtGui/QStyledItemDelegate>
 
 #include "actionlistcheckablemodel.h"
+#include "actionlistcompletermodel.h"
 #include "actionlistcombobox.h"
 #include "combomodel.h"
 #include "kdescendantsproxymodel.h"
@@ -163,6 +164,11 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
     comboBox->setEditable(true);
     comboBox->view()->setTextElideMode(Qt::ElideNone);
 
+    QCompleter *completer = new QCompleter(comboBox);
+    completer->setWidget(comboBox);
+    completer->setCompletionMode(QCompleter::PopupCompletion);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+
     if (isCategory) {
         comboBox->setAutoHidePopupEnabled(true);
         QItemSelectionModel *checkModel = new QItemSelectionModel(model, comboBox);
@@ -183,22 +189,18 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         var.setValue(checkModel);
         comboBox->setProperty("selectionModel", var);
         comboBox->setModel(checkable);
+
+        ActionListCompleterModel *completerModel = new ActionListCompleterModel(checkModel, completer);
+        completerModel->setSourceModel(checkable);
+        completer->setModel(completerModel);
+        ActionListComboBox *completerBox = new ActionListComboBox(parent);
+        completerBox->setAutoHidePopupEnabled(true);
+        completer->setPopup(completerBox->view());
     } else {
         comboBox->setModel(model);
+        completer->setModel(model);
     }
-
-    QCompleter *completer = new QCompleter(comboBox);
-    completer->setModel(model);
-    completer->setWidget(comboBox);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
     comboBox->setCompleter(completer);
-    if (isCategory) {
-        ActionListComboBox *completerBox = new ActionListComboBox(parent);
-        completer->setPopup(completerBox->view());
-        completer->setCompletionRole(ComboModel::LastPathPartRole);
-        comboBox->setEditText(selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>().join(", "));
-    }
 
     return comboBox;
 }

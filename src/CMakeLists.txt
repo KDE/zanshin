@@ -5,6 +5,7 @@ set(zanshin_SRCS
    actionduedatedelegate.cpp
    actionlistcheckablemodel.cpp
    actionlistcombobox.cpp
+   actionlistcompletermodel.cpp
    actionlistdelegate.cpp
    actionlisteditor.cpp
    actionlisteditorpage.cpp
