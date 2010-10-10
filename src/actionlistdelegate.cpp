@@ -196,6 +196,7 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         ActionListComboBox *completerBox = new ActionListComboBox(parent);
         completerBox->setAutoHidePopupEnabled(true);
         completer->setPopup(completerBox->view());
+        connect(completer, SIGNAL(highlighted(const QString&)), completer, SLOT(setCompletionPrefix(const QString&)));
     } else {
         comboBox->setModel(model);
         completer->setModel(model);
