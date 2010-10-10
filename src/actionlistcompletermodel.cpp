@@ -23,7 +23,6 @@
 */
 
 #include "actionlistcompletermodel.h"
-#include "actionlistcheckablemodel.h"
 
 #include <KDE/KCalCore/Todo>
 #include <kmodelindexproxymapper.h>
