@@ -34,20 +34,10 @@ class ComboModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-
-    // Add role for completion
-    enum Roles {
-        LastPathPartRole = TodoModel::UserRole + 1,
-        UserRole = TodoModel::UserRole + 2
-    };
-
     ComboModel(QObject *parent = 0);
     virtual ~ComboModel();
 
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
-
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-
 };
 
 #endif

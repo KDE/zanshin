@@ -48,23 +48,3 @@ bool ComboModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent
         && sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::Collection
         && sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::CategoryRoot;
 }
-
-QVariant ComboModel::data(const QModelIndex &index, int role) const
-{
-    // FIXME : must be removed and move in another model
-    if (role == LastPathPartRole) {
-        /*if (m_selectedItems.isEmpty()) {
-            QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
-            return path.last();
-        } else {
-            foreach (QString item, m_selectedItems) {
-                if (index.data(Qt::DisplayRole).toString().contains(item)) {
-                    return QVariant();
-                }
-            }
-            QStringList path = index.data(Qt::DisplayRole).toString().split(" / ");
-            return  m_selectedItems.join(", ") + ", " + path.last();
-        }*/
-    }
-    return QSortFilterProxyModel::data(index, role);
-}
