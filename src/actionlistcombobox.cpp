@@ -71,11 +71,14 @@ void ActionListComboBox::showPopup()
     const QFontMetrics &fm = fontMetrics();
 
     for (int i = 0; i < itemCount; ++i) {
-        const int textWidth = fm.width(itemText(i));
-        if (itemIcon(i).isNull()) {
-            width = (qMax(width, textWidth));
-        } else {
-            width = (qMax(width, textWidth + iconWidth));
+        QModelIndex index = model()->index(i, 0);
+        if (index.isValid()) {
+            const int textWidth = fm.width(index.data().toString());
+            if (itemIcon(i).isNull()) {
+                width = (qMax(width, textWidth));
+            } else {
+                width = (qMax(width, textWidth + iconWidth));
+            }
         }
     }
 
