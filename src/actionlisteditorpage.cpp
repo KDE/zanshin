@@ -28,13 +28,68 @@
 #include <KDE/Akonadi/ItemDeleteJob>
 
 #include <KDE/KConfigGroup>
+#include <kdescendantsproxymodel.h>
+#include <kmodelindexproxymapper.h>
 
 #include <QtCore/QTimer>
 #include <QtGui/QHeaderView>
+#include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QVBoxLayout>
 
 #include "actionlistdelegate.h"
 #include "todomodel.h"
+
+class ProjectSortingProxyModel : public QSortFilterProxyModel
+{
+public:
+    ProjectSortingProxyModel(QObject *parent = 0)
+        : QSortFilterProxyModel(parent)
+    {
+        setDynamicSortFilter(true);
+        setFilterCaseSensitivity(Qt::CaseInsensitive);
+    }
+
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const
+    {
+        int leftType = left.data(TodoModel::ItemTypeRole).toInt();
+        int rightType = right.data(TodoModel::ItemTypeRole).toInt();
+
+        return leftType==TodoModel::Inbox
+            || (leftType==TodoModel::CategoryRoot && rightType!=TodoModel::Inbox)
+            || (leftType==TodoModel::Collection && rightType!=TodoModel::Inbox)
+            || (leftType==TodoModel::Category && rightType==TodoModel::StandardTodo)
+            || (leftType==TodoModel::ProjectTodo && rightType==TodoModel::StandardTodo)
+            || QSortFilterProxyModel::lessThan(left, right);
+    }
+};
+
+class TypeFilterProxyModel : public QSortFilterProxyModel
+{
+public:
+    TypeFilterProxyModel(ProjectSortingProxyModel *sorting, QObject *parent = 0)
+        : QSortFilterProxyModel(parent), m_sorting(sorting)
+    {
+        setDynamicSortFilter(true);
+        setFilterCaseSensitivity(Qt::CaseInsensitive);
+    }
+
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    {
+        QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
+        int type = sourceChild.data(TodoModel::ItemTypeRole).toInt();
+        return type!=TodoModel::Collection
+            && type!=TodoModel::Inbox
+            && type!=TodoModel::CategoryRoot;
+    }
+
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
+    {
+        m_sorting->sort(column, order);
+    }
+
+private:
+    ProjectSortingProxyModel *m_sorting;
+};
 
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
@@ -46,7 +101,17 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     layout()->setContentsMargins(0, 0, 0, 0);
 
     m_treeView = new Akonadi::EntityTreeView(this);
-    m_treeView->setModel(model);
+
+    ProjectSortingProxyModel *sorting = new ProjectSortingProxyModel(this);
+    sorting->setSourceModel(model);
+
+    KDescendantsProxyModel *descendants = new KDescendantsProxyModel(this);
+    descendants->setSourceModel(sorting);
+
+    TypeFilterProxyModel *filter = new TypeFilterProxyModel(sorting, this);
+    filter->setSourceModel(descendants);
+
+    m_treeView->setModel(filter);
     m_treeView->setItemDelegate(new ActionListDelegate(models, m_treeView));
 
     m_treeView->header()->setSortIndicatorShown(true);
