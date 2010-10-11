@@ -58,9 +58,7 @@ QSize ActionListDelegate::sizeHint(const QStyleOptionViewItem &option,
 
     TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
 
-    if (!isInFocus(index)) {
-        res.setHeight(32);
-    } else if (type!=TodoModel::StandardTodo) {
+    if (type!=TodoModel::StandardTodo) {
         res.setHeight(24);
     }
 
@@ -75,13 +73,7 @@ void ActionListDelegate::paint(QPainter *painter,
 
     QStyleOptionViewItemV4 opt = option;
 
-    if (!isInFocus(index)) {
-        opt.decorationSize = QSize(1, 1);
-        opt.displayAlignment = Qt::AlignHCenter|Qt::AlignBottom;
-        opt.font.setItalic(true);
-        opt.font.setPointSizeF(opt.font.pointSizeF()*0.75);
-
-    } else if (type!=TodoModel::StandardTodo) {
+    if (type!=TodoModel::StandardTodo) {
         opt.decorationSize = QSize(22, 22);
         opt.font.setWeight(QFont::Bold);
 
@@ -119,11 +111,6 @@ KCalCore::Todo::Ptr ActionListDelegate::todoFromIndex(const QModelIndex &index) 
     }
 
     return item.payload<KCalCore::Todo::Ptr>();
-}
-
-bool ActionListDelegate::isInFocus(const QModelIndex &/*index*/) const
-{
-    return true;
 }
 
 bool ActionListDelegate::isCompleted(const QModelIndex &index) const

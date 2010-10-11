@@ -58,7 +58,6 @@ protected:
     KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
 
 private:
-    bool isInFocus(const QModelIndex &index) const;
     bool isCompleted(const QModelIndex &index) const;
     bool isOverdue(const QModelIndex &index) const;
     QWidget *createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex, bool isFiltered) const;
