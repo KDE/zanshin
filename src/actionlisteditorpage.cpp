@@ -78,7 +78,6 @@ public:
         QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
         int type = sourceChild.data(TodoModel::ItemTypeRole).toInt();
         return type!=TodoModel::Collection
-            && type!=TodoModel::Inbox
             && type!=TodoModel::CategoryRoot;
     }
 
