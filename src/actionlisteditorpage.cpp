@@ -77,8 +77,12 @@ public:
     {
         QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
         int type = sourceChild.data(TodoModel::ItemTypeRole).toInt();
+
+        QSize sizeHint = sourceChild.data(Qt::SizeHintRole).toSize();
+
         return type!=TodoModel::Collection
-            && type!=TodoModel::CategoryRoot;
+            && type!=TodoModel::CategoryRoot
+            && !sizeHint.isNull(); // SelectionProxyModel uses the null size for items we shouldn't display
     }
 
     void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)

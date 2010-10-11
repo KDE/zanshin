@@ -24,6 +24,7 @@
 #include "selectionproxymodel.h"
 
 #include <QtGui/QItemSelectionModel>
+#include <QtCore/QSize>
 
 #include <KDebug>
 
@@ -58,6 +59,24 @@ void SelectionProxyModel::setSourceModel(QAbstractItemModel *model)
     KRecursiveFilterProxyModel::setSourceModel(model);
 
     onSelectionChanged(QItemSelection(), QItemSelection());
+}
+
+QVariant SelectionProxyModel::data(const QModelIndex &index, int role) const
+{
+    if (role==Qt::SizeHintRole) {
+        QModelIndex sourceRowIndex = mapToSource(index.sibling(index.row(), 0));
+        while (sourceRowIndex.isValid()) {
+            if (m_sourceSelectedRows.contains(sourceRowIndex)) {
+                return KRecursiveFilterProxyModel::data(index, role);
+            }
+            sourceRowIndex = sourceRowIndex.parent();
+        }
+
+        return QSize(0, 0); // Ultimately we don't want to display those
+
+    } else {
+        return KRecursiveFilterProxyModel::data(index, role);
+    }
 }
 
 bool SelectionProxyModel::acceptRow(int sourceRow, const QModelIndex &sourceParent) const

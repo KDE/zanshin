@@ -38,6 +38,8 @@ public:
 
     virtual void setSourceModel(QAbstractItemModel *model);
 
+    QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const;
+
 protected:
     virtual bool acceptRow(int sourceRow, const QModelIndex &sourceParent) const;
 
