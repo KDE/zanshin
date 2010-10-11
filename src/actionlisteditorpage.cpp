@@ -39,10 +39,50 @@
 #include "actionlistdelegate.h"
 #include "todomodel.h"
 
-class ProjectSortingProxyModel : public QSortFilterProxyModel
+class GroupLabellingProxyModel : public QSortFilterProxyModel
 {
 public:
-    ProjectSortingProxyModel(QObject *parent = 0)
+    GroupLabellingProxyModel(QObject *parent = 0)
+        : QSortFilterProxyModel(parent)
+    {
+        setDynamicSortFilter(true);
+    }
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const
+    {
+        if (role!=Qt::DisplayRole || index.column()!=0) {
+            return QSortFilterProxyModel::data(index, role);
+        } else {
+            int type = index.data(TodoModel::ItemTypeRole).toInt();
+
+            if (type!=TodoModel::ProjectTodo
+             && type!=TodoModel::Category) {
+                return QSortFilterProxyModel::data(index, role);
+
+            } else {
+                QString display = QSortFilterProxyModel::data(index, role).toString();
+
+                QModelIndex currentIndex = index.parent();
+                type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
+
+                while (type==TodoModel::ProjectTodo
+                    || type==TodoModel::Category) {
+                    display = currentIndex.data(role).toString() + ": " + display;
+
+                    currentIndex = currentIndex.parent();
+                    type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
+                }
+
+                return display;
+            }
+        }
+    }
+};
+
+class GroupSortingProxyModel : public QSortFilterProxyModel
+{
+public:
+    GroupSortingProxyModel(QObject *parent = 0)
         : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
@@ -66,7 +106,7 @@ public:
 class TypeFilterProxyModel : public QSortFilterProxyModel
 {
 public:
-    TypeFilterProxyModel(ProjectSortingProxyModel *sorting, QObject *parent = 0)
+    TypeFilterProxyModel(GroupSortingProxyModel *sorting, QObject *parent = 0)
         : QSortFilterProxyModel(parent), m_sorting(sorting)
     {
         setDynamicSortFilter(true);
@@ -91,7 +131,7 @@ public:
     }
 
 private:
-    ProjectSortingProxyModel *m_sorting;
+    GroupSortingProxyModel *m_sorting;
 };
 
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
@@ -105,8 +145,11 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     m_treeView = new Akonadi::EntityTreeView(this);
 
-    ProjectSortingProxyModel *sorting = new ProjectSortingProxyModel(this);
-    sorting->setSourceModel(model);
+    GroupLabellingProxyModel *labelling = new GroupLabellingProxyModel(this);
+    labelling->setSourceModel(model);
+
+    GroupSortingProxyModel *sorting = new GroupSortingProxyModel(this);
+    sorting->setSourceModel(labelling);
 
     KDescendantsProxyModel *descendants = new KDescendantsProxyModel(this);
     descendants->setSourceModel(sorting);
