@@ -120,6 +120,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_treeView->setItemsExpandable(false);
+    m_treeView->setRootIsDecorated(false);
     m_treeView->setEditTriggers(m_treeView->editTriggers() | QAbstractItemView::SelectedClicked);
 
     connect(m_treeView->model(), SIGNAL(modelReset()),

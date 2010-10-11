@@ -85,9 +85,13 @@ void ActionListDelegate::paint(QPainter *painter,
         opt.decorationSize = QSize(22, 22);
         opt.font.setWeight(QFont::Bold);
 
-    } else if (index.parent().isValid()) {
+    } else {
         if (index.row()%2==0) {
             opt.features|= QStyleOptionViewItemV4::Alternate;
+        }
+
+        if (index.column()==0) {
+            opt.rect.setLeft(opt.rect.left()+32);
         }
     }
 
@@ -237,4 +241,18 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
     } else {
         QStyledItemDelegate::setModelData(editor, model, index);
     }
+}
+
+void ActionListDelegate::updateEditorGeometry(QWidget *editor,
+                                              const QStyleOptionViewItem &option,
+                                              const QModelIndex &index) const
+{
+    QStyleOptionViewItemV4 opt = option;
+    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+
+    if (type == TodoModel::StandardTodo) {
+        opt.rect.setLeft(opt.rect.left()+32);
+    }
+
+    QStyledItemDelegate::updateEditorGeometry(editor, opt, index);
 }
