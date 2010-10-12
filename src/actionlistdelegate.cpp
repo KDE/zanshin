@@ -246,3 +246,19 @@ void ActionListDelegate::updateEditorGeometry(QWidget *editor,
 
     QStyledItemDelegate::updateEditorGeometry(editor, opt, index);
 }
+
+bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
+                                     const QStyleOptionViewItem &option, const QModelIndex &index)
+{
+    QStyleOptionViewItemV4 opt = option;
+
+    if (index.column()==0) {
+        TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+
+        if (type == TodoModel::StandardTodo && index.column()==0) {
+            opt.rect.setLeft(opt.rect.left()+32);
+        }
+    }
+
+    QStyledItemDelegate::editorEvent(event, model, opt, index);
+}

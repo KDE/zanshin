@@ -55,6 +55,9 @@ public:
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 protected:
+    virtual bool editorEvent(QEvent *event, QAbstractItemModel *model,
+                             const QStyleOptionViewItem &option, const QModelIndex &index);
+
     KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
 
 private:

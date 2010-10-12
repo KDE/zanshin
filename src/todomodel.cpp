@@ -49,6 +49,18 @@ TodoModel::~TodoModel()
 {
 }
 
+Qt::ItemFlags TodoModel::flags(const QModelIndex &index) const
+{
+    if (index.isValid() && index.column()==0) {
+        Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
+        if (item.isValid() && itemTypeFromItem(item)==StandardTodo) {
+            return Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsUserCheckable;
+        }
+    }
+
+    return Akonadi::EntityTreeModel::flags(index);
+}
+
 int TodoModel::entityColumnCount(HeaderGroup headerGroup) const
 {
     if (headerGroup == CollectionTreeHeaders) {
@@ -113,6 +125,12 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
         case 4:
             return modelIndexForCollection(this, item.parentCollection()).data();
         }
+    case Qt::CheckStateRole:
+        if (column==0 && itemTypeFromItem(item)==StandardTodo) {
+            return todoFromItem(item)->isCompleted() ? Qt::Checked : Qt::Unchecked;
+        } else {
+            return QVariant();
+        }
     case Qt::DecorationRole:
         if (column==0 && itemTypeFromItem(item)==ProjectTodo) {
             return KIcon("view-pim-tasks");
@@ -156,7 +174,7 @@ QVariant TodoModel::entityData(const Akonadi::Collection &collection, int column
 
 bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role!=Qt::EditRole || !index.isValid()) {
+    if ((role!=Qt::EditRole && role!=Qt::CheckStateRole) || !index.isValid()) {
         return EntityTreeModel::setData(index, value, role);
     }
 
@@ -172,8 +190,13 @@ bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
     switch (index.column()) {
     case 0:
-        todo->setSummary(value.toString());
-        shouldModifyItem = true;
+        if (role==Qt::EditRole) {
+            todo->setSummary(value.toString());
+            shouldModifyItem = true;
+        } else if (role==Qt::CheckStateRole) {
+            todo->setCompleted(value.toInt()==Qt::Checked);
+            shouldModifyItem = true;
+        }
         break;
     case 1:
     case 2:

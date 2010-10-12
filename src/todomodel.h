@@ -65,6 +65,8 @@ public:
     TodoModel(Akonadi::ChangeRecorder *monitor, QObject *parent = 0);
     virtual ~TodoModel();
 
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+
     virtual int entityColumnCount(HeaderGroup headerGroup) const;
     virtual QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const;
     virtual QVariant entityData(const Akonadi::Item &item, int column, int role) const;
