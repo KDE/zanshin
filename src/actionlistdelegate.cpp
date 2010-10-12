@@ -235,10 +235,13 @@ void ActionListDelegate::updateEditorGeometry(QWidget *editor,
                                               const QModelIndex &index) const
 {
     QStyleOptionViewItemV4 opt = option;
-    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
 
-    if (type == TodoModel::StandardTodo) {
-        opt.rect.setLeft(opt.rect.left()+32);
+    if (index.column()==0) {
+        TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+
+        if (type == TodoModel::StandardTodo && index.column()==0) {
+            opt.rect.setLeft(opt.rect.left()+32);
+        }
     }
 
     QStyledItemDelegate::updateEditorGeometry(editor, opt, index);
