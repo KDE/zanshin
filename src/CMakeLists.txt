@@ -6,6 +6,7 @@ set(zanshin_SRCS
    actionlistcheckablemodel.cpp
    actionlistcombobox.cpp
    actionlistcompletermodel.cpp
+   actionlistcompleterview.cpp
    actionlistdelegate.cpp
    actionlisteditor.cpp
    actionlisteditorpage.cpp

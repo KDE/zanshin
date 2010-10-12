@@ -29,6 +29,7 @@
 #include <QtGui/QStyledItemDelegate>
 
 #include "actionlistcheckablemodel.h"
+#include "actionlistcompleterview.h"
 #include "actionlistcompletermodel.h"
 #include "actionlistcombobox.h"
 #include "combomodel.h"
@@ -156,7 +157,6 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
     comboBox->view()->setTextElideMode(Qt::ElideNone);
 
     QCompleter *completer = new QCompleter(comboBox);
-    completer->setWidget(comboBox);
     completer->setCompletionMode(QCompleter::PopupCompletion);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
 
@@ -180,14 +180,11 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         var.setValue(checkModel);
         comboBox->setProperty("selectionModel", var);
         comboBox->setModel(checkable);
-
         ActionListCompleterModel *completerModel = new ActionListCompleterModel(checkModel, completer);
         completerModel->setSourceModel(checkable);
         completer->setModel(completerModel);
-        ActionListComboBox *completerBox = new ActionListComboBox(parent);
-        completerBox->setAutoHidePopupEnabled(true);
-        completer->setPopup(completerBox->view());
-        connect(completer, SIGNAL(highlighted(const QString&)), completer, SLOT(setCompletionPrefix(const QString&)));
+        ActionListCompleterView *listView = new ActionListCompleterView(comboBox);
+        completer->setPopup(listView);
     } else {
         comboBox->setModel(model);
         completer->setModel(model);
