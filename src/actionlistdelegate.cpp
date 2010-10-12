@@ -176,9 +176,6 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
                 }
             }
         }
-        QVariant var;
-        var.setValue(checkModel);
-        comboBox->setProperty("selectionModel", var);
         comboBox->setModel(checkable);
         ActionListCompleterModel *completerModel = new ActionListCompleterModel(checkModel, completer);
         completerModel->setSourceModel(checkable);
@@ -217,7 +214,15 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         KDateEdit *dateEdit = static_cast<KDateEdit*>(editor);
         model->setData(index, dateEdit->date());
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        QComboBox *comboBox = static_cast<QComboBox*>(editor);
+        ActionListCheckableModel *checkableModel = static_cast<ActionListCheckableModel*>(comboBox->model());
+        QItemSelectionModel *selectionModel = checkableModel->selectionModel();
+        QModelIndexList indexes = selectionModel->selectedIndexes();
+        QStringList categories;
+        foreach (const QModelIndex &idx, indexes) {
+            categories << idx.data(Qt::EditRole).toString();
+        }
+        model->setData(index, categories);
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         kDebug() << comboBox->currentText();
@@ -257,5 +262,5 @@ bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
         }
     }
 
-    QStyledItemDelegate::editorEvent(event, model, opt, index);
+    return QStyledItemDelegate::editorEvent(event, model, opt, index);
 }

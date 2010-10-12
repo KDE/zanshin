@@ -199,7 +199,10 @@ bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int rol
         }
         break;
     case 1:
+        break;
     case 2:
+        todoFromItem(item)->setCategories(value.toStringList());
+        shouldModifyItem = true;
         break;
     case 3:
         todo->setDtDue(KDateTime(value.toDate()));
