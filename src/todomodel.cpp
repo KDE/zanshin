@@ -51,14 +51,20 @@ TodoModel::~TodoModel()
 
 Qt::ItemFlags TodoModel::flags(const QModelIndex &index) const
 {
-    if (index.isValid() && index.column()==0) {
-        Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
-        if (item.isValid() && itemTypeFromItem(item)==StandardTodo) {
-            return Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsUserCheckable;
+    Qt::ItemFlags flags = Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsEditable;
+
+    if (index.isValid()) {
+        if (index.column()==0) {
+            Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
+            if (item.isValid() && itemTypeFromItem(item)==StandardTodo) {
+                flags|= Qt::ItemIsUserCheckable;
+            }
+        } else if (index.column()==4) {
+            flags&= ~Qt::ItemIsEditable;
         }
     }
 
-    return Akonadi::EntityTreeModel::flags(index);
+    return flags;
 }
 
 int TodoModel::entityColumnCount(HeaderGroup headerGroup) const
