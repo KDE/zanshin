@@ -117,7 +117,7 @@ Qt::ItemFlags TodoProxyModelBase::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
     }
 
-    return node->flags();
+    return node->flags(index.column());
 }
 
 QModelIndex TodoProxyModelBase::mapToSource(const QModelIndex &proxyIndex) const

@@ -47,7 +47,7 @@ public:
     void setData(const QVariant &value, int column, int role);
     void setRowData(const QVariant &value, int role);
 
-    Qt::ItemFlags flags() const;
+    Qt::ItemFlags flags(int column) const;
     void setFlags(Qt::ItemFlags flags);
 
 private:

@@ -93,7 +93,7 @@ void TodoNode::setData(const QVariant &value, int column, int role)
 {
     if (m_rowSourceIndex.isValid()) {
         QAbstractItemModel *model = const_cast<QAbstractItemModel*>(m_rowSourceIndex.model());
-        model->setData(m_rowSourceIndex, value, role);
+        model->setData(m_rowSourceIndex.sibling(m_rowSourceIndex.row(), column), value, role);
     } else {
         m_data[QPair<int, int>(column, role)] = value;
     }
@@ -109,11 +109,11 @@ void TodoNode::setRowData(const QVariant &value, int role)
     }
 }
 
-Qt::ItemFlags TodoNode::flags() const
+Qt::ItemFlags TodoNode::flags(int column) const
 {
     if (m_rowSourceIndex.isValid()) {
         QAbstractItemModel *model = const_cast<QAbstractItemModel*>(m_rowSourceIndex.model());
-        return model->flags(m_rowSourceIndex);
+        return model->flags(m_rowSourceIndex.sibling(m_rowSourceIndex.row(), column));
     } else {
         return m_flags;
     }
