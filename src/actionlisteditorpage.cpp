@@ -134,6 +134,53 @@ private:
     GroupSortingProxyModel *m_sorting;
 };
 
+
+class ActionListEditorView : public Akonadi::EntityTreeView
+{
+public:
+    ActionListEditorView(QWidget *parent = 0)
+        : Akonadi::EntityTreeView(parent) { }
+
+protected:
+    virtual QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+    {
+        QModelIndex index = currentIndex();
+
+        if (index.isValid() && modifiers==Qt::NoModifier) {
+            QModelIndex newIndex;
+            int newColumn = index.column();
+
+            switch (cursorAction) {
+            case MoveLeft:
+                do {
+                    newColumn--;
+                } while (isColumnHidden(newColumn)
+                      && newColumn>=0);
+                break;
+
+            case MoveRight:
+                do {
+                    newColumn++;
+                } while (isColumnHidden(newColumn)
+                      && newColumn<header()->count());
+                break;
+
+            default:
+                return Akonadi::EntityTreeView::moveCursor(cursorAction, modifiers);
+            }
+
+            newIndex = index.sibling(index.row(), newColumn);
+
+            if (newIndex.isValid()) {
+                return newIndex;
+            }
+        }
+
+        return Akonadi::EntityTreeView::moveCursor(cursorAction, modifiers);
+    }
+};
+
+
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
                                            Zanshin::ApplicationMode mode,
@@ -143,7 +190,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     setLayout(new QVBoxLayout(this));
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    m_treeView = new Akonadi::EntityTreeView(this);
+    m_treeView = new ActionListEditorView(this);
 
     GroupLabellingProxyModel *labelling = new GroupLabellingProxyModel(this);
     labelling->setSourceModel(model);
@@ -167,7 +214,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_treeView->setItemsExpandable(false);
     m_treeView->setRootIsDecorated(false);
-    m_treeView->setEditTriggers(m_treeView->editTriggers() | QAbstractItemView::SelectedClicked);
+    m_treeView->setEditTriggers(m_treeView->editTriggers() | QAbstractItemView::DoubleClicked);
 
     connect(m_treeView->model(), SIGNAL(modelReset()),
             m_treeView, SLOT(expandAll()));

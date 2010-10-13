@@ -31,7 +31,6 @@
 
 class ActionListEditorPage;
 class ActionListModel;
-class ActionListView;
 class KAction;
 class KActionCollection;
 class KConfigGroup;
