@@ -205,6 +205,8 @@ bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int rol
         }
         break;
     case 1:
+        todo->setRelatedTo(value.toString());
+        shouldModifyItem = true;
         break;
     case 2:
         todoFromItem(item)->setCategories(value.toStringList());

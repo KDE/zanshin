@@ -35,6 +35,7 @@
 #include "combomodel.h"
 #include "kdescendantsproxymodel.h"
 #include "kdateedit.h"
+#include <kmodelindexproxymapper.h>
 #include "modelstack.h"
 #include "todomodel.h"
 
@@ -185,7 +186,9 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
     } else {
         comboBox->setModel(model);
         completer->setModel(model);
+        comboBox->setEditText(selectedIndex.data().toString());
     }
+    connect(completer, SIGNAL(activated(const QModelIndex&)), this, SLOT(onCompleterActivated(const QModelIndex&)));
     comboBox->setCompleter(completer);
 
     return comboBox;
@@ -225,8 +228,13 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         model->setData(index, categories);
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
-        kDebug() << comboBox->currentText();
-        QStyledItemDelegate::setModelData(editor, model, index);
+        if (comboBox->currentIndex() == -1) {
+            return;
+        }
+        QModelIndex idx = comboBox->model()->index(comboBox->currentIndex(), 0);
+        if (idx.isValid()) {
+            model->setData(index, idx.data(TodoModel::UidRole));
+        }
     } else {
         QStyledItemDelegate::setModelData(editor, model, index);
     }
@@ -263,4 +271,22 @@ bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     }
 
     return QStyledItemDelegate::editorEvent(event, model, opt, index);
+}
+
+void ActionListDelegate::onCompleterActivated(const QModelIndex &index)
+{
+    QCompleter *completer = static_cast<QCompleter*>(sender());
+    QComboBox *comboBox = static_cast<QComboBox*>(completer->widget());
+
+    KModelIndexProxyMapper *mapper = new KModelIndexProxyMapper(comboBox->model(), index.model(), this);
+    QModelIndex mapperIndex = mapper->mapRightToLeft(index);
+
+    comboBox->setCurrentIndex(mapperIndex.row());
+    QVariant value = mapperIndex.data(Qt::CheckStateRole);
+    if (!value.isValid()) {
+        return;
+    }
+    Qt::CheckState state = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked
+                            ? Qt::Unchecked : Qt::Checked);
+    comboBox->model()->setData(mapperIndex, state, Qt::CheckStateRole);
 }

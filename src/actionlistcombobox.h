@@ -39,6 +39,12 @@ public:
 public slots:
     virtual void showPopup();
 
+protected:
+    virtual void childEvent(QChildEvent *event);
+
+private slots:
+    void onLineEditPolished();
+
 private:
     bool m_autoHidePopupEnabled;
 };

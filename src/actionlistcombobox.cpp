@@ -24,11 +24,12 @@
 #include "actionlistcombobox.h"
 #include "combomodel.h"
 
-#include <QtGui/QApplication>
 #include <QtCore/QEvent>
+#include <QtCore/QTimer>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QLineEdit>
 #include <QtGui/QMouseEvent>
 
 ActionListComboBox::ActionListComboBox(QWidget *parent)
@@ -107,4 +108,23 @@ void ActionListComboBox::showPopup()
         const int y = view()->parentWidget()->geometry().y();
         view()->parentWidget()->move( x, y );
     }
+}
+
+void ActionListComboBox::childEvent(QChildEvent *event)
+{
+    if (event->polished() && qobject_cast<QLineEdit*>(event->child())) {
+        QTimer::singleShot(0, this, SLOT(onLineEditPolished()));
+    }
+}
+
+void ActionListComboBox::onLineEditPolished()
+{
+    /*disconnect signal editingFinished and returnPressed in
+    actionListComboBox to fix the currentIndex, by default the combobox
+    call QAbstractItemModel::match to find the good index and here it can't
+    work because we set the lineEdit with the item name without the path and the
+    item.data(DisplayRole) return the path + the name of item.*/
+
+    disconnect(lineEdit(), SIGNAL(returnPressed()), this, 0);
+    disconnect(lineEdit(), SIGNAL(editingFinished()), this, 0);
 }

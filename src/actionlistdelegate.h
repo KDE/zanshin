@@ -60,6 +60,9 @@ protected:
 
     KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
 
+private slots:
+    void onCompleterActivated(const QModelIndex &index);
+
 private:
     bool isCompleted(const QModelIndex &index) const;
     bool isOverdue(const QModelIndex &index) const;
