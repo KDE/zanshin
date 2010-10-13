@@ -51,7 +51,7 @@ SideBarPage::SideBarPage(QAbstractItemModel *model,
     m_treeView->sortByColumn(0, Qt::AscendingOrder);
     m_treeView->setAnimated(true);
     m_treeView->setModel(model);
-    m_treeView->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_treeView->setDragEnabled(true);
     m_treeView->viewport()->setAcceptDrops(true);
     m_treeView->setDropIndicatorShown(true);
