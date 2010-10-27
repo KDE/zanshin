@@ -84,6 +84,7 @@ void TodoCategoriesModel::onSourceRemoveRows(const QModelIndex &sourceIndex, int
             TodoNode *node = m_manager->nodeForIndex(proxyIndex);
 
             beginRemoveRows(proxyIndex.parent(), proxyIndex.row(), proxyIndex.row());
+            m_manager->removeNode(node);
             delete node;
             endRemoveRows();
         }
@@ -125,6 +126,7 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
 
             int oldRow = parentNode->children().indexOf(node);
             beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
+            m_manager->removeNode(node);
             delete node;
             endRemoveRows();
         }
