@@ -218,14 +218,8 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         model->setData(index, dateEdit->date());
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
-        ActionListCheckableModel *checkableModel = static_cast<ActionListCheckableModel*>(comboBox->model());
-        QItemSelectionModel *selectionModel = checkableModel->selectionModel();
-        QModelIndexList indexes = selectionModel->selectedIndexes();
-        QStringList categories;
-        foreach (const QModelIndex &idx, indexes) {
-            categories << idx.data(Qt::EditRole).toString();
-        }
-        model->setData(index, categories);
+        QStringList currentCategories = comboBox->currentText().split(", ");
+        model->setData(index, currentCategories);
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         if (comboBox->currentIndex() == -1) {
