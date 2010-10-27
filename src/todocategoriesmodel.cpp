@@ -131,6 +131,29 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
             endRemoveRows();
         }
 
+        if (!oldCategories.isEmpty()) {
+            QStringList categories = sourceModel()->data(sourceIndex, TodoModel::CategoriesRole).toStringList();
+            if (categories.isEmpty()) {
+                addChildNode(sourceIndex, m_inboxNode);
+            }
+        } else if (!newCategories.isEmpty()) {
+            TodoNode *node = 0;
+            QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
+            foreach (TodoNode *n, nodes) {
+                if (n->parent() == m_inboxNode) {
+                    node = n;
+                    break;
+                }
+            }
+            if (node) {
+                int oldRow = m_inboxNode->children().indexOf(node);
+                beginRemoveRows(m_manager->indexForNode(m_inboxNode, 0), oldRow, oldRow);
+                m_manager->removeNode(node);
+                delete node;
+                endRemoveRows();
+            }
+        }
+
         foreach (const QString &newCategory, newCategories) {
             if (!m_categoryMap.contains(newCategory)) {
                 createCategoryNode(newCategory);
