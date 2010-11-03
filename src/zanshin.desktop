@@ -3,6 +3,7 @@ Type=Application
 Categories=Qt;KDE;Utility;X-KDE-Utilities-PIM;
 Exec=zanshin
 Name=Zanshin
+Name[cs]=Zanshin
 Name[es]=Zanshin
 Name[nds]=Zanshin
 Name[nl]=Zanshin
