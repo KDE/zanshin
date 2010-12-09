@@ -1,7 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
-   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
+   Copyright 2010 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,28 +21,22 @@
    USA.
 */
 
-#ifndef ZANSHIN_SIDEBARMODEL_H
-#define ZANSHIN_SIDEBARMODEL_H
+#include "todotreeview.h"
+#include <QDragMoveEvent>
+#include <QDropEvent>
 
-#include <QtGui/QSortFilterProxyModel>
-
-#include <KDE/Akonadi/EntityTreeModel>
-#include <KDE/KCalCore/Todo>
-
-class SideBarModel : public QSortFilterProxyModel
+TodoTreeView::TodoTreeView(QWidget *parent)
+            : Akonadi::EntityTreeView(parent) 
 {
-    Q_OBJECT
+}
 
-public:
-    SideBarModel(QObject *parent = 0);
-    virtual ~SideBarModel();
+void TodoTreeView::dragMoveEvent(QDragMoveEvent *event)
+{
+    QTreeView::dragMoveEvent(event);
+}
 
-    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
-    virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
-    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
-
-    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
-};
-
-#endif
+void TodoTreeView::dropEvent(QDropEvent *event)
+{
+    QTreeView::dropEvent(event);
+}
 

@@ -23,7 +23,6 @@
 
 #include "actionlisteditorpage.h"
 
-#include <KDE/Akonadi/EntityTreeView>
 #include <KDE/Akonadi/ItemCreateJob>
 #include <KDE/Akonadi/ItemDeleteJob>
 
@@ -38,6 +37,7 @@
 
 #include "actionlistdelegate.h"
 #include "todomodel.h"
+#include "todotreeview.h"
 
 class GroupLabellingProxyModel : public QSortFilterProxyModel
 {
@@ -135,11 +135,11 @@ private:
 };
 
 
-class ActionListEditorView : public Akonadi::EntityTreeView
+class ActionListEditorView : public TodoTreeView
 {
 public:
     ActionListEditorView(QWidget *parent = 0)
-        : Akonadi::EntityTreeView(parent) { }
+        : TodoTreeView(parent) { }
 
 protected:
     virtual QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
@@ -180,6 +180,23 @@ protected:
     }
 };
 
+class ActionListEditorModel : public KDescendantsProxyModel
+{
+public:
+    ActionListEditorModel(QObject *parent = 0)
+        : KDescendantsProxyModel(parent)
+    {
+    }
+
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+    {
+        if (!sourceModel()) {
+            return QAbstractProxyModel::dropMimeData(data, action, row, column, parent);
+        }
+        QModelIndex sourceParent = mapToSource(parent);
+        return sourceModel()->dropMimeData(data, action, row, column, sourceParent);
+    }
+};
 
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
@@ -198,7 +215,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     GroupSortingProxyModel *sorting = new GroupSortingProxyModel(this);
     sorting->setSourceModel(labelling);
 
-    KDescendantsProxyModel *descendants = new KDescendantsProxyModel(this);
+    ActionListEditorModel *descendants = new ActionListEditorModel(this);
     descendants->setSourceModel(sorting);
 
     TypeFilterProxyModel *filter = new TypeFilterProxyModel(sorting, this);

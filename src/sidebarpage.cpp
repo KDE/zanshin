@@ -23,7 +23,6 @@
 
 #include "sidebarpage.h"
 
-#include <KDE/Akonadi/EntityTreeView>
 #include <KDE/KDebug>
 #include <KDE/KInputDialog>
 #include <KDE/KLocale>
@@ -34,6 +33,7 @@
 
 #include "todohelpers.h"
 #include "todomodel.h"
+#include "todotreeview.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
                          const QList<QAction*> &contextActions,
@@ -41,7 +41,7 @@ SideBarPage::SideBarPage(QAbstractItemModel *model,
     : QWidget(parent)
 {
     setLayout(new QVBoxLayout(this));
-    m_treeView = new Akonadi::EntityTreeView(this);
+    m_treeView = new TodoTreeView(this);
     layout()->addWidget(m_treeView);
     layout()->setContentsMargins(0, 0, 0, 0);
 

@@ -64,3 +64,11 @@ bool SideBarModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePare
     QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
     return sourceChild.data(TodoModel::ItemTypeRole).toInt()!=TodoModel::StandardTodo;
 }
+
+bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    if (!sourceModel()) {
+        return QAbstractProxyModel::dropMimeData(data, action, row, column, parent);
+    }
+    return sourceModel()->dropMimeData(data, action, row, column, parent);
+}

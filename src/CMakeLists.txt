@@ -24,6 +24,7 @@ set(zanshin_SRCS
    todohelpers.cpp
    todoproxymodelbase.cpp
    todotreemodel.cpp
+   todotreeview.cpp
    todomodel.cpp
    todonode.cpp
    todonodemanager.cpp

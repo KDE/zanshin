@@ -380,3 +380,8 @@ QStringList TodoModel::categoriesFromItem(const Akonadi::Item &item) const
         return QStringList();
     }
 }
+
+Qt::DropActions TodoModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}

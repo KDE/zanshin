@@ -28,6 +28,7 @@
 #include "todonode.h"
 #include "todoproxymodelbase.h"
 
+class KJob;
 class TodoTreeModel : public TodoProxyModelBase
 {
     Q_OBJECT
@@ -36,10 +37,18 @@ public:
     TodoTreeModel(QObject *parent = 0);
     virtual ~TodoTreeModel();
 
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    virtual QStringList mimeTypes() const;
+    virtual Qt::DropActions supportedDropActions() const;
+
 private slots:
     virtual void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     virtual void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     virtual void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
+    void moveJobDone(KJob *job);
+    void transactionFinished(KJob *job);
 
 private:
     virtual TodoNode *createInbox() const;
