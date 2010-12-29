@@ -98,8 +98,9 @@ public:
             || (leftType==TodoModel::CategoryRoot && rightType!=TodoModel::Inbox)
             || (leftType==TodoModel::Collection && rightType!=TodoModel::Inbox)
             || (leftType==TodoModel::Category && rightType==TodoModel::StandardTodo)
-            || (leftType==TodoModel::ProjectTodo && rightType==TodoModel::StandardTodo)
-            || QSortFilterProxyModel::lessThan(left, right);
+            || (leftType==TodoModel::StandardTodo && rightType!=TodoModel::StandardTodo)
+            || (leftType==TodoModel::ProjectTodo && rightType==TodoModel::Collection)
+            || (leftType == rightType && QSortFilterProxyModel::lessThan(left, right));
     }
 };
 
