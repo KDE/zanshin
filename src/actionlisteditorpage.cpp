@@ -69,7 +69,7 @@ public:
 
                 while (type==TodoModel::ProjectTodo
                     || type==TodoModel::Category) {
-                    display = currentIndex.data(role).toString() + ": " + display;
+                    display = currentIndex.data(Qt::EditRole).toString() + ": " + display;
 
                     currentIndex = currentIndex.parent();
                     type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
