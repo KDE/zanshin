@@ -293,7 +293,7 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
     int type = current.data(TodoModel::ItemTypeRole).toInt();
 
     while (current.isValid() && type==TodoModel::StandardTodo) {
-        current = current.parent();
+        current = current.sibling(current.row()-1, current.column());
         type = current.data(TodoModel::ItemTypeRole).toInt();
     }
 
