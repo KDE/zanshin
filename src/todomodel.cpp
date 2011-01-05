@@ -164,6 +164,8 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
             default:
                 return StandardType;
         }
+    case ChildUidsRole:
+        return childUidsFromItem(item);
     default:
         return EntityTreeModel::entityData(item, column, role);
     }
@@ -176,6 +178,15 @@ QVariant TodoModel::entityData(const Akonadi::Collection &collection, int column
     } else {
         return EntityTreeModel::entityData(collection, column, role);
     }
+}
+
+
+QVariant TodoModel::data(const QModelIndex &index, int role) const
+{
+    if (role==ChildIndexesRole) {
+        return QVariant::fromValue(childIndexesFromIndex(index));
+    }
+    return EntityTreeModel::data(index, role);
 }
 
 bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -379,6 +390,37 @@ QStringList TodoModel::categoriesFromItem(const Akonadi::Item &item) const
     } else {
         return QStringList();
     }
+}
+
+QStringList TodoModel::childUidsFromItem(const Akonadi::Item &item) const
+{
+    KCalCore::Todo::Ptr todo = todoFromItem(item);
+    if (todo) {
+        return m_childrenMap[todo->uid()];
+    } else {
+        return QStringList();
+    }
+}
+
+QModelIndexList TodoModel::childIndexesFromIndex(const QModelIndex &idx) const
+{
+    QModelIndexList indexes;
+    KCalCore::Todo::Ptr todo = todoFromIndex(idx);
+    if (!todo) {
+        return indexes;
+    }
+    QString parent = todo->uid();
+    for (int i = 0; i < rowCount(idx.parent()); ++i) {
+        QModelIndex child = index(i, idx.column(), idx.parent());
+        todo = todoFromIndex(child);
+        if (!todo) {
+            continue;
+        }
+        if (m_parentMap[todo->uid()] == parent) {
+            indexes << child;
+        }
+    }
+    return indexes;
 }
 
 Qt::DropActions TodoModel::supportedDropActions() const

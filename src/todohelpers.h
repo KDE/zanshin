@@ -27,13 +27,16 @@
 
 #include <KDE/Akonadi/Collection>
 #include <KDE/Akonadi/Item>
-
+#include <KDE/Akonadi/TransactionSequence>
+#include <QModelIndex>
 
 namespace TodoHelpers
 {
     void addProject(const QString &summary, const Akonadi::Collection &collection);
     void addProject(const QString &summary, const Akonadi::Item &parentProject);
     void addCategory(const QString &summary);
+    bool removeProject(QWidget *parent, const QModelIndex &project);
+    void removeCategory();
 }
 
 #endif

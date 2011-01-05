@@ -24,8 +24,15 @@
 
 #include "todohelpers.h"
 
+#include <KDE/Akonadi/Item>
 #include <KDE/Akonadi/ItemCreateJob>
+#include <KDE/Akonadi/ItemDeleteJob>
+#include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/KCalCore/Todo>
+#include <KDE/KLocale>
+#include <KDE/KMessageBox>
+
+#include "todomodel.h"
 
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
 {
@@ -65,3 +72,43 @@ void TodoHelpers::addCategory(const QString &summary)
 
 }
 
+void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
+{
+    foreach (QModelIndex child, children) {
+        QModelIndexList childList = child.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+        removeCurrentTodo(child, childList, sequence);
+    }
+
+    Akonadi::Item item = project.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    new Akonadi::ItemDeleteJob(item, sequence);
+}
+
+bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
+{
+    bool canRemove = true;
+    QModelIndexList children = project.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+    if (!children.isEmpty()) {
+        QString summary = project.data().toString();
+
+        QString title;
+        QString text;
+
+        text = i18n("Do you really want to delete the project '%1', with all its actions?", summary);
+        title = i18n("Delete Project");
+
+        int button = KMessageBox::questionYesNo(parent, text, title);
+        canRemove = (button==KMessageBox::Yes);
+    }
+
+    if (!canRemove) return false;
+
+    Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence();
+    removeCurrentTodo(project, children, sequence);
+    sequence->start();
+    return true;
+}
+
+void TodoHelpers::removeCategory()
+{
+
+}

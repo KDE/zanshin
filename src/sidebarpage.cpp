@@ -120,7 +120,19 @@ void SideBarPage::addNewItem()
 
 void SideBarPage::removeCurrentItem()
 {
+    QModelIndex current = selectionModel()->currentIndex();
+    TodoModel::ItemType type = (TodoModel::ItemType) current.data(TodoModel::ItemTypeRole).toInt();
 
+    if (type==TodoModel::ProjectTodo) {
+        if (TodoHelpers::removeProject(this, current)) {
+            m_treeView->setCurrentIndex(current.parent());
+        }
+    } else if (type==TodoModel::Category) {
+        // FIXME
+        TodoHelpers::removeCategory();
+    } else {
+        kFatal() << "We should never, ever, get in this case...";
+    }
 }
 
 void SideBarPage::renameCurrentItem()

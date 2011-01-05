@@ -53,6 +53,8 @@ public:
         CategoriesRole,
         ItemTypeRole,
         DataTypeRole,
+        ChildUidsRole,
+        ChildIndexesRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };
 
@@ -72,6 +74,7 @@ public:
     virtual QVariant entityData(const Akonadi::Item &item, int column, int role) const;
     virtual QVariant entityData(const Akonadi::Collection &collection, int column, int role) const;
 
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     virtual Qt::DropActions supportedDropActions() const;
@@ -90,11 +93,15 @@ private:
     QString relatedUidFromItem(const Akonadi::Item &item) const;
     QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
     QStringList categoriesFromItem(const Akonadi::Item &item) const;
+    QStringList childUidsFromItem(const Akonadi::Item &item) const;
+    QModelIndexList childIndexesFromIndex(const QModelIndex &index) const;
 
     QHash<QString, QString> m_summaryMap;
     QHash<QString, QString> m_parentMap;
     QHash<QString, QStringList> m_childrenMap;
 };
+
+Q_DECLARE_METATYPE(QModelIndexList)
 
 #endif
 
