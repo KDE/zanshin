@@ -30,6 +30,7 @@
 #include <KDE/KConfigGroup>
 #include <KDE/KDebug>
 #include <kdescendantsproxymodel.h>
+#include <kmodelindexproxymapper.h>
 #include <KDE/KIcon>
 #include <KDE/KLineEdit>
 #include <KDE/KLocale>
@@ -188,7 +189,7 @@ void ActionListEditor::updateActions(const QModelIndex &index)
 {
     int type = index.data(TodoModel::ItemTypeRole).toInt();
 
-    m_remove->setEnabled(index.isValid() && (type==TodoModel::StandardTodo));
+    m_remove->setEnabled(index.isValid() && ((type==TodoModel::StandardTodo) || type==TodoModel::ProjectTodo));
     m_move->setEnabled(index.isValid() && (type==TodoModel::StandardTodo));
 }
 
@@ -202,7 +203,14 @@ void ActionListEditor::onAddActionRequested()
 
 void ActionListEditor::onRemoveAction()
 {
-    currentPage()->removeCurrentTodo();
+    QModelIndex current = m_projectSelection->currentIndex();
+    KModelIndexProxyMapper mapper(current.model(), currentPage()->selectionModel()->currentIndex().model());
+    QModelIndex mapperIndex = mapper.mapRightToLeft(currentPage()->selectionModel()->currentIndex());
+    if (currentPage()->removeCurrentTodo()) {
+        if (current == mapperIndex) {
+            m_projectSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
+        }
+    }
 }
 
 void ActionListEditor::onMoveAction()

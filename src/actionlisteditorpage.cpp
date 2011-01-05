@@ -25,6 +25,7 @@
 
 #include <KDE/Akonadi/ItemCreateJob>
 #include <KDE/Akonadi/ItemDeleteJob>
+#include <KDE/Akonadi/TransactionSequence>
 
 #include <KDE/KConfigGroup>
 #include <kdescendantsproxymodel.h>
@@ -38,6 +39,7 @@
 #include "actionlistdelegate.h"
 #include "todomodel.h"
 #include "todotreeview.h"
+#include "todohelpers.h"
 
 class GroupLabellingProxyModel : public QSortFilterProxyModel
 {
@@ -338,21 +340,16 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
     new Akonadi::ItemCreateJob(item, collection);
 }
 
-void ActionListEditorPage::removeCurrentTodo()
+bool ActionListEditorPage::removeCurrentTodo()
 {
     QModelIndex current = m_treeView->selectionModel()->currentIndex();
     int type = current.data(TodoModel::ItemTypeRole).toInt();
 
-    if (!current.isValid() || type!=TodoModel::StandardTodo) {
-        return;
+    if (!current.isValid() || (type!=TodoModel::StandardTodo && type!=TodoModel::ProjectTodo)) {
+        return false;
     }
 
-    Akonadi::Item item = current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    if (!item.isValid()) {
-        return;
-    }
-
-    new Akonadi::ItemDeleteJob(item, this);
+    return TodoHelpers::removeProject(this, current);
 }
 
 Zanshin::ApplicationMode ActionListEditorPage::mode()

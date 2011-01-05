@@ -64,7 +64,7 @@ public:
 
 public slots:
     void addNewTodo(const QString &summary);
-    void removeCurrentTodo();
+    bool removeCurrentTodo();
 
 private slots:
     void onAutoHideColumns();
