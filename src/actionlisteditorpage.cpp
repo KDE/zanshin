@@ -340,16 +340,29 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
     new Akonadi::ItemCreateJob(item, collection);
 }
 
-bool ActionListEditorPage::removeCurrentTodo()
+void ActionListEditorPage::removeCurrentTodo()
 {
     QModelIndex current = m_treeView->selectionModel()->currentIndex();
     int type = current.data(TodoModel::ItemTypeRole).toInt();
 
-    if (!current.isValid() || (type!=TodoModel::StandardTodo && type!=TodoModel::ProjectTodo)) {
-        return false;
+    if (!current.isValid() || type!=TodoModel::StandardTodo) {
+        return;
     }
 
-    return TodoHelpers::removeProject(this, current);
+    if (m_mode==Zanshin::ProjectMode) {
+        TodoHelpers::removeProject(this, current);
+    } else {
+        QStringList categories = current.data(TodoModel::CategoriesRole).toStringList();
+        for (int i=current.row(); i>=0; --i) {
+            QModelIndex index = m_treeView->model()->index(i, 0);
+            int type = index.data(TodoModel::ItemTypeRole).toInt();
+            if (type==TodoModel::Category) {
+                QString category = index.data().toString();
+                if (TodoHelpers::removeTodoFromCategory(current, category))
+                    break;
+            }
+        }
+    }
 }
 
 Zanshin::ApplicationMode ActionListEditorPage::mode()

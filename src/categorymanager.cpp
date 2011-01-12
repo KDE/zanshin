@@ -86,7 +86,9 @@ bool CategoryManager::removeCategory(const QString &category)
         removeCategoryFromTodo(QModelIndex(), category);
         m_categories.removeAt(pos);
         emit categoryRemoved(category);
+        return true;
     }
+    return false;
 }
 
 void CategoryManager::onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end)

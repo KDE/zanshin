@@ -27,6 +27,7 @@
 #include <KDE/Akonadi/Item>
 #include <KDE/Akonadi/ItemCreateJob>
 #include <KDE/Akonadi/ItemDeleteJob>
+#include <KDE/Akonadi/ItemModifyJob>
 #include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KLocale>
@@ -109,7 +110,26 @@ bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
     return true;
 }
 
-void TodoHelpers::removeCategory(const QString &summary)
+bool TodoHelpers::removeCategory(const QString &category)
 {
-    CategoryManager::instance().removeCategory(summary);
+    return CategoryManager::instance().removeCategory(category);
+}
+
+bool TodoHelpers::removeTodoFromCategory(const QModelIndex &index, const QString &category)
+{
+    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+
+    if (!todo) {
+        return false;
+    }
+
+    QStringList categories = todo->categories();
+    if (categories.contains(category)) {
+        categories.removeAll(category);
+        todo->setCategories(categories);
+        new Akonadi::ItemModifyJob(item);
+        return true;
+    }
+    return false;
 }

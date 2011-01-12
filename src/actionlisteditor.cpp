@@ -47,6 +47,7 @@
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
 #include "modelstack.h"
+#include "todohelpers.h"
 #include "todomodel.h"
 #if 0
 #include "quickselectdialog.h"
@@ -189,7 +190,10 @@ void ActionListEditor::updateActions(const QModelIndex &index)
 {
     int type = index.data(TodoModel::ItemTypeRole).toInt();
 
-    m_remove->setEnabled(index.isValid() && ((type==TodoModel::StandardTodo) || type==TodoModel::ProjectTodo));
+    m_remove->setEnabled(index.isValid() 
+                     && ((type==TodoModel::StandardTodo)
+                       || type==TodoModel::ProjectTodo
+                       || type==TodoModel::Category));
     m_move->setEnabled(index.isValid() && (type==TodoModel::StandardTodo));
 }
 
@@ -203,13 +207,37 @@ void ActionListEditor::onAddActionRequested()
 
 void ActionListEditor::onRemoveAction()
 {
-    QModelIndex current = m_projectSelection->currentIndex();
-    KModelIndexProxyMapper mapper(current.model(), currentPage()->selectionModel()->currentIndex().model());
-    QModelIndex mapperIndex = mapper.mapRightToLeft(currentPage()->selectionModel()->currentIndex());
-    if (currentPage()->removeCurrentTodo()) {
-        if (current == mapperIndex) {
-            m_projectSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
+    QModelIndex currentIndex = currentPage()->selectionModel()->currentIndex();
+
+    if (!currentIndex.isValid()) {
+        return;
+    }
+
+    int type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
+    QModelIndex current;
+    QModelIndex mapperIndex;
+
+    if (type==TodoModel::ProjectTodo) {
+        current = m_projectSelection->currentIndex();
+    } else {
+        current = m_categoriesSelection->currentIndex();
+    }
+
+    if (current.isValid()) {
+        KModelIndexProxyMapper mapper(current.model(), currentIndex.model());
+        mapperIndex = mapper.mapRightToLeft(currentIndex);
+    }
+
+    if (type==TodoModel::ProjectTodo) {
+        if (TodoHelpers::removeProject(this, currentIndex)) {
+            if (type==TodoModel::ProjectTodo && current==mapperIndex) {
+                m_projectSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
+            }
         }
+    } else if (type==TodoModel::Category) {
+        QString category = currentIndex.data().toString();
+        m_categoriesSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
+        TodoHelpers::removeCategory(category);
     }
 }
 
