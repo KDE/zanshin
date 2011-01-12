@@ -30,6 +30,7 @@
 #include <KDE/KIcon>
 #include <KDE/KLocale>
 
+#include "categorymanager.h"
 #include "todomodel.h"
 #include "todonode.h"
 #include "todonodemanager.h"
@@ -37,6 +38,10 @@
 TodoCategoriesModel::TodoCategoriesModel(QObject *parent)
     : TodoProxyModelBase(MultiMapping, parent), m_categoryRootNode(0)
 {
+    connect(&CategoryManager::instance(), SIGNAL(categoryAdded(const QString&)),
+            this, SLOT(createCategoryNode(const QString&)));
+    connect(&CategoryManager::instance(), SIGNAL(categoryRemoved(const QString&)),
+            this, SLOT(removeCategoryNode(const QString&)));
 }
 
 TodoCategoriesModel::~TodoCategoriesModel()
@@ -62,9 +67,7 @@ void TodoCategoriesModel::onSourceInsertRows(const QModelIndex &sourceIndex, int
             } else {
                 foreach (const QString &category, categories) {
                     TodoNode *parent = m_categoryMap[category];
-                    if (!parent) {
-                        parent = createCategoryNode(category);
-                    }
+                    Q_ASSERT(parent);
                     addChildNode(sourceChildIndex, parent);
                 }
             }
@@ -155,11 +158,8 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
         }
 
         foreach (const QString &newCategory, newCategories) {
-            if (!m_categoryMap.contains(newCategory)) {
-                createCategoryNode(newCategory);
-            }
-
             TodoNode *parent = m_categoryMap[newCategory];
+            Q_ASSERT(parent);
             addChildNode(sourceIndex, parent);
         }
     }
@@ -195,7 +195,7 @@ TodoNode *TodoCategoriesModel::createInbox() const
     return node;
 }
 
-TodoNode *TodoCategoriesModel::createCategoryNode(const QString &category)
+void TodoCategoriesModel::createCategoryNode(const QString &category)
 {
     //TODO: Order them along a tree
     int row = m_categoryRootNode->children().size();
@@ -213,5 +213,22 @@ TodoNode *TodoCategoriesModel::createCategoryNode(const QString &category)
 
     endInsertRows();
 
-    return node;
+    //return node;
+}
+
+void TodoCategoriesModel::removeCategoryNode(const QString &category)
+{
+    TodoNode *node = m_categoryMap[category];
+
+    QList<TodoNode*> children = node->children();
+    foreach (TodoNode* child, children) {
+        child->setParent(m_inboxNode);
+    }
+
+    QModelIndex index = m_manager->indexForNode(node, 0);
+    beginRemoveRows(index.parent(), index.row(), index.row());
+    m_manager->removeNode(node);
+    m_categoryMap.remove(category);
+    delete node;
+    endRemoveRows();
 }

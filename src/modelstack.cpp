@@ -30,6 +30,7 @@
 #include <KDE/Akonadi/EntityMimeTypeFilterModel>
 #include <KDE/Akonadi/ItemFetchScope>
 
+#include "categorymanager.h"
 #include "combomodel.h"
 #include "sidebarmodel.h"
 #include "selectionproxymodel.h"
@@ -139,6 +140,7 @@ QAbstractItemModel *ModelStack::treeComboModel()
 QAbstractItemModel *ModelStack::categoriesModel()
 {
     if (!m_categoriesModel) {
+        CategoryManager::instance().setModel(baseModel());
         TodoCategoriesModel *categoriesModel = new TodoCategoriesModel(this);
         categoriesModel->setSourceModel(baseModel());
         m_categoriesModel = categoriesModel;

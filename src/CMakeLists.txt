@@ -10,6 +10,7 @@ set(zanshin_SRCS
    actionlistdelegate.cpp
    actionlisteditor.cpp
    actionlisteditorpage.cpp
+   categorymanager.cpp
    combomodel.cpp
    debugwindow.cpp
    kdateedit.cpp

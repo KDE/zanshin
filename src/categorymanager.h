@@ -1,7 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
-   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
+   Copyright 2011 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,35 +21,46 @@
    USA.
 */
 
-#ifndef ZANSHIN_TODOCATEGORIESMODEL_H
-#define ZANSHIN_TODOCATEGORIESMODEL_H
+#ifndef ZANSHIN_CATEGORYMANAGER_H
+#define ZANSHIN_CATEGORYMANAGER_H
 
-#include <QtGui/QAbstractProxyModel>
+#include <QtCore/QObject>
+#include <QtCore/QStringList>
 
-#include "todonode.h"
-#include "todoproxymodelbase.h"
+class QAbstractItemModel;
+class QModelIndex;
 
-class TodoCategoriesModel : public TodoProxyModelBase
+class CategoryManager : public QObject
 {
     Q_OBJECT
 
 public:
-    TodoCategoriesModel(QObject *parent = 0);
-    virtual ~TodoCategoriesModel();
+    static CategoryManager &instance();
+
+    CategoryManager(QObject *parent = 0);
+    virtual ~CategoryManager();
+
+    void setModel(QAbstractItemModel *model);
+    QAbstractItemModel *model() { return m_model; }
+
+    void addCategory(const QString &category);
+    bool removeCategory(const QString &category);
+
+    QStringList categories();
+
+Q_SIGNALS:
+    void categoryAdded(const QString &category);
+    void categoryRemoved(const QString &category);
 
 private slots:
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    void createCategoryNode(const QString &category);
-    void removeCategoryNode(const QString &category);
+    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
 
 private:
-    virtual void init();
-    virtual TodoNode *createInbox() const;
+    void removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &category);
 
-    TodoNode *m_categoryRootNode;
-    QMap<QString, TodoNode*> m_categoryMap;
+    QStringList m_categories;
+    QAbstractItemModel *m_model;
 };
 
 #endif

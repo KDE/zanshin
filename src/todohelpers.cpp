@@ -32,6 +32,7 @@
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
 
+#include "categorymanager.h"
 #include "todomodel.h"
 
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
@@ -69,7 +70,7 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Item &parent
 
 void TodoHelpers::addCategory(const QString &summary)
 {
-
+    CategoryManager::instance().addCategory(summary);
 }
 
 void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
@@ -108,7 +109,7 @@ bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
     return true;
 }
 
-void TodoHelpers::removeCategory()
+void TodoHelpers::removeCategory(const QString &summary)
 {
-
+    CategoryManager::instance().removeCategory(summary);
 }

@@ -128,8 +128,8 @@ void SideBarPage::removeCurrentItem()
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==TodoModel::Category) {
-        // FIXME
-        TodoHelpers::removeCategory();
+        m_treeView->setCurrentIndex(current.parent());
+        TodoHelpers::removeCategory(current.data().toString());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }

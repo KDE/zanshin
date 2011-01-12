@@ -36,7 +36,7 @@ namespace TodoHelpers
     void addProject(const QString &summary, const Akonadi::Item &parentProject);
     void addCategory(const QString &summary);
     bool removeProject(QWidget *parent, const QModelIndex &project);
-    void removeCategory();
+    void removeCategory(const QString &summary);
 }
 
 #endif

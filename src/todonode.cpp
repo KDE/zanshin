@@ -66,6 +66,19 @@ TodoNode *TodoNode::parent() const
     return m_parent;
 }
 
+void TodoNode::setParent(TodoNode *parent)
+{
+    if (m_parent) {
+        m_parent->m_children.removeAll(this);
+    }
+
+    m_parent = parent;
+
+    if (m_parent) {
+        m_parent->m_children << this;
+    }
+}
+
 QList<TodoNode*> TodoNode::children() const
 {
     return m_children;
