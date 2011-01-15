@@ -38,6 +38,12 @@ public:
     TodoCategoriesModel(QObject *parent = 0);
     virtual ~TodoCategoriesModel();
 
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    virtual QStringList mimeTypes() const;
+    virtual Qt::DropActions supportedDropActions() const;
+
 private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);

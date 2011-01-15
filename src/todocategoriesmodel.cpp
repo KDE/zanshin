@@ -25,10 +25,14 @@
 #include "todocategoriesmodel.h"
 
 #include <QtCore/QStringList>
+#include <QtCore/QMimeData>
 
+#include <KDE/Akonadi/ItemFetchJob>
+#include <KDE/Akonadi/ItemFetchScope>
 #include <KDE/KDebug>
 #include <KDE/KIcon>
 #include <KDE/KLocale>
+#include <KDE/KUrl>
 
 #include "categorymanager.h"
 #include "todomodel.h"
@@ -231,4 +235,101 @@ void TodoCategoriesModel::removeCategoryNode(const QString &category)
     m_categoryMap.remove(category);
     delete node;
     endRemoveRows();
+}
+
+Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
+{
+    if (index.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Inbox) {
+        return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
+    }
+    return TodoProxyModelBase::flags(index) | Qt::ItemIsDropEnabled;
+}
+
+QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
+{
+    QModelIndexList sourceIndexes;
+    QByteArray categoriesList;
+    foreach (const QModelIndex &proxyIndex, indexes) {
+        TodoNode *node = m_manager->nodeForIndex(proxyIndex);
+        QModelIndex index = m_manager->indexForNode(node, 0);
+        TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
+        if (type==TodoModel::StandardTodo) {
+            sourceIndexes << mapToSource(proxyIndex);
+        } else {
+            categoriesList.append(data(proxyIndex).toByteArray());
+        }
+    }
+
+    if (!sourceIndexes.isEmpty()) {
+        return sourceModel()->mimeData(sourceIndexes);
+    } else {
+        QMimeData *mimeData = new QMimeData();
+        mimeData->setData("application/x-vnd.zanshin.category", categoriesList);
+        return mimeData;
+    }
+}
+
+QStringList TodoCategoriesModel::mimeTypes() const
+{
+    QStringList types;
+    types << sourceModel()->mimeTypes();
+    types << "application/x-vnd.zanshin.category";
+    return types;
+}
+
+
+bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action,
+                                 int row, int column, const QModelIndex &parent)
+{
+    if (action != Qt::MoveAction || (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.category"))) {
+        return false;
+    }
+
+    QString parentCategory = parent.data().toString();
+
+    if (KUrl::List::canDecode(mimeData)) {
+        KUrl::List urls = KUrl::List::fromMimeData(mimeData);
+        foreach (const KUrl &url, urls) {
+            const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
+            if (urlItem.isValid()) {
+                Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(urlItem);
+                Akonadi::ItemFetchScope scope;
+                scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+                scope.fetchFullPayload();
+                job->setFetchScope(scope);
+
+                if ( !job->exec() ) {
+                    return false;
+                }
+
+                foreach (const Akonadi::Item &item, job->items()) {
+                    if (item.hasPayload<KCalCore::Todo::Ptr>()) {
+                        QModelIndexList indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
+                        if (indexes.isEmpty()) {
+                            return false;
+                        }
+                        QModelIndex index = indexes.first();
+                        QModelIndex categoryIndex = sourceModel()->index(index.row(), 2, index.parent());
+                        QStringList categories = index.data(TodoModel::CategoriesRole).toStringList();
+                        if (categories.contains(parentCategory)) {
+                            return false;
+                        }
+                        categories << parentCategory;
+                        return sourceModel()->setData(categoryIndex, categories);
+                    }
+                }
+            }
+        }
+    } else {
+        QByteArray categories = mimeData->data("application/x-vnd.zanshin.category");
+        QString category = categories.data();
+        /*QModelIndex index = indexForCategory(category, TodoFlatModel::Categories);
+        setData(index, parentCategory);*/
+    }
+    return true;
+}
+
+Qt::DropActions TodoCategoriesModel::supportedDropActions() const
+{
+    return sourceModel()->supportedDropActions();
 }
