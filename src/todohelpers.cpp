@@ -110,8 +110,19 @@ bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
     return true;
 }
 
-bool TodoHelpers::removeCategory(const QString &category)
+bool TodoHelpers::removeCategory(QWidget *parent, const QString &category)
 {
+    QString title;
+    QString text;
+
+    text = i18n("Do you really want to delete the category '%1'? All actions won't be associated to those contexts anymore.", category);
+    title = i18n("Delete Category");
+
+    int button = KMessageBox::questionYesNo(parent, text, title);
+    bool canRemove = (button==KMessageBox::Yes);
+
+    if (!canRemove) return false;
+
     return CategoryManager::instance().removeCategory(category);
 }
 

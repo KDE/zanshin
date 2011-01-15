@@ -128,8 +128,9 @@ void SideBarPage::removeCurrentItem()
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==TodoModel::Category) {
-        m_treeView->setCurrentIndex(current.parent());
-        TodoHelpers::removeCategory(current.data().toString());
+        if (TodoHelpers::removeCategory(this, current.data().toString())) {
+            m_treeView->setCurrentIndex(current.parent());
+        }
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
