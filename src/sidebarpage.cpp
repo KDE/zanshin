@@ -138,7 +138,7 @@ void SideBarPage::removeCurrentItem()
 
 void SideBarPage::renameCurrentItem()
 {
-
+    m_treeView->edit(selectionModel()->currentIndex());
 }
 
 void SideBarPage::selectPreviousItem()
