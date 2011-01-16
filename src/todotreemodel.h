@@ -47,8 +47,6 @@ private slots:
     virtual void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     virtual void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     virtual void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    void moveJobDone(KJob *job);
-    void transactionFinished(KJob *job);
 
 private:
     virtual TodoNode *createInbox() const;

@@ -29,40 +29,37 @@
 #include <QtGui/QLayout>
 #include <QtGui/QTreeView>
 
-#include "globalmodel.h"
-#include "projectsmodel.h"
-#include "contextsmodel.h"
 #include "todocategoriesmodel.h"
-#include "todoflatmodel.h"
 #include "todotreemodel.h"
+#include "todomodel.h"
 
-QuickSelectDialog::QuickSelectDialog(QWidget *parent, Mode mode, ActionType action)
-    : KDialog(parent), m_tree(0), m_mode(mode)
+QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action)
+    : KDialog(parent), m_tree(0), m_model(model), m_mode(mode)
 {
     QString caption;
 
-    if (mode==ContextMode) {
+    if (mode==Zanshin::CategoriesMode) {
         switch (action) {
         case MoveAction:
-            caption = i18n("Move Actions to Context");
+            caption = i18n("Move Actions to Category");
             break;
         case CopyAction:
-            caption = i18n("Copy Actions to Context");
+            caption = i18n("Copy Actions to Category");
             break;
         case JumpAction:
-            caption = i18n("Jump to Context");
+            caption = i18n("Jump to Category");
             break;
         }
-    } else if (mode==ProjectMode) {
+    } else if (mode==Zanshin::ProjectMode) {
         switch (action) {
         case MoveAction:
-            caption = i18n("Move Actions to Project or Folder");
+            caption = i18n("Move Actions to Project");
             break;
         case CopyAction:
-            caption = i18n("Copy Actions to Project or Folder");
+            caption = i18n("Copy Actions to Project");
             break;
         case JumpAction:
-            caption = i18n("Jump to Project or Folder");
+            caption = i18n("Jump to Project");
             break;
         }
     } else {
@@ -80,42 +77,50 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent, Mode mode, ActionType acti
     m_tree->sortByColumn(0, Qt::AscendingOrder);
     page->layout()->addWidget(m_tree);
 
-    switch (mode) {
-    case ProjectMode:
-        m_tree->setModel(GlobalModel::projects());
-        break;
-    case ContextMode:
-        m_tree->setModel(GlobalModel::contexts());
-        break;
-    }
-
+    m_tree->setModel(m_model);
     m_tree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_tree->setCurrentIndex(m_tree->model()->index(0, 0));
+    m_tree->setCurrentIndex(m_model->index(0, 0));
     m_tree->expandAll();
     m_tree->setFocus(Qt::OtherFocusReason);
 }
 
 QString QuickSelectDialog::selectedId() const
 {
-    if (m_mode==ProjectMode) {
+    if (m_mode==Zanshin::ProjectMode) {
         return projectSelectedId();
     } else {
-        return contextSelectedId();
+        return categorySelectedId();
     }
 }
 
-QString QuickSelectDialog::contextSelectedId() const
+TodoModel::ItemType QuickSelectDialog::selectedType() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
-    QModelIndex sourceIndex = GlobalModel::contexts()->mapToSource(index);
+    return (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+}
 
-    return GlobalModel::todoCategories()->data(sourceIndex.sibling(sourceIndex.row(), 0)).toString();
+QString QuickSelectDialog::categorySelectedId() const
+{
+    QModelIndex index = m_tree->selectionModel()->currentIndex();
+    return index.data().toString();
 }
 
 QString QuickSelectDialog::projectSelectedId() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
-    QModelIndex sourceIndex = GlobalModel::projects()->mapToSource(index);
+    return index.data(TodoModel::UidRole).toString();
+}
 
-    return GlobalModel::todoTree()->data(sourceIndex.sibling(sourceIndex.row(), TodoFlatModel::RemoteId)).toString();
+Akonadi::Collection QuickSelectDialog::collection() const
+{
+    QModelIndex index = m_tree->selectionModel()->currentIndex();
+    Akonadi::Collection collection;
+    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+    if (type == TodoModel::Collection) {
+        collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    } else {
+        const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        collection = item.parentCollection();
+    }
+    return collection;
 }

@@ -17,6 +17,7 @@ set(zanshin_SRCS
    kdatepickerpopup.cpp
    mainwindow.cpp
    modelstack.cpp
+   quickselectdialog.cpp
    selectionproxymodel.cpp
    sidebar.cpp
    sidebarmodel.cpp

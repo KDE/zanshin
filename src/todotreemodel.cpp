@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 
+#include "todohelpers.h"
 #include "todomodel.h"
 #include "todonode.h"
 #include "todonodemanager.h"
@@ -246,7 +247,7 @@ QStringList TodoTreeModel::mimeTypes() const
 
 
 bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action,
-                                 int row, int column, const QModelIndex &parent)
+                                 int /*row*/, int /*column*/, const QModelIndex &parent)
 {
     if (action != Qt::MoveAction || !KUrl::List::canDecode(mimeData)) {
         return false;
@@ -262,8 +263,6 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
         const Akonadi::Item parentItem = parent.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         collection = parentItem.parentCollection();
     }
-
-    int parentCollectionId = collection.id();
 
     QString parentUid = parent.data(TodoModel::UidRole).toString();
 
@@ -288,36 +287,7 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
                         return false;
                     }
                     QModelIndex index = indexes.first();
-                    TodoModel::ItemType itemType = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
-                    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
-                    if ((todo->relatedTo() == parentUid)
-                     || (itemType == TodoModel::StandardTodo && parentType == TodoModel::StandardTodo)
-                     || (itemType == TodoModel::ProjectTodo && parentType == TodoModel::ProjectTodo)
-                     || (itemType == TodoModel::ProjectTodo && parentType == TodoModel::StandardTodo)
-                     || (itemType == TodoModel::Collection && parentType == TodoModel::ProjectTodo)
-                     || (itemType == TodoModel::Collection && parentType == TodoModel::StandardTodo)) {
-                        return false;
-                    }
-
-                    if (parentType == TodoModel::Inbox || parentType == TodoModel::Collection) {
-                        todo->setRelatedTo("");
-                    } else {
-                        todo->setRelatedTo(parentUid);
-                    }
-
-                    Akonadi::TransactionSequence *transaction = new Akonadi::TransactionSequence();
-                    connect(transaction, SIGNAL(result(KJob*)), SLOT(transactionFinished(KJob*)));
-
-                    Akonadi::ItemModifyJob *itemModifyJob = new Akonadi::ItemModifyJob(item, transaction);
-                    connect(itemModifyJob, SIGNAL(result(KJob*)),
-                            sourceModel(), SLOT(updateJobDone(KJob*)));
-
-                    int itemCollectonId = item.parentCollection().id();
-                    if ((parentType != TodoModel::Inbox) && (itemCollectonId != parentCollectionId)) {
-                        Akonadi::ItemMoveJob *itemMoveJob = new Akonadi::ItemMoveJob(item, collection, transaction);
-                        connect(itemMoveJob, SIGNAL(result(KJob*)), this, SLOT(moveJobDone(KJob*)));
-                    }
+                    TodoHelpers::moveTodoToProject(index, parentUid, parentType, collection);
                 }
             }
         }
@@ -329,18 +299,4 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
 Qt::DropActions TodoTreeModel::supportedDropActions() const
 {
     return sourceModel()->supportedDropActions();
-}
-
-void TodoTreeModel::transactionFinished(KJob *job)
-{
-    if ( job->error() ) {
-        kWarning() << "Job Error : "  << job->errorString();
-    }
-}
-
-void TodoTreeModel::moveJobDone(KJob *job)
-{
-    if ( job->error() ) {
-        kWarning() << "Move Job Error : "  << job->errorString();
-    }
 }

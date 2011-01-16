@@ -35,6 +35,7 @@
 #include <KDE/KUrl>
 
 #include "categorymanager.h"
+#include "todohelpers.h"
 #include "todomodel.h"
 #include "todonode.h"
 #include "todonodemanager.h"
@@ -279,13 +280,14 @@ QStringList TodoCategoriesModel::mimeTypes() const
 
 
 bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action,
-                                 int row, int column, const QModelIndex &parent)
+                                 int /*row*/, int /*column*/, const QModelIndex &parent)
 {
     if (action != Qt::MoveAction || (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.category"))) {
         return false;
     }
 
     QString parentCategory = parent.data().toString();
+    TodoModel::ItemType parentType = (TodoModel::ItemType)parent.data(TodoModel::ItemTypeRole).toInt();
 
     if (KUrl::List::canDecode(mimeData)) {
         KUrl::List urls = KUrl::List::fromMimeData(mimeData);
@@ -309,13 +311,7 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
                             return false;
                         }
                         QModelIndex index = indexes.first();
-                        QModelIndex categoryIndex = sourceModel()->index(index.row(), 2, index.parent());
-                        QStringList categories = index.data(TodoModel::CategoriesRole).toStringList();
-                        if (categories.contains(parentCategory)) {
-                            return false;
-                        }
-                        categories << parentCategory;
-                        return sourceModel()->setData(categoryIndex, categories);
+                        return TodoHelpers::moveTodoToCategory(index, parentCategory, parentType);
                     }
                 }
             }

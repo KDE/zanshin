@@ -24,10 +24,12 @@
 
 #include "todohelpers.h"
 
+#include <KDE/Akonadi/Collection>
 #include <KDE/Akonadi/Item>
 #include <KDE/Akonadi/ItemCreateJob>
 #include <KDE/Akonadi/ItemDeleteJob>
 #include <KDE/Akonadi/ItemModifyJob>
+#include <KDE/Akonadi/ItemMoveJob>
 #include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KLocale>
@@ -143,4 +145,60 @@ bool TodoHelpers::removeTodoFromCategory(const QModelIndex &index, const QString
         return true;
     }
     return false;
+}
+
+bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const TodoModel::ItemType parentType, const Akonadi::Collection &parentCollection)
+{
+    TodoModel::ItemType itemType = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+
+    if (!todo) {
+        return false;
+    }
+
+    if ((todo->relatedTo() == parentUid)
+     || (itemType == TodoModel::StandardTodo && parentType == TodoModel::StandardTodo)
+     || (itemType == TodoModel::ProjectTodo && parentType == TodoModel::ProjectTodo)
+     || (itemType == TodoModel::ProjectTodo && parentType == TodoModel::StandardTodo)
+     || (itemType == TodoModel::Collection && parentType == TodoModel::ProjectTodo)
+     || (itemType == TodoModel::Collection && parentType == TodoModel::StandardTodo)) {
+         return false;
+    }
+
+    if (parentType == TodoModel::Inbox || parentType == TodoModel::Collection) {
+        todo->setRelatedTo("");
+    } else {
+        todo->setRelatedTo(parentUid);
+    }
+
+    Akonadi::TransactionSequence *transaction = new Akonadi::TransactionSequence();
+
+    new Akonadi::ItemModifyJob(item, transaction);
+
+    int itemCollectonId = item.parentCollection().id();
+    int parentCollectionId = parentCollection.id();
+    if ((parentType != TodoModel::Inbox) && (itemCollectonId != parentCollectionId)) {
+        new Akonadi::ItemMoveJob(item, parentCollection, transaction);
+    }
+    return true;
+}
+
+bool TodoHelpers::moveTodoToCategory(const QModelIndex &index, const QString &category, const TodoModel::ItemType parentType)
+{
+    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+    if (!todo) {
+        return false;
+    }
+    QStringList categories;
+    if (parentType != TodoModel::Inbox && parentType != TodoModel::CategoryRoot) {
+        categories= todo->categories();
+        if (!categories.contains(category)) {
+            categories << category;
+        }
+    }
+    todo->setCategories(categories);
+    new Akonadi::ItemModifyJob(item);
+    return true;
 }

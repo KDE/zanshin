@@ -47,6 +47,7 @@
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
 #include "modelstack.h"
+#include "quickselectdialog.h"
 #include "todohelpers.h"
 #include "todomodel.h"
 #if 0
@@ -60,7 +61,8 @@ ActionListEditor::ActionListEditor(ModelStack *models,
                                    QWidget *parent)
     : QWidget(parent),
       m_projectSelection(projectSelection),
-      m_categoriesSelection(categoriesSelection)
+      m_categoriesSelection(categoriesSelection),
+      m_models(models)
 {
     setLayout(new QVBoxLayout(this));
 
@@ -244,54 +246,29 @@ void ActionListEditor::onRemoveAction()
 
 void ActionListEditor::onMoveAction()
 {
-#if 0
-    QModelIndex current = m_view->currentIndex();
+    QModelIndex current = currentPage()->selectionModel()->currentIndex();
 
-    if (m_model->rowCount(current)>0) {
+    if (!current.isValid()) {
         return;
     }
 
-    QAbstractItemModel *source = m_model->sourceModel();
-    QModelIndex movedIndex;
-
-    TodoFlatModel *flat = dynamic_cast<TodoFlatModel*>(source);
-    if (flat != 0) {
-        movedIndex = m_model->mapToSource(current);
+    QAbstractItemModel *model;
+    if (currentPage()->mode()==Zanshin::ProjectMode) {
+        model = m_models->treeSideBarModel();
+    } else {
+        model = m_models->categoriesSideBarModel();
     }
 
-    TodoTreeModel *tree = dynamic_cast<TodoTreeModel*>(source);
-    if (tree != 0) {
-        movedIndex = m_model->mapToSource(current);
-    }
-
-    TodoCategoriesModel *categories = dynamic_cast<TodoCategoriesModel*>(source);
-    if (categories != 0) {
-        movedIndex = m_model->mapToSource(current);
-    }
-
-    if (!movedIndex.isValid()) {
-        return;
-    }
-
-    QuickSelectDialog::Mode mode = QuickSelectDialog::ProjectMode;
-    if (m_model->mode()==ActionListModel::NoContextMode
-     || m_model->mode()==ActionListModel::ContextMode) {
-        mode = QuickSelectDialog::ContextMode;
-    }
-
-    QuickSelectDialog dlg(this, mode,
+    QuickSelectDialog dlg(this, model, currentPage()->mode(),
                           QuickSelectDialog::MoveAction);
     if (dlg.exec()==QDialog::Accepted) {
         QString selectedId = dlg.selectedId();
-        if (mode==QuickSelectDialog::ProjectMode) {
-            QModelIndex index = movedIndex.sibling(movedIndex.row(), TodoFlatModel::ParentRemoteId);
-            source->setData(index, selectedId);
+        if (currentPage()->mode()==Zanshin::ProjectMode) {
+            TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
         } else {
-            QModelIndex index = movedIndex.sibling(movedIndex.row(), TodoFlatModel::Categories);
-            source->setData(index, selectedId);
+            TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
         }
     }
-#endif
 }
 
 void ActionListEditor::focusActionEdit()

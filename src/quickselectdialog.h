@@ -26,35 +26,40 @@
 
 #include <KDE/KDialog>
 
+#include "globaldefs.h"
+#include "todomodel.h"
+
+class QAbstractItemModel;
 class QTreeView;
+namespace Akonadi
+{
+    class Collection;
+}
 
 class QuickSelectDialog : public KDialog
 {
     Q_OBJECT
-    Q_ENUMS(Mode)
 
 public:
-    enum Mode {
-        ContextMode,
-        ProjectMode
-    };
-
     enum ActionType {
         MoveAction,
         CopyAction,
         JumpAction
     };
 
-    QuickSelectDialog(QWidget *parent, Mode mode, ActionType action);
+    QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action);
 
     QString selectedId() const;
+    TodoModel::ItemType selectedType() const;
+    Akonadi::Collection collection() const;
 
 private:
-    QString contextSelectedId() const;
+    QString categorySelectedId() const;
     QString projectSelectedId() const;
 
     QTreeView *m_tree;
-    Mode m_mode;
+    QAbstractItemModel *m_model;
+    Zanshin::ApplicationMode m_mode;
 };
 
 #endif

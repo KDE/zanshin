@@ -30,6 +30,8 @@
 #include <KDE/Akonadi/TransactionSequence>
 #include <QModelIndex>
 
+#include "todomodel.h"
+
 namespace TodoHelpers
 {
     void addProject(const QString &summary, const Akonadi::Collection &collection);
@@ -38,6 +40,8 @@ namespace TodoHelpers
     bool removeProject(QWidget *parent, const QModelIndex &project);
     bool removeCategory(QWidget *parent, const QString &category);
     bool removeTodoFromCategory(const QModelIndex &todo, const QString &category);
+    bool moveTodoToProject(const QModelIndex &todo, const QString &parentUid, const TodoModel::ItemType parentType, const Akonadi::Collection &parentCollection);
+    bool moveTodoToCategory(const QModelIndex &todo, const QString &category, const TodoModel::ItemType parentType);
 }
 
 #endif

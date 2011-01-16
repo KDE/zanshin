@@ -91,6 +91,8 @@ private:
     KAction *m_cancelAdd;
     KAction *m_remove;
     KAction *m_move;
+
+    ModelStack *m_models;
 };
 
 #endif
