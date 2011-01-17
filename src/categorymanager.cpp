@@ -25,9 +25,11 @@
 
 #include <QtCore/QAbstractItemModel>
 
+#include <KDE/Akonadi/ItemModifyJob>
 #include <KDE/KDebug>
 #include "kglobal.h"
 
+#include "todohelpers.h"
 #include "todomodel.h"
 
 
@@ -131,12 +133,34 @@ void CategoryManager::removeCategoryFromTodo(const QModelIndex &sourceIndex, con
 {
     for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
         QModelIndex child = m_model->index(i, 0, sourceIndex);
-        QStringList categories = m_model->data(child, TodoModel::CategoriesRole).toStringList();
-        if (categories.contains(category)) {
-            categories.removeOne(category);
-            QModelIndex index = m_model->index(i, 2, sourceIndex);
-            m_model->setData(index, categories);
-        }
+        removeTodoFromCategory(child, category);
         removeCategoryFromTodo(child, category);
     }
+}
+
+bool CategoryManager::removeTodoFromCategory(const QModelIndex &index, const QString &category)
+{
+    if (!index.isValid()) {
+        return false;
+    }
+
+    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    if (!item.isValid()) {
+        return false;
+    }
+
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+
+    if (!todo) {
+        return false;
+    }
+
+    QStringList categories = todo->categories();
+    if (categories.contains(category)) {
+        categories.removeAll(category);
+        todo->setCategories(categories);
+        new Akonadi::ItemModifyJob(item);
+        return true;
+    }
+    return false;
 }

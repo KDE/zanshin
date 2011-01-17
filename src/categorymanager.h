@@ -45,6 +45,7 @@ public:
 
     void addCategory(const QString &category);
     bool removeCategory(const QString &category);
+    bool removeTodoFromCategory(const QModelIndex &index, const QString &category);
 
     QStringList categories();
 

@@ -130,21 +130,7 @@ bool TodoHelpers::removeCategory(QWidget *parent, const QString &category)
 
 bool TodoHelpers::removeTodoFromCategory(const QModelIndex &index, const QString &category)
 {
-    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
-    if (!todo) {
-        return false;
-    }
-
-    QStringList categories = todo->categories();
-    if (categories.contains(category)) {
-        categories.removeAll(category);
-        todo->setCategories(categories);
-        new Akonadi::ItemModifyJob(item);
-        return true;
-    }
-    return false;
+    return CategoryManager::instance().removeTodoFromCategory(index, category);
 }
 
 bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const TodoModel::ItemType parentType, const Akonadi::Collection &parentCollection)
