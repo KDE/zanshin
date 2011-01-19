@@ -43,6 +43,7 @@ CategoryManager &CategoryManager::instance()
 
 CategoryManager::CategoryManager(QObject *parent)
     : QObject(parent)
+    , m_model(0)
 {
 }
 
@@ -163,4 +164,36 @@ bool CategoryManager::removeTodoFromCategory(const QModelIndex &index, const QSt
         return true;
     }
     return false;
+}
+
+void CategoryManager::renameCategory(const QString &oldCategoryName, const QString &newCategoryName)
+{
+    emit categoryRenamed(oldCategoryName, newCategoryName);
+
+    m_categories.removeAll(oldCategoryName);
+    m_categories << newCategoryName;
+
+    renameCategory(QModelIndex(), oldCategoryName, newCategoryName);
+}
+
+void CategoryManager::renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryName, const QString &newCategoryName)
+{
+    for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
+        QModelIndex child = m_model->index(i, 0, sourceIndex);
+        if (child.isValid()) {
+            const Akonadi::Item item = child.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+            if (item.isValid()) {
+                KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+                if (todo) {
+                    QStringList categories = todo->categories();
+                    if (categories.contains(oldCategoryName)) {
+                        categories = categories.replaceInStrings(oldCategoryName, newCategoryName);
+                        todo->setCategories(categories);
+                        new Akonadi::ItemModifyJob(item);
+                    }
+                }
+            }
+        }
+        renameCategory(child, oldCategoryName, newCategoryName);
+    }
 }

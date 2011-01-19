@@ -46,12 +46,14 @@ public:
     void addCategory(const QString &category);
     bool removeCategory(const QString &category);
     bool removeTodoFromCategory(const QModelIndex &index, const QString &category);
+    void renameCategory(const QString &oldCategoryName, const QString &newCategoryName);
 
     QStringList categories();
 
 Q_SIGNALS:
     void categoryAdded(const QString &category);
     void categoryRemoved(const QString &category);
+    void categoryRenamed(const QString &oldCategory, const QString &newCategory);
 
 private slots:
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
@@ -59,6 +61,7 @@ private slots:
 
 private:
     void removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &category);
+    void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryName, const QString &newCategoryName);
 
     QStringList m_categories;
     QAbstractItemModel *m_model;

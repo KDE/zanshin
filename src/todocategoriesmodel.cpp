@@ -47,6 +47,8 @@ TodoCategoriesModel::TodoCategoriesModel(QObject *parent)
             this, SLOT(createCategoryNode(const QString&)));
     connect(&CategoryManager::instance(), SIGNAL(categoryRemoved(const QString&)),
             this, SLOT(removeCategoryNode(const QString&)));
+    connect(&CategoryManager::instance(), SIGNAL(categoryRenamed(const QString&, const QString&)),
+            this, SLOT(renameCategoryNode(const QString&, const QString&)));
 }
 
 TodoCategoriesModel::~TodoCategoriesModel()
@@ -217,12 +219,14 @@ void TodoCategoriesModel::createCategoryNode(const QString &category)
     m_manager->insertNode(node);
 
     endInsertRows();
-
-    //return node;
 }
 
 void TodoCategoriesModel::removeCategoryNode(const QString &category)
 {
+    if (!m_categoryMap.contains(category)) {
+        return;
+    }
+
     TodoNode *node = m_categoryMap[category];
 
     QList<TodoNode*> children = node->children();
@@ -238,12 +242,25 @@ void TodoCategoriesModel::removeCategoryNode(const QString &category)
     endRemoveRows();
 }
 
+void TodoCategoriesModel::renameCategoryNode(const QString &oldCategory, const QString &newCategory)
+{
+    TodoNode *node = m_categoryMap[oldCategory];
+    m_categoryMap[newCategory] = node;
+    m_categoryMap.remove(oldCategory);
+
+    node->setData(newCategory, 0, Qt::DisplayRole);
+    node->setData(newCategory, 0, Qt::EditRole);
+
+    QModelIndex index = m_manager->indexForNode(node, 0);
+    emit dataChanged(index, index);
+}
+
 Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
 {
     if (index.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Inbox) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
-    return TodoProxyModelBase::flags(index) | Qt::ItemIsDropEnabled;
+    return TodoProxyModelBase::flags(index) | Qt::ItemIsDropEnabled | Qt::ItemIsEditable;
 }
 
 QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
@@ -328,4 +345,20 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
 Qt::DropActions TodoCategoriesModel::supportedDropActions() const
 {
     return sourceModel()->supportedDropActions();
+}
+
+bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (role!=Qt::EditRole || !index.isValid()) {
+        return TodoProxyModelBase::setData(index, value, role);
+    }
+
+    if (index.column()==0) {
+        QString oldCategory = index.data().toString();
+        QString newCategory = value.toString();
+        CategoryManager::instance().renameCategory(oldCategory, newCategory);
+        return true;
+    }
+
+    return TodoProxyModelBase::setData(index, value, role);
 }

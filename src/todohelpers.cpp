@@ -188,3 +188,8 @@ bool TodoHelpers::moveTodoToCategory(const QModelIndex &index, const QString &ca
     new Akonadi::ItemModifyJob(item);
     return true;
 }
+
+void TodoHelpers::renameCategory(const QString &oldCategoryName, const QString &newCategoryName)
+{
+    CategoryManager::instance().renameCategory(oldCategoryName, newCategoryName);
+}

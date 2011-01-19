@@ -44,12 +44,15 @@ public:
     virtual QStringList mimeTypes() const;
     virtual Qt::DropActions supportedDropActions() const;
 
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+
 private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
     void createCategoryNode(const QString &category);
     void removeCategoryNode(const QString &category);
+    void renameCategoryNode(const QString &oldCategory, const QString &newCategory);
 
 private:
     virtual void init();

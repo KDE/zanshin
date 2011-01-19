@@ -42,6 +42,7 @@ namespace TodoHelpers
     bool removeTodoFromCategory(const QModelIndex &todo, const QString &category);
     bool moveTodoToProject(const QModelIndex &todo, const QString &parentUid, const TodoModel::ItemType parentType, const Akonadi::Collection &parentCollection);
     bool moveTodoToCategory(const QModelIndex &todo, const QString &category, const TodoModel::ItemType parentType);
+    void renameCategory(const QString &oldCategoryName, const QString &newCategoryName);
 }
 
 #endif
