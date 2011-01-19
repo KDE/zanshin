@@ -117,7 +117,8 @@ void SelectionProxyModel::onSelectionChanged(const QItemSelection &selected, con
 
     kDebug() << "m_selectedRows" << m_selectedRows;
     kDebug() << "m_sourceSelectedRows" << m_sourceSelectedRows;
-    invalidate();
+    if (!m_selectedRows.isEmpty())
+        invalidate();
 }
 
 QModelIndex SelectionProxyModel::mapFromSelectionToSource(const QModelIndex &index) const
