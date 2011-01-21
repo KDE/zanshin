@@ -49,6 +49,8 @@ TodoCategoriesModel::TodoCategoriesModel(QObject *parent)
             this, SLOT(removeCategoryNode(const QString&)));
     connect(&CategoryManager::instance(), SIGNAL(categoryRenamed(const QString&, const QString&)),
             this, SLOT(renameCategoryNode(const QString&, const QString&)));
+    connect(&CategoryManager::instance(), SIGNAL(categoryMoved(const QString&, const QString&)),
+            this, SLOT(moveCategoryNode(const QString&, const QString&)));
 }
 
 TodoCategoriesModel::~TodoCategoriesModel()
@@ -117,7 +119,7 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
             TodoNode *categoryNode = node->parent();
             if (categoryNode
              && categoryNode->data(0, TodoModel::ItemTypeRole).toInt()!=TodoModel::Inbox) {
-                QString category = categoryNode->data(0, Qt::DisplayRole).toString();
+                QString category = categoryNode->data(0, TodoModel::CategoryPathRole).toString();
                 oldCategories << category;
                 nodeMap[category] = node;
             }
@@ -202,20 +204,33 @@ TodoNode *TodoCategoriesModel::createInbox() const
     return node;
 }
 
-void TodoCategoriesModel::createCategoryNode(const QString &category)
+void TodoCategoriesModel::createCategoryNode(const QString &categoryPath)
 {
     //TODO: Order them along a tree
-    int row = m_categoryRootNode->children().size();
+    TodoNode* parentNode = m_categoryRootNode;
+    QString categoryName = categoryPath;
+    if (categoryPath.contains(CategoryManager::pathSeparator())) {
+        QString parentCategory = categoryPath.left(categoryPath.lastIndexOf(CategoryManager::pathSeparator()));
+        categoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
+        parentNode = m_categoryMap[parentCategory];
+        if (!parentNode) {
+            CategoryManager::instance().addCategory(parentCategory);
+            parentNode = m_categoryMap[parentCategory];
+        }
+    }
 
-    beginInsertRows(m_manager->indexForNode(m_categoryRootNode, 0), row, row);
+    int row = parentNode->children().size();
 
-    TodoNode *node = new TodoNode(m_categoryRootNode);
-    node->setData(category, 0, Qt::DisplayRole);
-    node->setData(category, 0, Qt::EditRole);
+    beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
+
+    TodoNode *node = new TodoNode(parentNode);
+    node->setData(categoryName, 0, Qt::DisplayRole);
+    node->setData(categoryName, 0, Qt::EditRole);
+    node->setData(categoryPath, 0, TodoModel::CategoryPathRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
     node->setRowData(TodoModel::Category, TodoModel::ItemTypeRole);
 
-    m_categoryMap[category] = node;
+    m_categoryMap[categoryPath] = node;
     m_manager->insertNode(node);
 
     endInsertRows();
@@ -231,7 +246,20 @@ void TodoCategoriesModel::removeCategoryNode(const QString &category)
 
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
-        child->setParent(m_inboxNode);
+        QModelIndex childIndex = m_manager->indexForNode(child, 0);
+        if (childIndex.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Category) {
+            CategoryManager::instance().removeCategory(childIndex.data(TodoModel::CategoryPathRole).toString());
+        } else {
+            QStringList categories = childIndex.data(TodoModel::CategoriesRole).toStringList();
+            if (categories.empty()) {
+                child->setParent(m_inboxNode);
+            } else {
+                beginRemoveRows(childIndex.parent(), childIndex.row(), childIndex.row());
+                m_manager->removeNode(child);
+                delete child;
+                endRemoveRows();
+            }
+        }
     }
 
     QModelIndex index = m_manager->indexForNode(node, 0);
@@ -242,31 +270,64 @@ void TodoCategoriesModel::removeCategoryNode(const QString &category)
     endRemoveRows();
 }
 
-void TodoCategoriesModel::renameCategoryNode(const QString &oldCategory, const QString &newCategory)
+void TodoCategoriesModel::renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath)
 {
-    TodoNode *node = m_categoryMap[oldCategory];
-    m_categoryMap[newCategory] = node;
-    m_categoryMap.remove(oldCategory);
+    TodoNode *node = m_categoryMap[oldCategoryPath];
+    m_categoryMap[newCategoryPath] = node;
+    m_categoryMap.remove(oldCategoryPath);
 
+    QList<TodoNode*> children = node->children();
+    foreach (TodoNode* child, children) {
+        QModelIndex childIndex = m_manager->indexForNode(child, 0);
+        if (childIndex.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Category) {
+            QString childPath = childIndex.data(TodoModel::CategoryPathRole).toString();
+            QString newChildPath = childPath;
+            newChildPath = newChildPath.replace(oldCategoryPath, newCategoryPath);
+            CategoryManager::instance().renameCategory(childPath, newChildPath);
+        }
+    }
+
+    QString newCategory = newCategoryPath.split(CategoryManager::pathSeparator()).last();
     node->setData(newCategory, 0, Qt::DisplayRole);
     node->setData(newCategory, 0, Qt::EditRole);
+    node->setData(newCategoryPath, 0, TodoModel::CategoryPathRole);
 
     QModelIndex index = m_manager->indexForNode(node, 0);
     emit dataChanged(index, index);
 }
 
+void TodoCategoriesModel::moveCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath)
+{
+    TodoNode *node = m_categoryMap[oldCategoryPath];
+
+    QList<TodoNode*> children = node->children();
+    foreach (TodoNode* child, children) {
+        QModelIndex childIndex = m_manager->indexForNode(child, 0);
+        if (childIndex.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Category) {
+            QString ChildPath = childIndex.data(TodoModel::CategoryPathRole).toString();
+            QString newChildPath = ChildPath;
+            newChildPath = newChildPath.replace(oldCategoryPath, newCategoryPath);
+            CategoryManager::instance().moveCategory(ChildPath, newChildPath);
+        } else {
+            CategoryManager::instance().moveTodoToCategory(childIndex, newCategoryPath, TodoModel::Category);
+        }
+    }
+
+}
+
 Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
 {
-    if (index.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Inbox) {
+    TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
+    if (type == TodoModel::Inbox || type == TodoModel::CategoryRoot) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
-    return TodoProxyModelBase::flags(index) | Qt::ItemIsDropEnabled | Qt::ItemIsEditable;
+    return TodoProxyModelBase::flags(index) | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 }
 
 QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList sourceIndexes;
-    QByteArray categoriesList;
+    QStringList categoriesList;
     foreach (const QModelIndex &proxyIndex, indexes) {
         TodoNode *node = m_manager->nodeForIndex(proxyIndex);
         QModelIndex index = m_manager->indexForNode(node, 0);
@@ -274,7 +335,7 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
         if (type==TodoModel::StandardTodo) {
             sourceIndexes << mapToSource(proxyIndex);
         } else {
-            categoriesList.append(data(proxyIndex).toByteArray());
+            categoriesList << proxyIndex.data(TodoModel::CategoryPathRole).toString();
         }
     }
 
@@ -282,7 +343,10 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
         return sourceModel()->mimeData(sourceIndexes);
     } else {
         QMimeData *mimeData = new QMimeData();
-        mimeData->setData("application/x-vnd.zanshin.category", categoriesList);
+        QString sep = CategoryManager::pathSeparator();
+        sep += CategoryManager::pathSeparator();
+        QByteArray categories = categoriesList.join(sep).toUtf8();
+        mimeData->setData("application/x-vnd.zanshin.category", categories);
         return mimeData;
     }
 }
@@ -303,7 +367,7 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
         return false;
     }
 
-    QString parentCategory = parent.data().toString();
+    QString parentCategory = parent.data(TodoModel::CategoryPathRole).toString();
     TodoModel::ItemType parentType = (TodoModel::ItemType)parent.data(TodoModel::ItemTypeRole).toInt();
 
     if (KUrl::List::canDecode(mimeData)) {
@@ -328,16 +392,23 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
                             return false;
                         }
                         QModelIndex index = indexes.first();
-                        return TodoHelpers::moveTodoToCategory(index, parentCategory, parentType);
+                        return CategoryManager::instance().moveTodoToCategory(index, parentCategory, parentType);
                     }
                 }
             }
         }
     } else {
         QByteArray categories = mimeData->data("application/x-vnd.zanshin.category");
-        QString category = categories.data();
-        /*QModelIndex index = indexForCategory(category, TodoFlatModel::Categories);
-        setData(index, parentCategory);*/
+        QString sep = CategoryManager::pathSeparator();
+        sep += CategoryManager::pathSeparator();
+        QStringList categoriesPath = QString::fromUtf8(categories.data()).split(sep);
+        foreach (QString categoryPath, categoriesPath) {
+            QString CategoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
+            QString newCategoryPath = parentCategory + CategoryManager::pathSeparator() + CategoryName;
+            if (newCategoryPath != categoryPath) {
+                CategoryManager::instance().moveCategory(categoryPath, newCategoryPath);
+            }
+        }
     }
     return true;
 }
@@ -354,9 +425,10 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
     }
 
     if (index.column()==0) {
-        QString oldCategory = index.data().toString();
-        QString newCategory = value.toString();
-        CategoryManager::instance().renameCategory(oldCategory, newCategory);
+        QString oldCategoryPath = index.data(TodoModel::CategoryPathRole).toString();
+        QString newCategoryName = value.toString();
+        QString newCategoryPath = oldCategoryPath.left(oldCategoryPath.lastIndexOf(CategoryManager::pathSeparator())+1) + newCategoryName;
+        CategoryManager::instance().renameCategory(oldCategoryPath, newCategoryPath);
         return true;
     }
 

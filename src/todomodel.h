@@ -55,6 +55,7 @@ public:
         DataTypeRole,
         ChildUidsRole,
         ChildIndexesRole,
+        CategoryPathRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };
 

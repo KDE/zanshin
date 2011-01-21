@@ -32,7 +32,6 @@
 #include "todohelpers.h"
 #include "todomodel.h"
 
-
 K_GLOBAL_STATIC(CategoryManager, s_categoryManager);
 
 CategoryManager &CategoryManager::instance()
@@ -74,21 +73,26 @@ QStringList CategoryManager::categories()
     return m_categories;
 }
 
-void CategoryManager::addCategory(const QString &category)
+const QChar CategoryManager::pathSeparator()
 {
-    if (!m_categories.contains(category)) {
-        m_categories << category;
-        emit categoryAdded(category);
+    return QChar(0x2044);
+}
+
+void CategoryManager::addCategory(const QString &categoryPath)
+{
+    if (!m_categories.contains(categoryPath)) {
+        m_categories << categoryPath;
+        emit categoryAdded(categoryPath);
     }
 }
 
-bool CategoryManager::removeCategory(const QString &category)
+bool CategoryManager::removeCategory(const QString &categoryPath)
 {
-    int pos = m_categories.indexOf(category);
+    int pos = m_categories.indexOf(categoryPath);
     if (pos != -1) {
-        removeCategoryFromTodo(QModelIndex(), category);
+        removeCategoryFromTodo(QModelIndex(), categoryPath);
         m_categories.removeAt(pos);
-        emit categoryRemoved(category);
+        emit categoryRemoved(categoryPath);
         return true;
     }
     return false;
@@ -130,16 +134,16 @@ void CategoryManager::onSourceDataChanged(const QModelIndex &begin, const QModel
     }
 }
 
-void CategoryManager::removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &category)
+void CategoryManager::removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &categoryPath)
 {
     for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
         QModelIndex child = m_model->index(i, 0, sourceIndex);
-        removeTodoFromCategory(child, category);
-        removeCategoryFromTodo(child, category);
+        removeTodoFromCategory(child, categoryPath);
+        removeCategoryFromTodo(child, categoryPath);
     }
 }
 
-bool CategoryManager::removeTodoFromCategory(const QModelIndex &index, const QString &category)
+bool CategoryManager::removeTodoFromCategory(const QModelIndex &index, const QString &categoryPath)
 {
     if (!index.isValid()) {
         return false;
@@ -157,8 +161,8 @@ bool CategoryManager::removeTodoFromCategory(const QModelIndex &index, const QSt
     }
 
     QStringList categories = todo->categories();
-    if (categories.contains(category)) {
-        categories.removeAll(category);
+    if (categories.contains(categoryPath)) {
+        categories.removeAll(categoryPath);
         todo->setCategories(categories);
         new Akonadi::ItemModifyJob(item);
         return true;
@@ -166,17 +170,21 @@ bool CategoryManager::removeTodoFromCategory(const QModelIndex &index, const QSt
     return false;
 }
 
-void CategoryManager::renameCategory(const QString &oldCategoryName, const QString &newCategoryName)
+void CategoryManager::renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath)
 {
-    emit categoryRenamed(oldCategoryName, newCategoryName);
+    if (oldCategoryPath == newCategoryPath) {
+        return;
+    }
 
-    m_categories.removeAll(oldCategoryName);
-    m_categories << newCategoryName;
+    emit categoryRenamed(oldCategoryPath, newCategoryPath);
 
-    renameCategory(QModelIndex(), oldCategoryName, newCategoryName);
+    m_categories.removeAll(oldCategoryPath);
+    m_categories << newCategoryPath;
+
+    renameCategory(QModelIndex(), oldCategoryPath, newCategoryPath);
 }
 
-void CategoryManager::renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryName, const QString &newCategoryName)
+void CategoryManager::renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath)
 {
     for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
         QModelIndex child = m_model->index(i, 0, sourceIndex);
@@ -186,14 +194,43 @@ void CategoryManager::renameCategory(const QModelIndex &sourceIndex, const QStri
                 KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
                 if (todo) {
                     QStringList categories = todo->categories();
-                    if (categories.contains(oldCategoryName)) {
-                        categories = categories.replaceInStrings(oldCategoryName, newCategoryName);
+                    if (categories.contains(oldCategoryPath)) {
+                        categories = categories.replaceInStrings(oldCategoryPath, newCategoryPath);
                         todo->setCategories(categories);
                         new Akonadi::ItemModifyJob(item);
                     }
                 }
             }
         }
-        renameCategory(child, oldCategoryName, newCategoryName);
+        renameCategory(child, oldCategoryPath, newCategoryPath);
     }
+}
+
+void CategoryManager::moveCategory(const QString &oldCategoryPath, const QString &newCategoryPath)
+{
+    if (oldCategoryPath == newCategoryPath) {
+        return;
+    }
+    addCategory(newCategoryPath);
+    emit categoryMoved(oldCategoryPath, newCategoryPath);
+    removeCategory(oldCategoryPath);
+}
+
+bool CategoryManager::moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const TodoModel::ItemType parentType)
+{
+    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+    if (!todo) {
+        return false;
+    }
+    QStringList categories;
+    if (parentType != TodoModel::Inbox && parentType != TodoModel::CategoryRoot) {
+        categories= todo->categories();
+        if (!categories.contains(categoryPath)) {
+            categories << categoryPath;
+        }
+    }
+    todo->setCategories(categories);
+    new Akonadi::ItemModifyJob(item);
+    return true;
 }

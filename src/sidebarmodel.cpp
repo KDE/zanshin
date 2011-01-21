@@ -72,3 +72,4 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
     }
     return sourceModel()->dropMimeData(data, action, row, column, parent);
 }
+

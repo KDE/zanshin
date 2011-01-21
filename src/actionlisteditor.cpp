@@ -237,8 +237,7 @@ void ActionListEditor::onRemoveAction()
             }
         }
     } else if (type==TodoModel::Category) {
-        QString category = currentIndex.data().toString();
-        if (TodoHelpers::removeCategory(this, category)) {
+        if (TodoHelpers::removeCategory(this, currentIndex)) {
             m_categoriesSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
         }
     }

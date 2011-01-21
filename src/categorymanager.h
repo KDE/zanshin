@@ -26,6 +26,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
+#include "todomodel.h"
 
 class QAbstractItemModel;
 class QModelIndex;
@@ -43,25 +44,30 @@ public:
     void setModel(QAbstractItemModel *model);
     QAbstractItemModel *model() { return m_model; }
 
-    void addCategory(const QString &category);
-    bool removeCategory(const QString &category);
-    bool removeTodoFromCategory(const QModelIndex &index, const QString &category);
-    void renameCategory(const QString &oldCategoryName, const QString &newCategoryName);
+    void addCategory(const QString &categoryPath);
+    bool removeCategory(const QString &categoryPath);
+    bool removeTodoFromCategory(const QModelIndex &index, const QString &categoryPath);
+    void renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
+    void moveCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
+    bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const TodoModel::ItemType parentType);
 
     QStringList categories();
 
+    static const QChar pathSeparator();
+
 Q_SIGNALS:
-    void categoryAdded(const QString &category);
-    void categoryRemoved(const QString &category);
-    void categoryRenamed(const QString &oldCategory, const QString &newCategory);
+    void categoryAdded(const QString &categoryPath);
+    void categoryRemoved(const QString &categoryPath);
+    void categoryRenamed(const QString &oldCategoryPath, const QString &newCategoryPath);
+    void categoryMoved(const QString &oldCategoryPath, const QString &newCategoryPath);
 
 private slots:
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
 
 private:
-    void removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &category);
-    void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryName, const QString &newCategoryName);
+    void removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &categoryPath);
+    void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
 
     QStringList m_categories;
     QAbstractItemModel *m_model;

@@ -172,7 +172,7 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         for (int i = 0; i < model->rowCount(); ++i) {
             QModelIndex index = model->index(i, 0);
             foreach (QString item, categories) {
-                if (index.data(Qt::DisplayRole).toString().contains(item)) {
+                if (index.data(TodoModel::CategoryPathRole).toString() == item) {
                     checkModel->select(index, QItemSelectionModel::Toggle);
                 }
             }
@@ -218,7 +218,13 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         model->setData(index, dateEdit->date());
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
-        QStringList currentCategories = comboBox->currentText().split(", ");
+        QStringList currentCategories;
+        for (int i=0; i < comboBox->model()->rowCount(); ++i) {
+            QModelIndex comboIndex = comboBox->model()->index(i, 0);
+            if (comboIndex.data(Qt::CheckStateRole).toInt() == Qt::Checked) {
+                currentCategories << comboIndex.data(TodoModel::CategoryPathRole).toString();
+            }
+        }
         model->setData(index, currentCategories);
     } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);

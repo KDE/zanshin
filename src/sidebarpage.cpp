@@ -85,7 +85,8 @@ void SideBarPage::addNewItem()
         title = i18n("New Project");
         text = i18n("Enter project name:");
 
-    } else if (type==TodoModel::CategoryRoot) {
+    } else if (type==TodoModel::CategoryRoot
+            || type==TodoModel::Category) {
         title = i18n("New Category");
         text = i18n("Enter category name:");
 
@@ -112,7 +113,8 @@ void SideBarPage::addNewItem()
 
     } else if (type==TodoModel::CategoryRoot) {
         TodoHelpers::addCategory(summary);
-
+    } else if (type==TodoModel::Category) {
+        TodoHelpers::addCategory(summary, parentItem.data(TodoModel::CategoryPathRole).toString());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
@@ -128,7 +130,7 @@ void SideBarPage::removeCurrentItem()
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==TodoModel::Category) {
-        if (TodoHelpers::removeCategory(this, current.data().toString())) {
+        if (TodoHelpers::removeCategory(this, current)) {
             m_treeView->setCurrentIndex(current.parent());
         }
     } else {

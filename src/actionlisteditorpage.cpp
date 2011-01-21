@@ -64,12 +64,12 @@ public:
             } else {
                 QString display = QSortFilterProxyModel::data(index, role).toString();
 
-                QModelIndex currentIndex = index.parent();
+                QModelIndex currentIndex = mapToSource(index.parent());
                 type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
 
                 while (type==TodoModel::ProjectTodo
                     || type==TodoModel::Category) {
-                    display = currentIndex.data(Qt::EditRole).toString() + ": " + display;
+                    display = currentIndex.data().toString() + ": " + display;
 
                     currentIndex = currentIndex.parent();
                     type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
@@ -357,7 +357,7 @@ void ActionListEditorPage::removeCurrentTodo()
             QModelIndex index = m_treeView->model()->index(i, 0);
             int type = index.data(TodoModel::ItemTypeRole).toInt();
             if (type==TodoModel::Category) {
-                QString category = index.data().toString();
+                QString category = index.data(TodoModel::CategoryPathRole).toString();
                 if (TodoHelpers::removeTodoFromCategory(current, category))
                     break;
             }

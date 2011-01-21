@@ -32,8 +32,6 @@
 class TodoNode
 {
 public:
-    static const QChar pathSeparator;
-
     explicit TodoNode(const QModelIndex &rowSourceIndex, TodoNode *parent = 0);
     explicit TodoNode(TodoNode *parent = 0);
     ~TodoNode();

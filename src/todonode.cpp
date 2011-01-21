@@ -26,8 +26,6 @@
 
 #include <KDebug>
 
-const QChar TodoNode::pathSeparator = QChar(0x2044);
-
 TodoNode::TodoNode(const QModelIndex &rowSourceIndex, TodoNode *parent)
     : m_parent(parent), m_rowSourceIndex(rowSourceIndex)
 {

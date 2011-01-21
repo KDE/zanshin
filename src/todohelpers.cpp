@@ -71,9 +71,10 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Item &parent
     job->start();
 }
 
-void TodoHelpers::addCategory(const QString &summary)
+void TodoHelpers::addCategory(const QString &category, const QString &parentCategory)
 {
-    CategoryManager::instance().addCategory(summary);
+    QString categoryPath = parentCategory + CategoryManager::pathSeparator() + category;
+    CategoryManager::instance().addCategory(categoryPath);
 }
 
 void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
@@ -112,8 +113,10 @@ bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
     return true;
 }
 
-bool TodoHelpers::removeCategory(QWidget *parent, const QString &category)
+bool TodoHelpers::removeCategory(QWidget *parent, const QModelIndex &categoryIndex)
 {
+    QString category = categoryIndex.data().toString();
+    QString path = categoryIndex.data(TodoModel::CategoryPathRole).toString();
     QString title;
     QString text;
 
@@ -125,7 +128,7 @@ bool TodoHelpers::removeCategory(QWidget *parent, const QString &category)
 
     if (!canRemove) return false;
 
-    return CategoryManager::instance().removeCategory(category);
+    return CategoryManager::instance().removeCategory(path);
 }
 
 bool TodoHelpers::removeTodoFromCategory(const QModelIndex &index, const QString &category)
@@ -172,24 +175,11 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
 
 bool TodoHelpers::moveTodoToCategory(const QModelIndex &index, const QString &category, const TodoModel::ItemType parentType)
 {
-    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-    if (!todo) {
-        return false;
-    }
-    QStringList categories;
-    if (parentType != TodoModel::Inbox && parentType != TodoModel::CategoryRoot) {
-        categories= todo->categories();
-        if (!categories.contains(category)) {
-            categories << category;
-        }
-    }
-    todo->setCategories(categories);
-    new Akonadi::ItemModifyJob(item);
-    return true;
+    return CategoryManager::instance().moveTodoToCategory(index, category, parentType);
 }
 
-void TodoHelpers::renameCategory(const QString &oldCategoryName, const QString &newCategoryName)
+void TodoHelpers::renameCategory(const QString &oldCategoryPath, const QString &newCategoryName)
 {
-    CategoryManager::instance().renameCategory(oldCategoryName, newCategoryName);
+    QString newCategoryPath = oldCategoryPath.left(oldCategoryPath.lastIndexOf(CategoryManager::pathSeparator())+1) + newCategoryName;
+    CategoryManager::instance().renameCategory(oldCategoryPath, newCategoryPath);
 }

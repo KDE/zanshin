@@ -50,9 +50,10 @@ private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    void createCategoryNode(const QString &category);
-    void removeCategoryNode(const QString &category);
-    void renameCategoryNode(const QString &oldCategory, const QString &newCategory);
+    void createCategoryNode(const QString &categoryPath);
+    void removeCategoryNode(const QString &categoryPath);
+    void renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);
+    void moveCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);
 
 private:
     virtual void init();
