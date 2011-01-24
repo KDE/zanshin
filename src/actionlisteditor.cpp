@@ -240,6 +240,8 @@ void ActionListEditor::onRemoveAction()
         if (TodoHelpers::removeCategory(this, currentIndex)) {
             m_categoriesSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
         }
+    } else {
+        currentPage()->removeCurrentTodo();
     }
 }
 
