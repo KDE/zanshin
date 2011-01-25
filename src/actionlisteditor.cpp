@@ -192,11 +192,13 @@ void ActionListEditor::updateActions(const QModelIndex &index)
 {
     int type = index.data(TodoModel::ItemTypeRole).toInt();
 
-    m_remove->setEnabled(index.isValid() 
+    m_remove->setEnabled(index.isValid()
                      && ((type==TodoModel::StandardTodo)
                        || type==TodoModel::ProjectTodo
                        || type==TodoModel::Category));
-    m_move->setEnabled(index.isValid() && (type==TodoModel::StandardTodo));
+    m_move->setEnabled(index.isValid()
+                   && (type==TodoModel::StandardTodo
+                    || type==TodoModel::Category));
 }
 
 void ActionListEditor::onAddActionRequested()
@@ -267,7 +269,12 @@ void ActionListEditor::onMoveAction()
         if (currentPage()->mode()==Zanshin::ProjectMode) {
             TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
         } else {
-            TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
+            int type = current.data(TodoModel::ItemTypeRole).toInt();
+            if (type==TodoModel::Category) {
+                TodoHelpers::moveCategory(current.data(TodoModel::CategoryPathRole).toString(), selectedId, dlg.selectedType());
+            } else {
+                TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
+            }
         }
     }
 }

@@ -102,7 +102,7 @@ TodoModel::ItemType QuickSelectDialog::selectedType() const
 QString QuickSelectDialog::categorySelectedId() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
-    return index.data().toString();
+    return index.data(TodoModel::CategoryPathRole).toString();
 }
 
 QString QuickSelectDialog::projectSelectedId() const

@@ -183,6 +183,23 @@ bool TodoHelpers::moveTodoToCategory(const QModelIndex &index, const QString &ca
     return CategoryManager::instance().moveTodoToCategory(index, category, parentType);
 }
 
+void TodoHelpers::moveCategory(const QString &oldCategoryPath, const QString &parentPath, const TodoModel::ItemType parentType)
+{
+    if (parentType!=TodoModel::Category && parentType!=TodoModel::CategoryRoot) {
+        return;
+    }
+
+    QString categoryName = oldCategoryPath.split(CategoryManager::pathSeparator()).last();
+    QString newCategoryPath;
+    if (parentType==TodoModel::Category) {
+        newCategoryPath = parentPath + CategoryManager::pathSeparator() + categoryName;
+    } else {
+        newCategoryPath = categoryName;
+    }
+
+    CategoryManager::instance().moveCategory(oldCategoryPath, newCategoryPath);
+}
+
 void TodoHelpers::renameCategory(const QString &oldCategoryPath, const QString &newCategoryName)
 {
     QString newCategoryPath = oldCategoryPath.left(oldCategoryPath.lastIndexOf(CategoryManager::pathSeparator())+1) + newCategoryName;
