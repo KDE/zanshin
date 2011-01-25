@@ -398,13 +398,21 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
             }
         }
     } else {
+        if (parentType!=TodoModel::Category && parentType!=TodoModel::CategoryRoot) {
+            return false;
+        }
         QByteArray categories = mimeData->data("application/x-vnd.zanshin.category");
         QString sep = CategoryManager::pathSeparator();
         sep += CategoryManager::pathSeparator();
         QStringList categoriesPath = QString::fromUtf8(categories.data()).split(sep);
         foreach (QString categoryPath, categoriesPath) {
             QString CategoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
-            QString newCategoryPath = parentCategory + CategoryManager::pathSeparator() + CategoryName;
+            QString newCategoryPath;
+            if (parentType==TodoModel::CategoryRoot) {
+                newCategoryPath = CategoryName;
+            } else {
+                newCategoryPath = parentCategory + CategoryManager::pathSeparator() + CategoryName;
+            }
             if (newCategoryPath != categoryPath) {
                 CategoryManager::instance().moveCategory(categoryPath, newCategoryPath);
             }
