@@ -73,7 +73,12 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Item &parent
 
 void TodoHelpers::addCategory(const QString &category, const QString &parentCategory)
 {
-    QString categoryPath = parentCategory + CategoryManager::pathSeparator() + category;
+    QString categoryPath;
+    if (parentCategory.isEmpty()) {
+        categoryPath = category;
+    } else {
+        categoryPath = parentCategory + CategoryManager::pathSeparator() + category;
+    }
     CategoryManager::instance().addCategory(categoryPath);
 }
 
