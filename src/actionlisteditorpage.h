@@ -33,6 +33,7 @@
 class KConfigGroup;
 class QAbstractItemModel;
 class QItemSelectionModel;
+class QModelIndex;
 class ModelStack;
 
 namespace Akonadi
@@ -62,6 +63,7 @@ public:
 
     void setDefaultCollection(const Akonadi::Collection &collection);
 
+    void selectSiblingIndex(const QModelIndex &index);
 public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();

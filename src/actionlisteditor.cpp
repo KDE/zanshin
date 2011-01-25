@@ -276,6 +276,7 @@ void ActionListEditor::onMoveAction()
                 TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
             }
         }
+        currentPage()->selectSiblingIndex(current);
     }
 }
 
