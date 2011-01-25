@@ -432,7 +432,8 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
         return TodoProxyModelBase::setData(index, value, role);
     }
 
-    if (index.column()==0) {
+    TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
+    if (index.column()==0 && type==TodoModel::Category) {
         QString oldCategoryPath = index.data(TodoModel::CategoryPathRole).toString();
         QString newCategoryName = value.toString();
         QString newCategoryPath = oldCategoryPath.left(oldCategoryPath.lastIndexOf(CategoryManager::pathSeparator())+1) + newCategoryName;
