@@ -413,7 +413,7 @@ void ActionListEditorPage::setDefaultCollection(const Akonadi::Collection &colle
     m_defaultCollection = collection;
 }
 
-void ActionListEditorPage::selectSiblingIndex(const QModelIndex &index)
+bool ActionListEditorPage::selectSiblingIndex(const QModelIndex &index)
 {
     QModelIndex sibling = m_treeView->indexBelow(index);
     if (!sibling.isValid()) {
@@ -421,5 +421,7 @@ void ActionListEditorPage::selectSiblingIndex(const QModelIndex &index)
     }
     if (sibling.isValid()) {
         m_treeView->selectionModel()->setCurrentIndex(sibling, QItemSelectionModel::Select|QItemSelectionModel::Rows);
+        return true;
     }
+    return false;
 }

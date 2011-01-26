@@ -52,6 +52,7 @@ public:
     QString selectedId() const;
     TodoModel::ItemType selectedType() const;
     Akonadi::Collection collection() const;
+    QModelIndex selectedIndex() const;
 
 private:
     QString categorySelectedId() const;

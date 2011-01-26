@@ -124,3 +124,8 @@ Akonadi::Collection QuickSelectDialog::collection() const
     }
     return collection;
 }
+
+QModelIndex QuickSelectDialog::selectedIndex() const
+{
+    return m_tree->selectionModel()->currentIndex();
+}

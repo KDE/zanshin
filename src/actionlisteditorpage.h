@@ -63,7 +63,7 @@ public:
 
     void setDefaultCollection(const Akonadi::Collection &collection);
 
-    void selectSiblingIndex(const QModelIndex &index);
+    bool selectSiblingIndex(const QModelIndex &index);
 public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();

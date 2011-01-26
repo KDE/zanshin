@@ -46,6 +46,7 @@
 #include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
+#include "categorymanager.h"
 #include "modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
@@ -256,10 +257,13 @@ void ActionListEditor::onMoveAction()
     }
 
     QAbstractItemModel *model;
+    QModelIndex currentSelection;
     if (currentPage()->mode()==Zanshin::ProjectMode) {
         model = m_models->treeSideBarModel();
+        currentSelection = m_projectSelection->currentIndex();
     } else {
         model = m_models->categoriesSideBarModel();
+        currentSelection = m_categoriesSelection->currentIndex();
     }
 
     QuickSelectDialog dlg(this, model, currentPage()->mode(),
@@ -268,15 +272,30 @@ void ActionListEditor::onMoveAction()
         QString selectedId = dlg.selectedId();
         if (currentPage()->mode()==Zanshin::ProjectMode) {
             TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
+            if (!currentPage()->selectSiblingIndex(current)) {
+                // FIXME : the current index should the moved todo
+                m_projectSelection->setCurrentIndex(currentSelection.parent(), QItemSelectionModel::Select);
+            }
         } else {
             int type = current.data(TodoModel::ItemTypeRole).toInt();
+            QString categoryPath = current.data(TodoModel::CategoryPathRole).toString();
             if (type==TodoModel::Category) {
-                TodoHelpers::moveCategory(current.data(TodoModel::CategoryPathRole).toString(), selectedId, dlg.selectedType());
+                TodoHelpers::moveCategory(categoryPath, selectedId, dlg.selectedType());
             } else {
                 TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
             }
+            if (!currentPage()->selectSiblingIndex(current)) {
+                QModelIndex index = dlg.selectedIndex();
+                QString categoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
+                for (int row = 0; row < index.model()->rowCount(index); ++row) {
+                    QModelIndex child = index.model()->index(row, index.column(), index);
+                    if (child.data().toString() == categoryName) {
+                        m_categoriesSelection->setCurrentIndex(child, QItemSelectionModel::Select);
+                    }
+                }
+            }
+
         }
-        currentPage()->selectSiblingIndex(current);
     }
 }
 
