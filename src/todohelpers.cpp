@@ -141,6 +141,16 @@ bool TodoHelpers::removeTodoFromCategory(const QModelIndex &index, const QString
     return CategoryManager::instance().removeTodoFromCategory(index, category);
 }
 
+void changeCollection(const Akonadi::Item &item, QModelIndexList children, const Akonadi::Collection &parentCollection, Akonadi::TransactionSequence *sequence)
+{
+    new Akonadi::ItemMoveJob(item, parentCollection, sequence);
+    foreach (QModelIndex child, children) {
+        QModelIndexList childList = child.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+        Akonadi::Item item = child.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        changeCollection(item, childList, parentCollection, sequence);
+    }
+}
+
 bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const TodoModel::ItemType parentType, const Akonadi::Collection &parentCollection)
 {
     TodoModel::ItemType itemType = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
@@ -153,7 +163,6 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
 
     if ((todo->relatedTo() == parentUid)
      || (itemType == TodoModel::StandardTodo && parentType == TodoModel::StandardTodo)
-     || (itemType == TodoModel::ProjectTodo && parentType == TodoModel::ProjectTodo)
      || (itemType == TodoModel::ProjectTodo && parentType == TodoModel::StandardTodo)
      || (itemType == TodoModel::Collection && parentType == TodoModel::ProjectTodo)
      || (itemType == TodoModel::Collection && parentType == TodoModel::StandardTodo)) {
@@ -173,7 +182,8 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
     int itemCollectonId = item.parentCollection().id();
     int parentCollectionId = parentCollection.id();
     if ((parentType != TodoModel::Inbox) && (itemCollectonId != parentCollectionId)) {
-        new Akonadi::ItemMoveJob(item, parentCollection, transaction);
+        QModelIndexList childList = index.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+        changeCollection(item, childList, parentCollection, transaction);
     }
     return true;
 }

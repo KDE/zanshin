@@ -171,6 +171,10 @@ void TodoProxyModelBase::setSourceModel(QAbstractItemModel *model)
                 this, SLOT(onSourceInsertRows(const QModelIndex&, int, int)));
         connect(sourceModel(), SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)),
                 this, SLOT(onSourceRemoveRows(const QModelIndex&, int, int)));
+        connect(sourceModel(), SIGNAL(rowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
+                this, SLOT(onRowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
+        connect(sourceModel(), SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
+                this, SLOT(onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
     }
 
     if (model) {
@@ -180,6 +184,10 @@ void TodoProxyModelBase::setSourceModel(QAbstractItemModel *model)
                 this, SLOT(onSourceInsertRows(const QModelIndex&, int, int)));
         connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)),
                 this, SLOT(onSourceRemoveRows(const QModelIndex&, int, int)));
+        connect(model, SIGNAL(rowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
+                this, SLOT(onRowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
+        connect(model, SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
+                this, SLOT(onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
     }
 
     QAbstractProxyModel::setSourceModel(model);
@@ -207,3 +215,14 @@ TodoNode *TodoProxyModelBase::addChildNode(const QModelIndex &sourceIndex, TodoN
 
     return child;
 }
+
+void TodoProxyModelBase::onRowsAboutToBeMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &/*destinationParent*/, int /*destinationRow*/)
+{
+    onSourceRemoveRows(sourceParent, sourceStart, sourceEnd);
+}
+
+void TodoProxyModelBase::onRowsMoved(const QModelIndex &/*parent*/, int start, int end, const QModelIndex &destination, int row)
+{
+    onSourceInsertRows(destination, row, row + end - start);
+}
+

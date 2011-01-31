@@ -63,6 +63,8 @@ private slots:
     virtual void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end) = 0;
     virtual void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end) = 0;
     virtual void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end) = 0;
+    virtual void onRowsAboutToBeMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destinationParent, int destinationRow);
+    virtual void onRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
 
 protected:
     virtual void init();

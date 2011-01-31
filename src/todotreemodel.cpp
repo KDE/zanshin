@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 
+#include "kmodelindexproxymapper.h"
 #include "todohelpers.h"
 #include "todomodel.h"
 #include "todonode.h"
@@ -245,6 +246,25 @@ QStringList TodoTreeModel::mimeTypes() const
     return sourceModel()->mimeTypes();
 }
 
+void TodoTreeModel::moveChildTodo(const QModelIndex &child, const QModelIndex &parent)
+{
+    if (!child.isValid() || !parent.isValid()) {
+        return;
+    }
+
+    TodoNode *node = m_manager->nodeForSourceIndex(child);
+    if (node)
+        destroyBranch(node);
+
+    QModelIndex sourceParentIndex = sourceModel()->index(parent.row(), 0, parent.parent());
+    onSourceInsertRows(sourceParentIndex.parent(), child.row(), child.row());
+
+    QModelIndexList children = child.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+    foreach (const QModelIndex &index, children) {
+        Q_ASSERT(index.model()==sourceModel());
+        moveChildTodo(index, child);
+    }
+}
 
 bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction action,
                                  int /*row*/, int /*column*/, const QModelIndex &parent)
@@ -288,6 +308,12 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
                     }
                     QModelIndex index = indexes.first();
                     TodoHelpers::moveTodoToProject(index, parentUid, parentType, collection);
+                    if (index.data(TodoModel::ItemTypeRole).toInt()==TodoModel::ProjectTodo
+                     && item.parentCollection().id()==collection.id()) {
+                        KModelIndexProxyMapper *mapper = new KModelIndexProxyMapper(index.model(), parent.model(), this);
+                        QModelIndex newParent = mapper->mapRightToLeft(parent);
+                        moveChildTodo(index, newParent);
+                    }
                 }
             }
         }
