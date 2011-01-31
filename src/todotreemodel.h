@@ -51,7 +51,7 @@ private slots:
 private:
     virtual TodoNode *createInbox() const;
     void destroyBranch(TodoNode *root);
-    void moveChildTodo(const QModelIndex &child, const QModelIndex &parent = QModelIndex());
+    void createChild(const QModelIndex &child, const QModelIndex &parent, int row);
 
     QHash<TodoNode*, QHash<QString, TodoNode*> > m_collectionToUidsHash;
 };

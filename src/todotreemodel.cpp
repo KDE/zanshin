@@ -187,7 +187,7 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
         destroyBranch(node);
 
         // Then simulate a row insertion signal
-        onSourceInsertRows(sourceChildIndex.parent(), row, row);
+        createChild(sourceChildIndex, sourceChildIndex.parent(), row);
     }
 }
 
@@ -246,23 +246,18 @@ QStringList TodoTreeModel::mimeTypes() const
     return sourceModel()->mimeTypes();
 }
 
-void TodoTreeModel::moveChildTodo(const QModelIndex &child, const QModelIndex &parent)
+void TodoTreeModel::createChild(const QModelIndex &child, const QModelIndex &parent, int row)
 {
     if (!child.isValid() || !parent.isValid()) {
         return;
     }
 
-    TodoNode *node = m_manager->nodeForSourceIndex(child);
-    if (node)
-        destroyBranch(node);
-
-    QModelIndex sourceParentIndex = sourceModel()->index(parent.row(), 0, parent.parent());
-    onSourceInsertRows(sourceParentIndex.parent(), child.row(), child.row());
+    onSourceInsertRows(parent, row, row);
 
     QModelIndexList children = child.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
     foreach (const QModelIndex &index, children) {
         Q_ASSERT(index.model()==sourceModel());
-        moveChildTodo(index, child);
+        createChild(index, child.parent(), index.row());
     }
 }
 
@@ -308,12 +303,6 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
                     }
                     QModelIndex index = indexes.first();
                     TodoHelpers::moveTodoToProject(index, parentUid, parentType, collection);
-                    if (index.data(TodoModel::ItemTypeRole).toInt()==TodoModel::ProjectTodo
-                     && item.parentCollection().id()==collection.id()) {
-                        KModelIndexProxyMapper *mapper = new KModelIndexProxyMapper(index.model(), parent.model(), this);
-                        QModelIndex newParent = mapper->mapRightToLeft(parent);
-                        moveChildTodo(index, newParent);
-                    }
                 }
             }
         }

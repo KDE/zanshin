@@ -199,7 +199,8 @@ void ActionListEditor::updateActions(const QModelIndex &index)
                        || type==TodoModel::Category));
     m_move->setEnabled(index.isValid()
                    && (type==TodoModel::StandardTodo
-                    || type==TodoModel::Category));
+                    || type==TodoModel::Category
+                    || type==TodoModel::ProjectTodo));
 }
 
 void ActionListEditor::onAddActionRequested()
