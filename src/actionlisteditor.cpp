@@ -267,15 +267,23 @@ void ActionListEditor::onMoveAction()
         currentSelection = m_categoriesSelection->currentIndex();
     }
 
+    QModelIndex mapperIndex;
+    if (currentSelection.isValid()) {
+        KModelIndexProxyMapper mapper(currentSelection.model(), current.model());
+        mapperIndex = mapper.mapRightToLeft(current);
+    }
+
     QuickSelectDialog dlg(this, model, currentPage()->mode(),
                           QuickSelectDialog::MoveAction);
     if (dlg.exec()==QDialog::Accepted) {
         QString selectedId = dlg.selectedId();
+        QModelIndex index = dlg.selectedIndex();
         if (currentPage()->mode()==Zanshin::ProjectMode) {
             TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
-            if (!currentPage()->selectSiblingIndex(current)) {
-                // FIXME : the current index should the moved todo
-                m_projectSelection->setCurrentIndex(currentSelection.parent(), QItemSelectionModel::Select);
+            if (dlg.selectedType()==TodoModel::ProjectTodo && currentSelection==mapperIndex) {
+                m_projectSelection->setCurrentIndex(index, QItemSelectionModel::Select);
+            } else {
+                currentPage()->selectSiblingIndex(current);
             }
         } else {
             int type = current.data(TodoModel::ItemTypeRole).toInt();
@@ -285,17 +293,11 @@ void ActionListEditor::onMoveAction()
             } else {
                 TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
             }
-            if (!currentPage()->selectSiblingIndex(current)) {
-                QModelIndex index = dlg.selectedIndex();
-                QString categoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
-                for (int row = 0; row < index.model()->rowCount(index); ++row) {
-                    QModelIndex child = index.model()->index(row, index.column(), index);
-                    if (child.data().toString() == categoryName) {
-                        m_categoriesSelection->setCurrentIndex(child, QItemSelectionModel::Select);
-                    }
-                }
+            if (dlg.selectedType()==TodoModel::Category && currentSelection==mapperIndex) {
+                m_categoriesSelection->setCurrentIndex(index, QItemSelectionModel::Select);
+            } else {
+                currentPage()->selectSiblingIndex(current);
             }
-
         }
     }
 }
