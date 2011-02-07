@@ -29,6 +29,7 @@
 #include <KDE/KConfigGroup>
 #include <KDE/KIcon>
 #include <KDE/KLocale>
+#include <KDE/KMenuBar>
 
 #include <QtGui/QDockWidget>
 #include <QtGui/QHeaderView>
@@ -76,10 +77,14 @@ void MainWindow::setupActions()
 {
     KActionCollection *ac = actionCollection();
 
+    KAction *action = ac->addAction(KStandardAction::ShowMenubar);
+    connect(action, SIGNAL(toggled(bool)),
+            menuBar(), SLOT(setVisible(bool)));
+
     QActionGroup *modeGroup = new QActionGroup(this);
     modeGroup->setExclusive(true);
 
-    KAction *action = ac->addAction("project_mode", this, SLOT(onModeSwitch()));
+    action = ac->addAction("project_mode", this, SLOT(onModeSwitch()));
     action->setText(i18n("Project View"));
     action->setIcon(KIcon("view-pim-tasks"));
     action->setShortcut(Qt::CTRL | Qt::Key_P);
