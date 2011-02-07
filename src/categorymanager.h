@@ -25,6 +25,7 @@
 #define ZANSHIN_CATEGORYMANAGER_H
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 #include <QtCore/QStringList>
 #include "todomodel.h"
 
@@ -70,7 +71,7 @@ private:
     void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
 
     QStringList m_categories;
-    QAbstractItemModel *m_model;
+    QPointer<QAbstractItemModel> m_model;
 };
 
 #endif
