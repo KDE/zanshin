@@ -30,7 +30,6 @@
 #include <KDE/KIcon>
 #include <KDE/KLocale>
 
-#include "todomodel.h"
 #include "todonode.h"
 #include "todonodemanager.h"
 

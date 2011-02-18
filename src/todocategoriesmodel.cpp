@@ -29,14 +29,15 @@
 
 #include <KDE/Akonadi/ItemFetchJob>
 #include <KDE/Akonadi/ItemFetchScope>
+#include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
 #include <KDE/KIcon>
 #include <KDE/KLocale>
 #include <KDE/KUrl>
 
 #include "categorymanager.h"
+#include "globaldefs.h"
 #include "todohelpers.h"
-#include "todomodel.h"
 #include "todonode.h"
 #include "todonodemanager.h"
 
@@ -66,9 +67,9 @@ void TodoCategoriesModel::onSourceInsertRows(const QModelIndex &sourceIndex, int
             continue;
         }
 
-        TodoModel::ItemType type = (TodoModel::ItemType) sourceChildIndex.data(TodoModel::ItemTypeRole).toInt();
-        if (type==TodoModel::StandardTodo) {
-            QStringList categories = sourceModel()->data(sourceChildIndex, TodoModel::CategoriesRole).toStringList();
+        Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
+        if (type==Zanshin::StandardTodo) {
+            QStringList categories = sourceModel()->data(sourceChildIndex, Zanshin::CategoriesRole).toStringList();
 
             if (categories.isEmpty()) {
                 addChildNode(sourceChildIndex, m_inboxNode);
@@ -80,7 +81,7 @@ void TodoCategoriesModel::onSourceInsertRows(const QModelIndex &sourceIndex, int
                     addChildNode(sourceChildIndex, parent);
                 }
             }
-        } else if (type==TodoModel::Collection) {
+        } else if (type==Zanshin::Collection) {
             onSourceInsertRows(sourceChildIndex, 0, sourceModel()->rowCount(sourceChildIndex)-1);
         }
     }
@@ -118,14 +119,14 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
 
             TodoNode *categoryNode = node->parent();
             if (categoryNode
-             && categoryNode->data(0, TodoModel::ItemTypeRole).toInt()!=TodoModel::Inbox) {
-                QString category = categoryNode->data(0, TodoModel::CategoryPathRole).toString();
+             && categoryNode->data(0, Zanshin::ItemTypeRole).toInt()!=Zanshin::Inbox) {
+                QString category = categoryNode->data(0, Zanshin::CategoryPathRole).toString();
                 oldCategories << category;
                 nodeMap[category] = node;
             }
         }
 
-        QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(TodoModel::CategoriesRole).toStringList());
+        QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(Zanshin::CategoriesRole).toStringList());
 
         QSet<QString> interCategories = newCategories;
         interCategories.intersect(oldCategories);
@@ -144,7 +145,7 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
         }
 
         if (!oldCategories.isEmpty()) {
-            QStringList categories = sourceModel()->data(sourceIndex, TodoModel::CategoriesRole).toStringList();
+            QStringList categories = sourceModel()->data(sourceIndex, Zanshin::CategoriesRole).toStringList();
             if (categories.isEmpty()) {
                 addChildNode(sourceIndex, m_inboxNode);
             }
@@ -184,7 +185,7 @@ void TodoCategoriesModel::init()
         TodoNode *node = new TodoNode;
         node->setData(i18n("Categories"), 0, Qt::DisplayRole);
         node->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
-        node->setRowData(TodoModel::CategoryRoot, TodoModel::ItemTypeRole);
+        node->setRowData(Zanshin::CategoryRoot, Zanshin::ItemTypeRole);
 
         m_categoryRootNode = node;
         m_manager->insertNode(m_categoryRootNode);
@@ -199,7 +200,7 @@ TodoNode *TodoCategoriesModel::createInbox() const
 
     node->setData(i18n("No Category"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
-    node->setRowData(TodoModel::Inbox, TodoModel::ItemTypeRole);
+    node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 
     return node;
 }
@@ -226,9 +227,9 @@ void TodoCategoriesModel::createCategoryNode(const QString &categoryPath)
     TodoNode *node = new TodoNode(parentNode);
     node->setData(categoryName, 0, Qt::DisplayRole);
     node->setData(categoryName, 0, Qt::EditRole);
-    node->setData(categoryPath, 0, TodoModel::CategoryPathRole);
+    node->setData(categoryPath, 0, Zanshin::CategoryPathRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
-    node->setRowData(TodoModel::Category, TodoModel::ItemTypeRole);
+    node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole);
 
     m_categoryMap[categoryPath] = node;
     m_manager->insertNode(node);
@@ -247,10 +248,10 @@ void TodoCategoriesModel::removeCategoryNode(const QString &category)
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-        if (childIndex.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Category) {
-            CategoryManager::instance().removeCategory(childIndex.data(TodoModel::CategoryPathRole).toString());
+        if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
+            CategoryManager::instance().removeCategory(childIndex.data(Zanshin::CategoryPathRole).toString());
         } else {
-            QStringList categories = childIndex.data(TodoModel::CategoriesRole).toStringList();
+            QStringList categories = childIndex.data(Zanshin::CategoriesRole).toStringList();
             if (categories.empty()) {
                 child->setParent(m_inboxNode);
             } else {
@@ -279,8 +280,8 @@ void TodoCategoriesModel::renameCategoryNode(const QString &oldCategoryPath, con
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-        if (childIndex.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Category) {
-            QString childPath = childIndex.data(TodoModel::CategoryPathRole).toString();
+        if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
+            QString childPath = childIndex.data(Zanshin::CategoryPathRole).toString();
             QString newChildPath = childPath;
             newChildPath = newChildPath.replace(oldCategoryPath, newCategoryPath);
             CategoryManager::instance().renameCategory(childPath, newChildPath);
@@ -290,7 +291,7 @@ void TodoCategoriesModel::renameCategoryNode(const QString &oldCategoryPath, con
     QString newCategory = newCategoryPath.split(CategoryManager::pathSeparator()).last();
     node->setData(newCategory, 0, Qt::DisplayRole);
     node->setData(newCategory, 0, Qt::EditRole);
-    node->setData(newCategoryPath, 0, TodoModel::CategoryPathRole);
+    node->setData(newCategoryPath, 0, Zanshin::CategoryPathRole);
 
     QModelIndex index = m_manager->indexForNode(node, 0);
     emit dataChanged(index, index);
@@ -303,13 +304,13 @@ void TodoCategoriesModel::moveCategoryNode(const QString &oldCategoryPath, const
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-        if (childIndex.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Category) {
-            QString ChildPath = childIndex.data(TodoModel::CategoryPathRole).toString();
+        if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
+            QString ChildPath = childIndex.data(Zanshin::CategoryPathRole).toString();
             QString newChildPath = ChildPath;
             newChildPath = newChildPath.replace(oldCategoryPath, newCategoryPath);
             CategoryManager::instance().moveCategory(ChildPath, newChildPath);
         } else {
-            CategoryManager::instance().moveTodoToCategory(childIndex, newCategoryPath, TodoModel::Category);
+            CategoryManager::instance().moveTodoToCategory(childIndex, newCategoryPath, Zanshin::Category);
         }
     }
 
@@ -317,8 +318,8 @@ void TodoCategoriesModel::moveCategoryNode(const QString &oldCategoryPath, const
 
 Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
 {
-    TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
-    if (type == TodoModel::Inbox || type == TodoModel::CategoryRoot) {
+    Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+    if (type == Zanshin::Inbox || type == Zanshin::CategoryRoot) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
     return TodoProxyModelBase::flags(index) | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
@@ -331,11 +332,11 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
     foreach (const QModelIndex &proxyIndex, indexes) {
         TodoNode *node = m_manager->nodeForIndex(proxyIndex);
         QModelIndex index = m_manager->indexForNode(node, 0);
-        TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
-        if (type==TodoModel::StandardTodo) {
+        Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+        if (type==Zanshin::StandardTodo) {
             sourceIndexes << mapToSource(proxyIndex);
         } else {
-            categoriesList << proxyIndex.data(TodoModel::CategoryPathRole).toString();
+            categoriesList << proxyIndex.data(Zanshin::CategoryPathRole).toString();
         }
     }
 
@@ -367,8 +368,8 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
         return false;
     }
 
-    QString parentCategory = parent.data(TodoModel::CategoryPathRole).toString();
-    TodoModel::ItemType parentType = (TodoModel::ItemType)parent.data(TodoModel::ItemTypeRole).toInt();
+    QString parentCategory = parent.data(Zanshin::CategoryPathRole).toString();
+    Zanshin::ItemType parentType = (Zanshin::ItemType)parent.data(Zanshin::ItemTypeRole).toInt();
 
     if (KUrl::List::canDecode(mimeData)) {
         KUrl::List urls = KUrl::List::fromMimeData(mimeData);
@@ -398,7 +399,7 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
             }
         }
     } else {
-        if (parentType!=TodoModel::Category && parentType!=TodoModel::CategoryRoot) {
+        if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
             return false;
         }
         QByteArray categories = mimeData->data("application/x-vnd.zanshin.category");
@@ -408,7 +409,7 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
         foreach (QString categoryPath, categoriesPath) {
             QString CategoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
             QString newCategoryPath;
-            if (parentType==TodoModel::CategoryRoot) {
+            if (parentType==Zanshin::CategoryRoot) {
                 newCategoryPath = CategoryName;
             } else {
                 newCategoryPath = parentCategory + CategoryManager::pathSeparator() + CategoryName;
@@ -432,9 +433,9 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
         return TodoProxyModelBase::setData(index, value, role);
     }
 
-    TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
-    if (index.column()==0 && type==TodoModel::Category) {
-        QString oldCategoryPath = index.data(TodoModel::CategoryPathRole).toString();
+    Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+    if (index.column()==0 && type==Zanshin::Category) {
+        QString oldCategoryPath = index.data(Zanshin::CategoryPathRole).toString();
         QString newCategoryName = value.toString();
         QString newCategoryPath = oldCategoryPath.left(oldCategoryPath.lastIndexOf(CategoryManager::pathSeparator())+1) + newCategoryName;
         CategoryManager::instance().renameCategory(oldCategoryPath, newCategoryPath);

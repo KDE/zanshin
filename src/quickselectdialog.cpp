@@ -29,9 +29,9 @@
 #include <QtGui/QLayout>
 #include <QtGui/QTreeView>
 
+#include "globaldefs.h"
 #include "todocategoriesmodel.h"
 #include "todotreemodel.h"
-#include "todomodel.h"
 
 QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action)
     : KDialog(parent), m_tree(0), m_model(model), m_mode(mode)
@@ -93,30 +93,30 @@ QString QuickSelectDialog::selectedId() const
     }
 }
 
-TodoModel::ItemType QuickSelectDialog::selectedType() const
+Zanshin::ItemType QuickSelectDialog::selectedType() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
-    return (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+    return (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
 }
 
 QString QuickSelectDialog::categorySelectedId() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
-    return index.data(TodoModel::CategoryPathRole).toString();
+    return index.data(Zanshin::CategoryPathRole).toString();
 }
 
 QString QuickSelectDialog::projectSelectedId() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
-    return index.data(TodoModel::UidRole).toString();
+    return index.data(Zanshin::UidRole).toString();
 }
 
 Akonadi::Collection QuickSelectDialog::collection() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
     Akonadi::Collection collection;
-    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
-    if (type == TodoModel::Collection) {
+    Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
+    if (type == Zanshin::Collection) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     } else {
         const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();

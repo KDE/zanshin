@@ -44,9 +44,9 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
 
+#include "globaldefs.h"
 #include "modelstack.h"
 #include "sidebarpage.h"
-#include "todomodel.h"
 
 
 SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)
@@ -158,18 +158,18 @@ QItemSelectionModel *SideBar::categoriesSelection() const
 
 void SideBar::updateActions(const QModelIndex &index)
 {
-    TodoModel::ItemType type = (TodoModel::ItemType) index.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
 
-    m_add->setEnabled( type == TodoModel::Collection
-                    || type == TodoModel::ProjectTodo
-                    || type == TodoModel::CategoryRoot 
-                    || type == TodoModel::Category);
+    m_add->setEnabled( type == Zanshin::Collection
+                    || type == Zanshin::ProjectTodo
+                    || type == Zanshin::CategoryRoot 
+                    || type == Zanshin::Category);
 
-    m_remove->setEnabled( type == TodoModel::ProjectTodo
-                       || type == TodoModel::Category );
+    m_remove->setEnabled( type == Zanshin::ProjectTodo
+                       || type == Zanshin::Category );
 
-    m_rename->setEnabled( type == TodoModel::ProjectTodo
-                       || type == TodoModel::Category );
+    m_rename->setEnabled( type == Zanshin::ProjectTodo
+                       || type == Zanshin::Category );
 }
 
 void SideBar::onAddItem()

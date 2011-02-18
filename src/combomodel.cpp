@@ -29,7 +29,7 @@
 #include <KDebug>
 #include <KIcon>
 
-#include "todomodel.h"
+#include "globaldefs.h"
 
 ComboModel::ComboModel(QObject *parent)
     : QSortFilterProxyModel(parent)
@@ -44,7 +44,7 @@ ComboModel::~ComboModel()
 bool ComboModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
-    return sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::Inbox
-        && sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::Collection
-        && sourceChild.data(TodoModel::ItemTypeRole).toInt() != TodoModel::CategoryRoot;
+    return sourceChild.data(Zanshin::ItemTypeRole).toInt() != Zanshin::Inbox
+        && sourceChild.data(Zanshin::ItemTypeRole).toInt() != Zanshin::Collection
+        && sourceChild.data(Zanshin::ItemTypeRole).toInt() != Zanshin::CategoryRoot;
 }

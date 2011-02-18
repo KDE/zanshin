@@ -27,7 +27,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
 #include <QtCore/QStringList>
-#include "todomodel.h"
+#include "globaldefs.h"
 
 class QAbstractItemModel;
 class QModelIndex;
@@ -50,7 +50,7 @@ public:
     bool removeTodoFromCategory(const QModelIndex &index, const QString &categoryPath);
     void renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
     void moveCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
-    bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const TodoModel::ItemType parentType);
+    bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType);
 
     QStringList categories();
 

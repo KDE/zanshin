@@ -36,7 +36,7 @@
 #include <KDE/KMessageBox>
 
 #include "categorymanager.h"
-#include "todomodel.h"
+#include "globaldefs.h"
 
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
 {
@@ -85,7 +85,7 @@ void TodoHelpers::addCategory(const QString &category, const QString &parentCate
 void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
 {
     foreach (QModelIndex child, children) {
-        QModelIndexList childList = child.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+        QModelIndexList childList = child.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
         removeCurrentTodo(child, childList, sequence);
     }
 
@@ -96,7 +96,7 @@ void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Ako
 bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
 {
     bool canRemove = true;
-    QModelIndexList children = project.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+    QModelIndexList children = project.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
     if (!children.isEmpty()) {
         QString summary = project.data().toString();
 
@@ -121,7 +121,7 @@ bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
 bool TodoHelpers::removeCategory(QWidget *parent, const QModelIndex &categoryIndex)
 {
     QString category = categoryIndex.data().toString();
-    QString path = categoryIndex.data(TodoModel::CategoryPathRole).toString();
+    QString path = categoryIndex.data(Zanshin::CategoryPathRole).toString();
     QString title;
     QString text;
 
@@ -145,15 +145,15 @@ void changeCollection(const Akonadi::Item &item, QModelIndexList children, const
 {
     new Akonadi::ItemMoveJob(item, parentCollection, sequence);
     foreach (QModelIndex child, children) {
-        QModelIndexList childList = child.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+        QModelIndexList childList = child.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
         Akonadi::Item item = child.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         changeCollection(item, childList, parentCollection, sequence);
     }
 }
 
-bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const TodoModel::ItemType parentType, const Akonadi::Collection &parentCollection)
+bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection)
 {
-    TodoModel::ItemType itemType = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
 
@@ -162,14 +162,14 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
     }
 
     if ((todo->relatedTo() == parentUid)
-     || (itemType == TodoModel::StandardTodo && parentType == TodoModel::StandardTodo)
-     || (itemType == TodoModel::ProjectTodo && parentType == TodoModel::StandardTodo)
-     || (itemType == TodoModel::Collection && parentType == TodoModel::ProjectTodo)
-     || (itemType == TodoModel::Collection && parentType == TodoModel::StandardTodo)) {
+     || (itemType == Zanshin::StandardTodo && parentType == Zanshin::StandardTodo)
+     || (itemType == Zanshin::ProjectTodo && parentType == Zanshin::StandardTodo)
+     || (itemType == Zanshin::Collection && parentType == Zanshin::ProjectTodo)
+     || (itemType == Zanshin::Collection && parentType == Zanshin::StandardTodo)) {
          return false;
     }
 
-    if (parentType == TodoModel::Inbox || parentType == TodoModel::Collection) {
+    if (parentType == Zanshin::Inbox || parentType == Zanshin::Collection) {
         todo->setRelatedTo("");
     } else {
         todo->setRelatedTo(parentUid);
@@ -181,27 +181,27 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
 
     int itemCollectonId = item.parentCollection().id();
     int parentCollectionId = parentCollection.id();
-    if ((parentType != TodoModel::Inbox) && (itemCollectonId != parentCollectionId)) {
-        QModelIndexList childList = index.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+    if ((parentType != Zanshin::Inbox) && (itemCollectonId != parentCollectionId)) {
+        QModelIndexList childList = index.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
         changeCollection(item, childList, parentCollection, transaction);
     }
     return true;
 }
 
-bool TodoHelpers::moveTodoToCategory(const QModelIndex &index, const QString &category, const TodoModel::ItemType parentType)
+bool TodoHelpers::moveTodoToCategory(const QModelIndex &index, const QString &category, const Zanshin::ItemType parentType)
 {
     return CategoryManager::instance().moveTodoToCategory(index, category, parentType);
 }
 
-void TodoHelpers::moveCategory(const QString &oldCategoryPath, const QString &parentPath, const TodoModel::ItemType parentType)
+void TodoHelpers::moveCategory(const QString &oldCategoryPath, const QString &parentPath, const Zanshin::ItemType parentType)
 {
-    if (parentType!=TodoModel::Category && parentType!=TodoModel::CategoryRoot) {
+    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
         return;
     }
 
     QString categoryName = oldCategoryPath.split(CategoryManager::pathSeparator()).last();
     QString newCategoryPath;
-    if (parentType==TodoModel::Category) {
+    if (parentType==Zanshin::Category) {
         newCategoryPath = parentPath + CategoryManager::pathSeparator() + categoryName;
     } else {
         newCategoryPath = categoryName;

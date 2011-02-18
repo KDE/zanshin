@@ -43,8 +43,8 @@
 #include <boost/bind.hpp>
 
 #include "kmodelindexproxymapper.h"
+#include "globaldefs.h"
 #include "todohelpers.h"
-#include "todomodel.h"
 #include "todonode.h"
 #include "todonodemanager.h"
 
@@ -59,30 +59,30 @@ TodoTreeModel::~TodoTreeModel()
 
 bool _k_indexLessThan(const QModelIndex &left, const QModelIndex &right)
 {
-    TodoModel::ItemType leftType = (TodoModel::ItemType) left.data(TodoModel::ItemTypeRole).toInt();
-    TodoModel::ItemType rightType = (TodoModel::ItemType) right.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType leftType = (Zanshin::ItemType) left.data(Zanshin::ItemTypeRole).toInt();
+    Zanshin::ItemType rightType = (Zanshin::ItemType) right.data(Zanshin::ItemTypeRole).toInt();
 
     if (leftType!=rightType) {
-        return (leftType==TodoModel::Collection && rightType==TodoModel::ProjectTodo)
-            || (leftType==TodoModel::Collection && rightType==TodoModel::StandardTodo)
-            || (leftType==TodoModel::ProjectTodo && rightType==TodoModel::StandardTodo);
+        return (leftType==Zanshin::Collection && rightType==Zanshin::ProjectTodo)
+            || (leftType==Zanshin::Collection && rightType==Zanshin::StandardTodo)
+            || (leftType==Zanshin::ProjectTodo && rightType==Zanshin::StandardTodo);
     }
 
-    if (leftType==TodoModel::Collection) {
+    if (leftType==Zanshin::Collection) {
         qint64 leftId = left.data(Akonadi::EntityTreeModel::CollectionIdRole).toLongLong();
         qint64 rightId = right.data(Akonadi::EntityTreeModel::CollectionIdRole).toLongLong();
 
         return leftId<rightId;
 
-    } else if (leftType==TodoModel::ProjectTodo) {
-        QStringList leftAncestors = left.data(TodoModel::AncestorsUidRole).toStringList();
-        QStringList rightAncestors = right.data(TodoModel::AncestorsUidRole).toStringList();
+    } else if (leftType==Zanshin::ProjectTodo) {
+        QStringList leftAncestors = left.data(Zanshin::AncestorsUidRole).toStringList();
+        QStringList rightAncestors = right.data(Zanshin::AncestorsUidRole).toStringList();
 
         return leftAncestors.size()<rightAncestors.size();
 
-    } else if (leftType==TodoModel::StandardTodo) {
-        QString leftId = left.data(TodoModel::UidRole).toString();
-        QString rightId = right.data(TodoModel::UidRole).toString();
+    } else if (leftType==Zanshin::StandardTodo) {
+        QString leftId = left.data(Zanshin::UidRole).toString();
+        QString rightId = right.data(Zanshin::UidRole).toString();
         return leftId<rightId;
 
     } else {
@@ -111,24 +111,24 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
     QHash<QString, TodoNode*> uidHash = m_collectionToUidsHash[collectionNode];
 
     foreach (const QModelIndex &sourceChildIndex, sourceChildIndexes) {
-        TodoModel::ItemType type = (TodoModel::ItemType) sourceChildIndex.data(TodoModel::ItemTypeRole).toInt();
+        Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
 
-        if (type==TodoModel::Collection) {
+        if (type==Zanshin::Collection) {
             //kDebug() << "Adding collection";
             addChildNode(sourceChildIndex, collectionNode);
             onSourceInsertRows(sourceChildIndex, 0, sourceModel()->rowCount(sourceChildIndex)-1);
 
         } else {
-            QString parentUid = sourceChildIndex.data(TodoModel::ParentUidRole).toString();
+            QString parentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
             TodoNode *parentNode = 0;
 
             if (uidHash.contains(parentUid)) {
                 parentNode = uidHash[parentUid];
 
             } else {
-                if (type==TodoModel::ProjectTodo) {
+                if (type==Zanshin::ProjectTodo) {
                     parentNode = collectionNode;
-                } else if (type==TodoModel::StandardTodo) {
+                } else if (type==Zanshin::StandardTodo) {
                     parentNode = m_inboxNode;
                 } else {
                     kFatal() << "Shouldn't happen, we must get only collections or todos";
@@ -136,7 +136,7 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
             }
 
             TodoNode *child = addChildNode(sourceChildIndex, parentNode);
-            QString uid = child->data(0, TodoModel::UidRole).toString();
+            QString uid = child->data(0, Zanshin::UidRole).toString();
             //kDebug() << "Adding node:" << uid << parentUid;
             uidHash[uid] = child;
         }
@@ -168,14 +168,14 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
         TodoNode *node = m_manager->nodeForSourceIndex(sourceChildIndex);
 
         // Collections are just reemited
-        if (node->data(0, TodoModel::ItemTypeRole).toInt()==TodoModel::Collection) {
+        if (node->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Collection) {
             emit dataChanged(mapFromSource(sourceChildIndex),
                              mapFromSource(sourceChildIndex));
             continue;
         }
 
-        QString oldParentUid = node->parent()->data(0, TodoModel::UidRole).toString();
-        QString newParentUid = sourceChildIndex.data(TodoModel::ParentUidRole).toString();
+        QString oldParentUid = node->parent()->data(0, Zanshin::UidRole).toString();
+        QString newParentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
 
         // If the parent didn't change we just reemit
         if (oldParentUid==newParentUid) {
@@ -197,7 +197,7 @@ TodoNode *TodoTreeModel::createInbox() const
 
     node->setData(i18n("Inbox"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
-    node->setRowData(TodoModel::Inbox, TodoModel::ItemTypeRole);
+    node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 
     return node;
 }
@@ -225,7 +225,7 @@ void TodoTreeModel::destroyBranch(TodoNode *root)
 
 Qt::ItemFlags TodoTreeModel::flags(const QModelIndex &index) const
 {
-    if (index.data(TodoModel::ItemTypeRole).toInt() == TodoModel::Inbox) {
+    if (index.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Inbox) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
     return sourceModel()->flags(mapToSource(index)) | Qt::ItemIsDropEnabled;
@@ -254,7 +254,7 @@ void TodoTreeModel::createChild(const QModelIndex &child, const QModelIndex &par
 
     onSourceInsertRows(parent, row, row);
 
-    QModelIndexList children = child.data(TodoModel::ChildIndexesRole).value<QModelIndexList>();
+    QModelIndexList children = child.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
     foreach (const QModelIndex &index, children) {
         Q_ASSERT(index.model()==sourceModel());
         createChild(index, child.parent(), index.row());
@@ -271,15 +271,15 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
 
     Akonadi::Collection collection;
-    TodoModel::ItemType parentType = (TodoModel::ItemType)parent.data(TodoModel::ItemTypeRole).toInt();
-    if (parentType == TodoModel::Collection) {
+    Zanshin::ItemType parentType = (Zanshin::ItemType)parent.data(Zanshin::ItemTypeRole).toInt();
+    if (parentType == Zanshin::Collection) {
         collection = parent.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     } else {
         const Akonadi::Item parentItem = parent.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         collection = parentItem.parentCollection();
     }
 
-    QString parentUid = parent.data(TodoModel::UidRole).toString();
+    QString parentUid = parent.data(Zanshin::UidRole).toString();
 
     foreach (const KUrl &url, urls) {
         const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);

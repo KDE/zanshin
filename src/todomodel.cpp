@@ -56,7 +56,7 @@ Qt::ItemFlags TodoModel::flags(const QModelIndex &index) const
     if (index.isValid()) {
         if (index.column()==0) {
             Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
-            if (item.isValid() && itemTypeFromItem(item)==StandardTodo) {
+            if (item.isValid() && itemTypeFromItem(item)==Zanshin::StandardTodo) {
                 flags|= Qt::ItemIsUserCheckable;
             }
         } else if (index.column()==4) {
@@ -132,39 +132,39 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
             return modelIndexForCollection(this, item.parentCollection()).data();
         }
     case Qt::CheckStateRole:
-        if (column==0 && itemTypeFromItem(item)==StandardTodo) {
+        if (column==0 && itemTypeFromItem(item)==Zanshin::StandardTodo) {
             return todoFromItem(item)->isCompleted() ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();
         }
     case Qt::DecorationRole:
-        if (column==0 && itemTypeFromItem(item)==ProjectTodo) {
+        if (column==0 && itemTypeFromItem(item)==Zanshin::ProjectTodo) {
             return KIcon("view-pim-tasks");
         } else if (column==4) {
             return modelIndexForCollection(this, item.parentCollection()).data(Qt::DecorationRole);
         } else {
             return EntityTreeModel::entityData(item, column, role);
         }
-    case UidRole:
+    case Zanshin::UidRole:
         return uidFromItem(item);
-    case ParentUidRole:
+    case Zanshin::ParentUidRole:
         return relatedUidFromItem(item);
-    case AncestorsUidRole:
+    case Zanshin::AncestorsUidRole:
         return ancestorsUidFromItem(item);
-    case ItemTypeRole:
+    case Zanshin::ItemTypeRole:
         return itemTypeFromItem(item);
-    case CategoriesRole:
+    case Zanshin::CategoriesRole:
         return categoriesFromItem(item);
-    case DataTypeRole:
+    case Zanshin::DataTypeRole:
         switch (column) {
             case 1 :
-                return ProjectType;
+                return Zanshin::ProjectType;
             case 2 :
-                return CategoryType;
+                return Zanshin::CategoryType;
             default:
-                return StandardType;
+                return Zanshin::StandardType;
         }
-    case ChildUidsRole:
+    case Zanshin::ChildUidsRole:
         return childUidsFromItem(item);
     default:
         return EntityTreeModel::entityData(item, column, role);
@@ -173,8 +173,8 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
 
 QVariant TodoModel::entityData(const Akonadi::Collection &collection, int column, int role) const
 {
-    if ( role == ItemTypeRole ) {
-        return Collection;
+    if ( role == Zanshin::ItemTypeRole ) {
+        return Zanshin::Collection;
     } else {
         return EntityTreeModel::entityData(collection, column, role);
     }
@@ -183,7 +183,7 @@ QVariant TodoModel::entityData(const Akonadi::Collection &collection, int column
 
 QVariant TodoModel::data(const QModelIndex &index, int role) const
 {
-    if (role==ChildIndexesRole) {
+    if (role==Zanshin::ChildIndexesRole) {
         return QVariant::fromValue(childIndexesFromIndex(index));
     }
     return EntityTreeModel::data(index, role);
@@ -331,16 +331,16 @@ KCalCore::Todo::Ptr TodoModel::todoFromItem(const Akonadi::Item &item) const
     }
 }
 
-TodoModel::ItemType TodoModel::itemTypeFromItem(const Akonadi::Item &item) const
+Zanshin::ItemType TodoModel::itemTypeFromItem(const Akonadi::Item &item) const
 {
     KCalCore::Todo::Ptr todo = todoFromItem(item);
 
     QStringList comments = todo->comments();
     if (comments.contains("X-Zanshin-Project")
      || m_childrenMap[todo->uid()].count()>0) {
-        return ProjectTodo;
+        return Zanshin::ProjectTodo;
     } else {
-        return StandardTodo;
+        return Zanshin::StandardTodo;
     }
 }
 

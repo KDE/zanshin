@@ -33,11 +33,11 @@
 #include "actionlistcompletermodel.h"
 #include "actionlistcombobox.h"
 #include "combomodel.h"
+#include "globaldefs.h"
 #include "kdescendantsproxymodel.h"
 #include "kdateedit.h"
 #include <kmodelindexproxymapper.h>
 #include "modelstack.h"
-#include "todomodel.h"
 
 using namespace KPIM;
 Q_DECLARE_METATYPE(QItemSelectionModel*);
@@ -58,9 +58,9 @@ QSize ActionListDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     QSize res = QStyledItemDelegate::sizeHint(option, index);
 
-    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
 
-    if (type!=TodoModel::StandardTodo) {
+    if (type!=Zanshin::StandardTodo) {
         res.setHeight(24);
     }
 
@@ -71,11 +71,11 @@ void ActionListDelegate::paint(QPainter *painter,
                                const QStyleOptionViewItem &option,
                                const QModelIndex &index) const
 {
-    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
 
     QStyleOptionViewItemV4 opt = option;
 
-    if (type!=TodoModel::StandardTodo) {
+    if (type!=Zanshin::StandardTodo) {
         opt.decorationSize = QSize(22, 22);
         opt.font.setWeight(QFont::Bold);
 
@@ -101,9 +101,9 @@ void ActionListDelegate::paint(QPainter *painter,
 
 KCalCore::Todo::Ptr ActionListDelegate::todoFromIndex(const QModelIndex &index) const
 {
-    TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
 
-    if (type!=TodoModel::StandardTodo) {
+    if (type!=Zanshin::StandardTodo) {
         return KCalCore::Todo::Ptr();
     }
 
@@ -142,9 +142,9 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 {
     if (index.data(Qt::EditRole).type()==QVariant::Date) {
         return new KDateEdit(parent);
-    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
+    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::CategoryType) {
         return createComboBox(m_models->categoriesComboModel(), parent, index, true);
-    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
+    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::ProjectType) {
         return createComboBox(m_models->treeComboModel(), parent, index, false);
     } else {
         return QStyledItemDelegate::createEditor(parent, option, index);
@@ -168,11 +168,11 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         checkable->setSourceModel(model);
         checkable->setSelectionModel(checkModel);
 
-        QStringList categories = selectedIndex.data(TodoModel::CategoriesRole).value<QStringList>();
+        QStringList categories = selectedIndex.data(Zanshin::CategoriesRole).value<QStringList>();
         for (int i = 0; i < model->rowCount(); ++i) {
             QModelIndex index = model->index(i, 0);
             foreach (QString item, categories) {
-                if (index.data(TodoModel::CategoryPathRole).toString() == item) {
+                if (index.data(Zanshin::CategoryPathRole).toString() == item) {
                     checkModel->select(index, QItemSelectionModel::Toggle);
                 }
             }
@@ -216,24 +216,24 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
     if (index.data(Qt::EditRole).type()==QVariant::Date) {
         KDateEdit *dateEdit = static_cast<KDateEdit*>(editor);
         model->setData(index, dateEdit->date());
-    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::CategoryType) {
+    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::CategoryType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         QStringList currentCategories;
         for (int i=0; i < comboBox->model()->rowCount(); ++i) {
             QModelIndex comboIndex = comboBox->model()->index(i, 0);
             if (comboIndex.data(Qt::CheckStateRole).toInt() == Qt::Checked) {
-                currentCategories << comboIndex.data(TodoModel::CategoryPathRole).toString();
+                currentCategories << comboIndex.data(Zanshin::CategoryPathRole).toString();
             }
         }
         model->setData(index, currentCategories);
-    } else if (index.data(TodoModel::DataTypeRole).toInt() == TodoModel::ProjectType) {
+    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::ProjectType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         if (comboBox->currentIndex() == -1) {
             return;
         }
         QModelIndex idx = comboBox->model()->index(comboBox->currentIndex(), 0);
         if (idx.isValid()) {
-            model->setData(index, idx.data(TodoModel::UidRole));
+            model->setData(index, idx.data(Zanshin::UidRole));
         }
     } else {
         QStyledItemDelegate::setModelData(editor, model, index);
@@ -247,9 +247,9 @@ void ActionListDelegate::updateEditorGeometry(QWidget *editor,
     QStyleOptionViewItemV4 opt = option;
 
     if (index.column()==0) {
-        TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+        Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
 
-        if (type == TodoModel::StandardTodo && index.column()==0) {
+        if (type == Zanshin::StandardTodo && index.column()==0) {
             opt.rect.setLeft(opt.rect.left()+32);
         }
     }
@@ -263,9 +263,9 @@ bool ActionListDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     QStyleOptionViewItemV4 opt = option;
 
     if (index.column()==0) {
-        TodoModel::ItemType type = (TodoModel::ItemType)index.data(TodoModel::ItemTypeRole).toInt();
+        Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
 
-        if (type == TodoModel::StandardTodo && index.column()==0) {
+        if (type == Zanshin::StandardTodo && index.column()==0) {
             opt.rect.setLeft(opt.rect.left()+32);
         }
     }

@@ -24,13 +24,47 @@
 #ifndef ZANSHIN_GLOBALDEFS_H
 #define ZANSHIN_GLOBALDEFS_H
 
+#include <KDE/Akonadi/EntityTreeModel>
+#include <QModelIndex>
+
 namespace Zanshin
 {
     enum ApplicationMode {
         ProjectMode = 0,
         CategoriesMode = 1
     };
+
+    enum ItemType
+    {
+        StandardTodo = 0,
+        ProjectTodo,
+        Category,
+        Collection,
+        Inbox,
+        CategoryRoot
+    };
+
+    enum Roles {
+        UidRole = Akonadi::EntityTreeModel::UserRole + 1,
+        ParentUidRole,
+        AncestorsUidRole,
+        CategoriesRole,
+        ItemTypeRole,
+        DataTypeRole,
+        ChildUidsRole,
+        ChildIndexesRole,
+        CategoryPathRole,
+        UserRole = Akonadi::EntityTreeModel::UserRole + 100
+    };
+
+    enum DataType {
+        StandardType = 0,
+        CategoryType,
+        ProjectType
+    };
+
 };
+Q_DECLARE_METATYPE(QModelIndexList)
 
 #endif
 

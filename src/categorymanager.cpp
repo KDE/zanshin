@@ -26,11 +26,12 @@
 #include <QtCore/QAbstractItemModel>
 
 #include <KDE/Akonadi/ItemModifyJob>
+#include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
 #include "kglobal.h"
 
+#include "globaldefs.h"
 #include "todohelpers.h"
-#include "todomodel.h"
 
 K_GLOBAL_STATIC(CategoryManager, s_categoryManager);
 
@@ -105,13 +106,13 @@ void CategoryManager::onSourceInsertRows(const QModelIndex &sourceIndex, int beg
         if (!sourceChildIndex.isValid()) {
             continue;
         }
-        TodoModel::ItemType type = (TodoModel::ItemType) sourceChildIndex.data(TodoModel::ItemTypeRole).toInt();
-        if (type==TodoModel::StandardTodo) {
-            QStringList categories = m_model->data(sourceChildIndex, TodoModel::CategoriesRole).toStringList();
+        Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
+        if (type==Zanshin::StandardTodo) {
+            QStringList categories = m_model->data(sourceChildIndex, Zanshin::CategoriesRole).toStringList();
             foreach (QString category, categories) {
                 addCategory(category);
             }
-        } else if (type==TodoModel::Collection) {
+        } else if (type==Zanshin::Collection) {
             onSourceInsertRows(sourceChildIndex, 0, m_model->rowCount(sourceChildIndex)-1);
         }
     }
@@ -121,7 +122,7 @@ void CategoryManager::onSourceDataChanged(const QModelIndex &begin, const QModel
 {
     for (int row=begin.row(); row<=end.row(); ++row) {
         QModelIndex sourceIndex = begin.sibling(row, 0);
-        QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(TodoModel::CategoriesRole).toStringList());
+        QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(Zanshin::CategoriesRole).toStringList());
 
         QSet<QString> oldCategories = QSet<QString>::fromList(m_categories);
         QSet<QString> interCategories = newCategories;
@@ -216,7 +217,7 @@ void CategoryManager::moveCategory(const QString &oldCategoryPath, const QString
     removeCategory(oldCategoryPath);
 }
 
-bool CategoryManager::moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const TodoModel::ItemType parentType)
+bool CategoryManager::moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType)
 {
     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
@@ -224,7 +225,7 @@ bool CategoryManager::moveTodoToCategory(const QModelIndex &index, const QString
         return false;
     }
     QStringList categories;
-    if (parentType != TodoModel::Inbox && parentType != TodoModel::CategoryRoot) {
+    if (parentType != Zanshin::Inbox && parentType != Zanshin::CategoryRoot) {
         categories= todo->categories();
         if (!categories.contains(categoryPath)) {
             categories << categoryPath;

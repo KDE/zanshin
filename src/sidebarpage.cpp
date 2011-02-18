@@ -31,8 +31,8 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
 
+#include "globaldefs.h"
 #include "todohelpers.h"
-#include "todomodel.h"
 #include "todotreeview.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
@@ -75,18 +75,18 @@ QItemSelectionModel *SideBarPage::selectionModel() const
 void SideBarPage::addNewItem()
 {
     QModelIndex parentItem = selectionModel()->currentIndex();
-    TodoModel::ItemType type = (TodoModel::ItemType) parentItem.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType type = (Zanshin::ItemType) parentItem.data(Zanshin::ItemTypeRole).toInt();
 
     QString title;
     QString text;
 
-    if (type==TodoModel::Collection
-     || type==TodoModel::ProjectTodo) {
+    if (type==Zanshin::Collection
+     || type==Zanshin::ProjectTodo) {
         title = i18n("New Project");
         text = i18n("Enter project name:");
 
-    } else if (type==TodoModel::CategoryRoot
-            || type==TodoModel::Category) {
+    } else if (type==Zanshin::CategoryRoot
+            || type==Zanshin::Category) {
         title = i18n("New Category");
         text = i18n("Enter category name:");
 
@@ -103,18 +103,18 @@ void SideBarPage::addNewItem()
     if (!ok || summary.isEmpty()) return;
 
 
-    if (type==TodoModel::Collection) {
+    if (type==Zanshin::Collection) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
         TodoHelpers::addProject(summary, collection);
 
-    } else if (type==TodoModel::ProjectTodo) {
+    } else if (type==Zanshin::ProjectTodo) {
         Akonadi::Item parentProject = parentItem.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         TodoHelpers::addProject(summary, parentProject);
 
-    } else if (type==TodoModel::CategoryRoot) {
+    } else if (type==Zanshin::CategoryRoot) {
         TodoHelpers::addCategory(summary);
-    } else if (type==TodoModel::Category) {
-        TodoHelpers::addCategory(summary, parentItem.data(TodoModel::CategoryPathRole).toString());
+    } else if (type==Zanshin::Category) {
+        TodoHelpers::addCategory(summary, parentItem.data(Zanshin::CategoryPathRole).toString());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
@@ -123,13 +123,13 @@ void SideBarPage::addNewItem()
 void SideBarPage::removeCurrentItem()
 {
     QModelIndex current = selectionModel()->currentIndex();
-    TodoModel::ItemType type = (TodoModel::ItemType) current.data(TodoModel::ItemTypeRole).toInt();
+    Zanshin::ItemType type = (Zanshin::ItemType) current.data(Zanshin::ItemTypeRole).toInt();
 
-    if (type==TodoModel::ProjectTodo) {
+    if (type==Zanshin::ProjectTodo) {
         if (TodoHelpers::removeProject(this, current)) {
             m_treeView->setCurrentIndex(current.parent());
         }
-    } else if (type==TodoModel::Category) {
+    } else if (type==Zanshin::Category) {
         if (TodoHelpers::removeCategory(this, current)) {
             m_treeView->setCurrentIndex(current.parent());
         }

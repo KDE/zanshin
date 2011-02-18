@@ -29,42 +29,14 @@
 
 #include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/KCalCore/Todo>
+#include "globaldefs.h"
 
 class TodoModel : public Akonadi::EntityTreeModel
 {
     Q_OBJECT
-    Q_ENUMS(ItemType Roles)
+    Q_ENUMS(Zanshin::ItemType Roles)
 
 public:
-    enum ItemType
-    {
-        StandardTodo = 0,
-        ProjectTodo,
-        Category,
-        Collection,
-        Inbox,
-        CategoryRoot
-    };
-
-    enum Roles {
-        UidRole = Akonadi::EntityTreeModel::UserRole + 1,
-        ParentUidRole,
-        AncestorsUidRole,
-        CategoriesRole,
-        ItemTypeRole,
-        DataTypeRole,
-        ChildUidsRole,
-        ChildIndexesRole,
-        CategoryPathRole,
-        UserRole = Akonadi::EntityTreeModel::UserRole + 100
-    };
-
-    enum DataType {
-        StandardType = 0,
-        CategoryType,
-        ProjectType
-    };
-
     TodoModel(Akonadi::ChangeRecorder *monitor, QObject *parent = 0);
     virtual ~TodoModel();
 
@@ -89,7 +61,7 @@ private:
     KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
     KCalCore::Todo::Ptr todoFromItem(const Akonadi::Item &item) const;
 
-    ItemType itemTypeFromItem(const Akonadi::Item &item) const;
+    Zanshin::ItemType itemTypeFromItem(const Akonadi::Item &item) const;
     QString uidFromItem(const Akonadi::Item &item) const;
     QString relatedUidFromItem(const Akonadi::Item &item) const;
     QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
@@ -101,8 +73,6 @@ private:
     QHash<QString, QString> m_parentMap;
     QHash<QString, QStringList> m_childrenMap;
 };
-
-Q_DECLARE_METATYPE(QModelIndexList)
 
 #endif
 

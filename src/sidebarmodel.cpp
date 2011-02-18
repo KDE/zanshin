@@ -29,7 +29,7 @@
 #include <KDebug>
 #include <KIcon>
 
-#include "todomodel.h"
+#include "globaldefs.h"
 
 SideBarModel::SideBarModel(QObject *parent)
     : QSortFilterProxyModel(parent)
@@ -43,10 +43,10 @@ SideBarModel::~SideBarModel()
 
 bool SideBarModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    if (left.data(TodoModel::ItemTypeRole).toInt()==TodoModel::Inbox) {
+    if (left.data(Zanshin::ItemTypeRole).toInt()==Zanshin::Inbox) {
         return true;
 
-    } else if (right.data(TodoModel::ItemTypeRole).toInt()==TodoModel::Inbox) {
+    } else if (right.data(Zanshin::ItemTypeRole).toInt()==Zanshin::Inbox) {
         return false;
 
     } else {
@@ -62,7 +62,7 @@ bool SideBarModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &/*so
 bool SideBarModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
-    return sourceChild.data(TodoModel::ItemTypeRole).toInt()!=TodoModel::StandardTodo;
+    return sourceChild.data(Zanshin::ItemTypeRole).toInt()!=Zanshin::StandardTodo;
 }
 
 bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)

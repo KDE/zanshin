@@ -27,7 +27,6 @@
 #include <KDE/KDialog>
 
 #include "globaldefs.h"
-#include "todomodel.h"
 
 class QAbstractItemModel;
 class QTreeView;
@@ -50,7 +49,7 @@ public:
     QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action);
 
     QString selectedId() const;
-    TodoModel::ItemType selectedType() const;
+    Zanshin::ItemType selectedType() const;
     Akonadi::Collection collection() const;
     QModelIndex selectedIndex() const;
 

@@ -47,10 +47,10 @@
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
 #include "categorymanager.h"
+#include "globaldefs.h"
 #include "modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
-#include "todomodel.h"
 #if 0
 #include "quickselectdialog.h"
 #endif
@@ -139,13 +139,13 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
 
 void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
 {
-    int type = index.data(TodoModel::ItemTypeRole).toInt();
+    int type = index.data(Zanshin::ItemTypeRole).toInt();
 
-    m_comboBox->setVisible(type == TodoModel::Inbox
-                        || type == TodoModel::Category
-                        || type == TodoModel::CategoryRoot);
+    m_comboBox->setVisible(type == Zanshin::Inbox
+                        || type == Zanshin::Category
+                        || type == Zanshin::CategoryRoot);
 
-    currentPage()->setCollectionColumnHidden(type!=TodoModel::Inbox);
+    currentPage()->setCollectionColumnHidden(type!=Zanshin::Inbox);
 }
 
 void ActionListEditor::onComboBoxChanged()
@@ -193,16 +193,16 @@ void ActionListEditor::setupActions(KActionCollection *ac)
 
 void ActionListEditor::updateActions(const QModelIndex &index)
 {
-    int type = index.data(TodoModel::ItemTypeRole).toInt();
+    int type = index.data(Zanshin::ItemTypeRole).toInt();
 
     m_remove->setEnabled(index.isValid()
-                     && ((type==TodoModel::StandardTodo)
-                       || type==TodoModel::ProjectTodo
-                       || type==TodoModel::Category));
+                     && ((type==Zanshin::StandardTodo)
+                       || type==Zanshin::ProjectTodo
+                       || type==Zanshin::Category));
     m_move->setEnabled(index.isValid()
-                   && (type==TodoModel::StandardTodo
-                    || type==TodoModel::Category
-                    || type==TodoModel::ProjectTodo));
+                   && (type==Zanshin::StandardTodo
+                    || type==Zanshin::Category
+                    || type==Zanshin::ProjectTodo));
 }
 
 void ActionListEditor::onAddActionRequested()
@@ -221,11 +221,11 @@ void ActionListEditor::onRemoveAction()
         return;
     }
 
-    int type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
+    int type = currentIndex.data(Zanshin::ItemTypeRole).toInt();
     QModelIndex current;
     QModelIndex mapperIndex;
 
-    if (type==TodoModel::ProjectTodo) {
+    if (type==Zanshin::ProjectTodo) {
         current = m_projectSelection->currentIndex();
     } else {
         current = m_categoriesSelection->currentIndex();
@@ -236,13 +236,13 @@ void ActionListEditor::onRemoveAction()
         mapperIndex = mapper.mapRightToLeft(currentIndex);
     }
 
-    if (type==TodoModel::ProjectTodo) {
+    if (type==Zanshin::ProjectTodo) {
         if (TodoHelpers::removeProject(this, currentIndex)) {
-            if (type==TodoModel::ProjectTodo && current==mapperIndex) {
+            if (type==Zanshin::ProjectTodo && current==mapperIndex) {
                 m_projectSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
             }
         }
-    } else if (type==TodoModel::Category) {
+    } else if (type==Zanshin::Category) {
         if (TodoHelpers::removeCategory(this, currentIndex)) {
             m_categoriesSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
         }
@@ -282,20 +282,20 @@ void ActionListEditor::onMoveAction()
         QModelIndex index = dlg.selectedIndex();
         if (currentPage()->mode()==Zanshin::ProjectMode) {
             TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
-            if (dlg.selectedType()==TodoModel::ProjectTodo && currentSelection==mapperIndex) {
+            if (dlg.selectedType()==Zanshin::ProjectTodo && currentSelection==mapperIndex) {
                 m_projectSelection->setCurrentIndex(index, QItemSelectionModel::Select);
             } else {
                 currentPage()->selectSiblingIndex(current);
             }
         } else {
-            int type = current.data(TodoModel::ItemTypeRole).toInt();
-            QString categoryPath = current.data(TodoModel::CategoryPathRole).toString();
-            if (type==TodoModel::Category) {
+            int type = current.data(Zanshin::ItemTypeRole).toInt();
+            QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
+            if (type==Zanshin::Category) {
                 TodoHelpers::moveCategory(categoryPath, selectedId, dlg.selectedType());
             } else {
                 TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
             }
-            if (dlg.selectedType()==TodoModel::Category && currentSelection==mapperIndex) {
+            if (dlg.selectedType()==Zanshin::Category && currentSelection==mapperIndex) {
                 m_categoriesSelection->setCurrentIndex(index, QItemSelectionModel::Select);
             } else {
                 currentPage()->selectSiblingIndex(current);

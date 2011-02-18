@@ -27,8 +27,6 @@
 
 #include <QtGui/QSortFilterProxyModel>
 
-#include "todomodel.h"
-
 class ComboModel : public QSortFilterProxyModel
 {
     Q_OBJECT

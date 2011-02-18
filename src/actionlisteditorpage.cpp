@@ -37,7 +37,7 @@
 #include <QtGui/QVBoxLayout>
 
 #include "actionlistdelegate.h"
-#include "todomodel.h"
+#include "globaldefs.h"
 #include "todotreeview.h"
 #include "todohelpers.h"
 
@@ -55,24 +55,24 @@ public:
         if (role!=Qt::DisplayRole || index.column()!=0) {
             return QSortFilterProxyModel::data(index, role);
         } else {
-            int type = index.data(TodoModel::ItemTypeRole).toInt();
+            int type = index.data(Zanshin::ItemTypeRole).toInt();
 
-            if (type!=TodoModel::ProjectTodo
-             && type!=TodoModel::Category) {
+            if (type!=Zanshin::ProjectTodo
+             && type!=Zanshin::Category) {
                 return QSortFilterProxyModel::data(index, role);
 
             } else {
                 QString display = QSortFilterProxyModel::data(index, role).toString();
 
                 QModelIndex currentIndex = mapToSource(index.parent());
-                type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
+                type = currentIndex.data(Zanshin::ItemTypeRole).toInt();
 
-                while (type==TodoModel::ProjectTodo
-                    || type==TodoModel::Category) {
+                while (type==Zanshin::ProjectTodo
+                    || type==Zanshin::Category) {
                     display = currentIndex.data().toString() + ": " + display;
 
                     currentIndex = currentIndex.parent();
-                    type = currentIndex.data(TodoModel::ItemTypeRole).toInt();
+                    type = currentIndex.data(Zanshin::ItemTypeRole).toInt();
                 }
 
                 return display;
@@ -93,14 +93,14 @@ public:
 
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const
     {
-        int leftType = left.data(TodoModel::ItemTypeRole).toInt();
-        int rightType = right.data(TodoModel::ItemTypeRole).toInt();
+        int leftType = left.data(Zanshin::ItemTypeRole).toInt();
+        int rightType = right.data(Zanshin::ItemTypeRole).toInt();
 
-        return leftType==TodoModel::Inbox
-            || (leftType==TodoModel::CategoryRoot && rightType!=TodoModel::Inbox)
-            || (leftType==TodoModel::Collection && rightType!=TodoModel::Inbox)
-            || (leftType==TodoModel::StandardTodo && rightType!=TodoModel::StandardTodo)
-            || (leftType==TodoModel::ProjectTodo && rightType==TodoModel::Collection)
+        return leftType==Zanshin::Inbox
+            || (leftType==Zanshin::CategoryRoot && rightType!=Zanshin::Inbox)
+            || (leftType==Zanshin::Collection && rightType!=Zanshin::Inbox)
+            || (leftType==Zanshin::StandardTodo && rightType!=Zanshin::StandardTodo)
+            || (leftType==Zanshin::ProjectTodo && rightType==Zanshin::Collection)
             || (leftType == rightType && QSortFilterProxyModel::lessThan(left, right));
     }
 };
@@ -118,12 +118,12 @@ public:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
     {
         QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
-        int type = sourceChild.data(TodoModel::ItemTypeRole).toInt();
+        int type = sourceChild.data(Zanshin::ItemTypeRole).toInt();
 
         QSize sizeHint = sourceChild.data(Qt::SizeHintRole).toSize();
 
-        return type!=TodoModel::Collection
-            && type!=TodoModel::CategoryRoot
+        return type!=Zanshin::Collection
+            && type!=Zanshin::CategoryRoot
             && !sizeHint.isNull(); // SelectionProxyModel uses the null size for items we shouldn't display
     }
 
@@ -289,11 +289,11 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
         return;
     }
 
-    int type = current.data(TodoModel::ItemTypeRole).toInt();
+    int type = current.data(Zanshin::ItemTypeRole).toInt();
 
-    while (current.isValid() && type==TodoModel::StandardTodo) {
+    while (current.isValid() && type==Zanshin::StandardTodo) {
         current = current.sibling(current.row()-1, current.column());
-        type = current.data(TodoModel::ItemTypeRole).toInt();
+        type = current.data(Zanshin::ItemTypeRole).toInt();
     }
 
     Akonadi::Collection collection;
@@ -301,24 +301,24 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
     QString category;
 
     switch (type) {
-    case TodoModel::StandardTodo:
+    case Zanshin::StandardTodo:
         kFatal() << "Can't possibly happen!";
         break;
 
-    case TodoModel::ProjectTodo:
-        parentUid = current.data(TodoModel::UidRole).toString();
+    case Zanshin::ProjectTodo:
+        parentUid = current.data(Zanshin::UidRole).toString();
         collection = current.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
         break;
 
-    case TodoModel::Collection:
+    case Zanshin::Collection:
         collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
         break;
 
-    case TodoModel::Category:
+    case Zanshin::Category:
         category = current.data(Qt::EditRole).toString();
         // fallthrough
-    case TodoModel::Inbox:
-    case TodoModel::CategoryRoot:
+    case Zanshin::Inbox:
+    case Zanshin::CategoryRoot:
         collection = m_defaultCollection;
         break;
     }
@@ -342,21 +342,21 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
 void ActionListEditorPage::removeCurrentTodo()
 {
     QModelIndex current = m_treeView->selectionModel()->currentIndex();
-    int type = current.data(TodoModel::ItemTypeRole).toInt();
+    int type = current.data(Zanshin::ItemTypeRole).toInt();
 
-    if (!current.isValid() || type!=TodoModel::StandardTodo) {
+    if (!current.isValid() || type!=Zanshin::StandardTodo) {
         return;
     }
 
     if (m_mode==Zanshin::ProjectMode) {
         TodoHelpers::removeProject(this, current);
     } else {
-        QStringList categories = current.data(TodoModel::CategoriesRole).toStringList();
+        QStringList categories = current.data(Zanshin::CategoriesRole).toStringList();
         for (int i=current.row(); i>=0; --i) {
             QModelIndex index = m_treeView->model()->index(i, 0);
-            int type = index.data(TodoModel::ItemTypeRole).toInt();
-            if (type==TodoModel::Category) {
-                QString category = index.data(TodoModel::CategoryPathRole).toString();
+            int type = index.data(Zanshin::ItemTypeRole).toInt();
+            if (type==Zanshin::Category) {
+                QString category = index.data(Zanshin::CategoryPathRole).toString();
                 if (TodoHelpers::removeTodoFromCategory(current, category))
                     break;
             }
