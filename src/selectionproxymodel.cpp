@@ -32,31 +32,66 @@
 
 class TodoModel;
 
-SelectionProxyModel::SelectionProxyModel(QItemSelectionModel *selectionModel, QObject *parent)
+SelectionProxyModel::SelectionProxyModel(QObject *parent)
     : KRecursiveFilterProxyModel(parent),
-      m_selectionModel(selectionModel)
+      m_selectionModel(0)
 {
     setDynamicSortFilter(true);
-    connect(selectionModel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
-            this, SLOT(onSelectionChanged(QItemSelection, QItemSelection)));
 }
 
 SelectionProxyModel::~SelectionProxyModel()
 {
 }
 
+void SelectionProxyModel::setSelectionModel(QItemSelectionModel *selectionModel)
+{
+    if (m_selectionModel == selectionModel) {
+        return;
+    }
+
+    if (m_selectionModel) {
+        disconnect(m_selectionModel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)));
+    }
+
+    m_selectionModel = selectionModel;
+
+    if (selectionModel) {
+        connect(selectionModel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+                this, SLOT(onSelectionChanged(QItemSelection, QItemSelection)));
+    }
+
+    initializeSelection();
+    invalidate();
+}
+
 void SelectionProxyModel::setSourceModel(QAbstractItemModel *model)
 {
+    if (model == sourceModel()) {
+        return;
+    }
+    KRecursiveFilterProxyModel::setSourceModel(model);
+    initializeSelection();
+}
+
+void SelectionProxyModel::initializeSelection()
+{
+    m_selectionChain.clear();
+    m_sourceChain.clear();
+    m_selectedRows.clear();
+    m_sourceSelectedRows.clear();
+
+    if (!m_selectionModel || !sourceModel()) {
+        return;
+    }
+
     QList<QAbstractItemModel*> selectionStack = buildModelStack(const_cast<QAbstractItemModel*>(m_selectionModel->model()));
-    QList<QAbstractItemModel*> sourceStack = buildModelStack(model);
+    QList<QAbstractItemModel*> sourceStack = buildModelStack(sourceModel());
     QAbstractItemModel *commonModel = findCommonModel(selectionStack, sourceStack);
 
     Q_ASSERT(commonModel!=0);
 
     m_selectionChain = createProxyChain(selectionStack, commonModel, false);
     m_sourceChain = createProxyChain(sourceStack, commonModel, true);
-
-    KRecursiveFilterProxyModel::setSourceModel(model);
 
     onSelectionChanged(QItemSelection(), QItemSelection());
 }
@@ -93,7 +128,7 @@ bool SelectionProxyModel::acceptRow(int sourceRow, const QModelIndex &sourcePare
     return false;
 }
 
-void SelectionProxyModel::onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+void SelectionProxyModel::onSelectionChanged(const QItemSelection &/*selected*/, const QItemSelection &deselected)
 {
 #if QT_VERSION < 0x040800
     // The QItemSelectionModel sometimes doesn't remove deselected items from its selection

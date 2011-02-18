@@ -33,9 +33,10 @@ class SelectionProxyModel : public KRecursiveFilterProxyModel
     Q_OBJECT
 
 public:
-    SelectionProxyModel(QItemSelectionModel *selectionModel, QObject *parent = 0);
+    SelectionProxyModel(QObject *parent = 0);
     virtual ~SelectionProxyModel();
 
+    void setSelectionModel(QItemSelectionModel *selectionModel);
     virtual void setSourceModel(QAbstractItemModel *model);
 
     QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const;
@@ -53,6 +54,7 @@ private:
                                         const QList<QAbstractItemModel*> &rightStack) const;
     QList<QAbstractProxyModel*> createProxyChain(const QList<QAbstractItemModel*> &modelStack,
                                                 QAbstractItemModel *commonModel, bool isBackward);
+    void initializeSelection();
 
     QItemSelectionModel *m_selectionModel;
 

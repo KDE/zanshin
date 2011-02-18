@@ -15,5 +15,6 @@ ENDMACRO(ZANSHIN_UNIT_TESTS)
 
 ZANSHIN_UNIT_TESTS(
   modelstacktest
+  selectionproxymodeltest
 )
 

@@ -76,8 +76,10 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
 
-    createPage(models->treeSelectionModel(projectSelection), models, Zanshin::ProjectMode);
-    createPage(models->categoriesSelectionModel(categoriesSelection), models, Zanshin::CategoriesMode);
+    models->setItemTreeSelectionModel(projectSelection);
+    models->setItemCategorySelectionModel(categoriesSelection);
+    createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode);
+    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode);
 
     QWidget *bottomBar = new QWidget(this);
     layout()->addWidget(bottomBar);

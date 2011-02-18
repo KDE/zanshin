@@ -54,8 +54,11 @@ private slots:
         QItemSelectionModel selectionModel1(stack.baseModel());
         QItemSelectionModel selectionModel2(stack.baseModel());
 
-        QVERIFY(stack.treeSelectionModel(&selectionModel1)!=0);
-        QVERIFY(stack.categoriesSelectionModel(&selectionModel2)!=0);
+        stack.setItemTreeSelectionModel(&selectionModel1);
+        stack.setItemCategorySelectionModel(&selectionModel2);
+
+        QVERIFY(stack.treeSelectionModel()!=0);
+        QVERIFY(stack.categoriesSelectionModel()!=0);
 
         QVERIFY(stack.treeSelectionModel()!=0);
         QVERIFY(stack.categoriesSelectionModel()!=0);
@@ -69,17 +72,19 @@ private slots:
         ModelStack stack;
 
         QItemSelectionModel selectionModel(stack.baseModel());
+        stack.setItemTreeSelectionModel(&selectionModel);
+        stack.setItemCategorySelectionModel(&selectionModel);
 
         QList<QAbstractItemModel*> models;
         models << stack.baseModel()
                << stack.collectionsModel()
                << stack.treeModel()
                << stack.treeSideBarModel()
-               << stack.treeSelectionModel(&selectionModel)
+               << stack.treeSelectionModel()
                << stack.treeComboModel()
                << stack.categoriesModel()
                << stack.categoriesSideBarModel()
-               << stack.categoriesSelectionModel(&selectionModel)
+               << stack.categoriesSelectionModel()
                << stack.categoriesComboModel();
 
         for (int i=0; i<3; i++) {

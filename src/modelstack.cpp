@@ -51,7 +51,9 @@ ModelStack::ModelStack(QObject *parent)
       m_categoriesModel(0),
       m_categoriesSideBarModel(0),
       m_categoriesSelectionModel(0),
-      m_categoriesComboModel(0)
+      m_categoriesComboModel(0),
+      m_treeSelection(0),
+      m_categorySelection(0)
 {
 }
 
@@ -110,12 +112,11 @@ QAbstractItemModel *ModelStack::treeSideBarModel()
     return m_treeSideBarModel;
 }
 
-QAbstractItemModel *ModelStack::treeSelectionModel(QItemSelectionModel *selection)
+QAbstractItemModel *ModelStack::treeSelectionModel()
 {
-    Q_ASSERT( (m_treeSelectionModel!=0 && selection==0)
-           || (m_treeSelectionModel==0 && selection!=0) );
     if (!m_treeSelectionModel) {
-        SelectionProxyModel *treeSelectionModel = new SelectionProxyModel(selection, this);
+        SelectionProxyModel *treeSelectionModel = new SelectionProxyModel(this);
+        treeSelectionModel->setSelectionModel(m_treeSelection);
         treeSelectionModel->setSourceModel(treeModel());
         m_treeSelectionModel = treeSelectionModel;
     }
@@ -158,12 +159,11 @@ QAbstractItemModel *ModelStack::categoriesSideBarModel()
     return m_categoriesSideBarModel;
 }
 
-QAbstractItemModel *ModelStack::categoriesSelectionModel(QItemSelectionModel *selection)
+QAbstractItemModel *ModelStack::categoriesSelectionModel()
 {
-    Q_ASSERT( (m_categoriesSelectionModel!=0 && selection==0)
-           || (m_categoriesSelectionModel==0 && selection!=0) );
     if (!m_categoriesSelectionModel) {
-        SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(selection, this);
+        SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
+        categoriesSelectionModel->setSelectionModel(m_categorySelection);
         categoriesSelectionModel->setSourceModel(categoriesModel());
         m_categoriesSelectionModel = categoriesSelectionModel;
     }
@@ -183,4 +183,20 @@ QAbstractItemModel *ModelStack::categoriesComboModel()
         m_categoriesComboModel = categoriesComboModel;
     }
     return m_categoriesComboModel;
+}
+
+void ModelStack::setItemTreeSelectionModel(QItemSelectionModel *selection)
+{
+    m_treeSelection = selection;
+    if (m_treeSelectionModel) {
+        static_cast<SelectionProxyModel*>(m_treeSelectionModel)->setSelectionModel(m_treeSelection);
+    }
+}
+
+void ModelStack::setItemCategorySelectionModel(QItemSelectionModel *selection)
+{
+    m_categorySelection = selection;
+    if (m_categoriesSelectionModel) {
+        static_cast<SelectionProxyModel*>(m_categoriesSelectionModel)->setSelectionModel(m_categorySelection);
+    }
 }
