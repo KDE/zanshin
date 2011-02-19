@@ -51,20 +51,7 @@ TodoModel::~TodoModel()
 
 Qt::ItemFlags TodoModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags flags = Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsEditable;
-
-    if (index.isValid()) {
-        if (index.column()==0) {
-            Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
-            if (item.isValid() && itemTypeFromItem(item)==Zanshin::StandardTodo) {
-                flags|= Qt::ItemIsUserCheckable;
-            }
-        } else if (index.column()==4) {
-            flags&= ~Qt::ItemIsEditable;
-        }
-    }
-
-    return flags;
+    return Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsEditable;
 }
 
 int TodoModel::entityColumnCount(HeaderGroup headerGroup) const
@@ -131,41 +118,12 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
         case 4:
             return modelIndexForCollection(this, item.parentCollection()).data();
         }
-    case Qt::CheckStateRole:
-        if (column==0 && itemTypeFromItem(item)==Zanshin::StandardTodo) {
-            return todoFromItem(item)->isCompleted() ? Qt::Checked : Qt::Unchecked;
-        } else {
-            return QVariant();
-        }
     case Qt::DecorationRole:
-        if (column==0 && itemTypeFromItem(item)==Zanshin::ProjectTodo) {
-            return KIcon("view-pim-tasks");
-        } else if (column==4) {
+        if (column==4) {
             return modelIndexForCollection(this, item.parentCollection()).data(Qt::DecorationRole);
         } else {
             return EntityTreeModel::entityData(item, column, role);
         }
-    case Zanshin::UidRole:
-        return uidFromItem(item);
-    case Zanshin::ParentUidRole:
-        return relatedUidFromItem(item);
-    case Zanshin::AncestorsUidRole:
-        return ancestorsUidFromItem(item);
-    case Zanshin::ItemTypeRole:
-        return itemTypeFromItem(item);
-    case Zanshin::CategoriesRole:
-        return categoriesFromItem(item);
-    case Zanshin::DataTypeRole:
-        switch (column) {
-            case 1 :
-                return Zanshin::ProjectType;
-            case 2 :
-                return Zanshin::CategoryType;
-            default:
-                return Zanshin::StandardType;
-        }
-    case Zanshin::ChildUidsRole:
-        return childUidsFromItem(item);
     default:
         return EntityTreeModel::entityData(item, column, role);
     }
@@ -180,14 +138,6 @@ QVariant TodoModel::entityData(const Akonadi::Collection &collection, int column
     }
 }
 
-
-QVariant TodoModel::data(const QModelIndex &index, int role) const
-{
-    if (role==Zanshin::ChildIndexesRole) {
-        return QVariant::fromValue(childIndexesFromIndex(index));
-    }
-    return EntityTreeModel::data(index, role);
-}
 
 bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -257,15 +207,6 @@ void TodoModel::onSourceInsertRows(const QModelIndex &parent, int begin, int end
         QString uid = todo->uid();
 
         m_summaryMap[uid] = todo->summary();
-
-        QString relatedUid = todo->relatedTo();
-
-        if (relatedUid.isEmpty()) {
-            continue;
-        }
-
-        m_parentMap[uid] = relatedUid;
-        m_childrenMap[relatedUid] << uid;
     }
 }
 
@@ -282,11 +223,6 @@ void TodoModel::onSourceRemoveRows(const QModelIndex &parent, int begin, int end
         QString uid = todo->uid();
 
         m_summaryMap.remove(uid);
-
-        QString relatedUid = todo->relatedTo();
-
-        m_parentMap.remove(uid);
-        m_childrenMap[relatedUid].removeAll(uid);
     }
 }
 
@@ -303,15 +239,6 @@ void TodoModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex 
             QString uid = todo->uid();
 
             m_summaryMap[uid] = todo->summary();
-
-            QString newRelatedUid = todo->relatedTo();
-            QString oldRelatedUid = m_parentMap[uid];
-
-            if (newRelatedUid!=oldRelatedUid) {
-                m_parentMap[uid] = newRelatedUid;
-                m_childrenMap[newRelatedUid] << uid;
-                m_childrenMap[oldRelatedUid].removeAll(uid);
-            }
         }
     }
 }
@@ -329,98 +256,6 @@ KCalCore::Todo::Ptr TodoModel::todoFromItem(const Akonadi::Item &item) const
     } else {
         return item.payload<KCalCore::Todo::Ptr>();
     }
-}
-
-Zanshin::ItemType TodoModel::itemTypeFromItem(const Akonadi::Item &item) const
-{
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-
-    QStringList comments = todo->comments();
-    if (comments.contains("X-Zanshin-Project")
-     || m_childrenMap[todo->uid()].count()>0) {
-        return Zanshin::ProjectTodo;
-    } else {
-        return Zanshin::StandardTodo;
-    }
-}
-
-QString TodoModel::uidFromItem(const Akonadi::Item &item) const
-{
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        return todo->uid();
-    } else {
-        return QString();
-    }
-}
-
-QString TodoModel::relatedUidFromItem(const Akonadi::Item &item) const
-{
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        return todo->relatedTo();
-    } else {
-        return QString();
-    }
-}
-
-QStringList TodoModel::ancestorsUidFromItem(const Akonadi::Item &item) const
-{
-    QStringList result;
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-
-    if (todo) {
-        QString id = todo->uid();
-        while (m_parentMap.contains(id)) {
-            const QString parentId = m_parentMap[id];
-            Q_ASSERT(!parentId.isEmpty());
-            result << parentId;
-            id = parentId;
-        }
-    }
-
-    return result;
-}
-
-QStringList TodoModel::categoriesFromItem(const Akonadi::Item &item) const
-{
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        return todo->categories();
-    } else {
-        return QStringList();
-    }
-}
-
-QStringList TodoModel::childUidsFromItem(const Akonadi::Item &item) const
-{
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        return m_childrenMap[todo->uid()];
-    } else {
-        return QStringList();
-    }
-}
-
-QModelIndexList TodoModel::childIndexesFromIndex(const QModelIndex &idx) const
-{
-    QModelIndexList indexes;
-    KCalCore::Todo::Ptr todo = todoFromIndex(idx);
-    if (!todo) {
-        return indexes;
-    }
-    QString parent = todo->uid();
-    for (int i = 0; i < rowCount(idx.parent()); ++i) {
-        QModelIndex child = index(i, idx.column(), idx.parent());
-        todo = todoFromIndex(child);
-        if (!todo) {
-            continue;
-        }
-        if (m_parentMap[todo->uid()] == parent) {
-            indexes << child;
-        }
-    }
-    return indexes;
 }
 
 Qt::DropActions TodoModel::supportedDropActions() const

@@ -35,6 +35,7 @@
 #include "sidebarmodel.h"
 #include "selectionproxymodel.h"
 #include "todocategoriesmodel.h"
+#include "todometadatamodel.h"
 #include "todomodel.h"
 #include "todotreemodel.h"
 
@@ -76,7 +77,10 @@ QAbstractItemModel *ModelStack::baseModel()
         changeRecorder->setItemFetchScope(itemScope);
         changeRecorder->setSession(session);
 
-        m_baseModel = new TodoModel(changeRecorder, this);
+        TodoModel *todomodel = new TodoModel(changeRecorder, this);
+        TodoMetadataModel *metadataModel = new TodoMetadataModel(this);
+        metadataModel->setSourceModel(todomodel);
+        m_baseModel = metadataModel;
     }
     return m_baseModel;
 }

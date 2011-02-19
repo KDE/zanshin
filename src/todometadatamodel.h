@@ -1,7 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
-   Copyright 2008, 2009 Mario Bensi <nef@ipsquad.net>
+   Copyright 2008-2011 Mario Bensi <nef@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,34 +21,31 @@
    USA.
 */
 
-#ifndef ZANSHIN_TODOMODEL_H
-#define ZANSHIN_TODOMODEL_H
+#ifndef ZANSHIN_TODOMETADATAMODEL_H
+#define ZANSHIN_TODOMETADATAMODEL_H
 
 #include <QtGui/QSortFilterProxyModel>
 
-#include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/KCalCore/Todo>
+
 #include "globaldefs.h"
 
-class TodoModel : public Akonadi::EntityTreeModel
+namespace Akonadi
+{
+    class Item;
+}
+
+class TodoMetadataModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_ENUMS(Zanshin::ItemType Roles)
 
 public:
-    TodoModel(Akonadi::ChangeRecorder *monitor, QObject *parent = 0);
-    virtual ~TodoModel();
+    TodoMetadataModel(QObject *parent = 0);
+    virtual ~TodoMetadataModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    virtual int entityColumnCount(HeaderGroup headerGroup) const;
-    virtual QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const;
-    virtual QVariant entityData(const Akonadi::Item &item, int column, int role) const;
-    virtual QVariant entityData(const Akonadi::Collection &collection, int column, int role) const;
-
-    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-
-    virtual Qt::DropActions supportedDropActions() const;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 private slots:
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
@@ -60,7 +56,16 @@ private:
     KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
     KCalCore::Todo::Ptr todoFromItem(const Akonadi::Item &item) const;
 
-    QHash<QString, QString> m_summaryMap;
+    Zanshin::ItemType itemTypeFromItem(const Akonadi::Item &item) const;
+    QString uidFromItem(const Akonadi::Item &item) const;
+    QString relatedUidFromItem(const Akonadi::Item &item) const;
+    QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
+    QStringList categoriesFromItem(const Akonadi::Item &item) const;
+    QStringList childUidsFromItem(const Akonadi::Item &item) const;
+    QModelIndexList childIndexesFromIndex(const QModelIndex &index) const;
+
+    QHash<QString, QString> m_parentMap;
+    QHash<QString, QStringList> m_childrenMap;
 };
 
 #endif
