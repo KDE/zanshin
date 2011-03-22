@@ -91,12 +91,20 @@ int main(int argc, char **argv)
 
     KCmdLineArgs::init(argc, argv, &about);
 
+    KCmdLineOptions options;
+    options.add("debug", ki18n("Show the debug window"));
+
+    KCmdLineArgs::addCmdLineOptions(options);
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
     KApplication app;
 
     ModelStack models;
 
-    DebugWindow *debugWindow = new DebugWindow(&models);
-    debugWindow->show();
+    if (args->isSet("debug")) {
+        DebugWindow *debugWindow = new DebugWindow(&models);
+        debugWindow->show();
+    }
 
     MainWindow *mainWindow = new MainWindow(&models);
     mainWindow->show();
