@@ -1,3 +1,5 @@
+add_subdirectory(testlib)
+
 include_directories( ${CMAKE_SOURCE_DIR}/src)
 
 MACRO(ZANSHIN_UNIT_TESTS)
@@ -7,6 +9,7 @@ MACRO(ZANSHIN_UNIT_TESTS)
     target_link_libraries(${_testname} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_AKONADI_LIBS}
                                        ${KDEPIMLIBS_KCALCORE_LIBS} ${QT_QTTEST_LIBRARY}
                                        zanshin_static
+                                       zanshin_testlib
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_UNIT_TESTS)

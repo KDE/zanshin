@@ -1,0 +1,17 @@
+########### zanshin ###############
+
+set(zanshin_testlib_SRCS
+   c.cpp
+   indent.cpp
+   modelbuilder.cpp
+   modelnode.cpp
+   modelpath.cpp
+   modelstructure.cpp
+   modelutils.cpp
+   t.cpp
+)
+
+include_directories(${CMAKE_SOURCE_DIR}/tests)
+kde4_add_library(zanshin_testlib STATIC ${zanshin_testlib_SRCS})
+target_link_libraries(zanshin_testlib ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS})
+
