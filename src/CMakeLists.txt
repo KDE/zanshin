@@ -1,3 +1,5 @@
+add_subdirectory( runner )
+
 ########### zanshin ###############
 
 set(zanshin_core_SRCS
