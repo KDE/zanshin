@@ -1,6 +1,14 @@
 [Desktop Entry]
 Name=Zanshin Todo
+Name[pt]=Itens Por-Fazer Zanshin
+Name[pt_BR]=Lista de tarefas Zanshin
+Name[uk]=Завдання Zanshin
+Name[x-test]=xxZanshin Todoxx
 Comment=Add tasks to your todo list
+Comment[pt]=Adicionar tarefas à sua lista de itens por-fazer
+Comment[pt_BR]=Adicionar tarefas à sua lista
+Comment[uk]=Додавання завдань до вашого списку
+Comment[x-test]=xxAdd tasks to your todo listxx
 X-KDE-ServiceTypes=Plasma/Runner
 Type=Service
 Icon=office-calendar
