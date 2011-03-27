@@ -25,12 +25,13 @@
 
 #include <algorithm>
 
+#include "modelbuilderbehavior.h"
 #include "modelutils.h"
 
 using namespace Zanshin::Test;
 
 ModelBuilder::ModelBuilder()
-    : m_model(0)
+    : m_model(0), m_behavior(new StandardModelBuilderBehavior)
 {
 }
 
@@ -42,6 +43,21 @@ QStandardItemModel *ModelBuilder::model() const
 void ModelBuilder::setModel(QStandardItemModel *model)
 {
     m_model = model;
+}
+
+ModelBuilderBehaviorBase *ModelBuilder::behavior() const
+{
+    return m_behavior;
+}
+
+void ModelBuilder::setBehavior(ModelBuilderBehaviorBase *behavior)
+{
+    delete m_behavior;
+    if (behavior) {
+        m_behavior = behavior;
+    } else {
+        m_behavior = new StandardModelBuilderBehavior;
+    }
 }
 
 void ModelBuilder::create(const ModelStructure &structure, const ModelPath &root)
@@ -84,14 +100,14 @@ QList<QStandardItem*> ModelBuilder::createItem(const ModelStructureTreeNode *nod
 
     if (v.canConvert<C>()) {
         C c = v.value<C>();
-        QStandardItem *item = new QStandardItem(c.name);
-        item->setData(v, TestDslRole);
-        row << item;
+        row = m_behavior->expandCollection(c);
     } else {
         T t = v.value<T>();
-        QStandardItem *item = new QStandardItem(t.uid);
+        row = m_behavior->expandTodo(t);
+    }
+
+    foreach (QStandardItem *item, row) {
         item->setData(v, TestDslRole);
-        row << item;
     }
 
     foreach (ModelStructureTreeNode* child, node->children()) {

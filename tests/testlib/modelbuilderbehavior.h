@@ -21,48 +21,39 @@
    USA.
 */
 
-#ifndef ZANSHIN_TESTLIB_MODELBUILDER_H
-#define ZANSHIN_TESTLIB_MODELBUILDER_H
+#ifndef ZANSHIN_TESTLIB_MODELBUILDERBEHAVIOR_H
+#define ZANSHIN_TESTLIB_MODELBUILDERBEHAVIOR_H
 
 #include <QtCore/QList>
 #include <QtGui/QStandardItemModel>
-#include <KDE/Akonadi/EntityTreeModel>
 
-#include <testlib/modelpath.h>
-#include <testlib/modelstructure.h>
+#include <testlib/c.h>
+#include <testlib/t.h>
 
 namespace Zanshin
 {
 namespace Test
 {
 
-enum Roles {
-    TestDslRole = Akonadi::EntityTreeModel::UserRole + 101,
-    UserRole = Akonadi::EntityTreeModel::UserRole + 200
-};
 
-class ModelBuilderBehaviorBase;
-
-class ModelBuilder
+class ModelBuilderBehaviorBase
 {
 public:
-    ModelBuilder();
+    ModelBuilderBehaviorBase();
+    virtual ~ModelBuilderBehaviorBase();
 
-    QStandardItemModel *model() const;
-    void setModel(QStandardItemModel *model);
+    virtual QList<QStandardItem*> expandTodo(const T &todo) = 0;
+    virtual QList<QStandardItem*> expandCollection(const C &collection) = 0;
+};
 
-    ModelBuilderBehaviorBase *behavior() const;
-    void setBehavior(ModelBuilderBehaviorBase *behavior);
+class StandardModelBuilderBehavior : public ModelBuilderBehaviorBase
+{
+public:
+    StandardModelBuilderBehavior();
+    virtual ~StandardModelBuilderBehavior();
 
-    void create(const ModelStructure &structure, const ModelPath &root = ModelPath());
-
-private:
-    QStandardItem *locateItem(const ModelPath &root);
-    QList< QList<QStandardItem*> > createItems(const ModelStructure &structure);
-    QList<QStandardItem*> createItem(const ModelStructureTreeNode *node);
-
-    QStandardItemModel *m_model;
-    ModelBuilderBehaviorBase *m_behavior;
+    virtual QList<QStandardItem*> expandTodo(const T &todo);
+    virtual QList<QStandardItem*> expandCollection(const C &collection);
 };
 
 } // namespace Test
