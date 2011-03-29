@@ -91,6 +91,26 @@ void ZanshinRunner::run(const Plasma::RunnerContext &context, const Plasma::Quer
         return;
     }
 
+    Akonadi::Collection collection;
+
+    KConfig zanshin("zanshinrc");
+    KConfigGroup config(&zanshin, "General");
+
+    qint64 defaultCollectionId = config.readEntry("defaultCollection", -1);
+
+    if (defaultCollectionId > 0) {
+        foreach (Akonadi::Collection col, cols) {
+            if (col.id() == defaultCollectionId) {
+                collection = col;
+                break;
+            }
+        }
+    }
+
+    if (!collection.isValid()) {
+        collection = cols.first();
+    }
+
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
     todo->setSummary(match.data().toString());
 
@@ -98,7 +118,7 @@ void ZanshinRunner::run(const Plasma::RunnerContext &context, const Plasma::Quer
     item.setMimeType("application/x-vnd.akonadi.calendar.todo");
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 
-    new Akonadi::ItemCreateJob(item, cols.first());
+    new Akonadi::ItemCreateJob(item, collection);
 }
 
 #include "zanshinrunner.moc"
