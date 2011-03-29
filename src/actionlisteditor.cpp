@@ -63,7 +63,8 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     : QWidget(parent),
       m_projectSelection(projectSelection),
       m_categoriesSelection(categoriesSelection),
-      m_models(models)
+      m_models(models),
+      m_defaultCollectionId(-1)
 {
     setLayout(new QVBoxLayout(this));
 
@@ -105,6 +106,17 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
     descendantProxyModel->setSourceModel(models->collectionsModel());
     descendantProxyModel->setDisplayAncestorData(true);
+
+    KConfigGroup config(KGlobal::config(), "General");
+    m_defaultCollectionId = config.readEntry("defaultCollection", -1);
+
+    if (m_defaultCollectionId > 0) {
+        if (!selectDefaultCollection(descendantProxyModel, QModelIndex(),
+                                     0, descendantProxyModel->rowCount()-1)) {
+            connect(descendantProxyModel, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+                    this, SLOT(onRowInsertedInComboBox(const QModelIndex&, int, int)));
+        }
+    }
 
     m_comboBox->setModel(descendantProxyModel);
     bottomBar->layout()->addWidget(m_comboBox);
@@ -153,8 +165,34 @@ void ActionListEditor::onComboBoxChanged()
     QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
     Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
 
+    KConfigGroup config(KGlobal::config(), "General");
+    config.writeEntry("defaultCollection", QString::number(collection.id()));
+    config.sync();
+
     for (int i=0; i<m_stack->count(); i++) {
         page(i)->setDefaultCollection(collection);
+    }
+}
+
+bool ActionListEditor::selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end)
+{
+    for (int i = begin; i <= end; i++) {
+        QModelIndex collectionIndex = model->index(i, 0, parent);
+        Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        if (collection.id() == m_defaultCollectionId) {
+            m_comboBox->setCurrentIndex(i);
+            m_defaultCollectionId = -1;
+            return true;
+        }
+    }
+    return false;
+}
+
+void ActionListEditor::onRowInsertedInComboBox(const QModelIndex &parent, int begin, int end)
+{
+    QAbstractItemModel *model = static_cast<QAbstractItemModel*>(sender());
+    if (selectDefaultCollection(model, parent, begin, end)) {
+        disconnect(this, SLOT(onRowInsertedInComboBox(const QModelIndex&, int, int)));
     }
 }
 

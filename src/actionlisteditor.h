@@ -72,10 +72,12 @@ private slots:
     void focusActionEdit();
     void onSideBarSelectionChanged(const QModelIndex &index);
     void onComboBoxChanged();
+    void onRowInsertedInComboBox(const QModelIndex &index, int start, int end);
 
 private:
     void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode);
     void setupActions(KActionCollection *ac);
+    bool selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end);
 
     ActionListEditorPage *currentPage() const;
     ActionListEditorPage *page(int idx) const;
@@ -93,6 +95,8 @@ private:
     KAction *m_move;
 
     ModelStack *m_models;
+
+    qint64 m_defaultCollectionId;
 };
 
 #endif
