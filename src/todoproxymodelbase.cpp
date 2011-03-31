@@ -62,6 +62,10 @@ QModelIndex TodoProxyModelBase::index(int row, int column, const QModelIndex &pa
 
 QModelIndex TodoProxyModelBase::parent(const QModelIndex &index) const
 {
+    if (!index.isValid()) {
+        return QModelIndex();
+    }
+
     TodoNode *parent = m_manager->nodeForIndex(index)->parent();
 
     if (parent == 0) {
@@ -85,6 +89,10 @@ int TodoProxyModelBase::rowCount(const QModelIndex &parent) const
 
 int TodoProxyModelBase::columnCount(const QModelIndex &parent) const
 {
+    if (!sourceModel()) {
+        return 0;
+    }
+
     return sourceModel()->columnCount(mapToSource(parent));
 }
 
@@ -93,6 +101,10 @@ QVariant TodoProxyModelBase::headerData(int section, Qt::Orientation orientation
     if (orientation == Qt::Vertical) {
         return QAbstractProxyModel::headerData(section, orientation, role);
     } else {
+        if (!sourceModel()) {
+            return QVariant();
+        }
+
         return sourceModel()->headerData(section, orientation, role);
     }
 }

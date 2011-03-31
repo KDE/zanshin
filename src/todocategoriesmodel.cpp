@@ -318,6 +318,10 @@ void TodoCategoriesModel::moveCategoryNode(const QString &oldCategoryPath, const
 
 Qt::ItemFlags TodoCategoriesModel::flags(const QModelIndex &index) const
 {
+    if (!index.isValid()) {
+        return Qt::NoItemFlags;
+    }
+
     Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
     if (type == Zanshin::Inbox || type == Zanshin::CategoryRoot) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
@@ -355,7 +359,9 @@ QMimeData *TodoCategoriesModel::mimeData(const QModelIndexList &indexes) const
 QStringList TodoCategoriesModel::mimeTypes() const
 {
     QStringList types;
-    types << sourceModel()->mimeTypes();
+    if (sourceModel()) {
+        types << sourceModel()->mimeTypes();
+    }
     types << "application/x-vnd.zanshin.category";
     return types;
 }
@@ -424,6 +430,10 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
 
 Qt::DropActions TodoCategoriesModel::supportedDropActions() const
 {
+    if (!sourceModel()) {
+        return Qt::IgnoreAction;
+    }
+
     return sourceModel()->supportedDropActions();
 }
 
