@@ -20,5 +20,6 @@ ZANSHIN_UNIT_TESTS(
   modelstacktest
   selectionproxymodeltest
   todocategoriesmodelspec
+  todotreemodelspec
 )
 

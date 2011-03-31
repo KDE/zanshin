@@ -225,6 +225,10 @@ void TodoTreeModel::destroyBranch(TodoNode *root)
 
 Qt::ItemFlags TodoTreeModel::flags(const QModelIndex &index) const
 {
+    if (!index.isValid()) {
+        return Qt::NoItemFlags;
+    }
+
     if (index.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Inbox) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
@@ -243,7 +247,11 @@ QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const
 
 QStringList TodoTreeModel::mimeTypes() const
 {
-    return sourceModel()->mimeTypes();
+    QStringList types;
+    if (sourceModel()) {
+        types << sourceModel()->mimeTypes();
+    }
+    return types;
 }
 
 void TodoTreeModel::createChild(const QModelIndex &child, const QModelIndex &parent, int row)
@@ -313,5 +321,8 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
 
 Qt::DropActions TodoTreeModel::supportedDropActions() const
 {
+    if (!sourceModel()) {
+        return Qt::IgnoreAction;
+    }
     return sourceModel()->supportedDropActions();
 }
