@@ -23,8 +23,7 @@
 
 #include "modelutils.h"
 
-// Needed for roles
-#include "modelbuilder.h"
+#include "modelbuilderbehavior.h"
 
 using namespace Zanshin::Test;
 
@@ -68,6 +67,75 @@ QModelIndex ModelUtils::locateItem(QAbstractItemModel *model, const ModelPath &r
     }
 
     return index;
+}
+
+
+
+void ModelUtils::create(QStandardItemModel *model,
+                        const ModelStructure &structure,
+                        const ModelPath &root,
+                        ModelBuilderBehaviorBase *behavior)
+{
+    QModelIndex rootIndex = locateItem(model, root);
+    QStandardItem *rootItem = model->itemFromIndex(rootIndex);
+
+    bool mustDeleteBehavior = false;
+    if (behavior==0) {
+        behavior = new StandardModelBuilderBehavior;
+        mustDeleteBehavior = true;
+    }
+
+    QList< QList<QStandardItem*> > rows = createItems(structure, behavior);
+
+    if (mustDeleteBehavior) {
+        delete behavior;
+        behavior = 0;
+    }
+
+    foreach (const QList<QStandardItem*> &row, rows) {
+        if (rootItem) {
+            rootItem->appendRow(row);
+        } else {
+            model->appendRow(row);
+        }
+    }
+}
+
+QList< QList<QStandardItem*> > ModelUtils::createItems(const ModelStructure &structure, ModelBuilderBehaviorBase *behavior)
+{
+    QList< QList<QStandardItem*> > items;
+
+    foreach (ModelStructureTreeNode* node, structure.m_roots) {
+        items << createItem(node, behavior);
+    }
+
+    return items;
+}
+
+QList<QStandardItem*> ModelUtils::createItem(const ModelStructureTreeNode *node, ModelBuilderBehaviorBase *behavior)
+{
+    QList<QStandardItem *> row;
+
+    ModelNode modelNode = node->modelNode();
+    QVariant v = modelNode.entity();
+
+    if (v.canConvert<C>()) {
+        C c = v.value<C>();
+        row = behavior->expandCollection(c);
+    } else {
+        T t = v.value<T>();
+        row = behavior->expandTodo(t);
+    }
+
+    foreach (QStandardItem *item, row) {
+        item->setData(v, TestDslRole);
+    }
+
+    foreach (ModelStructureTreeNode* child, node->children()) {
+        row.first()->appendRow(createItem(child, behavior));
+    }
+
+    return row;
 }
 
 

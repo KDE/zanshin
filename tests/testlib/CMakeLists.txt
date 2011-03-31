@@ -3,7 +3,6 @@
 set(zanshin_testlib_SRCS
    c.cpp
    indent.cpp
-   modelbuilder.cpp
    modelbuilderbehavior.cpp
    modelnode.cpp
    modelpath.cpp

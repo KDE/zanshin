@@ -24,21 +24,39 @@
 #ifndef ZANSHIN_TESTLIB_MODELUTILS_H
 #define ZANSHIN_TESTLIB_MODELUTILS_H
 
-#include <QtCore/QModelIndex>
+#include <QtGui/QStandardItemModel>
+#include <KDE/Akonadi/EntityTreeModel>
 
 #include <testlib/modelpath.h>
+#include <testlib/modelstructure.h>
 
-class QAbstractItemModel;
+#include <testlib/modelpath.h>
 
 namespace Zanshin
 {
 namespace Test
 {
 
+enum Roles {
+    TestDslRole = Akonadi::EntityTreeModel::UserRole + 101,
+    UserRole = Akonadi::EntityTreeModel::UserRole + 200
+};
+
+class ModelBuilderBehaviorBase;
+
 class ModelUtils
 {
 public:
+    static void create(QStandardItemModel *model,
+                       const ModelStructure &structure,
+                       const ModelPath &root = ModelPath(),
+                       ModelBuilderBehaviorBase *behavior = 0);
+
     static QModelIndex locateItem(QAbstractItemModel *model, const ModelPath &root);
+
+private:
+    static QList< QList<QStandardItem*> > createItems(const ModelStructure &structure, ModelBuilderBehaviorBase *behavior);
+    static QList<QStandardItem*> createItem(const ModelStructureTreeNode *node, ModelBuilderBehaviorBase *behavior);
 };
 
 } // namespace Test

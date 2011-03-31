@@ -155,10 +155,8 @@ private slots:
         QFETCH(ModelStructure, sourceStructure);
 
         //Source model
-        ModelBuilder builder;
         QStandardItemModel source;
-        builder.setModel(&source);
-        builder.create(sourceStructure);
+        ModelUtils::create(&source, sourceStructure);
 
         //Selection proxy
         QItemSelectionModel selection(&source);
@@ -178,8 +176,7 @@ private slots:
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
-        builder.setModel(&output);
-        builder.create(outputStructure);
+        ModelUtils::create(&output, outputStructure);
         QCOMPARE(proxyModel, output);
     }
 };

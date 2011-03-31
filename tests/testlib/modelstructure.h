@@ -33,7 +33,7 @@ namespace Zanshin
 namespace Test
 {
 
-class ModelBuilder;
+class ModelUtils;
 class ModelStructureTreeNode;
 
 class ModelStructure
@@ -53,7 +53,7 @@ public:
     void clear();
 
 private:
-    friend class ModelBuilder;
+    friend class ModelUtils;
 
     QList<ModelStructureTreeNode *> m_roots;
 
