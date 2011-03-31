@@ -51,6 +51,7 @@ private slots:
         QStandardItemModel baseModel;
         QItemSelectionModel selectionModel(&baseModel);
         SelectionProxyModel proxyModel;
+        ModelTest mt(&proxyModel);
 
         //WHEN
         proxyModel.setSelectionModel(&selectionModel);
@@ -65,6 +66,7 @@ private slots:
         //GIVEN
         QStandardItemModel treeModel;
         SelectionProxyModel proxyModel;
+        ModelTest mt(&proxyModel);
 
         //WHEN
         proxyModel.setSourceModel(&treeModel);
@@ -79,6 +81,7 @@ private slots:
         QStandardItemModel baseModel;
         QItemSelectionModel selectionModel(&baseModel);
         SelectionProxyModel proxyModel;
+        ModelTest mt(&proxyModel);
 
         //WHEN
         proxyModel.setSourceModel(&baseModel);
@@ -161,6 +164,7 @@ private slots:
         //Selection proxy
         QItemSelectionModel selection(&source);
         SelectionProxyModel proxyModel;
+        ModelTest mt(&proxyModel);
         proxyModel.setSelectionModel(&selection);
         proxyModel.setSourceModel(&source);
 
