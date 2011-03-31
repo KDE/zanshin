@@ -90,7 +90,7 @@ int TodoProxyModelBase::rowCount(const QModelIndex &parent) const
 int TodoProxyModelBase::columnCount(const QModelIndex &parent) const
 {
     if (!sourceModel()) {
-        return 0;
+        return 1;
     }
 
     return sourceModel()->columnCount(mapToSource(parent));
