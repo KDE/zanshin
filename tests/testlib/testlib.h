@@ -25,6 +25,7 @@
 #define ZANSHIN_TESTLIB_TESTLIB_H
 
 #include <testlib/dsl.h>
+#include <testlib/modeltest.h>
 #include <testlib/modelutils.h>
 #include <testlib/qcompare.h>
 

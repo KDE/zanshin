@@ -7,6 +7,7 @@ set(zanshin_testlib_SRCS
    modelnode.cpp
    modelpath.cpp
    modelstructure.cpp
+   modeltest.cpp
    modelutils.cpp
    qcompare.cpp
    t.cpp
