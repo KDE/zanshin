@@ -27,7 +27,6 @@
 
 #include <KDE/Akonadi/Collection>
 #include <KDE/Akonadi/Item>
-#include <KDE/Akonadi/TransactionSequence>
 #include <QModelIndex>
 
 #include "globaldefs.h"

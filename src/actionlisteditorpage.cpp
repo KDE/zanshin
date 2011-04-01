@@ -24,8 +24,6 @@
 #include "actionlisteditorpage.h"
 
 #include <KDE/Akonadi/ItemCreateJob>
-#include <KDE/Akonadi/ItemDeleteJob>
-#include <KDE/Akonadi/TransactionSequence>
 
 #include <KDE/KConfigGroup>
 #include <kdescendantsproxymodel.h>

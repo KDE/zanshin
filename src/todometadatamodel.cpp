@@ -29,8 +29,6 @@
 #include <KIcon>
 #include <KLocale>
 
-#include <KDE/Akonadi/ItemModifyJob>
-
 #include "globaldefs.h"
 
 TodoMetadataModel::TodoMetadataModel(QObject *parent)

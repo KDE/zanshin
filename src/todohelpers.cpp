@@ -31,6 +31,7 @@
 #include <KDE/Akonadi/ItemModifyJob>
 #include <KDE/Akonadi/ItemMoveJob>
 #include <KDE/Akonadi/EntityTreeModel>
+#include <KDE/Akonadi/TransactionSequence>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>

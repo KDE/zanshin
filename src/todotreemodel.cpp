@@ -28,10 +28,7 @@
 
 #include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/Akonadi/ItemFetchJob>
-#include <KDE/Akonadi/ItemMoveJob>
 #include <KDE/Akonadi/ItemFetchScope>
-#include <KDE/Akonadi/ItemModifyJob>
-#include <KDE/Akonadi/TransactionSequence>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
 #include <KDE/KIcon>
