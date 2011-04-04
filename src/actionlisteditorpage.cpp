@@ -322,20 +322,7 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
         break;
     }
 
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary(summary);
-    if (!parentUid.isEmpty()) {
-        todo->setRelatedTo(parentUid);
-    }
-    if (!category.isEmpty()) {
-        todo->setCategories(category);
-    }
-
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
-
-    new Akonadi::ItemCreateJob(item, collection);
+    TodoHelpers::addTodo(summary, parentUid, category, collection);
 }
 
 void ActionListEditorPage::removeCurrentTodo()

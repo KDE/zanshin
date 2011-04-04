@@ -58,6 +58,24 @@ Akonadi::Item TodoHelpers::fetchFullItem(const Akonadi::Item &item)
     return job->items().first();
 }
 
+void TodoHelpers::addTodo(const QString &summary, const QString &parentUid, const QString &category, const Akonadi::Collection &collection)
+{
+    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+    todo->setSummary(summary);
+    if (!parentUid.isEmpty()) {
+        todo->setRelatedTo(parentUid);
+    }
+    if (!category.isEmpty()) {
+        todo->setCategories(category);
+    }
+
+    Akonadi::Item item;
+    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+    new Akonadi::ItemCreateJob(item, collection);
+}
+
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
 {
     KCalCore::Todo::Ptr todo(new KCalCore::Todo());

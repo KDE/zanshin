@@ -35,6 +35,9 @@ namespace TodoHelpers
 {
     Akonadi::Item fetchFullItem(const Akonadi::Item &item);
 
+    void addTodo(const QString &summary, const QString &parentUid, const QString &category,
+                 const Akonadi::Collection &collection);
+
     void addProject(const QString &summary, const Akonadi::Collection &collection);
     void addProject(const QString &summary, const Akonadi::Item &parentProject);
     bool removeProject(QWidget *parent, const QModelIndex &project);
