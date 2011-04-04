@@ -53,6 +53,8 @@ public:
                        ModelBuilderBehaviorBase *behavior = 0);
 
     static QModelIndex locateItem(QAbstractItemModel *model, const ModelPath &root);
+    static bool destroy(QAbstractItemModel *model, const ModelPath::List &paths);
+    static bool destroy(QAbstractItemModel *model, const ModelPath &path);
 
 private:
     static QList< QList<QStandardItem*> > createItems(const ModelStructure &structure, ModelBuilderBehaviorBase *behavior);

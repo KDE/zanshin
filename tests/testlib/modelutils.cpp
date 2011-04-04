@@ -147,4 +147,19 @@ QList<QStandardItem*> ModelUtils::createItem(const ModelStructureTreeNode *node,
     return row;
 }
 
+bool ModelUtils::destroy(QAbstractItemModel *model, const ModelPath::List &paths)
+{
+    foreach (ModelPath path, paths) {
+        if (!destroy(model, path)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ModelUtils::destroy(QAbstractItemModel *model, const ModelPath &path)
+{
+    QModelIndex index = ModelUtils::locateItem(model, path);
+    return model->removeRow(index.row(), index.parent());
+}
 
