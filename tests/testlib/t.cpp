@@ -37,6 +37,7 @@ T::T(qint64 i,
      const QString &pU,
      const QString &s,
      TodoState st,
+     TodoTag tag,
      const QString &d,
      const QString &c)
     : id(i),
@@ -44,6 +45,7 @@ T::T(qint64 i,
       uid(u),
       parentUid(pU),
       state(st),
+      todoTag(tag),
       summary(s)
 {
     if (!d.isEmpty()) {
@@ -60,6 +62,7 @@ T::T(const T &other)
       uid(other.uid),
       parentUid(other.parentUid),
       state(other.state),
+      todoTag(other.todoTag),
       summary(other.summary),
       dueDate(other.dueDate),
       categories(other.categories)
@@ -80,6 +83,7 @@ bool T::operator==(const T &other) const
         && uid==other.uid
         && parentUid==other.parentUid
         && state==other.state
+        && todoTag==other.todoTag
         && summary==other.summary
         && dueDate==other.dueDate
         && categories==other.categories;

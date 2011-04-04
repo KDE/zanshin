@@ -38,6 +38,11 @@ enum TodoState {
     Done
 };
 
+enum TodoTag {
+    NoTag = 0,
+    ProjectTag
+};
+
 struct T // Stands for todo
 {
 public:
@@ -50,6 +55,7 @@ public:
       const QString &parentUid,
       const QString &summary,
       TodoState state = Done,
+      TodoTag todoTag = NoTag,
       const QString &date = QString(),
       const QString &categories = QString());
 
@@ -63,6 +69,7 @@ public:
     QString uid;
     QString parentUid;
     TodoState state;
+    TodoTag todoTag;
     QString summary;
     KDateTime dueDate;
     QStringList categories;

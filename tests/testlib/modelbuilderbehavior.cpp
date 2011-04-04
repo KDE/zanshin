@@ -64,6 +64,10 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
         todo->setAllDay(true);
     }
 
+    if (t.todoTag==ProjectTag) {
+        todo->addComment("X-Zanshin-Project");
+    }
+
     Akonadi::Item it(t.id);
     it.setParentCollection(Akonadi::Collection(t.parentId));
     it.setMimeType("application/x-vnd.akonadi.calendar.todo");
