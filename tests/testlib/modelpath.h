@@ -28,6 +28,7 @@
 
 #include <testlib/c.h>
 #include <testlib/t.h>
+#include <testlib/v.h>
 
 namespace Zanshin
 {
@@ -47,6 +48,7 @@ public:
 
     ModelPath(const C &collection);
     ModelPath(const T &todo);
+    ModelPath(const V &virt);
     ModelPath(const C &collection1, const C &collection2);
     ModelPath(const C &collection, const T &todo);
     ModelPath(const ModelPath &path, const C &collection);

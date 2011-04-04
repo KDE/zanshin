@@ -54,6 +54,11 @@ ModelPath::ModelPath(const T &todo)
     m_path << QVariant::fromValue(todo);
 }
 
+ModelPath::ModelPath(const V &virt)
+{
+    m_path << QVariant::fromValue(virt);
+}
+
 ModelPath::ModelPath(const C &collection1, const C &collection2)
 {
     m_path << QVariant::fromValue(collection1)

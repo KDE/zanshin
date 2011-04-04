@@ -21,69 +21,47 @@
    USA.
 */
 
-#include "modelnode.h"
+#include "v.h"
 
 #include <algorithm>
 
 using namespace Zanshin::Test;
 
-ModelNode::ModelNode()
+V::V()
 {
 }
 
-ModelNode::ModelNode(const C &collection, const Indent &indent)
-    : m_entity(QVariant::fromValue(collection)),
-      m_indent(indent)
+V::V(VirtualType t)
+    : type(t)
+{
+    switch (t) {
+    case Inbox:
+        name = "Inbox";
+        break;
+    case NoCategory:
+        name = "No Category";
+        break;
+    case Categories:
+        name = "Categories";
+        break;
+    }
+}
+
+V::V(const V &other)
+    : type(other.type)
+    , name(other.name)
 {
 }
 
-ModelNode::ModelNode(const T &todo, const Indent &indent)
-    : m_entity(QVariant::fromValue(todo)),
-      m_indent(indent)
+V &V::operator=(const V &other)
 {
-}
-
-ModelNode::ModelNode(const V &virt, const Indent &indent)
-    : m_entity(QVariant::fromValue(virt)),
-      m_indent(indent)
-{
-}
-
-ModelNode::ModelNode(const ModelNode &other)
-    : m_entity(other.m_entity),
-      m_indent(other.m_indent)
-{
-}
-
-ModelNode &ModelNode::operator=(const ModelNode &other)
-{
-    ModelNode node(other);
-    std::swap(*this, node);
+    V v(other);
+    std::swap(*this, v);
     return *this;
 }
 
-quint64 ModelNode::indent() const
+bool V::operator==(const V &other) const
 {
-    return m_indent.size;
-}
-
-QVariant ModelNode::entity() const
-{
-    return m_entity;
-}
-
-ModelNode operator+(const Indent& indent, const C &collection)
-{
-    return ModelNode(collection, indent);
-}
-
-ModelNode operator+(const Indent& indent, const T &todo)
-{
-    return ModelNode(todo, indent);
-}
-
-ModelNode operator+(const Indent& indent, const V &virt)
-{
-    return ModelNode(virt, indent);
+    return type==other.type;
 }
 

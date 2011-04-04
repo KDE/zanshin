@@ -29,6 +29,7 @@
 
 #include <testlib/c.h>
 #include <testlib/t.h>
+#include <testlib/v.h>
 
 namespace Zanshin
 {
@@ -44,6 +45,7 @@ public:
 
     virtual QList<QStandardItem*> expandTodo(const T &todo) = 0;
     virtual QList<QStandardItem*> expandCollection(const C &collection) = 0;
+    virtual QList<QStandardItem*> expandVirtual(const V &virt) = 0;
 };
 
 class StandardModelBuilderBehavior : public ModelBuilderBehaviorBase
@@ -54,6 +56,8 @@ public:
 
     virtual QList<QStandardItem*> expandTodo(const T &todo);
     virtual QList<QStandardItem*> expandCollection(const C &collection);
+    virtual QList<QStandardItem*> expandVirtual(const V &virt);
+
 };
 
 } // namespace Test

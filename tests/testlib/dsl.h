@@ -30,6 +30,7 @@
 #include <testlib/modelpath.h>
 #include <testlib/modelstructure.h>
 #include <testlib/t.h>
+#include <testlib/v.h>
 
 #endif
 

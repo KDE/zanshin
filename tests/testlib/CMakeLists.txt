@@ -14,6 +14,7 @@ set(zanshin_testlib_SRCS
    modelutils.cpp
    qcompare.cpp
    t.cpp
+   v.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/tests)

@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2011 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Mario Bensi <mbensi@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,48 +21,46 @@
    USA.
 */
 
-#ifndef ZANSHIN_TESTLIB_MODELNODE_H
-#define ZANSHIN_TESTLIB_MODELNODE_H
+#ifndef ZANSHIN_TESTLIB_V_H
+#define ZANSHIN_TESTLIB_V_H
 
+#include <QtCore/QString>
 #include <QtCore/QVariant>
-
-#include <testlib/c.h>
-#include <testlib/indent.h>
-#include <testlib/t.h>
-#include <testlib/v.h>
 
 namespace Zanshin
 {
 namespace Test
 {
 
-class ModelNode
+enum VirtualType {
+    Inbox=0,
+    NoCategory,
+    Categories
+};
+
+struct V // Stands for collection
 {
 public:
-    ModelNode();
-    ModelNode(const C &collection, const Indent &indent = Indent());
-    ModelNode(const T &todo, const Indent &indent = Indent());
-    ModelNode(const V &virt, const Indent &indent = Indent());
+    typedef QList<V> List;
 
-    ModelNode(const ModelNode &other);
-    ModelNode &operator=(const ModelNode &other);
 
-    quint64 indent() const;
-    QVariant entity() const;
+    V();
+    explicit V(VirtualType t);
 
-private:
-    QVariant m_entity;
-    Indent m_indent;
+    V(const V &other);
+    V &operator=(const V &other);
+
+    bool operator==(const V &other) const;
+
+    VirtualType type;
+    QString name;
 };
 
 } // namespace Test
 } // namespace Zanshin
 
-Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::C &collection);
-Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::T &todo);
-Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::V &virt);
-
-Q_DECLARE_METATYPE(Zanshin::Test::ModelNode)
+Q_DECLARE_METATYPE(Zanshin::Test::V)
+Q_DECLARE_METATYPE(Zanshin::Test::V::List)
 
 #endif
 

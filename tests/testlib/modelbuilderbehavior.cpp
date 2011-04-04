@@ -25,6 +25,7 @@
 
 #include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/KCalCore/Todo>
+#include "../../src/globaldefs.h"
 
 using namespace Zanshin::Test;
 
@@ -114,3 +115,22 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCollect
     return row;
 }
 
+QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandVirtual(const V &virt)
+{
+    QList<QStandardItem*> row;
+
+    QStandardItem *item = new QStandardItem(virt.name);
+    item->setData(QVariant::fromValue(virt.name), Qt::DisplayRole);
+    row << item;
+
+    item = new QStandardItem;
+    item->setData(QVariant::fromValue((int)virt.type), Zanshin::ItemTypeRole);
+    row << item;
+
+    for (int i=0; i<3; i++) {
+        item = new QStandardItem;
+        row << item;
+    }
+
+    return row;
+}

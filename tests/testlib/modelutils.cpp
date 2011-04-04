@@ -49,11 +49,17 @@ QModelIndex ModelUtils::locateItem(QAbstractItemModel *model, const ModelPath &r
                 if (t1==t2) {
                     found = true;
                 }
-            } else {
-                Q_ASSERT(variant.canConvert<C>());
+            } else if (variant.canConvert<C>()) {
                 C c1 = variant.value<C>();
                 C c2 = pathPart.value<C>();
                 if (c1==c2) {
+                    found = true;
+                }
+            } else {
+                Q_ASSERT(variant.canConvert<V>());
+                V v1 = variant.value<V>();
+                V v2 = pathPart.value<V>();
+                if (v1==v2) {
                     found = true;
                 }
             }
@@ -117,18 +123,21 @@ QList<QStandardItem*> ModelUtils::createItem(const ModelStructureTreeNode *node,
     QList<QStandardItem *> row;
 
     ModelNode modelNode = node->modelNode();
-    QVariant v = modelNode.entity();
+    QVariant variant = modelNode.entity();
 
-    if (v.canConvert<C>()) {
-        C c = v.value<C>();
+    if (variant.canConvert<C>()) {
+        C c = variant.value<C>();
         row = behavior->expandCollection(c);
-    } else {
-        T t = v.value<T>();
+    } else if (variant.canConvert<T>()) {
+        T t = variant.value<T>();
         row = behavior->expandTodo(t);
+    } else {
+        V v = variant.value<V>();
+        row = behavior->expandVirtual(v);
     }
 
     foreach (QStandardItem *item, row) {
-        item->setData(v, TestDslRole);
+        item->setData(variant, TestDslRole);
     }
 
     foreach (ModelStructureTreeNode* child, node->children()) {
