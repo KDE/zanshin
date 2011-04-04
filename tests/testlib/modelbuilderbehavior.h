@@ -58,6 +58,13 @@ public:
     virtual QList<QStandardItem*> expandCollection(const C &collection);
     virtual QList<QStandardItem*> expandVirtual(const V &virt);
 
+    void setMetadataCreationEnabled(bool enabled);
+    bool isMetadataCreationEnabled();
+
+private:
+    void addTodoMetadata(QStandardItem*, const QString &parentUid, const QString &uid, TodoTag todoTag);
+    void addCollectionMetadata(QStandardItem*);
+    bool m_metadataCreationEnabled;
 };
 
 } // namespace Test

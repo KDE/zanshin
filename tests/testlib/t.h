@@ -40,7 +40,8 @@ enum TodoState {
 
 enum TodoTag {
     NoTag = 0,
-    ProjectTag
+    ProjectTag,
+    ReferencedTag
 };
 
 struct T // Stands for todo

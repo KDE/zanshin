@@ -41,6 +41,7 @@ ModelBuilderBehaviorBase::~ModelBuilderBehaviorBase()
 
 StandardModelBuilderBehavior::StandardModelBuilderBehavior()
     : ModelBuilderBehaviorBase()
+    , m_metadataCreationEnabled(true)
 {
 
 }
@@ -78,22 +79,27 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
 
     QStandardItem *item = new QStandardItem(t.summary);
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
+    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
     row << item;
 
     item = new QStandardItem(t.parentUid);
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
+    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
     row << item;
 
     item = new QStandardItem(t.categories.join(", "));
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
+    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
     row << item;
 
     item = new QStandardItem(t.dueDate.toString());
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
+    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
     row << item;
 
     item = new QStandardItem;
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
+    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
     row << item;
 
     return row;
@@ -108,6 +114,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCollect
 
     QStandardItem *item = new QStandardItem(c.name);
     item->setData(QVariant::fromValue(col), Akonadi::EntityTreeModel::CollectionRole);
+    addCollectionMetadata(item);
     row << item;
 
     for (int i=0; i<4; i++) {
@@ -137,4 +144,33 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandVirtual
     }
 
     return row;
+}
+
+void Zanshin::Test::StandardModelBuilderBehavior::setMetadataCreationEnabled(bool enabled)
+{
+    m_metadataCreationEnabled = enabled;
+}
+
+bool Zanshin::Test::StandardModelBuilderBehavior::isMetadataCreationEnabled()
+{
+    return m_metadataCreationEnabled;
+}
+
+void Zanshin::Test::StandardModelBuilderBehavior::addTodoMetadata(QStandardItem *item, const QString &parentUid, const QString &uid, TodoTag todoTag)
+{
+    if (m_metadataCreationEnabled) {
+        item->setData(QVariant::fromValue(parentUid), Zanshin::ParentUidRole);
+        item->setData(QVariant::fromValue(uid), Zanshin::UidRole);
+        if (todoTag==ProjectTag || todoTag==ReferencedTag) {
+            item->setData(QVariant::fromValue((int)Zanshin::ProjectTodo), Zanshin::ItemTypeRole);
+        } else {
+            item->setData(QVariant::fromValue((int)Zanshin::StandardTodo), Zanshin::ItemTypeRole);
+        }
+    }
+}
+void Zanshin::Test::StandardModelBuilderBehavior::addCollectionMetadata(QStandardItem *item)
+{
+    if (m_metadataCreationEnabled) {
+        item->setData(QVariant::fromValue((int)Zanshin::Collection), Zanshin::ItemTypeRole);
+    }
 }
