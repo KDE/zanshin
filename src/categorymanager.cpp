@@ -220,6 +220,11 @@ void CategoryManager::moveCategory(const QString &oldCategoryPath, const QString
 bool CategoryManager::moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType)
 {
     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    return moveTodoToCategory(item, categoryPath, parentType);
+}
+
+bool CategoryManager::moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType)
+{
     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
     if (!todo) {
         return false;

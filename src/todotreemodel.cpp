@@ -301,13 +301,7 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
 
             foreach (const Akonadi::Item &item, job->items()) {
                 if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-
-                    QModelIndexList indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
-                    if (indexes.isEmpty()) {
-                        return false;
-                    }
-                    QModelIndex index = indexes.first();
-                    TodoHelpers::moveTodoToProject(index, parentUid, parentType, collection);
+                    TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
                 }
             }
         }

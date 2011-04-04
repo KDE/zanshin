@@ -40,6 +40,7 @@ namespace TodoHelpers
     bool removeCategory(QWidget *parent, const QModelIndex &categoryIndex);
     bool removeTodoFromCategory(const QModelIndex &todo, const QString &category);
     bool moveTodoToProject(const QModelIndex &todo, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection);
+    bool moveTodoToProject(const Akonadi::Item &todo, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection);
     bool moveTodoToCategory(const QModelIndex &todo, const QString &category, const Zanshin::ItemType parentType);
     void moveCategory(const QString &oldCategoryPath, const QString &parentPath, const Zanshin::ItemType parentType);
     void renameCategory(const QString &oldCategoryPath, const QString &newCategoryName);

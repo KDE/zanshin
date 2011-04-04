@@ -28,6 +28,8 @@
 #include <KDE/Akonadi/Item>
 #include <KDE/Akonadi/ItemCreateJob>
 #include <KDE/Akonadi/ItemDeleteJob>
+#include <KDE/Akonadi/ItemFetchJob>
+#include <KDE/Akonadi/ItemFetchScope>
 #include <KDE/Akonadi/ItemModifyJob>
 #include <KDE/Akonadi/ItemMoveJob>
 #include <KDE/Akonadi/EntityTreeModel>
@@ -142,14 +144,52 @@ bool TodoHelpers::removeTodoFromCategory(const QModelIndex &index, const QString
     return CategoryManager::instance().removeTodoFromCategory(index, category);
 }
 
-void changeCollection(const Akonadi::Item &item, QModelIndexList children, const Akonadi::Collection &parentCollection, Akonadi::TransactionSequence *sequence)
+static Akonadi::Item::List collectChildItemsRecHelper(const Akonadi::Item &item, const Akonadi::Item::List &items)
 {
-    new Akonadi::ItemMoveJob(item, parentCollection, sequence);
-    foreach (QModelIndex child, children) {
-        QModelIndexList childList = child.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
-        Akonadi::Item item = child.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        changeCollection(item, childList, parentCollection, sequence);
+    Akonadi::Item::List result;
+
+    Akonadi::Item::List itemsToProcess = items;
+    Q_ASSERT(item.isValid() && item.hasPayload<KCalCore::Todo::Ptr>());
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+
+    for (Akonadi::Item::List::Iterator it = itemsToProcess.begin();
+         it!=itemsToProcess.end(); ++it) {
+        Akonadi::Item currentItem = *it;
+
+        if (!currentItem.hasPayload<KCalCore::Todo::Ptr>()
+         || currentItem == item) {
+            it = itemsToProcess.erase(it);
+            --it;
+
+        } else {
+           KCalCore::Todo::Ptr currentTodo = currentItem.payload<KCalCore::Todo::Ptr>();
+
+            if (currentTodo->relatedTo()==todo->uid()) {
+                it = itemsToProcess.erase(it);
+                --it;
+
+                result << currentItem;
+                result+= collectChildItemsRecHelper(currentItem, itemsToProcess);
+            }
+        }
     }
+
+    return result;
+}
+
+static Akonadi::Item::List collectChildItems(const Akonadi::Item &item)
+{
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item.parentCollection());
+    Akonadi::ItemFetchScope scope;
+    scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    scope.fetchFullPayload();
+    job->setFetchScope(scope);
+
+    if (!job->exec()) {
+        return Akonadi::Item::List();
+    }
+
+    return collectChildItemsRecHelper(item, job->items());
 }
 
 bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection)
@@ -170,21 +210,52 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
          return false;
     }
 
+    return moveTodoToProject(item, parentUid, parentType, parentCollection);
+}
+
+bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection)
+{
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+
+    if (!todo) {
+        return false;
+    }
+
+    if ((!parentUid.isEmpty() && todo->relatedTo()==parentUid)
+     || parentType == Zanshin::StandardTodo) {
+        return false;
+    }
+
+
     if (parentType == Zanshin::Inbox || parentType == Zanshin::Collection) {
         todo->setRelatedTo("");
     } else {
         todo->setRelatedTo(parentUid);
     }
 
+    const int itemCollectonId = item.parentCollection().id();
+    const int parentCollectionId = parentCollection.id();
+    const bool shouldMoveItems = (parentType != Zanshin::Inbox)
+                              && (itemCollectonId != parentCollectionId);
+
+    Akonadi::Item::List childItems;
+    if (shouldMoveItems) {
+        // Collect first, as the inner fetch job has to be
+        // done before any transaction is created
+        childItems = collectChildItems(item);
+    }
+
+    // Make the whole modification and move happen in a single transaction
     Akonadi::TransactionSequence *transaction = new Akonadi::TransactionSequence();
 
     new Akonadi::ItemModifyJob(item, transaction);
 
-    int itemCollectonId = item.parentCollection().id();
-    int parentCollectionId = parentCollection.id();
-    if ((parentType != Zanshin::Inbox) && (itemCollectonId != parentCollectionId)) {
-        QModelIndexList childList = index.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
-        changeCollection(item, childList, parentCollection, transaction);
+    if (shouldMoveItems) {
+        new Akonadi::ItemMoveJob(item, parentCollection, transaction);
+
+        if (!childItems.isEmpty()) {
+            new Akonadi::ItemMoveJob(childItems, parentCollection, transaction);
+        }
     }
     return true;
 }

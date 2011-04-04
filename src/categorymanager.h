@@ -51,6 +51,7 @@ public:
     void renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
     void moveCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
     bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType);
+    bool moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType);
 
     QStringList categories();
 

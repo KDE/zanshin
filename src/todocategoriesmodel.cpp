@@ -394,12 +394,7 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
 
                 foreach (const Akonadi::Item &item, job->items()) {
                     if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-                        QModelIndexList indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
-                        if (indexes.isEmpty()) {
-                            return false;
-                        }
-                        QModelIndex index = indexes.first();
-                        return CategoryManager::instance().moveTodoToCategory(index, parentCategory, parentType);
+                        CategoryManager::instance().moveTodoToCategory(item, parentCategory, parentType);
                     }
                 }
             }
