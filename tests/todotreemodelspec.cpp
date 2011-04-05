@@ -189,6 +189,57 @@ private slots:
             QCOMPARE(signalPayload.at(2).toInt(), expectedRow);
         }
     }
+
+    void shouldReparentBasedOnUids_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        ModelStructure outputStructure;
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t2;
+
+        QTest::newRow( "add todo" ) << sourceStructure << outputStructure;
+    }
+
+    void shouldReparentBasedOnUids()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //WHEN
+        //create treeModel
+        TodoTreeModel treeModel;
+        ModelTest t1(&treeModel);
+
+        //treeModel.setSourceModel(static_cast<QAbstractItemModel*>(&source));
+        treeModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(treeModel, output);
+    }
 };
 
 QTEST_KDEMAIN(TodoTreeModelSpec, GUI)
