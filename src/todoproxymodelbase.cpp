@@ -93,7 +93,16 @@ int TodoProxyModelBase::columnCount(const QModelIndex &parent) const
         return 1;
     }
 
-    return sourceModel()->columnCount(mapToSource(parent));
+    if (parent.isValid()) {
+        TodoNode *node = m_manager->nodeForIndex(parent);
+        if (node && node->children().size() > 0) {
+            return sourceModel()->columnCount();
+        } else {
+            return 0;
+        }
+    } else {
+        return sourceModel()->columnCount(mapToSource(parent));
+    }
 }
 
 QVariant TodoProxyModelBase::headerData(int section, Qt::Orientation orientation, int role) const
