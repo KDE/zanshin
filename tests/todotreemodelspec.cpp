@@ -240,6 +240,91 @@ private slots:
 
         QCOMPARE(treeModel, output);
     }
+
+    void shouldReactToSourceRowInserts_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "sourceParentPath" );
+        QTest::addColumn<ModelPath>( "proxyParentPath" );
+        QTest::addColumn<ModelStructure>( "insertedStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1;
+
+        ModelPath sourceParentPath = c1;
+        ModelPath proxyParentPath = c1 % t1;
+
+        ModelStructure insertedStructure;
+        insertedStructure << t2;
+
+        ModelStructure outputStructure;
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t2;
+
+        QTest::newRow( "add todo to project" ) << sourceStructure << sourceParentPath
+                                               << proxyParentPath << insertedStructure
+                                               << outputStructure;
+    }
+
+    void shouldReactToSourceRowInserts()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create treeModel
+        TodoTreeModel treeModel;
+        ModelTest t1(&treeModel);
+
+        treeModel.setSourceModel(&source);
+
+        // What row number will we expect?
+        QFETCH(ModelPath, proxyParentPath);
+        QModelIndex parentIndex = ModelUtils::locateItem(&treeModel, proxyParentPath);
+        const int expectedRow = treeModel.rowCount(parentIndex);
+
+        //WHEN
+        QFETCH(ModelPath, sourceParentPath);
+        QFETCH(ModelStructure, insertedStructure);
+
+        // Collect data to ensure we signalled the outside properly
+        QSignalSpy aboutToInsertSpy(&treeModel, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
+        QSignalSpy insertSpy(&treeModel, SIGNAL(rowsInserted(QModelIndex, int, int)));
+
+        ModelUtils::create(&source, insertedStructure, sourceParentPath);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(treeModel, output);
+
+        QCOMPARE(aboutToInsertSpy.size(), 1);
+        QCOMPARE(insertSpy.size(), 1);
+
+        QCOMPARE(aboutToInsertSpy.first().at(0).value<QModelIndex>(), parentIndex);
+        QCOMPARE(aboutToInsertSpy.first().at(1).toInt(), expectedRow);
+        QCOMPARE(aboutToInsertSpy.first().at(2).toInt(), expectedRow);
+
+        QCOMPARE(insertSpy.first().at(0).value<QModelIndex>(), parentIndex);
+        QCOMPARE(insertSpy.first().at(1).toInt(), expectedRow);
+        QCOMPARE(insertSpy.first().at(2).toInt(), expectedRow);
+    }
 };
 
 QTEST_KDEMAIN(TodoTreeModelSpec, GUI)
