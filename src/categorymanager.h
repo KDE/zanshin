@@ -31,6 +31,7 @@
 
 class QAbstractItemModel;
 class QModelIndex;
+class TodoCategoriesModel;
 
 class CategoryManager : public QObject
 {
@@ -45,11 +46,12 @@ public:
     void setModel(QAbstractItemModel *model);
     QAbstractItemModel *model() { return m_model; }
 
+    void addCategory(const QString &category, const QString &parentCategory);
     void addCategory(const QString &categoryPath);
-    bool removeCategory(const QString &categoryPath);
+    bool removeCategory(QWidget *parent, const QModelIndex &categoryIndex);
     bool removeTodoFromCategory(const QModelIndex &index, const QString &categoryPath);
     void renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
-    void moveCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
+    void moveCategory(const QString &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType);
     bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType);
     bool moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType);
 
@@ -68,6 +70,9 @@ private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
 
 private:
+    friend class TodoCategoriesModel;
+
+    bool removeCategory(const QString &categoryPath);
     void removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &categoryPath);
     void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
 

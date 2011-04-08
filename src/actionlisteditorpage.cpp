@@ -35,6 +35,7 @@
 #include <QtGui/QVBoxLayout>
 
 #include "actionlistdelegate.h"
+#include "categorymanager.h"
 #include "globaldefs.h"
 #include "todotreeview.h"
 #include "todohelpers.h"
@@ -355,7 +356,7 @@ void ActionListEditorPage::removeCurrentTodo()
             int type = index.data(Zanshin::ItemTypeRole).toInt();
             if (type==Zanshin::Category) {
                 QString category = index.data(Zanshin::CategoryPathRole).toString();
-                if (TodoHelpers::removeTodoFromCategory(current, category))
+                if (CategoryManager::instance().removeTodoFromCategory(current, category))
                     break;
             }
         }

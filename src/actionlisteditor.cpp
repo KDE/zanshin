@@ -281,7 +281,7 @@ void ActionListEditor::onRemoveAction()
             }
         }
     } else if (type==Zanshin::Category) {
-        if (TodoHelpers::removeCategory(this, currentIndex)) {
+        if (CategoryManager::instance().removeCategory(this, currentIndex)) {
             m_categoriesSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
         }
     } else {
@@ -329,9 +329,9 @@ void ActionListEditor::onMoveAction()
             int type = current.data(Zanshin::ItemTypeRole).toInt();
             QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
             if (type==Zanshin::Category) {
-                TodoHelpers::moveCategory(categoryPath, selectedId, dlg.selectedType());
+                CategoryManager::instance().moveCategory(categoryPath, selectedId, dlg.selectedType());
             } else {
-                TodoHelpers::moveTodoToCategory(current, selectedId, dlg.selectedType());
+                CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
             }
             if (dlg.selectedType()==Zanshin::Category && currentSelection==mapperIndex) {
                 m_categoriesSelection->setCurrentIndex(index, QItemSelectionModel::Select);

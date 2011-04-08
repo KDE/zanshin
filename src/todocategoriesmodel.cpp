@@ -303,10 +303,8 @@ void TodoCategoriesModel::moveCategoryNode(const QString &oldCategoryPath, const
     foreach (TodoNode* child, children) {
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
         if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
-            QString ChildPath = childIndex.data(Zanshin::CategoryPathRole).toString();
-            QString newChildPath = ChildPath;
-            newChildPath = newChildPath.replace(oldCategoryPath, newCategoryPath);
-            CategoryManager::instance().moveCategory(ChildPath, newChildPath);
+            QString childPath = childIndex.data(Zanshin::CategoryPathRole).toString();
+            CategoryManager::instance().moveCategory(childPath, newCategoryPath, Zanshin::Category);
         } else {
             CategoryManager::instance().moveTodoToCategory(childIndex, newCategoryPath, Zanshin::Category);
         }
@@ -400,16 +398,7 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
         sep += CategoryManager::pathSeparator();
         QStringList categoriesPath = QString::fromUtf8(categories.data()).split(sep);
         foreach (QString categoryPath, categoriesPath) {
-            QString CategoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
-            QString newCategoryPath;
-            if (parentType==Zanshin::CategoryRoot) {
-                newCategoryPath = CategoryName;
-            } else {
-                newCategoryPath = parentCategory + CategoryManager::pathSeparator() + CategoryName;
-            }
-            if (newCategoryPath != categoryPath) {
-                CategoryManager::instance().moveCategory(categoryPath, newCategoryPath);
-            }
+            CategoryManager::instance().moveCategory(categoryPath, parentCategory, parentType);
         }
     }
     return true;

@@ -31,6 +31,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
 
+#include "categorymanager.h"
 #include "globaldefs.h"
 #include "todohelpers.h"
 #include "todotreeview.h"
@@ -112,9 +113,9 @@ void SideBarPage::addNewItem()
         TodoHelpers::addProject(summary, parentProject);
 
     } else if (type==Zanshin::CategoryRoot) {
-        TodoHelpers::addCategory(summary);
+        CategoryManager::instance().addCategory(summary);
     } else if (type==Zanshin::Category) {
-        TodoHelpers::addCategory(summary, parentItem.data(Zanshin::CategoryPathRole).toString());
+        CategoryManager::instance().addCategory(summary, parentItem.data(Zanshin::CategoryPathRole).toString());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
@@ -130,7 +131,7 @@ void SideBarPage::removeCurrentItem()
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==Zanshin::Category) {
-        if (TodoHelpers::removeCategory(this, current)) {
+        if (CategoryManager::instance().removeCategory(this, current)) {
             m_treeView->setCurrentIndex(current.parent());
         }
     } else {

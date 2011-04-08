@@ -28,7 +28,9 @@
 #include <KDE/Akonadi/ItemModifyJob>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
-#include "kglobal.h"
+#include <KDE/KGlobal>
+#include <KDE/KLocale>
+#include <KDE/KMessageBox>
 
 #include "globaldefs.h"
 #include "todohelpers.h"
@@ -79,12 +81,41 @@ const QChar CategoryManager::pathSeparator()
     return QChar(0x2044);
 }
 
+void CategoryManager::addCategory(const QString &category, const QString &parentCategory)
+{
+    QString categoryPath;
+    if (parentCategory.isEmpty()) {
+        categoryPath = category;
+    } else {
+        categoryPath = parentCategory + CategoryManager::pathSeparator() + category;
+    }
+    addCategory(categoryPath);
+}
+
 void CategoryManager::addCategory(const QString &categoryPath)
 {
     if (!m_categories.contains(categoryPath)) {
         m_categories << categoryPath;
         emit categoryAdded(categoryPath);
     }
+}
+
+bool CategoryManager::removeCategory(QWidget *parent, const QModelIndex &categoryIndex)
+{
+    QString categoryName = categoryIndex.data().toString();
+    QString categoryPath = categoryIndex.data(Zanshin::CategoryPathRole).toString();
+    QString title;
+    QString text;
+
+    text = i18n("Do you really want to delete the category '%1'? All actions won't be associated to those categories anymore.", categoryName);
+    title = i18n("Delete Category");
+
+    int button = KMessageBox::questionYesNo(parent, text, title);
+    bool canRemove = (button==KMessageBox::Yes);
+
+    if (!canRemove) return false;
+
+    return removeCategory(categoryPath);
 }
 
 bool CategoryManager::removeCategory(const QString &categoryPath)
@@ -207,8 +238,20 @@ void CategoryManager::renameCategory(const QModelIndex &sourceIndex, const QStri
     }
 }
 
-void CategoryManager::moveCategory(const QString &oldCategoryPath, const QString &newCategoryPath)
+void CategoryManager::moveCategory(const QString &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType)
 {
+    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
+        return;
+    }
+
+    QString categoryName = oldCategoryPath.split(CategoryManager::pathSeparator()).last();
+    QString newCategoryPath;
+    if (parentType==Zanshin::Category) {
+        newCategoryPath = parentCategoryPath + CategoryManager::pathSeparator() + categoryName;
+    } else {
+        newCategoryPath = categoryName;
+    }
+
     if (oldCategoryPath == newCategoryPath) {
         return;
     }

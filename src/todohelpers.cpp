@@ -91,17 +91,6 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Item &parent
     job->start();
 }
 
-void TodoHelpers::addCategory(const QString &category, const QString &parentCategory)
-{
-    QString categoryPath;
-    if (parentCategory.isEmpty()) {
-        categoryPath = category;
-    } else {
-        categoryPath = parentCategory + CategoryManager::pathSeparator() + category;
-    }
-    CategoryManager::instance().addCategory(categoryPath);
-}
-
 void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
 {
     foreach (QModelIndex child, children) {
@@ -136,29 +125,6 @@ bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
     removeCurrentTodo(project, children, sequence);
     sequence->start();
     return true;
-}
-
-bool TodoHelpers::removeCategory(QWidget *parent, const QModelIndex &categoryIndex)
-{
-    QString category = categoryIndex.data().toString();
-    QString path = categoryIndex.data(Zanshin::CategoryPathRole).toString();
-    QString title;
-    QString text;
-
-    text = i18n("Do you really want to delete the category '%1'? All actions won't be associated to those contexts anymore.", category);
-    title = i18n("Delete Category");
-
-    int button = KMessageBox::questionYesNo(parent, text, title);
-    bool canRemove = (button==KMessageBox::Yes);
-
-    if (!canRemove) return false;
-
-    return CategoryManager::instance().removeCategory(path);
-}
-
-bool TodoHelpers::removeTodoFromCategory(const QModelIndex &index, const QString &category)
-{
-    return CategoryManager::instance().removeTodoFromCategory(index, category);
 }
 
 static Akonadi::Item::List collectChildItemsRecHelper(const Akonadi::Item &item, const Akonadi::Item::List &items)
@@ -277,30 +243,3 @@ bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &pa
     return true;
 }
 
-bool TodoHelpers::moveTodoToCategory(const QModelIndex &index, const QString &category, const Zanshin::ItemType parentType)
-{
-    return CategoryManager::instance().moveTodoToCategory(index, category, parentType);
-}
-
-void TodoHelpers::moveCategory(const QString &oldCategoryPath, const QString &parentPath, const Zanshin::ItemType parentType)
-{
-    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
-        return;
-    }
-
-    QString categoryName = oldCategoryPath.split(CategoryManager::pathSeparator()).last();
-    QString newCategoryPath;
-    if (parentType==Zanshin::Category) {
-        newCategoryPath = parentPath + CategoryManager::pathSeparator() + categoryName;
-    } else {
-        newCategoryPath = categoryName;
-    }
-
-    CategoryManager::instance().moveCategory(oldCategoryPath, newCategoryPath);
-}
-
-void TodoHelpers::renameCategory(const QString &oldCategoryPath, const QString &newCategoryName)
-{
-    QString newCategoryPath = oldCategoryPath.left(oldCategoryPath.lastIndexOf(CategoryManager::pathSeparator())+1) + newCategoryName;
-    CategoryManager::instance().renameCategory(oldCategoryPath, newCategoryPath);
-}
