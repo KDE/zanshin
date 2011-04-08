@@ -33,6 +33,8 @@
 
 namespace TodoHelpers
 {
+    Akonadi::Item fetchFullItem(const Akonadi::Item &item);
+
     void addProject(const QString &summary, const Akonadi::Collection &collection);
     void addProject(const QString &summary, const Akonadi::Item &parentProject);
     void addCategory(const QString &category, const QString &parentCategory = QString());

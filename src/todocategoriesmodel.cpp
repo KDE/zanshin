@@ -27,8 +27,6 @@
 #include <QtCore/QStringList>
 #include <QtCore/QMimeData>
 
-#include <KDE/Akonadi/ItemFetchJob>
-#include <KDE/Akonadi/ItemFetchScope>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
 #include <KDE/KIcon>
@@ -382,20 +380,14 @@ bool TodoCategoriesModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction
         foreach (const KUrl &url, urls) {
             const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
             if (urlItem.isValid()) {
-                Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(urlItem);
-                Akonadi::ItemFetchScope scope;
-                scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-                scope.fetchFullPayload();
-                job->setFetchScope(scope);
+                Akonadi::Item item = TodoHelpers::fetchFullItem(urlItem);
 
-                if ( !job->exec() ) {
+                if (!item.isValid()) {
                     return false;
                 }
 
-                foreach (const Akonadi::Item &item, job->items()) {
-                    if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-                        CategoryManager::instance().moveTodoToCategory(item, parentCategory, parentType);
-                    }
+                if (item.hasPayload<KCalCore::Todo::Ptr>()) {
+                    CategoryManager::instance().moveTodoToCategory(item, parentCategory, parentType);
                 }
             }
         }

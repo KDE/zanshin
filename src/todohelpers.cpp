@@ -41,6 +41,23 @@
 #include "categorymanager.h"
 #include "globaldefs.h"
 
+Akonadi::Item TodoHelpers::fetchFullItem(const Akonadi::Item &item)
+{
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item);
+    Akonadi::ItemFetchScope scope;
+    scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    scope.fetchFullPayload();
+    job->setFetchScope(scope);
+
+    if ( !job->exec() ) {
+        return Akonadi::Item();
+    }
+
+    Q_ASSERT(job->items().size()==1);
+
+    return job->items().first();
+}
+
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
 {
     KCalCore::Todo::Ptr todo(new KCalCore::Todo());

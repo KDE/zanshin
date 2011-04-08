@@ -27,8 +27,6 @@
 #include <QtCore/QStringList>
 
 #include <KDE/Akonadi/EntityTreeModel>
-#include <KDE/Akonadi/ItemFetchJob>
-#include <KDE/Akonadi/ItemFetchScope>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
 #include <KDE/KIcon>
@@ -289,20 +287,14 @@ bool TodoTreeModel::dropMimeData(const QMimeData *mimeData, Qt::DropAction actio
     foreach (const KUrl &url, urls) {
         const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
         if (urlItem.isValid()) {
-            Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(urlItem);
-            Akonadi::ItemFetchScope scope;
-            scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-            scope.fetchFullPayload();
-            job->setFetchScope(scope);
+            Akonadi::Item item = TodoHelpers::fetchFullItem(urlItem);
 
-            if ( !job->exec() ) {
+            if (!item.isValid()) {
                 return false;
             }
 
-            foreach (const Akonadi::Item &item, job->items()) {
-                if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-                    TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
-                }
+            if (item.hasPayload<KCalCore::Todo::Ptr>()) {
+                TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
             }
         }
     }

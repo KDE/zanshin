@@ -28,7 +28,6 @@
 #include "todonode.h"
 #include "todoproxymodelbase.h"
 
-class KJob;
 class TodoTreeModel : public TodoProxyModelBase
 {
     Q_OBJECT
