@@ -70,9 +70,8 @@ ModelStructure &ModelStructure::operator=(const ModelStructure &other)
 
 ModelStructure &ModelStructure::operator<<(const ModelNode &node)
 {
-    Q_ASSERT((node.indent()==m_latestIndent)
-          || (node.indent()==m_latestIndent+1)
-          || (node.indent()==m_latestIndent-1));
+    Q_ASSERT((node.indent()<=m_latestIndent)
+          || (node.indent()==m_latestIndent+1));
 
     if (node.indent()==m_latestIndent) {
         if (m_latestNode) {
@@ -88,8 +87,19 @@ ModelStructure &ModelStructure::operator<<(const ModelNode &node)
     } else if (node.indent()==m_latestIndent+1) {
         m_latestNode = new ModelStructureTreeNode(node, m_latestNode);
 
-    } else /*if (node.indent()==m_latestIndent-1)*/ {
-        m_latestNode = new ModelStructureTreeNode(node, m_latestNode->parent()->parent());
+    } else /*if (node.indent()<=m_latestIndent-1)*/ {
+        quint64 tmpIndent = m_latestIndent;
+        ModelStructureTreeNode *parent = m_latestNode->parent();
+        while (tmpIndent>node.indent()) {
+            tmpIndent--;
+            parent = parent->parent();
+        }
+
+        m_latestNode = new ModelStructureTreeNode(node, parent);
+
+        if (parent==0) { // We created a root
+            m_roots << m_latestNode;
+        }
     }
 
     m_latestIndent = node.indent();

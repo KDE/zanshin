@@ -1,4 +1,7 @@
-########### zanshin ###############
+# Even the test lib needs to be tested. ;-)
+add_subdirectory(tests)
+
+########### testlib ###############
 
 set(zanshin_testlib_SRCS
    c.cpp
