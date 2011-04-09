@@ -47,9 +47,6 @@ public:
     V();
     explicit V(VirtualType t);
 
-    V(const V &other);
-    V &operator=(const V &other);
-
     bool operator==(const V &other) const;
 
     VirtualType type;

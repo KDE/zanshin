@@ -31,19 +31,6 @@ ModelPath::ModelPath()
 {
 }
 
-ModelPath::ModelPath(const ModelPath &other)
-    : m_path(other.m_path)
-{
-
-}
-
-ModelPath &ModelPath::operator=(const ModelPath &other)
-{
-    ModelPath p(other);
-    std::swap(*this, p);
-    return *this;
-}
-
 ModelPath::ModelPath(const C &collection)
 {
     m_path << QVariant::fromValue(collection);

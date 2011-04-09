@@ -44,9 +44,6 @@ public:
     ModelNode(const T &todo, const Indent &indent = Indent());
     ModelNode(const V &virt, const Indent &indent = Indent());
 
-    ModelNode(const ModelNode &other);
-    ModelNode &operator=(const ModelNode &other);
-
     quint64 indent() const;
     QVariant entity() const;
 

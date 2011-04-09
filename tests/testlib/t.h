@@ -60,9 +60,6 @@ public:
       const QString &date = QString(),
       const QString &categories = QString());
 
-    T(const T &other);
-    T &operator=(const T &other);
-
     bool operator==(const T &other) const;
 
     qint64 id;

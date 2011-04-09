@@ -47,19 +47,6 @@ V::V(VirtualType t)
     }
 }
 
-V::V(const V &other)
-    : type(other.type)
-    , name(other.name)
-{
-}
-
-V &V::operator=(const V &other)
-{
-    V v(other);
-    std::swap(*this, v);
-    return *this;
-}
-
 bool V::operator==(const V &other) const
 {
     return type==other.type;

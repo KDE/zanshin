@@ -64,7 +64,8 @@ ModelStructure::ModelStructure(const ModelStructure &other)
 ModelStructure &ModelStructure::operator=(const ModelStructure &other)
 {
     ModelStructure s(other);
-    std::swap(*this, s);
+    std::swap(m_latestNode, s.m_latestNode);
+    std::swap(m_latestIndent, s.m_latestIndent);
     return *this;
 }
 

@@ -56,26 +56,6 @@ T::T(qint64 i,
     categories = c.split(QRegExp("\\s*,\\s*"), QString::SkipEmptyParts);
 }
 
-T::T(const T &other)
-    : id(other.id),
-      parentId(other.parentId),
-      uid(other.uid),
-      parentUid(other.parentUid),
-      state(other.state),
-      todoTag(other.todoTag),
-      summary(other.summary),
-      dueDate(other.dueDate),
-      categories(other.categories)
-{
-}
-
-T &T::operator=(const T &other)
-{
-    T t(other);
-    std::swap(*this, t);
-    return *this;
-}
-
 bool T::operator==(const T &other) const
 {
     return id==other.id

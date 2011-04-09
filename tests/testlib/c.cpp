@@ -36,18 +36,6 @@ C::C(qint64 i, qint64 pI, const QString &n)
 {
 }
 
-C::C(const C &other)
-    : id(other.id), parentId(other.parentId), name(other.name)
-{
-}
-
-C &C::operator=(const C &other)
-{
-    C c(other);
-    std::swap(*this, c);
-    return *this;
-}
-
 bool C::operator==(const C &other) const
 {
     return id==other.id

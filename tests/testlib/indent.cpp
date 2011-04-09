@@ -32,15 +32,3 @@ Indent::Indent(quint64 s)
 {
 }
 
-Indent::Indent(const Indent &other)
-    : size(other.size)
-{
-}
-
-Indent &Indent::operator=(const Indent &other)
-{
-    Indent id(other);
-    std::swap(*this, id);
-    return *this;
-}
-

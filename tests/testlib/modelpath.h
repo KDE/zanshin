@@ -43,8 +43,6 @@ public:
     typedef QList<ModelPath> List;
 
     ModelPath();
-    ModelPath(const ModelPath &other);
-    ModelPath &operator=(const ModelPath &other);
 
     ModelPath(const C &collection);
     ModelPath(const T &todo);

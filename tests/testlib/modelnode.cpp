@@ -49,19 +49,6 @@ ModelNode::ModelNode(const V &virt, const Indent &indent)
 {
 }
 
-ModelNode::ModelNode(const ModelNode &other)
-    : m_entity(other.m_entity),
-      m_indent(other.m_indent)
-{
-}
-
-ModelNode &ModelNode::operator=(const ModelNode &other)
-{
-    ModelNode node(other);
-    std::swap(*this, node);
-    return *this;
-}
-
 quint64 ModelNode::indent() const
 {
     return m_indent.size;

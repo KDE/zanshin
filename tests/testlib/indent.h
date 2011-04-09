@@ -36,9 +36,6 @@ struct Indent
 public:
     explicit Indent(quint64 size = 0);
 
-    Indent(const Indent &other);
-    Indent &operator=(const Indent &other);
-
     quint64 size;
 };
 

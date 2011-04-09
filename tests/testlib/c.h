@@ -40,9 +40,6 @@ public:
     C();
     explicit C(qint64 id, qint64 parentId, const QString &name);
 
-    C(const C &other);
-    C &operator=(const C &other);
-
     bool operator==(const C &other) const;
 
     qint64 id;
