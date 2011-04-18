@@ -27,6 +27,7 @@
 #include <QtCore/QVariant>
 
 #include <testlib/c.h>
+#include <testlib/cat.h>
 #include <testlib/t.h>
 #include <testlib/v.h>
 
@@ -46,11 +47,15 @@ public:
 
     ModelPath(const C &collection);
     ModelPath(const T &todo);
+    ModelPath(const Cat &category);
     ModelPath(const V &virt);
     ModelPath(const C &collection1, const C &collection2);
     ModelPath(const C &collection, const T &todo);
+    ModelPath(const Cat &category1, const Cat &category2);
+    ModelPath(const Cat &category, const T &todo);
     ModelPath(const ModelPath &path, const C &collection);
     ModelPath(const ModelPath &path, const T &todo);
+    ModelPath(const ModelPath &path, const Cat &category);
     ModelPath(const ModelPath &path1, const ModelPath &path2);
 
 private:
@@ -64,8 +69,11 @@ private:
 
 Zanshin::Test::ModelPath operator%(const Zanshin::Test::C &collection1, const Zanshin::Test::C &collection2);
 Zanshin::Test::ModelPath operator%(const Zanshin::Test::C &collection, const Zanshin::Test::T &todo);
+Zanshin::Test::ModelPath operator%(const Zanshin::Test::Cat &category1, const Zanshin::Test::Cat &category2);
+Zanshin::Test::ModelPath operator%(const Zanshin::Test::Cat &category, const Zanshin::Test::T &todo);
 Zanshin::Test::ModelPath operator%(const Zanshin::Test::ModelPath &path, const Zanshin::Test::C &collection);
 Zanshin::Test::ModelPath operator%(const Zanshin::Test::ModelPath &path, const Zanshin::Test::T &todo);
+Zanshin::Test::ModelPath operator%(const Zanshin::Test::ModelPath &path, const Zanshin::Test::Cat &category);
 Zanshin::Test::ModelPath operator%(const Zanshin::Test::ModelPath &path1, const Zanshin::Test::ModelPath &path2);
 
 Q_DECLARE_METATYPE(Zanshin::Test::ModelPath)

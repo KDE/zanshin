@@ -21,17 +21,29 @@
    USA.
 */
 
-#ifndef ZANSHIN_TESTLIB_DSL_H
-#define ZANSHIN_TESTLIB_DSL_H
+#include "cat.h"
 
-#include <testlib/c.h>
-#include <testlib/cat.h>
-#include <testlib/indent.h>
-#include <testlib/modelnode.h>
-#include <testlib/modelpath.h>
-#include <testlib/modelstructure.h>
-#include <testlib/t.h>
-#include <testlib/v.h>
+#include <algorithm>
 
-#endif
+using namespace Zanshin::Test;
+
+Cat::Cat()
+{
+}
+
+Cat::Cat(const QString &n)
+    : name(n)
+{
+}
+
+Cat::Cat(const QString &pP, const QString &n)
+    : parentPath(pP), name(n)
+{
+}
+
+bool Cat::operator==(const Cat &other) const
+{
+    return parentPath==other.parentPath
+        && name==other.name;
+}
 

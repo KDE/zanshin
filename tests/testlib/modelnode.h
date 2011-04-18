@@ -27,6 +27,7 @@
 #include <QtCore/QVariant>
 
 #include <testlib/c.h>
+#include <testlib/cat.h>
 #include <testlib/indent.h>
 #include <testlib/t.h>
 #include <testlib/v.h>
@@ -42,6 +43,7 @@ public:
     ModelNode();
     ModelNode(const C &collection, const Indent &indent = Indent());
     ModelNode(const T &todo, const Indent &indent = Indent());
+    ModelNode(const Cat &category, const Indent &indent = Indent());
     ModelNode(const V &virt, const Indent &indent = Indent());
 
     quint64 indent() const;
@@ -57,6 +59,7 @@ private:
 
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::C &collection);
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::T &todo);
+Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::Cat &category);
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::V &virt);
 
 Q_DECLARE_METATYPE(Zanshin::Test::ModelNode)

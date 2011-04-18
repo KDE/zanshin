@@ -21,17 +21,37 @@
    USA.
 */
 
-#ifndef ZANSHIN_TESTLIB_DSL_H
-#define ZANSHIN_TESTLIB_DSL_H
+#ifndef ZANSHIN_TESTLIB_CAT_H
+#define ZANSHIN_TESTLIB_CAT_H
 
-#include <testlib/c.h>
-#include <testlib/cat.h>
-#include <testlib/indent.h>
-#include <testlib/modelnode.h>
-#include <testlib/modelpath.h>
-#include <testlib/modelstructure.h>
-#include <testlib/t.h>
-#include <testlib/v.h>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+
+namespace Zanshin
+{
+namespace Test
+{
+
+struct Cat // Stands for category
+{
+public:
+    typedef QList<Cat> List;
+
+    Cat();
+    explicit Cat(const QString &name);
+    Cat(const QString &parentPath, const QString &name);
+
+    bool operator==(const Cat &other) const;
+
+    QString parentPath;
+    QString name;
+};
+
+} // namespace Test
+} // namespace Zanshin
+
+Q_DECLARE_METATYPE(Zanshin::Test::Cat)
+Q_DECLARE_METATYPE(Zanshin::Test::Cat::List)
 
 #endif
 

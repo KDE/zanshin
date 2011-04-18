@@ -41,6 +41,11 @@ ModelPath::ModelPath(const T &todo)
     m_path << QVariant::fromValue(todo);
 }
 
+ModelPath::ModelPath(const Cat &category)
+{
+    m_path << QVariant::fromValue(category);
+}
+
 ModelPath::ModelPath(const V &virt)
 {
     m_path << QVariant::fromValue(virt);
@@ -58,6 +63,18 @@ ModelPath::ModelPath(const C &collection, const T &todo)
            << QVariant::fromValue(todo);
 }
 
+ModelPath::ModelPath(const Cat &category1, const Cat &category2)
+{
+    m_path << QVariant::fromValue(category1)
+           << QVariant::fromValue(category2);
+}
+
+ModelPath::ModelPath(const Cat &category, const T &todo)
+{
+    m_path << QVariant::fromValue(category)
+           << QVariant::fromValue(todo);
+}
+
 ModelPath::ModelPath(const ModelPath &path, const C &collection)
 {
     m_path = path.m_path;
@@ -68,6 +85,12 @@ ModelPath::ModelPath(const ModelPath &path, const T &todo)
 {
     m_path = path.m_path;
     m_path << QVariant::fromValue(todo);
+}
+
+ModelPath::ModelPath(const ModelPath &path, const Cat &category)
+{
+    m_path = path.m_path;
+    m_path << QVariant::fromValue(category);
 }
 
 ModelPath::ModelPath(const ModelPath &path1, const ModelPath &path2)
@@ -83,24 +106,35 @@ ModelPath operator%(const C &collection1, const C &collection2)
 ModelPath operator%(const C &collection, const T &todo)
 {
     return ModelPath(collection, todo);
+}
 
+ModelPath operator%(const Cat &category1, const Cat &category2)
+{
+    return ModelPath(category1, category2);
+}
+
+ModelPath operator%(const Cat &category, const T &todo)
+{
+    return ModelPath(category, todo);
 }
 
 ModelPath operator%(const ModelPath &path, const C &collection)
 {
     return ModelPath(path, collection);
-
 }
 
 ModelPath operator%(const ModelPath &path, const T &todo)
 {
-
     return ModelPath(path, todo);
+}
+
+ModelPath operator%(const ModelPath &path, const Cat &category)
+{
+    return ModelPath(path, category);
 }
 
 ModelPath operator%(const ModelPath &path1, const ModelPath &path2)
 {
-
     return ModelPath(path1, path2);
 }
 

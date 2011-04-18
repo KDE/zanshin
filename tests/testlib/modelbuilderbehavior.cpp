@@ -105,6 +105,23 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
     return row;
 }
 
+QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCategory(const Cat &c)
+{
+    QList<QStandardItem*> row;
+
+    QStandardItem *item = new QStandardItem(c.name);
+    addCategoryMetadata(item);
+    row << item;
+
+    for (int i=0; i<4; i++) {
+        item = new QStandardItem;
+        addCategoryMetadata(item);
+        row << item;
+    }
+
+    return row;
+}
+
 QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCollection(const C &c)
 {
     Akonadi::Collection col(c.id);
@@ -169,9 +186,18 @@ void Zanshin::Test::StandardModelBuilderBehavior::addTodoMetadata(QStandardItem 
         }
     }
 }
+
+void Zanshin::Test::StandardModelBuilderBehavior::addCategoryMetadata(QStandardItem *item)
+{
+    if (m_metadataCreationEnabled) {
+        item->setData(QVariant::fromValue((int)Zanshin::Category), Zanshin::ItemTypeRole);
+    }
+}
+
 void Zanshin::Test::StandardModelBuilderBehavior::addCollectionMetadata(QStandardItem *item)
 {
     if (m_metadataCreationEnabled) {
         item->setData(QVariant::fromValue((int)Zanshin::Collection), Zanshin::ItemTypeRole);
     }
 }
+

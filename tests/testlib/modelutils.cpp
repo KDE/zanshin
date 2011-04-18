@@ -55,6 +55,12 @@ QModelIndex ModelUtils::locateItem(QAbstractItemModel *model, const ModelPath &r
                 if (c1==c2) {
                     found = true;
                 }
+            } else if (variant.canConvert<Cat>()) {
+                Cat cat1 = variant.value<Cat>();
+                Cat cat2 = pathPart.value<Cat>();
+                if (cat1==cat2) {
+                    found = true;
+                }
             } else {
                 Q_ASSERT(variant.canConvert<V>());
                 V v1 = variant.value<V>();
@@ -131,6 +137,9 @@ QList<QStandardItem*> ModelUtils::createItem(const ModelStructureTreeNode *node,
     } else if (variant.canConvert<T>()) {
         T t = variant.value<T>();
         row = behavior->expandTodo(t);
+    } else if (variant.canConvert<Cat>()) {
+        Cat cat = variant.value<Cat>();
+        row = behavior->expandCategory(cat);
     } else {
         V v = variant.value<V>();
         row = behavior->expandVirtual(v);

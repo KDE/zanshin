@@ -5,6 +5,7 @@ add_subdirectory(tests)
 
 set(zanshin_testlib_SRCS
    c.cpp
+   cat.cpp
    indent.cpp
    modelbuilderbehavior.cpp
    modelnode.cpp

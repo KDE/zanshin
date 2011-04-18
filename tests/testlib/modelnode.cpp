@@ -43,6 +43,12 @@ ModelNode::ModelNode(const T &todo, const Indent &indent)
 {
 }
 
+ModelNode::ModelNode(const Cat &category, const Indent &indent)
+    : m_entity(QVariant::fromValue(category)),
+      m_indent(indent)
+{
+}
+
 ModelNode::ModelNode(const V &virt, const Indent &indent)
     : m_entity(QVariant::fromValue(virt)),
       m_indent(indent)
@@ -67,6 +73,11 @@ ModelNode operator+(const Indent& indent, const C &collection)
 ModelNode operator+(const Indent& indent, const T &todo)
 {
     return ModelNode(todo, indent);
+}
+
+ModelNode operator+(const Indent& indent, const Cat &category)
+{
+    return ModelNode(category, indent);
 }
 
 ModelNode operator+(const Indent& indent, const V &virt)
