@@ -318,7 +318,7 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
         break;
 
     case Zanshin::Category:
-        category = current.data(Qt::EditRole).toString();
+        category = current.data(Zanshin::CategoryPathRole).toString();
         // fallthrough
     case Zanshin::Inbox:
     case Zanshin::CategoryRoot:
