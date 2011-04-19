@@ -291,12 +291,6 @@ void ActionListEditor::onRemoveAction()
 
 void ActionListEditor::onMoveAction()
 {
-    QModelIndex current = currentPage()->selectionModel()->currentIndex();
-
-    if (!current.isValid()) {
-        return;
-    }
-
     QAbstractItemModel *model;
     QModelIndex currentSelection;
     if (currentPage()->mode()==Zanshin::ProjectMode) {
@@ -307,36 +301,43 @@ void ActionListEditor::onMoveAction()
         currentSelection = m_categoriesSelection->currentIndex();
     }
 
-    QModelIndex mapperIndex;
-    if (currentSelection.isValid()) {
-        KModelIndexProxyMapper mapper(currentSelection.model(), current.model());
-        mapperIndex = mapper.mapRightToLeft(current);
-    }
-
     QuickSelectDialog dlg(this, model, currentPage()->mode(),
                           QuickSelectDialog::MoveAction);
     if (dlg.exec()==QDialog::Accepted) {
         QString selectedId = dlg.selectedId();
         QModelIndex index = dlg.selectedIndex();
-        if (currentPage()->mode()==Zanshin::ProjectMode) {
-            TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
-            if (dlg.selectedType()==Zanshin::ProjectTodo && currentSelection==mapperIndex) {
-                m_projectSelection->setCurrentIndex(index, QItemSelectionModel::Select);
-            } else {
-                currentPage()->selectSiblingIndex(current);
-            }
-        } else {
-            int type = current.data(Zanshin::ItemTypeRole).toInt();
-            QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
-            if (type==Zanshin::Category) {
-                CategoryManager::instance().moveCategory(categoryPath, selectedId, dlg.selectedType());
-            } else {
-                CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
-            }
-            if (dlg.selectedType()==Zanshin::Category && currentSelection==mapperIndex) {
-                m_categoriesSelection->setCurrentIndex(index, QItemSelectionModel::Select);
-            } else {
-                currentPage()->selectSiblingIndex(current);
+
+        QModelIndexList list = currentPage()->selectionModel()->selectedIndexes();
+        if (currentSelection.isValid() && !list.isEmpty()) {
+            KModelIndexProxyMapper mapper(currentSelection.model(), list.first().model());
+            foreach (QModelIndex current, list) {
+                if (!current.isValid()) {
+                    return;
+                }
+
+                QModelIndex mapperIndex = mapper.mapRightToLeft(current);
+
+                if (currentPage()->mode()==Zanshin::ProjectMode) {
+                    TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
+                    if (dlg.selectedType()==Zanshin::ProjectTodo && currentSelection==mapperIndex) {
+                        m_projectSelection->setCurrentIndex(index, QItemSelectionModel::Select);
+                    } else {
+                        currentPage()->selectSiblingIndex(current);
+                    }
+                } else {
+                    int type = current.data(Zanshin::ItemTypeRole).toInt();
+                    QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
+                    if (type==Zanshin::Category) {
+                        CategoryManager::instance().moveCategory(categoryPath, selectedId, dlg.selectedType());
+                    } else {
+                        CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
+                    }
+                    if (dlg.selectedType()==Zanshin::Category && currentSelection==mapperIndex) {
+                        m_categoriesSelection->setCurrentIndex(index, QItemSelectionModel::Select);
+                    } else {
+                        currentPage()->selectSiblingIndex(current);
+                    }
+                }
             }
         }
     }
