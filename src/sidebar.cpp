@@ -88,12 +88,14 @@ void SideBar::setupToolBar()
 {
     QHBoxLayout *toolbarLayout = new QHBoxLayout;
     toolbarLayout->setAlignment(Qt::AlignRight);
+    static_cast<QBoxLayout*>(layout())->addLayout(toolbarLayout);
 
     QToolBar *projectBar = new QToolBar(this);
     projectBar->setIconSize(QSize(16, 16));
-    layout()->addWidget(projectBar);
     projectBar->addAction(m_add);
     projectBar->addAction(m_remove);
+
+    toolbarLayout->addWidget(projectBar);
 }
 
 void SideBar::setupActions(KActionCollection *ac)
