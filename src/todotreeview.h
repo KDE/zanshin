@@ -29,13 +29,15 @@
 class QDragMoveEvent;
 class QDropEvent;
 
-class TodoTreeView : public Akonadi::EntityTreeView {
+class TodoTreeView : public Akonadi::EntityTreeView
+{
     public:
         TodoTreeView(QWidget *parent = 0);
     protected:
         virtual void dragMoveEvent(QDragMoveEvent *event);
         virtual void dropEvent(QDropEvent *event);
-
+        virtual QItemSelectionModel::SelectionFlags selectionCommand(const QModelIndex &index,
+                                                                     const QEvent *event = 0 ) const;
 };
 
 #endif //ZANSHIN_TODOTREEVIEW_H

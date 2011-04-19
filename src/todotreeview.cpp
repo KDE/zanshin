@@ -40,3 +40,12 @@ void TodoTreeView::dropEvent(QDropEvent *event)
     QTreeView::dropEvent(event);
 }
 
+QItemSelectionModel::SelectionFlags TodoTreeView::selectionCommand(const QModelIndex &index, const QEvent *event) const
+{
+    if (!index.isValid()) {
+        return QItemSelectionModel::NoUpdate;
+    } else {
+        return Akonadi::EntityTreeView::selectionCommand(index, event);
+    }
+}
+
