@@ -89,15 +89,23 @@ void TodoCategoriesModel::onSourceRemoveRows(const QModelIndex &sourceIndex, int
 {
     for (int i = begin; i <= end; ++i) {
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
-        QModelIndexList proxyIndexes = mapFromSourceAll(sourceChildIndex);
+        Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
 
-        foreach (const QModelIndex &proxyIndex, proxyIndexes) {
-            TodoNode *node = m_manager->nodeForIndex(proxyIndex);
+        if (type==Zanshin::Collection) {
+            onSourceRemoveRows(sourceChildIndex,
+                               0, sourceModel()->rowCount(sourceChildIndex)-1);
 
-            beginRemoveRows(proxyIndex.parent(), proxyIndex.row(), proxyIndex.row());
-            m_manager->removeNode(node);
-            delete node;
-            endRemoveRows();
+        } else {
+            QModelIndexList proxyIndexes = mapFromSourceAll(sourceChildIndex);
+
+            foreach (const QModelIndex &proxyIndex, proxyIndexes) {
+                TodoNode *node = m_manager->nodeForIndex(proxyIndex);
+
+                beginRemoveRows(proxyIndex.parent(), proxyIndex.row(), proxyIndex.row());
+                m_manager->removeNode(node);
+                delete node;
+                endRemoveRows();
+            }
         }
     }
 }
@@ -189,6 +197,13 @@ void TodoCategoriesModel::init()
         m_manager->insertNode(m_categoryRootNode);
 
         endInsertRows();
+    }
+
+
+    foreach (const QString &category, CategoryManager::instance().categories()) {
+        if (!m_categoryMap.contains(category)) {
+            createCategoryNode(category);
+        }
     }
 }
 
