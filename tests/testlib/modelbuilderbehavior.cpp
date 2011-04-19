@@ -79,27 +79,27 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
 
     QStandardItem *item = new QStandardItem(t.summary);
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
-    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
+    addTodoMetadata(item, t);
     row << item;
 
     item = new QStandardItem(t.parentUid);
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
-    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
+    addTodoMetadata(item, t);
     row << item;
 
     item = new QStandardItem(t.categories.join(", "));
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
-    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
+    addTodoMetadata(item, t);
     row << item;
 
     item = new QStandardItem(t.dueDate.toString());
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
-    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
+    addTodoMetadata(item, t);
     row << item;
 
     item = new QStandardItem;
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
-    addTodoMetadata(item, t.parentUid, t.uid, t.todoTag);
+    addTodoMetadata(item, t);
     row << item;
 
     return row;
@@ -156,12 +156,13 @@ bool Zanshin::Test::StandardModelBuilderBehavior::isMetadataCreationEnabled()
     return m_metadataCreationEnabled;
 }
 
-void Zanshin::Test::StandardModelBuilderBehavior::addTodoMetadata(QStandardItem *item, const QString &parentUid, const QString &uid, TodoTag todoTag)
+void Zanshin::Test::StandardModelBuilderBehavior::addTodoMetadata(QStandardItem *item, const T &todo)
 {
     if (m_metadataCreationEnabled) {
-        item->setData(QVariant::fromValue(parentUid), Zanshin::ParentUidRole);
-        item->setData(QVariant::fromValue(uid), Zanshin::UidRole);
-        if (todoTag==ProjectTag || todoTag==ReferencedTag) {
+        item->setData(todo.parentUid, Zanshin::ParentUidRole);
+        item->setData(todo.uid, Zanshin::UidRole);
+        item->setData(todo.categories, Zanshin::CategoriesRole);
+        if (todo.todoTag==ProjectTag || todo.todoTag==ReferencedTag) {
             item->setData(QVariant::fromValue((int)Zanshin::ProjectTodo), Zanshin::ItemTypeRole);
         } else {
             item->setData(QVariant::fromValue((int)Zanshin::StandardTodo), Zanshin::ItemTypeRole);

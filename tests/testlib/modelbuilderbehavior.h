@@ -62,7 +62,7 @@ public:
     bool isMetadataCreationEnabled();
 
 private:
-    void addTodoMetadata(QStandardItem*, const QString &parentUid, const QString &uid, TodoTag todoTag);
+    void addTodoMetadata(QStandardItem*, const T &todo);
     void addCollectionMetadata(QStandardItem*);
     bool m_metadataCreationEnabled;
 };
