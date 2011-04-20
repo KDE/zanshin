@@ -35,6 +35,7 @@
 #include <QtGui/QHeaderView>
 
 #include "actionlisteditor.h"
+#include "configdialog.h"
 #include "globaldefs.h"
 #include "sidebar.h"
 
@@ -100,6 +101,7 @@ void MainWindow::setupActions()
     action->setData(Zanshin::CategoriesMode);
     modeGroup->addAction(action);
 
+    ac->addAction(KStandardAction::Preferences, this, SLOT(showConfigDialog()));
     ac->addAction(KStandardAction::Quit, this, SLOT(close()));
 }
 
@@ -132,4 +134,10 @@ void MainWindow::onModeSwitch()
     KAction *action = static_cast<KAction*>(sender());
     m_editor->setMode((Zanshin::ApplicationMode)action->data().toInt());
     m_sidebar->setMode((Zanshin::ApplicationMode)action->data().toInt());
+}
+
+void MainWindow::showConfigDialog()
+{
+    ConfigDialog dialog(this);
+    dialog.exec();
 }

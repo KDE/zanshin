@@ -28,6 +28,7 @@ set(zanshin_SRCS
    actionlistdelegate.cpp
    actionlisteditor.cpp
    actionlisteditorpage.cpp
+   configdialog.cpp
    debugwindow.cpp
    kdateedit.cpp
    kdatepickerpopup.cpp

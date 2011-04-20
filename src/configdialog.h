@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,42 +21,30 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_CONFIGDIALOG_H
+#define ZANSHIN_CONFIGDIALOG_H
 
-#include <KDE/KXmlGuiWindow>
+#include <KDE/KDialog>
 
-class ActionListEditor;
-class ModelStack;
-class SideBar;
+namespace Akonadi
+{
+    class AgentInstanceWidget;
+}
 
-class MainWindow : public KXmlGuiWindow
+class ConfigDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
-
-protected slots:
-    void saveAutoSaveSettings();
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
+    ConfigDialog(QWidget *parent = 0);
 
 private slots:
-    void onModeSwitch();
-    void showConfigDialog();
+    void addResource();
+    void removeResource();
+    void configureResource();
 
 private:
-    void setupCentralWidget(ModelStack *models);
-    void setupSideBar(ModelStack *models);
-    void setupActions();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    SideBar *m_sidebar;
-    ActionListEditor *m_editor;
+    Akonadi::AgentInstanceWidget *m_agentInstanceWidget;
 };
 
 #endif
