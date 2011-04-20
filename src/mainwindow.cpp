@@ -47,7 +47,7 @@ MainWindow::MainWindow(ModelStack *models, QWidget *parent)
     setupCentralWidget(models);
     setupActions();
 
-    setupGUI(ToolBar | Keys | Save | Create);
+    setupGUI(QSize(1024, 600), ToolBar | Keys | Save | Create);
 
     restoreColumnsState();
 

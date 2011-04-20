@@ -57,7 +57,6 @@ public:
     void restoreColumnsState(const KConfigGroup &config, const QString &key);
 
     Zanshin::ApplicationMode mode();
-    void hideColumn(int column);
 
     void setCollectionColumnHidden(bool hidden);
 

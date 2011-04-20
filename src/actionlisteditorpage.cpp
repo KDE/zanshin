@@ -40,6 +40,8 @@
 #include "todotreeview.h"
 #include "todohelpers.h"
 
+static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
+
 class GroupLabellingProxyModel : public QSortFilterProxyModel
 {
 public:
@@ -264,6 +266,8 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
 {
     if (config.hasKey(key+"/Normal")) {
         m_normalStateCache = QByteArray::fromBase64(config.readEntry(key+"/Normal", QByteArray()));
+    } else {
+        m_normalStateCache = QByteArray::fromBase64(_z_defaultColumnStateCache);
     }
 
     if (config.hasKey(key+"/NoCollection")) {
@@ -359,18 +363,13 @@ void ActionListEditorPage::onAutoHideColumns()
 {
     switch (m_mode) {
     case Zanshin::ProjectMode:
-        hideColumn(1);
+        m_treeView->hideColumn(1);
+        m_treeView->showColumn(2);
         break;
     case Zanshin::CategoriesMode:
-        hideColumn(2);
+        m_treeView->showColumn(1);
+        m_treeView->hideColumn(2);
         break;
-    }
-}
-
-void ActionListEditorPage::hideColumn(int column)
-{
-    if (!m_treeView->isColumnHidden(column)) {
-        m_treeView->hideColumn(column);
     }
 }
 
