@@ -31,6 +31,7 @@
 #include <KDE/KLocale>
 #include <KDE/KMenuBar>
 
+#include <QtCore/QTimer>
 #include <QtGui/QDockWidget>
 #include <QtGui/QHeaderView>
 
@@ -51,6 +52,12 @@ MainWindow::MainWindow(ModelStack *models, QWidget *parent)
     restoreColumnsState();
 
     actionCollection()->action("project_mode")->trigger();
+
+    KConfigGroup config(KGlobal::config(), "General");
+    if (config.readEntry("firstRun", true)) {
+        QTimer::singleShot(0, this, SLOT(showConfigDialog()));
+        config.writeEntry("firstRun", false);
+    }
 }
 
 void MainWindow::setupCentralWidget(ModelStack *models)
