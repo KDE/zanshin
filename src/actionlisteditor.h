@@ -30,7 +30,6 @@
 #include "globaldefs.h"
 
 class ActionListEditorPage;
-class ActionListModel;
 class KAction;
 class KActionCollection;
 class KConfigGroup;
