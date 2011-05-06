@@ -28,12 +28,14 @@
 #include <QtTest/QSignalSpy>
 
 #include "todotreemodel.h"
+#include "todometadatamodel.h"
 #include "testlib/testlib.h"
 #include "testlib/modeltest.h"
 
 using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
+Q_DECLARE_METATYPE(QList<int>)
 
 class TodoTreeModelSpec : public QObject
 {
@@ -245,23 +247,27 @@ private slots:
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
         QTest::addColumn<ModelPath>( "sourceParentPath" );
-        QTest::addColumn<ModelPath>( "proxyParentPath" );
+        QTest::addColumn<ModelPath::List>( "proxyParentPathList" );
         QTest::addColumn<ModelStructure>( "insertedStructure" );
         QTest::addColumn<ModelStructure>( "outputStructure" );
+        QTest::addColumn<QList<int> >( "insertRows" );
 
         // Base items
         V inbox(Inbox);
         C c1(1, 0, "c1");
         T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
         T t2(2, 1, "t2", "t1", "t2");
+        T t3(3, 1, "t3", "t2", "t3");
 
         // Create the source structure once and for all
         ModelStructure sourceStructure;
         sourceStructure << c1
                         << _+t1;
 
+        ModelPath::List proxyParentPathList;
+
         ModelPath sourceParentPath = c1;
-        ModelPath proxyParentPath = c1 % t1;
+        proxyParentPathList << c1 % t1;
 
         ModelStructure insertedStructure;
         insertedStructure << t2;
@@ -272,9 +278,46 @@ private slots:
                         << _+t1
                         << __+t2;
 
+        QList<int> insertRows;
+        insertRows << 0;
+
         QTest::newRow( "add todo to project" ) << sourceStructure << sourceParentPath
-                                               << proxyParentPath << insertedStructure
-                                               << outputStructure;
+                                               << proxyParentPathList << insertedStructure
+                                               << outputStructure << insertRows;
+
+        sourceStructure.clear();
+        sourceStructure << c1;
+
+        sourceParentPath = c1;
+        proxyParentPathList.clear();
+        proxyParentPathList << c1
+                            << inbox
+                            << inbox
+                            << c1 % t1
+                            << c1 % t1 % t2;
+
+        insertedStructure.clear();
+        insertedStructure << t1
+                          << t3
+                          << t2;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t2
+                        << ___+t3;
+
+        insertRows.clear();
+        insertRows << 0
+                   << 0
+                   << 0
+                   << 0
+                   << 0;
+
+        QTest::newRow( "add todo before project" ) << sourceStructure << sourceParentPath
+                                                   << proxyParentPathList << insertedStructure
+                                                   << outputStructure << insertRows;
     }
 
     void shouldReactToSourceRowInserts()
@@ -286,16 +329,17 @@ private slots:
         QStandardItemModel source;
         ModelUtils::create(&source, sourceStructure);
 
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
         //create treeModel
         TodoTreeModel treeModel;
-        ModelTest t1(&treeModel);
+        ModelTest t2(&treeModel);
 
-        treeModel.setSourceModel(&source);
-
-        // What row number will we expect?
-        QFETCH(ModelPath, proxyParentPath);
-        QModelIndex parentIndex = ModelUtils::locateItem(&treeModel, proxyParentPath);
-        const int expectedRow = treeModel.rowCount(parentIndex);
+        treeModel.setSourceModel(&metadataModel);
 
         //WHEN
         QFETCH(ModelPath, sourceParentPath);
@@ -307,6 +351,14 @@ private slots:
 
         ModelUtils::create(&source, insertedStructure, sourceParentPath);
 
+        // What row number will we expect?
+        QFETCH(ModelPath::List, proxyParentPathList);
+        QFETCH(QList<int>, insertRows);
+        QModelIndexList parentIndexList;
+        foreach (ModelPath proxyParentPath, proxyParentPathList) {
+            parentIndexList << ModelUtils::locateItem(&treeModel, proxyParentPath);
+        }
+
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
@@ -314,16 +366,21 @@ private slots:
 
         QCOMPARE(treeModel, output);
 
-        QCOMPARE(aboutToInsertSpy.size(), 1);
-        QCOMPARE(insertSpy.size(), 1);
+        QCOMPARE(aboutToInsertSpy.size(), insertRows.size());
+        QCOMPARE(insertSpy.size(), insertRows.size());
 
-        QCOMPARE(aboutToInsertSpy.first().at(0).value<QModelIndex>(), parentIndex);
-        QCOMPARE(aboutToInsertSpy.first().at(1).toInt(), expectedRow);
-        QCOMPARE(aboutToInsertSpy.first().at(2).toInt(), expectedRow);
+        QCOMPARE(aboutToInsertSpy.size(), parentIndexList.size());
+        QCOMPARE(insertSpy.size(), parentIndexList.size());
 
-        QCOMPARE(insertSpy.first().at(0).value<QModelIndex>(), parentIndex);
-        QCOMPARE(insertSpy.first().at(1).toInt(), expectedRow);
-        QCOMPARE(insertSpy.first().at(2).toInt(), expectedRow);
+        for (int i=0; i<aboutToInsertSpy.size(); ++i) {
+            QCOMPARE(aboutToInsertSpy[i].at(0).value<QModelIndex>(), parentIndexList[i]);
+            QCOMPARE(aboutToInsertSpy[i].at(1).toInt(), insertRows[i]);
+            QCOMPARE(aboutToInsertSpy[i].at(2).toInt(), insertRows[i]);
+
+            QCOMPARE(insertSpy[i].at(0).value<QModelIndex>(), parentIndexList[i]);
+            QCOMPARE(insertSpy[i].at(1).toInt(), insertRows[i]);
+            QCOMPARE(insertSpy[i].at(2).toInt(), insertRows[i]);
+        }
     }
 };
 

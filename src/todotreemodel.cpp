@@ -134,10 +134,69 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
             QString uid = child->data(0, Zanshin::UidRole).toString();
             //kDebug() << "Adding node:" << uid << parentUid;
             uidHash[uid] = child;
+
+            if (type==Zanshin::ProjectTodo) {
+                m_collectionToUidsHash[collectionNode] = uidHash;
+                //find and reparent children if possible
+                QList<TodoNode*> children = findChildNodes(uid, m_inboxNode);
+                foreach (TodoNode *childNode, children) {
+                    reparentTodo(childNode);
+                }
+                uidHash = m_collectionToUidsHash[collectionNode];
+            }
         }
     }
 
     m_collectionToUidsHash[collectionNode] = uidHash;
+}
+
+QList<TodoNode*> TodoTreeModel::collectChildrenNode(TodoNode *root)
+{
+    QList<TodoNode*> children;
+    foreach (TodoNode *child, root->children()) {
+        children << child;
+        children << collectChildrenNode(child);
+    }
+    return children;
+}
+
+QModelIndexList TodoTreeModel::mapNodesToSource(QList<TodoNode*> nodes)
+{
+    QModelIndexList indexes;
+    foreach (TodoNode* nodes, nodes) {
+        indexes << nodes->rowSourceIndex();
+    }
+    return indexes;
+}
+
+QList<TodoNode*> TodoTreeModel::findChildNodes(const QString &parentUid, const TodoNode *root)
+{
+    QList<TodoNode*> children;
+    if (!root) {
+        return children;
+    }
+
+    foreach (TodoNode *node, root->children()) {
+        if (node->data(0, Zanshin::ParentUidRole).toString()==parentUid) {
+            children << node;
+        }
+    }
+    return children;
+}
+
+void TodoTreeModel::reparentTodo(TodoNode *node)
+{
+    QList<TodoNode*> nodes;
+    nodes << node;
+    nodes << collectChildrenNode(node);
+
+    QModelIndexList indexes;
+    indexes << mapNodesToSource(nodes);
+
+    destroyBranch(node);
+    foreach (const QModelIndex &index, indexes) {
+        onSourceInsertRows(index.parent(), index.row(), index.row());
+    }
 }
 
 void TodoTreeModel::onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end)
@@ -176,13 +235,21 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
         QString oldParentUid = node->parent()->data(0, Zanshin::UidRole).toString();
         QString newParentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
 
+        TodoNode *oldParentNode = node->parent();
+
+        if (oldParentNode) {
+            Zanshin::ItemType type = (Zanshin::ItemType) oldParentNode->data(0, Zanshin::ItemTypeRole).toInt();
+            if (type==Zanshin::Inbox) {
+                reparentTodo(node);
+                continue;
+            } else if (type==Zanshin::Collection) {
+                continue;
+            }
+        }
+
         // If the parent didn't change we just reemit
         if (oldParentUid==newParentUid) {
             emit dataChanged(mapFromSource(sourceChildIndex), mapFromSource(sourceChildIndex));
-            continue;
-        }
-
-        if (oldParentUid.isEmpty()) {
             continue;
         }
 
@@ -209,6 +276,12 @@ void TodoTreeModel::destroyBranch(TodoNode *root)
 {
     foreach (TodoNode *child, root->children()) {
         destroyBranch(child);
+    }
+
+    // Remove the uid item from all the maps
+    QString uid = root->data(0, Zanshin::UidRole).toString();
+    foreach (TodoNode* node, m_collectionToUidsHash.keys()) {
+        m_collectionToUidsHash[node].remove(uid);
     }
 
     QModelIndex proxyParentIndex = m_manager->indexForNode(root->parent(), 0);

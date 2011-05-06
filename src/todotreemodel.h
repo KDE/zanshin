@@ -51,6 +51,10 @@ private:
     virtual TodoNode *createInbox() const;
     void destroyBranch(TodoNode *root);
     void createChild(const QModelIndex &child, const QModelIndex &parent, int row);
+    QList<TodoNode*> collectChildrenNode(TodoNode *root);
+    QModelIndexList mapNodesToSource(QList<TodoNode*> nodes);
+    QList<TodoNode*> findChildNodes(const QString &parentUid, const TodoNode *root);
+    void reparentTodo(TodoNode *node);
 
     QHash<TodoNode*, QHash<QString, TodoNode*> > m_collectionToUidsHash;
 };
