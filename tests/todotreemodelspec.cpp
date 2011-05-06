@@ -258,6 +258,9 @@ private slots:
         T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
         T t2(2, 1, "t2", "t1", "t2");
         T t3(3, 1, "t3", "t2", "t3");
+        T t4(4, 1, "t4", "QString", "t4");
+        T t5(5, 1, "t5", "t4", "t5");
+        T t6(6, 1, "t6", "t5", "t6");
 
         // Create the source structure once and for all
         ModelStructure sourceStructure;
@@ -318,6 +321,58 @@ private slots:
         QTest::newRow( "add todo before project" ) << sourceStructure << sourceParentPath
                                                    << proxyParentPathList << insertedStructure
                                                    << outputStructure << insertRows;
+
+        sourceStructure.clear();
+        sourceStructure << c1;
+
+        sourceParentPath = c1;
+
+        proxyParentPathList.clear();
+        proxyParentPathList << inbox
+                            << c1
+                            << c1 % t1
+                            << inbox
+                            << c1
+                            << c1 % t4
+                            << c1 % t1 % t2
+                            << c1
+                            << c1 % t4
+                            << c1 % t4 % t5;
+
+        insertedStructure.clear();
+        insertedStructure << t2
+                          << t1
+                          << t5
+                          << t6
+                          << t3
+                          << t4;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t2
+                        << ___+t3
+                        << _+t4
+                        << __+t5
+                        << ___+t6;
+
+        insertRows.clear();
+        insertRows << 0
+                   << 0
+                   << 0
+                   << 0
+                   << 1
+                   << 0
+                   << 0
+                   << 2
+                   << 0
+                   << 0;
+
+        QTest::newRow( "add todos in random order" )  << sourceStructure << sourceParentPath
+                                                      << proxyParentPathList << insertedStructure
+                                                      << outputStructure << insertRows;
+
     }
 
     void shouldReactToSourceRowInserts()

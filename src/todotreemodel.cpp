@@ -142,6 +142,12 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
                 foreach (TodoNode *childNode, children) {
                     reparentTodo(childNode);
                 }
+
+                children = findChildNodes(uid, collectionNode);
+                foreach (TodoNode *childNode, children) {
+                    reparentTodo(childNode);
+                }
+
                 uidHash = m_collectionToUidsHash[collectionNode];
             }
         }
