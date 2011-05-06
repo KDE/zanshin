@@ -162,6 +162,10 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
 
         TodoNode *node = m_manager->nodeForSourceIndex(sourceChildIndex);
 
+        if (!node) {
+            continue;
+        }
+
         // Collections are just reemited
         if (node->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Collection) {
             emit dataChanged(mapFromSource(sourceChildIndex),
@@ -175,6 +179,10 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
         // If the parent didn't change we just reemit
         if (oldParentUid==newParentUid) {
             emit dataChanged(mapFromSource(sourceChildIndex), mapFromSource(sourceChildIndex));
+            continue;
+        }
+
+        if (oldParentUid.isEmpty()) {
             continue;
         }
 

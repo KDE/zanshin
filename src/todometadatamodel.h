@@ -25,6 +25,7 @@
 #define ZANSHIN_TODOMETADATAMODEL_H
 
 #include <QtGui/QSortFilterProxyModel>
+#include <QtCore/QPersistentModelIndex>
 
 #include <KDE/KCalCore/Todo>
 
@@ -66,6 +67,7 @@ private:
 
     QHash<QString, QString> m_parentMap;
     QHash<QString, QStringList> m_childrenMap;
+    QHash<QString, QPersistentModelIndex> m_indexMap;
 };
 
 #endif

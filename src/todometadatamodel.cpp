@@ -138,6 +138,8 @@ void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin,
 
         QString uid = todo->uid();
 
+        m_indexMap[uid] = child;
+
         QString relatedUid = todo->relatedTo();
 
         if (relatedUid.isEmpty()) {
@@ -146,6 +148,13 @@ void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin,
 
         m_parentMap[uid] = relatedUid;
         m_childrenMap[relatedUid] << uid;
+
+        // Emit dataChanged to notify that the todo is a project todo
+        QModelIndex parentIndex = m_indexMap[relatedUid];
+        if (parentIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo) {
+            emit dataChanged(parentIndex, parentIndex);
+        }
+
     }
 }
 
@@ -165,6 +174,7 @@ void TodoMetadataModel::onSourceRemoveRows(const QModelIndex &parent, int begin,
 
         m_parentMap.remove(uid);
         m_childrenMap[relatedUid].removeAll(uid);
+        m_indexMap.remove(uid);
     }
 }
 
@@ -181,7 +191,11 @@ void TodoMetadataModel::onSourceDataChanged(const QModelIndex &begin, const QMod
             QString uid = todo->uid();
 
             QString newRelatedUid = todo->relatedTo();
-            QString oldRelatedUid = m_parentMap[uid];
+            QString oldRelatedUid;
+            if (m_parentMap.contains(uid)) {
+                oldRelatedUid = m_parentMap[uid];
+            }
+
 
             if (newRelatedUid!=oldRelatedUid) {
                 m_parentMap[uid] = newRelatedUid;
