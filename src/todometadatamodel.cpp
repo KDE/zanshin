@@ -182,7 +182,8 @@ void TodoMetadataModel::onSourceDataChanged(const QModelIndex &begin, const QMod
 {
     for (int row = begin.row(); row <= end.row(); ++row) {
         for (int column = begin.column(); column <= end.column(); ++column) {
-            KCalCore::Todo::Ptr todo = todoFromIndex( index(row, column, begin.parent()) );
+            QModelIndex child = index(row, column, begin.parent());
+            KCalCore::Todo::Ptr todo = todoFromIndex(child);
 
             if (!todo) {
                 continue;
@@ -201,6 +202,12 @@ void TodoMetadataModel::onSourceDataChanged(const QModelIndex &begin, const QMod
                 m_parentMap[uid] = newRelatedUid;
                 m_childrenMap[newRelatedUid] << uid;
                 m_childrenMap[oldRelatedUid].removeAll(uid);
+            }
+
+            if (child.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo) {
+                foreach (const QModelIndex &index, childIndexesFromIndex(child)) {
+                    emit dataChanged(index, index);
+                }
             }
         }
     }
