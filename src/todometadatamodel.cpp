@@ -50,6 +50,10 @@ TodoMetadataModel::~TodoMetadataModel()
 
 Qt::ItemFlags TodoMetadataModel::flags(const QModelIndex &index) const
 {
+    if (!sourceModel()) {
+        return Qt::NoItemFlags;
+    }
+
     Qt::ItemFlags flags = sourceModel()->flags(mapToSource(index));
 
     if (index.isValid()) {
@@ -68,6 +72,10 @@ Qt::ItemFlags TodoMetadataModel::flags(const QModelIndex &index) const
 
 QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
 {
+    if (!sourceModel()) {
+        return QVariant();
+    }
+
     Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
     if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
