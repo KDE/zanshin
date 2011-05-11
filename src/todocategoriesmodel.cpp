@@ -173,10 +173,22 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
             }
         }
 
-        foreach (const QString &newCategory, newCategories) {
-            TodoNode *parent = m_categoryMap[newCategory];
-            Q_ASSERT(parent);
-            addChildNode(sourceIndex, parent);
+        if (!sourceIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo) {
+            foreach (const QString &newCategory, newCategories) {
+                TodoNode *parent = m_categoryMap[newCategory];
+                Q_ASSERT(parent);
+                addChildNode(sourceIndex, parent);
+            }
+        } else {
+            QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
+            foreach (TodoNode *node, nodes) {
+                TodoNode *parentNode = node->parent();
+                int oldRow = parentNode->children().indexOf(node);
+                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
+                m_manager->removeNode(node);
+                delete node;
+                endRemoveRows();
+            }
         }
     }
 }
