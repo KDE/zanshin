@@ -281,12 +281,21 @@ QStringList TodoMetadataModel::ancestorsUidFromItem(const Akonadi::Item &item) c
 
 QStringList TodoMetadataModel::categoriesFromItem(const Akonadi::Item &item) const
 {
+    QStringList ancestors = ancestorsUidFromItem(item);
+    QStringList categories;
+    foreach (QString uid, ancestors) {
+        const QModelIndex &index = m_indexMap[uid];
+        KCalCore::Todo::Ptr todo = todoFromIndex(index);
+        if (todo) {
+            categories << todo->categories();
+        }
+    }
     KCalCore::Todo::Ptr todo = todoFromItem(item);
     if (todo) {
-        return todo->categories();
-    } else {
-        return QStringList();
+        categories << todo->categories();
     }
+    categories.removeDuplicates();
+    return categories;
 }
 
 QStringList TodoMetadataModel::childUidsFromItem(const Akonadi::Item &item) const
