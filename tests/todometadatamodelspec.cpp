@@ -165,6 +165,65 @@ private slots:
 
         QCOMPARE(index.data(Zanshin::UidRole).toString(), uid);
     }
+
+    void shouldRetrieveItemParentUid_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<QString>( "parentUid" );
+
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1");
+        T t2(2, 1, "t2", "t1", "t2");
+
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        QString parentUid;
+        QTest::newRow( "check without parent" ) << sourceStructure << parentUid;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1;
+
+        QTest::newRow( "check parentUid with collection as parent" ) << sourceStructure << parentUid;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        parentUid = "t1";
+
+        QTest::newRow( "check parentUid with todo as parent" ) << sourceStructure << parentUid;
+    }
+
+    void shouldRetrieveItemParentUid()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel todoMetadataModel;
+        ModelTest t1(&todoMetadataModel);
+
+        //WHEN
+        todoMetadataModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(QString, parentUid);
+        QModelIndex index = todoMetadataModel.index(0,0);
+        while (todoMetadataModel.rowCount(index) > 0) {
+            index = todoMetadataModel.index(todoMetadataModel.rowCount(index)-1, 0, index);
+        }
+
+        QCOMPARE(index.data(Zanshin::ParentUidRole).toString(), parentUid);
+    }
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
