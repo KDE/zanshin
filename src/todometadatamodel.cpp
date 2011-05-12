@@ -328,3 +328,10 @@ QModelIndexList TodoMetadataModel::childIndexesFromIndex(const QModelIndex &idx)
     }
     return indexes;
 }
+
+void TodoMetadataModel::setSourceModel(QAbstractItemModel *model)
+{
+    QSortFilterProxyModel::setSourceModel(model);
+
+    onSourceInsertRows(QModelIndex(), 0, rowCount() - 1);
+}
