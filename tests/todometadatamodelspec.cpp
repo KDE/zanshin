@@ -119,6 +119,52 @@ private slots:
 
         QCOMPARE(index.data(Qt::CheckStateRole), state);
     }
+
+    void shouldRetrieveItemUid_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<QString>( "uid" );
+
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1");
+
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        QString uid;
+        QTest::newRow( "check uid of a collection" ) << sourceStructure << uid;
+
+        sourceStructure.clear();
+        sourceStructure << t1;
+
+        uid = "t1";
+        QTest::newRow( "check uid for a todo" ) << sourceStructure << uid;
+    }
+
+    void shouldRetrieveItemUid()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel todoMetadataModel;
+        ModelTest t1(&todoMetadataModel);
+
+        //WHEN
+        todoMetadataModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(QString, uid);
+        QModelIndex index = todoMetadataModel.index(0,0);
+
+        QCOMPARE(index.data(Zanshin::UidRole).toString(), uid);
+    }
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
