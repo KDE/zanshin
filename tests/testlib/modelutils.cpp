@@ -21,6 +21,7 @@
    USA.
 */
 
+#include "../../src/globaldefs.h"
 #include "modelutils.h"
 
 #include "modelbuilderbehavior.h"
@@ -39,7 +40,9 @@ QModelIndex ModelUtils::locateItem(QAbstractItemModel *model, const ModelPath &r
             QModelIndex childIndex = model->index(row, 0, index);
             QVariant variant = model->data(childIndex, TestDslRole);
 
-            if (variant.userType()!=pathPart.userType()) {
+            if (!variant.isValid()) {
+                variant = model->data(childIndex, Zanshin::ItemTypeRole);
+            } else if (variant.userType()!=pathPart.userType()) {
                 continue;
             }
 
@@ -61,8 +64,14 @@ QModelIndex ModelUtils::locateItem(QAbstractItemModel *model, const ModelPath &r
                 if (cat1==cat2) {
                     found = true;
                 }
-            } else {
-                Q_ASSERT(variant.canConvert<V>());
+            } else if (variant.canConvert<int>() && pathPart.canConvert<V>()) {
+                Zanshin::ItemType type = (Zanshin::ItemType)variant.toInt();
+                V v2 = pathPart.value<V>();
+                if ((type==Zanshin::Inbox && (v2.type==Inbox || v2.type==NoCategory))
+                 || (type==Zanshin::CategoryRoot && v2.type==Categories)) {
+                    found = true;
+                }
+            } else if (variant.canConvert<V>()) {
                 V v1 = variant.value<V>();
                 V v2 = pathPart.value<V>();
                 if (v1==v2) {
