@@ -327,6 +327,103 @@ private slots:
         QCOMPARE(index.data(Zanshin::AncestorsUidRole).toStringList(), ancestors);
     }
 
+    void shouldRetrieveItemType_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<int>( "type" );
+
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+        T t3(3, 2, "t3", "t3", "t3");
+        V inbox(Inbox);
+        V categoryRoot(Categories);
+        V nocategory(NoCategory);
+        Cat category("cat");
+
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        int type = Zanshin::Collection;
+
+        QTest::newRow( "check collection type" ) << sourceStructure << type;
+
+        sourceStructure.clear();
+        sourceStructure << t1;
+
+        type = Zanshin::ProjectTodo;
+
+        QTest::newRow( "check project type" ) << sourceStructure << type;
+
+        sourceStructure.clear();
+        sourceStructure << t2;
+
+        type = Zanshin::StandardTodo;
+
+        QTest::newRow( "check todo type" ) << sourceStructure << type;
+
+        sourceStructure.clear();
+        sourceStructure << t1
+                        << t2;
+
+        type = Zanshin::ProjectTodo;
+
+        QTest::newRow( "check todo type when it has a child" ) << sourceStructure << type;
+
+        sourceStructure.clear();
+        sourceStructure << inbox;
+
+        type = 0;
+
+        QTest::newRow( "check inbox type" ) << sourceStructure << type;
+
+        sourceStructure.clear();
+        sourceStructure << categoryRoot;
+
+        type = 0;
+
+        QTest::newRow( "check category root type" ) << sourceStructure << type;
+
+        sourceStructure.clear();
+        sourceStructure << nocategory;
+
+        type = 0;
+
+        QTest::newRow( "check no category type" ) << sourceStructure << type;
+
+        sourceStructure.clear();
+        sourceStructure << category;
+
+        type = 0;
+
+        QTest::newRow( "check category type" ) << sourceStructure << type;
+    }
+
+    void shouldRetrieveItemType()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel todoMetadataModel;
+        ModelTest t1(&todoMetadataModel);
+
+        //WHEN
+        todoMetadataModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(int, type);
+        QModelIndex index = todoMetadataModel.index(0,0);
+
+        QCOMPARE(index.data(Zanshin::ItemTypeRole).toInt(), type);
+    }
+
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
