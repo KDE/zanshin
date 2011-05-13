@@ -57,13 +57,19 @@ Qt::ItemFlags TodoMetadataModel::flags(const QModelIndex &index) const
     Qt::ItemFlags flags = sourceModel()->flags(mapToSource(index));
 
     if (index.isValid()) {
+        Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
         if (index.column()==0) {
-            Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-            if (item.isValid() && itemTypeFromItem(item)==Zanshin::StandardTodo) {
+            Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+            if (item.isValid() && type==Zanshin::StandardTodo) {
                 flags|= Qt::ItemIsUserCheckable;
             }
         } else if (index.column()==4) {
             flags&= ~Qt::ItemIsEditable;
+        }
+
+        if (type==Zanshin::Collection) {
+            flags&= ~Qt::ItemIsEditable;
+            flags&= ~Qt::ItemIsDragEnabled;
         }
     }
 

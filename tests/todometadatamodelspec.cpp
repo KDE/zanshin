@@ -769,6 +769,103 @@ private slots:
             QCOMPARE(children[i].data(Zanshin::UidRole).toString(), childUids[i]);
         }
     }
+
+    void shouldRetrieveItemFlags_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<int>( "column" );
+        QTest::addColumn<int>( "flags" );
+
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+        V inbox(Inbox);
+        V categoryRoot(Categories);
+        V nocategory(NoCategory);
+        Cat category("cat");
+
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        int flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+        int column = 0;
+        QTest::newRow( "get flags on collection" ) << sourceStructure << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << t2;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on todo" ) << sourceStructure << column << flags;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+        column = 4;
+
+        QTest::newRow( "get flags on todo on column 4" ) << sourceStructure << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << t1;
+
+        column = 0;
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on project" ) << sourceStructure << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << inbox;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on inbox" ) << sourceStructure << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << category;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on category" ) << sourceStructure << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << categoryRoot;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on category root" ) << sourceStructure << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << nocategory;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on NoCategory" ) << sourceStructure << column << flags;
+    }
+
+    void shouldRetrieveItemFlags()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel todoMetadataModel;
+        ModelTest t1(&todoMetadataModel);
+
+        //WHEN
+        todoMetadataModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(int, column);
+        QFETCH(int, flags);
+
+        QModelIndex index = todoMetadataModel.index(0,column);
+
+        QCOMPARE(todoMetadataModel.flags(index), flags);
+    }
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
