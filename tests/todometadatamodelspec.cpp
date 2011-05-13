@@ -678,6 +678,97 @@ private slots:
 
         QCOMPARE(index.data(Zanshin::ChildUidsRole).toStringList(), childUids);
     }
+
+    void shouldRetrieveItemChildIndexes_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<QStringList>( "childUids" );
+
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1");
+        T t2(2, 1, "t2", "t1", "t2");
+        T t3(3, 1, "t3", "t1", "t3");
+        T t4(4, 1, "t4", "t1", "t4");
+        T t5(5, 4, "t5", "t4", "t5");
+
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        QStringList childUids;
+        QTest::newRow( "get child list on empty collection" ) << sourceStructure << childUids;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1;
+
+        QTest::newRow( "get child list on collection with one child" ) << sourceStructure << childUids;
+
+        sourceStructure.clear();
+        sourceStructure << t1
+                        << t2;
+
+        childUids << "t2";
+
+        QTest::newRow( "get child list on todo with one child" ) << sourceStructure << childUids;
+
+        sourceStructure.clear();
+        sourceStructure << t1
+                        << t2
+                        << t3
+                        << t4;
+
+        childUids.clear();
+        childUids << "t2"
+                  << "t3"
+                  << "t4";
+
+        QTest::newRow( "get child list on todo with several children" ) << sourceStructure << childUids;
+
+        sourceStructure.clear();
+        sourceStructure << t1
+                        << t2
+                        << t3
+                        << t4
+                        << t5;
+
+        childUids.clear();
+        childUids << "t2"
+                  << "t3"
+                  << "t4";
+
+        QTest::newRow( "check if the list is recursive" ) << sourceStructure << childUids;
+
+    }
+
+    void shouldRetrieveItemChildIndexes()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel todoMetadataModel;
+        ModelTest t1(&todoMetadataModel);
+
+        //WHEN
+        todoMetadataModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(QStringList, childUids);
+        QModelIndex index = todoMetadataModel.index(0,0);
+        QModelIndexList children = index.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
+
+        QCOMPARE(childUids.size(), children.size());
+
+        for (int i=0; i<childUids.size(); ++i) {
+            QCOMPARE(children[i].data(Zanshin::UidRole).toString(), childUids[i]);
+        }
+    }
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
