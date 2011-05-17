@@ -174,19 +174,8 @@ void TodoMetadataModel::onSourceRemoveRows(const QModelIndex &parent, int begin,
 {
     for (int i = begin; i <= end; ++i) {
         QModelIndex child = index(i, 0, parent);
-        KCalCore::Todo::Ptr todo = todoFromIndex(child);
 
-        if (!todo) {
-            continue;
-        }
-
-        QString uid = todo->uid();
-
-        QString relatedUid = todo->relatedTo();
-
-        m_parentMap.remove(uid);
-        m_childrenMap[relatedUid].removeAll(uid);
-        m_indexMap.remove(uid);
+        cleanupDataForSourceIndex(child);
     }
 }
 
@@ -223,6 +212,29 @@ void TodoMetadataModel::onSourceDataChanged(const QModelIndex &begin, const QMod
             }
         }
     }
+}
+
+void TodoMetadataModel::cleanupDataForSourceIndex(const QModelIndex &index)
+{
+    for (int row=0; row<rowCount(index); row++) {
+        QModelIndex child = this->index(row, 0, index);
+        cleanupDataForSourceIndex(child);
+    }
+
+
+    KCalCore::Todo::Ptr todo = todoFromIndex(index);
+
+    if (!todo) {
+        return;
+    }
+
+    QString uid = todo->uid();
+
+    QString relatedUid = todo->relatedTo();
+
+    m_parentMap.remove(uid);
+    m_childrenMap[relatedUid].removeAll(uid);
+    m_indexMap.remove(uid);
 }
 
 KCalCore::Todo::Ptr TodoMetadataModel::todoFromIndex(const QModelIndex &index) const

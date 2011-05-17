@@ -59,6 +59,7 @@ private:
     KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
     KCalCore::Todo::Ptr todoFromItem(const Akonadi::Item &item) const;
 
+    void cleanupDataForSourceIndex(const QModelIndex &index);
     Zanshin::ItemType itemTypeFromItem(const Akonadi::Item &item) const;
     QString uidFromItem(const Akonadi::Item &item) const;
     QString relatedUidFromItem(const Akonadi::Item &item) const;
