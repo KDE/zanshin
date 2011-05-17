@@ -31,12 +31,34 @@
 
 using namespace Zanshin::Test;
 
+Q_DECLARE_METATYPE(QModelIndex)
+
 class TodoMetadataModelTest : public QObject
 {
     Q_OBJECT
+private:
+    static QModelIndexList collectChildren(QAbstractItemModel *model, const QModelIndex &root)
+    {
+        QModelIndexList result;
+
+        for (int row=0; row<model->rowCount(root); row++) {
+            QModelIndex child = model->index(row, 0, root);
+
+            if (!child.isValid()) {
+                return result;
+            }
+
+            result+= collectChildren(model, child);
+            result << child;
+        }
+
+        return result;
+    }
+
 private slots:
     void initTestCase()
     {
+        qRegisterMetaType<QModelIndex>();
         QList<int> roles;
         roles << Qt::DisplayRole
               << Akonadi::EntityTreeModel::ItemRole
@@ -866,6 +888,163 @@ private slots:
 
         QCOMPARE(todoMetadataModel.flags(index), flags);
     }
+
+    void shouldReactToSourceRowInserts_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "sourceParentPath" );
+        QTest::addColumn<ModelStructure>( "insertedStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+        T t3(3, 1, "t3", "t2", "t3");
+        T t4(4, 1, "t4", QString(), "t4");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        ModelPath sourceParentPath = c1;
+        ModelStructure insertedStructure;
+        insertedStructure << t1;
+
+        ModelStructure outputStructure;
+        outputStructure << c1
+                        << _+t1;
+
+        QTest::newRow( "simple insertion" ) << sourceStructure << sourceParentPath
+                                               << insertedStructure
+                                               << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1;
+
+        sourceParentPath = c1 % t1;
+
+        insertedStructure.clear();
+        insertedStructure << t2;
+
+        outputStructure.clear();
+        outputStructure << c1
+                        << _+t1
+                        << __+t2;
+
+        QTest::newRow( "add todo to project" ) << sourceStructure << sourceParentPath
+                                               << insertedStructure
+                                               << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t2;
+
+        sourceParentPath = c1 % t2;
+
+        insertedStructure.clear();
+        insertedStructure << t3;
+
+        outputStructure.clear();
+        outputStructure << c1
+                        << _+t2
+                        << __+t3;
+
+        QTest::newRow( "add todo to project without project tag" ) << sourceStructure << sourceParentPath
+                                                                   << insertedStructure
+                                                                   << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t3;
+
+        sourceParentPath = c1 % t3;
+
+        insertedStructure.clear();
+        insertedStructure << t4;
+
+        outputStructure.clear();
+        outputStructure << c1
+                        << _+t3
+                        << __+t4;
+
+        QTest::newRow( "add todo to todo" ) << sourceStructure << sourceParentPath
+                                            << insertedStructure
+                                            << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1;
+
+        sourceParentPath = c1;
+
+        insertedStructure.clear();
+        insertedStructure << t2;
+
+        outputStructure.clear();
+        outputStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        QTest::newRow( "add todo to collection with a todo" ) << sourceStructure << sourceParentPath
+                                                              << insertedStructure
+                                                              << outputStructure;
+    }
+
+    void shouldReactToSourceRowInserts()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
+        // What row number will we expect?
+        QFETCH(ModelPath, sourceParentPath);
+        QModelIndex parentIndex = ModelUtils::locateItem(&metadataModel, sourceParentPath);
+        const int expectedRow = metadataModel.rowCount(parentIndex);
+
+        //WHEN
+        QFETCH(ModelStructure, insertedStructure);
+
+        // Collect data to ensure we signalled the outside properly
+        QSignalSpy aboutToInsertSpy(&metadataModel, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
+        QSignalSpy insertSpy(&metadataModel, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy changeSpy(&metadataModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
+
+        ModelUtils::create(&source, insertedStructure, sourceParentPath, &behavior);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(metadataModel, output);
+
+        QCOMPARE(aboutToInsertSpy.first().at(0).value<QModelIndex>(), parentIndex);
+        QCOMPARE(aboutToInsertSpy.first().at(1).toInt(), expectedRow);
+        QCOMPARE(aboutToInsertSpy.first().at(2).toInt(), expectedRow);
+
+        QCOMPARE(insertSpy.first().at(0).value<QModelIndex>(), parentIndex);
+        QCOMPARE(insertSpy.first().at(1).toInt(), expectedRow);
+        QCOMPARE(insertSpy.first().at(2).toInt(), expectedRow);
+
+        if (parentIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo) {
+            QCOMPARE(changeSpy.first().at(0).value<QModelIndex>(), parentIndex);
+            QCOMPARE(changeSpy.first().at(1).value<QModelIndex>(), parentIndex);
+        }
+    }
+
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
