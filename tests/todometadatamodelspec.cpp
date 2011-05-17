@@ -1045,6 +1045,137 @@ private slots:
         }
     }
 
+    void shouldReactToSourceRowRemovals_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath::List>( "itemsToRemove" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+        T t3(3, 1, "t3", "t2", "t3");
+        T t4(4, 1, "t4", QString(), "t4");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        ModelPath::List itemsToRemove;
+        itemsToRemove << c1;
+
+        ModelStructure outputStructure;
+
+        QTest::newRow( "remove empty collection" ) << sourceStructure
+                                                   << itemsToRemove
+                                                   << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2
+                        << _+t3
+                        << _+t4;
+
+
+        QTest::newRow( "remove collection with items" ) << sourceStructure
+                                                        << itemsToRemove
+                                                        << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        itemsToRemove.clear();
+        itemsToRemove << c1 % t1;
+
+        outputStructure << c1
+                        << _+t2;
+
+        QTest::newRow( "remove todo" ) << sourceStructure
+                                       << itemsToRemove
+                                       << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        itemsToRemove.clear();
+        itemsToRemove << c1 % t2
+                      << c1 % t1;
+
+        outputStructure.clear();
+        outputStructure << c1;
+
+        QTest::newRow( "remove all todos" ) << sourceStructure
+                                            << itemsToRemove
+                                            << outputStructure;
+
+    }
+
+    void shouldReactToSourceRowRemovals()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
+        //WHEN
+        QFETCH(ModelPath::List, itemsToRemove);
+
+        // Collect data to ensure we signalled the outside properly
+        QSignalSpy aboutToRemoveSpy(&metadataModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
+        QSignalSpy removeSpy(&metadataModel, SIGNAL(rowsRemoved(QModelIndex, int, int)));
+
+        QList<QModelIndex> parents;
+        QList<int> rows;
+
+        foreach (const ModelPath &path, itemsToRemove) {
+            QModelIndex sourceIndex = ModelUtils::locateItem(&source, path);
+            QModelIndex index = metadataModel.mapFromSource(sourceIndex);
+
+            parents << index.parent();
+            rows << index.row();
+        }
+
+        ModelUtils::destroy(&source, itemsToRemove);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(metadataModel, output);
+
+        while (aboutToRemoveSpy.size()>0) {
+            QModelIndex expectedParent = parents.takeFirst();
+            int expectedRow = rows.takeFirst();
+
+            QVariantList signalPayload = aboutToRemoveSpy.takeFirst();
+
+            QCOMPARE(signalPayload.at(0).value<QModelIndex>(), expectedParent);
+            QCOMPARE(signalPayload.at(1).toInt(), expectedRow);
+            QCOMPARE(signalPayload.at(2).toInt(), expectedRow);
+
+            signalPayload = removeSpy.takeFirst();
+            QCOMPARE(signalPayload.at(0).value<QModelIndex>(), expectedParent);
+            QCOMPARE(signalPayload.at(1).toInt(), expectedRow);
+            QCOMPARE(signalPayload.at(2).toInt(), expectedRow);
+        }
+    }
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
