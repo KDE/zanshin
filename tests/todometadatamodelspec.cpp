@@ -1176,6 +1176,120 @@ private slots:
             QCOMPARE(signalPayload.at(2).toInt(), expectedRow);
         }
     }
+
+    void shouldReactToSourceDataChanges_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "changePath" );
+        QTest::addColumn<ModelPath::List>( "notifyList" );
+
+        // Base items
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+        T t3(3, 1, "t3", "t2", "t3");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        ModelPath changePath = c1;
+        ModelPath::List notifyList;
+        notifyList << c1;
+
+        QTest::newRow( "change collection name" ) << sourceStructure
+                                                  << changePath
+                                                  << notifyList;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t2;
+
+        changePath = c1 % t2;
+
+        notifyList.clear();
+        notifyList << c1 % t2;
+
+        QTest::newRow( "change todo name" ) << sourceStructure
+                                            << changePath
+                                            << notifyList;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        changePath = c1 % t1;
+
+        notifyList.clear();
+        notifyList << c1 % t2
+                   << c1 % t1;
+
+        QTest::newRow( "change project name" ) << sourceStructure
+                                                                << changePath
+                                                                << notifyList;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t2
+                        << _+t3;
+
+        changePath = c1 % t2;
+
+        notifyList.clear();
+        notifyList << c1 % t3
+                   << c1 % t2;
+
+        QTest::newRow( "change name of todo with a child" ) << sourceStructure
+                                                            << changePath
+                                                            << notifyList;
+
+    }
+
+    void shouldReactToSourceDataChanges()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
+        //WHEN
+        QFETCH(ModelPath, changePath);
+        QModelIndex index = ModelUtils::locateItem(&source, changePath);
+
+        QFETCH(ModelPath::List, notifyList);
+        QModelIndexList indexes;
+
+        foreach (ModelPath path, notifyList) {
+            indexes << ModelUtils::locateItem(&metadataModel, path);
+        }
+
+        // Collect data to ensure we signalled the outside properly
+        QSignalSpy changeSpy(&metadataModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
+
+        source.setData(index, "test", Qt::DisplayRole);
+
+        //THEN
+        QCOMPARE(index.data(Qt::DisplayRole).toString(), QString("test"));
+
+        int i = 0;
+        foreach (QModelIndex changeIndex, indexes) {
+            QCOMPARE(changeSpy[i].at(0).value<QModelIndex>(), changeIndex);
+            QCOMPARE(changeSpy[i].at(1).value<QModelIndex>(), changeIndex);
+            i++;
+        }
+    }
+
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)
