@@ -52,40 +52,6 @@ TodoTreeModel::~TodoTreeModel()
 {
 }
 
-bool _k_indexLessThan(const QModelIndex &left, const QModelIndex &right)
-{
-    Zanshin::ItemType leftType = (Zanshin::ItemType) left.data(Zanshin::ItemTypeRole).toInt();
-    Zanshin::ItemType rightType = (Zanshin::ItemType) right.data(Zanshin::ItemTypeRole).toInt();
-
-    if (leftType!=rightType) {
-        return (leftType==Zanshin::Collection && rightType==Zanshin::ProjectTodo)
-            || (leftType==Zanshin::Collection && rightType==Zanshin::StandardTodo)
-            || (leftType==Zanshin::ProjectTodo && rightType==Zanshin::StandardTodo);
-    }
-
-    if (leftType==Zanshin::Collection) {
-        qint64 leftId = left.data(Akonadi::EntityTreeModel::CollectionIdRole).toLongLong();
-        qint64 rightId = right.data(Akonadi::EntityTreeModel::CollectionIdRole).toLongLong();
-
-        return leftId<rightId;
-
-    } else if (leftType==Zanshin::ProjectTodo) {
-        QStringList leftAncestors = left.data(Zanshin::AncestorsUidRole).toStringList();
-        QStringList rightAncestors = right.data(Zanshin::AncestorsUidRole).toStringList();
-
-        return leftAncestors.size()<rightAncestors.size();
-
-    } else if (leftType==Zanshin::StandardTodo) {
-        QString leftId = left.data(Zanshin::UidRole).toString();
-        QString rightId = right.data(Zanshin::UidRole).toString();
-        return leftId<rightId;
-
-    } else {
-        kFatal() << "Shouldn't happen, we must get only collections or todos";
-        return false;
-    }
-}
-
 void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end)
 {
     QList<QModelIndex> sourceChildIndexes;
@@ -97,9 +63,6 @@ void TodoTreeModel::onSourceInsertRows(const QModelIndex &sourceIndex, int begin
             sourceChildIndexes << sourceChildIndex;
         }
     }
-
-    // Sort, the top level ones first, then one level deep, and so on...
-    qSort(sourceChildIndexes.begin(), sourceChildIndexes.end(), &_k_indexLessThan);
 
     // Now we're sure to add them in the right order, so let's do that!
     TodoNode *collectionNode = m_manager->nodeForSourceIndex(sourceIndex);

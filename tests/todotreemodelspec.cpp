@@ -437,6 +437,119 @@ private slots:
             QCOMPARE(insertSpy[i].at(2).toInt(), insertRows[i]);
         }
     }
+
+    void shouldKeepSourceOrder_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        C c2(2, 0, "c2");
+        T t1(1, 0, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+        T t3(3, 1, "t3", "t1", "t3", InProgress, ProjectTag);
+        T t4(4, 1, "t4", "t1", "t4");
+        T t5(5, 1, "t5", "t1", "t5", InProgress, ProjectTag);
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << t1
+                        << c1;
+
+        ModelStructure outputStructure;
+        outputStructure << inbox
+                        << t1
+                        << c1;
+
+        QTest::newRow( "collection and project order" ) << sourceStructure
+                                                        << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2
+                        << _+t3;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t2
+                        << __+t3;
+
+        QTest::newRow( "project and todo order" ) << sourceStructure
+                                                  << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t4
+                        << _+t2;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t4
+                        << __+t2;
+
+        QTest::newRow( "order between two todo" ) << sourceStructure
+                                                  << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t5
+                        << _+t3;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t5
+                        << __+t3;
+
+        QTest::newRow( "order between two project" ) << sourceStructure
+                                                     << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c2
+                        << c1;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c2
+                        << c1;
+
+        QTest::newRow( "order between two collection" ) << sourceStructure
+                                                        << outputStructure;
+    }
+
+    void shouldKeepSourceOrder()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create todoTreeModel
+        TodoTreeModel todoTreeModel;
+        ModelTest t1(&todoTreeModel);
+
+        //WHEN
+        todoTreeModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(todoTreeModel, output);
+    }
 };
 
 QTEST_KDEMAIN(TodoTreeModelSpec, GUI)
