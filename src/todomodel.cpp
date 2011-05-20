@@ -129,16 +129,6 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
     }
 }
 
-QVariant TodoModel::entityData(const Akonadi::Collection &collection, int column, int role) const
-{
-    if ( role == Zanshin::ItemTypeRole ) {
-        return Zanshin::Collection;
-    } else {
-        return EntityTreeModel::entityData(collection, column, role);
-    }
-}
-
-
 bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if ((role!=Qt::EditRole && role!=Qt::CheckStateRole) || !index.isValid()) {

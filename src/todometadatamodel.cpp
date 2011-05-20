@@ -79,6 +79,12 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
     if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
+        if (role==Zanshin::ItemTypeRole) {
+            Akonadi::Collection collection = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+            if (collection.isValid()) {
+                return Zanshin::Collection;
+            }
+        }
         return QSortFilterProxyModel::data(index, role);
     }
 
