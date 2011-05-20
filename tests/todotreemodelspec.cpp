@@ -550,6 +550,87 @@ private slots:
 
         QCOMPARE(todoTreeModel, output);
     }
+
+    void shouldRetrieveItemFlags_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "itemPath" );
+        QTest::addColumn<int>( "column" );
+        QTest::addColumn<int>( "flags" );
+
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+        V inbox(Inbox);
+        V categoryRoot(Categories);
+        V nocategory(NoCategory);
+        Cat category("cat");
+
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        int flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+        int column = 0;
+        ModelPath itemPath = c1;
+
+        QTest::newRow( "get flags on collection" ) << sourceStructure << itemPath << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << t2;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+        itemPath = inbox % t2;
+
+        QTest::newRow( "get flags on todo" ) << sourceStructure << itemPath << column << flags;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+        column = 4;
+
+        QTest::newRow( "get flags on todo on column 4" ) << sourceStructure << itemPath << column << flags;
+
+        sourceStructure.clear();
+        sourceStructure << t1;
+
+        itemPath = t1;
+
+        column = 0;
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on project" ) << sourceStructure << itemPath << column << flags;
+
+        itemPath = inbox;
+
+        flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+
+        QTest::newRow( "get flags on inbox" ) << sourceStructure << itemPath << column << flags;
+    }
+
+    void shouldRetrieveItemFlags()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create metadataModel
+        TodoTreeModel todoTreeModel;
+        ModelTest t1(&todoTreeModel);
+
+        //WHEN
+        todoTreeModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(ModelPath, itemPath);
+        QFETCH(int, column);
+        QFETCH(int, flags);
+
+        QModelIndex index = ModelUtils::locateItem(&todoTreeModel, itemPath);
+        index = index.sibling(index.row(), column);
+
+        QCOMPARE(todoTreeModel.flags(index), flags);
+    }
 };
 
 QTEST_KDEMAIN(TodoTreeModelSpec, GUI)
