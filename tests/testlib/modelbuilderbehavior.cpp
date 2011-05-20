@@ -149,13 +149,25 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandVirtual
 
     QStandardItem *item = new QStandardItem(virt.name);
     item->setData(QVariant::fromValue(virt.name), Qt::DisplayRole);
+
+    if (m_metadataCreationEnabled) {
+        int type = 0;
+        switch (virt.type) {
+        case Inbox:
+        case NoCategory:
+            type = Zanshin::Inbox;
+            break;
+        case Categories:
+            type = Zanshin::CategoryRoot;
+            break;
+        }
+
+        item->setData(QVariant::fromValue(type), Zanshin::ItemTypeRole);
+    }
+
     row << item;
 
-    item = new QStandardItem;
-    item->setData(QVariant::fromValue((int)virt.type), Zanshin::ItemTypeRole);
-    row << item;
-
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<4; i++) {
         item = new QStandardItem;
         row << item;
     }
