@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2008-2011 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,36 +21,43 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef ZANSHIN_MAINCOMPONENT_H
+#define ZANSHIN_MAINCOMPONENT_H
 
-#include <KDE/KXmlGuiWindow>
+#include <QtCore/QObject>
 
+class KActionCollection;
+class KConfigGroup;
+class KXMLGUIClient;
+
+class ActionListEditor;
 class ModelStack;
-class MainComponent;
+class SideBar;
 
-class MainWindow : public KXmlGuiWindow
+class MainComponent : public QObject
 {
     Q_OBJECT
 
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+    MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient *client);
 
-protected slots:
-    void saveAutoSaveSettings();
+    SideBar *sideBar() const;
+    ActionListEditor *editor() const;
 
-protected:
-    virtual void closeEvent(QCloseEvent *event);
+    void saveColumnsState(KConfigGroup &group) const;
+    void restoreColumnsState(const KConfigGroup &group);
+
+public slots:
+    void showConfigDialog();
+
+private slots:
+    void onModeSwitch();
 
 private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
+    void setupActions(KActionCollection *ac);
 
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
+    SideBar *m_sidebar;
+    ActionListEditor *m_editor;
 };
 
 #endif

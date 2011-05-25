@@ -38,46 +38,39 @@
 #include "actionlisteditor.h"
 #include "configdialog.h"
 #include "globaldefs.h"
+#include "maincomponent.h"
 #include "sidebar.h"
 
 MainWindow::MainWindow(ModelStack *models, QWidget *parent)
-    : KXmlGuiWindow(parent)
+    : KXmlGuiWindow(parent),
+      m_component(new MainComponent(models, this, this))
 {
-    setupSideBar(models);
-    setupCentralWidget(models);
+    setupSideBar();
+    setupCentralWidget();
     setupActions();
 
     setupGUI(QSize(1024, 600), ToolBar | Keys | Save | Create);
 
     restoreColumnsState();
 
-    actionCollection()->action("project_mode")->trigger();
-
     KConfigGroup config(KGlobal::config(), "General");
     if (config.readEntry("firstRun", true)) {
-        QTimer::singleShot(0, this, SLOT(showConfigDialog()));
+        QTimer::singleShot(0, m_component, SLOT(showConfigDialog()));
         config.writeEntry("firstRun", false);
     }
 }
 
-void MainWindow::setupCentralWidget(ModelStack *models)
+void MainWindow::setupCentralWidget()
 {
-    m_editor = new ActionListEditor(models,
-                                    m_sidebar->projectSelection(),
-                                    m_sidebar->categoriesSelection(),
-                                    actionCollection(),
-                                    this);
-    setCentralWidget(m_editor);
+    setCentralWidget(m_component->editor());
 }
 
-void MainWindow::setupSideBar(ModelStack *models)
+void MainWindow::setupSideBar()
 {
-    m_sidebar = new SideBar(models, actionCollection(), this);
-
     QDockWidget *dock = new QDockWidget(this);
     dock->setObjectName("SideBar");
     dock->setFeatures(dock->features() & ~QDockWidget::DockWidgetClosable);
-    dock->setWidget(m_sidebar);
+    dock->setWidget(m_component->sideBar());
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 }
 
@@ -89,26 +82,7 @@ void MainWindow::setupActions()
     connect(action, SIGNAL(toggled(bool)),
             menuBar(), SLOT(setVisible(bool)));
 
-    QActionGroup *modeGroup = new QActionGroup(this);
-    modeGroup->setExclusive(true);
-
-    action = ac->addAction("project_mode", this, SLOT(onModeSwitch()));
-    action->setText(i18n("Project View"));
-    action->setIcon(KIcon("view-pim-tasks"));
-    action->setShortcut(Qt::CTRL | Qt::Key_P);
-    action->setCheckable(true);
-    action->setData(Zanshin::ProjectMode);
-    modeGroup->addAction(action);
-
-    action = ac->addAction("categories_mode", this, SLOT(onModeSwitch()));
-    action->setText(i18n("Categories View"));
-    action->setIcon(KIcon("view-pim-notes"));
-    action->setShortcut(Qt::CTRL | Qt::Key_O);
-    action->setCheckable(true);
-    action->setData(Zanshin::CategoriesMode);
-    modeGroup->addAction(action);
-
-    ac->addAction(KStandardAction::Preferences, this, SLOT(showConfigDialog()));
+    ac->addAction(KStandardAction::Preferences, m_component, SLOT(showConfigDialog()));
     ac->addAction(KStandardAction::Quit, this, SLOT(close()));
 }
 
@@ -127,24 +101,12 @@ void MainWindow::saveAutoSaveSettings()
 void MainWindow::saveColumnsState()
 {
     KConfigGroup cg = autoSaveConfigGroup();
-    m_editor->saveColumnsState(cg);
+    m_component->saveColumnsState(cg);
 }
 
 void MainWindow::restoreColumnsState()
 {
     KConfigGroup cg = autoSaveConfigGroup();
-    m_editor->restoreColumnsState(cg);
+    m_component->restoreColumnsState(cg);
 }
 
-void MainWindow::onModeSwitch()
-{
-    KAction *action = static_cast<KAction*>(sender());
-    m_editor->setMode((Zanshin::ApplicationMode)action->data().toInt());
-    m_sidebar->setMode((Zanshin::ApplicationMode)action->data().toInt());
-}
-
-void MainWindow::showConfigDialog()
-{
-    ConfigDialog dialog(this);
-    dialog.exec();
-}

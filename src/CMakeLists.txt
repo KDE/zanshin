@@ -20,8 +20,7 @@ set(zanshin_core_SRCS
    todonodemanager.cpp
 )
 
-set(zanshin_SRCS
-   main.cpp
+set(zanshin_gui_SRCS
    actionduedatedelegate.cpp
    actionlistcombobox.cpp
    actionlistcompleterview.cpp
@@ -29,15 +28,21 @@ set(zanshin_SRCS
    actionlisteditor.cpp
    actionlisteditorpage.cpp
    configdialog.cpp
-   debugwindow.cpp
    kdateedit.cpp
    kdatepickerpopup.cpp
-   mainwindow.cpp
+   maincomponent.cpp
    quickselectdialog.cpp
    sidebar.cpp
    sidebarpage.cpp
    todotreeview.cpp
+)
+
+set(zanshin_SRCS
+   debugwindow.cpp
+   main.cpp
+   mainwindow.cpp
    ${zanshin_core_SRCS}
+   ${zanshin_gui_SRCS}
 )
 
 kde4_add_executable(zanshin ${zanshin_SRCS})
