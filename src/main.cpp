@@ -26,6 +26,7 @@
 #include <KDE/KCmdLineArgs>
 #include <KDE/KLocale>
 
+#include "aboutdata.h"
 #include "debugwindow.h"
 #include "mainwindow.h"
 #include "modelstack.h"
@@ -72,23 +73,7 @@ void createViews(TodoModel *baseModel)
 
 int main(int argc, char **argv)
 {
-    KAboutData about("zanshin", "zanshin",
-                     ki18n("Zanshin Todo"), "0.2",
-                     ki18n("A Getting Things Done application which aims at getting your mind like water"),
-                     KAboutData::License_GPL_V3,
-                     ki18n("Copyright 2008-2010, Kevin Ottens <ervin@kde.org>"));
-
-    about.addAuthor(ki18n("Kevin Ottens"),
-                    ki18n("Lead Developer"),
-                    "ervin@kde.org");
-
-    about.addAuthor(ki18n("Mario Bensi"),
-                    ki18n("Developer"),
-                    "nef@ipsquad.net");
-
-    //TODO: Remove once we have a proper icon
-    about.setProgramIconName("office-calendar");
-
+    KAboutData about = Zanshin::getAboutData();
     KCmdLineArgs::init(argc, argv, &about);
 
     KCmdLineOptions options;

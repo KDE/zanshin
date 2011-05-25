@@ -21,6 +21,7 @@ set(zanshin_core_SRCS
 )
 
 set(zanshin_gui_SRCS
+   aboutdata.cpp
    actionduedatedelegate.cpp
    actionlistcombobox.cpp
    actionlistcompleterview.cpp
