@@ -1,0 +1,20 @@
+[Desktop Entry]
+Type=Service
+Icon=view-pim-tasks
+X-KDE-ServiceTypes=Kontact/Plugin,KPluginInfo
+
+X-KDE-Library=kontact_zanshinplugin
+X-KDE-KontactPluginVersion=9
+X-KDE-KontactPartLibraryName=zanshin_part
+X-KDE-KontactPartExecutableName=zanshin
+X-KDE-KontactPartLoadOnStart=false
+X-KDE-KontactPluginHasSummary=false
+
+X-KDE-PluginInfo-Name=kontact_zanshinplugin
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-PluginInfo-AllowEmptySettings=true
+
+Comment=Kontact Zanshin Plugin
+Name=Todo Lists

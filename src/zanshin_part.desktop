@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Zanshin Part
+X-KDE-ServiceTypes=KParts/ReadOnlyPart
+X-KDE-Library=zanshin_part
+Type=Service
+Icon=view-pim-tasks
+

@@ -211,7 +211,9 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_add = ac->addAction("editor_add_action", this, SLOT(focusActionEdit()));
     m_add->setText(i18n("New Action"));
     m_add->setIcon(KIcon("list-add"));
-    m_add->setShortcut(Qt::CTRL | Qt::Key_N);
+    if (qgetenv("ZANSHIN_KONTACT_PLUGIN").isEmpty()) {
+        m_add->setShortcut(Qt::CTRL | Qt::Key_N);
+    }
 
     m_cancelAdd = ac->addAction("editor_cancel_action", m_stack, SLOT(setFocus()));
     connect(m_cancelAdd, SIGNAL(activated()), m_addActionEdit, SLOT(clear()));
