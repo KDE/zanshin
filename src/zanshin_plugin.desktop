@@ -17,11 +17,13 @@ X-KDE-PluginInfo-EnabledByDefault=true
 X-KDE-PluginInfo-AllowEmptySettings=true
 
 Comment=Kontact Zanshin Plugin
+Comment[nl]=Kontact-plugin voor Zanshin
 Comment[pt]='Plugin' do Zanshin para o Kontact
 Comment[sv]=Zanshin-insticksprogram för Kontact
 Comment[uk]=Додаток Zanshin до Kontact
 Comment[x-test]=xxKontact Zanshin Pluginxx
 Name=Todo Lists
+Name[nl]=Takenlijsten
 Name[pt]=Listas de Itens Por-Fazer
 Name[sv]=Uppgiftslistor
 Name[uk]=Списки завдань
