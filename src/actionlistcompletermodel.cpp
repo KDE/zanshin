@@ -59,7 +59,7 @@ QVariant ActionListCompleterModel::data(const QModelIndex& index, int role) cons
         if (indexList.isEmpty()) {
             return QSortFilterProxyModel::data(index).toString().split(" / ").last();
         } else {
-            return indexList.join(", ") + ", " + QSortFilterProxyModel::data(index).toString().split(" / ").last();
+            return QString(indexList.join(", ") + ", " + QSortFilterProxyModel::data(index).toString().split(" / ").last());
         }
     }
     return QSortFilterProxyModel::data(index, role);
