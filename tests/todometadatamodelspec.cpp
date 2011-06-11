@@ -117,7 +117,7 @@ private slots:
         QTest::newRow( "check state role on collection" ) << sourceStructure << state;
     }
 
-    void shouldRetrieveTheItemState()
+    void shouldRetrieveItemState()
     {
         //GIVEN
         QFETCH(ModelStructure, sourceStructure);
@@ -247,7 +247,7 @@ private slots:
         QCOMPARE(index.data(Zanshin::ParentUidRole).toString(), parentUid);
     }
 
-    void shouldRetrieveItemAncestorsUid_data()
+    void shouldRetrieveItemAncestors_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
         QTest::addColumn<QStringList>( "ancestors" );
