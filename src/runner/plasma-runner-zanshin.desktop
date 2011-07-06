@@ -2,6 +2,7 @@
 Name=Zanshin Todo
 Name[es]=Tareas pendientes de Zanshin
 Name[et]=Zanshini ülesanded
+Name[km]=ការ​ងារ​ត្រូវ​ធ្វើ​របស់ Zanshin
 Name[nl]=Zanshin taken
 Name[pt]=Itens Por-Fazer Zanshin
 Name[pt_BR]=Lista de tarefas Zanshin
@@ -11,6 +12,7 @@ Name[x-test]=xxZanshin Todoxx
 Comment=Add tasks to your todo list
 Comment[es]=Añadir tareas a su lista de pendientes
 Comment[et]=Ülesannete lisamine sinu ülesannete nimekirja.
+Comment[km]=បន្ថែម​ភារកិច្ច​ទៅ​​ក្នុង​បញ្ជី​ការងារ​ត្រូវ​ធ្វើ​របស់​អ្នក
 Comment[nl]=Voeg taken toe aan uw lijst met taken
 Comment[pt]=Adicionar tarefas à sua lista de itens por-fazer
 Comment[pt_BR]=Adicionar tarefas à sua lista
