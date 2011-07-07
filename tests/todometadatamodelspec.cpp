@@ -558,6 +558,114 @@ private slots:
         QCOMPARE(index.data(Zanshin::CategoriesRole).toStringList(), categories);
     }
 
+    void shouldRetrieveItemAncestorsCategories_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<QStringList>( "categories" );
+
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1");
+        T t2(2, 1, "t2", "t1", "t2", Done, NoTag, QString(), "cat1");
+        T t3(3, 2, "t3", "t2", "t3", Done, NoTag, QString(), "cat2");
+        T t4(4, 3, "t4", "t3", "t4", Done, NoTag, QString(), "cat2");
+        T t5(5, 4, "t5", "t4", "t5", Done, NoTag, QString(), "cat3");
+        T t6(6, 5, "t6", "t5", "t6", Done, NoTag, QString(), "cat3");
+        T t7(7, 6, "t7", "t6", "t7", Done, NoTag, QString(), "cat4");
+        T t8(8, 7, "t8", "t7", "t8", Done, NoTag, QString(), "cat5");
+        T t9(9, 8, "t9", "t8", "t9");
+
+        ModelStructure sourceStructure;
+        sourceStructure << c1;
+
+        QStringList categories;
+        QTest::newRow( "get category list on collection" ) << sourceStructure << categories;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1;
+
+        QTest::newRow( "check todo without category set" ) << sourceStructure << categories;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        QTest::newRow( "check todo with category set" ) << sourceStructure << categories;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2
+                        << _+t3;
+
+        categories << "cat1";
+
+        QTest::newRow( "check todo with the different category set" ) << sourceStructure << categories;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2
+                        << _+t3
+                        << _+t4;
+
+        categories.clear();
+        categories << "cat2"
+                   << "cat1";
+
+        QTest::newRow( "check todo with the same category set" ) << sourceStructure << categories;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2
+                        << _+t3
+                        << _+t4
+                        << _+t5
+                        << _+t6
+                        << _+t7
+                        << _+t8
+                        << _+t9;
+
+        categories.clear();
+        categories << "cat5"
+                   << "cat4"
+                   << "cat3"
+                   << "cat2"
+                   << "cat1";
+
+        QTest::newRow( "check todo with some category duplicate" ) << sourceStructure << categories;
+    }
+
+    void shouldRetrieveItemAncestorsCategories()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel todoMetadataModel;
+        ModelTest t1(&todoMetadataModel);
+
+        //WHEN
+        todoMetadataModel.setSourceModel(&source);
+
+        //THEN
+        QFETCH(QStringList, categories);
+        QModelIndex index = todoMetadataModel.index(0,0);
+        while (todoMetadataModel.rowCount(index) > 0) {
+            index = todoMetadataModel.index(todoMetadataModel.rowCount(index)-1, 0, index);
+        }
+
+        QCOMPARE(index.data(Zanshin::AncestorsCategoriesRole).toStringList(), categories);
+    }
+
     void shouldRetrieveItemDataType_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );

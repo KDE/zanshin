@@ -64,6 +64,7 @@ private:
     QString uidFromItem(const Akonadi::Item &item) const;
     QString relatedUidFromItem(const Akonadi::Item &item) const;
     QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
+    QStringList ancestorsCategoriesFromItem(const Akonadi::Item &item) const;
     QStringList categoriesFromItem(const Akonadi::Item &item) const;
     QStringList childUidsFromItem(const Akonadi::Item &item) const;
     QModelIndexList childIndexesFromIndex(const QModelIndex &index) const;

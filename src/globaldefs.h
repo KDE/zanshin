@@ -49,6 +49,7 @@ namespace Zanshin
         ParentUidRole,
         AncestorsUidRole,
         CategoriesRole,
+        AncestorsCategoriesRole,
         ItemTypeRole,
         DataTypeRole,
         ChildUidsRole,

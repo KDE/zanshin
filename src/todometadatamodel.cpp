@@ -117,6 +117,8 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         return itemTypeFromItem(item);
     case Zanshin::CategoriesRole:
         return categoriesFromItem(item);
+    case Zanshin::AncestorsCategoriesRole:
+        return ancestorsCategoriesFromItem(item);
     case Zanshin::DataTypeRole:
         switch (index.column()) {
             case 1 :
@@ -303,7 +305,7 @@ QStringList TodoMetadataModel::ancestorsUidFromItem(const Akonadi::Item &item) c
     return result;
 }
 
-QStringList TodoMetadataModel::categoriesFromItem(const Akonadi::Item &item) const
+QStringList TodoMetadataModel::ancestorsCategoriesFromItem(const Akonadi::Item &item) const
 {
     QStringList ancestors = ancestorsUidFromItem(item);
     QStringList categories;
@@ -314,6 +316,13 @@ QStringList TodoMetadataModel::categoriesFromItem(const Akonadi::Item &item) con
             categories << todo->categories();
         }
     }
+    categories.removeDuplicates();
+    return categories;
+}
+
+QStringList TodoMetadataModel::categoriesFromItem(const Akonadi::Item &item) const
+{
+    QStringList categories = ancestorsCategoriesFromItem(item);
     KCalCore::Todo::Ptr todo = todoFromItem(item);
     if (todo) {
         categories << todo->categories();
