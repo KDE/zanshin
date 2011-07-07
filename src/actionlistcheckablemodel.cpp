@@ -22,6 +22,7 @@
 */
 
 #include <actionlistcheckablemodel.h>
+#include <globaldefs.h>
 #include <QStringList>
 #include <KDebug>
 
@@ -36,9 +37,8 @@ QVariant ActionListCheckableModel::data(const QModelIndex& id, int role) const
         QStringList categories;
         QModelIndexList indexes = selectionModel()->selectedIndexes();
         foreach (const QModelIndex &index, indexes) {
-            QString category = index.data(Qt::DisplayRole).toString();
-            QStringList path = category.split(" / ");
-            categories << path.last();
+            QString category = index.data(Zanshin::CategoryPathRole).toString();
+            categories << category;
         }
         return categories.join(", ");
     }

@@ -23,6 +23,7 @@
 */
 
 #include "actionlistcompletermodel.h"
+#include "globaldefs.h"
 
 #include <KDE/KCalCore/Todo>
 #include <kmodelindexproxymapper.h>
@@ -54,7 +55,7 @@ QVariant ActionListCompleterModel::data(const QModelIndex& index, int role) cons
         QStringList indexList;
         QModelIndexList indexes = m_selectionModel->selectedIndexes();
         foreach (const QModelIndex &index, indexes) {
-            indexList << index.data(Qt::DisplayRole).toString().split(" / ").last();
+            indexList << index.data(Zanshin::CategoryPathRole).toString().split(" / ").last();
         }
         if (indexList.isEmpty()) {
             return QSortFilterProxyModel::data(index).toString().split(" / ").last();

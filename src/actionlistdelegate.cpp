@@ -222,15 +222,9 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         model->setData(index, dateEdit->date());
     } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::CategoryType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
-        QStringList currentCategories;
-        for (int i=0; i < comboBox->model()->rowCount(); ++i) {
-            QModelIndex comboIndex = comboBox->model()->index(i, 0);
-            if (comboIndex.data(Qt::CheckStateRole).toInt() == Qt::Checked
-             && comboIndex.flags() & Qt::ItemIsEnabled) {
-                currentCategories << comboIndex.data(Zanshin::CategoryPathRole).toString();
-            }
-        }
+        QStringList currentCategories = comboBox->currentText().split(", ");
         model->setData(index, currentCategories);
+
     } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::ProjectType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         if (comboBox->currentIndex() == -1) {
