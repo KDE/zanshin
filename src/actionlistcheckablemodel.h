@@ -25,6 +25,7 @@
 #define ZANSHIN_ACTIONLISTCHECKABLEMODEL_H
 
 #include <kcheckableproxymodel.h>
+#include <QtCore/QStringList>
 
 class ActionListCheckableModel : public KCheckableProxyModel
 {
@@ -34,6 +35,11 @@ public:
 
     QVariant data(const QModelIndex& index, int role) const;
 
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    void setDisabledCategories(const QStringList categories);
+    const QStringList disabledCategories();
+private:
+    QStringList m_disabledCategories;
 };
 
 #endif //ZANSHIN_ACTIONLISTCOMBOBOX_H

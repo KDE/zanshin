@@ -165,14 +165,18 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         comboBox->setAutoHidePopupEnabled(true);
         QItemSelectionModel *checkModel = new QItemSelectionModel(model, comboBox);
         ActionListCheckableModel *checkable = new ActionListCheckableModel(comboBox);
+        QStringList ancestorsCategories = selectedIndex.data(Zanshin::AncestorsCategoriesRole).value<QStringList>();
+        checkable->setDisabledCategories(ancestorsCategories);
         checkable->setSourceModel(model);
         checkable->setSelectionModel(checkModel);
 
         QStringList categories = selectedIndex.data(Zanshin::CategoriesRole).value<QStringList>();
-        for (int i = 0; i < model->rowCount(); ++i) {
+        Q_ASSERT(checkable->rowCount() == model->rowCount());
+        for (int i = 0; i < checkable->rowCount(); ++i) {
+            QModelIndex checkIndex = checkable->index(i, 0);
             QModelIndex index = model->index(i, 0);
             foreach (QString item, categories) {
-                if (index.data(Zanshin::CategoryPathRole).toString() == item) {
+                if (index.data(Zanshin::CategoryPathRole).toString() == item && checkIndex.flags() & Qt::ItemIsEnabled) {
                     checkModel->select(index, QItemSelectionModel::Toggle);
                 }
             }
@@ -221,7 +225,8 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         QStringList currentCategories;
         for (int i=0; i < comboBox->model()->rowCount(); ++i) {
             QModelIndex comboIndex = comboBox->model()->index(i, 0);
-            if (comboIndex.data(Qt::CheckStateRole).toInt() == Qt::Checked) {
+            if (comboIndex.data(Qt::CheckStateRole).toInt() == Qt::Checked
+             && comboIndex.flags() & Qt::ItemIsEnabled) {
                 currentCategories << comboIndex.data(Zanshin::CategoryPathRole).toString();
             }
         }

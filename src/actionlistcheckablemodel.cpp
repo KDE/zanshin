@@ -46,3 +46,29 @@ QVariant ActionListCheckableModel::data(const QModelIndex& id, int role) const
     QVariant var = KCheckableProxyModel::data(id, role);
     return var;
 }
+
+Qt::ItemFlags ActionListCheckableModel::flags(const QModelIndex &index) const
+{
+    if (!sourceModel()) {
+        return Qt::NoItemFlags;
+    }
+
+    QString category = index.data().toString();
+    category = category.split(" / ").last();
+    Qt::ItemFlags flags = KCheckableProxyModel::flags(index);
+    if (m_disabledCategories.contains(category)) {
+        flags&= ~Qt::ItemIsEnabled;
+        return flags;
+    }
+    return flags;
+}
+
+void ActionListCheckableModel::setDisabledCategories(const QStringList categories)
+{
+    m_disabledCategories = categories;
+}
+
+const QStringList ActionListCheckableModel::disabledCategories()
+{
+    return m_disabledCategories;
+}
