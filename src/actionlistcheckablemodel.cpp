@@ -41,6 +41,11 @@ QVariant ActionListCheckableModel::data(const QModelIndex& id, int role) const
             categories << category;
         }
         return categories.join(", ");
+    } else if (role==Qt::DisplayRole) {
+        QModelIndex sourceChild = sourceModel()->index(id.row(), 0, id.parent());
+        QString category = sourceChild.data().toString();
+        category = category.mid(category.indexOf(" / ") + 3);
+        return category;
     }
 
     QVariant var = KCheckableProxyModel::data(id, role);
