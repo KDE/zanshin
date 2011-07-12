@@ -36,6 +36,8 @@ public:
 
     bool eventFilter(QObject *object, QEvent *event);
 
+    QRect finalizePopupGeometry(const QRect &geometry) const;
+
 public slots:
     virtual void showPopup();
 

@@ -62,9 +62,9 @@ bool ActionListComboBox::eventFilter(QObject *object, QEvent *event)
     return QComboBox::eventFilter(object,event);
 }
 
-void ActionListComboBox::showPopup()
+QRect ActionListComboBox::finalizePopupGeometry(const QRect &geometry) const
 {
-    QComboBox::showPopup();
+    QRect result = geometry;
 
     int width = 0;
     const int itemCount = count();
@@ -87,27 +87,37 @@ void ActionListComboBox::showPopup()
     initStyleOption(&opt);
     QSize tmp(width, 0);
     tmp = style()->sizeFromContents(QStyle::CT_ComboBox, &opt, tmp, this);
-    width = tmp.width();
+    width = tmp.width() + 2 * iconWidth;
 
     const int screenWidth = QApplication::desktop()->width();
     if ( width>screenWidth/2 ) {
         width = screenWidth/2;
     }
 
-    if (width>view()->width()) {
-        QSize size = view()->parentWidget()->size();
+    if (width>geometry.width()) {
+        QSize size = geometry.size();
         size.setWidth(width + 10);
-        view()->parentWidget()->resize(size);
+        result.setSize(size);
     }
 
-    const int viewRight = view()->parentWidget()->mapToGlobal(view()->parentWidget()->rect().bottomRight()).x();
-    const int dx = screenWidth - viewRight;
+    const int popupRight = geometry.bottomRight().x();
+    const int dx = screenWidth - popupRight;
 
     if (dx<0) {
-        const int x = view()->parentWidget()->geometry().x() + dx;
-        const int y = view()->parentWidget()->geometry().y();
-        view()->parentWidget()->move( x, y );
+        const int x = geometry.x() + dx;
+        const int y = geometry.y();
+        result.moveTopLeft(QPoint(x, y));
     }
+
+    return result;
+}
+
+void ActionListComboBox::showPopup()
+{
+    QComboBox::showPopup();
+
+    QRect geometry = finalizePopupGeometry(view()->parentWidget()->geometry());
+    view()->parentWidget()->setGeometry(geometry);
 }
 
 void ActionListComboBox::childEvent(QChildEvent *event)
