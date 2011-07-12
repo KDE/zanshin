@@ -410,3 +410,18 @@ bool ActionListEditorPage::selectSiblingIndex(const QModelIndex &index)
     }
     return false;
 }
+
+void ActionListEditorPage::selectFirstIndex()
+{
+    QTimer::singleShot(0, this, SLOT(onSelectFirstIndex()));
+}
+
+void ActionListEditorPage::onSelectFirstIndex()
+{
+    // Clear selection to avoid multiple selections when a widget is in edit mode.
+    m_treeView->selectionModel()->clearSelection();
+    QModelIndex root = m_treeView->model()->index(0, 0);
+    if (root.isValid()) {
+        m_treeView->selectionModel()->setCurrentIndex(root, QItemSelectionModel::Select|QItemSelectionModel::Rows);
+    }
+}

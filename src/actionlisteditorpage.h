@@ -63,6 +63,8 @@ public:
     void setDefaultCollection(const Akonadi::Collection &collection);
 
     bool selectSiblingIndex(const QModelIndex &index);
+    void selectFirstIndex();
+
 public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();
@@ -70,6 +72,7 @@ public slots:
 private slots:
     void onAutoHideColumns();
     void onColumnsGeometryChanged();
+    void onSelectFirstIndex();
 
 private:
     Akonadi::EntityTreeView *m_treeView;

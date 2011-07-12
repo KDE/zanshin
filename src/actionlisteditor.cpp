@@ -158,6 +158,8 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
                         || type == Zanshin::CategoryRoot);
 
     currentPage()->setCollectionColumnHidden(type!=Zanshin::Inbox);
+
+    currentPage()->selectFirstIndex();
 }
 
 void ActionListEditor::onComboBoxChanged()
