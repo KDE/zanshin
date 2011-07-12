@@ -138,20 +138,20 @@ void SideBar::setMode(Zanshin::ApplicationMode mode)
     switch (mode) {
     case Zanshin::ProjectMode:
         m_stack->setCurrentIndex(0);
-        m_add->setText("New Project");
-        m_remove->setText("Remove Project");
-        m_rename->setText("Rename Project");
-        m_previous->setText("Previous Project");
-        m_next->setText("Next Project");
+        m_add->setText(i18n("New Project"));
+        m_remove->setText(i18n("Remove Project"));
+        m_rename->setText(i18n("Rename Project"));
+        m_previous->setText(i18n("Previous Project"));
+        m_next->setText(i18n("Next Project"));
         break;
 
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
-        m_add->setText("New Category");
-        m_remove->setText("Remove Category");
-        m_rename->setText("Rename Category");
-        m_previous->setText("Previous Category");
-        m_next->setText("Next Category");
+        m_add->setText(i18n("New Category"));
+        m_remove->setText(i18n("Remove Category"));
+        m_rename->setText(i18n("Rename Category"));
+        m_previous->setText(i18n("Previous Category"));
+        m_next->setText(i18n("Next Category"));
         break;
     }
 
