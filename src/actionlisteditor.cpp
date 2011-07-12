@@ -231,6 +231,10 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_move = ac->addAction("editor_move_action", this, SLOT(onMoveAction()));
     m_move->setText(i18n("Move Action..."));
     m_move->setShortcut(Qt::Key_M);
+
+    m_promote = ac->addAction("editor_promote_action", this, SLOT(onPromoteAction()));
+    m_promote->setText(i18n("Promote Action as Project"));
+    m_promote->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
 }
 
 void ActionListEditor::updateActions(const QModelIndex &index)
@@ -245,6 +249,9 @@ void ActionListEditor::updateActions(const QModelIndex &index)
                    && (type==Zanshin::StandardTodo
                     || type==Zanshin::Category
                     || type==Zanshin::ProjectTodo));
+
+    m_promote->setEnabled(index.isValid()
+                       && type==Zanshin::StandardTodo);
 }
 
 void ActionListEditor::onAddActionRequested()
@@ -345,6 +352,23 @@ void ActionListEditor::onMoveAction()
             }
         }
     }
+}
+
+void ActionListEditor::onPromoteAction()
+{
+    QModelIndex currentIndex = currentPage()->selectionModel()->currentIndex();
+
+    if (!currentIndex.isValid()) {
+        return;
+    }
+
+    int type = currentIndex.data(Zanshin::ItemTypeRole).toInt();
+
+    if (type!=Zanshin::StandardTodo) {
+        return;
+    }
+
+    TodoHelpers::promoteTodo(currentIndex);
 }
 
 void ActionListEditor::focusActionEdit()

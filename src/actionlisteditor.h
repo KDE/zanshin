@@ -68,6 +68,7 @@ private slots:
     void onAddActionRequested();
     void onRemoveAction();
     void onMoveAction();
+    void onPromoteAction();
     void focusActionEdit();
     void onSideBarSelectionChanged(const QModelIndex &index);
     void onComboBoxChanged();
@@ -92,6 +93,7 @@ private:
     KAction *m_cancelAdd;
     KAction *m_remove;
     KAction *m_move;
+    KAction *m_promote;
 
     ModelStack *m_models;
 

@@ -261,3 +261,21 @@ bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &pa
     return true;
 }
 
+bool TodoHelpers::promoteTodo(const QModelIndex &index)
+{
+    Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
+    if (itemType!=Zanshin::StandardTodo) {
+        return false;
+    }
+
+    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+
+    if (!todo) {
+        return false;
+    }
+
+    todo->addComment("X-Zanshin-Project");
+    new Akonadi::ItemModifyJob(item);
+    return true;
+}

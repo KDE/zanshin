@@ -8,6 +8,7 @@
    <Action name="editor_add_action" />
    <Action name="editor_remove_action" />
    <Action name="editor_move_action" />
+   <Action name="editor_promote_action" />
    <Separator />
    <Action name="synchronize_all" />
    <Action name="sidebar_synchronize" />
