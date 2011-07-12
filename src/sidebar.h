@@ -61,6 +61,7 @@ private slots:
     void onRenameItem();
     void onPreviousItem();
     void onNextItem();
+    void onSynchronize();
 
 private:
     void createPage(QAbstractItemModel *model);
@@ -82,6 +83,7 @@ private:
     KAction *m_rename;
     KAction *m_previous;
     KAction *m_next;
+    KAction *m_synchronize;
 };
 
 #endif

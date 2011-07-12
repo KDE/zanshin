@@ -34,6 +34,10 @@
 #include <KDE/KCalCore/Todo>
 #endif
 
+#include <KDE/Akonadi/AgentManager>
+#include <KDE/Akonadi/AgentInstance>
+#include <KDE/Akonadi/AgentType>
+#include <KDE/Akonadi/EntityDisplayAttribute>
 #include <KDE/Akonadi/EntityTreeView>
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
@@ -92,6 +96,7 @@ void SideBar::setupToolBar()
 
     QToolBar *projectBar = new QToolBar(this);
     projectBar->setIconSize(QSize(16, 16));
+    projectBar->addAction(m_synchronize);
     projectBar->addAction(m_add);
     projectBar->addAction(m_remove);
 
@@ -121,6 +126,11 @@ void SideBar::setupActions(KActionCollection *ac)
     m_next->setText(i18n("Next"));
     m_next->setIcon(KIcon("go-next"));
     m_next->setShortcut(Qt::ALT | Qt::Key_Down);
+
+    m_synchronize = ac->addAction("sidebar_synchronize", this, SLOT(onSynchronize()));
+    m_synchronize->setText(i18n("Synchronize"));
+    m_synchronize->setIcon(KIcon("view-refresh"));
+    m_synchronize->setShortcut(Qt::Key_F5);
 }
 
 void SideBar::setMode(Zanshin::ApplicationMode mode)
@@ -172,6 +182,40 @@ void SideBar::updateActions(const QModelIndex &index)
 
     m_rename->setEnabled( type == Zanshin::ProjectTodo
                        || type == Zanshin::Category );
+
+    Akonadi::Collection col;
+    if ( type==Zanshin::Collection ) {
+        col = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    } else if ( type==Zanshin::ProjectTodo ) {
+        QModelIndex currentIndex = index;
+        Zanshin::ItemType currentType = type;
+
+        while (currentIndex.isValid() && currentType!=Zanshin::Collection) {
+            currentIndex = currentIndex.parent();
+            currentType = (Zanshin::ItemType) currentIndex.data(Zanshin::ItemTypeRole).toInt();
+
+            if (currentType==Zanshin::Collection) {
+                col = currentIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+                break;
+            }
+        }
+    }
+
+    QString name;
+
+    if ( !col.isValid() ) {
+        name = index.data().toString();
+    } else {
+        if ( col.hasAttribute<Akonadi::EntityDisplayAttribute>() &&
+             !col.attribute<Akonadi::EntityDisplayAttribute>()->displayName().isEmpty() ) {
+            name = col.attribute<Akonadi::EntityDisplayAttribute>()->displayName();
+        } else {
+            name = col.name();
+        }
+    }
+
+    m_synchronize->setData(QVariant::fromValue(col));
+    m_synchronize->setText(i18n("Synchronize \"%1\"", name));
 }
 
 void SideBar::onAddItem()
@@ -197,6 +241,25 @@ void SideBar::onPreviousItem()
 void SideBar::onNextItem()
 {
     currentPage()->selectNextItem();
+}
+
+void SideBar::onSynchronize()
+{
+    KAction *action = static_cast<KAction*>(sender());
+    Akonadi::Collection col = action->data().value<Akonadi::Collection>();
+
+    if (col.isValid()) {
+        Akonadi::AgentManager::self()->synchronizeCollection(col);
+    } else {
+        Akonadi::AgentInstance::List agents = Akonadi::AgentManager::self()->instances();
+        while (!agents.isEmpty()) {
+            Akonadi::AgentInstance agent = agents.takeFirst();
+
+            if (agent.type().mimeTypes().contains("application/x-vnd.akonadi.calendar.todo")) {
+                agent.synchronize();
+            }
+        }
+    }
 }
 
 SideBarPage *SideBar::currentPage() const
@@ -338,4 +401,3 @@ void SideBar::removeCurrentContext()
     GlobalModel::todoCategories()->removeCategory(summary);
 #endif
 }
-
