@@ -26,8 +26,11 @@
 #include <QtCore/QEvent>
 #include <QtGui/QMouseEvent>
 
-ActionListCompleterView::ActionListCompleterView(QWidget *parent)
-    : QListView(parent)
+#include "actionlistcombobox.h"
+
+ActionListCompleterView::ActionListCompleterView(ActionListComboBox *parent)
+    : QListView(parent),
+      m_combo(parent)
 {
 }
 
@@ -42,4 +45,18 @@ void ActionListCompleterView::mouseReleaseEvent(QMouseEvent *e)
                             ? Qt::Unchecked : Qt::Checked);
     model()->setData(index, state, Qt::CheckStateRole);
     hide();
+}
+
+void ActionListCompleterView::resizeEvent(QResizeEvent *e)
+{
+    QListView::resizeEvent(e);
+
+    static bool forceGeometry = false;
+
+    if (!forceGeometry) {
+        forceGeometry = true;
+        QRect geo = m_combo->finalizePopupGeometry(geometry());
+        setGeometry(geo);
+        forceGeometry = false;
+    }
 }

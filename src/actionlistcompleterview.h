@@ -26,14 +26,20 @@
 
 #include <QtGui/QListView>
 
+class ActionListComboBox;
+
 class ActionListCompleterView : public QListView
 {
     Q_OBJECT
 public:
-    ActionListCompleterView(QWidget *parent = 0);
+    ActionListCompleterView(ActionListComboBox *parent = 0);
 
 protected:
     virtual void mouseReleaseEvent(QMouseEvent *e);
+    virtual void resizeEvent(QResizeEvent *e);
+
+private:
+    ActionListComboBox *m_combo;
 };
 
 #endif //ZANSHIN_ACTIONLISTCOMPLETERVIEW_H
