@@ -8,6 +8,8 @@
    <Action name="editor_add_action" />
    <Action name="editor_remove_action" />
    <Action name="editor_move_action" />
+   <Separator />
+   <Action name="synchronize_all" />
   </Menu>
   <Menu name="go">
    <text>&amp;Go</text>

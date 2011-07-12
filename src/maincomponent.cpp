@@ -24,6 +24,10 @@
 
 #include "maincomponent.h"
 
+#include <KDE/Akonadi/AgentManager>
+#include <KDE/Akonadi/AgentInstance>
+#include <KDE/Akonadi/AgentType>
+
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfigGroup>
@@ -84,6 +88,11 @@ void MainComponent::setupActions(KActionCollection *ac)
     action->setCheckable(true);
     action->setData(Zanshin::CategoriesMode);
     modeGroup->addAction(action);
+
+    action = ac->addAction("synchronize_all", this, SLOT(onSynchronizeAll()));
+    action->setText(i18n("Synchronize All"));
+    action->setIcon(KIcon("view-refresh"));
+    action->setShortcut(Qt::CTRL | Qt::Key_L);
 }
 
 void MainComponent::saveColumnsState(KConfigGroup &cg) const
@@ -101,6 +110,18 @@ void MainComponent::onModeSwitch()
     KAction *action = static_cast<KAction*>(sender());
     m_editor->setMode((Zanshin::ApplicationMode)action->data().toInt());
     m_sidebar->setMode((Zanshin::ApplicationMode)action->data().toInt());
+}
+
+void MainComponent::onSynchronizeAll()
+{
+    Akonadi::AgentInstance::List agents = Akonadi::AgentManager::self()->instances();
+    while (!agents.isEmpty()) {
+        Akonadi::AgentInstance agent = agents.takeFirst();
+
+        if (agent.type().mimeTypes().contains("application/x-vnd.akonadi.calendar.todo")) {
+            agent.synchronize();
+        }
+    }
 }
 
 void MainComponent::showConfigDialog()

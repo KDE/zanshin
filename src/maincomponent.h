@@ -52,6 +52,7 @@ public slots:
 
 private slots:
     void onModeSwitch();
+    void onSynchronizeAll();
 
 private:
     void setupActions(KActionCollection *ac);
