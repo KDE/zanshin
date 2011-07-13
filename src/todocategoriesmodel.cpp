@@ -116,6 +116,22 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
         QModelIndex sourceIndex = begin.sibling(row, 0);
         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
 
+        if (sourceIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::Collection) {
+            return;
+        }
+
+        if (sourceIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo) {
+            foreach (TodoNode *node, nodes) {
+                TodoNode *parentNode = node->parent();
+                int oldRow = parentNode->children().indexOf(node);
+                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
+                m_manager->removeNode(node);
+                delete node;
+                endRemoveRows();
+            }
+            return;
+        }
+
         QSet<QString> oldCategories;
         QHash<QString, TodoNode*> nodeMap;
         foreach (TodoNode *node, nodes) {
@@ -155,7 +171,9 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
             if (categories.isEmpty()) {
                 addChildNode(sourceIndex, m_inboxNode);
             }
-        } else if (!newCategories.isEmpty()) {
+        }
+
+        if (!newCategories.isEmpty()) {
             TodoNode *node = 0;
             QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
             foreach (TodoNode *n, nodes) {
@@ -171,17 +189,11 @@ void TodoCategoriesModel::onSourceDataChanged(const QModelIndex &begin, const QM
                 delete node;
                 endRemoveRows();
             }
-        }
 
-        if (sourceIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo) {
-            QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
-            foreach (TodoNode *node, nodes) {
-                TodoNode *parentNode = node->parent();
-                int oldRow = parentNode->children().indexOf(node);
-                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
-                m_manager->removeNode(node);
-                delete node;
-                endRemoveRows();
+            foreach (const QString &newCategory, newCategories) {
+                TodoNode *parent = m_categoryMap[newCategory];
+                Q_ASSERT(parent);
+                addChildNode(sourceIndex, parent);
             }
         }
     }

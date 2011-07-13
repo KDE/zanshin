@@ -349,9 +349,11 @@ private slots:
         V cats(Categories);
         C c1(1, 0, "c1");
         Cat cat1("cat1");
+        Cat cat2("cat2");
         T t1(3, 1, "t1", QString(), "t1", InProgress, NoTag, QString(), "cat1");
         T t2(4, 1, "t2", QString(), "t2", InProgress, NoTag, QString(), "cat1");
         T t3(5, 1, "t3", QString(), "t3");
+        T t4(6, 1, "t4", QString(), "t4", InProgress, NoTag, QString(), "cat1, cat2");
 
         // Create the source structure once and for all
         ModelStructure sourceStructure;
@@ -372,6 +374,105 @@ private slots:
         QTest::newRow( "promote item" ) << sourceStructure << itemToChange
                                         << value << role
                                         << outputStructure;
+
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t3;
+
+        itemToChange = c1 % t3;
+        QStringList categoriesAdded;
+        categoriesAdded << "cat1";
+
+        value = categoriesAdded;
+        role = Zanshin::CategoriesRole;
+
+        outputStructure.clear();
+        outputStructure << nocat
+                        << cats
+                        << _+cat1
+                        << __+t1
+                        << __+t3;
+
+        QTest::newRow( "Todo with no category which gets a new category" ) << sourceStructure << itemToChange
+                                                                           << value << role
+                                                                           << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t4;
+
+        itemToChange = c1 % t1;
+        categoriesAdded.clear();
+
+        value = categoriesAdded;
+        role = Zanshin::CategoriesRole;
+
+        outputStructure.clear();
+        outputStructure << nocat
+                        << _+t1
+                        << cats
+                        << _+cat1
+                        << __+t4
+                        << _+cat2
+                        << __+t4;
+
+        QTest::newRow( "Todo with categories which looses all its categories" ) << sourceStructure << itemToChange
+                                                                                << value << role
+                                                                                << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t4;
+
+        itemToChange = c1 % t1;
+        categoriesAdded.clear();
+        categoriesAdded << "cat1";
+        categoriesAdded << "cat2";
+
+        value = categoriesAdded;
+        role = Zanshin::CategoriesRole;
+
+        outputStructure.clear();
+        outputStructure << nocat
+                        << cats
+                        << _+cat1
+                        << __+t1
+                        << __+t4
+                        << _+cat2
+                        << __+t4
+                        << __+t1;
+
+        QTest::newRow( "Todo with categories which gets a new category" ) << sourceStructure << itemToChange
+                                                                          << value << role
+                                                                          << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << _+t4;
+
+        itemToChange = c1 % t4;
+        categoriesAdded.clear();
+        categoriesAdded << "cat1";
+
+        value = categoriesAdded;
+        role = Zanshin::CategoriesRole;
+
+        outputStructure.clear();
+        outputStructure << nocat
+                        << cats
+                        << _+cat1
+                        << __+t1
+                        << __+t4
+                        << _+cat2;
+
+        QTest::newRow( "Todo with categories which looses one category" ) << sourceStructure << itemToChange
+                                                                          << value << role
+                                                                          << outputStructure;
     }
 
     void shouldReactToSourceDataChanges()
