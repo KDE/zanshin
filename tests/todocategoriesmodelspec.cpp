@@ -335,6 +335,79 @@ private slots:
             QCOMPARE(insertSpy.at(i).at(2).toInt(), expectedRow);
         }
     }
+
+    void shouldReactToSourceDataChanges_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "itemToChange" );
+        QTest::addColumn<QVariant>( "value" );
+        QTest::addColumn<int>( "role" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V nocat(NoCategory);
+        V cats(Categories);
+        C c1(1, 0, "c1");
+        Cat cat1("cat1");
+        T t1(3, 1, "t1", QString(), "t1", InProgress, NoTag, QString(), "cat1");
+        T t2(4, 1, "t2", QString(), "t2", InProgress, NoTag, QString(), "cat1");
+        T t3(5, 1, "t3", QString(), "t3");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        ModelPath itemToChange = c1 % t1;
+        QVariant value = Zanshin::ProjectTodo;
+        int role = Zanshin::ItemTypeRole;
+
+        ModelStructure outputStructure;
+        outputStructure << nocat
+                        << cats
+                        << _+cat1
+                        << __+t2;
+
+        QTest::newRow( "promote item" ) << sourceStructure << itemToChange
+                                        << value << role
+                                        << outputStructure;
+    }
+
+    void shouldReactToSourceDataChanges()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        //Kick up category manager
+        CategoryManager::instance().setModel(&source);
+        ModelUtils::create(&source, sourceStructure);
+
+        //create categoriesModel
+        TodoCategoriesModel categoriesModel;
+        ModelTest t1(&categoriesModel);
+
+        categoriesModel.setSourceModel(&source);
+
+        //WHEN
+        QFETCH(ModelPath, itemToChange);
+        QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
+
+        QFETCH(QVariant, value);
+        QFETCH(int, role);
+
+        source.setData(index, value, role);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(categoriesModel, output);
+    }
+
 };
 
 QTEST_KDEMAIN(TodoCategoriesModelSpec, GUI)
