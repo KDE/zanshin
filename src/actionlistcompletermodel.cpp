@@ -55,14 +55,15 @@ QVariant ActionListCompleterModel::data(const QModelIndex& index, int role) cons
         QStringList indexList;
         QModelIndexList indexes = m_selectionModel->selectedIndexes();
         foreach (const QModelIndex &index, indexes) {
-            indexList << index.data(Zanshin::CategoryPathRole).toString().split(" / ").last();
+            indexList << index.data(Zanshin::CategoryPathRole).toString();
         }
         if (indexList.isEmpty()) {
-            return QSortFilterProxyModel::data(index).toString().split(" / ").last();
+            return index.data(Zanshin::CategoryPathRole).toString();
         } else {
-            return QString(indexList.join(", ") + ", " + QSortFilterProxyModel::data(index).toString().split(" / ").last());
+            return QString(indexList.join(", ") + ", " + index.data(Zanshin::CategoryPathRole).toString());
         }
     }
+
     return QSortFilterProxyModel::data(index, role);
 }
 
