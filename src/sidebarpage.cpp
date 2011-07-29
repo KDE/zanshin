@@ -61,8 +61,8 @@ SideBarPage::SideBarPage(QAbstractItemModel *model,
 
     m_treeView->setCurrentIndex(m_treeView->model()->index(0, 0));
 
-    connect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-            m_treeView, SLOT(expand(const QModelIndex&)));
+    connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+            m_treeView, SLOT(expand(QModelIndex)));
 
     m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
     m_treeView->addActions(contextActions);

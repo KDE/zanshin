@@ -61,7 +61,7 @@ void createViews(TodoModel *baseModel)
                      mainView, SLOT(expandAll()));
     QObject::connect(selectionProxy, SIGNAL(layoutChanged()),
                      mainView, SLOT(expandAll()));
-    QObject::connect(selectionProxy, SIGNAL(rowsInserted(QModelIndex, int, int)),
+    QObject::connect(selectionProxy, SIGNAL(rowsInserted(QModelIndex,int,int)),
                      mainView, SLOT(expandAll()));
 
     mainView->setSelectionMode(QAbstractItemView::ExtendedSelection);

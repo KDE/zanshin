@@ -144,8 +144,8 @@ private slots:
         QFETCH(ModelPath::List, itemsToRemove);
 
         // Collect data to ensure we signalled the outside properly
-        QSignalSpy aboutToRemoveSpy(&treeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
-        QSignalSpy removeSpy(&treeModel, SIGNAL(rowsRemoved(QModelIndex, int, int)));
+        QSignalSpy aboutToRemoveSpy(&treeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)));
+        QSignalSpy removeSpy(&treeModel, SIGNAL(rowsRemoved(QModelIndex,int,int)));
 
         QList<QModelIndex> parents;
         QList<int> rows;
@@ -401,8 +401,8 @@ private slots:
         QFETCH(ModelStructure, insertedStructure);
 
         // Collect data to ensure we signalled the outside properly
-        QSignalSpy aboutToInsertSpy(&treeModel, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy insertSpy(&treeModel, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy aboutToInsertSpy(&treeModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)));
+        QSignalSpy insertSpy(&treeModel, SIGNAL(rowsInserted(QModelIndex,int,int)));
 
         ModelUtils::create(&source, insertedStructure, sourceParentPath);
 

@@ -56,15 +56,15 @@ CategoryManager::~CategoryManager()
 void CategoryManager::setModel(QAbstractItemModel *model)
 {
     if (m_model) {
-        disconnect(m_model, SIGNAL(rowsInserted(const QModelIndex&, int, int)));
-        disconnect(m_model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)));
+        disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)));
+        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
     }
 
     if (model) {
-        connect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-                this, SLOT(onSourceInsertRows(const QModelIndex&, int, int)));
-        connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-                this, SLOT(onSourceDataChanged(const QModelIndex&, const QModelIndex&)));
+        connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+                this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
     }
 
     m_categories.clear();

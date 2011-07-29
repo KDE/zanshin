@@ -240,14 +240,14 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
             m_treeView, SLOT(expandAll()));
     connect(m_treeView->model(), SIGNAL(layoutChanged()),
             m_treeView, SLOT(expandAll()));
-    connect(m_treeView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+    connect(m_treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
             m_treeView, SLOT(expandAll()));
 
     layout()->addWidget(m_treeView);
 
     QTimer::singleShot(0, this, SLOT(onAutoHideColumns()));
 
-    connect(m_treeView->header(), SIGNAL(sectionResized(int, int, int)),
+    connect(m_treeView->header(), SIGNAL(sectionResized(int,int,int)),
             this, SLOT(onColumnsGeometryChanged()));
 }
 

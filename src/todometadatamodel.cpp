@@ -34,12 +34,12 @@
 TodoMetadataModel::TodoMetadataModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
-    connect(this, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-            this, SLOT(onSourceInsertRows(const QModelIndex&, int, int)));
-    connect(this, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)),
-            this, SLOT(onSourceRemoveRows(const QModelIndex&, int, int)));
-    connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-            this, SLOT(onSourceDataChanged(const QModelIndex&, const QModelIndex&)));
+    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)),
+            this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
+    connect(this, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+            this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
+    connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+            this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
 
     onSourceInsertRows(QModelIndex(), 0, rowCount()-1);
 }

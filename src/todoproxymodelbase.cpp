@@ -185,29 +185,29 @@ void TodoProxyModelBase::setSourceModel(QAbstractItemModel *model)
     init();
 
     if (sourceModel()) {
-        connect(sourceModel(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-                this, SLOT(onSourceDataChanged(const QModelIndex&, const QModelIndex&)));
-        connect(sourceModel(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-                this, SLOT(onSourceInsertRows(const QModelIndex&, int, int)));
-        connect(sourceModel(), SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)),
-                this, SLOT(onSourceRemoveRows(const QModelIndex&, int, int)));
-        connect(sourceModel(), SIGNAL(rowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
-                this, SLOT(onRowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
-        connect(sourceModel(), SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
-                this, SLOT(onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
+        connect(sourceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+                this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
+        connect(sourceModel(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+                this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
+        connect(sourceModel(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
+        connect(sourceModel(), SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
+                this, SLOT(onRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
+        connect(sourceModel(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+                this, SLOT(onRowsMoved(QModelIndex,int,int,QModelIndex,int)));
     }
 
     if (model) {
-        connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-                this, SLOT(onSourceDataChanged(const QModelIndex&, const QModelIndex&)));
-        connect(model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-                this, SLOT(onSourceInsertRows(const QModelIndex&, int, int)));
-        connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)),
-                this, SLOT(onSourceRemoveRows(const QModelIndex&, int, int)));
-        connect(model, SIGNAL(rowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
-                this, SLOT(onRowsAboutToBeMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
-        connect(model, SIGNAL(rowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)),
-                this, SLOT(onRowsMoved(const QModelIndex&, int, int, const QModelIndex&, int)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+                this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
+        connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
+        connect(model, SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
+                this, SLOT(onRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
+        connect(model, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+                this, SLOT(onRowsMoved(QModelIndex,int,int,QModelIndex,int)));
     }
 
     QAbstractProxyModel::setSourceModel(model);

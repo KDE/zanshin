@@ -50,14 +50,14 @@ void SelectionProxyModel::setSelectionModel(QItemSelectionModel *selectionModel)
     }
 
     if (m_selectionModel) {
-        disconnect(m_selectionModel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)));
+        disconnect(m_selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)));
     }
 
     m_selectionModel = selectionModel;
 
     if (selectionModel) {
-        connect(selectionModel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
-                this, SLOT(onSelectionChanged(QItemSelection, QItemSelection)));
+        connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+                this, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
     }
 
     initializeSelection();

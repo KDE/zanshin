@@ -42,14 +42,14 @@
 TodoCategoriesModel::TodoCategoriesModel(QObject *parent)
     : TodoProxyModelBase(MultiMapping, parent), m_categoryRootNode(0)
 {
-    connect(&CategoryManager::instance(), SIGNAL(categoryAdded(const QString&)),
-            this, SLOT(createCategoryNode(const QString&)));
-    connect(&CategoryManager::instance(), SIGNAL(categoryRemoved(const QString&)),
-            this, SLOT(removeCategoryNode(const QString&)));
-    connect(&CategoryManager::instance(), SIGNAL(categoryRenamed(const QString&, const QString&)),
-            this, SLOT(renameCategoryNode(const QString&, const QString&)));
-    connect(&CategoryManager::instance(), SIGNAL(categoryMoved(const QString&, const QString&)),
-            this, SLOT(moveCategoryNode(const QString&, const QString&)));
+    connect(&CategoryManager::instance(), SIGNAL(categoryAdded(QString)),
+            this, SLOT(createCategoryNode(QString)));
+    connect(&CategoryManager::instance(), SIGNAL(categoryRemoved(QString)),
+            this, SLOT(removeCategoryNode(QString)));
+    connect(&CategoryManager::instance(), SIGNAL(categoryRenamed(QString,QString)),
+            this, SLOT(renameCategoryNode(QString,QString)));
+    connect(&CategoryManager::instance(), SIGNAL(categoryMoved(QString,QString)),
+            this, SLOT(moveCategoryNode(QString,QString)));
 }
 
 TodoCategoriesModel::~TodoCategoriesModel()

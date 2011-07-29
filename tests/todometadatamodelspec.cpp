@@ -1126,9 +1126,9 @@ private slots:
         QFETCH(ModelStructure, insertedStructure);
 
         // Collect data to ensure we signalled the outside properly
-        QSignalSpy aboutToInsertSpy(&metadataModel, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy insertSpy(&metadataModel, SIGNAL(rowsInserted(QModelIndex, int, int)));
-        QSignalSpy changeSpy(&metadataModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
+        QSignalSpy aboutToInsertSpy(&metadataModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)));
+        QSignalSpy insertSpy(&metadataModel, SIGNAL(rowsInserted(QModelIndex,int,int)));
+        QSignalSpy changeSpy(&metadataModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
 
         ModelUtils::create(&source, insertedStructure, sourceParentPath, &behavior);
 
@@ -1245,8 +1245,8 @@ private slots:
         QFETCH(ModelPath::List, itemsToRemove);
 
         // Collect data to ensure we signalled the outside properly
-        QSignalSpy aboutToRemoveSpy(&metadataModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
-        QSignalSpy removeSpy(&metadataModel, SIGNAL(rowsRemoved(QModelIndex, int, int)));
+        QSignalSpy aboutToRemoveSpy(&metadataModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)));
+        QSignalSpy removeSpy(&metadataModel, SIGNAL(rowsRemoved(QModelIndex,int,int)));
 
         QList<QModelIndex> parents;
         QList<int> rows;
@@ -1383,7 +1383,7 @@ private slots:
         }
 
         // Collect data to ensure we signalled the outside properly
-        QSignalSpy changeSpy(&metadataModel, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
+        QSignalSpy changeSpy(&metadataModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
 
         source.setData(index, "test", Qt::DisplayRole);
 

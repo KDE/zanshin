@@ -307,8 +307,8 @@ private slots:
         QFETCH(ModelStructure, insertedStructure);
 
         // Collect data to ensure we signalled the outside properly
-        QSignalSpy aboutToInsertSpy(&categoriesModel, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy insertSpy(&categoriesModel, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy aboutToInsertSpy(&categoriesModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)));
+        QSignalSpy insertSpy(&categoriesModel, SIGNAL(rowsInserted(QModelIndex,int,int)));
 
         ModelUtils::create(&source, insertedStructure, sourceParentPath);
 

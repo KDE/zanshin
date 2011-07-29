@@ -72,9 +72,9 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    connect(projectSelection, SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+    connect(projectSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
-    connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+    connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
 
     models->setItemTreeSelectionModel(projectSelection);
@@ -113,8 +113,8 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     if (m_defaultCollectionId > 0) {
         if (!selectDefaultCollection(descendantProxyModel, QModelIndex(),
                                      0, descendantProxyModel->rowCount()-1)) {
-            connect(descendantProxyModel, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-                    this, SLOT(onRowInsertedInComboBox(const QModelIndex&, int, int)));
+            connect(descendantProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                    this, SLOT(onRowInsertedInComboBox(QModelIndex,int,int)));
         }
     }
 
@@ -194,7 +194,7 @@ void ActionListEditor::onRowInsertedInComboBox(const QModelIndex &parent, int be
 {
     QAbstractItemModel *model = static_cast<QAbstractItemModel*>(sender());
     if (selectDefaultCollection(model, parent, begin, end)) {
-        disconnect(this, SLOT(onRowInsertedInComboBox(const QModelIndex&, int, int)));
+        disconnect(this, SLOT(onRowInsertedInComboBox(QModelIndex,int,int)));
     }
 }
 
@@ -202,7 +202,7 @@ void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models,
 {
     ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, m_stack);
 
-    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
     m_stack->addWidget(page);

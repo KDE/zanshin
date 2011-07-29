@@ -192,7 +192,7 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         completer->setModel(model);
         comboBox->setEditText(selectedIndex.data().toString());
     }
-    connect(completer, SIGNAL(activated(const QModelIndex&)), this, SLOT(onCompleterActivated(const QModelIndex&)));
+    connect(completer, SIGNAL(activated(QModelIndex)), this, SLOT(onCompleterActivated(QModelIndex)));
     comboBox->setCompleter(completer);
 
     return comboBox;

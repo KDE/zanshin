@@ -82,7 +82,7 @@ void SideBar::createPage(QAbstractItemModel *model)
 
     SideBarPage *page = new SideBarPage(model, contextActions, m_stack);
 
-    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)),
+    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
     m_stack->addWidget(page);
