@@ -100,8 +100,7 @@ QRect ActionListComboBox::finalizePopupGeometry(const QRect &geometry) const
         result.setSize(size);
     }
 
-    const int popupRight = geometry.bottomRight().x();
-    const int dx = screenWidth - popupRight;
+    const int dx = screenWidth - result.right();
 
     if (dx<0) {
         const int x = geometry.x() + dx;
