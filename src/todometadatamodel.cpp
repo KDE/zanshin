@@ -165,7 +165,8 @@ void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin,
 
         // Emit dataChanged to notify that the todo is a project todo
         QModelIndex parentIndex = m_indexMap[relatedUid];
-        if (parentIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo) {
+        if (parentIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo
+         && m_childrenMap[relatedUid].size() == 1) {
             emit dataChanged(parentIndex, parentIndex);
         }
 
