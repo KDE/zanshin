@@ -51,9 +51,7 @@
 #include "modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
-#if 0
-#include "quickselectdialog.h"
-#endif
+
 
 ActionListEditor::ActionListEditor(ModelStack *models,
                                    QItemSelectionModel *projectSelection,
