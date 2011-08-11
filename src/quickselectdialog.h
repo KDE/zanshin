@@ -29,11 +29,13 @@
 #include "globaldefs.h"
 
 class QAbstractItemModel;
+class QLabel;
 class QTreeView;
 namespace Akonadi
 {
     class Collection;
 }
+class KRecursiveFilterProxyModel;
 
 class QuickSelectDialog : public KDialog
 {
@@ -57,7 +59,13 @@ private:
     QString categorySelectedId() const;
     QString projectSelectedId() const;
 
+    QString pattern() const;
+    void applyPattern(const QString &pattern);
+    bool eventFilter(QObject *object, QEvent *ev);
+
+    QLabel *m_label;
     QTreeView *m_tree;
+    KRecursiveFilterProxyModel *m_filter;
     QAbstractItemModel *m_model;
     Zanshin::ApplicationMode m_mode;
 };

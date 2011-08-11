@@ -25,7 +25,10 @@
 
 #include <KDE/KDebug>
 #include <KDE/KLocale>
+#include <krecursivefilterproxymodel.h>
 
+#include <QtGui/QKeyEvent>
+#include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtGui/QTreeView>
 
@@ -34,7 +37,12 @@
 #include "todotreemodel.h"
 
 QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action)
-    : KDialog(parent), m_tree(0), m_model(model), m_mode(mode)
+    : KDialog(parent),
+      m_label(0),
+      m_tree(0),
+      m_filter(new KRecursiveFilterProxyModel(this)),
+      m_model(model),
+      m_mode(mode)
 {
     QString caption;
 
@@ -72,16 +80,26 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model,
     QWidget *page = mainWidget();
     page->setLayout(new QVBoxLayout(page));
 
+    m_label = new QLabel(page);
+    page->layout()->addWidget(m_label);
+
     m_tree = new QTreeView(page);
     m_tree->setSortingEnabled(true);
     m_tree->sortByColumn(0, Qt::AscendingOrder);
     page->layout()->addWidget(m_tree);
 
-    m_tree->setModel(m_model);
+    m_filter->setDynamicSortFilter(true);
+    m_filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    m_filter->setSourceModel(m_model);
+
+    m_tree->setModel(m_filter);
     m_tree->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_tree->setCurrentIndex(m_model->index(0, 0));
+    m_tree->setCurrentIndex(m_filter->index(0, 0));
     m_tree->expandAll();
     m_tree->setFocus(Qt::OtherFocusReason);
+
+    m_tree->installEventFilter(this);
+    applyPattern(QString());
 }
 
 QString QuickSelectDialog::selectedId() const
@@ -128,4 +146,49 @@ Akonadi::Collection QuickSelectDialog::collection() const
 QModelIndex QuickSelectDialog::selectedIndex() const
 {
     return m_tree->selectionModel()->currentIndex();
+}
+
+QString QuickSelectDialog::pattern() const
+{
+    return m_filter->filterRegExp().pattern();
+}
+
+void QuickSelectDialog::applyPattern(const QString &pattern)
+{
+    if (pattern.isEmpty()) {
+        QString type = i18n("projects");
+        if (m_mode==Zanshin::CategoriesMode) {
+            type = i18n("categories");
+        }
+
+        m_label->setText(i18n("You can start typing to filter the list of %1.", type));
+    } else {
+        m_label->setText(i18n("Path: %1", pattern));
+    }
+
+    m_filter->setFilterFixedString(pattern);
+    m_tree->expandAll();
+}
+
+bool QuickSelectDialog::eventFilter(QObject *, QEvent *ev)
+{
+    if (ev->type() == QEvent::KeyPress) {
+        const QKeyEvent * const event = static_cast<QKeyEvent*>(ev);
+        QString p = pattern();
+
+        switch (event->key()) {
+        case Qt::Key_Backspace:
+            p.chop(1);
+            break;
+        case Qt::Key_Delete:
+            p = QString();
+            break;
+        default:
+            p+= event->text();
+            break;
+        }
+
+        applyPattern(p);
+    }
+    return false;
 }
