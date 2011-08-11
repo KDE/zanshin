@@ -1,3 +1,4 @@
+add_subdirectory( icons )
 add_subdirectory( runner )
 
 ########### zanshin core ###############
