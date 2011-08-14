@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Zanshin Todo
+Name[da]=Zanshin gøremål
 Name[de]=Zanshin-Aufgaben
 Name[es]=Tareas pendientes de Zanshin
 Name[et]=Zanshini ülesanded
@@ -12,6 +13,7 @@ Name[sv]=Zanshin uppgifter
 Name[uk]=Завдання Zanshin
 Name[x-test]=xxZanshin Todoxx
 Comment=Add tasks to your todo list
+Comment[da]=Tilføjer opgaver til din gøremålsliste
 Comment[de]=Aufgaben zu Ihrer Aufgabenliste hinzufügen
 Comment[es]=Añadir tareas a su lista de pendientes
 Comment[et]=Ülesannete lisamine sinu ülesannete nimekirja.
