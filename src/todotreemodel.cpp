@@ -132,8 +132,8 @@ QList<TodoNode*> TodoTreeModel::collectChildrenNode(TodoNode *root)
 QModelIndexList TodoTreeModel::mapNodesToSource(QList<TodoNode*> nodes)
 {
     QModelIndexList indexes;
-    foreach (TodoNode* nodes, nodes) {
-        indexes << nodes->rowSourceIndex();
+    foreach (TodoNode* node, nodes) {
+        indexes << node->rowSourceIndex();
     }
     return indexes;
 }
