@@ -40,9 +40,6 @@ ZanshinRunner::ZanshinRunner(QObject *parent, const QVariantList &args)
     setObjectName(QLatin1String("Zanshin"));
     setIgnoredTypes(Plasma::RunnerContext::Directory | Plasma::RunnerContext::File |
                     Plasma::RunnerContext::NetworkLocation | Plasma::RunnerContext::Help);
-
-    connect(this, SIGNAL(prepare()), this, SLOT(prep()));
-    connect(this, SIGNAL(teardown()), this, SLOT(down()));
 }
 
 ZanshinRunner::~ZanshinRunner()
