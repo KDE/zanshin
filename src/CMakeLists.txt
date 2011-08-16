@@ -56,6 +56,7 @@ set(zanshin_SRCS
    ${zanshin_gui_SRCS}
 )
 
+kde4_add_app_icon(zanshin_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-apps-zanshin.png")
 kde4_add_executable(zanshin ${zanshin_SRCS})
 target_link_libraries(zanshin ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS})
 
