@@ -64,7 +64,7 @@ protected:
     virtual bool eventFilter(QObject *watched, QEvent *event);
 
 private slots:
-    void updateActions(const QModelIndex &index);
+    void updateActions();
     void onAddActionRequested();
     void onRemoveAction();
     void onMoveAction();

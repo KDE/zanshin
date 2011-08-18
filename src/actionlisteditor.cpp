@@ -129,7 +129,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     m_cancelAdd->setEnabled(false);
 
-    updateActions(QModelIndex());
+    updateActions();
     setMode(Zanshin::ProjectMode);
     onComboBoxChanged();
 }
@@ -207,8 +207,8 @@ void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models,
 
     ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, m_stack);
 
-    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this, SLOT(updateActions(QModelIndex)));
+    connect(page->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(updateActions()));
 
     m_stack->addWidget(page);
 }
@@ -242,8 +242,10 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_promote->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
 }
 
-void ActionListEditor::updateActions(const QModelIndex &index)
+void ActionListEditor::updateActions()
 {
+    const QItemSelectionModel * const itemSelectionModel = currentPage()->selectionModel();
+    const QModelIndex index = itemSelectionModel->currentIndex();
     int type = index.data(Zanshin::ItemTypeRole).toInt();
 
     m_remove->setEnabled(index.isValid()
@@ -256,7 +258,8 @@ void ActionListEditor::updateActions(const QModelIndex &index)
                     || type==Zanshin::ProjectTodo));
 
     m_promote->setEnabled(index.isValid()
-                       && type==Zanshin::StandardTodo);
+                       && type==Zanshin::StandardTodo
+                       && itemSelectionModel->selectedRows().size() == 1);
 }
 
 void ActionListEditor::onAddActionRequested()
