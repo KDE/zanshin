@@ -269,39 +269,101 @@ void ActionListEditor::onAddActionRequested()
 
 void ActionListEditor::onRemoveAction()
 {
-    QModelIndex currentIndex = currentPage()->selectionModel()->currentIndex();
+    QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
 
-    if (!currentIndex.isValid()) {
+    if (currentIndexes.isEmpty()) {
         return;
     }
 
-    int type = currentIndex.data(Zanshin::ItemTypeRole).toInt();
+    QModelIndexList currentProjects;
+    QModelIndexList currentCategories;
+    QModelIndexList currentTodos;
+
+    foreach (const QModelIndex &index, currentIndexes) {
+        const int type = index.data(Zanshin::ItemTypeRole).toInt();
+        if (type==Zanshin::ProjectTodo) {
+            currentProjects << index;
+        } else if (type==Zanshin::Category) {
+            currentCategories << index;
+        } else if (type==Zanshin::StandardTodo) {
+            currentTodos << index;
+        }
+    }
+
+    // Remove todos and projects already present in selected projects
+    if (!currentProjects.isEmpty()) {
+        QStringList projectUidList;
+        foreach (const QModelIndex project, currentProjects) {
+            projectUidList << project.data(Zanshin::UidRole).toString();
+        }
+
+        QSet<QString> projects = QSet<QString>::fromList(projectUidList);
+
+        foreach (const QModelIndex project, currentProjects) {
+            QSet<QString> ancestors = QSet<QString>::fromList(project.data(Zanshin::AncestorsUidRole).toStringList());
+            if (!ancestors.intersect(projects).isEmpty()) {
+                currentProjects.removeOne(project);
+            }
+        }
+        foreach (const QModelIndex todo, currentTodos) {
+            QSet<QString> ancestors = QSet<QString>::fromList(todo.data(Zanshin::AncestorsUidRole).toStringList());
+            if (!ancestors.intersect(projects).isEmpty()) {
+                currentTodos.removeOne(todo);
+            }
+        }
+    }
+
+    // Remove categories if the parent is also in the list
+    if (!currentCategories.isEmpty()) {
+        QStringList categoryList;
+        foreach (const QModelIndex project, currentCategories) {
+            categoryList << project.data(Qt::EditRole).toString();
+        }
+
+        QSet<QString> categories = QSet<QString>::fromList(categoryList);
+
+        foreach (const QModelIndex category, currentCategories) {
+            QStringList pathList = category.data(Zanshin::CategoryPathRole).toString().split(CategoryManager::pathSeparator());
+            pathList.removeLast();
+            QSet<QString> ancestors = QSet<QString>::fromList(pathList);
+            if (!ancestors.intersect(categories).isEmpty()) {
+                currentCategories.removeOne(category);
+            }
+        }
+    }
+
     QModelIndex current;
     QModelIndex mapperIndex;
 
-    if (type==Zanshin::ProjectTodo) {
+    if (!currentProjects.isEmpty()) {
         current = m_projectSelection->currentIndex();
-    } else {
-        current = m_categoriesSelection->currentIndex();
-    }
+        if (current.isValid()) {
+            KModelIndexProxyMapper mapper(current.model(), currentProjects[0].model());
+            mapperIndex = mapper.mapRightToLeft(currentProjects[0]);
+        }
 
-    if (current.isValid()) {
-        KModelIndexProxyMapper mapper(current.model(), currentIndex.model());
-        mapperIndex = mapper.mapRightToLeft(currentIndex);
-    }
-
-    if (type==Zanshin::ProjectTodo) {
-        if (TodoHelpers::removeProject(this, currentIndex)) {
-            if (type==Zanshin::ProjectTodo && current==mapperIndex) {
-                m_projectSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
+        if (TodoHelpers::removeProjects(this, currentProjects)) {
+            if (current==mapperIndex) {
+               m_projectSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
             }
         }
-    } else if (type==Zanshin::Category) {
-        if (CategoryManager::instance().removeCategory(this, currentIndex)) {
+    }
+
+    if (!currentCategories.isEmpty()) {
+        current = m_categoriesSelection->currentIndex();
+        if (current.isValid()) {
+            KModelIndexProxyMapper mapper(current.model(), currentCategories[0].model());
+            mapperIndex = mapper.mapRightToLeft(currentCategories[0]);
+        }
+        if (CategoryManager::instance().removeCategories(this, currentCategories)) {
             m_categoriesSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
         }
-    } else {
-        currentPage()->removeCurrentTodo();
+    }
+
+    if (!currentTodos.isEmpty()) {
+        foreach (QModelIndex index, currentTodos) {
+            currentPage()->removeTodo(index);
+        }
     }
 }
 

@@ -336,6 +336,11 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
 void ActionListEditorPage::removeCurrentTodo()
 {
     QModelIndex current = m_treeView->selectionModel()->currentIndex();
+    removeTodo(current);
+}
+
+void ActionListEditorPage::removeTodo(const QModelIndex &current)
+{
     int type = current.data(Zanshin::ItemTypeRole).toInt();
 
     if (!current.isValid() || type!=Zanshin::StandardTodo) {

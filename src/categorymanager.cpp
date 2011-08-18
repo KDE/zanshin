@@ -102,20 +102,46 @@ void CategoryManager::addCategory(const QString &categoryPath)
 
 bool CategoryManager::removeCategory(QWidget *parent, const QModelIndex &categoryIndex)
 {
-    QString categoryName = categoryIndex.data().toString();
-    QString categoryPath = categoryIndex.data(Zanshin::CategoryPathRole).toString();
+    QModelIndexList categories;
+    categories << categoryIndex;
+    return removeCategories(parent, categories);
+}
+
+bool CategoryManager::removeCategories(QWidget *parent, const QModelIndexList &categories)
+{
+    if (categories.isEmpty()) {
+        return false;
+    }
+
+    QStringList categoryList;
+    foreach (QModelIndex category, categories) {
+        categoryList << category.data().toString();
+    }
+    QString categoryName = categoryList.join(", ");
+
     QString title;
     QString text;
 
-    text = i18n("Do you really want to delete the category '%1'? All actions won't be associated to those categories anymore.", categoryName);
-    title = i18n("Delete Category");
+    if (categories.size() > 1) {
+        text = i18n("Do you really want to delete the category '%1'? All actions won't be associated to those categories anymore.", categoryName);
+        title = i18n("Delete Category");
+    } else {
+        text = i18n("Do you really want to delete the categories '%1'? All actions won't be associated to those categories anymore.", categoryName);
+        title = i18n("Delete Categories");
+    }
 
     int button = KMessageBox::questionYesNo(parent, text, title);
     bool canRemove = (button==KMessageBox::Yes);
 
     if (!canRemove) return false;
 
-    return removeCategory(categoryPath);
+    foreach (QModelIndex category, categories) {
+        QString categoryPath = category.data(Zanshin::CategoryPathRole).toString();
+        if (!removeCategory(categoryPath)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool CategoryManager::removeCategory(const QString &categoryPath)

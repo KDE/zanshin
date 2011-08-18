@@ -122,16 +122,44 @@ void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Ako
 
 bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
 {
-    bool canRemove = true;
-    QModelIndexList children = project.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
-    if (!children.isEmpty()) {
-        QString summary = project.data().toString();
+    QModelIndexList projects;
+    projects << project;
+    return removeProjects(parent, projects);
+}
 
+bool TodoHelpers::removeProjects(QWidget *parent, const QModelIndexList &projects)
+{
+    if (projects.isEmpty()) {
+        return false;
+    }
+
+    bool canRemove = true;
+    QString summary;
+    if (projects.size() > 1) {
+        QStringList projectList;
+        foreach (QModelIndex project, projects) {
+            projectList << project.data().toString();
+        }
+        summary = projectList.join(", ");
+    } else {
+        QModelIndexList children = projects[0].data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
+        if (!children.isEmpty()) {
+            summary = projects[0].data().toString();
+        }
+    }
+
+    if (!summary.isEmpty()) {
         QString title;
         QString text;
 
-        text = i18n("Do you really want to delete the project '%1', with all its actions?", summary);
-        title = i18n("Delete Project");
+        if (projects.size() > 1) {
+            title = i18n("Delete Projects");
+            text = i18n("Do you really want to delete the projects '%1', with all its actions?", summary);
+        } else {
+            title = i18n("Delete Project");
+            text = i18n("Do you really want to delete the project '%1', with all its actions?", summary);
+        }
+
 
         int button = KMessageBox::questionYesNo(parent, text, title);
         canRemove = (button==KMessageBox::Yes);
@@ -140,7 +168,10 @@ bool TodoHelpers::removeProject(QWidget *parent, const QModelIndex &project)
     if (!canRemove) return false;
 
     Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence();
-    removeCurrentTodo(project, children, sequence);
+    foreach (QModelIndex project, projects) {
+        QModelIndexList children = project.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
+        removeCurrentTodo(project, children, sequence);
+    }
     sequence->start();
     return true;
 }
