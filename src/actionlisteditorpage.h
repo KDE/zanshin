@@ -49,6 +49,7 @@ public:
     ActionListEditorPage(QAbstractItemModel *model,
                          ModelStack *models,
                          Zanshin::ApplicationMode mode,
+                         const QList<QAction*> &contextActions,
                          QWidget *parent=0);
 
     QItemSelectionModel *selectionModel() const;

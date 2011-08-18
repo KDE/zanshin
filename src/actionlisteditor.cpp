@@ -77,8 +77,6 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     models->setItemTreeSelectionModel(projectSelection);
     models->setItemCategorySelectionModel(categoriesSelection);
-    createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode);
-    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode);
 
     QWidget *bottomBar = new QWidget(this);
     layout()->addWidget(bottomBar);
@@ -92,6 +90,11 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     m_addActionEdit->setClearButtonShown(true);
     connect(m_addActionEdit, SIGNAL(returnPressed()),
             this, SLOT(onAddActionRequested()));
+
+    setupActions(ac);
+
+    createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode);
+    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode);
 
     m_comboBox = new ActionListComboBox(bottomBar);
     m_comboBox->view()->setTextElideMode(Qt::ElideLeft);
@@ -118,8 +121,6 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     m_comboBox->setModel(descendantProxyModel);
     bottomBar->layout()->addWidget(m_comboBox);
-
-    setupActions(ac);
 
     QToolBar *toolBar = new QToolBar(bottomBar);
     toolBar->setIconSize(QSize(16, 16));
@@ -198,7 +199,13 @@ void ActionListEditor::onRowInsertedInComboBox(const QModelIndex &parent, int be
 
 void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode)
 {
-    ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, m_stack);
+    QList<QAction*> contextActions;
+    contextActions << m_add
+                   << m_remove
+                   << m_move
+                   << m_promote;
+
+    ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, m_stack);
 
     connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));

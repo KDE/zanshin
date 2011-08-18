@@ -204,6 +204,7 @@ public:
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
                                            Zanshin::ApplicationMode mode,
+                                           const QList<QAction*> &contextActions,
                                            QWidget *parent)
     : QWidget(parent), m_mode(mode)
 {
@@ -249,6 +250,9 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     connect(m_treeView->header(), SIGNAL(sectionResized(int,int,int)),
             this, SLOT(onColumnsGeometryChanged()));
+
+    m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+    m_treeView->addActions(contextActions);
 }
 
 QItemSelectionModel *ActionListEditorPage::selectionModel() const
