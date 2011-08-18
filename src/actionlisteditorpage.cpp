@@ -350,7 +350,6 @@ void ActionListEditorPage::removeTodo(const QModelIndex &current)
     if (m_mode==Zanshin::ProjectMode) {
         TodoHelpers::removeProject(this, current);
     } else {
-        QStringList categories = current.data(Zanshin::CategoriesRole).toStringList();
         for (int i=current.row(); i>=0; --i) {
             QModelIndex index = m_treeView->model()->index(i, 0);
             int type = index.data(Zanshin::ItemTypeRole).toInt();
