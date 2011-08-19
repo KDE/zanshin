@@ -40,11 +40,6 @@ class QItemSelectionModel;
 class QStackedWidget;
 class ModelStack;
 
-namespace Akonadi
-{
-    class EntityTreeView;
-}
-
 class ActionListEditor : public QWidget
 {
     Q_OBJECT

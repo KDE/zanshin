@@ -37,10 +37,6 @@ class QStackedWidget;
 class ModelStack;
 class SideBarPage;
 
-namespace Akonadi
-{
-    class EntityTreeView;
-}
 
 class SideBar : public QWidget
 {
