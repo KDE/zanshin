@@ -223,7 +223,7 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     }
 
     m_cancelAdd = ac->addAction("editor_cancel_action", m_stack, SLOT(setFocus()));
-    connect(m_cancelAdd, SIGNAL(activated()), m_addActionEdit, SLOT(clear()));
+    connect(m_cancelAdd, SIGNAL(triggered()), m_addActionEdit, SLOT(clear()));
     m_cancelAdd->setText(i18n("Cancel New Action"));
     m_cancelAdd->setIcon(KIcon("edit-undo"));
     m_cancelAdd->setShortcut(Qt::Key_Escape);
