@@ -29,6 +29,8 @@
 #include "testlib/testlib.h"
 #include "testlib/modelbuilderbehavior.h"
 
+#include <KDE/Akonadi/EntityTreeModel>
+
 using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
@@ -1396,6 +1398,66 @@ private slots:
             QCOMPARE(changeSpy[i].at(1).value<QModelIndex>(), changeIndex);
             i++;
         }
+    }
+
+    void shouldNotCrashWhenParentBecomesEmpty_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "itemToTest" );
+        QTest::addColumn<ModelPath>( "itemToRemove" );
+        //QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        ModelPath itemToRemove = c1 % t1;
+
+        ModelPath itemToTest = c1 % t2;
+
+        QTest::newRow( "remove empty collection" ) << sourceStructure
+                                                   << itemToTest
+                                                   << itemToRemove;
+    }
+
+    void shouldNotCrashWhenParentBecomesEmpty()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
+        //WHEN
+        QFETCH(ModelPath, itemToTest);
+        QModelIndex sourceIndex = ModelUtils::locateItem(&source, itemToTest);
+
+        Akonadi::Item item = sourceIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+        todo->setRelatedTo(QString());
+
+        //modify something
+        source.setData(sourceIndex, QString(), Zanshin::CategoriesRole);
+
+        QModelIndex metadataIndex = ModelUtils::locateItem(&metadataModel, itemToTest);
+
+        //THEN
+        QStringList categories = metadataIndex.data(Zanshin::CategoriesRole).toStringList();
+        QVERIFY(categories.empty());
     }
 
 };
