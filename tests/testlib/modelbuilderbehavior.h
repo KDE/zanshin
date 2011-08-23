@@ -64,11 +64,15 @@ public:
     void setMetadataCreationEnabled(bool enabled);
     bool isMetadataCreationEnabled();
 
+    void setSingleColumnEnabled(bool singleColumnEnabled);
+    bool isSingleColumnEnabled();
+
 private:
     void addTodoMetadata(QStandardItem*, const T &todo);
     void addCategoryMetadata(QStandardItem*);
     void addCollectionMetadata(QStandardItem*);
     bool m_metadataCreationEnabled;
+    bool m_singleColumnEnabled;
 };
 
 } // namespace Test

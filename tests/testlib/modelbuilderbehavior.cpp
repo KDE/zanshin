@@ -42,6 +42,7 @@ ModelBuilderBehaviorBase::~ModelBuilderBehaviorBase()
 StandardModelBuilderBehavior::StandardModelBuilderBehavior()
     : ModelBuilderBehaviorBase()
     , m_metadataCreationEnabled(true)
+    , m_singleColumnEnabled(false)
 {
 
 }
@@ -82,6 +83,10 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
     addTodoMetadata(item, t);
     row << item;
 
+    if (m_singleColumnEnabled) {
+        return row;
+    }
+
     item = new QStandardItem(t.parentUid);
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
     addTodoMetadata(item, t);
@@ -113,6 +118,10 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCategor
     addCategoryMetadata(item);
     row << item;
 
+    if (m_singleColumnEnabled) {
+        return row;
+    }
+
     for (int i=0; i<4; i++) {
         item = new QStandardItem;
         addCategoryMetadata(item);
@@ -133,6 +142,10 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCollect
     item->setData(QVariant::fromValue(col), Akonadi::EntityTreeModel::CollectionRole);
     addCollectionMetadata(item);
     row << item;
+
+    if (m_singleColumnEnabled) {
+        return row;
+    }
 
     for (int i=0; i<4; i++) {
         item = new QStandardItem;
@@ -166,6 +179,10 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandVirtual
     }
 
     row << item;
+
+    if (m_singleColumnEnabled) {
+        return row;
+    }
 
     for (int i=0; i<4; i++) {
         item = new QStandardItem;
@@ -213,3 +230,12 @@ void Zanshin::Test::StandardModelBuilderBehavior::addCollectionMetadata(QStandar
     }
 }
 
+void Zanshin::Test::StandardModelBuilderBehavior::setSingleColumnEnabled(bool singleColumnEnabled)
+{
+    m_singleColumnEnabled = singleColumnEnabled;
+}
+
+bool Zanshin::Test::StandardModelBuilderBehavior::isSingleColumnEnabled()
+{
+    return m_singleColumnEnabled;
+}
