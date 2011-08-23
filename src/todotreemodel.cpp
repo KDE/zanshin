@@ -212,6 +212,7 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
                 reparentTodo(node);
                 continue;
             } else if (type==Zanshin::Collection) {
+                emit dataChanged(mapFromSource(sourceChildIndex), mapFromSource(sourceChildIndex));
                 continue;
             }
         }

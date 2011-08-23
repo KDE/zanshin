@@ -19,6 +19,7 @@ ENDMACRO(ZANSHIN_UNIT_TESTS)
 ZANSHIN_UNIT_TESTS(
   modelstacktest
   selectionproxymodeltest
+  sidebarmodelspec
   todocategoriesmodelspec
   todometadatamodelspec
   todotreemodelspec
