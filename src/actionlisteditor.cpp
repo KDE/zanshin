@@ -205,6 +205,10 @@ void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models,
                    << m_move
                    << m_promote;
 
+    if (mode==Zanshin::CategoriesMode) {
+        contextActions << m_dissociate;
+    }
+
     ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, m_stack);
 
     connect(page->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -240,6 +244,10 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_promote = ac->addAction("editor_promote_action", this, SLOT(onPromoteAction()));
     m_promote->setText(i18n("Promote Action as Project"));
     m_promote->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
+
+    m_dissociate = ac->addAction("editor_dissociate_action", this, SLOT(onDissociateAction()));
+    m_dissociate->setText(i18n("Dissociate Action from Category"));
+    m_dissociate->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_D);
 }
 
 void ActionListEditor::updateActions()
@@ -260,6 +268,9 @@ void ActionListEditor::updateActions()
     m_promote->setEnabled(index.isValid()
                        && type==Zanshin::StandardTodo
                        && itemSelectionModel->selectedRows().size() == 1);
+
+    m_dissociate->setEnabled(index.isValid()
+                            && type==Zanshin::StandardTodo);
 }
 
 void ActionListEditor::onAddActionRequested()
@@ -439,6 +450,14 @@ void ActionListEditor::onPromoteAction()
     }
 
     TodoHelpers::promoteTodo(currentIndex);
+}
+
+void ActionListEditor::onDissociateAction()
+{
+    QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
+    foreach (QModelIndex index, currentIndexes) {
+        currentPage()->dissociateTodo(index);
+    }
 }
 
 void ActionListEditor::focusActionEdit()

@@ -70,6 +70,7 @@ public slots:
     void addNewTodo(const QString &summary);
     void removeCurrentTodo();
     void removeTodo(const QModelIndex &current);
+    void dissociateTodo(const QModelIndex &current);
 
 private slots:
     void onAutoHideColumns();

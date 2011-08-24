@@ -347,16 +347,26 @@ void ActionListEditorPage::removeTodo(const QModelIndex &current)
         return;
     }
 
-    if (m_mode==Zanshin::ProjectMode) {
-        TodoHelpers::removeProject(this, current);
-    } else {
-        for (int i=current.row(); i>=0; --i) {
-            QModelIndex index = m_treeView->model()->index(i, 0);
-            int type = index.data(Zanshin::ItemTypeRole).toInt();
-            if (type==Zanshin::Category) {
-                QString category = index.data(Zanshin::CategoryPathRole).toString();
-                if (CategoryManager::instance().removeTodoFromCategory(current, category))
-                    break;
+    TodoHelpers::removeProject(this, current);
+}
+
+void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
+{
+    int type = current.data(Zanshin::ItemTypeRole).toInt();
+
+    if (!current.isValid()
+     || type!=Zanshin::StandardTodo
+     || m_mode==Zanshin::ProjectMode) {
+        return;
+    }
+
+    for (int i=current.row(); i>=0; --i) {
+        QModelIndex index = m_treeView->model()->index(i, 0);
+        int type = index.data(Zanshin::ItemTypeRole).toInt();
+        if (type==Zanshin::Category) {
+            QString category = index.data(Zanshin::CategoryPathRole).toString();
+            if (CategoryManager::instance().dissociateTodoFromCategory(current, category)) {
+                break;
             }
         }
     }

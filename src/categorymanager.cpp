@@ -196,12 +196,12 @@ void CategoryManager::removeCategoryFromTodo(const QModelIndex &sourceIndex, con
 {
     for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
         QModelIndex child = m_model->index(i, 0, sourceIndex);
-        removeTodoFromCategory(child, categoryPath);
+        dissociateTodoFromCategory(child, categoryPath);
         removeCategoryFromTodo(child, categoryPath);
     }
 }
 
-bool CategoryManager::removeTodoFromCategory(const QModelIndex &index, const QString &categoryPath)
+bool CategoryManager::dissociateTodoFromCategory(const QModelIndex &index, const QString &categoryPath)
 {
     if (!index.isValid()) {
         return false;

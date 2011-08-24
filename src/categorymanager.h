@@ -50,7 +50,7 @@ public:
     void addCategory(const QString &categoryPath);
     bool removeCategory(QWidget *parent, const QModelIndex &categoryIndex);
     bool removeCategories(QWidget *parent, const QModelIndexList &categoryIndex);
-    bool removeTodoFromCategory(const QModelIndex &index, const QString &categoryPath);
+    bool dissociateTodoFromCategory(const QModelIndex &index, const QString &categoryPath);
     void renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
     void moveCategory(const QString &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType);
     bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType);
