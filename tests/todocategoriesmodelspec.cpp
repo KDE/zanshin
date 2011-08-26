@@ -25,7 +25,9 @@
 
 #include "categorymanager.h"
 #include "todocategoriesmodel.h"
+#include "todometadatamodel.h"
 #include "testlib/testlib.h"
+#include "testlib/modelbuilderbehavior.h"
 
 #include <QtGui/QTreeView>
 #include <QtCore/QEventLoop>
@@ -250,7 +252,7 @@ private slots:
 
         ModelPath sourceParentPath = c1;
         ModelPath::List sourceSiblingPaths;
-        sourceSiblingPaths << c2 % t4 << c1 % t6;
+        sourceSiblingPaths << c1 % t6 << c2 % t4;
 
         ModelStructure insertedStructure;
         insertedStructure << t2;
@@ -509,6 +511,111 @@ private slots:
         QCOMPARE(categoriesModel, output);
     }
 
+
+    void shouldNotDuplicateTodo_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "sourceParentPath" );
+        QTest::addColumn<ModelStructure>( "insertedStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V nocat(NoCategory);
+        V cats(Categories);
+        C c1(1, 0, "c1");
+        Cat cat1("cat1");
+        Cat cat2("cat2");
+        T t1(3, 1, "t1", QString(), "t1", InProgress, ProjectTag, QString(), "cat1");
+        T t2(4, 1, "t2", "t1", "t2");
+        T t3(5, 1, "t3", "t1", "t3", InProgress, ProjectTag, QString(), "cat2");
+        T t4(6, 1, "t4", "t3", "t4");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1;
+
+        ModelPath sourceParentPath = c1;
+
+        ModelStructure insertedStructure;
+        insertedStructure << t2;
+
+        ModelStructure outputStructure;
+        outputStructure << nocat
+                        << cats
+                        << _+cat1
+                        << __+t2;
+
+        QTest::newRow( "add one todo" ) << sourceStructure
+                                        << sourceParentPath
+                                        << insertedStructure
+                                        << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1;
+
+        sourceParentPath = c1;
+
+        insertedStructure.clear();
+        insertedStructure << t2
+                          << t3
+                          << t4;
+
+        outputStructure.clear();
+        outputStructure << nocat
+                        << cats
+                        << _+cat1
+                        << __+t2
+                        << __+t4
+                        << _+cat2
+                        << __+t4;
+
+        QTest::newRow( "add complexe structure" ) << sourceStructure
+                                                  << sourceParentPath
+                                                  << insertedStructure
+                                                  << outputStructure;
+    }
+    void shouldNotDuplicateTodo()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        //Kick up category manager
+        CategoryManager::instance().setModel(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
+        //create categoriesModel
+        TodoCategoriesModel categoriesModel;
+        ModelTest t2(&categoriesModel);
+
+        categoriesModel.setSourceModel(&metadataModel);
+
+        //WHEN
+        QFETCH(ModelPath, sourceParentPath);
+        QFETCH(ModelStructure, insertedStructure);
+
+        ModelUtils::create(&source, insertedStructure, sourceParentPath, &behavior);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(categoriesModel, output);
+    }
 };
 
 QTEST_KDEMAIN(TodoCategoriesModelSpec, GUI)

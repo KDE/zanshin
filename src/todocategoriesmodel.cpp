@@ -73,7 +73,25 @@ void TodoCategoriesModel::onSourceInsertRows(const QModelIndex &sourceIndex, int
                 addChildNode(sourceChildIndex, m_inboxNode);
 
             } else {
-                foreach (const QString &category, categories) {
+                QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
+                QSet<QString> oldCategories;
+
+                foreach (TodoNode *node, nodes) {
+
+                    TodoNode *categoryNode = node->parent();
+                    if (categoryNode
+                     && categoryNode->data(0, Zanshin::ItemTypeRole).toInt()!=Zanshin::Inbox) {
+                        QString category = categoryNode->data(0, Zanshin::CategoryPathRole).toString();
+                        oldCategories << category;
+                    }
+                }
+
+                QSet<QString> newCategories = QSet<QString>::fromList(categories);
+                QSet<QString> interCategories = newCategories;
+                interCategories.intersect(oldCategories);
+                newCategories-= interCategories;
+
+                foreach (const QString &category, newCategories) {
                     TodoNode *parent = m_categoryMap[category];
                     Q_ASSERT(parent);
                     addChildNode(sourceChildIndex, parent);
