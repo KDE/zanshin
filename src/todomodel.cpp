@@ -78,7 +78,7 @@ QVariant TodoModel::entityHeaderData(int section, Qt::Orientation orientation, i
         case 1:
             return i18n("Project");
         case 2:
-            return i18n("Categories");
+            return i18n("Contexts");
         case 3:
             return i18n("Due Date");
         case 4:

@@ -82,7 +82,7 @@ void MainComponent::setupActions(KActionCollection *ac)
     modeGroup->addAction(action);
 
     action = ac->addAction("categories_mode", this, SLOT(onModeSwitch()));
-    action->setText(i18n("Categories View"));
+    action->setText(i18n("Context View"));
     action->setIcon(KIcon("view-pim-notes"));
     action->setShortcut(Qt::CTRL | Qt::Key_O);
     action->setCheckable(true);

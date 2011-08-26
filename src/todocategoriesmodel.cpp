@@ -207,7 +207,7 @@ void TodoCategoriesModel::init()
         beginInsertRows(QModelIndex(), 1, 1);
 
         TodoNode *node = new TodoNode;
-        node->setData(i18n("Categories"), 0, Qt::DisplayRole);
+        node->setData(i18n("Contexts"), 0, Qt::DisplayRole);
         node->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
         node->setRowData(Zanshin::CategoryRoot, Zanshin::ItemTypeRole);
 
@@ -229,7 +229,7 @@ TodoNode *TodoCategoriesModel::createInbox() const
 {
     TodoNode *node = new TodoNode;
 
-    node->setData(i18n("No Category"), 0, Qt::DisplayRole);
+    node->setData(i18n("No Context"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 

@@ -39,10 +39,10 @@ V::V(VirtualType t)
         name = "Inbox";
         break;
     case NoCategory:
-        name = "No Category";
+        name = "No Context";
         break;
     case Categories:
-        name = "Categories";
+        name = "Contexts";
         break;
     }
 }

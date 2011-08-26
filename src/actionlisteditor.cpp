@@ -246,7 +246,7 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     m_promote->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
 
     m_dissociate = ac->addAction("editor_dissociate_action", this, SLOT(onDissociateAction()));
-    m_dissociate->setText(i18n("Dissociate Action from Category"));
+    m_dissociate->setText(i18n("Dissociate Action from Context"));
     m_dissociate->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_D);
 }
 

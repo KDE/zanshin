@@ -147,11 +147,11 @@ void SideBar::setMode(Zanshin::ApplicationMode mode)
 
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
-        m_add->setText(i18n("New Category"));
-        m_remove->setText(i18n("Remove Category"));
-        m_rename->setText(i18n("Rename Category"));
-        m_previous->setText(i18n("Previous Category"));
-        m_next->setText(i18n("Next Category"));
+        m_add->setText(i18n("New Context"));
+        m_remove->setText(i18n("Remove Context"));
+        m_rename->setText(i18n("Rename Context"));
+        m_previous->setText(i18n("Previous Context"));
+        m_next->setText(i18n("Next Context"));
         break;
     }
 

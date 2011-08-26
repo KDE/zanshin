@@ -88,8 +88,8 @@ void SideBarPage::addNewItem()
 
     } else if (type==Zanshin::CategoryRoot
             || type==Zanshin::Category) {
-        title = i18n("New Category");
-        text = i18n("Enter category name:");
+        title = i18n("New Context");
+        text = i18n("Enter context name:");
 
     } else {
         kFatal() << "We should never, ever, get in this case...";

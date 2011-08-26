@@ -49,13 +49,13 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model,
     if (mode==Zanshin::CategoriesMode) {
         switch (action) {
         case MoveAction:
-            caption = i18n("Move Actions to Category");
+            caption = i18n("Move Actions to Context");
             break;
         case CopyAction:
-            caption = i18n("Copy Actions to Category");
+            caption = i18n("Copy Actions to Context");
             break;
         case JumpAction:
-            caption = i18n("Jump to Category");
+            caption = i18n("Jump to Context");
             break;
         }
     } else if (mode==Zanshin::ProjectMode) {
@@ -158,7 +158,7 @@ void QuickSelectDialog::applyPattern(const QString &pattern)
     if (pattern.isEmpty()) {
         QString type = i18n("projects");
         if (m_mode==Zanshin::CategoriesMode) {
-            type = i18n("categories");
+            type = i18n("contexts");
         }
 
         m_label->setText(i18n("You can start typing to filter the list of %1.", type));

@@ -123,11 +123,11 @@ bool CategoryManager::removeCategories(QWidget *parent, const QModelIndexList &c
     QString text;
 
     if (categories.size() > 1) {
-        text = i18n("Do you really want to delete the category '%1'? All actions won't be associated to those categories anymore.", categoryName);
-        title = i18n("Delete Category");
+        text = i18n("Do you really want to delete the context '%1'? All actions won't be associated to this context anymore.", categoryName);
+        title = i18n("Delete Context");
     } else {
-        text = i18n("Do you really want to delete the categories '%1'? All actions won't be associated to those categories anymore.", categoryName);
-        title = i18n("Delete Categories");
+        text = i18n("Do you really want to delete the contexts '%1'? All actions won't be associated to those contexts anymore.", categoryName);
+        title = i18n("Delete Contexts");
     }
 
     int button = KMessageBox::questionYesNo(parent, text, title);
