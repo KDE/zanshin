@@ -31,6 +31,7 @@
 #include "todometadatamodel.h"
 #include "testlib/testlib.h"
 #include "testlib/modeltest.h"
+#include "testlib/modelbuilderbehavior.h"
 
 using namespace Zanshin::Test;
 
@@ -631,6 +632,100 @@ private slots:
 
         QCOMPARE(todoTreeModel.flags(index), flags);
     }
+
+    void shouldReactToSourceRowRemovalsWithMetadata_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath::List>( "itemsToRemove" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        C c2(2, 0, "c2");
+        T t1(3, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(4, 1, "t2", "t1", "t2");
+        T t3(5, 2, "t3", QString(), "t3", InProgress, ProjectTag);
+        T t4(6, 2, "t4", QString(), "t4", InProgress, ProjectTag);
+        T t5(6, 2, "t5", "", "t5");
+        T t6(6, 2, "t6", "t5", "t6");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2
+                        << c2
+                        << _+t3
+                        << _+t4;
+
+
+        ModelPath::List itemsToRemove;
+        itemsToRemove << c1;
+
+        ModelStructure outputStructure;
+        outputStructure << inbox
+                        << c2
+                        << _+t3
+                        << _+t4;
+
+
+        QTest::newRow( "delete collection" ) << sourceStructure << itemsToRemove << outputStructure;
+
+        sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t5
+                        << _+t6;
+
+        itemsToRemove.clear();
+        itemsToRemove << c1 % t6;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << _+t5
+                        << c1;
+
+        QTest::newRow( "Root Project without tag should return to inbox when it looses its children" )
+                                            << sourceStructure << itemsToRemove << outputStructure;
+    }
+
+    void shouldReactToSourceRowRemovalsWithMetadata()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
+        //create treeModel
+        TodoTreeModel treeModel;
+        ModelTest t2(&treeModel);
+
+        treeModel.setSourceModel(&metadataModel);
+
+        //WHEN
+        QFETCH(ModelPath::List, itemsToRemove);
+
+        // destroy the item selected
+        ModelUtils::destroy(&source, itemsToRemove);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(treeModel, output);
+    }
+
 };
 
 QTEST_KDEMAIN(TodoTreeModelSpec, GUI)

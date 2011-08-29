@@ -195,9 +195,16 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
         }
 
         // Collections are just reemited
-        if (node->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Collection) {
+        int nodeType = node->data(0, Zanshin::ItemTypeRole).toInt();
+        if (nodeType==Zanshin::Collection) {
             emit dataChanged(mapFromSource(sourceChildIndex),
                              mapFromSource(sourceChildIndex));
+            continue;
+        }
+
+        if (nodeType==Zanshin::StandardTodo
+         && node->parent() == m_manager->nodeForSourceIndex(sourceChildIndex.parent())) {
+            reparentTodo(node);
             continue;
         }
 
