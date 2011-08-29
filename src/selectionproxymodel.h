@@ -46,6 +46,7 @@ protected:
 
 private slots:
     void onSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
 
 private:
     QModelIndex mapFromSelectionToSource(const QModelIndex &index) const;

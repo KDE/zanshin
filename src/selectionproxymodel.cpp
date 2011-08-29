@@ -51,6 +51,7 @@ void SelectionProxyModel::setSelectionModel(QItemSelectionModel *selectionModel)
 
     if (m_selectionModel) {
         disconnect(m_selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)));
+        disconnect(m_selectionModel->model(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)));
     }
 
     m_selectionModel = selectionModel;
@@ -58,6 +59,8 @@ void SelectionProxyModel::setSelectionModel(QItemSelectionModel *selectionModel)
     if (selectionModel) {
         connect(selectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
                 this, SLOT(onSelectionChanged(QItemSelection,QItemSelection)));
+        connect(selectionModel->model(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
     }
 
     initializeSelection();
@@ -221,3 +224,9 @@ QList<QAbstractProxyModel*> SelectionProxyModel::createProxyChain(const QList<QA
     return result;
 }
 
+void SelectionProxyModel::onSourceRemoveRows(const QModelIndex &sourceIndex, int /*begin*/, int /*end*/)
+{
+    if (m_selectedRows.isEmpty()) {
+        m_selectionModel->select(sourceIndex, QItemSelectionModel::Select);
+    }
+}
