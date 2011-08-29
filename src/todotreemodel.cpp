@@ -211,30 +211,12 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
         QString oldParentUid = node->parent()->data(0, Zanshin::UidRole).toString();
         QString newParentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
 
-        TodoNode *oldParentNode = node->parent();
-
-        if (oldParentNode) {
-            Zanshin::ItemType type = (Zanshin::ItemType) oldParentNode->data(0, Zanshin::ItemTypeRole).toInt();
-            if (type==Zanshin::Inbox) {
-                reparentTodo(node);
-                continue;
-            } else if (type==Zanshin::Collection) {
-                emit dataChanged(mapFromSource(sourceChildIndex), mapFromSource(sourceChildIndex));
-                continue;
-            }
-        }
-
         // If the parent didn't change we just reemit
         if (oldParentUid==newParentUid) {
             emit dataChanged(mapFromSource(sourceChildIndex), mapFromSource(sourceChildIndex));
-            continue;
+        } else {
+            reparentTodo(node);
         }
-
-        // The parent did change, so first destroy the old branch...
-        destroyBranch(node);
-
-        // Then simulate a row insertion signal
-        createChild(sourceChildIndex, sourceChildIndex.parent(), row);
     }
 }
 

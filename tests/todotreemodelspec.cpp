@@ -439,6 +439,109 @@ private slots:
         }
     }
 
+    void shouldHandleProjectMoves_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "itemToChange" );
+        QTest::addColumn<QString>( "parentUid" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        T p1(1, 1, "p1", QString(), "p1", InProgress, ProjectTag);
+        T p2(2, 1, "p2", QString(), "p2", InProgress, ProjectTag);
+        T p3(3, 1, "p3", "p1", "p3", InProgress, ProjectTag);
+        T t1(11, 1, "t1", "p1", "t1");
+        T t2(22, 1, "t2", "p2", "t2");
+        T t3(22, 1, "t3", "p3", "t3");
+        C c2(2, 0, "c2");
+        T p4(4, 2, "p4", QString(), "p4", InProgress, ProjectTag);
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2
+                        << _+t3
+                        << _+p1
+                        << _+p2
+                        << _+p3
+                        << c2
+                        << _+p4;
+
+        ModelPath itemToChange = c1 % p2;
+
+        QString parentUid = "p1";
+
+        ModelStructure outputStructure;
+        outputStructure << inbox
+                        << c1
+                        << _+p1
+                        << __+t1
+                        << __+p3
+                        << ___+t3
+                        << __+p2
+                        << ___+t2
+                        << c2
+                        << _+p4;
+
+        QTest::newRow( "root project moved under another project of the same collection" )
+            << sourceStructure << itemToChange
+            << parentUid << outputStructure;
+
+
+        itemToChange = c1 % p3;
+        parentUid = QString();
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c1
+                        << _+p1
+                        << __+t1
+                        << _+p2
+                        << __+t2
+                        << _+p3
+                        << __+t3
+                        << c2
+                        << _+p4;
+
+        QTest::newRow( "sub-project moved as root in the same collection" )
+            << sourceStructure << itemToChange
+            << parentUid << outputStructure;
+
+    }
+
+    void shouldHandleProjectMoves()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create treeModel
+        TodoTreeModel treeModel;
+        ModelTest t1(&treeModel);
+
+        treeModel.setSourceModel(&source);
+
+        //WHEN
+        QFETCH(ModelPath, itemToChange);
+        QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
+
+        QFETCH(QString, parentUid);
+        source.setData(index, parentUid, Zanshin::ParentUidRole);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(treeModel, output);
+    }
+
+
     void shouldKeepSourceOrder_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
