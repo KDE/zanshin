@@ -346,32 +346,12 @@ void ActionListEditor::onRemoveAction()
         }
     }
 
-    QModelIndex current;
-    QModelIndex mapperIndex;
-
     if (!currentProjects.isEmpty()) {
-        current = m_projectSelection->currentIndex();
-        if (current.isValid()) {
-            KModelIndexProxyMapper mapper(current.model(), currentProjects[0].model());
-            mapperIndex = mapper.mapRightToLeft(currentProjects[0]);
-        }
-
-        if (TodoHelpers::removeProjects(this, currentProjects)) {
-            if (current==mapperIndex) {
-               m_projectSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
-            }
-        }
+        TodoHelpers::removeProjects(this, currentProjects);
     }
 
     if (!currentCategories.isEmpty()) {
-        current = m_categoriesSelection->currentIndex();
-        if (current.isValid()) {
-            KModelIndexProxyMapper mapper(current.model(), currentCategories[0].model());
-            mapperIndex = mapper.mapRightToLeft(currentCategories[0]);
-        }
-        if (CategoryManager::instance().removeCategories(this, currentCategories)) {
-            m_categoriesSelection->setCurrentIndex(current.parent(), QItemSelectionModel::Select);
-        }
+        CategoryManager::instance().removeCategories(this, currentCategories);
     }
 
     if (!currentTodos.isEmpty()) {
