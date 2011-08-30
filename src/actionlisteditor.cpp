@@ -41,6 +41,7 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QStackedWidget>
 
 #include "actionlistcombobox.h"
@@ -52,6 +53,25 @@
 #include "quickselectdialog.h"
 #include "todohelpers.h"
 
+class TodoCollectionsProxyModel : public QSortFilterProxyModel
+{
+public:
+    TodoCollectionsProxyModel(QObject *parent = 0)
+        : QSortFilterProxyModel(parent)
+    {
+        setDynamicSortFilter(true);
+    }
+
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    {
+        QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
+        Akonadi::Collection col = sourceChild.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+
+        return col.isValid()
+            && col.contentMimeTypes().contains("application/x-vnd.akonadi.calendar.todo")
+            && (col.rights() & (Akonadi::Collection::CanChangeItem|Akonadi::Collection::CanCreateItem));
+    }
+};
 
 ActionListEditor::ActionListEditor(ModelStack *models,
                                    QItemSelectionModel *projectSelection,
@@ -108,18 +128,21 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     descendantProxyModel->setSourceModel(models->collectionsModel());
     descendantProxyModel->setDisplayAncestorData(true);
 
+    TodoCollectionsProxyModel *todoColsModel = new TodoCollectionsProxyModel(m_comboBox);
+    todoColsModel->setSourceModel(descendantProxyModel);
+
     KConfigGroup config(KGlobal::config(), "General");
     m_defaultCollectionId = config.readEntry("defaultCollection", -1);
 
     if (m_defaultCollectionId > 0) {
-        if (!selectDefaultCollection(descendantProxyModel, QModelIndex(),
-                                     0, descendantProxyModel->rowCount()-1)) {
-            connect(descendantProxyModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+        if (!selectDefaultCollection(todoColsModel, QModelIndex(),
+                                     0, todoColsModel->rowCount()-1)) {
+            connect(todoColsModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
                     this, SLOT(onRowInsertedInComboBox(QModelIndex,int,int)));
         }
     }
 
-    m_comboBox->setModel(descendantProxyModel);
+    m_comboBox->setModel(todoColsModel);
     bottomBar->layout()->addWidget(m_comboBox);
 
     QToolBar *toolBar = new QToolBar(bottomBar);
