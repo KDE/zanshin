@@ -32,7 +32,7 @@
 #include "globaldefs.h"
 
 TodoMetadataModel::TodoMetadataModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
+    : KIdentityProxyModel(parent)
 {
     connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
@@ -91,7 +91,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
                 return Zanshin::Collection;
             }
         }
-        return QSortFilterProxyModel::data(index, role);
+        return KIdentityProxyModel::data(index, role);
     }
 
     switch (role) {
@@ -105,7 +105,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         if (index.column()==0 && itemTypeFromItem(item)==Zanshin::ProjectTodo) {
             return KIcon("view-pim-tasks");
         } else {
-            return QSortFilterProxyModel::data(index, role);
+            return KIdentityProxyModel::data(index, role);
         }
     case Zanshin::UidRole:
         return uidFromItem(item);
@@ -133,9 +133,9 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     case Zanshin::ChildIndexesRole:
         return QVariant::fromValue(childIndexesFromIndex(index));
     default:
-        return QSortFilterProxyModel::data(index, role);
+        return KIdentityProxyModel::data(index, role);
     }
-    return QSortFilterProxyModel::data(index, role);
+    return KIdentityProxyModel::data(index, role);
 }
 
 void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin, int end)
@@ -377,7 +377,7 @@ QModelIndexList TodoMetadataModel::childIndexesFromIndex(const QModelIndex &idx)
 
 void TodoMetadataModel::setSourceModel(QAbstractItemModel *model)
 {
-    QSortFilterProxyModel::setSourceModel(model);
+    KIdentityProxyModel::setSourceModel(model);
 
     onSourceInsertRows(QModelIndex(), 0, rowCount() - 1);
 }

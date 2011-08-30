@@ -24,7 +24,7 @@
 #ifndef ZANSHIN_TODOMETADATAMODEL_H
 #define ZANSHIN_TODOMETADATAMODEL_H
 
-#include <QtGui/QSortFilterProxyModel>
+#include "kidentityproxymodel.h"
 #include <QtCore/QPersistentModelIndex>
 
 #include <KDE/KCalCore/Todo>
@@ -36,7 +36,7 @@ namespace Akonadi
     class Item;
 }
 
-class TodoMetadataModel : public QSortFilterProxyModel
+class TodoMetadataModel : public KIdentityProxyModel
 {
     Q_OBJECT
 
