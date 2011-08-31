@@ -39,9 +39,6 @@ KAboutData Zanshin::getAboutData()
                     ki18n("Developer"),
                     "nef@ipsquad.net");
 
-    //TODO: Remove once we have a proper icon
-    about.setProgramIconName("office-calendar");
-
     return about;
 }
 

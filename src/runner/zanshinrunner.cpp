@@ -65,7 +65,7 @@ void ZanshinRunner::match(Plasma::RunnerContext &context)
     Plasma::QueryMatch match(this);
     match.setData(summary);
     match.setType(Plasma::QueryMatch::ExactMatch);
-    match.setIcon(KIcon("office-calendar"));
+    match.setIcon(KIcon("zanshin"));
     match.setText(i18n("Add \"%1\" to your todo list", summary));
     match.setRelevance(1.0);
 
