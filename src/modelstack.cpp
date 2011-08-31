@@ -43,6 +43,7 @@
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
+      m_entityModel(0),
       m_baseModel(0),
       m_collectionsModel(0),
       m_treeModel(0),
@@ -77,9 +78,9 @@ QAbstractItemModel *ModelStack::baseModel()
         changeRecorder->setItemFetchScope(itemScope);
         changeRecorder->setSession(session);
 
-        TodoModel *todomodel = new TodoModel(changeRecorder, this);
+        m_entityModel = new TodoModel(changeRecorder, this);
         TodoMetadataModel *metadataModel = new TodoMetadataModel(this);
-        metadataModel->setSourceModel(todomodel);
+        metadataModel->setSourceModel(m_entityModel);
         m_baseModel = metadataModel;
     }
     return m_baseModel;
@@ -90,7 +91,7 @@ QAbstractItemModel *ModelStack::collectionsModel()
     if (!m_collectionsModel) {
         Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
         collectionsModel->addMimeTypeInclusionFilter( Akonadi::Collection::mimeType() );
-        collectionsModel->setSourceModel(baseModel());
+        collectionsModel->setSourceModel(m_entityModel);
         m_collectionsModel = collectionsModel;
     }
     return m_collectionsModel;

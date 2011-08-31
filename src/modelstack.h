@@ -54,6 +54,7 @@ public:
     void setItemCategorySelectionModel(QItemSelectionModel *selection);
 
 private:
+    QAbstractItemModel *m_entityModel;
     QAbstractItemModel *m_baseModel;
     QAbstractItemModel *m_collectionsModel;
 
