@@ -65,7 +65,9 @@ SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)
 
     createPage(models->treeSideBarModel());
     createPage(models->categoriesSideBarModel());
-
+    createPage(models->knowledgeSidebarModel());
+    models->setKnowledgeSelectionModel(static_cast<SideBarPage*>(m_stack->widget(2))->selectionModel());
+    
     setupToolBar();
 }
 
@@ -152,6 +154,14 @@ void SideBar::setMode(Zanshin::ApplicationMode mode)
         m_rename->setText(i18n("Rename Context"));
         m_previous->setText(i18n("Previous Context"));
         m_next->setText(i18n("Next Context"));
+        break;
+    case Zanshin::KnowledgeMode:
+        m_stack->setCurrentIndex(2);
+        m_add->setText(i18n("New Topic"));
+        m_remove->setText(i18n("Remove Topic"));
+        m_rename->setText(i18n("Rename Topic"));
+        m_previous->setText(i18n("Previous Topic"));
+        m_next->setText(i18n("Next Topic"));
         break;
     }
 

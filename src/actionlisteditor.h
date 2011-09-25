@@ -28,7 +28,10 @@
 #include <QtGui/QWidget>
 
 #include "globaldefs.h"
+#include <KXMLGUIClient>
 
+class ItemViewer;
+class ItemSelectorProxy;
 class ActionListEditorPage;
 class KAction;
 class KActionCollection;
@@ -48,7 +51,7 @@ public:
     ActionListEditor(ModelStack *models,
                      QItemSelectionModel *projectSelection,
                      QItemSelectionModel *categoriesSelection,
-                     KActionCollection *ac, QWidget *parent=0);
+                     KActionCollection *ac, QWidget *parent, KXMLGUIClient *client, ItemViewer *itemviewer);
 
     void setMode(Zanshin::ApplicationMode mode);
 
@@ -57,6 +60,8 @@ public:
 
 protected:
     virtual bool eventFilter(QObject *watched, QEvent *event);
+/*signals:
+    void currentChanged(const Akonadi::Item &);*/
 
 private slots:
     void updateActions();
@@ -71,7 +76,7 @@ private slots:
     void onRowInsertedInComboBox(const QModelIndex &index, int start, int end);
 
 private:
-    void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode);
+    void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode, KXMLGUIClient *guiClient);
     void setupActions(KActionCollection *ac);
     bool selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end);
 
@@ -81,6 +86,7 @@ private:
     QStackedWidget *m_stack;
     QItemSelectionModel *m_projectSelection;
     QItemSelectionModel *m_categoriesSelection;
+    QItemSelectionModel *m_knowledgeSelection;
 
     KLineEdit *m_addActionEdit;
     QComboBox *m_comboBox;
@@ -93,6 +99,7 @@ private:
     KAction *m_dissociate;
 
     ModelStack *m_models;
+    ItemSelectorProxy *m_selectorProxy;
 
     qint64 m_defaultCollectionId;
 };

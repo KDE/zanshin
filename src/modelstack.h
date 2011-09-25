@@ -26,6 +26,10 @@
 
 #include <QtCore/QObject>
 
+namespace Akonadi {
+class ChangeRecorder;
+}
+
 class QItemSelectionModel;
 class QAbstractItemModel;
 
@@ -49,6 +53,16 @@ public:
     QAbstractItemModel *categoriesSideBarModel();
     QAbstractItemModel *categoriesSelectionModel();
     QAbstractItemModel *categoriesComboModel();
+    
+    QAbstractItemModel *knowledgeBaseModel();
+    QAbstractItemModel *topicsTreeModel();
+    QAbstractItemModel *knowledgeSidebarModel();
+    //QAbstractItemModel *categoriesModel();
+    //QAbstractItemModel *categoriesSideBarModel();
+    QAbstractItemModel *knowledgeSelectionModel(); //Filter model
+    void setKnowledgeSelectionModel(QItemSelectionModel *selection);
+    //QAbstractItemModel *categoriesComboModel();
+    QItemSelectionModel *knowledgeSelection();
 
     void setItemTreeSelectionModel(QItemSelectionModel *selection);
     void setItemCategorySelectionModel(QItemSelectionModel *selection);
@@ -62,6 +76,12 @@ private:
     QAbstractItemModel *m_treeSideBarModel;
     QAbstractItemModel *m_treeSelectionModel;
     QAbstractItemModel *m_treeComboModel;
+    
+    Akonadi::ChangeRecorder *m_knowledgeMonitor;
+    QAbstractItemModel *m_knowledgeBaseModel;
+    QAbstractItemModel *m_knowledgeSelectionModel;
+    QAbstractItemModel *m_topicsTreeModel;
+    QAbstractItemModel *m_knowledgeSidebarModel;
 
     QAbstractItemModel *m_categoriesModel;
     QAbstractItemModel *m_categoriesSideBarModel;
@@ -69,6 +89,7 @@ private:
     QAbstractItemModel *m_categoriesComboModel;
     QItemSelectionModel *m_treeSelection;
     QItemSelectionModel *m_categorySelection;
+    QItemSelectionModel *m_topicSelection;
 };
 
 #endif

@@ -30,6 +30,7 @@
 
 #include "globaldefs.h"
 
+class KXMLGUIClient;
 class KConfigGroup;
 class QAbstractItemModel;
 class QItemSelectionModel;
@@ -50,10 +51,10 @@ public:
                          ModelStack *models,
                          Zanshin::ApplicationMode mode,
                          const QList<QAction*> &contextActions,
-                         QWidget *parent=0);
+                         QWidget *parent, KXMLGUIClient *client);
 
     QItemSelectionModel *selectionModel() const;
-
+    Akonadi::EntityTreeView *treeView() const;
     void saveColumnsState(KConfigGroup &config, const QString &key) const;
     void restoreColumnsState(const KConfigGroup &config, const QString &key);
 

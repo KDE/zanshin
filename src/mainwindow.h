@@ -46,6 +46,7 @@ private:
     void setupCentralWidget();
     void setupSideBar();
     void setupActions();
+    void setupEditor();
 
     void saveColumnsState();
     void restoreColumnsState();

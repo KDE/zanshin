@@ -38,8 +38,13 @@
 #include "todometadatamodel.h"
 #include "todomodel.h"
 #include "todotreemodel.h"
+#include "notetakermodel.h"
+#include "abstractpimitem.h"
+#include "notesortfilterproxymodel.h"
 
 #include "kdescendantsproxymodel.h"
+#include <Akonadi/EntityDisplayAttribute>
+#include "topicsmodel.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -55,7 +60,13 @@ ModelStack::ModelStack(QObject *parent)
       m_categoriesSelectionModel(0),
       m_categoriesComboModel(0),
       m_treeSelection(0),
-      m_categorySelection(0)
+      m_categorySelection(0),
+      m_knowledgeMonitor(0),
+      m_knowledgeBaseModel(0),
+      m_knowledgeSelectionModel(0),
+      m_knowledgeSidebarModel(0),
+      m_topicsTreeModel(0),
+      m_topicSelection(0)
 {
 }
 
@@ -204,4 +215,109 @@ void ModelStack::setItemCategorySelectionModel(QItemSelectionModel *selection)
     if (m_categoriesSelectionModel) {
         static_cast<SelectionProxyModel*>(m_categoriesSelectionModel)->setSelectionModel(m_categorySelection);
     }
+}
+
+QAbstractItemModel* ModelStack::knowledgeBaseModel()
+{
+    if (m_knowledgeBaseModel) {
+        return m_knowledgeBaseModel;
+    }
+    
+    Akonadi::ItemFetchScope scope;
+    scope.fetchFullPayload( true ); // Need to have full item when adding it to the internal data structure
+    scope.fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
+    //scope.fetchAttribute<Akonadi::EntityDeletedAttribute>(true);
+    
+    Akonadi::Session *session = new Akonadi::Session("zanshin", this);
+
+    /*Akonadi::ItemFetchScope itemScope;
+    itemScope.fetchFullPayload();
+    itemScope.fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
+    itemScope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
+
+    Akonadi::CollectionFetchScope collectionScope;
+    collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);*/
+    
+    m_knowledgeMonitor = new Akonadi::ChangeRecorder( this );
+    m_knowledgeMonitor->fetchCollection( true );
+    m_knowledgeMonitor->setItemFetchScope( scope );
+    //m_knowledgeMonitor->setCollectionFetchScope( collectionScope );
+    m_knowledgeMonitor->setCollectionMonitored(Collection::root());
+    m_knowledgeMonitor->setSession(session);
+    
+    //FIXME quick fix to avoid having all sorts collections when no monitored collections are configured,
+    // the init of the monitor should be delayed in this case though.
+    //m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Incidence), true);
+    m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
+    
+    NotetakerModel *notetakerModel = new NotetakerModel ( m_knowledgeMonitor, this );
+    notetakerModel->setSupportedDragActions(Qt::MoveAction);
+    notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
+    m_knowledgeBaseModel = notetakerModel;
+    
+    //TODO
+    /*
+     * m_trashFilterProxy = new TrashFilterProxyModel(this);
+    m_trashFilterProxy->setDynamicSortFilter(true);
+    m_trashFilterProxy->setSourceModel(m_model);
+    m_model = m_trashFilterProxy;
+    */
+    return m_knowledgeBaseModel;
+}
+
+QAbstractItemModel *ModelStack::topicsTreeModel()
+{
+    if (!m_topicsTreeModel) {
+        TopicsModel *treeModel = new TopicsModel(this);
+        treeModel->setSourceModel(knowledgeBaseModel());
+        m_topicsTreeModel = treeModel;
+    }
+    return m_topicsTreeModel;
+}
+
+QAbstractItemModel *ModelStack::knowledgeSidebarModel()
+{
+    if (!m_knowledgeSidebarModel) {
+        SideBarModel *sideBarModel = new SideBarModel(this);
+        sideBarModel->setSourceModel(topicsTreeModel());
+        m_knowledgeSidebarModel = sideBarModel;
+    }
+    return m_knowledgeSidebarModel;
+}
+
+void ModelStack::setKnowledgeSelectionModel(QItemSelectionModel *selection)
+{
+    m_topicSelection = selection;
+    if (m_knowledgeSelectionModel) {
+        static_cast<SelectionProxyModel*>(m_knowledgeSelectionModel)->setSelectionModel(m_topicSelection);
+    }
+}
+
+QItemSelectionModel* ModelStack::knowledgeSelection()
+{
+    return m_topicSelection;
+}
+
+
+QAbstractItemModel* ModelStack::knowledgeSelectionModel()
+{
+    /*if (m_knowledgeSelectionModel) {
+        return m_knowledgeSelectionModel;
+    }
+    
+    NoteSortFilterProxyModel *filterModel = new NoteSortFilterProxyModel(this);
+    filterModel->setDynamicSortFilter(true); //dynamically update the model
+    filterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    filterModel->setSourceModel(knowledgeBaseModel());
+    filterModel->setItemFilter(AbstractPimItem::None);
+    m_knowledgeSelectionModel = filterModel;
+    return m_knowledgeSelectionModel;*/
+    
+    if (!m_knowledgeSelectionModel) {
+        SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
+        categoriesSelectionModel->setSelectionModel(m_topicSelection);
+        categoriesSelectionModel->setSourceModel(topicsTreeModel());
+        m_knowledgeSelectionModel = categoriesSelectionModel;
+    }
+    return m_knowledgeSelectionModel;
 }

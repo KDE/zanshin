@@ -18,6 +18,7 @@
    <text>&amp;Go</text>
    <Action name="project_mode" />
    <Action name="categories_mode" />
+   <Action name="knowledge_mode" />
    <Separator />
    <Action name="sidebar_go_next" />
    <Action name="sidebar_go_previous" />
@@ -27,6 +28,7 @@
   <text context="@title:menu">Main Toolbar</text>
   <Action name="project_mode" />
   <Action name="categories_mode" />
+  <Action name="knowledge_mode" />
   <Separator name="separator_0" />
   <Action name="editor_add_action" />
  </ToolBar>

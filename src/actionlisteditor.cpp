@@ -52,6 +52,8 @@
 #include "modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
+#include <itemviewer.h>
+#include <itemselectorproxy.h>
 
 class TodoCollectionsProxyModel : public QSortFilterProxyModel
 {
@@ -77,12 +79,14 @@ ActionListEditor::ActionListEditor(ModelStack *models,
                                    QItemSelectionModel *projectSelection,
                                    QItemSelectionModel *categoriesSelection,
                                    KActionCollection *ac,
-                                   QWidget *parent)
+                                   QWidget *parent, KXMLGUIClient *client, ItemViewer *itemViewer)
     : QWidget(parent),
       m_projectSelection(projectSelection),
       m_categoriesSelection(categoriesSelection),
+      m_knowledgeSelection(models->knowledgeSelection()),
       m_models(models),
-      m_defaultCollectionId(-1)
+      m_defaultCollectionId(-1),
+      m_selectorProxy(new ItemSelectorProxy(this))
 {
     setLayout(new QVBoxLayout(this));
 
@@ -93,6 +97,8 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     connect(projectSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
     connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this, SLOT(onSideBarSelectionChanged(QModelIndex)));
+    connect(m_knowledgeSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
 
     models->setItemTreeSelectionModel(projectSelection);
@@ -113,8 +119,12 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     setupActions(ac);
 
-    createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode);
-    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode);
+    createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode, client);
+    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode, client);
+    createPage(models->knowledgeSelectionModel(), models, Zanshin::KnowledgeMode, client);
+
+    connect(m_selectorProxy, SIGNAL(itemSelected(Akonadi::Item)), itemViewer, SLOT(setItem(const Akonadi::Item &)));
+    //connect(&AkonadiCollection::instance(), SIGNAL(itemCreated(const Akonadi::Item &)), m_selectorProxy, SLOT(selectItem(const Akonadi::Item &)));
 
     m_comboBox = new ActionListComboBox(bottomBar);
     m_comboBox->view()->setTextElideMode(Qt::ElideLeft);
@@ -128,6 +138,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     descendantProxyModel->setSourceModel(models->collectionsModel());
     descendantProxyModel->setDisplayAncestorData(true);
 
+    //TODO Show notes resources in knowledgemode
     TodoCollectionsProxyModel *todoColsModel = new TodoCollectionsProxyModel(m_comboBox);
     todoColsModel->setSourceModel(descendantProxyModel);
 
@@ -167,6 +178,12 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
         onSideBarSelectionChanged(m_categoriesSelection->currentIndex());
+        break;
+    case Zanshin::KnowledgeMode:
+        m_stack->setCurrentIndex(2);
+        onSideBarSelectionChanged(m_knowledgeSelection->currentIndex());
+        m_selectorProxy->setView(currentPage()->treeView());
+
         break;
     }
 }
@@ -220,22 +237,25 @@ void ActionListEditor::onRowInsertedInComboBox(const QModelIndex &parent, int be
     }
 }
 
-void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode)
+void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode, KXMLGUIClient *client)
 {
     QList<QAction*> contextActions;
-    contextActions << m_add
-                   << m_remove
-                   << m_move
-                   << m_promote;
+    if (mode == Zanshin::CategoriesMode || mode == Zanshin::ProjectMode) {
+        contextActions << m_add
+                      << m_remove
+                      << m_move
+                      << m_promote;
+    }
 
     if (mode==Zanshin::CategoriesMode) {
         contextActions << m_dissociate;
     }
-
-    ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, m_stack);
+    //TODO add new note action
+    ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, m_stack, client);
 
     connect(page->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(updateActions()));
+    //connect(page->treeView(), SIGNAL(currentChanged(Akonadi::Item)), this, SIGNAL(currentChanged(Akonadi::Item)));
 
     m_stack->addWidget(page);
 }

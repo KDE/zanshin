@@ -39,6 +39,8 @@
 #include "globaldefs.h"
 #include "todotreeview.h"
 #include "todohelpers.h"
+#include "treeview.h"
+#include <KXMLGUIClient>
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 
@@ -205,44 +207,50 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
                                            Zanshin::ApplicationMode mode,
                                            const QList<QAction*> &contextActions,
-                                           QWidget *parent)
+                                           QWidget *parent, KXMLGUIClient *client)
     : QWidget(parent), m_mode(mode)
 {
     setLayout(new QVBoxLayout(this));
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    m_treeView = new ActionListEditorView(this);
+    if ( mode == Zanshin::KnowledgeMode) {
+      m_treeView = new TreeView(client, this);
+      //NoteSortFilterProxyModel 
+      m_treeView->setModel(model);
+    } else {
+        m_treeView = new ActionListEditorView(this);
 
-    GroupLabellingProxyModel *labelling = new GroupLabellingProxyModel(this);
-    labelling->setSourceModel(model);
+        GroupLabellingProxyModel *labelling = new GroupLabellingProxyModel(this);
+        labelling->setSourceModel(model);
 
-    GroupSortingProxyModel *sorting = new GroupSortingProxyModel(this);
-    sorting->setSourceModel(labelling);
+        GroupSortingProxyModel *sorting = new GroupSortingProxyModel(this);
+        sorting->setSourceModel(labelling);
 
-    ActionListEditorModel *descendants = new ActionListEditorModel(this);
-    descendants->setSourceModel(sorting);
+        ActionListEditorModel *descendants = new ActionListEditorModel(this);
+        descendants->setSourceModel(sorting);
 
-    TypeFilterProxyModel *filter = new TypeFilterProxyModel(sorting, this);
-    filter->setSourceModel(descendants);
+        TypeFilterProxyModel *filter = new TypeFilterProxyModel(sorting, this);
+        filter->setSourceModel(descendants);
 
-    m_treeView->setModel(filter);
-    m_treeView->setItemDelegate(new ActionListDelegate(models, m_treeView));
+        m_treeView->setModel(filter);
+        m_treeView->setItemDelegate(new ActionListDelegate(models, m_treeView));
 
-    m_treeView->header()->setSortIndicatorShown(true);
-    m_treeView->setSortingEnabled(true);
-    m_treeView->sortByColumn(0, Qt::AscendingOrder);
+        m_treeView->header()->setSortIndicatorShown(true);
+        m_treeView->setSortingEnabled(true);
+        m_treeView->sortByColumn(0, Qt::AscendingOrder);
 
-    m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    m_treeView->setItemsExpandable(false);
-    m_treeView->setRootIsDecorated(false);
-    m_treeView->setEditTriggers(m_treeView->editTriggers() | QAbstractItemView::DoubleClicked);
+        m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        m_treeView->setItemsExpandable(false);
+        m_treeView->setRootIsDecorated(false);
+        m_treeView->setEditTriggers(m_treeView->editTriggers() | QAbstractItemView::DoubleClicked);
 
-    connect(m_treeView->model(), SIGNAL(modelReset()),
-            m_treeView, SLOT(expandAll()));
-    connect(m_treeView->model(), SIGNAL(layoutChanged()),
-            m_treeView, SLOT(expandAll()));
-    connect(m_treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-            m_treeView, SLOT(expandAll()));
+        connect(m_treeView->model(), SIGNAL(modelReset()),
+                m_treeView, SLOT(expandAll()));
+        connect(m_treeView->model(), SIGNAL(layoutChanged()),
+                m_treeView, SLOT(expandAll()));
+        connect(m_treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+              m_treeView, SLOT(expandAll()));
+    }
 
     layout()->addWidget(m_treeView);
 
@@ -258,6 +266,11 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 QItemSelectionModel *ActionListEditorPage::selectionModel() const
 {
     return m_treeView->selectionModel();
+}
+
+Akonadi::EntityTreeView* ActionListEditorPage::treeView() const
+{
+    return m_treeView;
 }
 
 void ActionListEditorPage::saveColumnsState(KConfigGroup &config, const QString &key) const

@@ -31,7 +31,8 @@ namespace Zanshin
 {
     enum ApplicationMode {
         ProjectMode = 0,
-        CategoriesMode = 1
+        CategoriesMode = 1,
+        KnowledgeMode = 2
     };
 
     enum ItemType

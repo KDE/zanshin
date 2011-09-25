@@ -172,8 +172,14 @@ QList<QModelIndex> TodoProxyModelBase::mapFromSourceAll(const QModelIndex &sourc
 QModelIndex TodoProxyModelBase::mapFromSource(const QModelIndex &sourceIndex) const
 {
     if (m_mappingType==MultiMapping) {
-        kError() << "Never call mapFromSource() for a MultiMapping model";
-        return QModelIndex();
+        kWarning() << "Never call mapFromSource() for a MultiMapping model";
+        //This is useful for selecting an item in the list
+        //If we just return an empty index we break EntityTreeModel::modelIndexesForItem
+        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
+        if (nodes.isEmpty()) {
+            return QModelIndex();
+        }
+        return  m_manager->indexForNode(nodes.first(), sourceIndex.column());
     }
 
     TodoNode *node = m_manager->nodeForSourceIndex(sourceIndex);
