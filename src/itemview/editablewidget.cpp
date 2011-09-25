@@ -1,0 +1,249 @@
+/*
+    <one line to give the library's name and an idea of what it does.>
+    Copyright (C) <year>  <name of author>
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+
+#include "editablewidget.h"
+
+#include <datestringbuilder.h>
+#include <QHBoxLayout>
+#include <KDateTimeWidget>
+#include <QLabel>
+#include <QToolButton>
+#include <QCheckBox>
+
+#include <KDebug>
+#include <klocalizedstring.h>
+#include <KDE/KIconLoader>
+#include <QLineEdit>
+
+
+
+AbstractEditableWidget::AbstractEditableWidget(QWidget *contentWidget, QWidget* parent)
+:   QWidget(parent),
+    m_contentWidget(contentWidget)
+{
+    m_layout = new QHBoxLayout(this);
+    m_layout->setContentsMargins(0,0,0,0);
+
+    m_label = new QLabel(this);
+    m_layout->addWidget(m_label);
+
+    m_layout->addWidget(contentWidget);
+
+    m_button = new QToolButton(this);
+    m_button->setCheckable(false);
+    //m_button->setIconSize(QSize(10,10));
+    //m_button->setI (Qt::ToolButtonIconOnly);
+    connect(m_button, SIGNAL(pressed()), this, SLOT(buttonPressed()));
+    m_layout->addWidget(m_button);
+
+    m_layout->addStretch();
+    setLayout(m_layout);
+
+    display();
+}
+
+void AbstractEditableWidget::clear()
+{
+    m_label->clear();
+    display();
+}
+
+
+
+void AbstractEditableWidget::edit()
+{
+    if (m_editMode) {
+        return;
+    }
+    m_label->hide();
+    m_contentWidget->show();
+    m_editMode = true;
+    m_button->setIcon(QIcon(SmallIcon("document-save")));
+}
+
+void AbstractEditableWidget::display()
+{
+    m_contentWidget->hide();
+    m_label->show();
+    m_editMode = false;
+    m_button->setIcon(QIcon(SmallIcon("document-edit")));
+}
+
+void AbstractEditableWidget::buttonPressed()
+{
+    if (!m_editMode) {
+        edit();
+    } else {
+        display();
+        emit valueChanged();
+    }
+}
+
+
+
+
+EditableDate::EditableDate(QWidget* parent)
+:   AbstractEditableWidget(new KDateTimeWidget(), parent),
+    m_dateTimeWidget(static_cast<KDateTimeWidget*>(m_contentWidget))
+
+{
+    m_dateTimeWidget->setParent(this);
+}
+
+void EditableDate::clear()
+{
+    AbstractEditableWidget::clear();
+    m_dateTimeWidget->setDateTime(QDateTime::currentDateTime());
+}
+
+void EditableDate::display()
+{
+    m_label->setText(DateStringBuilder::getFullDate(KDateTime(m_dateTimeWidget->dateTime())));
+    AbstractEditableWidget::display();
+}
+
+void EditableDate::buttonPressed()
+{
+    if (m_editMode) {
+        emit dateChanged(KDateTime(m_dateTimeWidget->dateTime()));
+    }
+    AbstractEditableWidget::buttonPressed();
+}
+
+KDateTime EditableDate::dateTime()
+{
+    return KDateTime( m_dateTimeWidget->dateTime());
+}
+
+void EditableDate::setDate(const KDateTime& date)
+{
+    m_label->setText(DateStringBuilder::getFullDate(date));
+    m_dateTimeWidget->setDateTime(date.dateTime());
+}
+
+
+
+
+CheckableEditableDate::CheckableEditableDate(QWidget* parent)
+:   EditableDate(parent)
+{
+    m_checkBox = new QCheckBox(this);
+    m_layout->insertWidget(0, m_checkBox);
+    connect(m_checkBox, SIGNAL(clicked(bool)), this, SLOT(checkStatusChanged(bool)));
+}
+
+void CheckableEditableDate::enable(bool enable)
+{
+    m_label->setEnabled(enable);
+    m_dateTimeWidget->setEnabled(enable);
+    m_button->setEnabled(enable);
+    m_isEnabled = enable;
+    m_checkBox->setChecked(enable);
+    if (!enable) {
+        m_checkBox->setText(i18n("&Enable"));
+        m_button->hide();
+        m_label->hide();
+    } else {
+        m_checkBox->setText("");
+        m_button->show();
+        m_label->show();
+    }
+}
+
+bool CheckableEditableDate::isEnabled()
+{
+    return m_isEnabled;
+}
+
+void CheckableEditableDate::checkStatusChanged(bool status)
+{
+    if (status) {
+        enable(true);
+        edit();
+    } else {
+        display();
+        enable(false);
+        emit dateChanged(KDateTime(), false);
+    }
+
+}
+
+void CheckableEditableDate::buttonPressed()
+{
+    if (m_editMode) {
+        emit dateChanged(KDateTime(m_dateTimeWidget->dateTime()), true);
+    }
+    EditableDate::buttonPressed();
+}
+
+
+
+EditableString::EditableString(QWidget* parent)
+:   AbstractEditableWidget(new QLineEdit(), parent),
+    m_lineEdit(static_cast<QLineEdit*>(m_contentWidget))
+{
+    m_contentWidget->setParent(this);
+    connect(m_lineEdit, SIGNAL(returnPressed()), this, SLOT(buttonPressed()));
+
+}
+
+void EditableString::clear()
+{
+    AbstractEditableWidget::clear();
+    m_lineEdit->clear();
+}
+
+void EditableString::display()
+{
+    m_label->setText(m_lineEdit->text());
+    AbstractEditableWidget::display();
+}
+
+void EditableString::buttonPressed()
+{
+    if (m_editMode) {
+        emit textChanged(m_lineEdit->text());
+    }
+    AbstractEditableWidget::buttonPressed();
+}
+
+QString EditableString::text()
+{
+    return m_lineEdit->text();
+}
+
+void EditableString::setText( const QString &text)
+{
+    m_label->setText(text);
+    m_lineEdit->setText(text);
+}
+
+QLineEdit& EditableString::lineEdit()
+{
+    return *m_lineEdit;
+}
+
+void EditableString::setDisplayFont( const QFont &font)
+{
+    m_label->setFont(font);
+}
+
+
+
