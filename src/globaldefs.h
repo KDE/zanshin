@@ -42,7 +42,9 @@ namespace Zanshin
         Category,
         Collection,
         Inbox,
-        CategoryRoot
+        CategoryRoot,
+        Topic,
+        TopicRoot
     };
 
     enum Roles {
@@ -56,6 +58,7 @@ namespace Zanshin
         ChildUidsRole,
         ChildIndexesRole,
         CategoryPathRole,
+        UriRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };
 

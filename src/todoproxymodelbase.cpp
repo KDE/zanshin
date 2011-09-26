@@ -120,6 +120,7 @@ QVariant TodoProxyModelBase::headerData(int section, Qt::Orientation orientation
 
 QVariant TodoProxyModelBase::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(index.model() == this);
     TodoNode *node = m_manager->nodeForIndex(index);
 
     if (node == 0) {

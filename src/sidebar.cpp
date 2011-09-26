@@ -185,7 +185,9 @@ void SideBar::updateActions(const QModelIndex &index)
     m_add->setEnabled( type == Zanshin::Collection
                     || type == Zanshin::ProjectTodo
                     || type == Zanshin::CategoryRoot 
-                    || type == Zanshin::Category);
+                    || type == Zanshin::Category
+                    || type == Zanshin::TopicRoot 
+                    || type == Zanshin::Topic);
 
     m_remove->setEnabled( type == Zanshin::ProjectTodo
                        || type == Zanshin::Category );

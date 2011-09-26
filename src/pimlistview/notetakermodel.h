@@ -22,6 +22,7 @@
 #define NOTETAKERMODEL_H
 
 #include <Akonadi/EntityTreeModel>
+#include <globaldefs.h>
 
 namespace Akonadi
 {
@@ -51,10 +52,10 @@ public:
 
     //For QML
     enum CustomRoles {
-        SortRole=Akonadi::EntityTreeModel::UserRole,
+        SortRole=Zanshin::UserRole,
         TitleRole,
         DateRole,
-        NotetakerModelUserRole
+        UserRole
     };
 
     /**

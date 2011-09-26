@@ -34,6 +34,8 @@
 #include <Nepomuk/Query/Result>
 #include <Nepomuk/Resource>
 #include "todonodemanager.h"
+#include <tagmanager.h>
+#include <QMimeData>
 
 TopicsModel::TopicsModel(QObject* parent)
 : TodoProxyModelBase(MultiMapping, parent), m_rootNode(0)
@@ -67,7 +69,7 @@ void TopicsModel::init()
         TodoNode *node = new TodoNode;
         node->setData(i18n("Topics"), 0, Qt::DisplayRole);
         node->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
-        node->setRowData(Zanshin::CategoryRoot, Zanshin::ItemTypeRole);
+        node->setRowData(Zanshin::TopicRoot, Zanshin::ItemTypeRole);
 
         m_rootNode = node;
         m_manager->insertNode(m_rootNode);
@@ -147,7 +149,8 @@ void TopicsModel::createNode(const Nepomuk::Resource& res)
     node->setData(res.label(), 0, Qt::EditRole);
     //node->setData(categoryPath, 0, Zanshin::CategoryPathRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole); //TODO get icon from reesource
-    //node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole);
+    node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
+    node->setRowData(res.resourceUri(), Zanshin::UriRole);
 
     m_resourceMap[res.resourceUri()] = node;
     m_manager->insertNode(node);
@@ -252,7 +255,89 @@ void TopicsModel::onSourceDataChanged(const QModelIndex& begin, const QModelInde
 
 }
 
+QStringList TopicsModel::mimeTypes() const
+{
+    QStringList list = QAbstractItemModel::mimeTypes();
+    list.append("text/uri-list");
+    list.append("text/plain");
+    return list;
+}
+
+Qt::ItemFlags TopicsModel::flags(const QModelIndex& index) const
+{
+    if (!index.isValid()) {
+        return Qt::NoItemFlags;
+    }
+
+    Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+    if (type == Zanshin::Inbox || type == Zanshin::TopicRoot) {
+        return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
+    }
+    return TodoProxyModelBase::flags(index) | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+}
 
 
 
+Qt::DropActions TopicsModel::supportedDropActions() const
+{
+    if (!sourceModel()) {
+        return Qt::IgnoreAction;
+    }
+    return sourceModel()->supportedDropActions();
+}
+
+bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+{
+        //kDebug() << mimeData->formats();
+    //kDebug() << mimeData->text();
+
+    bool moveToTrash = false;
+    QUrl targetTopic;
+    if (parent.isValid()) {
+        //kDebug() << "dropped on item " << data(parent, UriRole) << data(parent, Qt::DisplayRole).toString();
+        targetTopic = parent.data(Zanshin::UriRole).value<QUrl>();
+    }
+/*
+    if (mimeData->hasText()) { //plain text is interpreted as topic anyway, so you can drag a textfragment from anywhere and create a new topic when dropped
+        const QUrl &sourceTopic = QUrl(mimeData->text());
+        //beginResetModel();
+        if (targetTopic.isValid()) {
+            kDebug() << "set topic: " << targetTopic << " on dropped topic: " << sourceTopic;
+            NepomukUtils::moveToTopic(sourceTopic, targetTopic);
+        } else {
+            kDebug() << "remove all topics from topic:" << sourceTopic;
+            NepomukUtils::removeAllTopics(sourceTopic);
+        }
+        //endResetModel(); //TODO emit item move instead
+        return true;
+    }*/
+
+    //TODO support also drop of other urls (files), and add to topic contextview?
+
+    if (!mimeData->hasUrls()) {
+        kWarning() << "no urls in drop";
+        return false;
+    }
+    kDebug() << mimeData->urls();
+
+
+    foreach (const KUrl &url, mimeData->urls()) {
+        const Akonadi::Item item = Akonadi::Item::fromUrl(url);
+        if (!item.isValid()) {
+            kDebug() << "invalid item";
+            continue;
+        }
+
+        if (targetTopic.isValid()) {
+            kDebug() << "set topic: " << targetTopic << " on dropped item: " << item.url();
+            NepomukUtils::moveToTopic(item, targetTopic);
+        } else {
+            kDebug() << "remove all topics from item:" << item.url();
+            NepomukUtils::removeAllTopics(item);
+        }
+
+    }
+
+    return true;
+}
 

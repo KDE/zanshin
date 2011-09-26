@@ -492,6 +492,6 @@ void ItemViewer::itemRemoved()
 
 void ItemViewer::addTag()
 {
-    MindMirrorNepomukUtils::tagItem(m_currentItem->getItem(), ui_tags->tagEdit->text());
+    NepomukUtils::tagItem(m_currentItem->getItem(), ui_tags->tagEdit->text());
     ui_tags->tagEdit->clear();
 }

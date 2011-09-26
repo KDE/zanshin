@@ -40,7 +40,7 @@ namespace Soprano {
 
 
 
-namespace MindMirrorNepomukUtils
+namespace NepomukUtils
 {
     Nepomuk::SimpleResource itemThing(const Akonadi::Item&, Nepomuk::SimpleResourceGraph &);
     //Nepomuk::Thing itemThing(const Akonadi::Item &item);

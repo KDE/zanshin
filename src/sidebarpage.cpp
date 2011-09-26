@@ -35,6 +35,7 @@
 #include "globaldefs.h"
 #include "todohelpers.h"
 #include "todotreeview.h"
+#include <tagmanager.h>
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
                          const QList<QAction*> &contextActions,
@@ -91,6 +92,11 @@ void SideBarPage::addNewItem()
         title = i18n("New Context");
         text = i18n("Enter context name:");
 
+    } else if (type==Zanshin::TopicRoot
+            || type==Zanshin::Topic) {
+        title = i18n("New Topic");
+        text = i18n("Enter topic name:");
+
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
@@ -116,6 +122,10 @@ void SideBarPage::addNewItem()
         CategoryManager::instance().addCategory(summary);
     } else if (type==Zanshin::Category) {
         CategoryManager::instance().addCategory(summary, parentItem.data(Zanshin::CategoryPathRole).toString());
+    } else if (type==Zanshin::TopicRoot) {
+        NepomukUtils::createTopic(summary);
+    } else if (type==Zanshin::Topic) {
+        //TODO NepomukUtils::createTopic(summary, parentItem.data(Zanshin::TopicRole).toUrl());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }

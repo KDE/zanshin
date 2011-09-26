@@ -36,6 +36,7 @@
 #include "incidenceitem.h"
 #include "datestringbuilder.h"
 #include "tagmanager.h"
+#include <globaldefs.h>
 
 
 NotetakerModel::NotetakerModel(ChangeRecorder* monitor, QObject* parent)

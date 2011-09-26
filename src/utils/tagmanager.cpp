@@ -50,7 +50,7 @@
 #include "queries.h"
 
 
-namespace MindMirrorNepomukUtils {
+namespace NepomukUtils {
 
 
 KJob *addToTopic(const Akonadi::Item& item, const QUrl& topicId)
