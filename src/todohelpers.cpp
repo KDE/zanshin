@@ -60,6 +60,10 @@ Akonadi::Item TodoHelpers::fetchFullItem(const Akonadi::Item &item)
 
 void TodoHelpers::addTodo(const QString &summary, const QString &parentUid, const QString &category, const Akonadi::Collection &collection)
 {
+    if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
+        return;
+    }
+
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
     todo->setSummary(summary);
     if (!parentUid.isEmpty()) {
@@ -78,6 +82,10 @@ void TodoHelpers::addTodo(const QString &summary, const QString &parentUid, cons
 
 void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
 {
+    if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
+        return;
+    }
+
     KCalCore::Todo::Ptr todo(new KCalCore::Todo());
     todo->setSummary(summary);
     todo->addComment("X-Zanshin-Project");
@@ -90,8 +98,17 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &
     job->start();
 }
 
-void TodoHelpers::addProject(const QString &summary, const Akonadi::Item &parentProject)
+void TodoHelpers::addProject(const QString &summary, const QModelIndex &parentItem)
 {
+    // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+    // information about the rights is not valid on retrieved items.
+    Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
+        return;
+    }
+
+    Akonadi::Item parentProject = parentItem.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+
     KCalCore::Todo::Ptr todo(new KCalCore::Todo());
     todo->setSummary(summary);
     todo->addComment("X-Zanshin-Project");
@@ -103,14 +120,19 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Item &parent
     item.setMimeType("application/x-vnd.akonadi.calendar.todo");
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 
-    Akonadi::Collection collection = parentProject.parentCollection();
-
     Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
     job->start();
 }
 
 void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
 {
+    // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+    // information about the rights is not valid on retrieved items.
+    Akonadi::Collection collection = project.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    if (!(collection.rights() & Akonadi::Collection::CanDeleteItem)) {
+        return;
+    }
+
     foreach (QModelIndex child, children) {
         QModelIndexList childList = child.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
         removeCurrentTodo(child, childList, sequence);
@@ -169,6 +191,14 @@ bool TodoHelpers::removeProjects(QWidget *parent, const QModelIndexList &project
 
     Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence();
     foreach (QModelIndex project, projects) {
+
+        // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+        // information about the rights is not valid on retrieved items.
+        Akonadi::Collection collection = project.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+        if (!(collection.rights() & Akonadi::Collection::CanDeleteItem)) {
+            continue;
+        }
+
         QModelIndexList children = project.data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
         removeCurrentTodo(project, children, sequence);
     }
@@ -247,6 +277,10 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
 
 bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection)
 {
+    if (!(parentCollection.rights() & Akonadi::Collection::CanCreateItem)) {
+        return false;
+    }
+
     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
 
     if (!todo) {
@@ -294,6 +328,13 @@ bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &pa
 
 bool TodoHelpers::promoteTodo(const QModelIndex &index)
 {
+    // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+    // information about the rights is not valid on retrieved items.
+    Akonadi::Collection collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    if (!(collection.rights() & Akonadi::Collection::CanChangeItem)) {
+        return false;
+    }
+
     Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
     if (itemType!=Zanshin::StandardTodo) {
         return false;

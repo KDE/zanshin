@@ -137,8 +137,7 @@ Akonadi::Collection QuickSelectDialog::collection() const
     if (type == Zanshin::Collection) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     } else {
-        const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        collection = item.parentCollection();
+        collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
     }
     return collection;
 }

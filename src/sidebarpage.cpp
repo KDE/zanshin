@@ -109,8 +109,7 @@ void SideBarPage::addNewItem()
         TodoHelpers::addProject(summary, collection);
 
     } else if (type==Zanshin::ProjectTodo) {
-        Akonadi::Item parentProject = parentItem.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        TodoHelpers::addProject(summary, parentProject);
+        TodoHelpers::addProject(summary, parentItem);
 
     } else if (type==Zanshin::CategoryRoot) {
         CategoryManager::instance().addCategory(summary);
