@@ -410,15 +410,8 @@ void ActionListEditor::onMoveAction()
                     return;
                 }
 
-                QModelIndex mapperIndex = mapper.mapRightToLeft(current);
-
                 if (currentPage()->mode()==Zanshin::ProjectMode) {
                     TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
-                    if (dlg.selectedType()==Zanshin::ProjectTodo && currentSelection==mapperIndex) {
-                        m_projectSelection->setCurrentIndex(index, QItemSelectionModel::Select);
-                    } else {
-                        currentPage()->selectSiblingIndex(current);
-                    }
                 } else {
                     int type = current.data(Zanshin::ItemTypeRole).toInt();
                     QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
@@ -426,11 +419,6 @@ void ActionListEditor::onMoveAction()
                         CategoryManager::instance().moveCategory(categoryPath, selectedId, dlg.selectedType());
                     } else {
                         CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
-                    }
-                    if (dlg.selectedType()==Zanshin::Category && currentSelection==mapperIndex) {
-                        m_categoriesSelection->setCurrentIndex(index, QItemSelectionModel::Select);
-                    } else {
-                        currentPage()->selectSiblingIndex(current);
                     }
                 }
             }
