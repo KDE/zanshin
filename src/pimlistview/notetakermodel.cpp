@@ -105,8 +105,8 @@ QVariant NotetakerModel::entityData(const Akonadi::Item& item, int column, int r
                 d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getPrimaryDate())));
             }
             d.append(QString::fromLatin1("Akonadi: %1\n").arg(pimitem->getItem().url().url()));
-            d.append(QString::fromLatin1("Resource: %1\n").arg(AbstractPimItem::getResource(pimitem->getItem()).uri()));
-            d.append(QString::fromLatin1("Thing: %1\n").arg(pimitem->getThing().uri()));
+            d.append(QString::fromLatin1("Resource: %1\n").arg(PimItemUtils::getResource(pimitem->getItem()).uri()));
+            d.append(QString::fromLatin1("Thing: %1\n").arg(PimItemUtils::getThing(pimitem->getItem()).uri()));
             return d;
         }
         case Qt::DecorationRole: { //only needed because the calendar doesnt set the display attribute properly, so we cant rely on it

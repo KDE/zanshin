@@ -49,6 +49,7 @@
 #include <nepomuk/comparisonterm.h>
 
 #include "searchfiltercacheproxy.h"
+#include <incidenceitem.h>
 
 NoteSortFilterProxyModel::NoteSortFilterProxyModel(QObject *parent)
 :   QSortFilterProxyModel(parent),

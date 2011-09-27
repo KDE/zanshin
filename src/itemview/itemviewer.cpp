@@ -67,6 +67,7 @@
 #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
+#include <incidenceitem.h>
 
 
 
@@ -266,7 +267,7 @@ void ItemViewer::clearView()
 
 void ItemViewer::setItem(const Nepomuk::Resource &res)
 {
-    Akonadi::Item item = AbstractPimItem::getItemFromResource(res);    
+    Akonadi::Item item = PimItemUtils::getItemFromResource(res);    
     if (!item.isValid()) {
         kWarning() << "invalid item passed" << res.uri();
         return;
@@ -323,7 +324,7 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     m_currentItem->fetchPayload(); //in case the payload is not yet fetched (model does not automatically fetch
     m_currentItem->enableMonitor();
 
-    m_itemContext->setResource(AbstractPimItem::getThing(item)); //TODO what if the thing changes? => notify trough abstractpimitem
+    m_itemContext->setResource(PimItemUtils::getThing(item));
 }
 
 void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
@@ -410,7 +411,7 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
 
     if (parts & AbstractPimItem::Tags) {
         //otherwise the widget doesn't update if the tags changed
-        ui_tags->tagWidget->setTaggedResource(m_currentItem->getThing());
+        ui_tags->tagWidget->setTaggedResource(PimItemUtils::getThing(m_currentItem->getItem()));
     }
     
     //Set Focus for new items to title bar
