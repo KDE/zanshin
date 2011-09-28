@@ -291,13 +291,11 @@ void KDateEdit::keyPressEvent(QKeyEvent* e)
       if (!date.isValid()) break;
       date = date.addDays( -1 );
       break;
-    case Qt::Key_Plus:
     case Qt::Key_PageUp:
       date = parseDate();
       if (!date.isValid()) break;
       date = date.addMonths( 1 );
       break;
-    case Qt::Key_Minus:
     case Qt::Key_PageDown:
       date = parseDate();
       if (!date.isValid()) break;
