@@ -25,6 +25,12 @@
 #ifndef TOPICSMODEL_H
 #define TOPICSMODEL_H
 #include "todoproxymodelbase.h"
+#include <akonadi/item.h>
+
+namespace Akonadi
+{
+class Item;
+}
 
 namespace Nepomuk {
 namespace Query {
@@ -55,7 +61,6 @@ private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    
     //void onTopicAdded();
     //void onTopicRemoved();
     
@@ -64,8 +69,9 @@ private slots:
     //void renameNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     
-    void checkResults(QList<Nepomuk::Query::Result>);
-    void itemsWithTopicAdded(QList<Nepomuk::Query::Result>);
+    void checkResults(const QList<Nepomuk::Query::Result> &);
+    void itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &);
+    void itemsFromTopicRemoved(const QList<QUrl> &);
 
     void queryFinished();
 
@@ -76,6 +82,7 @@ private:
 
     TodoNode *m_rootNode;
     QMap<QUrl, TodoNode*> m_resourceMap;
+    QHash<Akonadi::Item::Id, QList <QUrl> > m_itemTopics;
     
 };
 
