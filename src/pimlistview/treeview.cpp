@@ -144,10 +144,26 @@ void TreeView::rowsInserted(const QModelIndex& parent, int start, int end)
     }*/
 }
 
+void TreeView::recursiveExpand(const QModelIndex &parent)
+{
+    for (int i = 0; i < model()->rowCount(parent); i++) {
+        //kDebug() << "get index";
+        const QModelIndex &index = model()->index(i, 0, parent);
+        if (!index.data(Akonadi::EntityTreeModel::ItemRole).canConvert<Akonadi::Item>()) { //section
+            //kDebug() << "expand : " << index << model()->rowCount(index);
+            expand(index);
+            Q_ASSERT(isExpanded(index));
+            recursiveExpand(index);
+        }
+    }
+}
+
+
 void TreeView::expandToplevel()
 {
+    recursiveExpand();
     //expand toplevel items (sections)
-    for (int i = 0; i < model()->rowCount(); i++) {
+    /*for (int i = 0; i < model()->rowCount(); i++) {
         //kDebug() << "get index";
         const QModelIndex &index = model()->index(i, 0);
         if (!index.data(Akonadi::EntityTreeModel::ItemRole).canConvert<Akonadi::Item>()) { //section
@@ -155,7 +171,7 @@ void TreeView::expandToplevel()
             expand(index);
             Q_ASSERT(isExpanded(index));
         }
-    }
+    }*/
 }
 
 void TreeView::sectionWasClicked(int index)
@@ -221,6 +237,16 @@ void TreeView::mouseReleaseEvent( QMouseEvent* event )
         selectionModel()->setCurrentIndex(idx, QItemSelectionModel::Rows|QItemSelectionModel::NoUpdate);
     }
     //EntityTreeView::mouseReleaseEvent(event);
+}
+
+void TreeView::mouseDoubleClickEvent ( QMouseEvent* event )
+{
+    const QModelIndex &idx = indexAt(event->pos());
+    if (!idx.data(Akonadi::EntityTreeModel::ItemRole).canConvert<Akonadi::Item>()) { //section
+            //kDebug() << "expand : " << index << model()->rowCount(index);
+            setExpanded(idx, !isExpanded(idx));
+        }
+    QTreeView::mouseDoubleClickEvent ( event );
 }
 
 

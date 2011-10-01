@@ -46,6 +46,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent( QMouseEvent* event );
+    virtual void mouseDoubleClickEvent ( QMouseEvent* event );
     virtual void contextMenuEvent(QContextMenuEvent* event);
 
     virtual void rowsInserted(const QModelIndex& parent, int start, int end);
@@ -59,8 +60,8 @@ private slots:
     void expandToplevel();
     void sectionWasClicked(int);
 
-
 private:
+    void recursiveExpand(const QModelIndex &parent = QModelIndex());
     QPoint m_dragStartPosition;
     KXMLGUIClient *m_guiClient;
 };
