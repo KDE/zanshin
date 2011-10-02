@@ -105,6 +105,11 @@ int TodoProxyModelBase::columnCount(const QModelIndex &parent) const
     }
 }
 
+bool TodoProxyModelBase::hasChildren(const QModelIndex &parent) const
+{
+    return QAbstractItemModel::hasChildren(parent);
+}
+
 QVariant TodoProxyModelBase::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Vertical) {
