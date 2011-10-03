@@ -829,6 +829,47 @@ private slots:
         QCOMPARE(treeModel, output);
     }
 
+    void shouldReparentOnTodoPromotion()
+    {
+        //GIVEN
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        T t1(3, 1, "t1", QString(), "t1");
+        T t2(4, 1, "t2", QString(), "t2");
+
+        // Source structure
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create treeModel
+        TodoTreeModel treeModel;
+        ModelTest modelTest(&treeModel);
+
+        treeModel.setSourceModel(&source);
+
+        //WHEN
+        ModelPath itemToPromote = c1 % t1;
+        QModelIndex index = ModelUtils::locateItem(&source, itemToPromote);
+        source.setData(index, Zanshin::ProjectTodo, Zanshin::ItemTypeRole);
+
+        //THEN
+        ModelStructure outputStructure;
+        outputStructure << inbox
+                        << _+t2
+                        << c1
+                        << _+t1;
+
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(treeModel, output);
+    }
 };
 
 QTEST_KDEMAIN(TodoTreeModelSpec, GUI)

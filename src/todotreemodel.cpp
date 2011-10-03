@@ -208,6 +208,11 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
             continue;
         }
 
+        if (nodeType==Zanshin::ProjectTodo && node->parent()==m_inboxNode) {
+            reparentTodo(node);
+            continue;
+        }
+
         QString oldParentUid = node->parent()->data(0, Zanshin::UidRole).toString();
         QString newParentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
 
