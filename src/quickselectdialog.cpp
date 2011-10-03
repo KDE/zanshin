@@ -183,7 +183,7 @@ bool QuickSelectDialog::eventFilter(QObject *, QEvent *ev)
             p = QString();
             break;
         default:
-            if (event->text().contains("^(\\w| )+$")) {
+            if (event->text().contains(QRegExp("^(\\w| )+$"))) {
                 p+= event->text();
             }
             break;
