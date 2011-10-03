@@ -107,6 +107,14 @@ int TodoProxyModelBase::columnCount(const QModelIndex &parent) const
 
 bool TodoProxyModelBase::hasChildren(const QModelIndex &parent) const
 {
+    // Since Qt 4.8, QAbstractProxyModel just forwards hasChildren to the source model
+    // so that's not based on the current model rowCount() and columnCount(), because
+    // of that it's easy to end up with inconsistent replies between rowCount() and
+    // hasChildren() for instance (resulting in empty views or crashes in proxies).
+    //
+    // So, here we just use the hasChildren() implementation inherited from QAbstractItemModel
+    // since it is based on rowCount() and columnCount().
+
     return QAbstractItemModel::hasChildren(parent);
 }
 
