@@ -425,7 +425,7 @@ void ActionListEditor::onMoveAction()
         QString selectedId = dlg.selectedId();
         QModelIndex index = dlg.selectedIndex();
 
-        QModelIndexList list = currentPage()->selectionModel()->selectedIndexes();
+        QModelIndexList list = currentPage()->selectionModel()->selectedRows();
         if (currentSelection.isValid() && !list.isEmpty()) {
             KModelIndexProxyMapper mapper(currentSelection.model(), list.first().model());
             foreach (QModelIndex current, list) {
