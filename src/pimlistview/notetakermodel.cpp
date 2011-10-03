@@ -155,6 +155,8 @@ QVariant NotetakerModel::entityData(const Akonadi::Item& item, int column, int r
             return pimitem->getTitle();
         case DateRole:
             return pimitem->getPrimaryDate().dateTime().toString("ddd, hh:mm:ss");
+        case ItemTypeRole:
+            return pimitem->itemType();
         default:
             return QVariant();
     }

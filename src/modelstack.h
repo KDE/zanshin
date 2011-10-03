@@ -63,6 +63,7 @@ public:
     void setKnowledgeSelectionModel(QItemSelectionModel *selection);
     //QAbstractItemModel *categoriesComboModel();
     QItemSelectionModel *knowledgeSelection();
+    QAbstractItemModel *knowledgeCollectionsModel();
 
     void setItemTreeSelectionModel(QItemSelectionModel *selection);
     void setItemCategorySelectionModel(QItemSelectionModel *selection);
@@ -82,6 +83,7 @@ private:
     QAbstractItemModel *m_knowledgeSelectionModel;
     QAbstractItemModel *m_topicsTreeModel;
     QAbstractItemModel *m_knowledgeSidebarModel;
+    QAbstractItemModel *m_knowledgeCollectionsModel;
 
     QAbstractItemModel *m_categoriesModel;
     QAbstractItemModel *m_categoriesSideBarModel;

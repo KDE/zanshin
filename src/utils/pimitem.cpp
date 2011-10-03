@@ -4,6 +4,8 @@
 #include "incidenceitem.h"
 #include <Nepomuk/Vocabulary/NIE>
 #include <Nepomuk/Variant>
+#include "queries.h"
+#include <Nepomuk/Query/QueryServiceClient>
 
 namespace PimItemUtils {
 
@@ -68,28 +70,29 @@ namespace PimItemUtils {
 
     Nepomuk::Thing getThing(const Akonadi::Item &item)
     {
-        Q_ASSERT(item.isValid());
-        if (item.mimeType().isEmpty()) {
-            kWarning() << "no valid mimetype";
+        
+        Nepomuk::Query::Query query;
+        query.setTerm(MindMirrorQueries::itemThingTerm(item));
+        query.setLimit(1);
+        
+        QList<Nepomuk::Query::Result> results = Nepomuk::Query::QueryServiceClient::syncSparqlQuery(query.toSparqlQuery()); //This is esentially the same as the resourcedata code is doing
+        if (results.isEmpty()) {
+            /*kDebug() << "createing new thing" << item.url();
+            Nepomuk::Resource res = getResource(item);
+            Nepomuk::Thing thing = res.pimoThing();
+
+            QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+            if (!pimitem.isNull()) {
+                thing.setLabel(pimitem->getTitle());
+            }
+            return thing;*/
+            //FIXME this creates duplicate things atm (probably due to the not yet ported resource api)
             return Nepomuk::Thing();
         }
-        Nepomuk::Resource res = getResource(item);
-        Nepomuk::Thing thing = res.pimoThing();
-
-        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-        if (!pimitem.isNull()) {
-            thing.setLabel(pimitem->getTitle());
+        if (results.size() > 1) {
+            kWarning() << "more than one Thing found, your db is broken";
         }
-        //kDebug() << item.url() << res.types();
-        //kDebug() << thing.types();
-        if (res == thing) {
-            kWarning() << res.types();
-            kWarning() << res.resourceType();
-            kWarning() << "(res == thing) should never happen";
-            kWarning() << thing.resourceUri() << thing.resourceType();
-        }
-        Q_ASSERT(thing.isValid());
-        return thing;
+        return Nepomuk::Thing(results.first().resource().resourceUri());
     }
     
     Akonadi::Item getItemFromResource(const Nepomuk::Resource &resource)
@@ -99,7 +102,7 @@ namespace PimItemUtils {
         if (!resource.hasProperty(Nepomuk::Vocabulary::NIE::url())) {
             kWarning() << "url property is missing (did you pass a thing instead of the grounding occurence?)";
             kWarning() << resource.uri();
-            //Q_ASSERT(0);
+            return Akonadi::Item();
         }
         Akonadi::Item item = Akonadi::Item::fromUrl(resource.property(Nepomuk::Vocabulary::NIE::url()).toUrl());//sizeof "NotetakerItem:"
         if (item.isValid()) {

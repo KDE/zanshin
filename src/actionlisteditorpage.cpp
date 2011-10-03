@@ -34,6 +34,8 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QVBoxLayout>
 
+#include "modelstack.h"
+#include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "categorymanager.h"
 #include "globaldefs.h"
@@ -41,6 +43,12 @@
 #include "todohelpers.h"
 #include "treeview.h"
 #include <KXMLGUIClient>
+#include <notesortfilterproxymodel.h>
+#include <note.h>
+#include <QComboBox>
+#include <KPassivePopup>
+#include <KLineEdit>
+#include <QToolBar>
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 
@@ -111,8 +119,8 @@ public:
 class TypeFilterProxyModel : public QSortFilterProxyModel
 {
 public:
-    TypeFilterProxyModel(GroupSortingProxyModel *sorting, QObject *parent = 0)
-        : QSortFilterProxyModel(parent), m_sorting(sorting)
+    TypeFilterProxyModel(QObject *parent = 0)
+        : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
         setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -132,7 +140,9 @@ public:
 
     void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
     {
-        m_sorting->sort(column, order);
+        if (sourceModel()) {
+            sourceModel()->sort(column, order);
+        }
     }
 
 private:
@@ -203,20 +213,85 @@ public:
     }
 };
 
+class CollectionsFilterProxyModel : public QSortFilterProxyModel
+{
+public:
+    CollectionsFilterProxyModel(const QString &mimetype, QObject *parent = 0)
+        : QSortFilterProxyModel(parent),
+        m_mimetype(mimetype)
+    {
+        setDynamicSortFilter(true);
+    }
+
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+    {
+        QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
+        Akonadi::Collection col = sourceChild.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+
+        return col.isValid()
+            && col.contentMimeTypes().contains(m_mimetype)
+            && (col.rights() & (Akonadi::Collection::CanChangeItem|Akonadi::Collection::CanCreateItem));
+    }
+private:
+    const QString m_mimetype;
+};
+
+
+Configuration::Configuration() : QObject(){};
+
+
+void Configuration::setDefaultTodoCollection(const Akonadi::Collection &collection) {
+    KConfigGroup config(KGlobal::config(), "General");
+    config.writeEntry("defaultCollection", QString::number(collection.id()));
+    config.sync();
+    emit defaultTodoCollectionChanged(collection);
+}
+
+Akonadi::Collection Configuration::defaultTodoCollection() {
+    KConfigGroup config(KGlobal::config(), "General");
+    Akonadi::Collection::Id id = config.readEntry("defaultCollection", -1);
+    return Akonadi::Collection(id);
+}
+
+void Configuration::setDefaultNoteCollection(const Akonadi::Collection &collection) {
+    KConfigGroup config(KGlobal::config(), "General");
+    config.writeEntry("defaultNoteCollection", QString::number(collection.id()));
+    config.sync();
+    emit defaultNoteCollectionChanged(collection);
+}
+
+Akonadi::Collection Configuration::defaultNoteCollection() {
+    KConfigGroup config(KGlobal::config(), "General");
+    Akonadi::Collection::Id id = config.readEntry("defaultNoteCollection", -1);
+    return Akonadi::Collection(id);
+}
+
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
                                            Zanshin::ApplicationMode mode,
                                            const QList<QAction*> &contextActions,
+                                           const QList<QAction*> &toolbarActions,
                                            QWidget *parent, KXMLGUIClient *client)
-    : QWidget(parent), m_mode(mode)
+    : QWidget(parent), 
+    m_mode(mode),
+    m_defaultCollectionId(-1)
 {
     setLayout(new QVBoxLayout(this));
     layout()->setContentsMargins(0, 0, 0, 0);
 
     if ( mode == Zanshin::KnowledgeMode) {
-      m_treeView = new TreeView(client, this);
-      //NoteSortFilterProxyModel 
-      m_treeView->setModel(model);
+        m_treeView = new TreeView(client, this);
+        
+        NoteSortFilterProxyModel *filter = new NoteSortFilterProxyModel(this);
+        filter->setSourceModel(model);
+        
+        /*ActionListEditorModel *descendants = new ActionListEditorModel(this);
+        descendants->setSourceModel(model);
+
+        TypeFilterProxyModel *filter = new TypeFilterProxyModel(this);
+        filter->setSourceModel(descendants);
+      */
+        m_treeView->setModel(filter);
     } else {
         m_treeView = new ActionListEditorView(this);
 
@@ -229,7 +304,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
         ActionListEditorModel *descendants = new ActionListEditorModel(this);
         descendants->setSourceModel(sorting);
 
-        TypeFilterProxyModel *filter = new TypeFilterProxyModel(sorting, this);
+        TypeFilterProxyModel *filter = new TypeFilterProxyModel(this);
         filter->setSourceModel(descendants);
 
         m_treeView->setModel(filter);
@@ -261,6 +336,111 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
     m_treeView->addActions(contextActions);
+    
+    
+    QWidget *bottomBar = new QWidget(this);
+    layout()->addWidget(bottomBar);
+    bottomBar->setLayout(new QHBoxLayout(bottomBar));
+    bottomBar->layout()->setContentsMargins(0, 0, 0, 0);
+
+    m_addActionEdit = new KLineEdit(bottomBar);
+    m_addActionEdit->installEventFilter(this);
+    bottomBar->layout()->addWidget(m_addActionEdit);
+    m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
+    m_addActionEdit->setClearButtonShown(true);
+    connect(m_addActionEdit, SIGNAL(returnPressed()),
+            this, SLOT(onAddActionRequested()));
+    
+    m_comboBox = new ActionListComboBox(bottomBar);
+    m_comboBox->view()->setTextElideMode(Qt::ElideLeft);
+    m_comboBox->setMinimumContentsLength(20);
+    m_comboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+
+    connect(m_comboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onComboBoxChanged()));
+
+    if (mode == Zanshin::KnowledgeMode) {
+        KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
+        descendantProxyModel->setSourceModel(models->knowledgeCollectionsModel());
+        descendantProxyModel->setDisplayAncestorData(true);
+        m_todoColsModel = new CollectionsFilterProxyModel(AbstractPimItem::mimeType(AbstractPimItem::Note), m_comboBox);
+        m_todoColsModel->setSourceModel(descendantProxyModel);
+        m_defaultCollectionId = Configuration::instance().defaultNoteCollection().id();
+    } else {
+        KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
+        descendantProxyModel->setSourceModel(models->collectionsModel());
+        descendantProxyModel->setDisplayAncestorData(true);
+        m_todoColsModel = new CollectionsFilterProxyModel("application/x-vnd.akonadi.calendar.todo", m_comboBox);
+        m_todoColsModel->setSourceModel(descendantProxyModel);
+        m_defaultCollectionId = Configuration::instance().defaultTodoCollection().id();
+    }
+    kDebug() << AbstractPimItem::mimeType(AbstractPimItem::Note);
+    if (m_defaultCollectionId > 0) {
+        if (!selectDefaultCollection(m_todoColsModel, QModelIndex(),
+                                    0, m_todoColsModel->rowCount()-1, m_defaultCollectionId)) {
+            connect(m_todoColsModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                    this, SLOT(onRowInsertedInComboBox(QModelIndex,int,int)));
+        }
+    }
+    
+    m_comboBox->setModel(m_todoColsModel);
+    
+    bottomBar->layout()->addWidget(m_comboBox);
+
+    QToolBar *toolBar = new QToolBar(bottomBar);
+    toolBar->setIconSize(QSize(16, 16));
+    bottomBar->layout()->addWidget(toolBar);
+    toolBar->addActions(toolbarActions);
+    onComboBoxChanged();
+    
+    connect(&Configuration::instance(), SIGNAL(defaultNoteCollectionChanged(Akonadi::Collection)), this, SLOT(setDefaultNoteCollection(Akonadi::Collection)));
+    connect(&Configuration::instance(), SIGNAL(defaultTodoCollectionChanged(Akonadi::Collection)), this, SLOT(setDefaultCollection(Akonadi::Collection)));
+
+}
+
+void ActionListEditorPage::setCollectionSelectorVisible(bool visible)
+{
+    m_comboBox->setVisible(visible);
+}
+
+void ActionListEditorPage::onComboBoxChanged()
+{
+    QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
+    Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    if (m_mode == Zanshin::KnowledgeMode) { //TODO based on content not viewtype
+        Configuration::instance().setDefaultNoteCollection(collection);
+    } else {
+        Configuration::instance().setDefaultTodoCollection(collection);
+    }
+
+}
+
+void ActionListEditorPage::selectDefaultCollection(const Akonadi::Collection& collection)
+{
+    selectDefaultCollection(m_todoColsModel, QModelIndex(),
+                                    0, m_todoColsModel->rowCount()-1, collection.id());
+}
+
+bool ActionListEditorPage::selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end, Akonadi::Collection::Id defaultCol)
+{
+    for (int i = begin; i <= end; i++) {
+        QModelIndex collectionIndex = model->index(i, 0, parent);
+        Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        if (collection.id() == defaultCol) {
+            m_comboBox->setCurrentIndex(i);
+            m_defaultCollectionId = -1;
+            return true;
+        }
+    }
+    return false;
+}
+
+void ActionListEditorPage::onRowInsertedInComboBox(const QModelIndex &parent, int begin, int end)
+{
+    QAbstractItemModel *model = static_cast<QAbstractItemModel*>(sender());
+    if (selectDefaultCollection(model, parent, begin, end, m_defaultCollectionId)) {
+        disconnect(this, SLOT(onRowInsertedInComboBox(QModelIndex,int,int)));
+    }
 }
 
 QItemSelectionModel *ActionListEditorPage::selectionModel() const
@@ -296,6 +476,30 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
     } else {
         m_treeView->header()->restoreState(m_noCollectionStateCache);
     }
+}
+
+
+void ActionListEditorPage::addNew(const QString& summary)
+{
+    if (m_mode == Zanshin::KnowledgeMode) {
+        addNewNote(summary);
+    } else {
+        addNewTodo(summary);
+    }
+}
+
+void ActionListEditorPage::addNewNote(const QString& summary)
+{
+    if (!m_defaultNoteCollection.isValid()) {
+        kWarning() << "no valid default collection";
+        return;
+    }
+    kDebug() << "creating new note";
+    Note note;
+    note.setTitle(summary);
+    Akonadi::ItemCreateJob *itemCreateJob = new Akonadi::ItemCreateJob(note.getItem(), m_defaultNoteCollection);
+    //connect( itemCreateJob, SIGNAL(result(KJob*)), SLOT(itemCreateDone( KJob *)));
+    //TODO set currently selected topic
 }
 
 void ActionListEditorPage::addNewTodo(const QString &summary)
@@ -426,7 +630,15 @@ void ActionListEditorPage::onColumnsGeometryChanged()
 
 void ActionListEditorPage::setDefaultCollection(const Akonadi::Collection &collection)
 {
+    //TODO select in combobox
     m_defaultCollection = collection;
+    selectDefaultCollection(m_defaultCollection);
+}
+
+void ActionListEditorPage::setDefaultNoteCollection(const Akonadi::Collection& collection)
+{
+    m_defaultNoteCollection = collection;
+    selectDefaultCollection(m_defaultCollection);
 }
 
 bool ActionListEditorPage::selectSiblingIndex(const QModelIndex &index)
@@ -456,3 +668,28 @@ void ActionListEditorPage::onSelectFirstIndex()
         m_treeView->selectionModel()->setCurrentIndex(root, QItemSelectionModel::Select|QItemSelectionModel::Rows);
     }
 }
+
+void ActionListEditorPage::clearActionEdit()
+{
+    m_addActionEdit->clear();
+}
+
+void ActionListEditorPage::focusActionEdit()
+{
+    QPoint pos = m_addActionEdit->geometry().topLeft();
+    pos = m_addActionEdit->parentWidget()->mapToGlobal(pos);
+
+    KPassivePopup *popup = KPassivePopup::message(i18n("Type and press enter to add an action"), m_addActionEdit);
+    popup->move(pos-QPoint(0, popup->height()));
+    m_addActionEdit->setFocus();
+}
+
+void ActionListEditorPage::onAddActionRequested()
+{
+    QString summary = m_addActionEdit->text().trimmed();
+    m_addActionEdit->setText(QString());
+
+    addNew(summary);
+}
+
+#include "actionlisteditorpage.moc"

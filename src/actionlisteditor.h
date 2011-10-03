@@ -30,6 +30,7 @@
 #include "globaldefs.h"
 #include <KXMLGUIClient>
 
+class CollectionsFilterProxyModel;
 class ItemViewer;
 class ItemSelectorProxy;
 class ActionListEditorPage;
@@ -65,20 +66,18 @@ protected:
 
 private slots:
     void updateActions();
-    void onAddActionRequested();
     void onRemoveAction();
     void onMoveAction();
     void onPromoteAction();
     void onDissociateAction();
     void focusActionEdit();
+    void clearActionEdit();
     void onSideBarSelectionChanged(const QModelIndex &index);
-    void onComboBoxChanged();
-    void onRowInsertedInComboBox(const QModelIndex &index, int start, int end);
+
 
 private:
     void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode, KXMLGUIClient *guiClient);
     void setupActions(KActionCollection *ac);
-    bool selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end);
 
     ActionListEditorPage *currentPage() const;
     ActionListEditorPage *page(int idx) const;
@@ -88,8 +87,6 @@ private:
     QItemSelectionModel *m_categoriesSelection;
     QItemSelectionModel *m_knowledgeSelection;
 
-    KLineEdit *m_addActionEdit;
-    QComboBox *m_comboBox;
 
     KAction *m_add;
     KAction *m_cancelAdd;
@@ -100,8 +97,7 @@ private:
 
     ModelStack *m_models;
     ItemSelectorProxy *m_selectorProxy;
-
-    qint64 m_defaultCollectionId;
+    
 };
 
 #endif

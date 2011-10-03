@@ -133,6 +133,8 @@ void MainComponent::onSynchronizeAll()
 
         if (agent.type().mimeTypes().contains("application/x-vnd.akonadi.calendar.todo")) {
             agent.synchronize();
+        } else if (agent.type().mimeTypes().contains(AbstractPimItem::mimeType(AbstractPimItem::Note))) {
+            agent.synchronize();
         }
     }
 }

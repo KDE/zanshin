@@ -55,6 +55,7 @@ public:
         SortRole=Zanshin::UserRole,
         TitleRole,
         DateRole,
+        ItemTypeRole,
         UserRole
     };
 

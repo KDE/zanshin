@@ -66,7 +66,8 @@ ModelStack::ModelStack(QObject *parent)
       m_knowledgeSelectionModel(0),
       m_knowledgeSidebarModel(0),
       m_topicsTreeModel(0),
-      m_topicSelection(0)
+      m_topicSelection(0),
+      m_knowledgeCollectionsModel(0)
 {
 }
 
@@ -301,18 +302,6 @@ QItemSelectionModel* ModelStack::knowledgeSelection()
 
 QAbstractItemModel* ModelStack::knowledgeSelectionModel()
 {
-    /*if (m_knowledgeSelectionModel) {
-        return m_knowledgeSelectionModel;
-    }
-    
-    NoteSortFilterProxyModel *filterModel = new NoteSortFilterProxyModel(this);
-    filterModel->setDynamicSortFilter(true); //dynamically update the model
-    filterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    filterModel->setSourceModel(knowledgeBaseModel());
-    filterModel->setItemFilter(AbstractPimItem::None);
-    m_knowledgeSelectionModel = filterModel;
-    return m_knowledgeSelectionModel;*/
-    
     if (!m_knowledgeSelectionModel) {
         SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
         categoriesSelectionModel->setSelectionModel(m_topicSelection);
@@ -320,4 +309,24 @@ QAbstractItemModel* ModelStack::knowledgeSelectionModel()
         m_knowledgeSelectionModel = categoriesSelectionModel;
     }
     return m_knowledgeSelectionModel;
+}
+
+QAbstractItemModel *ModelStack::knowledgeCollectionsModel()
+{
+    if (!m_knowledgeCollectionsModel) {
+        Akonadi::Session *session = new Akonadi::Session("zanshin", this);
+        Akonadi::ChangeRecorder *collectionsMonitor = new Akonadi::ChangeRecorder( this );
+        collectionsMonitor->fetchCollection( true );
+        collectionsMonitor->setCollectionMonitored(Collection::root());
+        collectionsMonitor->setSession(session);
+        collectionsMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
+
+        Akonadi::EntityTreeModel *model = new Akonadi::EntityTreeModel(collectionsMonitor, this);
+
+        Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
+        collectionsModel->addMimeTypeInclusionFilter( Akonadi::Collection::mimeType() );
+        collectionsModel->setSourceModel(model);
+        m_knowledgeCollectionsModel = collectionsModel;
+    }
+    return m_knowledgeCollectionsModel;
 }
