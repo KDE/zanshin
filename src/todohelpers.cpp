@@ -264,8 +264,7 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
         return false;
     }
 
-    if ((todo->relatedTo() == parentUid)
-     || (itemType == Zanshin::StandardTodo && parentType == Zanshin::StandardTodo)
+    if ((itemType == Zanshin::StandardTodo && parentType == Zanshin::StandardTodo)
      || (itemType == Zanshin::ProjectTodo && parentType == Zanshin::StandardTodo)
      || (itemType == Zanshin::Collection && parentType == Zanshin::ProjectTodo)
      || (itemType == Zanshin::Collection && parentType == Zanshin::StandardTodo)) {
