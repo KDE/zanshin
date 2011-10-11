@@ -245,24 +245,23 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
     //m_knowledgeMonitor->setCollectionFetchScope( collectionScope );
     m_knowledgeMonitor->setCollectionMonitored(Collection::root());
     m_knowledgeMonitor->setSession(session);
-    
-    //FIXME quick fix to avoid having all sorts collections when no monitored collections are configured,
-    // the init of the monitor should be delayed in this case though.
+
     //m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Incidence), true);
     m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
-    
+
     NotetakerModel *notetakerModel = new NotetakerModel ( m_knowledgeMonitor, this );
     notetakerModel->setSupportedDragActions(Qt::MoveAction);
-    notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
-    m_knowledgeBaseModel = notetakerModel;
-    
-    //TODO
-    /*
-     * m_trashFilterProxy = new TrashFilterProxyModel(this);
-    m_trashFilterProxy->setDynamicSortFilter(true);
-    m_trashFilterProxy->setSourceModel(m_model);
-    m_model = m_trashFilterProxy;
-    */
+    //notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
+    //m_knowledgeBaseModel = notetakerModel;
+
+    //FIXME because invisible collectionfetch is broken we use this instead
+    KDescendantsProxyModel *desc = new KDescendantsProxyModel(this);
+    desc->setSourceModel(notetakerModel);
+    Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
+    collectionsModel->addMimeTypeExclusionFilter( Akonadi::Collection::mimeType() );
+    collectionsModel->setSourceModel(desc);
+    m_knowledgeBaseModel = collectionsModel;
+
     return m_knowledgeBaseModel;
 }
 
