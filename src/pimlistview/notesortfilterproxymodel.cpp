@@ -99,6 +99,7 @@ void NoteSortFilterProxyModel::setItemFilter(AbstractPimItem::ItemTypes itemType
 
 void NoteSortFilterProxyModel::setFilterString(const QString &string)
 {
+    kDebug() << string;
     m_filterString = string;
     m_cache->setFulltextSearch(string);
     setFilterRegExp(string);
@@ -124,17 +125,15 @@ void NoteSortFilterProxyModel::setSourceModel(QAbstractItemModel* s)
 
 bool NoteSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
-    return true;
-    if (sourceParent.isValid()) { //check only toplevel items if they match, in case subtodos were not added to the topic
+    /*if (sourceParent.isValid()) { //check only toplevel items if they match, in case subtodos were not added to the topic
         return true;
-    }
+    }*/
 
     const QModelIndex &index0 = sourceModel()->index(sourceRow, 0, sourceParent);
     Q_ASSERT(index0.isValid());
     const Akonadi::Item item = index0.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
     if (!item.isValid()) {
-        kWarning() << "invalid item";
-        return false;
+        return true;
     }
     //kDebug() << item.id();
 
@@ -146,7 +145,7 @@ bool NoteSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
         }
         return false;
     }
-
+/*
     if (!itemIsSelected(item)) {
         return false;
     }
@@ -155,12 +154,12 @@ bool NoteSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
         if (m_filterDate.date() != item.modificationTime().date()) {
             return false;
         }
-    }
-    
+    }*/
+
     QScopedPointer<AbstractPimItem> pimItem(PimItemUtils::getItem(item));
     Q_ASSERT(!pimItem.isNull());
     //TODO add exception for newly created items
-    switch (m_filterStrategy) {
+    /*switch (m_filterStrategy) {
         case NotCompleteFilter:
             if (pimItem->getStatus() == AbstractPimItem::Complete) {
                 return false;
@@ -184,21 +183,12 @@ bool NoteSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
                 }
             }
             return false;
-    }
-
-    //Passed all filters except fulltext search
-    if (m_filterString.isEmpty()) {
-        return true;
-    }
-
-    if (!m_filterString.isEmpty() && m_cache->isFulltextMatch(item)) {
-        return true;
-    }
+    }*/
 
     //search trough title
     //TODO could be replaced by the corresponding nepomuk searches
     //though the nepomuk serach behaves a little different (explicit regex needed, i.e. Bub does not match Bubikon)
-    if (pimItem->getTitle().contains(filterRegExp())) {
+    if (m_filterString.isEmpty() || m_cache->isFulltextMatch(item) || pimItem->getTitle().contains(filterRegExp())) {
         return true;
     }
     return false;

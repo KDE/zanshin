@@ -52,8 +52,6 @@ SearchFilterCache::SearchFilterCache(QObject* parent)
     m_queryServiceClient(new Nepomuk::Query::QueryServiceClient(this)),
     m_topicQueryServiceClient(new Nepomuk::Query::QueryServiceClient(this))
 {
-    connect(this, SIGNAL(modelReset()), this, SLOT(modelWasReset()));
-    
     //Fulltext queries
     connect(m_queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(newFulltextMatches(QList<Nepomuk::Query::Result>)));
     connect(m_queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(entriesRemoved(QList<QUrl>)));
@@ -153,7 +151,7 @@ void SearchFilterCache::setFulltextSearch(const QString &string)
 {
     kDebug() << string;
     m_fulltextHits.clear();
-    
+
     if (string.isEmpty()) {
         return;
     }
