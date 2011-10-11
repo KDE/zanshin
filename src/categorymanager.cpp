@@ -35,7 +35,7 @@
 #include "globaldefs.h"
 #include "todohelpers.h"
 
-K_GLOBAL_STATIC(CategoryManager, s_categoryManager);
+K_GLOBAL_STATIC(CategoryManager, s_categoryManager)
 
 CategoryManager &CategoryManager::instance()
 {

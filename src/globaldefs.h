@@ -64,7 +64,7 @@ namespace Zanshin
         ProjectType
     };
 
-};
+}
 Q_DECLARE_METATYPE(QModelIndexList)
 
 #endif
