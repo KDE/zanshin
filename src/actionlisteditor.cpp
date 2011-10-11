@@ -196,7 +196,9 @@ void ActionListEditor::updateActions()
     m_remove->setEnabled(index.isValid()
                      && ((type==Zanshin::StandardTodo)
                        || type==Zanshin::ProjectTodo
-                       || type==Zanshin::Category));
+                       || type==Zanshin::Category
+                       || type==Zanshin::KnowledgeMode));
+
     m_move->setEnabled(index.isValid()
                    && (type==Zanshin::StandardTodo
                     || type==Zanshin::Category
@@ -210,8 +212,7 @@ void ActionListEditor::updateActions()
                             && type==Zanshin::StandardTodo);
 }
 
-
-void ActionListEditor::onRemoveAction()
+void ActionListEditor::removeTodo()
 {
     QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
 
@@ -286,8 +287,28 @@ void ActionListEditor::onRemoveAction()
 
     if (!currentTodos.isEmpty()) {
         foreach (QModelIndex index, currentTodos) {
-            currentPage()->removeTodo(index);
+            currentPage()->removeItem(index);
         }
+    }
+}
+
+void ActionListEditor::removeNote()
+{
+    QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
+    if (!currentIndexes.isEmpty()) {
+        foreach (QModelIndex index, currentIndexes) {
+            currentPage()->removeItem(index);
+        }
+    }
+}
+
+
+void ActionListEditor::onRemoveAction()
+{
+    if (currentPage()->mode()==Zanshin::KnowledgeMode) {
+        removeNote();
+    } else {
+        removeTodo();
     }
 }
 

@@ -75,11 +75,11 @@ public:
     void clearActionEdit();
 
 public slots:
-    void addNew(const QString &summary);
+    void addNewItem(const QString &summary);
     void addNewNote(const QString &summary);
     void addNewTodo(const QString &summary);
-    void removeCurrentTodo();
-    void removeTodo(const QModelIndex &current);
+    void removeCurrentItem();
+    void removeItem(const QModelIndex &current);
     void dissociateTodo(const QModelIndex &current);
     void onAddActionRequested();
 

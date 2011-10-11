@@ -49,6 +49,8 @@
 #include <KPassivePopup>
 #include <KLineEdit>
 #include <QToolBar>
+#include <Akonadi/ItemDeleteJob>
+#include <searchbar.h>
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 
@@ -135,6 +137,7 @@ public:
 
         return type!=Zanshin::Collection
             && type!=Zanshin::CategoryRoot
+            && type!=Zanshin::TopicRoot
             && !sizeHint.isNull(); // SelectionProxyModel uses the null size for items we shouldn't display
     }
 
@@ -232,6 +235,13 @@ public:
             && col.contentMimeTypes().contains(m_mimetype)
             && (col.rights() & (Akonadi::Collection::CanChangeItem|Akonadi::Collection::CanCreateItem));
     }
+
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
+    {
+        if (sourceModel()) {
+            sourceModel()->sort(column, order);
+        }
+    }
 private:
     const QString m_mimetype;
 };
@@ -281,16 +291,19 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     if ( mode == Zanshin::KnowledgeMode) {
         m_treeView = new TreeView(client, this);
-        
-        NoteSortFilterProxyModel *filter = new NoteSortFilterProxyModel(this);
-        filter->setSourceModel(model);
-        
-        /*ActionListEditorModel *descendants = new ActionListEditorModel(this);
-        descendants->setSourceModel(model);
+
+        NoteSortFilterProxyModel *notefilter = new NoteSortFilterProxyModel(this);
+        notefilter->setSourceModel(model);
+
+        SearchBar *searchBar = new SearchBar(notefilter, this);
+        layout()->addWidget(searchBar);
+
+        ActionListEditorModel *descendants = new ActionListEditorModel(this);
+        descendants->setSourceModel(notefilter);
 
         TypeFilterProxyModel *filter = new TypeFilterProxyModel(this);
         filter->setSourceModel(descendants);
-      */
+
         m_treeView->setModel(filter);
     } else {
         m_treeView = new ActionListEditorView(this);
@@ -479,7 +492,7 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
 }
 
 
-void ActionListEditorPage::addNew(const QString& summary)
+void ActionListEditorPage::addNewItem(const QString& summary)
 {
     if (m_mode == Zanshin::KnowledgeMode) {
         addNewNote(summary);
@@ -550,21 +563,25 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
     TodoHelpers::addTodo(summary, parentUid, category, collection);
 }
 
-void ActionListEditorPage::removeCurrentTodo()
+void ActionListEditorPage::removeCurrentItem()
 {
     QModelIndex current = m_treeView->selectionModel()->currentIndex();
-    removeTodo(current);
+    removeItem(current);
 }
 
-void ActionListEditorPage::removeTodo(const QModelIndex &current)
+void ActionListEditorPage::removeItem(const QModelIndex &current)
 {
     int type = current.data(Zanshin::ItemTypeRole).toInt();
 
-    if (!current.isValid() || type!=Zanshin::StandardTodo) {
+    if (!current.isValid()) {
         return;
     }
-
-    TodoHelpers::removeProject(this, current);
+    if (type == Zanshin::StandardTodo) {
+        TodoHelpers::removeProject(this, current);
+    }
+    if (type == AbstractPimItem::Note) {
+        new Akonadi::ItemDeleteJob(current.data(EntityTreeModel::ItemRole).value<Akonadi::Item>());
+    }
 }
 
 void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
@@ -689,7 +706,7 @@ void ActionListEditorPage::onAddActionRequested()
     QString summary = m_addActionEdit->text().trimmed();
     m_addActionEdit->setText(QString());
 
-    addNew(summary);
+    addNewItem(summary);
 }
 
 #include "actionlisteditorpage.moc"
