@@ -192,15 +192,15 @@ void TodoProxyModelBase::setSourceModel(QAbstractItemModel *model)
     init();
 
     if (sourceModel()) {
-        connect(sourceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+        disconnect(sourceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
                 this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
-        connect(sourceModel(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+        disconnect(sourceModel(), SIGNAL(rowsInserted(QModelIndex,int,int)),
                 this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
-        connect(sourceModel(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+        disconnect(sourceModel(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
                 this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
-        connect(sourceModel(), SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
+        disconnect(sourceModel(), SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
                 this, SLOT(onRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
-        connect(sourceModel(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+        disconnect(sourceModel(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
                 this, SLOT(onRowsMoved(QModelIndex,int,int,QModelIndex,int)));
     }
 
