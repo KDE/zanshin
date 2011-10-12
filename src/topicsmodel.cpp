@@ -172,14 +172,13 @@ void TopicsModel::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &resul
                 && parentNode->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Inbox) {
                 kDebug() << "removed node from inbox";
                 int oldRow = parentNode->children().indexOf(node);
-                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
+                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
                 m_manager->removeNode(node);
                 delete node;
                 endRemoveRows();
             }
         }
-        
-        //Q_ASSERT(indexes.size() == 1); //assumption that every item is only once shown in the list
+
         kDebug() << "add item: " << item.url();
         addChildNode(indexes.first(), parent);
     }
@@ -302,11 +301,13 @@ void TopicsModel::removeNode(const Nepomuk::Resource& res)
 
 void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
 {
-    kDebug() << begin << end;
+    kDebug() << begin << end << sourceIndex;
+    kDebug() << sourceModel()->rowCount();
     for (int i = begin; i <= end; i++) {
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
 
         if (!sourceChildIndex.isValid()) {
+            kDebug() << "invalid sourceIndex";
             continue;
         }
 
@@ -314,11 +315,10 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
         if (type & AbstractPimItem::All) {
             QVariantList resources = sourceModel()->data(sourceChildIndex, NepomukPropertyProxy::PropertyRole).toList();
             QList <QUrl> topics = m_itemTopics[sourceChildIndex.data(NotetakerModel::ItemIdRole).value<Akonadi::Item::Id>()];
-
             if (topics.isEmpty()) {
+                //kDebug() << "add node to inbox";
                 addChildNode(sourceChildIndex, m_inboxNode);
             } else {
-
                 foreach (const QUrl &res, topics) {
                     kDebug() << "added node to topic: " << res;
                     TodoNode *parent = m_resourceMap[res];
@@ -326,6 +326,8 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
                     addChildNode(sourceChildIndex, parent);
                 }
             }
+        } else {
+            kDebug() << "no valid item";
         }
     }
 }

@@ -129,6 +129,8 @@ namespace MindMirrorQueries
     
     QString itemThingQuery(const Akonadi::Item &item)
     {
+        //can we add to this query preferred results?
+        //prefer thing created by zanshin, things with isRelated properties
         QString query = QString::fromLatin1("select distinct ?r where { ?r <%2> ?g. ?g <%3> <%1>.} LIMIT 1")
             .arg(item.url().url())
             .arg(Nepomuk::Vocabulary::PIMO::groundingOccurrence().toString())

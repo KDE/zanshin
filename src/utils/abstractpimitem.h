@@ -226,6 +226,7 @@ private:
     bool m_itemOutdated;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractPimItem::ItemTypes)
+Q_DECLARE_METATYPE(AbstractPimItem::ItemTypes)
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractPimItem::ChangedParts)
 Q_DECLARE_METATYPE(AbstractPimItem::ChangedParts)
 

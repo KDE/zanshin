@@ -407,7 +407,13 @@ void AbstractPimItem::modifyDone( KJob *job )
     kDebug() << "item modified";
 }
 
-
+/*
+ * TODO
+ * why are we updating the akonadi item?
+ * 
+ * if we would just remove the revision number, we could probably save without conflict.
+ * Whis would then allow to factor out the monitor part to another class.
+ */
 void AbstractPimItem::updateItem(const Akonadi::Item &item, const QSet<QByteArray> &changes)
 {
     kDebug() << "new item" << item.id() << item.revision() << item.modificationTime() << "old item" << m_item.id() << m_item.revision() << m_item.modificationTime();

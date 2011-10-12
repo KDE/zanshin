@@ -17,7 +17,6 @@ set(utils_SRCS
     #localresourcecreator.cpp
     #akonadicollection.cpp
     datestringbuilder.cpp
-    #nepomukpropertycache.cpp
     pimitem.cpp
     #pimitemconversionjob.cpp
     #${CMAKE_CURRENT_SOURCE_DIR}/zanshin/todonode.cpp
