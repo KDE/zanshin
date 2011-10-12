@@ -56,7 +56,8 @@ void ItemSelectorProxy::setView(Akonadi::EntityTreeView* view)
 
 void ItemSelectorProxy::selectIndex(const QModelIndex &index)
 {
-    m_selectionModel->setCurrentIndex(index, QItemSelectionModel::Rows|QItemSelectionModel::ClearAndSelect);
+    //TODO this would be needed to sync breadcrumbs with listview, it doesn't really work though if we select items again which have been selected in the listview. In case the item is twice in the list (different topics) theres a chance that we select the other instance than the one that was clicked.
+    //m_selectionModel->setCurrentIndex(index, QItemSelectionModel::Rows|QItemSelectionModel::ClearAndSelect); 
     Akonadi::Item item = m_sourceModel->data(index, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     kDebug() << "selecting new item" << index << item.url().url();
     Q_ASSERT(item.isValid());
