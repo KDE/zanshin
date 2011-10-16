@@ -23,7 +23,7 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include <kcalcore/incidence.h>
 
-#include "../calendarsupport/utils.h"
+#include "calendarsupport/utils.h"
 
 IncidenceItem::IncidenceItem(AbstractPimItem::ItemType type, QObject *parent)
 : AbstractPimItem(parent)
