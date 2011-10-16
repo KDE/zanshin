@@ -38,9 +38,8 @@
 #include <nepomuk/comparisonterm.h>
 #include <Nepomuk/Tag>
 #include <Nepomuk/Query/QueryServiceClient>
-
+#include <Nepomuk/Variant>
 #include "abstractpimitem.h"
-#include "nepomukpropertycache.h"
 #include <Nepomuk/Query/Result>
 
 #include "queries.h"

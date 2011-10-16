@@ -40,7 +40,6 @@
 
 #include "note.h"
 #include "incidenceitem.h"
-#include "akonadicollection.h"
 #include "tagmanager.h"
 #include "pimitem.h"
 

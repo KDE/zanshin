@@ -39,7 +39,6 @@
 #include "calendarsupport/utils.h"
 
 #include "tagmanager.h"
-#include "akonadicollection.h"
 #include "itemcontext.h"
 #include "pimitem.h"
 

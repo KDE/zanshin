@@ -38,7 +38,6 @@
 #include <QMimeData>
 #include <notetakermodel.h>
 #include <abstractpimitem.h>
-#include <nepomukpropertyproxy.h>
 #include <queries.h>
 #include <pimitem.h>
 
@@ -313,7 +312,6 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
 
         AbstractPimItem::ItemType type = (AbstractPimItem::ItemType) sourceChildIndex.data(NotetakerModel::ItemTypeRole).toInt();
         if (type & AbstractPimItem::All) {
-            QVariantList resources = sourceModel()->data(sourceChildIndex, NepomukPropertyProxy::PropertyRole).toList();
             QList <QUrl> topics = m_itemTopics[sourceChildIndex.data(NotetakerModel::ItemIdRole).value<Akonadi::Item::Id>()];
             if (topics.isEmpty()) {
                 //kDebug() << "add node to inbox";
