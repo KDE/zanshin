@@ -1,0 +1,19 @@
+add_subdirectory(abstractmodels)
+include_directories(abstractmodels)
+set(pimlistview_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/treeview.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/treemodel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/notetakermodel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/notesortfilterproxymodel.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/qmlview.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/abstractmodels/kidentityproxymodel_copy.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/abstractmodels/sectionproxymodel.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/pimsectionmodel.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/collectionfilter.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/modelmanager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/itemselectorproxy.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/pimitemdelegate.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/searchfiltercacheproxy.cpp
+    ${abstractmodels_SRCS}
+    PARENT_SCOPE)
+
