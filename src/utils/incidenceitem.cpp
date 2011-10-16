@@ -250,11 +250,11 @@ void IncidenceItem::setTodoStatus(AbstractPimItem::ItemStatus status)
                 break;
             case Later:
                 t->setCompleted(false);
-                t->setPriority(9);
+                t->setHasStartDate(false);
                 break;
             case Now:
                 t->setCompleted(false);
-                t->setPriority(1);
+                t->setDtStart(KDateTime::currentLocalDateTime());
                 break;
         }
         return;
@@ -274,7 +274,7 @@ AbstractPimItem::ItemStatus IncidenceItem::getStatus() const
             //kDebug() << "iscomplete";
             return Complete;
         }
-        if (t->priority() == 1) {
+        if (t->hasStartDate() && (t->dtStart() <= KDateTime::currentLocalDateTime())) {
             //kDebug() << "Now";
             return Now;
         }

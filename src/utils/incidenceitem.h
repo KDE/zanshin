@@ -53,15 +53,7 @@ public:
     bool hasStartDate() const;
     KDateTime getEventStart();
     void setEventStart(const KDateTime&);
-    
-    /*bool isComplete();
-    void setComplete(bool);*/
 
-    /**
-     * For the status now, the priority of the todo is set to 1
-     * For the status Later, the priority of the todo is set to 9
-     * For the status Complete, the complete flag is used
-     */
     void setTodoStatus(ItemStatus status);
     AbstractPimItem::ItemStatus getStatus() const;
     
