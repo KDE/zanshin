@@ -36,6 +36,11 @@
 #include "todonodemanager.h"
 #include <tagmanager.h>
 #include <QMimeData>
+#include <notetakermodel.h>
+#include <abstractpimitem.h>
+#include <nepomukpropertyproxy.h>
+#include <queries.h>
+#include <pimitem.h>
 
 TopicsModel::TopicsModel(QObject* parent)
 : TodoProxyModelBase(MultiMapping, parent), m_rootNode(0)
@@ -113,7 +118,7 @@ void TopicsModel::checkResults(QList< Nepomuk::Query::Result > results)
         Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(Nepomuk::Vocabulary::PIMO::Topic()) || res.types().contains(Nepomuk::Vocabulary::PIMO::Project())) {
-            createNode(res);
+            addTopic(res);
         }
     }
 }
@@ -123,6 +128,40 @@ void TopicsModel::queryFinished()
     kWarning();
     //emit ready();
 }
+
+void TopicsModel::addTopic (const Nepomuk::Resource& topic)
+{
+    Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
+    connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(itemsWithTopicAdded(QList<Nepomuk::Query::Result>)));
+    connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
+    //connect(queryServiceClient, SIGNAL(finishedListing()), queryServiceClient, SLOT(deleteLater()));
+    if ( !queryServiceClient->sparqlQuery(MindMirrorQueries::itemsWithTopicsQuery(QList <QUrl>() << topic.resourceUri())) ) {
+        kWarning() << "error";
+    }
+    createNode(topic);
+}
+
+void TopicsModel::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
+{
+    QUrl topic;
+    foreach (const Nepomuk::Query::Result &result, results) {
+        Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
+        //kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
+        const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
+        
+        TodoNode *parent = m_resourceMap[topic];
+        Q_ASSERT(parent);
+        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(this, item);
+        if (indexes.isEmpty()) {
+            kDebug() << "item not found" << item.url();
+            return;
+        }
+        //Q_ASSERT(indexes.size() == 1); //assumption that every item is only once shown in the list
+        addChildNode(indexes.first(), parent);
+    }
+
+}
+
 
 void TopicsModel::createNode(const Nepomuk::Resource& res)
 {
@@ -196,7 +235,7 @@ void TopicsModel::removeNode(const Nepomuk::Resource& res)
 
 void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
 {
-    
+    kDebug() << begin << end;
     //TODO Use propertycache model to find hierarchy
     for (int i = begin; i <= end; i++) {
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
@@ -205,18 +244,17 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
             continue;
         }
         
-        addChildNode(sourceChildIndex, m_rootNode);
+        //addChildNode(sourceChildIndex, m_rootNode);
 
-       /* Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
-        if (type==Zanshin::StandardTodo) {
-            QStringList categories = sourceModel()->data(sourceChildIndex, Zanshin::CategoriesRole).toStringList();
+        AbstractPimItem::ItemType type = (AbstractPimItem::ItemType) sourceChildIndex.data(NotetakerModel::ItemTypeRole).toInt();
+        if (type & AbstractPimItem::All) {
+            QVariantList resources = sourceModel()->data(sourceChildIndex, NepomukPropertyProxy::PropertyRole).toList();
 
-            if (categories.isEmpty()) {
+            if (resources.isEmpty()) {
                 addChildNode(sourceChildIndex, m_inboxNode);
-
             } else {
-                QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
-                QSet<QString> oldCategories;
+                //QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
+                /*QSet<QString> oldCategories;
 
                 foreach (TodoNode *node, nodes) {
 
@@ -231,17 +269,17 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
                 QSet<QString> newCategories = QSet<QString>::fromList(categories);
                 QSet<QString> interCategories = newCategories;
                 interCategories.intersect(oldCategories);
-                newCategories-= interCategories;
+                newCategories-= interCategories;*/
 
-                foreach (const QString &category, newCategories) {
-                    TodoNode *parent = m_categoryMap[category];
+                foreach (const QVariant &res, resources) {
+                    TodoNode *parent = m_resourceMap[res.toUrl()];
                     Q_ASSERT(parent);
                     addChildNode(sourceChildIndex, parent);
                 }
             }
-        } else if (type==Zanshin::Collection) {*/
+        }/* else if (type==Zanshin::Collection) {
             //onSourceInsertRows(sourceChildIndex, 0, sourceModel()->rowCount(sourceChildIndex)-1);
-        //}
+        }*/
     }
 }
 
@@ -251,8 +289,91 @@ void TopicsModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int begin, 
 }
 
 void TopicsModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
-{
+{   
+    //return KIdentityProxyModelCopy::onSourceDataChanged
+    kDebug() << begin.row() << end.row();
+    for (int row=begin.row(); row<=end.row(); ++row) {
+        QModelIndex sourceIndex = begin.sibling(row, 0);
+        kDebug() << "----- index: " << sourceIndex;
+        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
 
+        if (!sourceIndex.data(NotetakerModel::ItemTypeRole).toInt()) {
+            kDebug() << "invalid item";
+            return;
+        }
+
+        QSet<QUrl> oldTopics;
+        QHash<QUrl, TodoNode*> nodeMap;
+        foreach (TodoNode *node, nodes) {
+            QModelIndex begin = m_manager->indexForNode(node, 0);
+            QModelIndex end = m_manager->indexForNode(node, qMax(begin.column(), end.column()));
+            emit dataChanged(begin, end);
+
+            TodoNode *categoryNode = node->parent();
+            if (categoryNode
+             && categoryNode->data(0, Zanshin::ItemTypeRole).toInt()!=Zanshin::Inbox) {
+                QUrl res = categoryNode->data(0, Zanshin::UriRole).toUrl();
+                oldTopics << res;
+                nodeMap[res] = node;
+            }
+        }
+
+        QSet<QUrl> newTopics;
+        foreach (const QVariant &res, sourceIndex.data(NepomukPropertyProxy::PropertyRole).toList()) {
+            newTopics << res.toUrl();
+        }
+            
+        QSet<QUrl> inter = newTopics;
+        inter.intersect(oldTopics);
+        newTopics-= inter;
+        oldTopics-= inter;
+
+        foreach (const QUrl &old, oldTopics) {
+            TodoNode *parentNode = m_resourceMap[old];
+            TodoNode *node = nodeMap[old];
+
+            int oldRow = parentNode->children().indexOf(node);
+            beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
+            m_manager->removeNode(node);
+            delete node;
+            endRemoveRows();
+        }
+        kDebug() << "removed from old topics: " << oldTopics;
+
+
+        if (!oldTopics.isEmpty()) {
+            //item has been removed from topics and has no new topic, so goes to inbox
+            if (/*sourceIndex.data(NepomukPropertyProxy::PropertyRole).toList().isEmpty()*/newTopics.isEmpty()) { 
+                addChildNode(sourceIndex, m_inboxNode);
+                kDebug() << "back to inbox";
+            }
+        }
+
+        if (!newTopics.isEmpty()) {
+            TodoNode *node = 0;
+            QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
+            foreach (TodoNode *n, nodes) {
+                if (n->parent() == m_inboxNode) {
+                    node = n;
+                    break;
+                }
+            }
+            if (node) {
+                int oldRow = m_inboxNode->children().indexOf(node);
+                beginRemoveRows(m_manager->indexForNode(m_inboxNode, 0), oldRow, oldRow);
+                m_manager->removeNode(node);
+                delete node;
+                endRemoveRows();
+            }
+
+            foreach (const QUrl &newRes, newTopics) {
+                TodoNode *parent = m_resourceMap[newRes];
+                Q_ASSERT(parent);
+                addChildNode(sourceIndex, parent);
+            }
+            kDebug() << "added to new topics: " << newTopics;
+        }
+    }
 }
 
 QStringList TopicsModel::mimeTypes() const
@@ -320,7 +441,6 @@ bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action,
     }
     kDebug() << mimeData->urls();
 
-
     foreach (const KUrl &url, mimeData->urls()) {
         const Akonadi::Item item = Akonadi::Item::fromUrl(url);
         if (!item.isValid()) {
@@ -337,7 +457,6 @@ bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action,
         }
 
     }
-
     return true;
 }
 

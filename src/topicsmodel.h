@@ -65,11 +65,14 @@ private slots:
     //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     
     void checkResults(QList<Nepomuk::Query::Result>);
+    void itemsWithTopicAdded(QList<Nepomuk::Query::Result>);
+
     void queryFinished();
 
 private:
     virtual void init();
     virtual TodoNode *createInbox() const;
+    void addTopic(const Nepomuk::Resource& topic);
 
     TodoNode *m_rootNode;
     QMap<QUrl, TodoNode*> m_resourceMap;
