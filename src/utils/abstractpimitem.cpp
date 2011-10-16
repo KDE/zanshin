@@ -116,7 +116,7 @@ void AbstractPimItem::enableMonitor()
     connect( m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SLOT(updateItem(Akonadi::Item,QSet<QByteArray>)));
     connect( m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(removed()));
     
-    const Nepomuk::Thing &thing = getThing(); //FIXME This is flawed as the thing does not necessarily already exist. We should use a query instead.
+    const Nepomuk::Thing &thing = PimItemUtils::getThing(m_item); //FIXME This is flawed as the thing does not necessarily already exist. We should use a query instead.
     if (thing.isValid()) {
         Nepomuk::ResourceWatcher *m_resourceWatcher = new Nepomuk::ResourceWatcher(this); //TODO use a propertycache instead
         m_resourceWatcher->addResource(thing);
@@ -182,8 +182,6 @@ void AbstractPimItem::propertyChanged(Nepomuk::Resource resource, Nepomuk::Types
 */
 }
 
-
-
 AbstractPimItem::ItemType AbstractPimItem::itemType(const Akonadi::Item &item)
 {
     Q_ASSERT(!item.mimeType().isEmpty());
@@ -197,71 +195,6 @@ AbstractPimItem::ItemType AbstractPimItem::itemType(const Akonadi::Item &item)
     kWarning() << "attention, unknown type" << item.mimeType();
     //Q_ASSERT(false);
     return Unknown;
-}
-
-Akonadi::Item AbstractPimItem::getItemFromResource(const Nepomuk::Resource &resource)
-{
-    //TODO add property to Nepomuk::Resource
-    //kDebug() << resource.property(Nepomuk::Vocabulary::NIE::url()).toUrl();
-    if (!resource.hasProperty(Nepomuk::Vocabulary::NIE::url())) {
-        kWarning() << "url property is missing (did you pass a thing instead of the grounding occurence?)";
-        kWarning() << resource.uri();
-        //Q_ASSERT(0);
-    }
-    Akonadi::Item item = Akonadi::Item::fromUrl(resource.property(Nepomuk::Vocabulary::NIE::url()).toUrl());//sizeof "NotetakerItem:"
-    if (item.isValid()) {
-        //kDebug() << "found item" << item.url();
-        return item;
-    }
-    kWarning() << "no item found";
-    return Akonadi::Item();
-}
-
-
-Nepomuk::Resource AbstractPimItem::getResource(const Akonadi::Item &item)
-{
-    Q_ASSERT(item.isValid());
-    //Since the feeder will add all needed information, this is enough for our needs
-    Nepomuk::Resource resource(item.url());
-    //We set the minimum required type, in case the feeder didn't create tht item yet, so the thing != resource
-    resource.addType( Nepomuk::Vocabulary::NIE::InformationElement() );
-    return resource;
-}
-
-Nepomuk::Thing AbstractPimItem::getThing(const Akonadi::Item &item)
-{
-    Q_ASSERT(item.isValid());
-    if (item.mimeType().isEmpty()) {
-        kWarning() << "no valid mimetype";
-        return Nepomuk::Thing();
-    }
-    Nepomuk::Resource res = getResource(item);
-    Nepomuk::Thing thing = res.pimoThing();
-    //thing.addType(Nepomuk::Vocabulary::PIMO::Document());
-    //TODO maybe move the the Nepomuk related stuff to pimitem, so we have less dependencies in here?
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-    if (!pimitem.isNull()) {
-        thing.setLabel(pimitem->getTitle());
-    }
-    //kDebug() << item.url() << res.types();
-    //kDebug() << thing.types();
-    if (res == thing) {
-        kWarning() << res.types();
-        kWarning() << res.resourceType();
-        kWarning() << "(res == thing) should never happen";
-        kWarning() << thing.resourceUri() << thing.resourceType();
-    }
-    Q_ASSERT(thing.isValid());
-    return thing;
-}
-
-
-Nepomuk::Thing AbstractPimItem::getExistingThing(const Akonadi::Item &item)
-{
-    Q_ASSERT(item.isValid());
-    //FIXME find a fast replacement for the notesorefilterproxymodel, maybe describe resources
-    Nepomuk::Resource res(item.url());
-    return res.pimoThing();
 }
 
 void AbstractPimItem::setText(const QString &text, bool isRich)
@@ -420,16 +353,6 @@ const Akonadi::Item& AbstractPimItem::getItem() const
     }
     return m_item;
 }
-
-Nepomuk::Thing AbstractPimItem::getThing() const
-{
-    if (!m_item.isValid()) {
-        kWarning() << "invalid item";
-        return Nepomuk::Thing();
-    }
-    return getThing(m_item);
-}
-
 
 void AbstractPimItem::saveItem()
 {

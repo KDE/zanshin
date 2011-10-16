@@ -18,6 +18,7 @@ set(utils_SRCS
     #akonadicollection.cpp
     datestringbuilder.cpp
     #nepomukpropertycache.cpp
+    pimitem.cpp
     #pimitemconversionjob.cpp
     #${CMAKE_CURRENT_SOURCE_DIR}/zanshin/todonode.cpp
     #${CMAKE_CURRENT_SOURCE_DIR}/zanshin/todonodemanager.cpp
