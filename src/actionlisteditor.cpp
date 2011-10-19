@@ -105,10 +105,12 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     case Zanshin::ProjectMode:
         m_stack->setCurrentIndex(0);
         onSideBarSelectionChanged(m_projectSelection->currentIndex());
+        m_selectorProxy->setView(currentPage()->treeView());
         break;
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
         onSideBarSelectionChanged(m_categoriesSelection->currentIndex());
+        m_selectorProxy->setView(currentPage()->treeView());
         break;
     case Zanshin::KnowledgeMode:
         m_stack->setCurrentIndex(2);
