@@ -214,6 +214,13 @@ public:
         QModelIndex sourceParent = mapToSource(parent);
         return sourceModel()->dropMimeData(data, action, row, column, sourceParent);
     }
+
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
+    {
+        if (sourceModel()) {
+            sourceModel()->sort(column, order);
+        }
+    }
 };
 
 class CollectionsFilterProxyModel : public QSortFilterProxyModel
