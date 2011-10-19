@@ -228,17 +228,13 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
     scope.fetchFullPayload( true ); // Need to have full item when adding it to the internal data structure
     scope.fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
     //scope.fetchAttribute<Akonadi::EntityDeletedAttribute>(true);
-    
+    //scope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
+
+    //Akonadi::CollectionFetchScope collectionScope;
+    //collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
+
     Akonadi::Session *session = new Akonadi::Session("zanshin", this);
 
-    /*Akonadi::ItemFetchScope itemScope;
-    itemScope.fetchFullPayload();
-    itemScope.fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
-    itemScope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
-
-    Akonadi::CollectionFetchScope collectionScope;
-    collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);*/
-    
     m_knowledgeMonitor = new Akonadi::ChangeRecorder( this );
     m_knowledgeMonitor->fetchCollection( true );
     m_knowledgeMonitor->setItemFetchScope( scope );
