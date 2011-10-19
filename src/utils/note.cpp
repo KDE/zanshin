@@ -23,6 +23,7 @@
 #include <akonadi/notes/noteutils.h>
 
 #include <KMime/Message>
+#include <QCoreApplication>
 
 Note::Note(QObject *parent)
 :   AbstractPimItem(parent)
@@ -68,7 +69,7 @@ void Note::commitData()
     messageWrapper.setTitle(m_title);
     messageWrapper.setText(m_text, m_textIsRich ? Qt::RichText : Qt::PlainText);
     messageWrapper.setCreationDate(m_creationDate);
-    messageWrapper.setFrom(QString::fromLatin1( "NoteTaker@kde4" )); //FIXME shouldn't be hardcoded
+    messageWrapper.setFrom(QCoreApplication::applicationName()+QCoreApplication::applicationVersion());
     m_item.setPayload(messageWrapper.message());
     
     Akonadi::EntityDisplayAttribute *eda = new Akonadi::EntityDisplayAttribute();
