@@ -312,6 +312,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
         filter->setSourceModel(descendants);
 
         m_treeView->setModel(filter);
+        m_treeView->hideColumn(NotetakerModel::Status);
     } else {
         m_treeView = new ActionListEditorView(this);
 
