@@ -105,8 +105,8 @@ QVariant NotetakerModel::entityData(const Akonadi::Item& item, int column, int r
                 d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getPrimaryDate())));
             }
             d.append(QString::fromLatin1("Akonadi: %1\n").arg(item.url().url()));
-            d.append(QString::fromLatin1("Nepomuk Resource: %1\n").arg(PimItemUtils::getResource(item).uri()));
-            d.append(QString::fromLatin1("Nepomuk Thing: %1\n").arg(PimItemUtils::getThing(item).uri()));
+            d.append(QString::fromLatin1("Nepomuk Resource: %1\n").arg(PimItemUtils::getResource(item).resourceUri().toString()));
+            d.append(QString::fromLatin1("Nepomuk Thing: %1\n").arg(PimItemUtils::getThing(item).resourceUri().toString()));
             d.append(QString::fromLatin1("Akonadi Collection: %1\n").arg(item.parentCollection().id()));
             return d;
         }
@@ -114,7 +114,8 @@ QVariant NotetakerModel::entityData(const Akonadi::Item& item, int column, int r
             if ( column != Title ) {
                 return QVariant();
             }
-            return SmallIcon(pimitem->getIconName());
+            return QVariant();
+            //return SmallIcon(pimitem->getIconName());
         }
         /*case Qt::BackgroundRole: {
             if (pimitem->itemType() & AbstractPimItem::Todo) {

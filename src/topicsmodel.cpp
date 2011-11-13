@@ -116,7 +116,7 @@ void TopicsModel::checkResults(const QList< Nepomuk::Query::Result > &results)
 {
     //kDebug() <<  results.size() << results.first().resource().resourceUri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
     foreach (const Nepomuk::Query::Result &result, results) {
-        Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
+        Nepomuk::Resource res(result.resource().resourceUri());
         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(Nepomuk::Vocabulary::PIMO::Topic()) || res.types().contains(Nepomuk::Vocabulary::PIMO::Project())) {
             addTopic(res);
@@ -167,7 +167,7 @@ void TopicsModel::addTopic (const Nepomuk::Resource& topic)
 
 void TopicsModel::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
 {
-    const QUrl &topic = sender()->property("topic").toUrl();
+    const QUrl &topic = sender()->property("resourceuri").toUrl();
     kDebug() << topic;
     foreach (const Nepomuk::Query::Result &result, results) {
         Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
