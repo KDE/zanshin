@@ -58,6 +58,7 @@ namespace NepomukUtils
  * 
  */
     KJob * createTopic(const QString &topicName, const QUrl &supertopicId = QUrl()); 
+    KJob * deleteTopic(const QUrl &topicId); 
     KJob * addToTopic(const Akonadi::Item &item, const QUrl &topicId);  //TODO job
 //     static void removeFromTopic(const Akonadi::Item &item, const QString &topicId);
     KJob * moveToTopic(const Akonadi::Item &item, const QUrl &topicId);  //TODO job

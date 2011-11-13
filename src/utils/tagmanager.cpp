@@ -74,6 +74,13 @@ KJob *createTopic(const QString& topicName, const QUrl& supertopicId)
     return Nepomuk::createResource(QList<QUrl>() << Nepomuk::Vocabulary::PIMO::Topic(), topicName, "A MindMirror Topic");
 }
 
+KJob* deleteTopic(const QUrl& topicId)
+{
+    kDebug() << "removing topic: " << topicId;
+    return Nepomuk::removeResources(QList<QUrl>() << topicId, Nepomuk::RemoveSubResoures);
+}
+
+
 /*
 QStringList getTopicList(const Nepomuk::Thing& thing)
 {

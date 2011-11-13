@@ -70,6 +70,7 @@ private slots:
     //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     
     void checkResults(const QList<Nepomuk::Query::Result> &);
+    void topicRemoved(const QList<QUrl> &);
     void itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &);
     void itemsFromTopicRemoved(const QList<QUrl> &);
 
@@ -82,6 +83,7 @@ private:
 
     TodoNode *m_rootNode;
     QMap<QUrl, TodoNode*> m_resourceMap;
+    QMap<QUrl, QObject*> m_guardMap;
     QHash<Akonadi::Item::Id, QList <QUrl> > m_itemTopics;
     
 };

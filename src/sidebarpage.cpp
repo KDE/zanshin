@@ -144,6 +144,9 @@ void SideBarPage::removeCurrentItem()
         if (CategoryManager::instance().removeCategory(this, current)) {
             m_treeView->setCurrentIndex(current.parent());
         }
+    } else if (type==Zanshin::Topic) {
+        NepomukUtils::deleteTopic(current.data(Zanshin::UriRole).toUrl());
+        m_treeView->setCurrentIndex(current.parent());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }

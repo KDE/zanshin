@@ -103,7 +103,7 @@ void TopicsModel::init()
     Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
     connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk::Query::Result>)));
     connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
-    //connect(queryServiceClient, SIGNAL(finishedListing()), queryServiceClient, SLOT(deleteLater()));
+    connect(queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(topicRemoved(QList<QUrl>)));
     if ( !queryServiceClient->query(query) ) {
         kWarning() << "error";
     }
@@ -122,6 +122,17 @@ void TopicsModel::checkResults(const QList< Nepomuk::Query::Result > &results)
     }
 }
 
+void TopicsModel::topicRemoved(const QList<QUrl> &results)
+{
+    foreach (const QUrl &result, results) {
+        Nepomuk::Resource res(result);
+        kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
+        if (res.types().contains(Nepomuk::Vocabulary::PIMO::Topic()) || res.types().contains(Nepomuk::Vocabulary::PIMO::Project())) {
+            removeNode(res);
+        }
+    }
+}
+
 void TopicsModel::queryFinished()
 {
     kWarning();
@@ -131,8 +142,10 @@ void TopicsModel::queryFinished()
 void TopicsModel::addTopic (const Nepomuk::Resource& topic)
 {
     kDebug() << "add topic" << topic.label() << topic.resourceUri();
-    Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
-    queryServiceClient->setProperty("topic", topic.resourceUri());
+    QObject *guard = new QObject(this);
+    m_guardMap[topic.resourceUri()] = guard;
+    Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(guard);
+    queryServiceClient->setProperty("resourceuri", topic.resourceUri());
     connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(itemsWithTopicAdded(QList<Nepomuk::Query::Result>)));
     connect(queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(itemsFromTopicRemoved(QList<QUrl>)));
     connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
@@ -265,7 +278,7 @@ void TopicsModel::createNode(const Nepomuk::Resource& res)
 
 void TopicsModel::removeNode(const Nepomuk::Resource& res)
 {
-    /*
+    kDebug() << res.resourceUri();
     if (!m_resourceMap.contains(res.resourceUri())) {
         return;
     }
@@ -274,10 +287,14 @@ void TopicsModel::removeNode(const Nepomuk::Resource& res)
 
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
+        child->setParent(m_inboxNode);
+        
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
         if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
-            CategoryManager::instance().removeCategory(childIndex.data(Zanshin::CategoryPathRole).toString());
+            NepomukUtils::deleteTopic(childIndex.data(Zanshin::UriRole).toUrl()); //TODO maybe leave this up to nepomuk subresource handling?
         } else {
+            child->setParent(m_inboxNode);
+            /*
             QStringList categories = childIndex.data(Zanshin::CategoriesRole).toStringList();
             if (categories.empty()) {
                 child->setParent(m_inboxNode);
@@ -286,7 +303,7 @@ void TopicsModel::removeNode(const Nepomuk::Resource& res)
                 m_manager->removeNode(child);
                 delete child;
                 endRemoveRows();
-            }
+            }*/
         }
     }
 
@@ -295,7 +312,9 @@ void TopicsModel::removeNode(const Nepomuk::Resource& res)
     m_manager->removeNode(node);
     m_resourceMap.remove(res.resourceUri());
     delete node;
-    endRemoveRows();*/
+    endRemoveRows();
+    
+    m_guardMap.take(res.resourceUri())->deleteLater();
 }
 
 void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
