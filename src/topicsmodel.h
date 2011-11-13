@@ -33,6 +33,11 @@ class Item;
 }
 
 namespace Nepomuk {
+namespace Types {
+
+class Property;
+}
+
 namespace Query {
 
 class Result;
@@ -55,7 +60,7 @@ public:
     virtual QStringList mimeTypes() const;
     virtual Qt::DropActions supportedDropActions() const;
 
-    //virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
@@ -75,6 +80,8 @@ private slots:
     void itemsFromTopicRemoved(const QList<QUrl> &);
 
     void queryFinished();
+
+    void propertyChanged(const Nepomuk::Resource &, const Nepomuk::Types::Property &, const QVariant &);
 
 private:
     virtual void init();

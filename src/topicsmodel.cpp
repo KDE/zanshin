@@ -40,6 +40,8 @@
 #include <abstractpimitem.h>
 #include <queries.h>
 #include <pimitem.h>
+#include <nepomuk/resourcewatcher.h>
+#include <soprano/nao.h>
 
 TopicsModel::TopicsModel(QObject* parent)
 : TodoProxyModelBase(MultiMapping, parent), m_rootNode(0)
@@ -144,6 +146,13 @@ void TopicsModel::addTopic (const Nepomuk::Resource& topic)
     kDebug() << "add topic" << topic.label() << topic.resourceUri();
     QObject *guard = new QObject(this);
     m_guardMap[topic.resourceUri()] = guard;
+
+    Nepomuk::ResourceWatcher *m_resourceWatcher = new Nepomuk::ResourceWatcher(guard);
+    m_resourceWatcher->addResource(topic);
+    m_resourceWatcher->addProperty(Soprano::Vocabulary::NAO::prefLabel());
+    connect(m_resourceWatcher, SIGNAL(propertyAdded(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)), this, SLOT(propertyChanged(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)));
+    m_resourceWatcher->start();
+
     Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(guard);
     queryServiceClient->setProperty("resourceuri", topic.resourceUri());
     connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(itemsWithTopicAdded(QList<Nepomuk::Query::Result>)));
@@ -240,6 +249,18 @@ void TopicsModel::itemsFromTopicRemoved(const QList<QUrl> &items)
     }
 }
 
+void TopicsModel::propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value)
+{
+    if (property.uri() == Soprano::Vocabulary::NAO::prefLabel()) {
+        kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
+        TodoNode *node = m_resourceMap[res.resourceUri()];
+        node->setData(value.toString(), 0, Qt::DisplayRole);
+        node->setData(value.toString(), 0, Qt::EditRole);
+        const QModelIndex &begin = m_manager->indexForNode(node, 0);
+        const QModelIndex &end = m_manager->indexForNode(node, 0);
+        emit dataChanged(begin, end);
+    }
+}
 
 
 void TopicsModel::createNode(const Nepomuk::Resource& res)
@@ -462,3 +483,17 @@ bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action,
     return true;
 }
 
+bool TopicsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (role!=Qt::EditRole || !index.isValid()) {
+        return TodoProxyModelBase::setData(index, value, role);
+    }
+
+    Zanshin::ItemType type = static_cast<Zanshin::ItemType>(index.data(Zanshin::ItemTypeRole).toInt());
+    if (index.column()==0 && type==Zanshin::Topic) {
+        NepomukUtils::renameTopic(index.data(Zanshin::UriRole).toUrl(), value.toString());
+        return true;
+    }
+
+    return TodoProxyModelBase::setData(index, value, role);
+}
