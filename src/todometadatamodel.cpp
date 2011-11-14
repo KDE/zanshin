@@ -40,6 +40,8 @@ TodoMetadataModel::TodoMetadataModel(QObject *parent)
             this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
     connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
+    connect(this, SIGNAL(modelReset()),
+            this, SLOT(onModelReset()));
 
     onSourceInsertRows(QModelIndex(), 0, rowCount()-1);
 }
@@ -54,9 +56,10 @@ Qt::ItemFlags TodoMetadataModel::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
     }
 
-    Qt::ItemFlags flags = sourceModel()->flags(mapToSource(index));
+    Qt::ItemFlags flags = Qt::NoItemFlags;
 
     if (index.isValid()) {
+        flags = sourceModel()->flags(mapToSource(index));
         Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
         if (index.column()==0) {
             Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
@@ -390,3 +393,11 @@ void TodoMetadataModel::setSourceModel(QAbstractItemModel *model)
 
     onSourceInsertRows(QModelIndex(), 0, rowCount() - 1);
 }
+
+void TodoMetadataModel::onModelReset()
+{
+    m_parentMap.clear();
+    m_childrenMap.clear();
+    m_indexMap.clear();
+}
+

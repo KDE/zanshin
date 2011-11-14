@@ -54,6 +54,7 @@ private slots:
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
+    void onModelReset();
 
 private:
     KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
