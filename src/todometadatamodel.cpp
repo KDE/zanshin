@@ -163,6 +163,11 @@ void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin,
         m_parentMap[uid] = relatedUid;
         m_childrenMap[relatedUid] << uid;
 
+
+        if (!m_indexMap.contains(relatedUid)) {
+            continue;
+        }
+
         // Emit dataChanged to notify that the todo is a project todo
         QModelIndex parentIndex = m_indexMap[relatedUid];
         if (parentIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo
@@ -272,8 +277,9 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
     KCalCore::Todo::Ptr todo = todoFromItem(item);
 
     QStringList comments = todo->comments();
+    const int childCount = m_childrenMap.contains(todo->uid()) ? m_childrenMap[todo->uid()].count() : 0;
     if (comments.contains("X-Zanshin-Project")
-     || m_childrenMap[todo->uid()].count()>0) {
+     || childCount>0) {
         return Zanshin::ProjectTodo;
     } else {
         return Zanshin::StandardTodo;
@@ -323,6 +329,9 @@ QStringList TodoMetadataModel::ancestorsCategoriesFromItem(const Akonadi::Item &
     QStringList ancestors = ancestorsUidFromItem(item);
     QStringList categories;
     foreach (QString uid, ancestors) {
+        if (!m_indexMap.contains(uid)) {
+            continue;
+        }
         const QModelIndex &index = m_indexMap[uid];
         KCalCore::Todo::Ptr todo = todoFromIndex(index);
         if (todo) {
