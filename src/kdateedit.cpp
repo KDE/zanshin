@@ -304,6 +304,12 @@ void KDateEdit::keyPressEvent(QKeyEvent* e)
     case Qt::Key_Equal:
       date = QDate::currentDate();
       break;
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+      // When the date is selected and the Key_Return/Key_Enter pressed, the value in the
+      // QLineEdit is set to the value of the first item in the QCompleter, here "friday".
+      lineEdit()->deselect();
+      break;
     }
 
     if ( date.isValid() && assignDate( date ) ) {
