@@ -870,6 +870,54 @@ private slots:
 
         QCOMPARE(treeModel, output);
     }
+
+    void shouldReactToModelReset_data()
+    {
+        QTest::addColumn<ModelStructure>("sourceStructure");
+
+        // Base items
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        QTest::newRow("clear model") << sourceStructure;
+    }
+
+
+    void shouldReactToModelReset()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create treeModel
+        TodoTreeModel treeModel;
+        ModelTest t2(&treeModel);
+
+        treeModel.setSourceModel(&source);
+
+        //WHEN
+        source.clear();
+
+        //THEN
+        QStandardItemModel output;
+        TodoTreeModel* treeModelOutput = new TodoTreeModel();
+
+        treeModelOutput->setSourceModel(&output);
+
+        QAbstractItemModel* abstractModel = treeModelOutput;
+        QCOMPARE(treeModel, *abstractModel);
+        delete treeModelOutput;
+    }
 };
 
 QTEST_KDEMAIN(TodoTreeModelSpec, GUI)
