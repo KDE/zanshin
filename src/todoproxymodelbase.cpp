@@ -271,14 +271,19 @@ void TodoProxyModelBase::onModelReset()
 {
     beginResetModel();
 
+    resetInternalData();
+
+    endResetModel();
+
+    init();
+}
+
+void TodoProxyModelBase::resetInternalData()
+{
     foreach(TodoNode* node, m_manager->roots()) {
         m_manager->removeNode(node);
         delete node;
     }
 
     m_inboxNode = 0;
-
-    endResetModel();
-
-    init();
 }

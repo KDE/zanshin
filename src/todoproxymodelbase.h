@@ -73,6 +73,7 @@ protected slots:
 protected:
     virtual void init();
     virtual TodoNode *createInbox() const = 0;
+    virtual void resetInternalData();
 
     TodoNode *addChildNode(const QModelIndex &sourceIndex, TodoNode *parent);
 
