@@ -285,6 +285,21 @@ void ActionListEditor::updateActions()
     } else if (type==Zanshin::Category) {
         QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
         collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    } else if (type==Zanshin::StandardTodo) {
+        QModelIndex parent = index;
+        int parentType = type;
+        while (parent.isValid() && parentType==Zanshin::StandardTodo) {
+            parent = parent.sibling(parent.row()-1, parent.column());
+            parentType = parent.data(Zanshin::ItemTypeRole).toInt();
+        }
+
+        if (parentType!=Zanshin::ProjectTodo) {
+            QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
+            collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        } else {
+            collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+        }
+
     } else {
         // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
         // information about the rights is not valid on retrieved items.
@@ -296,7 +311,10 @@ void ActionListEditor::updateActions()
                   && (collection.rights() & Akonadi::Collection::CanCreateItem)
                   && (type==Zanshin::ProjectTodo
                    || type==Zanshin::Category
-                   || type==Zanshin::Inbox));
+                   || type==Zanshin::Inbox
+                   || type==Zanshin::StandardTodo));
+
+    m_addActionEdit->setEnabled(m_add->isEnabled());
 
     m_remove->setEnabled(index.isValid()
                      && (collection.rights() & Akonadi::Collection::CanDeleteItem)
