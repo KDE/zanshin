@@ -101,11 +101,7 @@ int TodoProxyModelBase::columnCount(const QModelIndex &parent) const
             return 0;
         }
     } else {
-        if (sourceModel()->rowCount(mapToSource(parent))) {
-            return sourceModel()->columnCount(mapToSource(parent));
-        } else {
-            return 1;
-        }
+        return sourceModel()->columnCount(mapToSource(parent));
     }
 }
 

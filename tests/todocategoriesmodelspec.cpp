@@ -27,6 +27,7 @@
 #include "todocategoriesmodel.h"
 #include "todometadatamodel.h"
 #include "testlib/testlib.h"
+#include "testlib/mockmodel.h"
 #include "testlib/modelbuilderbehavior.h"
 
 #include <QtGui/QTreeView>
@@ -643,7 +644,7 @@ private slots:
         QFETCH(ModelStructure, sourceStructure);
 
         //Source model
-        QStandardItemModel source;
+        MockModel source;
 
         //Kick up category manager
         CategoryManager::instance().setModel(&source);
@@ -657,10 +658,10 @@ private slots:
         categoriesModel.setSourceModel(&source);
 
         //WHEN
-        source.clear();
+        source.clearData();
 
         //THEN
-        QStandardItemModel output;
+        MockModel output;
         TodoCategoriesModel* categoriesModelOutput = new TodoCategoriesModel();
 
         categoriesModelOutput->setSourceModel(&output);

@@ -30,6 +30,7 @@
 #include "todotreemodel.h"
 #include "todometadatamodel.h"
 #include "testlib/testlib.h"
+#include "testlib/mockmodel.h"
 #include "testlib/modeltest.h"
 #include "testlib/modelbuilderbehavior.h"
 
@@ -896,7 +897,7 @@ private slots:
         QFETCH(ModelStructure, sourceStructure);
 
         //Source model
-        QStandardItemModel source;
+        MockModel source;
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
@@ -906,10 +907,10 @@ private slots:
         treeModel.setSourceModel(&source);
 
         //WHEN
-        source.clear();
+        source.clearData();
 
         //THEN
-        QStandardItemModel output;
+        MockModel output;
         TodoTreeModel* treeModelOutput = new TodoTreeModel();
 
         treeModelOutput->setSourceModel(&output);
