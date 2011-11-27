@@ -234,33 +234,36 @@ QDate KDateEdit::parseDate( bool *replaced ) const
     result = QDate();
   } else if ( mKeywordMap.contains( text.toLower() ) ) {
     QDate today = QDate::currentDate();
-    int i = mKeywordMap[ text.toLower() ];
+    int i = mKeywordMap.value( text.toLower() );
     if ( i == 30 ) {
-      today = today.addMonths( 1 );
-    } else if ( i >= 100 ) {
-      /* A day name has been entered. Convert to offset from today.
-       * This uses some math tricks to figure out the offset in days
-       * to the next date the given day of the week occurs. There
-       * are two cases, that the new day is >= the current day, which means
-       * the new day has not occurred yet or that the new day < the current day,
-       * which means the new day is already passed (so we need to find the
-       * day in the next week).
-       */
-      i -= 100;
-      int currentDay = today.dayOfWeek();
-      if ( i >= currentDay ) {
-        i -= currentDay;
-      } else {
-        i += 7 - currentDay;
+      // Special case for "one month"
+      result = today.addMonths( 1 );
+    } else {
+      if ( i >= 100 ) {
+        /* A day name has been entered. Convert to offset from today.
+         * This uses some math tricks to figure out the offset in days
+         * to the next date the given day of the week occurs. There
+         * are two cases, that the new day is >= the current day, which means
+         * the new day has not occurred yet or that the new day < the current day,
+         * which means the new day is already passed (so we need to find the
+         * day in the next week).
+         */
+        i -= 100;
+        int currentDay = today.dayOfWeek();
+        if ( i >= currentDay ) {
+          i -= currentDay;
+        } else {
+          i += 7 - currentDay;
+        }
       }
-    }
 
-    result = today.addDays( i );
+      result = today.addDays( i );
+    }
     if ( replaced ) {
-      (*replaced) = true;
+        (*replaced) = true;
     }
   } else {
-    result = KGlobal::locale()->readDate( text );
+      result = KGlobal::locale()->readDate( text );
   }
 
   return result;
