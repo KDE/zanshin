@@ -57,6 +57,7 @@ public:
     virtual QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
     virtual QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
     QList<QModelIndex> mapFromSourceAll(const QModelIndex &sourceIndex) const;
+    virtual QModelIndex buddy(const QModelIndex &index) const;
 
     virtual void setSourceModel(QAbstractItemModel *model);
 

@@ -60,6 +60,11 @@ QModelIndex TodoProxyModelBase::index(int row, int column, const QModelIndex &pa
     return m_manager->index(row, column, parent);
 }
 
+QModelIndex TodoProxyModelBase::buddy(const QModelIndex &index) const
+{
+    return index;
+}
+
 QModelIndex TodoProxyModelBase::parent(const QModelIndex &index) const
 {
     if (!index.isValid()) {
