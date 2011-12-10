@@ -135,6 +135,13 @@ bool TodoModel::setData(const QModelIndex &index, const QVariant &value, int rol
         return EntityTreeModel::setData(index, value, role);
     }
 
+    // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+    // information about the rights is not valid on retrieved items.
+    Akonadi::Collection collection = data(index, Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    if (!(collection.rights() & Akonadi::Collection::CanChangeItem)) {
+        return false;
+    }
+
     Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
 
     if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {

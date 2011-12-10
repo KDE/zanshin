@@ -39,7 +39,7 @@ namespace TodoHelpers
                  const Akonadi::Collection &collection);
 
     void addProject(const QString &summary, const Akonadi::Collection &collection);
-    void addProject(const QString &summary, const Akonadi::Item &parentProject);
+    void addProject(const QString &summary, const QModelIndex &parentItem);
     bool removeProject(QWidget *parent, const QModelIndex &project);
     bool removeProjects(QWidget *parent, const QModelIndexList &projects);
     bool moveTodoToProject(const QModelIndex &todo, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection);

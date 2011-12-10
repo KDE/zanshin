@@ -208,6 +208,11 @@ void TodoTreeModel::onSourceDataChanged(const QModelIndex &begin, const QModelIn
             continue;
         }
 
+        if (nodeType==Zanshin::ProjectTodo && node->parent()==m_inboxNode) {
+            reparentTodo(node);
+            continue;
+        }
+
         QString oldParentUid = node->parent()->data(0, Zanshin::UidRole).toString();
         QString newParentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
 
@@ -264,10 +269,31 @@ Qt::ItemFlags TodoTreeModel::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
     }
 
-    if (index.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Inbox) {
+    Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
+
+    if (type == Zanshin::Inbox) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
-    return sourceModel()->flags(mapToSource(index)) | Qt::ItemIsDropEnabled;
+
+    Qt::ItemFlags flags = sourceModel()->flags(mapToSource(index));
+    Akonadi::Collection collection;
+
+    if (type==Zanshin::Collection) {
+        collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+
+    } else if (type==Zanshin::ProjectTodo) {
+        // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+        // information about the rights is not valid on retrieved items.
+        collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    }
+
+    if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
+        flags&= ~Qt::ItemIsDropEnabled;
+    } else {
+        flags|= Qt::ItemIsDropEnabled;
+    }
+
+    return flags;
 }
 
 QMimeData *TodoTreeModel::mimeData(const QModelIndexList &indexes) const

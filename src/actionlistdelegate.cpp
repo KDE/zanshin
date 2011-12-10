@@ -40,7 +40,7 @@
 #include "modelstack.h"
 
 using namespace KPIM;
-Q_DECLARE_METATYPE(QItemSelectionModel*);
+Q_DECLARE_METATYPE(QItemSelectionModel*)
 
 ActionListDelegate::ActionListDelegate(ModelStack *models, QObject *parent)
     : QStyledItemDelegate(parent)

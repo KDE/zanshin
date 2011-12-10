@@ -182,38 +182,32 @@ void SideBar::updateActions(const QModelIndex &index)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
 
-    m_add->setEnabled( type == Zanshin::Collection
-                    || type == Zanshin::ProjectTodo
-                    || type == Zanshin::CategoryRoot 
-                    || type == Zanshin::Category
-                    || type == Zanshin::TopicRoot 
-                    || type == Zanshin::Topic);
-
-    m_remove->setEnabled( type == Zanshin::ProjectTodo
-                       || type == Zanshin::Category
-                       || type == Zanshin::Topic );
-
-    m_rename->setEnabled( type == Zanshin::ProjectTodo
-                       || type == Zanshin::Category 
-                       || type == Zanshin::Topic );
-
     Akonadi::Collection col;
     if ( type==Zanshin::Collection ) {
         col = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-    } else if ( type==Zanshin::ProjectTodo ) {
-        QModelIndex currentIndex = index;
-        Zanshin::ItemType currentType = type;
-
-        while (currentIndex.isValid() && currentType!=Zanshin::Collection) {
-            currentIndex = currentIndex.parent();
-            currentType = (Zanshin::ItemType) currentIndex.data(Zanshin::ItemTypeRole).toInt();
-
-            if (currentType==Zanshin::Collection) {
-                col = currentIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-                break;
-            }
-        }
+    } else {
+        // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+        // information about the rights is not valid on retrieved items.
+        col = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
     }
+
+    m_add->setEnabled((col.rights() & Akonadi::Collection::CanCreateItem)
+                  && ( type == Zanshin::Collection
+                    || type == Zanshin::ProjectTodo
+                    || type == Zanshin::CategoryRoot
+                    || type == Zanshin::Category
+                    || type == Zanshin::TopicRoot 
+                    || type == Zanshin::Topic ));
+
+    m_remove->setEnabled((col.rights() & Akonadi::Collection::CanDeleteItem)
+                      && (type == Zanshin::ProjectTodo
+                       || type == Zanshin::Category 
+                       || type == Zanshin::Topic ));
+
+    m_rename->setEnabled((col.rights() & Akonadi::Collection::CanChangeItem)
+                      && (type == Zanshin::ProjectTodo
+                       || type == Zanshin::Category 
+                       || type == Zanshin::Topic ));
 
     QString name;
 

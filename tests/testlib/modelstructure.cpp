@@ -133,10 +133,13 @@ ModelStructureTreeNode::ModelStructureTreeNode(const ModelNode &node, ModelStruc
 
 ModelStructureTreeNode::~ModelStructureTreeNode()
 {
+    QList<ModelStructureTreeNode*> children = m_children;
+
     if (m_parent) {
         m_parent->m_children.removeAll(this);
     }
-    qDeleteAll(m_children);
+
+    qDeleteAll(children);
 }
 
 ModelNode ModelStructureTreeNode::modelNode() const

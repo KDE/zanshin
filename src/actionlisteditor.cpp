@@ -195,23 +195,46 @@ void ActionListEditor::updateActions()
     const QModelIndex index = itemSelectionModel->currentIndex();
     int type = index.data(Zanshin::ItemTypeRole).toInt();
 
+    Akonadi::Collection collection;
+    if ( type==Zanshin::Collection ) {
+        collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    } else if (type==Zanshin::Category) {
+        QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
+        collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    } else {
+        // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+        // information about the rights is not valid on retrieved items.
+        collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    }
+
+
+    m_add->setEnabled(index.isValid()
+                  && (collection.rights() & Akonadi::Collection::CanCreateItem)
+                  && (type==Zanshin::ProjectTodo
+                   || type==Zanshin::Category
+                   || type==Zanshin::Inbox));
+
     m_remove->setEnabled(index.isValid()
+                     && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                      && ((type==Zanshin::StandardTodo)
                        || type==Zanshin::ProjectTodo
                        || type==Zanshin::Category
                        || type==Zanshin::KnowledgeMode));
 
     m_move->setEnabled(index.isValid()
+                   && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                    && (type==Zanshin::StandardTodo
                     || type==Zanshin::Category
                     || type==Zanshin::ProjectTodo));
 
     m_promote->setEnabled(index.isValid()
+                       && (collection.rights() & Akonadi::Collection::CanChangeItem)
                        && type==Zanshin::StandardTodo
                        && itemSelectionModel->selectedRows().size() == 1);
 
     m_dissociate->setEnabled(index.isValid()
-                            && type==Zanshin::StandardTodo);
+                          && (collection.rights() & Akonadi::Collection::CanDeleteItem)
+                          && type==Zanshin::StandardTodo);
 }
 
 void ActionListEditor::removeTodo()
@@ -332,7 +355,7 @@ void ActionListEditor::onMoveAction()
         QString selectedId = dlg.selectedId();
         QModelIndex index = dlg.selectedIndex();
 
-        QModelIndexList list = currentPage()->selectionModel()->selectedIndexes();
+        QModelIndexList list = currentPage()->selectionModel()->selectedRows();
         if (currentSelection.isValid() && !list.isEmpty()) {
             KModelIndexProxyMapper mapper(currentSelection.model(), list.first().model());
             foreach (QModelIndex current, list) {
@@ -340,15 +363,8 @@ void ActionListEditor::onMoveAction()
                     return;
                 }
 
-                QModelIndex mapperIndex = mapper.mapRightToLeft(current);
-
                 if (currentPage()->mode()==Zanshin::ProjectMode) {
                     TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
-                    if (dlg.selectedType()==Zanshin::ProjectTodo && currentSelection==mapperIndex) {
-                        m_projectSelection->setCurrentIndex(index, QItemSelectionModel::Select);
-                    } else {
-                        currentPage()->selectSiblingIndex(current);
-                    }
                 } else {
                     int type = current.data(Zanshin::ItemTypeRole).toInt();
                     QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
@@ -356,11 +372,6 @@ void ActionListEditor::onMoveAction()
                         CategoryManager::instance().moveCategory(categoryPath, selectedId, dlg.selectedType());
                     } else {
                         CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
-                    }
-                    if (dlg.selectedType()==Zanshin::Category && currentSelection==mapperIndex) {
-                        m_categoriesSelection->setCurrentIndex(index, QItemSelectionModel::Select);
-                    } else {
-                        currentPage()->selectSiblingIndex(current);
                     }
                 }
             }
