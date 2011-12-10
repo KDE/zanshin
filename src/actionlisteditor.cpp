@@ -126,7 +126,9 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
 
     currentPage()->setCollectionSelectorVisible(type == Zanshin::Inbox
                         || type == Zanshin::Category
-                        || type == Zanshin::CategoryRoot);
+                        || type == Zanshin::CategoryRoot
+                        || type == Zanshin::Topic
+                        || type == Zanshin::TopicRoot);
 
     currentPage()->setCollectionColumnHidden(type!=Zanshin::Inbox);
 
@@ -202,30 +204,47 @@ void ActionListEditor::updateActions()
         collection = Configuration::instance().defaultTodoCollection();
     } else if (type==Zanshin::Topic) {
         collection = Configuration::instance().defaultNoteCollection();
+    } else if (type==Zanshin::StandardTodo) {
+        QModelIndex parent = index;
+        int parentType = type;
+        while (parent.isValid() && parentType==Zanshin::StandardTodo) {
+            parent = parent.sibling(parent.row()-1, parent.column());
+            parentType = parent.data(Zanshin::ItemTypeRole).toInt();
+        }
+
+        if (parentType!=Zanshin::ProjectTodo) {
+            collection = Configuration::instance().defaultTodoCollection();
+        } else {
+            collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+        }
     } else {
         // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
         // information about the rights is not valid on retrieved items.
         collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
     }
 
-
     m_add->setEnabled(index.isValid()
                   && (collection.rights() & Akonadi::Collection::CanCreateItem)
                   && (type==Zanshin::ProjectTodo
                    || type==Zanshin::Category
-                   || type==Zanshin::Inbox));
+                   || type==Zanshin::Topic
+                   || type==Zanshin::Inbox
+                   || type==Zanshin::StandardTodo));
+
+    currentPage()->setActionEditEnabled(m_add->isEnabled());
 
     m_remove->setEnabled(index.isValid()
                      && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                      && ((type==Zanshin::StandardTodo)
                        || type==Zanshin::ProjectTodo
                        || type==Zanshin::Category
-                       || type==Zanshin::KnowledgeMode));
+                       || type==Zanshin::Topic));
 
     m_move->setEnabled(index.isValid()
                    && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                    && (type==Zanshin::StandardTodo
                     || type==Zanshin::Category
+                    || type==Zanshin::Topic
                     || type==Zanshin::ProjectTodo));
 
     m_promote->setEnabled(index.isValid()

@@ -44,7 +44,8 @@ TodoNode::~TodoNode()
         m_parent->m_children.removeAll(this);
     }
 
-    qDeleteAll(m_children);
+    QList<TodoNode*> children = m_children;
+    qDeleteAll(children);
 }
 
 void TodoNode::init()

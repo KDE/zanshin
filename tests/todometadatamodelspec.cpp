@@ -1460,6 +1460,53 @@ private slots:
         QVERIFY(categories.empty());
     }
 
+    void shouldReactToModelReset_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
+        T t2(2, 1, "t2", "t1", "t2");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        ModelStructure outputStructure;
+
+        QTest::newRow( "clear model" ) << sourceStructure
+                                       << outputStructure;
+    }
+
+
+    void shouldReactToModelReset()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        StandardModelBuilderBehavior behavior;
+        behavior.setMetadataCreationEnabled(false);
+        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
+
+        //create metadataModel
+        TodoMetadataModel metadataModel;
+        ModelTest t1(&metadataModel);
+
+        metadataModel.setSourceModel(&source);
+
+        //WHEN
+        source.clear();
+
+        //THEN
+        QStandardItemModel output;
+        QCOMPARE(metadataModel, output);
+    }
 };
 
 QTEST_KDEMAIN(TodoMetadataModelTest, GUI)

@@ -60,6 +60,11 @@ QModelIndex TodoProxyModelBase::index(int row, int column, const QModelIndex &pa
     return m_manager->index(row, column, parent);
 }
 
+QModelIndex TodoProxyModelBase::buddy(const QModelIndex &index) const
+{
+    return index;
+}
+
 QModelIndex TodoProxyModelBase::parent(const QModelIndex &index) const
 {
     if (!index.isValid()) {
@@ -215,6 +220,8 @@ void TodoProxyModelBase::setSourceModel(QAbstractItemModel *model)
                 this, SLOT(onRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
         disconnect(sourceModel(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
                 this, SLOT(onRowsMoved(QModelIndex,int,int,QModelIndex,int)));
+        connect(sourceModel(), SIGNAL(modelReset()),
+                this, SLOT(onModelReset()));
     }
 
     if (model) {
@@ -228,6 +235,8 @@ void TodoProxyModelBase::setSourceModel(QAbstractItemModel *model)
                 this, SLOT(onRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
         connect(model, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
                 this, SLOT(onRowsMoved(QModelIndex,int,int,QModelIndex,int)));
+        connect(model, SIGNAL(modelReset()),
+                this, SLOT(onModelReset()));
     }
 
     QAbstractProxyModel::setSourceModel(model);
@@ -266,3 +275,23 @@ void TodoProxyModelBase::onRowsMoved(const QModelIndex &/*parent*/, int start, i
     onSourceInsertRows(destination, row, row + end - start);
 }
 
+void TodoProxyModelBase::onModelReset()
+{
+    beginResetModel();
+
+    resetInternalData();
+
+    endResetModel();
+
+    init();
+}
+
+void TodoProxyModelBase::resetInternalData()
+{
+    foreach(TodoNode* node, m_manager->roots()) {
+        m_manager->removeNode(node);
+        delete node;
+    }
+
+    m_inboxNode = 0;
+}

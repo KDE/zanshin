@@ -58,6 +58,7 @@ private slots:
 private:
     virtual void init();
     virtual TodoNode *createInbox() const;
+    virtual void resetInternalData();
 
     TodoNode *m_categoryRootNode;
     QMap<QString, TodoNode*> m_categoryMap;

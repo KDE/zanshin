@@ -73,6 +73,7 @@ public:
     
     void focusActionEdit();
     void clearActionEdit();
+    void setActionEditEnabled(bool);
 
 public slots:
     void addNewItem(const QString &summary);

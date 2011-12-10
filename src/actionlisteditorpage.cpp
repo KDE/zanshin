@@ -709,6 +709,12 @@ void ActionListEditorPage::focusActionEdit()
     m_addActionEdit->setFocus();
 }
 
+void ActionListEditorPage::setActionEditEnabled(bool enabled)
+{
+    m_addActionEdit->setEnabled(enabled);
+}
+
+
 void ActionListEditorPage::onAddActionRequested()
 {
     QString summary = m_addActionEdit->text().trimmed();

@@ -7,6 +7,7 @@ set(zanshin_testlib_SRCS
    c.cpp
    cat.cpp
    indent.cpp
+   mockmodel.cpp
    modelbuilderbehavior.cpp
    modelnode.cpp
    modelpath.cpp

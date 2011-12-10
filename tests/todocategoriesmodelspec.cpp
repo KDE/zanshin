@@ -27,6 +27,7 @@
 #include "todocategoriesmodel.h"
 #include "todometadatamodel.h"
 #include "testlib/testlib.h"
+#include "testlib/mockmodel.h"
 #include "testlib/modelbuilderbehavior.h"
 
 #include <QtGui/QTreeView>
@@ -615,6 +616,59 @@ private slots:
         ModelUtils::create(&output, outputStructure);
 
         QCOMPARE(categoriesModel, output);
+    }
+
+    void shouldReactToModelReset_data()
+    {
+        QTest::addColumn<ModelStructure>("sourceStructure");
+
+        // Base items
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag, QString(), "cat1");
+        T t2(2, 1, "t2", "t1", "t2", InProgress, NoTag, QString(), "cat1, cat2");
+
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        QTest::newRow("clear model") << sourceStructure;
+    }
+
+
+    void shouldReactToModelReset()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        MockModel source;
+
+        //Kick up category manager
+        CategoryManager::instance().setModel(&source);
+
+        ModelUtils::create(&source, sourceStructure);
+
+        //create categoriesModel
+        TodoCategoriesModel categoriesModel;
+        ModelTest t2(&categoriesModel);
+
+        categoriesModel.setSourceModel(&source);
+
+        //WHEN
+        source.clearData();
+
+        //THEN
+        MockModel output;
+        TodoCategoriesModel* categoriesModelOutput = new TodoCategoriesModel();
+
+        categoriesModelOutput->setSourceModel(&output);
+
+        QAbstractItemModel* abstractModel = categoriesModelOutput;
+        QCOMPARE(categoriesModel, *abstractModel);
+        delete categoriesModelOutput;
     }
 };
 

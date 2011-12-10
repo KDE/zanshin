@@ -57,6 +57,7 @@ public:
     virtual QModelIndex mapToSource(const QModelIndex &proxyIndex) const;
     virtual QModelIndex mapFromSource(const QModelIndex &sourceIndex) const;
     QList<QModelIndex> mapFromSourceAll(const QModelIndex &sourceIndex) const;
+    virtual QModelIndex buddy(const QModelIndex &index) const;
 
     virtual void setSourceModel(QAbstractItemModel *model);
 
@@ -67,9 +68,13 @@ private slots:
     virtual void onRowsAboutToBeMoved(const QModelIndex &sourceParent, int sourceStart, int sourceEnd, const QModelIndex &destinationParent, int destinationRow);
     virtual void onRowsMoved(const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row);
 
+protected slots:
+    virtual void onModelReset();
+
 protected:
     virtual void init();
     virtual TodoNode *createInbox() const = 0;
+    virtual void resetInternalData();
 
     TodoNode *addChildNode(const QModelIndex &sourceIndex, TodoNode *parent);
 

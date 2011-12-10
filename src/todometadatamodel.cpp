@@ -40,6 +40,8 @@ TodoMetadataModel::TodoMetadataModel(QObject *parent)
             this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
     connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
+    connect(this, SIGNAL(modelReset()),
+            this, SLOT(onModelReset()));
 
     onSourceInsertRows(QModelIndex(), 0, rowCount()-1);
 }
@@ -54,9 +56,10 @@ Qt::ItemFlags TodoMetadataModel::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
     }
 
-    Qt::ItemFlags flags = sourceModel()->flags(mapToSource(index));
+    Qt::ItemFlags flags = Qt::NoItemFlags;
 
     if (index.isValid()) {
+        flags = sourceModel()->flags(mapToSource(index));
         Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
         if (index.column()==0) {
             Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
@@ -162,6 +165,11 @@ void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin,
 
         m_parentMap[uid] = relatedUid;
         m_childrenMap[relatedUid] << uid;
+
+
+        if (!m_indexMap.contains(relatedUid)) {
+            continue;
+        }
 
         // Emit dataChanged to notify that the todo is a project todo
         QModelIndex parentIndex = m_indexMap[relatedUid];
@@ -272,8 +280,9 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
     KCalCore::Todo::Ptr todo = todoFromItem(item);
 
     QStringList comments = todo->comments();
+    const int childCount = m_childrenMap.contains(todo->uid()) ? m_childrenMap[todo->uid()].count() : 0;
     if (comments.contains("X-Zanshin-Project")
-     || m_childrenMap[todo->uid()].count()>0) {
+     || childCount>0) {
         return Zanshin::ProjectTodo;
     } else {
         return Zanshin::StandardTodo;
@@ -323,6 +332,9 @@ QStringList TodoMetadataModel::ancestorsCategoriesFromItem(const Akonadi::Item &
     QStringList ancestors = ancestorsUidFromItem(item);
     QStringList categories;
     foreach (QString uid, ancestors) {
+        if (!m_indexMap.contains(uid)) {
+            continue;
+        }
         const QModelIndex &index = m_indexMap[uid];
         KCalCore::Todo::Ptr todo = todoFromIndex(index);
         if (todo) {
@@ -381,3 +393,11 @@ void TodoMetadataModel::setSourceModel(QAbstractItemModel *model)
 
     onSourceInsertRows(QModelIndex(), 0, rowCount() - 1);
 }
+
+void TodoMetadataModel::onModelReset()
+{
+    m_parentMap.clear();
+    m_childrenMap.clear();
+    m_indexMap.clear();
+}
+

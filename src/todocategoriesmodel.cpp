@@ -262,13 +262,17 @@ void TodoCategoriesModel::createCategoryNode(const QString &categoryPath)
     if (categoryPath.contains(CategoryManager::pathSeparator())) {
         QString parentCategory = categoryPath.left(categoryPath.lastIndexOf(CategoryManager::pathSeparator()));
         categoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
-        parentNode = m_categoryMap[parentCategory];
-        if (!parentNode) {
+
+        if (m_categoryMap.contains(parentCategory)) {
+            parentNode = m_categoryMap[parentCategory];
+        } else {
             CategoryManager::instance().addCategory(parentCategory);
+            Q_ASSERT(m_categoryMap.contains(parentCategory));
             parentNode = m_categoryMap[parentCategory];
         }
     }
 
+    Q_ASSERT(parentNode);
     int row = parentNode->children().size();
 
     beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
@@ -480,4 +484,15 @@ bool TodoCategoriesModel::setData(const QModelIndex &index, const QVariant &valu
     }
 
     return TodoProxyModelBase::setData(index, value, role);
+}
+
+void TodoCategoriesModel::resetInternalData()
+{
+    m_categoryRootNode = 0;
+    m_categoryMap.clear();
+    foreach(QString category, CategoryManager::instance().categories()) {
+        CategoryManager::instance().removeCategory(category);
+    }
+
+    TodoProxyModelBase::resetInternalData();
 }
