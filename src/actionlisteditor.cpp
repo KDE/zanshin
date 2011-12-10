@@ -199,8 +199,9 @@ void ActionListEditor::updateActions()
     if ( type==Zanshin::Collection ) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     } else if (type==Zanshin::Category) {
-        QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
-        collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        collection = Configuration::instance().defaultTodoCollection();
+    } else if (type==Zanshin::Topic) {
+        collection = Configuration::instance().defaultNoteCollection();
     } else {
         // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
         // information about the rights is not valid on retrieved items.
