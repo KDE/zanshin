@@ -260,6 +260,8 @@ void IncidenceItem::setTodoStatus(AbstractPimItem::ItemStatus status)
                 t->setCompleted(false);
                 t->setDtStart(KDateTime::currentLocalDateTime());
                 break;
+            default:
+                kDebug() << "tried to set unhandled status: " << status;
         }
         return;
     }

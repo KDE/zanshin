@@ -54,10 +54,6 @@ public:
     explicit ItemViewer(QWidget* parent, KXMLGUIClient *parentClient);
     virtual ~ItemViewer();
 
-protected:
-    //void focusOutEvent ( QFocusEvent * event );
-    //void focusInEvent ( QFocusEvent * event );
-
 public slots:
     /**
      * Set new Akonadi::Item in the viewer, this function also stores the (changed) content to the old item

@@ -59,10 +59,10 @@
 AbstractPimItem::AbstractPimItem(QObject *parent)
 : QObject(parent),
 m_dataFetched(false),
-m_itemOutdated(false),
-m_monitor(0),
 m_textIsRich(false),
-m_titleIsRich(false)
+m_titleIsRich(false),
+m_monitor(0),
+m_itemOutdated(false)
 {
 
 }
@@ -70,10 +70,10 @@ m_titleIsRich(false)
 AbstractPimItem::AbstractPimItem(const Akonadi::Item &item, QObject *parent)
 : QObject(parent),
 m_dataFetched(false),
-m_itemOutdated(false),
-m_monitor(0),
 m_textIsRich(false),
-m_titleIsRich(false)
+m_titleIsRich(false),
+m_monitor(0),
+m_itemOutdated(false)
 {
     m_item = item;
 }
@@ -81,10 +81,10 @@ m_titleIsRich(false)
 AbstractPimItem::AbstractPimItem(AbstractPimItem &item, QObject* parent)
 :   QObject(parent),
 m_dataFetched(false),
-m_itemOutdated(false),
-m_monitor(0),
 m_textIsRich(false),
-m_titleIsRich(false)
+m_titleIsRich(false),
+m_monitor(0),
+m_itemOutdated(false)
 {
     m_title = item.getTitle();
     m_textIsRich = item.textIsRich();

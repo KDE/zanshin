@@ -31,8 +31,7 @@
 
 
 GuiClient::GuiClient(const QString &xmlfile, QObject *parent)
-: QObject(parent),
-KXMLGUIClient(),
+: KXMLGUIClient(), QObject(parent),
 m_builder(0),
 m_factory(0)
 {

@@ -33,6 +33,7 @@
 
 #include <nepomuk/resourcewatcher.h>
 #include <nepomuk/datamanagement.h>
+#include <nepomuk/storeresourcesjob.h>
 
 #include <aneo.h>
 

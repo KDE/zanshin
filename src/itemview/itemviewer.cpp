@@ -80,10 +80,11 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
 :   QFrame(parent),
     KXMLGUIClient(parentClient),
     m_currentItem(0),
+    m_autosaveTimer(new QTimer(this)),
     m_autosaveTimeout(5000),
     m_itemContext(new ItemContext(this)),
-    ui_properties(new properties()),
-    ui_tags(new tags())
+    ui_tags(new tags()),
+    ui_properties(new properties())
 {
     setupUi(this);
 
@@ -135,7 +136,6 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
 
     setEnabled(false);
 
-    m_autosaveTimer = new QTimer(this);
     connect(m_autosaveTimer, SIGNAL(timeout()), this, SLOT(autosave()));
     QTimer::singleShot(0, this, SLOT(restoreState())); //delayed so we can check if the toolbar is visible or not
 }
