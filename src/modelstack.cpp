@@ -84,7 +84,7 @@ QAbstractItemModel *ModelStack::baseModel()
 
         Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder(this);
         changeRecorder->setCollectionMonitored(Akonadi::Collection::root());
-        changeRecorder->setMimeTypeMonitored("application/x-vnd.akonadi.calendar.todo");
+        changeRecorder->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Todo));
         changeRecorder->setCollectionFetchScope(collectionScope);
         changeRecorder->setItemFetchScope(itemScope);
         changeRecorder->setSession(session);
