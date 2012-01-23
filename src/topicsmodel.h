@@ -32,16 +32,13 @@ class Item;
 }
 
 namespace Nepomuk {
-namespace Types {
+    namespace Types {
+        class Property;
+    }
 
-class Property;
-}
-
-namespace Query {
-
-class Result;
-}
-
+    namespace Query {
+        class Result;
+    }
     class Resource;
 }
 
