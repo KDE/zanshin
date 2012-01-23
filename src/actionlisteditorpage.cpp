@@ -312,7 +312,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
         filter->setSourceModel(descendants);
 
         m_treeView->setModel(filter);
-        m_treeView->hideColumn(NotetakerModel::Status);
+        m_treeView->hideColumn(PimItemModel::Status);
     } else {
         m_treeView = new ActionListEditorView(this);
 
@@ -588,7 +588,7 @@ void ActionListEditorPage::removeItem(const QModelIndex &current)
         TodoHelpers::removeProject(this, current);
     }
     if (type == AbstractPimItem::Note) {
-        new Akonadi::ItemDeleteJob(current.data(EntityTreeModel::ItemRole).value<Akonadi::Item>());
+        new Akonadi::ItemDeleteJob(current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
     }
 }
 

@@ -40,7 +40,7 @@
 #include <Nepomuk/Vocabulary/NCAL>
 #include <aneo.h>
 
-#include "notetakermodel.h"
+#include "pimitemmodel.h"
 #include "tagmanager.h"
 #include "pimitem.h"
 
@@ -229,21 +229,21 @@ bool NoteSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelInd
             //Everyting with a date
             //Todos/Events without date at end TODO: this is not explicitly handled as also a valid date is returned for items without due/event-date. 
             //But since the modification time is never in the future, it works implicitly correct.
-            int leftStatus = left.sibling(left.row(), NotetakerModel::Status).data(NotetakerModel::SortRole).value<int>();
-            int rightStatus = right.sibling(right.row(), NotetakerModel::Status).data(NotetakerModel::SortRole).value<int>();
+            int leftStatus = left.sibling(left.row(), PimItemModel::Status).data(PimItemModel::SortRole).value<int>();
+            int rightStatus = right.sibling(right.row(), PimItemModel::Status).data(PimItemModel::SortRole).value<int>();
             //TODO items with duedate (or duedate within 1 week) have higher priority than todos without due date
             if (leftStatus == rightStatus) {
-                return left.sibling(left.row(), NotetakerModel::Date).data(NotetakerModel::SortRole).value<QDateTime>() < right.sibling(right.row(), NotetakerModel::Date).data(NotetakerModel::SortRole).value<QDateTime>();
+                return left.sibling(left.row(), PimItemModel::Date).data(PimItemModel::SortRole).value<QDateTime>() < right.sibling(right.row(), PimItemModel::Date).data(PimItemModel::SortRole).value<QDateTime>();
             }
             return leftStatus > rightStatus;
         }
     }
     switch (sortColumn()) {
-        case NotetakerModel::Date: { //sort by last primary date
-            return left.data(NotetakerModel::SortRole).value<QDateTime>() < right.data(NotetakerModel::SortRole).value<QDateTime>();
+        case PimItemModel::Date: { //sort by last primary date
+            return left.data(PimItemModel::SortRole).value<QDateTime>() < right.data(PimItemModel::SortRole).value<QDateTime>();
         }
-        case NotetakerModel::Status: { //sort by status
-            return left.data(NotetakerModel::SortRole).value<int>() < right.data(NotetakerModel::SortRole).value<int>();
+        case PimItemModel::Status: { //sort by status
+            return left.data(PimItemModel::SortRole).value<int>() < right.data(PimItemModel::SortRole).value<int>();
         }
         default: {
             if (left.data(Qt::DisplayRole).value<QString>().compare(right.data(Qt::DisplayRole).value<QString>(), Qt::CaseInsensitive) < 0) {

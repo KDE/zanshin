@@ -26,9 +26,9 @@
 #define SEARCHFILTERCACHECPROXY_H
 
 #include "kidentityproxymodel_copy.h"
-#include "notetakermodel.h"
 #include <Nepomuk/Query/Result>
 #include <KUrl>
+#include <akonadi/item.h>
 
 class QUrl;
 namespace Nepomuk {
@@ -48,15 +48,7 @@ class SearchFilterCache: public KIdentityProxyModelCopy
     Q_OBJECT
 public:
     explicit SearchFilterCache(QObject* parent = 0);
-
-   /* enum CustomRoles {
-        TopicRole = NotetakerModel::UserRole,
-        TagRole, //Returns a taglist for the item
-        TopicRole, //returns a topic list for the item
-        FulltextQueryMatch,
-        NepomukProxyUserRole
-    };*/
-
+    
     void setFulltextSearch(const QString &);
     bool isFulltextMatch(const Akonadi::Item &) const;
     void setTopicFilter(const QList<KUrl> &topicList, bool noTopic);

@@ -30,7 +30,7 @@
 #include <QModelIndex>
 #include <kdatetime.h>
 #include "abstractpimitem.h"
-#include "notetakermodel.h"
+#include "pimitemmodel.h"
 
 namespace Akonadi {
 class ItemSearchJob;
@@ -75,7 +75,7 @@ public:
     void setFilterStrategy(FilterStrategy);
 
     enum SortRoles {
-        ColumnSorting = NotetakerModel::UserRole, //Normal sorting by column, sorts by column 0 by default
+        ColumnSorting = PimItemModel::UserRole, //Normal sorting by column, sorts by column 0 by default
         StatusDateSorting, //First by status, then by date, used by work view
         UpcomingSorting, //Used by the upcoming view
         PrioritySorting //used by the search view

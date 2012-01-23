@@ -35,7 +35,7 @@
 #include "todonodemanager.h"
 #include <tagmanager.h>
 #include <QMimeData>
-#include <notetakermodel.h>
+#include <pimitemmodel.h>
 #include <abstractpimitem.h>
 #include <queries.h>
 #include <pimitem.h>
@@ -349,9 +349,9 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
             continue;
         }
 
-        AbstractPimItem::ItemType type = (AbstractPimItem::ItemType) sourceChildIndex.data(NotetakerModel::ItemTypeRole).toInt();
+        AbstractPimItem::ItemType type = (AbstractPimItem::ItemType) sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt();
         if (type & AbstractPimItem::All) {
-            QList <QUrl> topics = m_itemTopics[sourceChildIndex.data(NotetakerModel::ItemIdRole).value<Akonadi::Item::Id>()];
+            QList <QUrl> topics = m_itemTopics[sourceChildIndex.data(PimItemModel::ItemIdRole).value<Akonadi::Item::Id>()];
             if (topics.isEmpty()) {
                 //kDebug() << "add node to inbox";
                 addChildNode(sourceChildIndex, m_inboxNode);

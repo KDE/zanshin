@@ -43,7 +43,6 @@
 #include "pimitemdelegate.h"
 #include <qvarlengtharray.h>
 #include <QTimer>
-#include "notetakermodel.h"
 
 TreeHeaderView::TreeHeaderView(Qt::Orientation orientation, QWidget* parent): QHeaderView(orientation, parent)
 {

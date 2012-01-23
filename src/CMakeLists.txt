@@ -22,7 +22,6 @@ set(zanshin_core_SRCS
    todoproxymodelbase.cpp
    todotreemodel.cpp
    todometadatamodel.cpp
-   todomodel.cpp
    todonode.cpp
    todonodemanager.cpp
    topicsmodel.cpp

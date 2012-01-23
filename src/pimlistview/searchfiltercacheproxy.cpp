@@ -193,7 +193,7 @@ void SearchFilterCache::newFulltextMatches(QList< Nepomuk::Query::Result > resul
 {
     kDebug();
     foreach (const Nepomuk::Query::Result &result, results) {
-        Entity::Id id = Nepomuk::Variant::fromNode(result.requestProperty(Vocabulary::ANEO::akonadiItemId())).toString().toInt();
+        Akonadi::Entity::Id id = Nepomuk::Variant::fromNode(result.requestProperty(Vocabulary::ANEO::akonadiItemId())).toString().toInt();
         Akonadi::Item item(id);
         Q_ASSERT(item.isValid());
         kDebug() << item.id();

@@ -36,15 +36,14 @@
 #include "selectionproxymodel.h"
 #include "todocategoriesmodel.h"
 #include "todometadatamodel.h"
-#include "todomodel.h"
 #include "todotreemodel.h"
-#include "notetakermodel.h"
 #include "abstractpimitem.h"
 #include "notesortfilterproxymodel.h"
 
 #include "kdescendantsproxymodel.h"
 #include <Akonadi/EntityDisplayAttribute>
 #include "topicsmodel.h"
+#include "pimitemmodel.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -90,7 +89,7 @@ QAbstractItemModel *ModelStack::baseModel()
         changeRecorder->setItemFetchScope(itemScope);
         changeRecorder->setSession(session);
 
-        m_entityModel = new TodoModel(changeRecorder, this);
+        m_entityModel = new PimItemModel(changeRecorder, this);
         TodoMetadataModel *metadataModel = new TodoMetadataModel(this);
         metadataModel->setSourceModel(m_entityModel);
         m_baseModel = metadataModel;
@@ -239,13 +238,13 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
     m_knowledgeMonitor->fetchCollection( true );
     m_knowledgeMonitor->setItemFetchScope( scope );
     //m_knowledgeMonitor->setCollectionFetchScope( collectionScope );
-    m_knowledgeMonitor->setCollectionMonitored(Collection::root());
+    m_knowledgeMonitor->setCollectionMonitored(Akonadi::Collection::root());
     m_knowledgeMonitor->setSession(session);
 
     //m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Incidence), true);
     m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
 
-    NotetakerModel *notetakerModel = new NotetakerModel ( m_knowledgeMonitor, this );
+    PimItemModel *notetakerModel = new PimItemModel ( m_knowledgeMonitor, this );
     notetakerModel->setSupportedDragActions(Qt::MoveAction);
     //notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
     //m_knowledgeBaseModel = notetakerModel;
@@ -312,7 +311,7 @@ QAbstractItemModel *ModelStack::knowledgeCollectionsModel()
         Akonadi::Session *session = new Akonadi::Session("zanshin", this);
         Akonadi::ChangeRecorder *collectionsMonitor = new Akonadi::ChangeRecorder( this );
         collectionsMonitor->fetchCollection( true );
-        collectionsMonitor->setCollectionMonitored(Collection::root());
+        collectionsMonitor->setCollectionMonitored(Akonadi::Collection::root());
         collectionsMonitor->setSession(session);
         collectionsMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
 
