@@ -312,6 +312,9 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
         filter->setSourceModel(descendants);
 
         m_treeView->setModel(filter);
+        m_treeView->hideColumn(PimItemModel::Project);
+        m_treeView->hideColumn(PimItemModel::Collection);
+        m_treeView->hideColumn(PimItemModel::Contexts);
         m_treeView->hideColumn(PimItemModel::Status);
     } else {
         m_treeView = new ActionListEditorView(this);
@@ -492,7 +495,7 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
         m_noCollectionStateCache = QByteArray::fromBase64(config.readEntry(key+"/NoCollection", QByteArray()));
     }
 
-    if (!m_treeView->isColumnHidden(4)) {
+    if (!m_treeView->isColumnHidden(PimItemModel::Collection)) {
         m_treeView->header()->restoreState(m_normalStateCache);
     } else {
         m_treeView->header()->restoreState(m_noCollectionStateCache);
@@ -623,12 +626,12 @@ void ActionListEditorPage::onAutoHideColumns()
 {
     switch (m_mode) {
     case Zanshin::ProjectMode:
-        m_treeView->hideColumn(1);
-        m_treeView->showColumn(2);
+        m_treeView->hideColumn(PimItemModel::Project);
+        m_treeView->showColumn(PimItemModel::Contexts);
         break;
     case Zanshin::CategoriesMode:
-        m_treeView->showColumn(1);
-        m_treeView->hideColumn(2);
+        m_treeView->showColumn(PimItemModel::Project);
+        m_treeView->hideColumn(PimItemModel::Contexts);
         break;
     }
 }
@@ -640,13 +643,13 @@ void ActionListEditorPage::setCollectionColumnHidden(bool hidden)
     if (!state.isEmpty()) {
         m_treeView->header()->restoreState(state);
     } else {
-        m_treeView->setColumnHidden(4, hidden);
+        m_treeView->setColumnHidden(PimItemModel::Collection, hidden);
     }
 }
 
 void ActionListEditorPage::onColumnsGeometryChanged()
 {
-    if (!m_treeView->isColumnHidden(4)) {
+    if (!m_treeView->isColumnHidden(PimItemModel::Collection)) {
         m_normalStateCache = m_treeView->header()->saveState();
     } else {
         m_noCollectionStateCache = m_treeView->header()->saveState();
