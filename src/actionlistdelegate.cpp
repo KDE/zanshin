@@ -36,6 +36,8 @@
 #include "globaldefs.h"
 #include "kdescendantsproxymodel.h"
 #include "kdateedit.h"
+#include <klocale.h>
+#include <kglobal.h>
 #include <kmodelindexproxymapper.h>
 #include "modelstack.h"
 
@@ -65,6 +67,20 @@ QSize ActionListDelegate::sizeHint(const QStyleOptionViewItem &option,
     }
 
     return res;
+}
+
+QString ActionListDelegate::displayText(const QVariant &value, const QLocale &locale) const
+{
+    switch (value.userType()) {
+    case QVariant::Date:
+        return KGlobal::locale()->formatDate(value.toDate(), KLocale::FancyLongDate);
+    case QVariant::Time:
+        return KGlobal::locale()->formatLocaleTime(value.toTime(), KLocale::TimeWithoutSeconds);
+    case QVariant::DateTime:
+        return KGlobal::locale()->formatDateTime(value.toDateTime());
+    default:
+        return QStyledItemDelegate::displayText(value, locale);
+    }
 }
 
 void ActionListDelegate::paint(QPainter *painter,
