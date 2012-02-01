@@ -101,7 +101,7 @@ QVariant TodoModel::entityData(const Akonadi::Item &item, int column, int role) 
         case 2:
             return todoFromItem(item)->categories().join(", ");
         case 3:
-            return todoFromItem(item)->dtDue().date().toString();
+            return todoFromItem(item)->dtDue().date();
         case 4:
             return modelIndexForCollection(this, item.parentCollection()).data();
         }
