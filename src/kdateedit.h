@@ -116,6 +116,7 @@ class KDateEdit : public QComboBox
     virtual bool eventFilter( QObject *, QEvent * );
     virtual void mousePressEvent( QMouseEvent * );
     virtual void focusOutEvent( QFocusEvent * );
+    virtual void wheelEvent( QWheelEvent * );
     virtual void keyPressEvent( QKeyEvent * );
 
     /**

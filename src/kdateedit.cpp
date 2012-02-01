@@ -278,6 +278,28 @@ void KDateEdit::focusOutEvent( QFocusEvent *e )
   QComboBox::focusOutEvent( e );
 }
 
+void KDateEdit::wheelEvent( QWheelEvent *e )
+{
+  if ( mReadOnly || e->delta() == 0 ) {
+    return;
+  }
+  QDate date = parseDate();
+  if ( !date.isValid() ) {
+    return;
+  }
+  // QWheelEvent::delta reports +/-120 per step on most mice, but according to the documentation some
+  // mice may send smaller deltas. We're just interested in the direction, though...
+  date = date.addDays( e->delta() > 0 ? 1 : -1 );
+  if ( assignDate( date ) ) {
+    e->accept();
+    updateView();
+    emit dateChanged( date );
+    emit dateEntered( date );
+    return;
+  }
+  QComboBox::wheelEvent( e );
+}
+
 void KDateEdit::keyPressEvent(QKeyEvent* e)
 {
   QDate date;
