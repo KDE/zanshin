@@ -124,15 +124,15 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                 case Summary:
                     return pimitem->getTitle();
                 case Project:
-                    if (pimitem->itemType() & AbstractPimItem::Todo) {
+                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
                         return m_summaryMap[todoFromItem(item)->relatedTo()];
                     }
-                    break;
+                    return QString();
                 case Contexts:
-                    if (pimitem->itemType() & AbstractPimItem::Todo) {
+                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
                         return todoFromItem(item)->categories().join(", ");
                     }
-                    break;
+                    return QString();
                 case Date:
                     return DateStringBuilder::getShortDate(pimitem->getPrimaryDate());
                 case Collection:
@@ -148,6 +148,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                         case AbstractPimItem::Attention:
                             return QBrush(Qt::red);
                     }
+                    kDebug() << "unhandled status" << item.id() << pimitem->getStatus();
                     break;
             }
             break;
@@ -157,12 +158,12 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                 case Summary:
                     return pimitem->getTitle();
                 case Project:
-                    if (todoFromItem(item) && pimitem->itemType() & AbstractPimItem::Todo) {
+                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
                         return m_summaryMap[todoFromItem(item)->relatedTo()];
                     }
                     break;
                 case Contexts:
-                    if (todoFromItem(item) && pimitem->itemType() & AbstractPimItem::Todo) {
+                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
                         return todoFromItem(item)->categories();
                     }
                     break;
