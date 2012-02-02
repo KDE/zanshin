@@ -394,7 +394,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
         KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
         descendantProxyModel->setSourceModel(models->collectionsModel());
         descendantProxyModel->setDisplayAncestorData(true);
-        m_todoColsModel = new CollectionsFilterProxyModel("application/x-vnd.akonadi.calendar.todo", m_comboBox);
+        m_todoColsModel = new CollectionsFilterProxyModel(AbstractPimItem::mimeType(AbstractPimItem::Todo), m_comboBox);
         m_todoColsModel->setSourceModel(descendantProxyModel);
         m_defaultCollectionId = Configuration::instance().defaultTodoCollection().id();
     }
