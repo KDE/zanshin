@@ -79,23 +79,22 @@ void TreeHeaderView::resizeSections(int width)
     * Therefore I do this manually now.
     * The sizehint is implemented in notetakermodel
     */
-    //kDebug() << event->size();
-    //kDebug() << sectionSizeHint(1) << sectionSizeHint(2);
-    //kDebug() << sectionSizeFromContents(1) << sectionSizeFromContents(2);
-    const int one = sectionSizeHint(1);
-    const int two = sectionSizeHint(2);
     const int minimumSize = 200;
-    int size = width - one - two;
+    int size = width;
+    for (int i = 0; i < count(); i++) {
+        const int logicalIndex = visualIndex(i);
+        if (logicalIndex < 0) {
+            continue;
+        }
+        const int s = sectionSizeHint(logicalIndex);
+        size -= s;
+        resizeSection(logicalIndex, s);
+    }
     if (size < minimumSize) {
         size = minimumSize;
     }
     resizeSection(0, size);
-    resizeSection(1, one);
-    resizeSection(2, two);
 
-    //kDebug() << size << one << two;
-    //kDebug() << sectionSize(0) << sectionSize(1) << sectionSize(2);
-    //kDebug() << geometry().width();
 }
 
 
