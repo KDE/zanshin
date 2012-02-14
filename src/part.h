@@ -37,6 +37,7 @@ class Part : public KParts::ReadOnlyPart
 
 public:
     Part(QWidget *parentWidget, QObject *parent, const QVariantList &);
+    ~Part();
 
 protected:
     virtual bool openFile();

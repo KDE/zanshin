@@ -23,6 +23,7 @@
 
 #include "part.h"
 
+#include <KDE/KConfigGroup>
 #include <KDE/KPluginFactory>
 #include <KDE/KStandardDirs>
 
@@ -49,6 +50,15 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     setComponentData(PartFactory::componentData());
     setWidget(m_splitter);
     setXMLFile(KStandardDirs::locate("data", "zanshin/zanshin_part.rc"));
+
+    KConfigGroup cg(componentData().config(), "KontactPart");
+    m_component->restoreColumnsState(cg);
+}
+
+Part::~Part()
+{
+    KConfigGroup cg(componentData().config(), "KontactPart");
+    m_component->saveColumnsState(cg);
 }
 
 bool Part::openFile()
