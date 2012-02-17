@@ -26,7 +26,7 @@
 KAboutData Zanshin::getAboutData()
 {
     KAboutData about("zanshin", "zanshin",
-                     ki18n("Zanshin Todo"), "0.2",
+                     ki18n("Zanshin Todo"), "0.2.1",
                      ki18n("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutData::License_GPL_V3,
                      ki18n("Copyright 2008-2010, Kevin Ottens <ervin@kde.org>"));
