@@ -93,7 +93,7 @@ target_link_libraries(utils
   ${KDE4_KDECORE_LIBS}
   ${KDEPIMLIBS_AKONADI_LIBS}
   calendarsupport
-  akonadi_next
+#   akonadi_next
   akonadi-notes
   nepomukdatamanagement
   nepomukquery
