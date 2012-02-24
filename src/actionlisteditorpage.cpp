@@ -41,7 +41,6 @@
 #include "globaldefs.h"
 #include "todotreeview.h"
 #include "todohelpers.h"
-#include "treeview.h"
 #include <KXMLGUIClient>
 #include <notesortfilterproxymodel.h>
 #include <note.h>
@@ -51,6 +50,7 @@
 #include <QToolBar>
 #include <Akonadi/ItemDeleteJob>
 #include <searchbar.h>
+#include <pimitemdelegate.h>
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 
@@ -297,8 +297,8 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     layout()->setContentsMargins(0, 0, 0, 0);
 
     if ( mode == Zanshin::KnowledgeMode) {
-        m_treeView = new TreeView(client, this);
-
+        m_treeView = new ActionListEditorView(this);
+        m_treeView->setItemDelegate(new PimItemDelegate(m_treeView));
         NoteSortFilterProxyModel *notefilter = new NoteSortFilterProxyModel(this);
         notefilter->setSourceModel(model);
 
@@ -312,10 +312,6 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
         filter->setSourceModel(descendants);
 
         m_treeView->setModel(filter);
-        m_treeView->hideColumn(PimItemModel::Project);
-        m_treeView->hideColumn(PimItemModel::Collection);
-        m_treeView->hideColumn(PimItemModel::Contexts);
-        m_treeView->hideColumn(PimItemModel::Status);
     } else {
         m_treeView = new ActionListEditorView(this);
 
@@ -628,10 +624,18 @@ void ActionListEditorPage::onAutoHideColumns()
     case Zanshin::ProjectMode:
         m_treeView->hideColumn(PimItemModel::Project);
         m_treeView->showColumn(PimItemModel::Contexts);
+        m_treeView->hideColumn(PimItemModel::Status);
         break;
     case Zanshin::CategoriesMode:
         m_treeView->showColumn(PimItemModel::Project);
         m_treeView->hideColumn(PimItemModel::Contexts);
+        m_treeView->hideColumn(PimItemModel::Status);
+        break;
+    case Zanshin::KnowledgeMode:
+        m_treeView->hideColumn(PimItemModel::Status);
+        m_treeView->hideColumn(PimItemModel::Collection);
+        m_treeView->hideColumn(PimItemModel::Contexts);
+        m_treeView->hideColumn(PimItemModel::Project);
         break;
     }
 }
