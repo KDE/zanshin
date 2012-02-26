@@ -50,7 +50,6 @@
 #include <QToolBar>
 #include <Akonadi/ItemDeleteJob>
 #include <searchbar.h>
-#include <pimitemdelegate.h>
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 
@@ -296,56 +295,44 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     setLayout(new QVBoxLayout(this));
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    if ( mode == Zanshin::KnowledgeMode) {
-        m_treeView = new ActionListEditorView(this);
-        m_treeView->setItemDelegate(new PimItemDelegate(m_treeView));
-        NoteSortFilterProxyModel *notefilter = new NoteSortFilterProxyModel(this);
-        notefilter->setSourceModel(model);
+    m_treeView = new ActionListEditorView(this);
+    
+    NoteSortFilterProxyModel *notefilter = new NoteSortFilterProxyModel(this);
+    notefilter->setSourceModel(model);
+    
+    SearchBar *searchBar = new SearchBar(notefilter, this);
+    layout()->addWidget(searchBar);
 
-        SearchBar *searchBar = new SearchBar(notefilter, this);
-        layout()->addWidget(searchBar);
+    GroupLabellingProxyModel *labelling = new GroupLabellingProxyModel(this);
+    labelling->setSourceModel(notefilter);
 
-        ActionListEditorModel *descendants = new ActionListEditorModel(this);
-        descendants->setSourceModel(notefilter);
+    GroupSortingProxyModel *sorting = new GroupSortingProxyModel(this);
+    sorting->setSourceModel(labelling);
 
-        TypeFilterProxyModel *filter = new TypeFilterProxyModel(this);
-        filter->setSourceModel(descendants);
+    ActionListEditorModel *descendants = new ActionListEditorModel(this);
+    descendants->setSourceModel(sorting);
 
-        m_treeView->setModel(filter);
-    } else {
-        m_treeView = new ActionListEditorView(this);
+    TypeFilterProxyModel *filter = new TypeFilterProxyModel(this);
+    filter->setSourceModel(descendants);
 
-        GroupLabellingProxyModel *labelling = new GroupLabellingProxyModel(this);
-        labelling->setSourceModel(model);
+    m_treeView->setModel(filter);
+    m_treeView->setItemDelegate(new ActionListDelegate(models, m_treeView));
 
-        GroupSortingProxyModel *sorting = new GroupSortingProxyModel(this);
-        sorting->setSourceModel(labelling);
+    m_treeView->header()->setSortIndicatorShown(true);
+    m_treeView->setSortingEnabled(true);
+    m_treeView->sortByColumn(0, Qt::AscendingOrder);
 
-        ActionListEditorModel *descendants = new ActionListEditorModel(this);
-        descendants->setSourceModel(sorting);
+    m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    m_treeView->setItemsExpandable(false);
+    m_treeView->setRootIsDecorated(false);
+    m_treeView->setEditTriggers(m_treeView->editTriggers() | QAbstractItemView::DoubleClicked);
 
-        TypeFilterProxyModel *filter = new TypeFilterProxyModel(this);
-        filter->setSourceModel(descendants);
-
-        m_treeView->setModel(filter);
-        m_treeView->setItemDelegate(new ActionListDelegate(models, m_treeView));
-
-        m_treeView->header()->setSortIndicatorShown(true);
-        m_treeView->setSortingEnabled(true);
-        m_treeView->sortByColumn(0, Qt::AscendingOrder);
-
-        m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        m_treeView->setItemsExpandable(false);
-        m_treeView->setRootIsDecorated(false);
-        m_treeView->setEditTriggers(m_treeView->editTriggers() | QAbstractItemView::DoubleClicked);
-
-        connect(m_treeView->model(), SIGNAL(modelReset()),
-                m_treeView, SLOT(expandAll()));
-        connect(m_treeView->model(), SIGNAL(layoutChanged()),
-                m_treeView, SLOT(expandAll()));
-        connect(m_treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-              m_treeView, SLOT(expandAll()));
-    }
+    connect(m_treeView->model(), SIGNAL(modelReset()),
+            m_treeView, SLOT(expandAll()));
+    connect(m_treeView->model(), SIGNAL(layoutChanged()),
+            m_treeView, SLOT(expandAll()));
+    connect(m_treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+            m_treeView, SLOT(expandAll()));
 
     layout()->addWidget(m_treeView);
 
