@@ -47,9 +47,9 @@
 #include "tagmanager.h"
 #include "pimitem.h"
 
-#include "todo.h"
-#include "event.h"
-#include "htmldocument.h"
+// #include "todo.h"
+// #include "event.h"
+// #include "htmldocument.h"
 #include <nepomuk/resourcewatcher.h>
 #include <Nepomuk/Vocabulary/NCAL>
 #include <Soprano/Vocabulary/NAO>

@@ -35,7 +35,6 @@
 #include <nepomuk/datamanagement.h>
 #include <nepomuk/storeresourcesjob.h>
 
-#include <aneo.h>
 
 #include <QStringList>
 
