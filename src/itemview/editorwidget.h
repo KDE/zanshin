@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,38 +21,45 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
 
-#include <KDE/KXmlGuiWindow>
+#ifndef EDITORWIDGET_H
+#define EDITORWIDGET_H
 
-class ModelStack;
-class MainComponent;
+#include <QWidget>
 
-class MainWindow : public KXmlGuiWindow
+class KToolBar;
+class QToolButton;
+class KRichTextWidget;
+class KXMLGUIClient;
+
+/**
+ * An editorwidget, with the toolbox buttons
+ */
+class EditorWidget: public QWidget
 {
     Q_OBJECT
-
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+    EditorWidget(QWidget *parent = 0);
 
-protected slots:
-    void saveAutoSaveSettings();
+    KRichTextWidget *editor();
+    void setXmlGuiClient(KXMLGUIClient *);
+
+public slots:
+    void toggleToolbarVisibility();
 
 protected:
-    virtual void closeEvent(QCloseEvent *event);
+    virtual void changeEvent(QEvent* );
+    virtual void keyPressEvent(QKeyEvent* );
+
+signals:
+    void fullscreenToggled(bool);
+    void toolbarVisibilityToggled(bool);
 
 private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
-    void setupEditor();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
+    KRichTextWidget *m_editor;
+    QToolButton *m_fullscreenButton;
+    KToolBar *m_toolbar;
+    const QColor m_defaultColor;
 };
 
-#endif
-
+#endif // EDITORWIDGET_H

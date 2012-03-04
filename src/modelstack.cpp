@@ -36,10 +36,14 @@
 #include "selectionproxymodel.h"
 #include "todocategoriesmodel.h"
 #include "todometadatamodel.h"
-#include "todomodel.h"
 #include "todotreemodel.h"
+#include "abstractpimitem.h"
+#include "notesortfilterproxymodel.h"
 
 #include "kdescendantsproxymodel.h"
+#include <Akonadi/EntityDisplayAttribute>
+#include "topicsmodel.h"
+#include "pimitemmodel.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -55,7 +59,14 @@ ModelStack::ModelStack(QObject *parent)
       m_categoriesSelectionModel(0),
       m_categoriesComboModel(0),
       m_treeSelection(0),
-      m_categorySelection(0)
+      m_categorySelection(0),
+      m_knowledgeMonitor(0),
+      m_knowledgeBaseModel(0),
+      m_knowledgeSelectionModel(0),
+      m_knowledgeSidebarModel(0),
+      m_topicsTreeModel(0),
+      m_topicSelection(0),
+      m_knowledgeCollectionsModel(0)
 {
 }
 
@@ -73,12 +84,12 @@ QAbstractItemModel *ModelStack::baseModel()
 
         Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder(this);
         changeRecorder->setCollectionMonitored(Akonadi::Collection::root());
-        changeRecorder->setMimeTypeMonitored("application/x-vnd.akonadi.calendar.todo");
+        changeRecorder->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Todo));
         changeRecorder->setCollectionFetchScope(collectionScope);
         changeRecorder->setItemFetchScope(itemScope);
         changeRecorder->setSession(session);
 
-        m_entityModel = new TodoModel(changeRecorder, this);
+        m_entityModel = new PimItemModel(changeRecorder, this);
         TodoMetadataModel *metadataModel = new TodoMetadataModel(this);
         metadataModel->setSourceModel(m_entityModel);
         m_baseModel = metadataModel;
@@ -204,4 +215,112 @@ void ModelStack::setItemCategorySelectionModel(QItemSelectionModel *selection)
     if (m_categoriesSelectionModel) {
         static_cast<SelectionProxyModel*>(m_categoriesSelectionModel)->setSelectionModel(m_categorySelection);
     }
+}
+
+QAbstractItemModel* ModelStack::knowledgeBaseModel()
+{
+    if (m_knowledgeBaseModel) {
+        return m_knowledgeBaseModel;
+    }
+    
+    Akonadi::ItemFetchScope scope;
+    scope.fetchFullPayload( true ); // Need to have full item when adding it to the internal data structure
+    scope.fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
+    //scope.fetchAttribute<Akonadi::EntityDeletedAttribute>(true);
+    //scope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
+
+    //Akonadi::CollectionFetchScope collectionScope;
+    //collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
+
+    Akonadi::Session *session = new Akonadi::Session("zanshin", this);
+
+    m_knowledgeMonitor = new Akonadi::ChangeRecorder( this );
+    m_knowledgeMonitor->fetchCollection( true );
+    m_knowledgeMonitor->setItemFetchScope( scope );
+    //m_knowledgeMonitor->setCollectionFetchScope( collectionScope );
+    m_knowledgeMonitor->setCollectionMonitored(Akonadi::Collection::root());
+    m_knowledgeMonitor->setSession(session);
+
+    //m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Incidence), true);
+    m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
+
+    PimItemModel *notetakerModel = new PimItemModel ( m_knowledgeMonitor, this );
+    notetakerModel->setSupportedDragActions(Qt::MoveAction);
+    //notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
+    //m_knowledgeBaseModel = notetakerModel;
+
+    //FIXME because invisible collectionfetch is broken we use this instead
+    KDescendantsProxyModel *desc = new KDescendantsProxyModel(this);
+    desc->setSourceModel(notetakerModel);
+    Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
+    collectionsModel->addMimeTypeExclusionFilter( Akonadi::Collection::mimeType() );
+    collectionsModel->setSourceModel(desc);
+    m_knowledgeBaseModel = collectionsModel;
+
+    return m_knowledgeBaseModel;
+}
+
+QAbstractItemModel *ModelStack::topicsTreeModel()
+{
+    if (!m_topicsTreeModel) {
+        TopicsModel *treeModel = new TopicsModel(this);
+        treeModel->setSourceModel(knowledgeBaseModel());
+        m_topicsTreeModel = treeModel;
+    }
+    return m_topicsTreeModel;
+}
+
+QAbstractItemModel *ModelStack::knowledgeSidebarModel()
+{
+    if (!m_knowledgeSidebarModel) {
+        SideBarModel *sideBarModel = new SideBarModel(this);
+        sideBarModel->setSourceModel(topicsTreeModel());
+        m_knowledgeSidebarModel = sideBarModel;
+    }
+    return m_knowledgeSidebarModel;
+}
+
+void ModelStack::setKnowledgeSelectionModel(QItemSelectionModel *selection)
+{
+    m_topicSelection = selection;
+    if (m_knowledgeSelectionModel) {
+        static_cast<SelectionProxyModel*>(m_knowledgeSelectionModel)->setSelectionModel(m_topicSelection);
+    }
+}
+
+QItemSelectionModel* ModelStack::knowledgeSelection()
+{
+    return m_topicSelection;
+}
+
+
+QAbstractItemModel* ModelStack::knowledgeSelectionModel()
+{
+    if (!m_knowledgeSelectionModel) {
+        SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
+        categoriesSelectionModel->setSelectionModel(m_topicSelection);
+        categoriesSelectionModel->setSourceModel(topicsTreeModel());
+        m_knowledgeSelectionModel = categoriesSelectionModel;
+    }
+    return m_knowledgeSelectionModel;
+}
+
+QAbstractItemModel *ModelStack::knowledgeCollectionsModel()
+{
+    if (!m_knowledgeCollectionsModel) {
+        Akonadi::Session *session = new Akonadi::Session("zanshin", this);
+        Akonadi::ChangeRecorder *collectionsMonitor = new Akonadi::ChangeRecorder( this );
+        collectionsMonitor->fetchCollection( true );
+        collectionsMonitor->setCollectionMonitored(Akonadi::Collection::root());
+        collectionsMonitor->setSession(session);
+        collectionsMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
+
+        Akonadi::EntityTreeModel *model = new Akonadi::EntityTreeModel(collectionsMonitor, this);
+
+        Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
+        collectionsModel->addMimeTypeInclusionFilter( Akonadi::Collection::mimeType() );
+        collectionsModel->setSourceModel(model);
+        m_knowledgeCollectionsModel = collectionsModel;
+    }
+    return m_knowledgeCollectionsModel;
 }

@@ -42,17 +42,22 @@
 #include "configdialog.h"
 #include "globaldefs.h"
 #include "sidebar.h"
+#include <itemviewer.h>
+#include "itemselectorproxy.h"
+#include "modelstack.h"
 
 MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient *client)
-    : QObject(parent)
+    : QObject(parent),
+        m_itemViewer(0)
 {
     KActionCollection *ac = client->actionCollection();
 
     m_sidebar = new SideBar(models, ac, parent);
+    m_itemViewer = new ItemViewer(parent, client);
     m_editor = new ActionListEditor(models,
                                     m_sidebar->projectSelection(),
                                     m_sidebar->categoriesSelection(),
-                                    ac, parent);
+                                    ac, parent, client, m_itemViewer);
     setupActions(ac);
 
     ac->action("project_mode")->trigger();
@@ -89,6 +94,14 @@ void MainComponent::setupActions(KActionCollection *ac)
     action->setData(Zanshin::CategoriesMode);
     modeGroup->addAction(action);
 
+    action = ac->addAction("knowledge_mode", this, SLOT(onModeSwitch()));
+    action->setText(i18n("Knowledge View"));
+    action->setIcon(KIcon("view-pim-notes"));
+    action->setShortcut(Qt::CTRL | Qt::Key_K);
+    action->setCheckable(true);
+    action->setData(Zanshin::KnowledgeMode);
+    modeGroup->addAction(action);
+
     action = ac->addAction("synchronize_all", this, SLOT(onSynchronizeAll()));
     action->setText(i18n("Synchronize All"));
     action->setIcon(KIcon("view-refresh"));
@@ -120,6 +133,8 @@ void MainComponent::onSynchronizeAll()
 
         if (agent.type().mimeTypes().contains("application/x-vnd.akonadi.calendar.todo")) {
             agent.synchronize();
+        } else if (agent.type().mimeTypes().contains(AbstractPimItem::mimeType(AbstractPimItem::Note))) {
+            agent.synchronize();
         }
     }
 }
@@ -128,4 +143,9 @@ void MainComponent::showConfigDialog()
 {
     ConfigDialog dialog(static_cast<QWidget*>(parent()));
     dialog.exec();
+}
+
+ItemViewer* MainComponent::itemViewer() const
+{
+    return m_itemViewer;
 }

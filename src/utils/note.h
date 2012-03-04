@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,38 +21,63 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef KJOTS_NOTE_H
+#define KJOTS_NOTE_H
 
-#include <KDE/KXmlGuiWindow>
+#include <QtCore/QString>
 
-class ModelStack;
-class MainComponent;
+#include <kdatetime.h>
 
-class MainWindow : public KXmlGuiWindow
+#include <Akonadi/Item>
+#include <QString>
+
+#include "abstractpimitem.h"
+
+/**
+ *
+ */
+class Note : public AbstractPimItem
 {
-    Q_OBJECT
-
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+    /**
+     * For creating a new note
+     */
+    Note(QObject *parent = 0);
 
-protected slots:
-    void saveAutoSaveSettings();
+    /**
+     * For acessing existing notes
+     */
+    Note(const Akonadi::Item&, QObject *parent = 0);
+
+    /**
+     * For converting other items into notes
+     */
+    Note(AbstractPimItem&, QObject *parent = 0);
+
+    //~Note();
+
+    QString mimeType();
+
+    KDateTime getPrimaryDate();
+    QString getIconName();
+
+    virtual bool hasValidPayload();
+
+    /**
+     * Returns Note
+     */
+    ItemType itemType();
 
 protected:
-    virtual void closeEvent(QCloseEvent *event);
+    /*QString m_text;
+    QString m_title;
+    KDateTime m_creationDate;*/
 
-private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
-    void setupEditor();
+    virtual ItemStatus getStatus() const;
 
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
+    void commitData();
+    void fetchData();
 };
 
-#endif
 
+#endif

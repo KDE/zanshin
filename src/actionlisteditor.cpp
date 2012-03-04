@@ -44,7 +44,6 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QStackedWidget>
 
-#include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
 #include "categorymanager.h"
@@ -52,37 +51,22 @@
 #include "modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
+#include <itemviewer.h>
+#include <itemselectorproxy.h>
 
-class TodoCollectionsProxyModel : public QSortFilterProxyModel
-{
-public:
-    TodoCollectionsProxyModel(QObject *parent = 0)
-        : QSortFilterProxyModel(parent)
-    {
-        setDynamicSortFilter(true);
-    }
 
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
-    {
-        QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
-        Akonadi::Collection col = sourceChild.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-
-        return col.isValid()
-            && col.contentMimeTypes().contains("application/x-vnd.akonadi.calendar.todo")
-            && (col.rights() & (Akonadi::Collection::CanChangeItem|Akonadi::Collection::CanCreateItem));
-    }
-};
 
 ActionListEditor::ActionListEditor(ModelStack *models,
                                    QItemSelectionModel *projectSelection,
                                    QItemSelectionModel *categoriesSelection,
                                    KActionCollection *ac,
-                                   QWidget *parent)
+                                   QWidget *parent, KXMLGUIClient *client, ItemViewer *itemViewer)
     : QWidget(parent),
       m_projectSelection(projectSelection),
       m_categoriesSelection(categoriesSelection),
+      m_knowledgeSelection(models->knowledgeSelection()),
       m_models(models),
-      m_defaultCollectionId(-1)
+      m_selectorProxy(new ItemSelectorProxy(this))
 {
     setLayout(new QVBoxLayout(this));
 
@@ -94,79 +78,44 @@ ActionListEditor::ActionListEditor(ModelStack *models,
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
     connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
+    connect(m_knowledgeSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this, SLOT(onSideBarSelectionChanged(QModelIndex)));
 
     models->setItemTreeSelectionModel(projectSelection);
     models->setItemCategorySelectionModel(categoriesSelection);
 
-    QWidget *bottomBar = new QWidget(this);
-    layout()->addWidget(bottomBar);
-    bottomBar->setLayout(new QHBoxLayout(bottomBar));
-    bottomBar->layout()->setContentsMargins(0, 0, 0, 0);
-
-    m_addActionEdit = new KLineEdit(bottomBar);
-    m_addActionEdit->installEventFilter(this);
-    bottomBar->layout()->addWidget(m_addActionEdit);
-    m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
-    m_addActionEdit->setClearButtonShown(true);
-    connect(m_addActionEdit, SIGNAL(returnPressed()),
-            this, SLOT(onAddActionRequested()));
-
     setupActions(ac);
 
-    createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode);
-    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode);
+    createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode, client);
+    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode, client);
+    createPage(models->knowledgeSelectionModel(), models, Zanshin::KnowledgeMode, client);
 
-    m_comboBox = new ActionListComboBox(bottomBar);
-    m_comboBox->view()->setTextElideMode(Qt::ElideLeft);
-    m_comboBox->setMinimumContentsLength(20);
-    m_comboBox->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-
-    connect(m_comboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onComboBoxChanged()));
-
-    KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
-    descendantProxyModel->setSourceModel(models->collectionsModel());
-    descendantProxyModel->setDisplayAncestorData(true);
-
-    TodoCollectionsProxyModel *todoColsModel = new TodoCollectionsProxyModel(m_comboBox);
-    todoColsModel->setSourceModel(descendantProxyModel);
-
-    KConfigGroup config(KGlobal::config(), "General");
-    m_defaultCollectionId = config.readEntry("defaultCollection", -1);
-
-    if (m_defaultCollectionId > 0) {
-        if (!selectDefaultCollection(todoColsModel, QModelIndex(),
-                                     0, todoColsModel->rowCount()-1)) {
-            connect(todoColsModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                    this, SLOT(onRowInsertedInComboBox(QModelIndex,int,int)));
-        }
-    }
-
-    m_comboBox->setModel(todoColsModel);
-    bottomBar->layout()->addWidget(m_comboBox);
-
-    QToolBar *toolBar = new QToolBar(bottomBar);
-    toolBar->setIconSize(QSize(16, 16));
-    bottomBar->layout()->addWidget(toolBar);
-    toolBar->addAction(m_cancelAdd);
-
-    m_cancelAdd->setEnabled(false);
+    connect(m_selectorProxy, SIGNAL(itemSelected(Akonadi::Item)), itemViewer, SLOT(setItem(const Akonadi::Item &)));
+    //connect(&AkonadiCollection::instance(), SIGNAL(itemCreated(const Akonadi::Item &)), m_selectorProxy, SLOT(selectItem(const Akonadi::Item &)));
 
     updateActions();
     setMode(Zanshin::ProjectMode);
-    onComboBoxChanged();
+    m_cancelAdd->setEnabled(false);
 }
 
 void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
 {
+    kDebug() << mode;
     switch (mode) {
     case Zanshin::ProjectMode:
         m_stack->setCurrentIndex(0);
         onSideBarSelectionChanged(m_projectSelection->currentIndex());
+        m_selectorProxy->setView(currentPage()->treeView());
         break;
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
         onSideBarSelectionChanged(m_categoriesSelection->currentIndex());
+        m_selectorProxy->setView(currentPage()->treeView());
+        break;
+    case Zanshin::KnowledgeMode:
+        m_stack->setCurrentIndex(2);
+        onSideBarSelectionChanged(m_knowledgeSelection->currentIndex());
+        m_selectorProxy->setView(currentPage()->treeView());
         break;
     }
 }
@@ -175,67 +124,36 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
 {
     int type = index.data(Zanshin::ItemTypeRole).toInt();
 
-    m_comboBox->setVisible(type == Zanshin::Inbox
+    currentPage()->setCollectionSelectorVisible(type == Zanshin::Inbox
                         || type == Zanshin::Category
-                        || type == Zanshin::CategoryRoot);
+                        || type == Zanshin::CategoryRoot
+                        || type == Zanshin::Topic
+                        || type == Zanshin::TopicRoot);
 
     currentPage()->setCollectionColumnHidden(type!=Zanshin::Inbox);
 
     currentPage()->selectFirstIndex();
 }
 
-void ActionListEditor::onComboBoxChanged()
-{
-    QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
-    Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
 
-    KConfigGroup config(KGlobal::config(), "General");
-    config.writeEntry("defaultCollection", QString::number(collection.id()));
-    config.sync();
-
-    for (int i=0; i<m_stack->count(); i++) {
-        page(i)->setDefaultCollection(collection);
-    }
-}
-
-bool ActionListEditor::selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end)
-{
-    for (int i = begin; i <= end; i++) {
-        QModelIndex collectionIndex = model->index(i, 0, parent);
-        Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        if (collection.id() == m_defaultCollectionId) {
-            m_comboBox->setCurrentIndex(i);
-            m_defaultCollectionId = -1;
-            return true;
-        }
-    }
-    return false;
-}
-
-void ActionListEditor::onRowInsertedInComboBox(const QModelIndex &parent, int begin, int end)
-{
-    QAbstractItemModel *model = static_cast<QAbstractItemModel*>(sender());
-    if (selectDefaultCollection(model, parent, begin, end)) {
-        disconnect(this, SLOT(onRowInsertedInComboBox(QModelIndex,int,int)));
-    }
-}
-
-void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode)
+void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode, KXMLGUIClient *client)
 {
     QList<QAction*> contextActions;
-    contextActions << m_add
-                   << m_remove
-                   << m_move
-                   << m_promote;
+    if (mode == Zanshin::CategoriesMode || mode == Zanshin::ProjectMode) {
+        contextActions << m_add
+                      << m_remove
+                      << m_move
+                      << m_promote;
+    }
 
     if (mode==Zanshin::CategoriesMode) {
         contextActions << m_dissociate;
     }
-
-    ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, m_stack);
+    ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, QList<QAction*>() << m_cancelAdd, m_stack, client);
 
     connect(page->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(updateActions()));
+    //connect(page->treeView(), SIGNAL(currentChanged(Akonadi::Item)), this, SIGNAL(currentChanged(Akonadi::Item)));
 
     m_stack->addWidget(page);
 }
@@ -250,7 +168,7 @@ void ActionListEditor::setupActions(KActionCollection *ac)
     }
 
     m_cancelAdd = ac->addAction("editor_cancel_action", m_stack, SLOT(setFocus()));
-    connect(m_cancelAdd, SIGNAL(triggered()), m_addActionEdit, SLOT(clear()));
+    connect(m_cancelAdd, SIGNAL(triggered()), this, SLOT(clearActionEdit()));
     m_cancelAdd->setText(i18n("Cancel New Action"));
     m_cancelAdd->setIcon(KIcon("edit-undo"));
     m_cancelAdd->setShortcut(Qt::Key_Escape);
@@ -283,8 +201,9 @@ void ActionListEditor::updateActions()
     if ( type==Zanshin::Collection ) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     } else if (type==Zanshin::Category) {
-        QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
-        collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        collection = Configuration::instance().defaultTodoCollection();
+    } else if (type==Zanshin::Topic) {
+        collection = Configuration::instance().defaultNoteCollection();
     } else if (type==Zanshin::StandardTodo) {
         QModelIndex parent = index;
         int parentType = type;
@@ -294,37 +213,38 @@ void ActionListEditor::updateActions()
         }
 
         if (parentType!=Zanshin::ProjectTodo) {
-            QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
-            collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+            collection = Configuration::instance().defaultTodoCollection();
         } else {
             collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
         }
-
     } else {
         // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
         // information about the rights is not valid on retrieved items.
         collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
     }
 
-
     m_add->setEnabled(index.isValid()
                   && (collection.rights() & Akonadi::Collection::CanCreateItem)
                   && (type==Zanshin::ProjectTodo
                    || type==Zanshin::Category
+                   || type==Zanshin::Topic
                    || type==Zanshin::Inbox
                    || type==Zanshin::StandardTodo));
 
-    m_addActionEdit->setEnabled(m_add->isEnabled());
+    currentPage()->setActionEditEnabled(m_add->isEnabled());
 
     m_remove->setEnabled(index.isValid()
                      && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                      && ((type==Zanshin::StandardTodo)
                        || type==Zanshin::ProjectTodo
-                       || type==Zanshin::Category));
+                       || type==Zanshin::Category
+                       || type==Zanshin::Topic));
+
     m_move->setEnabled(index.isValid()
                    && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                    && (type==Zanshin::StandardTodo
                     || type==Zanshin::Category
+                    || type==Zanshin::Topic
                     || type==Zanshin::ProjectTodo));
 
     m_promote->setEnabled(index.isValid()
@@ -337,15 +257,7 @@ void ActionListEditor::updateActions()
                           && type==Zanshin::StandardTodo);
 }
 
-void ActionListEditor::onAddActionRequested()
-{
-    QString summary = m_addActionEdit->text().trimmed();
-    m_addActionEdit->setText(QString());
-
-    currentPage()->addNewTodo(summary);
-}
-
-void ActionListEditor::onRemoveAction()
+void ActionListEditor::removeTodo()
 {
     QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
 
@@ -420,8 +332,28 @@ void ActionListEditor::onRemoveAction()
 
     if (!currentTodos.isEmpty()) {
         foreach (QModelIndex index, currentTodos) {
-            currentPage()->removeTodo(index);
+            currentPage()->removeItem(index);
         }
+    }
+}
+
+void ActionListEditor::removeNote()
+{
+    QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
+    if (!currentIndexes.isEmpty()) {
+        foreach (QModelIndex index, currentIndexes) {
+            currentPage()->removeItem(index);
+        }
+    }
+}
+
+
+void ActionListEditor::onRemoveAction()
+{
+    if (currentPage()->mode()==Zanshin::KnowledgeMode) {
+        removeNote();
+    } else {
+        removeTodo();
     }
 }
 
@@ -494,17 +426,18 @@ void ActionListEditor::onDissociateAction()
 
 void ActionListEditor::focusActionEdit()
 {
-    QPoint pos = m_addActionEdit->geometry().topLeft();
-    pos = m_addActionEdit->parentWidget()->mapToGlobal(pos);
-
-    KPassivePopup *popup = KPassivePopup::message(i18n("Type and press enter to add an action"), m_addActionEdit);
-    popup->move(pos-QPoint(0, popup->height()));
-    m_addActionEdit->setFocus();
+    currentPage()->focusActionEdit();
 }
+
+void ActionListEditor::clearActionEdit()
+{
+    currentPage()->clearActionEdit();
+}
+
 
 bool ActionListEditor::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched==m_addActionEdit) {
+    if (watched==currentPage()->m_addActionEdit) {
         if (event->type()==QEvent::FocusIn) {
             m_cancelAdd->setEnabled(true);
         } else  if (event->type()==QEvent::FocusOut) {

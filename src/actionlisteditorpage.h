@@ -30,6 +30,10 @@
 
 #include "globaldefs.h"
 
+class CollectionsFilterProxyModel;
+class QComboBox;
+class KLineEdit;
+class KXMLGUIClient;
 class KConfigGroup;
 class QAbstractItemModel;
 class QItemSelectionModel;
@@ -44,16 +48,17 @@ namespace Akonadi
 class ActionListEditorPage : public QWidget
 {
     Q_OBJECT
-
+    friend class ActionListEditor;
 public:
     ActionListEditorPage(QAbstractItemModel *model,
                          ModelStack *models,
                          Zanshin::ApplicationMode mode,
                          const QList<QAction*> &contextActions,
-                         QWidget *parent=0);
+                         const QList<QAction*> &toolbarActions,
+                         QWidget *parent, KXMLGUIClient *client);
 
     QItemSelectionModel *selectionModel() const;
-
+    Akonadi::EntityTreeView *treeView() const;
     void saveColumnsState(KConfigGroup &config, const QString &key) const;
     void restoreColumnsState(const KConfigGroup &config, const QString &key);
 
@@ -61,30 +66,77 @@ public:
 
     void setCollectionColumnHidden(bool hidden);
 
-    void setDefaultCollection(const Akonadi::Collection &collection);
-
     bool selectSiblingIndex(const QModelIndex &index);
     void selectFirstIndex();
+    
+    void setCollectionSelectorVisible(bool);
+    
+    void focusActionEdit();
+    void clearActionEdit();
+    void setActionEditEnabled(bool);
 
 public slots:
+    void addNewItem(const QString &summary);
+    void addNewNote(const QString &summary);
     void addNewTodo(const QString &summary);
-    void removeCurrentTodo();
-    void removeTodo(const QModelIndex &current);
+    void removeCurrentItem();
+    void removeItem(const QModelIndex &current);
     void dissociateTodo(const QModelIndex &current);
+    void onAddActionRequested();
 
 private slots:
     void onAutoHideColumns();
     void onColumnsGeometryChanged();
     void onSelectFirstIndex();
+    void onComboBoxChanged();
+    void onRowInsertedInComboBox(const QModelIndex &index, int start, int end);
+    void setDefaultCollection(const Akonadi::Collection &collection);
+    void setDefaultNoteCollection(const Akonadi::Collection &collection);
 
 private:
+    bool selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end, Akonadi::Collection::Id defaultCol);
+    void selectDefaultCollection(const Akonadi::Collection &collection);
+
     Akonadi::EntityTreeView *m_treeView;
     Zanshin::ApplicationMode m_mode;
 
+    KLineEdit *m_addActionEdit;
+    QComboBox *m_comboBox;
+    
     QByteArray m_normalStateCache;
     QByteArray m_noCollectionStateCache;
 
     Akonadi::Collection m_defaultCollection;
+    Akonadi::Collection m_defaultNoteCollection;
+    
+    qint64 m_defaultCollectionId;
+    
+    CollectionsFilterProxyModel *m_todoColsModel;
+
+
+};
+
+class Configuration : public QObject
+{
+    Q_OBJECT
+private:
+    Configuration();
+    Configuration(const Configuration &);
+public:
+    static Configuration &instance() {
+        static Configuration i;
+        return i;
+    }
+    
+    void setDefaultTodoCollection(const Akonadi::Collection &collection);
+    Akonadi::Collection defaultTodoCollection();
+
+    void setDefaultNoteCollection(const Akonadi::Collection &collection);
+    Akonadi::Collection defaultNoteCollection();
+    
+signals:
+    void defaultTodoCollectionChanged(Akonadi::Collection);
+    void defaultNoteCollectionChanged(Akonadi::Collection);
 };
 
 #endif

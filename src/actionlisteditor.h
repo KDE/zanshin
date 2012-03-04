@@ -28,7 +28,11 @@
 #include <QtGui/QWidget>
 
 #include "globaldefs.h"
+#include <KXMLGUIClient>
 
+class CollectionsFilterProxyModel;
+class ItemViewer;
+class ItemSelectorProxy;
 class ActionListEditorPage;
 class KAction;
 class KActionCollection;
@@ -48,7 +52,7 @@ public:
     ActionListEditor(ModelStack *models,
                      QItemSelectionModel *projectSelection,
                      QItemSelectionModel *categoriesSelection,
-                     KActionCollection *ac, QWidget *parent=0);
+                     KActionCollection *ac, QWidget *parent, KXMLGUIClient *client, ItemViewer *itemviewer);
 
     void setMode(Zanshin::ApplicationMode mode);
 
@@ -57,23 +61,25 @@ public:
 
 protected:
     virtual bool eventFilter(QObject *watched, QEvent *event);
+/*signals:
+    void currentChanged(const Akonadi::Item &);*/
 
 private slots:
     void updateActions();
-    void onAddActionRequested();
     void onRemoveAction();
     void onMoveAction();
     void onPromoteAction();
     void onDissociateAction();
     void focusActionEdit();
+    void clearActionEdit();
     void onSideBarSelectionChanged(const QModelIndex &index);
-    void onComboBoxChanged();
-    void onRowInsertedInComboBox(const QModelIndex &index, int start, int end);
+
 
 private:
-    void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode);
+    void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode, KXMLGUIClient *guiClient);
     void setupActions(KActionCollection *ac);
-    bool selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end);
+    void removeTodo();
+    void removeNote();
 
     ActionListEditorPage *currentPage() const;
     ActionListEditorPage *page(int idx) const;
@@ -81,9 +87,8 @@ private:
     QStackedWidget *m_stack;
     QItemSelectionModel *m_projectSelection;
     QItemSelectionModel *m_categoriesSelection;
+    QItemSelectionModel *m_knowledgeSelection;
 
-    KLineEdit *m_addActionEdit;
-    QComboBox *m_comboBox;
 
     KAction *m_add;
     KAction *m_cancelAdd;
@@ -93,8 +98,8 @@ private:
     KAction *m_dissociate;
 
     ModelStack *m_models;
-
-    qint64 m_defaultCollectionId;
+    ItemSelectorProxy *m_selectorProxy;
+    
 };
 
 #endif

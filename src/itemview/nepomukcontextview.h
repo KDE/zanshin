@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,38 +21,29 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
 
-#include <KDE/KXmlGuiWindow>
+#ifndef NEPOMUKCONTEXTVIEW_H
+#define NEPOMUKCONTEXTVIEW_H
 
-class ModelStack;
-class MainComponent;
+#include <QTreeView>
 
-class MainWindow : public KXmlGuiWindow
+#include <QList>
+#include <Nepomuk/Resource>
+
+class QContextMenuEvent;
+class KXMLGUIClient;
+
+class NepomukContextView : public QTreeView
 {
     Q_OBJECT
-
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
-
-protected slots:
-    void saveAutoSaveSettings();
-
+    explicit NepomukContextView(KXMLGUIClient *client, QWidget *parent = 0);
+    QList <Nepomuk::Resource> selectedResources();
 protected:
-    virtual void closeEvent(QCloseEvent *event);
+    virtual void contextMenuEvent(QContextMenuEvent* );
 
 private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
-    void setupEditor();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
+    KXMLGUIClient *m_guiClient;
 };
 
-#endif
-
+#endif // NEPOMUKCONTEXTVIEW_H

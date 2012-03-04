@@ -99,7 +99,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::CheckStateRole:
-        if (index.column()==0 && itemTypeFromItem(item)==Zanshin::StandardTodo) {
+        if (todoFromItem(item) && index.column()==0 && itemTypeFromItem(item)==Zanshin::StandardTodo) {
             return todoFromItem(item)->isCompleted() ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();

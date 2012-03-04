@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,38 +21,36 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#ifndef TOOLBOX_H
+#define TOOLBOX_H
 
-#include <KDE/KXmlGuiWindow>
+#include <QtGui/QWidget>
 
-class ModelStack;
-class MainComponent;
-
-class MainWindow : public KXmlGuiWindow
+/**
+ * A fully collapsible toolbox
+ * 
+ */
+class Toolbox : public QWidget
 {
     Q_OBJECT
-
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+    explicit Toolbox(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    virtual ~Toolbox();
+    /**
+     * Adds the widget to the end of the toolbox
+     * The contents margins of the widget are modified.
+     */
+    void addWidget(QWidget *widget, const QString &title);
+    int count();
+    int currentIndex();
+    /// -1 collapses all widgets
+    void activateWidget(int index);
 
-protected slots:
-    void saveAutoSaveSettings();
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
-private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
-    void setupEditor();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
+public slots:
+    void collapseAll();
 };
 
-#endif
 
+
+
+#endif // TOOLBOX_H

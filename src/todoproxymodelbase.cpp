@@ -138,6 +138,12 @@ QVariant TodoProxyModelBase::headerData(int section, Qt::Orientation orientation
 
 QVariant TodoProxyModelBase::data(const QModelIndex &index, int role) const
 {
+    if (!index.isValid()) {
+        kDebug() << "invalid index: " << index << role;
+        return QVariant();
+    }
+
+    Q_ASSERT(index.model() == this);
     TodoNode *node = m_manager->nodeForIndex(index);
 
     if (node == 0) {
@@ -190,8 +196,14 @@ QList<QModelIndex> TodoProxyModelBase::mapFromSourceAll(const QModelIndex &sourc
 QModelIndex TodoProxyModelBase::mapFromSource(const QModelIndex &sourceIndex) const
 {
     if (m_mappingType==MultiMapping) {
-        kError() << "Never call mapFromSource() for a MultiMapping model";
-        return QModelIndex();
+        kWarning() << "Never call mapFromSource() for a MultiMapping model";
+        //This is useful for selecting an item in the list
+        //If we just return an empty index we break EntityTreeModel::modelIndexesForItem
+        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
+        if (nodes.isEmpty()) {
+            return QModelIndex();
+        }
+        return  m_manager->indexForNode(nodes.first(), sourceIndex.column());
     }
 
     TodoNode *node = m_manager->nodeForSourceIndex(sourceIndex);
@@ -203,15 +215,15 @@ void TodoProxyModelBase::setSourceModel(QAbstractItemModel *model)
     init();
 
     if (sourceModel()) {
-        connect(sourceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+        disconnect(sourceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
                 this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
-        connect(sourceModel(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+        disconnect(sourceModel(), SIGNAL(rowsInserted(QModelIndex,int,int)),
                 this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
-        connect(sourceModel(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+        disconnect(sourceModel(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
                 this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
-        connect(sourceModel(), SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
+        disconnect(sourceModel(), SIGNAL(rowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)),
                 this, SLOT(onRowsAboutToBeMoved(QModelIndex,int,int,QModelIndex,int)));
-        connect(sourceModel(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+        disconnect(sourceModel(), SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
                 this, SLOT(onRowsMoved(QModelIndex,int,int,QModelIndex,int)));
         connect(sourceModel(), SIGNAL(modelReset()),
                 this, SLOT(onModelReset()));

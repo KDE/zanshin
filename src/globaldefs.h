@@ -31,7 +31,8 @@ namespace Zanshin
 {
     enum ApplicationMode {
         ProjectMode = 0,
-        CategoriesMode = 1
+        CategoriesMode = 1,
+        KnowledgeMode = 2
     };
 
     enum ItemType
@@ -41,7 +42,9 @@ namespace Zanshin
         Category,
         Collection,
         Inbox,
-        CategoryRoot
+        CategoryRoot,
+        Topic,
+        TopicRoot
     };
 
     enum Roles {
@@ -55,6 +58,7 @@ namespace Zanshin
         ChildUidsRole,
         ChildIndexesRole,
         CategoryPathRole,
+        UriRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };
 

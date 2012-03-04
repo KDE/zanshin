@@ -40,6 +40,7 @@
 #include "globaldefs.h"
 #include "maincomponent.h"
 #include "sidebar.h"
+#include "itemviewer.h"
 
 MainWindow::MainWindow(ModelStack *models, QWidget *parent)
     : KXmlGuiWindow(parent),
@@ -47,6 +48,7 @@ MainWindow::MainWindow(ModelStack *models, QWidget *parent)
 {
     setupSideBar();
     setupCentralWidget();
+    setupEditor();
     setupActions();
 
     setupGUI(QSize(1024, 600), ToolBar | Keys | Save | Create);
@@ -73,6 +75,16 @@ void MainWindow::setupSideBar()
     dock->setWidget(m_component->sideBar());
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 }
+
+void MainWindow::setupEditor()
+{
+    QDockWidget *dock = new QDockWidget(this);
+    dock->setObjectName("Editor");
+    dock->setFeatures(dock->features() & ~QDockWidget::DockWidgetClosable);
+    dock->setWidget(m_component->itemViewer());
+    addDockWidget(Qt::RightDockWidgetArea, dock);
+}
+
 
 void MainWindow::setupActions()
 {

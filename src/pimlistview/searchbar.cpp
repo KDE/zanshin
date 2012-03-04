@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,38 +21,31 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
+#include "searchbar.h"
 
-#include <KDE/KXmlGuiWindow>
+#include <QSortFilterProxyModel>
+#include <QTimer>
+#include "notesortfilterproxymodel.h"
 
-class ModelStack;
-class MainComponent;
-
-class MainWindow : public KXmlGuiWindow
+SearchBar::SearchBar(NoteSortFilterProxyModel *filter, QWidget* parent)
+: QLineEdit(parent),
+ m_filterProxy(filter)
 {
-    Q_OBJECT
+    connect (this, SIGNAL(textChanged(QString)), this, SLOT(evaluateInput()));
+    setPlaceholderText("Filter...");
+    m_timer = new QTimer(this);
+    m_timer->setSingleShot(true);
+    connect(m_timer, SIGNAL(timeout()), SLOT(validateCommand()));
+    connect(this, SIGNAL(returnPressed()), SLOT(validateCommand()));
+}
 
-public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+void SearchBar::evaluateInput()
+{
+    m_timer->start(300);
+}
 
-protected slots:
-    void saveAutoSaveSettings();
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
-private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
-    void setupEditor();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
-};
-
-#endif
+void SearchBar::validateCommand()
+{
+    m_filterProxy->setFilterString(text());
+}
 

@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,38 +21,26 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
 
-#include <KDE/KXmlGuiWindow>
+#ifndef GUICLIENT_H
+#define GUICLIENT_H
 
-class ModelStack;
-class MainComponent;
+#include <kxmlguiclient.h>
 
-class MainWindow : public KXmlGuiWindow
+class KXMLGUIBuilder;
+class KXMLGUIFactory;
+class QWidget;
+
+class GuiClient : public QObject, public virtual KXMLGUIClient
 {
-    Q_OBJECT
-
 public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
-
-protected slots:
-    void saveAutoSaveSettings();
-
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
+    explicit GuiClient(const QString &xmlfile, QObject *);
+    virtual ~GuiClient();
+    void setupActions(QWidget *widget);
 private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
-    void setupEditor();
+    KXMLGUIBuilder *m_builder;
+    KXMLGUIFactory *m_factory;
 
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
 };
 
-#endif
-
+#endif // GUICLIENT_H

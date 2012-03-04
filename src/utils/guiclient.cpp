@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2008-2010 Kevin Ottens <ervin@kde.org>
+   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,38 +21,38 @@
    USA.
 */
 
-#ifndef ZANSHIN_MAINWINDOW_H
-#define ZANSHIN_MAINWINDOW_H
 
-#include <KDE/KXmlGuiWindow>
+#include "guiclient.h"
 
-class ModelStack;
-class MainComponent;
+#include <kxmlguibuilder.h>
+#include <kxmlguifactory.h>
 
-class MainWindow : public KXmlGuiWindow
+#include <QWidget>
+
+
+GuiClient::GuiClient(const QString &xmlfile, QObject *parent)
+: KXMLGUIClient(), QObject(parent),
+m_builder(0),
+m_factory(0)
 {
-    Q_OBJECT
+    setXMLFile(xmlfile);
+}
 
-public:
-    MainWindow(ModelStack *models, QWidget *parent = 0);
+GuiClient::~GuiClient()
+{
+    if (m_factory) {
+        m_factory->removeClient(this);
+        m_factory->deleteLater();
+    }
+    if (m_builder) {
+        delete m_builder;
+    }
+}
 
-protected slots:
-    void saveAutoSaveSettings();
 
-protected:
-    virtual void closeEvent(QCloseEvent *event);
-
-private:
-    void setupCentralWidget();
-    void setupSideBar();
-    void setupActions();
-    void setupEditor();
-
-    void saveColumnsState();
-    void restoreColumnsState();
-
-    MainComponent *m_component;
-};
-
-#endif
-
+void GuiClient::setupActions(QWidget* widget)
+{
+    m_builder = new KXMLGUIBuilder(widget);
+    m_factory = new KXMLGUIFactory(m_builder);
+    m_factory->addClient(this);
+}
