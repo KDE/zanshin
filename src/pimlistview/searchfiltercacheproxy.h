@@ -25,7 +25,7 @@
 #ifndef SEARCHFILTERCACHECPROXY_H
 #define SEARCHFILTERCACHECPROXY_H
 
-#include "kidentityproxymodel_copy.h"
+#include <kidentityproxymodel.h>
 #include <Nepomuk/Query/Result>
 #include <KUrl>
 #include <akonadi/item.h>
@@ -43,7 +43,7 @@ class QueryServiceClient;
  * Make data from nepomuk accessible in the model
  * 
  */
-class SearchFilterCache: public KIdentityProxyModelCopy
+class SearchFilterCache: public KIdentityProxyModel
 {
     Q_OBJECT
 public:

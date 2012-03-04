@@ -52,7 +52,7 @@
 #include <Soprano/Vocabulary/NAO>
 
 SearchFilterCache::SearchFilterCache(QObject* parent)
-: KIdentityProxyModelCopy(parent),
+: KIdentityProxyModel(parent),
     m_queryServiceClient(new Nepomuk::Query::QueryServiceClient(this)),
     m_topicQueryServiceClient(new Nepomuk::Query::QueryServiceClient(this))
 {
