@@ -25,9 +25,17 @@
 #include "incidenceitem.h"
 
 #include <Akonadi/EntityDisplayAttribute>
-#include <kcalcore/incidence.h>
 
-#include "calendarsupport/utils.h"
+#include <kcalcore/event.h>
+#include <kcalcore/incidence.h>
+#include <kcalcore/journal.h>
+#include <kcalcore/todo.h>
+
+template<class T>
+T unwrap(const Akonadi::Item &item)
+{
+    return item.hasPayload<T>() ? item.payload<T>() : T();
+}
 
 IncidenceItem::IncidenceItem(AbstractPimItem::ItemType type, QObject *parent)
 : AbstractPimItem(parent)
@@ -72,7 +80,7 @@ IncidenceItem::IncidenceItem(AbstractPimItem::ItemType type, AbstractPimItem &it
 
 void IncidenceItem::commitData()
 {
-    KCalCore::Incidence::Ptr old = CalendarSupport::incidence(m_item);
+    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item);
     if (!old) {
         kDebug() << "invalid item, cannot commit data";
         return;
@@ -129,7 +137,7 @@ void IncidenceItem::fetchData()
 
 QString IncidenceItem::mimeType()
 {
-    const KCalCore::Incidence::Ptr old = CalendarSupport::incidence(m_item); //same as hasValidPayload + getting payload
+    const KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item); //same as hasValidPayload + getting payload
     if (!old) {
         kWarning() << "invalid item";
         return QString();
@@ -142,7 +150,7 @@ bool IncidenceItem::hasStartDate() const
     if (!m_item.hasPayload()) {
         kWarning() << "no payload";
     }
-    if ( const KCalCore::Event::Ptr t = CalendarSupport::event(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
         return t->dtStart().isValid();
     }
     return false;
@@ -155,7 +163,7 @@ KDateTime IncidenceItem::getEventStart()
         kWarning() << "no payload";
         //        fetchPayload(true);
     }
-    if ( const KCalCore::Event::Ptr t = CalendarSupport::event(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
         return t->dtStart();
     }
     kWarning() << "not an event, or no start date";
@@ -164,7 +172,7 @@ KDateTime IncidenceItem::getEventStart()
 
 void IncidenceItem::setEventStart(const KDateTime &date)
 {
-    if ( const KCalCore::Event::Ptr t = CalendarSupport::event(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
         t->setDtStart(date);
     }
 }
@@ -172,8 +180,8 @@ void IncidenceItem::setEventStart(const KDateTime &date)
 
 void IncidenceItem::setParentTodo(const IncidenceItem &parent)
 {
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
-        const KCalCore::Todo::Ptr p = CalendarSupport::todo(parent.getItem());
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
+        const KCalCore::Todo::Ptr p = unwrap<KCalCore::Todo::Ptr>(parent.getItem());
         t->setRelatedTo(p->uid());
     }
 }
@@ -181,7 +189,7 @@ void IncidenceItem::setParentTodo(const IncidenceItem &parent)
 
 void IncidenceItem::setDueDate(const KDateTime &date, bool hasDueDate)
 {
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         t->setDtDue(date);
         t->setHasDueDate(hasDueDate);
     }
@@ -193,7 +201,7 @@ KDateTime IncidenceItem::getDueDate()
         kWarning() << "no payload";
         //        fetchPayload(true);
     }
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         if (t->hasDueDate()) {
             //kDebug() << "due date: " << t->dtDue();
             return t->dtDue();
@@ -208,7 +216,7 @@ bool IncidenceItem::hasDueDate() const
     if (!m_item.hasPayload()) {
         kWarning() << "no payload";
     }
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         return t->hasDueDate();
     }
     return false;
@@ -221,7 +229,7 @@ bool IncidenceItem::isComplete()
         kDebug() << "no payload";
         //        fetchPayload(true);
     }
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         return t->isCompleted();
     }
     kWarning() << "not a todo";
@@ -234,7 +242,7 @@ void IncidenceItem::setComplete(bool state)
         kDebug() << "no payload";
         //        fetchPayload(true);
     }
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         return t->setCompleted(state);
     }
     kWarning() << "not a todo";
@@ -247,7 +255,7 @@ void IncidenceItem::setTodoStatus(AbstractPimItem::ItemStatus status)
         //        fetchPayload(true);
     }
     //kDebug() << status;
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         switch (status) {
             case Complete:
                 t->setCompleted(true);
@@ -275,7 +283,7 @@ AbstractPimItem::ItemStatus IncidenceItem::getStatus() const
         kDebug() << "no payload";
         //        fetchPayload(true);
     }
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         if (t->isCompleted()) {
             //kDebug() << "iscomplete";
             return Complete;
@@ -290,7 +298,7 @@ AbstractPimItem::ItemStatus IncidenceItem::getStatus() const
         //kDebug() << "Later";
         return Later;
     }
-    if ( const KCalCore::Event::Ptr t = CalendarSupport::event(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
         if (!t->dtStart().isValid() || t->dtStart() > KDateTime::currentLocalDateTime()) {
             return Later;
         }
@@ -310,7 +318,7 @@ KDateTime IncidenceItem::getPrimaryDate()
         kDebug() << "no payload";
 //        fetchPayload(true);
     }
-    if ( const KCalCore::Todo::Ptr t = CalendarSupport::todo(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         if (t->hasDueDate()) {
             //kDebug() << "due date: " << t->dtDue();
             return t->dtDue();
@@ -318,11 +326,11 @@ KDateTime IncidenceItem::getPrimaryDate()
             //kDebug() << "mod date: " << modificationTime();
             return getLastModifiedDate();
         }
-    } else if ( const KCalCore::Event::Ptr e = CalendarSupport::event(m_item) ) {
+    } else if ( const KCalCore::Event::Ptr e = unwrap<KCalCore::Event::Ptr>(m_item) ) {
         //if ( !e->recurs() && !e->isMultiDay() ) {
             return e->dtStart();
         //}
-    } else if ( const KCalCore::Journal::Ptr j = CalendarSupport::journal(m_item) ) {
+    } else if ( const KCalCore::Journal::Ptr j = unwrap<KCalCore::Journal::Ptr>(m_item) ) {
         return j->dtStart();
     }
     kWarning() << "unknown item";
@@ -331,7 +339,7 @@ KDateTime IncidenceItem::getPrimaryDate()
 
 QString IncidenceItem::getIconName()
 {
-    KCalCore::Incidence::Ptr old = CalendarSupport::incidence(m_item);
+    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item);
     if (!old) {
         kWarning() << "invalid item";
         return QLatin1String( "network-wired" );
@@ -349,7 +357,7 @@ QString IncidenceItem::getIconName()
 
 AbstractPimItem::ItemType IncidenceItem::itemType()
 {
-    KCalCore::Incidence::Ptr old = CalendarSupport::incidence(m_item);
+    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item);
     if (!old) {
         kWarning() << "invalid item";
         return AbstractPimItem::Incidence;

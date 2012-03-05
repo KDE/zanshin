@@ -39,8 +39,6 @@
 
 #include <KInputDialog>
 
-#include "calendarsupport/utils.h"
-
 #include "tagmanager.h"
 #include "itemcontext.h"
 #include "pimitem.h"
