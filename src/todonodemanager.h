@@ -35,7 +35,6 @@ class TodoNodeManager
 public:
     explicit TodoNodeManager(TodoProxyModelBase *model, bool multiMapping = false);
 
-    QModelIndex index(int row, int column, TodoNode *parent) const;
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
 
     QModelIndex indexForNode(TodoNode *node, int column) const;
@@ -56,6 +55,8 @@ protected:
     bool m_multiMapping;
     QList<TodoNode*> m_roots;
     QMultiHash<QPersistentModelIndex, TodoNode*> m_nodes;
+private:
+    QModelIndex index(int row, int column, TodoNode *parent) const;
 };
 
 #endif

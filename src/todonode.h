@@ -39,7 +39,7 @@ public:
     TodoNode *parent() const;
     void setParent(TodoNode *parent);
 
-    QList<TodoNode*> children() const;
+    const QList<TodoNode*> &children() const;
 
     QModelIndex rowSourceIndex() const;
 

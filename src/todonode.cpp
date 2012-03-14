@@ -78,7 +78,7 @@ void TodoNode::setParent(TodoNode *parent)
     }
 }
 
-QList<TodoNode*> TodoNode::children() const
+const QList<TodoNode*> &TodoNode::children() const
 {
     return m_children;
 }

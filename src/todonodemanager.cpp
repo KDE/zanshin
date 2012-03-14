@@ -36,18 +36,25 @@ TodoNodeManager::TodoNodeManager(TodoProxyModelBase *model, bool multiMapping)
 
 QModelIndex TodoNodeManager::index(int row, int column, TodoNode *parent) const
 {
-    if (row < 0 || column < 0
-     || row >= m_model->rowCount(indexForNode(parent, 0))
-     || column >= m_model->columnCount(indexForNode(parent, 0))) {
+    if (row < 0 || column < 0) {
         return QModelIndex();
     }
+    //We check the following two conditions only in asserts for performance reasons because they are very expensive in here
+    //indexForNode results in nested calls up to the root node and should be avoided
+    Q_ASSERT(row < m_model->rowCount(indexForNode(parent, 0)));
+    Q_ASSERT(column < m_model->columnCount(indexForNode(parent, 0)));
 
     return m_model->createIndex(row, column, parent);
 }
 
 QModelIndex TodoNodeManager::index(int row, int column, const QModelIndex &parent) const
 {
-    return index(row, column, nodeForIndex(parent));
+    TodoNode *p = nodeForIndex(parent);
+    if ( (p && (row >= p->children().size())) ||
+        (!p && (row >= m_roots.size())) ) {
+        return QModelIndex();
+    }
+    return index(row, column, p);
 }
 
 QModelIndex TodoNodeManager::indexForNode(TodoNode *node, int column) const
