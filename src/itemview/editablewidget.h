@@ -29,7 +29,8 @@
 
 #include <KDateTime>
 
-class QCheckBox;class QLabel;
+class KSqueezedTextLabel;
+class QCheckBox;
 class QToolButton;
 class KDateTimeWidget;
 class QHBoxLayout;
@@ -56,7 +57,7 @@ public slots:
 
 protected:
     QWidget *m_contentWidget;
-    QLabel *m_label;
+    KSqueezedTextLabel *m_label;
     QToolButton *m_button;
     QHBoxLayout *m_layout;
     bool m_editMode;

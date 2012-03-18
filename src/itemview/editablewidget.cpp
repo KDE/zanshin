@@ -34,6 +34,7 @@
 #include <KDebug>
 #include <klocalizedstring.h>
 #include <KDE/KIconLoader>
+#include <KSqueezedTextLabel>
 #include <QLineEdit>
 
 
@@ -45,7 +46,9 @@ AbstractEditableWidget::AbstractEditableWidget(QWidget *contentWidget, QWidget* 
     m_layout = new QHBoxLayout(this);
     m_layout->setContentsMargins(0,0,0,0);
 
-    m_label = new QLabel(this);
+    m_label = new KSqueezedTextLabel(this);
+    m_label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    m_label->setTextElideMode(Qt::ElideRight);
     m_layout->addWidget(m_label);
 
     m_layout->addWidget(contentWidget);
