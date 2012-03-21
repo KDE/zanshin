@@ -86,7 +86,12 @@ private slots:
     
     void setFullscreenEditor();
     void restoreState();
-
+    
+    void newTopics(const QStringList &);
+    void gotThing(const Nepomuk::Resource &);
+    
+signals:
+    void itemChanged();
 private:
 
     AbstractPimItem *m_currentItem;

@@ -167,9 +167,7 @@ public:
         CreationDate = 0x04,
         LastModifiedDate = 0x08,
         Payload = 0x10, //The payload of the akonadi item has changed in any way
-        Tags = 0x20,
-        Topic = 0x40,
-        AllParts = Title|Text|CreationDate|LastModifiedDate|Payload|Tags|Topic
+        AllParts = Title|Text|CreationDate|LastModifiedDate|Payload
     };
     Q_DECLARE_FLAGS(ChangedParts, ChangedPart)
     
@@ -219,9 +217,9 @@ private slots:
      */
     //void itemModified(const Akonadi::Item &);
     void modifyDone( KJob *job );
-    void propertyChanged(Nepomuk::Resource, Nepomuk::Types::Property, QVariant);
-    void newTopics(QList<Nepomuk::Query::Result>);
-    void topicsRemoved(QList<QUrl>);
+//     void propertyChanged(Nepomuk::Resource, Nepomuk::Types::Property, QVariant);
+//     void newTopics(QList<Nepomuk::Query::Result>);
+//     void topicsRemoved(QList<QUrl>);
 
 private:
     Q_DISABLE_COPY(AbstractPimItem);

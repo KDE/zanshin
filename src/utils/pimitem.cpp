@@ -79,44 +79,8 @@ namespace PimItemUtils {
     {
         return getItem(Akonadi::Item::fromUrl(url));
     };
-    
-    Nepomuk::Resource getResource(const Akonadi::Item &item)
-    {
-        Q_ASSERT(item.isValid());
-        //Since the feeder will add all needed information, this is enough for our needs
-        Nepomuk::Resource resource(item.url());
-        //We set the minimum required type, in case the feeder didn't create tht item yet, so the thing != resource
-        resource.addType( Nepomuk::Vocabulary::NIE::InformationElement() );
-        return resource;
-    }
 
-    Nepomuk::Thing getThing(const Akonadi::Item &item)
-    {
-        
-        Nepomuk::Query::Query query;
-        query.setTerm(MindMirrorQueries::itemThingTerm(item));
-        query.setLimit(1);
-        
-        QList<Nepomuk::Query::Result> results = Nepomuk::Query::QueryServiceClient::syncSparqlQuery(query.toSparqlQuery()); //This is esentially the same as the resourcedata code is doing
-        if (results.isEmpty()) {
-            /*kDebug() << "createing new thing" << item.url();
-            Nepomuk::Resource res = getResource(item);
-            Nepomuk::Thing thing = res.pimoThing();
 
-            QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-            if (!pimitem.isNull()) {
-                thing.setLabel(pimitem->getTitle());
-            }
-            return thing;*/
-            //FIXME this creates duplicate things atm (probably due to the not yet ported resource api)
-            return Nepomuk::Thing();
-        }
-        if (results.size() > 1) {
-            kWarning() << "more than one Thing found, your db is broken";
-        }
-        return Nepomuk::Thing(results.first().resource().resourceUri());
-    }
-    
     Akonadi::Item getItemFromResource(const Nepomuk::Resource &resource)
     {
         //TODO add property to Nepomuk::Resource
@@ -135,14 +99,5 @@ namespace PimItemUtils {
         return Akonadi::Item();
     }
 
-    
-
-    Nepomuk::Thing getExistingThing(const Akonadi::Item &item)
-    {
-        Q_ASSERT(item.isValid());
-        //FIXME find a fast replacement for the notesorefilterproxymodel, maybe describe resources
-        Nepomuk::Resource res(item.url());
-        return res.pimoThing();
-    }
 }
 

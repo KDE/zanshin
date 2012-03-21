@@ -64,6 +64,7 @@
 #include <KAction>
 
 #include "toolbox.h"
+#include "itemmonitor.h"
 #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
@@ -140,18 +141,21 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
 
 ItemViewer::~ItemViewer()
 {
+    kDebug();
     KConfigGroup config(KGlobal::config(), "ItemViewer");
     config.writeEntry("activeToolbox", toolbox->currentIndex());
     config.writeEntry("toolbarHidden", actionCollection()->action( "hide_toolbar" )->isChecked()); //The widget is already hidden, but the action still has the correct state
 
     saveItem();
     if (m_currentItem) {
+        disconnect(m_currentItem, 0, this, 0);
         m_currentItem->deleteLater();
         m_currentItem = 0;
     }
-
     delete ui_properties;
+    ui_properties = 0;
     delete ui_tags;
+    ui_tags = 0;
 }
 
 void ItemViewer::restoreState()
@@ -241,6 +245,7 @@ void ItemViewer::clearView()
 {
     m_autosaveTimer->stop();
     ui_tags->tagEdit->clear();
+    ui_properties->topics->clear();
     editor->editor()->clear();
     //Reset action from last text (i.e. if bold text was enabled)
     /*foreach (QAction *action, guiWindow->actionCollection()->actions()) {
@@ -260,6 +265,7 @@ void ItemViewer::clearView()
     title->lineEdit().clearFocus();
 
     if (m_currentItem) {
+        disconnect(m_currentItem, 0, this, 0);
         m_currentItem->deleteLater();
         m_currentItem = 0;
     }
@@ -302,6 +308,7 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     kDebug();
     //reset pending signals from last item
     disconnect(&title->lineEdit(), SIGNAL(editingFinished()), this, SLOT(saveItem()));
+    emit itemChanged();
     saveItem();
 
     clearView();
@@ -324,12 +331,32 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     m_currentItem->fetchPayload(); //in case the payload is not yet fetched (model does not automatically fetch
     m_currentItem->enableMonitor();
 
-    m_itemContext->setResource(PimItemUtils::getThing(item));
+    ItemMonitor *monitor = new ItemMonitor(m_currentItem->getItem(), this);
+    connect(monitor, SIGNAL(gotThing(Nepomuk::Resource)), m_itemContext, SLOT(setResource(Nepomuk::Resource)));
+    connect(monitor, SIGNAL(topicsChanged(QStringList)), this, SLOT(newTopics(QStringList)));
+    connect(this, SIGNAL(itemChanged()), monitor,SLOT(deleteLater()));
+}
+
+void ItemViewer::gotThing(const Nepomuk::Resource &r)
+{
+    kDebug() << "got Thing too";
+    ui_tags->tagWidget->setTaggedResource(r);
+}
+
+
+void ItemViewer::newTopics(const QStringList &results)
+{
+    if (ui_properties && ui_properties->topics) {
+        ui_properties->topics->setText(results.join(", "));
+    }
 }
 
 void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
 {
     kDebug();
+    Q_ASSERT(ui_properties);
+    Q_ASSERT(ui_tags);
+    Q_ASSERT(ui_properties->topics);
     /*
      * TODO check for changed content, if there is changed content we have a conflict,
      * and the user should be allowed to save the current content
@@ -402,16 +429,6 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
     } else { //not a todo
         ui_properties->lb_eventDate->hide();
         ui_properties->editableEventDate->hide();
-    }
-
-    //TODO replace by sparql query
-    if (parts & AbstractPimItem::Topic) {
-        ui_properties->topics->setText(QStringList(m_currentItem->topics().values()).join(", "));
-    }
-
-    if (parts & AbstractPimItem::Tags) {
-        //otherwise the widget doesn't update if the tags changed
-        ui_tags->tagWidget->setTaggedResource(PimItemUtils::getThing(m_currentItem->getItem()));
     }
     
     //Set Focus for new items to title bar

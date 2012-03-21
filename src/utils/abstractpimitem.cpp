@@ -118,71 +118,8 @@ void AbstractPimItem::enableMonitor()
     m_monitor->setItemMonitored(m_item);
     connect( m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SLOT(updateItem(Akonadi::Item,QSet<QByteArray>)));
     connect( m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(removed()));
-    
-    const Nepomuk::Thing &thing = PimItemUtils::getThing(m_item); //FIXME This is flawed as the thing does not necessarily already exist. We should use a query instead.
-    if (thing.isValid()) {
-        Nepomuk::ResourceWatcher *m_resourceWatcher = new Nepomuk::ResourceWatcher(this); //TODO use a propertycache instead
-        m_resourceWatcher->addResource(thing);
-        m_resourceWatcher->addProperty(Nepomuk::Vocabulary::PIMO::isRelated());
-        m_resourceWatcher->addProperty(Soprano::Vocabulary::NAO::hasTag());
-        connect(m_resourceWatcher, SIGNAL(propertyAdded(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)), this, SLOT(propertyChanged(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)));
-        connect(m_resourceWatcher, SIGNAL(propertyRemoved(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)), this, SLOT(propertyChanged(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)));
-        m_resourceWatcher->start();
-    }
-    
-    Nepomuk::Query::QueryServiceClient *topicsClient = new Nepomuk::Query::QueryServiceClient(this);
-    connect(topicsClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), SLOT(newTopics(QList<Nepomuk::Query::Result>)));
-    connect(topicsClient, SIGNAL(entriesRemoved(QList<QUrl>)), SLOT(topicsRemoved(QList<QUrl>)));
-    topicsClient->sparqlQuery(MindMirrorQueries::itemTopicsQuery(m_item));
 
-    //connect( m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), SLOT(itemRemoved()) );
     kDebug() << "monitoring of item " << m_item.id() << " started";
-}
-
-void AbstractPimItem::newTopics(QList< Nepomuk::Query::Result > )
-{
-    emit changed(Topic);
-}
-
-void AbstractPimItem::topicsRemoved(QList< QUrl > )
-{
-    emit changed(Topic);
-}
-
-QMap< QUrl, QString > AbstractPimItem::topics()
-{
-    QMap<QUrl, QString> list;
-    QList<Nepomuk::Query::Result> results = Nepomuk::Query::QueryServiceClient::syncSparqlQuery(MindMirrorQueries::itemTopicsQuery(m_item));
-    foreach (const Nepomuk::Query::Result &result, results) {
-        const Nepomuk::Resource &res = result.resource();
-        list.insert(res.resourceUri(), res.label());
-    }
-    return list;
-}
-
-
-void AbstractPimItem::propertyChanged(Nepomuk::Resource resource, Nepomuk::Types::Property property, QVariant value)
-{
-    kDebug();
-    if (property == Nepomuk::Types::Property(Nepomuk::Vocabulary::PIMO::isRelated())) {
-        kDebug() << "is related " << value;
-        emit changed(Topic);
-    } else if (property == Nepomuk::Types::Property(Soprano::Vocabulary::NAO::hasTag())) {
-        kDebug() << "has tag" << value;
-        emit changed(Tags);
-    } else {
-        kDebug() << property;
-        Q_ASSERT(0);
-    }
-/*
-    Nepomuk::Thing thing = resource.pimoThing(); //Normally this should already be the thing (we're monitoring the thing
-    if (thing != resource) {
-        kWarning() << "thing != resource";
-    }
-    Q_ASSERT(thing.groundingOccurrences().size() >= 1);
-    Q_ASSERT(thing.groundingOccurrences().first().property(Soprano::Vocabulary::NIE::uri()) == m_item.url());
-    Q_ASSERT(thing.groundingOccurrences().first().property(Soprano::Vocabulary::NIE::uri()));
-*/
 }
 
 AbstractPimItem::ItemType AbstractPimItem::itemType(const Akonadi::Item &item)

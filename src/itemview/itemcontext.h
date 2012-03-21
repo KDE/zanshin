@@ -46,14 +46,16 @@ public:
     explicit ItemContext(QWidget* parent = 0);
 
     /**
+     * Set the uri related to the current item
+     */
+    void addContext(const KUrl &uri);
+public slots:
+    
+    /**
      * Sets the resource for which we want the context
      * Actually we set the thing here normally
      */
     void setResource(const Nepomuk::Resource &resource);
-    /**
-     * Set the uri related to the current item
-     */
-    void addContext(const KUrl &uri);
 protected:
     virtual void dragEnterEvent(QDragEnterEvent* );
     virtual void dropEvent(QDropEvent* );
