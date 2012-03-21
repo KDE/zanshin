@@ -24,37 +24,12 @@
 
 #include "abstractpimitem.h"
 
-#include <KMime/KMimeMessage>
-#include <KCalCore/Incidence>
-#include <KCalCore/Todo>
-#include <KCalCore/Event>
-
-#include <Nepomuk/Thing>
-#include <Nepomuk/Variant>
-#include <nepomuk/pimo.h>
-#include <nepomuk/nie.h>
-#include <nepomuk/nfo.h>
-
 #include <Akonadi/EntityDisplayAttribute>
 #include <akonadi/itemfetchjob.h>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ItemModifyJob>
 #include <Akonadi/Monitor>
 #include <Akonadi/Session>
-
-#include "note.h"
-#include "incidenceitem.h"
-#include "tagmanager.h"
-#include "pimitem.h"
-
-// #include "todo.h"
-// #include "event.h"
-// #include "htmldocument.h"
-#include <nepomuk/resourcewatcher.h>
-#include <Nepomuk/Vocabulary/NCAL>
-#include <Soprano/Vocabulary/NAO>
-#include <Nepomuk/Query/QueryServiceClient>
-#include "queries.h"
 
 AbstractPimItem::AbstractPimItem(QObject *parent)
 : QObject(parent),
@@ -216,23 +191,6 @@ QStringList AbstractPimItem::mimeTypes()
     list << mimeType(Todo);
     return list;
 }
-
-QUrl AbstractPimItem::pimoType(AbstractPimItem::ItemType type)
-{
-    switch (type) {
-        case Note:
-            return Nepomuk::Vocabulary::NFO::HtmlDocument();
-        case Event:
-            return Nepomuk::Vocabulary::NCAL::Event();
-        case Todo:
-            return Nepomuk::Vocabulary::NCAL::Todo();
-        default:
-            kWarning() << "not implemented";
-            Q_ASSERT(0);
-    }
-    return QUrl();
-}
-
 
 void AbstractPimItem::fetchPayload(bool blocking)
 {

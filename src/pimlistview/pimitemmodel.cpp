@@ -29,6 +29,7 @@
 #include <KDebug>
 #include <KIcon>
 #include <KLocale>
+#include <KUrl>
 
 #include <KDE/Akonadi/ItemModifyJob>
 #include <abstractpimitem.h>

@@ -32,6 +32,10 @@
 
 #include "abstractpimitem.h"
 
+namespace Nepomuk {
+class Resource;
+}
+
 class ItemContext;
 class QFocusEvent;
 

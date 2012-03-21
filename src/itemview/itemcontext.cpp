@@ -44,6 +44,7 @@
 #include <Nepomuk/Vocabulary/NFO>
 #include <Nepomuk/Vocabulary/NIE>
 #include <Nepomuk/Variant>
+#include <Nepomuk/Thing>
 
 #include "guiclient.h"
 #include <KActionCollection>

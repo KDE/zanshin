@@ -26,11 +26,11 @@
 #define ABSTRACTPIMITEM_H
 
 #include <Akonadi/Item>
-#include <Nepomuk/Resource>
-#include <Nepomuk/Thing>
+// #include <Nepomuk/Resource>
+// #include <Nepomuk/Thing>
 #include <kdatetime.h>
-#include <Nepomuk/Types/Property>
-#include <Nepomuk/Query/Result>
+// #include <Nepomuk/Types/Property>
+// #include <Nepomuk/Query/Result>
 
 class KJob;
 
@@ -93,9 +93,6 @@ public:
     static QString mimeType(ItemType);
     //Returns a list of all supported mimetypes
     static QStringList mimeTypes();
-
-    static QUrl pimoType(ItemType);
-
 
     virtual void setText(const QString &, bool isRich = false);
     virtual QString getText();
@@ -217,9 +214,6 @@ private slots:
      */
     //void itemModified(const Akonadi::Item &);
     void modifyDone( KJob *job );
-//     void propertyChanged(Nepomuk::Resource, Nepomuk::Types::Property, QVariant);
-//     void newTopics(QList<Nepomuk::Query::Result>);
-//     void topicsRemoved(QList<QUrl>);
 
 private:
     Q_DISABLE_COPY(AbstractPimItem);

@@ -49,6 +49,8 @@
 #include <KLineEdit>
 #include <QToolBar>
 #include <Akonadi/ItemDeleteJob>
+#include <KGlobal>
+#include <KLocalizedString>
 #include <searchbar.h>
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";

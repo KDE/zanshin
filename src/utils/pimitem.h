@@ -24,7 +24,10 @@
 #define PIMITEM_H
 
 #include "abstractpimitem.h"
-//#include "abstractpimitem.h"
+
+namespace Nepomuk {
+class Resource;
+}
 
 namespace PimItemUtils {
 
@@ -48,16 +51,6 @@ namespace PimItemUtils {
         //Q_ASSERT(0);
         return AbstractPimItemPtr();
     };*/
-/*
-    static Akonadi::Item getAkonadiItem(const QModelIndex &index)
-    {
-        const Akonadi::Item item = index0.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
-        if (!item.isValid()) {
-            kDebug() << "invalid item";
-        }
-        return item;
-    };
-*/
 
     AbstractPimItem* fromUrl( const KUrl &url );
     
