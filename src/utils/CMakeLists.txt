@@ -15,7 +15,8 @@ set(utils_SRCS
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}) #to find ontology classes
 
-soprano_add_ontology(utils_SRCS ${SHAREDDESKTOPONTOLOGIES_ROOT_DIR}/kde/aneo.trig "ANEO" "Vocabulary" "trig")
+#The aneo.trig resides in kdepim-runtime/agents/ontologies and was copied here to avoid a compiletime dependency
+soprano_add_ontology(utils_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/aneo.trig "ANEO" "Vocabulary" "trig")
 
 kde4_add_library(utils STATIC ${utils_SRCS})
 target_link_libraries(utils
