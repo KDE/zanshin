@@ -149,9 +149,12 @@ QList<QStandardItem*> ModelUtils::createItem(const ModelStructureTreeNode *node,
     } else if (variant.canConvert<Cat>()) {
         Cat cat = variant.value<Cat>();
         row = behavior->expandCategory(cat);
-    } else {
+    } else if (variant.canConvert<V>()) {
         V v = variant.value<V>();
         row = behavior->expandVirtual(v);
+    } else {
+        G g = variant.value<G>();
+        row = behavior->expandGeneric(g);
     }
 
     foreach (QStandardItem *item, row) {

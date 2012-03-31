@@ -25,6 +25,7 @@ set(zanshin_core_SRCS
    todonode.cpp
    todonodemanager.cpp
    topicsmodel.cpp
+   nepomukadapter.cpp
    ${pimlistview_SRCS}
    ${itemview_SRCS}
 )

@@ -22,6 +22,7 @@
 */
 
 #include "modelnode.h"
+#include "g.h"
 
 #include <algorithm>
 
@@ -55,6 +56,14 @@ ModelNode::ModelNode(const V &virt, const Indent &indent)
 {
 }
 
+ModelNode::ModelNode(const G& virt, const Indent& indent)
+    : m_entity(QVariant::fromValue(virt)),
+    m_indent(indent)
+{
+
+}
+
+
 quint64 ModelNode::indent() const
 {
     return m_indent.size;
@@ -83,5 +92,10 @@ ModelNode operator+(const Indent& indent, const Cat &category)
 ModelNode operator+(const Indent& indent, const V &virt)
 {
     return ModelNode(virt, indent);
+}
+
+ModelNode operator+(const Indent& indent, const Zanshin::Test::G& g)
+{
+    return ModelNode(g, indent);
 }
 

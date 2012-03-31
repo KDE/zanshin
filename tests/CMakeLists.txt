@@ -23,5 +23,6 @@ ZANSHIN_UNIT_TESTS(
   todocategoriesmodelspec
   todometadatamodelspec
   todotreemodelspec
+  topicsmodelspec
 )
 

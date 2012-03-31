@@ -192,6 +192,30 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandVirtual
     return row;
 }
 
+QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandGeneric(const G &generic)
+{
+    QList<QStandardItem*> row;
+    
+    QStandardItem *item = new QStandardItem("generic"+QString::number(generic.id));
+    
+    foreach(int role, generic.data.keys()) {
+        item->setData(generic.data.value(role), role);
+    }
+    
+    row << item;
+    
+    if (m_singleColumnEnabled) {
+        return row;
+    }
+    
+    for (int i=0; i<4; i++) {
+        item = new QStandardItem;
+        row << item;
+    }
+    
+    return row;
+}
+
 void Zanshin::Test::StandardModelBuilderBehavior::setMetadataCreationEnabled(bool enabled)
 {
     m_metadataCreationEnabled = enabled;

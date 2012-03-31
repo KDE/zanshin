@@ -31,6 +31,7 @@
 #include <testlib/cat.h>
 #include <testlib/t.h>
 #include <testlib/v.h>
+#include <testlib/g.h>
 
 namespace Zanshin
 {
@@ -48,6 +49,7 @@ public:
     virtual QList<QStandardItem*> expandCollection(const C &collection) = 0;
     virtual QList<QStandardItem*> expandCategory(const Cat &category) = 0;
     virtual QList<QStandardItem*> expandVirtual(const V &virt) = 0;
+    virtual QList<QStandardItem*> expandGeneric(const G &generic) = 0;
 };
 
 class StandardModelBuilderBehavior : public ModelBuilderBehaviorBase
@@ -60,6 +62,7 @@ public:
     virtual QList<QStandardItem*> expandCollection(const C &collection);
     virtual QList<QStandardItem*> expandCategory(const Cat &category);
     virtual QList<QStandardItem*> expandVirtual(const V &virt);
+    virtual QList<QStandardItem*> expandGeneric(const G &generic);
 
     void setMetadataCreationEnabled(bool enabled);
     bool isMetadataCreationEnabled();

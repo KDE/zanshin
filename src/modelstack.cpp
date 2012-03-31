@@ -263,7 +263,7 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
 QAbstractItemModel *ModelStack::topicsTreeModel()
 {
     if (!m_topicsTreeModel) {
-        TopicsModel *treeModel = new TopicsModel(this);
+        TopicsModel *treeModel = new TopicsModel(new NepomukAdapter(this), this);
         treeModel->setSourceModel(knowledgeBaseModel());
         m_topicsTreeModel = treeModel;
     }

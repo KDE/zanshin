@@ -26,12 +26,7 @@
 #include "globaldefs.h"
 #include <KIcon>
 #include <KLocalizedString>
-#include <Nepomuk/Query/Query>
-#include <nepomuk/resourcetypeterm.h>
 #include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/Result>
-#include <Nepomuk/Resource>
 #include "todonodemanager.h"
 #include <tagmanager.h>
 #include <QMimeData>
@@ -39,11 +34,9 @@
 #include <abstractpimitem.h>
 #include <queries.h>
 #include <pimitem.h>
-#include <nepomuk/resourcewatcher.h>
-#include <soprano/nao.h>
 
-TopicsModel::TopicsModel(QObject* parent)
-: TodoProxyModelBase(MultiMapping, parent), m_rootNode(0)
+TopicsModel::TopicsModel(StructureAdapter *adapter, QObject* parent)
+: TodoProxyModelBase(MultiMapping, parent), m_rootNode(0), m_nepomukAdapter(adapter)
 {
 
 }
@@ -89,107 +82,60 @@ void TopicsModel::init()
             createCategoryNode(category);
         }
     }
-    */
+*/
 
-    Nepomuk::Query::Query query;
-    /*switch (type) {
-        case Topics:*/
-            query.setTerm(Nepomuk::Query::ResourceTypeTerm(Nepomuk::Types::Class(Nepomuk::Vocabulary::PIMO::Topic())));
-            //break;
-        /*case Projects:
-        default:
-            Q_ASSERT(0);
-    }*/
-
-    Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
-    connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk::Query::Result>)));
-    connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
-    connect(queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(topicRemoved(QList<QUrl>)));
-    if ( !queryServiceClient->query(query) ) {
-        kWarning() << "error";
-    }
+    connect(m_nepomukAdapter, SIGNAL(parentAdded(QString,QString,QString)), this, SLOT(createNode(QString,QString,QString)));
+    connect(m_nepomukAdapter, SIGNAL(parentRemoved(QString)), this, SLOT(removeNode(QString)));
+    
+    connect(m_nepomukAdapter, SIGNAL(itemsAdded(QString,QModelIndexList)), this, SLOT(itemsWithTopicAdded(QString,QModelIndexList)));
+    connect(m_nepomukAdapter, SIGNAL(itemsRemovedFromParent(QString,QModelIndexList)), this, SLOT(itemsFromTopicRemoved(QString,QModelIndexList)));
+    
+    connect(m_nepomukAdapter, SIGNAL(parentChanged(QString,QString,QString)), this, SLOT(propertyChanged(QString,QString,QString)));
+    m_nepomukAdapter->setType(Nepomuk::Vocabulary::PIMO::Topic()); //Generalize that we only have to parametrize the adapter and the model is fully generic
+    
 }
 
 
-void TopicsModel::checkResults(const QList< Nepomuk::Query::Result > &results)
+
+
+
+
+void TopicsModel::itemsWithTopicAdded(const QString &identifier, const QModelIndexList &items)
 {
-    //kDebug() <<  results.size() << results.first().resource().resourceUri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
-    foreach (const Nepomuk::Query::Result &result, results) {
-        Nepomuk::Resource res(result.resource().resourceUri());
-        kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
-        if (res.types().contains(Nepomuk::Vocabulary::PIMO::Topic()) || res.types().contains(Nepomuk::Vocabulary::PIMO::Project())) {
-            addTopic(res);
-        }
-    }
-}
-
-void TopicsModel::topicRemoved(const QList<QUrl> &results)
-{
-    foreach (const QUrl &result, results) {
-        Nepomuk::Resource res(result);
-        kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
-        if (res.types().contains(Nepomuk::Vocabulary::PIMO::Topic()) || res.types().contains(Nepomuk::Vocabulary::PIMO::Project())) {
-            removeNode(res);
-        }
-    }
-}
-
-void TopicsModel::queryFinished()
-{
-    kWarning();
-    //emit ready();
-}
-
-void TopicsModel::addTopic (const Nepomuk::Resource& topic)
-{
-    kDebug() << "add topic" << topic.label() << topic.resourceUri();
-    QObject *guard = new QObject(this);
-    m_guardMap[topic.resourceUri()] = guard;
-
-    Nepomuk::ResourceWatcher *m_resourceWatcher = new Nepomuk::ResourceWatcher(guard);
-    m_resourceWatcher->addResource(topic);
-    m_resourceWatcher->addProperty(Soprano::Vocabulary::NAO::prefLabel());
-    connect(m_resourceWatcher, SIGNAL(propertyAdded(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)), this, SLOT(propertyChanged(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)));
-    m_resourceWatcher->start();
-
-    Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(guard);
-    queryServiceClient->setProperty("resourceuri", topic.resourceUri());
-    connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(itemsWithTopicAdded(QList<Nepomuk::Query::Result>)));
-    connect(queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(itemsFromTopicRemoved(QList<QUrl>)));
-    connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
-    //connect(queryServiceClient, SIGNAL(finishedListing()), queryServiceClient, SLOT(deleteLater()));
-    if ( !queryServiceClient->sparqlQuery(MindMirrorQueries::itemsWithTopicsQuery(QList <QUrl>() << topic.resourceUri())) ) {
-        kWarning() << "error";
-    }
-    createNode(topic);
-}
-
-void TopicsModel::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
-{
-    const QUrl &topic = sender()->property("resourceuri").toUrl();
-    kDebug() << topic;
-    foreach (const Nepomuk::Query::Result &result, results) {
-        Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
+//     const QUrl &topic = sender()->property("resourceuri").toUrl();
+//     kDebug() << topic;
+    foreach (const QModelIndex &index, items) {
         //kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
-        const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
-        if (!item.isValid()) {
+        if (!index.isValid()) {
             continue;
         }
-
-        m_itemTopics[item.id()].append(topic);
-        TodoNode *parent = m_resourceMap[topic];
-        Q_ASSERT(parent);
-        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
-        if (indexes.isEmpty()) {
-            kDebug() << "item not found" << item.url();
-            return;
+        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
+        foreach (TodoNode *node, nodes) {
+            QStringList list = node->data(0, TopicRole).toStringList();
+            list.append(identifier);
+            node->setData(list, 0, TopicRole);
         }
 
-        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(indexes.first());
+//         m_itemTopics[index.internalId()].append(identifier);
+        TodoNode *parent = m_resourceMap[identifier];
+        if (!parent) { //Topic is not yet in map, wait for it
+            kDebug() << identifier;
+            kDebug() << m_resourceMap;
+            createNode(identifier, QString(), "tempname");
+            parent = m_resourceMap[identifier];
+//             return;
+        }
+        Q_ASSERT(parent);
+//         const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
+//         if (indexes.isEmpty()) {
+//             kDebug() << "item not found" << item.url();
+//             return;
+//         }
+
+        
         foreach (TodoNode *node, nodes) {
             TodoNode *parentNode = node->parent();
-            if (parentNode
-                && parentNode->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Inbox) {
+            if (parentNode && parentNode->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Inbox) {
                 kDebug() << "removed node from inbox";
                 int oldRow = parentNode->children().indexOf(node);
                 beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
@@ -199,35 +145,32 @@ void TopicsModel::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &resul
             }
         }
 
-        kDebug() << "add item: " << item.url();
-        addChildNode(indexes.first(), parent);
+//         kDebug() << "add item: " << item.url();
+        addChildNode(index, parent);
     }
 
 }
 
-void TopicsModel::itemsFromTopicRemoved(const QList<QUrl> &items)
+void TopicsModel::itemsFromTopicRemoved(const QString &identifier, const QModelIndexList &items)
 {
-    const QUrl &topic = sender()->property("topic").toUrl();
-    TodoNode *parentNode = m_resourceMap[topic];
+    TodoNode *parentNode = m_resourceMap[identifier];
     if (!parentNode) {
         kWarning() << "topic not in model";
         return;
     }
-    kDebug() << "removing nodes from topic: " << topic;
-    foreach (const QUrl &uri, items) {
-        Nepomuk::Resource res = Nepomuk::Resource(uri);
-        const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
-        if (!item.isValid()) {
+    kDebug() << "removing nodes from topic: " << identifier;
+    foreach (const QModelIndex &index, items) {
+        if (!index.isValid()) {
             continue;
         }
-        kDebug() << item.url();
+//         kDebug() << item.url();
 
-        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
-        if (indexes.isEmpty()) {
-            kDebug() << "item not found" << item.url();
-            continue;
-        }
-        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(indexes.first());
+//         const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
+//         if (indexes.isEmpty()) {
+//             kDebug() << "item not found" << item.url();
+//             continue;
+//         }
+        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
         foreach (TodoNode *childNode, parentNode->children()) {
             if (childNode && nodes.contains(childNode)) {
                 kDebug() << "removed item from topic";
@@ -240,32 +183,32 @@ void TopicsModel::itemsFromTopicRemoved(const QList<QUrl> &items)
             }
         }
 
-        if (m_manager->nodesForSourceIndex(indexes.first()).isEmpty()) {
+        if (m_manager->nodesForSourceIndex(index).isEmpty()) {
             kDebug() << "added to inbox";
-            addChildNode(indexes.first(), m_inboxNode);
+            addChildNode(index, m_inboxNode);
         }
 
     }
 }
 
-void TopicsModel::propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value)
+void TopicsModel::propertyChanged(const QString &identifier, const QString &parentIdentifier, const QString &name)
 {
-    if (property.uri() == Soprano::Vocabulary::NAO::prefLabel()) {
-        kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
-        TodoNode *node = m_resourceMap[res.resourceUri()];
-        node->setData(value.toString(), 0, Qt::DisplayRole);
-        node->setData(value.toString(), 0, Qt::EditRole);
-        const QModelIndex &begin = m_manager->indexForNode(node, 0);
-        const QModelIndex &end = m_manager->indexForNode(node, 0);
-        emit dataChanged(begin, end);
-    }
+    kDebug() << "renamed " << identifier << " to " << name;
+    TodoNode *node = m_resourceMap[identifier];
+    node->setData(name, 0, Qt::DisplayRole);
+    node->setData(name, 0, Qt::EditRole);
+    const QModelIndex &begin = m_manager->indexForNode(node, 0);
+    const QModelIndex &end = m_manager->indexForNode(node, 0);
+    emit dataChanged(begin, end);
 }
 
 
-void TopicsModel::createNode(const Nepomuk::Resource& res)
+void TopicsModel::createNode(const QString &identifier, const QString &parentIdentifier, const QString &name)
 {
+    kDebug() << "add topic" << name << identifier;
     //TODO: Order them along a tree
     TodoNode* parentNode = m_rootNode;
+    Q_ASSERT(parentNode);
     //TODO find super topic
     /*QString categoryName = categoryPath;
     if (categoryPath.contains(CategoryManager::pathSeparator())) {
@@ -279,38 +222,38 @@ void TopicsModel::createNode(const Nepomuk::Resource& res)
     }*/
 
     int row = parentNode->children().size();
-
+    kDebug() << "beforeindsert";
     beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
-
+    kDebug() << "afterinsert";
     TodoNode *node = new TodoNode(parentNode);
-    node->setData(res.label(), 0, Qt::DisplayRole);
-    node->setData(res.label(), 0, Qt::EditRole);
+    node->setData(name, 0, Qt::DisplayRole);
+    node->setData(name, 0, Qt::EditRole);
     //node->setData(categoryPath, 0, Zanshin::CategoryPathRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole); //TODO get icon from reesource
     node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
-    node->setRowData(res.resourceUri(), Zanshin::UriRole);
+    node->setRowData(identifier, Zanshin::UriRole); //TODO don't rely on the identifier being the uri
 
-    m_resourceMap[res.resourceUri()] = node;
+    m_resourceMap[identifier] = node;
     m_manager->insertNode(node);
-
+    kDebug() << identifier << node;
     endInsertRows();
 }
 
-void TopicsModel::removeNode(const Nepomuk::Resource& res)
+void TopicsModel::removeNode(const QString &identifier)
 {
-    kDebug() << res.resourceUri();
-    if (!m_resourceMap.contains(res.resourceUri())) {
+    kDebug() << identifier;
+    if (!m_resourceMap.contains(identifier)) {
         return;
     }
 
-    TodoNode *node = m_resourceMap[res.resourceUri()];
+    TodoNode *node = m_resourceMap[identifier];
 
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
         child->setParent(m_inboxNode);
         
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-        if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
+        if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Topic) {
             NepomukUtils::deleteTopic(childIndex.data(Zanshin::UriRole).toUrl()); //TODO maybe leave this up to nepomuk subresource handling?
         } else {
             child->setParent(m_inboxNode);
@@ -330,11 +273,9 @@ void TopicsModel::removeNode(const Nepomuk::Resource& res)
     QModelIndex index = m_manager->indexForNode(node, 0);
     beginRemoveRows(index.parent(), index.row(), index.row());
     m_manager->removeNode(node);
-    m_resourceMap.remove(res.resourceUri());
+    m_resourceMap.remove(identifier);
     delete node;
     endRemoveRows();
-    
-    m_guardMap.take(res.resourceUri())->deleteLater();
 }
 
 void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
@@ -351,7 +292,12 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
 
         AbstractPimItem::ItemType type = (AbstractPimItem::ItemType) sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt();
         if (type & AbstractPimItem::All) {
-            QList <QUrl> topics = m_itemTopics[sourceChildIndex.data(PimItemModel::ItemIdRole).value<Akonadi::Item::Id>()];
+            QStringList topics;// = m_itemTopics[sourceChildIndex.data(PimItemModel::ItemIdRole).value<Akonadi::Item::Id>()];
+            QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
+            foreach (TodoNode *node, nodes) {
+                topics = node->data(0, TopicRole).toStringList();
+                break;
+            }
             if (topics.isEmpty()) {
                 //kDebug() << "add node to inbox";
                 addChildNode(sourceChildIndex, m_inboxNode);

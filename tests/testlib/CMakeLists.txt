@@ -3,7 +3,7 @@ add_subdirectory(tests)
 
 ########### testlib ###############
 
-set(zanshin_testlib_SRCS
+set(zanshin_testlib_SRCS s.cpp
    c.cpp
    cat.cpp
    indent.cpp
@@ -17,6 +17,7 @@ set(zanshin_testlib_SRCS
    qcompare.cpp
    t.cpp
    v.cpp
+   g.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/tests)

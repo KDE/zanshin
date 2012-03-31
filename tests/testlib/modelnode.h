@@ -31,6 +31,7 @@
 #include <testlib/indent.h>
 #include <testlib/t.h>
 #include <testlib/v.h>
+#include <testlib/g.h>
 
 namespace Zanshin
 {
@@ -45,6 +46,7 @@ public:
     ModelNode(const T &todo, const Indent &indent = Indent());
     ModelNode(const Cat &category, const Indent &indent = Indent());
     ModelNode(const V &virt, const Indent &indent = Indent());
+    ModelNode(const G &virt, const Indent &indent = Indent());
 
     quint64 indent() const;
     QVariant entity() const;
@@ -61,6 +63,7 @@ Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Za
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::T &todo);
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::Cat &category);
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::V &virt);
+Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::G &virt);
 
 Q_DECLARE_METATYPE(Zanshin::Test::ModelNode)
 
