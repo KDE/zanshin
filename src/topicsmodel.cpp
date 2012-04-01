@@ -59,7 +59,7 @@ TodoNode* TopicsModel::createInbox() const
 
 void TopicsModel::init()
 {
-    kDebug();
+//     kDebug();
     TodoProxyModelBase::init();
     
     if (!m_rootNode) {
@@ -77,87 +77,111 @@ void TopicsModel::init()
     }
     
     m_nepomukAdapter->setType(Nepomuk::Vocabulary::PIMO::Topic()); //TODO Generalize that we only have to parametrize the adapter and the model is fully generic
-    
 }
 
 
 
 
-
-
-void TopicsModel::itemsWithTopicAdded(const QString &identifier, const QModelIndexList &items)
+void TopicsModel::itemParentsChanged(const QModelIndex& item, const QStringList& parents)
 {
-//     foreach (const QModelIndex &index, items) {
-//         if (!index.isValid()) {
+    if (!item.isValid()) {
+        kWarning() << "invalid item";
+        return;
+    }
+    
+    //remove node from any current parent
+    QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(item);
+    foreach (TodoNode *node, nodes) {
+        TodoNode *parentNode = node->parent();
+        if (parentNode) {
+            int oldRow = parentNode->children().indexOf(node);
+            beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
+            m_manager->removeNode(node);
+            delete node;
+            endRemoveRows();
+        }
+    }
+    
+    if (parents.empty()) { //If no parents are available, back to inbox
+        addChildNode(item, m_inboxNode);
+        return;
+    }
+    foreach(const QString &p, parents) {
+//         TodoNode *parentNode = m_resourceMap[parent];
+//         if (!parentNode) {
+//             kWarning() << "topic not in model";
 //             continue;
 //         }
 //         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
-//         foreach (TodoNode *node, nodes) {
-//             QStringList list = node->data(0, TopicRole).toStringList();
-//             list.append(identifier);
-//             node->setData(list, 0, TopicRole);
+//         foreach (TodoNode *childNode, parentNode->children()) {
+//             if (childNode && nodes.contains(childNode)) {
+//                 kDebug() << "removed item from topic";
+//                 int oldRow = parentNode->children().indexOf(childNode);
+//                 beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
+//                 m_manager->removeNode(childNode);
+//                 delete childNode;
+//                 endRemoveRows();
+//                 break;
+//             }
 //         }
-/*
-        TodoNode *parent = m_resourceMap[identifier];
-        if (!parent) { //Topic is not yet in map, wait for it
-            kDebug() << identifier;
-            kDebug() << m_resourceMap;
-            createNode(identifier, QString(), "tempname");
-            parent = m_resourceMap[identifier];
-        }
-        Q_ASSERT(parent);
+        
 
-        foreach (TodoNode *node, nodes) {
-            TodoNode *parentNode = node->parent();
-            if (parentNode && parentNode->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Inbox) {
-                kDebug() << "removed node from inbox";
-                int oldRow = parentNode->children().indexOf(node);
-                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
-                m_manager->removeNode(node);
-                delete node;
-                endRemoveRows();
-            }
-        }
-
-//         kDebug() << "add item: " << item.url();
-        addChildNode(index, parent);*/
+        
+        //TODO only change for the topics that actually changed
+        
+        //TODO add node to new parents
+        TodoNode *pa = m_resourceMap[p];
+        //             if (!pa) { //Topic is not yet in map, wait for it
+        //                 kDebug() << identifier;
+        //                 kDebug() << m_resourceMap;
+        //                 createNode(identifier, QString(), "tempname");
+        //                 pa = m_resourceMap[identifier];
+        //             }
+        Q_ASSERT(pa);
+        addChildNode(item, pa);
+        
+    }
+        
+//     TodoNode *parentNode = m_resourceMap[identifier];
+//         if (!parentNode) {
+//                 kWarning() << "topic not in model";
+//             return;
+//         }
+//         kDebug() << "removing nodes from topic: " << identifier;
+//         foreach (const QModelIndex &index, items) {
+//                 if (!index.isValid()) {
+//                         continue;
+//             }
+//     
+//             QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
+//             foreach (TodoNode *childNode, parentNode->children()) {
+//                     if (childNode && nodes.contains(childNode)) {
+//                             kDebug() << "removed item from topic";
+//                     int oldRow = parentNode->children().indexOf(childNode);
+//                     beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
+//                     m_manager->removeNode(childNode);
+//                     delete childNode;
+//                     endRemoveRows();
+//                     break;
+//                 }
+//             }
+//     
+//             if (m_manager->nodesForSourceIndex(index).isEmpty()) {
+//                     kDebug() << "added to inbox";
+//                 addChildNode(index, m_inboxNode);
+//             }
+//     
+//         }
 //     }
-
 }
 
-void TopicsModel::itemsFromTopicRemoved(const QString &identifier, const QModelIndexList &items)
+void TopicsModel::renameParent(const QString& identifier, const QString& name)
 {
-    TodoNode *parentNode = m_resourceMap[identifier];
-    if (!parentNode) {
-        kWarning() << "topic not in model";
-        return;
-    }
-    kDebug() << "removing nodes from topic: " << identifier;
-    foreach (const QModelIndex &index, items) {
-        if (!index.isValid()) {
-            continue;
-        }
-
-        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
-        foreach (TodoNode *childNode, parentNode->children()) {
-            if (childNode && nodes.contains(childNode)) {
-                kDebug() << "removed item from topic";
-                int oldRow = parentNode->children().indexOf(childNode);
-                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
-                m_manager->removeNode(childNode);
-                delete childNode;
-                endRemoveRows();
-                break;
-            }
-        }
-
-        if (m_manager->nodesForSourceIndex(index).isEmpty()) {
-            kDebug() << "added to inbox";
-            addChildNode(index, m_inboxNode);
-        }
-
-    }
+    TodoNode *node = m_resourceMap[identifier];
+    node->setData(name, 0, Qt::DisplayRole);
+    node->setData(name, 0, Qt::EditRole);
 }
+
 
 void TopicsModel::propertyChanged(const QString &identifier, const QString &parentIdentifier, const QString &name)
 {
@@ -177,9 +201,7 @@ void TopicsModel::createOrRenameParent(const QString& identifier, const QString&
         return;
     }
     //if the node was already created we have to rename it now
-    TodoNode *node = m_resourceMap[identifier];
-    node->setData(name, 0, Qt::DisplayRole);
-    node->setData(name, 0, Qt::EditRole);
+    renameParent(identifier, name);
     
 }
 
@@ -318,33 +340,7 @@ void TopicsModel::onSourceDataChanged(const QModelIndex& begin, const QModelInde
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         const QStringList &parents = m_nepomukAdapter->onSourceDataChanged(index);
         
-        //remove node from any current parent
-        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
-        foreach (TodoNode *node, nodes) {
-            TodoNode *parentNode = node->parent();
-            if (parentNode) {
-                int oldRow = parentNode->children().indexOf(node);
-                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
-                m_manager->removeNode(node);
-                delete node;
-                endRemoveRows();
-            }
-        }
-        
-        //TODO only change for the topics that actually changed
-        
-        //TODO add node to new parents
-        foreach (const QString &p, parents) {
-            TodoNode *parent = m_resourceMap[p];
-//             if (!parent) { //Topic is not yet in map, wait for it
-//                 kDebug() << identifier;
-//                 kDebug() << m_resourceMap;
-//                 createNode(identifier, QString(), "tempname");
-//                 parent = m_resourceMap[identifier];
-//             }
-            Q_ASSERT(parent);
-            addChildNode(index, parent);
-        }
+        itemParentsChanged(index, parents);
 
         const QModelIndexList &list = mapFromSourceAll(index);
         

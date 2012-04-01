@@ -61,6 +61,8 @@ private:
     
     //for creating parents from StructureAdapter
     void createOrRenameParent(const QString &identifier, const QString &parentIdentifier, const QString &name);
+    void itemParentsChanged(const QModelIndex &item, const QStringList &parents);
+    void renameParent(const QString &identifier, const QString &name);
     
     void createNode(const QString &identifier, const QString &parentIdentifier, const QString &name);
     void removeNode(const QString &identifier);
@@ -68,8 +70,8 @@ private:
     //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     
     
-    void itemsWithTopicAdded(const QString &, const QModelIndexList &);
-    void itemsFromTopicRemoved(const QString &, const QModelIndexList &);
+    
+    
     
     void propertyChanged(const QString &identifier, const QString &parentIdentifier, const QString &name);
 

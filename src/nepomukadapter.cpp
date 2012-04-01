@@ -73,31 +73,13 @@ QStringList TestStructureAdapter::onSourceInsertRow(const QModelIndex &sourceChi
 QStringList TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
 {
     return onSourceInsertRow(sourceIndex);
-
-//         QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(Zanshin::CategoriesRole).toStringList());
-//         
-//         QSet<QString> oldCategories = QSet<QString>::fromList(m_categories);
-//         QSet<QString> interCategories = newCategories;
-//         interCategories.intersect(oldCategories);
-//         newCategories-= interCategories;
-//         
-//         foreach (const QString &newCategory, newCategories) {
-//             addCategory(newCategory);
-//         }
 }
 
-
-
-// void TestStructureAdapter::addItem(const QString& parentIdentifier, const Akonadi::Item::List &items)
-// {
-//     emit itemsAdded(parentIdentifier, items);
-// }
 
 void TestStructureAdapter::addParent(const QString& identifier, const QString& parentIdentifier, const QString& name)
 {
     kDebug() << identifier << parentIdentifier << name;
     m_model->createOrRenameParent(identifier, parentIdentifier, name);
-//     emit parentAdded(identifier, parentIdentifier, name);
 }
 
 void TestStructureAdapter::removeParent(const QString& identifier)
@@ -166,7 +148,7 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
         kWarning() << "error";
     }
 //     emit parentAdded(topic.resourceUri().toString(), QString(), topic.label());
-    m_model->createNode(topic.resourceUri().toString(), QString(), topic.label());
+    m_model->createOrRenameParent(topic.resourceUri().toString(), QString(), topic.label());
 }
 
 void NepomukAdapter::removeResult(const QList<QUrl> &results)
@@ -175,7 +157,7 @@ void NepomukAdapter::removeResult(const QList<QUrl> &results)
         Nepomuk::Resource res(result);
         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(m_type)) {
-            emit parentRemoved(res.resourceUri().toString());
+            m_model->removeNode(res.resourceUri().toString());
             m_guardMap.take(res.resourceUri())->deleteLater();
         } else {
             kWarning() << "unknown result " << res.types();
@@ -209,15 +191,14 @@ void NepomukAdapter::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &re
             continue;
         }
         list.append(indexes.first()); //TODO hanle all
+        m_model->itemParentsChanged(indexes.first(), QStringList() << parent.toString());
     }
-    emit itemsAdded(parent.toString(), list);
 }
 
 void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
 {
     const QUrl &topic = sender()->property("topic").toUrl();
     kDebug() << "removing nodes from topic: " << topic;
-//     Akonadi::Item::List list;
     QModelIndexList list;
     foreach (const QUrl &uri, items) {
         Nepomuk::Resource res = Nepomuk::Resource(uri);
@@ -232,14 +213,14 @@ void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
             continue;
         }
         list.append(indexes.first()); //TODO handle all
+        m_model->itemParentsChanged(indexes.first(), QStringList());
     }
-    emit itemsRemovedFromParent(topic.toString(), list);
 }
 
 void NepomukAdapter::propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value)
 {
     if (property.uri() == Soprano::Vocabulary::NAO::prefLabel()) {
         kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
-        emit parentChanged(res.resourceUri().toString(), QString(), value.toString());
+        m_model->renameParent(res.resourceUri().toString(), value.toString());
     }
 }
