@@ -38,6 +38,7 @@ namespace Zanshin
                     typedef QList<G> List;
                     
                     G();
+                    explicit G(qint64 i);
                     explicit G(qint64 i, int role, const QVariant &n);
                     
                     bool operator==(const G &other) const;

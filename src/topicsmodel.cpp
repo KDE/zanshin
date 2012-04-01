@@ -82,7 +82,7 @@ void TopicsModel::init()
 
 
 
-void TopicsModel::itemParentsChanged(const QModelIndex& item, const QStringList& parents)
+void TopicsModel::itemParentsChanged(const QModelIndex& item, const IdList& parents)
 {
     if (!item.isValid()) {
         kWarning() << "invalid item";
@@ -106,7 +106,7 @@ void TopicsModel::itemParentsChanged(const QModelIndex& item, const QStringList&
         addChildNode(item, m_inboxNode);
         return;
     }
-    foreach(const QString &p, parents) {
+    foreach(const Id &p, parents) {
 //         TodoNode *parentNode = m_resourceMap[parent];
 //         if (!parentNode) {
 //             kWarning() << "topic not in model";
@@ -175,15 +175,7 @@ void TopicsModel::itemParentsChanged(const QModelIndex& item, const QStringList&
 //     }
 }
 
-void TopicsModel::renameParent(const QString& identifier, const QString& name)
-{
-    TodoNode *node = m_resourceMap[identifier];
-    node->setData(name, 0, Qt::DisplayRole);
-    node->setData(name, 0, Qt::EditRole);
-}
-
-
-void TopicsModel::propertyChanged(const QString &identifier, const QString &parentIdentifier, const QString &name)
+void TopicsModel::renameParent(const Id& identifier, const QString& name)
 {
     kDebug() << "renamed " << identifier << " to " << name;
     TodoNode *node = m_resourceMap[identifier];
@@ -194,7 +186,14 @@ void TopicsModel::propertyChanged(const QString &identifier, const QString &pare
     emit dataChanged(begin, end);
 }
 
-void TopicsModel::createOrRenameParent(const QString& identifier, const QString& parentIdentifier, const QString& name)
+
+// void TopicsModel::propertyChanged(const Id &identifier, const Id &parentIdentifier, const QString &name)
+// {
+//     kDebug() << "renamed " << identifier << " to " << name;
+//     renameParent(identifier, name);
+// }
+
+void TopicsModel::createOrRenameParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
 {
     if (!m_resourceMap.contains(identifier)) {
         createNode(identifier, parentIdentifier, name);
@@ -206,7 +205,7 @@ void TopicsModel::createOrRenameParent(const QString& identifier, const QString&
 }
 
 
-void TopicsModel::createNode(const QString &identifier, const QString &parentIdentifier, const QString &name)
+void TopicsModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name)
 {
     kDebug() << "add topic" << name << identifier;
     //TODO: Order them along a tree
@@ -242,7 +241,7 @@ void TopicsModel::createNode(const QString &identifier, const QString &parentIde
     endInsertRows();
 }
 
-void TopicsModel::removeNode(const QString &identifier)
+void TopicsModel::removeNode(const Id &identifier)
 {
     kDebug() << identifier;
     if (!m_resourceMap.contains(identifier)) {
@@ -293,18 +292,18 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
             continue;
         }
         
-        QStringList parents = m_nepomukAdapter->onSourceInsertRow(sourceChildIndex);
+        IdList parents = m_nepomukAdapter->onSourceInsertRow(sourceChildIndex);
         
         TodoNode *node;
         if (parents.isEmpty()) {
             kDebug() << "add node to inbox";
             node = addChildNode(sourceChildIndex, m_inboxNode);
         } else {
-            foreach (const QString &res, parents) {
+            foreach (const Id &res, parents) {
                 kDebug() << "added node to topic: " << res;
                 TodoNode *parent = m_resourceMap[res];
                 if (!parent) { //if the item is before the parent, the parent may not be existing yet.
-                    createNode(res, QString(), "unknown");
+                    createNode(res, -1, "unknown");
                     parent = m_resourceMap[res];
                 }
                 Q_ASSERT(parent);
@@ -338,7 +337,7 @@ void TopicsModel::onSourceDataChanged(const QModelIndex& begin, const QModelInde
 //     kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
-        const QStringList &parents = m_nepomukAdapter->onSourceDataChanged(index);
+        const IdList &parents = m_nepomukAdapter->onSourceDataChanged(index);
         
         itemParentsChanged(index, parents);
 

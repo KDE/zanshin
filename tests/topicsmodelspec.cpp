@@ -65,18 +65,18 @@ private slots:
         G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
         root.data.insert(Qt::DisplayRole, "Topics");
         
-        G p1(8, TestStructureAdapter::TopicParentRole, QString());
-        p1.data.insert(TestStructureAdapter::TopicRole, "topic1");
+        G p1(8);
+        p1.data.insert(TestStructureAdapter::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
-        G p2(9, TestStructureAdapter::TopicParentRole, QString());
-        p2.data.insert(TestStructureAdapter::TopicRole, "topic2");
+        G p2(9);
+        p2.data.insert(TestStructureAdapter::TopicRole, 2);
         p2.data.insert(Qt::DisplayRole, "topic2");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, "topic1");
-        G t2(4, TestStructureAdapter::TopicParentRole, "topic1");
-        G t3(5, TestStructureAdapter::TopicParentRole, "topic2");
-        G t4(6, TestStructureAdapter::TopicParentRole, "topic2");
-        G t5(7, TestStructureAdapter::TopicParentRole, QString());
+        G t1(3, TestStructureAdapter::TopicParentRole, 1);
+        G t2(4, TestStructureAdapter::TopicParentRole, 1);
+        G t3(5, TestStructureAdapter::TopicParentRole, 2);
+        G t4(6, TestStructureAdapter::TopicParentRole, 2);
+        G t5(7);
         
         
         // Create the source structure once and for all
@@ -118,8 +118,8 @@ private slots:
         categoriesModel.setSourceModel(&source);
 
         //Parents
-        testadapter->addParent("topic1", QString(), "topic1");
-        testadapter->addParent("topic2", QString(), "topic2");
+        testadapter->addParent(1, -1, "topic1");
+        testadapter->addParent(2, -1, "topic2");
         
         //Items
         ModelUtils::create(&source, sourceStructure);
@@ -145,18 +145,18 @@ private slots:
         G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
         root.data.insert(Qt::DisplayRole, "Topics");
         
-        G p1(8, TestStructureAdapter::TopicParentRole, QString());
-        p1.data.insert(TestStructureAdapter::TopicRole, "topic1");
+        G p1(8);
+        p1.data.insert(TestStructureAdapter::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
-        G p2(9, TestStructureAdapter::TopicParentRole, QString());
-        p2.data.insert(TestStructureAdapter::TopicRole, "topic2");
+        G p2(9);
+        p2.data.insert(TestStructureAdapter::TopicRole, 2);
         p2.data.insert(Qt::DisplayRole, "topic2");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, "topic1");
-        G t2(4, TestStructureAdapter::TopicParentRole, "topic1");
-        G t3(5, TestStructureAdapter::TopicParentRole, "topic2");
-        G t4(6, TestStructureAdapter::TopicParentRole, "topic2");
-        G t5(7, TestStructureAdapter::TopicParentRole, QString());
+        G t1(3, TestStructureAdapter::TopicParentRole, 1);
+        G t2(4, TestStructureAdapter::TopicParentRole, 1);
+        G t3(5, TestStructureAdapter::TopicParentRole, 2);
+        G t4(6, TestStructureAdapter::TopicParentRole, 2);
+        G t5(7);
         
         // Create the source structure once and for all
         ModelStructure sourceStructure;
@@ -202,8 +202,8 @@ private slots:
         ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
         
         //parents
-        testadapter->addParent("topic1", QString(), "topic1");
-        testadapter->addParent("topic2", QString(), "topic2");
+        testadapter->addParent(1, -1, "topic1");
+        testadapter->addParent(2, -1, "topic2");
                 
         ModelTest t2(&categoriesModel);
         
@@ -228,18 +228,18 @@ private slots:
         G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
         root.data.insert(Qt::DisplayRole, "Topics");
         
-        G p1(8, TestStructureAdapter::TopicParentRole, QString());
-        p1.data.insert(TestStructureAdapter::TopicRole, "topic1");
+        G p1(8);
+        p1.data.insert(TestStructureAdapter::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
-        G p2(9, TestStructureAdapter::TopicParentRole, QString());
-        p2.data.insert(TestStructureAdapter::TopicRole, "topic2");
+        G p2(9);
+        p2.data.insert(TestStructureAdapter::TopicRole, 2);
         p2.data.insert(Qt::DisplayRole, "topic2");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, QString());
-        G t2(4, TestStructureAdapter::TopicParentRole, QString());
-        G t3(5, TestStructureAdapter::TopicParentRole, QString());
-        G t4(6, TestStructureAdapter::TopicParentRole, QString());
-        G t5(7, TestStructureAdapter::TopicParentRole, QString());
+        G t1(3);
+        G t2(4);
+        G t3(5);
+        G t4(6);
+        G t5(7);
         
         
         // Create the source structure once and for all
@@ -308,15 +308,15 @@ private slots:
         QCOMPARE(categoriesModel, intermediate);
         
         //parents
-        testadapter->addParent("topic1", QString(), "topic1");
-        testadapter->addParent("topic2", QString(), "topic2");
+        testadapter->addParent(1, -1, "topic1");
+        testadapter->addParent(2, -1, "topic2");
                 
         //Reparent items
         QFETCH(ModelPath::List, itemsToChangeTopic1);
         foreach (const ModelPath &itemToChange, itemsToChangeTopic1) {
             QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
             Q_ASSERT(index.isValid());
-            source.setData(index, "topic1", TestStructureAdapter::TopicParentRole);
+            source.setData(index, 1, TestStructureAdapter::TopicParentRole);
         }
                 
         ModelTest t2(&categoriesModel);
@@ -329,6 +329,44 @@ private slots:
         QCOMPARE(categoriesModel, output);
         
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
  /*   
     void shouldReactToSourceRowInserts_data()

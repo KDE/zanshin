@@ -56,16 +56,16 @@ public:
     void setModel(TopicsModel *model);
     
     //Called when the item first appears in the model, used to get the correct parent right away
-    virtual QStringList onSourceInsertRow(const QModelIndex &sourceChildIndex) { return QStringList();};
+    virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex) { return QList<qint64>();};
     //Called whenever the item has changed, to reevaluate the parents
-    virtual QStringList onSourceDataChanged(const QModelIndex &changed) {return QStringList();};
+    virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed) {return QList<qint64>();};
     
-signals:
-    void parentAdded(const QString &identifier, const QString &parentIdentifier, const QString &name);
-    void parentChanged(const QString &identifier, const QString &parentIdentifier, const QString &name);
-    void parentRemoved(const QString &identifier);
-    void itemsAdded(const QString &parentIdentifier, const QModelIndexList &);
-    void itemsRemovedFromParent(const QString &parentIdentifier, const QModelIndexList &);
+// signals:
+//     void parentAdded(const QString &identifier, const QString &parentIdentifier, const QString &name);
+//     void parentChanged(const QString &identifier, const QString &parentIdentifier, const QString &name);
+//     void parentRemoved(const QString &identifier);
+//     void itemsAdded(const QString &parentIdentifier, const QModelIndexList &);
+//     void itemsRemovedFromParent(const QString &parentIdentifier, const QModelIndexList &);
 protected:
     TopicsModel *m_model;
 };
@@ -84,13 +84,13 @@ public:
     
     explicit TestStructureAdapter(QObject* parent = 0);
     
-    void addParent(const QString &identifier, const QString &parentIdentifier, const QString &name);
-    void setParent(const QString &itemIdentifier, const QString &parentIdentifier);
-    void removeParent(const QString &identifier);
+    void addParent(const qint64 &identifier, const qint64 &parentIdentifier, const QString &name);
+    void setParent(const qint64 &itemIdentifier, const qint64 &parentIdentifier);
+    void removeParent(const qint64 &identifier);
 //     void addItem(const QString &parentIdentifier, const Akonadi::Item::List &);
     
-    virtual QStringList onSourceInsertRow(const QModelIndex &sourceChildIndex);
-    virtual QStringList onSourceDataChanged(const QModelIndex &changed);
+    virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
+    virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed);
     
 };
 
@@ -116,7 +116,9 @@ private:
     void addParent (const Nepomuk::Resource& topic);
     
     QMap<QUrl, QObject*> m_guardMap;
+    QMap<QUrl, qint64> m_topicMap;
     QUrl m_type;
+    qint64 m_counter;
     
 };
 

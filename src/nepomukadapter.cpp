@@ -55,41 +55,41 @@ TestStructureAdapter::TestStructureAdapter(QObject* parent)
 }
 
 
-QStringList TestStructureAdapter::onSourceInsertRow(const QModelIndex &sourceChildIndex)
+TopicsModel::IdList TestStructureAdapter::onSourceInsertRow(const QModelIndex &sourceChildIndex)
 {
     if (!sourceChildIndex.isValid()) {
         kWarning() << "invalid indexx";
-        return QStringList();
+        return TopicsModel::IdList();
     }
 
-    const QString &parent = sourceChildIndex.data(TopicParentRole).toString();
-    if (parent.isEmpty()) {
-        return QStringList();
+    if (!sourceChildIndex.data(TopicParentRole).isValid()) {
+        return TopicsModel::IdList();
     }
+    const TopicsModel::Id &parent = sourceChildIndex.data(TopicParentRole).value<TopicsModel::Id>();
 
-    return QStringList() << parent;
+    return TopicsModel::IdList() << parent;
 }
 
-QStringList TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
+TopicsModel::IdList TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
 {
     return onSourceInsertRow(sourceIndex);
 }
 
 
-void TestStructureAdapter::addParent(const QString& identifier, const QString& parentIdentifier, const QString& name)
+void TestStructureAdapter::addParent(const TopicsModel::Id& identifier, const TopicsModel::Id& parentIdentifier, const QString& name)
 {
     kDebug() << identifier << parentIdentifier << name;
     m_model->createOrRenameParent(identifier, parentIdentifier, name);
 }
 
-void TestStructureAdapter::removeParent(const QString& identifier)
+void TestStructureAdapter::removeParent(const TopicsModel::Id& identifier)
 {
 //     emit parentRemoved(identifier);
 }
 
 
 NepomukAdapter::NepomukAdapter(QObject* parent)
-: StructureAdapter(parent)
+: StructureAdapter(parent), m_counter(0)
 {
 
 }
@@ -148,7 +148,8 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
         kWarning() << "error";
     }
 //     emit parentAdded(topic.resourceUri().toString(), QString(), topic.label());
-    m_model->createOrRenameParent(topic.resourceUri().toString(), QString(), topic.label());
+    Q_ASSERT(m_topicMap.contains(topic.resourceUri()));
+    m_model->createOrRenameParent(m_topicMap[topic.resourceUri()], -1, topic.label());
 }
 
 void NepomukAdapter::removeResult(const QList<QUrl> &results)
@@ -157,7 +158,8 @@ void NepomukAdapter::removeResult(const QList<QUrl> &results)
         Nepomuk::Resource res(result);
         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(m_type)) {
-            m_model->removeNode(res.resourceUri().toString());
+            Q_ASSERT(m_topicMap.contains(res.resourceUri()));
+            m_model->removeNode(m_topicMap[res.resourceUri()]);
             m_guardMap.take(res.resourceUri())->deleteLater();
         } else {
             kWarning() << "unknown result " << res.types();
@@ -191,7 +193,8 @@ void NepomukAdapter::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &re
             continue;
         }
         list.append(indexes.first()); //TODO hanle all
-        m_model->itemParentsChanged(indexes.first(), QStringList() << parent.toString());
+        Q_ASSERT(m_topicMap.contains(parent));
+        m_model->itemParentsChanged(indexes.first(), TopicsModel::IdList() << m_topicMap[parent]);
     }
 }
 
@@ -213,7 +216,7 @@ void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
             continue;
         }
         list.append(indexes.first()); //TODO handle all
-        m_model->itemParentsChanged(indexes.first(), QStringList());
+        m_model->itemParentsChanged(indexes.first(), TopicsModel::IdList());
     }
 }
 
@@ -221,6 +224,7 @@ void NepomukAdapter::propertyChanged(const Nepomuk::Resource &res, const Nepomuk
 {
     if (property.uri() == Soprano::Vocabulary::NAO::prefLabel()) {
         kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
-        m_model->renameParent(res.resourceUri().toString(), value.toString());
+        Q_ASSERT(m_topicMap.contains(res.resourceUri()));
+        m_model->renameParent(m_topicMap[res.resourceUri()], value.toString());
     }
 }

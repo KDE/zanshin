@@ -32,6 +32,9 @@ class TopicsModel : public TodoProxyModelBase
      friend class StructureAdapter;
      friend class NepomukAdapter;
      friend class TestStructureAdapter;
+     
+     typedef qint64 Id;
+     typedef QList<qint64> IdList;
 public:
 //     enum Roles {
 //         Begin = Qt::UserRole+1000,
@@ -60,12 +63,12 @@ private:
     virtual TodoNode *createInbox() const;
     
     //for creating parents from StructureAdapter
-    void createOrRenameParent(const QString &identifier, const QString &parentIdentifier, const QString &name);
-    void itemParentsChanged(const QModelIndex &item, const QStringList &parents);
-    void renameParent(const QString &identifier, const QString &name);
+    void createOrRenameParent(const Id &identifier, const Id &parentIdentifier, const QString &name);
+    void itemParentsChanged(const QModelIndex &item, const IdList &parents);
+    void renameParent(const Id &identifier, const QString &name);
     
-    void createNode(const QString &identifier, const QString &parentIdentifier, const QString &name);
-    void removeNode(const QString &identifier);
+    void createNode(const Id &identifier, const Id &parentIdentifier, const QString &name);
+    void removeNode(const Id &identifier);
     //void renameNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     
@@ -73,10 +76,10 @@ private:
     
     
     
-    void propertyChanged(const QString &identifier, const QString &parentIdentifier, const QString &name);
+//     void propertyChanged(const Id &identifier, const Id &parentIdentifier, const QString &name);
 
     TodoNode *m_rootNode;
-    QMap<QString, TodoNode*> m_resourceMap;
+    QMap<Id, TodoNode*> m_resourceMap;
 
     StructureAdapter *m_nepomukAdapter;
     

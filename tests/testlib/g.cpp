@@ -31,6 +31,12 @@ namespace Zanshin {
  {
  }
  
+Test::G::G(qint64 i)
+: id(i)
+{
+
+}
+
  
  G::G(qint64 i, int role, const QVariant &n)
  : id(i)
