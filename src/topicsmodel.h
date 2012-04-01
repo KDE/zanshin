@@ -25,21 +25,17 @@
 #define TOPICSMODEL_H
 #include "todoproxymodelbase.h"
 #include "nepomukadapter.h"
-#include <akonadi/item.h>
-
-namespace Akonadi
-{
-class Item;
-}
 
 class TopicsModel : public TodoProxyModelBase
 {
      Q_OBJECT
-
+     friend class StructureAdapter;
+     friend class NepomukAdapter;
+     friend class TestStructureAdapter;
 public:
     enum Roles {
         Begin = Qt::UserRole+1000,
-        TopicRole
+        ParentRole
     };
     TopicsModel(StructureAdapter *adapter, QObject *parent = 0);
     virtual ~TopicsModel();
@@ -58,26 +54,26 @@ private slots:
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
     //void onTopicAdded();
     //void onTopicRemoved();
+
+private:
+    virtual void init();
+    virtual TodoNode *createInbox() const;
+    
     
     void createNode(const QString &identifier, const QString &parentIdentifier, const QString &name);
     void removeNode(const QString &identifier);
     //void renameNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     
-   
+    
     void itemsWithTopicAdded(const QString &, const QModelIndexList &);
     void itemsFromTopicRemoved(const QString &, const QModelIndexList &);
-
+    
     void propertyChanged(const QString &identifier, const QString &parentIdentifier, const QString &name);
 
-private:
-    virtual void init();
-    virtual TodoNode *createInbox() const;
-
     TodoNode *m_rootNode;
-    QMap<QUrl, TodoNode*> m_resourceMap;
+    QMap<QString, TodoNode*> m_resourceMap;
 
-    QHash<Akonadi::Item::Id, QList <QUrl> > m_itemTopics;
     StructureAdapter *m_nepomukAdapter;
     
 };

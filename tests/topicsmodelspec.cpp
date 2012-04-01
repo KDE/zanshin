@@ -25,6 +25,7 @@
 
 #include "topicsmodel.h"
 #include "nepomukadapter.h"
+#include <globaldefs.h>
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modelbuilderbehavior.h"
@@ -153,26 +154,23 @@ private slots:
         QTest::addColumn<ModelStructure>( "outputStructure" );
         
         // Base items
-        V inbox(Inbox);
-        V root(Categories);
-//         C c1(1, 0, "c1");
-//         C c2(2, 0, "c2");
-//         T t1(3, 1, "t1", QString(), "t1", InProgress, NoTag, QString(), QString());
-//         T t2(4, 1, "t2", "t1", "t2", InProgress, NoTag, QString(), QString());
-//         T t3(5, 1, "t3", QString(), "t3", InProgress, NoTag, QString());
-//         T t4(6, 1, "t4", QString(), "t4", InProgress, NoTag, QString(), QString());
-//         T t5(7, 1, "t5", QString(), "t5", InProgress, NoTag);
+        G inbox(1, Zanshin::ItemTypeRole, Zanshin::Inbox);
+        inbox.data.insert(Qt::DisplayRole, "No Topic");
+        G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
+        root.data.insert(Qt::DisplayRole, "Topics");
+        
+        G p1(3, TestStructureAdapter::TopicParentRole, QString());
+        p1.data.insert(TestStructureAdapter::TopicRole, "topic1");
+        p1.data.insert(Qt::DisplayRole, "topic1");
+        G p2(3, TestStructureAdapter::TopicParentRole, QString());
+        p2.data.insert(TestStructureAdapter::TopicRole, "topic2");
+        p2.data.insert(Qt::DisplayRole, "topic2");
         
         G t1(3, TestStructureAdapter::TopicParentRole, "topic1");
-        t1.data.insert(Akonadi::EntityTreeModel::ItemRole, QVariant::fromValue(Akonadi::Item(3)));
         G t2(4, TestStructureAdapter::TopicParentRole, "topic1");
-        t2.data.insert(Akonadi::EntityTreeModel::ItemRole, QVariant::fromValue(Akonadi::Item(4)));
         G t3(5, TestStructureAdapter::TopicParentRole, "topic2");
-        t3.data.insert(Akonadi::EntityTreeModel::ItemRole, QVariant::fromValue(Akonadi::Item(5)));
         G t4(6, TestStructureAdapter::TopicParentRole, "topic2");
-        t4.data.insert(Akonadi::EntityTreeModel::ItemRole, QVariant::fromValue(Akonadi::Item(6)));
         G t5(7, TestStructureAdapter::TopicParentRole, QString());
-        t5.data.insert(Akonadi::EntityTreeModel::ItemRole, QVariant::fromValue(Akonadi::Item(7)));
         
         
         // Create the source structure once and for all
@@ -191,22 +189,19 @@ private slots:
         ModelStructure outputStructure;
         outputStructure 
         << inbox
-        << _+t1
-        << _+t2
-        << _+t3
-        << _+t4
-        << _+t5;
-//         << _+t5
-//         << root
-// //         << _+cat1
-//         << __+t2
-//         << __+t4
-// //         << _+cat2
-//         << __+t2;
+        << _+t5
+        << root
+        << _+p1
+        << __+t1
+        << __+t2
+        << _+p2
+        << __+t3
+        << __+t4;
         
         QTest::newRow( "nominal case" ) << sourceStructure << outputStructure;
     }
     
+    //parents before items
     void shouldReparentBasedOnCategories()
     {
         //GIVEN
@@ -216,11 +211,14 @@ private slots:
         QStandardItemModel source;
 
         TestStructureAdapter *testadapter = new TestStructureAdapter(this);
-        testadapter->setModel(&source);
-        testadapter->addParent("topic1", QString(), "testname1");
-        testadapter->addParent("topic2", QString(), "testname");
+
+        TopicsModel categoriesModel(testadapter, this);        
         
-        TopicsModel categoriesModel(testadapter, this);
+        categoriesModel.setSourceModel(&source);
+        
+        testadapter->addParent("topic1", QString(), "topic1");
+        testadapter->addParent("topic2", QString(), "topic2");
+        
         ModelTest t1(&categoriesModel);
         
         categoriesModel.setSourceModel(&source);
@@ -235,6 +233,7 @@ private slots:
         ModelUtils::create(&output, outputStructure);
         
         Helper::printModel(&categoriesModel);
+        Helper::printModel(&output);
         
         
         QCOMPARE(categoriesModel, output);

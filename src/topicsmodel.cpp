@@ -38,7 +38,7 @@
 TopicsModel::TopicsModel(StructureAdapter *adapter, QObject* parent)
 : TodoProxyModelBase(MultiMapping, parent), m_rootNode(0), m_nepomukAdapter(adapter)
 {
-
+    adapter->setModel(this);
 }
 
 TopicsModel::~TopicsModel()
@@ -84,13 +84,13 @@ void TopicsModel::init()
     }
 */
 
-    connect(m_nepomukAdapter, SIGNAL(parentAdded(QString,QString,QString)), this, SLOT(createNode(QString,QString,QString)));
-    connect(m_nepomukAdapter, SIGNAL(parentRemoved(QString)), this, SLOT(removeNode(QString)));
-    
-    connect(m_nepomukAdapter, SIGNAL(itemsAdded(QString,QModelIndexList)), this, SLOT(itemsWithTopicAdded(QString,QModelIndexList)));
-    connect(m_nepomukAdapter, SIGNAL(itemsRemovedFromParent(QString,QModelIndexList)), this, SLOT(itemsFromTopicRemoved(QString,QModelIndexList)));
-    
-    connect(m_nepomukAdapter, SIGNAL(parentChanged(QString,QString,QString)), this, SLOT(propertyChanged(QString,QString,QString)));
+//     connect(m_nepomukAdapter, SIGNAL(parentAdded(QString,QString,QString)), this, SLOT(createNode(QString,QString,QString)));
+//     connect(m_nepomukAdapter, SIGNAL(parentRemoved(QString)), this, SLOT(removeNode(QString)));
+//     
+//     connect(m_nepomukAdapter, SIGNAL(itemsAdded(QString,QModelIndexList)), this, SLOT(itemsWithTopicAdded(QString,QModelIndexList)));
+//     connect(m_nepomukAdapter, SIGNAL(itemsRemovedFromParent(QString,QModelIndexList)), this, SLOT(itemsFromTopicRemoved(QString,QModelIndexList)));
+//     
+//     connect(m_nepomukAdapter, SIGNAL(parentChanged(QString,QString,QString)), this, SLOT(propertyChanged(QString,QString,QString)));
     m_nepomukAdapter->setType(Nepomuk::Vocabulary::PIMO::Topic()); //Generalize that we only have to parametrize the adapter and the model is fully generic
     
 }
@@ -102,37 +102,26 @@ void TopicsModel::init()
 
 void TopicsModel::itemsWithTopicAdded(const QString &identifier, const QModelIndexList &items)
 {
-//     const QUrl &topic = sender()->property("resourceuri").toUrl();
-//     kDebug() << topic;
-    foreach (const QModelIndex &index, items) {
-        //kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
-        if (!index.isValid()) {
-            continue;
-        }
-        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
-        foreach (TodoNode *node, nodes) {
-            QStringList list = node->data(0, TopicRole).toStringList();
-            list.append(identifier);
-            node->setData(list, 0, TopicRole);
-        }
-
-//         m_itemTopics[index.internalId()].append(identifier);
+//     foreach (const QModelIndex &index, items) {
+//         if (!index.isValid()) {
+//             continue;
+//         }
+//         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
+//         foreach (TodoNode *node, nodes) {
+//             QStringList list = node->data(0, TopicRole).toStringList();
+//             list.append(identifier);
+//             node->setData(list, 0, TopicRole);
+//         }
+/*
         TodoNode *parent = m_resourceMap[identifier];
         if (!parent) { //Topic is not yet in map, wait for it
             kDebug() << identifier;
             kDebug() << m_resourceMap;
             createNode(identifier, QString(), "tempname");
             parent = m_resourceMap[identifier];
-//             return;
         }
         Q_ASSERT(parent);
-//         const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
-//         if (indexes.isEmpty()) {
-//             kDebug() << "item not found" << item.url();
-//             return;
-//         }
 
-        
         foreach (TodoNode *node, nodes) {
             TodoNode *parentNode = node->parent();
             if (parentNode && parentNode->data(0, Zanshin::ItemTypeRole).toInt()==Zanshin::Inbox) {
@@ -146,8 +135,8 @@ void TopicsModel::itemsWithTopicAdded(const QString &identifier, const QModelInd
         }
 
 //         kDebug() << "add item: " << item.url();
-        addChildNode(index, parent);
-    }
+        addChildNode(index, parent);*/
+//     }
 
 }
 
@@ -163,13 +152,7 @@ void TopicsModel::itemsFromTopicRemoved(const QString &identifier, const QModelI
         if (!index.isValid()) {
             continue;
         }
-//         kDebug() << item.url();
 
-//         const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(sourceModel(), item);
-//         if (indexes.isEmpty()) {
-//             kDebug() << "item not found" << item.url();
-//             continue;
-//         }
         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
         foreach (TodoNode *childNode, parentNode->children()) {
             if (childNode && nodes.contains(childNode)) {
@@ -289,29 +272,22 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
             kDebug() << "invalid sourceIndex";
             continue;
         }
-
-        AbstractPimItem::ItemType type = (AbstractPimItem::ItemType) sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt();
-        if (type & AbstractPimItem::All) {
-            QStringList topics;// = m_itemTopics[sourceChildIndex.data(PimItemModel::ItemIdRole).value<Akonadi::Item::Id>()];
-            QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
-            foreach (TodoNode *node, nodes) {
-                topics = node->data(0, TopicRole).toStringList();
-                break;
-            }
-            if (topics.isEmpty()) {
-                //kDebug() << "add node to inbox";
-                addChildNode(sourceChildIndex, m_inboxNode);
-            } else {
-                foreach (const QUrl &res, topics) {
-                    kDebug() << "added node to topic: " << res;
-                    TodoNode *parent = m_resourceMap[res];
-                    Q_ASSERT(parent);
-                    addChildNode(sourceChildIndex, parent);
-                }
-            }
+        
+        QStringList parents = m_nepomukAdapter->onSourceInsertRow(sourceChildIndex);
+        
+        TodoNode *node;
+        if (parents.isEmpty()) {
+            kDebug() << "add node to inbox";
+            node = addChildNode(sourceChildIndex, m_inboxNode);
         } else {
-            kDebug() << "no valid item";
+            foreach (const QString &res, parents) {
+                kDebug() << "added node to topic: " << res;
+                TodoNode *parent = m_resourceMap[res];
+                Q_ASSERT(parent);
+                node = addChildNode(sourceChildIndex, parent);
+            }
         }
+//         node->setData(parents, 0, ParentRole);
     }
 }
 

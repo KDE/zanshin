@@ -25,6 +25,7 @@
 #include <queries.h>
 #include <pimitem.h>
 #include "globaldefs.h"
+#include "topicsmodel.h"
 #include <Nepomuk/Query/Query>
 #include <Nepomuk/Query/QueryServiceClient>
 #include <Nepomuk/Query/Result>
@@ -41,19 +42,19 @@ StructureAdapter::StructureAdapter(QObject* parent): QObject(parent), m_model(0)
 }
 
 
-void StructureAdapter::setModel(QAbstractItemModel* model)
+void StructureAdapter::setModel(TopicsModel* model)
 {
-    if (m_model) {
-        disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)));
-        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
-    }
-    
-    if (model) {
-        connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-                this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
-    }
+//     if (m_model) {
+//         disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)));
+//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
+//     }
+//     
+//     if (model) {
+//         connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+//                 this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
+//         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+//                 this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
+//     }
     
     m_model = model;
 }
@@ -66,18 +67,20 @@ TestStructureAdapter::TestStructureAdapter(QObject* parent)
 }
 
 
-void TestStructureAdapter::onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end)
+QStringList TestStructureAdapter::onSourceInsertRow(const QModelIndex &sourceChildIndex)
 {
-    kDebug() << sourceIndex;
-    for (int i=begin; i<=end; ++i) {
-        QModelIndex sourceChildIndex = m_model->index(i, 0, sourceIndex);
+
         if (!sourceChildIndex.isValid()) {
-            continue;
+            kWarning() << "invalid indexx";
+            return QStringList();
         }
-//         const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-//         Q_ASSERT(item.isValid());
+
         const QString &parent = sourceChildIndex.data(TopicParentRole).toString();
-        emit itemsAdded(parent, QModelIndexList() << sourceChildIndex);
+        if (parent.isEmpty()) {
+            return QStringList();
+        }
+
+        return QStringList() << parent;
 //         Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
 //         if (type==Zanshin::StandardTodo) {
 // //             QStringList categories = m_model->data(sourceChildIndex, Zanshin::CategoriesRole).toStringList();
@@ -87,14 +90,12 @@ void TestStructureAdapter::onSourceInsertRows(const QModelIndex &sourceIndex, in
 //         } else if (type==Zanshin::Collection) {
 //             onSourceInsertRows(sourceChildIndex, 0, m_model->rowCount(sourceChildIndex)-1);
 //         }
-    }
 }
 
-void TestStructureAdapter::onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end)
+void TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
 {
     kDebug();
-    for (int row=begin.row(); row<=end.row(); ++row) {
-//         QModelIndex sourceIndex = begin.sibling(row, 0);
+
 //         QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(Zanshin::CategoriesRole).toStringList());
 //         
 //         QSet<QString> oldCategories = QSet<QString>::fromList(m_categories);
@@ -105,7 +106,6 @@ void TestStructureAdapter::onSourceDataChanged(const QModelIndex &begin, const Q
 //         foreach (const QString &newCategory, newCategories) {
 //             addCategory(newCategory);
 //         }
-    }
 }
 
 
@@ -118,12 +118,13 @@ void TestStructureAdapter::onSourceDataChanged(const QModelIndex &begin, const Q
 void TestStructureAdapter::addParent(const QString& identifier, const QString& parentIdentifier, const QString& name)
 {
     kDebug() << identifier << parentIdentifier << name;
-    emit parentAdded(identifier, parentIdentifier, name);
+    m_model->createNode(identifier, parentIdentifier, name);
+//     emit parentAdded(identifier, parentIdentifier, name);
 }
 
 void TestStructureAdapter::removeParent(const QString& identifier)
 {
-    emit parentRemoved(identifier);
+//     emit parentRemoved(identifier);
 }
 
 
@@ -186,7 +187,8 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
     if ( !queryServiceClient->sparqlQuery(MindMirrorQueries::itemsWithTopicsQuery(QList <QUrl>() << topic.resourceUri())) ) {
         kWarning() << "error";
     }
-    emit parentAdded(topic.resourceUri().toString(), QString(), topic.label());
+//     emit parentAdded(topic.resourceUri().toString(), QString(), topic.label());
+    m_model->createNode(topic.resourceUri().toString(), QString(), topic.label());
 }
 
 void NepomukAdapter::removeResult(const QList<QUrl> &results)

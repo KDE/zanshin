@@ -44,6 +44,8 @@ class Query;
 class Resource;
 }
 
+class TopicsModel;
+
 class StructureAdapter: public QObject
 {
     Q_OBJECT
@@ -51,8 +53,11 @@ public:
     explicit StructureAdapter(QObject* parent = 0);
     virtual void setType(const QUrl &) {};
     
-    void setModel(QAbstractItemModel *model);
-    QAbstractItemModel *model() { return m_model; }
+    void setModel(TopicsModel *model);
+//     QAbstractItemModel *model() { return m_model; }
+    
+    virtual QStringList onSourceInsertRow(const QModelIndex &sourceChildIndex) { return QStringList();};
+    virtual void onSourceDataChanged(const QModelIndex &changed) {};
     
 signals:
     void parentAdded(const QString &identifier, const QString &parentIdentifier, const QString &name);
@@ -61,7 +66,7 @@ signals:
     void itemsAdded(const QString &parentIdentifier, const QModelIndexList &);
     void itemsRemovedFromParent(const QString &parentIdentifier, const QModelIndexList &);
 protected:
-    QAbstractItemModel *m_model;
+    TopicsModel *m_model;
 };
 
 class TestStructureAdapter : public StructureAdapter
@@ -83,9 +88,9 @@ public:
     void removeParent(const QString &identifier);
 //     void addItem(const QString &parentIdentifier, const Akonadi::Item::List &);
     
-private slots:
-    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
+    virtual QStringList onSourceInsertRow(const QModelIndex &sourceChildIndex);
+    virtual void onSourceDataChanged(const QModelIndex &changed);
+    
 };
 
 class NepomukAdapter : public StructureAdapter
