@@ -331,6 +331,87 @@ private slots:
     }
     
     
+    void reparentParents_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+        
+        // Base items
+        G inbox(1, Zanshin::ItemTypeRole, Zanshin::Inbox);
+        inbox.data.insert(Qt::DisplayRole, "No Topic");
+        G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
+        root.data.insert(Qt::DisplayRole, "Topics");
+        
+        G p1(8);
+        p1.data.insert(TestStructureAdapter::TopicRole, 1);
+        p1.data.insert(Qt::DisplayRole, "topic1");
+        G p2(9);
+        p2.data.insert(TestStructureAdapter::TopicRole, 2);
+        p2.data.insert(TestStructureAdapter::TopicParentRole, 1);
+        p2.data.insert(Qt::DisplayRole, "topic2");
+        
+        G t1(3, TestStructureAdapter::TopicParentRole, 1);
+        G t2(4, TestStructureAdapter::TopicParentRole, 1);
+        G t3(5, TestStructureAdapter::TopicParentRole, 2);
+        G t4(6, TestStructureAdapter::TopicParentRole, 2);
+        G t5(7);
+        
+        
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure 
+        << t1
+        << t2
+        << t3
+        << t4
+        << t5;
+        
+        ModelStructure outputStructure;
+        outputStructure 
+        << inbox
+        << _+t5
+        << root
+        << _+p1
+        << __+p2
+        << ___+t3
+        << ___+t4
+        << __+t1
+        << __+t2;
+        
+        
+        QTest::newRow( "nominal case" ) << sourceStructure << outputStructure;
+    }
+    
+    void reparentParents()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+        
+        //Source model
+        QStandardItemModel source;
+        
+        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        
+        TopicsModel categoriesModel(testadapter, this);        
+        
+        categoriesModel.setSourceModel(&source);
+        
+        //Parents
+        testadapter->addParent(1, -1, "topic1");
+        testadapter->addParent(2, 1, "topic2");
+        
+        //Items
+        ModelUtils::create(&source, sourceStructure);
+        
+        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+        
+        QCOMPARE(categoriesModel, output);
+    }
     
     
     

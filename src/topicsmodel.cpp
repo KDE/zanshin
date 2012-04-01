@@ -209,7 +209,16 @@ void TopicsModel::createNode(const Id &identifier, const Id &parentIdentifier, c
 {
     kDebug() << "add topic" << name << identifier;
     //TODO: Order them along a tree
-    TodoNode* parentNode = m_rootNode;
+    TodoNode* parentNode = 0;
+    if (parentIdentifier >= 0) {
+        if (!m_resourceMap.contains(parentIdentifier)) {
+            createNode(parentIdentifier, -1, "unknown");
+        }
+        Q_ASSERT(m_resourceMap.contains(parentIdentifier));
+        parentNode = m_resourceMap[parentIdentifier];
+    } else {
+        parentNode = m_rootNode; 
+    }
     Q_ASSERT(parentNode);
     //TODO find super topic
     /*QString categoryName = categoryPath;

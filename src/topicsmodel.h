@@ -62,10 +62,24 @@ private:
     virtual void init();
     virtual TodoNode *createInbox() const;
     
-    //for creating parents from StructureAdapter
+    /**
+     * Creates a new parent
+     * 
+     * @param identifier must be unique
+     * 
+     * The 
+     */
     void createOrRenameParent(const Id &identifier, const Id &parentIdentifier, const QString &name);
+    /**
+     * Updates the parents of @param item.
+     * 
+     * Moves/adds/removes from parents.
+     */
     void itemParentsChanged(const QModelIndex &item, const IdList &parents);
-    void renameParent(const Id &identifier, const QString &name);
+    /**
+     * Renames @param parent
+     */
+    void renameParent(const Id &id, const QString &name);
     
     void createNode(const Id &identifier, const Id &parentIdentifier, const QString &name);
     void removeNode(const Id &identifier);
