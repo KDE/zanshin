@@ -33,10 +33,10 @@ class TopicsModel : public TodoProxyModelBase
      friend class NepomukAdapter;
      friend class TestStructureAdapter;
 public:
-    enum Roles {
-        Begin = Qt::UserRole+1000,
-        ParentRole
-    };
+//     enum Roles {
+//         Begin = Qt::UserRole+1000,
+//         ParentRole
+//     };
     TopicsModel(StructureAdapter *adapter, QObject *parent = 0);
     virtual ~TopicsModel();
 
@@ -59,6 +59,8 @@ private:
     virtual void init();
     virtual TodoNode *createInbox() const;
     
+    //for creating parents from StructureAdapter
+    void createOrRenameParent(const QString &identifier, const QString &parentIdentifier, const QString &name);
     
     void createNode(const QString &identifier, const QString &parentIdentifier, const QString &name);
     void removeNode(const QString &identifier);

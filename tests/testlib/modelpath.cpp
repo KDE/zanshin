@@ -51,6 +51,11 @@ ModelPath::ModelPath(const V &virt)
     m_path << QVariant::fromValue(virt);
 }
 
+ModelPath::ModelPath(const G& g)
+{
+    m_path << QVariant::fromValue(g);
+}
+
 ModelPath::ModelPath(const C &collection1, const C &collection2)
 {
     m_path << QVariant::fromValue(collection1)
@@ -75,6 +80,18 @@ ModelPath::ModelPath(const Cat &category, const T &todo)
            << QVariant::fromValue(todo);
 }
 
+ModelPath::ModelPath(const G& g1, const G& g2)
+{
+    m_path << QVariant::fromValue(g1)
+    << QVariant::fromValue(g2);
+}
+
+ModelPath::ModelPath(const G& g1, const T& todo)
+{
+    m_path << QVariant::fromValue(g1)
+    << QVariant::fromValue(todo);
+}
+
 ModelPath::ModelPath(const ModelPath &path, const C &collection)
 {
     m_path = path.m_path;
@@ -92,6 +109,13 @@ ModelPath::ModelPath(const ModelPath &path, const Cat &category)
     m_path = path.m_path;
     m_path << QVariant::fromValue(category);
 }
+
+ModelPath::ModelPath(const ModelPath& path, const G& g)
+{
+    m_path = path.m_path;
+    m_path << QVariant::fromValue(g);
+}
+
 
 ModelPath::ModelPath(const ModelPath &path1, const ModelPath &path2)
 {
@@ -118,6 +142,16 @@ ModelPath operator%(const Cat &category, const T &todo)
     return ModelPath(category, todo);
 }
 
+ModelPath operator%(const G& g, const T& todo)
+{
+    return ModelPath(g, todo);
+}
+
+ModelPath operator%(const G& g1, const G& g2)
+{
+    return ModelPath(g1, g2);
+}
+
 ModelPath operator%(const ModelPath &path, const C &collection)
 {
     return ModelPath(path, collection);
@@ -131,6 +165,11 @@ ModelPath operator%(const ModelPath &path, const T &todo)
 ModelPath operator%(const ModelPath &path, const Cat &category)
 {
     return ModelPath(path, category);
+}
+
+ModelPath operator%(const ModelPath& path, const G& g)
+{
+    return ModelPath(path, g);
 }
 
 ModelPath operator%(const ModelPath &path1, const ModelPath &path2)

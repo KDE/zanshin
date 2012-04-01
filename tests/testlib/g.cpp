@@ -40,7 +40,8 @@ namespace Zanshin {
  
  bool G::operator==(const G &other) const
  {
-     return data==other.data;
+     return id == other.id &&
+     data==other.data;
  }
  
     }

@@ -59,6 +59,7 @@ TodoNode* TopicsModel::createInbox() const
 
 void TopicsModel::init()
 {
+    kDebug();
     TodoProxyModelBase::init();
     
     if (!m_rootNode) {
@@ -74,24 +75,8 @@ void TopicsModel::init()
 
         endInsertRows();
     }
-
-    //TODO fetch topics
-/*
-    foreach (const QString &category, CategoryManager::instance().categories()) {
-        if (!m_categoryMap.contains(category)) {
-            createCategoryNode(category);
-        }
-    }
-*/
-
-//     connect(m_nepomukAdapter, SIGNAL(parentAdded(QString,QString,QString)), this, SLOT(createNode(QString,QString,QString)));
-//     connect(m_nepomukAdapter, SIGNAL(parentRemoved(QString)), this, SLOT(removeNode(QString)));
-//     
-//     connect(m_nepomukAdapter, SIGNAL(itemsAdded(QString,QModelIndexList)), this, SLOT(itemsWithTopicAdded(QString,QModelIndexList)));
-//     connect(m_nepomukAdapter, SIGNAL(itemsRemovedFromParent(QString,QModelIndexList)), this, SLOT(itemsFromTopicRemoved(QString,QModelIndexList)));
-//     
-//     connect(m_nepomukAdapter, SIGNAL(parentChanged(QString,QString,QString)), this, SLOT(propertyChanged(QString,QString,QString)));
-    m_nepomukAdapter->setType(Nepomuk::Vocabulary::PIMO::Topic()); //Generalize that we only have to parametrize the adapter and the model is fully generic
+    
+    m_nepomukAdapter->setType(Nepomuk::Vocabulary::PIMO::Topic()); //TODO Generalize that we only have to parametrize the adapter and the model is fully generic
     
 }
 
@@ -185,6 +170,19 @@ void TopicsModel::propertyChanged(const QString &identifier, const QString &pare
     emit dataChanged(begin, end);
 }
 
+void TopicsModel::createOrRenameParent(const QString& identifier, const QString& parentIdentifier, const QString& name)
+{
+    if (!m_resourceMap.contains(identifier)) {
+        createNode(identifier, parentIdentifier, name);
+        return;
+    }
+    //if the node was already created we have to rename it now
+    TodoNode *node = m_resourceMap[identifier];
+    node->setData(name, 0, Qt::DisplayRole);
+    node->setData(name, 0, Qt::EditRole);
+    
+}
+
 
 void TopicsModel::createNode(const QString &identifier, const QString &parentIdentifier, const QString &name)
 {
@@ -263,8 +261,8 @@ void TopicsModel::removeNode(const QString &identifier)
 
 void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
 {
-    kDebug() << begin << end << sourceIndex;
-    kDebug() << sourceModel()->rowCount();
+//     kDebug() << begin << end << sourceIndex;
+//     kDebug() << sourceModel()->rowCount();
     for (int i = begin; i <= end; i++) {
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
 
@@ -283,11 +281,14 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
             foreach (const QString &res, parents) {
                 kDebug() << "added node to topic: " << res;
                 TodoNode *parent = m_resourceMap[res];
+                if (!parent) { //if the item is before the parent, the parent may not be existing yet.
+                    createNode(res, QString(), "unknown");
+                    parent = m_resourceMap[res];
+                }
                 Q_ASSERT(parent);
                 node = addChildNode(sourceChildIndex, parent);
             }
         }
-//         node->setData(parents, 0, ParentRole);
     }
 }
 
@@ -311,9 +312,42 @@ void TopicsModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int begin, 
 }
 
 void TopicsModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
-{   
+{
+//     kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
-        const QModelIndexList &list = mapFromSourceAll(sourceModel()->index(row, 0, begin.parent()));
+        const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
+        const QStringList &parents = m_nepomukAdapter->onSourceDataChanged(index);
+        
+        //remove node from any current parent
+        QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
+        foreach (TodoNode *node, nodes) {
+            TodoNode *parentNode = node->parent();
+            if (parentNode) {
+                int oldRow = parentNode->children().indexOf(node);
+                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
+                m_manager->removeNode(node);
+                delete node;
+                endRemoveRows();
+            }
+        }
+        
+        //TODO only change for the topics that actually changed
+        
+        //TODO add node to new parents
+        foreach (const QString &p, parents) {
+            TodoNode *parent = m_resourceMap[p];
+//             if (!parent) { //Topic is not yet in map, wait for it
+//                 kDebug() << identifier;
+//                 kDebug() << m_resourceMap;
+//                 createNode(identifier, QString(), "tempname");
+//                 parent = m_resourceMap[identifier];
+//             }
+            Q_ASSERT(parent);
+            addChildNode(index, parent);
+        }
+
+        const QModelIndexList &list = mapFromSourceAll(index);
+        
         foreach (const QModelIndex &proxyIndex, list) {
             dataChanged(proxyIndex, proxyIndex);
         }

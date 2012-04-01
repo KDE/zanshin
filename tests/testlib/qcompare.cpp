@@ -81,6 +81,37 @@ QString toString(const Akonadi::Collection &collection)
            .arg(collection.name());
 }
 
+void printModel(QDebug &s, const QAbstractItemModel *model, const QModelIndex &parent = QModelIndex(), int level = 0)
+{
+    if (!level)
+        s << "\n" << "------------------start--------------------" << "\n";
+    QString prefix;
+    for (int i = 0; i < level; i++) {
+        prefix.append("-");
+    }
+    for(int q = 0; q < model->rowCount(parent); q++) {
+        const QModelIndex &index = model->index(q, 0, parent);
+        s << prefix << index << index.data(Qt::DisplayRole) << model->columnCount(index) << "\n";
+        if (model->hasChildren(index)) {
+            printModel(s, model, index, level+1);
+        }
+    }
+    if (!level)
+        s << "------------------end--------------------" << "\n";
+};
+
+template<>
+QString toString(const QAbstractItemModel &model)
+{
+    kDebug();
+    QString result;
+    QDebug s(&result);
+    printModel(s, &model);
+    s << flush;
+    kDebug() << result;
+    return result;
+}
+
 template<>
 QString toString(const QModelIndexList &list)
 {
@@ -248,6 +279,10 @@ bool QTest::qCompare(const QAbstractItemModel &model1, const QAbstractItemModel 
     if (result) {
         return compare_helper(true, "COMPARE()", file, line);
     } else {
+        dumpError(QString("Models differ"),
+                  model1,
+                  model2,
+                  actual, expected, file, line);
         return false;
     }
 }

@@ -54,101 +54,7 @@ private slots:
         QTest::setEvaluatedItemRoles(roles);
     }
     
-//     void shouldRememberItsSourceModel()
-//     {
-//         //GIVEN
-//         QStandardItemModel baseModel;
-//         TodoCategoriesModel proxyModel;
-//         ModelTest mt(&proxyModel);
-//         
-//         //WHEN
-//         proxyModel.setSourceModel(&baseModel);
-//         
-//         //THEN
-//         QVERIFY(proxyModel.sourceModel() == &baseModel);
-//     }
-//     
-//     void shouldReactToSourceRowRemovals_data()
-//     {
-//         QTest::addColumn<ModelStructure>( "sourceStructure" );
-//         QTest::addColumn<ModelPath::List>( "itemsToRemove" );
-//         QTest::addColumn<ModelStructure>( "outputStructure" );
-//         
-//         // Base items
-//         V nocat(NoCategory);
-//         V cats(Categories);
-//         C c1(1, 0, "c1");
-//         C c2(2, 0, "c2");
-//         Cat cat1("cat1");
-//         Cat cat2("cat2");
-//         T t1(3, 1, "t1", QString(), "t1", InProgress, ProjectTag, QString(), "cat1");
-//         T t2(4, 1, "t2", "t1", "t2", InProgress, NoTag, QString(), "cat1, cat2");
-//         T t3(5, 2, "t3", QString(), "t3", InProgress, ProjectTag, QString());
-//         T t4(6, 2, "t4", QString(), "t4", InProgress, NoTag, QString(), "cat1");
-//         T t5(6, 2, "t5", QString(), "t5", InProgress, NoTag);
-//         
-//         // Create the source structure once and for all
-//         ModelStructure sourceStructure;
-//         sourceStructure << c1
-//         << _+t1
-//         << _+t2
-//         << c2
-//         << _+t3
-//         << _+t4
-//         << _+t5;
-//         
-//         
-//         ModelPath::List itemsToRemove;
-//         itemsToRemove << c1 % t2;
-//         
-//         ModelStructure outputStructure;
-//         outputStructure << nocat
-//         << _+t5
-//         << cats
-//         << _+cat1
-//         << __+t4
-//         << _+cat2;
-//         
-//         QTest::newRow( "delete todo" ) << sourceStructure << itemsToRemove << outputStructure;
-//         
-//         
-//         itemsToRemove.clear();
-//         itemsToRemove << c1;
-//         
-//         QTest::newRow( "delete collection" ) << sourceStructure << itemsToRemove << outputStructure;
-//     }
-//     
-//     void shouldReactToSourceRowRemovals()
-//     {
-//         //GIVEN
-//         QFETCH(ModelStructure, sourceStructure);
-//         
-//         //Source model
-//         QStandardItemModel source;
-//         //Kick up category manager
-//         CategoryManager::instance().setModel(&source);
-//         
-//         ModelUtils::create(&source, sourceStructure);
-//         
-//         //create categoriesModel
-//         TodoCategoriesModel categoriesModel;
-//         ModelTest t1(&categoriesModel);
-//         
-//         categoriesModel.setSourceModel(&source);
-//         
-//         //WHEN
-//         QFETCH(ModelPath::List, itemsToRemove);
-//         ModelUtils::destroy(&source, itemsToRemove);
-//         
-//         //THEN
-//         QFETCH(ModelStructure, outputStructure);
-//         QStandardItemModel output;
-//         ModelUtils::create(&output, outputStructure);
-//         
-//         QCOMPARE(categoriesModel, output);
-//     }
-    
-    void shouldReparentBasedOnCategories_data()
+    void parentsBeforeItems_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
         QTest::addColumn<ModelStructure>( "outputStructure" );
@@ -159,10 +65,10 @@ private slots:
         G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
         root.data.insert(Qt::DisplayRole, "Topics");
         
-        G p1(3, TestStructureAdapter::TopicParentRole, QString());
+        G p1(8, TestStructureAdapter::TopicParentRole, QString());
         p1.data.insert(TestStructureAdapter::TopicRole, "topic1");
         p1.data.insert(Qt::DisplayRole, "topic1");
-        G p2(3, TestStructureAdapter::TopicParentRole, QString());
+        G p2(9, TestStructureAdapter::TopicParentRole, QString());
         p2.data.insert(TestStructureAdapter::TopicRole, "topic2");
         p2.data.insert(Qt::DisplayRole, "topic2");
         
@@ -182,9 +88,84 @@ private slots:
         << t4
         << t5;
         
+        ModelStructure outputStructure;
+        outputStructure 
+        << inbox
+        << _+t5
+        << root
+        << _+p1
+        << __+t1
+        << __+t2
+        << _+p2
+        << __+t3
+        << __+t4;
         
-//         ModelPath::List itemsToRemove;
-//         itemsToRemove << c1 % t2;
+        QTest::newRow( "nominal case" ) << sourceStructure << outputStructure;
+    }
+    
+    void parentsBeforeItems()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+        
+        //Source model
+        QStandardItemModel source;
+
+        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+
+        TopicsModel categoriesModel(testadapter, this);        
+                
+        categoriesModel.setSourceModel(&source);
+
+        //Parents
+        testadapter->addParent("topic1", QString(), "topic1");
+        testadapter->addParent("topic2", QString(), "topic2");
+        
+        //Items
+        ModelUtils::create(&source, sourceStructure);
+
+        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+        
+        QCOMPARE(categoriesModel, output);
+    }
+    
+    void itemsBeforeParents_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+        
+        // Base items
+        G inbox(1, Zanshin::ItemTypeRole, Zanshin::Inbox);
+        inbox.data.insert(Qt::DisplayRole, "No Topic");
+        G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
+        root.data.insert(Qt::DisplayRole, "Topics");
+        
+        G p1(8, TestStructureAdapter::TopicParentRole, QString());
+        p1.data.insert(TestStructureAdapter::TopicRole, "topic1");
+        p1.data.insert(Qt::DisplayRole, "topic1");
+        G p2(9, TestStructureAdapter::TopicParentRole, QString());
+        p2.data.insert(TestStructureAdapter::TopicRole, "topic2");
+        p2.data.insert(Qt::DisplayRole, "topic2");
+        
+        G t1(3, TestStructureAdapter::TopicParentRole, "topic1");
+        G t2(4, TestStructureAdapter::TopicParentRole, "topic1");
+        G t3(5, TestStructureAdapter::TopicParentRole, "topic2");
+        G t4(6, TestStructureAdapter::TopicParentRole, "topic2");
+        G t5(7, TestStructureAdapter::TopicParentRole, QString());
+        
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure 
+        << t1
+        << t2
+        << t3
+        << t4
+        << t5;
         
         ModelStructure outputStructure;
         outputStructure 
@@ -201,43 +182,154 @@ private slots:
         QTest::newRow( "nominal case" ) << sourceStructure << outputStructure;
     }
     
-    //parents before items
-    void shouldReparentBasedOnCategories()
+    void itemsBeforeParents()
     {
         //GIVEN
         QFETCH(ModelStructure, sourceStructure);
         
         //Source model
         QStandardItemModel source;
-
+        
         TestStructureAdapter *testadapter = new TestStructureAdapter(this);
-
+        
         TopicsModel categoriesModel(testadapter, this);        
         
         categoriesModel.setSourceModel(&source);
+                
+        //items
+        ModelUtils::create(&source, sourceStructure);
         
+        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        
+        //parents
         testadapter->addParent("topic1", QString(), "topic1");
         testadapter->addParent("topic2", QString(), "topic2");
-        
-        ModelTest t1(&categoriesModel);
-        
-        categoriesModel.setSourceModel(&source);
-        
-        ModelUtils::create(&source, sourceStructure);
-        Helper::printModel(&source);
-        
+                
+        ModelTest t2(&categoriesModel);
         
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
         
-        Helper::printModel(&categoriesModel);
-        Helper::printModel(&output);
-        
-        
         QCOMPARE(categoriesModel, output);
     }
+    
+    void shouldReparentFromInbox_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "intermediateStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+        QTest::addColumn<ModelPath::List>( "itemsToChangeTopic1" );
+        
+        // Base items
+        G inbox(1, Zanshin::ItemTypeRole, Zanshin::Inbox);
+        inbox.data.insert(Qt::DisplayRole, "No Topic");
+        G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
+        root.data.insert(Qt::DisplayRole, "Topics");
+        
+        G p1(8, TestStructureAdapter::TopicParentRole, QString());
+        p1.data.insert(TestStructureAdapter::TopicRole, "topic1");
+        p1.data.insert(Qt::DisplayRole, "topic1");
+        G p2(9, TestStructureAdapter::TopicParentRole, QString());
+        p2.data.insert(TestStructureAdapter::TopicRole, "topic2");
+        p2.data.insert(Qt::DisplayRole, "topic2");
+        
+        G t1(3, TestStructureAdapter::TopicParentRole, QString());
+        G t2(4, TestStructureAdapter::TopicParentRole, QString());
+        G t3(5, TestStructureAdapter::TopicParentRole, QString());
+        G t4(6, TestStructureAdapter::TopicParentRole, QString());
+        G t5(7, TestStructureAdapter::TopicParentRole, QString());
+        
+        
+        // Create the source structure once and for all
+        ModelStructure sourceStructure;
+        sourceStructure 
+        << t1
+        << t2
+        << t3
+        << t4
+        << t5;
+        
+        ModelPath::List itemsToChangeTopic1;
+        itemsToChangeTopic1 << t1;
+        itemsToChangeTopic1 << t2;
+        itemsToChangeTopic1 << t3;
+        itemsToChangeTopic1 << t5;
+        
+        ModelStructure intermediateStructure;
+        intermediateStructure 
+        << inbox
+        << _+t1
+        << _+t2
+        << _+t3
+        << _+t4
+        << _+t5
+        << root;
+        
+        ModelStructure outputStructure;
+        outputStructure 
+        << inbox
+        << _+t4
+        << root
+        << _+p1
+        << __+t1
+        << __+t2
+        << __+t3
+        << __+t5
+        << _+p2;
+        
+        
+        QTest::newRow( "nominal case" ) << sourceStructure << intermediateStructure << outputStructure << itemsToChangeTopic1;
+    }
+    
+    void shouldReparentFromInbox()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+        
+        //Source model
+        QStandardItemModel source;
+        
+        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        
+        TopicsModel categoriesModel(testadapter, this);        
+        
+        categoriesModel.setSourceModel(&source);
+        
+        //items
+        ModelUtils::create(&source, sourceStructure);
+        
+        ModelTest t1(&categoriesModel);
+        
+        QStandardItemModel intermediate;
+        QFETCH(ModelStructure, intermediateStructure);
+        ModelUtils::create(&intermediate, intermediateStructure);
+        QCOMPARE(categoriesModel, intermediate);
+        
+        //parents
+        testadapter->addParent("topic1", QString(), "topic1");
+        testadapter->addParent("topic2", QString(), "topic2");
+                
+        //Reparent items
+        QFETCH(ModelPath::List, itemsToChangeTopic1);
+        foreach (const ModelPath &itemToChange, itemsToChangeTopic1) {
+            QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
+            Q_ASSERT(index.isValid());
+            source.setData(index, "topic1", TestStructureAdapter::TopicParentRole);
+        }
+                
+        ModelTest t2(&categoriesModel);
+        
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+        
+        QCOMPARE(categoriesModel, output);
+        
+    }
+    
  /*   
     void shouldReactToSourceRowInserts_data()
     {

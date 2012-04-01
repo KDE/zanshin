@@ -44,18 +44,6 @@ StructureAdapter::StructureAdapter(QObject* parent): QObject(parent), m_model(0)
 
 void StructureAdapter::setModel(TopicsModel* model)
 {
-//     if (m_model) {
-//         disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)));
-//         disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
-//     }
-//     
-//     if (model) {
-//         connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-//                 this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
-//         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-//                 this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
-//     }
-    
     m_model = model;
 }
 
@@ -69,32 +57,22 @@ TestStructureAdapter::TestStructureAdapter(QObject* parent)
 
 QStringList TestStructureAdapter::onSourceInsertRow(const QModelIndex &sourceChildIndex)
 {
+    if (!sourceChildIndex.isValid()) {
+        kWarning() << "invalid indexx";
+        return QStringList();
+    }
 
-        if (!sourceChildIndex.isValid()) {
-            kWarning() << "invalid indexx";
-            return QStringList();
-        }
+    const QString &parent = sourceChildIndex.data(TopicParentRole).toString();
+    if (parent.isEmpty()) {
+        return QStringList();
+    }
 
-        const QString &parent = sourceChildIndex.data(TopicParentRole).toString();
-        if (parent.isEmpty()) {
-            return QStringList();
-        }
-
-        return QStringList() << parent;
-//         Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
-//         if (type==Zanshin::StandardTodo) {
-// //             QStringList categories = m_model->data(sourceChildIndex, Zanshin::CategoriesRole).toStringList();
-// //             foreach (QString category, categories) {
-// //                 addCategory(category);
-// //             }
-//         } else if (type==Zanshin::Collection) {
-//             onSourceInsertRows(sourceChildIndex, 0, m_model->rowCount(sourceChildIndex)-1);
-//         }
+    return QStringList() << parent;
 }
 
-void TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
+QStringList TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
 {
-    kDebug();
+    return onSourceInsertRow(sourceIndex);
 
 //         QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(Zanshin::CategoriesRole).toStringList());
 //         
@@ -118,7 +96,7 @@ void TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
 void TestStructureAdapter::addParent(const QString& identifier, const QString& parentIdentifier, const QString& name)
 {
     kDebug() << identifier << parentIdentifier << name;
-    m_model->createNode(identifier, parentIdentifier, name);
+    m_model->createOrRenameParent(identifier, parentIdentifier, name);
 //     emit parentAdded(identifier, parentIdentifier, name);
 }
 

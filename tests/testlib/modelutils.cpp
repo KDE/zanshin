@@ -77,6 +77,12 @@ QModelIndex ModelUtils::locateItem(QAbstractItemModel *model, const ModelPath &r
                 if (v1==v2) {
                     found = true;
                 }
+            } else if (variant.canConvert<G>()) {
+                G v1 = variant.value<G>();
+                G v2 = pathPart.value<G>();
+                if (v1==v2) {
+                    found = true;
+                }
             }
 
             if (found) {

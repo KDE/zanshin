@@ -54,10 +54,11 @@ public:
     virtual void setType(const QUrl &) {};
     
     void setModel(TopicsModel *model);
-//     QAbstractItemModel *model() { return m_model; }
     
+    //Called when the item first appears in the model, used to get the correct parent right away
     virtual QStringList onSourceInsertRow(const QModelIndex &sourceChildIndex) { return QStringList();};
-    virtual void onSourceDataChanged(const QModelIndex &changed) {};
+    //Called whenever the item has changed, to reevaluate the parents
+    virtual QStringList onSourceDataChanged(const QModelIndex &changed) {return QStringList();};
     
 signals:
     void parentAdded(const QString &identifier, const QString &parentIdentifier, const QString &name);
@@ -81,15 +82,15 @@ public:
         TopicNameRole
     };
     
-    
     explicit TestStructureAdapter(QObject* parent = 0);
     
     void addParent(const QString &identifier, const QString &parentIdentifier, const QString &name);
+    void setParent(const QString &itemIdentifier, const QString &parentIdentifier);
     void removeParent(const QString &identifier);
 //     void addItem(const QString &parentIdentifier, const Akonadi::Item::List &);
     
     virtual QStringList onSourceInsertRow(const QModelIndex &sourceChildIndex);
-    virtual void onSourceDataChanged(const QModelIndex &changed);
+    virtual QStringList onSourceDataChanged(const QModelIndex &changed);
     
 };
 
