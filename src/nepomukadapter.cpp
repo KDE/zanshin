@@ -79,7 +79,7 @@ TopicsModel::IdList TestStructureAdapter::onSourceDataChanged(const QModelIndex 
 void TestStructureAdapter::addParent(const TopicsModel::Id& identifier, const TopicsModel::Id& parentIdentifier, const QString& name)
 {
     kDebug() << identifier << parentIdentifier << name;
-    m_model->createOrRenameParent(identifier, parentIdentifier, name);
+    m_model->createOrUpdateParent(identifier, parentIdentifier, name);
 }
 
 void TestStructureAdapter::removeParent(const TopicsModel::Id& identifier)
@@ -149,7 +149,7 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
     }
 //     emit parentAdded(topic.resourceUri().toString(), QString(), topic.label());
     Q_ASSERT(m_topicMap.contains(topic.resourceUri()));
-    m_model->createOrRenameParent(m_topicMap[topic.resourceUri()], -1, topic.label());
+    m_model->createOrUpdateParent(m_topicMap[topic.resourceUri()], -1, topic.label());
 }
 
 void NepomukAdapter::removeResult(const QList<QUrl> &results)

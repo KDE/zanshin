@@ -175,6 +175,40 @@ void TopicsModel::itemParentsChanged(const QModelIndex& item, const IdList& pare
 //     }
 }
 
+void TopicsModel::reparentParent(const Id& p, const Id& parent)
+{
+    if (p < 0) {
+        kWarning() << "invalid item";
+        return;
+    }
+    
+    TodoNode *node = m_resourceMap[p];
+    Q_ASSERT(node);
+    const QString &name = node->data(0, Qt::DisplayRole).toString();
+    
+    QList<TodoNode*> children = node->children();
+    foreach (TodoNode* child, children) {
+        child->setParent(0);
+    }
+
+    //remove node from any current parent
+    TodoNode *parentNode = node->parent();
+    Q_ASSERT(parentNode);
+    int oldRow = parentNode->children().indexOf(node);
+    beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
+    Q_ASSERT(m_resourceMap.values().contains(node));
+    m_resourceMap.remove(m_resourceMap.key(node));
+    m_manager->removeNode(node);
+    delete node;
+    endRemoveRows();
+    
+    TodoNode *newParent = createNode(p, parent, name);
+    foreach (TodoNode* child, children) {
+        child->setParent(newParent);
+    }
+    
+}
+
 void TopicsModel::renameParent(const Id& identifier, const QString& name)
 {
     kDebug() << "renamed " << identifier << " to " << name;
@@ -193,7 +227,7 @@ void TopicsModel::renameParent(const Id& identifier, const QString& name)
 //     renameParent(identifier, name);
 // }
 
-void TopicsModel::createOrRenameParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
+void TopicsModel::createOrUpdateParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
 {
     if (!m_resourceMap.contains(identifier)) {
         createNode(identifier, parentIdentifier, name);
@@ -201,11 +235,12 @@ void TopicsModel::createOrRenameParent(const Id& identifier, const Id& parentIde
     }
     //if the node was already created we have to rename it now
     renameParent(identifier, name);
+    reparentParent(identifier, parentIdentifier);
     
 }
 
 
-void TopicsModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name)
+TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name)
 {
     kDebug() << "add topic" << name << identifier;
     //TODO: Order them along a tree
@@ -248,6 +283,7 @@ void TopicsModel::createNode(const Id &identifier, const Id &parentIdentifier, c
     m_manager->insertNode(node);
     kDebug() << identifier << node;
     endInsertRows();
+    return node;
 }
 
 void TopicsModel::removeNode(const Id &identifier)
@@ -313,6 +349,7 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
                 TodoNode *parent = m_resourceMap[res];
                 if (!parent) { //if the item is before the parent, the parent may not be existing yet.
                     createNode(res, -1, "unknown");
+                    Q_ASSERT(m_resourceMap.contains(res));
                     parent = m_resourceMap[res];
                 }
                 Q_ASSERT(parent);

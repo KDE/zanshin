@@ -67,21 +67,22 @@ private:
      * 
      * @param identifier must be unique
      * 
-     * The 
+     * If the parent already exists as identifier name and parent are updated
      */
-    void createOrRenameParent(const Id &identifier, const Id &parentIdentifier, const QString &name);
+    void createOrUpdateParent(const Id &identifier, const Id &parentIdentifier, const QString &name);
     /**
      * Updates the parents of @param item.
      * 
      * Moves/adds/removes from parents.
      */
     void itemParentsChanged(const QModelIndex &item, const IdList &parents);
+    void reparentParent(const Id& p, const Id& parent);
     /**
      * Renames @param parent
      */
     void renameParent(const Id &id, const QString &name);
     
-    void createNode(const Id &identifier, const Id &parentIdentifier, const QString &name);
+    TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name);
     void removeNode(const Id &identifier);
     //void renameNode(const QString &oldCategoryPath, const QString &newCategoryPath);
     //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);

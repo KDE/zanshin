@@ -437,7 +437,7 @@ private slots:
         G t2(4, TestStructureAdapter::TopicParentRole, 1);
         G t3(5, TestStructureAdapter::TopicParentRole, 2);
         G t4(6, TestStructureAdapter::TopicParentRole, 2);
-        G t5(7);
+        G t5(7, TestStructureAdapter::TopicParentRole, 3);
         
         
         // Create the source structure once and for all
@@ -452,11 +452,11 @@ private slots:
         ModelStructure outputStructure;
         outputStructure 
         << inbox
-        << _+t5
         << root
         << _+p1
         << __+p2
         << ___+p3
+        << ____+t5
         << ___+t3
         << ___+t4
         << __+t1
@@ -482,8 +482,9 @@ private slots:
         
         //Parents
         testadapter->addParent(1, -1, "topic1");
-        testadapter->addParent(2, 1, "topic2");
         testadapter->addParent(3, 2, "topic3");
+        testadapter->addParent(2, 1, "topic2");
+        
         
         //Items
         ModelUtils::create(&source, sourceStructure);
