@@ -24,6 +24,7 @@
 #include "nepomukadapter.h"
 #include <queries.h>
 #include <pimitem.h>
+#include <tagmanager.h>
 #include "globaldefs.h"
 #include "topicsmodel.h"
 #include <Nepomuk/Query/Query>
@@ -35,6 +36,7 @@
 #include <nepomuk/resourcetypeterm.h>
 #include <nepomuk/resourcewatcher.h>
 #include <Soprano/Vocabulary/NAO>
+#include <QMimeData>
 
 StructureAdapter::StructureAdapter(QObject* parent): QObject(parent), m_model(0)
 {
@@ -233,4 +235,65 @@ void NepomukAdapter::propertyChanged(const Nepomuk::Resource &res, const Nepomuk
         Q_ASSERT(m_topicMap.contains(res.resourceUri()));
         m_model->renameParent(m_topicMap[res.resourceUri()], value.toString());
     }
+}
+
+bool NepomukAdapter::onDropMimeData(const QMimeData* mimeData, Qt::DropAction action,  qint64 id)
+{
+    bool moveToTrash = false;
+    QUrl targetTopic;
+    if (id >= 0) {
+        //kDebug() << "dropped on item " << data(parent, UriRole) << data(parent, Qt::DisplayRole).toString();
+        targetTopic = m_topicMap.key(id);
+        
+    }
+    /*
+     i f (mimeData*->hasText()) { //plain text is interpreted as topic anyway, so you can drag a textfragment from anywhere and create a new topic when dropped
+     const QUrl &sourceTopic = QUrl(mimeData->text());
+     //beginResetModel();
+     if (targetTopic.isValid()) {
+         kDebug() << "set topic: " << targetTopic << " on dropped topic: " << sourceTopic;
+         NepomukUtils::moveToTopic(sourceTopic, targetTopic);
+} else {
+    kDebug() << "remove all topics from topic:" << sourceTopic;
+    NepomukUtils::removeAllTopics(sourceTopic);
+}
+//endResetModel(); //TODO emit item move instead
+return true;
+}*/
+    
+    //TODO support also drop of other urls (files), and add to topic contextview?
+    
+    if (!mimeData->hasUrls()) {
+        kWarning() << "no urls in drop";
+        return false;
+    }
+    kDebug() << mimeData->urls();
+    
+    foreach (const KUrl &url, mimeData->urls()) {
+        const Akonadi::Item item = Akonadi::Item::fromUrl(url);
+        if (!item.isValid()) {
+            kDebug() << "invalid item";
+            continue;
+        }
+        
+        if (targetTopic.isValid()) {
+            kDebug() << "set topic: " << targetTopic << " on dropped item: " << item.url();
+            NepomukUtils::moveToTopic(item, targetTopic);
+        } else {
+            kDebug() << "remove all topics from item:" << item.url();
+            NepomukUtils::removeAllTopics(item);
+        }
+        
+    }
+    return true;
+}
+
+bool NepomukAdapter::onSetData(qint64 id, const QVariant &value, int role) {
+    QUrl targetTopic = m_topicMap.key(id);
+    if (!targetTopic.isValid()) {
+        kWarning() << "tried to rename invalid topic";
+        return false;
+    }
+    NepomukUtils::renameTopic(targetTopic, value.toString());
+    return true;
 }

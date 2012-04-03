@@ -62,6 +62,9 @@ public:
     //Called whenever a parentNode is removed by removeNode(). (I.e. to cleanup the internals)
     virtual void onNodeRemoval(const qint64 &changed) {};
     
+    virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id){ return false; };
+    virtual bool onSetData(qint64 id, const QVariant &value, int role) { return false; };
+    
 // signals:
 //     void parentAdded(const QString &identifier, const QString &parentIdentifier, const QString &name);
 //     void parentChanged(const QString &identifier, const QString &parentIdentifier, const QString &name);
@@ -106,6 +109,8 @@ public:
     //Set the basic query
     virtual void setType(const QUrl &);
     virtual void onNodeRemoval(const qint64& changed);
+    virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id);
+    virtual bool onSetData(qint64 id, const QVariant &value, int role);
     
 private slots:
     void checkResults(const QList<Nepomuk::Query::Result> &);

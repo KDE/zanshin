@@ -195,8 +195,8 @@ TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifi
     node->setData(name, 0, Qt::DisplayRole);
     node->setData(name, 0, Qt::EditRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole); //TODO get icon from reesource
-    node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
-//     node->setRowData(identifier, Zanshin::UriRole); //TODO don't rely on the identifier being the uri
+    node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole); //TODO remove or move to nepomukadapter
+    node->setRowData(identifier, IdRole);
 
     m_resourceMap[identifier] = node;
     m_manager->insertNode(node);
@@ -218,9 +218,9 @@ void TopicsModel::removeNode(const Id &identifier)
     foreach (TodoNode* child, children) {
         
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-        if (m_resourceMap.values().contains(child)) {
-            const Id childId = m_resourceMap.key(child);
-            removeNode(childId); //Recursive removal of child parent nodes
+        if (childIndex.data(IdRole).canConvert<Id>()) {
+            Id id = childIndex.data(IdRole).value<Id>();
+            removeNode(id); //Recursive removal of child parent nodes
         } else {
             child->setParent(m_inboxNode);
         }
@@ -339,53 +339,12 @@ bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action,
 {
         //kDebug() << mimeData->formats();
     //kDebug() << mimeData->text();
-
-    bool moveToTrash = false;
-    QUrl targetTopic;
-    if (parent.isValid()) {
-        //kDebug() << "dropped on item " << data(parent, UriRole) << data(parent, Qt::DisplayRole).toString();
-        targetTopic = parent.data(Zanshin::UriRole).value<QUrl>();
+    if (parent.data(IdRole).canConvert<Id>()) {
+        Id id = parent.data(IdRole).value<Id>();
+        //TODO make use of row/column to find correct child instead?
+        return m_nepomukAdapter->onDropMimeData(mimeData, action, id);
     }
-/*
-    if (mimeData->hasText()) { //plain text is interpreted as topic anyway, so you can drag a textfragment from anywhere and create a new topic when dropped
-        const QUrl &sourceTopic = QUrl(mimeData->text());
-        //beginResetModel();
-        if (targetTopic.isValid()) {
-            kDebug() << "set topic: " << targetTopic << " on dropped topic: " << sourceTopic;
-            NepomukUtils::moveToTopic(sourceTopic, targetTopic);
-        } else {
-            kDebug() << "remove all topics from topic:" << sourceTopic;
-            NepomukUtils::removeAllTopics(sourceTopic);
-        }
-        //endResetModel(); //TODO emit item move instead
-        return true;
-    }*/
-
-    //TODO support also drop of other urls (files), and add to topic contextview?
-
-    if (!mimeData->hasUrls()) {
-        kWarning() << "no urls in drop";
-        return false;
-    }
-    kDebug() << mimeData->urls();
-
-    foreach (const KUrl &url, mimeData->urls()) {
-        const Akonadi::Item item = Akonadi::Item::fromUrl(url);
-        if (!item.isValid()) {
-            kDebug() << "invalid item";
-            continue;
-        }
-
-        if (targetTopic.isValid()) {
-            kDebug() << "set topic: " << targetTopic << " on dropped item: " << item.url();
-            NepomukUtils::moveToTopic(item, targetTopic);
-        } else {
-            kDebug() << "remove all topics from item:" << item.url();
-            NepomukUtils::removeAllTopics(item);
-        }
-
-    }
-    return true;
+    return false;
 }
 
 bool TopicsModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -393,10 +352,8 @@ bool TopicsModel::setData(const QModelIndex &index, const QVariant &value, int r
     if (role!=Qt::EditRole || !index.isValid()) {
         return TodoProxyModelBase::setData(index, value, role);
     }
-
-    Zanshin::ItemType type = static_cast<Zanshin::ItemType>(index.data(Zanshin::ItemTypeRole).toInt());
-    if (index.column()==0 && type==Zanshin::Topic) {
-        NepomukUtils::renameTopic(index.data(Zanshin::UriRole).toUrl(), value.toString());
+    
+    if (index.data(IdRole).canConvert<Id>() && m_nepomukAdapter->onSetData(index.data(IdRole).value<Id>(), value, role)) {
         return true;
     }
 

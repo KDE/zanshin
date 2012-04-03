@@ -36,10 +36,10 @@ class TopicsModel : public TodoProxyModelBase
      typedef qint64 Id;
      typedef QList<qint64> IdList;
 public:
-//     enum Roles {
-//         Begin = Qt::UserRole+1000,
-//         ParentRole
-//     };
+    enum Roles {
+        Begin = Qt::UserRole+1000,
+        IdRole
+    };
     TopicsModel(StructureAdapter *adapter, QObject *parent = 0);
     virtual ~TopicsModel();
 
