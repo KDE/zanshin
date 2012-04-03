@@ -90,6 +90,7 @@ void TestStructureAdapter::removeParent(const TopicsModel::Id& identifier)
 }
 
 
+
 NepomukAdapter::NepomukAdapter(QObject* parent)
 : StructureAdapter(parent), m_counter(0)
 {
@@ -145,18 +146,19 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
     connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(itemsWithTopicAdded(QList<Nepomuk::Query::Result>)));
     connect(queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(itemsFromTopicRemoved(QList<QUrl>)));
     connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
-    //connect(queryServiceClient, SIGNAL(finishedListing()), queryServiceClient, SLOT(deleteLater()));
     if ( !queryServiceClient->sparqlQuery(MindMirrorQueries::itemsWithTopicsQuery(QList <QUrl>() << topic.resourceUri())) ) {
         kWarning() << "error";
     }
-//     emit parentAdded(topic.resourceUri().toString(), QString(), topic.label());
     Q_ASSERT(m_topicMap.contains(topic.resourceUri()));
     m_model->createOrUpdateParent(m_topicMap[topic.resourceUri()], -1, topic.label());
 }
 
-void NepomukAdapter::onNodeRemoval(const qint64& changed)
+void NepomukAdapter::onNodeRemoval(const qint64& id)
 {
-    //NepomukUtils::deleteTopic(childIndex.data(Zanshin::UriRole).toUrl()); //TODO maybe leave this up to nepomuk subresource handling?
+    const QUrl &targetTopic = m_topicMap.key(id);
+    if (targetTopic.isValid()) {
+        NepomukUtils::deleteTopic(targetTopic); //TODO maybe leave this up to nepomuk subresource handling?
+    }
 }
 
 
@@ -178,7 +180,6 @@ void NepomukAdapter::removeResult(const QList<QUrl> &results)
 void NepomukAdapter::queryFinished()
 {
     kWarning();
-    //emit ready();
 }
 
 
@@ -289,7 +290,7 @@ return true;
 }
 
 bool NepomukAdapter::onSetData(qint64 id, const QVariant &value, int role) {
-    QUrl targetTopic = m_topicMap.key(id);
+    const QUrl &targetTopic = m_topicMap.key(id);
     if (!targetTopic.isValid()) {
         kWarning() << "tried to rename invalid topic";
         return false;

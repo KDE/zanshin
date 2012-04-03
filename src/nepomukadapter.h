@@ -65,12 +65,6 @@ public:
     virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id){ return false; };
     virtual bool onSetData(qint64 id, const QVariant &value, int role) { return false; };
     
-// signals:
-//     void parentAdded(const QString &identifier, const QString &parentIdentifier, const QString &name);
-//     void parentChanged(const QString &identifier, const QString &parentIdentifier, const QString &name);
-//     void parentRemoved(const QString &identifier);
-//     void itemsAdded(const QString &parentIdentifier, const QModelIndexList &);
-//     void itemsRemovedFromParent(const QString &parentIdentifier, const QModelIndexList &);
 protected:
     TopicsModel *m_model;
 };
@@ -93,7 +87,6 @@ public:
     void setParent(const qint64 &itemIdentifier, const qint64 &parentIdentifier);
     void removeParent(const qint64 &identifier);
     void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
-//     void addItem(const QString &parentIdentifier, const Akonadi::Item::List &);
     
     virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
     virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed);

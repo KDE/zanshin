@@ -145,7 +145,6 @@ void TopicsModel::reparentParent(const Id& p, const Id& parent)
     foreach (TodoNode* child, children) {
         child->setParent(newParent);
     }
-    
 }
 
 void TopicsModel::renameParent(const Id& identifier, const QString& name)
@@ -168,7 +167,6 @@ void TopicsModel::createOrUpdateParent(const Id& identifier, const Id& parentIde
     //if the node was already created we have to rename it now
     renameParent(identifier, name);
     reparentParent(identifier, parentIdentifier);
-    
 }
 
 
@@ -188,9 +186,7 @@ TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifi
     Q_ASSERT(parentNode);
 
     int row = parentNode->children().size();
-    kDebug() << "beforeindsert";
     beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
-    kDebug() << "afterinsert";
     TodoNode *node = new TodoNode(parentNode);
     node->setData(name, 0, Qt::DisplayRole);
     node->setData(name, 0, Qt::EditRole);
@@ -337,7 +333,7 @@ Qt::DropActions TopicsModel::supportedDropActions() const
 
 bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
-        //kDebug() << mimeData->formats();
+    //kDebug() << mimeData->formats();
     //kDebug() << mimeData->text();
     if (parent.data(IdRole).canConvert<Id>()) {
         Id id = parent.data(IdRole).value<Id>();

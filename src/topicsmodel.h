@@ -55,8 +55,6 @@ private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    //void onTopicAdded();
-    //void onTopicRemoved();
 
 private:
     virtual void init();
@@ -84,20 +82,11 @@ private:
     
     TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name);
     void removeNode(const Id &identifier);
-    //void renameNode(const QString &oldCategoryPath, const QString &newCategoryPath);
-    //void moveNode(const QString &oldCategoryPath, const QString &newCategoryPath);
-    
-    
-    
-    
-    
-//     void propertyChanged(const Id &identifier, const Id &parentIdentifier, const QString &name);
 
     TodoNode *m_rootNode;
     QMap<Id, TodoNode*> m_resourceMap;
 
     StructureAdapter *m_nepomukAdapter;
-    
 };
 
 #endif // TOPICSMODEL_H
