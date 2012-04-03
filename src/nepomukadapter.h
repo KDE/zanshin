@@ -59,6 +59,8 @@ public:
     virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex) { return QList<qint64>();};
     //Called whenever the item has changed, to reevaluate the parents
     virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed) {return QList<qint64>();};
+    //Called whenever a parentNode is removed by removeNode(). (I.e. to cleanup the internals)
+    virtual void onNodeRemoval(const qint64 &changed) {};
     
 // signals:
 //     void parentAdded(const QString &identifier, const QString &parentIdentifier, const QString &name);
@@ -87,6 +89,7 @@ public:
     void addParent(const qint64 &identifier, const qint64 &parentIdentifier, const QString &name);
     void setParent(const qint64 &itemIdentifier, const qint64 &parentIdentifier);
     void removeParent(const qint64 &identifier);
+    void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
 //     void addItem(const QString &parentIdentifier, const Akonadi::Item::List &);
     
     virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
@@ -102,6 +105,7 @@ public:
     
     //Set the basic query
     virtual void setType(const QUrl &);
+    virtual void onNodeRemoval(const qint64& changed);
     
 private slots:
     void checkResults(const QList<Nepomuk::Query::Result> &);

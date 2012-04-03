@@ -107,72 +107,11 @@ void TopicsModel::itemParentsChanged(const QModelIndex& item, const IdList& pare
         return;
     }
     foreach(const Id &p, parents) {
-//         TodoNode *parentNode = m_resourceMap[parent];
-//         if (!parentNode) {
-//             kWarning() << "topic not in model";
-//             continue;
-//         }
-//         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
-//         foreach (TodoNode *childNode, parentNode->children()) {
-//             if (childNode && nodes.contains(childNode)) {
-//                 kDebug() << "removed item from topic";
-//                 int oldRow = parentNode->children().indexOf(childNode);
-//                 beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
-//                 m_manager->removeNode(childNode);
-//                 delete childNode;
-//                 endRemoveRows();
-//                 break;
-//             }
-//         }
-        
-
-        
         //TODO only change for the topics that actually changed
-        
-        //TODO add node to new parents
         TodoNode *pa = m_resourceMap[p];
-        //             if (!pa) { //Topic is not yet in map, wait for it
-        //                 kDebug() << identifier;
-        //                 kDebug() << m_resourceMap;
-        //                 createNode(identifier, QString(), "tempname");
-        //                 pa = m_resourceMap[identifier];
-        //             }
         Q_ASSERT(pa);
         addChildNode(item, pa);
-        
     }
-        
-//     TodoNode *parentNode = m_resourceMap[identifier];
-//         if (!parentNode) {
-//                 kWarning() << "topic not in model";
-//             return;
-//         }
-//         kDebug() << "removing nodes from topic: " << identifier;
-//         foreach (const QModelIndex &index, items) {
-//                 if (!index.isValid()) {
-//                         continue;
-//             }
-//     
-//             QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
-//             foreach (TodoNode *childNode, parentNode->children()) {
-//                     if (childNode && nodes.contains(childNode)) {
-//                             kDebug() << "removed item from topic";
-//                     int oldRow = parentNode->children().indexOf(childNode);
-//                     beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
-//                     m_manager->removeNode(childNode);
-//                     delete childNode;
-//                     endRemoveRows();
-//                     break;
-//                 }
-//             }
-//     
-//             if (m_manager->nodesForSourceIndex(index).isEmpty()) {
-//                     kDebug() << "added to inbox";
-//                 addChildNode(index, m_inboxNode);
-//             }
-//     
-//         }
-//     }
 }
 
 void TopicsModel::reparentParent(const Id& p, const Id& parent)
@@ -220,13 +159,6 @@ void TopicsModel::renameParent(const Id& identifier, const QString& name)
     emit dataChanged(begin, end);
 }
 
-
-// void TopicsModel::propertyChanged(const Id &identifier, const Id &parentIdentifier, const QString &name)
-// {
-//     kDebug() << "renamed " << identifier << " to " << name;
-//     renameParent(identifier, name);
-// }
-
 void TopicsModel::createOrUpdateParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
 {
     if (!m_resourceMap.contains(identifier)) {
@@ -243,7 +175,6 @@ void TopicsModel::createOrUpdateParent(const Id& identifier, const Id& parentIde
 TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name)
 {
     kDebug() << "add topic" << name << identifier;
-    //TODO: Order them along a tree
     TodoNode* parentNode = 0;
     if (parentIdentifier >= 0) {
         if (!m_resourceMap.contains(parentIdentifier)) {
@@ -255,17 +186,6 @@ TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifi
         parentNode = m_rootNode; 
     }
     Q_ASSERT(parentNode);
-    //TODO find super topic
-    /*QString categoryName = categoryPath;
-    if (categoryPath.contains(CategoryManager::pathSeparator())) {
-        QString parentCategory = categoryPath.left(categoryPath.lastIndexOf(CategoryManager::pathSeparator()));
-        categoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
-        parentNode = m_categoryMap[parentCategory];
-        if (!parentNode) {
-            CategoryManager::instance().addCategory(parentCategory);
-            parentNode = m_categoryMap[parentCategory];
-        }
-    }*/
 
     int row = parentNode->children().size();
     kDebug() << "beforeindsert";
@@ -274,10 +194,9 @@ TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifi
     TodoNode *node = new TodoNode(parentNode);
     node->setData(name, 0, Qt::DisplayRole);
     node->setData(name, 0, Qt::EditRole);
-    //node->setData(categoryPath, 0, Zanshin::CategoryPathRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole); //TODO get icon from reesource
     node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
-    node->setRowData(identifier, Zanshin::UriRole); //TODO don't rely on the identifier being the uri
+//     node->setRowData(identifier, Zanshin::UriRole); //TODO don't rely on the identifier being the uri
 
     m_resourceMap[identifier] = node;
     m_manager->insertNode(node);
@@ -294,26 +213,16 @@ void TopicsModel::removeNode(const Id &identifier)
     }
 
     TodoNode *node = m_resourceMap[identifier];
-
+    m_nepomukAdapter->onNodeRemoval(identifier);
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
-        child->setParent(m_inboxNode);
         
         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-        if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Topic) {
-            NepomukUtils::deleteTopic(childIndex.data(Zanshin::UriRole).toUrl()); //TODO maybe leave this up to nepomuk subresource handling?
+        if (m_resourceMap.values().contains(child)) {
+            const Id childId = m_resourceMap.key(child);
+            removeNode(childId); //Recursive removal of child parent nodes
         } else {
             child->setParent(m_inboxNode);
-            /*
-            QStringList categories = childIndex.data(Zanshin::CategoriesRole).toStringList();
-            if (categories.empty()) {
-                child->setParent(m_inboxNode);
-            } else {
-                beginRemoveRows(childIndex.parent(), childIndex.row(), childIndex.row());
-                m_manager->removeNode(child);
-                delete child;
-                endRemoveRows();
-            }*/
         }
     }
 

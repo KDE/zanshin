@@ -84,7 +84,7 @@ void TestStructureAdapter::addParent(const TopicsModel::Id& identifier, const To
 
 void TestStructureAdapter::removeParent(const TopicsModel::Id& identifier)
 {
-//     emit parentRemoved(identifier);
+    m_model->removeNode(identifier);
 }
 
 
@@ -151,6 +151,12 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
     Q_ASSERT(m_topicMap.contains(topic.resourceUri()));
     m_model->createOrUpdateParent(m_topicMap[topic.resourceUri()], -1, topic.label());
 }
+
+void NepomukAdapter::onNodeRemoval(const qint64& changed)
+{
+    //NepomukUtils::deleteTopic(childIndex.data(Zanshin::UriRole).toUrl()); //TODO maybe leave this up to nepomuk subresource handling?
+}
+
 
 void NepomukAdapter::removeResult(const QList<QUrl> &results)
 {
