@@ -51,6 +51,7 @@
 #include <nepomuk/createresourcejob.h>
 
 #include "queries.h"
+#include "tagmanager_p.h"
 
 
 namespace NepomukUtils {
@@ -83,43 +84,6 @@ KJob* deleteTopic(const QUrl& topicId)
     return Nepomuk::removeResources(QList<QUrl>() << topicId, Nepomuk::RemoveSubResoures);
 }
 
-
-/*
-QStringList getTopicList(const Nepomuk::Thing& thing)
-{
-    QStringList list;
-    QString query = QString::fromLatin1("select ?r where { ?r <%1> <%2>. <%4> <%3> ?r.}")
-        .arg(Soprano::Vocabulary::RDF::type().toString())
-        .arg(Nepomuk::Vocabulary::PIMO::Topic().toString())
-        .arg(Nepomuk::Vocabulary::PIMO::isRelated().toString())
-        .arg(thing.uri());
-    QList<Nepomuk::Query::Result> results = Nepomuk::Query::QueryServiceClient::syncSparqlQuery(query);
-    foreach (const Nepomuk::Query::Result &result, results) {
-        list.append(result.resource().label());
-    }
-    return list;
-}*/
-
-QList<QUrl> getTopicList(const Akonadi::Item& item)
-{
-    QList<QUrl> list;
-    QList<Nepomuk::Query::Result> results = Nepomuk::Query::QueryServiceClient::syncSparqlQuery(MindMirrorQueries::itemTopicsQuery(item));
-    foreach (const Nepomuk::Query::Result &result, results) {
-        list.append(result.resource().resourceUri());
-    }
-    return list;
-}
-
-QStringList getTopicNameList(const Akonadi::Item& item)
-{
-    QStringList list;
-    QList<Nepomuk::Query::Result> results = Nepomuk::Query::QueryServiceClient::syncSparqlQuery(MindMirrorQueries::itemTopicsQuery(item));
-    foreach (const Nepomuk::Query::Result &result, results) {
-        list.append(result.resource().label());
-    }
-    return list;
-}
-
 KJob *moveToTopic(const Akonadi::Item& item, const QUrl& topicId)
 {
     removeAllTopics(item);
@@ -134,20 +98,9 @@ KJob *moveToTopic(const QUrl& topicId, const QUrl& supertopicId)
 
 KJob *removeAllTopics(const Akonadi::Item& item)
 {
-    QList<QUrl> list = getTopicList(item);
-    if (list.isEmpty()) {
-        return 0;
-    }
-    QList<Nepomuk::Query::Result> results = Nepomuk::Query::QueryServiceClient::syncSparqlQuery(MindMirrorQueries::itemThingQuery(item));
-    const Nepomuk::Resource &thing = results.first().resource();
-    Q_ASSERT(thing.isValid());
-    kDebug() << "res: " << thing.resourceUri();
-    QVariantList values;
-    foreach (const QUrl &url, list) {
-        kDebug() << url;
-        values << url;
-    }
-    return Nepomuk::removeProperty(QList<QUrl>() << thing.resourceUri(), Nepomuk::Vocabulary::PIMO::isRelated(), values);
+    KJob *job = new RemoveAllTopicsJob(item);
+    job->start();
+    return job;
 }
 
 KJob *removeAllTopics(const QUrl& topicId)
