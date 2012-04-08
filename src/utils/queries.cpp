@@ -45,6 +45,7 @@
 #include <nepomuk/andterm.h>
 #include <aneo.h>
 #include <soprano/rdf.h>
+#include <soprano/nao.h>
 #include <nepomuk/resourceterm.h>
 
 
@@ -147,13 +148,14 @@ namespace MindMirrorQueries
     {//"select ?topic where { ?topic <%4> <%5>. ?r <%6> ?topic. ?r <%2> ?g. ?g <%3> <%1>.}"
     //select ?t where { ?t rdf:type pimo:Topic. ?r pimo:isRelated ?t. ?r pimo:groundingOccurrence ?g. ?g nie:url <akonadi:?item=225> }
         //TODO for some reason ?thing <%6> ?r can not be changed into ?r <%6> ?thing although the property is bidirectional
-        QString query = QString::fromLatin1("select ?r where { ?r <%4> <%5>. ?thing <%6> ?r. ?thing <%2> ?g. ?g <%3> <%1>.}")
+    QString query = QString::fromLatin1("select ?r ?reqProp1 where { ?r <%4> <%5>. ?thing <%6> ?r. ?thing <%2> ?g. ?g <%3> <%1>. ?r <%7> ?reqProp1.}")
             .arg(item.url().url())
             .arg(Nepomuk::Vocabulary::PIMO::groundingOccurrence().toString())
             .arg(Nepomuk::Vocabulary::NIE::url().toString())
             .arg(Soprano::Vocabulary::RDF::type().toString())
             .arg(PIMO::Topic().toString())
-            .arg(PIMO::isRelated().toString());
+            .arg(PIMO::isRelated().toString())
+            .arg(Soprano::Vocabulary::NAO::prefLabel().toString());
         kDebug() << query;
         return query;
     }
