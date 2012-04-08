@@ -33,6 +33,7 @@
 #include <Nepomuk/Types/Class>
 #include <Nepomuk/Resource>
 #include <KDebug>
+#include <KIcon>
 #include <nepomuk/resourcetypeterm.h>
 #include <nepomuk/resourcewatcher.h>
 #include <Soprano/Vocabulary/NAO>
@@ -83,6 +84,12 @@ void TestStructureAdapter::addParent(const TopicsModel::Id& identifier, const To
     kDebug() << identifier << parentIdentifier << name;
     m_model->createOrUpdateParent(identifier, parentIdentifier, name);
 }
+
+void TestStructureAdapter::setParent(const QModelIndex &item, const qint64& parentIdentifier)
+{
+    m_model->itemParentsChanged(item, TopicsModel::IdList() << parentIdentifier);
+}
+
 
 void TestStructureAdapter::removeParent(const TopicsModel::Id& identifier)
 {
@@ -149,12 +156,19 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
     if ( !queryServiceClient->sparqlQuery(MindMirrorQueries::itemsWithTopicsQuery(QList <QUrl>() << topic.resourceUri())) ) {
         kWarning() << "error";
     }
-    Q_ASSERT(m_topicMap.contains(topic.resourceUri()));
-    m_model->createOrUpdateParent(m_topicMap[topic.resourceUri()], -1, topic.label());
+    qint64 id = -1;
+    if (m_topicMap.contains(topic.resourceUri())) {
+        id = m_topicMap[topic.resourceUri()];
+    } else {
+        id = m_counter++;
+        m_topicMap.insert(topic.resourceUri(), id);
+    }
+    m_model->createOrUpdateParent(id, -1, topic.label());
 }
 
 void NepomukAdapter::onNodeRemoval(const qint64& id)
 {
+    kDebug() << id;
     const QUrl &targetTopic = m_topicMap.key(id);
     if (targetTopic.isValid()) {
         NepomukUtils::deleteTopic(targetTopic); //TODO maybe leave this up to nepomuk subresource handling?
@@ -194,18 +208,30 @@ void NepomukAdapter::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &re
         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
         if (!item.isValid()) {
+            kWarning() << "invalid Item";
             continue;
         }
-        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(m_model, item);
+        Q_ASSERT(m_topicMap.contains(parent));
+        m_topicCache.insert(item.url(),  TopicsModel::IdList() << m_topicMap[parent]); //TODO preserve existing topics (multi topic items)
+        //If the index is already available change it right away
+        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(m_model->sourceModel(), item);
         if (indexes.isEmpty()) {
-            kDebug() << "item not found" << item.url();
+            kWarning() << "item not found" << item.url() << m_topicMap[parent];
             continue;
         }
         list.append(indexes.first()); //TODO hanle all
-        Q_ASSERT(m_topicMap.contains(parent));
-        m_model->itemParentsChanged(indexes.first(), TopicsModel::IdList() << m_topicMap[parent]);
+        m_model->itemParentsChanged(indexes.first(), m_topicCache.value(item.url()));
     }
 }
+
+QList< qint64 > NepomukAdapter::onSourceInsertRow(const QModelIndex& sourceChildIndex)
+{
+    const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    kDebug() << item.url() << m_topicCache.value(item.url());
+    return m_topicCache.value(item.url());
+//     return StructureAdapter::onSourceInsertRow(sourceChildIndex);
+}
+
 
 void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
 {
@@ -219,13 +245,14 @@ void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
             continue;
         }
         kDebug() << item.url();
-        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(m_model, item);
+        m_topicCache.remove(item.url()); //TODO preserve other topics
+        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(m_model->sourceModel(), item);
         if (indexes.isEmpty()) {
             kDebug() << "item not found" << item.url();
             continue;
         }
         list.append(indexes.first()); //TODO handle all
-        m_model->itemParentsChanged(indexes.first(), TopicsModel::IdList());
+        m_model->itemParentsChanged(indexes.first(), m_topicCache.value(item.url()));
     }
 }
 
@@ -247,22 +274,6 @@ bool NepomukAdapter::onDropMimeData(const QMimeData* mimeData, Qt::DropAction ac
         targetTopic = m_topicMap.key(id);
         
     }
-    /*
-     i f (mimeData*->hasText()) { //plain text is interpreted as topic anyway, so you can drag a textfragment from anywhere and create a new topic when dropped
-     const QUrl &sourceTopic = QUrl(mimeData->text());
-     //beginResetModel();
-     if (targetTopic.isValid()) {
-         kDebug() << "set topic: " << targetTopic << " on dropped topic: " << sourceTopic;
-         NepomukUtils::moveToTopic(sourceTopic, targetTopic);
-} else {
-    kDebug() << "remove all topics from topic:" << sourceTopic;
-    NepomukUtils::removeAllTopics(sourceTopic);
-}
-//endResetModel(); //TODO emit item move instead
-return true;
-}*/
-    
-    //TODO support also drop of other urls (files), and add to topic contextview?
     
     if (!mimeData->hasUrls()) {
         kWarning() << "no urls in drop";
@@ -297,4 +308,11 @@ bool NepomukAdapter::onSetData(qint64 id, const QVariant &value, int role) {
     }
     NepomukUtils::renameTopic(targetTopic, value.toString());
     return true;
+}
+
+void NepomukAdapter::setData(TodoNode* node, qint64 id)
+{
+    node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
+    node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
+    node->setRowData(m_topicMap.key(id), Zanshin::UriRole);
 }

@@ -82,17 +82,20 @@ void TopicsModel::init()
 
 
 
-void TopicsModel::itemParentsChanged(const QModelIndex& item, const IdList& parents)
+void TopicsModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdList& parents)
 {
-    if (!item.isValid()) {
+    kDebug() << sourceIndex << parents;
+    if (!sourceIndex.isValid()) {
         kWarning() << "invalid item";
         return;
     }
     
     //remove node from any current parent
-    QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(item);
+    QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
+    Q_ASSERT(!nodes.empty());
     foreach (TodoNode *node, nodes) {
         TodoNode *parentNode = node->parent();
+        kDebug() << "remove " << node << node->parent();
         if (parentNode) {
             int oldRow = parentNode->children().indexOf(node);
             beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
@@ -103,14 +106,15 @@ void TopicsModel::itemParentsChanged(const QModelIndex& item, const IdList& pare
     }
     
     if (parents.empty()) { //If no parents are available, back to inbox
-        addChildNode(item, m_inboxNode);
+        addChildNode(sourceIndex, m_inboxNode);
+        kDebug() << "add to inbox";
         return;
     }
     foreach(const Id &p, parents) {
         //TODO only change for the topics that actually changed
         TodoNode *pa = m_resourceMap[p];
         Q_ASSERT(pa);
-        addChildNode(item, pa);
+        addChildNode(sourceIndex, pa);
     }
 }
 
@@ -190,10 +194,9 @@ TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifi
     TodoNode *node = new TodoNode(parentNode);
     node->setData(name, 0, Qt::DisplayRole);
     node->setData(name, 0, Qt::EditRole);
-    node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole); //TODO get icon from reesource
-    node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole); //TODO remove or move to nepomukadapter
     node->setRowData(identifier, IdRole);
-
+    m_nepomukAdapter->setData(node, identifier);
+    
     m_resourceMap[identifier] = node;
     m_manager->insertNode(node);
     kDebug() << identifier << node;
@@ -337,9 +340,12 @@ bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action,
     //kDebug() << mimeData->text();
     if (parent.data(IdRole).canConvert<Id>()) {
         Id id = parent.data(IdRole).value<Id>();
-        //TODO make use of row/column to find correct child instead?
+        //TODO make use of row/column to find correct child instead? Seems to work....
         return m_nepomukAdapter->onDropMimeData(mimeData, action, id);
+    } else {
+        m_nepomukAdapter->onDropMimeData(mimeData, action, -1);
     }
+    
     return false;
 }
 

@@ -69,11 +69,11 @@ private:
      */
     void createOrUpdateParent(const Id &identifier, const Id &parentIdentifier, const QString &name);
     /**
-     * Updates the parents of @param item.
+     * Updates the parents of @param sourceIndex.
      * 
      * Moves/adds/removes from parents.
      */
-    void itemParentsChanged(const QModelIndex &item, const IdList &parents);
+    void itemParentsChanged(const QModelIndex &sourceIndex, const IdList &parents);
     void reparentParent(const Id& p, const Id& parent);
     /**
      * Renames @param parent

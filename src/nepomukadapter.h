@@ -29,6 +29,7 @@
 #include <QAbstractItemModel>
 #include <akonadi/item.h>
 #include <akonadi/entitytreemodel.h>
+#include "todonode.h"
 
 class QUrl;
 namespace Nepomuk {
@@ -65,6 +66,8 @@ public:
     virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id){ return false; };
     virtual bool onSetData(qint64 id, const QVariant &value, int role) { return false; };
     
+    virtual void setData(TodoNode *node, qint64 id){};
+    
 protected:
     TopicsModel *m_model;
 };
@@ -84,7 +87,7 @@ public:
     explicit TestStructureAdapter(QObject* parent = 0);
     
     void addParent(const qint64 &identifier, const qint64 &parentIdentifier, const QString &name);
-    void setParent(const qint64 &itemIdentifier, const qint64 &parentIdentifier);
+    void setParent(const QModelIndex &item, const qint64 &parentIdentifier);
     void removeParent(const qint64 &identifier);
     void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
     
@@ -101,9 +104,13 @@ public:
     
     //Set the basic query
     virtual void setType(const QUrl &);
+    
+    virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
     virtual void onNodeRemoval(const qint64& changed);
     virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id);
     virtual bool onSetData(qint64 id, const QVariant &value, int role);
+    
+    virtual void setData(TodoNode* node, qint64 id);
     
 private slots:
     void checkResults(const QList<Nepomuk::Query::Result> &);
@@ -119,6 +126,7 @@ private:
     
     QMap<QUrl, QObject*> m_guardMap;
     QMap<QUrl, qint64> m_topicMap;
+    QMap<QUrl, QList<qint64> > m_topicCache; //cache akonadi item uris and their topics
     QUrl m_type;
     qint64 m_counter;
     
