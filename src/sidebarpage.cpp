@@ -124,7 +124,7 @@ void SideBarPage::addNewItem()
     } else if (type==Zanshin::TopicRoot) {
         NepomukUtils::createTopic(summary);
     } else if (type==Zanshin::Topic) {
-        //TODO NepomukUtils::createTopic(summary, parentItem.data(Zanshin::TopicRole).toUrl());
+        NepomukUtils::createTopic(summary, parentItem.data(Zanshin::UriRole).toUrl());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }

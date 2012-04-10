@@ -122,7 +122,7 @@ private slots:
     void propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value);
     
 private:
-    void addParent (const Nepomuk::Resource& topic);
+    void addParent (const Nepomuk::Resource& topic, const QUrl &parent = QUrl());
     
     QMap<QUrl, QObject*> m_guardMap;
     QMap<QUrl, qint64> m_topicMap;

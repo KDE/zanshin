@@ -32,6 +32,7 @@
 #include <Nepomuk/Query/Result>
 #include <Nepomuk/Types/Class>
 #include <Nepomuk/Resource>
+#include <Nepomuk/Vocabulary/PIMO>
 #include <KDebug>
 #include <KIcon>
 #include <nepomuk/resourcetypeterm.h>
@@ -111,6 +112,8 @@ void NepomukAdapter::setType(const QUrl &type)
     
     Nepomuk::Query::Query query;
     query.setTerm(Nepomuk::Query::ResourceTypeTerm(Nepomuk::Types::Class(m_type)));
+    
+    query.addRequestProperty(Nepomuk::Query::Query::RequestProperty(Nepomuk::Vocabulary::PIMO::superTopic()));
 
     Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
     connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk::Query::Result>)));
@@ -126,9 +129,14 @@ void NepomukAdapter::checkResults(const QList< Nepomuk::Query::Result > &results
     //kDebug() <<  results.size() << results.first().resource().resourceUri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
     foreach (const Nepomuk::Query::Result &result, results) {
         Nepomuk::Resource res(result.resource().resourceUri());
-        kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
+        const QUrl parent = result.requestProperty(Nepomuk::Vocabulary::PIMO::superTopic()).uri();
+        kDebug() << res.resourceUri() << res.label() << res.types() << res.className() << parent;
         if (res.types().contains(m_type)) {
-            addParent(res);
+            if (parent.isValid()) {
+                addParent(res, parent);
+            } else {
+                addParent(res);
+            }
         } else {
             kWarning() << "unknown result " << res.types();
         }
@@ -136,9 +144,12 @@ void NepomukAdapter::checkResults(const QList< Nepomuk::Query::Result > &results
 }
 
 
-void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
+void NepomukAdapter::addParent (const Nepomuk::Resource& topic, const QUrl &parent)
 {
-    kDebug() << "add topic" << topic.label() << topic.resourceUri();
+    kDebug() << "add topic" << topic.label() << topic.uri() << parent;
+    if (parent.isValid() && !m_topicMap.contains(parent)) {
+        addParent(parent);
+    }
     QObject *guard = new QObject(this);
     m_guardMap[topic.resourceUri()] = guard;
     
@@ -163,7 +174,11 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic)
         id = m_counter++;
         m_topicMap.insert(topic.resourceUri(), id);
     }
-    m_model->createOrUpdateParent(id, -1, topic.label());
+    qint64 pid = -1;
+    if (m_topicMap.contains(parent)) {
+        pid = m_topicMap[parent];
+    }
+    m_model->createOrUpdateParent(id, pid, topic.label());
 }
 
 void NepomukAdapter::onNodeRemoval(const qint64& id)
@@ -171,7 +186,7 @@ void NepomukAdapter::onNodeRemoval(const qint64& id)
     kDebug() << id;
     const QUrl &targetTopic = m_topicMap.key(id);
     if (targetTopic.isValid()) {
-        NepomukUtils::deleteTopic(targetTopic); //TODO maybe leave this up to nepomuk subresource handling?
+        NepomukUtils::deleteTopic(targetTopic); //TODO delete subtopics with subresource handling?
     }
 }
 
@@ -183,7 +198,7 @@ void NepomukAdapter::removeResult(const QList<QUrl> &results)
         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(m_type)) {
             Q_ASSERT(m_topicMap.contains(res.resourceUri()));
-            m_model->removeNode(m_topicMap[res.resourceUri()]);
+            m_model->removeNode(m_topicMap.take(res.resourceUri())); //We remove it right here, because otherwise we would try to remove the topic again in onNodeRemoval
             m_guardMap.take(res.resourceUri())->deleteLater();
         } else {
             kWarning() << "unknown result " << res.types();
@@ -262,6 +277,9 @@ void NepomukAdapter::propertyChanged(const Nepomuk::Resource &res, const Nepomuk
         kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
         Q_ASSERT(m_topicMap.contains(res.resourceUri()));
         m_model->renameParent(m_topicMap[res.resourceUri()], value.toString());
+    }
+    if (property.uri() == Nepomuk::Vocabulary::PIMO::superTopic()) {
+        //TODO handle move of topic
     }
 }
 

@@ -75,7 +75,23 @@ KJob *addToTopic(const Akonadi::Item& item, const QUrl& topicId)
 // TODO all topics MUST either have a pimo:hasSuperTopic or be defined as root topic with pimo:hasRootTopic
 KJob *createTopic(const QString& topicName, const QUrl& supertopicId)
 {
-    return Nepomuk::createResource(QList<QUrl>() << Nepomuk::Vocabulary::PIMO::Topic(), topicName, "A MindMirror Topic");
+    kDebug() << "creating topic " << topicName << supertopicId;
+    Nepomuk::SimpleResourceGraph graph;
+    Nepomuk::SimpleResource topic;
+    topic.addType(Nepomuk::Vocabulary::PIMO::Topic());
+    topic.setProperty(Soprano::Vocabulary::NAO::prefLabel(),topicName);
+    topic.setProperty(Soprano::Vocabulary::NAO::description(),"A MindMirror Topic");
+    
+    if (supertopicId.isValid()) {
+        kDebug() << "adding to supertopic: " << supertopicId;
+        Nepomuk::SimpleResource superTopic(supertopicId);
+        superTopic.addType(Nepomuk::Vocabulary::PIMO::Topic());
+        topic.setProperty(Nepomuk::Vocabulary::PIMO::superTopic(), superTopic.uri());
+        graph << superTopic;
+    }
+    graph << topic;
+    
+    return graph.save();
 }
 
 KJob* deleteTopic(const QUrl& topicId)
@@ -92,8 +108,21 @@ KJob *moveToTopic(const Akonadi::Item& item, const QUrl& topicId)
 
 KJob *moveToTopic(const QUrl& topicId, const QUrl& supertopicId)
 {
-    removeAllTopics(topicId);
-    return addToTopic(topicId, supertopicId);
+//     removeAllTopics(topicId);
+//     return addToTopic(topicId, supertopicId);
+    kDebug() << "moving " << topicId << " to " << supertopicId;
+    if (!topicId.isValid() || !supertopicId.isValid()) {
+        return 0;
+    }
+    
+    Nepomuk::SimpleResourceGraph graph;
+    Nepomuk::SimpleResource topic(topicId);
+    
+    Nepomuk::SimpleResource superTopic(supertopicId);
+    superTopic.addType(Nepomuk::Vocabulary::PIMO::Topic());
+    graph << superTopic;
+    topic.setProperty(Nepomuk::Vocabulary::PIMO::superTopic(), superTopic.uri());
+    return Nepomuk::storeResources(graph, Nepomuk::IdentifyNew, Nepomuk::OverwriteProperties);
 }
 
 KJob *removeAllTopics(const Akonadi::Item& item)
