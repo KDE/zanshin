@@ -63,9 +63,10 @@ KJob *addToTopic(const Akonadi::Item& item, const QUrl& topicId)
         kDebug() << "invalid item";
         return 0;
     }
+    kDebug() << "adding item to topic " << item.url() << topicId;
     Nepomuk::SimpleResourceGraph graph;
     Nepomuk::SimpleResource topic(topicId);
-    topic.addType(Nepomuk::Vocabulary::PIMO::Topic()); //For some reason store resources otherwise complains about an invalid resource (although the resource was already created)
+    topic.addType(Nepomuk::Vocabulary::PIMO::Topic());
     Nepomuk::SimpleResource thing = itemThing(item, graph);
     thing.addProperty(Nepomuk::Vocabulary::PIMO::isRelated(), topic.uri());
     graph << topic << thing;
@@ -102,14 +103,22 @@ KJob* deleteTopic(const QUrl& topicId)
 
 KJob *moveToTopic(const Akonadi::Item& item, const QUrl& topicId)
 {
-    removeAllTopics(item);
-    return addToTopic(item, topicId);
+    if (!item.isValid()) {
+        kDebug() << "invalid item";
+        return 0;
+    }
+    kDebug() << "moving item to topic " << item.url() << topicId;
+    Nepomuk::SimpleResourceGraph graph;
+    Nepomuk::SimpleResource topic(topicId);
+    topic.addType(Nepomuk::Vocabulary::PIMO::Topic());
+    Nepomuk::SimpleResource thing = itemThing(item, graph);
+    thing.addProperty(Nepomuk::Vocabulary::PIMO::isRelated(), topic.uri());
+    graph << topic << thing;
+    return Nepomuk::storeResources(graph, Nepomuk::IdentifyNew, Nepomuk::OverwriteProperties);
 }
 
 KJob *moveToTopic(const QUrl& topicId, const QUrl& supertopicId)
 {
-//     removeAllTopics(topicId);
-//     return addToTopic(topicId, supertopicId);
     kDebug() << "moving " << topicId << " to " << supertopicId;
     if (!topicId.isValid() || !supertopicId.isValid()) {
         return 0;
