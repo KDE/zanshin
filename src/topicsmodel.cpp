@@ -89,6 +89,13 @@ void TopicsModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdLis
         kWarning() << "invalid item";
         return;
     }
+    QList<TodoNode*> parentNodes;
+    foreach(const Id &p, parents) {
+        TodoNode *pa = m_resourceMap[p];
+        Q_ASSERT(pa);
+        parentNodes.append(pa);
+    }
+    bool backToInbox = parentNodes.isEmpty();
     
     //remove node from any current parent
     QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceIndex);
@@ -97,24 +104,34 @@ void TopicsModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdLis
         TodoNode *parentNode = node->parent();
         kDebug() << "remove " << node << node->parent();
         if (parentNode) {
+            //Don't remove/readd for parents which remain
+            if (parentNodes.removeOne(parentNode)) {
+                continue;
+            }
+            //Don't remove/readd for parents which remain
+            if (backToInbox && (parentNode == m_inboxNode)) {
+                backToInbox = false;
+                continue;
+            }
             int oldRow = parentNode->children().indexOf(node);
             beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
             m_manager->removeNode(node);
             delete node;
             endRemoveRows();
+        } else {
+            kDebug() << "why is there no parent?";
         }
     }
     
-    if (parents.empty()) { //If no parents are available, back to inbox
+    //If no parents are available, back to inbox
+    if (backToInbox) {
         addChildNode(sourceIndex, m_inboxNode);
         kDebug() << "add to inbox";
         return;
     }
-    foreach(const Id &p, parents) {
-        //TODO only change for the topics that actually changed
-        TodoNode *pa = m_resourceMap[p];
-        Q_ASSERT(pa);
-        addChildNode(sourceIndex, pa);
+    
+    foreach(TodoNode *p, parentNodes) {
+        addChildNode(sourceIndex, p);
     }
 }
 
