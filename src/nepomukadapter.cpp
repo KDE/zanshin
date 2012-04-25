@@ -102,19 +102,16 @@ void TestStructureAdapter::removeParent(const TopicsModel::Id& identifier)
 NepomukAdapter::NepomukAdapter(QObject* parent)
 : StructureAdapter(parent), m_counter(0)
 {
-
+    setType(Nepomuk::Vocabulary::PIMO::Topic());
 }
 
-
-void NepomukAdapter::setType(const QUrl &type)
+void NepomukAdapter::init()
 {
-    m_type = type;
-    
     Nepomuk::Query::Query query;
     query.setTerm(Nepomuk::Query::ResourceTypeTerm(Nepomuk::Types::Class(m_type)));
     
     query.addRequestProperty(Nepomuk::Query::Query::RequestProperty(Nepomuk::Vocabulary::PIMO::superTopic()));
-
+    
     Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
     connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk::Query::Result>)));
     connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
@@ -122,6 +119,13 @@ void NepomukAdapter::setType(const QUrl &type)
     if ( !queryServiceClient->query(query) ) {
         kWarning() << "error";
     }
+}
+
+
+void NepomukAdapter::setType(const QUrl &type)
+{
+    m_type = type;
+    
 }
 
 void NepomukAdapter::checkResults(const QList< Nepomuk::Query::Result > &results)
@@ -247,6 +251,10 @@ QList< qint64 > NepomukAdapter::onSourceInsertRow(const QModelIndex& sourceChild
 //     return StructureAdapter::onSourceInsertRow(sourceChildIndex);
 }
 
+QList< qint64 > NepomukAdapter::onSourceDataChanged(const QModelIndex& changed)
+{
+    return onSourceInsertRow(changed);
+}
 
 void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
 {

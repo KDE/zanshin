@@ -52,7 +52,7 @@ class StructureAdapter: public QObject
     Q_OBJECT
 public:
     explicit StructureAdapter(QObject* parent = 0);
-    virtual void setType(const QUrl &) {};
+    virtual void init(){};
     
     void setModel(TopicsModel *model);
     
@@ -102,10 +102,13 @@ class NepomukAdapter : public StructureAdapter
 public:
     explicit NepomukAdapter(QObject* parent = 0);
     
+    virtual void init();
+    
     //Set the basic query
     virtual void setType(const QUrl &);
     
     virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
+    virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed);
     virtual void onNodeRemoval(const qint64& changed);
     virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id);
     virtual bool onSetData(qint64 id, const QVariant &value, int role);

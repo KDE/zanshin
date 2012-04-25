@@ -26,7 +26,6 @@
 #include "globaldefs.h"
 #include <KIcon>
 #include <KLocalizedString>
-#include <Nepomuk/Vocabulary/PIMO>
 #include "todonodemanager.h"
 #include <tagmanager.h>
 #include <QMimeData>
@@ -75,8 +74,7 @@ void TopicsModel::init()
 
         endInsertRows();
     }
-    
-    m_nepomukAdapter->setType(Nepomuk::Vocabulary::PIMO::Topic()); //TODO Generalize that we only have to parametrize the adapter and the model is fully generic
+    m_nepomukAdapter->init();
 }
 
 
