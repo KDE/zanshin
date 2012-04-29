@@ -101,7 +101,9 @@ void TestParentStructureStrategy::removeParent(const ParentStructureModel::Id& i
 
 
 NepomukParentStructureStrategy::NepomukParentStructureStrategy(QObject* parent)
-: ParentStructureStrategy(parent), m_counter(0)
+:   ParentStructureStrategy(parent),
+    m_counter(0),
+    m_queryServiceClient(0)
 {
     setType(Nepomuk::Vocabulary::PIMO::Topic());
 }
