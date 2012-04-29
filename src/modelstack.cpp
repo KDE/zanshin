@@ -42,7 +42,7 @@
 
 #include "kdescendantsproxymodel.h"
 #include <Akonadi/EntityDisplayAttribute>
-#include "topicsmodel.h"
+#include "parentstructuremodel.h"
 #include "pimitemmodel.h"
 
 ModelStack::ModelStack(QObject *parent)
@@ -263,7 +263,7 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
 QAbstractItemModel *ModelStack::topicsTreeModel()
 {
     if (!m_topicsTreeModel) {
-        TopicsModel *treeModel = new TopicsModel(new NepomukAdapter(this), this);
+        ParentStructureModel *treeModel = new ParentStructureModel(new NepomukParentStructureStrategy(this), this);
         treeModel->setSourceModel(knowledgeBaseModel());
         m_topicsTreeModel = treeModel;
     }

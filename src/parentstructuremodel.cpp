@@ -21,7 +21,7 @@
    USA.
 */
 
-#include "topicsmodel.h"
+#include "parentstructuremodel.h"
 #include "todonode.h"
 #include "globaldefs.h"
 #include <KIcon>
@@ -34,18 +34,18 @@
 #include <queries.h>
 #include <pimitem.h>
 
-TopicsModel::TopicsModel(StructureAdapter *adapter, QObject* parent)
+ParentStructureModel::ParentStructureModel(ParentStructureStrategy *adapter, QObject* parent)
 : TodoProxyModelBase(MultiMapping, parent), m_rootNode(0), m_nepomukAdapter(adapter)
 {
     adapter->setModel(this);
 }
 
-TopicsModel::~TopicsModel()
+ParentStructureModel::~ParentStructureModel()
 {
 
 }
 
-TodoNode* TopicsModel::createInbox() const
+TodoNode* ParentStructureModel::createInbox() const
 {
     TodoNode *node = new TodoNode;
 
@@ -56,7 +56,7 @@ TodoNode* TopicsModel::createInbox() const
     return node;
 }
 
-void TopicsModel::init()
+void ParentStructureModel::init()
 {
 //     kDebug();
     TodoProxyModelBase::init();
@@ -80,7 +80,7 @@ void TopicsModel::init()
 
 
 
-void TopicsModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdList& parents)
+void ParentStructureModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdList& parents)
 {
     kDebug() << sourceIndex << parents;
     if (!sourceIndex.isValid()) {
@@ -91,6 +91,7 @@ void TopicsModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdLis
     foreach(const Id &p, parents) {
         TodoNode *pa = m_resourceMap[p];
         Q_ASSERT(pa);
+        kDebug() << "newparent : " << pa;
         parentNodes.append(pa);
     }
     bool backToInbox = parentNodes.isEmpty();
@@ -133,7 +134,7 @@ void TopicsModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdLis
     }
 }
 
-void TopicsModel::reparentParent(const Id& p, const Id& parent)
+void ParentStructureModel::reparentParent(const Id& p, const Id& parent)
 {
     if (p < 0) {
         kWarning() << "invalid item";
@@ -166,7 +167,7 @@ void TopicsModel::reparentParent(const Id& p, const Id& parent)
     }
 }
 
-void TopicsModel::renameParent(const Id& identifier, const QString& name)
+void ParentStructureModel::renameParent(const Id& identifier, const QString& name)
 {
     kDebug() << "renamed " << identifier << " to " << name;
     TodoNode *node = m_resourceMap[identifier];
@@ -177,7 +178,7 @@ void TopicsModel::renameParent(const Id& identifier, const QString& name)
     emit dataChanged(begin, end);
 }
 
-void TopicsModel::createOrUpdateParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
+void ParentStructureModel::createOrUpdateParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
 {
     if (!m_resourceMap.contains(identifier)) {
         createNode(identifier, parentIdentifier, name);
@@ -189,7 +190,7 @@ void TopicsModel::createOrUpdateParent(const Id& identifier, const Id& parentIde
 }
 
 
-TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name)
+TodoNode *ParentStructureModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name)
 {
     kDebug() << "add topic" << name << identifier;
     TodoNode* parentNode = 0;
@@ -219,7 +220,7 @@ TodoNode *TopicsModel::createNode(const Id &identifier, const Id &parentIdentifi
     return node;
 }
 
-void TopicsModel::removeNode(const Id &identifier)
+void ParentStructureModel::removeNode(const Id &identifier)
 {
     kDebug() << identifier;
     if (!m_resourceMap.contains(identifier)) {
@@ -248,7 +249,7 @@ void TopicsModel::removeNode(const Id &identifier)
     endRemoveRows();
 }
 
-void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
+void ParentStructureModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
 {
 //     kDebug() << begin << end << sourceIndex;
 //     kDebug() << sourceModel()->rowCount();
@@ -282,7 +283,7 @@ void TopicsModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, 
     }
 }
 
-void TopicsModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int begin, int end)
+void ParentStructureModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int begin, int end)
 {
     for (int i = begin; i <= end; ++i) {
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
@@ -301,9 +302,9 @@ void TopicsModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int begin, 
     }
 }
 
-void TopicsModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
+void ParentStructureModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
 {
-//     kDebug() << begin << end;
+    kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         const IdList &parents = m_nepomukAdapter->onSourceDataChanged(index);
@@ -318,7 +319,7 @@ void TopicsModel::onSourceDataChanged(const QModelIndex& begin, const QModelInde
     }
 }
 
-QStringList TopicsModel::mimeTypes() const
+QStringList ParentStructureModel::mimeTypes() const
 {
     QStringList list = QAbstractItemModel::mimeTypes();
     list.append("text/uri-list");
@@ -326,7 +327,7 @@ QStringList TopicsModel::mimeTypes() const
     return list;
 }
 
-Qt::ItemFlags TopicsModel::flags(const QModelIndex& index) const
+Qt::ItemFlags ParentStructureModel::flags(const QModelIndex& index) const
 {
     if (!index.isValid()) {
         return Qt::NoItemFlags;
@@ -341,7 +342,7 @@ Qt::ItemFlags TopicsModel::flags(const QModelIndex& index) const
 
 
 
-Qt::DropActions TopicsModel::supportedDropActions() const
+Qt::DropActions ParentStructureModel::supportedDropActions() const
 {
     if (!sourceModel()) {
         return Qt::IgnoreAction;
@@ -349,7 +350,7 @@ Qt::DropActions TopicsModel::supportedDropActions() const
     return sourceModel()->supportedDropActions();
 }
 
-bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+bool ParentStructureModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
     //kDebug() << mimeData->formats();
     //kDebug() << mimeData->text();
@@ -364,7 +365,7 @@ bool TopicsModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action,
     return false;
 }
 
-bool TopicsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool ParentStructureModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role!=Qt::EditRole || !index.isValid()) {
         return TodoProxyModelBase::setData(index, value, role);

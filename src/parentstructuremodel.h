@@ -21,17 +21,18 @@
    USA.
 */
 
-#ifndef TOPICSMODEL_H
-#define TOPICSMODEL_H
-#include "todoproxymodelbase.h"
-#include "nepomukadapter.h"
+#ifndef PARENTSTRUCTUREMODEL_H
+#define PARENTSTRUCTUREMODEL_H
 
-class TopicsModel : public TodoProxyModelBase
+#include "todoproxymodelbase.h"
+#include "parentstructurestrategy.h"
+
+class ParentStructureModel : public TodoProxyModelBase
 {
      Q_OBJECT
-     friend class StructureAdapter;
-     friend class NepomukAdapter;
-     friend class TestStructureAdapter;
+     friend class ParentStructureStrategy;
+     friend class NepomukParentStructureStrategy;
+     friend class TestParentStructureStrategy;
      
      typedef qint64 Id;
      typedef QList<qint64> IdList;
@@ -40,8 +41,8 @@ public:
         Begin = Qt::UserRole+1000,
         IdRole
     };
-    TopicsModel(StructureAdapter *adapter, QObject *parent = 0);
-    virtual ~TopicsModel();
+    ParentStructureModel(ParentStructureStrategy *adapter, QObject *parent = 0);
+    virtual ~ParentStructureModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     //virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
@@ -86,7 +87,7 @@ private:
     TodoNode *m_rootNode;
     QMap<Id, TodoNode*> m_resourceMap;
 
-    StructureAdapter *m_nepomukAdapter;
+    ParentStructureStrategy *m_nepomukAdapter;
 };
 
 #endif // TOPICSMODEL_H

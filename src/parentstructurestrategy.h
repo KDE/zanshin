@@ -45,16 +45,16 @@ class Query;
 class Resource;
 }
 
-class TopicsModel;
+class ParentStructureModel;
 
-class StructureAdapter: public QObject
+class ParentStructureStrategy: public QObject
 {
     Q_OBJECT
 public:
-    explicit StructureAdapter(QObject* parent = 0);
+    explicit ParentStructureStrategy(QObject* parent = 0);
     virtual void init(){};
     
-    void setModel(TopicsModel *model);
+    void setModel(ParentStructureModel *model);
     
     //Called when the item first appears in the model, used to get the correct parent right away
     virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex) { return QList<qint64>();};
@@ -69,10 +69,10 @@ public:
     virtual void setData(TodoNode *node, qint64 id){};
     
 protected:
-    TopicsModel *m_model;
+    ParentStructureModel *m_model;
 };
 
-class TestStructureAdapter : public StructureAdapter
+class TestParentStructureStrategy : public ParentStructureStrategy
 {    
     Q_OBJECT
 public:
@@ -84,7 +84,7 @@ public:
         TopicNameRole
     };
     
-    explicit TestStructureAdapter(QObject* parent = 0);
+    explicit TestParentStructureStrategy(QObject* parent = 0);
     
     void addParent(const qint64 &identifier, const qint64 &parentIdentifier, const QString &name);
     void setParent(const QModelIndex &item, const qint64 &parentIdentifier);
@@ -96,11 +96,11 @@ public:
     
 };
 
-class NepomukAdapter : public StructureAdapter
+class NepomukParentStructureStrategy : public ParentStructureStrategy
 {
     Q_OBJECT
 public:
-    explicit NepomukAdapter(QObject* parent = 0);
+    explicit NepomukParentStructureStrategy(QObject* parent = 0);
     
     virtual void init();
     

@@ -23,8 +23,9 @@
 
 #include <qtest_kde.h>
 
-#include "topicsmodel.h"
-#include "nepomukadapter.h"
+#include "parentstructuremodel.h"
+#include "parentstructurestrategy.h"
+
 #include <globaldefs.h>
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
@@ -38,7 +39,7 @@ using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
-class TopicsModelSpec : public QObject
+class ParentStructureModelSpec : public QObject
 {
     Q_OBJECT
 private slots:
@@ -66,16 +67,16 @@ private slots:
         root.data.insert(Qt::DisplayRole, "Topics");
         
         G p1(8);
-        p1.data.insert(TestStructureAdapter::TopicRole, 1);
+        p1.data.insert(TestParentStructureStrategy::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
         G p2(9);
-        p2.data.insert(TestStructureAdapter::TopicRole, 2);
+        p2.data.insert(TestParentStructureStrategy::TopicRole, 2);
         p2.data.insert(Qt::DisplayRole, "topic2");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, 1);
-        G t2(4, TestStructureAdapter::TopicParentRole, 1);
-        G t3(5, TestStructureAdapter::TopicParentRole, 2);
-        G t4(6, TestStructureAdapter::TopicParentRole, 2);
+        G t1(3, TestParentStructureStrategy::TopicParentRole, 1);
+        G t2(4, TestParentStructureStrategy::TopicParentRole, 1);
+        G t3(5, TestParentStructureStrategy::TopicParentRole, 2);
+        G t4(6, TestParentStructureStrategy::TopicParentRole, 2);
         G t5(7);
         
         
@@ -111,9 +112,9 @@ private slots:
         //Source model
         QStandardItemModel source;
 
-        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
 
-        TopicsModel categoriesModel(testadapter, this);        
+        ParentStructureModel categoriesModel(testadapter, this);        
                 
         categoriesModel.setSourceModel(&source);
 
@@ -146,16 +147,16 @@ private slots:
         root.data.insert(Qt::DisplayRole, "Topics");
         
         G p1(8);
-        p1.data.insert(TestStructureAdapter::TopicRole, 1);
+        p1.data.insert(TestParentStructureStrategy::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
         G p2(9);
-        p2.data.insert(TestStructureAdapter::TopicRole, 2);
+        p2.data.insert(TestParentStructureStrategy::TopicRole, 2);
         p2.data.insert(Qt::DisplayRole, "topic2");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, 1);
-        G t2(4, TestStructureAdapter::TopicParentRole, 1);
-        G t3(5, TestStructureAdapter::TopicParentRole, 2);
-        G t4(6, TestStructureAdapter::TopicParentRole, 2);
+        G t1(3, TestParentStructureStrategy::TopicParentRole, 1);
+        G t2(4, TestParentStructureStrategy::TopicParentRole, 1);
+        G t3(5, TestParentStructureStrategy::TopicParentRole, 2);
+        G t4(6, TestParentStructureStrategy::TopicParentRole, 2);
         G t5(7);
         
         // Create the source structure once and for all
@@ -190,9 +191,9 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        TopicsModel categoriesModel(testadapter, this);        
+        ParentStructureModel categoriesModel(testadapter, this);        
         
         categoriesModel.setSourceModel(&source);
                 
@@ -229,10 +230,10 @@ private slots:
         root.data.insert(Qt::DisplayRole, "Topics");
         
         G p1(8);
-        p1.data.insert(TestStructureAdapter::TopicRole, 1);
+        p1.data.insert(TestParentStructureStrategy::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
         G p2(9);
-        p2.data.insert(TestStructureAdapter::TopicRole, 2);
+        p2.data.insert(TestParentStructureStrategy::TopicRole, 2);
         p2.data.insert(Qt::DisplayRole, "topic2");
         
         G t1(3);
@@ -291,9 +292,9 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        TopicsModel categoriesModel(testadapter, this);        
+        ParentStructureModel categoriesModel(testadapter, this);        
         
         categoriesModel.setSourceModel(&source);
         
@@ -316,7 +317,7 @@ private slots:
         foreach (const ModelPath &itemToChange, itemsToChangeTopic1) {
             QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
             Q_ASSERT(index.isValid());
-            source.setData(index, 1, TestStructureAdapter::TopicParentRole);
+            source.setData(index, 1, TestParentStructureStrategy::TopicParentRole);
         }
                 
         ModelTest t2(&categoriesModel);
@@ -343,17 +344,17 @@ private slots:
         root.data.insert(Qt::DisplayRole, "Topics");
         
         G p1(8);
-        p1.data.insert(TestStructureAdapter::TopicRole, 1);
+        p1.data.insert(TestParentStructureStrategy::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
         G p2(9);
-        p2.data.insert(TestStructureAdapter::TopicRole, 2);
-        p2.data.insert(TestStructureAdapter::TopicParentRole, 1);
+        p2.data.insert(TestParentStructureStrategy::TopicRole, 2);
+        p2.data.insert(TestParentStructureStrategy::TopicParentRole, 1);
         p2.data.insert(Qt::DisplayRole, "topic2");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, 1);
-        G t2(4, TestStructureAdapter::TopicParentRole, 1);
-        G t3(5, TestStructureAdapter::TopicParentRole, 2);
-        G t4(6, TestStructureAdapter::TopicParentRole, 2);
+        G t1(3, TestParentStructureStrategy::TopicParentRole, 1);
+        G t2(4, TestParentStructureStrategy::TopicParentRole, 1);
+        G t3(5, TestParentStructureStrategy::TopicParentRole, 2);
+        G t4(6, TestParentStructureStrategy::TopicParentRole, 2);
         G t5(7);
         
         
@@ -390,9 +391,9 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        TopicsModel categoriesModel(testadapter, this);        
+        ParentStructureModel categoriesModel(testadapter, this);        
         
         categoriesModel.setSourceModel(&source);
         
@@ -424,20 +425,20 @@ private slots:
         G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
         root.data.insert(Qt::DisplayRole, "Topics");
         
-        G p1(8, TestStructureAdapter::TopicRole, 1);
+        G p1(8, TestParentStructureStrategy::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
-        G p2(9, TestStructureAdapter::TopicRole, 2);
-        p2.data.insert(TestStructureAdapter::TopicParentRole, 1);
+        G p2(9, TestParentStructureStrategy::TopicRole, 2);
+        p2.data.insert(TestParentStructureStrategy::TopicParentRole, 1);
         p2.data.insert(Qt::DisplayRole, "topic2");
-        G p3(10, TestStructureAdapter::TopicRole, 3);
-        p3.data.insert(TestStructureAdapter::TopicParentRole, 2);
+        G p3(10, TestParentStructureStrategy::TopicRole, 3);
+        p3.data.insert(TestParentStructureStrategy::TopicParentRole, 2);
         p3.data.insert(Qt::DisplayRole, "topic3");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, 1);
-        G t2(4, TestStructureAdapter::TopicParentRole, 1);
-        G t3(5, TestStructureAdapter::TopicParentRole, 2);
-        G t4(6, TestStructureAdapter::TopicParentRole, 2);
-        G t5(7, TestStructureAdapter::TopicParentRole, 3);
+        G t1(3, TestParentStructureStrategy::TopicParentRole, 1);
+        G t2(4, TestParentStructureStrategy::TopicParentRole, 1);
+        G t3(5, TestParentStructureStrategy::TopicParentRole, 2);
+        G t4(6, TestParentStructureStrategy::TopicParentRole, 2);
+        G t5(7, TestParentStructureStrategy::TopicParentRole, 3);
         
         
         // Create the source structure once and for all
@@ -474,9 +475,9 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        TopicsModel categoriesModel(testadapter, this);        
+        ParentStructureModel categoriesModel(testadapter, this);        
         
         categoriesModel.setSourceModel(&source);
         
@@ -512,20 +513,20 @@ private slots:
         G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
         root.data.insert(Qt::DisplayRole, "Topics");
         
-        G p1(8, TestStructureAdapter::TopicRole, 1);
+        G p1(8, TestParentStructureStrategy::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
-        G p2(9, TestStructureAdapter::TopicRole, 2);
-        p2.data.insert(TestStructureAdapter::TopicParentRole, 1);
+        G p2(9, TestParentStructureStrategy::TopicRole, 2);
+        p2.data.insert(TestParentStructureStrategy::TopicParentRole, 1);
         p2.data.insert(Qt::DisplayRole, "topic2");
-        G p3(10, TestStructureAdapter::TopicRole, 3);
-        p3.data.insert(TestStructureAdapter::TopicParentRole, 2);
+        G p3(10, TestParentStructureStrategy::TopicRole, 3);
+        p3.data.insert(TestParentStructureStrategy::TopicParentRole, 2);
         p3.data.insert(Qt::DisplayRole, "topic3");
         
-        G t1(3, TestStructureAdapter::TopicParentRole, 1);
-        G t2(4, TestStructureAdapter::TopicParentRole, 1);
-        G t3(5, TestStructureAdapter::TopicParentRole, 2);
-        G t4(6, TestStructureAdapter::TopicParentRole, 2);
-        G t5(7, TestStructureAdapter::TopicParentRole, 3);
+        G t1(3, TestParentStructureStrategy::TopicParentRole, 1);
+        G t2(4, TestParentStructureStrategy::TopicParentRole, 1);
+        G t3(5, TestParentStructureStrategy::TopicParentRole, 2);
+        G t4(6, TestParentStructureStrategy::TopicParentRole, 2);
+        G t5(7, TestParentStructureStrategy::TopicParentRole, 3);
         
         
         // Create the source structure once and for all
@@ -574,9 +575,9 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        TopicsModel categoriesModel(testadapter, this);        
+        ParentStructureModel categoriesModel(testadapter, this);        
         
         categoriesModel.setSourceModel(&source);
         
@@ -622,7 +623,7 @@ private slots:
         G root(2, Zanshin::ItemTypeRole, Zanshin::TopicRoot);
         root.data.insert(Qt::DisplayRole, "Topics");
         
-        G p1(8, TestStructureAdapter::TopicRole, 1);
+        G p1(8, TestParentStructureStrategy::TopicRole, 1);
         p1.data.insert(Qt::DisplayRole, "topic1");
         
         G t1(3);
@@ -666,9 +667,9 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestStructureAdapter *testadapter = new TestStructureAdapter(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        TopicsModel categoriesModel(testadapter, this);        
+        ParentStructureModel categoriesModel(testadapter, this);        
         
         categoriesModel.setSourceModel(&source);
         
@@ -706,6 +707,6 @@ private slots:
 
 };
 
-QTEST_KDEMAIN(TopicsModelSpec, GUI)
+QTEST_KDEMAIN(ParentStructureModelSpec, GUI)
 
 #include "topicsmodelspec.moc"

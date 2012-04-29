@@ -24,8 +24,8 @@ set(zanshin_core_SRCS
    todometadatamodel.cpp
    todonode.cpp
    todonodemanager.cpp
-   topicsmodel.cpp
-   nepomukadapter.cpp
+   parentstructuremodel.cpp
+   parentstructurestrategy.cpp
    ${pimlistview_SRCS}
    ${itemview_SRCS}
 )

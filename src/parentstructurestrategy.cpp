@@ -21,12 +21,13 @@
  * USA.
  */
 
-#include "nepomukadapter.h"
+#include "parentstructurestrategy.h"
+#include "parentstructuremodel.h"
+
 #include <queries.h>
 #include <pimitem.h>
 #include <tagmanager.h>
 #include "globaldefs.h"
-#include "topicsmodel.h"
 #include <Nepomuk/Query/Query>
 #include <Nepomuk/Query/QueryServiceClient>
 #include <Nepomuk/Query/Result>
@@ -40,72 +41,72 @@
 #include <Soprano/Vocabulary/NAO>
 #include <QMimeData>
 
-StructureAdapter::StructureAdapter(QObject* parent): QObject(parent), m_model(0)
+ParentStructureStrategy::ParentStructureStrategy(QObject* parent): QObject(parent), m_model(0)
 {
 
 }
 
 
-void StructureAdapter::setModel(TopicsModel* model)
+void ParentStructureStrategy::setModel(ParentStructureModel* model)
 {
     m_model = model;
 }
 
 
-TestStructureAdapter::TestStructureAdapter(QObject* parent)
-: StructureAdapter(parent)
+TestParentStructureStrategy::TestParentStructureStrategy(QObject* parent)
+: ParentStructureStrategy(parent)
 {
 
 }
 
 
-TopicsModel::IdList TestStructureAdapter::onSourceInsertRow(const QModelIndex &sourceChildIndex)
+ParentStructureModel::IdList TestParentStructureStrategy::onSourceInsertRow(const QModelIndex &sourceChildIndex)
 {
     if (!sourceChildIndex.isValid()) {
         kWarning() << "invalid indexx";
-        return TopicsModel::IdList();
+        return ParentStructureModel::IdList();
     }
 
     if (!sourceChildIndex.data(TopicParentRole).isValid()) {
-        return TopicsModel::IdList();
+        return ParentStructureModel::IdList();
     }
-    const TopicsModel::Id &parent = sourceChildIndex.data(TopicParentRole).value<TopicsModel::Id>();
+    const ParentStructureModel::Id &parent = sourceChildIndex.data(TopicParentRole).value<ParentStructureModel::Id>();
 
-    return TopicsModel::IdList() << parent;
+    return ParentStructureModel::IdList() << parent;
 }
 
-TopicsModel::IdList TestStructureAdapter::onSourceDataChanged(const QModelIndex &sourceIndex)
+ParentStructureModel::IdList TestParentStructureStrategy::onSourceDataChanged(const QModelIndex &sourceIndex)
 {
     return onSourceInsertRow(sourceIndex);
 }
 
 
-void TestStructureAdapter::addParent(const TopicsModel::Id& identifier, const TopicsModel::Id& parentIdentifier, const QString& name)
+void TestParentStructureStrategy::addParent(const ParentStructureModel::Id& identifier, const ParentStructureModel::Id& parentIdentifier, const QString& name)
 {
     kDebug() << identifier << parentIdentifier << name;
     m_model->createOrUpdateParent(identifier, parentIdentifier, name);
 }
 
-void TestStructureAdapter::setParent(const QModelIndex &item, const qint64& parentIdentifier)
+void TestParentStructureStrategy::setParent(const QModelIndex &item, const qint64& parentIdentifier)
 {
-    m_model->itemParentsChanged(item, TopicsModel::IdList() << parentIdentifier);
+    m_model->itemParentsChanged(item, ParentStructureModel::IdList() << parentIdentifier);
 }
 
 
-void TestStructureAdapter::removeParent(const TopicsModel::Id& identifier)
+void TestParentStructureStrategy::removeParent(const ParentStructureModel::Id& identifier)
 {
     m_model->removeNode(identifier);
 }
 
 
 
-NepomukAdapter::NepomukAdapter(QObject* parent)
-: StructureAdapter(parent), m_counter(0)
+NepomukParentStructureStrategy::NepomukParentStructureStrategy(QObject* parent)
+: ParentStructureStrategy(parent), m_counter(0)
 {
     setType(Nepomuk::Vocabulary::PIMO::Topic());
 }
 
-void NepomukAdapter::init()
+void NepomukParentStructureStrategy::init()
 {
     Nepomuk::Query::Query query;
     query.setTerm(Nepomuk::Query::ResourceTypeTerm(Nepomuk::Types::Class(m_type)));
@@ -122,13 +123,13 @@ void NepomukAdapter::init()
 }
 
 
-void NepomukAdapter::setType(const QUrl &type)
+void NepomukParentStructureStrategy::setType(const QUrl &type)
 {
     m_type = type;
     
 }
 
-void NepomukAdapter::checkResults(const QList< Nepomuk::Query::Result > &results)
+void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::Result > &results)
 {
     //kDebug() <<  results.size() << results.first().resource().resourceUri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
     foreach (const Nepomuk::Query::Result &result, results) {
@@ -148,7 +149,7 @@ void NepomukAdapter::checkResults(const QList< Nepomuk::Query::Result > &results
 }
 
 
-void NepomukAdapter::addParent (const Nepomuk::Resource& topic, const QUrl &parent)
+void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, const QUrl &parent)
 {
     kDebug() << "add topic" << topic.label() << topic.uri() << parent;
     if (parent.isValid() && !m_topicMap.contains(parent)) {
@@ -185,7 +186,7 @@ void NepomukAdapter::addParent (const Nepomuk::Resource& topic, const QUrl &pare
     m_model->createOrUpdateParent(id, pid, topic.label());
 }
 
-void NepomukAdapter::onNodeRemoval(const qint64& id)
+void NepomukParentStructureStrategy::onNodeRemoval(const qint64& id)
 {
     kDebug() << id;
     const QUrl &targetTopic = m_topicMap.key(id);
@@ -195,7 +196,7 @@ void NepomukAdapter::onNodeRemoval(const qint64& id)
 }
 
 
-void NepomukAdapter::removeResult(const QList<QUrl> &results)
+void NepomukParentStructureStrategy::removeResult(const QList<QUrl> &results)
 {
     foreach (const QUrl &result, results) {
         Nepomuk::Resource res(result);
@@ -210,13 +211,13 @@ void NepomukAdapter::removeResult(const QList<QUrl> &results)
     }
 }
 
-void NepomukAdapter::queryFinished()
+void NepomukParentStructureStrategy::queryFinished()
 {
     kWarning();
 }
 
 
-void NepomukAdapter::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
+void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
 {
     const QUrl &parent = sender()->property("resourceuri").toUrl();
     kDebug() << parent;
@@ -231,7 +232,7 @@ void NepomukAdapter::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &re
             continue;
         }
         Q_ASSERT(m_topicMap.contains(parent));
-        m_topicCache.insert(item.url(),  TopicsModel::IdList() << m_topicMap[parent]); //TODO preserve existing topics (multi topic items)
+        m_topicCache.insert(item.url(),  ParentStructureModel::IdList() << m_topicMap[parent]); //TODO preserve existing topics (multi topic items)
         //If the index is already available change it right away
         const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(m_model->sourceModel(), item);
         if (indexes.isEmpty()) {
@@ -243,20 +244,20 @@ void NepomukAdapter::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &re
     }
 }
 
-QList< qint64 > NepomukAdapter::onSourceInsertRow(const QModelIndex& sourceChildIndex)
+QList< qint64 > NepomukParentStructureStrategy::onSourceInsertRow(const QModelIndex& sourceChildIndex)
 {
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     kDebug() << item.url() << m_topicCache.value(item.url());
     return m_topicCache.value(item.url());
-//     return StructureAdapter::onSourceInsertRow(sourceChildIndex);
+//     return ParentStructureStrategy::onSourceInsertRow(sourceChildIndex);
 }
 
-QList< qint64 > NepomukAdapter::onSourceDataChanged(const QModelIndex& changed)
+QList< qint64 > NepomukParentStructureStrategy::onSourceDataChanged(const QModelIndex& changed)
 {
     return onSourceInsertRow(changed);
 }
 
-void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
+void NepomukParentStructureStrategy::itemsFromTopicRemoved(const QList<QUrl> &items)
 {
     const QUrl &topic = sender()->property("topic").toUrl();
     kDebug() << "removing nodes from topic: " << topic;
@@ -279,7 +280,7 @@ void NepomukAdapter::itemsFromTopicRemoved(const QList<QUrl> &items)
     }
 }
 
-void NepomukAdapter::propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value)
+void NepomukParentStructureStrategy::propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value)
 {
     if (property.uri() == Soprano::Vocabulary::NAO::prefLabel()) {
         kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
@@ -291,7 +292,7 @@ void NepomukAdapter::propertyChanged(const Nepomuk::Resource &res, const Nepomuk
     }
 }
 
-bool NepomukAdapter::onDropMimeData(const QMimeData* mimeData, Qt::DropAction action,  qint64 id)
+bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Qt::DropAction action,  qint64 id)
 {
     bool moveToTrash = false;
     QUrl targetTopic;
@@ -326,7 +327,7 @@ bool NepomukAdapter::onDropMimeData(const QMimeData* mimeData, Qt::DropAction ac
     return true;
 }
 
-bool NepomukAdapter::onSetData(qint64 id, const QVariant &value, int role) {
+bool NepomukParentStructureStrategy::onSetData(qint64 id, const QVariant &value, int role) {
     const QUrl &targetTopic = m_topicMap.key(id);
     if (!targetTopic.isValid()) {
         kWarning() << "tried to rename invalid topic";
@@ -336,7 +337,7 @@ bool NepomukAdapter::onSetData(qint64 id, const QVariant &value, int role) {
     return true;
 }
 
-void NepomukAdapter::setData(TodoNode* node, qint64 id)
+void NepomukParentStructureStrategy::setData(TodoNode* node, qint64 id)
 {
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
