@@ -52,11 +52,14 @@ public:
 
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
+protected:
+    virtual void resetInternalData();
+
 private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-
+    
 private:
     virtual void init();
     virtual TodoNode *createInbox() const;
@@ -85,9 +88,9 @@ private:
     void removeNode(const Id &identifier);
 
     TodoNode *m_rootNode;
-    QMap<Id, TodoNode*> m_resourceMap;
+    QMap<Id, TodoNode*> m_parentMap;
 
-    ParentStructureStrategy *m_nepomukAdapter;
+    ParentStructureStrategy *m_strategy;
 };
 
 #endif // TOPICSMODEL_H

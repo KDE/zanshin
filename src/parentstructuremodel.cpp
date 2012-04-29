@@ -22,20 +22,14 @@
 */
 
 #include "parentstructuremodel.h"
-#include "todonode.h"
 #include "globaldefs.h"
 #include <KIcon>
 #include <KLocalizedString>
 #include "todonodemanager.h"
-#include <tagmanager.h>
 #include <QMimeData>
-#include <pimitemmodel.h>
-#include <abstractpimitem.h>
-#include <queries.h>
-#include <pimitem.h>
 
 ParentStructureModel::ParentStructureModel(ParentStructureStrategy *adapter, QObject* parent)
-: TodoProxyModelBase(MultiMapping, parent), m_rootNode(0), m_nepomukAdapter(adapter)
+: TodoProxyModelBase(MultiMapping, parent), m_rootNode(0), m_strategy(adapter)
 {
     adapter->setModel(this);
 }
@@ -74,11 +68,8 @@ void ParentStructureModel::init()
 
         endInsertRows();
     }
-    m_nepomukAdapter->init();
+    m_strategy->init();
 }
-
-
-
 
 void ParentStructureModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdList& parents)
 {
@@ -89,7 +80,7 @@ void ParentStructureModel::itemParentsChanged(const QModelIndex& sourceIndex, co
     }
     QList<TodoNode*> parentNodes;
     foreach(const Id &p, parents) {
-        TodoNode *pa = m_resourceMap[p];
+        TodoNode *pa = m_parentMap[p];
         Q_ASSERT(pa);
         kDebug() << "newparent : " << pa;
         parentNodes.append(pa);
@@ -141,7 +132,7 @@ void ParentStructureModel::reparentParent(const Id& p, const Id& parent)
         return;
     }
     
-    TodoNode *node = m_resourceMap[p];
+    TodoNode *node = m_parentMap[p];
     Q_ASSERT(node);
     const QString &name = node->data(0, Qt::DisplayRole).toString();
     
@@ -155,8 +146,8 @@ void ParentStructureModel::reparentParent(const Id& p, const Id& parent)
     Q_ASSERT(parentNode);
     int oldRow = parentNode->children().indexOf(node);
     beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
-    Q_ASSERT(m_resourceMap.values().contains(node));
-    m_resourceMap.remove(m_resourceMap.key(node));
+    Q_ASSERT(m_parentMap.values().contains(node));
+    m_parentMap.remove(m_parentMap.key(node));
     m_manager->removeNode(node);
     delete node;
     endRemoveRows();
@@ -170,7 +161,7 @@ void ParentStructureModel::reparentParent(const Id& p, const Id& parent)
 void ParentStructureModel::renameParent(const Id& identifier, const QString& name)
 {
     kDebug() << "renamed " << identifier << " to " << name;
-    TodoNode *node = m_resourceMap[identifier];
+    TodoNode *node = m_parentMap[identifier];
     node->setData(name, 0, Qt::DisplayRole);
     node->setData(name, 0, Qt::EditRole);
     const QModelIndex &begin = m_manager->indexForNode(node, 0);
@@ -180,7 +171,7 @@ void ParentStructureModel::renameParent(const Id& identifier, const QString& nam
 
 void ParentStructureModel::createOrUpdateParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
 {
-    if (!m_resourceMap.contains(identifier)) {
+    if (!m_parentMap.contains(identifier)) {
         createNode(identifier, parentIdentifier, name);
         return;
     }
@@ -189,17 +180,16 @@ void ParentStructureModel::createOrUpdateParent(const Id& identifier, const Id& 
     reparentParent(identifier, parentIdentifier);
 }
 
-
 TodoNode *ParentStructureModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name)
 {
-    kDebug() << "add topic" << name << identifier;
+//     kDebug() << "add topic" << name << identifier;
     TodoNode* parentNode = 0;
     if (parentIdentifier >= 0) {
-        if (!m_resourceMap.contains(parentIdentifier)) {
+        if (!m_parentMap.contains(parentIdentifier)) {
             createNode(parentIdentifier, -1, "unknown");
         }
-        Q_ASSERT(m_resourceMap.contains(parentIdentifier));
-        parentNode = m_resourceMap[parentIdentifier];
+        Q_ASSERT(m_parentMap.contains(parentIdentifier));
+        parentNode = m_parentMap[parentIdentifier];
     } else {
         parentNode = m_rootNode; 
     }
@@ -211,9 +201,9 @@ TodoNode *ParentStructureModel::createNode(const Id &identifier, const Id &paren
     node->setData(name, 0, Qt::DisplayRole);
     node->setData(name, 0, Qt::EditRole);
     node->setRowData(identifier, IdRole);
-    m_nepomukAdapter->setData(node, identifier);
+    m_strategy->setData(node, identifier);
     
-    m_resourceMap[identifier] = node;
+    m_parentMap[identifier] = node;
     m_manager->insertNode(node);
     kDebug() << identifier << node;
     endInsertRows();
@@ -223,12 +213,12 @@ TodoNode *ParentStructureModel::createNode(const Id &identifier, const Id &paren
 void ParentStructureModel::removeNode(const Id &identifier)
 {
     kDebug() << identifier;
-    if (!m_resourceMap.contains(identifier)) {
+    if (!m_parentMap.contains(identifier)) {
         return;
     }
 
-    TodoNode *node = m_resourceMap[identifier];
-    m_nepomukAdapter->onNodeRemoval(identifier);
+    TodoNode *node = m_parentMap[identifier];
+    m_strategy->onNodeRemoval(identifier);
     QList<TodoNode*> children = node->children();
     foreach (TodoNode* child, children) {
         
@@ -244,7 +234,7 @@ void ParentStructureModel::removeNode(const Id &identifier)
     QModelIndex index = m_manager->indexForNode(node, 0);
     beginRemoveRows(index.parent(), index.row(), index.row());
     m_manager->removeNode(node);
-    m_resourceMap.remove(identifier);
+    m_parentMap.remove(identifier);
     delete node;
     endRemoveRows();
 }
@@ -257,27 +247,26 @@ void ParentStructureModel::onSourceInsertRows(const QModelIndex& sourceIndex, in
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
 
         if (!sourceChildIndex.isValid()) {
-            kDebug() << "invalid sourceIndex";
+            kWarning() << "invalid sourceIndex";
             continue;
         }
         
-        IdList parents = m_nepomukAdapter->onSourceInsertRow(sourceChildIndex);
+        IdList parents = m_strategy->onSourceInsertRow(sourceChildIndex);
         
-        TodoNode *node;
         if (parents.isEmpty()) {
-            kDebug() << "add node to inbox";
-            node = addChildNode(sourceChildIndex, m_inboxNode);
+//             kDebug() << "add node to inbox";
+            addChildNode(sourceChildIndex, m_inboxNode);
         } else {
             foreach (const Id &res, parents) {
-                kDebug() << "added node to topic: " << res;
-                TodoNode *parent = m_resourceMap[res];
+//                 kDebug() << "added node to topic: " << res;
+                TodoNode *parent = m_parentMap[res];
                 if (!parent) { //if the item is before the parent, the parent may not be existing yet.
                     createNode(res, -1, "unknown");
-                    Q_ASSERT(m_resourceMap.contains(res));
-                    parent = m_resourceMap[res];
+                    Q_ASSERT(m_parentMap.contains(res));
+                    parent = m_parentMap[res];
                 }
                 Q_ASSERT(parent);
-                node = addChildNode(sourceChildIndex, parent);
+                addChildNode(sourceChildIndex, parent);
             }
         }
     }
@@ -307,7 +296,7 @@ void ParentStructureModel::onSourceDataChanged(const QModelIndex& begin, const Q
     kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
-        const IdList &parents = m_nepomukAdapter->onSourceDataChanged(index);
+        const IdList &parents = m_strategy->onSourceDataChanged(index);
         
         itemParentsChanged(index, parents);
 
@@ -350,16 +339,16 @@ Qt::DropActions ParentStructureModel::supportedDropActions() const
     return sourceModel()->supportedDropActions();
 }
 
-bool ParentStructureModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+bool ParentStructureModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex& parent)
 {
     //kDebug() << mimeData->formats();
     //kDebug() << mimeData->text();
     if (parent.data(IdRole).canConvert<Id>()) {
         Id id = parent.data(IdRole).value<Id>();
         //TODO make use of row/column to find correct child instead? Seems to work....
-        return m_nepomukAdapter->onDropMimeData(mimeData, action, id);
+        return m_strategy->onDropMimeData(mimeData, action, id);
     } else {
-        m_nepomukAdapter->onDropMimeData(mimeData, action, -1);
+        m_strategy->onDropMimeData(mimeData, action, -1);
     }
     
     return false;
@@ -371,9 +360,16 @@ bool ParentStructureModel::setData(const QModelIndex &index, const QVariant &val
         return TodoProxyModelBase::setData(index, value, role);
     }
     
-    if (index.data(IdRole).canConvert<Id>() && m_nepomukAdapter->onSetData(index.data(IdRole).value<Id>(), value, role)) {
+    if (index.data(IdRole).canConvert<Id>() && m_strategy->onSetData(index.data(IdRole).value<Id>(), value, role)) {
         return true;
     }
 
     return TodoProxyModelBase::setData(index, value, role);
+}
+
+void ParentStructureModel::resetInternalData()
+{
+    m_parentMap.clear();
+    m_strategy->reset();
+    TodoProxyModelBase::resetInternalData();
 }

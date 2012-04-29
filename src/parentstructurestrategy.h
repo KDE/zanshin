@@ -41,6 +41,7 @@ class Property;
 namespace Query {
 class Result;
 class Query;
+class QueryServiceClient;
 }
 class Resource;
 }
@@ -57,16 +58,18 @@ public:
     void setModel(ParentStructureModel *model);
     
     //Called when the item first appears in the model, used to get the correct parent right away
-    virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex) { return QList<qint64>();};
+    virtual QList<qint64> onSourceInsertRow(const QModelIndex &/*sourceChildIndex*/) { return QList<qint64>();};
     //Called whenever the item has changed, to reevaluate the parents
-    virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed) {return QList<qint64>();};
+    virtual QList<qint64> onSourceDataChanged(const QModelIndex &/*changed*/) {return QList<qint64>();};
     //Called whenever a parentNode is removed by removeNode(). (I.e. to cleanup the internals)
-    virtual void onNodeRemoval(const qint64 &changed) {};
+    virtual void onNodeRemoval(const qint64 &/*changed*/) {};
     
-    virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id){ return false; };
-    virtual bool onSetData(qint64 id, const QVariant &value, int role) { return false; };
+    virtual bool onDropMimeData(const QMimeData* /*mimeData*/, Qt::DropAction /*action*/, qint64 /*id*/){ return false; };
+    virtual bool onSetData(qint64 /*id*/, const QVariant &/*value*/, int /*role*/) { return false; };
     
-    virtual void setData(TodoNode *node, qint64 id){};
+    virtual void setData(TodoNode */*node*/, qint64 /*id*/){};
+
+    virtual void reset(){};
     
 protected:
     ParentStructureModel *m_model;
@@ -114,6 +117,8 @@ public:
     virtual bool onSetData(qint64 id, const QVariant &value, int role);
     
     virtual void setData(TodoNode* node, qint64 id);
+
+    virtual void reset();
     
 private slots:
     void checkResults(const QList<Nepomuk::Query::Result> &);
@@ -126,7 +131,7 @@ private slots:
     
 private:
     void addParent (const Nepomuk::Resource& topic, const QUrl &parent = QUrl());
-    
+    Nepomuk::Query::QueryServiceClient *m_queryServiceClient;
     QMap<QUrl, QObject*> m_guardMap;
     QMap<QUrl, qint64> m_topicMap;
     QMap<QUrl, QList<qint64> > m_topicCache; //cache akonadi item uris and their topics

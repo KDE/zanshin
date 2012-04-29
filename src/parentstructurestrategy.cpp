@@ -108,16 +108,21 @@ NepomukParentStructureStrategy::NepomukParentStructureStrategy(QObject* parent)
 
 void NepomukParentStructureStrategy::init()
 {
+    if (m_queryServiceClient) {
+        disconnect(m_queryServiceClient, 0, 0, 0);
+        m_queryServiceClient->deleteLater();
+        m_queryServiceClient = 0;
+    }
     Nepomuk::Query::Query query;
     query.setTerm(Nepomuk::Query::ResourceTypeTerm(Nepomuk::Types::Class(m_type)));
     
     query.addRequestProperty(Nepomuk::Query::Query::RequestProperty(Nepomuk::Vocabulary::PIMO::superTopic()));
     
-    Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
-    connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk::Query::Result>)));
-    connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
-    connect(queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(removeResult(QList<QUrl>)));
-    if ( !queryServiceClient->query(query) ) {
+    m_queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
+    connect(m_queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk::Query::Result>)));
+    connect(m_queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
+    connect(m_queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(removeResult(QList<QUrl>)));
+    if ( !m_queryServiceClient->query(query) ) {
         kWarning() << "error";
     }
 }
@@ -292,9 +297,8 @@ void NepomukParentStructureStrategy::propertyChanged(const Nepomuk::Resource &re
     }
 }
 
-bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Qt::DropAction action,  qint64 id)
+bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Qt::DropAction /*action*/,  qint64 id)
 {
-    bool moveToTrash = false;
     QUrl targetTopic;
     if (id >= 0) {
         //kDebug() << "dropped on item " << data(parent, UriRole) << data(parent, Qt::DisplayRole).toString();
@@ -327,7 +331,7 @@ bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Q
     return true;
 }
 
-bool NepomukParentStructureStrategy::onSetData(qint64 id, const QVariant &value, int role) {
+bool NepomukParentStructureStrategy::onSetData(qint64 id, const QVariant &value, int /*role*/) {
     const QUrl &targetTopic = m_topicMap.key(id);
     if (!targetTopic.isValid()) {
         kWarning() << "tried to rename invalid topic";
@@ -343,3 +347,13 @@ void NepomukParentStructureStrategy::setData(TodoNode* node, qint64 id)
     node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
     node->setRowData(m_topicMap.key(id), Zanshin::UriRole);
 }
+
+void NepomukParentStructureStrategy::reset()
+{
+    m_topicCache.clear();
+    m_topicMap.clear();
+    m_guardMap.clear();
+    m_counter = 0;
+    ParentStructureStrategy::reset();
+}
+
