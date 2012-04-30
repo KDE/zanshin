@@ -3,7 +3,7 @@ add_subdirectory(tests)
 
 ########### testlib ###############
 
-set(zanshin_testlib_SRCS s.cpp
+set(zanshin_testlib_SRCS
    c.cpp
    cat.cpp
    indent.cpp
