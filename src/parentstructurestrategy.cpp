@@ -158,7 +158,7 @@ void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::R
 
 void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, const QUrl &parent)
 {
-    kDebug() << "add topic" << topic.label() << topic.uri() << parent;
+//     kDebug() << "add topic" << topic.label() << topic.uri() << parent;
     if (parent.isValid() && !m_topicMap.contains(parent)) {
         addParent(parent);
     }
@@ -195,7 +195,7 @@ void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, 
 
 void NepomukParentStructureStrategy::onNodeRemoval(const qint64& id)
 {
-    kDebug() << id;
+//     kDebug() << id;
     const QUrl &targetTopic = m_topicMap.key(id);
     if (targetTopic.isValid()) {
         NepomukUtils::deleteTopic(targetTopic); //TODO delete subtopics with subresource handling?
@@ -207,7 +207,7 @@ void NepomukParentStructureStrategy::removeResult(const QList<QUrl> &results)
 {
     foreach (const QUrl &result, results) {
         Nepomuk::Resource res(result);
-        kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
+//         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(m_type)) {
             Q_ASSERT(m_topicMap.contains(res.resourceUri()));
             m_model->removeNode(m_topicMap.take(res.resourceUri())); //We remove it right here, because otherwise we would try to remove the topic again in onNodeRemoval
@@ -227,12 +227,12 @@ void NepomukParentStructureStrategy::queryFinished()
 void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
 {
     const QUrl &parent = sender()->property("resourceuri").toUrl();
-    kDebug() << parent;
+//     kDebug() << parent;
     
     QModelIndexList list;
     foreach (const Nepomuk::Query::Result &result, results) {
         Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
-        kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
+//         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
         if (!item.isValid()) {
             kWarning() << "invalid Item";
@@ -254,7 +254,7 @@ void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk::Qu
 QList< qint64 > NepomukParentStructureStrategy::onSourceInsertRow(const QModelIndex& sourceChildIndex)
 {
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    kDebug() << item.url() << m_topicCache.value(item.url());
+//     kDebug() << item.url() << m_topicCache.value(item.url());
     return m_topicCache.value(item.url());
 //     return ParentStructureStrategy::onSourceInsertRow(sourceChildIndex);
 }

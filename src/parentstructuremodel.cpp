@@ -73,7 +73,7 @@ void ParentStructureModel::init()
 
 void ParentStructureModel::itemParentsChanged(const QModelIndex& sourceIndex, const IdList& parents)
 {
-    kDebug() << sourceIndex << parents;
+//     kDebug() << sourceIndex << parents;
     if (!sourceIndex.isValid()) {
         kWarning() << "invalid item";
         return;
@@ -82,7 +82,7 @@ void ParentStructureModel::itemParentsChanged(const QModelIndex& sourceIndex, co
     foreach(const Id &p, parents) {
         TodoNode *pa = m_parentMap[p];
         Q_ASSERT(pa);
-        kDebug() << "newparent : " << pa;
+//         kDebug() << "newparent : " << pa;
         parentNodes.append(pa);
     }
     bool backToInbox = parentNodes.isEmpty();
@@ -92,7 +92,7 @@ void ParentStructureModel::itemParentsChanged(const QModelIndex& sourceIndex, co
     Q_ASSERT(!nodes.empty());
     foreach (TodoNode *node, nodes) {
         TodoNode *parentNode = node->parent();
-        kDebug() << "remove " << node << node->parent();
+//         kDebug() << "remove " << node << node->parent();
         if (parentNode) {
             //Don't remove/readd for parents which remain
             if (parentNodes.removeOne(parentNode)) {
@@ -116,7 +116,7 @@ void ParentStructureModel::itemParentsChanged(const QModelIndex& sourceIndex, co
     //If no parents are available, back to inbox
     if (backToInbox) {
         addChildNode(sourceIndex, m_inboxNode);
-        kDebug() << "add to inbox";
+//         kDebug() << "add to inbox";
         return;
     }
     
@@ -293,7 +293,7 @@ void ParentStructureModel::onSourceRemoveRows(const QModelIndex& sourceIndex, in
 
 void ParentStructureModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
 {
-    kDebug() << begin << end;
+//     kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         const IdList &parents = m_strategy->onSourceDataChanged(index);

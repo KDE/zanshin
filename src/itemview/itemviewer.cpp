@@ -141,7 +141,6 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
 
 ItemViewer::~ItemViewer()
 {
-    kDebug();
     KConfigGroup config(KGlobal::config(), "ItemViewer");
     config.writeEntry("activeToolbox", toolbox->currentIndex());
     config.writeEntry("toolbarHidden", actionCollection()->action( "hide_toolbar" )->isChecked()); //The widget is already hidden, but the action still has the correct state
@@ -152,6 +151,7 @@ ItemViewer::~ItemViewer()
         m_currentItem->deleteLater();
         m_currentItem = 0;
     }
+
     delete ui_properties;
     ui_properties = 0;
     delete ui_tags;

@@ -177,7 +177,7 @@ namespace MindMirrorQueries
             .arg(topicQueryPart)
             .arg(PIMO::groundingOccurrence().toString())
             .arg(NIE::url().toString());
-        kDebug() << query;
+//         kDebug() << query;
         return query;
     }
     
