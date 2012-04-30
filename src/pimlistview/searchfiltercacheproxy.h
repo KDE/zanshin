@@ -51,24 +51,22 @@ public:
     
     void setFulltextSearch(const QString &);
     bool isFulltextMatch(const Akonadi::Item &) const;
-    void setTopicFilter(const QList<KUrl> &topicList, bool noTopic);
-    bool isTopicMatch(const Akonadi::Item &item) const;
+//     void setTopicFilter(const QList<KUrl> &topicList, bool noTopic);
+//     bool isTopicMatch(const Akonadi::Item &item) const;
     
-    //virtual QVariant data(const QModelIndex& proxyIndex, int role = Qt::DisplayRole) const;
-
 private slots:
     void itemChanged(const Nepomuk::Resource &resource, const Nepomuk::Types::Property &property, const QVariant &value);
     void newFulltextMatches(QList< Nepomuk::Query::Result > results);
     void entriesRemoved(QList< QUrl > removedResources);
-    void newTopicMatches(QList< Nepomuk::Query::Result > results);
-    void topicMatchRemoved(QList< QUrl > removedResources);
+//     void newTopicMatches(QList< Nepomuk::Query::Result > results);
+//     void topicMatchRemoved(QList< QUrl > removedResources);
     void queryFinished();
     
 private:    
     Akonadi::Item::List m_fulltextHits;
-    Akonadi::Item::List m_topicHits;
+//     Akonadi::Item::List m_topicHits;
     Nepomuk::Query::QueryServiceClient *m_queryServiceClient;
-    Nepomuk::Query::QueryServiceClient *m_topicQueryServiceClient;
+//     Nepomuk::Query::QueryServiceClient *m_topicQueryServiceClient;
 };
 
 #endif // SEARCHFILTERCACHECPROXY_H

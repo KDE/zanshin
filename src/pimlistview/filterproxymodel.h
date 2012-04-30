@@ -21,31 +21,40 @@
    USA.
 */
 
-#include "searchbar.h"
+#ifndef FILTERPROXYMODEL_H
+#define FILTERPROXYMODEL_H
 
+#include <QString>
 #include <QSortFilterProxyModel>
-#include <QTimer>
-#include "filterproxymodel.h"
+#include <QModelIndex>
+#include "pimitemmodel.h"
 
-SearchBar::SearchBar(FilterProxyModel *filter, QWidget* parent)
-: QLineEdit(parent),
- m_filterProxy(filter)
-{
-    connect (this, SIGNAL(textChanged(QString)), this, SLOT(evaluateInput()));
-    setPlaceholderText("Filter...");
-    m_timer = new QTimer(this);
-    m_timer->setSingleShot(true);
-    connect(m_timer, SIGNAL(timeout()), SLOT(validateCommand()));
-    connect(this, SIGNAL(returnPressed()), SLOT(validateCommand()));
+namespace Akonadi {
+class ItemSearchJob;
 }
 
-void SearchBar::evaluateInput()
+/**
+ * Filtering of items
+ */
+class FilterProxyModel : public QSortFilterProxyModel
 {
-    m_timer->start(300);
-}
+    Q_OBJECT
 
-void SearchBar::validateCommand()
-{
-    m_filterProxy->setFilterString(text());
-}
+public:
+    explicit FilterProxyModel(QObject *parent = 0);
+    virtual ~FilterProxyModel();
+
+    void setFilterString(const QString &);
+    
+    virtual void setSourceModel(QAbstractItemModel* sourceModel);
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+
+private:
+    QString m_filterString;
+    class SearchFilterCache *m_cache;
+};
+
+#endif // NOTESORTFILTERPROXYMODEL_H
 

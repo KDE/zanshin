@@ -26,7 +26,7 @@
 
 #include <QLineEdit>
 
-class NoteSortFilterProxyModel;
+class FilterProxyModel;
 class QTimer;
 /**
  * A Filter can have the following items:
@@ -39,7 +39,7 @@ class SearchBar : public QLineEdit
 {
     Q_OBJECT
 public:
-    explicit SearchBar(NoteSortFilterProxyModel *filterProxy, QWidget* parent = 0);
+    explicit SearchBar(FilterProxyModel *filterProxy, QWidget* parent = 0);
 
 signals:
     void filterChanged();
@@ -48,7 +48,7 @@ private slots:
     void evaluateInput();
     void validateCommand();
 private:
-    NoteSortFilterProxyModel *m_filterProxy;
+    FilterProxyModel *m_filterProxy;
     QTimer *m_timer;
     
 };

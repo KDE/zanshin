@@ -42,7 +42,7 @@
 #include "todotreeview.h"
 #include "todohelpers.h"
 #include <KXMLGUIClient>
-#include <notesortfilterproxymodel.h>
+#include <filterproxymodel.h>
 #include <note.h>
 #include <QComboBox>
 #include <KPassivePopup>
@@ -299,7 +299,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     m_treeView = new ActionListEditorView(this);
     
-    NoteSortFilterProxyModel *notefilter = new NoteSortFilterProxyModel(this);
+    FilterProxyModel *notefilter = new FilterProxyModel(this);
     notefilter->setSourceModel(model);
     
     SearchBar *searchBar = new SearchBar(notefilter, this);

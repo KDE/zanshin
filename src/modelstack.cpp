@@ -38,7 +38,6 @@
 #include "todometadatamodel.h"
 #include "todotreemodel.h"
 #include "abstractpimitem.h"
-#include "notesortfilterproxymodel.h"
 
 #include "kdescendantsproxymodel.h"
 #include <Akonadi/EntityDisplayAttribute>

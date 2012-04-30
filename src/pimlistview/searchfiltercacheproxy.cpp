@@ -53,16 +53,16 @@
 
 SearchFilterCache::SearchFilterCache(QObject* parent)
 : KIdentityProxyModel(parent),
-    m_queryServiceClient(new Nepomuk::Query::QueryServiceClient(this)),
-    m_topicQueryServiceClient(new Nepomuk::Query::QueryServiceClient(this))
+    m_queryServiceClient(new Nepomuk::Query::QueryServiceClient(this))
+//     m_topicQueryServiceClient(new Nepomuk::Query::QueryServiceClient(this))
 {
     //Fulltext queries
     connect(m_queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(newFulltextMatches(QList<Nepomuk::Query::Result>)));
     connect(m_queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(entriesRemoved(QList<QUrl>)));
     connect(m_queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
-    
+/*    
     connect(m_topicQueryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(newTopicMatches(QList<Nepomuk::Query::Result>)));
-    connect(m_topicQueryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(topicMatchRemoved(QList<QUrl>)));
+    connect(m_topicQueryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(topicMatchRemoved(QList<QUrl>)));*/
     
     Nepomuk::ResourceWatcher *watcher = new Nepomuk::ResourceWatcher(this);
     watcher->addType(Nepomuk::Types::Class(Nepomuk::Vocabulary::NCAL::Todo()));
@@ -99,10 +99,10 @@ void SearchFilterCache::itemChanged(const Nepomuk::Resource &resource, const Nep
 
 bool SearchFilterCache::isFulltextMatch(const Akonadi::Item &item ) const
 {
-    //kDebug() << item.id() << m_fulltextHits.contains(item);
+    kDebug() << item.id() << m_fulltextHits.contains(item);
     return m_fulltextHits.contains(item);
 }
-
+/*
 void SearchFilterCache::setTopicFilter(const QList<KUrl> &topicList, bool noTopic)
 {
     m_topicHits.clear();
@@ -149,7 +149,7 @@ void SearchFilterCache::topicMatchRemoved(QList< QUrl > removedResources)
 bool SearchFilterCache::isTopicMatch(const Akonadi::Item &item) const
 {
     return m_topicHits.contains(item);
-}
+}*/
 
 void SearchFilterCache::setFulltextSearch(const QString &string)
 {
@@ -191,14 +191,14 @@ void SearchFilterCache::setFulltextSearch(const QString &string)
 
 void SearchFilterCache::newFulltextMatches(QList< Nepomuk::Query::Result > results)
 {
-    kDebug();
     foreach (const Nepomuk::Query::Result &result, results) {
         Akonadi::Entity::Id id = Nepomuk::Variant::fromNode(result.requestProperty(Vocabulary::ANEO::akonadiItemId())).toString().toInt();
         Akonadi::Item item(id);
         Q_ASSERT(item.isValid());
-        kDebug() << item.id();
+//         kDebug() << item.id();
         const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(this, item);
         if (indexes.isEmpty()) { //can happen if the item is in a non monitored collection
+//             kDebug() << "could not find item";
             continue;
         }
         m_fulltextHits << item;
@@ -207,7 +207,7 @@ void SearchFilterCache::newFulltextMatches(QList< Nepomuk::Query::Result > resul
     }
 }
 
-void SearchFilterCache::entriesRemoved(QList< QUrl > removedResources)
+void SearchFilterCache::entriesRemoved(QList< QUrl > /*removedResources*/)
 {
     //TODO
     kWarning() << "why are entries removed?";
@@ -215,7 +215,7 @@ void SearchFilterCache::entriesRemoved(QList< QUrl > removedResources)
 
 void SearchFilterCache::queryFinished()
 {
-    kDebug();
+//     kDebug();
 }
 
 
