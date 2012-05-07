@@ -67,11 +67,14 @@ void FilterProxyModel::setSourceModel(QAbstractItemModel* s)
     QSortFilterProxyModel::setSourceModel(m_cache);
 }
 
-
 bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     const QModelIndex &index0 = sourceModel()->index(sourceRow, 0, sourceParent);
     Q_ASSERT(index0.isValid());
+    //Ensures that parent todos in the project view are not filtered, alternatively we could use a krecursivefilterproxy
+    if (index0.data(Zanshin::ItemTypeRole).toInt() == Zanshin::ProjectTodo) {
+        return true;
+    }
     const Akonadi::Item item = index0.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
     if (!item.isValid()) {
         kWarning() << "not an item " << sourceRow;
