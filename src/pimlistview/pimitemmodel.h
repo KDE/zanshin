@@ -69,8 +69,6 @@ public:
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
     virtual Qt::DropActions supportedDropActions() const;
-    
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 private slots:
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);

@@ -94,21 +94,6 @@ QVariant PimItemModel::entityHeaderData(int section, Qt::Orientation orientation
     return EntityTreeModel::entityHeaderData(section, orientation, role, headerGroup);
 }
 
-QVariant PimItemModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (role == Qt::SizeHintRole) {
-        if (section == 1) { //Weekdays
-            return QSize(100, EntityTreeModel::headerData(section, orientation, role).toSize().height());
-        }
-        if (section == 2) { //Weekdays
-            return QSize(60, EntityTreeModel::headerData(section, orientation, role).toSize().height());
-        }
-    }
-    return Akonadi::EntityTreeModel::headerData(section, orientation, role);
-}
-
-
-
 QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int role) const
 {
     if (!item.isValid()) {
@@ -171,7 +156,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                 case Date:
                     return pimitem->getPrimaryDate().dateTime();
                 case Collection:
-                    modelIndexForCollection(this, item.parentCollection()).data();
+                    return modelIndexForCollection(this, item.parentCollection()).data();
                 case Status: //TODO status editor?
                     switch (pimitem->getStatus()) {
                         case AbstractPimItem::Now:
@@ -335,15 +320,10 @@ void PimItemModel::onSourceInsertRows(const QModelIndex &parent, int begin, int 
         onSourceInsertRows(child, 0, rowCount(child)-1);
 
         const Akonadi::Item &item = data(child, ItemRole).value<Akonadi::Item>();
-        KCalCore::Todo::Ptr todo = todoFromItem(item); //FIXME for non todos. Or don't we need that mapping?
-
-        if (!todo) {
-            continue;
+        KCalCore::Todo::Ptr todo = todoFromItem(item); //only required for todos because we need the related-to name
+        if (todo) {
+            m_summaryMap[todo->uid()] = todo->summary();
         }
-
-        const QString &uid = todo->uid();
-
-        m_summaryMap[uid] = todo->summary();
     }
 }
 
@@ -352,14 +332,9 @@ void PimItemModel::onSourceRemoveRows(const QModelIndex &parent, int begin, int 
     for (int i = begin; i <= end; ++i) {
         const QModelIndex &child = index(i, 0, parent);
         KCalCore::Todo::Ptr todo = todoFromIndex(child);
-
-        if (!todo) {
-            continue;
+        if (todo) {
+            m_summaryMap.remove(todo->uid());;
         }
-
-        QString uid = todo->uid();
-
-        m_summaryMap.remove(uid);
     }
 }
 
@@ -368,14 +343,9 @@ void PimItemModel::onSourceDataChanged(const QModelIndex &begin, const QModelInd
     for (int row = begin.row(); row <= end.row(); ++row) {
         for (int column = begin.column(); column <= end.column(); ++column) {
             KCalCore::Todo::Ptr todo = todoFromIndex( index(row, column, begin.parent()) );
-
-            if (!todo) {
-                continue;
+            if (todo) {
+                m_summaryMap[todo->uid()] = todo->summary();
             }
-
-            QString uid = todo->uid();
-
-            m_summaryMap[uid] = todo->summary();
         }
     }
 }
