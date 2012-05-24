@@ -122,16 +122,20 @@ void ReparentingModel::reparentParent(const Id& p, const Id& parent)
 
     //remove node from any current parent
     TodoNode *parentNode = node->parent();
+    int oldRow;
+    QModelIndex parentIndex;
     if (parentNode) {
-        int oldRow = parentNode->children().indexOf(node);
-        beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow); //FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
-        Q_ASSERT(m_parentMap.values().contains(node));
-        m_parentMap.remove(m_parentMap.key(node));
-        m_manager->removeNode(node);
-        delete node;
-        endRemoveRows();
+        oldRow = parentNode->children().indexOf(node);
+        parentIndex = m_manager->indexForNode(parentNode, 0);
+    } else {
+        oldRow = m_manager->roots().indexOf(node);
     }
-    //FIXME remove from root here?
+    beginRemoveRows(parentIndex, oldRow, oldRow);//FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
+    Q_ASSERT(m_parentMap.values().contains(node));
+    m_parentMap.remove(m_parentMap.key(node));
+    m_manager->removeNode(node);
+    delete node;
+    endRemoveRows();
 
     TodoNode *newParent = createNode(p, parent, name);
     foreach (TodoNode* child, children) {
@@ -164,7 +168,7 @@ void ReparentingModel::createOrUpdateParent(const Id& identifier, const Id& pare
 void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
 {
     for (int i = begin; i <= end; i++) {
-        QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
+        const QModelIndex &sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
         
         if (!sourceChildIndex.isValid()) {
             kWarning() << "invalid sourceIndex";
@@ -177,7 +181,11 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
         //The item has already been inserted before, update and reparent
         if (m_parentMap.contains(id)) {
             kDebug() << "update parent";
-            createOrUpdateParent(id, -1, "unknown"); //TODO get name
+            m_parentMap[id]->setRowSourceIndex(sourceChildIndex);
+            if (!parents.isEmpty()) {
+                reparentParent(id, parents.first());
+            }
+            //TODO reparent to all new parents
             return;
         }
 
@@ -196,7 +204,7 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
                 }
                 Q_ASSERT(parent);
                 m_parentMap[id] = addChildNode(sourceChildIndex, parent); //TODO set data
-                //TODO parent map is a multimap actually, act accordingly
+                //TODO parent map is a multimap actually, act accordingly (this applies to all places where parent map is used). This because a node can be in multiple places at the same time.
             }
         }
 

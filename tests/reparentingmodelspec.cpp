@@ -143,31 +143,57 @@ private slots:
         G t3(5, TestReparentingStrategy::IdRole, 5);
         t3.data.insert(TestReparentingStrategy::ParentRole, 2);
         G t4(6, TestReparentingStrategy::IdRole, 6);
-        t4.data.insert(TestReparentingStrategy::ParentRole, 2);
+        t4.data.insert(TestReparentingStrategy::ParentRole, 5);
         G t5(7, TestReparentingStrategy::IdRole, 7);
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << p1
+            << t1
+            << t2
+            << p2
+            << t3
+            << t4
+            << t5;
 
-        ModelStructure sourceStructure;
-        sourceStructure
-        << p1
-        << t1
-        << t2
-        << p2
-        << t3
-        << t4
-        << t5;
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
 
-        ModelStructure outputStructure;
-        outputStructure
-        << p1
-        << _+t1
-        << _+t2
-        << p2
-        << _+t3
-        << _+t4
-        << t5;
-        
 
-        QTest::newRow( "simple tree" ) << sourceStructure << outputStructure;
+            QTest::newRow( "simple tree" ) << sourceStructure << outputStructure;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
+            
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+
+
+            QTest::newRow( "unordered tree" ) << sourceStructure << outputStructure;
+        }
         
     }
 

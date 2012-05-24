@@ -60,6 +60,16 @@ void TodoNode::init()
     }
 }
 
+void TodoNode::setRowSourceIndex(const QModelIndex& rowSourceIndex)
+{
+    m_rowSourceIndex = QPersistentModelIndex(rowSourceIndex);
+    m_data.clear();
+    // Setting default flags
+    if (!m_rowSourceIndex.isValid()) {
+        m_flags = Qt::ItemIsEnabled|Qt::ItemIsSelectable;
+    }
+}
+
 TodoNode *TodoNode::parent() const
 {
     return m_parent;

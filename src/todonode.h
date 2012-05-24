@@ -41,6 +41,7 @@ public:
 
     const QList<TodoNode*> &children() const;
 
+    void setRowSourceIndex(const QModelIndex &rowSourceIndex);
     QModelIndex rowSourceIndex() const;
 
     QVariant data(int column, int role) const;
