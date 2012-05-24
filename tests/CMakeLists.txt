@@ -24,5 +24,6 @@ ZANSHIN_UNIT_TESTS(
   todometadatamodelspec
   todotreemodelspec
   parentstructuremodelspec
+  reparentingmodelspec
 )
 

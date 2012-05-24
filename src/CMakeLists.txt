@@ -26,6 +26,8 @@ set(zanshin_core_SRCS
    todonodemanager.cpp
    parentstructuremodel.cpp
    parentstructurestrategy.cpp
+   reparentingmodel.cpp
+   reparentingstrategy.cpp
    ${pimlistview_SRCS}
    ${itemview_SRCS}
 )
