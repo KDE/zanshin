@@ -80,6 +80,7 @@ private:
     TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name, const QModelIndex &index = QModelIndex());
 //     void removeNode(const Id &identifier);
 
+    void removeNode(TodoNode *node);
     TodoNode *m_rootNode;
     QMap<Id, TodoNode*> m_parentMap;
 

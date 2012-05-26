@@ -109,6 +109,17 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const Id &parentIde
     return node;
 }
 
+void ReparentingModel::removeNode(TodoNode *node)
+{
+    const QModelIndex &index = m_manager->indexForNode(node, 0);
+    beginRemoveRows(index.parent(), index.row(), index.row());
+    Q_ASSERT(m_parentMap.values().contains(node));
+    m_parentMap.remove(m_parentMap.key(node));
+    m_manager->removeNode(node);
+    delete node;
+    endRemoveRows();
+}
+
 void ReparentingModel::reparentParent(const Id& p, const IdList& parents, const QModelIndex &sourceIndex)
 {
     if (p < 0) {
@@ -119,9 +130,6 @@ void ReparentingModel::reparentParent(const Id& p, const IdList& parents, const 
     //TODO handle multiple parents
     TodoNode *node = m_parentMap[p];
     Q_ASSERT(node);
-//     if (!node) { //TODO is this a valid case?
-//         return;
-//     }
     const QString &name = node->data(0, Qt::DisplayRole).toString();
 
     QList<TodoNode*> children = node->children();
@@ -132,21 +140,7 @@ void ReparentingModel::reparentParent(const Id& p, const IdList& parents, const 
     //TODO check before removing which parents stay, and only change the ones which actually change (sourceIndex must also be checked)
 
     //remove node from any current parent
-    TodoNode *parentNode = node->parent();
-    int oldRow;
-    QModelIndex parentIndex;
-    if (parentNode) {
-        oldRow = parentNode->children().indexOf(node);
-        parentIndex = m_manager->indexForNode(parentNode, 0);
-    } else {
-        oldRow = m_manager->roots().indexOf(node);
-    }
-    beginRemoveRows(parentIndex, oldRow, oldRow);//FIXME triggers multimapping warning, but there shouldn't be multiple instances of the same item under inbox
-    Q_ASSERT(m_parentMap.values().contains(node));
-    m_parentMap.remove(m_parentMap.key(node));
-    m_manager->removeNode(node);
-    delete node;
-    endRemoveRows();
+    removeNode(node);
 
     TodoNode *newParent;
     if (parents.isEmpty()) {
@@ -187,10 +181,6 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
         //The item has already been inserted before, update and reparent
         if (m_parentMap.contains(id)) {
             kDebug() << "update parent";
-            //m_parentMap[id]->setRowSourceIndex(sourceChildIndex);
-//             m_manager->insertNode(m_parentMap[id]); //Update sourceChildIndex cache
-            // We need to convert a node without corresponding sourceIndex to one with a sourceIndex
-            // 
             reparentParent(id, parents, sourceChildIndex);
             return;
         }
@@ -254,14 +244,7 @@ void ReparentingModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int be
                 Id childId = m_parentMap.key(childNode);
                 reparentParent(childId, m_strategy->getParents(childId), childNode->rowSourceIndex());
             }
-            if (TodoNode *parentNode = node->parent()) {
-                kDebug() << "removed node";
-                int oldRow = parentNode->children().indexOf(node);
-                beginRemoveRows(m_manager->indexForNode(parentNode, 0), oldRow, oldRow);
-                m_manager->removeNode(node);
-                delete node;
-                endRemoveRows();
-            } //TODO handle toplevel removals
+            removeNode(node);
         }
     }
 }

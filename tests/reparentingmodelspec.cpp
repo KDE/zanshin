@@ -448,6 +448,42 @@ private slots:
 
             QTest::newRow( "remove single" ) << sourceStructure << outputStructure << itemToRemove;
         }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+            */
+
+            ModelPath itemToRemove = p2;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << t5
+            << t3
+            << _+t4;
+
+            QTest::newRow( "remove toplevel" ) << sourceStructure << outputStructure << itemToRemove;
+        }
     }
     
     void handleRemoves()
