@@ -37,6 +37,11 @@ public:
     virtual IdList onSourceInsertRow(const QModelIndex &/*sourceChildIndex*/);
     //Called whenever the item has changed, to reevaluate the parents
     virtual IdList onSourceDataChanged(const QModelIndex &/*changed*/);
+    //Called whenever a parentNode is removed by removeNode(). (I.e. to cleanup the internals)
+    virtual void onNodeRemoval(const qint64 &changed);
+
+    virtual IdList getParents(const qint64);
+    
 };
 
 class TestReparentingStrategy : public ReparentingStrategy

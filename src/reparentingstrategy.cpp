@@ -30,6 +30,15 @@ IdList ReparentingStrategy::onSourceDataChanged(const QModelIndex& )
     return IdList();
 }
 
+IdList ReparentingStrategy::getParents(const qint64 )
+{
+    return IdList();
+}
+
+void ReparentingStrategy::onNodeRemoval(const qint64& changed)
+{
+
+}
 
 
 
@@ -59,6 +68,9 @@ IdList TestReparentingStrategy::onSourceInsertRow(const QModelIndex &sourceChild
         return IdList();
     }
     const Id &parent = sourceChildIndex.data(ParentRole).value<Id>();
+    if (parent < 0) {
+        return IdList();
+    }
 
     return IdList() << parent;
 }

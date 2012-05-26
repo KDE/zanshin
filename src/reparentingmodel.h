@@ -66,26 +66,18 @@ private:
     virtual TodoNode *createInbox() const;
 
     /**
-     * Creates a new parent
-     *
-     * @param identifier must be unique
-     *
-     * If the parent already exists as identifier name and parent are updated
-     */
-    void createOrUpdateParent(const Id &identifier, const Id &parentIdentifier, const QString &name);
-    /**
      * Updates the parents of @param sourceIndex.
      *
      * Moves/adds/removes from parents.
      */
 //     void itemParentsChanged(const QModelIndex &sourceIndex, const IdList &parents);
-    void reparentParent(const Id& p, const Id& parent);
+    void reparentParent(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
     /**
      * Renames @param parent
      */
     void renameParent(const Id &id, const QString &name);
 
-    TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name);
+    TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name, const QModelIndex &index = QModelIndex());
 //     void removeNode(const Id &identifier);
 
     TodoNode *m_rootNode;

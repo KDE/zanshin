@@ -26,7 +26,7 @@
 
 #include "todonode.h"
 #include "todoproxymodelbase.h"
-
+#include <QDebug>
 
 TodoNodeManager::TodoNodeManager(TodoProxyModelBase *model, bool multiMapping)
     : m_model(model), m_multiMapping(multiMapping)
@@ -136,6 +136,12 @@ void TodoNodeManager::removeNode(TodoNode *node)
         m_roots.removeAll(node);
     }
 }
+
+// void TodoNodeManager::replaceNode(TodoNode *oldNode, TodoNode *newNode)
+// {
+//     removeNode(oldNode);
+//     foreach()
+// }
 
 QList<TodoNode*> TodoNodeManager::roots() const
 {

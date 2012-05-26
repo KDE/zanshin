@@ -29,6 +29,7 @@
 TodoNode::TodoNode(const QModelIndex &rowSourceIndex, TodoNode *parent)
     : m_parent(parent), m_rowSourceIndex(rowSourceIndex)
 {
+    Q_ASSERT(rowSourceIndex.column() == 0);
     init();
 }
 
@@ -54,16 +55,6 @@ void TodoNode::init()
         m_parent->m_children << this;
     }
 
-    // Setting default flags
-    if (!m_rowSourceIndex.isValid()) {
-        m_flags = Qt::ItemIsEnabled|Qt::ItemIsSelectable;
-    }
-}
-
-void TodoNode::setRowSourceIndex(const QModelIndex& rowSourceIndex)
-{
-    m_rowSourceIndex = QPersistentModelIndex(rowSourceIndex);
-    m_data.clear();
     // Setting default flags
     if (!m_rowSourceIndex.isValid()) {
         m_flags = Qt::ItemIsEnabled|Qt::ItemIsSelectable;
