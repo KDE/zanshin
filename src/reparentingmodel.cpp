@@ -27,8 +27,7 @@
 
 ReparentingModel::ReparentingModel(ReparentingStrategy* strategy, QObject* parent)
 :   TodoProxyModelBase(TodoProxyModelBase::MultiMapping, parent),
-    m_strategy(strategy),
-    m_reparentOnRemoval(strategy->reparentOnRemoval())
+    m_strategy(strategy)
 {
     m_strategy->setModel(this);
 }
@@ -95,6 +94,10 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
         foreach (TodoNode *child, root->children()) {
             removeNode(child, removeChildren);
         }
+    } else {
+        foreach(TodoNode *childNode, root->children()) {
+            childNode->setParent(0);
+        }
     }
 
     QModelIndex proxyParentIndex = m_manager->indexForNode(root->parent(), 0);
@@ -123,7 +126,7 @@ void ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QM
         kWarning() << "invalid item";
         return;
     }
-//     kDebug() << p << parents << sourceIndex;
+    kDebug() << p << parents << sourceIndex;
     //TODO handle multiple parents
     Q_ASSERT(m_parentMap.contains(p));
     TodoNode *node = m_parentMap.value(p);
@@ -133,7 +136,7 @@ void ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QM
     if (node->rowSourceIndex() == sourceIndex) {
         //Reparent only if parent has changed
         if ((parents.isEmpty() && !node->parent()) || (!parents.isEmpty() && (node->parent() == m_parentMap.value(parents.first())))) {
-//             kDebug() << "nothing changed";
+            kDebug() << "nothing changed";
             Q_ASSERT(!m_parentMap.values().contains(0));
             return;
         }
@@ -141,12 +144,9 @@ void ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QM
     
     const QString &name = node->data(0, Qt::DisplayRole).toString();
     QList<TodoNode*> children = node->children();
-    foreach (TodoNode* child, children) {
-        child->setParent(0);
-    }
 
     //remove node from any current parent
-    removeNode(node);
+    removeNode(node, false);
 
     TodoNode *newNode;
     if (parents.isEmpty()) {
@@ -243,16 +243,20 @@ void ReparentingModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int be
     for (int i = begin; i <= end; ++i) {
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
         if (!sourceChildIndex.isValid()) {
+//             kDebug() << "invalid source";
             continue;
         }
         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
         foreach (TodoNode *node, nodes) {
             Id id = m_parentMap.key(node);
-            m_strategy->onNodeRemoval(id);
-            if (m_reparentOnRemoval) {
+//             kDebug() << "remove node " << id << m_strategy->reparentOnRemoval();
+            if (m_strategy->reparentOnRemoval()) {
                 foreach(TodoNode *childNode, node->children()) {
                     Id childId = m_parentMap.key(childNode);
-                    reparentNode(childId, m_strategy->getParents(childNode->rowSourceIndex()), childNode->rowSourceIndex());
+//                     kDebug() << "child " << childId;
+                    IdList parents = m_strategy->getParents(childNode->rowSourceIndex());
+                    parents.removeAll(id); //Don't try to re-add it to the current parent
+                    reparentNode(childId, parents, childNode->rowSourceIndex());
                 }
                 removeNode(node, false);
             } else {

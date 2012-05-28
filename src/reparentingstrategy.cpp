@@ -26,7 +26,8 @@
 #include <KIcon>
 
 ReparentingStrategy::ReparentingStrategy()
-:   mReparentOnRemoval(true)
+:   mReparentOnRemoval(true),
+    mIdCounter(0)
 {
 
 }
@@ -99,6 +100,7 @@ IdList TestReparentingStrategy::getParents(const QModelIndex &sourceChildIndex)
 
 
 ProjectStrategy::ProjectStrategy()
+:   ReparentingStrategy()
 {
     mIdCounter = 2;
     mReparentOnRemoval = false;

@@ -81,7 +81,6 @@ private:
     QMap<Id, TodoNode*> m_parentMap;
 
     QScopedPointer<ReparentingStrategy> m_strategy;
-    bool m_reparentOnRemoval;
 };
 
 #endif // REPARENTINGMODEL_H
