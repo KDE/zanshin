@@ -222,40 +222,15 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
 
         Id id = m_strategy->getId(sourceChildIndex);
         IdList parents = m_strategy->getParents(sourceChildIndex);
-//         if (parents.isEmpty()) {
-//             createNode(id, -1);
-//         } else {
-//             createNode(id, parents.first());
-//         }
-//         kDebug() << "adding node: " << sourceChildIndex.data(Qt::DisplayRole).toString() << id << parents;
-        //The item has already been inserted before, update and reparent
-        if (m_parentMap.contains(id)) {
-//             kDebug() << "update parent";
-            reparentNode(id, parents, sourceChildIndex);
-            continue;
-        }
-
-        //Insert new item
+        bool replace = m_parentMap.contains(id);
         if (parents.isEmpty()) {
-            m_parentMap[id] = addChildNode(sourceChildIndex, 0);
+            createNode(id, -1, QString(), sourceChildIndex);
         } else {
-            foreach (const Id &p, parents) {
-//                 kDebug() << "added node to parent: " << p;
-                TodoNode *parent = m_parentMap.value(p);
-                if (!parent) { //if the item is before the parent, the parent may not be existing yet.
-                    kDebug() << "creating parent " << p;
-                    createNode(p, -1, "unknown");
-                    Q_ASSERT(m_parentMap.contains(p));
-                    parent = m_parentMap.value(p);
-                }
-                Q_ASSERT(parent);
-                m_parentMap[id] = addChildNode(sourceChildIndex, parent); //TODO set data
-                //TODO parent map is a multimap actually, act accordingly (this applies to all places where parent map is used). This because a node can be in multiple places at the same time.
-            }
+            createNode(id, parents.first(), QString(), sourceChildIndex);
         }
 
         //Insert children too
-        if (sourceModel()->hasChildren(sourceChildIndex)) {
+        if (!replace && sourceModel()->hasChildren(sourceChildIndex)) {
 //             kDebug() << id << " has children";
             onSourceInsertRows(sourceChildIndex, 0, sourceModel()->rowCount(sourceChildIndex)-1);
         }
