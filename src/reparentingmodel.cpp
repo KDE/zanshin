@@ -97,27 +97,15 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const Id &parentIde
 
 void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
 {
-//                 foreach(TodoNode *childNode, node->children()) {
-//                     Id childId = m_parentMap.key(childNode);
-// //                     kDebug() << "child " << childId;
-//                     IdList parents = m_strategy->getParents(childNode->rowSourceIndex());
-//                     parents.removeAll(id); //Don't try to re-add it to the current parent
-//                     reparentNode(childId, parents, childNode->rowSourceIndex());
-//                 }
 
     kDebug() << "removeNode " << m_parentMap.key(root);
 
-
     if (removeChildren) {
-//         foreach (TodoNode *child, root->children()) {
-//             removeNode(child, removeChildren);
-//         }
         foreach(TodoNode *childNode, root->children()) {
             Id childId = m_parentMap.key(childNode);
             if (m_strategy->reparentOnRemoval(childId)) {
                 kDebug() << "child " << childId;
                 IdList parents = m_strategy->getParents(childNode->rowSourceIndex(), IdList() << m_parentMap.key(root));//Don't try to re-add it to the current parent (which is not yet removed)
-//                 parents.removeAll(m_parentMap.key(childNode->parent())); //Don't try to re-add it to the current parent (which is not yet removed)
                 reparentNode(childId, parents, childNode->rowSourceIndex());
             } else {
                 removeNode(childNode, true);
@@ -276,23 +264,6 @@ void ReparentingModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int be
         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
         foreach (TodoNode *node, nodes) {
             removeNode(node, true);
-            
-//             Id id = m_parentMap.key(node);
-//             kDebug() << "remove node " << id;
-// //             if (m_strategy->reparentOnRemoval(id)) {
-//                 foreach(TodoNode *childNode, node->children()) {
-//                     Id childId = m_parentMap.key(childNode);
-//                     if (m_strategy->reparentOnRemoval(childId)) {
-//                         kDebug() << "child " << childId;
-//                         IdList parents = m_strategy->getParents(childNode->rowSourceIndex());
-//                         parents.removeAll(id); //Don't try to re-add it to the current parent (which is not yet removed)
-//                         reparentNode(childId, parents, childNode->rowSourceIndex());
-//                     }
-//                 }
-//                 removeNode(node, true);
-// //             } else {
-// //                 removeNode(node, true);
-// //             }
         }
     }
 }
