@@ -38,10 +38,6 @@ class ReparentingModel : public TodoProxyModelBase
      Q_OBJECT
 
 public:
-    enum Roles {
-        Begin = Qt::UserRole+1000,
-        IdRole
-    };
     ReparentingModel(ReparentingStrategy *strategy, QObject *parent = 0);
     virtual ~ReparentingModel();
 /*

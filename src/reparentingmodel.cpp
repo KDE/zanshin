@@ -70,12 +70,11 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const Id &parentIde
     TodoNode *node;
     if (sourceIndex.isValid()) {
         node = new TodoNode(sourceIndex, parentNode);
-    } else {
+    } else { //For virtual nodes
         node = new TodoNode(parentNode);
         node->setData(name, 0, Qt::DisplayRole);
         node->setData(name, 0, Qt::EditRole);
     }
-    node->setRowData(identifier, IdRole);
     //TODO
 //     m_strategy->setData(node, identifier);
 
@@ -215,7 +214,7 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
 void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
 {
     Q_ASSERT(!m_parentMap.values().contains(0));
-//     kDebug() << begin << end;
+    kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         Id id = m_strategy->getId(index);
