@@ -22,6 +22,7 @@
 */
 
 #include "modelbuilderbehavior.h"
+#include "modelutils.h"
 
 #include <KDE/Akonadi/EntityTreeModel>
 #include <KDE/KCalCore/Todo>
@@ -199,7 +200,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandGeneric
     QList<QStandardItem*> row;
     
     QStandardItem *item = new QStandardItem("generic"+QString::number(generic.id));
-    
+    item->setData(generic.id, IdRole);
     foreach(int role, generic.data.keys()) {
         item->setData(generic.data.value(role), role);
     }

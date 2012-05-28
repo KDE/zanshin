@@ -38,19 +38,19 @@ public:
     /// Get the id for an object
     virtual Id getId(const QModelIndex &/*sourceChildIndex*/) = 0;
     /// Get parents
-    virtual IdList getParents(const QModelIndex &);
+    virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
 
-    virtual void onNodeRemoval(const qint64 &changed);
+    virtual void onNodeRemoval(const Id &changed);
 
     virtual void reset(){};
 
     void setModel(ReparentingModel *model);
 
-    bool reparentOnRemoval() const;
+    virtual bool reparentOnRemoval(Id) const;
 
 protected:
     virtual TodoNode *createNode(Id id, Id pid, QString name);
-    void removeNode(Id id){};
+    void removeNode(Id id);
     void updateParents(Id id, IdList parents);
     void renameNode(Id id, QString name);
     
@@ -80,7 +80,7 @@ public:
 //     void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
 
     virtual Id getId(const QModelIndex& );
-    virtual IdList getParents(const QModelIndex &);
+    virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
 
 };
 
@@ -92,7 +92,7 @@ public:
     ProjectStrategy();
     virtual void init();
     virtual Id getId(const QModelIndex& );
-    virtual IdList getParents(const QModelIndex&);
+    virtual IdList getParents(const QModelIndex&, const IdList &ignore = IdList());
     virtual void reset();
 private:
     QHash<QString, Id> mUidMapping;
@@ -122,8 +122,10 @@ public:
     virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
     virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed);*/
 
+    virtual bool reparentOnRemoval(Id ) const;
+
     virtual Id getId(const QModelIndex& );
-    virtual IdList getParents(const QModelIndex &);
+    virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
 
     virtual void init();
 

@@ -23,8 +23,8 @@
 
 #include <qtest_kde.h>
 
-#include "parentstructuremodel.h"
-#include "parentstructurestrategy.h"
+#include "reparentingmodel.h"
+#include "reparentingstrategy.h"
 
 #include <globaldefs.h>
 #include "testlib/testlib.h"
@@ -39,7 +39,7 @@ using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
-class ParentStructureModelSpec : public QObject
+class ReparentingModelSpec : public QObject
 {
     Q_OBJECT
 private slots:
@@ -114,7 +114,7 @@ private slots:
 
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
 
-        ParentStructureModel categoriesModel(testadapter, this);        
+        ReparentingModel categoriesModel(testadapter, this);
                 
         categoriesModel.setSourceModel(&source);
 
@@ -193,7 +193,7 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        ParentStructureModel categoriesModel(testadapter, this);        
+        ReparentingModel categoriesModel(testadapter, this);
         
         categoriesModel.setSourceModel(&source);
                 
@@ -201,10 +201,16 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
         
         ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+
+//         Helper::printModel(&source);
+//         Helper::printModel(&categoriesModel);
         
         //parents
         testadapter->addParent(1, -1, "topic1");
         testadapter->addParent(2, -1, "topic2");
+
+//         Helper::printModel(&source);
+//         Helper::printModel(&categoriesModel);
                 
         ModelTest t2(&categoriesModel);
         
@@ -294,7 +300,7 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        ParentStructureModel categoriesModel(testadapter, this);        
+        ReparentingModel categoriesModel(testadapter, this);
         
         categoriesModel.setSourceModel(&source);
         
@@ -393,7 +399,7 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        ParentStructureModel categoriesModel(testadapter, this);        
+        ReparentingModel categoriesModel(testadapter, this);
         
         categoriesModel.setSourceModel(&source);
         
@@ -477,7 +483,7 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        ParentStructureModel categoriesModel(testadapter, this);        
+        ReparentingModel categoriesModel(testadapter, this);
         
         categoriesModel.setSourceModel(&source);
         
@@ -486,7 +492,7 @@ private slots:
         testadapter->addParent(3, 2, "topic3");
         testadapter->addParent(2, 1, "topic2");
         
-        Helper::printModel(&categoriesModel);
+//         Helper::printModel(&categoriesModel);
         
         //Items
         ModelUtils::create(&source, sourceStructure);
@@ -577,7 +583,7 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        ParentStructureModel categoriesModel(testadapter, this);        
+        ReparentingModel categoriesModel(testadapter, this);
         
         categoriesModel.setSourceModel(&source);
         
@@ -586,7 +592,7 @@ private slots:
         testadapter->addParent(2, 1, "topic2");
         testadapter->addParent(3, 2, "topic3");
         
-        Helper::printModel(&categoriesModel);
+//         Helper::printModel(&categoriesModel);
         
         //Items
         ModelUtils::create(&source, sourceStructure);
@@ -605,6 +611,9 @@ private slots:
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
+
+        Helper::printModel(&categoriesModel);
+        Helper::printModel(&output);
         
         QCOMPARE(categoriesModel, output);
     }
@@ -669,7 +678,7 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
         
-        ParentStructureModel categoriesModel(testadapter, this);        
+        ReparentingModel categoriesModel(testadapter, this);
         
         categoriesModel.setSourceModel(&source);
         
@@ -707,6 +716,6 @@ private slots:
 
 };
 
-QTEST_KDEMAIN(ParentStructureModelSpec, GUI)
+QTEST_KDEMAIN(ReparentingModelSpec, GUI)
 
 #include "topicsmodelspec.moc"

@@ -39,6 +39,7 @@ namespace Test
 
 enum Roles {
     TestDslRole = Akonadi::EntityTreeModel::UserRole + 101,
+    IdRole = 102,
     UserRole = Akonadi::EntityTreeModel::UserRole + 200
 };
 

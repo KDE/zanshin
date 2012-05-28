@@ -33,7 +33,7 @@ ReparentingStrategy::ReparentingStrategy()
 }
 
 
-IdList ReparentingStrategy::getParents(const QModelIndex & )
+IdList ReparentingStrategy::getParents(const QModelIndex &, const IdList & )
 {
     return IdList();
 }
@@ -69,7 +69,14 @@ void ReparentingStrategy::updateParents(Id id, IdList parents)
     m_model->reparentNode(id, parents);
 }
 
-bool ReparentingStrategy::reparentOnRemoval() const
+void ReparentingStrategy::removeNode(Id id)
+{
+    kDebug() << id;
+    m_model->removeNodeById(id);
+}
+
+
+bool ReparentingStrategy::reparentOnRemoval(Id) const
 {
     return mReparentOnRemoval;
 }
@@ -91,7 +98,7 @@ Id TestReparentingStrategy::getId(const QModelIndex &sourceChildIndex)
     return sourceChildIndex.data(IdRole).value<Id>();
 }
 
-IdList TestReparentingStrategy::getParents(const QModelIndex &sourceChildIndex)
+IdList TestReparentingStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList &ignore)
 {
     if (!sourceChildIndex.isValid()) {
         kWarning() << "invalid index";
@@ -103,6 +110,9 @@ IdList TestReparentingStrategy::getParents(const QModelIndex &sourceChildIndex)
     }
     const Id &parent = sourceChildIndex.data(ParentRole).value<Id>();
     if (parent < 0) {
+        return IdList();
+    }
+    if (ignore.contains(parent)) {
         return IdList();
     }
 
@@ -147,7 +157,7 @@ Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
     return mUidMapping.value(uid);
 }
 
-IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex)
+IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList &ignore)
 {
     Id id = getId(sourceChildIndex);
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
@@ -216,6 +226,15 @@ void TestParentStructureStrategy::init()
 
 }
 
+bool TestParentStructureStrategy::reparentOnRemoval(Id id) const
+{
+    if (id < 900) {
+        kDebug() << "reparent " << id;
+        return false;
+    }
+    return true;
+}
+
 
 Id TestParentStructureStrategy::getId(const QModelIndex &sourceChildIndex)
 {
@@ -245,7 +264,7 @@ Id TestParentStructureStrategy::getId(const QModelIndex &sourceChildIndex)
 //     return sourceChildIndex.data(TopicRole).toInt();
 }
 
-IdList TestParentStructureStrategy::getParents(const QModelIndex &sourceChildIndex)
+IdList TestParentStructureStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList &ignore)
 {
     Q_ASSERT(sourceChildIndex.isValid());
 
@@ -257,7 +276,9 @@ IdList TestParentStructureStrategy::getParents(const QModelIndex &sourceChildInd
         return IdList() << 997; //No Topics
     }
     const Id &parent = sourceChildIndex.data(TopicParentRole).value<Id>();
-
+    if (ignore.contains(parent)) {
+        return IdList() << 997; //No Topics
+    }
     return IdList() << parent;
 }
 
