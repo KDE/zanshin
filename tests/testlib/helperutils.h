@@ -3,6 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <KDebug>
+#include <Akonadi/EntityTreeModel>
 
 namespace Helper {
     void printModel(QAbstractItemModel *model, const QModelIndex &parent = QModelIndex(), int level = 0)
@@ -15,7 +16,7 @@ namespace Helper {
          }
          for(int q = 0; q < model->rowCount(parent); q++) {
              const QModelIndex &index = model->index(q, 0, parent);
-             kDebug() << prefix << index << index.data(Qt::DisplayRole) << model->columnCount(index);
+             kDebug() << prefix << index << index.data(Qt::DisplayRole) << model->columnCount(index) << index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url();
              if (model->hasChildren(index)) {
                  printModel(model, index, level+1);
              }

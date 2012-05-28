@@ -140,6 +140,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCollect
 
     QStandardItem *item = new QStandardItem(c.name);
     item->setData(QVariant::fromValue(col), Akonadi::EntityTreeModel::CollectionRole);
+    item->setData(QVariant::fromValue(col.id()), Akonadi::EntityTreeModel::CollectionIdRole);
     addCollectionMetadata(item);
     row << item;
 
@@ -150,6 +151,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCollect
     for (int i=0; i<4; i++) {
         item = new QStandardItem;
         item->setData(QVariant::fromValue(col), Akonadi::EntityTreeModel::CollectionRole);
+        item->setData(QVariant::fromValue(col.id()), Akonadi::EntityTreeModel::CollectionIdRole);
         row << item;
     }
 
