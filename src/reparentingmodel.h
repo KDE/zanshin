@@ -68,10 +68,11 @@ private:
      * Moves/adds/removes from parents.
      */
 //     void itemParentsChanged(const QModelIndex &sourceIndex, const IdList &parents);
-    void reparentNode(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
+    TodoNode *reparentNode(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
 
-    TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name, const QModelIndex &index = QModelIndex());
+    TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name = QString(), const QModelIndex &index = QModelIndex());
     void removeNode(TodoNode *node, bool removeChildren = false);
+    void renameNode(const Id& identifier, const QString& name);
     
     TodoNode *m_rootNode;
     QMap<Id, TodoNode*> m_parentMap;

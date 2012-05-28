@@ -48,7 +48,15 @@ TodoNode* ReparentingModel::createInbox() const
 }
 
 TodoNode *ReparentingModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name, const QModelIndex &sourceIndex)
-{    
+{
+    if (m_parentMap.contains(identifier)) { //We already have this item, we only need to update it
+        TodoNode *node = reparentNode(identifier, IdList() << parentIdentifier, sourceIndex);
+        if (!sourceIndex.isValid() && !name.isEmpty()) {
+            node->setData(name, 0, Qt::DisplayRole);
+        }
+        return node;
+    }
+    
 //     kDebug() << "add node" << name << identifier << parentIdentifier << sourceIndex;
     TodoNode* parentNode = 0;
     if (parentIdentifier >= 0) {
@@ -70,13 +78,13 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const Id &parentIde
     TodoNode *node;
     if (sourceIndex.isValid()) {
         node = new TodoNode(sourceIndex, parentNode);
+        //Don't set anything on real nodes
     } else { //For virtual nodes
         node = new TodoNode(parentNode);
         node->setData(name, 0, Qt::DisplayRole);
         node->setData(name, 0, Qt::EditRole);
+        //     m_strategy->setData(node, identifier);
     }
-    //TODO
-//     m_strategy->setData(node, identifier);
 
     Q_ASSERT(node);
     m_parentMap[identifier] = node;
@@ -118,12 +126,12 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
     endRemoveRows();
 }
 
-void ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QModelIndex &sourceIndex)
+TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QModelIndex &sourceIndex)
 {
     Q_ASSERT(!m_parentMap.values().contains(0));
     if (p < 0) {
         kWarning() << "invalid item";
-        return;
+        return 0;
     }
     kDebug() << p << parents << sourceIndex;
     //TODO handle multiple parents
@@ -137,7 +145,7 @@ void ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QM
         if ((parents.isEmpty() && !node->parent()) || (!parents.isEmpty() && (node->parent() == m_parentMap.value(parents.first())))) {
             kDebug() << "nothing changed";
             Q_ASSERT(!m_parentMap.values().contains(0));
-            return;
+            return 0;
         }
     }
     
@@ -159,6 +167,18 @@ void ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QM
     }
     Q_ASSERT(m_parentMap.contains(p));
     Q_ASSERT(!m_parentMap.values().contains(0));
+    return newNode;
+}
+
+void ReparentingModel::renameNode(const Id& identifier, const QString& name)
+{
+//     kDebug() << "renamed " << identifier << " to " << name;
+    TodoNode *node = m_parentMap[identifier];
+    node->setData(name, 0, Qt::DisplayRole);
+    node->setData(name, 0, Qt::EditRole);
+    const QModelIndex &begin = m_manager->indexForNode(node, 0);
+    const QModelIndex &end = m_manager->indexForNode(node, 0);
+    emit dataChanged(begin, end);
 }
 
 void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
@@ -174,6 +194,11 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
 
         Id id = m_strategy->getId(sourceChildIndex);
         IdList parents = m_strategy->getParents(sourceChildIndex);
+//         if (parents.isEmpty()) {
+//             createNode(id, -1);
+//         } else {
+//             createNode(id, parents.first());
+//         }
 //         kDebug() << "adding node: " << sourceChildIndex.data(Qt::DisplayRole).toString() << id << parents;
         //The item has already been inserted before, update and reparent
         if (m_parentMap.contains(id)) {
@@ -190,7 +215,7 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
 //                 kDebug() << "added node to parent: " << p;
                 TodoNode *parent = m_parentMap.value(p);
                 if (!parent) { //if the item is before the parent, the parent may not be existing yet.
-//                     kDebug() << "creating parent";
+                    kDebug() << "creating parent " << p;
                     createNode(p, -1, "unknown");
                     Q_ASSERT(m_parentMap.contains(p));
                     parent = m_parentMap.value(p);
