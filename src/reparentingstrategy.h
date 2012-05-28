@@ -33,6 +33,7 @@ class ReparentingStrategy
 {
 public:
     ReparentingStrategy();
+    virtual ~ReparentingStrategy(){};
     virtual void init() {};
     /// Get the id for an object
     virtual Id getId(const QModelIndex &/*sourceChildIndex*/) = 0;
@@ -92,7 +93,7 @@ public:
 private:
     QHash<QString, Id> mUidMapping;
     QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
-    Id mInbox = 1;
+    const Id mInbox;
 };
 
 #endif // REPARENTINGSTRATEGY_H

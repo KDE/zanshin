@@ -100,7 +100,8 @@ IdList TestReparentingStrategy::getParents(const QModelIndex &sourceChildIndex)
 
 
 ProjectStrategy::ProjectStrategy()
-:   ReparentingStrategy()
+:   ReparentingStrategy(),
+    mInbox(1)
 {
     mIdCounter = 2;
     mReparentOnRemoval = false;
