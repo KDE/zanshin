@@ -62,6 +62,7 @@ private slots:
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
 
 private:
+    friend ReparentingStrategy;
     virtual void init();
     virtual TodoNode *createInbox() const;
 
@@ -71,20 +72,16 @@ private:
      * Moves/adds/removes from parents.
      */
 //     void itemParentsChanged(const QModelIndex &sourceIndex, const IdList &parents);
-    void reparentParent(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
-    /**
-     * Renames @param parent
-     */
-    void renameParent(const Id &id, const QString &name);
+    void reparentNode(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
 
     TodoNode *createNode(const Id &identifier, const Id &parentIdentifier, const QString &name, const QModelIndex &index = QModelIndex());
-//     void removeNode(const Id &identifier);
-
-    void removeNode(TodoNode *node);
+    void removeNode(TodoNode *node, bool removeChildren = false);
+    
     TodoNode *m_rootNode;
     QMap<Id, TodoNode*> m_parentMap;
 
     QScopedPointer<ReparentingStrategy> m_strategy;
+    bool m_reparentOnRemoval;
 };
 
 #endif // REPARENTINGMODEL_H

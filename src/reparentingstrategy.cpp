@@ -19,18 +19,20 @@
 
 
 #include "reparentingstrategy.h"
+#include "globaldefs.h"
+#include "reparentingmodel.h"
+#include "todonode.h"
+#include <klocalizedstring.h>
+#include <KIcon>
 
-IdList ReparentingStrategy::onSourceInsertRow(const QModelIndex& )
+ReparentingStrategy::ReparentingStrategy()
+:   mReparentOnRemoval(true)
 {
-    return IdList();
+
 }
 
-IdList ReparentingStrategy::onSourceDataChanged(const QModelIndex& )
-{
-    return IdList();
-}
 
-IdList ReparentingStrategy::getParents(const qint64 )
+IdList ReparentingStrategy::getParents(const QModelIndex & )
 {
     return IdList();
 }
@@ -38,6 +40,26 @@ IdList ReparentingStrategy::getParents(const qint64 )
 void ReparentingStrategy::onNodeRemoval(const qint64& changed)
 {
 
+}
+
+void ReparentingStrategy::setModel(ReparentingModel* model)
+{
+    m_model = model;
+}
+
+Id ReparentingStrategy::getNextId()
+{
+    return mIdCounter++;
+}
+
+TodoNode *ReparentingStrategy::createNode(Id id, Id pid, QString name)
+{
+    return m_model->createNode(id, pid, name);
+}
+
+bool ReparentingStrategy::reparentOnRemoval() const
+{
+    return mReparentOnRemoval;
 }
 
 
@@ -56,8 +78,7 @@ Id TestReparentingStrategy::getId(const QModelIndex &sourceChildIndex)
     return sourceChildIndex.data(IdRole).value<Id>();
 }
 
-
-IdList TestReparentingStrategy::onSourceInsertRow(const QModelIndex &sourceChildIndex)
+IdList TestReparentingStrategy::getParents(const QModelIndex &sourceChildIndex)
 {
     if (!sourceChildIndex.isValid()) {
         kWarning() << "invalid index";
@@ -75,26 +96,80 @@ IdList TestReparentingStrategy::onSourceInsertRow(const QModelIndex &sourceChild
     return IdList() << parent;
 }
 
-IdList TestReparentingStrategy::onSourceDataChanged(const QModelIndex &sourceIndex)
+
+
+ProjectStrategy::ProjectStrategy()
 {
-    return onSourceInsertRow(sourceIndex);
+    mIdCounter = 2;
+    mReparentOnRemoval = false;
+}
+
+void ProjectStrategy::init()
+{
+    ReparentingStrategy::init();
+    TodoNode *node = createNode(mInbox, -1, "Inbox");
+    node->setData(i18n("Inbox"), 0, Qt::DisplayRole);
+    node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
+    node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 }
 
 
-// void TestReparentingStrategy::addParent(const Id& identifier, const Id& parentIdentifier, const QString& name)
-// {
-//     kDebug() << identifier << parentIdentifier << name;
-// //     m_model->createOrUpdateParent(identifier, parentIdentifier, name);
-// }
-// 
-// void TestReparentingStrategy::setParent(const QModelIndex &item, const qint64& parentIdentifier)
-// {
-// //     m_model->itemParentsChanged(item, ParentStructureModel::IdList() << parentIdentifier);
-// }
-// 
-// 
-// void TestReparentingStrategy::removeParent(const ParentStructureModel::Id& identifier)
-// {
-// //     m_model->removeNode(identifier);
-// }
+Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
+{
+    Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
+    if (type==Zanshin::Collection) {
+        Akonadi::Collection::Id id = sourceChildIndex.data(Akonadi::EntityTreeModel::CollectionIdRole).value<Akonadi::Collection::Id>();
+        if (!mCollectionMapping.contains(id)) {
+            mCollectionMapping.insert(id, getNextId());
+        }
+//         kDebug() << "collection id: " << id << mCollectionMapping.value(id);
+        return mCollectionMapping.value(id);
+    }
+    const QString &uid = sourceChildIndex.data(Zanshin::UidRole).toString();
+    if (!mUidMapping.contains(uid)) {
+        mUidMapping.insert(uid, getNextId());
+    }
+    return mUidMapping.value(uid);
+}
+
+IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex)
+{
+    Id id = getId(sourceChildIndex);
+    Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
+//     kDebug() << id << type;
+    if (type==Zanshin::Collection) {
+        const QModelIndex &parent = sourceChildIndex.parent();
+        if (parent.isValid()) {
+            return IdList() << getId(parent);
+        }
+        return IdList();
+    }
+    const QString &parentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
+//     kDebug() << parentUid;
+    if (type==Zanshin::ProjectTodo && parentUid.isEmpty()) {
+//         kDebug() << "get source parent";
+        const QModelIndex &parent = sourceChildIndex.parent();
+        if (parent.isValid()) {
+            return IdList() << getId(parent);
+        }
+        return IdList();
+    } else if (type==Zanshin::StandardTodo && parentUid.isEmpty()) {
+        return IdList() << mInbox;
+    }
+//     Q_ASSERT(type==Zanshin::StandardTodo);
+    if (!mUidMapping.contains(parentUid)) {
+        mUidMapping.insert(parentUid, getNextId());
+       
+    }
+    return IdList() << mUidMapping.value(parentUid);
+}
+
+void ProjectStrategy::reset()
+{
+    mIdCounter = 2;
+    mUidMapping.clear();
+    mCollectionMapping.clear();
+    
+}
+
 

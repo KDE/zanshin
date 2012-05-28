@@ -27,20 +27,33 @@
 
 typedef qint64 Id;
 typedef QList<qint64> IdList;
-
+class ReparentingModel;
+class TodoNode;
 class ReparentingStrategy
 {
 public:
+    ReparentingStrategy();
+    virtual void init() {};
     /// Get the id for an object
     virtual Id getId(const QModelIndex &/*sourceChildIndex*/) = 0;
     /// Get parents
-    virtual IdList onSourceInsertRow(const QModelIndex &/*sourceChildIndex*/);
-    //Called whenever the item has changed, to reevaluate the parents
-    virtual IdList onSourceDataChanged(const QModelIndex &/*changed*/);
-    //Called whenever a parentNode is removed by removeNode(). (I.e. to cleanup the internals)
+    virtual IdList getParents(const QModelIndex &);
+
     virtual void onNodeRemoval(const qint64 &changed);
 
-    virtual IdList getParents(const qint64);
+    virtual void reset(){};
+
+    void setModel(ReparentingModel *model);
+
+    bool reparentOnRemoval() const;
+
+protected:
+    TodoNode *createNode(Id id, Id pid, QString name);
+    Id getNextId();
+    Id mIdCounter;
+    bool mReparentOnRemoval;
+private:
+    ReparentingModel *m_model;
     
 };
 
@@ -51,8 +64,7 @@ public:
     enum Roles {
         First = Akonadi::EntityTreeModel::TerminalUserRole,
         IdRole,
-        ParentRole, //For items and topics
-//         NameRole
+        ParentRole
     };
 
     explicit TestReparentingStrategy();
@@ -63,9 +75,24 @@ public:
 //     void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
 
     virtual Id getId(const QModelIndex& );
-    virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
-    virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed);
+    virtual IdList getParents(const QModelIndex &);
 
+};
+
+
+
+class ProjectStrategy : public ReparentingStrategy
+{
+public:
+    ProjectStrategy();
+    virtual void init();
+    virtual Id getId(const QModelIndex& );
+    virtual IdList getParents(const QModelIndex&);
+    virtual void reset();
+private:
+    QHash<QString, Id> mUidMapping;
+    QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
+    Id mInbox = 1;
 };
 
 #endif // REPARENTINGSTRATEGY_H
