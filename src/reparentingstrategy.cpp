@@ -53,10 +53,10 @@ Id ReparentingStrategy::getNextId()
     return mIdCounter++;
 }
 
-TodoNode *ReparentingStrategy::createNode(Id id, Id pid, QString name)
+TodoNode *ReparentingStrategy::createNode(Id id, IdList parents, QString name)
 {
-    kDebug() << id << pid << name;
-    return m_model->createNode(id, pid, name);
+    kDebug() << id << parents << name;
+    return m_model->createNode(id, parents, name);
 }
 
 void ReparentingStrategy::renameNode(Id id, QString name)
@@ -132,7 +132,7 @@ ProjectStrategy::ProjectStrategy()
 void ProjectStrategy::init()
 {
     ReparentingStrategy::init();
-    TodoNode *node = createNode(mInbox, -1, "Inbox");
+    TodoNode *node = createNode(mInbox, IdList(), "Inbox");
     node->setData(i18n("Inbox"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
@@ -213,12 +213,12 @@ TestParentStructureStrategy::TestParentStructureStrategy(QObject* parent)
 void TestParentStructureStrategy::init()
 {
     ReparentingStrategy::init();
-    TodoNode *node = createNode(997, -1, "No Topic");
+    TodoNode *node = createNode(997, IdList(), "No Topic");
     node->setData(i18n("No Topic"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 
-    TodoNode *node2 = createNode(998, -1, "Topics");
+    TodoNode *node2 = createNode(998, IdList(), "Topics");
     node2->setData(i18n("Topics"), 0, Qt::DisplayRole);
     node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
     node2->setRowData(Zanshin::TopicRoot, Zanshin::ItemTypeRole);
@@ -288,7 +288,7 @@ void TestParentStructureStrategy::addParent(Id identifier, Id parentIdentifier, 
     if (parentIdentifier < 0 ) {
         parentIdentifier = 998;
     }
-    createNode(identifier, parentIdentifier, name);
+    createNode(identifier, IdList() << parentIdentifier, name);
 }
 
 void TestParentStructureStrategy::setParent(const QModelIndex &item, const qint64& parentIdentifier)

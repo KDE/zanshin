@@ -47,8 +47,12 @@ TodoNode* ReparentingModel::createInbox() const
     return 0;
 }
 
-TodoNode *ReparentingModel::createNode(const Id &identifier, const Id &parentIdentifier, const QString &name, const QModelIndex &sourceIndex)
+TodoNode *ReparentingModel::createNode(const Id &identifier, const IdList &parents, const QString &name, const QModelIndex &sourceIndex)
 {
+    Id parentIdentifier = -1;
+    if (!parents.isEmpty()) {
+        parentIdentifier = parents.first();
+    }
     if (m_parentMap.contains(identifier)) { //We already have this node, we only need to update it
         TodoNode *node = reparentNode(identifier, IdList() << parentIdentifier, sourceIndex);
         if (!sourceIndex.isValid() && !name.isEmpty()) {
@@ -56,13 +60,18 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const Id &parentIde
         }
         return node;
     }
+
+    Id parentIdentifier = -1;
+    if (!parents.isEmpty()) {
+        parentIdentifier = parents.first();
+    }
     
 //     kDebug() << "add node" << name << identifier << parentIdentifier << sourceIndex;
     TodoNode* parentNode = 0;
     if (parentIdentifier >= 0) {
         if (!m_parentMap.contains(parentIdentifier)) {
 //             kDebug() << "creating missing parent: " << parentIdentifier;
-            createNode(parentIdentifier, -1, "unknown");
+            createNode(parentIdentifier, IdList(), "unknown");
         }
         Q_ASSERT(m_parentMap.contains(parentIdentifier));
         parentNode = m_parentMap.value(parentIdentifier);
@@ -171,12 +180,7 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
     //remove node from any current parent
     removeNode(node, false);
 
-    TodoNode *newNode;
-    if (parents.isEmpty()) {
-        newNode = createNode(p, -1, name, sourceIndex);
-    } else {
-        newNode = createNode(p, parents.first(), name, sourceIndex);
-    }
+    TodoNode *newNode = createNode(p, parents, name, sourceIndex);
     
     foreach (TodoNode* child, children) {
         child->setParent(newNode);
@@ -211,11 +215,7 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
         Id id = m_strategy->getId(sourceChildIndex);
         IdList parents = m_strategy->getParents(sourceChildIndex);
         bool replace = m_parentMap.contains(id);
-        if (parents.isEmpty()) {
-            createNode(id, -1, QString(), sourceChildIndex);
-        } else {
-            createNode(id, parents.first(), QString(), sourceChildIndex);
-        }
+        createNode(id, parents, QString(), sourceChildIndex);
 
         //Insert children too
         if (!replace && sourceModel()->hasChildren(sourceChildIndex)) {

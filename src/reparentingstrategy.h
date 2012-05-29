@@ -46,10 +46,11 @@ public:
 
     void setModel(ReparentingModel *model);
 
-    virtual bool reparentOnRemoval(Id) const;
+    ///Return true if @param child should be reparented on parent removal
+    virtual bool reparentOnRemoval(Id child) const;
 
 protected:
-    virtual TodoNode *createNode(Id id, Id pid, QString name);
+    virtual TodoNode *createNode(Id id, IdList pid, QString name);
     void removeNode(Id id);
     void updateParents(Id id, IdList parents);
     void renameNode(Id id, QString name);
@@ -57,7 +58,7 @@ protected:
     Id getNextId();
     Id mIdCounter;
     bool mReparentOnRemoval;
-private:
+
     ReparentingModel *m_model;
     
 };
@@ -73,11 +74,6 @@ public:
     };
 
     explicit TestReparentingStrategy();
-
-//     void addParent(const qint64 &identifier, const qint64 &parentIdentifier, const QString &name);
-//     void setParent(const QModelIndex &item, const qint64 &parentIdentifier);
-//     void removeParent(const qint64 &identifier);
-//     void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
 
     virtual Id getId(const QModelIndex& );
     virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
@@ -118,9 +114,6 @@ public:
     void setParent(const QModelIndex &item, const qint64 &parentIdentifier);
     void removeParent(const qint64 &identifier);
     void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
-/*
-    virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
-    virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed);*/
 
     virtual bool reparentOnRemoval(Id ) const;
 
