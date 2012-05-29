@@ -43,6 +43,8 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include "parentstructuremodel.h"
 #include "pimitemmodel.h"
+#include "reparentingmodel.h"
+#include "reparentingstrategy.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -110,7 +112,8 @@ QAbstractItemModel *ModelStack::collectionsModel()
 QAbstractItemModel *ModelStack::treeModel()
 {
     if (!m_treeModel) {
-        TodoTreeModel *treeModel = new TodoTreeModel(this);
+//         TodoTreeModel *treeModel = new TodoTreeModel(this);
+        ReparentingModel *treeModel = new ReparentingModel(new ProjectStrategy());
         treeModel->setSourceModel(baseModel());
         m_treeModel = treeModel;
     }
@@ -262,7 +265,8 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
 QAbstractItemModel *ModelStack::topicsTreeModel()
 {
     if (!m_topicsTreeModel) {
-        ParentStructureModel *treeModel = new ParentStructureModel(new NepomukParentStructureStrategy(this), this);
+//         ParentStructureModel *treeModel = new ParentStructureModel(new NepomukParentStructureStrategy(this), this);
+        ReparentingModel *treeModel = new ReparentingModel(new NepomukParentStructureStrategy(), this);
         treeModel->setSourceModel(knowledgeBaseModel());
         m_topicsTreeModel = treeModel;
     }

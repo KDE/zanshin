@@ -22,12 +22,36 @@
 #include "globaldefs.h"
 #include "reparentingmodel.h"
 #include "todonode.h"
+#include <pimitem.h>
+#include <tagmanager.h>
 #include <klocalizedstring.h>
 #include <KIcon>
 
+#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk/Query/Query>
+#include <Nepomuk/Resource>
+#include <nepomuk/resourcetypeterm.h>
+#include <Soprano/Vocabulary/NAO>
+#include <queries.h>
+#include <pimitem.h>
+#include <tagmanager.h>
+#include "globaldefs.h"
+#include <Nepomuk/Query/Query>
+#include <Nepomuk/Query/QueryServiceClient>
+#include <Nepomuk/Query/Result>
+#include <Nepomuk/Types/Class>
+#include <Nepomuk/Resource>
+#include <Nepomuk/Vocabulary/PIMO>
+#include <KDebug>
+#include <nepomuk/resourcetypeterm.h>
+#include <nepomuk/resourcewatcher.h>
+#include <Soprano/Vocabulary/NAO>
+#include <QMimeData>
+
 ReparentingStrategy::ReparentingStrategy()
 :   mReparentOnRemoval(true),
-    mIdCounter(0)
+    mMinIdCounter(10),
+    mIdCounter(mMinIdCounter)
 {
 
 }
@@ -52,6 +76,17 @@ Id ReparentingStrategy::getNextId()
 {
     return mIdCounter++;
 }
+
+void ReparentingStrategy::setMinId(Id id)
+{
+    mMinIdCounter = id;
+}
+
+void ReparentingStrategy::reset()
+{
+    mIdCounter = mMinIdCounter;
+}
+
 
 TodoNode *ReparentingStrategy::createNode(Id id, IdList parents, QString name)
 {
@@ -125,7 +160,6 @@ ProjectStrategy::ProjectStrategy()
 :   ReparentingStrategy(),
     mInbox(1)
 {
-    mIdCounter = 2;
     mReparentOnRemoval = false;
 }
 
@@ -191,10 +225,9 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
 
 void ProjectStrategy::reset()
 {
-    mIdCounter = 2;
     mUidMapping.clear();
     mCollectionMapping.clear();
-    
+    ReparentingStrategy::reset();
 }
 
 
@@ -204,10 +237,9 @@ void ProjectStrategy::reset()
 
 
 
-TestParentStructureStrategy::TestParentStructureStrategy(QObject* parent)
+TestParentStructureStrategy::TestParentStructureStrategy()
 : ReparentingStrategy()
 {
-    mIdCounter = 3;
 }
 
 void TestParentStructureStrategy::init()
@@ -222,8 +254,6 @@ void TestParentStructureStrategy::init()
     node2->setData(i18n("Topics"), 0, Qt::DisplayRole);
     node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
     node2->setRowData(Zanshin::TopicRoot, Zanshin::ItemTypeRole);
-
-
 }
 
 bool TestParentStructureStrategy::reparentOnRemoval(Id id) const
@@ -302,20 +332,40 @@ void TestParentStructureStrategy::removeParent(const Id& identifier)
     removeNode(identifier);
 }
 
+// InboxStrategy::InboxStrategy(const QString& inboxName, const QString& rootName)
+// {
+// 
+// }
+// 
+// void InboxStrategy::init()
+// {
+//     ReparentingStrategy::init();
+// }
 
-#if 0
-NepomukParentStructureStrategy::NepomukParentStructureStrategy(QObject* parent)
-:
-    QObject(parent),
-    ParentStructureStrategy(),
-    m_counter(0),
+
+NepomukParentStructureStrategy::NepomukParentStructureStrategy()
+:   QObject(),
+    ReparentingStrategy(),
     m_queryServiceClient(0),
+    mInbox(1),
+    mRoot(2)
 {
     setType(Nepomuk::Vocabulary::PIMO::Topic());
 }
 
 void NepomukParentStructureStrategy::init()
 {
+    ReparentingStrategy::init();
+    TodoNode *node = createNode(mInbox, IdList(), "No Topic");
+    node->setData(i18n("No Topic"), 0, Qt::DisplayRole);
+    node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
+    node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
+
+    TodoNode *node2 = createNode(mRoot, IdList(), "Topics");
+    node2->setData(i18n("Topics"), 0, Qt::DisplayRole);
+    node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
+    node2->setRowData(Zanshin::TopicRoot, Zanshin::ItemTypeRole);
+    
     if (m_queryServiceClient) {
         disconnect(m_queryServiceClient, 0, 0, 0);
         m_queryServiceClient->deleteLater();
@@ -339,7 +389,6 @@ void NepomukParentStructureStrategy::init()
 void NepomukParentStructureStrategy::setType(const QUrl &type)
 {
     m_type = type;
-
 }
 
 void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::Result > &results)
@@ -364,7 +413,7 @@ void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::R
 
 void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, const QUrl &parent)
 {
-//     kDebug() << "add topic" << topic.label() << topic.uri() << parent;
+    kDebug() << "add topic" << topic.label() << topic.uri() << parent;
     if (parent.isValid() && !m_topicMap.contains(parent)) {
         addParent(parent);
     }
@@ -389,23 +438,26 @@ void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, 
     if (m_topicMap.contains(topic.resourceUri())) {
         id = m_topicMap[topic.resourceUri()];
     } else {
-        id = m_counter++;
+        id = getNextId();
         m_topicMap.insert(topic.resourceUri(), id);
     }
-    qint64 pid = -1;
+    Q_ASSERT(id >= 0);
+    IdList parents;
     if (m_topicMap.contains(parent)) {
-        pid = m_topicMap[parent];
+        parents << m_topicMap[parent];
+    } else {
+        parents << mRoot;
     }
-    createNode(id, pid, topic.label());
+    createNode(id, parents, topic.label());
 }
 
 void NepomukParentStructureStrategy::onNodeRemoval(const qint64& id)
 {
 //     kDebug() << id;
-    const QUrl &targetTopic = m_topicMap.key(id);
-    if (targetTopic.isValid()) {
-        NepomukUtils::deleteTopic(targetTopic); //TODO delete subtopics with subresource handling?
-    }
+//     const QUrl &targetTopic = m_topicMap.key(id);
+//     if (targetTopic.isValid()) {
+//         NepomukUtils::deleteTopic(targetTopic); //TODO delete subtopics with subresource handling?
+//     }
 }
 
 
@@ -416,7 +468,7 @@ void NepomukParentStructureStrategy::removeResult(const QList<QUrl> &results)
 //         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(m_type)) {
             Q_ASSERT(m_topicMap.contains(res.resourceUri()));
-            m_model->removeNode(m_topicMap.take(res.resourceUri())); //We remove it right here, because otherwise we would try to remove the topic again in onNodeRemoval
+            removeNode(m_topicMap.take(res.resourceUri())); //We remove it right here, because otherwise we would try to remove the topic again in onNodeRemoval
             m_guardMap.take(res.resourceUri())->deleteLater();
         } else {
             kWarning() << "unknown result " << res.types();
@@ -429,15 +481,13 @@ void NepomukParentStructureStrategy::queryFinished()
     kWarning();
 }
 
-
 void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
 {
     const QUrl &parent = sender()->property("resourceuri").toUrl();
 //     kDebug() << parent;
 
-    QModelIndexList list;
     foreach (const Nepomuk::Query::Result &result, results) {
-        Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
+        const Nepomuk::Resource &res = Nepomuk::Resource(result.resource().resourceUri());
 //         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
         if (!item.isValid()) {
@@ -452,29 +502,41 @@ void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk::Qu
             kWarning() << "item not found" << item.url() << m_topicMap[parent];
             continue;
         }
-        list.append(indexes.first()); //TODO hanle all
-        updateParents(indexes.first(), m_topicCache.value(item.url()));
+
+        updateParents(getId(indexes.first()), m_topicCache.value(item.url())); //TODO handle all
     }
 }
 
-QList< qint64 > NepomukParentStructureStrategy::onSourceInsertRow(const QModelIndex& sourceChildIndex)
+Id NepomukParentStructureStrategy::getId(const QModelIndex &sourceIndex)
+{
+    const Akonadi::Item &item = sourceIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    if (!m_itemIdMap.contains(item.id())) {
+        m_itemIdMap.insert(item.id(), getNextId());
+    }
+    kWarning() << item.url() << m_itemIdMap.value(item.id());
+    return m_itemIdMap.value(item.id());
+}
+
+IdList NepomukParentStructureStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
 {
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 //     kDebug() << item.url() << m_topicCache.value(item.url());
-    return m_topicCache.value(item.url());
-//     return ParentStructureStrategy::onSourceInsertRow(sourceChildIndex);
+    Q_ASSERT(item.isValid());
+    IdList parents = m_topicCache.value(item.url());
+    foreach(Id i, ignore) {
+        parents.removeAll(i);
+    }
+    if (parents.isEmpty()) {
+        parents << mInbox;
+    }
+    return parents;
 }
 
-QList< qint64 > NepomukParentStructureStrategy::onSourceDataChanged(const QModelIndex& changed)
-{
-    return onSourceInsertRow(changed);
-}
 
 void NepomukParentStructureStrategy::itemsFromTopicRemoved(const QList<QUrl> &items)
 {
     const QUrl &topic = sender()->property("topic").toUrl();
     kDebug() << "removing nodes from topic: " << topic;
-    QModelIndexList list;
     foreach (const QUrl &uri, items) {
         Nepomuk::Resource res = Nepomuk::Resource(uri);
         const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
@@ -488,8 +550,7 @@ void NepomukParentStructureStrategy::itemsFromTopicRemoved(const QList<QUrl> &it
             kDebug() << "item not found" << item.url();
             continue;
         }
-        list.append(indexes.first()); //TODO handle all
-        updateParents(indexes.first(), m_topicCache.value(item.url()));
+        updateParents(getId(indexes.first()), m_topicCache.value(item.url())); //TODO handle all
     }
 }
 
@@ -511,7 +572,6 @@ bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Q
     if (id >= 0) {
         //kDebug() << "dropped on item " << data(parent, UriRole) << data(parent, Qt::DisplayRole).toString();
         targetTopic = m_topicMap.key(id);
-
     }
 
     if (!mimeData->hasUrls()) {
@@ -534,7 +594,6 @@ bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Q
             kDebug() << "remove all topics from item:" << item.url();
             NepomukUtils::removeAllTopics(item);
         }
-
     }
     return true;
 }
@@ -561,9 +620,7 @@ void NepomukParentStructureStrategy::reset()
     m_topicCache.clear();
     m_topicMap.clear();
     m_guardMap.clear();
-    m_counter = 0;
-    ParentStructureStrategy::reset();
+    ReparentingStrategy::reset();
 }
 
-#endif
 

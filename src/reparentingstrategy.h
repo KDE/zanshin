@@ -22,7 +22,15 @@
 #define REPARENTINGSTRATEGY_H
 #include <QList>
 #include <QModelIndex>
+#include <Nepomuk/Resource>
+#include <Nepomuk/Query/Result>
 #include <Akonadi/EntityTreeModel>
+
+namespace Nepomuk {
+namespace Query {
+class QueryServiceClient;
+}
+}
 
 
 typedef qint64 Id;
@@ -42,12 +50,17 @@ public:
 
     virtual void onNodeRemoval(const Id &changed);
 
-    virtual void reset(){};
+    virtual void reset();
 
     void setModel(ReparentingModel *model);
 
     ///Return true if @param child should be reparented on parent removal
     virtual bool reparentOnRemoval(Id child) const;
+
+    /**
+     * Set data on a virtual node
+     */
+    virtual void setData(TodoNode* node, qint64 id) {};
 
 protected:
     virtual TodoNode *createNode(Id id, IdList pid, QString name);
@@ -56,17 +69,24 @@ protected:
     void renameNode(Id id, QString name);
     
     Id getNextId();
-    Id mIdCounter;
+    /**
+     * Set number of reserved id's for internal use (default is 10)
+     *
+     * Get id will never be used for those
+     **/
+    void setMinId(Id);
     bool mReparentOnRemoval;
 
     ReparentingModel *m_model;
-    
+private:
+    Id mMinIdCounter;
+    Id mIdCounter;
+
 };
 
 class TestReparentingStrategy : public ReparentingStrategy
 {
 public:
-
     enum Roles {
         First = Akonadi::EntityTreeModel::TerminalUserRole,
         IdRole,
@@ -77,7 +97,6 @@ public:
 
     virtual Id getId(const QModelIndex& );
     virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
-
 };
 
 
@@ -97,6 +116,15 @@ private:
 };
 
 
+// class InboxStrategy : public ReparentingStrategy
+// {
+// protected:
+//     InboxStrategy(const QString &inboxName, const QString &rootName);
+//     virtual void init();
+//     const Id mInbox;
+//     const Id mRoot;
+// };
+
 class TestParentStructureStrategy : public ReparentingStrategy
 {
 public:
@@ -104,11 +132,10 @@ public:
     enum Roles {
         First = Akonadi::EntityTreeModel::TerminalUserRole,
         TopicRole,
-        TopicParentRole, //For items and topics
-        TopicNameRole
+        TopicParentRole
     };
 
-    explicit TestParentStructureStrategy(QObject* parent = 0);
+    explicit TestParentStructureStrategy();
 
     void addParent(qint64 identifier, qint64 parentIdentifier, const QString &name);
     void setParent(const QModelIndex &item, const qint64 &parentIdentifier);
@@ -121,48 +148,50 @@ public:
     virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
 
     virtual void init();
-
 };
 
-// class NepomukParentStructureStrategy : public QObject, public ParentStructureStrategy
-// {
-//     Q_OBJECT
-// public:
-//     explicit NepomukParentStructureStrategy(QObject* parent = 0);
-// 
-//     virtual void init();
-// 
-//     //Set the basic query
-//     virtual void setType(const QUrl &);
-// 
-//     virtual QList<qint64> onSourceInsertRow(const QModelIndex &sourceChildIndex);
-//     virtual QList<qint64> onSourceDataChanged(const QModelIndex &changed);
-//     virtual void onNodeRemoval(const qint64& changed);
-//     virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id);
-//     virtual bool onSetData(qint64 id, const QVariant &value, int role);
-// 
-//     virtual void setData(TodoNode* node, qint64 id);
-// 
-//     virtual void reset();
-// 
-// private slots:
-//     void checkResults(const QList<Nepomuk::Query::Result> &);
-//     void removeResult(const QList<QUrl> &);
-//     void queryFinished();
-// 
-//     void itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results);
-//     void itemsFromTopicRemoved(const QList<QUrl> &items);
-//     void propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value);
-// 
-// private:
-//     void addParent (const Nepomuk::Resource& topic, const QUrl &parent = QUrl());
-//     Nepomuk::Query::QueryServiceClient *m_queryServiceClient;
-//     QMap<QUrl, QObject*> m_guardMap;
-//     QMap<QUrl, qint64> m_topicMap;
-//     QMap<QUrl, QList<qint64> > m_topicCache; //cache akonadi item uris and their topics
-//     QUrl m_type;
-//     qint64 m_counter;
-// 
-// };
+class NepomukParentStructureStrategy : public QObject, public ReparentingStrategy
+{
+    Q_OBJECT
+public:
+    explicit NepomukParentStructureStrategy();
+
+    virtual void init();
+
+    //Set the basic query
+    virtual void setType(const QUrl &);
+
+    virtual Id getId(const QModelIndex& );
+    virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
+    virtual void onNodeRemoval(const qint64& changed);
+    
+    virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id);
+    virtual bool onSetData(qint64 id, const QVariant &value, int role);
+
+    virtual void setData(TodoNode* node, qint64 id);
+
+    virtual void reset();
+
+private slots:
+    void checkResults(const QList<Nepomuk::Query::Result> &);
+    void removeResult(const QList<QUrl> &);
+    void queryFinished();
+
+    void itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results);
+    void itemsFromTopicRemoved(const QList<QUrl> &items);
+    void propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value);
+
+private:
+    void addParent (const Nepomuk::Resource& topic, const QUrl &parent = QUrl());
+    Nepomuk::Query::QueryServiceClient *m_queryServiceClient;
+    QMap<QUrl, QObject*> m_guardMap;
+    QMap<QUrl, Id> m_topicMap;
+    QMap<Akonadi::Item::Id, Id> m_itemIdMap;
+    QMap<QUrl, QList<Id> > m_topicCache; //cache akonadi item uris and their topics
+    QUrl m_type;
+    Id mInbox;
+    Id mRoot;
+
+};
 
 #endif // REPARENTINGSTRATEGY_H

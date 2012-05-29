@@ -112,7 +112,7 @@ private slots:
         //Source model
         QStandardItemModel source;
 
-        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
 
         ReparentingModel categoriesModel(testadapter, this);
                 
@@ -191,7 +191,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
         ReparentingModel categoriesModel(testadapter, this);
         
@@ -298,7 +298,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
         ReparentingModel categoriesModel(testadapter, this);
         
@@ -397,7 +397,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
         ReparentingModel categoriesModel(testadapter, this);
         
@@ -481,7 +481,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
         ReparentingModel categoriesModel(testadapter, this);
         
@@ -581,7 +581,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
         ReparentingModel categoriesModel(testadapter, this);
         
@@ -676,7 +676,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         
-        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy(this);
+        TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
         ReparentingModel categoriesModel(testadapter, this);
         
