@@ -269,4 +269,48 @@ void ReparentingModel::resetInternalData()
 }
 
 
+QStringList ReparentingModel::mimeTypes() const
+{
+    QStringList list = QAbstractItemModel::mimeTypes();
+    list.append(m_strategy->mimeTypes());
+    return list;
+}
 
+Qt::ItemFlags ReparentingModel::flags(const QModelIndex& index) const
+{
+    if (!index.isValid()) {
+        return Qt::NoItemFlags;
+    }
+    return m_strategy->flags(index, TodoProxyModelBase::flags(index));
+}
+
+
+
+Qt::DropActions ReparentingModel::supportedDropActions() const
+{
+    if (!sourceModel()) {
+        return Qt::IgnoreAction;
+    }
+    return sourceModel()->supportedDropActions();
+}
+
+bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+{
+    const QModelIndex &i = index(row, column, parent);
+    TodoNode *node = m_manager->nodeForIndex(i);
+    Q_ASSERT(node && m_parentMap.values().contains(node));
+    return m_strategy->onDropMimeData(m_parentMap.key(node), mimeData, action);
+}
+
+bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (role!=Qt::EditRole || !index.isValid()) {
+        return TodoProxyModelBase::setData(index, value, role);
+    }
+    TodoNode *node = m_manager->nodeForIndex(index);
+    Q_ASSERT(node && m_parentMap.values().contains(node));
+    if (m_strategy->onSetData(m_parentMap.key(node), value, role)) {
+        return true;
+    }
+    return TodoProxyModelBase::setData(index, value, role);
+}

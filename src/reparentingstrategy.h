@@ -60,7 +60,13 @@ public:
     /**
      * Set data on a virtual node
      */
-    virtual void setData(TodoNode* node, qint64 id) {};
+    virtual void setData(TodoNode* node, Id id) {};
+
+    virtual QStringList mimeTypes() { return QStringList(); };
+    virtual Qt::ItemFlags flags(const QModelIndex &index, Qt::ItemFlags flags) {return flags;};
+    
+    virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction ){ return false; };
+    virtual bool onSetData(Id id, const QVariant &value, int role) { return false; };
 
 protected:
     virtual TodoNode *createNode(Id id, IdList pid, QString name);
@@ -165,12 +171,16 @@ public:
     virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
     virtual void onNodeRemoval(const qint64& changed);
     
-    virtual bool onDropMimeData(const QMimeData* mimeData, Qt::DropAction action, qint64 id);
-    virtual bool onSetData(qint64 id, const QVariant &value, int role);
+    virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
+    virtual bool onSetData(Id id, const QVariant &value, int role);
 
     virtual void setData(TodoNode* node, qint64 id);
 
     virtual void reset();
+
+    virtual QStringList mimeTypes();
+    virtual Qt::ItemFlags flags(const QModelIndex &index, Qt::ItemFlags);
+    
 
 private slots:
     void checkResults(const QList<Nepomuk::Query::Result> &);

@@ -40,14 +40,14 @@ class ReparentingModel : public TodoProxyModelBase
 public:
     ReparentingModel(ReparentingStrategy *strategy, QObject *parent = 0);
     virtual ~ReparentingModel();
-/*
+
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     //virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
     virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     virtual QStringList mimeTypes() const;
     virtual Qt::DropActions supportedDropActions() const;
 
-    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);*/
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 protected:
     virtual void resetInternalData();

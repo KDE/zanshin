@@ -566,7 +566,7 @@ void NepomukParentStructureStrategy::propertyChanged(const Nepomuk::Resource &re
     }
 }
 
-bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Qt::DropAction /*action*/,  qint64 id)
+bool NepomukParentStructureStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::DropAction )
 {
     QUrl targetTopic;
     if (id >= 0) {
@@ -598,7 +598,7 @@ bool NepomukParentStructureStrategy::onDropMimeData(const QMimeData* mimeData, Q
     return true;
 }
 
-bool NepomukParentStructureStrategy::onSetData(qint64 id, const QVariant &value, int /*role*/) {
+bool NepomukParentStructureStrategy::onSetData(Id id, const QVariant &value, int /*role*/) {
     const QUrl &targetTopic = m_topicMap.key(id);
     if (!targetTopic.isValid()) {
         kWarning() << "tried to rename invalid topic";
@@ -623,4 +623,20 @@ void NepomukParentStructureStrategy::reset()
     ReparentingStrategy::reset();
 }
 
+QStringList NepomukParentStructureStrategy::mimeTypes()
+{
+    QStringList list;
+    list.append("text/uri-list");
+    list.append("text/plain");
+    return list;
+}
+
+Qt::ItemFlags NepomukParentStructureStrategy::flags(const QModelIndex &index, Qt::ItemFlags flags)
+{
+    Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+    if (type == Zanshin::Inbox || type == Zanshin::TopicRoot) {
+        return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
+    }
+    return flags | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+}
 
