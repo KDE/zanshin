@@ -41,7 +41,6 @@
 
 #include "kdescendantsproxymodel.h"
 #include <Akonadi/EntityDisplayAttribute>
-#include "parentstructuremodel.h"
 #include "pimitemmodel.h"
 #include "reparentingmodel.h"
 #include "reparentingstrategy.h"
