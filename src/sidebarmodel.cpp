@@ -70,6 +70,6 @@ bool SideBarModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
     if (!sourceModel()) {
         return QAbstractProxyModel::dropMimeData(data, action, row, column, parent);
     }
-    return sourceModel()->dropMimeData(data, action, row, column, parent);
+    return sourceModel()->dropMimeData(data, action, row, column, mapToSource(parent));
 }
 
