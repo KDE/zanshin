@@ -296,10 +296,18 @@ Qt::DropActions ReparentingModel::supportedDropActions() const
 
 bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
-    const QModelIndex &i = index(row, column, parent);
-    TodoNode *node = m_manager->nodeForIndex(i);
-    Q_ASSERT(node && m_parentMap.values().contains(node));
-    return m_strategy->onDropMimeData(m_parentMap.key(node), mimeData, action);
+    kDebug() << row << column << parent;
+    TodoNode *target;
+    if (row < 0 || column < 0) {
+        target = m_manager->nodeForIndex(parent);
+    } else {
+        target = m_manager->nodeForIndex(index(row, column, parent));
+    }
+    Q_ASSERT(target && m_parentMap.values().contains(target));
+    if (m_strategy->onDropMimeData(m_parentMap.key(target), mimeData, action)) {
+        return true;
+    }
+    return TodoProxyModelBase::dropMimeData(mimeData, action, row, column, parent);
 }
 
 bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, int role)
