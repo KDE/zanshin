@@ -23,8 +23,8 @@
 
 #include <qtest_kde.h>
 
-#include "reparentingmodel.h"
-#include "reparentingstrategy.h"
+#include "reparentingmodel/reparentingmodel.h"
+#include "reparentingmodel/reparentingstrategy.h"
 
 #include <globaldefs.h>
 #include "testlib/testlib.h"

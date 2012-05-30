@@ -29,8 +29,8 @@
 
 #include "todotreemodel.h"
 #include "todometadatamodel.h"
-#include <reparentingmodel.h>
-#include <reparentingstrategy.h>
+#include <reparentingmodel/reparentingmodel.h>
+#include <reparentingmodel/reparentingstrategy.h>
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modeltest.h"

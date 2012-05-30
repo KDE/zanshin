@@ -1,4 +1,4 @@
-include_directories(utils pimlistview pimlistview/abstractmodels itemview)
+include_directories(utils pimlistview pimlistview/abstractmodels itemview reparentingmodel)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/utils)
 
 add_subdirectory( icons )
@@ -6,6 +6,7 @@ add_subdirectory( runner )
 add_subdirectory( utils )
 add_subdirectory( pimlistview )
 add_subdirectory( itemview )
+add_subdirectory( reparentingmodel )
 
 ########### zanshin core ###############
 
@@ -30,6 +31,7 @@ set(zanshin_core_SRCS
    reparentingstrategy.cpp
    ${pimlistview_SRCS}
    ${itemview_SRCS}
+   ${reparentingmodel_SRCS}
 )
 
 set(zanshin_core_LIBS
