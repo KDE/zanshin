@@ -166,14 +166,19 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
             return 0;
         }
     }
-    
+
+    //Store what we need to copy to the nex item
     const QString &name = node->data(0, Qt::DisplayRole).toString();
     QList<TodoNode*> children = node->children();
+    QModelIndex index = sourceIndex;
+    if (!sourceIndex.isValid() && node->rowSourceIndex().isValid()) {
+        index = node->rowSourceIndex();
+    }
 
     //remove node from any current parent
     removeNode(node, false);
 
-    TodoNode *newNode = createNode(p, parents, name, sourceIndex);
+    TodoNode *newNode = createNode(p, parents, name, index);
     Q_ASSERT(newNode);
     foreach (TodoNode* child, children) {
         child->setParent(newNode);
