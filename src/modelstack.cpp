@@ -43,7 +43,7 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include "pimitemmodel.h"
 #include "reparentingmodel.h"
-#include "reparentingstrategy.h"
+#include "nepomukparentstructurestrategy.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
