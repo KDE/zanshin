@@ -42,8 +42,9 @@
 #include "kdescendantsproxymodel.h"
 #include <Akonadi/EntityDisplayAttribute>
 #include "pimitemmodel.h"
-#include "reparentingmodel.h"
-#include "nepomukparentstructurestrategy.h"
+#include "reparentingmodel/reparentingmodel.h"
+#include "reparentingmodel/nepomukparentstructurestrategy.h"
+#include "reparentingmodel/projectstrategy.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),

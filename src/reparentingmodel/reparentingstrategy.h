@@ -100,22 +100,6 @@ public:
 };
 
 
-
-class ProjectStrategy : public ReparentingStrategy
-{
-public:
-    ProjectStrategy();
-    virtual void init();
-    virtual Id getId(const QModelIndex& );
-    virtual IdList getParents(const QModelIndex&, const IdList &ignore = IdList());
-    virtual void reset();
-private:
-    QHash<QString, Id> mUidMapping;
-    QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
-    const Id mInbox;
-};
-
-
 // class InboxStrategy : public ReparentingStrategy
 // {
 // protected:
