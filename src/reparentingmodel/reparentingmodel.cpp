@@ -167,7 +167,8 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
         }
     }
 
-    //Store what we need to copy to the nex item
+    //TODO move instead of copy
+    //Store what we need to copy to the next item
     const QString &name = node->data(0, Qt::DisplayRole).toString();
     QList<TodoNode*> children = node->children();
     QModelIndex index = sourceIndex;
@@ -288,8 +289,6 @@ Qt::ItemFlags ReparentingModel::flags(const QModelIndex& index) const
     }
     return m_strategy->flags(index, TodoProxyModelBase::flags(index));
 }
-
-
 
 Qt::DropActions ReparentingModel::supportedDropActions() const
 {

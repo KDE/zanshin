@@ -25,10 +25,6 @@ set(zanshin_core_SRCS
    todometadatamodel.cpp
    todonode.cpp
    todonodemanager.cpp
-   parentstructuremodel.cpp
-   parentstructurestrategy.cpp
-   reparentingmodel.cpp
-   reparentingstrategy.cpp
    ${pimlistview_SRCS}
    ${itemview_SRCS}
    ${reparentingmodel_SRCS}
@@ -115,3 +111,5 @@ target_link_libraries(kontact_zanshinplugin ${KDE4_KPARTS_LIBS} ${KDEPIMLIBS_KON
 install(TARGETS kontact_zanshinplugin DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES zanshin_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR}/kontact)
 
+
+add_subdirectory(reparentingmodel)
