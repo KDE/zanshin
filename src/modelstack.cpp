@@ -112,7 +112,6 @@ QAbstractItemModel *ModelStack::collectionsModel()
 QAbstractItemModel *ModelStack::treeModel()
 {
     if (!m_treeModel) {
-//         TodoTreeModel *treeModel = new TodoTreeModel(this);
         ReparentingModel *treeModel = new ReparentingModel(new ProjectStrategy());
         treeModel->setSourceModel(baseModel());
         m_treeModel = treeModel;

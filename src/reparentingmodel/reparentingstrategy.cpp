@@ -97,6 +97,12 @@ bool ReparentingStrategy::reparentOnRemoval(Id) const
     return mReparentOnRemoval;
 }
 
+QVariant ReparentingStrategy::getData(Id id, int role)
+{
+    TodoNode *node = m_model->m_parentMap.value(id);
+    Q_ASSERT(node);
+    return node->data(0, role);
+}
 
 
 

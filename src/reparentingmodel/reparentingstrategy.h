@@ -67,6 +67,7 @@ protected:
     void removeNode(Id id);
     void updateParents(Id id, IdList parents);
     void renameNode(Id id, QString name);
+    QVariant getData(Id id, int role);
     
     Id getNextId();
     /**

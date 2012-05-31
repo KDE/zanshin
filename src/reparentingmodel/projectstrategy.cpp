@@ -19,10 +19,15 @@
 
 
 #include "projectstrategy.h"
+#include "reparentingmodel.h"
 #include <globaldefs.h>
 #include <todonode.h>
+#include <todohelpers.h>
 #include <KLocalizedString>
 #include <KIcon>
+#include <QMimeData>
+#include <KCalCore/Todo>
+#include <KUrl>
 
 ProjectStrategy::ProjectStrategy()
 :   ReparentingStrategy(),
@@ -98,3 +103,70 @@ void ProjectStrategy::reset()
     mCollectionMapping.clear();
     ReparentingStrategy::reset();
 }
+
+Qt::ItemFlags ProjectStrategy::flags(const QModelIndex& index, Qt::ItemFlags existingFlags)
+{
+    Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
+
+    if (type == Zanshin::Inbox) {
+        return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
+    }
+
+    Qt::ItemFlags flags = m_model->sourceModel()->flags(m_model->mapToSource(index));
+    Akonadi::Collection collection;
+
+    if (type==Zanshin::Collection) {
+        collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+
+    } else if (type==Zanshin::ProjectTodo) {
+        // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+        // information about the rights is not valid on retrieved items.
+        collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    }
+
+    if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
+        flags&= ~Qt::ItemIsDropEnabled;
+    } else {
+        flags|= Qt::ItemIsDropEnabled;
+    }
+
+    return flags;
+}
+
+bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropAction action)
+{
+    if (action != Qt::MoveAction || !KUrl::List::canDecode(mimeData)) {
+        return false;
+    }
+
+    KUrl::List urls = KUrl::List::fromMimeData(mimeData);
+
+    Akonadi::Collection collection;
+    Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
+    if (parentType == Zanshin::Collection) {
+        collection = getData(id, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    } else {
+        const Akonadi::Item parentItem = getData(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        collection = parentItem.parentCollection();
+    }
+
+    QString parentUid = getData(id, Zanshin::UidRole).toString();
+
+    foreach (const KUrl &url, urls) {
+        const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
+        if (urlItem.isValid()) {
+            Akonadi::Item item = TodoHelpers::fetchFullItem(urlItem);
+
+            if (!item.isValid()) {
+                return false;
+            }
+
+            if (item.hasPayload<KCalCore::Todo::Ptr>()) {
+                TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
+            }
+        }
+    }
+
+    return true;
+}
+

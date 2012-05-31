@@ -30,7 +30,7 @@
 #include "todotreemodel.h"
 #include "todometadatamodel.h"
 #include <reparentingmodel/reparentingmodel.h>
-#include <reparentingmodel/reparentingstrategy.h>
+#include <reparentingmodel/projectstrategy.h>
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modeltest.h"

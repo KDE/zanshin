@@ -24,6 +24,7 @@
 #include "todonodemanager.h"
 #include <KLocalizedString>
 #include <KIcon>
+#include <QMimeData>
 
 ReparentingModel::ReparentingModel(ReparentingStrategy* strategy, QObject* parent)
 :   TodoProxyModelBase(TodoProxyModelBase::MultiMapping, parent),
@@ -274,14 +275,6 @@ void ReparentingModel::resetInternalData()
     TodoProxyModelBase::resetInternalData();
 }
 
-
-QStringList ReparentingModel::mimeTypes() const
-{
-    QStringList list = QAbstractItemModel::mimeTypes();
-    list.append(m_strategy->mimeTypes());
-    return list;
-}
-
 Qt::ItemFlags ReparentingModel::flags(const QModelIndex& index) const
 {
     if (!index.isValid()) {
@@ -298,6 +291,19 @@ Qt::DropActions ReparentingModel::supportedDropActions() const
     return sourceModel()->supportedDropActions();
 }
 
+//TODO move to todoproxymodelbase
+QStringList ReparentingModel::mimeTypes() const
+{
+    QStringList list = m_strategy->mimeTypes();
+    if (!list.isEmpty()) {
+        return list;
+    }
+    if (sourceModel()) {
+        return sourceModel()->mimeTypes();
+    }
+    return QAbstractItemModel::mimeTypes();
+}
+
 bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
     kDebug() << row << column << parent;
@@ -312,6 +318,16 @@ bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction ac
         return true;
     }
     return TodoProxyModelBase::dropMimeData(mimeData, action, row, column, parent);
+}
+
+//TODO move to todoproxymodelbase
+QMimeData *ReparentingModel::mimeData(const QModelIndexList &indexes) const
+{
+    QModelIndexList sourceIndexes;
+    foreach (const QModelIndex &proxyIndex, indexes) {
+        sourceIndexes << mapToSource(proxyIndex);
+    }
+    return sourceModel()->mimeData(sourceIndexes);
 }
 
 bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, int role)

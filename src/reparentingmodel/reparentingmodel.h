@@ -42,7 +42,7 @@ public:
     virtual ~ReparentingModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-    //virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
+    virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
     virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     virtual QStringList mimeTypes() const;
     virtual Qt::DropActions supportedDropActions() const;
