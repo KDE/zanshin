@@ -99,7 +99,7 @@ void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::R
     foreach (const Nepomuk::Query::Result &result, results) {
         Nepomuk::Resource res(result.resource().resourceUri());
         const QUrl parent = result.requestProperty(Nepomuk::Vocabulary::PIMO::superTopic()).uri();
-        kDebug() << res.resourceUri() << res.label() << res.types() << res.className() << parent;
+//         kDebug() << res.resourceUri() << res.label() << res.types() << res.className() << parent;
         if (res.types().contains(m_type)) {
             if (parent.isValid()) {
                 addParent(res, parent);
@@ -115,7 +115,7 @@ void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::R
 
 void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, const QUrl &parent)
 {
-    kDebug() << "add topic" << topic.label() << topic.uri() << parent;
+//     kDebug() << "add topic" << topic.label() << topic.uri() << parent;
     if (parent.isValid() && !m_topicMap.contains(parent)) {
         addParent(parent);
     }
@@ -179,7 +179,7 @@ void NepomukParentStructureStrategy::removeResult(const QList<QUrl> &results)
 
 void NepomukParentStructureStrategy::queryFinished()
 {
-    kWarning();
+//     kWarning();
 }
 
 void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
@@ -214,7 +214,7 @@ Id NepomukParentStructureStrategy::getId(const QModelIndex &sourceIndex)
     if (!m_itemIdMap.contains(item.id())) {
         m_itemIdMap.insert(item.id(), getNextId());
     }
-    kWarning() << item.url() << m_itemIdMap.value(item.id());
+//     kWarning() << item.url() << m_itemIdMap.value(item.id());
     return m_itemIdMap.value(item.id());
 }
 
@@ -237,14 +237,14 @@ IdList NepomukParentStructureStrategy::getParents(const QModelIndex &sourceChild
 void NepomukParentStructureStrategy::itemsFromTopicRemoved(const QList<QUrl> &items)
 {
     const QUrl &topic = sender()->property("topic").toUrl();
-    kDebug() << "removing nodes from topic: " << topic;
+//     kDebug() << "removing nodes from topic: " << topic;
     foreach (const QUrl &uri, items) {
         Nepomuk::Resource res = Nepomuk::Resource(uri);
         const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
         if (!item.isValid()) {
             continue;
         }
-        kDebug() << item.url();
+//         kDebug() << item.url();
         m_topicCache.remove(item.url()); //TODO preserve other topics
         const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(m_model->sourceModel(), item);
         if (indexes.isEmpty()) {
@@ -258,7 +258,7 @@ void NepomukParentStructureStrategy::itemsFromTopicRemoved(const QList<QUrl> &it
 void NepomukParentStructureStrategy::propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value)
 {
     if (property.uri() == Soprano::Vocabulary::NAO::prefLabel()) {
-        kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
+//         kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
         Q_ASSERT(m_topicMap.contains(res.resourceUri()));
         renameNode(m_topicMap[res.resourceUri()], value.toString());
     }
@@ -279,7 +279,7 @@ bool NepomukParentStructureStrategy::onDropMimeData(Id id, const QMimeData *mime
         kWarning() << "no urls in drop";
         return false;
     }
-    kDebug() << mimeData->urls();
+//     kDebug() << mimeData->urls();
 
     foreach (const KUrl &url, mimeData->urls()) {
         const Akonadi::Item item = Akonadi::Item::fromUrl(url);
@@ -289,10 +289,10 @@ bool NepomukParentStructureStrategy::onDropMimeData(Id id, const QMimeData *mime
         }
 
         if (targetTopic.isValid()) {
-            kDebug() << "set topic: " << targetTopic << " on dropped item: " << item.url();
+//             kDebug() << "set topic: " << targetTopic << " on dropped item: " << item.url();
             NepomukUtils::moveToTopic(item, targetTopic);
         } else {
-            kDebug() << "remove all topics from item:" << item.url();
+//             kDebug() << "remove all topics from item:" << item.url();
             NepomukUtils::removeAllTopics(item);
         }
     }

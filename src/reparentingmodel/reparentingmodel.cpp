@@ -50,7 +50,7 @@ TodoNode* ReparentingModel::createInbox() const
 
 TodoNode *ReparentingModel::createNode(const Id &identifier, const IdList &parents, const QString &name, const QModelIndex &sourceIndex)
 {
-    kDebug() << "add node" << name << identifier << parents << sourceIndex;
+//     kDebug() << "add node" << name << identifier << parents << sourceIndex;
 
     if (m_parentMap.contains(identifier)) { //We already have this node, we only need to update it
         TodoNode *node = reparentNode(identifier, parents, sourceIndex);
@@ -67,7 +67,7 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const IdList &paren
     TodoNode* parentNode = 0;
     if (parentIdentifier >= 0) {
         if (!m_parentMap.contains(parentIdentifier)) {
-            kDebug() << "creating missing parent: " << parentIdentifier;
+//             kDebug() << "creating missing parent: " << parentIdentifier;
             createNode(parentIdentifier, IdList(), "unknown");
         }
         Q_ASSERT(m_parentMap.contains(parentIdentifier));
@@ -102,14 +102,13 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const IdList &paren
 
 void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
 {
-
-    kDebug() << "removeNode " << m_parentMap.key(root);
+//     kDebug() << "removeNode " << m_parentMap.key(root);
 
     if (removeChildren) {
         foreach(TodoNode *childNode, root->children()) {
             Id childId = m_parentMap.key(childNode);
             if (m_strategy->reparentOnRemoval(childId)) {
-                kDebug() << "child " << childId;
+//                 kDebug() << "child " << childId;
                 IdList parents = m_strategy->getParents(childNode->rowSourceIndex(), IdList() << m_parentMap.key(root));//Don't try to re-add it to the current parent (which is not yet removed)
                 reparentNode(childId, parents, childNode->rowSourceIndex());
             } else {
@@ -153,7 +152,7 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
         kWarning() << "invalid item";
         return 0;
     }
-    kDebug() << p << parents << sourceIndex;
+//     kDebug() << p << parents << sourceIndex;
     //TODO handle multiple parents
     Q_ASSERT(m_parentMap.contains(p));
     TodoNode *node = m_parentMap.value(p);
@@ -163,7 +162,7 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
     if (node->rowSourceIndex() == sourceIndex) {
         //Reparent only if parent has changed
         if ((parents.isEmpty() && !node->parent()) || (!parents.isEmpty() && (node->parent() == m_parentMap.value(parents.first())))) {
-            kDebug() << "nothing changed";
+//             kDebug() << "nothing changed";
             return 0;
         }
     }
@@ -203,7 +202,7 @@ void ReparentingModel::renameNode(const Id& identifier, const QString& name)
 
 void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
 {
-    kDebug() << sourceIndex << begin << end;
+//     kDebug() << sourceIndex << begin << end;
     for (int i = begin; i <= end; i++) {
         const QModelIndex &sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
         
@@ -230,7 +229,7 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
 void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
 {
     Q_ASSERT(!m_parentMap.values().contains(0));
-    kDebug() << begin << end;
+//     kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         Id id = m_strategy->getId(index);
@@ -240,7 +239,7 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
         if (m_parentMap.contains(id)) { //In case we get updates for indexes which haven't been inserted yet
             reparentNode(id, parents, index);
         } else {
-            kWarning() << id << " is missing";
+//             kWarning() << id << " is missing";
         }
 
         const QModelIndexList &list = mapFromSourceAll(index);
@@ -306,7 +305,7 @@ QStringList ReparentingModel::mimeTypes() const
 
 bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
-    kDebug() << row << column << parent;
+//     kDebug() << row << column << parent;
     TodoNode *target;
     if (row < 0 || column < 0) {
         target = m_manager->nodeForIndex(parent);
