@@ -31,28 +31,59 @@ typedef qint64 Id;
 typedef QList<qint64> IdList;
 class ReparentingModel;
 class TodoNode;
+
+/**
+ * A reparenting strategy for a ReparentingModel
+ *
+ * The strategy is basically responsible for identifying nodes, and to give information about the nodes parent relations.
+ * Each node can have multiple parents (TODO not yet implemented), and is identified by a unique Id.
+ */
 class ReparentingStrategy
 {
 public:
     ReparentingStrategy();
     virtual ~ReparentingStrategy(){};
     virtual void init() {};
-    /// Get the id for an object
+    /**
+     * Return the unique Id for the node.
+     *
+     * The Id must be unique for this strategy.
+     * Ids may be reused after a reset (given all caches are cleared). 
+     */
     virtual Id getId(const QModelIndex &/*sourceChildIndex*/) = 0;
-    /// Get parents
+    /**
+     * Return the parents of a node.
+     *
+     * @param ignore is a list of ids which must be removed from the return list (otherwise moves won't work).
+     */
     virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
 
-    virtual void onNodeRemoval(const Id &changed);
-
+    /**
+     * Reset all internal data (caches etc.)
+     *
+     * Issued on model reset.
+     */
     virtual void reset();
 
-    void setModel(ReparentingModel *model);
-
-    ///Return true if @param child should be reparented on parent removal
-    virtual bool reparentOnRemoval(Id child) const;
+    /**
+     * React to the removal of a node (e.g. cleanup cache)
+     */
+    virtual void onNodeRemoval(const Id &changed);
 
     /**
-     * Set data on a virtual node
+     * Set the reparenting model.
+     */
+    void setModel(ReparentingModel *model);
+
+    /**
+     * Return true if @param child should be reparented on parent removal, otherwise the child is removed as well.
+     */
+    virtual bool reparentOnParentRemoval(Id child) const;
+
+    /**
+     * Set data on a virtual node.
+     *
+     * Called during the creating of a virtual node.
      */
     virtual void setData(TodoNode* node, Id id) {};
 
@@ -63,10 +94,25 @@ public:
     virtual bool onSetData(Id id, const QVariant &value, int role) { return false; };
 
 protected:
+    /**
+     * Creates a virtual node (no corresponding sourceIndex).
+     */
     virtual TodoNode *createNode(Id id, IdList pid, QString name);
+    /**
+     * Remove a node.
+     */
     void removeNode(Id id);
+    /**
+     * Trigger an update of the parents (move the node to it's new parents).
+     */
     void updateParents(Id id, IdList parents);
+    /**
+     * Rename a virtual node.
+     */
     void renameNode(Id id, QString name);
+    /**
+     * Get the data of a node (same as index.data)
+     */
     QVariant getData(Id id, int role);
     
     Id getNextId();
@@ -127,7 +173,7 @@ public:
     void removeParent(const qint64 &identifier);
     void onNodeRemoval(const qint64 &changed) { qDebug() << "removed node: " << changed; };
 
-    virtual bool reparentOnRemoval(Id ) const;
+    virtual bool reparentOnParentRemoval(Id ) const;
 
     virtual Id getId(const QModelIndex& );
     virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());

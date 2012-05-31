@@ -92,7 +92,7 @@ void ReparentingStrategy::removeNode(Id id)
 }
 
 
-bool ReparentingStrategy::reparentOnRemoval(Id) const
+bool ReparentingStrategy::reparentOnParentRemoval(Id) const
 {
     return mReparentOnRemoval;
 }
@@ -163,7 +163,7 @@ void TestParentStructureStrategy::init()
     node2->setRowData(Zanshin::TopicRoot, Zanshin::ItemTypeRole);
 }
 
-bool TestParentStructureStrategy::reparentOnRemoval(Id id) const
+bool TestParentStructureStrategy::reparentOnParentRemoval(Id id) const
 {
     if (id < 900) {
         kDebug() << "reparent " << id;

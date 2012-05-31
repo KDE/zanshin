@@ -107,7 +107,7 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
     if (removeChildren) {
         foreach(TodoNode *childNode, root->children()) {
             Id childId = m_parentMap.key(childNode);
-            if (m_strategy->reparentOnRemoval(childId)) {
+            if (m_strategy->reparentOnParentRemoval(childId)) {
 //                 kDebug() << "child " << childId;
                 IdList parents = m_strategy->getParents(childNode->rowSourceIndex(), IdList() << m_parentMap.key(root));//Don't try to re-add it to the current parent (which is not yet removed)
                 reparentNode(childId, parents, childNode->rowSourceIndex());
