@@ -106,6 +106,7 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
 
     if (removeChildren) {
         foreach(TodoNode *childNode, root->children()) {
+            Q_ASSERT(m_parentMap.values().contains(childNode));
             Id childId = m_parentMap.key(childNode);
             if (m_strategy->reparentOnParentRemoval(childId)) {
 //                 kDebug() << "child " << childId;
@@ -142,6 +143,7 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
 
 void ReparentingModel::removeNodeById(Id id)
 {
+    Q_ASSERT(m_parentMap.contains(id));
     removeNode(m_parentMap.value(id), true);
 }
 
@@ -184,7 +186,6 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
     foreach (TodoNode* child, children) {
         child->setParent(newNode);
     }
-    Q_ASSERT(m_parentMap.contains(p));
     Q_ASSERT(!m_parentMap.values().contains(0));
     return newNode;
 }
@@ -192,7 +193,8 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
 void ReparentingModel::renameNode(const Id& identifier, const QString& name)
 {
 //     kDebug() << "renamed " << identifier << " to " << name;
-    TodoNode *node = m_parentMap[identifier];
+    Q_ASSERT(m_parentMap.contains(identifier));
+    TodoNode *node = m_parentMap.value(identifier);
     node->setData(name, 0, Qt::DisplayRole);
     node->setData(name, 0, Qt::EditRole);
     const QModelIndex &begin = m_manager->indexForNode(node, 0);
@@ -212,9 +214,12 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
         }
 
         Id id = m_strategy->getId(sourceChildIndex);
-        IdList parents = m_strategy->getParents(sourceChildIndex);
-        bool replace = m_parentMap.contains(id);
-        createNode(id, parents, QString(), sourceChildIndex);
+        bool replace = false;
+        if (id > 0) {
+            IdList parents = m_strategy->getParents(sourceChildIndex);
+            replace = m_parentMap.contains(id);
+            createNode(id, parents, QString(), sourceChildIndex);
+        }
 
         //Insert children too
         if (!replace && sourceModel()->hasChildren(sourceChildIndex)) {
@@ -228,11 +233,13 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
 
 void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
 {
-    Q_ASSERT(!m_parentMap.values().contains(0));
 //     kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         Id id = m_strategy->getId(index);
+        if (id < 0) {
+            continue;
+        }
         const IdList &parents = m_strategy->getParents(index);
 //         kDebug() << index.data(Qt::DisplayRole).toString() << id << parents;
 
@@ -260,6 +267,11 @@ void ReparentingModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int be
 //             kDebug() << "invalid source";
             continue;
         }
+        //The structure we have is not necessarily the same as the one of the sourceModel, we need to remove the children of the source model in case we don't get a removed signal for them.
+        //TODO write test
+        if (sourceModel()->hasChildren(sourceChildIndex)) {
+            onSourceRemoveRows(sourceChildIndex, 0, sourceModel()->rowCount(sourceChildIndex)-1);
+        }
         QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(sourceChildIndex);
         foreach (TodoNode *node, nodes) {
             removeNode(node, true);
@@ -284,23 +296,23 @@ Qt::ItemFlags ReparentingModel::flags(const QModelIndex& index) const
 
 Qt::DropActions ReparentingModel::supportedDropActions() const
 {
+    Qt::DropActions actions = m_strategy->supportedDropActions();
     if (!sourceModel()) {
-        return Qt::IgnoreAction;
+        return actions|Qt::IgnoreAction;
     }
-    return sourceModel()->supportedDropActions();
+    return actions|sourceModel()->supportedDropActions();
 }
 
 //TODO move to todoproxymodelbase
 QStringList ReparentingModel::mimeTypes() const
 {
     QStringList list = m_strategy->mimeTypes();
-    if (!list.isEmpty()) {
+    if (sourceModel()) {
+        list.append(sourceModel()->mimeTypes());
         return list;
     }
-    if (sourceModel()) {
-        return sourceModel()->mimeTypes();
-    }
-    return QAbstractItemModel::mimeTypes();
+    list.append(QAbstractItemModel::mimeTypes());
+    return list;
 }
 
 bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
@@ -324,9 +336,16 @@ QMimeData *ReparentingModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList sourceIndexes;
     foreach (const QModelIndex &proxyIndex, indexes) {
-        sourceIndexes << mapToSource(proxyIndex);
+        const QModelIndex &sourceIndex = mapToSource(proxyIndex);
+        if (sourceIndex.isValid() && !sourceIndexes.contains(sourceIndex)) {
+            sourceIndexes << mapToSource(proxyIndex);
+        }
     }
-    return sourceModel()->mimeData(sourceIndexes);
+    if (!sourceIndexes.isEmpty()) {
+        return sourceModel()->mimeData(sourceIndexes);
+    }
+    
+    return m_strategy->mimeData(indexes);
 }
 
 bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, int role)

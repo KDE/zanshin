@@ -24,11 +24,14 @@
 #include <qtest_kde.h>
 
 #include "categorymanager.h"
-#include "todocategoriesmodel.h"
+// #include "todocategoriesmodel.h"
 #include "todometadatamodel.h"
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modelbuilderbehavior.h"
+#include "testlib/helperutils.h"
+#include <reparentingmodel/reparentingmodel.h>
+#include <reparentingmodel/categoriesstrategy.h>
 
 #include <QtGui/QTreeView>
 #include <QtCore/QEventLoop>
@@ -57,7 +60,7 @@ private slots:
     {
         //GIVEN
         QStandardItemModel baseModel;
-        TodoCategoriesModel proxyModel;
+        ReparentingModel proxyModel(new CategoriesStrategy);
         ModelTest mt(&proxyModel);
 
         //WHEN
@@ -130,10 +133,12 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        TodoCategoriesModel categoriesModel;
+        ReparentingModel categoriesModel(new CategoriesStrategy);
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
+
+        Helper::printModel(&categoriesModel);
 
         //WHEN
         QFETCH(ModelPath::List, itemsToRemove);
@@ -205,7 +210,7 @@ private slots:
 
         //WHEN
         //create categoriesModel
-        TodoCategoriesModel categoriesModel;
+        ReparentingModel categoriesModel(new CategoriesStrategy);
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -214,7 +219,8 @@ private slots:
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
-
+        Helper::printModel(&categoriesModel);
+        Helper::printModel(&output);
         QCOMPARE(categoriesModel, output);
     }
 
@@ -286,7 +292,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
-        TodoCategoriesModel categoriesModel;
+        ReparentingModel categoriesModel(new CategoriesStrategy);
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -490,7 +496,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        TodoCategoriesModel categoriesModel;
+        ReparentingModel categoriesModel(new CategoriesStrategy);
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -599,7 +605,7 @@ private slots:
         metadataModel.setSourceModel(&source);
 
         //create categoriesModel
-        TodoCategoriesModel categoriesModel;
+        ReparentingModel categoriesModel(new CategoriesStrategy);
         ModelTest t2(&categoriesModel);
 
         categoriesModel.setSourceModel(&metadataModel);
@@ -652,7 +658,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        TodoCategoriesModel categoriesModel;
+        ReparentingModel categoriesModel(new CategoriesStrategy);
         ModelTest t2(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -662,7 +668,7 @@ private slots:
 
         //THEN
         MockModel output;
-        TodoCategoriesModel* categoriesModelOutput = new TodoCategoriesModel();
+        ReparentingModel* categoriesModelOutput = new ReparentingModel(new CategoriesStrategy);
 
         categoriesModelOutput->setSourceModel(&output);
 

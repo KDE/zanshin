@@ -37,6 +37,10 @@ class TodoNode;
  *
  * The strategy is basically responsible for identifying nodes, and to give information about the nodes parent relations.
  * Each node can have multiple parents (TODO not yet implemented), and is identified by a unique Id.
+ *
+ * A node may also insert virtual nodes (nodes without corresponding sourceindex), to i.e. build parent structures.
+ *
+ * Nodes may also be filtered by returning < 0 on getId;
  */
 class ReparentingStrategy
 {
@@ -48,15 +52,17 @@ public:
      * Return the unique Id for the node.
      *
      * The Id must be unique for this strategy.
-     * Ids may be reused after a reset (given all caches are cleared). 
+     * Ids may be reused after a reset (given all caches are cleared).
+     *
+     * If the node should be filtered return -1 (children are still added)
      */
-    virtual Id getId(const QModelIndex &/*sourceChildIndex*/) = 0;
+    virtual Id getId(const QModelIndex &sourceIndex) = 0;
     /**
      * Return the parents of a node.
      *
      * @param ignore is a list of ids which must be removed from the return list (otherwise moves won't work).
      */
-    virtual IdList getParents(const QModelIndex &, const IdList &ignore = IdList());
+    virtual IdList getParents(const QModelIndex &sourceIndex, const IdList &ignore = IdList());
 
     /**
      * Reset all internal data (caches etc.)
@@ -83,13 +89,14 @@ public:
     /**
      * Set data on a virtual node.
      *
-     * Called during the creating of a virtual node.
+     * Called during the creation of a virtual node.
      */
     virtual void setData(TodoNode* node, Id id) {};
 
+    virtual QMimeData *mimeData(const QModelIndexList &proxyIndexes) const{return 0;};
     virtual QStringList mimeTypes() { return QStringList(); };
-    virtual Qt::ItemFlags flags(const QModelIndex &index, Qt::ItemFlags flags) {return flags;};
-    
+    virtual Qt::ItemFlags flags(const QModelIndex &proxyIndex, Qt::ItemFlags flags) {return flags;};
+    virtual Qt::DropActions supportedDropActions() const { return Qt::IgnoreAction; };
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction ){ return false; };
     virtual bool onSetData(Id id, const QVariant &value, int role) { return false; };
 

@@ -34,9 +34,7 @@
 #include "combomodel.h"
 #include "sidebarmodel.h"
 #include "selectionproxymodel.h"
-#include "todocategoriesmodel.h"
 #include "todometadatamodel.h"
-#include "todotreemodel.h"
 #include "abstractpimitem.h"
 
 #include "kdescendantsproxymodel.h"
@@ -45,6 +43,7 @@
 #include "reparentingmodel/reparentingmodel.h"
 #include "reparentingmodel/nepomukparentstructurestrategy.h"
 #include "reparentingmodel/projectstrategy.h"
+#include "reparentingmodel/categoriesstrategy.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -159,7 +158,7 @@ QAbstractItemModel *ModelStack::categoriesModel()
 {
     if (!m_categoriesModel) {
         CategoryManager::instance().setModel(baseModel());
-        TodoCategoriesModel *categoriesModel = new TodoCategoriesModel(this);
+        ReparentingModel *categoriesModel = new ReparentingModel(new CategoriesStrategy(), this);
         categoriesModel->setSourceModel(baseModel());
         m_categoriesModel = categoriesModel;
     }

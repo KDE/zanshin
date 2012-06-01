@@ -32,6 +32,7 @@
 class QAbstractItemModel;
 class QModelIndex;
 class TodoCategoriesModel;
+class CategoriesStrategy;
 
 class CategoryManager : public QObject
 {
@@ -72,6 +73,7 @@ private slots:
 
 private:
     friend class TodoCategoriesModel;
+    friend class CategoriesStrategy;
 
     bool removeCategory(const QString &categoryPath);
     void removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &categoryPath);
