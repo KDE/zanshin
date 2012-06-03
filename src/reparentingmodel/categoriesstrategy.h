@@ -21,6 +21,7 @@
 #ifndef CATEGORIESSTRATEGY_H
 #define CATEGORIESSTRATEGY_H
 #include "reparentingstrategy.h"
+#include "pimitemrelations.h"
 
 class CategoriesStrategy : public QObject, public ReparentingStrategy
 {
@@ -46,16 +47,20 @@ public:
 
     virtual bool reparentOnParentRemoval(Id child) const;
 private slots:
-    void createCategoryNode(const QString &categoryPath);
-    void removeCategoryNode(const QString &categoryPath);
-    void renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);
-    void moveCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);
+    void createVirtualNode(Id id, IdList parents, const QString &name);
+//     void createCategoryNode(const QString &categoryPath);
+//     void removeCategoryNode(const QString &categoryPath);
+//     void renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);
+//     void moveCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);
 private:
-    QHash<QString, Id> mUidMapping;
-    QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
-    QMap<QString, Id> mCategoryMap;
+//     QHash<QString, Id> mUidMapping; //sourceitems to id
+//     QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
+//     QMap<Id, IdList> mNodeCategories; //nodes categories
+//     QMap<Id, Id> mNodeParentMap; //categories hierarchy
+//     QMap<QString, Id> mCategoryMap; //category string to node id
     const Id mInbox;
     const Id mRoot;
+    QScopedPointer<PimItemRelations> mRelations;
 };
 
 #endif // CATEGORIESSTRATEGY_H
