@@ -28,12 +28,29 @@
 #include <QtCore/QPointer>
 #include <QtCore/QStringList>
 #include "globaldefs.h"
+#include "reparentingmodel/pimitemrelations.h"
 
 class QAbstractItemModel;
 class QModelIndex;
 class TodoCategoriesModel;
 class CategoriesStrategy;
 
+// class VirtualNodeManager : public QObject
+// {
+//     Q_OBJECT
+// 
+// public:
+//     static VirtualNodeManager &instance();
+// 
+// };
+
+/**
+ * TODO VirtualNodeManager
+ *
+ * The interface to edit(create/remove/rename/move) virtual nodes.
+ * Singleton which creates the virtualnode structures.
+ *
+ */
 class CategoryManager : public QObject
 {
     Q_OBJECT
@@ -44,43 +61,32 @@ public:
     CategoryManager(QObject *parent = 0);
     virtual ~CategoryManager();
 
-    void setModel(QAbstractItemModel *model);
-    QAbstractItemModel *model() { return m_model; }
+//     CategoriesStructure *getCategoriesStructure();
+    void setCategoriesStructure(CategoriesStructure *);
 
-    void addCategory(const QString &category, const QString &parentCategory);
-    void addCategory(const QString &categoryPath);
-    bool removeCategory(QWidget *parent, const QModelIndex &categoryIndex);
-    bool removeCategories(QWidget *parent, const QModelIndexList &categoryIndex);
-    bool dissociateTodoFromCategory(const QModelIndex &index, const QString &categoryPath);
-    void renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath);
-    void moveCategory(const QString &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType);
-    bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType);
-    bool moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType);
-
-    QStringList categories();
+    void addCategory(const QString &category, const QString &parentCategory = QString());
+    bool removeCategories(QWidget *parent, const IdList &categoryIndex);
+    bool dissociateFromCategory(const Akonadi::Item &item, Id category);
+    bool moveToCategory(Id id, Id category, Zanshin::ItemType parentType);
+//     void moveCategory(const Id &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType);
+//     bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType);
+//     bool moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType);
 
     static const QChar pathSeparator();
-
-Q_SIGNALS:
-    void categoryAdded(const QString &categoryPath);
-    void categoryRemoved(const QString &categoryPath);
-    void categoryRenamed(const QString &oldCategoryPath, const QString &newCategoryPath);
-    void categoryMoved(const QString &oldCategoryPath, const QString &newCategoryPath);
-
+/*
 private slots:
     void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
+    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);*/
 
 private:
-    friend class TodoCategoriesModel;
     friend class CategoriesStrategy;
 
-    bool removeCategory(const QString &categoryPath);
-    void removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &categoryPath);
+    bool removeCategory(const Id &categoryPath);
     void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
 
-    QStringList m_categories;
-    QPointer<QAbstractItemModel> m_model;
+//     QStringList m_categories;
+//     QPointer<QAbstractItemModel> m_model;
+    QPointer<CategoriesStructure> m_categoriesStructure;
 };
 
 #endif

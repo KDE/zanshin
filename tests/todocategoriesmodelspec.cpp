@@ -128,7 +128,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         //Kick up category manager
-        CategoryManager::instance().setModel(&source);
+//         CategoryManager::instance().setModel(&source);
 
         ModelUtils::create(&source, sourceStructure);
 
@@ -205,7 +205,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         //Kick up category manager
-        CategoryManager::instance().setModel(&source);
+//         CategoryManager::instance().setModel(&source);
         ModelUtils::create(&source, sourceStructure);
 
         //WHEN
@@ -288,7 +288,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         //Kick up category manager
-        CategoryManager::instance().setModel(&source);
+//         CategoryManager::instance().setModel(&source);
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
@@ -492,7 +492,7 @@ private slots:
         //Source model
         QStandardItemModel source;
         //Kick up category manager
-        CategoryManager::instance().setModel(&source);
+//         CategoryManager::instance().setModel(&source);
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
@@ -600,7 +600,7 @@ private slots:
         ModelTest t1(&metadataModel);
 
         //Kick up category manager
-        CategoryManager::instance().setModel(&metadataModel);
+//         CategoryManager::instance().setModel(&metadataModel);
 
         metadataModel.setSourceModel(&source);
 
@@ -653,7 +653,7 @@ private slots:
         MockModel source;
 
         //Kick up category manager
-        CategoryManager::instance().setModel(&source);
+//         CategoryManager::instance().setModel(&source);
 
         ModelUtils::create(&source, sourceStructure);
 

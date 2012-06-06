@@ -140,7 +140,7 @@ void SideBarPage::removeCurrentItem()
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==Zanshin::Category) {
-        if (CategoryManager::instance().removeCategory(this, current)) {
+        if (CategoryManager::instance().removeCategories(this, IdList() << current.data(Zanshin::RelationIdRole).toLongLong())) {
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==Zanshin::Topic) {

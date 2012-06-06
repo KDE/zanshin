@@ -102,15 +102,20 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const IdList &paren
 
 void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
 {
-//     kDebug() << "removeNode " << m_parentMap.key(root);
+    Id id = m_parentMap.key(root);
+    if (!m_parentMap.contains(id)) {
+        kDebug() << "no such item " << id;
+        return;
+    }
+    kDebug() << "removeNode " << id;
 
     if (removeChildren) {
         foreach(TodoNode *childNode, root->children()) {
             Q_ASSERT(m_parentMap.values().contains(childNode));
             Id childId = m_parentMap.key(childNode);
             if (m_strategy->reparentOnParentRemoval(childId)) {
-//                 kDebug() << "child " << childId;
-                IdList parents = m_strategy->getParents(childNode->rowSourceIndex(), IdList() << m_parentMap.key(root));//Don't try to re-add it to the current parent (which is not yet removed)
+                kDebug() << "child " << childId;
+                IdList parents = m_strategy->getParents(childNode->rowSourceIndex(), IdList() << id);//Don't try to re-add it to the current parent (which is not yet removed)
                 reparentNode(childId, parents, childNode->rowSourceIndex());
             } else {
                 removeNode(childNode, true);
@@ -132,10 +137,9 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
     }
 
     beginRemoveRows(proxyParentIndex, row, row);
-    Q_ASSERT(m_parentMap.values().contains(root));
-    Id id = m_parentMap.key(root);
-    m_strategy->onNodeRemoval(id);
+    Q_ASSERT(m_parentMap.contains(id));
     m_parentMap.remove(id);
+    m_strategy->onNodeRemoval(id);
     m_manager->removeNode(root);
     delete root;
     endRemoveRows();
@@ -143,7 +147,10 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
 
 void ReparentingModel::removeNodeById(Id id)
 {
-    Q_ASSERT(m_parentMap.contains(id));
+    if (!m_parentMap.contains(id)) {
+        kDebug() << "no such item " << id;
+        return;
+    }
     removeNode(m_parentMap.value(id), true);
 }
 
@@ -260,11 +267,11 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
 
 void ReparentingModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int begin, int end)
 {
-//     kDebug() << begin << end;
+    kDebug() << begin << end;
     for (int i = begin; i <= end; ++i) {
         QModelIndex sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
         if (!sourceChildIndex.isValid()) {
-//             kDebug() << "invalid source";
+            kDebug() << "invalid source";
             continue;
         }
         //The structure we have is not necessarily the same as the one of the sourceModel, we need to remove the children of the source model in case we don't get a removed signal for them.
@@ -276,6 +283,11 @@ void ReparentingModel::onSourceRemoveRows(const QModelIndex& sourceIndex, int be
         foreach (TodoNode *node, nodes) {
             removeNode(node, true);
         }
+        //TODO if we wanted to delete children of a collection we could do so here, but IMO it doesn't make sense and is signaled through ETM anyways (the removal of the child items)
+        //actually I'm not sure if we're supposed ot remove child nodes as well.... Maybe we never get a removed signal for the childred
+        //if it is correct, write test for it in reparentingmodelspec
+        //also check behaviour if only some of the children are filtered
+
     }
 }
 
@@ -317,7 +329,7 @@ QStringList ReparentingModel::mimeTypes() const
 
 bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
-//     kDebug() << row << column << parent;
+    kDebug() << row << column << parent;
     TodoNode *target;
     if (row < 0 || column < 0) {
         target = m_manager->nodeForIndex(parent);
@@ -360,3 +372,15 @@ bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, 
     }
     return TodoProxyModelBase::setData(index, value, role);
 }
+
+QVariant ReparentingModel::data(const QModelIndex& index, int role) const
+{
+    TodoNode *node = m_manager->nodeForIndex(index);
+    Q_ASSERT(node && m_parentMap.values().contains(node));
+    const QVariant &var = m_strategy->data(m_parentMap.key(node), role);
+    if (var.isValid()) {
+        return var;
+    }
+    return TodoProxyModelBase::data(index, role);
+}
+

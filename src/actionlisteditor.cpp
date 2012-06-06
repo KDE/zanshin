@@ -305,29 +305,15 @@ void ActionListEditor::removeTodo()
 
     // Remove categories if the parent is also in the list
     if (!currentCategories.isEmpty()) {
-        QStringList categoryList;
-        foreach (const QModelIndex project, currentCategories) {
-            categoryList << project.data(Qt::EditRole).toString();
-        }
-
-        QSet<QString> categories = QSet<QString>::fromList(categoryList);
-
+        IdList categoryList;
         foreach (const QModelIndex category, currentCategories) {
-            QStringList pathList = category.data(Zanshin::CategoryPathRole).toString().split(CategoryManager::pathSeparator());
-            pathList.removeLast();
-            QSet<QString> ancestors = QSet<QString>::fromList(pathList);
-            if (!ancestors.intersect(categories).isEmpty()) {
-                currentCategories.removeOne(category);
-            }
+            categoryList << category.data(Zanshin::RelationIdRole).toInt();
         }
+        CategoryManager::instance().removeCategories(this, categoryList);
     }
 
     if (!currentProjects.isEmpty()) {
         TodoHelpers::removeProjects(this, currentProjects);
-    }
-
-    if (!currentCategories.isEmpty()) {
-        CategoryManager::instance().removeCategories(this, currentCategories);
     }
 
     if (!currentTodos.isEmpty()) {
@@ -372,7 +358,7 @@ void ActionListEditor::onMoveAction()
     QuickSelectDialog dlg(this, model, currentPage()->mode(),
                           QuickSelectDialog::MoveAction);
     if (dlg.exec()==QDialog::Accepted) {
-        QString selectedId = dlg.selectedId();
+        QVariant selectedId = dlg.selectedId();
         QModelIndex index = dlg.selectedIndex();
 
         QModelIndexList list = currentPage()->selectionModel()->selectedRows();
@@ -384,15 +370,16 @@ void ActionListEditor::onMoveAction()
                 }
 
                 if (currentPage()->mode()==Zanshin::ProjectMode) {
-                    TodoHelpers::moveTodoToProject(current, selectedId, dlg.selectedType(), dlg.collection());
+                    TodoHelpers::moveTodoToProject(current, selectedId.toString(), dlg.selectedType(), dlg.collection());
                 } else {
-                    int type = current.data(Zanshin::ItemTypeRole).toInt();
-                    QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
-                    if (type==Zanshin::Category) {
-                        CategoryManager::instance().moveCategory(categoryPath, selectedId, dlg.selectedType());
-                    } else {
-                        CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
-                    }
+                    CategoryManager::instance().moveToCategory(current.data(Zanshin::RelationIdRole).toLongLong(), selectedId.toLongLong(), dlg.selectedType());
+//                     int type = current.data(Zanshin::ItemTypeRole).toInt();
+//                     QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
+//                     if (type==Zanshin::Category) {
+//                         CategoryManager::instance().moveToCategory(current.data(Zanshin::RelationIdRole).toInt(), selectedId, dlg.selectedType());
+//                     } else {
+//                         CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
+//                     }
                 }
             }
         }

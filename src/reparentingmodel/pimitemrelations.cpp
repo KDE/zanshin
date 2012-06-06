@@ -44,7 +44,8 @@ Relation::Relation()
 
 
 PimItemRelations::PimItemRelations()
-
+:   QObject(),
+    mIdCounter(0)
 {
 
 }
@@ -55,7 +56,12 @@ void PimItemRelations::mergeNode(const TreeNode &node)
     if (!mNames.contains(node.id)) {
         created = true;
     }
-    mNames.insert(node.id, node.name);
+    if (mNames.value(node.id) != node.name) {
+        mNames.insert(node.id, node.name);
+        if (!created) {
+            emit virtualNodeRenamed(node.id, node.name);
+        }
+    }
     
     //TODO emit changes if changed
     mParents.remove(node.id);
@@ -80,7 +86,6 @@ Id PimItemRelations::addItem(const Akonadi::Item &item)
     }
     kDebug() << item.id() << mParents.values(id);
 
-    mItems.insert(id, item);
     return id;
 }
 
@@ -116,6 +121,7 @@ void PimItemRelations::moveNode(Id id, IdList parents)
     //get affected child nodes if virtual node
     //update all nodes
     rebuildCache();
+//     updateNodes(itemsToUpdate);
 //     foreach(Id item, itemsToUpdate) {
 //         setRelationTree(mItems.value(item));
 //     }
@@ -123,24 +129,45 @@ void PimItemRelations::moveNode(Id id, IdList parents)
 
 void PimItemRelations::removeNode(Id id)
 {
+    if (!mParents.contains(id) && !mNames.contains(id)) {
+        return;
+    }
+    kDebug() << id;
+    mParents.remove(id);
+    mNames.remove(id);
     //get affected child nodes if virtual node
     //update all nodes
     rebuildCache();
+    emit nodeRemoved(id);
 }
+
 void PimItemRelations::renameNode(Id id, const QString &name)
 {
+    if (name == mNames.value(id)) {
+        return;
+    }
     mNames.insert(id, name);
     //get affected child nodes if virtual node
     //update all nodes
     rebuildCache();
+    emit virtualNodeRenamed(id, name);
+}
+
+Id PimItemRelations::getItemId(const Akonadi::Item &item)
+{
+    if (mItemIdCache.contains(item.id())) {
+        return mItemIdCache.value(item.id());
+    }
+    Id id = mIdCounter++;
+    mItemIdCache[item.id()] = id;
+    return id;
 }
 
 
 
 
 CategoriesStructure::CategoriesStructure()
-:   PimItemRelations(),
-    mIdCounter(0)
+:   PimItemRelations()
 {
 
 }
@@ -160,32 +187,6 @@ QString getCategoryName(const QString &categoryPath)
 }
 
 
-// void CategoriesStructure::onMove(Id id, IdList parents)
-// {
-//     PimItemRelations::onMove(id, parents);
-// }
-
-// void CategoriesStructure::onRename(Id id, const QString& name)
-// {
-//     QString categoryPath = mCategoryMap.key(id);
-//     mCategoryMap.remove(categoryPath);
-//     if (categoryPath.contains(pathSeparator())) {
-//         categoryPath = categoryPath.left(categoryPath.lastIndexOf(pathSeparator())+1);
-//     }
-//     categoryPath.append(name);
-// }
-
-// void PimItemRelations::addToCache(const TreeNode &node, QString categoryPath)
-// {
-//     categoryPath.append(pathSeparator());
-//     categoryPath.append(node.name);
-//     
-//     mCategoryMap.insert(categoryPath, node.id);
-//     foreach (const TreeNode &node, node.parentNodes()) {
-//         addToCache(node, categoryPath);
-//     }
-// }
-
 QString CategoriesStructure::getCategoryPath(Id id) const
 {
     Q_ASSERT(mNames.contains(id));
@@ -199,6 +200,7 @@ QString CategoriesStructure::getCategoryPath(Id id) const
 
 void CategoriesStructure::rebuildCache()
 {
+    kWarning();
     mCategoryMap.clear();
     foreach(Id id, mParents.keys()) {
         if (mItemIdCache.contains(id)) {
@@ -207,7 +209,6 @@ void CategoriesStructure::rebuildCache()
         mCategoryMap.insert(getCategoryPath(id), id);
     }
 }
-
 
 
 TreeNode CategoriesStructure::createCategoryNode(const QString &categoryPath)
@@ -224,21 +225,18 @@ TreeNode CategoriesStructure::createCategoryNode(const QString &categoryPath)
     }
     if (!mCategoryMap.contains(categoryPath)) {
         mCategoryMap[categoryPath] = mIdCounter++;
+        kDebug() << categoryPath << mIdCounter;
     }
-    const TreeNode node(categoryName, mCategoryMap.value(categoryPath), parentNodes);
-    return node;
+    return TreeNode(categoryName, mCategoryMap.value(categoryPath), parentNodes);
 }
 
-Id CategoriesStructure::getItemId(const Akonadi::Item &item)
+void CategoriesStructure::createCategoryNode(const QString& categoryPath, const IdList& parents)
 {
-    if (mItemIdCache.contains(item.id())) {
-        return mItemIdCache.value(item.id());
-    }
-    Id id = mIdCounter++;
-    mItemIdCache[item.id()] = id;
-    return id;
-
+    const TreeNode &node = createCategoryNode(categoryPath);
+    //TODO parents
+    mergeNode(node);
 }
+
 
 Relation CategoriesStructure::getRelationTree(const Akonadi::Item& item)
 {
@@ -270,5 +268,25 @@ void CategoriesStructure::setRelationTree(Akonadi::Item &item, const Relation &r
 //     KCalCore::Todo::Ptr todo = item.getItem().payload<KCalCore::Todo::Ptr>();
 //     todo->setCategories(categories);
     //TODO save
+
+
+//     if (!item.isValid()) {
+//         return false;
+//     }
+// 
+//     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+// 
+//     if (!todo) {
+//         return false;
+//     }
+// 
+//     QStringList categories = todo->categories();
+//     if (categories.contains(categoryPath)) {
+//         categories.removeAll(categoryPath);
+//         todo->setCategories(categories);
+//         new Akonadi::ItemModifyJob(item);
+//         return true;
+//     }
+//     return false;
 }
 

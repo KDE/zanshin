@@ -102,7 +102,7 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model,
     applyPattern(QString());
 }
 
-QString QuickSelectDialog::selectedId() const
+QVariant QuickSelectDialog::selectedId() const
 {
     if (m_mode==Zanshin::ProjectMode) {
         return projectSelectedId();
@@ -117,10 +117,10 @@ Zanshin::ItemType QuickSelectDialog::selectedType() const
     return (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
 }
 
-QString QuickSelectDialog::categorySelectedId() const
+qint64 QuickSelectDialog::categorySelectedId() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
-    return index.data(Zanshin::CategoryPathRole).toString();
+    return index.data(Zanshin::RelationIdRole).toLongLong();
 }
 
 QString QuickSelectDialog::projectSelectedId() const

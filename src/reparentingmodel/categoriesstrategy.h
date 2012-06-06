@@ -36,6 +36,7 @@ public:
     virtual void setData(TodoNode* node, Id id);
     virtual void onNodeRemoval(const Id& changed);
 
+    virtual QVariant data(Id index, int role) const;
 
     virtual Qt::ItemFlags flags(const QModelIndex& index, Qt::ItemFlags flags);
     virtual QStringList mimeTypes();
@@ -48,6 +49,7 @@ public:
     virtual bool reparentOnParentRemoval(Id child) const;
 private slots:
     void createVirtualNode(Id id, IdList parents, const QString &name);
+    void doRemoveNode(Id id);
 //     void createCategoryNode(const QString &categoryPath);
 //     void removeCategoryNode(const QString &categoryPath);
 //     void renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);

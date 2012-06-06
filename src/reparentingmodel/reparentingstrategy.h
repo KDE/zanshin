@@ -92,6 +92,7 @@ public:
      * Called during the creation of a virtual node.
      */
     virtual void setData(TodoNode* node, Id id) {};
+    virtual QVariant data(Id index, int role) const { return QVariant(); };
 
     virtual QMimeData *mimeData(const QModelIndexList &proxyIndexes) const{return 0;};
     virtual QStringList mimeTypes() { return QStringList(); };

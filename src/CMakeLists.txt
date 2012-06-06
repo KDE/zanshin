@@ -18,7 +18,7 @@ set(zanshin_core_SRCS
    modelstack.cpp
    selectionproxymodel.cpp
    sidebarmodel.cpp
-   todocategoriesmodel.cpp
+#    todocategoriesmodel.cpp
    todohelpers.cpp
    todoproxymodelbase.cpp
    todotreemodel.cpp

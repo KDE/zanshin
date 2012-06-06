@@ -56,30 +56,6 @@ struct Relation
 };
 
 
-
-/**
- * Used to store/get the relations into the individual items
- */
-// class StructureInterface
-// {
-// public:
-//     //Build a relation tree from an item
-//     virtual Relation getRelationTree(const AbstractPimItem &item) = 0;
-//     virtual void setRelationTree(AbstractPimItem item, const Relation &) = 0;
-// //     virtual void onRename(Id, const QString &);
-// //     virtual void onMove(Id, const QString &);
-// };
-
-
-
-// class TopicsStructure: public StructureInterface  {
-// public:
-//     //Build a relation tree from a topic
-//     Relation getRelationTree(const AbstractPimItem &category);
-//     void setRelationTree(AbstractPimItem item, const Relation& );
-// };
-
-
 /**
  * Interfaces directly with akonadi (could be further abstracted for other storage backends, but that's for another one)
  *
@@ -111,10 +87,6 @@ public:
     //for all nodes
     void moveNode(Id, IdList parents);
 signals:
-//     void categoryAdded(const QString &categoryPath);
-//     void categoryRemoved(const QString &categoryPath);
-//     void categoryRenamed(const QString &oldCategoryPath, const QString &newCategoryPath);
-//     void categoryMoved(const QString &oldCategoryPath, const QString &newCategoryPath);
 
     //only for virtual nodes
     void virtualNodeAdded(Id id, IdList parents, const QString &name);
@@ -127,15 +99,15 @@ signals:
 protected:
     virtual Relation getRelationTree(const Akonadi::Item &item) = 0;
     virtual void setRelationTree(Akonadi::Item &item, const Relation &) = 0;
-//     virtual void onRename(Id id, const QString &name);
-//     virtual void onMove(Id id, IdList parents);
     virtual void rebuildCache() = 0;
     IdList getChildNodes(Id id);
-    
+    Id getItemId(const Akonadi::Item &item);
     void mergeNode(const TreeNode &node);
+    
     QMap<Id, QString> mNames;
     QMultiMap<Id, Id> mParents;
-    QMap<Id, Akonadi::Item> mItems;
+    QMap<Akonadi::Item::Id, Id> mItemIdCache;
+    Id mIdCounter;
 };
 
 class CategoriesStructure: public PimItemRelations {
@@ -144,23 +116,14 @@ public:
     //Build a relation tree from the category of an item
     Relation getRelationTree(const Akonadi::Item &item);
     void setRelationTree(Akonadi::Item &item, const Relation& );
+    void createCategoryNode(const QString &categoryPath, const IdList &parents);
 protected:
     virtual void rebuildCache();
 private:
     QString getCategoryPath(Id id) const;
-//     void addToCache(const TreeNode &node, QString categoryPath);
-    Id getItemId(const Akonadi::Item &item);
     TreeNode createCategoryNode(const QString &categoryPath);
     QMap<QString, Id> mCategoryMap; //TODO handle renames & moves
-    QMap<Akonadi::Item::Id, Id> mItemIdCache;
-    Id mIdCounter;
 };
 
-// void usage()
-// {
-//     PimItemRelations relations;
-//     AbstractPimItem item;
-//     relations.addItem(item);
-// }
 
 #endif // PIMITEMRELATIONS_H

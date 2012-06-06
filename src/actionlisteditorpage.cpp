@@ -594,8 +594,8 @@ void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
         QModelIndex index = m_treeView->model()->index(i, 0);
         int type = index.data(Zanshin::ItemTypeRole).toInt();
         if (type==Zanshin::Category) {
-            QString category = index.data(Zanshin::CategoryPathRole).toString();
-            if (CategoryManager::instance().dissociateTodoFromCategory(current, category)) {
+            Id category = index.data(Zanshin::RelationIdRole).toInt();
+            if (CategoryManager::instance().dissociateFromCategory(current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>(), category)) {
                 break;
             }
         }

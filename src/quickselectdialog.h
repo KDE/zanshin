@@ -50,13 +50,13 @@ public:
 
     QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action);
 
-    QString selectedId() const;
+    QVariant selectedId() const;
     Zanshin::ItemType selectedType() const;
     Akonadi::Collection collection() const;
     QModelIndex selectedIndex() const;
 
 private:
-    QString categorySelectedId() const;
+    qint64 categorySelectedId() const;
     QString projectSelectedId() const;
 
     QString pattern() const;

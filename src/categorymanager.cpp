@@ -45,7 +45,7 @@ CategoryManager &CategoryManager::instance()
 
 CategoryManager::CategoryManager(QObject *parent)
     : QObject(parent)
-    , m_model(0)
+//     , m_model(0)
 {
 }
 
@@ -53,27 +53,9 @@ CategoryManager::~CategoryManager()
 {
 }
 
-void CategoryManager::setModel(QAbstractItemModel *model)
+void CategoryManager::setCategoriesStructure(CategoriesStructure *s)
 {
-    if (m_model) {
-        disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)));
-        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
-    }
-
-    if (model) {
-        connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-                this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-                this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
-    }
-
-    m_categories.clear();
-    m_model = model;
-}
-
-QStringList CategoryManager::categories()
-{
-    return m_categories;
+    m_categoriesStructure = s;
 }
 
 const QChar CategoryManager::pathSeparator()
@@ -89,39 +71,20 @@ void CategoryManager::addCategory(const QString &category, const QString &parent
     } else {
         categoryPath = parentCategory + CategoryManager::pathSeparator() + category;
     }
-    addCategory(categoryPath);
+    m_categoriesStructure->createCategoryNode(categoryPath, IdList());
 }
 
-void CategoryManager::addCategory(const QString &categoryPath)
-{
-    if (!m_categories.contains(categoryPath)) {
-        m_categories << categoryPath;
-        emit categoryAdded(categoryPath);
-    }
-}
 
-bool CategoryManager::removeCategory(QWidget *parent, const QModelIndex &categoryIndex)
+bool CategoryManager::removeCategories(QWidget* parent, const IdList& categories)
 {
-    QModelIndexList categories;
-    categories << categoryIndex;
-    return removeCategories(parent, categories);
-}
-
-bool CategoryManager::removeCategories(QWidget *parent, const QModelIndexList &categories)
-{
-    if (categories.isEmpty()) {
-        return false;
-    }
-
     QStringList categoryList;
-    foreach (QModelIndex category, categories) {
-        categoryList << category.data().toString();
+    foreach (Id category, categories) {
+        categoryList << m_categoriesStructure->getName(category);
     }
     QString categoryName = categoryList.join(", ");
-
+    kDebug() << categories << categoryList;
     QString title;
     QString text;
-
     if (categories.size() > 1) {
         text = i18n("Do you really want to delete the context '%1'? All actions won't be associated to this context anymore.", categoryName);
         title = i18n("Delete Context");
@@ -129,183 +92,214 @@ bool CategoryManager::removeCategories(QWidget *parent, const QModelIndexList &c
         text = i18n("Do you really want to delete the contexts '%1'? All actions won't be associated to those contexts anymore.", categoryName);
         title = i18n("Delete Contexts");
     }
-
     int button = KMessageBox::questionYesNo(parent, text, title);
     bool canRemove = (button==KMessageBox::Yes);
 
-    if (!canRemove) return false;
-
-    foreach (QModelIndex category, categories) {
-        QString categoryPath = category.data(Zanshin::CategoryPathRole).toString();
-        if (!removeCategory(categoryPath)) {
-            return false;
-        }
+    if (!canRemove) {
+        return false;
+    }
+    kDebug() << "remove " << categories;
+    foreach (Id id, categories) {
+        m_categoriesStructure->removeNode(id);
     }
     return true;
 }
 
-bool CategoryManager::removeCategory(const QString &categoryPath)
+
+bool CategoryManager::removeCategory(const Id &id)
 {
-    int pos = m_categories.indexOf(categoryPath);
-    if (pos != -1) {
-        removeCategoryFromTodo(QModelIndex(), categoryPath);
-        m_categories.removeAt(pos);
-        emit categoryRemoved(categoryPath);
-        return true;
-    }
-    return false;
+    kDebug() << id;
+    m_categoriesStructure->removeNode(id);
+    return true;
+//     int pos = m_categories.indexOf(categoryPath);
+//     if (pos != -1) {
+//         removeCategoryFromTodo(QModelIndex(), categoryPath);
+//         m_categories.removeAt(pos);
+//         emit categoryRemoved(categoryPath);
+//         return true;
+//     }
+//     return false;
 }
 
-void CategoryManager::onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end)
+// void CategoryManager::onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end)
+// {
+//     for (int i=begin; i<=end; ++i) {
+//         QModelIndex sourceChildIndex = m_model->index(i, 0, sourceIndex);
+//         if (!sourceChildIndex.isValid()) {
+//             continue;
+//         }
+//         Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
+//         if (type==Zanshin::StandardTodo) {
+//             QStringList categories = m_model->data(sourceChildIndex, Zanshin::CategoriesRole).toStringList();
+//             foreach (QString category, categories) {
+//                 addCategory(category);
+//             }
+//         } else if (type==Zanshin::Collection) {
+//             onSourceInsertRows(sourceChildIndex, 0, m_model->rowCount(sourceChildIndex)-1);
+//         }
+//     }
+// }
+
+// void CategoryManager::onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end)
+// {
+//     for (int row=begin.row(); row<=end.row(); ++row) {
+//         QModelIndex sourceIndex = begin.sibling(row, 0);
+//         QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(Zanshin::CategoriesRole).toStringList());
+// 
+//         QSet<QString> oldCategories = QSet<QString>::fromList(m_categories);
+//         QSet<QString> interCategories = newCategories;
+//         interCategories.intersect(oldCategories);
+//         newCategories-= interCategories;
+// 
+//         foreach (const QString &newCategory, newCategories) {
+//             addCategory(newCategory);
+//         }
+//     }
+// }
+
+// void CategoryManager::removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &categoryPath)
+// {
+//     for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
+//         QModelIndex child = m_model->index(i, 0, sourceIndex);
+// //         dissociateTodoFromCategory(child, categoryPath);
+//         removeCategoryFromTodo(child, categoryPath);
+//     }
+// }
+
+bool CategoryManager::dissociateFromCategory(const Akonadi::Item& item, Id category)
 {
-    for (int i=begin; i<=end; ++i) {
-        QModelIndex sourceChildIndex = m_model->index(i, 0, sourceIndex);
-        if (!sourceChildIndex.isValid()) {
-            continue;
-        }
-        Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
-        if (type==Zanshin::StandardTodo) {
-            QStringList categories = m_model->data(sourceChildIndex, Zanshin::CategoriesRole).toStringList();
-            foreach (QString category, categories) {
-                addCategory(category);
-            }
-        } else if (type==Zanshin::Collection) {
-            onSourceInsertRows(sourceChildIndex, 0, m_model->rowCount(sourceChildIndex)-1);
-        }
-    }
-}
-
-void CategoryManager::onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end)
-{
-    for (int row=begin.row(); row<=end.row(); ++row) {
-        QModelIndex sourceIndex = begin.sibling(row, 0);
-        QSet<QString> newCategories = QSet<QString>::fromList(sourceIndex.data(Zanshin::CategoriesRole).toStringList());
-
-        QSet<QString> oldCategories = QSet<QString>::fromList(m_categories);
-        QSet<QString> interCategories = newCategories;
-        interCategories.intersect(oldCategories);
-        newCategories-= interCategories;
-
-        foreach (const QString &newCategory, newCategories) {
-            addCategory(newCategory);
-        }
-    }
-}
-
-void CategoryManager::removeCategoryFromTodo(const QModelIndex &sourceIndex, const QString &categoryPath)
-{
-    for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
-        QModelIndex child = m_model->index(i, 0, sourceIndex);
-        dissociateTodoFromCategory(child, categoryPath);
-        removeCategoryFromTodo(child, categoryPath);
-    }
-}
-
-bool CategoryManager::dissociateTodoFromCategory(const QModelIndex &index, const QString &categoryPath)
-{
-    if (!index.isValid()) {
-        return false;
-    }
-
-    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    kDebug() << item.id() << category;
     if (!item.isValid()) {
         return false;
     }
-
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
-    if (!todo) {
-        return false;
-    }
-
-    QStringList categories = todo->categories();
-    if (categories.contains(categoryPath)) {
-        categories.removeAll(categoryPath);
-        todo->setCategories(categories);
-        new Akonadi::ItemModifyJob(item);
-        return true;
-    }
-    return false;
-}
-
-void CategoryManager::renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath)
-{
-    if (oldCategoryPath == newCategoryPath) {
-        return;
-    }
-
-    emit categoryRenamed(oldCategoryPath, newCategoryPath);
-
-    m_categories.removeAll(oldCategoryPath);
-    m_categories << newCategoryPath;
-
-    renameCategory(QModelIndex(), oldCategoryPath, newCategoryPath);
-}
-
-void CategoryManager::renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath)
-{
-    for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
-        QModelIndex child = m_model->index(i, 0, sourceIndex);
-        if (child.isValid()) {
-            const Akonadi::Item item = child.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-            if (item.isValid()) {
-                KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-                if (todo) {
-                    QStringList categories = todo->categories();
-                    if (categories.contains(oldCategoryPath)) {
-                        categories = categories.replaceInStrings(oldCategoryPath, newCategoryPath);
-                        todo->setCategories(categories);
-                        new Akonadi::ItemModifyJob(item);
-                    }
-                }
-            }
-        }
-        renameCategory(child, oldCategoryPath, newCategoryPath);
-    }
-}
-
-void CategoryManager::moveCategory(const QString &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType)
-{
-    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
-        return;
-    }
-
-    QString categoryName = oldCategoryPath.split(CategoryManager::pathSeparator()).last();
-    QString newCategoryPath;
-    if (parentType==Zanshin::Category) {
-        newCategoryPath = parentCategoryPath + CategoryManager::pathSeparator() + categoryName;
-    } else {
-        newCategoryPath = categoryName;
-    }
-
-    if (oldCategoryPath == newCategoryPath) {
-        return;
-    }
-    addCategory(newCategoryPath);
-    emit categoryMoved(oldCategoryPath, newCategoryPath);
-    removeCategory(oldCategoryPath);
-}
-
-bool CategoryManager::moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType)
-{
-    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    return moveTodoToCategory(item, categoryPath, parentType);
-}
-
-bool CategoryManager::moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType)
-{
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-    if (!todo) {
-        return false;
-    }
-    QStringList categories;
-    if (parentType != Zanshin::Inbox && parentType != Zanshin::CategoryRoot) {
-        categories= todo->categories();
-        if (!categories.contains(categoryPath)) {
-            categories << categoryPath;
-        }
-    }
-    todo->setCategories(categories);
-    new Akonadi::ItemModifyJob(item);
+    Id id = m_categoriesStructure->addItem(item);
+    IdList parents = m_categoriesStructure->getParents(id);
+    parents.removeAll(category);
+    m_categoriesStructure->moveNode(id, parents);
     return true;
 }
+
+bool CategoryManager::moveToCategory(Id id, Id category, Zanshin::ItemType parentType)
+{
+    kDebug() << id << category;
+    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) { //TODO shouldn't be necessary
+        return false;
+    }
+    m_categoriesStructure->moveNode(id, IdList() << category);
+    return true;
+}
+
+
+
+// bool CategoryManager::dissociateTodoFromCategory(const QModelIndex &index, const QString &categoryPath)
+// {
+//     if (!index.isValid()) {
+//         return false;
+//     }
+// 
+//     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+//     if (!item.isValid()) {
+//         return false;
+//     }
+//     Id id = m_categoriesStructure->addItem(item);
+//     IdList parents = m_categoriesStructure->getParents(id);
+//     m_categoriesStructure->moveNode();
+//     return true;
+// // 
+// //     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+// // 
+// //     if (!todo) {
+// //         return false;
+// //     }
+// // 
+// //     QStringList categories = todo->categories();
+// //     if (categories.contains(categoryPath)) {
+// //         categories.removeAll(categoryPath);
+// //         todo->setCategories(categories);
+// //         new Akonadi::ItemModifyJob(item);
+// //         return true;
+// //     }
+// //     return false;
+// }
+
+// void CategoryManager::renameCategory(const QString &oldCategoryPath, const QString &newCategoryPath)
+// {
+//     if (oldCategoryPath == newCategoryPath) {
+//         return;
+//     }
+// 
+//     emit categoryRenamed(oldCategoryPath, newCategoryPath);
+// 
+//     m_categories.removeAll(oldCategoryPath);
+//     m_categories << newCategoryPath;
+// 
+//     renameCategory(QModelIndex(), oldCategoryPath, newCategoryPath);
+// }
+
+// void CategoryManager::renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath)
+// {
+//     for (int i=0; i < m_model->rowCount(sourceIndex); ++i) {
+//         QModelIndex child = m_model->index(i, 0, sourceIndex);
+//         if (child.isValid()) {
+//             const Akonadi::Item item = child.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+//             if (item.isValid()) {
+//                 KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+//                 if (todo) {
+//                     QStringList categories = todo->categories();
+//                     if (categories.contains(oldCategoryPath)) {
+//                         categories = categories.replaceInStrings(oldCategoryPath, newCategoryPath);
+//                         todo->setCategories(categories);
+//                         new Akonadi::ItemModifyJob(item);
+//                     }
+//                 }
+//             }
+//         }
+//         renameCategory(child, oldCategoryPath, newCategoryPath);
+//     }
+// }
+
+// void CategoryManager::moveCategory(const QString &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType)
+// {
+// //     if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
+// //         return;
+// //     }
+// // 
+// //     QString categoryName = oldCategoryPath.split(CategoryManager::pathSeparator()).last();
+// //     QString newCategoryPath;
+// //     if (parentType==Zanshin::Category) {
+// //         newCategoryPath = parentCategoryPath + CategoryManager::pathSeparator() + categoryName;
+// //     } else {
+// //         newCategoryPath = categoryName;
+// //     }
+// // 
+// //     if (oldCategoryPath == newCategoryPath) {
+// //         return;
+// //     }
+// //     addCategory(newCategoryPath);
+// //     emit categoryMoved(oldCategoryPath, newCategoryPath);
+// //     removeCategory(oldCategoryPath);
+// }
+
+// bool CategoryManager::moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType)
+// {
+//     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+//     return moveTodoToCategory(item, categoryPath, parentType);
+// }
+
+// bool CategoryManager::moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType)
+// {
+//     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+//     if (!todo) {
+//         return false;
+//     }
+//     QStringList categories;
+//     if (parentType != Zanshin::Inbox && parentType != Zanshin::CategoryRoot) {
+//         categories= todo->categories();
+//         if (!categories.contains(categoryPath)) {
+//             categories << categoryPath;
+//         }
+//     }
+//     todo->setCategories(categories);
+//     new Akonadi::ItemModifyJob(item);
+//     return true;
+// }

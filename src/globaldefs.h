@@ -58,6 +58,7 @@ namespace Zanshin
         ChildUidsRole,
         ChildIndexesRole,
         CategoryPathRole,
+        RelationIdRole,
         UriRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };

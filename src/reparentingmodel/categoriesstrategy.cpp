@@ -34,16 +34,10 @@ CategoriesStrategy::CategoriesStrategy()
     mRoot(2),
     mRelations(new CategoriesStructure())
 {
+    CategoryManager::instance().setCategoriesStructure(static_cast<CategoriesStructure*>(mRelations.data()));
     mReparentOnRemoval = true;
     connect(mRelations.data(), SIGNAL(virtualNodeAdded(Id, IdList, QString)), this, SLOT(createVirtualNode(Id, IdList, QString)));
-//     connect(&CategoryManager::instance(), SIGNAL(categoryAdded(QString)),
-//             this, SLOT(createCategoryNode(QString)));
-//     connect(&CategoryManager::instance(), SIGNAL(categoryRemoved(QString)),
-//             this, SLOT(removeCategoryNode(QString)));
-//     connect(&CategoryManager::instance(), SIGNAL(categoryRenamed(QString,QString)),
-//             this, SLOT(renameCategoryNode(QString,QString)));
-//     connect(&CategoryManager::instance(), SIGNAL(categoryMoved(QString,QString)),
-//             this, SLOT(moveCategoryNode(QString,QString)));
+    connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
 }
 
 void CategoriesStrategy::init()
@@ -88,12 +82,6 @@ Id CategoriesStrategy::getId(const QModelIndex &sourceChildIndex)
         return -1;
     }
     return translateFrom(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
-//     const QString &uid = sourceChildIndex.data(Zanshin::UidRole).toString();
-//     Q_ASSERT(!uid.isEmpty());
-//     if (!mUidMapping.contains(uid)) {
-//         mUidMapping.insert(uid, getNextId());
-//     }
-//     return mUidMapping.value(uid);
 }
 
 IdList CategoriesStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
@@ -102,13 +90,7 @@ IdList CategoriesStrategy::getParents(const QModelIndex &sourceChildIndex, const
     Q_ASSERT(sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::StandardTodo);
 
     IdList parents = translateFrom(mRelations->getParents(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>())));
-/*    
-    QStringList categories = sourceChildIndex.data(Zanshin::CategoriesRole).toStringList();
-    IdList parents;
-    foreach (const QString &category, categories) {
-        parents << createCategoryNode(category);
-    }
-    mNodeCategories.insert(id, parents);*/
+
     foreach(Id i, ignore) {
         parents.removeAll(i);
     }
@@ -117,34 +99,6 @@ IdList CategoriesStrategy::getParents(const QModelIndex &sourceChildIndex, const
     }
     return parents;
 }
-
-// QString getCategoryName(const QString &categoryPath)
-// {
-//     QString categoryName = categoryPath;
-//     if (categoryPath.contains(CategoryManager::pathSeparator())) {
-//         categoryName = categoryPath.split(CategoryManager::pathSeparator()).last();
-//     }
-//     return categoryName;
-// }
-
-// void CategoriesStrategy::createCategoryNode(const QString &categoryPath)
-// {
-//     if (mCategoryMap.contains(categoryPath)) {
-//         return mCategoryMap.value(categoryPath);
-//     }
-//     Id parent = mRoot;
-//     const QString &categoryName = getCategoryName(categoryPath);
-//     if (categoryPath.contains(CategoryManager::pathSeparator())) {
-//         const QString &parentCategory = categoryPath.left(categoryPath.lastIndexOf(CategoryManager::pathSeparator()));
-//         parent = createCategoryNode(parentCategory);
-//     }
-// 
-//     Id id = getNextId();
-//     mCategoryMap[categoryPath] = id;
-//     mNodeParentMap.insertMulti(id, parent);
-//     kDebug() << id << categoryPath;
-//     createNode(id, IdList() << mNodeParentMap.values(id), categoryName);
-// }
 
 void CategoriesStrategy::createVirtualNode(Id id, IdList parents, const QString& name)
 {
@@ -155,6 +109,13 @@ void CategoriesStrategy::createVirtualNode(Id id, IdList parents, const QString&
     createNode(translateFrom(id), p, name);
 }
 
+void CategoriesStrategy::doRemoveNode(Id id)
+{
+    kDebug() << id;
+    ReparentingStrategy::removeNode(translateFrom(id));
+}
+
+
 
 void CategoriesStrategy::setData(TodoNode* node, Id id)
 {
@@ -162,13 +123,10 @@ void CategoriesStrategy::setData(TodoNode* node, Id id)
     if (id == mInbox || id == mRoot) {
         return;
     }
-//     Q_ASSERT(mCategoryMap.values().contains(id));
-//     const QString &categoryPath = mCategoryMap.key(id);
-//     const QString &categoryName = getCategoryName(categoryPath);
+
     const QString &categoryName = mRelations->getName(translateTo(id));
     node->setData(categoryName, 0, Qt::DisplayRole);
     node->setData(categoryName, 0, Qt::EditRole);
-//     node->setData(categoryPath, 0, Zanshin::CategoryPathRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole);
 }
@@ -182,85 +140,6 @@ bool CategoriesStrategy::reparentOnParentRemoval(Id child) const
     return true;
 }
 
-
-// void CategoriesStrategy::removeCategoryNode(const QString &category)
-// {
-//     if (!mCategoryMap.contains(category)) {
-//         return;
-//     }
-//     removeNode(mCategoryMap.value(category));
-//     //TODO check that child categories are removed and child todos updated correctly
-// }
-// 
-// void CategoriesStrategy::renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath)
-// {
-//     if (!mCategoryMap.contains(oldCategoryPath)) {
-//         return;
-//     }
-//     Id id = mCategoryMap.value(oldCategoryPath);
-//     renameNode(id, newCategoryPath);
-//     mCategoryMap[newCategoryPath] = id;
-//     mCategoryMap.remove(oldCategoryPath);
-//     //TODO probably change renameNode into setData(id, QMap);
-//     //TODO node->setData(newCategoryPath, 0, Zanshin::CategoryPathRole);
-//     //TODO rename child nodes
-//     
-// //     TodoNode *node = m_categoryMap[oldCategoryPath];
-// //     m_categoryMap[newCategoryPath] = node;
-// //     m_categoryMap.remove(oldCategoryPath);
-// // 
-// //     QList<TodoNode*> children = node->children();
-// //     foreach (TodoNode* child, children) {
-// //         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-// //         if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
-// //             QString childPath = childIndex.data(Zanshin::CategoryPathRole).toString();
-// //             QString newChildPath = childPath;
-// //             newChildPath = newChildPath.replace(oldCategoryPath, newCategoryPath);
-// //             CategoryManager::instance().renameCategory(childPath, newChildPath);
-// //         }
-// //     }
-// // 
-// //     QString newCategory = newCategoryPath.split(CategoryManager::pathSeparator()).last();
-// //     node->setData(newCategory, 0, Qt::DisplayRole);
-// //     node->setData(newCategory, 0, Qt::EditRole);
-// //     node->setData(newCategoryPath, 0, Zanshin::CategoryPathRole);
-// // 
-// //     QModelIndex index = m_manager->indexForNode(node, 0);
-// //     emit dataChanged(index, index);
-// }
-// 
-// void CategoriesStrategy::moveCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath)
-// {
-// //     updateParents();
-// //     TodoNode *node = m_categoryMap[oldCategoryPath];
-// // 
-// //     QList<TodoNode*> children = node->children();
-// //     foreach (TodoNode* child, children) {
-// //         QModelIndex childIndex = m_manager->indexForNode(child, 0);
-// //         if (childIndex.data(Zanshin::ItemTypeRole).toInt() == Zanshin::Category) {
-// //             QString childPath = childIndex.data(Zanshin::CategoryPathRole).toString();
-// //             CategoryManager::instance().moveCategory(childPath, newCategoryPath, Zanshin::Category);
-// //         } else {
-// //             CategoryManager::instance().moveTodoToCategory(childIndex, newCategoryPath, Zanshin::Category);
-// //         }
-// //     }
-// //TODO handle
-// 
-// }
-
-// IdList getAffectedItems(Id)
-// {
-//     //Build a list of all children (the ones we need to update with the updated category information)
-// }
-// 
-// void CategoriesStrategy::removeCategory(const Id& toRemove)
-// {
-//     //It's a category remove from all children
-//     //Remove subcategories
-//     
-//     
-//     //remove cateogry from every todo
-// }
 
 void CategoriesStrategy::onNodeRemoval(const Id& changed)
 {
@@ -373,11 +252,19 @@ bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role)
 void CategoriesStrategy::reset()
 {
     ReparentingStrategy::reset();
-//     mCategoryMap.clear();
 //     mUidMapping.clear();
 //     foreach(QString category, CategoryManager::instance().categories()) {
 //         CategoryManager::instance().removeCategory(category);
 //     }
 }
+
+QVariant CategoriesStrategy::data(Id id, int role) const
+{
+    if (role == Zanshin::RelationIdRole) {
+        return translateTo(id);
+    }
+    return ReparentingStrategy::data(id, role);
+}
+
 
 

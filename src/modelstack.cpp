@@ -157,7 +157,7 @@ QAbstractItemModel *ModelStack::treeComboModel()
 QAbstractItemModel *ModelStack::categoriesModel()
 {
     if (!m_categoriesModel) {
-        CategoryManager::instance().setModel(baseModel());
+//         CategoryManager::instance().setModel(baseModel());
         ReparentingModel *categoriesModel = new ReparentingModel(new CategoriesStrategy(), this);
         categoriesModel->setSourceModel(baseModel());
         m_categoriesModel = categoriesModel;
