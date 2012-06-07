@@ -26,7 +26,6 @@
 #include <KUrl>
 #include <KLocalizedString>
 #include <QMimeData>
-#include <KCalCore/Todo>
 
 CategoriesStrategy::CategoriesStrategy()
 :   ReparentingStrategy(),
@@ -78,7 +77,7 @@ IdList translateFrom(IdList l)
 Id CategoriesStrategy::getId(const QModelIndex &sourceChildIndex)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
-    if (type!=Zanshin::StandardTodo) { //Filter all other items
+    if (type!=Zanshin::StandardTodo /*&& type!=Zanshin::ProjectTodo*/) { //Filter all other items
         return -1;
     }
     return translateFrom(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
@@ -87,7 +86,7 @@ Id CategoriesStrategy::getId(const QModelIndex &sourceChildIndex)
 IdList CategoriesStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
 {
     Id id = getId(sourceChildIndex);
-    Q_ASSERT(sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::StandardTodo);
+    Q_ASSERT(sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::StandardTodo /*|| sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo*/);
 
     IdList parents = translateFrom(mRelations->getParents(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>())));
 
@@ -134,9 +133,9 @@ void CategoriesStrategy::setData(TodoNode* node, Id id)
 bool CategoriesStrategy::reparentOnParentRemoval(Id child) const
 {
 //     kDebug() << child;
-//     if (mCategoryMap.values().contains(child)) {
-//         return false;
-//     }
+    if (mRelations->isVirtual(translateTo(child))) {
+        return false;
+    }
     return true;
 }
 
@@ -144,10 +143,6 @@ bool CategoriesStrategy::reparentOnParentRemoval(Id child) const
 void CategoriesStrategy::onNodeRemoval(const Id& changed)
 {
     kDebug() << changed;
-//     if (mCategoryMap.values().contains(changed)) {
-// 
-//         
-//     }
     mRelations->removeNode(translateTo(changed));
 }
 
@@ -158,7 +153,7 @@ QMimeData* CategoriesStrategy::mimeData(const QModelIndexList& indexes) const
 //     foreach (const QModelIndex &proxyIndex, indexes) {
 //         categoriesList << proxyIndex.data(Zanshin::CategoryPathRole).toString();
 //     }
-// 
+
 //     if (!categoriesList.isEmpty()) {
 //         QMimeData *mimeData = new QMimeData();
 //         QString sep = CategoryManager::pathSeparator();
@@ -173,8 +168,7 @@ QMimeData* CategoriesStrategy::mimeData(const QModelIndexList& indexes) const
 
 QStringList CategoriesStrategy::mimeTypes()
 {
-//     return QStringList() << "application/x-vnd.zanshin.category";
-return QStringList();
+    return QStringList() << "application/x-vnd.zanshin.category";
 }
 
 Qt::DropActions CategoriesStrategy::supportedDropActions() const
@@ -198,53 +192,42 @@ bool CategoriesStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::Dr
     if (action != Qt::MoveAction || (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.category"))) {
         return false;
     }
-    return false;
     
-//     QString parentCategory = getData(id, Zanshin::CategoryPathRole).toString();
-//     Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
-// 
-//     if (KUrl::List::canDecode(mimeData)) {
-//         KUrl::List urls = KUrl::List::fromMimeData(mimeData);
-//         foreach (const KUrl &url, urls) {
-//             const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
-//             if (urlItem.isValid()) {
-//                 Akonadi::Item item = TodoHelpers::fetchFullItem(urlItem);
-// 
-//                 if (!item.isValid()) {
-//                     return false;
-//                 }
-// 
-//                 if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-//                     CategoryManager::instance().moveTodoToCategory(item, parentCategory, parentType);
-//                 }
-//             }
-//         }
-//     } else {
-//         if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
-//             return false;
-//         }
-//         QByteArray categories = mimeData->data("application/x-vnd.zanshin.category");
+    Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
+    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
+        return false;
+    }
+    if (KUrl::List::canDecode(mimeData)) {
+        KUrl::List urls = KUrl::List::fromMimeData(mimeData);
+        foreach (const KUrl &url, urls) {
+            const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
+            if (!urlItem.isValid()) {
+                qWarning() << "invalid item";
+                continue;
+            }
+            mRelations->moveNode(mRelations->getItemId(urlItem), IdList() << translateTo(id));
+        }
+    } else {
+        QByteArray categories = mimeData->data("application/x-vnd.zanshin.category");
+        //TODO
+        return false;
 //         QString sep = CategoryManager::pathSeparator();
 //         sep += CategoryManager::pathSeparator();
 //         QStringList categoriesPath = QString::fromUtf8(categories.data()).split(sep);
 //         foreach (QString categoryPath, categoriesPath) {
 //             CategoryManager::instance().moveCategory(categoryPath, parentCategory, parentType);
 //         }
-//     }
-//     return true;
+    }
+    return true;
 }
 
 bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) getData(id, Zanshin::ItemTypeRole).toInt();
-//     if (type==Zanshin::Category) {
-//         QString oldCategoryPath = getData(id, Zanshin::CategoryPathRole).toString();
-//         QString newCategoryName = value.toString();
-//         QString newCategoryPath = oldCategoryPath.left(oldCategoryPath.lastIndexOf(CategoryManager::pathSeparator())+1) + newCategoryName;
-//         CategoryManager::instance().renameCategory(oldCategoryPath, newCategoryPath);
-//         return true;
-//     }
-//     return false;
+    if (type==Zanshin::Category) {
+        mRelations->renameNode(translateTo(id), value.toString());
+        return true;
+    }
     return false;
 }
 
@@ -252,10 +235,6 @@ bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role)
 void CategoriesStrategy::reset()
 {
     ReparentingStrategy::reset();
-//     mUidMapping.clear();
-//     foreach(QString category, CategoryManager::instance().categories()) {
-//         CategoryManager::instance().removeCategory(category);
-//     }
 }
 
 QVariant CategoriesStrategy::data(Id id, int role) const

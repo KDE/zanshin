@@ -77,11 +77,13 @@ TodoNode *ReparentingStrategy::createNode(Id id, IdList parents, QString name)
 
 void ReparentingStrategy::renameNode(Id id, QString name)
 {
+    kDebug() << id << name;
     m_model->renameNode(id, name);
 }
 
 void ReparentingStrategy::updateParents(Id id, IdList parents)
 {
+    kDebug() << id << parents;
     m_model->reparentNode(id, parents);
 }
 

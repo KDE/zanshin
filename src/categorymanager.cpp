@@ -45,7 +45,6 @@ CategoryManager &CategoryManager::instance()
 
 CategoryManager::CategoryManager(QObject *parent)
     : QObject(parent)
-//     , m_model(0)
 {
 }
 
@@ -58,20 +57,9 @@ void CategoryManager::setCategoriesStructure(CategoriesStructure *s)
     m_categoriesStructure = s;
 }
 
-const QChar CategoryManager::pathSeparator()
+void CategoryManager::addCategory(const QString &category, const IdList &parentCategory)
 {
-    return QChar(0x2044);
-}
-
-void CategoryManager::addCategory(const QString &category, const QString &parentCategory)
-{
-    QString categoryPath;
-    if (parentCategory.isEmpty()) {
-        categoryPath = category;
-    } else {
-        categoryPath = parentCategory + CategoryManager::pathSeparator() + category;
-    }
-    m_categoriesStructure->createCategoryNode(categoryPath, IdList());
+    m_categoriesStructure->addCategoryNode(category, parentCategory);
 }
 
 
@@ -172,7 +160,7 @@ bool CategoryManager::dissociateFromCategory(const Akonadi::Item& item, Id categ
     if (!item.isValid()) {
         return false;
     }
-    Id id = m_categoriesStructure->addItem(item);
+    Id id = m_categoriesStructure->getItemId(item);
     IdList parents = m_categoriesStructure->getParents(id);
     parents.removeAll(category);
     m_categoriesStructure->moveNode(id, parents);
@@ -189,6 +177,11 @@ bool CategoryManager::moveToCategory(Id id, Id category, Zanshin::ItemType paren
     return true;
 }
 
+bool CategoryManager::renameCategory(Id id, const QString &newName)
+{
+    m_categoriesStructure->renameNode(id, newName);
+    return true;
+}
 
 
 // bool CategoryManager::dissociateTodoFromCategory(const QModelIndex &index, const QString &categoryPath)

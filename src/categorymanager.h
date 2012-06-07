@@ -61,22 +61,13 @@ public:
     CategoryManager(QObject *parent = 0);
     virtual ~CategoryManager();
 
-//     CategoriesStructure *getCategoriesStructure();
     void setCategoriesStructure(CategoriesStructure *);
 
-    void addCategory(const QString &category, const QString &parentCategory = QString());
+    void addCategory(const QString &category, const IdList &parentCategory = IdList());
     bool removeCategories(QWidget *parent, const IdList &categoryIndex);
     bool dissociateFromCategory(const Akonadi::Item &item, Id category);
     bool moveToCategory(Id id, Id category, Zanshin::ItemType parentType);
-//     void moveCategory(const Id &oldCategoryPath, const QString &parentCategoryPath, Zanshin::ItemType parentType);
-//     bool moveTodoToCategory(const QModelIndex &index, const QString &categoryPath, const Zanshin::ItemType parentType);
-//     bool moveTodoToCategory(const Akonadi::Item &item, const QString &categoryPath, const Zanshin::ItemType parentType);
-
-    static const QChar pathSeparator();
-/*
-private slots:
-    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);*/
+    bool renameCategory(Id id, const QString &name);
 
 private:
     friend class CategoriesStrategy;
@@ -84,8 +75,6 @@ private:
     bool removeCategory(const Id &categoryPath);
     void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
 
-//     QStringList m_categories;
-//     QPointer<QAbstractItemModel> m_model;
     QPointer<CategoriesStructure> m_categoriesStructure;
 };
 

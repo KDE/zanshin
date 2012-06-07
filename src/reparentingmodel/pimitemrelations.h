@@ -73,8 +73,13 @@ public:
     PimItemRelations();
     //Handles merging, typically the tree of a single item
     Id addItem(const Akonadi::Item &);
+    Id getItemId(const Akonadi::Item &) const;
 
-    //for all nodes
+    /**
+     * Recursively remove subtree
+     * 
+     * for all nodes
+     */
     void removeNode(Id);
     //for all nodes
     IdList getParents(Id child);
@@ -86,6 +91,7 @@ public:
     void renameNode(Id, const QString &);
     //for all nodes
     void moveNode(Id, IdList parents);
+    bool isVirtual(Id) const;
 signals:
 
     //only for virtual nodes
@@ -101,7 +107,7 @@ protected:
     virtual void setRelationTree(Akonadi::Item &item, const Relation &) = 0;
     virtual void rebuildCache() = 0;
     IdList getChildNodes(Id id);
-    Id getItemId(const Akonadi::Item &item);
+    Id getOrCreateItemId(const Akonadi::Item &item);
     void mergeNode(const TreeNode &node);
     
     QMap<Id, QString> mNames;
@@ -116,7 +122,7 @@ public:
     //Build a relation tree from the category of an item
     Relation getRelationTree(const Akonadi::Item &item);
     void setRelationTree(Akonadi::Item &item, const Relation& );
-    void createCategoryNode(const QString &categoryPath, const IdList &parents);
+    void addCategoryNode(const QString &categoryPath, const IdList &parents);
 protected:
     virtual void rebuildCache();
 private:

@@ -120,7 +120,7 @@ void SideBarPage::addNewItem()
     } else if (type==Zanshin::CategoryRoot) {
         CategoryManager::instance().addCategory(summary);
     } else if (type==Zanshin::Category) {
-        CategoryManager::instance().addCategory(summary, parentItem.data(Zanshin::CategoryPathRole).toString());
+        CategoryManager::instance().addCategory(summary, IdList() << parentItem.data(Zanshin::RelationIdRole).toLongLong());
     } else if (type==Zanshin::TopicRoot) {
         NepomukUtils::createTopic(summary);
     } else if (type==Zanshin::Topic) {

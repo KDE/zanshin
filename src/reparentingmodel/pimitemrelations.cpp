@@ -45,7 +45,7 @@ Relation::Relation()
 
 PimItemRelations::PimItemRelations()
 :   QObject(),
-    mIdCounter(0)
+    mIdCounter(1)
 {
 
 }
@@ -70,6 +70,7 @@ void PimItemRelations::mergeNode(const TreeNode &node)
         mergeNode(parentNode);
     }
     if (created) {
+        kDebug() << "created node " << node.id << mParents.values(node.id) << node.name;
         emit virtualNodeAdded(node.id, mParents.values(node.id), node.name);
     }
 }
@@ -88,6 +89,13 @@ Id PimItemRelations::addItem(const Akonadi::Item &item)
 
     return id;
 }
+
+Id PimItemRelations::getItemId(const Akonadi::Item &item) const
+{
+    Q_ASSERT(mItemIdCache.contains(item.id()));
+    return mItemIdCache.value(item.id());
+}
+
 
 QString PimItemRelations::getName(Id id)
 {
@@ -135,6 +143,15 @@ void PimItemRelations::removeNode(Id id)
     kDebug() << id;
     mParents.remove(id);
     mNames.remove(id);
+    Q_ASSERT(!mParents.contains(id));
+    Q_ASSERT(!mNames.contains(id));
+
+    const IdList &children = getChildNodes(id);
+    foreach (Id child, children) {
+        mParents.remove(child);
+        mNames.remove(child);
+    }
+    
     //get affected child nodes if virtual node
     //update all nodes
     rebuildCache();
@@ -153,7 +170,7 @@ void PimItemRelations::renameNode(Id id, const QString &name)
     emit virtualNodeRenamed(id, name);
 }
 
-Id PimItemRelations::getItemId(const Akonadi::Item &item)
+Id PimItemRelations::getOrCreateItemId(const Akonadi::Item &item)
 {
     if (mItemIdCache.contains(item.id())) {
         return mItemIdCache.value(item.id());
@@ -163,7 +180,10 @@ Id PimItemRelations::getItemId(const Akonadi::Item &item)
     return id;
 }
 
-
+bool PimItemRelations::isVirtual(Id id) const
+{
+    return !mItemIdCache.values().contains(id);
+}
 
 
 CategoriesStructure::CategoriesStructure()
@@ -176,16 +196,6 @@ const QChar pathSeparator()
 {
     return QChar(0x2044);
 }
-
-QString getCategoryName(const QString &categoryPath)
-{
-    QString categoryName = categoryPath;
-    if (categoryPath.contains(pathSeparator())) {
-        categoryName = categoryPath.split(pathSeparator()).first();
-    }
-    return categoryName;
-}
-
 
 QString CategoriesStructure::getCategoryPath(Id id) const
 {
@@ -203,7 +213,7 @@ void CategoriesStructure::rebuildCache()
     kWarning();
     mCategoryMap.clear();
     foreach(Id id, mParents.keys()) {
-        if (mItemIdCache.contains(id)) {
+        if (!isVirtual(id)) {
             continue;
         }
         mCategoryMap.insert(getCategoryPath(id), id);
@@ -217,24 +227,36 @@ TreeNode CategoriesStructure::createCategoryNode(const QString &categoryPath)
 //     if (mCategoryMap.contains(categoryPath)) {
 //         return TreeNode node(categoryName, mCategoryMap.value(categoryPath), parentNodes);
 //     }
-    const QString &categoryName = getCategoryName(categoryPath);
+    QString categoryName = categoryPath;
+//     kDebug() << categoryPath << categoryName;
     QList<TreeNode> parentNodes;
     if (categoryPath.contains(pathSeparator())) {
+        const QStringList &categories = categoryPath.split(pathSeparator());
+        Q_ASSERT(!categories.isEmpty());
+        categoryName = categories.last();
         const QString &parentCategory = categoryPath.left(categoryPath.lastIndexOf(pathSeparator()));
         parentNodes << createCategoryNode(parentCategory);
     }
     if (!mCategoryMap.contains(categoryPath)) {
         mCategoryMap[categoryPath] = mIdCounter++;
-        kDebug() << categoryPath << mIdCounter;
+        kDebug() << "new Id " << categoryName << mIdCounter;
     }
+//     kDebug() << categoryName << mCategoryMap.value(categoryPath);
     return TreeNode(categoryName, mCategoryMap.value(categoryPath), parentNodes);
 }
 
-void CategoriesStructure::createCategoryNode(const QString& categoryPath, const IdList& parents)
+
+void CategoriesStructure::addCategoryNode(const QString& categoryPath, const IdList &parents)
 {
-    const TreeNode &node = createCategoryNode(categoryPath);
-    //TODO parents
-    mergeNode(node);
+//     kDebug() << categoryPath;
+    if (parents.isEmpty()) {
+        mergeNode(createCategoryNode(categoryPath));
+        return;
+    }
+    foreach (Id parent, parents) {
+        Q_ASSERT(mCategoryMap.values().contains(parent));
+        mergeNode(createCategoryNode(mCategoryMap.key(parent)+pathSeparator()+categoryPath));
+    }
 }
 
 
@@ -250,11 +272,12 @@ Relation CategoriesStructure::getRelationTree(const Akonadi::Item& item)
     }
     
     QStringList categories = todo->categories();
+    kDebug() << categories;
     QList<TreeNode> parents;
     foreach (const QString &category, categories) {
         parents << createCategoryNode(category);
     }
-    return Relation(getItemId(item), parents);
+    return Relation(getOrCreateItemId(item), parents);
 }
 
 QStringList getCategories(const Relation &rel)

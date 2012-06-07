@@ -161,7 +161,7 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
         kWarning() << "invalid item";
         return 0;
     }
-//     kDebug() << p << parents << sourceIndex;
+    kDebug() << p << parents << sourceIndex;
     //TODO handle multiple parents
     Q_ASSERT(m_parentMap.contains(p));
     TodoNode *node = m_parentMap.value(p);
@@ -245,6 +245,10 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         Id id = m_strategy->getId(index);
         if (id < 0) {
+            QList<TodoNode*> nodes = m_manager->nodesForSourceIndex(index);
+            foreach (TodoNode *node, nodes) { //remove if the sourceindex was in this model but is now hidden
+                removeNode(node, true);
+            }
             continue;
         }
         const IdList &parents = m_strategy->getParents(index);
@@ -375,12 +379,18 @@ bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, 
 
 QVariant ReparentingModel::data(const QModelIndex& index, int role) const
 {
+    if (!index.isValid()) {
+        return QVariant();
+    }
     TodoNode *node = m_manager->nodeForIndex(index);
+    if (!node) {
+        return QVariant();
+    }
     Q_ASSERT(node && m_parentMap.values().contains(node));
     const QVariant &var = m_strategy->data(m_parentMap.key(node), role);
     if (var.isValid()) {
         return var;
     }
-    return TodoProxyModelBase::data(index, role);
+    return node->data(index.column(), role);
 }
 
