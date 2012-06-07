@@ -65,12 +65,14 @@ void PimItemRelations::mergeNode(const TreeNode &node)
     
     //TODO emit changes if changed
     mParents.remove(node.id);
+    Q_ASSERT(node.parentNodes.size() <= 1);
     foreach (const TreeNode &parentNode, node.parentNodes) {
         mParents.insert(node.id, parentNode.id);
         mergeNode(parentNode);
     }
     if (created) {
         kDebug() << "created node " << node.id << mParents.values(node.id) << node.name;
+        Q_ASSERT(!node.name.isEmpty());
         emit virtualNodeAdded(node.id, mParents.values(node.id), node.name);
     }
 }
@@ -85,7 +87,7 @@ Id PimItemRelations::addItem(const Akonadi::Item &item)
         mParents.insert(id, node.id);
         mergeNode(node);
     }
-    kDebug() << item.id() << mParents.values(id);
+//     kDebug() << item.id() << mParents.values(id);
 
     return id;
 }
@@ -135,12 +137,8 @@ void PimItemRelations::moveNode(Id id, IdList parents)
 //     }
 }
 
-void PimItemRelations::removeNode(Id id)
+void PimItemRelations::removeNodeRecursive(Id id)
 {
-    if (!mParents.contains(id) && !mNames.contains(id)) {
-        return;
-    }
-    kDebug() << id;
     mParents.remove(id);
     mNames.remove(id);
     Q_ASSERT(!mParents.contains(id));
@@ -148,10 +146,18 @@ void PimItemRelations::removeNode(Id id)
 
     const IdList &children = getChildNodes(id);
     foreach (Id child, children) {
-        mParents.remove(child);
-        mNames.remove(child);
+        removeNodeRecursive(child);
     }
-    
+}
+
+void PimItemRelations::removeNode(Id id)
+{
+    if (!mParents.contains(id) && !mNames.contains(id)) {
+        return;
+    }
+    kDebug() << id;
+    removeNodeRecursive(id);
+
     //get affected child nodes if virtual node
     //update all nodes
     rebuildCache();
@@ -212,10 +218,11 @@ void CategoriesStructure::rebuildCache()
 {
     kWarning();
     mCategoryMap.clear();
-    foreach(Id id, mParents.keys()) {
+    foreach(Id id, mNames.keys()) {
         if (!isVirtual(id)) {
             continue;
         }
+        kDebug() << id;
         mCategoryMap.insert(getCategoryPath(id), id);
     }
 }
@@ -228,14 +235,17 @@ TreeNode CategoriesStructure::createCategoryNode(const QString &categoryPath)
 //         return TreeNode node(categoryName, mCategoryMap.value(categoryPath), parentNodes);
 //     }
     QString categoryName = categoryPath;
-//     kDebug() << categoryPath << categoryName;
+    Q_ASSERT(!categoryName.isEmpty());
+    kDebug() << categoryPath << categoryName;
     QList<TreeNode> parentNodes;
     if (categoryPath.contains(pathSeparator())) {
         const QStringList &categories = categoryPath.split(pathSeparator());
         Q_ASSERT(!categories.isEmpty());
         categoryName = categories.last();
         const QString &parentCategory = categoryPath.left(categoryPath.lastIndexOf(pathSeparator()));
-        parentNodes << createCategoryNode(parentCategory);
+        if (!parentCategory.isEmpty()) {
+            parentNodes << createCategoryNode(parentCategory);
+        }
     }
     if (!mCategoryMap.contains(categoryPath)) {
         mCategoryMap[categoryPath] = mIdCounter++;
@@ -248,7 +258,8 @@ TreeNode CategoriesStructure::createCategoryNode(const QString &categoryPath)
 
 void CategoriesStructure::addCategoryNode(const QString& categoryPath, const IdList &parents)
 {
-//     kDebug() << categoryPath;
+    kDebug() << categoryPath << parents;
+    Q_ASSERT(!categoryPath.isEmpty());
     if (parents.isEmpty()) {
         mergeNode(createCategoryNode(categoryPath));
         return;
@@ -265,14 +276,18 @@ Relation CategoriesStructure::getRelationTree(const Akonadi::Item& item)
     if (!item.isValid()) {
         return Relation();
     }
+    if (!item.hasPayload<KCalCore::Todo::Ptr>()) {
+        qWarning() << "not a todo";
+        return Relation();
+    }
     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
     if (!todo) {
+        qWarning() << "not a todo";
         return Relation();
     }
     
     QStringList categories = todo->categories();
-    kDebug() << categories;
+//     kDebug() << categories;
     QList<TreeNode> parents;
     foreach (const QString &category, categories) {
         parents << createCategoryNode(category);

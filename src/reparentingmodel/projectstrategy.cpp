@@ -59,7 +59,11 @@ Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
         return mCollectionMapping.value(id);
     }
     const QString &uid = sourceChildIndex.data(Zanshin::UidRole).toString();
-    Q_ASSERT(!uid.isEmpty());
+//     Q_ASSERT(!uid.isEmpty());
+    if (uid.isEmpty()) {
+        kWarning() << "no uid for item";
+        return -1;
+    }
     if (!mUidMapping.contains(uid)) {
         mUidMapping.insert(uid, getNextId());
     }

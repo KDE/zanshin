@@ -103,6 +103,7 @@ signals:
     //only for virtual nodes
     void virtualNodeRenamed(Id id, const QString &name);
 protected:
+    void removeNodeRecursive(Id id);
     virtual Relation getRelationTree(const Akonadi::Item &item) = 0;
     virtual void setRelationTree(Akonadi::Item &item, const Relation &) = 0;
     virtual void rebuildCache() = 0;
