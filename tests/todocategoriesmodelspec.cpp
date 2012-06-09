@@ -879,6 +879,78 @@ private slots:
         QCOMPARE(categoriesModel, *abstractModel);
         delete categoriesModelOutput;
     }
+
+    void shouldReactToCategoryRemoval_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<QString>( "categoryToRemove" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V nocat(NoCategory);
+        V cats(Categories);
+        Cat cat1("cat1");
+        Cat cat2("cat1"+Cat::pathSeparator()+"cat2");
+        T t1(3, 1, "t1", QString(), "t1", InProgress, NoTag, QString(), cat1.name);
+        T t2(4, 1, "t2", QString(), "t2", InProgress, NoTag, QString(), cat2.name);
+//         T t3(5, 1, "t3", QString(), "t3");
+        {
+            ModelStructure sourceStructure;
+            sourceStructure << t1;
+            ModelStructure outputStructure;
+            outputStructure << nocat
+                            << _+t1
+                            << cats;
+
+            QTest::newRow( "remove category" ) << sourceStructure <<  cat1.name << outputStructure;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure << t1
+                            << t2;
+//                             << t3;
+            ModelStructure outputStructure;
+            outputStructure << nocat
+//                             << _+t3
+                            << _+t2
+                            << cats
+                            << _+cat1
+                            << __+t1;
+
+            QTest::newRow( "remove sub-category" ) << sourceStructure <<  cat2.name << outputStructure;
+        }
+    }
+
+    void shouldReactToCategoryRemoval()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        //Kick up category manager
+        ModelUtils::create(&source, sourceStructure);
+
+        //create categoriesModel
+        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ModelTest t1(&categoriesModel);
+
+        categoriesModel.setSourceModel(&source);
+
+        //WHEN
+        QFETCH(QString, categoryToRemove);
+        CategoryManager::instance().removeCategories(0, categoryToRemove);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        Helper::printModel(&categoriesModel);
+
+        QCOMPARE(categoriesModel, output);
+    }
+    
 };
 
 QTEST_KDEMAIN(TodoCategoriesModelSpec, GUI)
