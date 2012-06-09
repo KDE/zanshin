@@ -65,32 +65,41 @@ void CategoryManager::addCategory(const QString &category, const IdList &parentC
 
 bool CategoryManager::removeCategories(QWidget* parent, const IdList& categories)
 {
-    QStringList categoryList;
-    foreach (Id category, categories) {
-        categoryList << m_categoriesStructure->getName(category);
-    }
-    QString categoryName = categoryList.join(", ");
-    kDebug() << categories << categoryList;
-    QString title;
-    QString text;
-    if (categories.size() > 1) {
-        text = i18n("Do you really want to delete the context '%1'? All actions won't be associated to this context anymore.", categoryName);
-        title = i18n("Delete Context");
-    } else {
-        text = i18n("Do you really want to delete the contexts '%1'? All actions won't be associated to those contexts anymore.", categoryName);
-        title = i18n("Delete Contexts");
-    }
-    int button = KMessageBox::questionYesNo(parent, text, title);
-    bool canRemove = (button==KMessageBox::Yes);
+    if (parent) {
+        QStringList categoryList;
+        foreach (Id category, categories) {
+            categoryList << m_categoriesStructure->getName(category);
+        }
+        QString categoryName = categoryList.join(", ");
+        kDebug() << categories << categoryList;
+        QString title;
+        QString text;
+        if (categories.size() > 1) {
+            text = i18n("Do you really want to delete the context '%1'? All actions won't be associated to this context anymore.", categoryName);
+            title = i18n("Delete Context");
+        } else {
+            text = i18n("Do you really want to delete the contexts '%1'? All actions won't be associated to those contexts anymore.", categoryName);
+            title = i18n("Delete Contexts");
+        }
+        int button = KMessageBox::questionYesNo(parent, text, title);
+        bool canRemove = (button==KMessageBox::Yes);
 
-    if (!canRemove) {
-        return false;
+        if (!canRemove) {
+            return false;
+        }
     }
     kDebug() << "remove " << categories;
     foreach (Id id, categories) {
         m_categoriesStructure->removeNode(id);
     }
     return true;
+}
+
+bool CategoryManager::removeCategories(QWidget* parent, const QString& categoryPath)
+{
+    Id id = m_categoriesStructure->getCategoryId(categoryPath);
+    kDebug() << "removing " << categoryPath << id;
+    return removeCategories(parent, IdList() << id);
 }
 
 

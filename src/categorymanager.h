@@ -65,6 +65,7 @@ public:
 
     void addCategory(const QString &category, const IdList &parentCategory = IdList());
     bool removeCategories(QWidget *parent, const IdList &categoryIndex);
+    bool removeCategories(QWidget *parent, const QString &categoryPath);
     bool dissociateFromCategory(const Akonadi::Item &item, Id category);
     bool moveToCategory(Id id, Id category, Zanshin::ItemType parentType);
     bool renameCategory(Id id, const QString &name);
@@ -73,7 +74,7 @@ private:
     friend class CategoriesStrategy;
 
     bool removeCategory(const Id &categoryPath);
-    void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
+//     void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
 
     QPointer<CategoriesStructure> m_categoriesStructure;
 };
