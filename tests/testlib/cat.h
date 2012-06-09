@@ -39,11 +39,10 @@ public:
 
     Cat();
     explicit Cat(const QString &name);
-    Cat(const QString &parentPath, const QString &name);
 
     bool operator==(const Cat &other) const;
+    static const QChar pathSeparator() { return QChar(0x2044); }
 
-    QString parentPath;
     QString name;
 };
 

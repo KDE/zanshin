@@ -36,14 +36,8 @@ Cat::Cat(const QString &n)
 {
 }
 
-Cat::Cat(const QString &pP, const QString &n)
-    : parentPath(pP), name(n)
-{
-}
-
 bool Cat::operator==(const Cat &other) const
 {
-    return parentPath==other.parentPath
-        && name==other.name;
+    return name==other.name;
 }
 
