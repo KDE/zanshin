@@ -124,6 +124,7 @@ public:
     Relation getRelationTree(const Akonadi::Item &item);
     void setRelationTree(Akonadi::Item &item, const Relation& );
     void addCategoryNode(const QString &categoryPath, const IdList &parents);
+    Id getCategoryId(const QString& categoryPath) const;
 protected:
     virtual void rebuildCache();
 private:

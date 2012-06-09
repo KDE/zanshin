@@ -101,6 +101,7 @@ Id PimItemRelations::getItemId(const Akonadi::Item &item) const
 
 QString PimItemRelations::getName(Id id)
 {
+    Q_ASSERT(mNames.contains(id));
     return mNames.value(id);
 }
 
@@ -156,12 +157,16 @@ void PimItemRelations::removeNode(Id id)
     if (!mParents.contains(id) && !mNames.contains(id)) {
         return;
     }
+    IdList itemsToUpdate = getChildNodes(id);
     kDebug() << id;
     removeNodeRecursive(id);
 
     //get affected child nodes if virtual node
     //update all nodes
     rebuildCache();
+//     foreach(Id item, itemsToUpdate) {
+//         setRelationTree(mItems.value(item));
+//     }
     emit nodeRemoved(id);
 }
 
@@ -203,6 +208,12 @@ const QChar pathSeparator()
 {
     return QChar(0x2044);
 }
+
+Id CategoriesStructure::getCategoryId(const QString& categoryPath) const
+{
+    return mCategoryMap.value(categoryPath);
+}
+
 
 QString CategoriesStructure::getCategoryPath(Id id) const
 {

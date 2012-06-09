@@ -87,10 +87,9 @@ Id CategoriesStrategy::getId(const QModelIndex &sourceChildIndex)
 
 IdList CategoriesStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
 {
-    Id id = getId(sourceChildIndex);
     Q_ASSERT(sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::StandardTodo /*|| sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo*/);
 
-    IdList parents = translateFrom(mRelations->getParents(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>())));
+    IdList parents = translateFrom(mRelations->getParents(mRelations->getItemId(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>())));
 
     foreach(Id i, ignore) {
         parents.removeAll(i);
