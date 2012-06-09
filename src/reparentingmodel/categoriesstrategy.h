@@ -50,6 +50,8 @@ public:
 private slots:
     void createVirtualNode(Id id, IdList parents, const QString &name);
     void doRemoveNode(Id id);
+    void doChangeParents(Id, IdList);
+    void doRenameParent(Id, const QString &name);
 //     void createCategoryNode(const QString &categoryPath);
 //     void removeCategoryNode(const QString &categoryPath);
 //     void renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);

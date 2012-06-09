@@ -135,6 +135,7 @@ void PimItemRelations::moveNode(Id id, IdList parents)
 //     foreach(Id item, itemsToUpdate) {
 //         setRelationTree(mItems.value(item));
 //     }
+    emit parentsChanged(id, parents);
 }
 
 void PimItemRelations::removeNodeRecursive(Id id)

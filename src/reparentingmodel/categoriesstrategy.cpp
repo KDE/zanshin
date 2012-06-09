@@ -37,6 +37,8 @@ CategoriesStrategy::CategoriesStrategy()
     mReparentOnRemoval = true;
     connect(mRelations.data(), SIGNAL(virtualNodeAdded(Id, IdList, QString)), this, SLOT(createVirtualNode(Id, IdList, QString)));
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
+    connect(mRelations.data(), SIGNAL(parentsChanged(Id,IdList)), this, SLOT(doChangeParents(Id, IdList)));
+    connect(mRelations.data(), SIGNAL(virtualNodeRenamed(Id,QString)), this, SLOT(doRenameParent(Id, QString)));
 }
 
 void CategoriesStrategy::init()
@@ -114,7 +116,15 @@ void CategoriesStrategy::doRemoveNode(Id id)
     ReparentingStrategy::removeNode(translateFrom(id));
 }
 
+void CategoriesStrategy::doChangeParents(Id id, IdList parents)
+{
+    ReparentingStrategy::updateParents(translateFrom(id), translateFrom(parents));
+}
 
+void CategoriesStrategy::doRenameParent(Id id, const QString& name)
+{
+    ReparentingStrategy::renameNode(translateFrom(id), name);
+}
 
 void CategoriesStrategy::setData(TodoNode* node, Id id)
 {
