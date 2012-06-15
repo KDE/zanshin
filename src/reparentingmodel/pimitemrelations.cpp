@@ -110,7 +110,7 @@ IdList PimItemRelations::getParents(Id id)
     return mParents.values(id);
 }
 
-IdList PimItemRelations::getChildNodes(Id id)
+IdList PimItemRelations::getChildNodes(Id id) const
 {
     IdList result;
     const IdList &list = mParents.keys(id);
@@ -121,22 +121,37 @@ IdList PimItemRelations::getChildNodes(Id id)
     return result;
 }
 
+IdList PimItemRelations::getAffectedChildItems(Id id) const
+{
+    QList<Akonadi::Item::Id> itemList;
+    IdList itemsToUpdate = getChildNodes(id);
+    kDebug() << itemsToUpdate;
+    foreach (Id update, itemsToUpdate) {
+        if (isVirtual(update)) {
+            continue;
+        }
+//         Q_ASSERT(mItemIdCache.values().contains(update));
+//         itemList << mItemIdCache.key(update);
+        itemList << update;
+    }
+    return itemList;
+}
+
 void PimItemRelations::moveNode(Id id, IdList parents)
 {
-    IdList itemsToUpdate = getChildNodes(id);
+    kDebug() << id << parents;
+    IdList itemList = getAffectedChildItems(id);
+    if (!isVirtual(id)) {
+        itemList << id;
+    }
 
     mParents.remove(id);
     foreach(Id parent, parents) {
         mParents.insert(id, parent);
     }
-    //get affected child nodes if virtual node
-    //update all nodes
     rebuildCache();
-//     updateNodes(itemsToUpdate);
-//     foreach(Id item, itemsToUpdate) {
-//         setRelationTree(mItems.value(item));
-//     }
     emit parentsChanged(id, parents);
+    emit updateItems(itemList);
 }
 
 void PimItemRelations::removeNodeRecursive(Id id)
@@ -157,17 +172,14 @@ void PimItemRelations::removeNode(Id id)
     if (!mParents.contains(id) && !mNames.contains(id)) {
         return;
     }
-    IdList itemsToUpdate = getChildNodes(id);
+    const IdList &itemList = getAffectedChildItems(id);
     kDebug() << id;
     removeNodeRecursive(id);
 
-    //get affected child nodes if virtual node
-    //update all nodes
     rebuildCache();
-//     foreach(Id item, itemsToUpdate) {
-//         setRelationTree(mItems.value(item));
-//     }
+
     emit nodeRemoved(id);
+    emit updateItems(itemList);
 }
 
 void PimItemRelations::renameNode(Id id, const QString &name)
@@ -175,11 +187,14 @@ void PimItemRelations::renameNode(Id id, const QString &name)
     if (name == mNames.value(id)) {
         return;
     }
+    IdList itemList = getAffectedChildItems(id);
+    if (!isVirtual(id)) {
+        itemList << id;
+    }
     mNames.insert(id, name);
-    //get affected child nodes if virtual node
-    //update all nodes
     rebuildCache();
     emit virtualNodeRenamed(id, name);
+    emit updateItems(itemList);
 }
 
 Id PimItemRelations::getOrCreateItemId(const Akonadi::Item &item)
@@ -312,7 +327,7 @@ QStringList getCategories(const Relation &rel)
     return QStringList();
 }
 
-void CategoriesStructure::setRelationTree(Akonadi::Item &item, const Relation &rel)
+void CategoriesStructure::updateRelationTree(Akonadi::Item &item)
 {
 //     QStringList categories = getCategories(rel);
 //     KCalCore::Todo::Ptr todo = item.getItem().payload<KCalCore::Todo::Ptr>();

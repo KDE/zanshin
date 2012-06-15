@@ -92,6 +92,9 @@ public:
     //for all nodes
     void moveNode(Id, IdList parents);
     bool isVirtual(Id) const;
+
+    //Store current relations to item
+    virtual void updateRelationTree(Akonadi::Item &item) = 0;
 signals:
 
     //only for virtual nodes
@@ -102,12 +105,14 @@ signals:
     void parentsChanged(Id id, IdList parents);
     //only for virtual nodes
     void virtualNodeRenamed(Id id, const QString &name);
+    //signals items which need updating
+    void updateItems(IdList);
 protected:
+    IdList getAffectedChildItems(Id id) const;
     void removeNodeRecursive(Id id);
     virtual Relation getRelationTree(const Akonadi::Item &item) = 0;
-    virtual void setRelationTree(Akonadi::Item &item, const Relation &) = 0;
     virtual void rebuildCache() = 0;
-    IdList getChildNodes(Id id);
+    IdList getChildNodes(Id id) const;
     Id getOrCreateItemId(const Akonadi::Item &item);
     void mergeNode(const TreeNode &node);
     
@@ -120,12 +125,13 @@ protected:
 class CategoriesStructure: public PimItemRelations {
 public:
     CategoriesStructure();
-    //Build a relation tree from the category of an item
-    Relation getRelationTree(const Akonadi::Item &item);
-    void setRelationTree(Akonadi::Item &item, const Relation& );
     void addCategoryNode(const QString &categoryPath, const IdList &parents);
     Id getCategoryId(const QString& categoryPath) const;
+    virtual void updateRelationTree(Akonadi::Item& item);
 protected:
+    //Build a relation tree from the category of an item
+    Relation getRelationTree(const Akonadi::Item &item);
+
     virtual void rebuildCache();
 private:
     QString getCategoryPath(Id id) const;

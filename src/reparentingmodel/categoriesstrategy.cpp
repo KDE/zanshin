@@ -27,6 +27,8 @@
 #include <KLocalizedString>
 #include <QMimeData>
 
+#include "reparentingmodel.h"
+
 CategoriesStrategy::CategoriesStrategy()
 :   ReparentingStrategy(),
     mInbox(1),
@@ -39,6 +41,7 @@ CategoriesStrategy::CategoriesStrategy()
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
     connect(mRelations.data(), SIGNAL(parentsChanged(Id,IdList)), this, SLOT(doChangeParents(Id, IdList)));
     connect(mRelations.data(), SIGNAL(virtualNodeRenamed(Id,QString)), this, SLOT(doRenameParent(Id, QString)));
+    connect(mRelations.data(), SIGNAL(updateItems(IdList)), this, SLOT(doUpdateItems(IdList)));
 }
 
 void CategoriesStrategy::init()
@@ -124,6 +127,22 @@ void CategoriesStrategy::doRenameParent(Id id, const QString& name)
 {
     ReparentingStrategy::renameNode(translateFrom(id), name);
 }
+
+void CategoriesStrategy::doUpdateItems(const IdList &itemsToUpdate)
+{
+    kDebug() << itemsToUpdate;
+    foreach (Id id , itemsToUpdate) {        
+        Akonadi::Item item = getData(translateFrom(id), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        if (!item.isValid()) {
+            kWarning() << "could not find item " << id;
+            continue;
+        }
+        Q_ASSERT(item.isValid());
+        mRelations->updateRelationTree(item);
+        //TODO store item
+    }
+}
+
 
 void CategoriesStrategy::setData(TodoNode* node, Id id)
 {

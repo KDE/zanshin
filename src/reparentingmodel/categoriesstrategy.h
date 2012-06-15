@@ -52,6 +52,7 @@ private slots:
     void doRemoveNode(Id id);
     void doChangeParents(Id, IdList);
     void doRenameParent(Id, const QString &name);
+    void doUpdateItems(const IdList &);
 //     void createCategoryNode(const QString &categoryPath);
 //     void removeCategoryNode(const QString &categoryPath);
 //     void renameCategoryNode(const QString &oldCategoryPath, const QString &newCategoryPath);

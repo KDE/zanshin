@@ -32,7 +32,8 @@
 ReparentingStrategy::ReparentingStrategy()
 :   mReparentOnRemoval(true),
     mMinIdCounter(10),
-    mIdCounter(mMinIdCounter)
+    mIdCounter(mMinIdCounter),
+    m_model(0)
 {
 
 }
