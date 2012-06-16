@@ -130,8 +130,6 @@ IdList PimItemRelations::getAffectedChildItems(Id id) const
         if (isVirtual(update)) {
             continue;
         }
-//         Q_ASSERT(mItemIdCache.values().contains(update));
-//         itemList << mItemIdCache.key(update);
         itemList << update;
     }
     return itemList;
@@ -329,29 +327,17 @@ QStringList getCategories(const Relation &rel)
 
 void CategoriesStructure::updateRelationTree(Akonadi::Item &item)
 {
-//     QStringList categories = getCategories(rel);
-//     KCalCore::Todo::Ptr todo = item.getItem().payload<KCalCore::Todo::Ptr>();
-//     todo->setCategories(categories);
-    //TODO save
-
-
-//     if (!item.isValid()) {
-//         return false;
-//     }
-// 
-//     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-// 
-//     if (!todo) {
-//         return false;
-//     }
-// 
-//     QStringList categories = todo->categories();
-//     if (categories.contains(categoryPath)) {
-//         categories.removeAll(categoryPath);
-//         todo->setCategories(categories);
-//         new Akonadi::ItemModifyJob(item);
-//         return true;
-//     }
-//     return false;
+    kDebug() << item.id();
+    Q_ASSERT(item.isValid());
+    const Id id = mItemIdCache.value(item.id());
+    IdList parents = mParents.values(id);
+    QStringList categories;
+    foreach (Id parent, parents) {
+        Q_ASSERT(mCategoryMap.values().contains(parent));
+        categories << mCategoryMap.key(parent);
+    }
+    kDebug() << categories;
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>(); //TODO abstractpimitem
+    todo->setCategories(categories);
 }
 

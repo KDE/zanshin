@@ -72,7 +72,7 @@ private:
     TodoNode *reparentNode(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
 
     TodoNode *createNode(const Id &identifier, const IdList &parentIdentifier, const QString &name = QString(), const QModelIndex &index = QModelIndex());
-    void removeNode(TodoNode *node, bool removeChildren = false);
+    void removeNode(TodoNode *node, bool removeChildren = false, bool cleanupStrategy = true);
     void removeNodeById(Id);
     void renameNode(const Id& identifier, const QString& name);
     

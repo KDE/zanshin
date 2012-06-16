@@ -100,7 +100,7 @@ TodoNode *ReparentingModel::createNode(const Id &identifier, const IdList &paren
     return node;
 }
 
-void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
+void ReparentingModel::removeNode(TodoNode *root, bool removeChildren, bool cleanupStrategy)
 {
     Id id = m_parentMap.key(root);
     if (!m_parentMap.contains(id)) {
@@ -139,7 +139,9 @@ void ReparentingModel::removeNode(TodoNode *root, bool removeChildren)
     beginRemoveRows(proxyParentIndex, row, row);
     Q_ASSERT(m_parentMap.contains(id));
     m_parentMap.remove(id);
-    m_strategy->onNodeRemoval(id);
+    if (cleanupStrategy) {
+        m_strategy->onNodeRemoval(id);
+    }
     m_manager->removeNode(root);
     delete root;
     endRemoveRows();
@@ -185,8 +187,8 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
         index = node->rowSourceIndex();
     }
 
-    //remove node from any current parent
-    removeNode(node, false);
+    //remove node from any current parent, don't touch the subtree (it moves along) and don't remove the node from the strategy (it already has the updated parent information)
+    removeNode(node, false, false);
 
     TodoNode *newNode = createNode(p, parents, name, index);
     Q_ASSERT(newNode);

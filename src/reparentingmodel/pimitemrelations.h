@@ -136,7 +136,7 @@ protected:
 private:
     QString getCategoryPath(Id id) const;
     TreeNode createCategoryNode(const QString &categoryPath);
-    QMap<QString, Id> mCategoryMap; //TODO handle renames & moves
+    QMap<QString, Id> mCategoryMap;
 };
 
 
