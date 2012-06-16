@@ -24,7 +24,6 @@
 #include <qtest_kde.h>
 
 #include "categorymanager.h"
-// #include "todocategoriesmodel.h"
 #include "todometadatamodel.h"
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
@@ -159,9 +158,6 @@ private slots:
 
         //Source model
         QStandardItemModel source;
-        //Kick up category manager
-//         CategoryManager::instance().setModel(&source);
-
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
@@ -267,9 +263,6 @@ private slots:
 
         //Source model
         QStandardItemModel source;
-        //Kick up category manager
-//         CategoryManager::instance().setModel(&source);
-
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
@@ -369,8 +362,6 @@ private slots:
 
         //Source model
         QStandardItemModel source;
-        //Kick up category manager
-//         CategoryManager::instance().setModel(&source);
         ModelUtils::create(&source, sourceStructure);
 
         //WHEN
@@ -485,8 +476,6 @@ private slots:
 
         //Source model
         QStandardItemModel source;
-        //Kick up category manager
-//         CategoryManager::instance().setModel(&source);
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
@@ -691,8 +680,6 @@ private slots:
 
         //Source model
         QStandardItemModel source;
-        //Kick up category manager
-//         CategoryManager::instance().setModel(&source);
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
@@ -854,9 +841,6 @@ private slots:
 
         //Source model
         MockModel source;
-
-        //Kick up category manager
-//         CategoryManager::instance().setModel(&source);
 
         ModelUtils::create(&source, sourceStructure);
 
