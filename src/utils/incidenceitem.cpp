@@ -381,4 +381,16 @@ QList< PimItemRelation > IncidenceItem::getRelations()
     return QList<PimItemRelation>() << rel;
 }
 
+QStringList IncidenceItem::getCategories()
+{
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    return i->categories();
+}
+
+bool IncidenceItem::isProject()
+{
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    return  i->comments().contains("X-Zanshin-Project");
+}
+
 

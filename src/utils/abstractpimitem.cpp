@@ -419,3 +419,8 @@ QList< PimItemRelation > AbstractPimItem::getRelations()
     return QList<PimItemRelation>();
 }
 
+QStringList AbstractPimItem::getCategories()
+{
+    return QStringList();
+}
+

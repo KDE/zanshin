@@ -29,6 +29,7 @@
 // #include <Nepomuk/Resource>
 // #include <Nepomuk/Thing>
 #include <kdatetime.h>
+#include <QStringList>
 // #include <Nepomuk/Types/Property>
 // #include <Nepomuk/Query/Result>
 
@@ -152,6 +153,7 @@ public:
     virtual ItemStatus getStatus() const = 0;
 
     virtual QList<PimItemRelation> getRelations();
+    virtual QStringList getCategories();
 
     /**
      * this will fetch the payload if not already fetched,

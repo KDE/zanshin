@@ -68,6 +68,10 @@ public:
 
     virtual QList< PimItemRelation > getRelations();
 
+    virtual QStringList getCategories();
+
+    bool isProject();
+
     virtual bool hasValidPayload();
     /**
      * Returns Todo/Event/Journal
