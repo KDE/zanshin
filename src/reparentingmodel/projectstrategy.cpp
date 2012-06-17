@@ -29,6 +29,8 @@
 #include <KIcon>
 #include <QMimeData>
 #include <Akonadi/ItemModifyJob>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 #include <KUrl>
 
 ProjectStrategy::ProjectStrategy()
@@ -162,8 +164,14 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     foreach (const KUrl &url, urls) {
         const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
         if (urlItem.isValid()) {
-            const Akonadi::Item &item = TodoHelpers::fetchFullItem(urlItem);
-            return TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
+            Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(urlItem);
+            job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+            job->fetchScope().fetchFullPayload();
+            if ( !job->exec() ) {
+                continue;
+            }
+            Q_ASSERT(job->items().size()==1);
+            return TodoHelpers::moveTodoToProject(job->items().first(), parentUid, parentType, collection);
         }
     }
 
