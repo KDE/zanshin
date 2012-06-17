@@ -28,6 +28,7 @@
 #include <QMimeData>
 
 #include "reparentingmodel.h"
+#include <Akonadi/ItemModifyJob>
 
 CategoriesStrategy::CategoriesStrategy()
 :   ReparentingStrategy(),
@@ -139,7 +140,7 @@ void CategoriesStrategy::doUpdateItems(const IdList &itemsToUpdate)
         }
         Q_ASSERT(item.isValid());
         mRelations->updateRelationTree(item);
-        //TODO store item
+        new Akonadi::ItemModifyJob(item, this);
     }
 }
 
