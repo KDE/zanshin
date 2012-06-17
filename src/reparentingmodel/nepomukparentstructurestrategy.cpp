@@ -311,6 +311,7 @@ bool NepomukParentStructureStrategy::onSetData(Id id, const QVariant &value, int
 
 void NepomukParentStructureStrategy::setData(TodoNode* node, qint64 id)
 {
+    //TODO filter inbox & root
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
     node->setRowData(m_topicMap.key(id), Zanshin::UriRole);

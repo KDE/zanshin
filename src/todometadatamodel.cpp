@@ -295,7 +295,6 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
 
 QStringList TodoMetadataModel::ancestorsUidFromItem(const Akonadi::Item &item) const
 {
-
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     if (pimitem.isNull()) {
         return QStringList();
@@ -377,6 +376,7 @@ QModelIndexList TodoMetadataModel::childIndexesFromIndex(const QModelIndex &idx)
 void TodoMetadataModel::setSourceModel(QAbstractItemModel *model)
 {
     KIdentityProxyModel::setSourceModel(model);
+
     onSourceInsertRows(QModelIndex(), 0, rowCount() - 1);
 }
 
