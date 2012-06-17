@@ -39,6 +39,33 @@ namespace Akonadi {
     class Session;
 }
 
+struct PimItemTreeNode;
+
+struct PimItemTreeNode {
+    PimItemTreeNode(const QByteArray &uid, const QString &name = QString(), const QList<PimItemTreeNode> &parentNodes = QList<PimItemTreeNode>());
+    QByteArray uid;
+    QString name;
+    QList<PimItemTreeNode> parentNodes;
+};
+
+struct PimItemRelation
+{
+  enum Type {
+    Project,
+    Context,
+    Topic
+  };
+  
+  PimItemRelation(Type type, const QList<PimItemTreeNode> &parentNodes);
+  PimItemRelation();
+  QList<PimItemTreeNode> parentNodes;
+
+  //     QDateTime timestamp; //for merging
+
+  Type type;
+};
+
+
 /**
  * A wrapper around akonadi item
  *
@@ -123,6 +150,8 @@ public:
      * Event: In Future/ Today/ Passed
      */
     virtual ItemStatus getStatus() const = 0;
+
+    virtual QList<PimItemRelation> getRelations();
 
     /**
      * this will fetch the payload if not already fetched,

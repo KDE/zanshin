@@ -31,6 +31,29 @@
 #include <Akonadi/Monitor>
 #include <Akonadi/Session>
 
+
+PimItemRelation::PimItemRelation(PimItemRelation::Type t, const QList< PimItemTreeNode >& p)
+:   type(t),
+    parentNodes(p)
+{
+
+}
+
+PimItemRelation::PimItemRelation()
+{
+
+}
+
+PimItemTreeNode::PimItemTreeNode(const QByteArray &u, const QString &n, const QList<PimItemTreeNode> &p)
+:   uid(u),
+    name(n),
+    parentNodes(p)
+{
+
+}
+
+
+
 AbstractPimItem::AbstractPimItem(QObject *parent)
 : QObject(parent),
 m_dataFetched(false),
@@ -391,4 +414,8 @@ bool AbstractPimItem::titleIsRich()
     return m_titleIsRich;
 }
 
+QList< PimItemRelation > AbstractPimItem::getRelations()
+{
+    return QList<PimItemRelation>();
+}
 

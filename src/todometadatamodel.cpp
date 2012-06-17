@@ -114,8 +114,19 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         }
     case Zanshin::UidRole:
         return pimitem->getUid();
-    case Zanshin::ParentUidRole:
-        return relatedUidFromItem(item);
+    case Zanshin::ParentUidRole: {
+        const QList<PimItemRelation> relations = pimitem->getRelations();
+        foreach (const PimItemRelation &rel, relations) {
+            if (rel.parentNodes.isEmpty()) {
+                continue;
+            }
+            if (rel.type == PimItemRelation::Project) {
+                Q_ASSERT(!rel.parentNodes.isEmpty());
+                return rel.parentNodes.first().uid;
+            }
+        }
+        return QString();
+    }
     case Zanshin::AncestorsUidRole:
         return ancestorsUidFromItem(item);
     case Zanshin::ItemTypeRole:
@@ -288,17 +299,6 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
         return Zanshin::ProjectTodo;
     } else {
         return Zanshin::StandardTodo;
-    }
-}
-
-
-QString TodoMetadataModel::relatedUidFromItem(const Akonadi::Item &item) const
-{
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        return todo->relatedTo();
-    } else {
-        return QString();
     }
 }
 

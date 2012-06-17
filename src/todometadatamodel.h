@@ -62,8 +62,6 @@ private:
 
     void cleanupDataForSourceIndex(const QModelIndex &index);
     Zanshin::ItemType itemTypeFromItem(const Akonadi::Item &item) const;
-    QString uidFromItem(const Akonadi::Item &item) const;
-    QString relatedUidFromItem(const Akonadi::Item &item) const;
     QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
     QStringList ancestorsCategoriesFromItem(const Akonadi::Item &item) const;
     QStringList categoriesFromItem(const Akonadi::Item &item) const;

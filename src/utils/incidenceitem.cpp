@@ -107,8 +107,6 @@ bool IncidenceItem::hasValidPayload()
     return m_item.hasPayload<KCalCore::Incidence::Ptr>();
 }
 
-
-
 void IncidenceItem::fetchData()
 {
     if (m_dataFetched) {
@@ -371,6 +369,16 @@ AbstractPimItem::ItemType IncidenceItem::itemType()
         return AbstractPimItem::Event;
     }
     return AbstractPimItem::Incidence;
+}
+
+QList< PimItemRelation > IncidenceItem::getRelations()
+{
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    if (i->relatedTo().isEmpty()) {
+        return QList<PimItemRelation>();
+    }
+    PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(i->relatedTo().toUtf8()));
+    return QList<PimItemRelation>() << rel;
 }
 
 

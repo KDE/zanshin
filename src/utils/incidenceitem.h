@@ -66,6 +66,8 @@ public:
     KDateTime getPrimaryDate();
     QString getIconName();
 
+    virtual QList< PimItemRelation > getRelations();
+
     virtual bool hasValidPayload();
     /**
      * Returns Todo/Event/Journal
