@@ -246,7 +246,7 @@ bool CategoriesStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::Dr
     return true;
 }
 
-bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role)
+bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role, int column)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) getData(id, Zanshin::ItemTypeRole).toInt();
     if (type==Zanshin::Category) {

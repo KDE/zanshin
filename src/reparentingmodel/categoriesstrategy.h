@@ -44,7 +44,7 @@ public:
     virtual Qt::DropActions supportedDropActions() const;
     
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
-    virtual bool onSetData(Id id, const QVariant& value, int role);
+    virtual bool onSetData(Id id, const QVariant& value, int role, int column);
 
     virtual bool reparentOnParentRemoval(Id child) const;
 private slots:
