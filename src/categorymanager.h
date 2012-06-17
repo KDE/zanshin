@@ -35,20 +35,10 @@ class QModelIndex;
 class TodoCategoriesModel;
 class CategoriesStrategy;
 
-// class VirtualNodeManager : public QObject
-// {
-//     Q_OBJECT
-// 
-// public:
-//     static VirtualNodeManager &instance();
-// 
-// };
-
 /**
  * TODO VirtualNodeManager
  *
  * The interface to edit(create/remove/rename/move) virtual nodes.
- * Singleton which creates the virtualnode structures.
  *
  */
 class CategoryManager : public QObject
@@ -74,7 +64,6 @@ private:
     friend class CategoriesStrategy;
 
     bool removeCategory(const Id &categoryPath);
-//     void renameCategory(const QModelIndex &sourceIndex, const QString &oldCategoryPath, const QString &newCategoryPath);
 
     QPointer<CategoriesStructure> m_categoriesStructure;
 };
