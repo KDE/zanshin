@@ -23,17 +23,6 @@
 
 #include "sidebar.h"
 
-#if 0
-#include <akonadi/item.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemdeletejob.h>
-#include <akonadi/transactionsequence.h>
-
-#include <boost/shared_ptr.hpp>
-
-#include <KDE/KCalCore/Todo>
-#endif
-
 #include <KDE/Akonadi/AgentManager>
 #include <KDE/Akonadi/AgentInstance>
 #include <KDE/Akonadi/AgentType>

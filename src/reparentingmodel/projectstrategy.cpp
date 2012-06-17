@@ -23,10 +23,11 @@
 #include <globaldefs.h>
 #include <todonode.h>
 #include <todohelpers.h>
+#include <pimitem.h>
+#include <incidenceitem.h>
 #include <KLocalizedString>
 #include <KIcon>
 #include <QMimeData>
-#include <KCalCore/Todo>
 #include <Akonadi/ItemModifyJob>
 #include <KUrl>
 
@@ -161,15 +162,8 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     foreach (const KUrl &url, urls) {
         const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
         if (urlItem.isValid()) {
-            Akonadi::Item item = TodoHelpers::fetchFullItem(urlItem);
-
-            if (!item.isValid()) {
-                return false;
-            }
-
-            if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-                TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
-            }
+            const Akonadi::Item &item = TodoHelpers::fetchFullItem(urlItem);
+            return TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
         }
     }
 
@@ -190,45 +184,43 @@ bool ProjectStrategy::onSetData(Id id, const QVariant& value, int role, int colu
     }
 
     Akonadi::Item item = data(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-
-    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
         return false;
     }
 
-    bool shouldModifyItem = false;
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
+    bool shouldModifyItem = true;
     switch (column) {
     case 0:
         if (role==Qt::EditRole) {
-            todo->setSummary(value.toString());
-            shouldModifyItem = true;
-        } else if (role==Qt::CheckStateRole) {
-            todo->setCompleted(value.toInt()==Qt::Checked);
-            shouldModifyItem = true;
+            pimitem->setTitle(value.toString());
+        } else if (role==Qt::CheckStateRole && pimitem->itemType() == AbstractPimItem::Todo) {
+            if (value.toInt()==Qt::Checked) {
+                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(AbstractPimItem::Complete);
+            } else {
+                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(AbstractPimItem::NotComplete);
+            }
         }
         break;
     case 1:
-        todo->setRelatedTo(value.toString());
-        shouldModifyItem = true;
+        pimitem->setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(value.toString().toUtf8())));
         break;
     case 2:
-        todo->setCategories(value.toStringList());
-        shouldModifyItem = true;
+        pimitem->setCategories(value.toStringList());
         break;
     case 3:
-        todo->setDtDue(KDateTime(value.toDate()));
-        todo->setHasDueDate(true);
-        todo->setAllDay(true);
-        shouldModifyItem = true;
+        if (pimitem->itemType() == AbstractPimItem::Todo) {
+            static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()), true);
+        }
+//         todo->setAllDay(true); TODO
         break;
-    case 4:
-        break;
+    default:
+        shouldModifyItem = false;
     }
 
     if (shouldModifyItem) {
-        new Akonadi::ItemModifyJob(item);
+        pimitem->saveItem();
     }
 
-    return false;
+    return true;
 }

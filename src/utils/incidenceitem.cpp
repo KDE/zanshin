@@ -256,6 +256,9 @@ void IncidenceItem::setTodoStatus(AbstractPimItem::ItemStatus status)
     //kDebug() << status;
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
         switch (status) {
+            case NotComplete:
+                t->setCompleted(false);
+                break;
             case Complete:
                 t->setCompleted(true);
                 break;
@@ -371,6 +374,16 @@ AbstractPimItem::ItemType IncidenceItem::itemType()
     return AbstractPimItem::Incidence;
 }
 
+void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)
+{
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    foreach (const PimItemRelation &rel, relations) {
+        if (rel.type == PimItemRelation::Project && !rel.parentNodes.isEmpty()) {
+            i->setRelatedTo(rel.parentNodes.first().uid);
+        }
+    }
+}
+
 QList< PimItemRelation > IncidenceItem::getRelations()
 {
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
@@ -380,6 +393,13 @@ QList< PimItemRelation > IncidenceItem::getRelations()
     PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(i->relatedTo().toUtf8()));
     return QList<PimItemRelation>() << rel;
 }
+
+void IncidenceItem::setCategories(const QStringList &categories)
+{
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    i->setCategories(categories);
+}
+
 
 QStringList IncidenceItem::getCategories()
 {

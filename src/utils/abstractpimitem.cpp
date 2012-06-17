@@ -414,9 +414,19 @@ bool AbstractPimItem::titleIsRich()
     return m_titleIsRich;
 }
 
+void AbstractPimItem::setRelations(const QList< PimItemRelation >& )
+{
+
+}
+
 QList< PimItemRelation > AbstractPimItem::getRelations()
 {
     return QList<PimItemRelation>();
+}
+
+void AbstractPimItem::setCategories(const QStringList& )
+{
+
 }
 
 QStringList AbstractPimItem::getCategories()

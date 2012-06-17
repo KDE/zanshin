@@ -66,8 +66,10 @@ public:
     KDateTime getPrimaryDate();
     QString getIconName();
 
+    virtual void setRelations(const QList< PimItemRelation >& );
     virtual QList< PimItemRelation > getRelations();
 
+    virtual void setCategories(const QStringList& );
     virtual QStringList getCategories();
 
     bool isProject();

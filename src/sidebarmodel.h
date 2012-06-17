@@ -28,7 +28,6 @@
 #include <QtGui/QSortFilterProxyModel>
 
 #include <KDE/Akonadi/EntityTreeModel>
-#include <KDE/KCalCore/Todo>
 
 class SideBarModel : public QSortFilterProxyModel
 {

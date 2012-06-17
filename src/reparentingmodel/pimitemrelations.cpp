@@ -19,7 +19,7 @@
 
 
 #include "pimitemrelations.h"
-#include <KCalCore/Todo>
+#include <pimitem.h>
 
 TreeNode::TreeNode(const QString& n, const Id& i, const QList< TreeNode >& p)
 :   name(n),
@@ -87,7 +87,7 @@ Id PimItemRelations::addItem(const Akonadi::Item &item)
         mParents.insert(id, node.id);
         mergeNode(node);
     }
-//     kDebug() << item.id() << mParents.values(id);
+    kDebug() << item.id() << mParents.values(id);
 
     return id;
 }
@@ -247,7 +247,7 @@ void CategoriesStructure::rebuildCache()
         if (!isVirtual(id)) {
             continue;
         }
-        kDebug() << id;
+//         kDebug() << id;
         mCategoryMap.insert(getCategoryPath(id), id);
     }
 }
@@ -298,21 +298,13 @@ void CategoriesStructure::addCategoryNode(const QString& categoryPath, const IdL
 
 Relation CategoriesStructure::getRelationTree(const Akonadi::Item& item)
 {
-    if (!item.isValid()) {
-        return Relation();
-    }
-    if (!item.hasPayload<KCalCore::Todo::Ptr>()) {
-        qWarning() << "not a todo";
-        return Relation();
-    }
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-    if (!todo) {
-        qWarning() << "not a todo";
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
         return Relation();
     }
     
-    QStringList categories = todo->categories();
-//     kDebug() << categories;
+    QStringList categories = pimitem->getCategories();
+    kDebug() << categories;
     QList<TreeNode> parents;
     foreach (const QString &category, categories) {
         parents << createCategoryNode(category);
@@ -337,7 +329,10 @@ void CategoriesStructure::updateRelationTree(Akonadi::Item &item)
         categories << mCategoryMap.key(parent);
     }
     kDebug() << categories;
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>(); //TODO abstractpimitem
-    todo->setCategories(categories);
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
+        return;
+    }
+    pimitem->setCategories(categories);
 }
 
