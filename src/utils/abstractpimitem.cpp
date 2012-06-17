@@ -112,6 +112,12 @@ AbstractPimItem::ItemType AbstractPimItem::itemType(const Akonadi::Item &item)
     return Unknown;
 }
 
+QString AbstractPimItem::getUid()
+{
+    fetchData();
+    return m_uid;
+}
+
 void AbstractPimItem::setText(const QString &text, bool isRich)
 {
     m_textIsRich = isRich;

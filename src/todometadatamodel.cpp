@@ -30,6 +30,8 @@
 #include <KLocale>
 
 #include "globaldefs.h"
+#include <abstractpimitem.h>
+#include <pimitem.h>
 
 TodoMetadataModel::TodoMetadataModel(QObject *parent)
     : KIdentityProxyModel(parent)
@@ -85,9 +87,10 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    const Akonadi::Item &item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
-    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
         if (role==Zanshin::ItemTypeRole) {
             Akonadi::Collection collection = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
             if (collection.isValid()) {
@@ -96,11 +99,10 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         }
         return KIdentityProxyModel::data(index, role);
     }
-
     switch (role) {
     case Qt::CheckStateRole:
-        if (todoFromItem(item) && index.column()==0 && itemTypeFromItem(item)==Zanshin::StandardTodo) {
-            return todoFromItem(item)->isCompleted() ? Qt::Checked : Qt::Unchecked;
+        if ((pimitem->itemType() == AbstractPimItem::Todo) && index.column()==0 && itemTypeFromItem(item)==Zanshin::StandardTodo) {
+            return (pimitem->getStatus() == AbstractPimItem::Complete) ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();
         }
@@ -111,7 +113,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
             return KIdentityProxyModel::data(index, role);
         }
     case Zanshin::UidRole:
-        return uidFromItem(item);
+        return pimitem->getUid();
     case Zanshin::ParentUidRole:
         return relatedUidFromItem(item);
     case Zanshin::AncestorsUidRole:
@@ -289,15 +291,6 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
     }
 }
 
-QString TodoMetadataModel::uidFromItem(const Akonadi::Item &item) const
-{
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        return todo->uid();
-    } else {
-        return QString();
-    }
-}
 
 QString TodoMetadataModel::relatedUidFromItem(const Akonadi::Item &item) const
 {

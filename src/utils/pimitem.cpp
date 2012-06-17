@@ -35,7 +35,7 @@ namespace PimItemUtils {
     AbstractPimItem* getItem(const Akonadi::Item &item, QObject *parent)
     {
         if (!item.isValid()) {
-            kWarning() << "invalid item";
+//             kWarning() << "invalid item";
             return 0;
         }
         AbstractPimItem::ItemType itemType = AbstractPimItem::itemType(item);

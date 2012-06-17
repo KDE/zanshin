@@ -92,7 +92,7 @@ void IncidenceItem::commitData()
         old->setCreated(m_creationDate);
     }
 
-    m_item.setPayload<KCalCore::Incidence::Ptr>(old);
+    m_item.setPayload<KCalCore::Incidence::Ptr>(old); //TODO probably not required (shared ptr)
     m_item.setMimeType(mimeType());
 
     //kDebug() << m_title;
@@ -124,6 +124,7 @@ void IncidenceItem::fetchData()
     KCalCore::Incidence::Ptr inc = m_item.payload<KCalCore::Incidence::Ptr>();
     Q_ASSERT(inc);
 
+    m_uid = inc->uid();
     m_title = inc->summary();
     m_titleIsRich = inc->summaryIsRich();
     m_text = inc->description();

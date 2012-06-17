@@ -94,6 +94,7 @@ public:
     //Returns a list of all supported mimetypes
     static QStringList mimeTypes();
 
+    virtual QString getUid();
     virtual void setText(const QString &, bool isRich = false);
     virtual QString getText();
     virtual void setTitle(const QString &, bool isRich = false);
@@ -168,9 +169,6 @@ public:
     };
     Q_DECLARE_FLAGS(ChangedParts, ChangedPart)
     
-    
-    QMap<QUrl, QString> topics();
-
 signals:
     void payloadFetchComplete();
     /**
@@ -183,6 +181,7 @@ signals:
     void removed();
 
 protected:
+    QString m_uid;
     QString m_text;
     QString m_title;
     KDateTime m_creationDate;
