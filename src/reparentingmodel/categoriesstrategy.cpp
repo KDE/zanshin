@@ -178,33 +178,29 @@ void CategoriesStrategy::onNodeRemoval(const Id& changed)
 
 QMimeData* CategoriesStrategy::mimeData(const QModelIndexList& indexes) const
 {
-//     QStringList categoriesList;
-//     foreach (const QModelIndex &proxyIndex, indexes) {
-//         categoriesList << proxyIndex.data(Zanshin::CategoryPathRole).toString();
-//     }
+    QStringList ids;
+    foreach (const QModelIndex &proxyIndex, indexes) {
+        ids << QString::number(proxyIndex.data(Zanshin::RelationIdRole).toLongLong());
+    }
 
-//     if (!categoriesList.isEmpty()) {
-//         QMimeData *mimeData = new QMimeData();
-//         QString sep = CategoryManager::pathSeparator();
-//         sep += CategoryManager::pathSeparator();
-//         QByteArray categories = categoriesList.join(sep).toUtf8();
-//         mimeData->setData("application/x-vnd.zanshin.category", categories);
-//         return mimeData;
-//     }
+    if (!ids.isEmpty()) {
+        QMimeData *mimeData = new QMimeData();
+        QByteArray categories = ids.join(",").toUtf8();
+        mimeData->setData("application/x-vnd.zanshin.relationid", categories);
+        return mimeData;
+    }
     return 0;
 }
 
-
 QStringList CategoriesStrategy::mimeTypes()
 {
-    return QStringList() << "application/x-vnd.zanshin.category";
+    return QStringList() << "application/x-vnd.zanshin.relationid";
 }
 
 Qt::DropActions CategoriesStrategy::supportedDropActions() const
 {
     return Qt::MoveAction;
 }
-
 
 Qt::ItemFlags CategoriesStrategy::flags(const QModelIndex& index, Qt::ItemFlags flags)
 {
@@ -215,19 +211,21 @@ Qt::ItemFlags CategoriesStrategy::flags(const QModelIndex& index, Qt::ItemFlags 
     return flags | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 }
 
-
 bool CategoriesStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::DropAction action)
 {
-    if (action != Qt::MoveAction || (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.category"))) {
+    if (action != Qt::MoveAction || (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.relationid"))) {
+        kDebug() << "invalid drop " << action << KUrl::List::canDecode(mimeData);
         return false;
     }
     
     Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
     if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
+        kDebug() << "not a category";
         return false;
     }
     if (KUrl::List::canDecode(mimeData)) {
         KUrl::List urls = KUrl::List::fromMimeData(mimeData);
+        kDebug() << urls;
         foreach (const KUrl &url, urls) {
             const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
             if (!urlItem.isValid()) {
@@ -237,15 +235,13 @@ bool CategoriesStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::Dr
             mRelations->moveNode(mRelations->getItemId(urlItem), IdList() << translateTo(id));
         }
     } else {
-        QByteArray categories = mimeData->data("application/x-vnd.zanshin.category");
-        //TODO
-        return false;
-//         QString sep = CategoryManager::pathSeparator();
-//         sep += CategoryManager::pathSeparator();
-//         QStringList categoriesPath = QString::fromUtf8(categories.data()).split(sep);
-//         foreach (QString categoryPath, categoriesPath) {
-//             CategoryManager::instance().moveCategory(categoryPath, parentCategory, parentType);
-//         }
+        QStringList sourceItems = QString(mimeData->data("application/x-vnd.zanshin.relationid")).split(",");
+        foreach (const QString &source, sourceItems) {
+            Id s = source.toLongLong();
+            mRelations->moveNode(s, IdList() << translateTo(id));
+        }
+        //TODO if multiple nodes of a hierarchy are dropped, all nodes are added as direct child (the hierarchy is destroyed).
+        //TODO move only dragged node and not all (remove a single category and add the new one from the parent list)
     }
     return true;
 }
@@ -259,7 +255,6 @@ bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role)
     }
     return false;
 }
-
 
 void CategoriesStrategy::reset()
 {
