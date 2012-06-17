@@ -23,8 +23,6 @@
 
 #include "todometadatamodel.h"
 
-#include <KDE/KCalCore/Todo>
-
 #include <KDebug>
 #include <KIcon>
 #include <KLocale>
@@ -32,6 +30,22 @@
 #include "globaldefs.h"
 #include <abstractpimitem.h>
 #include <pimitem.h>
+#include <incidenceitem.h>
+
+QString getParentProject(const QList<PimItemRelation> &relations)
+{
+    foreach (const PimItemRelation &rel, relations) {
+        if (rel.parentNodes.isEmpty()) {
+            continue;
+        }
+        if (rel.type == PimItemRelation::Project) {
+            Q_ASSERT(!rel.parentNodes.isEmpty());
+            return rel.parentNodes.first().uid;
+        }
+    }
+    return QString();
+}
+
 
 TodoMetadataModel::TodoMetadataModel(QObject *parent)
     : KIdentityProxyModel(parent)
@@ -114,19 +128,8 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         }
     case Zanshin::UidRole:
         return pimitem->getUid();
-    case Zanshin::ParentUidRole: {
-        const QList<PimItemRelation> relations = pimitem->getRelations();
-        foreach (const PimItemRelation &rel, relations) {
-            if (rel.parentNodes.isEmpty()) {
-                continue;
-            }
-            if (rel.type == PimItemRelation::Project) {
-                Q_ASSERT(!rel.parentNodes.isEmpty());
-                return rel.parentNodes.first().uid;
-            }
-        }
-        return QString();
-    }
+    case Zanshin::ParentUidRole:
+        return getParentProject(pimitem->getRelations());
     case Zanshin::AncestorsUidRole:
         return ancestorsUidFromItem(item);
     case Zanshin::ItemTypeRole:
@@ -160,17 +163,17 @@ void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin,
         QModelIndex child = index(i, 0, parent);
         onSourceInsertRows(child, 0, rowCount(child)-1);
 
-        KCalCore::Todo::Ptr todo = todoFromIndex(child);
-
-        if (!todo) {
+        const Akonadi::Item item = sourceModel()->data(mapToSource(child), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+        if (pimitem.isNull()) {
             continue;
         }
 
-        QString uid = todo->uid();
+        const QString uid = pimitem->getUid();
 
         m_indexMap[uid] = child;
 
-        QString relatedUid = todo->relatedTo();
+        const QString relatedUid = getParentProject(pimitem->getRelations());
 
         if (relatedUid.isEmpty()) {
             continue;
@@ -208,20 +211,20 @@ void TodoMetadataModel::onSourceDataChanged(const QModelIndex &begin, const QMod
     for (int row = begin.row(); row <= end.row(); ++row) {
         for (int column = begin.column(); column <= end.column(); ++column) {
             QModelIndex child = index(row, column, begin.parent());
-            KCalCore::Todo::Ptr todo = todoFromIndex(child);
 
-            if (!todo) {
+            const Akonadi::Item item = sourceModel()->data(mapToSource(child), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+            QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+            if (pimitem.isNull()) {
                 continue;
             }
 
-            QString uid = todo->uid();
+            const QString uid = pimitem->getUid();
+            const QString newRelatedUid = getParentProject(pimitem->getRelations());
 
-            QString newRelatedUid = todo->relatedTo();
             QString oldRelatedUid;
             if (m_parentMap.contains(uid)) {
                 oldRelatedUid = m_parentMap[uid];
             }
-
 
             if (newRelatedUid!=oldRelatedUid) {
                 if (newRelatedUid.isEmpty()) {
@@ -249,16 +252,14 @@ void TodoMetadataModel::cleanupDataForSourceIndex(const QModelIndex &index)
         cleanupDataForSourceIndex(child);
     }
 
-
-    KCalCore::Todo::Ptr todo = todoFromIndex(index);
-
-    if (!todo) {
+    const Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
         return;
     }
 
-    QString uid = todo->uid();
-
-    QString relatedUid = todo->relatedTo();
+    const QString uid = pimitem->getUid();
+    const QString relatedUid = getParentProject(pimitem->getRelations());
 
     QModelIndex parentIndex = m_indexMap[relatedUid];
     Zanshin::ItemType parentType = (Zanshin::ItemType)parentIndex.data(Zanshin::ItemTypeRole).toInt();
@@ -273,28 +274,18 @@ void TodoMetadataModel::cleanupDataForSourceIndex(const QModelIndex &index)
     }
 }
 
-KCalCore::Todo::Ptr TodoMetadataModel::todoFromIndex(const QModelIndex &index) const
-{
-    Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    return todoFromItem(item);
-}
-
-KCalCore::Todo::Ptr TodoMetadataModel::todoFromItem(const Akonadi::Item &item) const
-{
-    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
-        return KCalCore::Todo::Ptr();
-    } else {
-        return item.payload<KCalCore::Todo::Ptr>();
-    }
-}
-
 Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item) const
 {
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull() || (pimitem->itemType() != AbstractPimItem::Todo)) {
+        return Zanshin::StandardTodo;
+    }
 
-    QStringList comments = todo->comments();
-    const int childCount = m_childrenMap.contains(todo->uid()) ? m_childrenMap[todo->uid()].count() : 0;
-    if (comments.contains("X-Zanshin-Project")
+    const QString uid = pimitem->getUid();
+    const QString relatedUid = getParentProject(pimitem->getRelations());
+    
+    const int childCount = m_childrenMap.contains(uid) ? m_childrenMap[uid].count() : 0;
+    if (static_cast<IncidenceItem*>(pimitem.data())->isProject()
      || childCount>0) {
         return Zanshin::ProjectTodo;
     } else {
@@ -304,19 +295,22 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
 
 QStringList TodoMetadataModel::ancestorsUidFromItem(const Akonadi::Item &item) const
 {
-    QStringList result;
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
 
-    if (todo) {
-        QString id = todo->uid();
-        while (m_parentMap.contains(id)) {
-            const QString parentId = m_parentMap[id];
-            Q_ASSERT(!parentId.isEmpty());
-            result << parentId;
-            id = parentId;
-        }
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
+        return QStringList();
     }
 
+    QString id = pimitem->getUid();
+    const QString relatedUid = getParentProject(pimitem->getRelations());
+
+    QStringList result;
+    while (m_parentMap.contains(id)) {
+        const QString parentId = m_parentMap[id];
+        Q_ASSERT(!parentId.isEmpty());
+        result << parentId;
+        id = parentId;
+    }
     return result;
 }
 
@@ -329,9 +323,10 @@ QStringList TodoMetadataModel::ancestorsCategoriesFromItem(const Akonadi::Item &
             continue;
         }
         const QModelIndex &index = m_indexMap[uid];
-        KCalCore::Todo::Ptr todo = todoFromIndex(index);
-        if (todo) {
-            categories << todo->categories();
+        const Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+        if (!pimitem.isNull()) {
+            categories << pimitem->getCategories();
         }
     }
     categories.removeDuplicates();
@@ -341,9 +336,9 @@ QStringList TodoMetadataModel::ancestorsCategoriesFromItem(const Akonadi::Item &
 QStringList TodoMetadataModel::categoriesFromItem(const Akonadi::Item &item) const
 {
     QStringList categories = ancestorsCategoriesFromItem(item);
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        categories << todo->categories();
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (!pimitem.isNull()) {
+        categories << pimitem->getCategories();
     }
     categories.removeDuplicates();
     return categories;
@@ -351,29 +346,28 @@ QStringList TodoMetadataModel::categoriesFromItem(const Akonadi::Item &item) con
 
 QStringList TodoMetadataModel::childUidsFromItem(const Akonadi::Item &item) const
 {
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (todo) {
-        return m_childrenMap[todo->uid()];
-    } else {
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
         return QStringList();
     }
+    return m_childrenMap.value(pimitem->getUid());
 }
 
 QModelIndexList TodoMetadataModel::childIndexesFromIndex(const QModelIndex &idx) const
 {
     QModelIndexList indexes;
-    KCalCore::Todo::Ptr todo = todoFromIndex(idx);
-    if (!todo) {
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(sourceModel()->data(mapToSource(idx), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    if (pimitem.isNull()) {
         return indexes;
     }
-    QString parent = todo->uid();
+    QString parent = pimitem->getUid();
     for (int i = 0; i < rowCount(idx.parent()); ++i) {
         QModelIndex child = index(i, idx.column(), idx.parent());
-        todo = todoFromIndex(child);
-        if (!todo) {
+        QScopedPointer<AbstractPimItem> item(PimItemUtils::getItem(sourceModel()->data(mapToSource(child), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+        if (item.isNull()) {
             continue;
         }
-        if (m_parentMap[todo->uid()] == parent) {
+        if (m_parentMap[item->getUid()] == parent) {
             indexes << child;
         }
     }
@@ -383,7 +377,6 @@ QModelIndexList TodoMetadataModel::childIndexesFromIndex(const QModelIndex &idx)
 void TodoMetadataModel::setSourceModel(QAbstractItemModel *model)
 {
     KIdentityProxyModel::setSourceModel(model);
-
     onSourceInsertRows(QModelIndex(), 0, rowCount() - 1);
 }
 
