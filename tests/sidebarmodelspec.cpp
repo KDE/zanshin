@@ -27,7 +27,10 @@
 
 #include "sidebarmodel.h"
 #include "todometadatamodel.h"
-#include "todotreemodel.h"
+
+#include <reparentingmodel/reparentingmodel.h>
+#include <reparentingmodel/projectstrategy.h>
+
 #include "testlib/testlib.h"
 #include "testlib/modelbuilderbehavior.h"
 
@@ -103,7 +106,7 @@ private slots:
         metadataModel.setSourceModel(&source);
 
         //create todoTreeModel
-        TodoTreeModel todoTreeModel;
+        ReparentingModel todoTreeModel(new ProjectStrategy);
         ModelTest t2(&todoTreeModel);
 
         todoTreeModel.setSourceModel(&metadataModel);

@@ -27,7 +27,6 @@
 #include <QtGui/QStandardItemModel>
 #include <QtTest/QSignalSpy>
 
-#include "todotreemodel.h"
 #include "todometadatamodel.h"
 #include <reparentingmodel/reparentingmodel.h>
 #include <reparentingmodel/projectstrategy.h>
@@ -645,7 +644,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create todoTreeModel
-        TodoTreeModel todoTreeModel;
+        ReparentingModel todoTreeModel(new ProjectStrategy());
         ModelTest t1(&todoTreeModel);
 
         //WHEN
@@ -670,9 +669,6 @@ private slots:
         T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
         T t2(2, 1, "t2", "t1", "t2");
         V inbox(Inbox);
-        V categoryRoot(Categories);
-        V nocategory(NoCategory);
-        Cat category("cat");
 
         ModelStructure sourceStructure;
         sourceStructure << c1;
@@ -684,10 +680,10 @@ private slots:
         QTest::newRow( "get flags on collection" ) << sourceStructure << itemPath << column << flags;
 
         sourceStructure.clear();
-        sourceStructure << t2;
+        sourceStructure << t1 << t2;
 
         flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-        itemPath = inbox % t2;
+        itemPath = t1 % t2;
 
         QTest::newRow( "get flags on todo" ) << sourceStructure << itemPath << column << flags;
 
@@ -723,7 +719,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create metadataModel
-        TodoTreeModel todoTreeModel;
+        ReparentingModel todoTreeModel(new ProjectStrategy);
         ModelTest t1(&todoTreeModel);
 
         //WHEN
@@ -734,6 +730,8 @@ private slots:
         QFETCH(int, column);
         QFETCH(int, flags);
 
+        Helper::printModel(&todoTreeModel);
+        
         QModelIndex index = ModelUtils::locateItem(&todoTreeModel, itemPath);
         index = index.sibling(index.row(), column);
 
@@ -914,7 +912,7 @@ private slots:
 
         //THEN
         MockModel output;
-        TodoTreeModel* treeModelOutput = new TodoTreeModel();
+        ReparentingModel *treeModelOutput = new ReparentingModel(new ProjectStrategy);
 
         treeModelOutput->setSourceModel(&output);
 

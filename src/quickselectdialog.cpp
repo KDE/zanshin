@@ -33,8 +33,6 @@
 #include <QtGui/QTreeView>
 
 #include "globaldefs.h"
-#include "todocategoriesmodel.h"
-#include "todotreemodel.h"
 
 QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action)
     : KDialog(parent),
