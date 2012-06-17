@@ -27,6 +27,7 @@
 #include <KIcon>
 #include <QMimeData>
 #include <KCalCore/Todo>
+#include <Akonadi/ItemModifyJob>
 #include <KUrl>
 
 ProjectStrategy::ProjectStrategy()
@@ -175,3 +176,59 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     return true;
 }
 
+bool ProjectStrategy::onSetData(Id id, const QVariant& value, int role, int column)
+{
+    if ((role!=Qt::EditRole && role!=Qt::CheckStateRole)) {
+        return false;
+    }
+
+    // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+    // information about the rights is not valid on retrieved items.
+    Akonadi::Collection collection = data(id, Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    if (!(collection.rights() & Akonadi::Collection::CanChangeItem)) {
+        return false;
+    }
+
+    Akonadi::Item item = data(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+
+    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
+        return false;
+    }
+
+    bool shouldModifyItem = false;
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+
+    switch (column) {
+    case 0:
+        if (role==Qt::EditRole) {
+            todo->setSummary(value.toString());
+            shouldModifyItem = true;
+        } else if (role==Qt::CheckStateRole) {
+            todo->setCompleted(value.toInt()==Qt::Checked);
+            shouldModifyItem = true;
+        }
+        break;
+    case 1:
+        todo->setRelatedTo(value.toString());
+        shouldModifyItem = true;
+        break;
+    case 2:
+        todo->setCategories(value.toStringList());
+        shouldModifyItem = true;
+        break;
+    case 3:
+        todo->setDtDue(KDateTime(value.toDate()));
+        todo->setHasDueDate(true);
+        todo->setAllDay(true);
+        shouldModifyItem = true;
+        break;
+    case 4:
+        break;
+    }
+
+    if (shouldModifyItem) {
+        new Akonadi::ItemModifyJob(item);
+    }
+
+    return false;
+}

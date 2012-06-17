@@ -373,7 +373,7 @@ bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, 
     }
     TodoNode *node = m_manager->nodeForIndex(index);
     Q_ASSERT(node && m_parentMap.values().contains(node));
-    if (m_strategy->onSetData(m_parentMap.key(node), value, role)) {
+    if (m_strategy->onSetData(m_parentMap.key(node), value, role, index.column())) {
         return true;
     }
     return TodoProxyModelBase::setData(index, value, role);
