@@ -58,8 +58,6 @@ protected:
     virtual bool editorEvent(QEvent *event, QAbstractItemModel *model,
                              const QStyleOptionViewItem &option, const QModelIndex &index);
 
-    KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
-
 private slots:
     void onCompleterActivated(const QModelIndex &index);
 

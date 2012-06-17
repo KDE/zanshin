@@ -40,6 +40,8 @@
 #include <kglobal.h>
 #include <kmodelindexproxymapper.h>
 #include "modelstack.h"
+#include <abstractpimitem.h>
+#include <pimitem.h>
 
 using namespace KPIM;
 Q_DECLARE_METATYPE(QItemSelectionModel*)
@@ -115,42 +117,23 @@ void ActionListDelegate::paint(QPainter *painter,
     QStyledItemDelegate::paint(painter, opt, index);
 }
 
-KCalCore::Todo::Ptr ActionListDelegate::todoFromIndex(const QModelIndex &index) const
-{
-    Zanshin::ItemType type = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
-
-    if (type!=Zanshin::StandardTodo) {
-        return KCalCore::Todo::Ptr();
-    }
-
-    Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
-        return KCalCore::Todo::Ptr();
-    }
-
-    return item.payload<KCalCore::Todo::Ptr>();
-}
 
 bool ActionListDelegate::isCompleted(const QModelIndex &index) const
 {
-    KCalCore::Todo::Ptr todo = todoFromIndex(index);
-
-    if (todo) {
-        return todo->isCompleted();
-    } else {
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    if (pimitem.isNull()) {
         return false;
     }
+    return pimitem->getStatus() == AbstractPimItem::Complete;
 }
 
 bool ActionListDelegate::isOverdue(const QModelIndex &index) const
 {
-    KCalCore::Todo::Ptr todo = todoFromIndex(index);
-
-    if (todo) {
-        return todo->isOverdue();
-    } else {
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    if (pimitem.isNull()) {
         return false;
     }
+    return pimitem->getStatus() == AbstractPimItem::Attention;
 }
 
 QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
