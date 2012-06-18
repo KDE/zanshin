@@ -36,7 +36,6 @@ public:
     
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
 
-    virtual bool onSetData(Id id, const QVariant& value, int role, int column);
 private:
     QHash<QString, Id> mUidMapping;
     QHash<Akonadi::Collection::Id, Id> mCollectionMapping;

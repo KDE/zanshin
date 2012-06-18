@@ -110,15 +110,13 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                 case Summary:
                     return pimitem->getTitle();
                 case Project:
+                    //TODO
                     if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
                         return m_summaryMap[todoFromItem(item)->relatedTo()];
                     }
                     return QString();
                 case Contexts:
-                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
-                        return todoFromItem(item)->categories().join(", ");
-                    }
-                    return QString();
+                    return pimitem->getCategories().join(", ");
                 case Date:
                     return DateStringBuilder::getShortDate(pimitem->getPrimaryDate());
                 case Collection:
@@ -149,10 +147,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                     }
                     break;
                 case Contexts:
-                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
-                        return todoFromItem(item)->categories();
-                    }
-                    break;
+                    return pimitem->getCategories();
                 case Date:
                     return pimitem->getPrimaryDate().dateTime();
                 case Collection:
@@ -251,8 +246,8 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
 
 bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if ((role!=Qt::EditRole && role!=Qt::CheckStateRole) || !index.isValid()) {
-        return EntityTreeModel::setData(index, value, role);
+    if ((role!=Qt::EditRole && role!=Qt::CheckStateRole)) {
+        return false;
     }
 
     // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
@@ -262,55 +257,46 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
         return false;
     }
 
-    Akonadi::Item item = data(index, ItemRole).value<Akonadi::Item>();
-
-    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
-        return EntityTreeModel::setData(index, value, role);
-    }
-
-    bool shouldModifyItem = false;
-
-    KCalCore::Todo::Ptr todo = todoFromItem(item);
-    if (!todo) {
-        kWarning() << "not a todo cannot modify";
+    Akonadi::Item item = data(index, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    if (pimitem.isNull()) {
         return false;
     }
 
+    bool shouldModifyItem = true;
     switch (index.column()) {
-    case Summary:
+    case 0:
         if (role==Qt::EditRole) {
-            todo->setSummary(value.toString());
-            shouldModifyItem = true;
-        } else if (role==Qt::CheckStateRole) {
-            todo->setCompleted(value.toInt()==Qt::Checked);
-            shouldModifyItem = true;
+            pimitem->setTitle(value.toString());
+        } else if (role==Qt::CheckStateRole && pimitem->itemType() == AbstractPimItem::Todo) {
+            if (value.toInt()==Qt::Checked) {
+                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(AbstractPimItem::Complete);
+            } else {
+                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(AbstractPimItem::NotComplete);
+            }
         }
         break;
-    case Project:
-        todo->setRelatedTo(value.toString());
-        shouldModifyItem = true;
+    case 1:
+        pimitem->setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(value.toString().toUtf8())));
         break;
-    case Contexts:
-        todo->setCategories(value.toStringList());
-        shouldModifyItem = true;
+    case 2:
+        pimitem->setCategories(value.toStringList());
         break;
-    case Date:
-        todo->setDtDue(KDateTime(value.toDate()));
-        todo->setHasDueDate(true);
-        todo->setAllDay(true);
-        shouldModifyItem = true;
+    case 3:
+        if (pimitem->itemType() == AbstractPimItem::Todo) {
+            static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()), true);
+        }
+//         todo->setAllDay(true); TODO
         break;
-    case Collection:
-        break;
+    default:
+        shouldModifyItem = false;
     }
 
     if (shouldModifyItem) {
-        Akonadi::ItemModifyJob *itemModifyJob = new Akonadi::ItemModifyJob( item, this );
-        connect(itemModifyJob, SIGNAL(result(KJob*)),
-                 this, SLOT(updateJobDone(KJob*)));
+        pimitem->saveItem();
     }
 
-    return false;
+    return true;
 }
 
 void PimItemModel::onSourceInsertRows(const QModelIndex &parent, int begin, int end)
@@ -319,10 +305,9 @@ void PimItemModel::onSourceInsertRows(const QModelIndex &parent, int begin, int 
         QModelIndex child = index(i, 0, parent);
         onSourceInsertRows(child, 0, rowCount(child)-1);
 
-        const Akonadi::Item &item = data(child, ItemRole).value<Akonadi::Item>();
-        KCalCore::Todo::Ptr todo = todoFromItem(item); //only required for todos because we need the related-to name
-        if (todo) {
-            m_summaryMap[todo->uid()] = todo->summary();
+        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(data(child, ItemRole).value<Akonadi::Item>()));
+        if (pimitem) {
+            m_summaryMap[pimitem->getUid()] = pimitem->getTitle();
         }
     }
 }
@@ -331,9 +316,9 @@ void PimItemModel::onSourceRemoveRows(const QModelIndex &parent, int begin, int 
 {
     for (int i = begin; i <= end; ++i) {
         const QModelIndex &child = index(i, 0, parent);
-        KCalCore::Todo::Ptr todo = todoFromIndex(child);
-        if (todo) {
-            m_summaryMap.remove(todo->uid());;
+        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(data(child, ItemRole).value<Akonadi::Item>()));
+        if (pimitem) {
+            m_summaryMap.remove(pimitem->getUid());
         }
     }
 }
@@ -342,18 +327,12 @@ void PimItemModel::onSourceDataChanged(const QModelIndex &begin, const QModelInd
 {
     for (int row = begin.row(); row <= end.row(); ++row) {
         for (int column = begin.column(); column <= end.column(); ++column) {
-            KCalCore::Todo::Ptr todo = todoFromIndex( index(row, column, begin.parent()) );
-            if (todo) {
-                m_summaryMap[todo->uid()] = todo->summary();
+            QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(data(index(row, column, begin.parent()), ItemRole).value<Akonadi::Item>()));
+            if (pimitem) {
+                m_summaryMap[pimitem->getUid()] = pimitem->getTitle();
             }
         }
     }
-}
-
-KCalCore::Todo::Ptr PimItemModel::todoFromIndex(const QModelIndex &index) const
-{
-    const Akonadi::Item &item = data(index, ItemRole).value<Akonadi::Item>();
-    return todoFromItem(item);
 }
 
 KCalCore::Todo::Ptr PimItemModel::todoFromItem(const Akonadi::Item &item) const
