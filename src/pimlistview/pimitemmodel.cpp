@@ -111,8 +111,8 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                     return pimitem->getTitle();
                 case Project:
                     //TODO
-                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
-                        return m_summaryMap[todoFromItem(item)->relatedTo()];
+                    if ((pimitem->itemType() & AbstractPimItem::Todo) && item.hasPayload<KCalCore::Todo::Ptr>()) {
+                        return m_summaryMap[item.payload<KCalCore::Todo::Ptr>()->relatedTo()];
                     }
                     return QString();
                 case Contexts:
@@ -142,8 +142,8 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                 case Summary:
                     return pimitem->getTitle();
                 case Project:
-                    if ((pimitem->itemType() & AbstractPimItem::Todo) && todoFromItem(item)) {
-                        return m_summaryMap[todoFromItem(item)->relatedTo()];
+                    if ((pimitem->itemType() & AbstractPimItem::Todo) && item.hasPayload<KCalCore::Todo::Ptr>()) {
+                        return m_summaryMap[item.payload<KCalCore::Todo::Ptr>()->relatedTo()];
                     }
                     break;
                 case Contexts:
@@ -332,15 +332,6 @@ void PimItemModel::onSourceDataChanged(const QModelIndex &begin, const QModelInd
                 m_summaryMap[pimitem->getUid()] = pimitem->getTitle();
             }
         }
-    }
-}
-
-KCalCore::Todo::Ptr PimItemModel::todoFromItem(const Akonadi::Item &item) const
-{
-    if (!item.isValid() || !item.hasPayload<KCalCore::Todo::Ptr>()) {
-        return KCalCore::Todo::Ptr();
-    } else {
-        return item.payload<KCalCore::Todo::Ptr>();
     }
 }
 

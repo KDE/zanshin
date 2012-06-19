@@ -29,7 +29,6 @@
 #include <QtGui/QSortFilterProxyModel>
 
 #include <KDE/Akonadi/EntityTreeModel>
-#include <KDE/KCalCore/Todo>
 #include "globaldefs.h"
 
 class PimItemModel : public Akonadi::EntityTreeModel
@@ -76,9 +75,6 @@ private slots:
     void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
 
 private:
-    KCalCore::Todo::Ptr todoFromIndex(const QModelIndex &index) const;
-    KCalCore::Todo::Ptr todoFromItem(const Akonadi::Item &item) const;
-
     QHash<QString, QString> m_summaryMap;
     QStringList m_itemHeaders;
 };
