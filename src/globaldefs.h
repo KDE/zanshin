@@ -51,14 +51,15 @@ namespace Zanshin
         UidRole = Akonadi::EntityTreeModel::UserRole + 1,
         ParentUidRole,
         AncestorsUidRole,
-        CategoriesRole,
-        AncestorsCategoriesRole,
+        CategoriesRole, //TODO remove
+        AncestorsCategoriesRole, //TODO remove
         ItemTypeRole,
         DataTypeRole,
         ChildUidsRole,
         ChildIndexesRole,
         CategoryPathRole,
-        RelationIdRole,
+        RelationIdRole, //Id of node
+        AncestorsRole, //List of all parents
         UriRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };
@@ -70,6 +71,9 @@ namespace Zanshin
     };
 
 }
+typedef qint64 Id;
+typedef QList<qint64> IdList;
+Q_DECLARE_METATYPE(IdList)
 Q_DECLARE_METATYPE(QModelIndexList)
 
 #endif

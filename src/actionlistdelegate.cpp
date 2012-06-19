@@ -42,6 +42,7 @@
 #include "modelstack.h"
 #include <abstractpimitem.h>
 #include <pimitem.h>
+#include "categorymanager.h"
 
 using namespace KPIM;
 Q_DECLARE_METATYPE(QItemSelectionModel*)
@@ -164,18 +165,22 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
         comboBox->setAutoHidePopupEnabled(true);
         QItemSelectionModel *checkModel = new QItemSelectionModel(model, comboBox);
         ActionListCheckableModel *checkable = new ActionListCheckableModel(comboBox);
-        QStringList ancestorsCategories = selectedIndex.data(Zanshin::AncestorsCategoriesRole).value<QStringList>();
-        checkable->setDisabledCategories(ancestorsCategories);
+        //Avoid having an item in both a super and subcategory at the same time
+//         IdList ancestorsCategories = CategoryManager::instance().getAncestors(selectedIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
+//         kDebug() << "ancestors " << ancestorsCategories;
+//         checkable->setDisabledCategories(ancestorsCategories);
         checkable->setSourceModel(model);
         checkable->setSelectionModel(checkModel);
 
-        QStringList categories = selectedIndex.data(Zanshin::CategoriesRole).value<QStringList>();
+
+        //Check currently active categories
+        IdList categories = CategoryManager::instance().getParents(selectedIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
         Q_ASSERT(checkable->rowCount() == model->rowCount());
         for (int i = 0; i < checkable->rowCount(); ++i) {
             QModelIndex checkIndex = checkable->index(i, 0);
             QModelIndex index = model->index(i, 0);
-            foreach (QString item, categories) {
-                if (index.data(Zanshin::CategoryPathRole).toString() == item && checkIndex.flags() & Qt::ItemIsEnabled) {
+            foreach (Id item, categories) {
+                if (index.data(Zanshin::RelationIdRole).toLongLong() == item && checkIndex.flags() & Qt::ItemIsEnabled) {
                     checkModel->select(index, QItemSelectionModel::Toggle);
                 }
             }
@@ -223,7 +228,6 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         QStringList currentCategories = comboBox->currentText().split(", ");
         model->setData(index, currentCategories);
-
     } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::ProjectType) {
         QComboBox *comboBox = static_cast<QComboBox*>(editor);
         if (comboBox->currentIndex() == -1) {

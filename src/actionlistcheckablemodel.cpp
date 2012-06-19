@@ -23,6 +23,7 @@
 
 #include <actionlistcheckablemodel.h>
 #include <globaldefs.h>
+#include <pimitemrelations.h>
 #include <QStringList>
 #include <KDebug>
 
@@ -58,8 +59,7 @@ Qt::ItemFlags ActionListCheckableModel::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
     }
 
-    QString category = index.data().toString();
-    category = category.split(" / ").last();
+    Id category = index.data(Zanshin::RelationIdRole).toLongLong();
     Qt::ItemFlags flags = KCheckableProxyModel::flags(index);
     if (m_disabledCategories.contains(category)) {
         flags&= ~Qt::ItemIsEnabled;
@@ -68,12 +68,12 @@ Qt::ItemFlags ActionListCheckableModel::flags(const QModelIndex &index) const
     return flags;
 }
 
-void ActionListCheckableModel::setDisabledCategories(const QStringList categories)
+void ActionListCheckableModel::setDisabledCategories(const IdList categories)
 {
     m_disabledCategories = categories;
 }
 
-const QStringList ActionListCheckableModel::disabledCategories()
+const IdList ActionListCheckableModel::disabledCategories()
 {
     return m_disabledCategories;
 }

@@ -23,12 +23,9 @@
 #include <QList>
 #include <QModelIndex>
 #include <Akonadi/EntityTreeModel>
+#include "globaldefs.h"
 
 
-
-
-typedef qint64 Id;
-typedef QList<qint64> IdList;
 class ReparentingModel;
 class TodoNode;
 

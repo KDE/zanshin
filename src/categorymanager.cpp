@@ -59,6 +59,7 @@ void CategoryManager::setCategoriesStructure(CategoriesStructure *s)
 
 void CategoryManager::addCategory(const QString &category, const IdList &parentCategory)
 {
+    kDebug() << category << parentCategory;
     m_categoriesStructure->addCategoryNode(category, parentCategory);
 }
 
@@ -136,4 +137,36 @@ bool CategoryManager::renameCategory(Id id, const QString &newName)
     m_categoriesStructure->renameNode(id, newName);
     return true;
 }
+
+IdList CategoryManager::getParents(const Akonadi::Item& item) const
+{
+    if (!item.isValid()) {
+        return IdList();
+    }
+    Id id = m_categoriesStructure->getItemId(item);
+    return m_categoriesStructure->getParents(id);
+}
+
+IdList CategoryManager::getAncestors(Id id) const
+{
+    IdList ancestors;
+    foreach (Id parent, m_categoriesStructure->getParents(id)) {
+        kDebug() << m_categoriesStructure->getPath(parent) << parent;
+        ancestors << parent;
+        ancestors << getAncestors(parent);
+    }
+    return ancestors;
+}
+
+IdList CategoryManager::getAncestors(const Akonadi::Item& item) const
+{
+    if (!item.isValid()) {
+        return IdList();
+    }
+    IdList ancestors;
+    Id id = m_categoriesStructure->getItemId(item);
+    kDebug() << "ancestors of " << m_categoriesStructure->getPath(id) << id;
+    return getAncestors(id);
+}
+
 

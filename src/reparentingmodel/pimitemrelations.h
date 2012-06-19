@@ -22,10 +22,8 @@
 #define PIMITEMRELATIONS_H
 #include <QDateTime>
 #include <akonadi/item.h>
+#include "globaldefs.h"
 
-
-typedef qint64 Id;
-typedef QList<qint64> IdList;
 
 /**
  * A relation tree
@@ -95,6 +93,9 @@ public:
 
     //Store current relations to item
     virtual void updateRelationTree(Akonadi::Item &item) = 0;
+
+    //Get a path, representing the hierarchy, which can be used for manual editing
+    virtual QString getPath(Id id) const = 0;
 signals:
 
     //only for virtual nodes
@@ -128,6 +129,7 @@ public:
     void addCategoryNode(const QString &categoryPath, const IdList &parents);
     Id getCategoryId(const QString& categoryPath) const;
     virtual void updateRelationTree(Akonadi::Item& item);
+    virtual QString getPath(Id id) const;
 protected:
     //Build a relation tree from the category of an item
     Relation getRelationTree(const Akonadi::Item &item);

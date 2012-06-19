@@ -266,6 +266,9 @@ QVariant CategoriesStrategy::data(Id id, int role) const
     if (role == Zanshin::RelationIdRole) {
         return translateTo(id);
     }
+    if (role == Zanshin::CategoryPathRole) {
+        return mRelations->getPath(translateTo(id));
+    }
     return ReparentingStrategy::data(id, role);
 }
 

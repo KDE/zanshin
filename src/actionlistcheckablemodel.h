@@ -26,6 +26,7 @@
 
 #include <kcheckableproxymodel.h>
 #include <QtCore/QStringList>
+#include <pimitemrelations.h>
 
 class ActionListCheckableModel : public KCheckableProxyModel
 {
@@ -36,10 +37,10 @@ public:
     QVariant data(const QModelIndex& index, int role) const;
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-    void setDisabledCategories(const QStringList categories);
-    const QStringList disabledCategories();
+    void setDisabledCategories(const IdList categories);
+    const IdList disabledCategories();
 private:
-    QStringList m_disabledCategories;
+    IdList m_disabledCategories;
 };
 
 #endif //ZANSHIN_ACTIONLISTCOMBOBOX_H

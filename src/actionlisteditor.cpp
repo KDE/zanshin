@@ -359,7 +359,6 @@ void ActionListEditor::onMoveAction()
                           QuickSelectDialog::MoveAction);
     if (dlg.exec()==QDialog::Accepted) {
         QVariant selectedId = dlg.selectedId();
-        QModelIndex index = dlg.selectedIndex();
 
         QModelIndexList list = currentPage()->selectionModel()->selectedRows();
         if (currentSelection.isValid() && !list.isEmpty()) {
@@ -371,15 +370,10 @@ void ActionListEditor::onMoveAction()
 
                 if (currentPage()->mode()==Zanshin::ProjectMode) {
                     TodoHelpers::moveTodoToProject(current, selectedId.toString(), dlg.selectedType(), dlg.collection());
-                } else {
+                } else if (currentPage()->mode()==Zanshin::CategoriesMode){
                     CategoryManager::instance().moveToCategory(current.data(Zanshin::RelationIdRole).toLongLong(), selectedId.toLongLong(), dlg.selectedType());
-//                     int type = current.data(Zanshin::ItemTypeRole).toInt();
-//                     QString categoryPath = current.data(Zanshin::CategoryPathRole).toString();
-//                     if (type==Zanshin::Category) {
-//                         CategoryManager::instance().moveToCategory(current.data(Zanshin::RelationIdRole).toInt(), selectedId, dlg.selectedType());
-//                     } else {
-//                         CategoryManager::instance().moveTodoToCategory(current, selectedId, dlg.selectedType());
-//                     }
+                } else {
+                    qWarning() << "not implemented";
                 }
             }
         }

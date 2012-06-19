@@ -336,3 +336,8 @@ void CategoriesStructure::updateRelationTree(Akonadi::Item &item)
     pimitem->setCategories(categories);
 }
 
+QString CategoriesStructure::getPath(Id id) const
+{
+    return mCategoryMap.key(id);
+}
+

@@ -60,10 +60,14 @@ public:
     bool moveToCategory(Id id, Id category, Zanshin::ItemType parentType);
     bool renameCategory(Id id, const QString &name);
 
+    IdList getParents(const Akonadi::Item &item) const;
+    IdList getAncestors(const Akonadi::Item &item) const;
 private:
     friend class CategoriesStrategy;
 
     bool removeCategory(const Id &categoryPath);
+
+    IdList getAncestors(Id id) const;
 
     QPointer<CategoriesStructure> m_categoriesStructure;
 };
