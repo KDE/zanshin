@@ -26,11 +26,7 @@
 #define ABSTRACTPIMITEM_H
 
 #include <Akonadi/Item>
-// #include <Nepomuk/Resource>
-// #include <Nepomuk/Thing>
 #include <kdatetime.h>
-// #include <Nepomuk/Types/Property>
-// #include <Nepomuk/Query/Result>
 
 class KJob;
 
@@ -47,8 +43,6 @@ namespace Akonadi {
  * The default strategy is, to avoid loading the payload if possible (by using available attributes),
  * and loading the whole payload only as needed. This does not happen automatically though, if you want to access
  * some values which are only in the payload, fetch it first via fetchPayload.
- *
- * TODO: maybe also add a Nepomuk::Resource instance
  *
  */
 class AbstractPimItem : public QObject
