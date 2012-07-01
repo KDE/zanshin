@@ -27,29 +27,30 @@
 #include <QLabel>
 #include <QDropEvent>
 #include <QListView>
-#include <Nepomuk/Utils/SimpleResourceModel>
-#include <Nepomuk/Utils/SearchWidget>
-#include <Nepomuk/File>
-#include <Nepomuk/ResourceManager>
+// #include <Nepomuk2/Utils/SimpleResourceModel>
+// #include <Nepomuk2/Utils/SearchWidget>
+#include <Nepomuk2/File>
+#include <Nepomuk2/ResourceManager>
 #include <Akonadi/Item>
 #include <KDebug>
 #include "abstractpimitem.h"
 #include "nepomukcontextmodel.h"
 #include "nepomukcontextview.h"
 
-#include <Nepomuk/Utils/FacetWidget>
-#include <Nepomuk/Utils/SimpleFacet>
-#include <Nepomuk/Query/LiteralTerm>
-#include <Nepomuk/Query/ComparisonTerm>
-#include <Nepomuk/Vocabulary/NFO>
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Variant>
-#include <Nepomuk/Thing>
+// #include <Nepomuk2/Utils/FacetWidget>
+// #include <Nepomuk2/Utils/SimpleFacet>
+#include <Nepomuk2/Query/LiteralTerm>
+#include <Nepomuk2/Query/ComparisonTerm>
+#include <Nepomuk2/Vocabulary/NFO>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/Thing>
 
 #include "guiclient.h"
 #include <KActionCollection>
 #include <KAction>
 #include <KRun>
+#include <Soprano/Vocabulary/NAO>
 
 ItemContext::ItemContext(QWidget* parent)
 : QWidget(parent)
@@ -76,19 +77,19 @@ ItemContext::ItemContext(QWidget* parent)
     m_model = new NepomukContextModel(this);
     m_contextView = new NepomukContextView(client, this);
     client->setupActions(m_contextView);
-    m_contextView->setModel(m_model);
+//     m_contextView->setModel(m_model);
     //view->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     layout->addWidget(m_contextView);
 
-/*    Nepomuk::Utils::SearchWidget *search = new Nepomuk::Utils::SearchWidget(this);
+/*    Nepomuk2::Utils::SearchWidget *search = new Nepomuk2::Utils::SearchWidget(this);
     layout->addWidget(search);
 */
-    /*Nepomuk::Utils::FacetWidget *facetWidget = new Nepomuk::Utils::FacetWidget(this);
-    Nepomuk::Utils::SimpleFacet* imageSizeFacet = new Nepomuk::Utils::SimpleFacet();
-    imageSizeFacet->addTerm( i18n("Small"), Nepomuk::Vocabulary::NFO::width() <= Nepomuk::Query::LiteralTerm(300));
-    imageSizeFacet->addTerm( i18n("Medium"), (Nepomuk::Vocabulary::NFO::width() > Nepomuk::Query::LiteralTerm(300)) &&
-    (Nepomuk::Vocabulary::NFO::width() <= Nepomuk::Query::LiteralTerm(800)));
-    imageSizeFacet->addTerm( i18n("Large"), Nepomuk::Vocabulary::NFO::width() > Nepomuk::Query::LiteralTerm(800));
+    /*Nepomuk2::Utils::FacetWidget *facetWidget = new Nepomuk2::Utils::FacetWidget(this);
+    Nepomuk2::Utils::SimpleFacet* imageSizeFacet = new Nepomuk2::Utils::SimpleFacet();
+    imageSizeFacet->addTerm( i18n("Small"), Nepomuk2::Vocabulary::NFO::width() <= Nepomuk2::Query::LiteralTerm(300));
+    imageSizeFacet->addTerm( i18n("Medium"), (Nepomuk2::Vocabulary::NFO::width() > Nepomuk2::Query::LiteralTerm(300)) &&
+    (Nepomuk2::Vocabulary::NFO::width() <= Nepomuk2::Query::LiteralTerm(800)));
+    imageSizeFacet->addTerm( i18n("Large"), Nepomuk2::Vocabulary::NFO::width() > Nepomuk2::Query::LiteralTerm(800));
     facetWidget->addFacet(imageSizeFacet);
     layout->addWidget(facetWidget);*/
 
@@ -100,7 +101,7 @@ ItemContext::ItemContext(QWidget* parent)
 }
 
 
-void ItemContext::setResource(const Nepomuk::Resource &resource)
+void ItemContext::setResource(const Nepomuk2::Resource &resource)
 {
     m_resource = resource;
     updateContext();
@@ -111,9 +112,9 @@ void ItemContext::addContext(const KUrl& uri)
     kDebug() << "added context: " << uri;
     if (uri.isLocalFile()) {
         //TODO add option to copy file to a repository managed by notetaker
-        Nepomuk::File file = Nepomuk::File(uri, Nepomuk::ResourceManager::instance());
-        //FIXME this should happen in the Nepomuk::File class
-        file.setProperty(Nepomuk::Vocabulary::NIE::url(), Nepomuk::Variant(uri.url()));
+        Nepomuk2::File file = Nepomuk2::File(uri);
+        //FIXME this should happen in the Nepomuk2::File class
+        file.setProperty(Nepomuk2::Vocabulary::NIE::url(), Nepomuk2::Variant(uri.url()));
         //TODO actually the file thing should be added as relation not the file itself. Also the file should be
         m_resource.addIsRelated(file);
     } else {
@@ -122,7 +123,7 @@ void ItemContext::addContext(const KUrl& uri)
             kDebug() << "item is valid";
             //The resource should already be available from the nepomukrunner
             //We do not create a new resource because for this we would need to fetch the akonadi item first (for the mimetype)
-            Nepomuk::Resource res(uri);
+            Nepomuk2::Resource res(uri);
             if (res.exists()) {
                 kDebug() << "resource is existing";
                 m_resource.addIsRelated(res.pimoThing());
@@ -135,8 +136,8 @@ void ItemContext::addContext(const KUrl& uri)
 
 void ItemContext::updateContext()
 {
-    m_model->clear();
-    m_model->addResources(m_resource.isRelateds());
+//     m_model->clear();
+//     m_model->addResources(m_resource.isRelateds());
 }
 
 void ItemContext::dragEnterEvent(QDragEnterEvent *event)
@@ -158,10 +159,10 @@ void ItemContext::dropEvent(QDropEvent *event)
 
 void ItemContext::openSelection()
 {
-    foreach (const Nepomuk::Resource &res, m_contextView->selectedResources()) {
+    foreach (const Nepomuk2::Resource &res, m_contextView->selectedResources()) {
         if (res.isFile()) {
-            Nepomuk::File file = Nepomuk::File(res);
-            KRun *run = new KRun(file.property(Nepomuk::Vocabulary::NIE::url()).toUrl(), this);
+            Nepomuk2::File file = Nepomuk2::File(res);
+            KRun *run = new KRun(file.property(Nepomuk2::Vocabulary::NIE::url()).toUrl(), this);
         } else {
             emit itemActivated(res);
         }
@@ -171,8 +172,8 @@ void ItemContext::openSelection()
 
 void ItemContext::removeSelection()
 {
-    foreach (const Nepomuk::Resource &res, m_contextView->selectedResources()) {
-        m_resource.removeProperty( Nepomuk::Resource::isRelatedUri(), res);
+    foreach (const Nepomuk2::Resource &res, m_contextView->selectedResources()) {
+        m_resource.removeProperty( Soprano::Vocabulary::NAO::isRelated(), res);
     }
     updateContext();
 }

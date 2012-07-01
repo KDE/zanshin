@@ -26,12 +26,12 @@
 #define SEARCHFILTERCACHECPROXY_H
 
 #include <kidentityproxymodel.h>
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Query/Result>
 #include <KUrl>
 #include <akonadi/item.h>
 
 class QUrl;
-namespace Nepomuk {
+namespace Nepomuk2 {
 namespace Query {
 class QueryServiceClient;
 }
@@ -55,18 +55,18 @@ public:
 //     bool isTopicMatch(const Akonadi::Item &item) const;
     
 private slots:
-    void itemChanged(const Nepomuk::Resource &resource, const Nepomuk::Types::Property &property, const QVariant &value);
-    void newFulltextMatches(QList< Nepomuk::Query::Result > results);
+    void itemChanged(const Nepomuk2::Resource &resource, const Nepomuk2::Types::Property &property, const QVariant &value);
+    void newFulltextMatches(QList< Nepomuk2::Query::Result > results);
     void entriesRemoved(QList< QUrl > removedResources);
-//     void newTopicMatches(QList< Nepomuk::Query::Result > results);
+//     void newTopicMatches(QList< Nepomuk2::Query::Result > results);
 //     void topicMatchRemoved(QList< QUrl > removedResources);
     void queryFinished();
     
 private:    
     Akonadi::Item::List m_fulltextHits;
 //     Akonadi::Item::List m_topicHits;
-    Nepomuk::Query::QueryServiceClient *m_queryServiceClient;
-//     Nepomuk::Query::QueryServiceClient *m_topicQueryServiceClient;
+    Nepomuk2::Query::QueryServiceClient *m_queryServiceClient;
+//     Nepomuk2::Query::QueryServiceClient *m_topicQueryServiceClient;
 };
 
 #endif // SEARCHFILTERCACHECPROXY_H

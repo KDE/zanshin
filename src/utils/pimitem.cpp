@@ -24,10 +24,10 @@
 
 #include "note.h"
 #include "incidenceitem.h"
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Variant>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Variant>
 #include "queries.h"
-#include <Nepomuk/Query/QueryServiceClient>
+#include <Nepomuk2/Query/QueryServiceClient>
 
 namespace PimItemUtils {
 
@@ -81,16 +81,16 @@ namespace PimItemUtils {
     };
 
 
-    Akonadi::Item getItemFromResource(const Nepomuk::Resource &resource)
+    Akonadi::Item getItemFromResource(const Nepomuk2::Resource &resource)
     {
-        //TODO add property to Nepomuk::Resource
-        //kDebug() << resource.property(Nepomuk::Vocabulary::NIE::url()).toUrl();
-        if (!resource.hasProperty(Nepomuk::Vocabulary::NIE::url())) {
+        //TODO add property to Nepomuk2::Resource
+        //kDebug() << resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl();
+        if (!resource.hasProperty(Nepomuk2::Vocabulary::NIE::url())) {
             kWarning() << "url property is missing (did you pass a thing instead of the grounding occurence?)";
-            kWarning() << resource.uri();
+            kWarning() << resource.resourceUri();
             return Akonadi::Item();
         }
-        Akonadi::Item item = Akonadi::Item::fromUrl(resource.property(Nepomuk::Vocabulary::NIE::url()).toUrl());//sizeof "NotetakerItem:"
+        Akonadi::Item item = Akonadi::Item::fromUrl(resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl());//sizeof "NotetakerItem:"
         if (item.isValid()) {
             //kDebug() << "found item" << item.url();
             return item;

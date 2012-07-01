@@ -26,6 +26,7 @@
 
 #include <QtGui/QWidget>
 
+class KJob;
 class QItemSelectionModel;
 class QAbstractItemModel;
 
@@ -51,6 +52,7 @@ public slots:
     void renameCurrentItem();
     void selectPreviousItem();
     void selectNextItem();
+    void result(KJob*);
 
 private:
     Akonadi::EntityTreeView *m_treeView;

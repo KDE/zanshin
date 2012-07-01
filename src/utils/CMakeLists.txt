@@ -23,6 +23,8 @@ target_link_libraries(utils
   ${KDE4_KDECORE_LIBS}
   ${KDEPIMLIBS_AKONADI_LIBS}
   akonadi-notes
-  nepomukdatamanagement
+  ${KDE4_NEPOMUK_LIBS}
+#   nepomukdatamanagement
+  ${NEPOMUK_CORE_LIBRARY}
   nepomukquery
 )

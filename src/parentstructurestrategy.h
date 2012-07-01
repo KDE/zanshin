@@ -32,7 +32,7 @@
 #include "todonode.h"
 
 class QUrl;
-namespace Nepomuk {
+namespace Nepomuk2 {
 namespace Types {
 
 class Property;
@@ -121,17 +121,17 @@ public:
     virtual void reset();
     
 private slots:
-    void checkResults(const QList<Nepomuk::Query::Result> &);
+    void checkResults(const QList<Nepomuk2::Query::Result> &);
     void removeResult(const QList<QUrl> &);
     void queryFinished();
     
-    void itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results);
+    void itemsWithTopicAdded(const QList<Nepomuk2::Query::Result> &results);
     void itemsFromTopicRemoved(const QList<QUrl> &items);
-    void propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value);
+    void propertyChanged(const Nepomuk2::Resource &res, const Nepomuk2::Types::Property &property, const QVariant &value);
     
 private:
-    void addParent (const Nepomuk::Resource& topic, const QUrl &parent = QUrl());
-    Nepomuk::Query::QueryServiceClient *m_queryServiceClient;
+    void addParent (const Nepomuk2::Resource& topic, const QUrl &parent = QUrl());
+    Nepomuk2::Query::QueryServiceClient *m_queryServiceClient;
     QMap<QUrl, QObject*> m_guardMap;
     QMap<QUrl, qint64> m_topicMap;
     QMap<QUrl, QList<qint64> > m_topicCache; //cache akonadi item uris and their topics

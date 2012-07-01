@@ -31,7 +31,7 @@ set(zanshin_core_SRCS
 )
 
 set(zanshin_core_LIBS
-   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils nepomukdatamanagement ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} nepomuk nepomukutils kio soprano
+   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} nepomuk nepomukutils kio soprano ${NEPOMUK_CORE_LIBRARY}
 )
 
 if(KDE4_BUILD_TESTS)

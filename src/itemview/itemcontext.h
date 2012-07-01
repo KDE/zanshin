@@ -26,7 +26,7 @@
 
 #include <QWidget>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 namespace Nepomuk {
     namespace Utils {
@@ -55,18 +55,18 @@ public slots:
      * Sets the resource for which we want the context
      * Actually we set the thing here normally
      */
-    void setResource(const Nepomuk::Resource &resource);
+    void setResource(const Nepomuk2::Resource &resource);
 protected:
     virtual void dragEnterEvent(QDragEnterEvent* );
     virtual void dropEvent(QDropEvent* );
 signals:
-    void itemActivated(const Nepomuk::Resource &);
+    void itemActivated(const Nepomuk2::Resource &);
 private slots:
     void removeSelection();
     void openSelection();
 
 private:
-    Nepomuk::Resource m_resource;
+    Nepomuk2::Resource m_resource;
     void updateContext();
     NepomukContextModel *m_model;
     NepomukContextView *m_contextView;

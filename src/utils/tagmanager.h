@@ -28,10 +28,10 @@
 #include <QStringList>
 #include <QRegExp>
 
-#include <Nepomuk/Tag>
-#include <Nepomuk/Thing>
-#include <nepomuk/simpleresource.h>
-#include <nepomuk/simpleresourcegraph.h>
+#include <Nepomuk2/Tag>
+#include <Nepomuk2/Thing>
+#include <nepomuk2/simpleresource.h>
+#include <nepomuk2/simpleresourcegraph.h>
 
 class KJob;
 namespace Akonadi {
@@ -45,8 +45,8 @@ namespace Soprano {
 
 namespace NepomukUtils
 {
-    Nepomuk::SimpleResource itemThing(const Akonadi::Item&, Nepomuk::SimpleResourceGraph &);
-    //Nepomuk::Thing itemThing(const Akonadi::Item &item);
+    Nepomuk2::SimpleResource itemThing(const Akonadi::Item&, Nepomuk2::SimpleResourceGraph &);
+    //Nepomuk2::Thing itemThing(const Akonadi::Item &item);
     
     KJob* tagItem(const Akonadi::Item&, const QString &tag);  //TODO job
     //static KJob* untagItem(const Akonadi::Item&, const QString &tag);
@@ -68,7 +68,7 @@ namespace NepomukUtils
     KJob * removeAllTopics(const Akonadi::Item &item);  //TODO job
     KJob * renameTopic(const QUrl &topicId, const QString &name);  //TODO job
     KJob * addToTopic(const QUrl &subtopicId, const QUrl &supertopicId);  //TODO job
-    //QStringList getTopicList(const Nepomuk::Thing &thing);
+    //QStringList getTopicList(const Nepomuk2::Thing &thing);
 //     QStringList getTopicNameList(const Akonadi::Item& item);
     /**
      * Remove the subtopic from the given supertopic

@@ -26,27 +26,27 @@
 #include <QStringList>
 #include <QRegExp>
 
-#include <Nepomuk/Tag>
-#include <Nepomuk/Thing>
-#include <nepomuk/simpleresource.h>
-#include <nepomuk/simpleresourcegraph.h>
-#include <nepomuk/query.h>
-#include <nepomuk/term.h>
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Vocabulary/NCAL>
-#include <Nepomuk/Vocabulary/NFO>
-#include <nepomuk/literalterm.h>
-#include <nepomuk/comparisonterm.h>
+#include <Nepomuk2/Tag>
+#include <Nepomuk2/Thing>
+#include <nepomuk2/simpleresource.h>
+#include <nepomuk2/simpleresourcegraph.h>
+#include <nepomuk2/query.h>
+#include <nepomuk2/term.h>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/NCAL>
+#include <Nepomuk2/Vocabulary/NFO>
+#include <nepomuk2/literalterm.h>
+#include <nepomuk2/comparisonterm.h>
 
 #include <akonadi/item.h>
-#include <nepomuk/orterm.h>
-#include <nepomuk/resourcetypeterm.h>
-#include <nepomuk/andterm.h>
+#include <nepomuk2/orterm.h>
+#include <nepomuk2/resourcetypeterm.h>
+#include <nepomuk2/andterm.h>
 #include <aneo.h>
 #include <soprano/rdf.h>
 #include <soprano/nao.h>
-#include <nepomuk/resourceterm.h>
+#include <nepomuk2/resourceterm.h>
 
 
 
@@ -62,11 +62,11 @@ namespace Soprano {
 
 namespace MindMirrorQueries
 {
-    using namespace Nepomuk::Query;
-        using namespace Nepomuk::Types;
-        using namespace Nepomuk::Vocabulary;
+    using namespace Nepomuk2::Query;
+        using namespace Nepomuk2::Types;
+        using namespace Nepomuk2::Vocabulary;
     
-    Nepomuk::Query::Term resourceTypes()
+    Nepomuk2::Query::Term resourceTypes()
     {
         
         AndTerm outer;
@@ -79,27 +79,27 @@ namespace MindMirrorQueries
         return outer;
     }
     
-    Nepomuk::Query::Term itemUrlTerm(const Akonadi::Item &item)
+    Nepomuk2::Query::Term itemUrlTerm(const Akonadi::Item &item)
     {
         return LiteralTerm(item.url().url());
     }
     
-    Nepomuk::Query::Term itemResourceTerm(const Akonadi::Item &item)
+    Nepomuk2::Query::Term itemResourceTerm(const Akonadi::Item &item)
     {
         AndTerm outer;
         outer.addSubTerm(resourceTypes());
-        outer.addSubTerm(ComparisonTerm(Nepomuk::Types::Property(NIE::url()), itemUrlTerm(item), ComparisonTerm::Equal));
+        outer.addSubTerm(ComparisonTerm(Nepomuk2::Types::Property(NIE::url()), itemUrlTerm(item), ComparisonTerm::Equal));
         return outer;
     }
     
-    Nepomuk::Query::Term itemThingTerm(const Akonadi::Item &item)
+    Nepomuk2::Query::Term itemThingTerm(const Akonadi::Item &item)
     {
         AndTerm outer;
         outer.addSubTerm(ResourceTypeTerm(Class(PIMO::Thing())));
-        return ComparisonTerm(Nepomuk::Types::Property(PIMO::groundingOccurrence()), itemResourceTerm(item), ComparisonTerm::Equal);
+        return ComparisonTerm(Nepomuk2::Types::Property(PIMO::groundingOccurrence()), itemResourceTerm(item), ComparisonTerm::Equal);
     }
     
-    Nepomuk::Query::Term itemTopicsTerm(const Akonadi::Item &item)
+    Nepomuk2::Query::Term itemTopicsTerm(const Akonadi::Item &item)
     {
         AndTerm outer;
         outer.addSubTerm(itemThingTerm(item));
@@ -109,7 +109,7 @@ namespace MindMirrorQueries
         return outer;
     }
     
-    Nepomuk::Query::Term itemsWithTopicsTerm(const QList <QUrl> topics)
+    Nepomuk2::Query::Term itemsWithTopicsTerm(const QList <QUrl> topics)
     {
         OrTerm topicTerm;
         foreach( const QUrl &t, topics) {
@@ -138,8 +138,8 @@ namespace MindMirrorQueries
         //prefer thing created by zanshin, things with isRelated properties
         QString query = QString::fromLatin1("select distinct ?r where { ?r <%2> ?g. ?g <%3> <%1>.} LIMIT 1")
             .arg(item.url().url())
-            .arg(Nepomuk::Vocabulary::PIMO::groundingOccurrence().toString())
-            .arg(Nepomuk::Vocabulary::NIE::url().toString());
+            .arg(Nepomuk2::Vocabulary::PIMO::groundingOccurrence().toString())
+            .arg(Nepomuk2::Vocabulary::NIE::url().toString());
         return query;
     }
     
@@ -150,8 +150,8 @@ namespace MindMirrorQueries
         //TODO for some reason ?thing <%6> ?r can not be changed into ?r <%6> ?thing although the property is bidirectional
     QString query = QString::fromLatin1("select ?r ?reqProp1 where { ?r <%4> <%5>. ?thing <%6> ?r. ?thing <%2> ?g. ?g <%3> <%1>. ?r <%7> ?reqProp1.}")
             .arg(item.url().url())
-            .arg(Nepomuk::Vocabulary::PIMO::groundingOccurrence().toString())
-            .arg(Nepomuk::Vocabulary::NIE::url().toString())
+            .arg(Nepomuk2::Vocabulary::PIMO::groundingOccurrence().toString())
+            .arg(Nepomuk2::Vocabulary::NIE::url().toString())
             .arg(Soprano::Vocabulary::RDF::type().toString())
             .arg(PIMO::Topic().toString())
             .arg(PIMO::isRelated().toString())

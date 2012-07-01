@@ -27,6 +27,7 @@
 #include <KDE/KInputDialog>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
+#include <KJob>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
@@ -122,13 +123,20 @@ void SideBarPage::addNewItem()
     } else if (type==Zanshin::Category) {
         CategoryManager::instance().addCategory(summary, parentItem.data(Zanshin::CategoryPathRole).toString());
     } else if (type==Zanshin::TopicRoot) {
-        NepomukUtils::createTopic(summary);
+        KJob * job  = NepomukUtils::createTopic(summary);
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(result(KJob*)));
     } else if (type==Zanshin::Topic) {
         NepomukUtils::createTopic(summary, parentItem.data(Zanshin::UriRole).toUrl());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
 }
+
+void SideBarPage::result(KJob *job)
+{
+    kDebug() << job->error() << job->errorString();
+}
+
 
 void SideBarPage::removeCurrentItem()
 {

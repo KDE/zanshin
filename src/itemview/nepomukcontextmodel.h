@@ -25,18 +25,19 @@
 #ifndef NEPOMUKCONTEXTMODEL_H
 #define NEPOMUKCONTEXTMODEL_H
 
-#include <Nepomuk/Utils/SimpleResourceModel>
+// #include <Nepomuk2/Utils/SimpleResourceModel>
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Query/Result>
 
 #include <QtCore/QList>
+#include <QModelIndex>
 
 
 /**
 
     */
-class NepomukContextModel : public Nepomuk::Utils::SimpleResourceModel
+class NepomukContextModel : public /*Nepomuk2::Utils::SimpleResourceModel*/ QObject
 {
     Q_OBJECT
 

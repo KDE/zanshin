@@ -27,34 +27,34 @@
 #include <QtCore/QUrl>
 #include <QtCore/QList>
 
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 #include <kdebug.h>
 #include <kurl.h>
-#include <Nepomuk/Utils/SimpleResourceModel>
-#include <Nepomuk/File>
-#include <Nepomuk/Thing>
+// #include <Nepomuk2/Utils/SimpleResourceModel>
+#include <Nepomuk2/File>
+#include <Nepomuk2/Thing>
 
 
 NepomukContextModel::NepomukContextModel( QObject* parent )
-: Nepomuk::Utils::SimpleResourceModel( parent )
+: /*Nepomuk2::Utils::SimpleResourceModel( parent )*/ QObject(parent)
 {
 }
 
 
 QVariant NepomukContextModel::data( const QModelIndex& index, int role ) const
 {
-  /*  Nepomuk::Resource res = resourceForIndex( index );
+  /*  Nepomuk2::Resource res = resourceForIndex( index );
     if( !res.isValid() ) {
         return QVariant();
     }
 
-    Nepomuk::Thing thing = res.pimoThing();
+    Nepomuk2::Thing thing = res.pimoThing();
 
     if (thing.groundingOccurrences().size()!=1) {
         kWarning() << thing.groundingOccurrences().size() << thing.uri() << thing.genericLabel();
         kWarning() << res.uri() << res.genericLabel();
-        foreach ( const Nepomuk::Resource &r, thing.groundingOccurrences()) {
+        foreach ( const Nepomuk2::Resource &r, thing.groundingOccurrences()) {
             kWarning() << r.uri() << r.genericLabel();
         }
     }
@@ -112,6 +112,6 @@ QVariant NepomukContextModel::data( const QModelIndex& index, int role ) const
     }
     */
 
-    return Nepomuk::Utils::SimpleResourceModel::data(index, role);
-
+//     return Nepomuk2::Utils::SimpleResourceModel::data(index, role);
+    return QVariant();
 }

@@ -23,17 +23,17 @@
 
 #include "tagmanager.h"
 
-#include <Nepomuk/Resource>
-#include <Nepomuk/Variant>
-#include <Nepomuk/Types/Class>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Variant>
+#include <Nepomuk2/Types/Class>
 #include <Soprano/Vocabulary/NAO>
 #include <Soprano/Vocabulary/RDF>
 
-#include <nepomuk/pimo.h>
+#include <nepomuk2/pimo.h>
 
-#include <nepomuk/resourcewatcher.h>
-#include <nepomuk/datamanagement.h>
-#include <nepomuk/storeresourcesjob.h>
+#include <nepomuk2/resourcewatcher.h>
+#include <nepomuk2/datamanagement.h>
+#include <nepomuk2/storeresourcesjob.h>
 
 
 #include <QStringList>
@@ -41,14 +41,14 @@
 #include <akonadi/item.h>
 
 #include "abstractpimitem.h"
-#include <nepomuk/simpleresource.h>
-#include <nepomuk/simpleresourcegraph.h>
-#include <Nepomuk/Vocabulary/NIE>
+#include <nepomuk2/simpleresource.h>
+#include <nepomuk2/simpleresourcegraph.h>
+#include <Nepomuk2/Vocabulary/NIE>
 #include <KJob>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Query/Result>
 
-#include <nepomuk/createresourcejob.h>
+#include <nepomuk2/createresourcejob.h>
 
 #include "queries.h"
 #include "tagmanager_p.h"
@@ -64,11 +64,11 @@ KJob *addToTopic(const Akonadi::Item& item, const QUrl& topicId)
         return 0;
     }
     kDebug() << "adding item to topic " << item.url() << topicId;
-    Nepomuk::SimpleResourceGraph graph;
-    Nepomuk::SimpleResource topic(topicId);
-    topic.addType(Nepomuk::Vocabulary::PIMO::Topic());
-    Nepomuk::SimpleResource thing = itemThing(item, graph);
-    thing.addProperty(Nepomuk::Vocabulary::PIMO::isRelated(), topic.uri());
+    Nepomuk2::SimpleResourceGraph graph;
+    Nepomuk2::SimpleResource topic(topicId);
+    topic.addType(Nepomuk2::Vocabulary::PIMO::Topic());
+    Nepomuk2::SimpleResource thing = itemThing(item, graph);
+    thing.addProperty(Nepomuk2::Vocabulary::PIMO::isRelated(), topic.uri());
     graph << topic << thing;
     return graph.save();
 }
@@ -77,17 +77,17 @@ KJob *addToTopic(const Akonadi::Item& item, const QUrl& topicId)
 KJob *createTopic(const QString& topicName, const QUrl& supertopicId)
 {
     kDebug() << "creating topic " << topicName << supertopicId;
-    Nepomuk::SimpleResourceGraph graph;
-    Nepomuk::SimpleResource topic;
-    topic.addType(Nepomuk::Vocabulary::PIMO::Topic());
+    Nepomuk2::SimpleResourceGraph graph;
+    Nepomuk2::SimpleResource topic;
+    topic.addType(Nepomuk2::Vocabulary::PIMO::Topic());
     topic.setProperty(Soprano::Vocabulary::NAO::prefLabel(),topicName);
     topic.setProperty(Soprano::Vocabulary::NAO::description(),"A MindMirror Topic");
     
     if (supertopicId.isValid()) {
         kDebug() << "adding to supertopic: " << supertopicId;
-        Nepomuk::SimpleResource superTopic(supertopicId);
-        superTopic.addType(Nepomuk::Vocabulary::PIMO::Topic());
-        topic.setProperty(Nepomuk::Vocabulary::PIMO::superTopic(), superTopic.uri());
+        Nepomuk2::SimpleResource superTopic(supertopicId);
+        superTopic.addType(Nepomuk2::Vocabulary::PIMO::Topic());
+        topic.setProperty(Nepomuk2::Vocabulary::PIMO::superTopic(), superTopic.uri());
         graph << superTopic;
     }
     graph << topic;
@@ -98,7 +98,7 @@ KJob *createTopic(const QString& topicName, const QUrl& supertopicId)
 KJob* deleteTopic(const QUrl& topicId)
 {
     kDebug() << "removing topic: " << topicId;
-    return Nepomuk::removeResources(QList<QUrl>() << topicId, Nepomuk::RemoveSubResoures);
+    return Nepomuk2::removeResources(QList<QUrl>() << topicId, Nepomuk2::RemoveSubResoures);
 }
 
 KJob *moveToTopic(const Akonadi::Item& item, const QUrl& topicId)
@@ -108,13 +108,13 @@ KJob *moveToTopic(const Akonadi::Item& item, const QUrl& topicId)
         return 0;
     }
     kDebug() << "moving item to topic " << item.url() << topicId;
-    Nepomuk::SimpleResourceGraph graph;
-    Nepomuk::SimpleResource topic(topicId);
-    topic.addType(Nepomuk::Vocabulary::PIMO::Topic());
-    Nepomuk::SimpleResource thing = itemThing(item, graph);
-    thing.addProperty(Nepomuk::Vocabulary::PIMO::isRelated(), topic.uri());
+    Nepomuk2::SimpleResourceGraph graph;
+    Nepomuk2::SimpleResource topic(topicId);
+    topic.addType(Nepomuk2::Vocabulary::PIMO::Topic());
+    Nepomuk2::SimpleResource thing = itemThing(item, graph);
+    thing.addProperty(Nepomuk2::Vocabulary::PIMO::isRelated(), topic.uri());
     graph << topic << thing;
-    return Nepomuk::storeResources(graph, Nepomuk::IdentifyNew, Nepomuk::OverwriteProperties);
+    return Nepomuk2::storeResources(graph, Nepomuk2::IdentifyNew, Nepomuk2::OverwriteProperties);
 }
 
 KJob *moveToTopic(const QUrl& topicId, const QUrl& supertopicId)
@@ -124,14 +124,14 @@ KJob *moveToTopic(const QUrl& topicId, const QUrl& supertopicId)
         return 0;
     }
     
-    Nepomuk::SimpleResourceGraph graph;
-    Nepomuk::SimpleResource topic(topicId);
+    Nepomuk2::SimpleResourceGraph graph;
+    Nepomuk2::SimpleResource topic(topicId);
     
-    Nepomuk::SimpleResource superTopic(supertopicId);
-    superTopic.addType(Nepomuk::Vocabulary::PIMO::Topic());
+    Nepomuk2::SimpleResource superTopic(supertopicId);
+    superTopic.addType(Nepomuk2::Vocabulary::PIMO::Topic());
     graph << superTopic;
-    topic.setProperty(Nepomuk::Vocabulary::PIMO::superTopic(), superTopic.uri());
-    return Nepomuk::storeResources(graph, Nepomuk::IdentifyNew, Nepomuk::OverwriteProperties);
+    topic.setProperty(Nepomuk2::Vocabulary::PIMO::superTopic(), superTopic.uri());
+    return Nepomuk2::storeResources(graph, Nepomuk2::IdentifyNew, Nepomuk2::OverwriteProperties);
 }
 
 KJob *removeAllTopics(const Akonadi::Item& item)
@@ -143,20 +143,20 @@ KJob *removeAllTopics(const Akonadi::Item& item)
 
 KJob *removeAllTopics(const QUrl& topicId)
 {
-    return Nepomuk::removeProperties(QList<QUrl>() << topicId, QList<QUrl>() << Nepomuk::Vocabulary::PIMO::superTopic());
+    return Nepomuk2::removeProperties(QList<QUrl>() << topicId, QList<QUrl>() << Nepomuk2::Vocabulary::PIMO::superTopic());
 }
 
 KJob *addToTopic(const QUrl& subtopicId, const QUrl& supertopicId)
 {
     kDebug() << "supertopic: " << supertopicId << " sub: " << subtopicId;
-    return Nepomuk::addProperty(QList<QUrl>() << subtopicId, Nepomuk::Vocabulary::PIMO::superTopic(), QVariantList() << supertopicId);
+    return Nepomuk2::addProperty(QList<QUrl>() << subtopicId, Nepomuk2::Vocabulary::PIMO::superTopic(), QVariantList() << supertopicId);
 }
 
 
 KJob *renameTopic(const QUrl& topicId, const QString& name)
 {
     kDebug() << "rename " << topicId << " to " << name;
-    return Nepomuk::setProperty(QList<QUrl>() << topicId, Soprano::Vocabulary::NAO::prefLabel(), QVariantList() << name);
+    return Nepomuk2::setProperty(QList<QUrl>() << topicId, Soprano::Vocabulary::NAO::prefLabel(), QVariantList() << name);
 }
 
 KJob* tagItem(const Akonadi::Item &item, const QString& tagstring)
@@ -165,27 +165,27 @@ KJob* tagItem(const Akonadi::Item &item, const QString& tagstring)
         kDebug() << "invalid item";
         return 0;
     }
-    Nepomuk::SimpleResourceGraph graph;
+    Nepomuk2::SimpleResourceGraph graph;
 
-    Nepomuk::SimpleResource tag;
+    Nepomuk2::SimpleResource tag;
     tag.addType(Soprano::Vocabulary::NAO::Tag());
     tag.addProperty(Soprano::Vocabulary::NAO::identifier(), tagstring);
     tag.addProperty(Soprano::Vocabulary::NAO::prefLabel(), tagstring);
   
-    Nepomuk::SimpleResource thing = itemThing(item, graph);
+    Nepomuk2::SimpleResource thing = itemThing(item, graph);
     thing.addProperty(Soprano::Vocabulary::NAO::hasTag(), tag.uri());
     graph << tag << thing;
     return graph.save();
 }
 
-Nepomuk::SimpleResource itemThing(const Akonadi::Item &item, Nepomuk::SimpleResourceGraph &graph)
+Nepomuk2::SimpleResource itemThing(const Akonadi::Item &item, Nepomuk2::SimpleResourceGraph &graph)
 {
-    Nepomuk::SimpleResource resource;
-    resource.setProperty( Nepomuk::Vocabulary::NIE::url(), QUrl(item.url()) );
+    Nepomuk2::SimpleResource resource;
+    resource.setProperty( Nepomuk2::Vocabulary::NIE::url(), QUrl(item.url()) );
     graph << resource;
-    Nepomuk::SimpleResource thing;
-    thing.addType(Nepomuk::Vocabulary::PIMO::Thing());
-    thing.addProperty(Nepomuk::Vocabulary::PIMO::groundingOccurrence(), resource.uri());
+    Nepomuk2::SimpleResource thing;
+    thing.addType(Nepomuk2::Vocabulary::PIMO::Thing());
+    thing.addProperty(Nepomuk2::Vocabulary::PIMO::groundingOccurrence(), resource.uri());
     return thing;
 }
 

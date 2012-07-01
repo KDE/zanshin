@@ -32,7 +32,7 @@
 
 #include "abstractpimitem.h"
 
-namespace Nepomuk {
+namespace Nepomuk2 {
 class Resource;
 }
 
@@ -65,7 +65,7 @@ public slots:
      */
     void setItem(const Akonadi::Item &);
     
-    void setItem(const Nepomuk::Resource &res);
+    void setItem(const Nepomuk2::Resource &res);
 
     /**
      * This will fetch the given item first, before setting it on the editor
@@ -92,7 +92,7 @@ private slots:
     void restoreState();
     
     void newTopics(const QStringList &);
-    void gotThing(const Nepomuk::Resource &);
+    void gotThing(const Nepomuk2::Resource &);
     
 signals:
     void itemChanged();

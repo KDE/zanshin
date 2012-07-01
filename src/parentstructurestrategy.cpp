@@ -28,16 +28,16 @@
 #include <pimitem.h>
 #include <tagmanager.h>
 #include "globaldefs.h"
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/Result>
-#include <Nepomuk/Types/Class>
-#include <Nepomuk/Resource>
-#include <Nepomuk/Vocabulary/PIMO>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Query/Result>
+#include <Nepomuk2/Types/Class>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Vocabulary/PIMO>
 #include <KDebug>
 #include <KIcon>
-#include <nepomuk/resourcetypeterm.h>
-#include <nepomuk/resourcewatcher.h>
+#include <nepomuk2/resourcetypeterm.h>
+#include <nepomuk2/resourcewatcher.h>
 #include <Soprano/Vocabulary/NAO>
 #include <QMimeData>
 
@@ -105,7 +105,7 @@ NepomukParentStructureStrategy::NepomukParentStructureStrategy(QObject* parent)
     m_counter(0),
     m_queryServiceClient(0)
 {
-    setType(Nepomuk::Vocabulary::PIMO::Topic());
+    setType(Nepomuk2::Vocabulary::PIMO::Topic());
 }
 
 void NepomukParentStructureStrategy::init()
@@ -115,13 +115,13 @@ void NepomukParentStructureStrategy::init()
         m_queryServiceClient->deleteLater();
         m_queryServiceClient = 0;
     }
-    Nepomuk::Query::Query query;
-    query.setTerm(Nepomuk::Query::ResourceTypeTerm(Nepomuk::Types::Class(m_type)));
+    Nepomuk2::Query::Query query;
+    query.setTerm(Nepomuk2::Query::ResourceTypeTerm(Nepomuk2::Types::Class(m_type)));
     
-    query.addRequestProperty(Nepomuk::Query::Query::RequestProperty(Nepomuk::Vocabulary::PIMO::superTopic()));
+    query.addRequestProperty(Nepomuk2::Query::Query::RequestProperty(Nepomuk2::Vocabulary::PIMO::superTopic()));
     
-    m_queryServiceClient = new Nepomuk::Query::QueryServiceClient(this);
-    connect(m_queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk::Query::Result>)));
+    m_queryServiceClient = new Nepomuk2::Query::QueryServiceClient(this);
+    connect(m_queryServiceClient, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), this, SLOT(checkResults(QList<Nepomuk2::Query::Result>)));
     connect(m_queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
     connect(m_queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(removeResult(QList<QUrl>)));
     if ( !m_queryServiceClient->query(query) ) {
@@ -136,13 +136,13 @@ void NepomukParentStructureStrategy::setType(const QUrl &type)
     
 }
 
-void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::Result > &results)
+void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk2::Query::Result > &results)
 {
     //kDebug() <<  results.size() << results.first().resource().resourceUri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
-    foreach (const Nepomuk::Query::Result &result, results) {
-        Nepomuk::Resource res(result.resource().resourceUri());
-        const QUrl parent = result.requestProperty(Nepomuk::Vocabulary::PIMO::superTopic()).uri();
-        kDebug() << res.resourceUri() << res.label() << res.types() << res.className() << parent;
+    foreach (const Nepomuk2::Query::Result &result, results) {
+        Nepomuk2::Resource res(result.resource().resourceUri());
+        const QUrl parent = result.requestProperty(Nepomuk2::Vocabulary::PIMO::superTopic()).uri();
+        kDebug() << res.resourceUri() << res.label() << res.types() <<  parent;
         if (res.types().contains(m_type)) {
             if (parent.isValid()) {
                 addParent(res, parent);
@@ -156,7 +156,7 @@ void NepomukParentStructureStrategy::checkResults(const QList< Nepomuk::Query::R
 }
 
 
-void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, const QUrl &parent)
+void NepomukParentStructureStrategy::addParent (const Nepomuk2::Resource& topic, const QUrl &parent)
 {
 //     kDebug() << "add topic" << topic.label() << topic.uri() << parent;
     if (parent.isValid() && !m_topicMap.contains(parent)) {
@@ -165,15 +165,15 @@ void NepomukParentStructureStrategy::addParent (const Nepomuk::Resource& topic, 
     QObject *guard = new QObject(this);
     m_guardMap[topic.resourceUri()] = guard;
     
-    Nepomuk::ResourceWatcher *m_resourceWatcher = new Nepomuk::ResourceWatcher(guard);
+    Nepomuk2::ResourceWatcher *m_resourceWatcher = new Nepomuk2::ResourceWatcher(guard);
     m_resourceWatcher->addResource(topic);
     m_resourceWatcher->addProperty(Soprano::Vocabulary::NAO::prefLabel());
-    connect(m_resourceWatcher, SIGNAL(propertyAdded(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)), this, SLOT(propertyChanged(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)));
+    connect(m_resourceWatcher, SIGNAL(propertyAdded(Nepomuk2::Resource,Nepomuk2::Types::Property,QVariant)), this, SLOT(propertyChanged(Nepomuk2::Resource,Nepomuk2::Types::Property,QVariant)));
     m_resourceWatcher->start();
     
-    Nepomuk::Query::QueryServiceClient *queryServiceClient = new Nepomuk::Query::QueryServiceClient(guard);
+    Nepomuk2::Query::QueryServiceClient *queryServiceClient = new Nepomuk2::Query::QueryServiceClient(guard);
     queryServiceClient->setProperty("resourceuri", topic.resourceUri());
-    connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(itemsWithTopicAdded(QList<Nepomuk::Query::Result>)));
+    connect(queryServiceClient, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), this, SLOT(itemsWithTopicAdded(QList<Nepomuk2::Query::Result>)));
     connect(queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(itemsFromTopicRemoved(QList<QUrl>)));
     connect(queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
     if ( !queryServiceClient->sparqlQuery(MindMirrorQueries::itemsWithTopicsQuery(QList <QUrl>() << topic.resourceUri())) ) {
@@ -206,7 +206,7 @@ void NepomukParentStructureStrategy::onNodeRemoval(const qint64& id)
 void NepomukParentStructureStrategy::removeResult(const QList<QUrl> &results)
 {
     foreach (const QUrl &result, results) {
-        Nepomuk::Resource res(result);
+        Nepomuk2::Resource res(result);
 //         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         if (res.types().contains(m_type)) {
             Q_ASSERT(m_topicMap.contains(res.resourceUri()));
@@ -224,14 +224,14 @@ void NepomukParentStructureStrategy::queryFinished()
 }
 
 
-void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk::Query::Result> &results)
+void NepomukParentStructureStrategy::itemsWithTopicAdded(const QList<Nepomuk2::Query::Result> &results)
 {
     const QUrl &parent = sender()->property("resourceuri").toUrl();
 //     kDebug() << parent;
     
     QModelIndexList list;
-    foreach (const Nepomuk::Query::Result &result, results) {
-        Nepomuk::Resource res = Nepomuk::Resource(result.resource().resourceUri());
+    foreach (const Nepomuk2::Query::Result &result, results) {
+        Nepomuk2::Resource res = Nepomuk2::Resource(result.resource().resourceUri());
 //         kDebug() << res.resourceUri() << res.label() << res.types() << res.className();
         const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
         if (!item.isValid()) {
@@ -270,7 +270,7 @@ void NepomukParentStructureStrategy::itemsFromTopicRemoved(const QList<QUrl> &it
     kDebug() << "removing nodes from topic: " << topic;
     QModelIndexList list;
     foreach (const QUrl &uri, items) {
-        Nepomuk::Resource res = Nepomuk::Resource(uri);
+        Nepomuk2::Resource res = Nepomuk2::Resource(uri);
         const Akonadi::Item item = PimItemUtils::getItemFromResource(res);
         if (!item.isValid()) {
             continue;
@@ -287,14 +287,14 @@ void NepomukParentStructureStrategy::itemsFromTopicRemoved(const QList<QUrl> &it
     }
 }
 
-void NepomukParentStructureStrategy::propertyChanged(const Nepomuk::Resource &res, const Nepomuk::Types::Property &property, const QVariant &value)
+void NepomukParentStructureStrategy::propertyChanged(const Nepomuk2::Resource &res, const Nepomuk2::Types::Property &property, const QVariant &value)
 {
     if (property.uri() == Soprano::Vocabulary::NAO::prefLabel()) {
         kDebug() << "renamed " << res.resourceUri() << " to " << value.toString();
         Q_ASSERT(m_topicMap.contains(res.resourceUri()));
         m_model->renameParent(m_topicMap[res.resourceUri()], value.toString());
     }
-    if (property.uri() == Nepomuk::Vocabulary::PIMO::superTopic()) {
+    if (property.uri() == Nepomuk2::Vocabulary::PIMO::superTopic()) {
         //TODO handle move of topic
     }
 }

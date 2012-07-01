@@ -28,8 +28,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <Nepomuk/TagWidget>
-#include <Nepomuk/Resource>
+// #include <Nepomuk2/TagWidget>
+#include <Nepomuk2/Resource>
 #include <KTextEdit>
 #include <KRichTextEdit>
 #include <KRichTextWidget>
@@ -65,7 +65,7 @@
 
 #include "toolbox.h"
 #include "itemmonitor.h"
-#include "ui_tags.h"
+// #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
 #include <incidenceitem.h>
@@ -81,8 +81,8 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     m_currentItem(0),
     m_autosaveTimer(new QTimer(this)),
     m_autosaveTimeout(5000),
-    m_itemContext(new ItemContext(this)),
-    ui_tags(new tags()),
+//     m_itemContext(new ItemContext(this)),
+//     ui_tags(new tags()),
     ui_properties(new properties())
 {
     setupUi(this);
@@ -125,13 +125,13 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     ui_properties->cB_status->addItem(i18n("Overdue"), IncidenceItem::Attention);
     toolbox->addWidget(propertiesWidget, i18n("Properties"));
     
-    QWidget *tagWidget = new QWidget(toolbox);
-    ui_tags->setupUi(tagWidget);
-    connect(ui_tags->tagEdit, SIGNAL(returnPressed()), this, SLOT(addTag()));
-    toolbox->addWidget(tagWidget, i18n("Tags"));
+//     QWidget *tagWidget = new QWidget(toolbox);
+//     ui_tags->setupUi(tagWidget);
+//     connect(ui_tags->tagEdit, SIGNAL(returnPressed()), this, SLOT(addTag()));
+//     toolbox->addWidget(tagWidget, i18n("Tags"));
 
-    connect(m_itemContext, SIGNAL(itemActivated(const Nepomuk::Resource &)), this, SLOT(setItem(const Nepomuk::Resource &)));
-    toolbox->addWidget(m_itemContext, i18n("Context"));
+//     connect(m_itemContext, SIGNAL(itemActivated(const Nepomuk2::Resource &)), this, SLOT(setItem(const Nepomuk2::Resource &)));
+//     toolbox->addWidget(m_itemContext, i18n("Context"));
 
     setEnabled(false);
 
@@ -154,8 +154,8 @@ ItemViewer::~ItemViewer()
 
     delete ui_properties;
     ui_properties = 0;
-    delete ui_tags;
-    ui_tags = 0;
+//     delete ui_tags;
+//     ui_tags = 0;
 }
 
 void ItemViewer::restoreState()
@@ -244,7 +244,7 @@ void ItemViewer::focusOutEvent(QFocusEvent* event)
 void ItemViewer::clearView()
 {
     m_autosaveTimer->stop();
-    ui_tags->tagEdit->clear();
+//     ui_tags->tagEdit->clear();
     ui_properties->topics->clear();
     editor->editor()->clear();
     //Reset action from last text (i.e. if bold text was enabled)
@@ -271,7 +271,7 @@ void ItemViewer::clearView()
     }
 }
 
-void ItemViewer::setItem(const Nepomuk::Resource &res)
+void ItemViewer::setItem(const Nepomuk2::Resource &res)
 {
     Akonadi::Item item = PimItemUtils::getItemFromResource(res);    
     if (!item.isValid()) {
@@ -332,15 +332,15 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     m_currentItem->enableMonitor();
 
     ItemMonitor *monitor = new ItemMonitor(m_currentItem->getItem(), this);
-    connect(monitor, SIGNAL(gotThing(Nepomuk::Resource)), m_itemContext, SLOT(setResource(Nepomuk::Resource)));
+//     connect(monitor, SIGNAL(gotThing(Nepomuk2::Resource)), m_itemContext, SLOT(setResource(Nepomuk2::Resource)));
     connect(monitor, SIGNAL(topicsChanged(QStringList)), this, SLOT(newTopics(QStringList)));
     connect(this, SIGNAL(itemChanged()), monitor,SLOT(deleteLater()));
 }
 
-void ItemViewer::gotThing(const Nepomuk::Resource &r)
+void ItemViewer::gotThing(const Nepomuk2::Resource &r)
 {
     kDebug() << "got Thing too";
-    ui_tags->tagWidget->setTaggedResource(r);
+//     ui_tags->tagWidget->setTaggedResource(r);
 }
 
 
@@ -355,7 +355,7 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
 {
     kDebug();
     Q_ASSERT(ui_properties);
-    Q_ASSERT(ui_tags);
+//     Q_ASSERT(ui_tags);
     Q_ASSERT(ui_properties->topics);
     /*
      * TODO check for changed content, if there is changed content we have a conflict,
@@ -510,6 +510,6 @@ void ItemViewer::itemRemoved()
 
 void ItemViewer::addTag()
 {
-    NepomukUtils::tagItem(m_currentItem->getItem(), ui_tags->tagEdit->text());
-    ui_tags->tagEdit->clear();
+//     NepomukUtils::tagItem(m_currentItem->getItem(), ui_tags->tagEdit->text());
+//     ui_tags->tagEdit->clear();
 }

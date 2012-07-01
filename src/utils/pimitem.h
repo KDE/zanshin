@@ -25,7 +25,7 @@
 
 #include "abstractpimitem.h"
 
-namespace Nepomuk {
+namespace Nepomuk2 {
 class Resource;
 }
 
@@ -54,7 +54,7 @@ namespace PimItemUtils {
 
     AbstractPimItem* fromUrl( const KUrl &url );
     
-    Akonadi::Item getItemFromResource(const Nepomuk::Resource &resource);
+    Akonadi::Item getItemFromResource(const Nepomuk2::Resource &resource);
 }
 
 #endif
