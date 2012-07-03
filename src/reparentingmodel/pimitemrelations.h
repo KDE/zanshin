@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <akonadi/item.h>
 #include "globaldefs.h"
+#include "utils/abstractpimitem.h"
 
 
 /**
@@ -37,6 +38,8 @@
  *
  */
 
+struct PimItemRelation;
+class PimItemTreeNode;
 struct TreeNode {
     TreeNode(const QString &name, const Id &uid, const QList<TreeNode> &parentNodes = QList<TreeNode>());
     QString name;
@@ -141,5 +144,25 @@ private:
     QMap<QString, Id> mCategoryMap;
 };
 
+class PimItemRelationsStructure: public PimItemRelations {
+public:
+    PimItemRelationsStructure(PimItemRelation::Type);
+    void addNode(const QString &name, const IdList &parents);
+//     Id getCategoryId(const QString& categoryPath) const;
+    virtual void updateRelationTree(Akonadi::Item& item);
+    virtual QString getPath(Id id) const;
+protected:
+    //Build a relation tree from the category of an item
+    Relation getRelationTree(const Akonadi::Item &item);
+
+    virtual void rebuildCache();
+private:
+    TreeNode createNode(const PimItemTreeNode &node);
+    Relation createRelation(const PimItemRelation &relation, const Id itemId);
+    QList<PimItemTreeNode> getParentTreeNodes(Id id);
+    QList<TreeNode> getParentList(Id id);
+    QHash<QByteArray, Id> mUidMapping;
+    PimItemRelation::Type mType;
+};
 
 #endif // PIMITEMRELATIONS_H

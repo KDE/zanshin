@@ -133,3 +133,30 @@ AbstractPimItem::ItemType Note::itemType()
 {
     return AbstractPimItem::Note;
 }
+
+QList< PimItemRelation > Note::getRelations()
+{
+    kDebug() << "#|#|##|#";
+    KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
+    Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
+    QList<QString> xml = messageWrapper.custom().values("x-related");
+    QList< PimItemRelation > relations;
+    foreach(const QString &x, xml) {
+        kDebug() << xml;
+        relations << relationFromXML(x.toLatin1());
+    }
+    return relations;
+}
+
+void Note::setRelations(const QList< PimItemRelation > &relations)
+{
+    KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
+    Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
+    messageWrapper.custom().remove("x-related");
+    foreach(const PimItemRelation &rel, relations) {
+        messageWrapper.custom().insert("x-related", relationToXML(rel));
+    }
+    m_item.setPayload(messageWrapper.message());
+//     kDebug() << messageWrapper.message()->encodedContent();
+}
+

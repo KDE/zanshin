@@ -95,7 +95,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
             return IdList() << getId(parent);
         }
         return IdList();
-    } else if (type==Zanshin::StandardTodo && parentUid.isEmpty()) {
+    } else if (/*type==Zanshin::StandardTodo && */parentUid.isEmpty()) {
         return IdList() << mInbox;
     }
 //     Q_ASSERT(type==Zanshin::StandardTodo);

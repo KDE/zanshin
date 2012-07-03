@@ -66,6 +66,9 @@ struct PimItemRelation
   Type type;
 };
 
+PimItemRelation relationFromXML(const QByteArray &xml);
+QString relationToXML(const PimItemRelation &rel);
+
 
 /**
  * A wrapper around akonadi item

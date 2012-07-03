@@ -18,8 +18,7 @@
 */
 
 
-#include "categoriesstrategy.h"
-#include <categorymanager.h>
+#include "pimitemrelationstrategy.h"
 #include <todohelpers.h>
 #include <todonode.h>
 #include <KIcon>
@@ -28,15 +27,20 @@
 #include <QMimeData>
 
 #include "reparentingmodel.h"
+#include <categorymanager.h>
 #include <Akonadi/ItemModifyJob>
 
-CategoriesStrategy::CategoriesStrategy()
+PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),
     mInbox(1),
-    mRoot(2)
-//     mRelations(new CategoriesStructure())
+    mRoot(2),
+    mRelations(new PimItemRelationsStructure(type))
 {
-//     CategoryManager::instance().setCategoriesStructure(static_cast<CategoriesStructure*>(mRelations.data()));
+    if (type == PimItemRelation::Context) {
+        CategoryManager::contextInstance().setCategoriesStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+    } else if (type == PimItemRelation::Topic) {
+        CategoryManager::topicInstance().setCategoriesStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+    }
     mReparentOnRemoval = true;
     connect(mRelations.data(), SIGNAL(virtualNodeAdded(Id, IdList, QString)), this, SLOT(createVirtualNode(Id, IdList, QString)));
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
@@ -45,33 +49,33 @@ CategoriesStrategy::CategoriesStrategy()
     connect(mRelations.data(), SIGNAL(updateItems(IdList)), this, SLOT(doUpdateItems(IdList)));
 }
 
-void CategoriesStrategy::init()
+void PimItemRelationStrategy::init()
 {
     ReparentingStrategy::init();
-    TodoNode *node = createNode(mInbox, IdList(), "No Context");
-    node->setData(i18n("No Context"), 0, Qt::DisplayRole);
+    TodoNode *node = createNode(mInbox, IdList(), "No Relation");
+    node->setData(i18n("No Relation"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 
-    TodoNode *node2 = createNode(mRoot, IdList(), "Contexts");
-    node2->setData(i18n("Contexts"), 0, Qt::DisplayRole);
+    TodoNode *node2 = createNode(mRoot, IdList(), "Relation");
+    node2->setData(i18n("Relation"), 0, Qt::DisplayRole);
     node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
     node2->setRowData(Zanshin::CategoryRoot, Zanshin::ItemTypeRole);
 }
 
-Id translateFrom(Id id)
+static Id translateFrom(Id id)
 {
     //TODO proper id mapping
     return id+10;
 }
 
-Id translateTo(Id id)
+static Id translateTo(Id id)
 {
     //TODO proper id mapping
     return id-10;
 }
 
-IdList translateFrom(IdList l)
+static IdList translateFrom(IdList l)
 {
     IdList list;
     foreach (Id id, l) {
@@ -80,18 +84,30 @@ IdList translateFrom(IdList l)
     return list;
 }
 
-Id CategoriesStrategy::getId(const QModelIndex &sourceChildIndex)
+bool isIgnored(const QModelIndex &sourceChildIndex)
 {
-    kDebug();
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
     if (type!=Zanshin::StandardTodo /*&& type!=Zanshin::ProjectTodo*/) { //Filter all other items
+        return true;
+    }
+    return false;
+}
+
+Id PimItemRelationStrategy::getId(const QModelIndex &sourceChildIndex)
+{
+    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
+    if (isIgnored(sourceChildIndex)) { //Filter all other items
         return -1;
     }
     return translateFrom(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
 }
 
-IdList CategoriesStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
+IdList PimItemRelationStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
 {
+    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
+    if (isIgnored(sourceChildIndex)) {
+        return IdList();
+    }
     Q_ASSERT(sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::StandardTodo /*|| sourceChildIndex.data(Zanshin::ItemTypeRole).toInt()==Zanshin::ProjectTodo*/);
 
     IdList parents = translateFrom(mRelations->getParents(mRelations->getItemId(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>())));
@@ -105,7 +121,7 @@ IdList CategoriesStrategy::getParents(const QModelIndex &sourceChildIndex, const
     return parents;
 }
 
-void CategoriesStrategy::createVirtualNode(Id id, IdList parents, const QString& name)
+void PimItemRelationStrategy::createVirtualNode(Id id, IdList parents, const QString& name)
 {
     IdList p = translateFrom(parents);
     if (p.isEmpty()) {
@@ -114,27 +130,28 @@ void CategoriesStrategy::createVirtualNode(Id id, IdList parents, const QString&
     createNode(translateFrom(id), p, name);
 }
 
-void CategoriesStrategy::doRemoveNode(Id id)
+void PimItemRelationStrategy::doRemoveNode(Id id)
 {
     kDebug() << id;
     ReparentingStrategy::removeNode(translateFrom(id));
 }
 
-void CategoriesStrategy::doChangeParents(Id id, IdList parents)
+void PimItemRelationStrategy::doChangeParents(Id id, IdList parents)
 {
     ReparentingStrategy::updateParents(translateFrom(id), translateFrom(parents));
 }
 
-void CategoriesStrategy::doRenameParent(Id id, const QString& name)
+void PimItemRelationStrategy::doRenameParent(Id id, const QString& name)
 {
     ReparentingStrategy::renameNode(translateFrom(id), name);
 }
 
-void CategoriesStrategy::doUpdateItems(const IdList &itemsToUpdate)
+void PimItemRelationStrategy::doUpdateItems(const IdList &itemsToUpdate)
 {
     kDebug() << itemsToUpdate;
-    foreach (Id id , itemsToUpdate) {        
+    foreach (Id id , itemsToUpdate) {
         Akonadi::Item item = getData(translateFrom(id), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        kDebug() << id << item.id();
         if (!item.isValid()) {
             kWarning() << "could not find item " << id;
             continue;
@@ -146,7 +163,7 @@ void CategoriesStrategy::doUpdateItems(const IdList &itemsToUpdate)
 }
 
 
-void CategoriesStrategy::setData(TodoNode* node, Id id)
+void PimItemRelationStrategy::setData(TodoNode* node, Id id)
 {
     kDebug() << id;
     if (id == mInbox || id == mRoot) {
@@ -157,10 +174,10 @@ void CategoriesStrategy::setData(TodoNode* node, Id id)
     node->setData(categoryName, 0, Qt::DisplayRole);
     node->setData(categoryName, 0, Qt::EditRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
-    node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole);
+    node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole); //TODO relation role
 }
 
-bool CategoriesStrategy::reparentOnParentRemoval(Id child) const
+bool PimItemRelationStrategy::reparentOnParentRemoval(Id child) const
 {
 //     kDebug() << child;
     if (mRelations->isVirtual(translateTo(child))) {
@@ -170,14 +187,14 @@ bool CategoriesStrategy::reparentOnParentRemoval(Id child) const
 }
 
 
-void CategoriesStrategy::onNodeRemoval(const Id& changed)
+void PimItemRelationStrategy::onNodeRemoval(const Id& changed)
 {
     kDebug() << changed;
     mRelations->removeNode(translateTo(changed));
 }
 
 
-QMimeData* CategoriesStrategy::mimeData(const QModelIndexList& indexes) const
+QMimeData* PimItemRelationStrategy::mimeData(const QModelIndexList& indexes) const
 {
     QStringList ids;
     foreach (const QModelIndex &proxyIndex, indexes) {
@@ -193,17 +210,17 @@ QMimeData* CategoriesStrategy::mimeData(const QModelIndexList& indexes) const
     return 0;
 }
 
-QStringList CategoriesStrategy::mimeTypes()
+QStringList PimItemRelationStrategy::mimeTypes()
 {
     return QStringList() << "application/x-vnd.zanshin.relationid";
 }
 
-Qt::DropActions CategoriesStrategy::supportedDropActions() const
+Qt::DropActions PimItemRelationStrategy::supportedDropActions() const
 {
     return Qt::MoveAction;
 }
 
-Qt::ItemFlags CategoriesStrategy::flags(const QModelIndex& index, Qt::ItemFlags flags)
+Qt::ItemFlags PimItemRelationStrategy::flags(const QModelIndex& index, Qt::ItemFlags flags)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
     if (type == Zanshin::Inbox || type == Zanshin::CategoryRoot) {
@@ -212,13 +229,13 @@ Qt::ItemFlags CategoriesStrategy::flags(const QModelIndex& index, Qt::ItemFlags 
     return flags | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 }
 
-bool CategoriesStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::DropAction action)
+bool PimItemRelationStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::DropAction action)
 {
     if (action != Qt::MoveAction || (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.relationid"))) {
         kDebug() << "invalid drop " << action << KUrl::List::canDecode(mimeData);
         return false;
     }
-    
+
     Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
     if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
         kDebug() << "not a category";
@@ -247,10 +264,10 @@ bool CategoriesStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::Dr
     return true;
 }
 
-bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role, int column)
+bool PimItemRelationStrategy::onSetData(Id id, const QVariant& value, int role, int column)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) getData(id, Zanshin::ItemTypeRole).toInt();
-        kWarning() << id << type;
+    kWarning() << id << type;
     if (type==Zanshin::Category) {
         kDebug() << value.toString();
         mRelations->renameNode(translateTo(id), value.toString());
@@ -259,17 +276,17 @@ bool CategoriesStrategy::onSetData(Id id, const QVariant& value, int role, int c
     return false;
 }
 
-void CategoriesStrategy::reset()
+void PimItemRelationStrategy::reset()
 {
     ReparentingStrategy::reset();
 }
 
-QVariant CategoriesStrategy::data(Id id, int role) const
+QVariant PimItemRelationStrategy::data(Id id, int role) const
 {
     if (role == Zanshin::RelationIdRole) {
         return translateTo(id);
     }
-    if (role == Zanshin::CategoryPathRole) {
+    if (role == Zanshin::CategoryPathRole) { //TODO relation path role
         return mRelations->getPath(translateTo(id));
     }
     return ReparentingStrategy::data(id, role);

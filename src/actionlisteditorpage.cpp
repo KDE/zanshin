@@ -548,7 +548,7 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
         break;
 
     case Zanshin::Category:
-        category = current.data(Zanshin::CategoryPathRole).toString();
+        category = current.data(Zanshin::CategoryPathRole).toString(); //TODO
         // fallthrough
     case Zanshin::Inbox:
     case Zanshin::CategoryRoot:
@@ -595,7 +595,7 @@ void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
         int type = index.data(Zanshin::ItemTypeRole).toInt();
         if (type==Zanshin::Category) {
             Id category = index.data(Zanshin::RelationIdRole).toInt();
-            if (CategoryManager::instance().dissociateFromCategory(current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>(), category)) {
+            if (CategoryManager::contextInstance().dissociateFromCategory(current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>(), category)) {
                 break;
             }
         }

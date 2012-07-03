@@ -309,7 +309,7 @@ void ActionListEditor::removeTodo()
         foreach (const QModelIndex category, currentCategories) {
             categoryList << category.data(Zanshin::RelationIdRole).toInt();
         }
-        CategoryManager::instance().removeCategories(this, categoryList);
+        CategoryManager::contextInstance().removeCategories(this, categoryList);
     }
 
     if (!currentProjects.isEmpty()) {
@@ -371,7 +371,7 @@ void ActionListEditor::onMoveAction()
                 if (currentPage()->mode()==Zanshin::ProjectMode) {
                     TodoHelpers::moveTodoToProject(current, selectedId.toString(), dlg.selectedType(), dlg.collection());
                 } else if (currentPage()->mode()==Zanshin::CategoriesMode){
-                    CategoryManager::instance().moveToCategory(current.data(Zanshin::RelationIdRole).toLongLong(), selectedId.toLongLong(), dlg.selectedType());
+                    CategoryManager::contextInstance().moveToCategory(current.data(Zanshin::RelationIdRole).toLongLong(), selectedId.toLongLong(), dlg.selectedType());
                 } else {
                     qWarning() << "not implemented";
                 }

@@ -377,21 +377,37 @@ AbstractPimItem::ItemType IncidenceItem::itemType()
 void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)
 {
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    QMap<QByteArray, QString> map = i->customProperties();
+    map.remove("X-pimitemrelation");
     foreach (const PimItemRelation &rel, relations) {
-        if (rel.type == PimItemRelation::Project && !rel.parentNodes.isEmpty()) {
+        if (rel.parentNodes.isEmpty()) {
+            continue;
+        }
+        if (rel.type == PimItemRelation::Project) {
             i->setRelatedTo(rel.parentNodes.first().uid);
+        } else {
+            map.insertMulti("X-pimitemrelation", relationToXML(rel));
         }
     }
+    i->setCustomProperties(map);
 }
 
 QList< PimItemRelation > IncidenceItem::getRelations()
 {
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
-    if (i->relatedTo().isEmpty()) {
-        return QList<PimItemRelation>();
+    QList<PimItemRelation> relations;
+    if (!i->relatedTo().isEmpty()) {
+        relations << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(i->relatedTo().toUtf8()));
     }
-    PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(i->relatedTo().toUtf8()));
-    return QList<PimItemRelation>() << rel;
+    foreach(const QByteArray &key, i->customProperties().keys()) {
+//         kDebug() <<  key << i->customProperties().value(key);
+        if (key != "X-pimitemrelation") {
+            continue;
+        }
+        const PimItemRelation &rel = relationFromXML(i->customProperties().value(key).toLatin1());
+        relations << rel;
+    }
+    return relations;
 }
 
 void IncidenceItem::setCategories(const QStringList &categories)

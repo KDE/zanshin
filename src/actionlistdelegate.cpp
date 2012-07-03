@@ -174,7 +174,7 @@ QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *
 
 
         //Check currently active categories
-        IdList categories = CategoryManager::instance().getParents(selectedIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
+        IdList categories = CategoryManager::contextInstance().getParents(selectedIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
         Q_ASSERT(checkable->rowCount() == model->rowCount());
         for (int i = 0; i < checkable->rowCount(); ++i) {
             QModelIndex checkIndex = checkable->index(i, 0);

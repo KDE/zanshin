@@ -118,9 +118,9 @@ void SideBarPage::addNewItem()
         TodoHelpers::addProject(summary, parentItem);
 
     } else if (type==Zanshin::CategoryRoot) {
-        CategoryManager::instance().addCategory(summary);
+        CategoryManager::contextInstance().addCategory(summary);
     } else if (type==Zanshin::Category) {
-        CategoryManager::instance().addCategory(summary, IdList() << parentItem.data(Zanshin::RelationIdRole).toLongLong());
+        CategoryManager::contextInstance().addCategory(summary, IdList() << parentItem.data(Zanshin::RelationIdRole).toLongLong());
     } else if (type==Zanshin::TopicRoot) {
         NepomukUtils::createTopic(summary);
     } else if (type==Zanshin::Topic) {
@@ -140,7 +140,7 @@ void SideBarPage::removeCurrentItem()
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==Zanshin::Category) {
-        if (CategoryManager::instance().removeCategories(this, IdList() << current.data(Zanshin::RelationIdRole).toLongLong())) {
+        if (CategoryManager::contextInstance().removeCategories(this, IdList() << current.data(Zanshin::RelationIdRole).toLongLong())) {
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==Zanshin::Topic) {

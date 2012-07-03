@@ -20,6 +20,7 @@
 
 #include "pimitemrelations.h"
 #include <pimitem.h>
+#include <quuid.h>
 
 TreeNode::TreeNode(const QString& n, const Id& i, const QList< TreeNode >& p)
 :   name(n),
@@ -52,6 +53,7 @@ PimItemRelations::PimItemRelations()
 
 void PimItemRelations::mergeNode(const TreeNode &node)
 {
+    kDebug() << node.id << node.name;
     bool created = false;
     if (!mNames.contains(node.id)) {
         created = true;
@@ -88,12 +90,13 @@ Id PimItemRelations::addItem(const Akonadi::Item &item)
         mergeNode(node);
     }
     kDebug() << item.id() << mParents.values(id);
-
+    Q_ASSERT(mItemIdCache.contains(item.id()));
     return id;
 }
 
 Id PimItemRelations::getItemId(const Akonadi::Item &item) const
 {
+    kDebug() << item.id();
     Q_ASSERT(mItemIdCache.contains(item.id()));
     return mItemIdCache.value(item.id());
 }
@@ -101,6 +104,7 @@ Id PimItemRelations::getItemId(const Akonadi::Item &item) const
 
 QString PimItemRelations::getName(Id id)
 {
+    kDebug() << id << mNames.value(id);
     Q_ASSERT(mNames.contains(id));
     return mNames.value(id);
 }
@@ -154,6 +158,7 @@ void PimItemRelations::moveNode(Id id, IdList parents)
 
 void PimItemRelations::removeNodeRecursive(Id id)
 {
+    kDebug() << id;
     mParents.remove(id);
     mNames.remove(id);
     Q_ASSERT(!mParents.contains(id));
@@ -210,7 +215,7 @@ bool PimItemRelations::isVirtual(Id id) const
     return !mItemIdCache.values().contains(id);
 }
 
-
+/*
 CategoriesStructure::CategoriesStructure()
 :   PimItemRelations()
 {
@@ -339,5 +344,125 @@ void CategoriesStructure::updateRelationTree(Akonadi::Item &item)
 QString CategoriesStructure::getPath(Id id) const
 {
     return mCategoryMap.key(id);
+}
+*/
+
+
+
+
+
+PimItemRelationsStructure::PimItemRelationsStructure(PimItemRelation::Type type)
+:   PimItemRelations(),
+    mType(type)
+{
+
+}
+
+TreeNode PimItemRelationsStructure::createNode(const PimItemTreeNode &node)
+{
+    if (!mUidMapping.contains(node.uid)) {
+        mUidMapping.insert(node.uid, mIdCounter++);
+    }
+    Id id = mUidMapping.value(node.uid);
+    QList<TreeNode> parents;
+    foreach(const PimItemTreeNode &parentNode, node.parentNodes) {
+        parents << createNode(parentNode);
+    }
+    return TreeNode(node.name, id, parents);
+}
+
+
+Relation PimItemRelationsStructure::createRelation(const PimItemRelation &relation, const Id itemId)
+{
+    QList<TreeNode> parents;
+    foreach(const PimItemTreeNode &n, relation.parentNodes) {
+        parents << createNode(n);
+    }
+    return Relation(itemId, parents);
+}
+
+
+Relation PimItemRelationsStructure::getRelationTree(const Akonadi::Item& item)
+{
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    Q_ASSERT (!pimitem.isNull());
+    kDebug() << pimitem->itemType();
+
+    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+        kDebug() << rel.type;
+        if (rel.type == mType) {
+            return createRelation(rel, getOrCreateItemId(item)); //TODO merge multiple relations
+        }
+    }
+    return Relation(getOrCreateItemId(item), QList<TreeNode>());
+}
+
+QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
+{
+    QList<PimItemTreeNode> list;
+    IdList parents = mParents.values(id);
+    foreach (Id parent, parents) {
+        list << PimItemTreeNode(mUidMapping.key(parent), mNames.value(parent), getParentTreeNodes(parent));
+    }
+    return list;
+}
+
+void PimItemRelationsStructure::updateRelationTree(Akonadi::Item &item)
+{
+    kDebug() << item.id();
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    Q_ASSERT(!pimitem.isNull());
+    const Id id = mItemIdCache.value(item.id());
+    kDebug() << id;
+    QList<PimItemRelation> relations = pimitem->getRelations();
+    int i = 0;
+    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+        if (rel.type == mType) {
+            relations.removeAt(i);
+        }
+        i++;
+    }
+    relations << PimItemRelation(mType, getParentTreeNodes(id));
+    pimitem->setRelations(relations);
+    item = pimitem->getItem();
+}
+
+QList<TreeNode> PimItemRelationsStructure::getParentList(Id id)
+{
+    QList<TreeNode> list;
+    IdList parents = mParents.values(id);
+    foreach (Id parent, parents) {
+        list << TreeNode(mNames.value(parent), parent, getParentList(parent));
+    }
+    return list;
+}
+
+void PimItemRelationsStructure::addNode(const QString& name, const IdList& parents)
+{
+    foreach (Id id, mNames.keys()) {
+        kDebug() << id << mNames.value(id);
+    }
+    
+    Q_ASSERT(!name.isEmpty());
+    QList<TreeNode> parentNodes;
+    foreach (Id parent, parents) {
+        kDebug() << parent;
+        parentNodes << TreeNode(getName(parent), parent, getParentList(parent)); //TODO parents
+        Q_ASSERT(!getName(parent).isEmpty());
+    }
+    mIdCounter++;
+    Id id = mIdCounter;
+    mUidMapping.insert(QUuid::createUuid().toByteArray(), id);
+    mergeNode(TreeNode(name, id, parentNodes));
+}
+
+void PimItemRelationsStructure::rebuildCache()
+{
+
+}
+
+QString PimItemRelationsStructure::getPath(Id id) const
+{
+    return QString("/this is a path");
 }
 

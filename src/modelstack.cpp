@@ -41,9 +41,10 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include "pimitemmodel.h"
 #include "reparentingmodel/reparentingmodel.h"
-#include "reparentingmodel/nepomukparentstructurestrategy.h"
+// #include "reparentingmodel/nepomukparentstructurestrategy.h"
 #include "reparentingmodel/projectstrategy.h"
-#include "reparentingmodel/categoriesstrategy.h"
+// #include "reparentingmodel/categoriesstrategy.h"
+#include "reparentingmodel/pimitemrelationstrategy.h"
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -158,7 +159,8 @@ QAbstractItemModel *ModelStack::categoriesModel()
 {
     if (!m_categoriesModel) {
 //         CategoryManager::instance().setModel(baseModel());
-        ReparentingModel *categoriesModel = new ReparentingModel(new CategoriesStrategy(), this);
+//         ReparentingModel *categoriesModel = new ReparentingModel(new CategoriesStrategy(), this);
+        ReparentingModel *categoriesModel = new ReparentingModel(new PimItemRelationStrategy(PimItemRelation::Context), this);
         categoriesModel->setSourceModel(baseModel());
         m_categoriesModel = categoriesModel;
     }
@@ -264,9 +266,11 @@ QAbstractItemModel *ModelStack::topicsTreeModel()
 {
     if (!m_topicsTreeModel) {
 //         ParentStructureModel *treeModel = new ParentStructureModel(new NepomukParentStructureStrategy(this), this);
-        ReparentingModel *treeModel = new ReparentingModel(new NepomukParentStructureStrategy(), this);
+        ReparentingModel *treeModel = new ReparentingModel(new PimItemRelationStrategy(PimItemRelation::Topic), this);
         treeModel->setSourceModel(knowledgeBaseModel());
         m_topicsTreeModel = treeModel;
+
+//         m_topicsTreeModel = knowledgeBaseModel();
     }
     return m_topicsTreeModel;
 }

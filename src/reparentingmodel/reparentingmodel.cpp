@@ -342,7 +342,8 @@ bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction ac
     } else {
         target = m_manager->nodeForIndex(index(row, column, parent));
     }
-    Q_ASSERT(target && m_parentMap.values().contains(target));
+    Q_ASSERT(target);
+    Q_ASSERT(m_parentMap.values().contains(target));
     if (m_strategy->onDropMimeData(m_parentMap.key(target), mimeData, action)) {
         return true;
     }

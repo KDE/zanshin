@@ -35,11 +35,17 @@
 #include "globaldefs.h"
 #include "todohelpers.h"
 
-K_GLOBAL_STATIC(CategoryManager, s_categoryManager)
+K_GLOBAL_STATIC(CategoryManager, s_contextManager)
+K_GLOBAL_STATIC(CategoryManager, s_topicManager)
 
-CategoryManager &CategoryManager::instance()
+CategoryManager &CategoryManager::contextInstance()
 {
-    return *s_categoryManager;
+    return *s_contextManager;
+}
+
+CategoryManager &CategoryManager::topicInstance()
+{
+    return *s_contextManager;
 }
 
 
@@ -52,7 +58,7 @@ CategoryManager::~CategoryManager()
 {
 }
 
-void CategoryManager::setCategoriesStructure(CategoriesStructure *s)
+void CategoryManager::setCategoriesStructure(PimItemRelationsStructure *s)
 {
     m_categoriesStructure = s;
 }
@@ -60,7 +66,7 @@ void CategoryManager::setCategoriesStructure(CategoriesStructure *s)
 void CategoryManager::addCategory(const QString &category, const IdList &parentCategory)
 {
     kDebug() << category << parentCategory;
-    m_categoriesStructure->addCategoryNode(category, parentCategory);
+    m_categoriesStructure->addNode(category, parentCategory);
 }
 
 bool CategoryManager::removeCategories(QWidget* parent, const IdList& categories)
@@ -93,13 +99,6 @@ bool CategoryManager::removeCategories(QWidget* parent, const IdList& categories
         m_categoriesStructure->removeNode(id);
     }
     return true;
-}
-
-bool CategoryManager::removeCategories(QWidget* parent, const QString& categoryPath)
-{
-    Id id = m_categoriesStructure->getCategoryId(categoryPath);
-    kDebug() << "removing " << categoryPath << id;
-    return removeCategories(parent, IdList() << id);
 }
 
 bool CategoryManager::removeCategory(const Id &id)

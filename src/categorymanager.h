@@ -40,22 +40,23 @@ class CategoriesStrategy;
  *
  * The interface to edit(create/remove/rename/move) virtual nodes.
  *
+ * TODO possibly use globally unique ids here (in case of multiple structures)
  */
 class CategoryManager : public QObject
 {
     Q_OBJECT
 
 public:
-    static CategoryManager &instance();
+    static CategoryManager &contextInstance();
+    static CategoryManager &topicInstance();
 
     CategoryManager(QObject *parent = 0);
     virtual ~CategoryManager();
 
-    void setCategoriesStructure(CategoriesStructure *);
+    void setCategoriesStructure(PimItemRelationsStructure *);
 
     void addCategory(const QString &category, const IdList &parentCategory = IdList());
     bool removeCategories(QWidget *parent, const IdList &categoryIndex);
-    bool removeCategories(QWidget *parent, const QString &categoryPath);
     bool dissociateFromCategory(const Akonadi::Item &item, Id category);
     bool moveToCategory(Id id, Id category, Zanshin::ItemType parentType);
     bool renameCategory(Id id, const QString &name);
@@ -63,13 +64,13 @@ public:
     IdList getParents(const Akonadi::Item &item) const;
     IdList getAncestors(const Akonadi::Item &item) const;
 private:
-    friend class CategoriesStrategy;
+    friend class PimItemRelationsStructure;
 
     bool removeCategory(const Id &categoryPath);
 
     IdList getAncestors(Id id) const;
 
-    QPointer<CategoriesStructure> m_categoriesStructure;
+    QPointer<PimItemRelationsStructure> m_categoriesStructure;
 };
 
 #endif

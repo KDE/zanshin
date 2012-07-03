@@ -68,6 +68,9 @@ public:
      */
     ItemType itemType();
 
+    virtual QList< PimItemRelation > getRelations();
+    virtual void setRelations(const QList< PimItemRelation >& );
+
 protected:
     /*QString m_text;
     QString m_title;
