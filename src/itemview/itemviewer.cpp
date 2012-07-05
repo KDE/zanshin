@@ -118,11 +118,6 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     ui_properties->setupUi(propertiesWidget);
     connect(ui_properties->editableDueDate, SIGNAL(dateChanged(KDateTime, bool)), this, SLOT(setDueDate(KDateTime, bool)));
     connect(ui_properties->editableEventDate, SIGNAL(dateChanged(KDateTime)), this, SLOT(setEventDate(KDateTime)));
-    connect(ui_properties->cB_status, SIGNAL(activated(int)), this, SLOT(setStatus(int)));
-    ui_properties->cB_status->addItem(i18n("Done"), IncidenceItem::Complete);
-    ui_properties->cB_status->addItem(i18n("Now"), IncidenceItem::Now);
-    ui_properties->cB_status->addItem(i18n("Later"), IncidenceItem::Later);
-    ui_properties->cB_status->addItem(i18n("Overdue"), IncidenceItem::Attention);
     toolbox->addWidget(propertiesWidget, i18n("Properties"));
     
     QWidget *tagWidget = new QWidget(toolbox);
@@ -407,17 +402,9 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
         }
         ui_properties->editableDueDate->enable(hasDue); //set checked status
 
-        //Status
-        ui_properties->lb_status->show();
-        ui_properties->cB_status->show();
-        ui_properties->cB_status->setCurrentIndex(inc->getStatus()-1); //FIXME very fragile implementation
     } else { //not a todo
         ui_properties->editableDueDate->hide();
         ui_properties->lb_dueDate->hide();
-
-        ui_properties->lb_status->hide();
-        ui_properties->cB_status->hide();
-
     }
 
     if (m_currentItem->itemType() & AbstractPimItem::Event) {
@@ -486,20 +473,6 @@ void ItemViewer::setDueDate(KDateTime dateTime, bool enabled)
         m_currentItem->saveItem();
     }
 }
-
-void ItemViewer::setStatus(int currentIndex)
-{
-    if (!m_currentItem) {
-        return;
-    }
-    Q_ASSERT(m_currentItem);
-    if (m_currentItem->itemType() & AbstractPimItem::Todo) {
-        IncidenceItem *inc = static_cast<IncidenceItem*>(m_currentItem);
-        inc->setTodoStatus(static_cast<AbstractPimItem::ItemStatus>(ui_properties->cB_status->itemData(currentIndex).toInt()));
-        m_currentItem->saveItem();
-    }
-}
-
 
 void ItemViewer::itemRemoved()
 {

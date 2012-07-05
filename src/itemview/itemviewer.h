@@ -82,7 +82,6 @@ private slots:
     void clearView();
 
     void setDueDate(KDateTime, bool);
-    void setStatus(int);
 
     void setEventDate(KDateTime);
 
