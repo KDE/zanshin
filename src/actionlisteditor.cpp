@@ -433,12 +433,14 @@ void ActionListEditor::saveColumnsState(KConfigGroup &config) const
 {
     page(0)->saveColumnsState(config, "ProjectHeaderState");
     page(1)->saveColumnsState(config, "CategoriesHeaderState");
+    page(2)->saveColumnsState(config, "TopicsHeaderState");
 }
 
 void ActionListEditor::restoreColumnsState(const KConfigGroup &config)
 {
     page(0)->restoreColumnsState(config, "ProjectHeaderState");
     page(1)->restoreColumnsState(config, "CategoriesHeaderState");
+    page(2)->restoreColumnsState(config, "TopicsHeaderState");
 }
 
 ActionListEditorPage *ActionListEditor::currentPage() const
