@@ -338,8 +338,6 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     layout()->addWidget(m_treeView);
 
-    QTimer::singleShot(0, this, SLOT(onAutoHideColumns()));
-
     connect(m_treeView->header(), SIGNAL(sectionResized(int,int,int)),
             this, SLOT(onColumnsGeometryChanged()));
 
@@ -548,7 +546,7 @@ void ActionListEditorPage::addNewTodo(const QString &summary)
         break;
 
     case Zanshin::Category:
-        category = current.data(Zanshin::CategoryPathRole).toString(); //TODO
+//         category = current.data(Zanshin::CategoryPathRole).toString(); //TODO
         // fallthrough
     case Zanshin::Inbox:
     case Zanshin::CategoryRoot:
@@ -605,28 +603,6 @@ void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
 Zanshin::ApplicationMode ActionListEditorPage::mode()
 {
     return m_mode;
-}
-
-void ActionListEditorPage::onAutoHideColumns()
-{
-    switch (m_mode) {
-    case Zanshin::ProjectMode:
-        m_treeView->hideColumn(PimItemModel::Project);
-        m_treeView->showColumn(PimItemModel::Contexts);
-        m_treeView->hideColumn(PimItemModel::Status);
-        break;
-    case Zanshin::CategoriesMode:
-        m_treeView->showColumn(PimItemModel::Project);
-        m_treeView->hideColumn(PimItemModel::Contexts);
-        m_treeView->hideColumn(PimItemModel::Status);
-        break;
-    case Zanshin::KnowledgeMode:
-        m_treeView->hideColumn(PimItemModel::Status);
-        m_treeView->hideColumn(PimItemModel::Collection);
-        m_treeView->hideColumn(PimItemModel::Contexts);
-        m_treeView->hideColumn(PimItemModel::Project);
-        break;
-    }
 }
 
 void ActionListEditorPage::setCollectionColumnHidden(bool hidden)

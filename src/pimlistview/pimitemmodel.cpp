@@ -41,16 +41,7 @@
 PimItemModel::PimItemModel(Akonadi::ChangeRecorder *monitor, QObject *parent)
     : Akonadi::EntityTreeModel(monitor, parent)
 {
-    connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)),
-            this, SLOT(onSourceInsertRows(QModelIndex,int,int)));
-    connect(this, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
-            this, SLOT(onSourceRemoveRows(QModelIndex,int,int)));
-    connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-            this, SLOT(onSourceDataChanged(QModelIndex,QModelIndex)));
-
-    onSourceInsertRows(QModelIndex(), 0, rowCount()-1);
-
-    m_itemHeaders << i18n("Summary") << i18n("Project") << i18n("Contexts") << i18n("Date") << i18n("Collection");
+    m_itemHeaders << i18n("Summary") << i18n("Date") << i18n("Collection");
 
     //For QML
 //     QHash<int, QByteArray> roles = EntityTreeModel::roleNames();
@@ -65,7 +56,10 @@ PimItemModel::~PimItemModel()
 
 Qt::ItemFlags PimItemModel::flags(const QModelIndex &index) const
 {
-    return Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsEditable;
+    if (index.column() == TitleRole) {
+        return Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsEditable;
+    }
+    return Akonadi::EntityTreeModel::flags(index);
 }
 
 int PimItemModel::entityColumnCount(HeaderGroup headerGroup) const
@@ -109,14 +103,6 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             switch (column) {
                 case Summary:
                     return pimitem->getTitle();
-                case Project:
-                    //TODO
-                    if ((pimitem->itemType() & AbstractPimItem::Todo) && item.hasPayload<KCalCore::Todo::Ptr>()) {
-                        return m_summaryMap[item.payload<KCalCore::Todo::Ptr>()->relatedTo()];
-                    }
-                    return QString();
-                case Contexts:
-                    return pimitem->getCategories().join(", ");
                 case Date:
                     return DateStringBuilder::getShortDate(pimitem->getPrimaryDate());
                 case Collection:
@@ -141,13 +127,6 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             switch (column) {
                 case Summary:
                     return pimitem->getTitle();
-                case Project:
-                    if ((pimitem->itemType() & AbstractPimItem::Todo) && item.hasPayload<KCalCore::Todo::Ptr>()) {
-                        return m_summaryMap[item.payload<KCalCore::Todo::Ptr>()->relatedTo()];
-                    }
-                    break;
-                case Contexts:
-                    return pimitem->getCategories();
                 case Date:
                     return pimitem->getPrimaryDate().dateTime();
                 case Collection:
@@ -297,42 +276,6 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
     }
 
     return true;
-}
-
-void PimItemModel::onSourceInsertRows(const QModelIndex &parent, int begin, int end)
-{
-    for (int i = begin; i <= end; i++) {
-        QModelIndex child = index(i, 0, parent);
-        onSourceInsertRows(child, 0, rowCount(child)-1);
-
-        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(data(child, ItemRole).value<Akonadi::Item>()));
-        if (pimitem) {
-            m_summaryMap[pimitem->getUid()] = pimitem->getTitle();
-        }
-    }
-}
-
-void PimItemModel::onSourceRemoveRows(const QModelIndex &parent, int begin, int end)
-{
-    for (int i = begin; i <= end; ++i) {
-        const QModelIndex &child = index(i, 0, parent);
-        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(data(child, ItemRole).value<Akonadi::Item>()));
-        if (pimitem) {
-            m_summaryMap.remove(pimitem->getUid());
-        }
-    }
-}
-
-void PimItemModel::onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end)
-{
-    for (int row = begin.row(); row <= end.row(); ++row) {
-        for (int column = begin.column(); column <= end.column(); ++column) {
-            QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(data(index(row, column, begin.parent()), ItemRole).value<Akonadi::Item>()));
-            if (pimitem) {
-                m_summaryMap[pimitem->getUid()] = pimitem->getTitle();
-            }
-        }
-    }
 }
 
 Qt::DropActions PimItemModel::supportedDropActions() const

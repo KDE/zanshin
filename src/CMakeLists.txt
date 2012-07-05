@@ -11,8 +11,6 @@ add_subdirectory( reparentingmodel )
 ########### zanshin core ###############
 
 set(zanshin_core_SRCS
-   actionlistcheckablemodel.cpp
-   actionlistcompletermodel.cpp
    categorymanager.cpp
    combomodel.cpp
    modelstack.cpp
@@ -43,7 +41,6 @@ set(zanshin_gui_SRCS
    aboutdata.cpp
    actionduedatedelegate.cpp
    actionlistcombobox.cpp
-   actionlistcompleterview.cpp
    actionlistdelegate.cpp
    actionlisteditor.cpp
    actionlisteditorpage.cpp

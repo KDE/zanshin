@@ -286,9 +286,6 @@ QVariant PimItemRelationStrategy::data(Id id, int role) const
     if (role == Zanshin::RelationIdRole) {
         return translateTo(id);
     }
-    if (role == Zanshin::CategoryPathRole) { //TODO relation path role
-        return mRelations->getPath(translateTo(id));
-    }
     return ReparentingStrategy::data(id, role);
 }
 

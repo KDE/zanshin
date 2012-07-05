@@ -85,7 +85,6 @@ public slots:
     void onAddActionRequested();
 
 private slots:
-    void onAutoHideColumns();
     void onColumnsGeometryChanged();
     void onSelectFirstIndex();
     void onComboBoxChanged();

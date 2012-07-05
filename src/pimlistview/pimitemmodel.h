@@ -42,8 +42,6 @@ public:
 
     enum Column {
         Summary=0,
-        Project,
-        Contexts,
         Date,
         Collection,
         Status,
@@ -69,13 +67,7 @@ public:
 
     virtual Qt::DropActions supportedDropActions() const;
 
-private slots:
-    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
-
 private:
-    QHash<QString, QString> m_summaryMap;
     QStringList m_itemHeaders;
 };
 

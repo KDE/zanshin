@@ -28,10 +28,6 @@
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QStyledItemDelegate>
 
-#include "actionlistcheckablemodel.h"
-#include "actionlistcompleterview.h"
-#include "actionlistcompletermodel.h"
-#include "actionlistcombobox.h"
 #include "combomodel.h"
 #include "globaldefs.h"
 #include "kdescendantsproxymodel.h"
@@ -48,8 +44,8 @@ using namespace KPIM;
 Q_DECLARE_METATYPE(QItemSelectionModel*)
 
 ActionListDelegate::ActionListDelegate(ModelStack *models, QObject *parent)
-    : QStyledItemDelegate(parent)
-    , m_models(models)
+    : QStyledItemDelegate(parent),
+    m_models(models)
 {
 }
 
@@ -142,64 +138,9 @@ QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 {
     if (index.data(Qt::EditRole).type()==QVariant::Date) {
         return new KDateEdit(parent);
-    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::CategoryType) {
-        return createComboBox(m_models->categoriesComboModel(), parent, index, true);
-    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::ProjectType) {
-        return createComboBox(m_models->treeComboModel(), parent, index, false);
     } else {
         return QStyledItemDelegate::createEditor(parent, option, index);
     }
-}
-
-QWidget *ActionListDelegate::createComboBox(QAbstractItemModel *model, QWidget *parent, const QModelIndex &selectedIndex, bool isCategory) const
-{
-    ActionListComboBox *comboBox = new ActionListComboBox(parent);
-    comboBox->setEditable(true);
-    comboBox->view()->setTextElideMode(Qt::ElideNone);
-
-    QCompleter *completer = new QCompleter(comboBox);
-    completer->setCompletionMode(QCompleter::PopupCompletion);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-
-    if (isCategory) {
-        comboBox->setAutoHidePopupEnabled(true);
-        QItemSelectionModel *checkModel = new QItemSelectionModel(model, comboBox);
-        ActionListCheckableModel *checkable = new ActionListCheckableModel(comboBox);
-        //Avoid having an item in both a super and subcategory at the same time
-//         IdList ancestorsCategories = CategoryManager::instance().getAncestors(selectedIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
-//         kDebug() << "ancestors " << ancestorsCategories;
-//         checkable->setDisabledCategories(ancestorsCategories);
-        checkable->setSourceModel(model);
-        checkable->setSelectionModel(checkModel);
-
-
-        //Check currently active categories
-        IdList categories = CategoryManager::contextInstance().getParents(selectedIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
-        Q_ASSERT(checkable->rowCount() == model->rowCount());
-        for (int i = 0; i < checkable->rowCount(); ++i) {
-            QModelIndex checkIndex = checkable->index(i, 0);
-            QModelIndex index = model->index(i, 0);
-            foreach (Id item, categories) {
-                if (index.data(Zanshin::RelationIdRole).toLongLong() == item && checkIndex.flags() & Qt::ItemIsEnabled) {
-                    checkModel->select(index, QItemSelectionModel::Toggle);
-                }
-            }
-        }
-        comboBox->setModel(checkable);
-        ActionListCompleterModel *completerModel = new ActionListCompleterModel(checkModel, completer);
-        completerModel->setSourceModel(checkable);
-        completer->setModel(completerModel);
-        ActionListCompleterView *listView = new ActionListCompleterView(comboBox);
-        completer->setPopup(listView);
-    } else {
-        comboBox->setModel(model);
-        completer->setModel(model);
-        comboBox->setEditText(selectedIndex.data().toString());
-    }
-    connect(completer, SIGNAL(activated(QModelIndex)), this, SLOT(onCompleterActivated(QModelIndex)));
-    comboBox->setCompleter(completer);
-
-    return comboBox;
 }
 
 void ActionListDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
@@ -224,19 +165,6 @@ void ActionListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
     if (index.data(Qt::EditRole).type()==QVariant::Date) {
         KDateEdit *dateEdit = static_cast<KDateEdit*>(editor);
         model->setData(index, dateEdit->date());
-    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::CategoryType) {
-        QComboBox *comboBox = static_cast<QComboBox*>(editor);
-        QStringList currentCategories = comboBox->currentText().split(", ");
-        model->setData(index, currentCategories);
-    } else if (index.data(Zanshin::DataTypeRole).toInt() == Zanshin::ProjectType) {
-        QComboBox *comboBox = static_cast<QComboBox*>(editor);
-        if (comboBox->currentIndex() == -1) {
-            return;
-        }
-        QModelIndex idx = comboBox->model()->index(comboBox->currentIndex(), 0);
-        if (idx.isValid()) {
-            model->setData(index, idx.data(Zanshin::UidRole));
-        }
     } else {
         QStyledItemDelegate::setModelData(editor, model, index);
     }
