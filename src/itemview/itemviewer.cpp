@@ -28,8 +28,6 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <Nepomuk/TagWidget>
-#include <Nepomuk/Resource>
 #include <KTextEdit>
 #include <KRichTextEdit>
 #include <KRichTextWidget>
@@ -81,8 +79,6 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     m_currentItem(0),
     m_autosaveTimer(new QTimer(this)),
     m_autosaveTimeout(5000),
-    m_itemContext(new ItemContext(this)),
-    ui_tags(new tags()),
     ui_properties(new properties())
 {
     setupUi(this);
@@ -119,14 +115,6 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     connect(ui_properties->editableDueDate, SIGNAL(dateChanged(KDateTime, bool)), this, SLOT(setDueDate(KDateTime, bool)));
     connect(ui_properties->editableEventDate, SIGNAL(dateChanged(KDateTime)), this, SLOT(setEventDate(KDateTime)));
     toolbox->addWidget(propertiesWidget, i18n("Properties"));
-    
-    QWidget *tagWidget = new QWidget(toolbox);
-    ui_tags->setupUi(tagWidget);
-    connect(ui_tags->tagEdit, SIGNAL(returnPressed()), this, SLOT(addTag()));
-    toolbox->addWidget(tagWidget, i18n("Tags"));
-
-    connect(m_itemContext, SIGNAL(itemActivated(const Nepomuk::Resource &)), this, SLOT(setItem(const Nepomuk::Resource &)));
-    toolbox->addWidget(m_itemContext, i18n("Context"));
 
     setEnabled(false);
 
@@ -149,8 +137,6 @@ ItemViewer::~ItemViewer()
 
     delete ui_properties;
     ui_properties = 0;
-    delete ui_tags;
-    ui_tags = 0;
 }
 
 void ItemViewer::restoreState()
@@ -239,8 +225,6 @@ void ItemViewer::focusOutEvent(QFocusEvent* event)
 void ItemViewer::clearView()
 {
     m_autosaveTimer->stop();
-    ui_tags->tagEdit->clear();
-    ui_properties->topics->clear();
     editor->editor()->clear();
     //Reset action from last text (i.e. if bold text was enabled)
     /*foreach (QAction *action, guiWindow->actionCollection()->actions()) {
@@ -326,32 +310,12 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     m_currentItem->fetchPayload(); //in case the payload is not yet fetched (model does not automatically fetch
     m_currentItem->enableMonitor();
 
-    ItemMonitor *monitor = new ItemMonitor(m_currentItem->getItem(), this);
-    connect(monitor, SIGNAL(gotThing(Nepomuk::Resource)), m_itemContext, SLOT(setResource(Nepomuk::Resource)));
-    connect(monitor, SIGNAL(topicsChanged(QStringList)), this, SLOT(newTopics(QStringList)));
-    connect(this, SIGNAL(itemChanged()), monitor,SLOT(deleteLater()));
-}
-
-void ItemViewer::gotThing(const Nepomuk::Resource &r)
-{
-    kDebug() << "got Thing too";
-    ui_tags->tagWidget->setTaggedResource(r);
-}
-
-
-void ItemViewer::newTopics(const QStringList &results)
-{
-    if (ui_properties && ui_properties->topics) {
-        ui_properties->topics->setText(results.join(", "));
-    }
 }
 
 void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
 {
     kDebug();
     Q_ASSERT(ui_properties);
-    Q_ASSERT(ui_tags);
-    Q_ASSERT(ui_properties->topics);
     /*
      * TODO check for changed content, if there is changed content we have a conflict,
      * and the user should be allowed to save the current content
@@ -478,11 +442,4 @@ void ItemViewer::itemRemoved()
 {
     clearView();
     setEnabled(false);
-}
-
-
-void ItemViewer::addTag()
-{
-    NepomukUtils::tagItem(m_currentItem->getItem(), ui_tags->tagEdit->text());
-    ui_tags->tagEdit->clear();
 }

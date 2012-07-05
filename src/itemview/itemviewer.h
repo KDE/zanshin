@@ -75,7 +75,6 @@ public slots:
 private slots:
     ///add tag from tag edit
     void itemsReceived(const Akonadi::Item::List&);
-    void addTag();
     void saveItem();
     void updateContent(AbstractPimItem::ChangedParts parts = AbstractPimItem::AllParts);
     void itemRemoved();
@@ -89,10 +88,7 @@ private slots:
     
     void setFullscreenEditor();
     void restoreState();
-    
-    void newTopics(const QStringList &);
-    void gotThing(const Nepomuk::Resource &);
-    
+        
 signals:
     void itemChanged();
 private:
@@ -100,8 +96,6 @@ private:
     AbstractPimItem *m_currentItem;
     QTimer *m_autosaveTimer;
     int m_autosaveTimeout;
-    ItemContext *m_itemContext;
-    Ui::tags *ui_tags;
     Ui::properties *ui_properties;
 
 };
