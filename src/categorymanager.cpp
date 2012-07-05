@@ -50,7 +50,8 @@ CategoryManager &CategoryManager::topicInstance()
 
 
 CategoryManager::CategoryManager(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+    m_categoriesStructure(0)
 {
 }
 
@@ -60,6 +61,7 @@ CategoryManager::~CategoryManager()
 
 void CategoryManager::setCategoriesStructure(PimItemRelationsStructure *s)
 {
+//     Q_ASSERT(!m_categoriesStructure);
     m_categoriesStructure = s;
 }
 
