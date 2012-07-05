@@ -532,34 +532,6 @@ private slots:
         QTest::newRow( "check todo with some category duplicate" ) << sourceStructure << categories;
     }
 
-    void shouldRetrieveItemCategories()
-    {
-        //GIVEN
-        QFETCH(ModelStructure, sourceStructure);
-
-        //Source model
-        QStandardItemModel source;
-        StandardModelBuilderBehavior behavior;
-        behavior.setMetadataCreationEnabled(false);
-        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
-
-        //create metadataModel
-        TodoMetadataModel todoMetadataModel;
-        ModelTest t1(&todoMetadataModel);
-
-        //WHEN
-        todoMetadataModel.setSourceModel(&source);
-
-        //THEN
-        QFETCH(QStringList, categories);
-        QModelIndex index = todoMetadataModel.index(0,0);
-        while (todoMetadataModel.rowCount(index) > 0) {
-            index = todoMetadataModel.index(todoMetadataModel.rowCount(index)-1, 0, index);
-        }
-
-        QCOMPARE(index.data(Zanshin::CategoriesRole).toStringList(), categories);
-    }
-
     void shouldRetrieveItemAncestorsCategories_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
@@ -638,34 +610,6 @@ private slots:
                    << "cat1";
 
         QTest::newRow( "check todo with some category duplicate" ) << sourceStructure << categories;
-    }
-
-    void shouldRetrieveItemAncestorsCategories()
-    {
-        //GIVEN
-        QFETCH(ModelStructure, sourceStructure);
-
-        //Source model
-        QStandardItemModel source;
-        StandardModelBuilderBehavior behavior;
-        behavior.setMetadataCreationEnabled(false);
-        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
-
-        //create metadataModel
-        TodoMetadataModel todoMetadataModel;
-        ModelTest t1(&todoMetadataModel);
-
-        //WHEN
-        todoMetadataModel.setSourceModel(&source);
-
-        //THEN
-        QFETCH(QStringList, categories);
-        QModelIndex index = todoMetadataModel.index(0,0);
-        while (todoMetadataModel.rowCount(index) > 0) {
-            index = todoMetadataModel.index(todoMetadataModel.rowCount(index)-1, 0, index);
-        }
-
-        QCOMPARE(index.data(Zanshin::AncestorsCategoriesRole).toStringList(), categories);
     }
 
     void shouldRetrieveItemDataType_data()
@@ -1427,38 +1371,39 @@ private slots:
                                                    << itemToRemove;
     }
 
-    void shouldNotCrashWhenParentBecomesEmpty()
-    {
-        //GIVEN
-        QFETCH(ModelStructure, sourceStructure);
-
-        //Source model
-        QStandardItemModel source;
-        ModelUtils::create(&source, sourceStructure);
-
-        //create metadataModel
-        TodoMetadataModel metadataModel;
-        ModelTest t1(&metadataModel);
-
-        metadataModel.setSourceModel(&source);
-
-        //WHEN
-        QFETCH(ModelPath, itemToTest);
-        QModelIndex sourceIndex = ModelUtils::locateItem(&source, itemToTest);
-
-        Akonadi::Item item = sourceIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-        todo->setRelatedTo(QString());
-
-        //modify something
-        source.setData(sourceIndex, QString(), Zanshin::CategoriesRole);
-
-        QModelIndex metadataIndex = ModelUtils::locateItem(&metadataModel, itemToTest);
-
-        //THEN
-        QStringList categories = metadataIndex.data(Zanshin::CategoriesRole).toStringList();
-        QVERIFY(categories.empty());
-    }
+// FIXME not sure if there is any way to make this test useful again
+//     void shouldNotCrashWhenParentBecomesEmpty()
+//     {
+//         //GIVEN
+//         QFETCH(ModelStructure, sourceStructure);
+// 
+//         //Source model
+//         QStandardItemModel source;
+//         ModelUtils::create(&source, sourceStructure);
+// 
+//         //create metadataModel
+//         TodoMetadataModel metadataModel;
+//         ModelTest t1(&metadataModel);
+// 
+//         metadataModel.setSourceModel(&source);
+// 
+//         //WHEN
+//         QFETCH(ModelPath, itemToTest);
+//         QModelIndex sourceIndex = ModelUtils::locateItem(&source, itemToTest);
+// 
+//         Akonadi::Item item = sourceIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+//         KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+//         todo->setRelatedTo(QString());
+// 
+//         //modify something
+//         source.setData(sourceIndex, QString(), Zanshin::UidRole);
+// 
+//         QModelIndex metadataIndex = ModelUtils::locateItem(&metadataModel, itemToTest);
+// 
+//         //THEN
+//         QStringList categories = metadataIndex.data(Zanshin::CategoriesRole).toStringList();
+//         QVERIFY(categories.empty());
+//     }
 
     void shouldReactToModelReset_data()
     {

@@ -51,8 +51,6 @@ namespace Zanshin
         UidRole = Akonadi::EntityTreeModel::UserRole + 1,
         ParentUidRole,
         AncestorsUidRole,
-        CategoriesRole, //TODO remove
-        AncestorsCategoriesRole, //TODO remove
         ItemTypeRole,
         DataTypeRole,
         ChildUidsRole,

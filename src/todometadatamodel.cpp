@@ -134,10 +134,6 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         return ancestorsUidFromItem(item);
     case Zanshin::ItemTypeRole:
         return itemTypeFromItem(item);
-    case Zanshin::CategoriesRole:
-        return categoriesFromItem(item);
-    case Zanshin::AncestorsCategoriesRole:
-        return ancestorsCategoriesFromItem(item);
     case Zanshin::DataTypeRole:
         switch (index.column()) {
             case 1 :
@@ -311,36 +307,6 @@ QStringList TodoMetadataModel::ancestorsUidFromItem(const Akonadi::Item &item) c
         id = parentId;
     }
     return result;
-}
-
-QStringList TodoMetadataModel::ancestorsCategoriesFromItem(const Akonadi::Item &item) const
-{
-    QStringList ancestors = ancestorsUidFromItem(item);
-    QStringList categories;
-    foreach (QString uid, ancestors) {
-        if (!m_indexMap.contains(uid)) {
-            continue;
-        }
-        const QModelIndex &index = m_indexMap[uid];
-        const Akonadi::Item item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-        if (!pimitem.isNull()) {
-            categories << pimitem->getCategories();
-        }
-    }
-    categories.removeDuplicates();
-    return categories;
-}
-
-QStringList TodoMetadataModel::categoriesFromItem(const Akonadi::Item &item) const
-{
-    QStringList categories = ancestorsCategoriesFromItem(item);
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-    if (!pimitem.isNull()) {
-        categories << pimitem->getCategories();
-    }
-    categories.removeDuplicates();
-    return categories;
 }
 
 QStringList TodoMetadataModel::childUidsFromItem(const Akonadi::Item &item) const
