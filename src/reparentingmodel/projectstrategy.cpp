@@ -44,7 +44,10 @@ void ProjectStrategy::init()
 {
     ReparentingStrategy::init();
     //FIXME we should be setting this earlier, here the inserted signals have already been emitted
-    TodoNode *node = createNode(mInbox, IdList(), "Inbox");
+
+    QList<TodoNode*> nodes = createNode(mInbox, IdList(), "Inbox");
+    Q_ASSERT(nodes.size() == 1);
+    TodoNode *node = nodes.first();
     node->setData(i18n("Inbox"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);

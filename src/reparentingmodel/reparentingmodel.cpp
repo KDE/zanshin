@@ -48,56 +48,96 @@ TodoNode* ReparentingModel::createInbox() const
     return 0;
 }
 
-TodoNode *ReparentingModel::createNode(const Id &identifier, const IdList &parents, const QString &name, const QModelIndex &sourceIndex)
+QList<TodoNode*> ReparentingModel::insertNode(const Id &identifier, const QString &name, QList<TodoNode*> parentNodes, const QModelIndex &sourceIndex)
+{
+    if (parentNodes.isEmpty()) {
+        TodoNode *parentNode = 0;
+        int row = 0;
+        if (parentNode) {
+            row = parentNode->children().size();
+        } else {
+            row = m_manager->roots().size();
+        }
+        beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
+        TodoNode *node;
+        if (sourceIndex.isValid()) {
+            node = new TodoNode(sourceIndex, parentNode);
+            //Don't set anything on real nodes
+        } else { //For virtual nodes
+            node = new TodoNode(parentNode);
+            node->setData(name, 0, Qt::DisplayRole);
+            node->setData(name, 0, Qt::EditRole);
+            m_strategy->setData(node, identifier);
+        }
+
+        Q_ASSERT(node);
+        m_parentMap.insertMulti(identifier, node);
+        m_manager->insertNode(node);
+        endInsertRows();
+        return QList<TodoNode*>() << node;
+    }
+
+    
+    QList<TodoNode*> nodes;
+    foreach (TodoNode *parentNode, parentNodes) {
+        int row = 0;
+        if (parentNode) {
+            row = parentNode->children().size();
+        } else {
+            row = m_manager->roots().size();
+        }
+        beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
+        TodoNode *node;
+        if (sourceIndex.isValid()) {
+            node = new TodoNode(sourceIndex, parentNode);
+            //Don't set anything on real nodes
+        } else { //For virtual nodes
+            node = new TodoNode(parentNode);
+            node->setData(name, 0, Qt::DisplayRole);
+            node->setData(name, 0, Qt::EditRole);
+            m_strategy->setData(node, identifier);
+        }
+
+        Q_ASSERT(node);
+        m_parentMap.insertMulti(identifier, node);
+        m_manager->insertNode(node);
+        endInsertRows();
+//         Q_ASSERT(!m_parentMap.values().contains(0));
+    }
+    return nodes;
+}
+
+QList<TodoNode*> ReparentingModel::createNode(const Id &identifier, const IdList &parents, const QString &name, const QModelIndex &sourceIndex)
 {
 //     kDebug() << "add node" << name << identifier << parents << sourceIndex;
 
     if (m_parentMap.contains(identifier)) { //We already have this node, we only need to update it
-        TodoNode *node = reparentNode(identifier, parents, sourceIndex);
-        if (!sourceIndex.isValid() && !name.isEmpty() && node) {
-            node->setData(name, 0, Qt::DisplayRole);
+        QList<TodoNode*> nodes = reparentNode(identifier, parents, sourceIndex);
+        if (!sourceIndex.isValid() && !name.isEmpty()) {
+            foreach (TodoNode *node, nodes) {
+                node->setData(name, 0, Qt::DisplayRole); //FIXME setting data after the signals have been emitted is probably evil
+            }
         }
-        return node;
+        return nodes;
     }
 
-    Id parentIdentifier = -1;
-    if (!parents.isEmpty()) {
-        parentIdentifier = parents.first();
+    if (parents.isEmpty()) {
+        return QList<TodoNode*>() << insertNode(identifier, name, QList<TodoNode*>(), sourceIndex);
     }
-    TodoNode* parentNode = 0;
-    if (parentIdentifier >= 0) {
+
+    QList<TodoNode*> nodeList;
+    foreach (Id parentIdentifier, parents) {
+        Q_ASSERT(parentIdentifier >= 0);
         if (!m_parentMap.contains(parentIdentifier)) {
 //             kDebug() << "creating missing parent: " << parentIdentifier;
             createNode(parentIdentifier, IdList(), "unknown");
         }
         Q_ASSERT(m_parentMap.contains(parentIdentifier));
-        parentNode = m_parentMap.value(parentIdentifier);
+        QList<TodoNode*> parentNodes = m_parentMap.values(parentIdentifier);
+        Q_ASSERT(!parentNodes.isEmpty());
+        nodeList.append(insertNode(identifier, name, parentNodes, sourceIndex));
     }
-
-    int row = 0;
-    if (parentNode) {
-        row = parentNode->children().size();
-    } else {
-        row = m_manager->roots().size();
-    }
-    beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
-    TodoNode *node;
-    if (sourceIndex.isValid()) {
-        node = new TodoNode(sourceIndex, parentNode);
-        //Don't set anything on real nodes
-    } else { //For virtual nodes
-        node = new TodoNode(parentNode);
-        node->setData(name, 0, Qt::DisplayRole);
-        node->setData(name, 0, Qt::EditRole);
-        m_strategy->setData(node, identifier);
-    }
-
-    Q_ASSERT(node);
-    m_parentMap[identifier] = node;
-    m_manager->insertNode(node);
-    endInsertRows();
-    Q_ASSERT(!m_parentMap.values().contains(0));
-    return node;
+    return nodeList;
 }
 
 void ReparentingModel::removeNode(TodoNode *root, bool removeChildren, bool cleanupStrategy)
@@ -157,11 +197,11 @@ void ReparentingModel::removeNodeById(Id id)
 }
 
 
-TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QModelIndex &sourceIndex)
+QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QModelIndex &sourceIndex)
 {
     if (p < 0) {
         kWarning() << "invalid item";
-        return 0;
+        return QList<TodoNode*>();
     }
     kDebug() << p << parents << sourceIndex;
     //TODO handle multiple parents
@@ -174,7 +214,7 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
         //Reparent only if parent has changed
         if ((parents.isEmpty() && !node->parent()) || (!parents.isEmpty() && (node->parent() == m_parentMap.value(parents.first())))) {
 //             kDebug() << "nothing changed";
-            return 0;
+            return QList<TodoNode*>();
         }
     }
 
@@ -190,30 +230,35 @@ TodoNode *ReparentingModel::reparentNode(const Id& p, const IdList& parents, con
     //remove node from any current parent, don't touch the subtree (it moves along) and don't remove the node from the strategy (it already has the updated parent information)
     removeNode(node, false, false);
 
-    TodoNode *newNode = createNode(p, parents, name, index);
-    Q_ASSERT(newNode);
-    foreach (TodoNode* child, children) {
-        child->setParent(newNode);
-    }
-    Q_ASSERT(!m_parentMap.values().contains(0));
-    return newNode;
+    QList<TodoNode*> newNodes = createNode(p, parents, name, index);
+
+    //FIXME we need to create more child nodes so each created node gets an instance
+        
+//     Q_ASSERT(newNode);
+//     foreach (TodoNode* child, children) {
+//         child->setParent(newNode);
+//     }
+//     Q_ASSERT(!m_parentMap.values().contains(0));
+    return newNodes;
 }
 
 void ReparentingModel::renameNode(const Id& identifier, const QString& name)
 {
 //     kDebug() << "renamed " << identifier << " to " << name;
     Q_ASSERT(m_parentMap.contains(identifier));
-    TodoNode *node = m_parentMap.value(identifier);
-    node->setData(name, 0, Qt::DisplayRole);
-    node->setData(name, 0, Qt::EditRole);
-    const QModelIndex &begin = m_manager->indexForNode(node, 0);
-    const QModelIndex &end = m_manager->indexForNode(node, 0);
-    emit dataChanged(begin, end);
+    QList<TodoNode*> nodes = m_parentMap.values(identifier);
+    foreach(TodoNode *node, nodes) {
+        node->setData(name, 0, Qt::DisplayRole);
+        node->setData(name, 0, Qt::EditRole);
+        const QModelIndex &begin = m_manager->indexForNode(node, 0);
+        const QModelIndex &end = m_manager->indexForNode(node, 0);
+        emit dataChanged(begin, end);
+    }
 }
 
 void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int begin, int end)
 {
-//     kDebug() << sourceIndex << begin << end;
+    kDebug() << sourceIndex << begin << end;
     for (int i = begin; i <= end; i++) {
         const QModelIndex &sourceChildIndex = sourceModel()->index(i, 0, sourceIndex);
         
@@ -237,12 +282,12 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
         }
     }
 
-    Q_ASSERT(!m_parentMap.values().contains(0));
+//     Q_ASSERT(!m_parentMap.values().contains(0));
 }
 
 void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
 {
-//     kDebug() << begin << end;
+    kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         Id id = m_strategy->getId(index);
@@ -267,7 +312,7 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
             dataChanged(proxyIndex, proxyIndex);
         }
     }
-    Q_ASSERT(!m_parentMap.values().contains(0));
+//     Q_ASSERT(!m_parentMap.values().contains(0));
 }
 
 
@@ -369,6 +414,7 @@ QMimeData *ReparentingModel::mimeData(const QModelIndexList &indexes) const
 
 bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    kDebug() << value << (role==Qt::EditRole) << index.isValid();
     if (role!=Qt::EditRole || !index.isValid()) {
         return TodoProxyModelBase::setData(index, value, role);
     }

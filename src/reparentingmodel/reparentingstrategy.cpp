@@ -70,7 +70,7 @@ void ReparentingStrategy::reset()
 }
 
 
-TodoNode *ReparentingStrategy::createNode(Id id, IdList parents, QString name)
+QList<TodoNode*> ReparentingStrategy::createNode(Id id, IdList parents, QString name)
 {
     kDebug() << id << parents << name;
     return m_model->createNode(id, parents, name);
@@ -130,6 +130,14 @@ IdList TestReparentingStrategy::getParents(const QModelIndex &sourceChildIndex, 
         return IdList();
     }
 
+    if (sourceChildIndex.data(ParentListRole).canConvert<IdList>()) {
+        IdList list = sourceChildIndex.data(ParentListRole).value<IdList>();
+        foreach (Id toRemove, ignore) {
+            list.removeAll(toRemove);
+        }
+        return list;
+    }
+
     if (!sourceChildIndex.data(ParentRole).isValid()) {
         return IdList();
     }
@@ -155,12 +163,16 @@ TestParentStructureStrategy::TestParentStructureStrategy()
 void TestParentStructureStrategy::init()
 {
     ReparentingStrategy::init();
-    TodoNode *node = createNode(997, IdList(), "No Topic");
+    QList<TodoNode*> nodes = createNode(997, IdList(), "No Topic");
+    Q_ASSERT(nodes.size() == 1);
+    TodoNode *node = nodes.first();
     node->setData(i18n("No Topic"), 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 
-    TodoNode *node2 = createNode(998, IdList(), "Topics");
+    QList<TodoNode*> nodes2 = createNode(998, IdList(), "Topics");
+    Q_ASSERT(nodes2.size() == 1);
+    TodoNode *node2 = nodes2.first();
     node2->setData(i18n("Topics"), 0, Qt::DisplayRole);
     node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
     node2->setRowData(Zanshin::TopicRoot, Zanshin::ItemTypeRole);

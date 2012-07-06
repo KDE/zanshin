@@ -102,7 +102,7 @@ protected:
     /**
      * Creates a virtual node (no corresponding sourceIndex).
      */
-    virtual TodoNode *createNode(Id id, IdList pid, QString name);
+    virtual QList<TodoNode*> createNode(Id id, IdList pid, QString name);
     /**
      * Remove a node.
      */
@@ -145,7 +145,8 @@ public:
     enum Roles {
         First = Akonadi::EntityTreeModel::TerminalUserRole,
         IdRole,
-        ParentRole
+        ParentRole,
+        ParentListRole
     };
 
     explicit TestReparentingStrategy();

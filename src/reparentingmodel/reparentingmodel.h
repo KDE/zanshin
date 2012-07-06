@@ -69,9 +69,10 @@ private:
      * Moves/adds/removes from parents.
      */
 //     void itemParentsChanged(const QModelIndex &sourceIndex, const IdList &parents);
-    TodoNode *reparentNode(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
+    QList<TodoNode*> reparentNode(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
 
-    TodoNode *createNode(const Id &identifier, const IdList &parentIdentifier, const QString &name = QString(), const QModelIndex &index = QModelIndex());
+    QList<TodoNode*> insertNode(const Id &identifier, const QString &name, QList<TodoNode*> parentNodes, const QModelIndex &sourceIndex);
+    QList<TodoNode*> createNode(const Id &identifier, const IdList &parentIdentifier, const QString &name = QString(), const QModelIndex &index = QModelIndex());
     void removeNode(TodoNode *node, bool removeChildren = false, bool cleanupStrategy = true);
     void removeNodeById(Id);
     void renameNode(const Id& identifier, const QString& name);

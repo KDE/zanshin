@@ -69,13 +69,17 @@ void PimItemRelationStrategy::init()
         relation = "Topics";
         relationTranslated = i18n("Topics");
     }
-    
-    TodoNode *node = createNode(mInbox, IdList(), noRelation);
+
+    QList<TodoNode*> nodes = createNode(mInbox, IdList(), noRelation);
+    Q_ASSERT(nodes.size() == 1);
+    TodoNode *node = nodes.first();
     node->setData(noRelationTranslated, 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 
-    TodoNode *node2 = createNode(mRoot, IdList(), relation);
+    QList<TodoNode*> nodes2 = createNode(mRoot, IdList(), relation);
+    Q_ASSERT(nodes2.size() == 1);
+    TodoNode *node2 = nodes2.first();
     node2->setData(relationTranslated, 0, Qt::DisplayRole);
     node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
     node2->setRowData(Zanshin::CategoryRoot, Zanshin::ItemTypeRole);
