@@ -34,7 +34,8 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),
     mInbox(1),
     mRoot(2),
-    mRelations(new PimItemRelationsStructure(type))
+    mRelations(new PimItemRelationsStructure(type)),
+    mType(type)
 {
     if (type == PimItemRelation::Context) {
         CategoryManager::contextInstance().setCategoriesStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
@@ -52,13 +53,30 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 void PimItemRelationStrategy::init()
 {
     ReparentingStrategy::init();
-    TodoNode *node = createNode(mInbox, IdList(), "No Relation");
-    node->setData(i18n("No Relation"), 0, Qt::DisplayRole);
+
+    QString noRelation("No Relation");
+    QString noRelationTranslated(i18n("No Relation"));
+    QString relation("Relation");
+    QString relationTranslated(i18n("Relation"));
+    if (mType == PimItemRelation::Context) {
+        noRelation = "No Context";
+        noRelationTranslated = i18n("No Context");
+        relation = "Contexts";
+        relationTranslated = i18n("Contexts");
+    } else if (mType == PimItemRelation::Topic) {
+        noRelation = "No Topic";
+        noRelationTranslated = i18n("No Topic");
+        relation = "Topics";
+        relationTranslated = i18n("Topics");
+    }
+    
+    TodoNode *node = createNode(mInbox, IdList(), noRelation);
+    node->setData(noRelationTranslated, 0, Qt::DisplayRole);
     node->setData(KIcon("mail-folder-inbox"), 0, Qt::DecorationRole);
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 
-    TodoNode *node2 = createNode(mRoot, IdList(), "Relation");
-    node2->setData(i18n("Relation"), 0, Qt::DisplayRole);
+    TodoNode *node2 = createNode(mRoot, IdList(), relation);
+    node2->setData(relationTranslated, 0, Qt::DisplayRole);
     node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
     node2->setRowData(Zanshin::CategoryRoot, Zanshin::ItemTypeRole);
 }
