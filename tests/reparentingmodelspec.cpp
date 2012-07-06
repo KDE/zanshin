@@ -188,65 +188,61 @@ private slots:
 
             QTest::newRow( "unordered tree simple" ) << sourceStructure << outputStructure << ModelStructure() << ModelPath();
         }
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5
-//             << t4
-//             << t3;
-// 
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << __+t4
-//             << t5;
-// 
-//             QTest::newRow( "unordered tree complex" ) << sourceStructure << outputStructure << ModelStructure() << ModelPath();
-//         }
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5;
-// 
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << __+t4
-//             << t5;
-// 
-//             ModelStructure insertStructure;
-//             insertStructure
-//             << t3
-//             << t4;
-// 
-//             ModelPath sourceParentPath = p2;
-// 
-// 
-//             QTest::newRow( "insert parents" ) << sourceStructure << outputStructure << insertStructure << sourceParentPath;
-//         }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
 
-       //TODO implement multiparent handling
 
-                {
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
 
+            QTest::newRow( "unordered tree complex" ) << sourceStructure << outputStructure << ModelStructure() << ModelPath();
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5;
+
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+
+            ModelStructure insertStructure;
+            insertStructure
+            << t3
+            << t4;
+
+            ModelPath sourceParentPath = p2;
+
+
+            QTest::newRow( "insert parents" ) << sourceStructure << outputStructure << insertStructure << sourceParentPath;
+        }
+        {
             G p3(1, TestReparentingStrategy::IdRole, 1);
             G p4(2, TestReparentingStrategy::IdRole, 2);
             G t6(3, TestReparentingStrategy::IdRole, 3);

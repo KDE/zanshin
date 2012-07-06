@@ -73,7 +73,7 @@ private:
 
     QList<TodoNode*> insertNode(const Id &identifier, const QString &name, QList<TodoNode*> parentNodes, const QModelIndex &sourceIndex);
     QList<TodoNode*> createNode(const Id &identifier, const IdList &parentIdentifier, const QString &name = QString(), const QModelIndex &index = QModelIndex());
-    void removeNode(const QList<TodoNode*> &nodes, bool removeChildren = false, bool cleanupStrategy = true);
+    void removeNode(Id id, bool removeChildren = false, bool cleanupStrategy = true);
     void removeNodeById(Id);
     void renameNode(const Id& identifier, const QString& name);
     
