@@ -41,6 +41,10 @@ using namespace Zanshin::Test;
 Q_DECLARE_METATYPE(QModelIndex)
 Q_DECLARE_METATYPE(QList<int>)
 
+/*
+ * Test for the ProjectStrategy
+ * Assumes a working ReparentingModel so run ReparentingModelSpec first.
+ */
 class TodoTreeModelSpec : public QObject
 {
     Q_OBJECT

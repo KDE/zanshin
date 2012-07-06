@@ -39,6 +39,9 @@ using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
+/*
+ * TODO: Remove and replace by PimItemRelationStructure test + PimItemRelationStrategy test (using a mock structure)
+ */
 class TodoCategoriesModelSpec : public QObject
 {
     Q_OBJECT

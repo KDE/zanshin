@@ -35,6 +35,9 @@ using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
+/*
+ * Test for the TodoMetadataModel
+ */
 class TodoMetadataModelTest : public QObject
 {
     Q_OBJECT

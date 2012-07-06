@@ -116,6 +116,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCategor
     QList<QStandardItem*> row;
 
     QStandardItem *item = new QStandardItem(c.name);
+//     item->setData(QVariant::fromValue(QString(c.parentPath + c.name)), Zanshin::CategoryPathRole);
     addCategoryMetadata(item);
     row << item;
 
@@ -234,7 +235,6 @@ void Zanshin::Test::StandardModelBuilderBehavior::addTodoMetadata(QStandardItem 
     if (m_metadataCreationEnabled) {
         item->setData(todo.parentUid, Zanshin::ParentUidRole);
         item->setData(todo.uid, Zanshin::UidRole);
-        item->setData(todo.categories, Zanshin::CategoriesRole);
         if (todo.todoTag==ProjectTag || todo.todoTag==ReferencedTag) {
             item->setData(QVariant::fromValue((int)Zanshin::ProjectTodo), Zanshin::ItemTypeRole);
         } else {
