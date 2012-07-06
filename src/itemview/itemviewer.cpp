@@ -28,8 +28,6 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <KTextEdit>
-#include <KRichTextEdit>
 #include <KRichTextWidget>
 #include <KMime/KMimeMessage>
 #include <boost/shared_ptr.hpp>
