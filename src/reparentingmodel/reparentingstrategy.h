@@ -136,6 +136,9 @@ private:
 
 };
 
+/**
+ * Used to test reparenting without virtual nodes
+ */
 class TestReparentingStrategy : public ReparentingStrategy
 {
 public:
@@ -152,15 +155,9 @@ public:
 };
 
 
-// class InboxStrategy : public ReparentingStrategy
-// {
-// protected:
-//     InboxStrategy(const QString &inboxName, const QString &rootName);
-//     virtual void init();
-//     const Id mInbox;
-//     const Id mRoot;
-// };
-
+/**
+ * Used to test reparenting including virtual nodes
+ */
 class TestParentStructureStrategy : public ReparentingStrategy
 {
 public:

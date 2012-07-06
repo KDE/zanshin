@@ -39,6 +39,9 @@ using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
+/*
+ * Test for the reparenting capabilities of the ReparentingModel without virtual nodes.
+ */
 class ReparentingModelSpec : public QObject
 {
     Q_OBJECT

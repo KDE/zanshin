@@ -39,6 +39,9 @@ using namespace Zanshin::Test;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
+/*
+ * Test building parent structure with virtual nodes and insertion of (fake) akonadi items
+ */
 class ReparentingModelSpec : public QObject
 {
     Q_OBJECT

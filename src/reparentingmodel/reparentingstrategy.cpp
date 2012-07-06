@@ -182,26 +182,8 @@ Id TestParentStructureStrategy::getId(const QModelIndex &sourceChildIndex)
         kWarning() << "invalid index";
         return -1;
     }
+    // modelutils.h IdRole=102
     return sourceChildIndex.data(102).value<qint64>()+1000;
-
-//     Zanshin::ItemType type = static_cast<Zanshin::ItemType>(sourceChildIndex.data(Zanshin::ItemTypeRole).toInt());
-//     if (type == Zanshin::Inbox) {
-//         return 997;
-//     }
-//     if (type == Zanshin::TopicRoot) {
-//         return 998;
-//     }
-//     
-//     if (!sourceChildIndex.data(TopicRole).isValid()) {
-// //         Q_ASSERT(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().isValid());
-// //         return sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id()+1000;
-//         Q_ASSERT(sourceChildIndex.data(102).canConvert<qint64>());
-//         kDebug() << sourceChildIndex.data(102).value<qint64>();
-//         return sourceChildIndex.data(102).value<qint64>()+1000;
-//     }
-//     Q_ASSERT(sourceChildIndex.data(TopicRole).canConvert(QVariant::Int));
-//     kDebug() << sourceChildIndex.data(TopicRole).toInt();
-//     return sourceChildIndex.data(TopicRole).toInt();
 }
 
 IdList TestParentStructureStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList &ignore)
@@ -209,10 +191,6 @@ IdList TestParentStructureStrategy::getParents(const QModelIndex &sourceChildInd
     Q_ASSERT(sourceChildIndex.isValid());
 
     if (!sourceChildIndex.data(TopicParentRole).isValid()) {
-//         if (sourceChildIndex.data(TopicRole).isValid()) {
-//             kWarning() << "topic role";
-//             return IdList() << 998; //Topics
-//         }
         return IdList() << 997; //No Topics
     }
     const Id &parent = sourceChildIndex.data(TopicParentRole).value<Id>();
@@ -241,16 +219,6 @@ void TestParentStructureStrategy::removeParent(const Id& identifier)
 {
     removeNode(identifier);
 }
-
-// InboxStrategy::InboxStrategy(const QString& inboxName, const QString& rootName)
-// {
-// 
-// }
-// 
-// void InboxStrategy::init()
-// {
-//     ReparentingStrategy::init();
-// }
 
 
 
