@@ -126,23 +126,6 @@ protected:
     Id mIdCounter;
 };
 
-class CategoriesStructure: public PimItemRelations {
-public:
-    CategoriesStructure();
-    void addCategoryNode(const QString &categoryPath, const IdList &parents);
-    Id getCategoryId(const QString& categoryPath) const;
-    virtual void updateRelationTree(Akonadi::Item& item);
-    virtual QString getPath(Id id) const;
-protected:
-    //Build a relation tree from the category of an item
-    Relation getRelationTree(const Akonadi::Item &item);
-
-    virtual void rebuildCache();
-private:
-    QString getCategoryPath(Id id) const;
-    TreeNode createCategoryNode(const QString &categoryPath);
-    QMap<QString, Id> mCategoryMap;
-};
 
 class PimItemRelationsStructure: public PimItemRelations {
 public:

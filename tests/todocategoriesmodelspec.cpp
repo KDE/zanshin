@@ -30,7 +30,7 @@
 #include "testlib/modelbuilderbehavior.h"
 #include "testlib/helperutils.h"
 #include <reparentingmodel/reparentingmodel.h>
-#include <reparentingmodel/categoriesstrategy.h>
+#include <reparentingmodel/pimitemrelationstrategy.h>
 
 #include <QtGui/QTreeView>
 #include <QtCore/QEventLoop>
@@ -59,7 +59,7 @@ private slots:
     {
         //GIVEN
         QStandardItemModel baseModel;
-        ReparentingModel proxyModel(new CategoriesStrategy);
+        ReparentingModel proxyModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest mt(&proxyModel);
 
         //WHEN
@@ -161,7 +161,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -266,7 +266,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -366,7 +366,7 @@ private slots:
 
         //WHEN
         //create categoriesModel
-        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -479,7 +479,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
-        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -683,7 +683,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -795,7 +795,7 @@ private slots:
 //         metadataModel.setSourceModel(&source);
 // 
 //         //create categoriesModel
-//         ReparentingModel categoriesModel(new CategoriesStrategy);
+//         ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
 //         ModelTest t2(&categoriesModel);
 // 
 //         categoriesModel.setSourceModel(&metadataModel);
@@ -841,11 +841,10 @@ private slots:
 
         //Source model
         MockModel source;
-
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest t2(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -855,7 +854,7 @@ private slots:
 
         //THEN
         MockModel output;
-        ReparentingModel* categoriesModelOutput = new ReparentingModel(new CategoriesStrategy);
+        ReparentingModel* categoriesModelOutput = new ReparentingModel(new PimItemRelationStrategy(PimItemRelation::Context));
 
         categoriesModelOutput->setSourceModel(&output);
 
@@ -916,7 +915,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create categoriesModel
-        ReparentingModel categoriesModel(new CategoriesStrategy);
+        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
         ModelTest t1(&categoriesModel);
 
         categoriesModel.setSourceModel(&source);
@@ -934,6 +933,36 @@ private slots:
 
         QCOMPARE(categoriesModel, output);
     }
+
+//     void shouldReactToCategoryMove()
+//     {
+//         //GIVEN
+//         QFETCH(ModelStructure, sourceStructure);
+// 
+//         //Source model
+//         QStandardItemModel source;
+//         //Kick up category manager
+//         ModelUtils::create(&source, sourceStructure);
+// 
+//         //create categoriesModel
+//         ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
+//         ModelTest t1(&categoriesModel);
+// 
+//         categoriesModel.setSourceModel(&source);
+// 
+//         //WHEN
+//         QFETCH(QString, categoryToRemove);
+//         CategoryManager::instance().moveToCategory(0, categoryToRemove);
+// 
+//         //THEN
+//         QFETCH(ModelStructure, outputStructure);
+//         QStandardItemModel output;
+//         ModelUtils::create(&output, outputStructure);
+// 
+//         Helper::printModel(&categoriesModel);
+// 
+//         QCOMPARE(categoriesModel, output);
+//     }
     
 };
 
