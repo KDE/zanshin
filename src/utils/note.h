@@ -60,6 +60,7 @@ public:
 
     KDateTime getPrimaryDate();
     QString getIconName();
+    virtual KDateTime getLastModifiedDate();
 
     virtual bool hasValidPayload();
 
@@ -72,9 +73,7 @@ public:
     virtual void setRelations(const QList< PimItemRelation >& );
 
 protected:
-    /*QString m_text;
-    QString m_title;
-    KDateTime m_creationDate;*/
+    KDateTime m_lastModifiedDate;
 
     virtual ItemStatus getStatus() const;
 

@@ -74,6 +74,7 @@ void Note::commitData()
     messageWrapper.setText(m_text, m_textIsRich ? Qt::RichText : Qt::PlainText);
     messageWrapper.setCreationDate(m_creationDate);
     messageWrapper.setFrom(QCoreApplication::applicationName()+QCoreApplication::applicationVersion());
+    messageWrapper.setLastModifiedDate(KDateTime::currentUtcDateTime());
     m_item.setPayload(messageWrapper.message());
     
     Akonadi::EntityDisplayAttribute *eda = new Akonadi::EntityDisplayAttribute();
@@ -101,6 +102,7 @@ void Note::fetchData()
     m_title = messageWrapper.title();
     m_text = messageWrapper.text();
     m_creationDate = messageWrapper.creationDate();
+    m_lastModifiedDate = messageWrapper.lastModifiedDate();
 
     m_dataFetched = true;
 }
@@ -128,6 +130,13 @@ QString Note::getIconName()
     return Akonadi::NoteUtils::noteIconName();
 }
 
+KDateTime Note::getLastModifiedDate()
+{
+    if (m_lastModifiedDate.isValid()) {
+        return m_lastModifiedDate.toLocalZone();
+    }
+    return AbstractPimItem::getLastModifiedDate();
+}
 
 AbstractPimItem::ItemType Note::itemType()
 {
