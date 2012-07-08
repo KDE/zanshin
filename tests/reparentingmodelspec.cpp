@@ -263,46 +263,50 @@ private slots:
 
             QTest::newRow( "simple multiparent tree" ) << sourceStructure << outputStructure << ModelStructure() << ModelPath();
         }
-//         {
-// 
-//             G p3(1, TestReparentingStrategy::IdRole, 1);
-//             G p4(2, TestReparentingStrategy::IdRole, 2);
-//             G t6(3, TestReparentingStrategy::IdRole, 3);
-// //             t6.data.insert(TestReparentingStrategy::ParentListRole, QVariant::fromValue<IdList>(IdList() << 1 << 2));
-//             G t7(4, TestReparentingStrategy::IdRole, 4);
-//             t7.data.insert(TestReparentingStrategy::ParentRole, 3);
-//             G t8(5, TestReparentingStrategy::IdRole, 5);
-//             t8.data.insert(TestReparentingStrategy::ParentRole, 2);
-//             G t9(6, TestReparentingStrategy::IdRole, 6);
-//             t9.data.insert(TestReparentingStrategy::ParentRole, 5);
-//             G t10(7, TestReparentingStrategy::IdRole, 7);
-// //             t10.data.insert(TestReparentingStrategy::ParentListRole, QVariant::fromValue<IdList>(IdList() << -1 << 5));
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << p3
-//             << t6
-//             << t7
-//             << p4
-//             << t8
-//             << t9
-//             << t10;
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p3
-//             << _+t6
-//             << __+t7
-//             << p4
-//             << _+t6
-//             << __+t7
-//             << _+t8
-//             << __+t10
-//             << __+t9
-//             << t10;
-// 
-// 
-//             QTest::newRow( "multiparent tree" ) << sourceStructure << outputStructure << ModelStructure() << ModelPath();
-//         }
+        {
+        /*
+         * Not sure if this test covers anything which the previous tests didn't. It's just a more complex scenario.
+         * 
+         * TODO it's currently not possible to have an item both toplevel and somewhere in the tree because: toplevel == empty parentlist (-1 for toplevel ?)
+         */
+            G p3(1, TestReparentingStrategy::IdRole, 1);
+            G p4(2, TestReparentingStrategy::IdRole, 2);
+            G t6(3, TestReparentingStrategy::IdRole, 3);
+            t6.data.insert(TestReparentingStrategy::ParentListRole, QVariant::fromValue<IdList>(IdList() << 1 << 2));
+            G t7(4, TestReparentingStrategy::IdRole, 4);
+            t7.data.insert(TestReparentingStrategy::ParentRole, 3);
+            G t8(5, TestReparentingStrategy::IdRole, 5);
+            t8.data.insert(TestReparentingStrategy::ParentRole, 2);
+            G t9(6, TestReparentingStrategy::IdRole, 6);
+            t9.data.insert(TestReparentingStrategy::ParentRole, 5);
+            G t10(7, TestReparentingStrategy::IdRole, 7);
+            t10.data.insert(TestReparentingStrategy::ParentListRole, QVariant::fromValue<IdList>(IdList() << 5));
+            ModelStructure sourceStructure;
+            sourceStructure
+            << p3
+            << t6
+            << t7
+            << p4
+            << t8
+            << t9
+            << t10;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p3
+            << _+t6
+            << __+t7
+            << p4
+            << _+t6
+            << __+t7
+            << _+t8
+            << __+t9
+            << __+t10
+            /*<< t10*/;
+
+
+            QTest::newRow( "multiparent tree" ) << sourceStructure << outputStructure << ModelStructure() << ModelPath();
+        }
         
     }
 
@@ -345,367 +349,297 @@ private slots:
         QCOMPARE(model, output);
     }
 
-//     void handleMoves_data()
-//     {
-//         QTest::addColumn<ModelStructure>( "sourceStructure" );
-//         QTest::addColumn<ModelStructure>( "outputStructure" );
-//         QTest::addColumn<ModelPath>( "itemToChange" );
-//         QTest::addColumn<Id>( "parentId" );
-// 
-//         G p1(1, TestReparentingStrategy::IdRole, 1);
-//         G p2(2, TestReparentingStrategy::IdRole, 2);
-//         G t1(3, TestReparentingStrategy::IdRole, 3);
-//         t1.data.insert(TestReparentingStrategy::ParentRole, 1);
-//         G t2(4, TestReparentingStrategy::IdRole, 4);
-//         t2.data.insert(TestReparentingStrategy::ParentRole, 1);
-//         G t3(5, TestReparentingStrategy::IdRole, 5);
-//         t3.data.insert(TestReparentingStrategy::ParentRole, 2);
-//         G t4(6, TestReparentingStrategy::IdRole, 6);
-//         t4.data.insert(TestReparentingStrategy::ParentRole, 5);
-//         G t5(7, TestReparentingStrategy::IdRole, 7);
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5
-//             << t4
-//             << t3;
-// 
-//             /*
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << __+t4
-//             << t5;
-//             */
-// 
-//             ModelPath itemToChange = t3;
-//             Id parentId = 3;
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << __+t3
-//             << ___+t4
-//             << _+t2
-//             << p2
-//             << t5;
-// 
-// 
-//             QTest::newRow( "reparent subtree" ) << sourceStructure << outputStructure << itemToChange << parentId;
-//         }
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5
-//             << t4
-//             << t3;
-// 
-//             /*
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << __+t4
-//             << t5;
-//             */
-// 
-//             ModelPath itemToChange = t3;
-//             Id parentId = -1;
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << t5
-//             << t3
-//             << _+t4;
-// 
-// 
-//             QTest::newRow( "move toplevel" ) << sourceStructure << outputStructure << itemToChange << parentId;
-//         }
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5
-//             << t4
-//             << t3;
-// 
-//             /*
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << __+t4
-//             << t5;
-//             */
-// 
-//             ModelPath itemToChange = p2;
-//             Id parentId = 1;
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << _+p2
-//             << __+t3
-//             << ___+t4
-//             << t5;
-// 
-//             QTest::newRow( "reparent virtual node" ) << sourceStructure << outputStructure << itemToChange << parentId;
-//         }
-//     }
-// 
-//     void handleMoves()
-//     {
-//         //GIVEN
-//         QFETCH(ModelStructure, sourceStructure);
-// 
-//         //Source model
-//         QStandardItemModel source;
-//         
-//         TestReparentingStrategy *strategy = new TestReparentingStrategy();
-//         ReparentingModel model(strategy, this);
-//         model.setSourceModel(&source);
-// 
-//         //Items
-//         ModelUtils::create(&source, sourceStructure);
-// 
-//         ModelTest t1(&model); //The sourcemodel must be populated for the test to pass
-// 
-//         //Insert
-//         QFETCH(ModelPath, itemToChange);
-//         QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
-//         QFETCH(Id, parentId);
-//         source.setData(index, parentId, TestReparentingStrategy::ParentRole);
-// 
-//         //THEN
-//         QFETCH(ModelStructure, outputStructure);
-//         QStandardItemModel output;
-//         ModelUtils::create(&output, outputStructure);
-// 
-//         QCOMPARE(model, output);
-//     }
-// 
-// 
-//     void handleRemoves_data()
-//     {
-//         QTest::addColumn<ModelStructure>( "sourceStructure" );
-//         QTest::addColumn<ModelStructure>( "outputStructure" );
-//         QTest::addColumn<ModelPath>( "itemToRemove" );
-// 
-//         G p1(1, TestReparentingStrategy::IdRole, 1);
-//         G p2(2, TestReparentingStrategy::IdRole, 2);
-//         G t1(3, TestReparentingStrategy::IdRole, 3);
-//         t1.data.insert(TestReparentingStrategy::ParentRole, 1);
-//         G t2(4, TestReparentingStrategy::IdRole, 4);
-//         t2.data.insert(TestReparentingStrategy::ParentRole, 1);
-//         G t3(5, TestReparentingStrategy::IdRole, 5);
-//         t3.data.insert(TestReparentingStrategy::ParentRole, 2);
-//         G t4(6, TestReparentingStrategy::IdRole, 6);
-//         t4.data.insert(TestReparentingStrategy::ParentRole, 5);
-//         G t5(7, TestReparentingStrategy::IdRole, 7);
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5
-//             << t4
-//             << t3;
-// 
-//             /*
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << __+t4
-//             << t5;
-//             */
-// 
-//             ModelPath itemToRemove = t3;
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << t5
-//             << t4;
-// 
-//             QTest::newRow( "remove single" ) << sourceStructure << outputStructure << itemToRemove;
-//         }
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5
-//             << t4
-//             << t3;
-// 
-//             /*
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << __+t4
-//             << t5;
-//             */
-// 
-//             ModelPath itemToRemove = p2;
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << t5
-//             << t3
-//             << _+t4;
-// 
-//             QTest::newRow( "remove toplevel" ) << sourceStructure << outputStructure << itemToRemove;
-//         }
-//     }
-//     
-//     void handleRemoves()
-//     {
-//         //GIVEN
-//         QFETCH(ModelStructure, sourceStructure);
-// 
-//         //Source model
-//         QStandardItemModel source;
-// 
-//         TestReparentingStrategy *strategy = new TestReparentingStrategy();
-//         ReparentingModel model(strategy, this);
-//         model.setSourceModel(&source);
-// 
-//         //Items
-//         ModelUtils::create(&source, sourceStructure);
-// 
-//         ModelTest t1(&model); //The sourcemodel must be populated for the test to pass
-// 
-//         Helper::printModel(&model);
-//         
-//         //Insert
-//         QFETCH(ModelPath, itemToRemove);
-//         ModelUtils::destroy(&source, itemToRemove);
-// 
-//         Helper::printModel(&model);
-// 
-//         //THEN
-//         QFETCH(ModelStructure, outputStructure);
-//         QStandardItemModel output;
-//         ModelUtils::create(&output, outputStructure);
-// 
-//         QCOMPARE(model, output);
-//     }
+    void handleMoves_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+        QTest::addColumn<ModelPath>( "itemToChange" );
+        QTest::addColumn<Id>( "parentId" );
 
-//     void inboxTest_data()
-//     {
-//         QTest::addColumn<ModelStructure>( "sourceStructure" );
-//         QTest::addColumn<ModelStructure>( "outputStructure" );
-//         QTest::addColumn<ModelPath>( "itemToRemove" );
-// 
-//         G p1(1, TestReparentingStrategy::IdRole, 1);
-//         G p2(2, TestReparentingStrategy::IdRole, 2);
-//         G t1(3, TestReparentingStrategy::IdRole, 3);
-//         t1.data.insert(TestReparentingStrategy::ParentRole, 1);
-//         G t2(4, TestReparentingStrategy::IdRole, 4);
-//         t2.data.insert(TestReparentingStrategy::ParentRole, 1);
-//         G t3(5, TestReparentingStrategy::IdRole, 5);
-//         t3.data.insert(TestReparentingStrategy::ParentRole, 2);
-//         G t4(6, TestReparentingStrategy::IdRole, 6);
-//         t4.data.insert(TestReparentingStrategy::ParentRole, 5);
-//         G t5(7, TestReparentingStrategy::IdRole, 7);
-//         {
-//             ModelStructure sourceStructure;
-//             sourceStructure
-//             << t1
-//             << t2
-//             << p1
-//             << p2
-//             << t5
-//             << t4
-//             << t3;
-// 
-//             ModelStructure outputStructure;
-//             outputStructure
-//             << inbox
-//             << p1
-//             << _+t1
-//             << _+t2
-//             << p2
-//             << _+t3
-//             << _+t4
-//             << t5;
-// 
-//             QTest::newRow( "test inbox" ) << sourceStructure << outputStructure;
-//         }
-//     }
+        G p1(1, TestReparentingStrategy::IdRole, 1);
+        G p2(2, TestReparentingStrategy::IdRole, 2);
+        G t1(3, TestReparentingStrategy::IdRole, 3);
+        t1.data.insert(TestReparentingStrategy::ParentRole, 1);
+        G t2(4, TestReparentingStrategy::IdRole, 4);
+        t2.data.insert(TestReparentingStrategy::ParentRole, 1);
+        G t3(5, TestReparentingStrategy::IdRole, 5);
+        t3.data.insert(TestReparentingStrategy::ParentRole, 2);
+        G t4(6, TestReparentingStrategy::IdRole, 6);
+        t4.data.insert(TestReparentingStrategy::ParentRole, 5);
+        G t5(7, TestReparentingStrategy::IdRole, 7);
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
 
-//     void inboxTest()
-//     {
-//         //GIVEN
-//         QFETCH(ModelStructure, sourceStructure);
-// 
-//         //Source model
-//         QStandardItemModel source;
-// 
-//         TestReparentingStrategy *strategy = new TestReparentingStrategy();
-//         ReparentingModel model(strategy, this);
-//         model.setSourceModel(&source);
-// 
-//         //Items
-//         ModelUtils::create(&source, sourceStructure);
-// 
-//         ModelTest t1(&model); //The sourcemodel must be populated for the test to pass
-// 
-//         Helper::printModel(&model);
-// 
-//         //THEN
-//         QFETCH(ModelStructure, outputStructure);
-//         QStandardItemModel output;
-//         ModelUtils::create(&output, outputStructure);
-// 
-//         QCOMPARE(model, output);
-//     }
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+            */
+
+            ModelPath itemToChange = t3;
+            Id parentId = 3;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << __+t3
+            << ___+t4
+            << _+t2
+            << p2
+            << t5;
+
+
+            QTest::newRow( "reparent subtree" ) << sourceStructure << outputStructure << itemToChange << parentId;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+            */
+
+            ModelPath itemToChange = t3;
+            Id parentId = -1;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << t5
+            << t3
+            << _+t4;
+
+
+            QTest::newRow( "move toplevel" ) << sourceStructure << outputStructure << itemToChange << parentId;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+            */
+
+            ModelPath itemToChange = p2;
+            Id parentId = 1;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << _+p2
+            << __+t3
+            << ___+t4
+            << t5;
+
+            QTest::newRow( "reparent virtual node" ) << sourceStructure << outputStructure << itemToChange << parentId;
+        }
+    }
+
+    void handleMoves()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+
+        TestReparentingStrategy *strategy = new TestReparentingStrategy();
+        ReparentingModel model(strategy, this);
+        model.setSourceModel(&source);
+
+        //Items
+        ModelUtils::create(&source, sourceStructure);
+
+        ModelTest t1(&model); //The sourcemodel must be populated for the test to pass
+
+        //Insert
+        QFETCH(ModelPath, itemToChange);
+        QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
+        QFETCH(Id, parentId);
+        source.setData(index, parentId, TestReparentingStrategy::ParentRole);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(model, output);
+    }
+
+
+    void handleRemoves_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+        QTest::addColumn<ModelPath>( "itemToRemove" );
+
+        G p1(1, TestReparentingStrategy::IdRole, 1);
+        G p2(2, TestReparentingStrategy::IdRole, 2);
+        G t1(3, TestReparentingStrategy::IdRole, 3);
+        t1.data.insert(TestReparentingStrategy::ParentRole, 1);
+        G t2(4, TestReparentingStrategy::IdRole, 4);
+        t2.data.insert(TestReparentingStrategy::ParentRole, 1);
+        G t3(5, TestReparentingStrategy::IdRole, 5);
+        t3.data.insert(TestReparentingStrategy::ParentRole, 2);
+        G t4(6, TestReparentingStrategy::IdRole, 6);
+        t4.data.insert(TestReparentingStrategy::ParentRole, 5);
+        G t5(7, TestReparentingStrategy::IdRole, 7);
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+            */
+
+            ModelPath itemToRemove = t3;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << t5
+            << t4;
+
+            QTest::newRow( "remove single" ) << sourceStructure << outputStructure << itemToRemove;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5
+            << t4
+            << t3;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << _+t3
+            << __+t4
+            << t5;
+            */
+
+            ModelPath itemToRemove = p2;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << t5
+            << t3
+            << _+t4;
+
+            QTest::newRow( "remove toplevel" ) << sourceStructure << outputStructure << itemToRemove;
+        }
+    }
+
+    void handleRemoves()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+
+        TestReparentingStrategy *strategy = new TestReparentingStrategy();
+        ReparentingModel model(strategy, this);
+        model.setSourceModel(&source);
+
+        //Items
+        ModelUtils::create(&source, sourceStructure);
+
+        ModelTest t1(&model); //The sourcemodel must be populated for the test to pass
+
+        Helper::printModel(&model);
+
+        //Insert
+        QFETCH(ModelPath, itemToRemove);
+        ModelUtils::destroy(&source, itemToRemove);
+
+        Helper::printModel(&model);
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(model, output);
+    }
 
 };
 
