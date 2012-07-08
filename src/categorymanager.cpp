@@ -45,7 +45,7 @@ CategoryManager &CategoryManager::contextInstance()
 
 CategoryManager &CategoryManager::topicInstance()
 {
-    return *s_contextManager;
+    return *s_topicManager;
 }
 
 

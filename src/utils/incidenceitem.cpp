@@ -379,6 +379,7 @@ void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
     QMap<QByteArray, QString> map = i->customProperties();
     map.remove("X-pimitemrelation");
+    i->removeNonKDECustomProperty("X-pimitemrelation");
     foreach (const PimItemRelation &rel, relations) {
         if (rel.parentNodes.isEmpty()) {
             continue;
