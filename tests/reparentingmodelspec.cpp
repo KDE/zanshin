@@ -354,7 +354,7 @@ private slots:
         QTest::addColumn<ModelStructure>( "sourceStructure" );
         QTest::addColumn<ModelStructure>( "outputStructure" );
         QTest::addColumn<ModelPath>( "itemToChange" );
-        QTest::addColumn<Id>( "parentId" );
+        QTest::addColumn<IdList>( "parentId" );
 
         G p1(1, TestReparentingStrategy::IdRole, 1);
         G p2(2, TestReparentingStrategy::IdRole, 2);
@@ -391,7 +391,8 @@ private slots:
             */
 
             ModelPath itemToChange = t3;
-            Id parentId = 3;
+            IdList parentId;
+            parentId << t1.id;
 
             ModelStructure outputStructure;
             outputStructure
@@ -430,7 +431,7 @@ private slots:
             */
 
             ModelPath itemToChange = t3;
-            Id parentId = -1;
+            IdList parentId;
 
             ModelStructure outputStructure;
             outputStructure
@@ -469,7 +470,8 @@ private slots:
             */
 
             ModelPath itemToChange = p2;
-            Id parentId = 1;
+            IdList parentId;
+            parentId << p1.id;
 
             ModelStructure outputStructure;
             outputStructure
@@ -482,6 +484,42 @@ private slots:
             << t5;
 
             QTest::newRow( "reparent virtual node" ) << sourceStructure << outputStructure << itemToChange << parentId;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << t1
+            << t2
+            << p1
+            << p2
+            << t5;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+t1
+            << _+t2
+            << p2
+            << t5;
+            */
+
+            ModelPath itemToChange = p1;
+            IdList parentId;
+            parentId << p2.id << t5.id;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p2
+            << _+p1
+            << __+t1
+            << __+t2
+            << t5
+            << _+p1
+            << __+t1
+            << __+t2;
+
+            QTest::newRow( "reparent twice with multiple children" ) << sourceStructure << outputStructure << itemToChange << parentId;
         }
     }
 
@@ -505,8 +543,8 @@ private slots:
         //Insert
         QFETCH(ModelPath, itemToChange);
         QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
-        QFETCH(Id, parentId);
-        source.setData(index, parentId, TestReparentingStrategy::ParentRole);
+        QFETCH(IdList, parentId);
+        source.setData(index, QVariant::fromValue<IdList>(parentId), TestReparentingStrategy::ParentListRole);
 
         //THEN
         QFETCH(ModelStructure, outputStructure);
@@ -515,7 +553,6 @@ private slots:
 
         QCOMPARE(model, output);
     }
-
 
     void handleRemoves_data()
     {
@@ -640,7 +677,6 @@ private slots:
 
         QCOMPARE(model, output);
     }
-
 };
 
 QTEST_KDEMAIN(ReparentingModelSpec, GUI)

@@ -76,6 +76,8 @@ private:
     void removeNode(Id id, bool removeChildren = false, bool cleanupStrategy = true);
     void removeNodeById(Id);
     void renameNode(const Id& identifier, const QString& name);
+
+    QList<TodoNode*> cloneChildren(const QList<TodoNode*> &children);
     
     TodoNode *m_rootNode;
     QMap<Id, TodoNode*> m_parentMap;
