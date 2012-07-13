@@ -78,6 +78,8 @@ private:
     void renameNode(const Id& identifier, const QString& name);
 
     QList<TodoNode*> cloneChildren(const QList<TodoNode*> &children);
+    void removeChildren(const QList<TodoNode*> &children);
+    void removeNodeFromParents(TodoNode *node);
     
     TodoNode *m_rootNode;
     QMap<Id, TodoNode*> m_parentMap;

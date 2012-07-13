@@ -171,15 +171,17 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
         }
 
         beginRemoveRows(proxyParentIndex, row, row);
-        Q_ASSERT(m_parentMap.contains(id));
-        m_parentMap.remove(id);
-        if (cleanupStrategy) {
-            m_strategy->onNodeRemoval(id);
-        }
         m_manager->removeNode(root);
         delete root;
         endRemoveRows();
     }
+    Q_ASSERT(m_parentMap.contains(id));
+    if (cleanupStrategy) {
+        m_strategy->onNodeRemoval(id);
+    }
+    //This removes all in one go
+    m_parentMap.remove(id);
+
 }
 
 void ReparentingModel::removeNodeById(Id id) //TODO remove
@@ -191,6 +193,28 @@ void ReparentingModel::removeNodeById(Id id) //TODO remove
     removeNode(id, true);
 }
 
+void ReparentingModel::removeNodeFromParents(TodoNode *node)
+{
+    QMap<Id, TodoNode*>::iterator i = m_parentMap.begin();
+    while (i != m_parentMap.end()) {
+        if (i.value() == node) {
+            i = m_parentMap.erase(i);
+            return;
+        } else {
+            ++i;
+        }
+    }
+}
+
+void ReparentingModel::removeChildren(const QList<TodoNode*> &children)
+{
+    foreach(TodoNode *child, children) {
+        removeChildren(child->children());
+        m_manager->removeNode(child);
+        removeNodeFromParents(child); //TODO check if this is really required
+        delete child;
+    }
+}
 
 QList<TodoNode*> ReparentingModel::cloneChildren(const QList<TodoNode*> &children)
 {
@@ -223,75 +247,81 @@ QList<TodoNode*> ReparentingModel::cloneChildren(const QList<TodoNode*> &childre
 
 QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& parents, const QModelIndex &sourceIndex)
 {
+    Q_ASSERT(p >= 0); //Not sure if this assert is correct
     if (p < 0) {
         kWarning() << "invalid item";
         return QList<TodoNode*>();
     }
     kDebug() << p << parents << sourceIndex;
-    //TODO handle multiple parents
-    Q_ASSERT(m_parentMap.contains(p));
     QList<TodoNode*> oldNodes = m_parentMap.values(p);
     Q_ASSERT(!oldNodes.isEmpty());
-    Q_ASSERT(oldNodes.size() == 1); //temp (don't remove without unittest to make sure we cover the codepath)
 
-    //FIXME multiparent
-    kDebug() << "parentsIsempty " << parents.size() << parents;
-    bool onlyUpdating = false;
-    foreach (TodoNode *node, oldNodes) {
-        //We might want to reparent to the same parent to update sourceIndex
-        kDebug() << node->parent();
-        if (node->rowSourceIndex() == sourceIndex) {
-            //Reparent only if parent has changed
-            //            if ((!parents.isEmpty() && !node->parent()) /*|| (!parents.isEmpty() && m_parentMap.values(parents.first()).contains(node->parent()))*/) {
-            if ((parents.isEmpty() && !node->parent()) || (!parents.isEmpty() && m_parentMap.values(parents.first()).contains(node->parent()))) { //TODO check the exact purpose of those checks
-                kDebug() << "nothing changed";
-                oldNodes.removeAll(node);
-                onlyUpdating = true; //TODO if one is true probably all are true so return immediately
-            }
-        }
-    }
-    if (onlyUpdating) {
-        return QList<TodoNode*>();
-    }
+// Pure optimization
+// TODO if it helps performancewise (or because of signals), fix and re-enable, otherwise simply remove
+//     bool nothingHasChanged = false;
+//     foreach (TodoNode *node, oldNodes) {
+//         //We might want to reparent to the same parent to update sourceIndex
+//         kDebug() << node->parent();
+//         if (node->rowSourceIndex() == sourceIndex) {
+//             //Reparent only if parent has changed
+// //                FIXME Second check, which checks wheter the parents of the node has changed, is broken (doesn't work with multiparent)
+//             if ((parents.isEmpty() && !node->parent()) || (!parents.isEmpty() && m_parentMap.values(parents.first()).contains(node->parent()))) {
+//                 kDebug() << "nothing changed";
+//                 oldNodes.removeAll(node);
+//                 nothingHasChanged = true;
+//             } else {
+//                 nothingHasChanged = false;
+//             }
+//         }
+//     }
+//     if (nothingHasChanged) {
+//         return QList<TodoNode*>();
+//     }
 
-    //Store what we need to copy to the next item
-    Q_ASSERT(oldNodes.size() >= 1); //temporary
+    //Store what we need to create the new nodes
+    //could be obtained from the strategy instead
     const QString &name = oldNodes.first()->data(0, Qt::DisplayRole).toString();
-    //The sourceindex must be the same for all
-    QModelIndex index = sourceIndex;
+    QModelIndex index = sourceIndex; //The sourceindex must be the same for all (if it is the same id it always maps to one sourceIndex)
     if (!sourceIndex.isValid() && oldNodes.first()->rowSourceIndex().isValid()) {
         index = oldNodes.first()->rowSourceIndex();
     }
-    
-    QList<TodoNode*> children = oldNodes.first()->children();
+    //We have to store the child structure, to be able to rebuild it later on when the new nodes have been created
+    QList< QList< TodoNode* > > children;
+    foreach (TodoNode *oldNode, oldNodes) {
+        children.append(oldNode->children());
+    }
 
-    //remove node from any current parent, don't touch the subtree (it moves along) and don't remove the node from the strategy (it already has the updated parent information)
+    /*
+     * remove node from any current parent, don't touch the subtree (it moves along)
+     * and don't remove the node from the strategy (it already has the updated parent information)
+     */
     removeNode(p, false, false);
 
-    //TODO get rid of original chlidren
-
+    //Create new nodes (one per parent
     QList<TodoNode*> newNodes = createNode(p, parents, name, index);
 
-    int i = 0;
+    //Now assign or copy a set of the stored children to each created node
+    int count = 0;
     foreach (TodoNode *newNode, newNodes) {
-        kDebug() << newNode->data(0, Qt::DisplayRole) << i << newNode;
-        if (i == 0) {
-            foreach (TodoNode* child, children) {
-                kDebug() << "setting first parent" << child;
+        kDebug() << newNode->data(0, Qt::DisplayRole) << count << newNode;
+        if (count <= (children.size()-1)) {
+            foreach (TodoNode* child, children.at(count)) {
                 child->setParent(newNode);
             }
         } else {
-            const QList<TodoNode *> clones = cloneChildren(children);
+            const QList<TodoNode *> clones = cloneChildren(children.at(0)); //It doesn't matter which children we copy
             foreach (TodoNode* child, clones) {
-                kDebug() << "setting second parent " << child;
                 child->setParent(newNode);
                 m_manager->insertNode(child);
             }
         }
-        i++;
+        count++;
     }
-
-    //FIXME delete children if there are now less than before
+    //Dispose the unused children trees
+    for (int i = count; i < children.size(); i++) {
+//         kDebug() << "remove superfluous children " << i;
+        removeChildren(children.at(i));
+    }
 
     return newNodes;
 }
@@ -326,7 +356,7 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
         if (id > 0) {
             IdList parents = m_strategy->getParents(sourceChildIndex);
             replaceTemporaryNode = m_parentMap.contains(id);
-            kDebug() << "replacing existing node";
+            kDebug() << "replacing existing node " << replaceTemporaryNode << id;
             createNode(id, parents, QString(), sourceChildIndex);
         } else {
             kDebug() << "ingore node";
@@ -466,7 +496,7 @@ QMimeData *ReparentingModel::mimeData(const QModelIndexList &indexes) const
 
 bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    kDebug() << value << (role==Qt::EditRole) << index.isValid();
+//     kDebug() << value << (role==Qt::EditRole) << index.isValid();
     if (role!=Qt::EditRole || !index.isValid()) {
         return TodoProxyModelBase::setData(index, value, role);
     }

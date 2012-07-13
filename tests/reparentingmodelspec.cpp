@@ -367,6 +367,13 @@ private slots:
         G t4(6, TestReparentingStrategy::IdRole, 6);
         t4.data.insert(TestReparentingStrategy::ParentRole, 5);
         G t5(7, TestReparentingStrategy::IdRole, 7);
+
+        G p3(8, TestReparentingStrategy::IdRole, 8);
+        p3.data.insert(TestReparentingStrategy::ParentListRole, QVariant::fromValue<IdList>(IdList() << 1 << 2));
+        G t6(9, TestReparentingStrategy::IdRole, 9);
+        t6.data.insert(TestReparentingStrategy::ParentRole, 8);
+        G t7(10, TestReparentingStrategy::IdRole, 10);
+        t7.data.insert(TestReparentingStrategy::ParentRole, 8);
         {
             ModelStructure sourceStructure;
             sourceStructure
@@ -444,7 +451,7 @@ private slots:
             << _+t4;
 
 
-            QTest::newRow( "move toplevel" ) << sourceStructure << outputStructure << itemToChange << parentId;
+            QTest::newRow( "move to toplevel" ) << sourceStructure << outputStructure << itemToChange << parentId;
         }
         {
             ModelStructure sourceStructure;
@@ -520,6 +527,77 @@ private slots:
             << __+t2;
 
             QTest::newRow( "reparent twice with multiple children" ) << sourceStructure << outputStructure << itemToChange << parentId;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << p1
+            << p2
+            << p3
+            << t6
+            << t7;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+p3
+            << __+t6
+            << __+t7
+            << p2
+            << _+p3
+            << __+t6
+            << __+t7
+            */
+
+            ModelPath itemToChange = p3;
+            IdList parentId;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << p2
+            << p3
+            << _+t6
+            << _+t7;
+
+            QTest::newRow( "reparent from multi to single toplevel" ) << sourceStructure << outputStructure << itemToChange << parentId;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure
+            << p1
+            << p2
+            << p3
+            << t6
+            << t7;
+
+            /*
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << _+p3
+            << __+t6
+            << __+t7
+            << p2
+            << _+p3
+            << __+t6
+            << __+t7
+            */
+
+            ModelPath itemToChange = p3;
+            IdList parentId;
+            parentId << p2.id;
+
+            ModelStructure outputStructure;
+            outputStructure
+            << p1
+            << p2
+            << _+p3
+            << __+t6
+            << __+t7;
+
+            QTest::newRow( "reparent from multi to single" ) << sourceStructure << outputStructure << itemToChange << parentId;
         }
     }
 
