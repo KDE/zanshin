@@ -116,6 +116,7 @@ QList<TodoNode*> TodoNodeManager::nodesForSourceIndex(const QModelIndex &sourceI
 
 void TodoNodeManager::insertNode(TodoNode *node)
 {
+    Q_ASSERT(node);
     if (node->rowSourceIndex().isValid()) {
         Q_ASSERT( (!m_multiMapping && m_nodes.count(node->rowSourceIndex())==0) || m_multiMapping );
         m_nodes.insert(node->rowSourceIndex(), node);
@@ -128,6 +129,7 @@ void TodoNodeManager::insertNode(TodoNode *node)
 
 void TodoNodeManager::removeNode(TodoNode *node)
 {
+    Q_ASSERT(node);
     if (node->rowSourceIndex().isValid()) {
         m_nodes.remove(node->rowSourceIndex(), node);
     }
