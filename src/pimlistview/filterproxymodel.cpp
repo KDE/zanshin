@@ -77,7 +77,7 @@ bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &source
     }
     const Akonadi::Item item = index0.data( Akonadi::EntityTreeModel::ItemRole ).value<Akonadi::Item>();
     if (!item.isValid()) {
-        kWarning() << "not an item " << sourceRow;
+//         kWarning() << "not an item " << sourceRow;
         return true;
     }
 

@@ -53,7 +53,7 @@ PimItemRelations::PimItemRelations()
 
 void PimItemRelations::mergeNode(const TreeNode &node)
 {
-    kDebug() << node.id << node.name;
+//     kDebug() << node.id << node.name;
     bool created = false;
     if (!mNames.contains(node.id)) {
         created = true;
@@ -73,7 +73,7 @@ void PimItemRelations::mergeNode(const TreeNode &node)
         mergeNode(parentNode);
     }
     if (created) {
-        kDebug() << "created node " << node.id << mParents.values(node.id) << node.name;
+//         kDebug() << "created node " << node.id << mParents.values(node.id) << node.name;
         Q_ASSERT(!node.name.isEmpty());
         emit virtualNodeAdded(node.id, mParents.values(node.id), node.name);
     }
@@ -89,14 +89,14 @@ Id PimItemRelations::addItem(const Akonadi::Item &item)
         mParents.insert(id, node.id);
         mergeNode(node);
     }
-    kDebug() << item.id() << mParents.values(id);
+//     kDebug() << item.id() << mParents.values(id);
     Q_ASSERT(mItemIdCache.contains(item.id()));
     return id;
 }
 
 Id PimItemRelations::getItemId(const Akonadi::Item &item) const
 {
-    kDebug() << item.id();
+//     kDebug() << item.id();
     Q_ASSERT(mItemIdCache.contains(item.id()));
     return mItemIdCache.value(item.id());
 }
@@ -104,7 +104,7 @@ Id PimItemRelations::getItemId(const Akonadi::Item &item) const
 
 QString PimItemRelations::getName(Id id)
 {
-    kDebug() << id << mNames.value(id);
+//     kDebug() << id << mNames.value(id);
     Q_ASSERT(mNames.contains(id));
     return mNames.value(id);
 }
@@ -129,7 +129,7 @@ IdList PimItemRelations::getAffectedChildItems(Id id) const
 {
     QList<Akonadi::Item::Id> itemList;
     IdList itemsToUpdate = getChildNodes(id);
-    kDebug() << itemsToUpdate;
+//     kDebug() << itemsToUpdate;
     foreach (Id update, itemsToUpdate) {
         if (isVirtual(update)) {
             continue;
@@ -141,7 +141,7 @@ IdList PimItemRelations::getAffectedChildItems(Id id) const
 
 void PimItemRelations::moveNode(Id id, IdList parents)
 {
-    kDebug() << id << parents;
+//     kDebug() << id << parents;
     IdList itemList = getAffectedChildItems(id);
     if (!isVirtual(id)) {
         itemList << id;
@@ -158,9 +158,12 @@ void PimItemRelations::moveNode(Id id, IdList parents)
 
 void PimItemRelations::removeNodeRecursive(Id id)
 {
-    kDebug() << id;
+//     kDebug() << id;
     mParents.remove(id);
     mNames.remove(id);
+//     if (mItemIdCache.values().contains(id)) {
+//         mItemIdCache.remove(mItemIdCache.key(id));
+//     }
     Q_ASSERT(!mParents.contains(id));
     Q_ASSERT(!mNames.contains(id));
 
@@ -176,7 +179,7 @@ void PimItemRelations::removeNode(Id id)
         return;
     }
     const IdList &itemList = getAffectedChildItems(id);
-    kDebug() << id;
+//     kDebug() << id;
     removeNodeRecursive(id);
 
     rebuildCache();
@@ -207,6 +210,7 @@ Id PimItemRelations::getOrCreateItemId(const Akonadi::Item &item)
     }
     Id id = mIdCounter++;
     mItemIdCache[item.id()] = id;
+    kDebug() << item.id() << id;
     return id;
 }
 
@@ -251,10 +255,10 @@ Relation PimItemRelationsStructure::getRelationTree(const Akonadi::Item& item)
 {
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     Q_ASSERT (!pimitem.isNull());
-    kDebug() << pimitem->itemType();
+//     kDebug() << pimitem->itemType();
 
     foreach(const PimItemRelation &rel, pimitem->getRelations()) {
-        kDebug() << rel.type;
+//         kDebug() << rel.type;
         if (rel.type == mType) {
             return createRelation(rel, getOrCreateItemId(item)); //TODO merge multiple relations
         }
@@ -268,17 +272,18 @@ QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
     IdList parents = mParents.values(id);
     foreach (Id parent, parents) {
         list << PimItemTreeNode(mUidMapping.key(parent), mNames.value(parent), getParentTreeNodes(parent));
+        kDebug() << mNames.value(parent);
     }
     return list;
 }
 
 void PimItemRelationsStructure::updateRelationTree(Akonadi::Item &item)
 {
-    kDebug() << item.id();
+//     kDebug() << item.id();
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     Q_ASSERT(!pimitem.isNull());
     const Id id = mItemIdCache.value(item.id());
-    kDebug() << id;
+//     kDebug() << id;
     QList<PimItemRelation> relations = pimitem->getRelations();
     int i = 0;
     foreach(const PimItemRelation &rel, pimitem->getRelations()) {
@@ -304,15 +309,15 @@ QList<TreeNode> PimItemRelationsStructure::getParentList(Id id)
 
 void PimItemRelationsStructure::addNode(const QString& name, const IdList& parents)
 {
-    foreach (Id id, mNames.keys()) {
-        kDebug() << id << mNames.value(id);
-    }
+//     foreach (Id id, mNames.keys()) {
+//         kDebug() << id << mNames.value(id);
+//     }
     
     Q_ASSERT(!name.isEmpty());
     QList<TreeNode> parentNodes;
     foreach (Id parent, parents) {
-        kDebug() << parent;
-        parentNodes << TreeNode(getName(parent), parent, getParentList(parent)); //TODO parents
+//         kDebug() << parent;
+        parentNodes << TreeNode(getName(parent), parent, getParentList(parent));
         Q_ASSERT(!getName(parent).isEmpty());
     }
     mIdCounter++;

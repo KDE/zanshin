@@ -117,7 +117,7 @@ bool isIgnored(const QModelIndex &sourceChildIndex)
 
 Id PimItemRelationStrategy::getId(const QModelIndex &sourceChildIndex)
 {
-    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
+//     kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
     if (isIgnored(sourceChildIndex)) { //Filter all other items
         return -1;
     }
@@ -126,7 +126,7 @@ Id PimItemRelationStrategy::getId(const QModelIndex &sourceChildIndex)
 
 IdList PimItemRelationStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
 {
-    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
+//     kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
     if (isIgnored(sourceChildIndex)) {
         return IdList();
     }

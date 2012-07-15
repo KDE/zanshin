@@ -145,13 +145,12 @@ AbstractPimItem::ItemType Note::itemType()
 
 QList< PimItemRelation > Note::getRelations()
 {
-    kDebug() << "#|#|##|#";
     KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
     Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
     QList<QString> xml = messageWrapper.custom().values("x-related");
     QList< PimItemRelation > relations;
     foreach(const QString &x, xml) {
-        kDebug() << xml;
+//         kDebug() << xml;
         relations << relationFromXML(x.toLatin1());
     }
     return relations;

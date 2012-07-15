@@ -66,6 +66,8 @@ struct Relation
  *
  * This class is mainly useful for parent relations where every item transports a complete branch of a larger relation tree.
  * It doesn't add any value to simple relations such as todos relatedTo as there we have no need for merging and changes are only saved to a single item.
+ *
+ * TODO cleanup mItemIdCache after an item has been removed
  */
 class PimItemRelations: public QObject
 {
