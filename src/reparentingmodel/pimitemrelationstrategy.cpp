@@ -239,7 +239,7 @@ QStringList PimItemRelationStrategy::mimeTypes()
 
 Qt::DropActions PimItemRelationStrategy::supportedDropActions() const
 {
-    return Qt::MoveAction;
+    return /*Qt::MoveAction|*/Qt::LinkAction;
 }
 
 Qt::ItemFlags PimItemRelationStrategy::flags(const QModelIndex& index, Qt::ItemFlags flags)
@@ -253,35 +253,46 @@ Qt::ItemFlags PimItemRelationStrategy::flags(const QModelIndex& index, Qt::ItemF
 
 bool PimItemRelationStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::DropAction action)
 {
-    if (action != Qt::MoveAction || (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.relationid"))) {
-        kDebug() << "invalid drop " << action << KUrl::List::canDecode(mimeData);
+    if (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.relationid")) {
+        kWarning() << "invalid drop " << KUrl::List::canDecode(mimeData);
         return false;
     }
 
     Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
-    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) {
-        kDebug() << "not a category";
+    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) { //TODO Check if virtual instead (so it works also for topics)
+        kWarning() << "not a category";
         return false;
     }
+    if (action != Qt::MoveAction && action != Qt::LinkAction) {
+        kWarning() << "action not supported";
+        return false;
+    }
+    IdList sourceItems;
     if (KUrl::List::canDecode(mimeData)) {
         KUrl::List urls = KUrl::List::fromMimeData(mimeData);
-        kDebug() << urls;
+//         kDebug() << urls;
         foreach (const KUrl &url, urls) {
             const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
             if (!urlItem.isValid()) {
                 qWarning() << "invalid item";
                 continue;
             }
-            mRelations->moveNode(mRelations->getItemId(urlItem), IdList() << translateTo(id));
+            sourceItems << mRelations->getItemId(urlItem);
         }
     } else {
-        QStringList sourceItems = QString(mimeData->data("application/x-vnd.zanshin.relationid")).split(",");
-        foreach (const QString &source, sourceItems) {
-            Id s = source.toLongLong();
-            mRelations->moveNode(s, IdList() << translateTo(id));
+        const QStringList sItems = QString(mimeData->data("application/x-vnd.zanshin.relationid")).split(",");
+        foreach (const QString &source, sItems) {
+            sourceItems << source.toLongLong();
         }
         //TODO if multiple nodes of a hierarchy are dropped, all nodes are added as direct child (the hierarchy is destroyed).
         //TODO move only dragged node and not all (remove a single category and add the new one from the parent list)
+    }
+    foreach (const Id &s, sourceItems) {
+        if (action == Qt::MoveAction) {
+            mRelations->moveNode(s, IdList() << translateTo(id));
+        } else if (action == Qt::LinkAction) {
+            mRelations->moveNode(s, IdList() << translateTo(id) << mRelations->getParents(s));
+        }
     }
     return true;
 }

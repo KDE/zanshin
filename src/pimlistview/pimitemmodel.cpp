@@ -278,9 +278,4 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
     return true;
 }
 
-Qt::DropActions PimItemModel::supportedDropActions() const
-{
-    return Qt::MoveAction;
-}
-
 #include "pimitemmodel.moc"

@@ -65,8 +65,6 @@ public:
 
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
-    virtual Qt::DropActions supportedDropActions() const;
-
 private:
     QStringList m_itemHeaders;
 };

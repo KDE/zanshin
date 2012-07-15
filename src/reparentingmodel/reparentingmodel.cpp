@@ -446,7 +446,7 @@ Qt::DropActions ReparentingModel::supportedDropActions() const
     if (!sourceModel()) {
         return actions|Qt::IgnoreAction;
     }
-    return actions|sourceModel()->supportedDropActions();
+    return actions/*|sourceModel()->supportedDropActions()*/;
 }
 
 //TODO move to todoproxymodelbase
