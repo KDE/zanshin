@@ -257,27 +257,38 @@ QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& paren
     QList<TodoNode*> oldNodes = m_parentMap.values(p);
     Q_ASSERT(!oldNodes.isEmpty());
 
-// Pure optimization
-// TODO if it helps performancewise (or because of signals), fix and re-enable, otherwise simply remove
-//     bool nothingHasChanged = false;
-//     foreach (TodoNode *node, oldNodes) {
-//         //We might want to reparent to the same parent to update sourceIndex
-//         kDebug() << node->parent();
-//         if (node->rowSourceIndex() == sourceIndex) {
-//             //Reparent only if parent has changed
-// //                FIXME Second check, which checks wheter the parents of the node has changed, is broken (doesn't work with multiparent)
-//             if ((parents.isEmpty() && !node->parent()) || (!parents.isEmpty() && m_parentMap.values(parents.first()).contains(node->parent()))) {
-//                 kDebug() << "nothing changed";
-//                 oldNodes.removeAll(node);
-//                 nothingHasChanged = true;
-//             } else {
-//                 nothingHasChanged = false;
-//             }
-//         }
-//     }
-//     if (nothingHasChanged) {
-//         return QList<TodoNode*>();
-//     }
+    //First check if we need to update anything
+    //We need this check because i.e. onSourceDataChanged simply calls this function, which would result in a complete removal of the node and readding
+    QSet<Id> oldParents;
+    bool updateSourceIndex = false;
+    foreach (TodoNode *node, oldNodes) {
+        if (!m_parentMap.values().contains(node->parent())) {
+            continue;
+        }
+        Id id = m_parentMap.key(node->parent());
+        if (!oldParents.contains(id)) {
+            oldParents << id;
+        }
+        if (node->rowSourceIndex() != sourceIndex) {
+            updateSourceIndex = true;
+        }
+    }
+
+    bool parentsChanged = false;
+    foreach (Id id, parents) {
+        if(!oldParents.remove(id)) {
+            parentsChanged = true;
+        }
+    }
+    if (!oldParents.isEmpty()) {
+        parentsChanged = true;
+    }
+    if (!parentsChanged && !updateSourceIndex) {
+        return QList<TodoNode*>();
+    }
+
+    //TODO when updating the sourceIndex, we should avoid emitting signals
+
 
     //Store what we need to create the new nodes
     //could be obtained from the strategy instead
@@ -369,13 +380,11 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
             onSourceInsertRows(sourceChildIndex, 0, sourceModel()->rowCount(sourceChildIndex)-1);
         }
     }
-
-//     Q_ASSERT(!m_parentMap.values().contains(0));
 }
 
 void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QModelIndex& end)
 {
-    kDebug() << begin << end;
+//     kDebug() << begin << end;
     for (int row = begin.row(); row <= end.row(); row++) {
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         Id id = m_strategy->getId(index);
