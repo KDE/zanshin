@@ -25,6 +25,7 @@
 #include <todohelpers.h>
 #include <pimitem.h>
 #include <incidenceitem.h>
+#include <pimitemmodel.h>
 #include <KLocalizedString>
 #include <KIcon>
 #include <QMimeData>
@@ -68,7 +69,7 @@ Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
     const QString &uid = sourceChildIndex.data(Zanshin::UidRole).toString();
 //     Q_ASSERT(!uid.isEmpty());
     if (uid.isEmpty()) {
-        kWarning() << "no uid for item";
+        kWarning() << "no uid for item" << type;
         return -1;
     }
     if (!mUidMapping.contains(uid)) {
@@ -82,7 +83,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     Id id = getId(sourceChildIndex);
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
 //     kDebug() << id << type;
-    if (type==Zanshin::Collection) {
+    if (type==Zanshin::Collection || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
         const QModelIndex &parent = sourceChildIndex.parent();
         if (parent.isValid()) {
             return IdList() << getId(parent);
@@ -91,14 +92,21 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     }
     const QString &parentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
 //     kDebug() << parentUid;
-    if (type==Zanshin::ProjectTodo && parentUid.isEmpty()) {
-//         kDebug() << "get source parent";
-        const QModelIndex &parent = sourceChildIndex.parent();
-        if (parent.isValid()) {
-            return IdList() << getId(parent);
+    if (parentUid.isEmpty()) {
+        if (type==Zanshin::ProjectTodo) {
+    //         kDebug() << "get source parent";
+            const QModelIndex &parent = sourceChildIndex.parent();
+            if (parent.isValid()) {
+                return IdList() << getId(parent);
+            }
+            return IdList();
+        } else if (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
+            const QModelIndex &parent = sourceChildIndex.parent();
+            if (parent.isValid()) {
+                return IdList() << getId(parent);
+            }
+            return IdList();
         }
-        return IdList();
-    } else if (parentUid.isEmpty()) {
         return IdList() << mInbox;
     }
     if (!mUidMapping.contains(parentUid)) {

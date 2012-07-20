@@ -75,6 +75,7 @@ void Note::commitData()
     messageWrapper.setCreationDate(m_creationDate);
     messageWrapper.setFrom(QCoreApplication::applicationName()+QCoreApplication::applicationVersion());
     messageWrapper.setLastModifiedDate(KDateTime::currentUtcDateTime());
+    messageWrapper.setUid(m_uid);
     m_item.setPayload(messageWrapper.message());
     
     Akonadi::EntityDisplayAttribute *eda = new Akonadi::EntityDisplayAttribute();
@@ -103,7 +104,7 @@ void Note::fetchData()
     m_text = messageWrapper.text();
     m_creationDate = messageWrapper.creationDate();
     m_lastModifiedDate = messageWrapper.lastModifiedDate();
-
+    m_uid = messageWrapper.uid();
     m_dataFetched = true;
 }
 
