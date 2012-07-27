@@ -381,7 +381,6 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
         m_todoColsModel->setSourceModel(descendantProxyModel);
         m_defaultCollectionId = Configuration::instance().defaultTodoCollection().id();
     }
-    kDebug() << AbstractPimItem::mimeType(AbstractPimItem::Note);
     if (m_defaultCollectionId > 0) {
         if (!selectDefaultCollection(m_todoColsModel, QModelIndex(),
                                     0, m_todoColsModel->rowCount()-1, m_defaultCollectionId)) {

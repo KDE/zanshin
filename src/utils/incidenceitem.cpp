@@ -34,6 +34,7 @@
 template<class T>
 T unwrap(const Akonadi::Item &item)
 {
+    Q_ASSERT(item.hasPayload<T>());
     return item.hasPayload<T>() ? item.payload<T>() : T();
 }
 

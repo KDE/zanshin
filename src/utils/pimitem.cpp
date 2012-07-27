@@ -40,7 +40,7 @@ namespace PimItemUtils {
         }
         AbstractPimItem::ItemType itemType = AbstractPimItem::itemType(item);
         if (itemType & AbstractPimItem::Note) {
-            return  new Note(item, parent);
+            return new Note(item, parent);
         } else if (itemType & AbstractPimItem::Incidence) {
             return new IncidenceItem(item, parent);
         }

@@ -91,6 +91,7 @@ ModelStructure &ModelStructure::operator<<(const ModelNode &node)
     } else /*if (node.indent()<=m_latestIndent-1)*/ {
         quint64 tmpIndent = m_latestIndent;
         ModelStructureTreeNode *parent = m_latestNode->parent();
+        Q_ASSERT_X(parent, "","Check indentation of the supplied model (did you forget a level?)");
         while (tmpIndent>node.indent()) {
             tmpIndent--;
             parent = parent->parent();
