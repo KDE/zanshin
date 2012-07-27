@@ -462,7 +462,6 @@ Akonadi::EntityTreeView* ActionListEditorPage::treeView() const
 void ActionListEditorPage::saveColumnsState(KConfigGroup &config, const QString &key) const
 {
     config.writeEntry(key+"/Normal", m_normalStateCache.toBase64());
-    config.writeEntry(key+"/NoCollection", m_noCollectionStateCache.toBase64());
 }
 
 void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const QString &key)
@@ -473,15 +472,11 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
         m_normalStateCache = QByteArray::fromBase64(_z_defaultColumnStateCache);
     }
 
-    if (config.hasKey(key+"/NoCollection")) {
-        m_noCollectionStateCache = QByteArray::fromBase64(config.readEntry(key+"/NoCollection", QByteArray()));
-    }
+    m_treeView->header()->restoreState(m_normalStateCache);
 
-    if (!m_treeView->isColumnHidden(PimItemModel::Collection)) {
-        m_treeView->header()->restoreState(m_normalStateCache);
-    } else {
-        m_treeView->header()->restoreState(m_noCollectionStateCache);
-    }
+    m_treeView->setColumnHidden(PimItemModel::Date, false);
+    m_treeView->setColumnHidden(PimItemModel::Collection, true);
+    m_treeView->setColumnHidden(PimItemModel::Status, true);
 }
 
 
@@ -604,24 +599,9 @@ Zanshin::ApplicationMode ActionListEditorPage::mode()
     return m_mode;
 }
 
-void ActionListEditorPage::setCollectionColumnHidden(bool hidden)
-{
-    QByteArray state = hidden ? m_noCollectionStateCache : m_normalStateCache;
-
-    if (!state.isEmpty()) {
-        m_treeView->header()->restoreState(state);
-    } else {
-        m_treeView->setColumnHidden(PimItemModel::Collection, hidden);
-    }
-}
-
 void ActionListEditorPage::onColumnsGeometryChanged()
 {
-    if (!m_treeView->isColumnHidden(PimItemModel::Collection)) {
-        m_normalStateCache = m_treeView->header()->saveState();
-    } else {
-        m_noCollectionStateCache = m_treeView->header()->saveState();
-    }
+    m_normalStateCache = m_treeView->header()->saveState();
 }
 
 void ActionListEditorPage::setDefaultCollection(const Akonadi::Collection &collection)

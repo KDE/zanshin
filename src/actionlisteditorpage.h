@@ -64,8 +64,6 @@ public:
 
     Zanshin::ApplicationMode mode();
 
-    void setCollectionColumnHidden(bool hidden);
-
     bool selectSiblingIndex(const QModelIndex &index);
     void selectFirstIndex();
     
@@ -103,7 +101,6 @@ private:
     QComboBox *m_comboBox;
     
     QByteArray m_normalStateCache;
-    QByteArray m_noCollectionStateCache;
 
     Akonadi::Collection m_defaultCollection;
     Akonadi::Collection m_defaultNoteCollection;
