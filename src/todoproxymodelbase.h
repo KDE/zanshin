@@ -72,15 +72,13 @@ protected slots:
     virtual void onModelReset();
 
 protected:
-    virtual void init();
-    virtual TodoNode *createInbox() const = 0;
+    virtual void init() = 0;
     virtual void resetInternalData();
 
     TodoNode *addChildNode(const QModelIndex &sourceIndex, TodoNode *parent);
 
     friend class TodoNodeManager;
     TodoNodeManager *m_manager;
-    TodoNode *m_inboxNode;
 
 private:
     MappingType m_mappingType;

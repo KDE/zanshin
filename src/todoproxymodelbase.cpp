@@ -36,23 +36,13 @@
 TodoProxyModelBase::TodoProxyModelBase(MappingType type, QObject *parent)
     : QAbstractProxyModel(parent),
       m_manager(new TodoNodeManager(this, (type==MultiMapping ? true : false))),
-      m_inboxNode(0), m_mappingType(type)
+      m_mappingType(type)
 {
 }
 
 TodoProxyModelBase::~TodoProxyModelBase()
 {
     delete m_manager;
-}
-
-void TodoProxyModelBase::init()
-{
-    if (!m_inboxNode) {
-        beginInsertRows(QModelIndex(), 0, 0);
-        m_inboxNode = createInbox();
-        m_manager->insertNode(m_inboxNode);
-        endInsertRows();
-    }
 }
 
 QModelIndex TodoProxyModelBase::index(int row, int column, const QModelIndex &parent) const
@@ -297,6 +287,4 @@ void TodoProxyModelBase::resetInternalData()
         m_manager->removeNode(node);
         delete node;
     }
-
-    m_inboxNode = 0;
 }
