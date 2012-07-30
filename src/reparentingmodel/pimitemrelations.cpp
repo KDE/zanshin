@@ -210,7 +210,7 @@ Id PimItemRelations::getOrCreateItemId(const Akonadi::Item &item)
     }
     Id id = mIdCounter++;
     mItemIdCache[item.id()] = id;
-    kDebug() << item.id() << id;
+//    kDebug() << item.id() << id;
     return id;
 }
 
