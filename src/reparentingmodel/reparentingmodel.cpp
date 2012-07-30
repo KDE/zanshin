@@ -389,7 +389,12 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
         const QModelIndex &index = sourceModel()->index(row, 0, begin.parent());
         Id id = m_strategy->getId(index);
         if (id < 0) {
-            removeNode(id, true); //remove if the sourceindex was in this model but is now hidden
+            //TODO write a test for the case that an item becomes hidden after being already in the model
+            QList<TodoNode *>nodes = m_manager->nodesForSourceIndex(index);
+            if (!nodes.isEmpty()) {
+                Id oldId = m_parentMap.key(nodes.first());
+                removeNode(oldId, true); //remove if the sourceindex was in this model but is now hidden
+            }
             continue;
         }
         const IdList &parents = m_strategy->getParents(index);
