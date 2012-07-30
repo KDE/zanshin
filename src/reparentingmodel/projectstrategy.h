@@ -33,7 +33,7 @@ public:
     virtual void reset();
 
     virtual Qt::ItemFlags flags(const QModelIndex& index, Qt::ItemFlags flags);
-    
+    virtual Qt::DropActions supportedDropActions() const;
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
 
 private:

@@ -152,6 +152,11 @@ Qt::ItemFlags ProjectStrategy::flags(const QModelIndex& index, Qt::ItemFlags exi
     return flags;
 }
 
+Qt::DropActions ProjectStrategy::supportedDropActions() const
+{
+    return Qt::MoveAction/*|Qt::LinkAction*/;
+}
+
 bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropAction action)
 {
     if (action != Qt::MoveAction || !KUrl::List::canDecode(mimeData)) {
