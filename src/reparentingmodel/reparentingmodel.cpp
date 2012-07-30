@@ -484,7 +484,8 @@ bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction ac
     if (m_strategy->onDropMimeData(m_parentMap.key(target), mimeData, action)) {
         return true;
     }
-    return TodoProxyModelBase::dropMimeData(mimeData, action, row, column, parent);
+    //Calling the QAbstractItemModel implementation results in a crash, maybe add an implementation to todoproxymodelbase?
+    return false;
 }
 
 //TODO move to todoproxymodelbase
