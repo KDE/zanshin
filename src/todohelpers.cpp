@@ -241,11 +241,6 @@ bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &par
 {
     Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
-    if (!todo) {
-        return false;
-    }
 
     if ((itemType == Zanshin::StandardTodo && parentType == Zanshin::StandardTodo)
      || (itemType == Zanshin::ProjectTodo && parentType == Zanshin::StandardTodo)
@@ -262,12 +257,12 @@ bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &pa
     if (!(parentCollection.rights() & Akonadi::Collection::CanCreateItem)) {
         return false;
     }
-
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
-    if (!todo) {
+    if (!item.hasPayload<KCalCore::Todo::Ptr>()) {
         return false;
     }
+
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+    Q_ASSERT(todo);
 
     if ((!parentUid.isEmpty() && todo->relatedTo()==parentUid)
      || parentType == Zanshin::StandardTodo) {
@@ -323,11 +318,11 @@ bool TodoHelpers::promoteTodo(const QModelIndex &index)
     }
 
     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-
-    if (!todo) {
+    if (!item.hasPayload<KCalCore::Todo::Ptr>()) {
         return false;
     }
+    KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+    Q_ASSERT(todo);
 
     todo->addComment("X-Zanshin-Project");
     new Akonadi::ItemModifyJob(item);
