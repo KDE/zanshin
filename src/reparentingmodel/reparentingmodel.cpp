@@ -458,7 +458,6 @@ Qt::DropActions ReparentingModel::supportedDropActions() const
     return actions/*|sourceModel()->supportedDropActions()*/;
 }
 
-//TODO move to todoproxymodelbase
 QStringList ReparentingModel::mimeTypes() const
 {
     QStringList list = m_strategy->mimeTypes();
@@ -472,7 +471,7 @@ QStringList ReparentingModel::mimeTypes() const
 
 bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
-    kDebug() << row << column << parent;
+//    kDebug() << row << column << parent;
     TodoNode *target;
     if (row < 0 || column < 0) {
         target = m_manager->nodeForIndex(parent);
@@ -488,7 +487,6 @@ bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction ac
     return false;
 }
 
-//TODO move to todoproxymodelbase
 QMimeData *ReparentingModel::mimeData(const QModelIndexList &indexes) const
 {
     QModelIndexList sourceIndexes;
