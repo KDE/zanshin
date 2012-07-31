@@ -262,15 +262,15 @@ QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& paren
     QSet<Id> oldParents;
     bool updateSourceIndex = false;
     foreach (TodoNode *node, oldNodes) {
-        if (!m_parentMap.values().contains(node->parent())) {
-            continue;
-        }
-        Id id = m_parentMap.key(node->parent());
-        if (!oldParents.contains(id)) {
-            oldParents << id;
-        }
         if (node->rowSourceIndex() != sourceIndex) {
+            kDebug() << "updating the sourceindex";
             updateSourceIndex = true;
+        }
+        if (m_parentMap.values().contains(node->parent())) {
+            Id id = m_parentMap.key(node->parent());
+            if (!oldParents.contains(id)) {
+                oldParents << id;
+            }
         }
     }
 
@@ -284,10 +284,11 @@ QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& paren
         parentsChanged = true;
     }
     if (!parentsChanged && !updateSourceIndex) {
+//        kDebug() << "nothing to do";
         return QList<TodoNode*>();
     }
 
-    //TODO when updating the sourceIndex, we should avoid emitting signals
+    //TODO when updating the sourceIndex, we should avoid emitting signals (respectively only emit changed signals for the updated name)
 
 
     //Store what we need to create the new nodes
