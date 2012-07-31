@@ -144,15 +144,6 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
     foreach (TodoNode *root, rootNodes) {
 //        kDebug() << "removeNode " << id;
 
-        QModelIndex proxyParentIndex = m_manager->indexForNode(root->parent(), 0);
-        int row = 0;
-        if (root->parent()) {
-            row = root->parent()->children().indexOf(root);
-        } else {
-            row = m_manager->roots().indexOf(root);
-        }
-        beginRemoveRows(proxyParentIndex, row, row);
-        
         if (removeChildren) {
             foreach(TodoNode *childNode, root->children()) {
                 Q_ASSERT(m_parentMap.values().contains(childNode));
@@ -171,10 +162,19 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
             }
         }
 
+        QModelIndex proxyParentIndex = m_manager->indexForNode(root->parent(), 0);
+        int row = 0;
+
+        if (root->parent()) {
+            row = root->parent()->children().indexOf(root);
+        } else {
+            row = m_manager->roots().indexOf(root);
+        }
+
+        beginRemoveRows(proxyParentIndex, row, row);
         m_manager->removeNode(root);
         delete root;
         endRemoveRows();
-//         kDebug() << "endremoveNode " << id;
     }
     Q_ASSERT(m_parentMap.contains(id));
     if (cleanupStrategy) {
