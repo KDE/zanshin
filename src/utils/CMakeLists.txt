@@ -10,6 +10,8 @@ set(utils_SRCS
     guiclient.cpp
     datestringbuilder.cpp
     pimitem.cpp
+    kdateedit.cpp
+    kdatepickerpopup.cpp
  )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}) #to find ontology classes

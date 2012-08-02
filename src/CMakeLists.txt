@@ -45,8 +45,6 @@ set(zanshin_gui_SRCS
    actionlisteditor.cpp
    actionlisteditorpage.cpp
    configdialog.cpp
-   kdateedit.cpp
-   kdatepickerpopup.cpp
    maincomponent.cpp
    quickselectdialog.cpp
    sidebar.cpp

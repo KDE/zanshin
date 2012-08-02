@@ -32,7 +32,9 @@
 class KSqueezedTextLabel;
 class QCheckBox;
 class QToolButton;
-class KDateTimeWidget;
+namespace KPIM {
+class KDateEdit;
+}
 class QHBoxLayout;
 class QLineEdit;
 
@@ -84,7 +86,7 @@ public slots:
     virtual void buttonPressed();
     void display();
 protected:
-    KDateTimeWidget *m_dateTimeWidget;
+    KPIM::KDateEdit *m_dateTimeWidget;
 };
 
 /**

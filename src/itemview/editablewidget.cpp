@@ -24,9 +24,9 @@
 
 #include "editablewidget.h"
 
+#include <kdateedit.h>
 #include <datestringbuilder.h>
 #include <QHBoxLayout>
-#include <KDateTimeWidget>
 #include <QLabel>
 #include <QToolButton>
 #include <QCheckBox>
@@ -107,8 +107,8 @@ void AbstractEditableWidget::buttonPressed()
 
 
 EditableDate::EditableDate(QWidget* parent)
-:   AbstractEditableWidget(new KDateTimeWidget(), parent),
-    m_dateTimeWidget(static_cast<KDateTimeWidget*>(m_contentWidget))
+:   AbstractEditableWidget(new KPIM::KDateEdit(), parent),
+    m_dateTimeWidget(static_cast<KPIM::KDateEdit*>(m_contentWidget))
 
 {
     m_dateTimeWidget->setParent(this);
@@ -117,32 +117,32 @@ EditableDate::EditableDate(QWidget* parent)
 void EditableDate::clear()
 {
     AbstractEditableWidget::clear();
-    m_dateTimeWidget->setDateTime(QDateTime::currentDateTime());
+    m_dateTimeWidget->setDate(QDate::currentDate());
 }
 
 void EditableDate::display()
 {
-    m_label->setText(DateStringBuilder::getFullDate(KDateTime(m_dateTimeWidget->dateTime())));
+    m_label->setText(DateStringBuilder::getFullDate(KDateTime(m_dateTimeWidget->date())));
     AbstractEditableWidget::display();
 }
 
 void EditableDate::buttonPressed()
 {
     if (m_editMode) {
-        emit dateChanged(KDateTime(m_dateTimeWidget->dateTime()));
+        emit dateChanged(KDateTime(m_dateTimeWidget->date()));
     }
     AbstractEditableWidget::buttonPressed();
 }
 
 KDateTime EditableDate::dateTime()
 {
-    return KDateTime( m_dateTimeWidget->dateTime());
+    return KDateTime( m_dateTimeWidget->date());
 }
 
 void EditableDate::setDate(const KDateTime& date)
 {
     m_label->setText(DateStringBuilder::getFullDate(date));
-    m_dateTimeWidget->setDateTime(date.dateTime());
+    m_dateTimeWidget->setDate(date.date());
 }
 
 
@@ -195,7 +195,7 @@ void CheckableEditableDate::checkStatusChanged(bool status)
 void CheckableEditableDate::buttonPressed()
 {
     if (m_editMode) {
-        emit dateChanged(KDateTime(m_dateTimeWidget->dateTime()), true);
+        emit dateChanged(KDateTime(m_dateTimeWidget->date()), true);
     }
     EditableDate::buttonPressed();
 }
