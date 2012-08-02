@@ -591,14 +591,12 @@ QString relationToXML(const PimItemRelation &rel)
     QDomDocument document = createXMLDocument();
     QDomElement element = document.createElement( "relations" );
     element.setAttribute( "version", "1.0" );
-//     foreach (const PimItemRelation &r, relations) {
-        QDomElement e = document.createElement( "relation" );
-        addNodes(rel.parentNodes, e);
-        addElement(e, "type", typeToString(rel.type));
-        element.appendChild(e);
-//     }
+    QDomElement e = document.createElement( "relation" );
+    addNodes(rel.parentNodes, e);
+    addElement(e, "type", typeToString(rel.type));
+    element.appendChild(e);
     document.appendChild(element);
-    kDebug() << document.toString();
+//    kDebug() << document.toString();
     return document.toString();
 }
 

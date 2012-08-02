@@ -20,7 +20,7 @@ ZANSHIN_UNIT_TESTS(
   modelstacktest
   selectionproxymodeltest
   sidebarmodelspec
-  todocategoriesmodelspec
+#  todocategoriesmodelspec
   todometadatamodelspec
   todotreemodelspec
   parentstructuremodelspec
