@@ -6,7 +6,6 @@ set(utils_SRCS
     abstractpimitem.cpp
     incidenceitem.cpp
     note.cpp
-    tagmanager.cpp
     queries.cpp
     guiclient.cpp
     datestringbuilder.cpp

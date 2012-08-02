@@ -35,7 +35,6 @@
 
 #include <KInputDialog>
 
-#include "tagmanager.h"
 #include "itemcontext.h"
 #include "pimitem.h"
 

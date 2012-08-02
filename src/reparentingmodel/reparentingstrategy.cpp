@@ -23,7 +23,6 @@
 #include "reparentingmodel.h"
 #include "todonode.h"
 #include <pimitem.h>
-#include <tagmanager.h>
 #include <klocalizedstring.h>
 #include <KIcon>
 

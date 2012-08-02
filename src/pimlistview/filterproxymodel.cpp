@@ -30,7 +30,6 @@
 #include <QItemSelectionModel>
 
 #include "pimitemmodel.h"
-#include "tagmanager.h"
 #include "pimitem.h"
 
 #include <KDebug>
