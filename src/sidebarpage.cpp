@@ -35,7 +35,6 @@
 #include "globaldefs.h"
 #include "todohelpers.h"
 #include "todotreeview.h"
-#include <tagmanager.h>
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
                          const QList<QAction*> &contextActions,
@@ -122,9 +121,9 @@ void SideBarPage::addNewItem()
     } else if (type==Zanshin::Category) {
         CategoryManager::contextInstance().addCategory(summary, IdList() << parentItem.data(Zanshin::RelationIdRole).toLongLong());
     } else if (type==Zanshin::TopicRoot) {
-        NepomukUtils::createTopic(summary);
+        CategoryManager::topicInstance().addCategory(summary);
     } else if (type==Zanshin::Topic) {
-        NepomukUtils::createTopic(summary, parentItem.data(Zanshin::UriRole).toUrl());
+        CategoryManager::topicInstance().addCategory(summary, IdList() << parentItem.data(Zanshin::RelationIdRole).toLongLong());
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
@@ -144,8 +143,9 @@ void SideBarPage::removeCurrentItem()
             m_treeView->setCurrentIndex(current.parent());
         }
     } else if (type==Zanshin::Topic) {
-        NepomukUtils::deleteTopic(current.data(Zanshin::UriRole).toUrl());
-        m_treeView->setCurrentIndex(current.parent());
+        if (CategoryManager::topicInstance().removeCategories(this, IdList() << current.data(Zanshin::RelationIdRole).toLongLong())) {
+            m_treeView->setCurrentIndex(current.parent());
+        }
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }

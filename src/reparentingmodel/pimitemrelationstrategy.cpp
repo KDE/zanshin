@@ -57,16 +57,19 @@ void PimItemRelationStrategy::init()
     QString noRelationTranslated(i18n("No Relation"));
     QString relation("Relation");
     QString relationTranslated(i18n("Relation"));
+    int rootType;
     if (mType == PimItemRelation::Context) {
         noRelation = "No Context";
         noRelationTranslated = i18n("No Context");
         relation = "Contexts";
         relationTranslated = i18n("Contexts");
+        rootType = Zanshin::CategoryRoot;
     } else if (mType == PimItemRelation::Topic) {
         noRelation = "No Topic";
         noRelationTranslated = i18n("No Topic");
         relation = "Topics";
         relationTranslated = i18n("Topics");
+        rootType = Zanshin::TopicRoot;
     }
 
     QList<TodoNode*> nodes = createNode(mInbox, IdList(), noRelation);
@@ -81,7 +84,7 @@ void PimItemRelationStrategy::init()
     TodoNode *node2 = nodes2.first();
     node2->setData(relationTranslated, 0, Qt::DisplayRole);
     node2->setData(KIcon("document-multiple"), 0, Qt::DecorationRole);
-    node2->setRowData(Zanshin::CategoryRoot, Zanshin::ItemTypeRole);
+    node2->setRowData(rootType, Zanshin::ItemTypeRole);
 }
 
 static Id translateFrom(Id id)
@@ -195,7 +198,11 @@ void PimItemRelationStrategy::setNodeData(TodoNode* node, Id id)
     node->setData(categoryName, 0, Qt::DisplayRole);
     node->setData(categoryName, 0, Qt::EditRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
-    node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole); //TODO relation role
+    if (mType == PimItemRelation::Context) {
+        node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole); //TODO relation role
+    } else if(mType == PimItemRelation::Topic) {
+        node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
+    }
 }
 
 bool PimItemRelationStrategy::reparentOnParentRemoval(Id child) const
@@ -258,7 +265,9 @@ bool PimItemRelationStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Q
     }
 
     Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
-    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) { //TODO Check if virtual instead (so it works also for topics)
+    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot &&
+        parentType!=Zanshin::Topic && parentType!=Zanshin::TopicRoot
+    ) { //TODO Check if virtual instead (so it works also for topics)
         kWarning() << "not a category";
         return false;
     }
