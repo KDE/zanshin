@@ -149,8 +149,6 @@ public:
         }
     }
 
-private:
-    GroupSortingProxyModel *m_sorting;
 };
 
 

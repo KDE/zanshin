@@ -48,6 +48,7 @@ struct PimItemTreeNode {
 struct PimItemRelation
 {
   enum Type {
+    Invalid,
     Project,
     Context,
     Topic

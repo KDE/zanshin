@@ -41,6 +41,7 @@ PimItemRelation::PimItemRelation(PimItemRelation::Type t, const QList< PimItemTr
 }
 
 PimItemRelation::PimItemRelation()
+:   type(Invalid)
 {
 
 }
