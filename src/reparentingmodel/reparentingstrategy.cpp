@@ -108,6 +108,14 @@ QVariant ReparentingStrategy::getData(Id id, int role)
 }
 
 
+void ReparentingStrategy::setData(Id id, const QVariant& value, int role)
+{
+    TodoNode *node = m_model->m_parentMap.value(id);
+    Q_ASSERT(node);
+    node->setData(value, 0, role);
+}
+
+
 
 TestReparentingStrategy::TestReparentingStrategy()
 : ReparentingStrategy()

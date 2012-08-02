@@ -226,7 +226,12 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
 bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if ((role!=Qt::EditRole && role!=Qt::CheckStateRole)) {
-        return false;
+        //The ETM makes some checks which don't work with the multiparenting proxies
+        if (role == EntityTreeModel::ItemRole && value.canConvert<Akonadi::Item>()) {
+            new Akonadi::ItemModifyJob(value.value<Akonadi::Item>());
+            return true;
+        }
+        return EntityTreeModel::setData(index, value, role);
     }
 
     // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the

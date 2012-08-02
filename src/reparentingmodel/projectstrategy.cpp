@@ -178,7 +178,9 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
 
     foreach (const KUrl &url, urls) {
         const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
+        //TODO make sure we never get here during testing (although we normally shouldn't anyways
         if (urlItem.isValid()) {
+            //TODO replace by getData/setData?
             Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(urlItem);
             job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
             job->fetchScope().fetchFullPayload();

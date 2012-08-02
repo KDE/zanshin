@@ -28,7 +28,6 @@
 
 #include "reparentingmodel.h"
 #include <categorymanager.h>
-#include <Akonadi/ItemModifyJob>
 
 PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),
@@ -180,12 +179,13 @@ void PimItemRelationStrategy::doUpdateItems(const IdList &itemsToUpdate)
         }
         Q_ASSERT(item.isValid());
         mRelations->updateRelationTree(item);
-        new Akonadi::ItemModifyJob(item, this);
+        //TODO Transaction style updating for all items, but while making sure it's never being executed during testing
+        setData(id, QVariant::fromValue<Akonadi::Item>(item), Akonadi::EntityTreeModel::ItemRole);
     }
 }
 
 
-void PimItemRelationStrategy::setData(TodoNode* node, Id id)
+void PimItemRelationStrategy::setNodeData(TodoNode* node, Id id)
 {
     kDebug() << id;
     if (id == mInbox || id == mRoot) {

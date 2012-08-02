@@ -88,7 +88,7 @@ public:
      *
      * Called during the creation of a virtual node.
      */
-    virtual void setData(TodoNode* node, Id id) {};
+    virtual void setNodeData(TodoNode* node, Id id) {};
     virtual QVariant data(Id index, int role) const { return QVariant(); };
 
     virtual QMimeData *mimeData(const QModelIndexList &proxyIndexes) const{return 0;};
@@ -119,6 +119,7 @@ protected:
      * Get the data of a node (same as index.data)
      */
     QVariant getData(Id id, int role);
+    void setData(Id id, const QVariant &value, int role);
     
     Id getNextId();
     /**

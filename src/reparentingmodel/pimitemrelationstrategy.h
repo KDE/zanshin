@@ -31,7 +31,7 @@ public:
     virtual IdList getParents(const QModelIndex&, const IdList &ignore = IdList());
     virtual void reset();
 
-    virtual void setData(TodoNode* node, Id id);
+    virtual void setNodeData(TodoNode* node, Id id);
     virtual void onNodeRemoval(const Id& changed);
 
     virtual QVariant data(Id index, int role) const;

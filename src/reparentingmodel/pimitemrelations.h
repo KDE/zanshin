@@ -68,6 +68,7 @@ struct Relation
  * It doesn't add any value to simple relations such as todos relatedTo as there we have no need for merging and changes are only saved to a single item.
  *
  * TODO cleanup mItemIdCache after an item has been removed
+ * TODO Remove Akonadi::Item from this class and instead work only with Relations and an id (where the id can be the akonadi item id or also something else)
  */
 class PimItemRelations: public QObject
 {

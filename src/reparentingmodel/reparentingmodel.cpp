@@ -62,7 +62,7 @@ QList<TodoNode*> ReparentingModel::insertNode(const Id &identifier, const QStrin
             node = new TodoNode(parentNode);
             node->setData(name, 0, Qt::DisplayRole);
             node->setData(name, 0, Qt::EditRole);
-            m_strategy->setData(node, identifier);
+            m_strategy->setNodeData(node, identifier);
         }
 
         Q_ASSERT(node);
@@ -85,7 +85,7 @@ QList<TodoNode*> ReparentingModel::insertNode(const Id &identifier, const QStrin
             node = new TodoNode(parentNode);
             node->setData(name, 0, Qt::DisplayRole);
             node->setData(name, 0, Qt::EditRole);
-            m_strategy->setData(node, identifier);
+            m_strategy->setNodeData(node, identifier);
         }
 
         Q_ASSERT(node);
@@ -230,7 +230,7 @@ QList<TodoNode*> ReparentingModel::cloneChildren(const QList<TodoNode*> &childre
             newNode = new TodoNode();
             newNode->setData(node->data(0, Qt::DisplayRole), 0, Qt::DisplayRole);
             newNode->setData(node->data(0, Qt::EditRole), 0, Qt::EditRole);
-            m_strategy->setData(newNode, id);
+            m_strategy->setNodeData(newNode, id);
         }
 //         newNode->setData(newNode->data()); //TODO copy all data we need
 
