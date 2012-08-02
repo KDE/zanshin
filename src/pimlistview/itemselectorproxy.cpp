@@ -23,6 +23,7 @@
 
 
 #include "itemselectorproxy.h"
+#include "todoproxymodelbase.h"
 
 #include <Akonadi/EntityTreeModel>
 #include <QModelIndex>
@@ -74,7 +75,7 @@ bool ItemSelectorProxy::selectNewIndex()
         kWarning() << "no selection model set";
         return false;
     }
-    QModelIndexList idx = Akonadi::EntityTreeModel::modelIndexesForItem(m_sourceModel, m_itemToSelect);
+    QModelIndexList idx = TodoProxyModelBase::modelIndexesForItem(m_sourceModel, m_itemToSelect);
     if (!idx.isEmpty()) {
         selectIndex(idx.first());
         disconnect(m_sourceModel, 0, this, 0);

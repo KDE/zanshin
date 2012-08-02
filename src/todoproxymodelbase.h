@@ -26,6 +26,7 @@
 #define ZANSHIN_TODOPROXYMODELBASE_H
 
 #include <QtGui/QAbstractProxyModel>
+#include <akonadi/item.h>
 
 class TodoNode;
 class TodoNodeManager;
@@ -60,6 +61,8 @@ public:
     virtual QModelIndex buddy(const QModelIndex &index) const;
 
     virtual void setSourceModel(QAbstractItemModel *model);
+
+    static QModelIndexList modelIndexesForItem( const QAbstractItemModel *model, const Akonadi::Item &item );
 
 private slots:
     virtual void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end) = 0;

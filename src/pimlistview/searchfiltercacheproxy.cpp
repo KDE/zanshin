@@ -24,8 +24,6 @@
 
 #include "searchfiltercacheproxy.h"
 
-#include <Akonadi/EntityTreeModel>
-
 #include <Nepomuk/Query/Query>
 #include <Nepomuk/Types/Class>
 #include <Nepomuk/Query/ResourceTypeTerm>
@@ -48,6 +46,7 @@
 #include <Nepomuk/Query/Result>
 
 #include "queries.h"
+#include <todoproxymodelbase.h>
 #include <nepomuk/resourcewatcher.h>
 #include <Soprano/Vocabulary/NAO>
 
@@ -88,13 +87,13 @@ void SearchFilterCache::itemChanged(const Nepomuk::Resource &resource, const Nep
     }
     Q_ASSERT(item.isValid());
     kDebug() << item.id();
-    const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(this, item);
+    const QModelIndexList &indexes = TodoProxyModelBase::modelIndexesForItem(this, item);
     if (indexes.isEmpty()) {
         kDebug() << "item not found" << item.url();
-        return;
     }
-    Q_ASSERT(indexes.size() == 1); //assumption that every item is only once shown in the list
-    emit dataChanged(indexes.first(), indexes.first());
+    foreach (const QModelIndex &idx, indexes) {
+        emit dataChanged(idx, idx);
+    }
 }
 
 bool SearchFilterCache::isFulltextMatch(const Akonadi::Item &item ) const
@@ -196,14 +195,15 @@ void SearchFilterCache::newFulltextMatches(QList< Nepomuk::Query::Result > resul
         Akonadi::Item item(id);
         Q_ASSERT(item.isValid());
 //         kDebug() << item.id();
-        const QModelIndexList &indexes = Akonadi::EntityTreeModel::modelIndexesForItem(this, item);
+        const QModelIndexList &indexes = TodoProxyModelBase::modelIndexesForItem(this, item);
         if (indexes.isEmpty()) { //can happen if the item is in a non monitored collection
 //             kDebug() << "could not find item";
             continue;
         }
         m_fulltextHits << item;
-        Q_ASSERT(indexes.size() == 1); //assumption that every item is only once shown in the list
-        emit dataChanged(indexes.first(), indexes.first());
+        foreach (const QModelIndex &idx, indexes) {
+            emit dataChanged(idx, idx);
+        }
     }
 }
 

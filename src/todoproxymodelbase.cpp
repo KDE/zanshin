@@ -29,6 +29,7 @@
 #include <KDE/KDebug>
 #include <KDE/KIcon>
 #include <KDE/KLocale>
+#include <Akonadi/EntityTreeModel>
 
 #include "todonode.h"
 #include "todonodemanager.h"
@@ -287,4 +288,55 @@ void TodoProxyModelBase::resetInternalData()
         m_manager->removeNode(node);
         delete node;
     }
+}
+
+
+static QPair<QList<const QAbstractProxyModel*>, const TodoProxyModelBase*> proxies(const QAbstractItemModel *model)
+{
+    QList<const QAbstractProxyModel *> proxyChain;
+    const QAbstractProxyModel *proxy = qobject_cast<const QAbstractProxyModel *>( model );
+    const QAbstractItemModel *_model = model;
+    const TodoProxyModelBase *base = 0;
+    while ( proxy )
+    {
+        proxyChain.prepend( proxy );
+        _model = proxy->sourceModel();
+        base = qobject_cast<const TodoProxyModelBase *>( _model );
+        if (base) {
+            break;
+        }
+        proxy = qobject_cast<const QAbstractProxyModel *>( _model );
+    }
+    Q_ASSERT(base);
+    return qMakePair(proxyChain, base);
+}
+
+static QModelIndex proxiedIndex( const QModelIndex &idx, QList<const QAbstractProxyModel *> proxyChain )
+{
+  QListIterator<const QAbstractProxyModel *> it( proxyChain );
+  QModelIndex _idx = idx;
+  while ( it.hasNext() )
+    _idx = it.next()->mapFromSource( _idx );
+  return _idx;
+}
+
+// We need this beacause the ETM version doesn't work with multiparenting models. modelIndexesForItem uses mapFromSource to traverse the model stack, and since mapFromSource only returns one item, we might end up with the wrong one at some point. In this specific case the selection model above the todoproxymodelbase filtered the other instance, resulting in the item not being found.
+// We can't fix this for as long as we use mapFromSource (it would have to return a list of model indexes), therefore the function has been reimplemented here and must be called whenever a TodoProxyModelBase is in the stack.
+// Note that this implementation would currently break with several TodoProxyModelBases in a modelstack. 
+// Maybe activate through a datachanged signal or alike, such a singla would be properly multiplied and arrive at all indexes?
+QModelIndexList TodoProxyModelBase::modelIndexesForItem(const QAbstractItemModel* model, const Akonadi::Item& item)
+{
+    QPair<QList<const QAbstractProxyModel*>, const TodoProxyModelBase*> pair = proxies(model);
+    const QModelIndexList sourceIndexes = Akonadi::EntityTreeModel::modelIndexesForItem(pair.second->sourceModel(), item);
+    QModelIndexList indexes;
+    foreach (const QModelIndex &idx, sourceIndexes) {
+        indexes << pair.second->mapFromSourceAll(idx);
+    }
+    QModelIndexList proxyList;
+    foreach( const QModelIndex &idx, indexes ) {
+        const QModelIndex pIdx = proxiedIndex( idx, pair.first );
+        if ( pIdx.isValid() )
+            proxyList << pIdx;
+    }
+    return proxyList;
 }
