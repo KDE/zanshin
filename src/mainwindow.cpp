@@ -80,8 +80,10 @@ void MainWindow::setupEditor()
 {
     QDockWidget *dock = new QDockWidget(this);
     dock->setObjectName("Editor");
-    dock->setFeatures(dock->features() & ~QDockWidget::DockWidgetClosable);
     dock->setWidget(m_component->itemViewer());
+    QAction *action = actionCollection()->addAction("toggle_editor_visibility", dock->toggleViewAction());
+    action->setText( i18n( "&Editor" ) );
+    action->setShortcut( QKeySequence( Qt::Key_F8) );
     addDockWidget(Qt::RightDockWidgetArea, dock);
 }
 
