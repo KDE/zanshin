@@ -24,8 +24,8 @@
 #include "itemmonitor.h"
 #include <queries.h>
 #include <QTimer>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Query/Result>
 #include <soprano/nao.h>
 
 ItemMonitor::ItemMonitor(const Akonadi::Item& item, QObject* parent): QObject(parent), mItem (item)
@@ -35,36 +35,36 @@ ItemMonitor::ItemMonitor(const Akonadi::Item& item, QObject* parent): QObject(pa
 
 void ItemMonitor::init()
 {
-    Nepomuk::Query::QueryServiceClient *client = new Nepomuk::Query::QueryServiceClient(this);
-    connect(client, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), SLOT(gotThing(QList<Nepomuk::Query::Result>)));
+    Nepomuk2::Query::QueryServiceClient *client = new Nepomuk2::Query::QueryServiceClient(this);
+    connect(client, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), SLOT(gotThing(QList<Nepomuk2::Query::Result>)));
     if (!client->sparqlQuery(MindMirrorQueries::itemThingQuery(mItem))) {
         kWarning() << "failed to start query";
     }
 }
 
 
-void ItemMonitor::gotThing(const QList< Nepomuk::Query::Result > &result)
+void ItemMonitor::gotThing(const QList< Nepomuk2::Query::Result > &result)
 {
-    Nepomuk::Query::QueryServiceClient *client = qobject_cast<Nepomuk::Query::QueryServiceClient*>(sender());
+    Nepomuk2::Query::QueryServiceClient *client = qobject_cast<Nepomuk2::Query::QueryServiceClient*>(sender());
     Q_ASSERT(client);
     client->close();
     emit gotThing(result.first().resource());
     
-    Nepomuk::Query::QueryServiceClient *topicsClient = new Nepomuk::Query::QueryServiceClient(this);
-    connect(topicsClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), SLOT(newTopics(QList<Nepomuk::Query::Result>)));
+    Nepomuk2::Query::QueryServiceClient *topicsClient = new Nepomuk2::Query::QueryServiceClient(this);
+    connect(topicsClient, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), SLOT(newTopics(QList<Nepomuk2::Query::Result>)));
     connect(topicsClient, SIGNAL(entriesRemoved(QList<QUrl>)), SLOT(topicsRemoved(QList<QUrl>)));
     
-    Nepomuk::Query::RequestPropertyMap encodedRps;
+    Nepomuk2::Query::RequestPropertyMap encodedRps;
     encodedRps.insert( QString::fromLatin1( "reqProp1" ), Soprano::Vocabulary::NAO::prefLabel() );
     if (!topicsClient->sparqlQuery(MindMirrorQueries::itemTopicsQuery(mItem), encodedRps)) {
         kWarning() << "failed to start query: " << topicsClient->errorMessage();
     }
 }
 
-void ItemMonitor::newTopics(const QList< Nepomuk::Query::Result > &results)
+void ItemMonitor::newTopics(const QList< Nepomuk2::Query::Result > &results)
 {
-    foreach (const Nepomuk::Query::Result &result, results) {
-        const Nepomuk::Resource &res = result.resource();
+    foreach (const Nepomuk2::Query::Result &result, results) {
+        const Nepomuk2::Resource &res = result.resource();
         const Soprano::Node &property = result.requestProperty(Soprano::Vocabulary::NAO::prefLabel());
 //         kDebug() << "result added: " << property.isValid() << property.isLiteral() << property.literal().isString() << property.literal().type() << result.requestProperties().size();
         mTopics.insert(res.resourceUri(), property.literal().toString());

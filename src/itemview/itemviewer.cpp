@@ -60,7 +60,7 @@
 
 #include "toolbox.h"
 #include "itemmonitor.h"
-#include "ui_tags.h"
+// #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
 #include <incidenceitem.h>
@@ -247,7 +247,7 @@ void ItemViewer::clearView()
     }
 }
 
-void ItemViewer::setItem(const Nepomuk::Resource &res)
+void ItemViewer::setItem(const Nepomuk2::Resource &res)
 {
     Akonadi::Item item = PimItemUtils::getItemFromResource(res);    
     if (!item.isValid()) {
@@ -440,3 +440,4 @@ void ItemViewer::itemRemoved()
     clearView();
     setEnabled(false);
 }
+

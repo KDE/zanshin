@@ -27,8 +27,8 @@
 #include <QtCore/QObject>
 #include <QStringList>
 #include <akonadi/item.h>
-#include <Nepomuk/Resource>
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Query/Result>
 
 
 class ItemMonitor : public QObject
@@ -39,11 +39,11 @@ public:
     
 signals:
     void topicsChanged(QStringList);
-    void gotThing(Nepomuk::Resource);
+    void gotThing(Nepomuk2::Resource);
 private slots:
     void init();
-    void gotThing(const QList<Nepomuk::Query::Result> &);
-    void newTopics(const QList<Nepomuk::Query::Result>  &);
+    void gotThing(const QList<Nepomuk2::Query::Result> &);
+    void newTopics(const QList<Nepomuk2::Query::Result>  &);
     void topicsRemoved(const QList<QUrl> &);
     
 private:

@@ -23,9 +23,9 @@
 
 #include "nepomukcontextview.h"
 
-#include <Nepomuk/Utils/ResourceModel>
-#include <Nepomuk/Resource>
-#include <Nepomuk/Variant>
+// #include <Nepomuk2/Utils/ResourceModel>
+#include <Nepomuk2/Resource>
+#include <Nepomuk2/Variant>
 
 #include <QContextMenuEvent>
 #include <QMenu>
@@ -50,7 +50,7 @@ void NepomukContextView::contextMenuEvent(QContextMenuEvent *event)
 
     const QModelIndex index = indexAt( event->pos() );
 
-    const Nepomuk::Resource res = Nepomuk::Variant(model()->data( index,  Nepomuk::Utils::ResourceModel::ResourceRole)).toResource();
+    const Nepomuk2::Resource res/* = Nepomuk2::Variant(model()->data( index,  Nepomuk2::Utils::ResourceModel::ResourceRole)).toResource()*/;
 
     if (!res.isValid()) {
         return;
@@ -87,14 +87,14 @@ void NepomukContextView::contextMenuEvent(QContextMenuEvent *event)
     }
 }
 
-QList< Nepomuk::Resource > NepomukContextView::selectedResources()
+QList< Nepomuk2::Resource > NepomukContextView::selectedResources()
 {
-    QList< Nepomuk::Resource > resourceList;
+    QList< Nepomuk2::Resource > resourceList;
     foreach (const QModelIndex &i ,selectionModel()->selectedIndexes()) {
         if (i.column() != 0) {
             continue;
         }
-        resourceList.append(Nepomuk::Variant(model()->data(i,  Nepomuk::Utils::ResourceModel::ResourceRole)).toResource());
+//         resourceList.append(Nepomuk2::Variant(model()->data(i,  Nepomuk2::Utils::ResourceModel::ResourceRole)).toResource());
     }
     return resourceList;
 }

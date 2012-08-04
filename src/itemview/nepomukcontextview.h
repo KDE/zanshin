@@ -28,7 +28,7 @@
 #include <QTreeView>
 
 #include <QList>
-#include <Nepomuk/Resource>
+#include <Nepomuk2/Resource>
 
 class QContextMenuEvent;
 class KXMLGUIClient;
@@ -38,7 +38,7 @@ class NepomukContextView : public QTreeView
     Q_OBJECT
 public:
     explicit NepomukContextView(KXMLGUIClient *client, QWidget *parent = 0);
-    QList <Nepomuk::Resource> selectedResources();
+    QList <Nepomuk2::Resource> selectedResources();
 protected:
     virtual void contextMenuEvent(QContextMenuEvent* );
 

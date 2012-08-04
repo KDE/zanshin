@@ -24,63 +24,63 @@
 
 #include "searchfiltercacheproxy.h"
 
-#include <Nepomuk/Query/Query>
-#include <Nepomuk/Types/Class>
-#include <Nepomuk/Query/ResourceTypeTerm>
-#include <Nepomuk/Query/GroupTerm>
-#include <Nepomuk/Query/AndTerm>
-#include <Nepomuk/Query/LiteralTerm>
-#include <Nepomuk/Vocabulary/NIE>
-#include <Nepomuk/Vocabulary/NCAL>
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Vocabulary/NFO>
+#include <Nepomuk2/Query/Query>
+#include <Nepomuk2/Types/Class>
+#include <Nepomuk2/Query/ResourceTypeTerm>
+#include <Nepomuk2/Query/GroupTerm>
+#include <Nepomuk2/Query/AndTerm>
+#include <Nepomuk2/Query/LiteralTerm>
+#include <Nepomuk2/Vocabulary/NIE>
+#include <Nepomuk2/Vocabulary/NCAL>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Vocabulary/NFO>
 
 #include <aneo.h>
 
-#include <nepomuk/orterm.h>
-#include <nepomuk/comparisonterm.h>
-#include <Nepomuk/Tag>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Variant>
+#include <nepomuk2/orterm.h>
+#include <nepomuk2/comparisonterm.h>
+#include <Nepomuk2/Tag>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Variant>
 #include "abstractpimitem.h"
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Query/Result>
 
 #include "queries.h"
 #include <todoproxymodelbase.h>
-#include <nepomuk/resourcewatcher.h>
+#include <nepomuk2/resourcewatcher.h>
 #include <Soprano/Vocabulary/NAO>
 
 SearchFilterCache::SearchFilterCache(QObject* parent)
 : KIdentityProxyModel(parent),
-    m_queryServiceClient(new Nepomuk::Query::QueryServiceClient(this))
-//     m_topicQueryServiceClient(new Nepomuk::Query::QueryServiceClient(this))
+    m_queryServiceClient(new Nepomuk2::Query::QueryServiceClient(this))
+//     m_topicQueryServiceClient(new Nepomuk2::Query::QueryServiceClient(this))
 {
     //Fulltext queries
-    connect(m_queryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(newFulltextMatches(QList<Nepomuk::Query::Result>)));
+    connect(m_queryServiceClient, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), this, SLOT(newFulltextMatches(QList<Nepomuk2::Query::Result>)));
     connect(m_queryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(entriesRemoved(QList<QUrl>)));
     connect(m_queryServiceClient, SIGNAL(finishedListing()), this, SLOT(queryFinished()));
 /*    
-    connect(m_topicQueryServiceClient, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), this, SLOT(newTopicMatches(QList<Nepomuk::Query::Result>)));
+    connect(m_topicQueryServiceClient, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), this, SLOT(newTopicMatches(QList<Nepomuk2::Query::Result>)));
     connect(m_topicQueryServiceClient, SIGNAL(entriesRemoved(QList<QUrl>)), this, SLOT(topicMatchRemoved(QList<QUrl>)));*/
     
-    Nepomuk::ResourceWatcher *watcher = new Nepomuk::ResourceWatcher(this);
-    watcher->addType(Nepomuk::Types::Class(Nepomuk::Vocabulary::NCAL::Todo()));
-    watcher->addType(Nepomuk::Types::Class(Nepomuk::Vocabulary::NCAL::Event()));
-    watcher->addType(Nepomuk::Types::Class(Nepomuk::Vocabulary::NFO::HtmlDocument()));
-    watcher->addProperty(Nepomuk::Types::Property(Nepomuk::Vocabulary::PIMO::isRelated()));
-    watcher->addProperty(Nepomuk::Types::Property(Soprano::Vocabulary::NAO::hasTag()));
-    watcher->addProperty(Nepomuk::Types::Property(Nepomuk::Vocabulary::NIE::plainTextContent()));
-    watcher->addProperty(Nepomuk::Types::Property(Nepomuk::Vocabulary::NIE::title()));
-    connect(watcher, SIGNAL(propertyAdded(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)), this, SLOT(itemChanged(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)));
-    connect(watcher, SIGNAL(propertyRemoved(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)), this, SLOT(itemChanged(Nepomuk::Resource,Nepomuk::Types::Property,QVariant)));
+    Nepomuk2::ResourceWatcher *watcher = new Nepomuk2::ResourceWatcher(this);
+    watcher->addType(Nepomuk2::Types::Class(Nepomuk2::Vocabulary::NCAL::Todo()));
+    watcher->addType(Nepomuk2::Types::Class(Nepomuk2::Vocabulary::NCAL::Event()));
+    watcher->addType(Nepomuk2::Types::Class(Nepomuk2::Vocabulary::NFO::HtmlDocument()));
+    watcher->addProperty(Nepomuk2::Types::Property(Nepomuk2::Vocabulary::PIMO::isRelated()));
+    watcher->addProperty(Nepomuk2::Types::Property(Soprano::Vocabulary::NAO::hasTag()));
+    watcher->addProperty(Nepomuk2::Types::Property(Nepomuk2::Vocabulary::NIE::plainTextContent()));
+    watcher->addProperty(Nepomuk2::Types::Property(Nepomuk2::Vocabulary::NIE::title()));
+    connect(watcher, SIGNAL(propertyAdded(Nepomuk2::Resource,Nepomuk2::Types::Property,QVariant)), this, SLOT(itemChanged(Nepomuk2::Resource,Nepomuk2::Types::Property,QVariant)));
+    connect(watcher, SIGNAL(propertyRemoved(Nepomuk2::Resource,Nepomuk2::Types::Property,QVariant)), this, SLOT(itemChanged(Nepomuk2::Resource,Nepomuk2::Types::Property,QVariant)));
 }
 
 //TODO connect to resource watcher
-void SearchFilterCache::itemChanged(const Nepomuk::Resource &resource, const Nepomuk::Types::Property &property, const QVariant &value)
+void SearchFilterCache::itemChanged(const Nepomuk2::Resource &resource, const Nepomuk2::Types::Property &property, const QVariant &value)
 {
     Q_UNUSED(value);
     Q_UNUSED(property)
-    const Akonadi::Item &item = Akonadi::Item::fromUrl(resource.property(Nepomuk::Vocabulary::NIE::url()).toUrl());
+    const Akonadi::Item &item = Akonadi::Item::fromUrl(resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl());
     if (!item.isValid()) {
         kWarning() << resource;
         return;
@@ -118,10 +118,10 @@ void SearchFilterCache::setTopicFilter(const QList<KUrl> &topicList, bool noTopi
     }
 }
 
-void SearchFilterCache::newTopicMatches(QList< Nepomuk::Query::Result > results)
+void SearchFilterCache::newTopicMatches(QList< Nepomuk2::Query::Result > results)
 {
-    foreach (const Nepomuk::Query::Result &result, results) {
-        const Nepomuk::Variant &v = result.additionalBinding(QLatin1String("url"));
+    foreach (const Nepomuk2::Query::Result &result, results) {
+        const Nepomuk2::Variant &v = result.additionalBinding(QLatin1String("url"));
         Akonadi::Item item = Akonadi::Item::fromUrl(v.toUrl());
         if (!item.isValid()) {
             kWarning() << "invalid item";
@@ -160,9 +160,9 @@ void SearchFilterCache::setFulltextSearch(const QString &string)
     }
     kDebug() << "run query";
     //TODO search tags from here
-    using namespace Nepomuk::Query;
-    using namespace Nepomuk::Types;
-    using namespace Nepomuk::Vocabulary;
+    using namespace Nepomuk2::Query;
+    using namespace Nepomuk2::Types;
+    using namespace Nepomuk2::Vocabulary;
     //TODO take definitions from abstractpimitem, and take it there from a file shared with the feeder (i.e. NCAL::TODO)
     OrTerm resourcesTerm;
     resourcesTerm.addSubTerm(ResourceTypeTerm(Class(NCAL::Todo())));
@@ -180,7 +180,7 @@ void SearchFilterCache::setFulltextSearch(const QString &string)
     outerGroup.addSubTerm(textSearchTerm);
     Query query;
     query.setTerm( outerGroup );
-    //query.addRequestProperty(Query::Query::RequestProperty(Nepomuk::Vocabulary::NIE::url()));
+    //query.addRequestProperty(Query::Query::RequestProperty(Nepomuk2::Vocabulary::NIE::url()));
     query.addRequestProperty(Query::Query::RequestProperty(Vocabulary::ANEO::akonadiItemId()));
     Q_ASSERT(query.isValid());
     if (!m_queryServiceClient->query(query)) { //This closes the old query automatically
@@ -188,10 +188,10 @@ void SearchFilterCache::setFulltextSearch(const QString &string)
     }
 }
 
-void SearchFilterCache::newFulltextMatches(QList< Nepomuk::Query::Result > results)
+void SearchFilterCache::newFulltextMatches(QList< Nepomuk2::Query::Result > results)
 {
-    foreach (const Nepomuk::Query::Result &result, results) {
-        Akonadi::Entity::Id id = Nepomuk::Variant::fromNode(result.requestProperty(Vocabulary::ANEO::akonadiItemId())).toString().toInt();
+    foreach (const Nepomuk2::Query::Result &result, results) {
+        Akonadi::Entity::Id id = Nepomuk2::Variant::fromNode(result.requestProperty(Vocabulary::ANEO::akonadiItemId())).toString().toInt();
         Akonadi::Item item(id);
         Q_ASSERT(item.isValid());
 //         kDebug() << item.id();

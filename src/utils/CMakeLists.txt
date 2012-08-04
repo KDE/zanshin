@@ -25,7 +25,9 @@ target_link_libraries(utils
   ${KDEPIMLIBS_AKONADI_LIBS}
   QtXml
   akonadi-notes
-  nepomukdatamanagement
+  ${KDE4_NEPOMUK_LIBS}
+#   nepomukdatamanagement
+  ${NEPOMUK_CORE_LIBRARY}
   nepomukquery
 #   kmime
 )

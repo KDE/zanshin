@@ -27,8 +27,8 @@
 #include <QList>
 #include <QUrl>
 
-#include <nepomuk/query.h>
-#include <nepomuk/term.h>
+#include <nepomuk2/query.h>
+#include <nepomuk2/term.h>
 
 namespace Akonadi {
     class Item;
@@ -37,17 +37,17 @@ namespace Akonadi {
 namespace MindMirrorQueries
 {
 
-    Nepomuk::Query::Term resourceTypes();
+    Nepomuk2::Query::Term resourceTypes();
     
-    Nepomuk::Query::Term itemUrlTerm(const Akonadi::Item &item);
+    Nepomuk2::Query::Term itemUrlTerm(const Akonadi::Item &item);
     
-    Nepomuk::Query::Term itemResourceTerm(const Akonadi::Item &item);
+    Nepomuk2::Query::Term itemResourceTerm(const Akonadi::Item &item);
     
-    Nepomuk::Query::Term itemThingTerm(const Akonadi::Item &item);
+    Nepomuk2::Query::Term itemThingTerm(const Akonadi::Item &item);
     
-    Nepomuk::Query::Term itemTopicsTerm(const Akonadi::Item &item);
+    Nepomuk2::Query::Term itemTopicsTerm(const Akonadi::Item &item);
     
-    Nepomuk::Query::Term itemsWithTopicsTerm(const QList <QUrl> topics);
+    Nepomuk2::Query::Term itemsWithTopicsTerm(const QList <QUrl> topics);
     
     ///get thing of item
     QString itemThingQuery(const Akonadi::Item &item);

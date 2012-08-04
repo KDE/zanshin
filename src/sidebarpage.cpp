@@ -27,6 +27,7 @@
 #include <KDE/KInputDialog>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
+#include <KJob>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
@@ -128,6 +129,12 @@ void SideBarPage::addNewItem()
         kFatal() << "We should never, ever, get in this case...";
     }
 }
+
+void SideBarPage::result(KJob *job)
+{
+    kDebug() << job->error() << job->errorString();
+}
+
 
 void SideBarPage::removeCurrentItem()
 {

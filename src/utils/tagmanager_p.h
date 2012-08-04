@@ -26,13 +26,13 @@
 
 #include <KJob>
 #include <kdebug.h>
-#include <Nepomuk/Vocabulary/PIMO>
-#include <Nepomuk/Query/QueryServiceClient>
-#include <Nepomuk/Query/Result>
+#include <Nepomuk2/Vocabulary/PIMO>
+#include <Nepomuk2/Query/QueryServiceClient>
+#include <Nepomuk2/Query/Result>
 #include <QUrl>
 #include <QVariant>
-#include <nepomuk/datamanagement.h>
-#include <nepomuk/resource.h>
+#include <nepomuk2/datamanagement.h>
+#include <nepomuk2/resource.h>
 #include <akonadi/item.h>
 #include "queries.h"
 
@@ -49,22 +49,22 @@ public:
     
     virtual void start() {
         kDebug();
-        Nepomuk::Query::QueryServiceClient *topicsQuery = new Nepomuk::Query::QueryServiceClient(this);
-        connect(topicsQuery, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), SLOT(topicsFound(QList<Nepomuk::Query::Result>)));
+        Nepomuk2::Query::QueryServiceClient *topicsQuery = new Nepomuk2::Query::QueryServiceClient(this);
+        connect(topicsQuery, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), SLOT(topicsFound(QList<Nepomuk2::Query::Result>)));
         connect(topicsQuery, SIGNAL(finishedListing()), SLOT(topicsQueryFinished()));
         if (!topicsQuery->sparqlQuery(MindMirrorQueries::itemTopicsQuery(mItem))) {
             kWarning() << topicsQuery->errorMessage();
         }
         
-        Nepomuk::Query::QueryServiceClient *thingquery = new Nepomuk::Query::QueryServiceClient(this);
-        connect(thingquery, SIGNAL(newEntries(QList<Nepomuk::Query::Result>)), SLOT(thingFound(QList<Nepomuk::Query::Result>)));
+        Nepomuk2::Query::QueryServiceClient *thingquery = new Nepomuk2::Query::QueryServiceClient(this);
+        connect(thingquery, SIGNAL(newEntries(QList<Nepomuk2::Query::Result>)), SLOT(thingFound(QList<Nepomuk2::Query::Result>)));
         if (!thingquery->sparqlQuery(MindMirrorQueries::itemThingQuery(mItem))) {
             kWarning() << thingquery->errorMessage();
         }
     }
     
 private slots:
-    void thingFound(const QList< Nepomuk::Query::Result > &results)
+    void thingFound(const QList< Nepomuk2::Query::Result > &results)
     {
         Q_ASSERT (!mThingFound); //This shouldn't be called twice (there is only 1 thing per item)
         if (results.isEmpty()) {
@@ -76,16 +76,16 @@ private slots:
         }
         Q_ASSERT(results.size() == 1);
         //kDebug() <<  results.size() << results.first().resource().resourceUri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
-        Nepomuk::Resource thing(results.first().resource().resourceUri());
+        Nepomuk2::Resource thing(results.first().resource().resourceUri());
         Q_ASSERT(thing.isValid());
         mThing = thing;
         mThingFound = true;
         tryRemove();
     }
     
-    void topicsFound(const QList< Nepomuk::Query::Result > &results)
+    void topicsFound(const QList< Nepomuk2::Query::Result > &results)
     {
-        foreach (const Nepomuk::Query::Result &result, results) {
+        foreach (const Nepomuk2::Query::Result &result, results) {
             mTopics.append(result.resource().resourceUri());
         }
     }
@@ -106,7 +106,7 @@ private slots:
             //             kDebug() << url;
             values << url;
         }
-        KJob *removeJob = Nepomuk::removeProperty(QList<QUrl>() << mThing.resourceUri(), Nepomuk::Vocabulary::PIMO::isRelated(), values);
+        KJob *removeJob = Nepomuk2::removeProperty(QList<QUrl>() << mThing.resourceUri(), Nepomuk2::Vocabulary::PIMO::isRelated(), values);
         connect(removeJob, SIGNAL(result(KJob*)), SLOT(removeJobFinished(KJob*)));
     }
     
@@ -125,7 +125,7 @@ private slots:
     
 private:
     Akonadi::Item mItem;
-    Nepomuk::Resource mThing;
+    Nepomuk2::Resource mThing;
     QList<QUrl> mTopics;
     bool mThingFound, mTopicsFound;
 };
