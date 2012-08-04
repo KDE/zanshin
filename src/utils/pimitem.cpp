@@ -87,7 +87,7 @@ namespace PimItemUtils {
         //kDebug() << resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl();
         if (!resource.hasProperty(Nepomuk2::Vocabulary::NIE::url())) {
             kWarning() << "url property is missing (did you pass a thing instead of the grounding occurence?)";
-            kWarning() << resource.resourceUri();
+            kWarning() << resource.uri();
             return Akonadi::Item();
         }
         Akonadi::Item item = Akonadi::Item::fromUrl(resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl());//sizeof "NotetakerItem:"
