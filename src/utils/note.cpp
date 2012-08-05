@@ -163,7 +163,7 @@ void Note::setRelations(const QList< PimItemRelation > &relations)
     Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
     messageWrapper.custom().remove("x-related");
     foreach(const PimItemRelation &rel, relations) {
-        messageWrapper.custom().insert("x-related", relationToXML(rel));
+        messageWrapper.custom().insert("x-related", relationToXML(removeDuplicates(rel)));
     }
     m_item.setPayload(messageWrapper.message());
 //     kDebug() << messageWrapper.message()->encodedContent();

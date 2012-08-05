@@ -65,6 +65,7 @@ struct PimItemRelation
 
 PimItemRelation relationFromXML(const QByteArray &xml);
 QString relationToXML(const PimItemRelation &rel);
+PimItemRelation removeDuplicates(const PimItemRelation &);
 
 
 /**

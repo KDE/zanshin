@@ -617,3 +617,20 @@ PimItemRelation relationFromXML(const QByteArray &xml)
     }
     return PimItemRelation();
 }
+
+PimItemRelation removeDuplicates(const PimItemRelation &rel)
+{
+    if (rel.type != PimItemRelation::Project) {
+        return rel;
+    }
+    QList<PimItemTreeNode> projects;
+    QStringList existingProjects;
+    foreach(const PimItemTreeNode &node, rel.parentNodes) {
+        if (existingProjects.contains(node.uid)) {
+            continue;
+        }
+        existingProjects << node.uid;
+        projects << node;
+    }
+    return PimItemRelation(PimItemRelation::Project, projects);
+}
