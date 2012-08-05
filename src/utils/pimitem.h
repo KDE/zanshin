@@ -55,6 +55,7 @@ namespace PimItemUtils {
     AbstractPimItem* fromUrl( const KUrl &url );
     
     Akonadi::Item getItemFromResource(const Nepomuk2::Resource &resource);
+    void moveToProject(Akonadi::Item &item, const QString &parentUid, bool linkOnly = false);
 }
 
 #endif

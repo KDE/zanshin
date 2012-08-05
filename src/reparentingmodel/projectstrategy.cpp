@@ -23,7 +23,7 @@
 #include <globaldefs.h>
 #include <todonode.h>
 #include <todohelpers.h>
-#include <pimitem.h>
+#include "pimitem.h"
 #include <incidenceitem.h>
 #include <pimitemmodel.h>
 #include <KLocalizedString>
@@ -83,7 +83,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     Id id = getId(sourceChildIndex);
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
 //     kDebug() << id << type;
-    if (type==Zanshin::Collection || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
+    if (type==Zanshin::Collection) {
         const QModelIndex &parent = sourceChildIndex.parent();
         if (parent.isValid()) {
             return IdList() << getId(parent);
@@ -92,28 +92,23 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     }
     const QString &parentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
 //     kDebug() << parentUid;
-    if (parentUid.isEmpty()) {
-        if (type==Zanshin::ProjectTodo) {
-    //         kDebug() << "get source parent";
-            const QModelIndex &parent = sourceChildIndex.parent();
-            if (parent.isValid()) {
-                return IdList() << getId(parent);
-            }
-            return IdList();
-        } else if (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
-            const QModelIndex &parent = sourceChildIndex.parent();
-            if (parent.isValid()) {
-                return IdList() << getId(parent);
-            }
-            return IdList();
+    IdList parents;
+    if (parentUid.isEmpty() || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
+        if (type != Zanshin::ProjectTodo && sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() != AbstractPimItem::Note) {
+            return IdList() << mInbox;
         }
-        return IdList() << mInbox;
+        const QModelIndex &parent = sourceChildIndex.parent();
+        if (parent.isValid()) {
+            parents << getId(parent);
+        }
     }
-    if (!mUidMapping.contains(parentUid)) {
-        mUidMapping.insert(parentUid, getNextId());
-
+    if (!parentUid.isEmpty()) {
+        if (!mUidMapping.contains(parentUid)) {
+            mUidMapping.insert(parentUid, getNextId());
+        }
+        parents << mUidMapping.value(parentUid);
     }
-    return IdList() << mUidMapping.value(parentUid);
+    return parents;
 }
 
 void ProjectStrategy::reset()
@@ -188,9 +183,17 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
                 continue;
             }
             Q_ASSERT(job->items().size()==1);
-            return TodoHelpers::moveTodoToProject(job->items().first(), parentUid, parentType, collection);
+            Akonadi::Item item = job->items().first();
+            Q_ASSERT(item.isValid());
+            if (AbstractPimItem::itemType(item) == AbstractPimItem::Todo) {
+                return TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
+            } else if (AbstractPimItem::itemType(item) == AbstractPimItem::Note) {
+                PimItemUtils::moveToProject(item, parentUid);
+                setData(id, QVariant::fromValue<Akonadi::Item>(item), Akonadi::EntityTreeModel::ItemRole);
+                return true;
+            }
         }
     }
 
-    return true;
+    return false;
 }
