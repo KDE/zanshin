@@ -88,10 +88,10 @@ public:
      *
      * Called during the creation of a virtual node.
      */
-    virtual void setNodeData(TodoNode* node, Id id) {};
-    virtual QVariant data(Id index, int role) const { return QVariant(); };
+    virtual void setNodeData(TodoNode* /*node*/, Id /*id*/) {};
+    virtual QVariant data(Id /*index*/, int /*role*/) const { return QVariant(); };
 
-    virtual QMimeData *mimeData(const QModelIndexList &proxyIndexes) const{return 0;};
+    virtual QMimeData *mimeData(const QModelIndexList &/*proxyIndexes*/) const{return 0;};
     virtual QStringList mimeTypes() { return QStringList(); };
     virtual Qt::ItemFlags flags(const QModelIndex &proxyIndex, Qt::ItemFlags flags) {return flags;};
     virtual Qt::DropActions supportedDropActions() const { return Qt::IgnoreAction; };
