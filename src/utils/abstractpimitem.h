@@ -151,8 +151,8 @@ public:
      */
     virtual ItemStatus getStatus() const = 0;
 
-    virtual void setRelations(const QList<PimItemRelation> &);
-    virtual QList<PimItemRelation> getRelations();
+    virtual void setRelations(const QList<PimItemRelation> &) = 0;
+    virtual QList<PimItemRelation> getRelations() = 0;
     virtual void setCategories(const QStringList &);
     virtual QStringList getCategories();
 
