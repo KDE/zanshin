@@ -60,7 +60,8 @@ void PimItemRelations::mergeNode(const TreeNode &node)
     }
     if (mNames.value(node.id) != node.name) {
         mNames.insert(node.id, node.name);
-        if (!created) {
+        //TODO the names need some changing for projects as the name comes from the item itself and not one of its children
+        if (!created && !node.name.isEmpty()) {
             emit virtualNodeRenamed(node.id, node.name);
         }
     }
@@ -74,7 +75,11 @@ void PimItemRelations::mergeNode(const TreeNode &node)
     }
     if (created) {
 //         kDebug() << "created node " << node.id << mParents.values(node.id) << node.name;
-        Q_ASSERT(!node.name.isEmpty());
+        QString name = node.name;
+        if (name.isEmpty()) {
+            name = "noname";
+        }
+//         Q_ASSERT(!node.name.isEmpty());
         emit virtualNodeAdded(node.id, mParents.values(node.id), node.name);
     }
 }
@@ -82,8 +87,10 @@ void PimItemRelations::mergeNode(const TreeNode &node)
 Id PimItemRelations::addItem(const Akonadi::Item &item)
 {
     //TODO cache
-    const Relation &rel = getRelationTree(item);
-    Id id = rel.id;
+    
+//     kDebug() << pimitem->itemType();
+    Id id = getOrCreateItemId(item);
+    const Relation &rel = getRelationTree(id, item);
     mParents.remove(id);
     foreach (const TreeNode &node, rel.parentNodes) {
         mParents.insert(id, node.id);
@@ -105,7 +112,7 @@ Id PimItemRelations::getItemId(const Akonadi::Item &item) const
 QString PimItemRelations::getName(Id id)
 {
 //     kDebug() << id << mNames.value(id);
-    Q_ASSERT(mNames.contains(id));
+//     Q_ASSERT(mNames.contains(id));
     return mNames.value(id);
 }
 
@@ -251,19 +258,17 @@ Relation PimItemRelationsStructure::createRelation(const PimItemRelation &relati
 }
 
 
-Relation PimItemRelationsStructure::getRelationTree(const Akonadi::Item& item)
+Relation PimItemRelationsStructure::getRelationTree(Id id, const Akonadi::Item &item)
 {
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     Q_ASSERT (!pimitem.isNull());
-//     kDebug() << pimitem->itemType();
-
     foreach(const PimItemRelation &rel, pimitem->getRelations()) {
 //         kDebug() << rel.type;
         if (rel.type == mType) {
-            return createRelation(rel, getOrCreateItemId(item)); //TODO merge multiple relations
+            return createRelation(rel, id); //TODO merge multiple relations
         }
     }
-    return Relation(getOrCreateItemId(item), QList<TreeNode>());
+    return Relation(id, QList<TreeNode>());
 }
 
 QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
@@ -282,6 +287,7 @@ void PimItemRelationsStructure::updateRelationTree(Akonadi::Item &item)
 //     kDebug() << item.id();
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     Q_ASSERT(!pimitem.isNull());
+    Q_ASSERT(mItemIdCache.contains(item.id()));
     const Id id = mItemIdCache.value(item.id());
 //     kDebug() << id;
     QList<PimItemRelation> relations = pimitem->getRelations();
@@ -336,3 +342,47 @@ QString PimItemRelationsStructure::getPath(Id id) const
     return QString("/this is a path");
 }
 
+
+
+
+
+
+
+ProjectStructure::ProjectStructure()
+{
+
+}
+
+Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
+{
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    Q_ASSERT (!pimitem.isNull());
+    QList<TreeNode> parents;
+    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+        if (rel.type == PimItemRelation::Project) {
+            foreach (const PimItemTreeNode &p, rel.parentNodes) {
+                if (!mUidMapping.contains(p.uid)) {
+                    mUidMapping.insert(p.uid, mIdCounter++);
+                }
+                Id projectId = mUidMapping.value(p.uid);
+                parents << TreeNode(p.name, projectId);
+            }
+        }
+    }
+    return Relation(id, parents);
+}
+
+void ProjectStructure::updateRelationTree(Akonadi::Item& item)
+{
+
+}
+
+void ProjectStructure::rebuildCache()
+{
+
+}
+
+QString ProjectStructure::getPath(Id id) const
+{
+    return QString("/this is a path");
+}

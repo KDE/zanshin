@@ -32,10 +32,10 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
 
-#include "categorymanager.h"
 #include "globaldefs.h"
 #include "todohelpers.h"
 #include "todotreeview.h"
+#include "pimitemrelationinterface.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
                          const QList<QAction*> &contextActions,
@@ -109,22 +109,26 @@ void SideBarPage::addNewItem()
 
     if (!ok || summary.isEmpty()) return;
 
+//     QList<QUrl> parents;
+//     if (parentItem.data(Zanshin::UriRole).canConvert<QUrl>()) {
+//         parents << parentItem.data(Zanshin::UriRole).toUrl();
+//     }
+//     PimItemStructureInterface itemType = PimItemStructureInterface::Project;
+//     if (
 
     if (type==Zanshin::Collection) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        TodoHelpers::addProject(summary, collection);
-
+        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>(), collection);
     } else if (type==Zanshin::ProjectTodo) {
-        TodoHelpers::addProject(summary, parentItem);
-
+        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem));
     } else if (type==Zanshin::CategoryRoot) {
-        CategoryManager::contextInstance().addCategory(summary);
+        PimItemStructureInterface::create(PimNode::Context, summary);
     } else if (type==Zanshin::Category) {
-        CategoryManager::contextInstance().addCategory(summary, IdList() << parentItem.data(Zanshin::RelationIdRole).toLongLong());
+        PimItemStructureInterface::create(PimNode::Context, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem));
     } else if (type==Zanshin::TopicRoot) {
-        CategoryManager::topicInstance().addCategory(summary);
+        PimItemStructureInterface::create(PimNode::Topic, summary);
     } else if (type==Zanshin::Topic) {
-        CategoryManager::topicInstance().addCategory(summary, IdList() << parentItem.data(Zanshin::RelationIdRole).toLongLong());
+        PimItemStructureInterface::create(PimNode::Topic, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem));
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
@@ -139,23 +143,12 @@ void SideBarPage::result(KJob *job)
 void SideBarPage::removeCurrentItem()
 {
     QModelIndex current = selectionModel()->currentIndex();
-    Zanshin::ItemType type = (Zanshin::ItemType) current.data(Zanshin::ItemTypeRole).toInt();
-
-    if (type==Zanshin::ProjectTodo) {
-        if (TodoHelpers::removeProject(this, current)) {
-            m_treeView->setCurrentIndex(current.parent());
-        }
-    } else if (type==Zanshin::Category) {
-        if (CategoryManager::contextInstance().removeCategories(this, IdList() << current.data(Zanshin::RelationIdRole).toLongLong())) {
-            m_treeView->setCurrentIndex(current.parent());
-        }
-    } else if (type==Zanshin::Topic) {
-        if (CategoryManager::topicInstance().removeCategories(this, IdList() << current.data(Zanshin::RelationIdRole).toLongLong())) {
-            m_treeView->setCurrentIndex(current.parent());
-        }
-    } else {
-        kFatal() << "We should never, ever, get in this case...";
+    if (!current.isValid()) {
+        return;
     }
+    PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(current), this);
+    //TODO only if remove succeeded
+    m_treeView->setCurrentIndex(current.parent());
 }
 
 void SideBarPage::renameCurrentItem()

@@ -11,7 +11,6 @@ add_subdirectory( reparentingmodel )
 ########### zanshin core ###############
 
 set(zanshin_core_SRCS
-   categorymanager.cpp
    combomodel.cpp
    modelstack.cpp
    selectionproxymodel.cpp

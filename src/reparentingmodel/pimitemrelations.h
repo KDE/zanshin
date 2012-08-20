@@ -68,7 +68,7 @@ struct Relation
  * It doesn't add any value to simple relations such as todos relatedTo as there we have no need for merging and changes are only saved to a single item.
  *
  * TODO cleanup mItemIdCache after an item has been removed
- * TODO Remove Akonadi::Item from this class and instead work only with Relations and an id (where the id can be the akonadi item id or also something else)
+ * TODO Remove Akonadi::Item from this class and instead work only with Relations and an id (where the id can be the akonadi item id or also something else), that should make the wohle thing much more testable
  */
 class PimItemRelations: public QObject
 {
@@ -117,16 +117,17 @@ signals:
 protected:
     IdList getAffectedChildItems(Id id) const;
     void removeNodeRecursive(Id id);
-    virtual Relation getRelationTree(const Akonadi::Item &item) = 0;
+    virtual Relation getRelationTree(Id id, const Akonadi::Item &item) = 0;
     virtual void rebuildCache() = 0;
     IdList getChildNodes(Id id) const;
-    Id getOrCreateItemId(const Akonadi::Item &item);
     void mergeNode(const TreeNode &node);
     
     QMap<Id, QString> mNames;
     QMultiMap<Id, Id> mParents;
     QMap<Akonadi::Item::Id, Id> mItemIdCache;
     Id mIdCounter;
+private:
+    Id getOrCreateItemId(const Akonadi::Item &item);
 };
 
 
@@ -139,7 +140,7 @@ public:
     virtual QString getPath(Id id) const;
 protected:
     //Build a relation tree from the category of an item
-    Relation getRelationTree(const Akonadi::Item &item);
+    Relation getRelationTree(Id id, const Akonadi::Item &item);
 
     virtual void rebuildCache();
 private:
@@ -151,4 +152,15 @@ private:
     PimItemRelation::Type mType;
 };
 
+class ProjectStructure: public PimItemRelations {
+public:
+    ProjectStructure();
+    virtual void updateRelationTree(Akonadi::Item& item);
+    virtual QString getPath(Id id) const;
+protected:
+    Relation getRelationTree(Id id, const Akonadi::Item &item);
+    virtual void rebuildCache();
+private:
+    QHash<QByteArray, Id> mUidMapping;
+};
 #endif // PIMITEMRELATIONS_H

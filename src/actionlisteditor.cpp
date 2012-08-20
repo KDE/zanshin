@@ -53,6 +53,7 @@
 #include "todohelpers.h"
 #include <itemviewer.h>
 #include <itemselectorproxy.h>
+#include <pimitemrelationinterface.h>
 
 
 
@@ -255,89 +256,12 @@ void ActionListEditor::updateActions()
                           && type==Zanshin::StandardTodo);
 }
 
-void ActionListEditor::removeTodo()
-{
-    QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
-
-    if (currentIndexes.isEmpty()) {
-        return;
-    }
-
-    QModelIndexList currentProjects;
-    QModelIndexList currentCategories;
-    QModelIndexList currentTodos;
-
-    foreach (const QModelIndex &index, currentIndexes) {
-        const int type = index.data(Zanshin::ItemTypeRole).toInt();
-        if (type==Zanshin::ProjectTodo) {
-            currentProjects << index;
-        } else if (type==Zanshin::Category) {
-            currentCategories << index;
-        } else if (type==Zanshin::StandardTodo) {
-            currentTodos << index;
-        }
-    }
-
-    // Remove todos and projects already present in selected projects
-    if (!currentProjects.isEmpty()) {
-        QStringList projectUidList;
-        foreach (const QModelIndex project, currentProjects) {
-            projectUidList << project.data(Zanshin::UidRole).toString();
-        }
-
-        QSet<QString> projects = QSet<QString>::fromList(projectUidList);
-
-        foreach (const QModelIndex project, currentProjects) {
-            QSet<QString> ancestors = QSet<QString>::fromList(project.data(Zanshin::AncestorsUidRole).toStringList());
-            if (!ancestors.intersect(projects).isEmpty()) {
-                currentProjects.removeOne(project);
-            }
-        }
-        foreach (const QModelIndex todo, currentTodos) {
-            QSet<QString> ancestors = QSet<QString>::fromList(todo.data(Zanshin::AncestorsUidRole).toStringList());
-            if (!ancestors.intersect(projects).isEmpty()) {
-                currentTodos.removeOne(todo);
-            }
-        }
-    }
-
-    // Remove categories if the parent is also in the list
-    if (!currentCategories.isEmpty()) {
-        IdList categoryList;
-        foreach (const QModelIndex category, currentCategories) {
-            categoryList << category.data(Zanshin::RelationIdRole).toInt();
-        }
-        CategoryManager::contextInstance().removeCategories(this, categoryList);
-    }
-
-    if (!currentProjects.isEmpty()) {
-        TodoHelpers::removeProjects(this, currentProjects);
-    }
-
-    if (!currentTodos.isEmpty()) {
-        foreach (QModelIndex index, currentTodos) {
-            currentPage()->removeItem(index);
-        }
-    }
-}
-
-void ActionListEditor::removeNote()
-{
-    QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
-    if (!currentIndexes.isEmpty()) {
-        foreach (QModelIndex index, currentIndexes) {
-            currentPage()->removeItem(index);
-        }
-    }
-}
-
-
 void ActionListEditor::onRemoveAction()
 {
-    if (currentPage()->mode()==Zanshin::KnowledgeMode) {
-        removeNote();
-    } else {
-        removeTodo();
+    QList<QUrl> nodes;
+    QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
+    foreach (QModelIndex index, currentIndexes) {
+        nodes << index.data(Zanshin::UriRole).toUrl();
     }
 }
 
@@ -356,8 +280,6 @@ void ActionListEditor::onMoveAction()
     QuickSelectDialog dlg(this, model, currentPage()->mode(),
                           QuickSelectDialog::MoveAction);
     if (dlg.exec()==QDialog::Accepted) {
-        QVariant selectedId = dlg.selectedId();
-
         QModelIndexList list = currentPage()->selectionModel()->selectedRows();
         if (currentSelection.isValid() && !list.isEmpty()) {
             KModelIndexProxyMapper mapper(currentSelection.model(), list.first().model());
@@ -367,9 +289,9 @@ void ActionListEditor::onMoveAction()
                 }
 
                 if (currentPage()->mode()==Zanshin::ProjectMode) {
-                    TodoHelpers::moveTodoToProject(current, selectedId.toString(), dlg.selectedType(), dlg.collection());
+                    PimItemStructureInterface::moveTo(PimItemStructureInterface::fromIndex(current), PimItemStructureInterface::fromIndex(dlg.selectedIndex()));
                 } else if (currentPage()->mode()==Zanshin::CategoriesMode){
-                    CategoryManager::contextInstance().moveToCategory(current.data(Zanshin::RelationIdRole).toLongLong(), selectedId.toLongLong(), dlg.selectedType());
+                    PimItemStructureInterface::linkTo(PimItemStructureInterface::fromIndex(current), PimItemStructureInterface::fromIndex(dlg.selectedIndex()));
                 } else {
                     qWarning() << "not implemented";
                 }

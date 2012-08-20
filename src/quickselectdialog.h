@@ -50,15 +50,11 @@ public:
 
     QuickSelectDialog(QWidget *parent, QAbstractItemModel *model, Zanshin::ApplicationMode mode, ActionType action);
 
-    QVariant selectedId() const;
     Zanshin::ItemType selectedType() const;
     Akonadi::Collection collection() const;
     QModelIndex selectedIndex() const;
 
 private:
-    qint64 categorySelectedId() const;
-    QString projectSelectedId() const;
-
     QString pattern() const;
     void applyPattern(const QString &pattern);
     bool eventFilter(QObject *object, QEvent *ev);

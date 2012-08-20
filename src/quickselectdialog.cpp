@@ -100,31 +100,10 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model,
     applyPattern(QString());
 }
 
-QVariant QuickSelectDialog::selectedId() const
-{
-    if (m_mode==Zanshin::ProjectMode) {
-        return projectSelectedId();
-    } else {
-        return categorySelectedId();
-    }
-}
-
 Zanshin::ItemType QuickSelectDialog::selectedType() const
 {
     QModelIndex index = m_tree->selectionModel()->currentIndex();
     return (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
-}
-
-qint64 QuickSelectDialog::categorySelectedId() const
-{
-    QModelIndex index = m_tree->selectionModel()->currentIndex();
-    return index.data(Zanshin::RelationIdRole).toLongLong();
-}
-
-QString QuickSelectDialog::projectSelectedId() const
-{
-    QModelIndex index = m_tree->selectionModel()->currentIndex();
-    return index.data(Zanshin::UidRole).toString();
 }
 
 Akonadi::Collection QuickSelectDialog::collection() const

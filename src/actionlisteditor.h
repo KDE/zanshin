@@ -78,8 +78,6 @@ private slots:
 private:
     void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode, KXMLGUIClient *guiClient);
     void setupActions(KActionCollection *ac);
-    void removeTodo();
-    void removeNote();
 
     ActionListEditorPage *currentPage() const;
     ActionListEditorPage *page(int idx) const;

@@ -52,6 +52,7 @@
 #include <KGlobal>
 #include <KLocalizedString>
 #include <searchbar.h>
+#include <pimitemrelationinterface.h>
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 
@@ -480,73 +481,42 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
 
 void ActionListEditorPage::addNewItem(const QString& summary)
 {
-    if (m_mode == Zanshin::KnowledgeMode) {
-        addNewNote(summary);
-    } else {
-        addNewTodo(summary);
-    }
-}
-
-void ActionListEditorPage::addNewNote(const QString& summary)
-{
-    if (!m_defaultNoteCollection.isValid()) {
-        kWarning() << "no valid default collection";
-        return;
-    }
-    kDebug() << "creating new note";
-    Note note;
-    note.setTitle(summary);
-    Akonadi::ItemCreateJob *itemCreateJob = new Akonadi::ItemCreateJob(note.getItem(), m_defaultNoteCollection);
-    //connect( itemCreateJob, SIGNAL(result(KJob*)), SLOT(itemCreateDone( KJob *)));
-    //TODO set currently selected topic
-}
-
-void ActionListEditorPage::addNewTodo(const QString &summary)
-{
     if (summary.isEmpty()) return;
 
     QModelIndex current = m_treeView->selectionModel()->currentIndex();
-
-    if (!current.isValid()) {
-        kWarning() << "Oops, nothing selected in the list!";
-        return;
-    }
-
-    int type = current.data(Zanshin::ItemTypeRole).toInt();
-
-    while (current.isValid() && type==Zanshin::StandardTodo) {
-        current = current.sibling(current.row()-1, current.column());
-        type = current.data(Zanshin::ItemTypeRole).toInt();
-    }
-
     Akonadi::Collection collection;
-    QString parentUid;
-    QString category;
+    if (current.isValid()) {
+        int type = current.data(Zanshin::ItemTypeRole).toInt();
 
-    switch (type) {
-    case Zanshin::StandardTodo:
-        kFatal() << "Can't possibly happen!";
-        break;
+        while (current.isValid() && type==Zanshin::StandardTodo) {
+            current = current.sibling(current.row()-1, current.column());
+            type = current.data(Zanshin::ItemTypeRole).toInt();
+        }
 
-    case Zanshin::ProjectTodo:
-        parentUid = current.data(Zanshin::UidRole).toString();
-        collection = current.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
-        break;
+        switch (type) {
+        case Zanshin::StandardTodo:
+            kFatal() << "Can't possibly happen!";
+            break;
 
-    case Zanshin::Collection:
-        collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        break;
-
-    case Zanshin::Category:
-//         category = current.data(Zanshin::CategoryPathRole).toString(); //TODO
-        // fallthrough
-    case Zanshin::Inbox:
-    case Zanshin::CategoryRoot:
-        collection = m_defaultCollection;
-        break;
+        case Zanshin::ProjectTodo:
+            collection = current.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+            break;
+        case Zanshin::Collection:
+            collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+            break;
+        }
     }
-
-    TodoHelpers::addTodo(summary, parentUid, category, collection);
+    if (m_mode == Zanshin::KnowledgeMode) {
+        if (!collection.isValid()) {
+            collection = m_defaultNoteCollection;
+        }
+        PimItemStructureInterface::create(PimNode::Note, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
+    } else {
+        if (!collection.isValid()) {
+            collection = m_defaultCollection;
+        }
+        PimItemStructureInterface::create(PimNode::Todo, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
+    }
 }
 
 void ActionListEditorPage::removeCurrentItem()
@@ -557,38 +527,22 @@ void ActionListEditorPage::removeCurrentItem()
 
 void ActionListEditorPage::removeItem(const QModelIndex &current)
 {
-    int type = current.data(Zanshin::ItemTypeRole).toInt();
-
     if (!current.isValid()) {
         return;
     }
-    if (type == Zanshin::StandardTodo) {
-        TodoHelpers::removeProject(this, current);
-    }
-    if (type == AbstractPimItem::Note) {
-        new Akonadi::ItemDeleteJob(current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
-    }
+    PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(current), this);
 }
 
 void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
 {
-    int type = current.data(Zanshin::ItemTypeRole).toInt();
-
-    if (!current.isValid()
-     || type!=Zanshin::StandardTodo
-     || m_mode==Zanshin::ProjectMode) {
+    if (!current.isValid()) {
         return;
     }
-
-    for (int i=current.row(); i>=0; --i) {
-        QModelIndex index = m_treeView->model()->index(i, 0);
-        int type = index.data(Zanshin::ItemTypeRole).toInt();
-        if (type==Zanshin::Category) {
-            Id category = index.data(Zanshin::RelationIdRole).toInt();
-            if (CategoryManager::contextInstance().dissociateFromCategory(current.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>(), category)) {
-                break;
-            }
-        }
+    if (m_mode == Zanshin::CategoriesMode) {
+        //FIXME
+//        PimItemStructureInterface::unlink(current.data(Zanshin::UriRole).toUrl(), PimItemStructureInterface::allContexts());
+    } else if (m_mode == Zanshin::KnowledgeMode) {
+//        PimItemStructureInterface::unlink(current.data(Zanshin::UriRole).toUrl(), PimItemStructureInterface::allTopics());
     }
 }
 
