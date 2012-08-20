@@ -25,5 +25,6 @@ ZANSHIN_UNIT_TESTS(
   todotreemodelspec
   parentstructuremodelspec
   reparentingmodelspec
+  pimitemrelationstest
 )
 

@@ -56,6 +56,53 @@ struct Relation
   //     QDateTime timestamp; //for merging
 };
 
+/*
+ * PimItemRelationCache: A cache which assigns an id to each of the passed in objects, and allows queries by UID
+ * PimItemRelations: Allows additionally the creatinon of virtual items (which have an name).
+ *
+ */
+
+class PimItemRelationCache: public QObject
+{
+    Q_OBJECT
+public:
+    PimItemRelationCache();
+    //Handles merging, typically the tree of a single item
+    virtual Id addItem(const Akonadi::Item &);
+    Id getItemId(const Akonadi::Item &) const;
+    
+    virtual void removeNode(Id);
+    
+    //for all nodes
+    IdList getParents(Id child);
+    
+    //for all nodes
+    void moveNode(Id, IdList parents);
+    virtual bool isVirtual(Id) const;
+
+signals:
+    //for all nodes
+    void nodeRemoved(Id id);
+    //for all nodes
+    void parentsChanged(Id id, IdList parents);
+    //signals items which need updating
+    void updateItems(IdList);
+protected:
+    IdList getAffectedChildItems(Id id) const;
+    void removeNodeRecursive(Id id);
+    virtual Relation getRelationTree(Id id, const Akonadi::Item &item) = 0;
+    virtual void rebuildCache(){};
+    IdList getChildNodes(Id id) const;
+    virtual void mergeNode(const TreeNode &node);
+    
+    QMultiMap<Id, Id> mParents;
+    QMap<Akonadi::Item::Id, Id> mItemIdCache;
+    Id mIdCounter;
+    QHash<QByteArray, Id> mUidMapping;
+private:
+    Id getOrCreateItemId(const Akonadi::Item &item);
+
+};
 
 /**
  * Interfaces directly with akonadi (could be further abstracted for other storage backends, but that's for another one)
@@ -69,65 +116,42 @@ struct Relation
  *
  * TODO cleanup mItemIdCache after an item has been removed
  * TODO Remove Akonadi::Item from this class and instead work only with Relations and an id (where the id can be the akonadi item id or also something else), that should make the wohle thing much more testable
+ *
+ *
+ * PimItemRelationCache vs TodoMetadataModel for Projects
+ * The primary motiviation, aside of codesharing with PimItemRelations, is to have a cache which can be queried for things like UID to akonadi-item, or childitems of a node.
+ * Those queries could also be written agains the model of course.... In this case the Interface would have to have a pointer to the model.
+ *
+ * After all both solutions are perfectly possible, but since I want a uniform solution for all three relation threes, i opted for getting rid of the TodoMetadataModel.
+ * (It is also easier to implement a good api for modifications there)
  */
-class PimItemRelations: public QObject
+class PimItemRelations: public PimItemRelationCache
 {
     Q_OBJECT
 public:
     PimItemRelations();
-    //Handles merging, typically the tree of a single item
-    Id addItem(const Akonadi::Item &);
-    Id getItemId(const Akonadi::Item &) const;
 
-    /**
-     * Recursively remove subtree
-     * 
-     * for all nodes
-     */
-    void removeNode(Id);
-    //for all nodes
-    IdList getParents(Id child);
+    virtual void removeNode(Id);
 
     //only for virtual nodes
     QString getName(Id);
 
     //only for virtual nodes
     void renameNode(Id, const QString &);
-    //for all nodes
-    void moveNode(Id, IdList parents);
-    bool isVirtual(Id) const;
 
     //Store current relations to item
     virtual void updateRelationTree(Akonadi::Item &item) = 0;
 
-    //Get a path, representing the hierarchy, which can be used for manual editing
-    virtual QString getPath(Id id) const = 0;
 signals:
-
     //only for virtual nodes
     void virtualNodeAdded(Id id, IdList parents, const QString &name);
-    //for all nodes
-    void nodeRemoved(Id id);
-    //for all nodes
-    void parentsChanged(Id id, IdList parents);
     //only for virtual nodes
     void virtualNodeRenamed(Id id, const QString &name);
-    //signals items which need updating
-    void updateItems(IdList);
 protected:
-    IdList getAffectedChildItems(Id id) const;
-    void removeNodeRecursive(Id id);
-    virtual Relation getRelationTree(Id id, const Akonadi::Item &item) = 0;
-    virtual void rebuildCache() = 0;
-    IdList getChildNodes(Id id) const;
-    void mergeNode(const TreeNode &node);
+    virtual void removeNodeRecursive(Id id);
+    virtual void mergeNode(const TreeNode &node);
     
     QMap<Id, QString> mNames;
-    QMultiMap<Id, Id> mParents;
-    QMap<Akonadi::Item::Id, Id> mItemIdCache;
-    Id mIdCounter;
-private:
-    Id getOrCreateItemId(const Akonadi::Item &item);
 };
 
 
@@ -137,30 +161,28 @@ public:
     void addNode(const QString &name, const IdList &parents);
 //     Id getCategoryId(const QString& categoryPath) const;
     virtual void updateRelationTree(Akonadi::Item& item);
-    virtual QString getPath(Id id) const;
 protected:
     //Build a relation tree from the category of an item
     Relation getRelationTree(Id id, const Akonadi::Item &item);
-
-    virtual void rebuildCache();
 private:
     TreeNode createNode(const PimItemTreeNode &node);
     Relation createRelation(const PimItemRelation &relation, const Id itemId);
     QList<PimItemTreeNode> getParentTreeNodes(Id id);
     QList<TreeNode> getParentList(Id id);
-    QHash<QByteArray, Id> mUidMapping;
     PimItemRelation::Type mType;
 };
 
-class ProjectStructure: public PimItemRelations {
+class ProjectStructure: public PimItemRelationCache {
 public:
     ProjectStructure();
     virtual void updateRelationTree(Akonadi::Item& item);
-    virtual QString getPath(Id id) const;
+    Id addCollection(const Akonadi::Collection &);
+    virtual Id addItem(const Akonadi::Item& );
+    bool hasChildren(Id);
+    void printCache();
 protected:
     Relation getRelationTree(Id id, const Akonadi::Item &item);
-    virtual void rebuildCache();
 private:
-    QHash<QByteArray, Id> mUidMapping;
+    QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
 };
 #endif // PIMITEMRELATIONS_H

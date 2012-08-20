@@ -87,6 +87,20 @@ void ReparentingStrategy::updateParents(Id id, IdList parents)
     m_model->reparentNode(id, parents);
 }
 
+void ReparentingStrategy::updateParents(Id id)
+{
+    TodoNode *node = m_model->m_parentMap.value(id);
+    if (!node || !node->rowSourceIndex().isValid()) {
+        kDebug() << id;
+        return;
+    }
+    Q_ASSERT(node);
+    IdList parents = getParents(node->rowSourceIndex());
+    kDebug() << id << parents;
+    m_model->reparentNode(id, parents);
+}
+
+
 void ReparentingStrategy::removeNode(Id id)
 {
     kDebug() << id;

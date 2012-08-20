@@ -20,6 +20,7 @@
 #include <QtCore/QAbstractItemModel>
 
 #include <KDE/Akonadi/ItemModifyJob>
+#include <Akonadi/ItemCreateJob>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
 #include <KDE/KGlobal>
@@ -29,10 +30,11 @@
 #include "globaldefs.h"
 #include "todohelpers.h"
 #include <pimitem.h>
+#include <note.h>
 
-// K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
-// K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)
-// K_GLOBAL_STATIC(ProjectStructureInterface, s_projectManager)
+K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
+K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)
+K_GLOBAL_STATIC(ProjectStructureInterface, s_projectManager)
 
 PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
 {
@@ -103,7 +105,32 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
 
 void PimItemStructureInterface::create(PimNode::NodeType type, const QString& name, const QList< PimNode >& parents, const Akonadi::Collection& col)
 {
-
+    switch (type) {
+        case PimNode::Project:
+            TodoHelpers::addProject(name, col);
+            break;
+        case PimNode::Todo:
+//             QString parent;
+//             if (!parents.isEmpty()) {
+//                 parent = parents.first().item;
+//             }
+            TodoHelpers::addTodo(name, QString(), QString(), col);
+            break;
+        case PimNode::Note: {
+            Note note;
+            note.setTitle(name);
+            Akonadi::ItemCreateJob *itemCreateJob = new Akonadi::ItemCreateJob(note.getItem(), col);
+            break;
+        }
+        case PimNode::Context:
+            PimItemStructureInterface::contextInstance().add(name, parents);
+            break;
+        case PimNode::Topic:
+            PimItemStructureInterface::topicInstance().add(name, parents);
+            break;
+        default:
+            Q_ASSERT(0);
+    }
 }
 
 void PimItemStructureInterface::remove(const PimNode& node, QWidget *)
@@ -137,57 +164,60 @@ void PimItemStructureInterface::rename(const PimNode& node, const QString& name)
 }
 
 
-// PimItemStructureInterface &PimItemStructureInterface::contextInstance()
-// {
-//     return *s_contextManager;
-// }
-// 
-// PimItemStructureInterface &PimItemStructureInterface::topicInstance()
-// {
-//     return *s_topicManager;
-// }
-// 
-// ProjectStructureInterface& PimItemStructureInterface::projectInstance()
-// {
-//     return *s_projectManager;
-// }
-// 
-// 
-// 
-// PimItemRelationInterface::PimItemRelationInterface()
-// :   mStructure(0)
-// {
-// }
-// 
-// PimItemRelationInterface::~PimItemRelationInterface()
-// {
-// }
-// 
-// void PimItemRelationInterface::setRelationsStructure(PimItemRelationsStructure *s)
-// {
-//     mStructure = s;
-// }
-// 
-// static Id toId(const QModelIndex &index)
-// {
-//     return index.data(Zanshin::RelationIdRole).toLongLong();
-// }
-// 
-// static IdList toId(const QModelIndexList &list)
-// {
-//     IdList parentIds;
-//     foreach (const QModelIndex &index, list) {
-//         parentIds << index.data(Zanshin::RelationIdRole).toLongLong();
-//     }
-//     return parentIds;
-// }
-// 
-// void PimItemRelationInterface::add(const QString& name, const QModelIndexList& parents)
-// {
-//     //kDebug() << name << parentCategory;
-//     mStructure->addNode(name, toId(parents));
-// }
-// 
+PimItemStructureInterface &PimItemStructureInterface::contextInstance()
+{
+    Q_ASSERT(s_contextManager);
+    return *s_contextManager;
+}
+
+PimItemStructureInterface &PimItemStructureInterface::topicInstance()
+{
+    Q_ASSERT(s_topicManager);
+    return *s_topicManager;
+}
+
+ProjectStructureInterface& PimItemStructureInterface::projectInstance()
+{
+    Q_ASSERT(s_projectManager);
+    return *s_projectManager;
+}
+
+
+
+PimItemRelationInterface::PimItemRelationInterface()
+:   mStructure(0)
+{
+}
+
+PimItemRelationInterface::~PimItemRelationInterface()
+{
+}
+
+void PimItemRelationInterface::setRelationsStructure(PimItemRelationsStructure *s)
+{
+    mStructure = s;
+}
+
+static Id toId(const PimNode &index)
+{
+    return index.relationId;
+}
+
+static IdList toId(const QList<PimNode> &list)
+{
+    IdList parentIds;
+    foreach (const PimNode &index, list) {
+        parentIds << index.relationId;
+    }
+    return parentIds;
+}
+
+void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& parents)
+{
+    //kDebug() << name << parentCategory;
+    mStructure->addNode(name, toId(parents));
+}
+
 // bool PimItemRelationInterface::remove(QWidget* widget, const QModelIndexList& relations)
 // {
 //     IdList relationIds = toId(relations);

@@ -22,24 +22,31 @@
 #define PROJECTSTRATEGY_H
 
 #include "reparentingstrategy.h"
+#include "pimitemrelations.h"
 
-class ProjectStrategy : public ReparentingStrategy
+class ProjectStrategy : public QObject, public ReparentingStrategy
 {
+    Q_OBJECT
 public:
     ProjectStrategy();
     virtual void init();
     virtual Id getId(const QModelIndex& );
     virtual IdList getParents(const QModelIndex&, const IdList &ignore = IdList());
     virtual void reset();
+    
+    virtual void onNodeRemoval(const Id& changed);
 
     virtual Qt::ItemFlags flags(const QModelIndex& index, Qt::ItemFlags flags);
     virtual Qt::DropActions supportedDropActions() const;
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
-
+private slots:
+    void doRemoveNode(Id id);
+    void doChangeParents(Id, IdList);
 private:
-    QHash<QString, Id> mUidMapping;
-    QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
+//     QHash<QString, Id> mUidMapping;
+//     QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
     const Id mInbox;
+    QScopedPointer<ProjectStructure> mRelations;
 };
 
 #endif // PROJECTSTRATEGY_H

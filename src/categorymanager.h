@@ -61,14 +61,14 @@ public:
     bool moveToCategory(Id id, Id category, Zanshin::ItemType parentType);
     bool renameCategory(Id id, const QString &name);
 
-    IdList getParents(const Akonadi::Item &item) const;
-    IdList getAncestors(const Akonadi::Item &item) const;
 private:
     friend class PimItemRelationsStructure;
 
     bool removeCategory(const Id &categoryPath);
 
     IdList getAncestors(Id id) const;
+    IdList getAncestors(const Akonadi::Item &item) const;
+    IdList getParents(const Akonadi::Item &item) const;
 
     QPointer<PimItemRelationsStructure> m_categoriesStructure;
 };

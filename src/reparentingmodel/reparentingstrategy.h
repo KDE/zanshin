@@ -111,6 +111,7 @@ protected:
      * Trigger an update of the parents (move the node to it's new parents).
      */
     void updateParents(Id id, IdList parents);
+    void updateParents(Id id);
     /**
      * Rename a virtual node.
      */

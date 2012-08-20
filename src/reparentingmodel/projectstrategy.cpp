@@ -36,9 +36,12 @@
 
 ProjectStrategy::ProjectStrategy()
 :   ReparentingStrategy(),
-    mInbox(1)
+    mInbox(1),
+    mRelations(new ProjectStructure())
 {
     mReparentOnRemoval = false;
+    connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
+    connect(mRelations.data(), SIGNAL(parentsChanged(Id,IdList)), this, SLOT(doChangeParents(Id, IdList)));
 }
 
 void ProjectStrategy::init()
@@ -54,32 +57,94 @@ void ProjectStrategy::init()
     node->setRowData(Zanshin::Inbox, Zanshin::ItemTypeRole);
 }
 
+static Id translateFrom(Id id)
+{
+    //TODO proper id mapping
+    return id+10;
+}
+
+static Id translateTo(Id id)
+{
+    //TODO proper id mapping
+    return id-10;
+}
+
+static IdList translateFrom(IdList l)
+{
+    IdList list;
+    foreach (Id id, l) {
+        list << translateFrom(id);
+    }
+    return list;
+}
+
+void ProjectStrategy::doRemoveNode(Id id)
+{
+    kDebug() << id;
+    //FIXME
+//     ReparentingStrategy::removeNode(translateFrom(id));
+}
+
+void ProjectStrategy::doChangeParents(Id id, IdList parents)
+{
+    ReparentingStrategy::updateParents(translateFrom(id), translateFrom(parents));
+}
 
 Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
     if (type==Zanshin::Collection) {
-        Akonadi::Collection::Id id = sourceChildIndex.data(Akonadi::EntityTreeModel::CollectionIdRole).value<Akonadi::Collection::Id>();
-        if (!mCollectionMapping.contains(id)) {
-            mCollectionMapping.insert(id, getNextId());
-        }
-//         kDebug() << "collection id: " << id << mCollectionMapping.value(id);
-        return mCollectionMapping.value(id);
+        return translateFrom(mRelations->addCollection(sourceChildIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>()));
     }
-    const QString &uid = sourceChildIndex.data(Zanshin::UidRole).toString();
-//     Q_ASSERT(!uid.isEmpty());
-    if (uid.isEmpty()) {
-        kWarning() << "no uid for item" << type;
-        return -1;
-    }
-    if (!mUidMapping.contains(uid)) {
-        mUidMapping.insert(uid, getNextId());
-    }
-    return mUidMapping.value(uid);
+    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url();
+    return translateFrom(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
 }
 
 IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList &ignore)
 {
+    Q_ASSERT(sourceChildIndex.isValid());
+    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url();
+    kDebug() << sourceChildIndex.data().toString();
+    mRelations->printCache();
+    IdList parents;
+    Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
+    if (type==Zanshin::Collection) {
+        const QModelIndex &parent = sourceChildIndex.parent();
+        if (parent.isValid()) {
+            return IdList() << getId(parent);
+        }
+        return IdList();
+    }
+    
+    Id id = mRelations->getItemId(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
+    parents = translateFrom(mRelations->getParents(id));
+    if (parents.isEmpty() || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
+        bool isProject = mRelations->hasChildren(id);
+        if (type == Zanshin::ProjectTodo) { //For projects without children
+            isProject = true;
+        }
+        if (!isProject && sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() != AbstractPimItem::Note) {
+            return IdList() << mInbox;
+        }
+        const QModelIndex &parent = sourceChildIndex.parent();
+        if (parent.isValid()) {
+            parents << getId(parent);
+        }
+    }
+
+    foreach(Id i, ignore) {
+        parents.removeAll(i);
+    }
+//     if (parents.isEmpty()) {
+//         return IdList() << mInbox;
+//     }
+    foreach(Id i, parents) {
+        //Because we may have just created a project
+        ReparentingStrategy::updateParents(i);
+    }
+    kDebug() << id << parents;
+    return parents;
+/*
     Id id = getId(sourceChildIndex);
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
 //     kDebug() << id << type;
@@ -90,8 +155,8 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
         }
         return IdList();
     }
-    const QString &parentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toString();
-//     kDebug() << parentUid;
+    const QStringList &parentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toStringList();
+    kDebug() << parentUid;
     IdList parents;
     if (parentUid.isEmpty() || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
         if (type != Zanshin::ProjectTodo && sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() != AbstractPimItem::Note) {
@@ -102,19 +167,26 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
             parents << getId(parent);
         }
     }
-    if (!parentUid.isEmpty()) {
-        if (!mUidMapping.contains(parentUid)) {
-            mUidMapping.insert(parentUid, getNextId());
+    Q_ASSERT(parentUid.size() <= 1);
+    foreach (const QString &p, parentUid) {
+        if (!mUidMapping.contains(p)) {
+            mUidMapping.insert(p, getNextId());
         }
-        parents << mUidMapping.value(parentUid);
+        parents << mUidMapping.value(p);
     }
-    return parents;
+    return parents; */
+}
+
+void ProjectStrategy::onNodeRemoval(const Id& changed)
+{
+    kDebug() << changed;
+    mRelations->removeNode(translateTo(changed));
 }
 
 void ProjectStrategy::reset()
 {
-    mUidMapping.clear();
-    mCollectionMapping.clear();
+//     mUidMapping.clear();
+//     mCollectionMapping.clear();
     ReparentingStrategy::reset();
 }
 

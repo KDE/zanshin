@@ -588,7 +588,7 @@ QString relationToXML(const PimItemRelation &rel)
     addElement(e, "type", typeToString(rel.type));
     element.appendChild(e);
     document.appendChild(element);
-//    kDebug() << document.toString();
+    kDebug() << document.toString();
     return document.toString();
 }
 

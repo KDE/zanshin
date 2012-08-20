@@ -237,20 +237,20 @@ static Akonadi::Item::List collectChildItems(const Akonadi::Item &item)
     return collectChildItemsRecHelper(item, job->items());
 }
 
-bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection)
-{
-    Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
-    const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-
-    if ((itemType == Zanshin::StandardTodo && parentType == Zanshin::StandardTodo)
-     || (itemType == Zanshin::ProjectTodo && parentType == Zanshin::StandardTodo)
-     || (itemType == Zanshin::Collection && parentType == Zanshin::ProjectTodo)
-     || (itemType == Zanshin::Collection && parentType == Zanshin::StandardTodo)) {
-         return false;
-    }
-
-    return moveTodoToProject(item, parentUid, parentType, parentCollection);
-}
+// bool TodoHelpers::moveTodoToProject(const QModelIndex &index, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection)
+// {
+//     Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
+//     const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+// 
+//     if ((itemType == Zanshin::StandardTodo && parentType == Zanshin::StandardTodo)
+//      || (itemType == Zanshin::ProjectTodo && parentType == Zanshin::StandardTodo)
+//      || (itemType == Zanshin::Collection && parentType == Zanshin::ProjectTodo)
+//      || (itemType == Zanshin::Collection && parentType == Zanshin::StandardTodo)) {
+//          return false;
+//     }
+// 
+//     return moveTodoToProject(item, parentUid, parentType, parentCollection);
+// }
 
 bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection)
 {

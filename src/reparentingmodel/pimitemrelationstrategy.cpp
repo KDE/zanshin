@@ -27,21 +27,29 @@
 #include <QMimeData>
 
 #include "reparentingmodel.h"
+#include "pimitemrelationinterface.h"
 #include <categorymanager.h>
 
 PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),
     mInbox(1),
     mRoot(2),
-    mRelations(new PimItemRelationsStructure(type)),
+    mRelations(type == PimItemRelation::Project ? (PimItemRelations*)new ProjectStructure() : (PimItemRelations*)new PimItemRelationsStructure(type)),
     mType(type)
 {
-    if (type == PimItemRelation::Context) {
-        CategoryManager::contextInstance().setCategoriesStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
-    } else if (type == PimItemRelation::Topic) {
-        CategoryManager::topicInstance().setCategoriesStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+    switch (type) {
+        case PimItemRelation::Context:
+            mReparentOnRemoval = true;
+            static_cast<PimItemRelationInterface*>(&PimItemStructureInterface::contextInstance())->setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+            break;
+        case PimItemRelation::Topic:
+            mReparentOnRemoval = true;
+            static_cast<PimItemRelationInterface*>(&PimItemStructureInterface::topicInstance())->setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+            break;
+        case PimItemRelation::Project:
+            mReparentOnRemoval = false;
+            break;
     }
-    mReparentOnRemoval = true;
     connect(mRelations.data(), SIGNAL(virtualNodeAdded(Id, IdList, QString)), this, SLOT(createVirtualNode(Id, IdList, QString)));
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
     connect(mRelations.data(), SIGNAL(parentsChanged(Id,IdList)), this, SLOT(doChangeParents(Id, IdList)));
@@ -326,6 +334,9 @@ QVariant PimItemRelationStrategy::data(Id id, int role) const
 {
     if (role == Zanshin::RelationIdRole) {
         return translateTo(id);
+    }
+    if (role == Zanshin::UriRole) {
+        
     }
     return ReparentingStrategy::data(id, role);
 }

@@ -32,18 +32,17 @@
 #include <pimitem.h>
 #include <incidenceitem.h>
 
-QString getParentProject(const QList<PimItemRelation> &relations)
+QStringList getParentProjects(const QList<PimItemRelation> &relations)
 {
+    QStringList parents;
     foreach (const PimItemRelation &rel, relations) {
-        if (rel.parentNodes.isEmpty()) {
-            continue;
-        }
         if (rel.type == PimItemRelation::Project) {
-            Q_ASSERT(!rel.parentNodes.isEmpty());
-            return rel.parentNodes.first().uid;
+            foreach(const PimItemTreeNode &node, rel.parentNodes) {
+                parents << node.uid;
+            }
         }
     }
-    return QString();
+    return parents;
 }
 
 
@@ -129,9 +128,9 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     case Zanshin::UidRole:
         return pimitem->getUid();
     case Zanshin::ParentUidRole:
-        return getParentProject(pimitem->getRelations());
-    case Zanshin::AncestorsUidRole:
-        return ancestorsUidFromItem(item);
+        return getParentProjects(pimitem->getRelations());
+//     case Zanshin::AncestorsUidRole:
+//         return ancestorsUidFromItem(item);
     case Zanshin::ItemTypeRole:
         return itemTypeFromItem(item);
     case Zanshin::DataTypeRole:
@@ -169,11 +168,12 @@ void TodoMetadataModel::onSourceInsertRows(const QModelIndex &parent, int begin,
 
         m_indexMap[uid] = child;
 
-        const QString relatedUid = getParentProject(pimitem->getRelations());
+        const QStringList parents = getParentProjects(pimitem->getRelations());
 
-        if (relatedUid.isEmpty()) {
+        if (parents.isEmpty()) {
             continue;
         }
+        QString relatedUid = parents.first();
 
         m_parentMap[uid] = relatedUid;
         m_childrenMap[relatedUid] << uid;
@@ -215,7 +215,11 @@ void TodoMetadataModel::onSourceDataChanged(const QModelIndex &begin, const QMod
             }
 
             const QString uid = pimitem->getUid();
-            const QString newRelatedUid = getParentProject(pimitem->getRelations());
+            const QStringList parents = getParentProjects(pimitem->getRelations());
+            QString newRelatedUid;
+            if (!parents.isEmpty()) {
+                newRelatedUid = parents.first();
+            }
 
             QString oldRelatedUid;
             if (m_parentMap.contains(uid)) {
@@ -255,13 +259,16 @@ void TodoMetadataModel::cleanupDataForSourceIndex(const QModelIndex &index)
     }
 
     const QString uid = pimitem->getUid();
-    const QString relatedUid = getParentProject(pimitem->getRelations());
+    const QStringList relatedUid = getParentProjects(pimitem->getRelations());
+    if (relatedUid.isEmpty()) {
+        return;
+    }
 
-    QModelIndex parentIndex = m_indexMap[relatedUid];
+    QModelIndex parentIndex = m_indexMap[relatedUid.first()];
     Zanshin::ItemType parentType = (Zanshin::ItemType)parentIndex.data(Zanshin::ItemTypeRole).toInt();
 
     m_parentMap.remove(uid);
-    m_childrenMap[relatedUid].removeAll(uid);
+    m_childrenMap[relatedUid.first()].removeAll(uid);
     m_indexMap.remove(uid);
 
     if (parentType==Zanshin::ProjectTodo
@@ -278,7 +285,6 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
     }
 
     const QString uid = pimitem->getUid();
-    const QString relatedUid = getParentProject(pimitem->getRelations());
     
     const int childCount = m_childrenMap.contains(uid) ? m_childrenMap[uid].count() : 0;
     if (static_cast<IncidenceItem*>(pimitem.data())->isProject()
@@ -289,25 +295,24 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
     }
 }
 
-QStringList TodoMetadataModel::ancestorsUidFromItem(const Akonadi::Item &item) const
-{
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-    if (pimitem.isNull()) {
-        return QStringList();
-    }
-
-    QString id = pimitem->getUid();
-    const QString relatedUid = getParentProject(pimitem->getRelations());
-
-    QStringList result;
-    while (m_parentMap.contains(id)) {
-        const QString parentId = m_parentMap[id];
-        Q_ASSERT(!parentId.isEmpty());
-        result << parentId;
-        id = parentId;
-    }
-    return result;
-}
+// QStringList TodoMetadataModel::ancestorsUidFromItem(const Akonadi::Item &item) const
+// {
+//     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+//     if (pimitem.isNull()) {
+//         return QStringList();
+//     }
+// 
+//     QString id = pimitem->getUid();
+// 
+//     QStringList result;
+//     while (m_parentMap.contains(id)) {
+//         const QString parentId = m_parentMap[id];
+//         Q_ASSERT(!parentId.isEmpty());
+//         result << parentId;
+//         id = parentId;
+//     }
+//     return result;
+// }
 
 QStringList TodoMetadataModel::childUidsFromItem(const Akonadi::Item &item) const
 {
