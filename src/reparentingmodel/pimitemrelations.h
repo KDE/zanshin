@@ -70,12 +70,14 @@ public:
     //Handles merging, typically the tree of a single item
     virtual Id addItem(const Akonadi::Item &);
     Id getItemId(const Akonadi::Item &) const;
+    Id getId(const QString &uid);
     
     virtual void removeNode(Id);
     
     //for all nodes
     IdList getParents(Id child);
     
+    virtual void addNode(const QString &name, const IdList &parents){};
     //for all nodes
     void moveNode(Id, IdList parents);
     virtual bool isVirtual(Id) const;

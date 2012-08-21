@@ -28,7 +28,7 @@ class ProjectStrategy : public QObject, public ReparentingStrategy
 {
     Q_OBJECT
 public:
-    ProjectStrategy();
+    ProjectStrategy(ProjectStructure *structure = new ProjectStructure());
     virtual void init();
     virtual Id getId(const QModelIndex& );
     virtual IdList getParents(const QModelIndex&, const IdList &ignore = IdList());

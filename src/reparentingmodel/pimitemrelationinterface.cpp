@@ -182,20 +182,20 @@ ProjectStructureInterface& PimItemStructureInterface::projectInstance()
     return *s_projectManager;
 }
 
+void PimItemStructureInterface::setRelationsStructure(PimItemRelationCache *s)
+{
+    mStructure = s;
+}
+
+
 
 
 PimItemRelationInterface::PimItemRelationInterface()
-:   mStructure(0)
 {
 }
 
 PimItemRelationInterface::~PimItemRelationInterface()
 {
-}
-
-void PimItemRelationInterface::setRelationsStructure(PimItemRelationsStructure *s)
-{
-    mStructure = s;
 }
 
 static Id toId(const PimNode &index)
@@ -375,6 +375,12 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
         return false;
     }
 
+    IdList parents;
+    parents << mStructure->getId(parent.uid);
+    Id nodeId = mStructure->getItemId(node.item);
+    mStructure->moveNode(nodeId, parents);
+    return true;
+
 //     if ((itemType == Zanshin::StandardTodo && parentType == Zanshin::StandardTodo)
 //      || (itemType == Zanshin::ProjectTodo && parentType == Zanshin::StandardTodo)
 //      || (itemType == Zanshin::Collection && parentType == Zanshin::ProjectTodo)
@@ -388,7 +394,6 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
 //     Akonadi::Collection parentCollection;
 // 
 //     return TodoHelpers::moveTodoToProject(item, pimitem->getUid(), parentType, parentCollection);
-    return false;
 }
 
 

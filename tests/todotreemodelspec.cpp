@@ -31,6 +31,7 @@
 #include <reparentingmodel/reparentingmodel.h>
 #include <reparentingmodel/projectstrategy.h>
 #include <reparentingmodel/pimitemrelationstrategy.h>
+#include <reparentingmodel/pimitemrelationinterface.h>
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modeltest.h"
@@ -571,7 +572,10 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
-        ReparentingModel treeModel(new ProjectStrategy());
+        ProjectStructure *structure = new ProjectStructure();
+        ProjectStructureInterface *interface = new ProjectStructureInterface();
+        interface->setRelationsStructure(structure);
+        ReparentingModel treeModel(new ProjectStrategy(structure));
         ModelTest t1(&treeModel);
 
         treeModel.setSourceModel(&source);
@@ -582,8 +586,9 @@ private slots:
 
         QFETCH(QString, parentUid);
         if (!parentUid.isEmpty()) {
-            //FIXME broken because we don't support this mechanism any more
-            source.setData(index, QStringList() << parentUid, Zanshin::ParentUidRole);
+            PimNode parent(PimNode::Project);
+            parent.uid = parentUid;
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
         }
 
         //THEN

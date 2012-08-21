@@ -34,10 +34,10 @@
 #include <Akonadi/ItemFetchScope>
 #include <KUrl>
 
-ProjectStrategy::ProjectStrategy()
+ProjectStrategy::ProjectStrategy(ProjectStructure *structure)
 :   ReparentingStrategy(),
     mInbox(1),
-    mRelations(new ProjectStructure())
+    mRelations(structure)
 {
     mReparentOnRemoval = false;
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));

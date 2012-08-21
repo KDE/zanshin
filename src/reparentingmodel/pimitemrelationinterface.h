@@ -68,6 +68,7 @@ class ProjectStructureInterface;
         Akonadi::Item item;
         Id relationId;
         Akonadi::Collection collection;
+        QString uid;
     };
 
 class PimItemStructureInterface
@@ -96,12 +97,16 @@ public:
     static void unlink(const PimNode &node, const PimNode &parent);
     static void rename(const PimNode &node, const QString &name);
 
+    void setRelationsStructure(PimItemRelationCache *);
+
     virtual void add(const QString &/*name*/, const QList<PimNode> &parents = QList<PimNode>()) {};
 //     virtual bool remove(QWidget * /*widget*/, const QModelIndexList &relations) {return false;};
 //     virtual bool moveTo(const QModelIndex &/*node*/, const QModelIndex &parent) = 0;
 //     virtual bool linkTo(const QModelIndex &/*node*/, const QModelIndex &parent) {return false;};
 //     virtual bool unlink(const Akonadi::Item &/*item*/, QModelIndex parent) {return false;};
 //     virtual bool rename(const QModelIndex &node, const QString &name) {return false;};
+protected:
+    QPointer<PimItemRelationCache> mStructure;
 };
 
 class PimItemRelationInterface : public PimItemStructureInterface
@@ -109,8 +114,6 @@ class PimItemRelationInterface : public PimItemStructureInterface
 public:
     PimItemRelationInterface();
     virtual ~PimItemRelationInterface();
-
-    void setRelationsStructure(PimItemRelationsStructure *);
 
     void add(const QString &name, const QList<PimNode> &parents = QList<PimNode>());
 //     bool remove(QWidget *widget, const QModelIndexList &relations);
@@ -121,7 +124,6 @@ public:
 private:
     friend class PimItemRelationsStructure;
 //     bool remove(const Id &relation);
-    QPointer<PimItemRelationsStructure> mStructure;
 };
 // 
 class ProjectStructureInterface: public PimItemStructureInterface

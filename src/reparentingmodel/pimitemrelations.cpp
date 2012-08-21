@@ -78,10 +78,20 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
 Id PimItemRelationCache::getItemId(const Akonadi::Item &item) const
 {
     kDebug() << item.id();
+    qDebug() << "itemids: " << mItemIdCache;
+    qDebug() << "parents " << mParents;
+    qDebug() << "uids " << mUidMapping;
     Q_ASSERT(item.isValid());
     Q_ASSERT(mItemIdCache.contains(item.id()));
     return mItemIdCache.value(item.id());
 }
+
+Id PimItemRelationCache::getId(const QString& uid)
+{
+    kDebug() << uid << mUidMapping;
+    return mUidMapping.value(uid.toLatin1());
+}
+
 
 Id PimItemRelationCache::getOrCreateItemId(const Akonadi::Item &item)
 {
@@ -140,7 +150,7 @@ IdList PimItemRelationCache::getAffectedChildItems(Id id) const
 
 void PimItemRelationCache::moveNode(Id id, IdList parents)
 {
-//     kDebug() << id << parents;
+    kDebug() << id << parents;
     IdList itemList = getAffectedChildItems(id);
     if (!isVirtual(id)) {
         itemList << id;
@@ -438,10 +448,10 @@ Id ProjectStructure::addItem(const Akonadi::Item &item)
 
 void ProjectStructure::printCache()
 {
-    qDebug() << mItemIdCache;
-    qDebug() << mCollectionMapping;
-    qDebug() << mParents;
-    qDebug() << mUidMapping;
+    qDebug() << "itemids: " << mItemIdCache;
+    qDebug() << "collections: " << mCollectionMapping;
+    qDebug() << "parents " << mParents;
+    qDebug() << "uids " << mUidMapping;
 
 }
 
