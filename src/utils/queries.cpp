@@ -27,7 +27,6 @@
 #include <QRegExp>
 
 #include <Nepomuk2/Tag>
-#include <Nepomuk2/Thing>
 #include <nepomuk2/simpleresource.h>
 #include <nepomuk2/simpleresourcegraph.h>
 #include <nepomuk2/query.h>
@@ -95,7 +94,9 @@ namespace MindMirrorQueries
     Nepomuk2::Query::Term itemThingTerm(const Akonadi::Item &item)
     {
         AndTerm outer;
-        outer.addSubTerm(ResourceTypeTerm(Class(PIMO::Thing())));
+        Q_ASSERT(0);
+        //FIXME replace useage of PIMO::Thing
+//        outer.addSubTerm(ResourceTypeTerm(Class(PIMO::Thing())));
         return ComparisonTerm(Nepomuk2::Types::Property(PIMO::groundingOccurrence()), itemResourceTerm(item), ComparisonTerm::Equal);
     }
     
