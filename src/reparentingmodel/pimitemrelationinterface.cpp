@@ -376,7 +376,9 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
     }
 
     IdList parents;
-    parents << mStructure->getId(parent.uid);
+    if (parent.type != PimNode::Empty) {
+        parents << mStructure->getId(parent.uid);
+    }
     Id nodeId = mStructure->getItemId(node.item);
     mStructure->moveNode(nodeId, parents);
     return true;

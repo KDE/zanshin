@@ -55,6 +55,7 @@ class ProjectStructureInterface;
         
         enum NodeType {
             Invalid,
+            Empty,
             Collection,
             Project,
             Context,

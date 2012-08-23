@@ -128,6 +128,14 @@ void ReparentingStrategy::setData(Id id, const QVariant& value, int role)
     node->setData(value, 0, role);
 }
 
+Akonadi::Collection ReparentingStrategy::getParentCollection(Id id)
+{
+
+    TodoNode *node = m_model->m_parentMap.value(id);
+    Q_ASSERT(node);
+    return node->rowSourceIndex().parent().data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+}
+
 
 
 TestReparentingStrategy::TestReparentingStrategy()

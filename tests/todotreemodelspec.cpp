@@ -505,60 +505,56 @@ private slots:
         T p3(3, 1, "p3", "p1", "p3", InProgress, ProjectTag);
         T t1(11, 1, "t1", "p1", "t1");
         T t2(22, 1, "t2", "p2", "t2");
-        T t3(22, 1, "t3", "p3", "t3");
+        T t3(33, 1, "t3", "p3", "t3");
         C c2(2, 0, "c2");
         T p4(4, 2, "p4", QString(), "p4", InProgress, ProjectTag);
 
-        // Create the source structure once and for all
-        ModelStructure sourceStructure;
-        sourceStructure << c1
-//                         << _+t1
-                        << _+t2
-//                         << _+t3
-                        << _+p1
-                        << _+p2;
-//                         << _+p3
-//                         << c2
-//                         << _+p4;
+        {
+            ModelStructure sourceStructure;
+            sourceStructure << c1
+                            << _+t2
+                            << _+p1
+                            << _+p2;
 
-        ModelPath itemToChange = c1 % p2;
+            ModelPath itemToChange = c1 % p2;
 
-        QString parentUid = "p1";
+            QString parentUid = "p1";
 
-        ModelStructure outputStructure;
-        outputStructure << inbox
-                        << c1
-                        << _+p1
-//                         << __+t1
-//                         << __+p3
-//                         << ___+t3
-                        << __+p2
-                        << ___+t2;
-//                         << c2
-//                         << _+p4;
+            ModelStructure outputStructure;
+            outputStructure << inbox
+                            << c1
+                            << _+p1
+                            << __+p2
+                            << ___+t2;
 
-        QTest::newRow( "root project moved under another project of the same collection" )
-            << sourceStructure << itemToChange
-            << parentUid << outputStructure;
+            QTest::newRow( "root project moved under another project of the same collection" )
+                << sourceStructure << itemToChange
+                << parentUid << outputStructure;
+        }
+        {
+            ModelStructure sourceStructure;
+            sourceStructure << c1
+                            << _+t2
+                            << _+t3
+                            << _+p1
+                            << _+p2
+                            << _+p3;
 
-
-//         itemToChange = c1 % p3;
-//         parentUid = QString();
-//         outputStructure.clear();
-//         outputStructure << inbox
-//                         << c1
-//                         << _+p1
-//                         << __+t1
-//                         << _+p2
-//                         << __+t2
-//                         << _+p3
-//                         << __+t3
-//                         << c2
-//                         << _+p4;
-// 
-//         QTest::newRow( "sub-project moved as root in the same collection" )
-//             << sourceStructure << itemToChange
-//             << parentUid << outputStructure;
+            ModelPath itemToChange = c1 % p3;
+            QString parentUid = QString();
+            ModelStructure outputStructure;
+            outputStructure << inbox
+                            << c1
+                            << _+p2
+                            << __+t2
+                            << _+p1
+                            << _+p3
+                            << __+t3;
+                            
+            QTest::newRow( "sub-project moved as root in the same collection" )
+                << sourceStructure << itemToChange
+                << parentUid << outputStructure;
+        }
 
     }
 
@@ -589,6 +585,8 @@ private slots:
             PimNode parent(PimNode::Project);
             parent.uid = parentUid;
             interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
+        } else {
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimNode(PimNode::Empty));
         }
 
         //THEN

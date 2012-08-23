@@ -121,6 +121,8 @@ protected:
      */
     QVariant getData(Id id, int role);
     void setData(Id id, const QVariant &value, int role);
+
+    Akonadi::Collection getParentCollection(Id id);
     
     Id getNextId();
     /**

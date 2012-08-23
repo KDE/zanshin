@@ -87,6 +87,12 @@ void ProjectStrategy::doRemoveNode(Id id)
 
 void ProjectStrategy::doChangeParents(Id id, IdList parents)
 {
+    if (parents.isEmpty()) {
+        const Akonadi::Collection col = getParentCollection(translateFrom(id));
+        if (col.isValid()) {
+            parents << mRelations->addCollection(col);
+        }
+    }
     ReparentingStrategy::updateParents(translateFrom(id), translateFrom(parents));
 }
 
