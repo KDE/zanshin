@@ -99,9 +99,10 @@ protected:
     
     QMultiMap<Id, Id> mParents;
     QMap<Akonadi::Item::Id, Id> mItemIdCache;
-    Id mIdCounter;
     QHash<QByteArray, Id> mUidMapping;
+    Id getNextId();
 private:
+    Id mIdCounter;
     Id getOrCreateItemId(const Akonadi::Item &item);
 
 };

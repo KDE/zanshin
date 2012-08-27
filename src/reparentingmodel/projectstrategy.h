@@ -43,6 +43,7 @@ private slots:
     void doRemoveNode(Id id);
     void doChangeParents(Id, IdList);
 private:
+    void checkParents(const IdList &);
 //     QHash<QString, Id> mUidMapping;
 //     QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
     const Id mInbox;

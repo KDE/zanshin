@@ -161,7 +161,11 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
                 childNode->setParent(0);
             }
         }
-
+        //If a strategy removes/moves a parent node after it's children have been removed, the pointer may be invalid at this point. We should probably be using smart pointers to detect such problems better.
+        if (!m_parentMap.values().contains(root)) {
+            return;
+        }
+        Q_ASSERT(m_parentMap.values().contains(root));
         QModelIndex proxyParentIndex = m_manager->indexForNode(root->parent(), 0);
         int row = 0;
 
@@ -180,9 +184,7 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
     if (cleanupStrategy) {
         m_strategy->onNodeRemoval(id);
     }
-    //This removes all in one go
     m_parentMap.remove(id);
-
 }
 
 void ReparentingModel::removeNodeById(Id id) //TODO remove

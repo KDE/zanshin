@@ -87,13 +87,21 @@ void ProjectStrategy::doRemoveNode(Id id)
 
 void ProjectStrategy::doChangeParents(Id id, IdList parents)
 {
+    IdList p;
     if (parents.isEmpty()) {
-        const Akonadi::Collection col = getParentCollection(translateFrom(id));
-        if (col.isValid()) {
-            parents << mRelations->addCollection(col);
+        bool isProject = mRelations->hasChildren(id);
+        if (isProject) {
+            const Akonadi::Collection col = getParentCollection(translateFrom(id));
+            if (col.isValid()) {
+                p << translateFrom(mRelations->addCollection(col));
+            }
+        } else {
+            p << mInbox;
         }
+    } else {
+        p << translateFrom(parents);
     }
-    ReparentingStrategy::updateParents(translateFrom(id), translateFrom(parents));
+    ReparentingStrategy::updateParents(translateFrom(id), p);
 }
 
 Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
@@ -137,6 +145,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
             parents << getId(parent);
         }
     }
+    Q_ASSERT(!parents.contains(translateFrom(id)));
 
     foreach(Id i, ignore) {
         parents.removeAll(i);
@@ -185,8 +194,19 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
 
 void ProjectStrategy::onNodeRemoval(const Id& changed)
 {
+    IdList parents = translateFrom(mRelations->getParents(translateTo(changed)));
+    kDebug() << changed << parents;
     kDebug() << changed;
     mRelations->removeNode(translateTo(changed));
+    checkParents(parents);
+}
+
+void ProjectStrategy::checkParents(const IdList &parentsToCheck)
+{
+    foreach(Id id, parentsToCheck) {
+        //Because we may have just removed a project
+        ReparentingStrategy::updateParents(id);
+    }
 }
 
 void ProjectStrategy::reset()

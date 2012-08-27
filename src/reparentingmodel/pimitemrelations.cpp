@@ -64,9 +64,11 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
 //     kDebug() << pimitem->itemType();
     Id id = getOrCreateItemId(item);
     const Relation &rel = getRelationTree(id, item);
+    Q_ASSERT(rel.id == id);
     qDebug() << " <<<<<<<<<<<<<<<<< " << item.url().url() << id << rel.id << rel.parentNodes.size();
     mParents.remove(id);
     foreach (const TreeNode &node, rel.parentNodes) {
+        Q_ASSERT(id != node.id);
         mParents.insert(id, node.id);
         mergeNode(node);
     }
@@ -106,7 +108,8 @@ Id PimItemRelationCache::getOrCreateItemId(const Akonadi::Item &item)
     if (mUidMapping.contains(uid)) {
         id = mUidMapping.value(uid);
     } else {
-        id = mIdCounter++;
+        id = getNextId();
+        mUidMapping.insert(uid, id);
     }
     mItemIdCache[item.id()] = id;
 //    kDebug() << item.id() << id;
@@ -193,6 +196,11 @@ void PimItemRelationCache::removeNode(Id id)
 
     emit nodeRemoved(id);
     emit updateItems(itemList);
+}
+
+Id PimItemRelationCache::getNextId()
+{
+    return mIdCounter++;
 }
 
 
@@ -289,7 +297,7 @@ PimItemRelationsStructure::PimItemRelationsStructure(PimItemRelation::Type type)
 TreeNode PimItemRelationsStructure::createNode(const PimItemTreeNode &node)
 {
     if (!mUidMapping.contains(node.uid)) {
-        mUidMapping.insert(node.uid, mIdCounter++);
+        mUidMapping.insert(node.uid, getNextId());
     }
     Id id = mUidMapping.value(node.uid);
     QList<TreeNode> parents;
@@ -378,8 +386,7 @@ void PimItemRelationsStructure::addNode(const QString& name, const IdList& paren
         parentNodes << TreeNode(getName(parent), parent, getParentList(parent));
         Q_ASSERT(!getName(parent).isEmpty());
     }
-    mIdCounter++;
-    Id id = mIdCounter;
+    Id id = getNextId();
     mUidMapping.insert(QUuid::createUuid().toByteArray(), id);
     mergeNode(TreeNode(name, id, parentNodes));
 }
@@ -412,7 +419,7 @@ Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
             foreach (const PimItemTreeNode &p, rel.parentNodes) {
                 qDebug() << p.uid;
                 if (!mUidMapping.contains(p.uid)) {
-                    mUidMapping.insert(p.uid, mIdCounter++);
+                    mUidMapping.insert(p.uid, getNextId());
                 }
                 Id projectId = mUidMapping.value(p.uid);
                 parents << TreeNode(p.name, projectId);
@@ -430,7 +437,7 @@ void ProjectStructure::updateRelationTree(Akonadi::Item& item)
 Id ProjectStructure::addCollection(const Akonadi::Collection &col)
 {
     if (!mCollectionMapping.contains(col.id())) {
-        mCollectionMapping.insert(col.id(), mIdCounter++);
+        mCollectionMapping.insert(col.id(), getNextId());
     }
     return mCollectionMapping.value(col.id());
 }
