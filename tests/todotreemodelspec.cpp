@@ -275,7 +275,6 @@ private slots:
 
         QCOMPARE(treeModel, output);
 
-        QEXPECT_FAIL("", "Reparents lead to some remove/add operations", Abort);
         QCOMPARE(aboutToRemoveSpy.size(), parents.size());
         QCOMPARE(removeSpy.size(), parents.size());
 
@@ -546,9 +545,9 @@ private slots:
             ModelStructure outputStructure;
             outputStructure << inbox
                             << c1
+                            << _+p1
                             << _+p2
                             << __+t2
-                            << _+p1
                             << _+p3
                             << __+t3;
                             

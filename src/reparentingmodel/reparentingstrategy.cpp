@@ -97,7 +97,7 @@ void ReparentingStrategy::updateParents(Id id)
     Q_ASSERT(node);
     IdList parents = getParents(node->rowSourceIndex());
     kDebug() << id << parents;
-    m_model->reparentNode(id, parents);
+    m_model->reparentNode(id, parents, node->rowSourceIndex());
 }
 
 
