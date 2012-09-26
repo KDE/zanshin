@@ -75,8 +75,8 @@ private slots:
             return;
         }
         Q_ASSERT(results.size() == 1);
-        //kDebug() <<  results.size() << results.first().resource().resourceUri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
-        Nepomuk2::Resource thing(results.first().resource().resourceUri());
+        //kDebug() <<  results.size() << results.first().resource().uri() << results.first().resource().label() << results.first().resource().types() << results.first().resource().className();
+        Nepomuk2::Resource thing(results.first().resource().uri());
         Q_ASSERT(thing.isValid());
         mThing = thing;
         mThingFound = true;
@@ -86,7 +86,7 @@ private slots:
     void topicsFound(const QList< Nepomuk2::Query::Result > &results)
     {
         foreach (const Nepomuk2::Query::Result &result, results) {
-            mTopics.append(result.resource().resourceUri());
+            mTopics.append(result.resource().uri());
         }
     }
     
@@ -106,7 +106,7 @@ private slots:
             //             kDebug() << url;
             values << url;
         }
-        KJob *removeJob = Nepomuk2::removeProperty(QList<QUrl>() << mThing.resourceUri(), Nepomuk2::Vocabulary::PIMO::isRelated(), values);
+        KJob *removeJob = Nepomuk2::removeProperty(QList<QUrl>() << mThing.uri(), Nepomuk2::Vocabulary::PIMO::isRelated(), values);
         connect(removeJob, SIGNAL(result(KJob*)), SLOT(removeJobFinished(KJob*)));
     }
     

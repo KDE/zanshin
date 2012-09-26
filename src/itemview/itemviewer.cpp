@@ -275,7 +275,7 @@ void ItemViewer::setItem(const Nepomuk2::Resource &res)
 {
     Akonadi::Item item = PimItemUtils::getItemFromResource(res);    
     if (!item.isValid()) {
-        kWarning() << "invalid item passed" << res.resourceUri().toString();
+        kWarning() << "invalid item passed" << res.uri().toString();
         return;
     }
     setItem(item);

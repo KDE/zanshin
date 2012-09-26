@@ -67,7 +67,7 @@ void ItemMonitor::newTopics(const QList< Nepomuk2::Query::Result > &results)
         const Nepomuk2::Resource &res = result.resource();
         const Soprano::Node &property = result.requestProperty(Soprano::Vocabulary::NAO::prefLabel());
 //         kDebug() << "result added: " << property.isValid() << property.isLiteral() << property.literal().isString() << property.literal().type() << result.requestProperties().size();
-        mTopics.insert(res.resourceUri(), property.literal().toString());
+        mTopics.insert(res.uri(), property.literal().toString());
     }
     emit topicsChanged(mTopics.values());
 }

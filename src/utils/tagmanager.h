@@ -29,7 +29,6 @@
 #include <QRegExp>
 
 #include <Nepomuk2/Tag>
-#include <Nepomuk2/Thing>
 #include <nepomuk2/simpleresource.h>
 #include <nepomuk2/simpleresourcegraph.h>
 
