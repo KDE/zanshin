@@ -84,6 +84,9 @@ TodoNode *TodoNodeManager::nodeForIndex(const QModelIndex &index) const
 
     TodoNode *parentNode = static_cast<TodoNode*>(index.internalPointer());
     if (parentNode != 0) {
+        Q_ASSERT(parentNode->children().size() > index.row());
+        if (parentNode->children().size() <= index.row())
+            return 0;
         return parentNode->children().at(index.row());
     } else {
         return m_roots.at(index.row());

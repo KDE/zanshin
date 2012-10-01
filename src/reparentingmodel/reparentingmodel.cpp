@@ -175,6 +175,7 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
             row = m_manager->roots().indexOf(root);
         }
 
+        Q_ASSERT(rootNodes.count(root) <= 1); //Duplicates would lead to us trying to delete an already deleted node again
         beginRemoveRows(proxyParentIndex, row, row);
         m_manager->removeNode(root);
         delete root;
@@ -411,7 +412,7 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
 
         const QModelIndexList &list = mapFromSourceAll(index);
         foreach (const QModelIndex &proxyIndex, list) {
-            dataChanged(proxyIndex, proxyIndex);
+            emit dataChanged(proxyIndex, proxyIndex);
         }
     }
 //     Q_ASSERT(!m_parentMap.values().contains(0));

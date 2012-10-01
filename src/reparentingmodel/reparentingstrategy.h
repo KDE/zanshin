@@ -119,7 +119,7 @@ protected:
     /**
      * Get the data of a node (same as index.data)
      */
-    QVariant getData(Id id, int role);
+    QVariant getData(Id id, int role) const;
     void setData(Id id, const QVariant &value, int role);
 
     Akonadi::Collection getParentCollection(Id id);

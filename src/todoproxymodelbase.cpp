@@ -62,7 +62,12 @@ QModelIndex TodoProxyModelBase::parent(const QModelIndex &index) const
         return QModelIndex();
     }
 
-    TodoNode *parent = m_manager->nodeForIndex(index)->parent();
+    TodoNode *node = m_manager->nodeForIndex(index);
+    Q_ASSERT(node);
+    if (!node) {
+        return QModelIndex();
+    }
+    TodoNode *parent = node->parent();
 
     if (parent == 0) {
         return QModelIndex();
