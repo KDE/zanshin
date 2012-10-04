@@ -4,7 +4,7 @@
 * Contributing to Zanshin
 
   Patches should be sent for review to Kevin Ottens <ervin@kde.org> before
-  being committed to Subversion. If major user interface changes are being
+  being committed to Git. If major user interface changes are being
   made, a screenshot of what the application looks like after the change
   should be sent along with the patch.
 
