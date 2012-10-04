@@ -39,6 +39,8 @@ public:
     virtual Qt::ItemFlags flags(const QModelIndex& index, Qt::ItemFlags flags);
     virtual Qt::DropActions supportedDropActions() const;
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
+
+    virtual QVariant data(Id id, int role) const;
 private slots:
     void doRemoveNode(Id id);
     void doChangeParents(Id, IdList);

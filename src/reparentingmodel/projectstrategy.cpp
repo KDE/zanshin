@@ -295,3 +295,42 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
 
     return false;
 }
+
+QVariant ProjectStrategy::data(Id id, int role) const
+{
+    const Akonadi::Item item = getData(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    bool isProject = false;
+    bool isTodo = false;
+    if (!pimitem.isNull() && (pimitem->itemType() == AbstractPimItem::Todo)) {
+        isTodo = true;
+        if (static_cast<IncidenceItem*>(pimitem.data())->isProject()
+        || mRelations->hasChildren(translateTo(id))) {
+            isProject = true;
+        } 
+    }
+
+    switch (role) {
+        case Zanshin::ItemTypeRole: {
+            if (id == mInbox) {
+                return Zanshin::Inbox;
+            } else if (!item.isValid()) {
+                return Zanshin::Collection;
+            } else if (isProject) {
+                return Zanshin::ProjectTodo;
+            }
+            return Zanshin::StandardTodo;
+        }
+        case Qt::CheckStateRole:
+            if (isTodo && !isProject) {
+                return (pimitem->getStatus() == AbstractPimItem::Complete) ? Qt::Checked : Qt::Unchecked;
+            }
+            break;
+        case Qt::DecorationRole:
+            if (isProject) {
+                return KIcon("view-pim-tasks");
+            }
+            break;
+    }
+    return QVariant();
+}

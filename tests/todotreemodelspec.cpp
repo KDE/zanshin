@@ -785,6 +785,7 @@ private slots:
 
         Helper::printModel(&todoTreeModel);
         
+        //If this fails we likely forgot to return the proper Zanshin::ItemType TODO write an explicit test to check if that is done properly
         QModelIndex index = ModelUtils::locateItem(&todoTreeModel, itemPath);
         index = index.sibling(index.row(), column);
 
@@ -922,6 +923,48 @@ private slots:
                         << _+t2
                         << c1
                         << _+t1;
+
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(treeModel, output);
+    }
+    
+    void shouldPromoteTodosWithSubtodos()
+    {
+        //GIVEN
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        T t1(3, 1, "t1", QString(), "t1");
+        T t2(4, 1, "t2", "t1", "t2");
+
+        // Source structure
+        ModelStructure sourceStructure;
+        sourceStructure << c1
+                        << _+t1
+                        << _+t2;
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create treeModel
+        ReparentingModel treeModel(new ProjectStrategy());
+        ModelTest modelTest(&treeModel);
+
+        treeModel.setSourceModel(&source);
+
+        //WHEN
+        ModelPath itemToPromote = c1 % t1;
+        QModelIndex index = ModelUtils::locateItem(&treeModel, itemToPromote);
+        QVERIFY(treeModel.data(index, Zanshin::ItemTypeRole).toInt() == Zanshin::ProjectTodo);
+
+        //THEN
+        ModelStructure outputStructure;
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t2;
 
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
