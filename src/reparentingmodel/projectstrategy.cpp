@@ -150,53 +150,18 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     foreach(Id i, ignore) {
         parents.removeAll(i);
     }
-//     if (parents.isEmpty()) {
-//         return IdList() << mInbox;
-//     }
+    kDebug() << id << parents;
     foreach(Id i, parents) {
         //Because we may have just created a project
         ReparentingStrategy::updateParents(i);
     }
-    kDebug() << id << parents;
     return parents;
-/*
-    Id id = getId(sourceChildIndex);
-    Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
-//     kDebug() << id << type;
-    if (type==Zanshin::Collection) {
-        const QModelIndex &parent = sourceChildIndex.parent();
-        if (parent.isValid()) {
-            return IdList() << getId(parent);
-        }
-        return IdList();
-    }
-    const QStringList &parentUid = sourceChildIndex.data(Zanshin::ParentUidRole).toStringList();
-    kDebug() << parentUid;
-    IdList parents;
-    if (parentUid.isEmpty() || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
-        if (type != Zanshin::ProjectTodo && sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() != AbstractPimItem::Note) {
-            return IdList() << mInbox;
-        }
-        const QModelIndex &parent = sourceChildIndex.parent();
-        if (parent.isValid()) {
-            parents << getId(parent);
-        }
-    }
-    Q_ASSERT(parentUid.size() <= 1);
-    foreach (const QString &p, parentUid) {
-        if (!mUidMapping.contains(p)) {
-            mUidMapping.insert(p, getNextId());
-        }
-        parents << mUidMapping.value(p);
-    }
-    return parents; */
 }
 
 void ProjectStrategy::onNodeRemoval(const Id& changed)
 {
     IdList parents = translateFrom(mRelations->getParents(translateTo(changed)));
     kDebug() << changed << parents;
-    kDebug() << changed;
     mRelations->removeNode(translateTo(changed));
     checkParents(parents);
 }
@@ -211,8 +176,6 @@ void ProjectStrategy::checkParents(const IdList &parentsToCheck)
 
 void ProjectStrategy::reset()
 {
-//     mUidMapping.clear();
-//     mCollectionMapping.clear();
     ReparentingStrategy::reset();
 }
 
