@@ -27,8 +27,6 @@
 #include "kidentityproxymodel.h"
 #include <QtCore/QPersistentModelIndex>
 
-#include <KDE/KCalCore/Todo>
-
 #include "globaldefs.h"
 
 namespace Akonadi
@@ -50,21 +48,8 @@ public:
 
     virtual void setSourceModel(QAbstractItemModel *model);
 
-private slots:
-    void onSourceInsertRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
-    void onSourceDataChanged(const QModelIndex &begin, const QModelIndex &end);
-    void onModelReset();
-
 private:
-    void cleanupDataForSourceIndex(const QModelIndex &index);
     Zanshin::ItemType itemTypeFromItem(const Akonadi::Item &item) const;
-    QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
-    QModelIndexList childIndexesFromIndex(const QModelIndex &index) const;
-
-    QHash<QString, QString> m_parentMap;
-    QHash<QString, QStringList> m_childrenMap;
-    QHash<QString, QPersistentModelIndex> m_indexMap;
 };
 
 #endif

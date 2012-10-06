@@ -50,10 +50,8 @@ namespace Zanshin
     enum Roles {
         UidRole = Akonadi::EntityTreeModel::UserRole + 1,
         ParentUidRole,
-        AncestorsUidRole,
         ItemTypeRole,
         DataTypeRole,
-        ChildIndexesRole,
         RelationIdRole, //Id of node
         AncestorsRole, //List of all parents
         UriRole,
