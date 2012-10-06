@@ -114,12 +114,21 @@ Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
     return translateFrom(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
 }
 
+bool ProjectStrategy::isProject(Id id, Zanshin::ItemType itemType) const
+{
+    if (itemType == Zanshin::ProjectTodo
+    || ((itemType == Zanshin::StandardTodo) && mRelations->hasChildren(translateTo(id)))) {
+        return true;
+    }
+    return false;
+}
+
 IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList &ignore)
 {
     Q_ASSERT(sourceChildIndex.isValid());
-    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url();
-    kDebug() << sourceChildIndex.data().toString();
-    mRelations->printCache();
+//     kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url();
+//     kDebug() << sourceChildIndex.data().toString();
+//     mRelations->printCache();
     IdList parents;
     Zanshin::ItemType type = (Zanshin::ItemType) sourceChildIndex.data(Zanshin::ItemTypeRole).toInt();
     if (type==Zanshin::Collection) {
@@ -129,15 +138,12 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
         }
         return IdList();
     }
-    
-    Id id = mRelations->getItemId(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
+
+    const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    Id id = mRelations->getItemId(item);
     parents = translateFrom(mRelations->getParents(id));
     if (parents.isEmpty() || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
-        bool isProject = mRelations->hasChildren(id);
-        if (type == Zanshin::ProjectTodo) { //For projects without children
-            isProject = true;
-        }
-        if (!isProject && sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() != AbstractPimItem::Note) {
+        if (!isProject(translateFrom(id), type) && (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() != AbstractPimItem::Note)) {
             return IdList() << mInbox;
         }
         const QModelIndex &parent = sourceChildIndex.parent();
@@ -193,7 +199,7 @@ Qt::ItemFlags ProjectStrategy::flags(const QModelIndex& index, Qt::ItemFlags exi
     if (type==Zanshin::Collection) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
 
-    } else if (type==Zanshin::ProjectTodo) {
+    } else if (type==Zanshin::ProjectTodo) { //FIXME use isProject instead
         // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
         // information about the rights is not valid on retrieved items.
         collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
@@ -259,38 +265,30 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     return false;
 }
 
-QVariant ProjectStrategy::data(Id id, int role) const
+QVariant ProjectStrategy::data(Id id, int role, bool &forward) const
 {
-    const Akonadi::Item item = getData(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-    bool isProject = false;
-    bool isTodo = false;
-    if (!pimitem.isNull() && (pimitem->itemType() == AbstractPimItem::Todo)) {
-        isTodo = true;
-        if (static_cast<IncidenceItem*>(pimitem.data())->isProject()
-        || mRelations->hasChildren(translateTo(id))) {
-            isProject = true;
-        } 
-    }
+    //We simply override the todometadatamodel data for todos with children (which are also projects)
+    const Zanshin::ItemType itemType = static_cast<Zanshin::ItemType>(getData(id, Zanshin::ItemTypeRole).toInt());
+    bool project = isProject(id, itemType);
 
     switch (role) {
         case Zanshin::ItemTypeRole: {
             if (id == mInbox) {
                 return Zanshin::Inbox;
-            } else if (!item.isValid()) {
-                return Zanshin::Collection;
-            } else if (isProject) {
+            }
+            if (project) {
                 return Zanshin::ProjectTodo;
             }
-            return Zanshin::StandardTodo;
+            return itemType;
         }
         case Qt::CheckStateRole:
-            if (isTodo && !isProject) {
-                return (pimitem->getStatus() == AbstractPimItem::Complete) ? Qt::Checked : Qt::Unchecked;
+            if (project) {
+                forward = false;
+                return QVariant();
             }
             break;
         case Qt::DecorationRole:
-            if (isProject) {
+            if (project) {
                 return KIcon("view-pim-tasks");
             }
             break;

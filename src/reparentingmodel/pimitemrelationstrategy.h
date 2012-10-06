@@ -34,7 +34,7 @@ public:
     virtual void setNodeData(TodoNode* node, Id id);
     virtual void onNodeRemoval(const Id& changed);
 
-    virtual QVariant data(Id index, int role) const;
+    virtual QVariant data(Id index, int role, bool &forward) const;
 
     virtual Qt::ItemFlags flags(const QModelIndex& index, Qt::ItemFlags flags);
     virtual QStringList mimeTypes();

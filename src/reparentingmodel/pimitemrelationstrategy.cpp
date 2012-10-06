@@ -330,7 +330,7 @@ void PimItemRelationStrategy::reset()
     ReparentingStrategy::reset();
 }
 
-QVariant PimItemRelationStrategy::data(Id id, int role) const
+QVariant PimItemRelationStrategy::data(Id id, int role, bool &/*forward*/) const
 {
     if (role == Zanshin::RelationIdRole) {
         return translateTo(id);
@@ -338,7 +338,7 @@ QVariant PimItemRelationStrategy::data(Id id, int role) const
     if (role == Zanshin::UriRole) {
         
     }
-    return ReparentingStrategy::data(id, role);
+    return QVariant();
 }
 
 

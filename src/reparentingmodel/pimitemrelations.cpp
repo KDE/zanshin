@@ -442,7 +442,7 @@ Id ProjectStructure::addCollection(const Akonadi::Collection &col)
     return mCollectionMapping.value(col.id());
 }
 
-bool ProjectStructure::hasChildren(Id id)
+bool ProjectStructure::hasChildren(Id id) const
 {
     return mParents.values().contains(id);
 }

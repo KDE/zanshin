@@ -1289,21 +1289,22 @@ private slots:
         QTest::newRow( "change project name" ) << sourceStructure
                                                                 << changePath
                                                                 << notifyList;
-
-        sourceStructure.clear();
-        sourceStructure << c1
-                        << _+t2
-                        << _+t3;
-
-        changePath = c1 % t2;
-
-        notifyList.clear();
-        notifyList << c1 % t3
-                   << c1 % t2;
-
-        QTest::newRow( "change name of todo with a child" ) << sourceStructure
-                                                            << changePath
-                                                            << notifyList;
+                                                                
+        //Fails since the TodoMetadataModel no longer knows that a todo with a child is a project (moved to projectstrategy)
+//         sourceStructure.clear();
+//         sourceStructure << c1
+//                         << _+t2
+//                         << _+t3;
+// 
+//         changePath = c1 % t2;
+// 
+//         notifyList.clear();
+//         notifyList << c1 % t3
+//                    << c1 % t2;
+// 
+//         QTest::newRow( "change name of todo with a child" ) << sourceStructure
+//                                                             << changePath
+//                                                             << notifyList;
 
     }
 

@@ -40,11 +40,12 @@ public:
     virtual Qt::DropActions supportedDropActions() const;
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
 
-    virtual QVariant data(Id id, int role) const;
+    virtual QVariant data(Id id, int role, bool &forward) const;
 private slots:
     void doRemoveNode(Id id);
     void doChangeParents(Id, IdList);
 private:
+    bool isProject(Id id, Zanshin::ItemType itemType) const;
     void checkParents(const IdList &);
 //     QHash<QString, Id> mUidMapping;
 //     QHash<Akonadi::Collection::Id, Id> mCollectionMapping;

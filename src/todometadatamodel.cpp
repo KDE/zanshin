@@ -285,10 +285,8 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
     }
 
     const QString uid = pimitem->getUid();
-    
-    const int childCount = m_childrenMap.contains(uid) ? m_childrenMap[uid].count() : 0;
-    if (static_cast<IncidenceItem*>(pimitem.data())->isProject()
-     || childCount>0) {
+
+    if (static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
         return Zanshin::ProjectTodo;
     } else {
         return Zanshin::StandardTodo;

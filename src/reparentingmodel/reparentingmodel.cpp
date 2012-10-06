@@ -536,7 +536,11 @@ QVariant ReparentingModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
     Q_ASSERT(node && m_parentMap.values().contains(node));
-    const QVariant &var = m_strategy->data(m_parentMap.key(node), role);
+    bool forward = true;
+    const QVariant &var = m_strategy->data(m_parentMap.key(node), role, forward);
+    if (!forward) {
+        return var;
+    }
     if (var.isValid()) {
         return var;
     }
