@@ -53,7 +53,6 @@ namespace Zanshin
         AncestorsUidRole,
         ItemTypeRole,
         DataTypeRole,
-        ChildUidsRole,
         ChildIndexesRole,
         RelationIdRole, //Id of node
         AncestorsRole, //List of all parents

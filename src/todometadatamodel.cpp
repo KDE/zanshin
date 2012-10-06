@@ -136,8 +136,6 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
             default:
                 return Zanshin::StandardType;
         }
-    case Zanshin::ChildUidsRole:
-        return childUidsFromItem(item);
     case Zanshin::ChildIndexesRole:
         return QVariant::fromValue(childIndexesFromIndex(index));
     default:
@@ -305,15 +303,6 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
 //     }
 //     return result;
 // }
-
-QStringList TodoMetadataModel::childUidsFromItem(const Akonadi::Item &item) const
-{
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-    if (pimitem.isNull()) {
-        return QStringList();
-    }
-    return m_childrenMap.value(pimitem->getUid());
-}
 
 QModelIndexList TodoMetadataModel::childIndexesFromIndex(const QModelIndex &idx) const
 {

@@ -60,7 +60,6 @@ private:
     void cleanupDataForSourceIndex(const QModelIndex &index);
     Zanshin::ItemType itemTypeFromItem(const Akonadi::Item &item) const;
     QStringList ancestorsUidFromItem(const Akonadi::Item &item) const;
-    QStringList childUidsFromItem(const Akonadi::Item &item) const;
     QModelIndexList childIndexesFromIndex(const QModelIndex &index) const;
 
     QHash<QString, QString> m_parentMap;
