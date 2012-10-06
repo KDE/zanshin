@@ -183,6 +183,9 @@ public:
     virtual Id addItem(const Akonadi::Item& );
     bool hasChildren(Id) const;
     void printCache();
+
+    Akonadi::Item::Id itemId(Id id) const;
+    IdList getChildren(Id id) const;
 protected:
     Relation getRelationTree(Id id, const Akonadi::Item &item);
 private:

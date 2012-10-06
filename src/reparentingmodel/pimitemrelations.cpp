@@ -452,6 +452,19 @@ Id ProjectStructure::addItem(const Akonadi::Item &item)
     return PimItemRelationCache::addItem(item);
 }
 
+Akonadi::Entity::Id ProjectStructure::itemId(Id id) const
+{
+    if (!mItemIdCache.values().contains(id)) {
+        return -1;
+    }
+    return mItemIdCache.key(id);
+}
+
+IdList ProjectStructure::getChildren(Id id) const
+{
+    return getAffectedChildItems(id);
+}
+
 
 void ProjectStructure::printCache()
 {

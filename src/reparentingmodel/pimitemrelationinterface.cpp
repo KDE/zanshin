@@ -21,6 +21,8 @@
 
 #include <KDE/Akonadi/ItemModifyJob>
 #include <Akonadi/ItemCreateJob>
+#include <Akonadi/TransactionSequence>
+#include <Akonadi/ItemDeleteJob>
 #include <KDE/KCalCore/Todo>
 #include <KDE/KDebug>
 #include <KDE/KGlobal>
@@ -133,14 +135,34 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
     }
 }
 
-void PimItemStructureInterface::remove(const PimNode& node, QWidget *)
+void PimItemStructureInterface::remove(const PimNode& node, QWidget *parent)
 {
-
+    switch (node.type) {
+        case PimNode::Project:
+            PimItemStructureInterface::projectInstance().remove(node, parent);
+            break;
+        case PimNode::Todo:
+            new Akonadi::ItemDeleteJob(node.item);
+            break;
+        case PimNode::Note:
+            new Akonadi::ItemDeleteJob(node.item);
+            break;
+        case PimNode::Context:
+            PimItemStructureInterface::contextInstance().remove(node, parent);
+            break;
+        case PimNode::Topic:
+            PimItemStructureInterface::topicInstance().remove(node, parent);
+            break;
+        default:
+            Q_ASSERT(0);
+    }
 }
 
-void PimItemStructureInterface::remove(const QList< PimNode >& nodes, QWidget* )
+void PimItemStructureInterface::remove(const QList< PimNode >& nodes, QWidget *parent)
 {
-
+    foreach(const PimNode &node, nodes) {
+        remove(node, parent);
+    }
 }
 
 void PimItemStructureInterface::moveTo(const PimNode& node, const PimNode& parent)
@@ -398,6 +420,70 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
 //     return TodoHelpers::moveTodoToProject(item, pimitem->getUid(), parentType, parentCollection);
 }
 
+void ProjectStructureInterface::remove(const QList< PimNode >& nodes, QWidget *parent)
+{
+
+    if (nodes.isEmpty()) {
+        return;
+    }
+
+    bool canRemove = true;
+    QString summary;
+    IdList projectList;
+    if (nodes.size() > 1) {
+//         QStringList projectList;
+//         foreach (QModelIndex project, projects) {
+//             projectList << project.data().toString();
+//         }
+//         summary = projectList.join(", ");
+    } else {
+//         QModelIndexList children = projects[0].data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
+//         if (!children.isEmpty()) {
+//             summary = projects[0].data().toString();
+//         }
+    }
+
+    if (!summary.isEmpty()) {
+        QString title;
+        QString text;
+
+//         if (projects.size() > 1) {
+//             title = i18n("Delete Projects");
+//             text = i18n("Do you really want to delete the projects '%1', with all its actions?", summary);
+//         } else {
+            title = i18n("Delete Project");
+            text = i18n("Do you really want to delete the project '%1', with all its actions?", summary);
+//         }
+
+        int button = KMessageBox::questionYesNo(parent, text, title);
+        canRemove = (button==KMessageBox::Yes);
+    }
+
+    if (!canRemove) return;
+
+    Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence();
+    foreach (const PimNode &node, nodes) {
+        Q_ASSERT(node.item.isValid());
+        Id id = mStructure->getItemId(node.item);
+        IdList children = static_cast<ProjectStructure*>(mStructure.data())->getChildren(id);
+        foreach (Id child, children) {
+            Akonadi::Item item(static_cast<ProjectStructure*>(mStructure.data())->itemId(child));
+            kDebug() << "remove " << item.id();
+//             new Akonadi::ItemDeleteJob(item, sequence);
+        }
+            kDebug() << "remove " << node.item.id();
+//         new Akonadi::ItemDeleteJob(node.item, sequence);
+    }
+//     sequence->start();
+    return;
+}
+
+void ProjectStructureInterface::remove(const PimNode& node, QWidget *parent)
+{
+    QList<PimNode> projects;
+    projects << node;
+    return remove(projects, parent);
+}
 
 
 

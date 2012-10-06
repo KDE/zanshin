@@ -132,6 +132,9 @@ class ProjectStructureInterface: public PimItemStructureInterface
 public:
     ProjectStructureInterface();
     bool moveTo(const PimNode &node, const PimNode &parent);
+    void remove(const QList<PimNode> &nodes, QWidget *);
+    void remove(const PimNode &node, QWidget *);
+    
 };
 
 #endif // PIMITEMRELATIONINTERFACE_H
