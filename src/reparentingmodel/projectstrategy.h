@@ -40,7 +40,7 @@ public:
     virtual Qt::DropActions supportedDropActions() const;
     virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction );
 
-    virtual QVariant data(Id id, int role, bool &forward) const;
+    virtual QVariant data(Id id, int column, int role, bool &forward) const;
 private slots:
     void doRemoveNode(Id id);
     void doChangeParents(Id, IdList);

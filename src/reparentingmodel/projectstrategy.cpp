@@ -265,7 +265,7 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     return false;
 }
 
-QVariant ProjectStrategy::data(Id id, int role, bool &forward) const
+QVariant ProjectStrategy::data(Id id, int column, int role, bool &forward) const
 {
     //We simply override the todometadatamodel data for todos with children (which are also projects)
     const Zanshin::ItemType itemType = static_cast<Zanshin::ItemType>(getData(id, Zanshin::ItemTypeRole).toInt());
@@ -288,7 +288,7 @@ QVariant ProjectStrategy::data(Id id, int role, bool &forward) const
             }
             break;
         case Qt::DecorationRole:
-            if (project) {
+            if (project && !column) {
                 return KIcon("view-pim-tasks");
             }
             break;

@@ -119,12 +119,6 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         } else {
             return QVariant();
         }
-    case Qt::DecorationRole:
-        if (index.column()==0 && itemTypeFromItem(item)==Zanshin::ProjectTodo) {
-            return KIcon("view-pim-tasks");
-        } else {
-            return KIdentityProxyModel::data(index, role);
-        }
     case Zanshin::UidRole:
         return pimitem->getUid();
     case Zanshin::ParentUidRole:
