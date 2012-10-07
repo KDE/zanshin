@@ -110,8 +110,14 @@ Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
     if (type==Zanshin::Collection) {
         return translateFrom(mRelations->addCollection(sourceChildIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>()));
     }
-    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url();
-    return translateFrom(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url() << sourceChildIndex << type;
+    const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    Q_ASSERT(item.isValid());
+    Id id = mRelations->addItem(item);
+    if (id < 0) {
+        return -1;
+    }
+    return translateFrom(id);
 }
 
 bool ProjectStrategy::isProject(Id id, Zanshin::ItemType itemType) const

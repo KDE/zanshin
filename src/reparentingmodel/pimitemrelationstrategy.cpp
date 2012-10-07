@@ -131,7 +131,11 @@ Id PimItemRelationStrategy::getId(const QModelIndex &sourceChildIndex)
     if (isIgnored(sourceChildIndex)) { //Filter all other items
         return -1;
     }
-    return translateFrom(mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    Id id = mRelations->addItem(sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>());
+    if (id < 0) {
+        return -1;
+    }
+    return translateFrom(id);
 }
 
 IdList PimItemRelationStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)

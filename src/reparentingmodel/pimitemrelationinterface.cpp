@@ -399,7 +399,7 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
 
     IdList parents;
     if (parent.type != PimNode::Empty) {
-        parents << mStructure->getId(parent.uid);
+        parents << mStructure->getId(parent.uid.toLatin1());
     }
     Id nodeId = mStructure->getItemId(node.item);
     mStructure->moveNode(nodeId, parents);

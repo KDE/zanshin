@@ -63,6 +63,9 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
     
 //     kDebug() << pimitem->itemType();
     Id id = getOrCreateItemId(item);
+    if (id < 0) {
+        return -1;
+    }
     const Relation &rel = getRelationTree(id, item);
     Q_ASSERT(rel.id == id);
     qDebug() << " <<<<<<<<<<<<<<<<< " << item.url().url() << id << rel.id << rel.parentNodes.size();
@@ -88,13 +91,6 @@ Id PimItemRelationCache::getItemId(const Akonadi::Item &item) const
     return mItemIdCache.value(item.id());
 }
 
-Id PimItemRelationCache::getId(const QString& uid)
-{
-    kDebug() << uid << mUidMapping;
-    return mUidMapping.value(uid.toLatin1());
-}
-
-
 Id PimItemRelationCache::getOrCreateItemId(const Akonadi::Item &item)
 {
     Q_ASSERT(item.isValid());
@@ -105,6 +101,11 @@ Id PimItemRelationCache::getOrCreateItemId(const Akonadi::Item &item)
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     Q_ASSERT (!pimitem.isNull());
     QByteArray uid = pimitem->getUid().toLatin1();
+    if (uid.isEmpty()) {
+        kWarning() << "empty uid: " << item.id();
+        return -1;
+    }
+    Q_ASSERT(!uid.isEmpty());
     if (mUidMapping.contains(uid)) {
         id = mUidMapping.value(uid);
     } else {
@@ -203,6 +204,35 @@ Id PimItemRelationCache::getNextId()
     return mIdCounter++;
 }
 
+void PimItemRelationCache::addUidMapping(const QByteArray& uid, Id id)
+{
+    Q_ASSERT(!uid.isEmpty());
+    Q_ASSERT(!mUidMapping.contains(uid) || (getId(uid) == id));
+    if (!mUidMapping.contains(uid)) {
+        mUidMapping.insert(uid, id);
+    }
+}
+
+Id PimItemRelationCache::getId(const QByteArray& uid) const
+{
+    return mUidMapping.value(uid);
+}
+
+QByteArray PimItemRelationCache::getUid(Id id) const
+{
+    return mUidMapping.key(id);
+}
+
+Id PimItemRelationCache::getUidMapping(const QByteArray& uid)
+{
+    if (!mUidMapping.contains(uid)) {
+        mUidMapping.insert(uid, getNextId());
+    }
+    return getId(uid);
+}
+
+
+
 
 
 
@@ -296,10 +326,7 @@ PimItemRelationsStructure::PimItemRelationsStructure(PimItemRelation::Type type)
 
 TreeNode PimItemRelationsStructure::createNode(const PimItemTreeNode &node)
 {
-    if (!mUidMapping.contains(node.uid)) {
-        mUidMapping.insert(node.uid, getNextId());
-    }
-    Id id = mUidMapping.value(node.uid);
+    Id id = getUidMapping(node.uid);
     QList<TreeNode> parents;
     foreach(const PimItemTreeNode &parentNode, node.parentNodes) {
         parents << createNode(parentNode);
@@ -336,7 +363,7 @@ QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
     QList<PimItemTreeNode> list;
     IdList parents = mParents.values(id);
     foreach (Id parent, parents) {
-        list << PimItemTreeNode(mUidMapping.key(parent), mNames.value(parent), getParentTreeNodes(parent));
+        list << PimItemTreeNode(getUid(parent), mNames.value(parent), getParentTreeNodes(parent));
         kDebug() << mNames.value(parent);
     }
     return list;
@@ -387,7 +414,7 @@ void PimItemRelationsStructure::addNode(const QString& name, const IdList& paren
         Q_ASSERT(!getName(parent).isEmpty());
     }
     Id id = getNextId();
-    mUidMapping.insert(QUuid::createUuid().toByteArray(), id);
+    addUidMapping(QUuid::createUuid().toByteArray(), id);
     mergeNode(TreeNode(name, id, parentNodes));
 }
 
@@ -406,22 +433,20 @@ Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
 {
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     Q_ASSERT (!pimitem.isNull());
-    QByteArray uid = pimitem->getUid().toLatin1();
+    const QByteArray uid = pimitem->getUid().toLatin1();
     qDebug() << "######### " << item.url().url() << id << uid << pimitem->getRelations().size();
-    if (!mUidMapping.contains(uid)) {
-        mUidMapping.insert(uid, id);
-    }
-    Q_ASSERT(mUidMapping.value(uid) == id);
+    addUidMapping(uid, id);
     QList<TreeNode> parents;
     foreach(const PimItemRelation &rel, pimitem->getRelations()) {
         qDebug() << "relation " << rel.type << rel.parentNodes.size();
         if (rel.type == PimItemRelation::Project) {
             foreach (const PimItemTreeNode &p, rel.parentNodes) {
-                qDebug() << p.uid;
-                if (!mUidMapping.contains(p.uid)) {
-                    mUidMapping.insert(p.uid, getNextId());
+                if (p.uid.isEmpty()) {
+                    kWarning() << "empty parent on item: " << item.id();
+                    continue;
                 }
-                Id projectId = mUidMapping.value(p.uid);
+                Id projectId = getUidMapping(p.uid);
+                qDebug() << p.uid << projectId;
                 parents << TreeNode(p.name, projectId);
             }
         }

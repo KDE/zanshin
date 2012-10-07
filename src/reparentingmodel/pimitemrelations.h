@@ -70,7 +70,7 @@ public:
     //Handles merging, typically the tree of a single item
     virtual Id addItem(const Akonadi::Item &);
     Id getItemId(const Akonadi::Item &) const;
-    Id getId(const QString &uid);
+    Id getId(const QByteArray &uid) const;
     
     virtual void removeNode(Id);
     
@@ -96,12 +96,16 @@ protected:
     virtual void rebuildCache(){};
     IdList getChildNodes(Id id) const;
     virtual void mergeNode(const TreeNode &node);
+
+    void addUidMapping(const QByteArray &uid, Id);
+    QByteArray getUid(Id) const;
+    Id getUidMapping(const QByteArray &uid);
     
     QMultiMap<Id, Id> mParents;
     QMap<Akonadi::Item::Id, Id> mItemIdCache;
-    QHash<QByteArray, Id> mUidMapping;
     Id getNextId();
 private:
+    QHash<QByteArray, Id> mUidMapping;
     Id mIdCounter;
     Id getOrCreateItemId(const Akonadi::Item &item);
 
