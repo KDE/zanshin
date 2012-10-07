@@ -496,8 +496,7 @@ void ProjectStructure::printCache()
     qDebug() << "itemids: " << mItemIdCache;
     qDebug() << "collections: " << mCollectionMapping;
     qDebug() << "parents " << mParents;
-    qDebug() << "uids " << mUidMapping;
-
+//     qDebug() << "uids " << mUidMapping;
 }
 
 

@@ -519,20 +519,6 @@ void ActionListEditorPage::addNewItem(const QString& summary)
     }
 }
 
-void ActionListEditorPage::removeCurrentItem()
-{
-    QModelIndex current = m_treeView->selectionModel()->currentIndex();
-    removeItem(current);
-}
-
-void ActionListEditorPage::removeItem(const QModelIndex &current)
-{
-    if (!current.isValid()) {
-        return;
-    }
-    PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(current), this);
-}
-
 void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
 {
     if (!current.isValid()) {

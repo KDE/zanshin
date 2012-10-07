@@ -258,10 +258,9 @@ void ActionListEditor::updateActions()
 
 void ActionListEditor::onRemoveAction()
 {
-    QList<QUrl> nodes;
     QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
     foreach (QModelIndex index, currentIndexes) {
-        nodes << index.data(Zanshin::UriRole).toUrl();
+        PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(current), this);
     }
 }
 

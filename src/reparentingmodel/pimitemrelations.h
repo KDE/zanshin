@@ -71,6 +71,7 @@ public:
     virtual Id addItem(const Akonadi::Item &);
     Id getItemId(const Akonadi::Item &) const;
     Id getId(const QByteArray &uid) const;
+    QByteArray getUid(Id) const;
     
     virtual void removeNode(Id);
     
@@ -98,7 +99,6 @@ protected:
     virtual void mergeNode(const TreeNode &node);
 
     void addUidMapping(const QByteArray &uid, Id);
-    QByteArray getUid(Id) const;
     Id getUidMapping(const QByteArray &uid);
     
     QMultiMap<Id, Id> mParents;

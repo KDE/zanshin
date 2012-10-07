@@ -339,6 +339,9 @@ QVariant PimItemRelationStrategy::data(Id id, int column, int role, bool &/*forw
     if (role == Zanshin::RelationIdRole) {
         return translateTo(id);
     }
+    if (role == Zanshin::UidRole) {
+        return QString(mRelations->getUid(id));
+    }
     return QVariant();
 }
 

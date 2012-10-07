@@ -40,26 +40,19 @@
 
 #include "categorymanager.h"
 #include "globaldefs.h"
+#include "utils/incidenceitem.h"
 
-void TodoHelpers::addTodo(const QString &summary, const QString &parentUid, const QString &category, const Akonadi::Collection &collection)
+void TodoHelpers::addTodo(const QString &summary, const QString &parentUid, const QList<PimItemRelation> relations, const Akonadi::Collection &collection)
 {
     if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
         return;
     }
 
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary(summary);
-    if (!parentUid.isEmpty()) {
-        todo->setRelatedTo(parentUid);
-    }
-    if (!category.isEmpty()) {
-        todo->setCategories(category);
-    }
-
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
-
+    IncidenceItem inc(AbstractPimItem::Todo);
+    inc.setTitle(summary);
+    inc.setRelations(relations);
+    inc.saveItem();
+    const Akonadi::Item item = inc.getItem();
     new Akonadi::ItemCreateJob(item, collection);
 }
 

@@ -30,10 +30,11 @@
 #include <QModelIndex>
 
 #include "globaldefs.h"
+#include <abstractpimitem.h>
 
 namespace TodoHelpers
 {
-    void addTodo(const QString &summary, const QString &parentUid, const QString &category,
+    void addTodo(const QString &summary, const QString &parentUid, const QList<PimItemRelation> relations,
                  const Akonadi::Collection &collection);
 
     void addProject(const QString &summary, const Akonadi::Collection &collection);

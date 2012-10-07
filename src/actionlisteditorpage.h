@@ -75,8 +75,6 @@ public:
 
 public slots:
     void addNewItem(const QString &summary);
-    void removeCurrentItem();
-    void removeItem(const QModelIndex &current);
     void dissociateTodo(const QModelIndex &current);
     void onAddActionRequested();
 
