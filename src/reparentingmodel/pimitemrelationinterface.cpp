@@ -50,6 +50,7 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
          case Zanshin::ProjectTodo: {
              PimNode node (PimNode::Project);
              node.item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+             node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
          case Zanshin::Category:
@@ -67,6 +68,7 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
          case Zanshin::StandardTodo: {
              PimNode node (PimNode::PimItem);
              node.item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+             node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
      }
@@ -111,13 +113,15 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
         case PimNode::Project:
             TodoHelpers::addProject(name, col);
             break;
-        case PimNode::Todo:
-//             QString parent;
-//             if (!parents.isEmpty()) {
-//                 parent = parents.first().item;
-//             }
-            TodoHelpers::addTodo(name, QString(), QString(), col);
+        case PimNode::Todo: {
+            QString parent;
+            if (!parents.isEmpty()) {
+                parent = parents.first().uid;
+            }
+            kDebug() << "adding todo: " << name << parent << col.url().url();
+            TodoHelpers::addTodo(name, parent, QString(), col);
             break;
+        }
         case PimNode::Note: {
             Note note;
             note.setTitle(name);
