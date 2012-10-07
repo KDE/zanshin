@@ -148,8 +148,9 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     Id id = mRelations->getItemId(item);
     parents = translateFrom(mRelations->getParents(id));
-    if (parents.isEmpty() || sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note) {
-        if (!isProject(translateFrom(id), type) && (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() != AbstractPimItem::Note)) {
+    bool isNote = (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note);
+    if (parents.isEmpty() || isNote) {
+        if (!isProject(translateFrom(id), type) && !isNote) {
             return IdList() << mInbox;
         }
         const QModelIndex &parent = sourceChildIndex.parent();
@@ -163,10 +164,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
         parents.removeAll(i);
     }
     kDebug() << id << parents;
-    foreach(Id i, parents) {
-        //Because we may have just created a project
-        ReparentingStrategy::updateParents(i);
-    }
+    checkParents(parents);
     return parents;
 }
 
