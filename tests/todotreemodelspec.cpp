@@ -160,6 +160,33 @@ private slots:
 
             QTest::newRow( "don't move projects to inbox" ) << sourceStructure << outputStructure;
         }
+        {
+            G n1(100, Qt::DisplayRole, "note1");
+            n1.data.insert(PimItemModel::ItemTypeRole, AbstractPimItem::Note);
+            Note note;
+            note.setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(t1.uid.toLatin1())));
+            Akonadi::Item item = note.getItem();
+            item.setId(234);
+            item.setParentCollection(Akonadi::Collection(c2.id));
+            n1.data.insert(Akonadi::EntityTreeModel::ItemRole, QVariant::fromValue<Akonadi::Item>(item));
+            // Create the source structure once and for all
+            ModelStructure sourceStructure;
+            sourceStructure
+                            << c1
+                            << _+t1
+                            << c2
+                            << _+n1;
+
+            ModelStructure outputStructure;
+            outputStructure << inbox
+                            << c1
+                            << _+t1
+                            << __+n1
+                            << c2
+                            << _+n1;
+
+            QTest::newRow( "build tree with notes" ) << sourceStructure << outputStructure;
+        }
     }
 
     void shouldReparentBasedOnUids()
