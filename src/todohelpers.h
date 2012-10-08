@@ -34,11 +34,10 @@
 
 namespace TodoHelpers
 {
-    void addTodo(const QString &summary, const QString &parentUid, const QList<PimItemRelation> relations,
-                 const Akonadi::Collection &collection);
+    void addTodo(const QString &summary, const QList<PimItemRelation> relations,
+                 const Akonadi::Collection &collection, bool isProject = false);
 
-    void addProject(const QString &summary, const Akonadi::Collection &collection);
-    void addProject(const QString &summary, const QModelIndex &parentItem);
+//     void addProject(const QString &summary, const Akonadi::Collection &collection);
 //     bool removeProject(QWidget *parent, const QModelIndex &project);
 //     bool removeProjects(QWidget *parent, const QModelIndexList &projects);
     bool moveTodoToProject(const QModelIndex &todo, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection);

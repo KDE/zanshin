@@ -23,8 +23,6 @@
 
 #include "actionlisteditorpage.h"
 
-#include <KDE/Akonadi/ItemCreateJob>
-
 #include <KDE/KConfigGroup>
 #include <kdescendantsproxymodel.h>
 #include <kmodelindexproxymapper.h>

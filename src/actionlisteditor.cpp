@@ -260,7 +260,7 @@ void ActionListEditor::onRemoveAction()
 {
     QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
     foreach (QModelIndex index, currentIndexes) {
-        PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(current), this);
+        PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(index), this);
     }
 }
 

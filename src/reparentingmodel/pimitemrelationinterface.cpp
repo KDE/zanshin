@@ -42,6 +42,7 @@ K_GLOBAL_STATIC(ProjectStructureInterface, s_projectManager)
 PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
 {
      Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
+     kDebug() << index << itemType;
      switch (itemType) {
          case Zanshin::Collection: {
              PimNode node(PimNode::Collection);
@@ -113,24 +114,24 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
 void PimItemStructureInterface::create(PimNode::NodeType type, const QString& name, const QList< PimNode >& parents, const Akonadi::Collection& col)
 {
     QList<PimItemRelation> relations;
+    if (!parents.isEmpty()) {
+        const PimNode parent = parents.first();
+        kDebug() << "relation " << parent.uid;
+        if (parent.type == PimNode::Project) {
+            relations << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
+        }
+        if (parent.type == PimNode::Context) {
+            relations << PimItemRelation(PimItemRelation::Context, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
+        }
+    }
     switch (type) {
         case PimNode::Project:
-            TodoHelpers::addProject(name, col);
+            kDebug() << "adding project: " << name << col.url().url();
+            TodoHelpers::addTodo(name, relations, col, true);
             break;
         case PimNode::Todo: {
-            QString parentUid;
-            if (!parents.isEmpty()) {
-                const PimNode parent = parents.first();
-                if (parent.type == PimNode::Project) {
-                    parentUid = parent.uid;
-                    relations << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
-                }
-                if (parent.type == PimNode::Context) {
-                    relations << PimItemRelation(PimItemRelation::Context, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
-                }
-            }
-            kDebug() << "adding todo: " << name << parentUid << col.url().url();
-            TodoHelpers::addTodo(name, parentUid, relations, col);
+            kDebug() << "adding todo: " << name << col.url().url();
+            TodoHelpers::addTodo(name, relations, col, false);
             break;
         }
         case PimNode::Note: {
@@ -250,7 +251,7 @@ static IdList toId(const QList<PimNode> &list)
 
 void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& parents)
 {
-    //kDebug() << name << parentCategory;
+    kDebug() << name << toId(parents);
     mStructure->addNode(name, toId(parents));
 }
 

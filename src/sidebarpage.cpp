@@ -109,13 +109,6 @@ void SideBarPage::addNewItem()
 
     if (!ok || summary.isEmpty()) return;
 
-//     QList<QUrl> parents;
-//     if (parentItem.data(Zanshin::UriRole).canConvert<QUrl>()) {
-//         parents << parentItem.data(Zanshin::UriRole).toUrl();
-//     }
-//     PimItemStructureInterface itemType = PimItemStructureInterface::Project;
-//     if (
-
     if (type==Zanshin::Collection) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
         PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>(), collection);

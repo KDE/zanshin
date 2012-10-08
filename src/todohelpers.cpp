@@ -42,7 +42,7 @@
 #include "globaldefs.h"
 #include "utils/incidenceitem.h"
 
-void TodoHelpers::addTodo(const QString &summary, const QString &parentUid, const QList<PimItemRelation> relations, const Akonadi::Collection &collection)
+void TodoHelpers::addTodo(const QString &summary, const QList<PimItemRelation> relations, const Akonadi::Collection &collection, bool isProject)
 {
     if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
         return;
@@ -51,53 +51,12 @@ void TodoHelpers::addTodo(const QString &summary, const QString &parentUid, cons
     IncidenceItem inc(AbstractPimItem::Todo);
     inc.setTitle(summary);
     inc.setRelations(relations);
+    if (isProject) {
+        inc.setProject();
+    }
     inc.saveItem();
     const Akonadi::Item item = inc.getItem();
     new Akonadi::ItemCreateJob(item, collection);
-}
-
-void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &collection)
-{
-    if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
-        return;
-    }
-
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo());
-    todo->setSummary(summary);
-    todo->addComment("X-Zanshin-Project");
-
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
-
-    Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
-    job->start();
-}
-
-void TodoHelpers::addProject(const QString &summary, const QModelIndex &parentItem)
-{
-    // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
-    // information about the rights is not valid on retrieved items.
-    Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
-    if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
-        return;
-    }
-
-    Akonadi::Item parentProject = parentItem.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo());
-    todo->setSummary(summary);
-    todo->addComment("X-Zanshin-Project");
-
-    KCalCore::Todo::Ptr parentTodo = parentProject.payload<KCalCore::Todo::Ptr>();
-    todo->setRelatedTo(parentTodo->uid());
-
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
-
-    Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, collection);
-    job->start();
 }
 
 void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
