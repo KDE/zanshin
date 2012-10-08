@@ -34,6 +34,7 @@
 #include "todohelpers.h"
 #include <pimitem.h>
 #include <note.h>
+#include <configuration.h>
 
 K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
 K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)
@@ -113,6 +114,22 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
 
 void PimItemStructureInterface::create(PimNode::NodeType type, const QString& name, const QList< PimNode >& parents, const Akonadi::Collection& col)
 {
+    Akonadi::Collection collection = col;
+    if (!collection.isValid()) {
+        //TODO get default from config
+        switch (type) {
+            case PimNode::Project:
+            case PimNode::Todo:
+                collection = Configuration::instance().defaultTodoCollection();
+                break;
+            case PimNode::Note:
+                collection = Configuration::instance().defaultNoteCollection();
+        }
+        if (!collection.isValid()) {
+            kWarning() << "no valid collection to create item";
+            return;
+        }
+    }
     QList<PimItemRelation> relations;
     if (!parents.isEmpty()) {
         const PimNode parent = parents.first();
@@ -126,18 +143,18 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
     }
     switch (type) {
         case PimNode::Project:
-            kDebug() << "adding project: " << name << col.url().url();
-            TodoHelpers::addTodo(name, relations, col, true);
+            kDebug() << "adding project: " << name << collection.url().url();
+            TodoHelpers::addTodo(name, relations, collection, true);
             break;
         case PimNode::Todo: {
-            kDebug() << "adding todo: " << name << col.url().url();
-            TodoHelpers::addTodo(name, relations, col, false);
+            kDebug() << "adding todo: " << name << collection.url().url();
+            TodoHelpers::addTodo(name, relations, collection, false);
             break;
         }
         case PimNode::Note: {
             Note note;
             note.setTitle(name);
-            Akonadi::ItemCreateJob *itemCreateJob = new Akonadi::ItemCreateJob(note.getItem(), col);
+            Akonadi::ItemCreateJob *itemCreateJob = new Akonadi::ItemCreateJob(note.getItem(), collection);
             break;
         }
         case PimNode::Context:

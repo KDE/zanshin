@@ -23,6 +23,7 @@ set(zanshin_core_SRCS
    ${pimlistview_SRCS}
    ${itemview_SRCS}
    ${reparentingmodel_SRCS}
+   configuration.cpp
 )
 
 set(zanshin_core_LIBS

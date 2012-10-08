@@ -72,7 +72,8 @@ public:
     virtual void setCategories(const QStringList& );
     virtual QStringList getCategories();
 
-    bool isProject();
+    void setProject();
+    bool isProject() const;
 
     virtual bool hasValidPayload();
     /**

@@ -51,6 +51,7 @@
 #include "modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
+#include "configuration.h"
 #include <itemviewer.h>
 #include <itemselectorproxy.h>
 #include <pimitemrelationinterface.h>

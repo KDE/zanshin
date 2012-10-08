@@ -425,7 +425,16 @@ QStringList IncidenceItem::getCategories()
     return i->categories();
 }
 
-bool IncidenceItem::isProject()
+void IncidenceItem::setProject()
+{
+    if (isProject()) {
+        return;
+    }
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    return  i->addComment("X-Zanshin-Project");
+}
+
+bool IncidenceItem::isProject() const
 {
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
     return  i->comments().contains("X-Zanshin-Project");

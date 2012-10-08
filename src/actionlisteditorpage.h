@@ -97,9 +97,6 @@ private:
     QComboBox *m_comboBox;
     
     QByteArray m_normalStateCache;
-
-    Akonadi::Collection m_defaultCollection;
-    Akonadi::Collection m_defaultNoteCollection;
     
     qint64 m_defaultCollectionId;
     
@@ -108,28 +105,6 @@ private:
 
 };
 
-class Configuration : public QObject
-{
-    Q_OBJECT
-private:
-    Configuration();
-    Configuration(const Configuration &);
-public:
-    static Configuration &instance() {
-        static Configuration i;
-        return i;
-    }
-    
-    void setDefaultTodoCollection(const Akonadi::Collection &collection);
-    Akonadi::Collection defaultTodoCollection();
-
-    void setDefaultNoteCollection(const Akonadi::Collection &collection);
-    Akonadi::Collection defaultNoteCollection();
-    
-signals:
-    void defaultTodoCollectionChanged(Akonadi::Collection);
-    void defaultNoteCollectionChanged(Akonadi::Collection);
-};
 
 #endif
 

@@ -39,6 +39,7 @@
 #include "globaldefs.h"
 #include "todotreeview.h"
 #include "todohelpers.h"
+#include "configuration.h"
 #include <KXMLGUIClient>
 #include <filterproxymodel.h>
 #include <note.h>
@@ -252,34 +253,6 @@ private:
 };
 
 
-Configuration::Configuration() : QObject(){};
-
-
-void Configuration::setDefaultTodoCollection(const Akonadi::Collection &collection) {
-    KConfigGroup config(KGlobal::config(), "General");
-    config.writeEntry("defaultCollection", QString::number(collection.id()));
-    config.sync();
-    emit defaultTodoCollectionChanged(collection);
-}
-
-Akonadi::Collection Configuration::defaultTodoCollection() {
-    KConfigGroup config(KGlobal::config(), "General");
-    Akonadi::Collection::Id id = config.readEntry("defaultCollection", -1);
-    return Akonadi::Collection(id);
-}
-
-void Configuration::setDefaultNoteCollection(const Akonadi::Collection &collection) {
-    KConfigGroup config(KGlobal::config(), "General");
-    config.writeEntry("defaultNoteCollection", QString::number(collection.id()));
-    config.sync();
-    emit defaultNoteCollectionChanged(collection);
-}
-
-Akonadi::Collection Configuration::defaultNoteCollection() {
-    KConfigGroup config(KGlobal::config(), "General");
-    Akonadi::Collection::Id id = config.readEntry("defaultNoteCollection", -1);
-    return Akonadi::Collection(id);
-}
 
 ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            ModelStack *models,
@@ -505,14 +478,8 @@ void ActionListEditorPage::addNewItem(const QString& summary)
         }
     }
     if (m_mode == Zanshin::KnowledgeMode) {
-        if (!collection.isValid()) {
-            collection = m_defaultNoteCollection;
-        }
         PimItemStructureInterface::create(PimNode::Note, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
     } else {
-        if (!collection.isValid()) {
-            collection = m_defaultCollection;
-        }
         PimItemStructureInterface::create(PimNode::Todo, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
     }
 }
@@ -543,14 +510,12 @@ void ActionListEditorPage::onColumnsGeometryChanged()
 void ActionListEditorPage::setDefaultCollection(const Akonadi::Collection &collection)
 {
     //TODO select in combobox
-    m_defaultCollection = collection;
-    selectDefaultCollection(m_defaultCollection);
+    selectDefaultCollection(collection);
 }
 
 void ActionListEditorPage::setDefaultNoteCollection(const Akonadi::Collection& collection)
 {
-    m_defaultNoteCollection = collection;
-    selectDefaultCollection(m_defaultCollection);
+    selectDefaultCollection(collection);
 }
 
 bool ActionListEditorPage::selectSiblingIndex(const QModelIndex &index)
