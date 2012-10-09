@@ -116,7 +116,6 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
 {
     Akonadi::Collection collection = col;
     if (!collection.isValid()) {
-        //TODO get default from config
         switch (type) {
             case PimNode::Project:
             case PimNode::Todo:
@@ -454,7 +453,7 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
 
 void ProjectStructureInterface::remove(const QList< PimNode >& nodes, QWidget *parent)
 {
-
+    Q_ASSERT(mStructure);
     if (nodes.isEmpty()) {
         return;
     }
@@ -501,13 +500,12 @@ void ProjectStructureInterface::remove(const QList< PimNode >& nodes, QWidget *p
         foreach (Id child, children) {
             Akonadi::Item item(static_cast<ProjectStructure*>(mStructure.data())->itemId(child));
             kDebug() << "remove " << item.id();
-//             new Akonadi::ItemDeleteJob(item, sequence);
+            new Akonadi::ItemDeleteJob(item, sequence);
         }
-            kDebug() << "remove " << node.item.id();
-//         new Akonadi::ItemDeleteJob(node.item, sequence);
+        kDebug() << "remove " << node.item.id();
+        new Akonadi::ItemDeleteJob(node.item, sequence);
     }
-//     sequence->start();
-    return;
+    sequence->start();
 }
 
 void ProjectStructureInterface::remove(const PimNode& node, QWidget *parent)
