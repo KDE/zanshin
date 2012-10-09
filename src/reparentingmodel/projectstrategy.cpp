@@ -199,25 +199,22 @@ Qt::ItemFlags ProjectStrategy::flags(const QModelIndex& index, Qt::ItemFlags exi
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
 
-    Qt::ItemFlags flags = m_model->sourceModel()->flags(m_model->mapToSource(index));
     Akonadi::Collection collection;
-
     if (type==Zanshin::Collection) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-
-    } else if (type==Zanshin::ProjectTodo) { //FIXME use isProject instead
+    } else if (type == Zanshin::ProjectTodo) { //isProject(getId(index), type) FIXME for some reason the item is invalid in getid
         // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
         // information about the rights is not valid on retrieved items.
         collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
     }
 
     if (!(collection.rights() & Akonadi::Collection::CanCreateItem)) {
-        flags&= ~Qt::ItemIsDropEnabled;
+        existingFlags &= ~Qt::ItemIsDropEnabled;
     } else {
-        flags|= Qt::ItemIsDropEnabled;
+        existingFlags |= Qt::ItemIsDropEnabled;
     }
 
-    return flags;
+    return existingFlags;
 }
 
 Qt::DropActions ProjectStrategy::supportedDropActions() const
