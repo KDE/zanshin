@@ -182,10 +182,10 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
         endRemoveRows();
     }
     Q_ASSERT(m_parentMap.contains(id));
+    m_parentMap.remove(id); //Make sure we have the pointer removed before calling onNodeRemoval which could again reenter this function and thus access an already deleted pointer
     if (cleanupStrategy) {
         m_strategy->onNodeRemoval(id);
     }
-    m_parentMap.remove(id);
 }
 
 void ReparentingModel::removeNodeById(Id id) //TODO remove
