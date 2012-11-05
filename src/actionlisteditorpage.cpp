@@ -476,6 +476,10 @@ void ActionListEditorPage::addNewItem(const QString& summary)
             collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
             break;
         }
+    } else if (m_mode == Zanshin::ProjectMode) {
+        //In Projects mode just using the default collection is somewhat confusing, in others we rely on it though.
+        kDebug() << "nothing selected";
+        return;
     }
     if (m_mode == Zanshin::KnowledgeMode) {
         PimItemStructureInterface::create(PimNode::Note, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
