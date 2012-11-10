@@ -56,11 +56,10 @@ struct PimItemRelation
   
   PimItemRelation(Type type, const QList<PimItemTreeNode> &parentNodes);
   PimItemRelation();
-  QList<PimItemTreeNode> parentNodes;
-
+  
   //     QDateTime timestamp; //for merging
-
   Type type;
+  QList<PimItemTreeNode> parentNodes;
 };
 
 PimItemRelation relationFromXML(const QByteArray &xml);

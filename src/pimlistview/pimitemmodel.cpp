@@ -117,8 +117,9 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                             return QBrush(Qt::lightGray);
                         case AbstractPimItem::Attention:
                             return QBrush(Qt::red);
+                        default:
+                            kDebug() << "unhandled status" << item.id() << pimitem->getStatus();
                     }
-                    kDebug() << "unhandled status" << item.id() << pimitem->getStatus();
                     break;
             }
             break;
@@ -141,6 +142,8 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                             return QBrush(Qt::lightGray);
                         case AbstractPimItem::Attention:
                             return QBrush(Qt::red);
+                        default:
+                            qWarning() << "unhandled status " << pimitem->getStatus();
                     }
                     break;
             }
@@ -201,6 +204,8 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                             return 2;
                         case IncidenceItem::Complete:
                             return 3;
+                        default:
+                            qWarning() << "unhandled status: " << pimitem->getStatus();
                     }
                 }
                 default:

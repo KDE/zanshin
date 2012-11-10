@@ -76,6 +76,8 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
+         default:
+             qWarning() << "unhandled type: " << itemType;
      }
      Q_ASSERT(false);
      return PimNode(PimNode::Invalid);
@@ -123,6 +125,8 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
                 break;
             case PimNode::Note:
                 collection = Configuration::instance().defaultNoteCollection();
+            default:
+                qWarning() << "unhandled type: " << type;
         }
         if (!collection.isValid()) {
             kWarning() << "no valid collection to create item";
@@ -153,7 +157,7 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
         case PimNode::Note: {
             Note note;
             note.setTitle(name);
-            Akonadi::ItemCreateJob *itemCreateJob = new Akonadi::ItemCreateJob(note.getItem(), collection);
+            new Akonadi::ItemCreateJob(note.getItem(), collection);
             break;
         }
         case PimNode::Context:
@@ -196,22 +200,22 @@ void PimItemStructureInterface::remove(const QList< PimNode >& nodes, QWidget *p
     }
 }
 
-void PimItemStructureInterface::moveTo(const PimNode& node, const PimNode& parent)
+void PimItemStructureInterface::moveTo(const PimNode& /*node*/, const PimNode& /*parent*/)
 {
 
 }
 
-void PimItemStructureInterface::linkTo(const PimNode& node, const PimNode& parent)
+void PimItemStructureInterface::linkTo(const PimNode& /*node*/, const PimNode& /*parent*/)
 {
 
 }
 
-void PimItemStructureInterface::unlink(const PimNode& node, const PimNode& parent)
+void PimItemStructureInterface::unlink(const PimNode& /*node*/, const PimNode& /*parent*/)
 {
 
 }
 
-void PimItemStructureInterface::rename(const PimNode& node, const QString& name)
+void PimItemStructureInterface::rename(const PimNode& /*node*/, const QString& /*name*/)
 {
 
 }
@@ -251,10 +255,10 @@ PimItemRelationInterface::~PimItemRelationInterface()
 {
 }
 
-static Id toId(const PimNode &index)
-{
-    return index.relationId;
-}
+// static Id toId(const PimNode &index)
+// {
+//     return index.relationId;
+// }
 
 static IdList toId(const QList<PimNode> &list)
 {

@@ -53,19 +53,19 @@ ModelStack::ModelStack(QObject *parent)
       m_treeSideBarModel(0),
       m_treeSelectionModel(0),
       m_treeComboModel(0),
+      m_knowledgeMonitor(0),
+      m_knowledgeBaseModel(0),
+      m_knowledgeSelectionModel(0),
+      m_topicsTreeModel(0),
+      m_knowledgeSidebarModel(0),
+      m_knowledgeCollectionsModel(0),
       m_categoriesModel(0),
       m_categoriesSideBarModel(0),
       m_categoriesSelectionModel(0),
       m_categoriesComboModel(0),
       m_treeSelection(0),
       m_categorySelection(0),
-      m_knowledgeMonitor(0),
-      m_knowledgeBaseModel(0),
-      m_knowledgeSelectionModel(0),
-      m_knowledgeSidebarModel(0),
-      m_topicsTreeModel(0),
-      m_topicSelection(0),
-      m_knowledgeCollectionsModel(0)
+      m_topicSelection(0)
 {
 }
 

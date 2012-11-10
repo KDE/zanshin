@@ -131,7 +131,7 @@ bool SelectionProxyModel::acceptRow(int sourceRow, const QModelIndex &sourcePare
     return false;
 }
 
-void SelectionProxyModel::onSelectionChanged(const QItemSelection &/*selected*/, const QItemSelection &deselected)
+void SelectionProxyModel::onSelectionChanged(const QItemSelection &/*selected*/, const QItemSelection &/*deselected*/)
 {
 #if QT_VERSION < 0x040800
     // The QItemSelectionModel sometimes doesn't remove deselected items from its selection

@@ -468,6 +468,8 @@ QString typeToString(PimItemRelation::Type type)
             return QLatin1String("Context");
         case PimItemRelation::Topic:
             return QLatin1String("Topic");
+        default:
+            qWarning() << "unhandled type" << type;
     }
     qWarning() << type;
     Q_ASSERT(0);

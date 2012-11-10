@@ -51,8 +51,8 @@ struct Relation
 {
   Relation(Id id, const QList<TreeNode> &parentNodes);
   Relation();
-  QList<TreeNode> parentNodes;
   Id id;
+  QList<TreeNode> parentNodes;
   //     QDateTime timestamp; //for merging
 };
 
@@ -78,7 +78,7 @@ public:
     //for all nodes
     IdList getParents(Id child);
     
-    virtual void addNode(const QString &name, const IdList &parents){};
+    virtual void addNode(const QString &/*name*/, const IdList &/*parents*/){};
     //for all nodes
     void moveNode(Id, IdList parents);
     virtual bool isVirtual(Id) const;

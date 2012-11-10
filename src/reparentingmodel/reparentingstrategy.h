@@ -93,10 +93,10 @@ public:
 
     virtual QMimeData *mimeData(const QModelIndexList &/*proxyIndexes*/) const{return 0;};
     virtual QStringList mimeTypes() { return QStringList(); };
-    virtual Qt::ItemFlags flags(const QModelIndex &proxyIndex, Qt::ItemFlags flags) {return flags;};
+    virtual Qt::ItemFlags flags(const QModelIndex &/*proxyIndex*/, Qt::ItemFlags flags) {return flags;};
     virtual Qt::DropActions supportedDropActions() const { return Qt::IgnoreAction; };
-    virtual bool onDropMimeData(Id id, const QMimeData* , Qt::DropAction ){ return false; };
-    virtual bool onSetData(Id id, const QVariant &value, int role, int column) { return false; };
+    virtual bool onDropMimeData(Id /*id*/, const QMimeData* , Qt::DropAction ){ return false; };
+    virtual bool onSetData(Id /*id*/, const QVariant &/*value*/, int /*role*/, int /*column*/) { return false; };
 
 protected:
     /**

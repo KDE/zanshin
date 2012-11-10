@@ -30,9 +30,9 @@
 
 ReparentingStrategy::ReparentingStrategy()
 :   mReparentOnRemoval(true),
+    m_model(0),
     mMinIdCounter(10),
-    mIdCounter(mMinIdCounter),
-    m_model(0)
+    mIdCounter(mMinIdCounter)
 {
 
 }
@@ -43,7 +43,7 @@ IdList ReparentingStrategy::getParents(const QModelIndex &, const IdList & )
     return IdList();
 }
 
-void ReparentingStrategy::onNodeRemoval(const qint64& changed)
+void ReparentingStrategy::onNodeRemoval(const qint64& /*changed*/)
 {
 
 }

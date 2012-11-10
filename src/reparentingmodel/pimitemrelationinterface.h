@@ -100,7 +100,7 @@ public:
 
     void setRelationsStructure(PimItemRelationCache *);
 
-    virtual void add(const QString &/*name*/, const QList<PimNode> &parents = QList<PimNode>()) {};
+    virtual void add(const QString &/*name*/, const QList<PimNode> &parents = QList<PimNode>()) {Q_UNUSED(parents);};
 //     virtual bool remove(QWidget * /*widget*/, const QModelIndexList &relations) {return false;};
 //     virtual bool moveTo(const QModelIndex &/*node*/, const QModelIndex &parent) = 0;
 //     virtual bool linkTo(const QModelIndex &/*node*/, const QModelIndex &parent) {return false;};

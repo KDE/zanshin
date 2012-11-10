@@ -259,7 +259,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
                                            Zanshin::ApplicationMode mode,
                                            const QList<QAction*> &contextActions,
                                            const QList<QAction*> &toolbarActions,
-                                           QWidget *parent, KXMLGUIClient *client)
+                                           QWidget *parent, KXMLGUIClient */*client*/)
     : QWidget(parent), 
     m_mode(mode),
     m_defaultCollectionId(-1)

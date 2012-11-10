@@ -49,6 +49,8 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
         case PimItemRelation::Project:
             mReparentOnRemoval = false;
             break;
+        default:
+            qWarning() << "unhandled type: " << type;
     }
     connect(mRelations.data(), SIGNAL(virtualNodeAdded(Id, IdList, QString)), this, SLOT(createVirtualNode(Id, IdList, QString)));
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
@@ -317,7 +319,7 @@ bool PimItemRelationStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Q
     return true;
 }
 
-bool PimItemRelationStrategy::onSetData(Id id, const QVariant& value, int role, int column)
+bool PimItemRelationStrategy::onSetData(Id id, const QVariant& value, int /*role*/, int /*column*/)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) getData(id, Zanshin::ItemTypeRole).toInt();
     kWarning() << id << type;
@@ -334,7 +336,7 @@ void PimItemRelationStrategy::reset()
     ReparentingStrategy::reset();
 }
 
-QVariant PimItemRelationStrategy::data(Id id, int column, int role, bool &/*forward*/) const
+QVariant PimItemRelationStrategy::data(Id id, int /*column*/, int role, bool &/*forward*/) const
 {
     if (role == Zanshin::RelationIdRole) {
         return translateTo(id);

@@ -147,7 +147,7 @@ private slots:
         
         QScopedPointer<PimItemRelations> relation(getStructure());
         Id id = relation->addItem(item);
-        Id id2 = relation->addItem(item2);
+        relation->addItem(item2);
         QCOMPARE(relation->getParents(id).size(), 0);
     }
     
@@ -162,7 +162,7 @@ private slots:
         Id id = relation->addItem(item);
         QCOMPARE(relation->getItemId(item), id);
         QCOMPARE(relation->getParents(id).size(), 1);
-        Id firstParent = relation->getParents(id).first();
+        relation->getParents(id).first();
     }
     
     void matchProjectByUid()
@@ -194,7 +194,7 @@ private slots:
         
         QScopedPointer<ProjectStructure> relation(new ProjectStructure());
         Id id = relation->addItem(item);
-        Id id2 = relation->addItem(item2);
+        relation->addItem(item2);
         QCOMPARE(relation->getParents(id).size(), 1);
     }
     

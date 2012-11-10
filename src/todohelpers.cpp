@@ -59,7 +59,7 @@ void TodoHelpers::addTodo(const QString &summary, const QList<PimItemRelation> r
     new Akonadi::ItemCreateJob(item, collection);
 }
 
-void removeCurrentTodo(const QModelIndex &project, QModelIndexList children, Akonadi::TransactionSequence *sequence)
+void removeCurrentTodo(const QModelIndex &project, QModelIndexList /*children*/, Akonadi::TransactionSequence */*sequence*/)
 {
     // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
     // information about the rights is not valid on retrieved items.

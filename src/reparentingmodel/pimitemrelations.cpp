@@ -52,7 +52,7 @@ PimItemRelationCache::PimItemRelationCache()
 }
 
 
-void PimItemRelationCache::mergeNode(const TreeNode &node)
+void PimItemRelationCache::mergeNode(const TreeNode &/*node*/)
 {
 }
 
@@ -454,7 +454,7 @@ Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
     return Relation(id, parents);
 }
 
-void ProjectStructure::updateRelationTree(Akonadi::Item& item)
+void ProjectStructure::updateRelationTree(Akonadi::Item& /*item*/)
 {
 
 }
