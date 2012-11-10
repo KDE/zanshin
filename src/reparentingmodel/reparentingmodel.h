@@ -59,7 +59,7 @@ private slots:
     void onSourceRemoveRows(const QModelIndex &sourceIndex, int begin, int end);
 
 private:
-    friend ReparentingStrategy;
+    friend class ReparentingStrategy;
     virtual void init();
     virtual TodoNode *createInbox() const;
 
