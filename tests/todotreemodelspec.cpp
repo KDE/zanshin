@@ -32,6 +32,8 @@
 #include <reparentingmodel/projectstrategy.h>
 #include <reparentingmodel/pimitemrelationstrategy.h>
 #include <reparentingmodel/pimitemrelationinterface.h>
+#include <utils/note.h>
+#include <pimlistview/pimitemmodel.h>
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modeltest.h"
