@@ -112,7 +112,7 @@ Id ProjectStrategy::getId(const QModelIndex &sourceChildIndex)
     if (type==Zanshin::Collection) {
         return translateFrom(mRelations->addCollection(sourceChildIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>()));
     }
-    kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url() << sourceChildIndex << type;
+//     kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().url() << sourceChildIndex << type;
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     Q_ASSERT(item.isValid());
     Id id = mRelations->addItem(item);
@@ -165,7 +165,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     foreach(Id i, ignore) {
         parents.removeAll(i);
     }
-    kDebug() << id << parents;
+//     kDebug() << id << parents;
     checkParents(parents);
     return parents;
 }
@@ -173,7 +173,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
 void ProjectStrategy::onNodeRemoval(const Id& changed)
 {
     IdList parents = translateFrom(mRelations->getParents(translateTo(changed)));
-    kDebug() << changed << parents;
+//     kDebug() << changed << parents;
     mRelations->removeNode(translateTo(changed));
     checkParents(parents);
 }

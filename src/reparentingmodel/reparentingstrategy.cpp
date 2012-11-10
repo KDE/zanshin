@@ -71,19 +71,19 @@ void ReparentingStrategy::reset()
 
 QList<TodoNode*> ReparentingStrategy::createNode(Id id, IdList parents, QString name)
 {
-    kDebug() << id << parents << name;
+//     kDebug() << id << parents << name;
     return m_model->createNode(id, parents, name);
 }
 
 void ReparentingStrategy::renameNode(Id id, QString name)
 {
-    kDebug() << id << name;
+//     kDebug() << id << name;
     m_model->renameNode(id, name);
 }
 
 void ReparentingStrategy::updateParents(Id id, IdList parents)
 {
-    kDebug() << id << parents;
+//     kDebug() << id << parents;
     m_model->reparentNode(id, parents);
 }
 
@@ -91,19 +91,19 @@ void ReparentingStrategy::updateParents(Id id)
 {
     TodoNode *node = m_model->m_parentMap.value(id);
     if (!node || !node->rowSourceIndex().isValid()) {
-        kDebug() << id;
+//         kDebug() << id;
         return;
     }
     Q_ASSERT(node);
     IdList parents = getParents(node->rowSourceIndex());
-    kDebug() << id << parents;
+//     kDebug() << id << parents;
     m_model->reparentNode(id, parents, node->rowSourceIndex());
 }
 
 
 void ReparentingStrategy::removeNode(Id id)
 {
-    kDebug() << id;
+//     kDebug() << id;
     m_model->removeNodeById(id);
 }
 

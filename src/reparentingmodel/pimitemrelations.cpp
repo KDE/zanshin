@@ -68,7 +68,7 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
     }
     const Relation &rel = getRelationTree(id, item);
     Q_ASSERT(rel.id == id);
-    qDebug() << " <<<<<<<<<<<<<<<<< " << item.url().url() << id << rel.id << rel.parentNodes.size();
+//     qDebug() << " <<<<<<<<<<<<<<<<< " << item.url().url() << id << rel.id << rel.parentNodes.size();
     mParents.remove(id);
     foreach (const TreeNode &node, rel.parentNodes) {
         Q_ASSERT(id != node.id);
@@ -82,10 +82,10 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
 
 Id PimItemRelationCache::getItemId(const Akonadi::Item &item) const
 {
-    kDebug() << item.id();
-    qDebug() << "itemids: " << mItemIdCache;
-    qDebug() << "parents " << mParents;
-    qDebug() << "uids " << mUidMapping;
+//     kDebug() << item.id();
+//     qDebug() << "itemids: " << mItemIdCache;
+//     qDebug() << "parents " << mParents;
+//     qDebug() << "uids " << mUidMapping;
     Q_ASSERT(item.isValid());
     Q_ASSERT(mItemIdCache.contains(item.id()));
     return mItemIdCache.value(item.id());
@@ -434,11 +434,11 @@ Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
     Q_ASSERT (!pimitem.isNull());
     const QByteArray uid = pimitem->getUid().toLatin1();
-    qDebug() << "######### " << item.url().url() << id << uid << pimitem->getRelations().size();
+//     qDebug() << "######### " << item.url().url() << id << uid << pimitem->getRelations().size();
     addUidMapping(uid, id);
     QList<TreeNode> parents;
     foreach(const PimItemRelation &rel, pimitem->getRelations()) {
-        qDebug() << "relation " << rel.type << rel.parentNodes.size();
+//         qDebug() << "relation " << rel.type << rel.parentNodes.size();
         if (rel.type == PimItemRelation::Project) {
             foreach (const PimItemTreeNode &p, rel.parentNodes) {
                 if (p.uid.isEmpty()) {
@@ -446,7 +446,7 @@ Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
                     continue;
                 }
                 Id projectId = getUidMapping(p.uid);
-                qDebug() << p.uid << projectId;
+//                 qDebug() << p.uid << projectId;
                 parents << TreeNode(p.name, projectId);
             }
         }
@@ -493,9 +493,9 @@ IdList ProjectStructure::getChildren(Id id) const
 
 void ProjectStructure::printCache()
 {
-    qDebug() << "itemids: " << mItemIdCache;
-    qDebug() << "collections: " << mCollectionMapping;
-    qDebug() << "parents " << mParents;
+//     qDebug() << "itemids: " << mItemIdCache;
+//     qDebug() << "collections: " << mCollectionMapping;
+//     qDebug() << "parents " << mParents;
 //     qDebug() << "uids " << mUidMapping;
 }
 

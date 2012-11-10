@@ -203,7 +203,7 @@ void PimItemRelationStrategy::doUpdateItems(const IdList &itemsToUpdate)
 
 void PimItemRelationStrategy::setNodeData(TodoNode* node, Id id)
 {
-    kDebug() << id;
+//     kDebug() << id;
     if (id == mInbox || id == mRoot) {
         return;
     }
