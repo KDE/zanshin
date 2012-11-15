@@ -431,13 +431,16 @@ void IncidenceItem::setProject()
         return;
     }
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
-    return  i->addComment("X-Zanshin-Project");
+    i->setCustomProperty("Zanshin", "Project", "true");
 }
 
 bool IncidenceItem::isProject() const
 {
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
-    return  i->comments().contains("X-Zanshin-Project");
+    if (i->comments().contains("X-Zanshin-Project")) {
+        return true;
+    }
+    return !i->customProperty("Zanshin", "Project").isEmpty();
 }
 
 
