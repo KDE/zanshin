@@ -167,9 +167,9 @@ QItemSelectionModel *SideBar::categoriesSelection() const
     return static_cast<SideBarPage*>(m_stack->widget(1))->selectionModel();
 }
 
-void SideBar::updateActions(const QModelIndex &index)
+static Akonadi::Collection getCollection(const QModelIndex &index)
 {
-    Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+    const Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
 
     Akonadi::Collection col;
     if ( type==Zanshin::Collection ) {
@@ -179,7 +179,13 @@ void SideBar::updateActions(const QModelIndex &index)
         // information about the rights is not valid on retrieved items.
         col = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
     }
+    return col;
+}
 
+void SideBar::updateActions(const QModelIndex &index)
+{
+    const Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+    const Akonadi::Collection col = getCollection(index);
     m_add->setEnabled((col.rights() & Akonadi::Collection::CanCreateItem)
                   && ( type == Zanshin::Collection
                     || type == Zanshin::ProjectTodo

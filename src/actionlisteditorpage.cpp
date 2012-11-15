@@ -411,6 +411,11 @@ bool ActionListEditorPage::selectDefaultCollection(QAbstractItemModel *model, co
     return false;
 }
 
+void ActionListEditorPage::setCurrentCollection(const Akonadi::Collection& collection)
+{
+    m_currentCollection = collection;
+}
+
 void ActionListEditorPage::onRowInsertedInComboBox(const QModelIndex &parent, int begin, int end)
 {
     QAbstractItemModel *model = static_cast<QAbstractItemModel*>(sender());
@@ -476,9 +481,9 @@ void ActionListEditorPage::addNewItem(const QString& summary)
             collection = current.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
             break;
         }
-    } else if (m_mode == Zanshin::ProjectMode) {
-        //In Projects mode just using the default collection is somewhat confusing, in others we rely on it though.
-        kDebug() << "nothing selected";
+    } else if (m_mode == Zanshin::ProjectMode) { //This actually only happens when there is no Project in a collection which could be shown in this view (and for which we could create todos).
+        collection = m_currentCollection;
+        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
         return;
     }
     if (m_mode == Zanshin::KnowledgeMode) {

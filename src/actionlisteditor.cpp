@@ -122,6 +122,21 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     }
 }
 
+static Akonadi::Collection getCollection(const QModelIndex &index)
+{
+    const Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
+
+    Akonadi::Collection col;
+    if ( type==Zanshin::Collection ) {
+        col = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+    } else {
+        // We use ParentCollectionRole instead of Akonadi::Item::parentCollection() because the
+        // information about the rights is not valid on retrieved items.
+        col = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+    }
+    return col;
+}
+
 void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
 {
     int type = index.data(Zanshin::ItemTypeRole).toInt();
@@ -133,6 +148,7 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
                         || type == Zanshin::TopicRoot);
 
     currentPage()->selectFirstIndex();
+    currentPage()->setCurrentCollection(getCollection(index));
 }
 
 

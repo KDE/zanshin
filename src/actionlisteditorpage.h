@@ -89,6 +89,7 @@ private slots:
 private:
     bool selectDefaultCollection(QAbstractItemModel *model, const QModelIndex &parent, int begin, int end, Akonadi::Collection::Id defaultCol);
     void selectDefaultCollection(const Akonadi::Collection &collection);
+    void setCurrentCollection(const Akonadi::Collection &collection);
 
     Akonadi::EntityTreeView *m_treeView;
     Zanshin::ApplicationMode m_mode;
@@ -99,6 +100,7 @@ private:
     QByteArray m_normalStateCache;
     
     qint64 m_defaultCollectionId;
+    Akonadi::Collection m_currentCollection;
     
     CollectionsFilterProxyModel *m_todoColsModel;
 
