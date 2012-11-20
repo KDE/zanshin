@@ -338,11 +338,12 @@ void PimItemRelationStrategy::reset()
 
 QVariant PimItemRelationStrategy::data(Id id, int /*column*/, int role, bool &/*forward*/) const
 {
+    const Id translatedId = translateTo(id);
     if (role == Zanshin::RelationIdRole) {
-        return translateTo(id);
+        return translatedId;
     }
     if (role == Zanshin::UidRole) {
-        return QString(mRelations->getUid(id));
+        return QString(mRelations->getUid(translatedId));
     }
     return QVariant();
 }

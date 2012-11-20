@@ -143,6 +143,9 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
         if (parent.type == PimNode::Context) {
             relations << PimItemRelation(PimItemRelation::Context, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
         }
+        if (parent.type == PimNode::Topic) {
+            relations << PimItemRelation(PimItemRelation::Topic, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
+        }
     }
     switch (type) {
         case PimNode::Project:
@@ -157,6 +160,7 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
         case PimNode::Note: {
             Note note;
             note.setTitle(name);
+            note.setRelations(relations);
             new Akonadi::ItemCreateJob(note.getItem(), collection);
             break;
         }
