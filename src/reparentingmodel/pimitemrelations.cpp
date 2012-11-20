@@ -220,6 +220,8 @@ Id PimItemRelationCache::getId(const QByteArray& uid) const
 
 QByteArray PimItemRelationCache::getUid(Id id) const
 {
+    //No empty uids in map
+    Q_ASSERT(!mUidMapping.key(id).isEmpty() || !mUidMapping.values().contains(id));
     return mUidMapping.key(id);
 }
 

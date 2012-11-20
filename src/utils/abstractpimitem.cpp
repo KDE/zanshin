@@ -496,6 +496,10 @@ void addElement(QDomElement &element, const QString &name, const QString &value)
 void addNodes(const QList < PimItemTreeNode > &nodes, QDomElement &element)
 {
     foreach(const PimItemTreeNode &node, nodes) {
+        if (node.uid.isEmpty()) {
+            kWarning() << "Empty uid in relation, skipping. name: " << node.name;
+            continue;
+        }
         QDomElement e = element.ownerDocument().createElement( "tree" );
         addElement(e, "uid", node.uid);
         addElement(e, "name", node.name);
@@ -538,7 +542,12 @@ PimItemRelation getRelation(QDomElement parent)
     if ( n.isElement() ) {
       QDomElement e = n.toElement();
       if (e.tagName() == "tree") {
-        nodes.append(getTreeNode(n.toElement()));
+        const PimItemTreeNode node = getTreeNode(n.toElement());
+        if (node.uid.isEmpty()) {
+            kWarning() << "Found node with empty uid, skipping.";
+            continue;
+        }
+        nodes.append(node);
       } else if (e.tagName() == "type") {
         type = e.text();
       } else {
