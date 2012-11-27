@@ -113,7 +113,8 @@ void SideBarPage::addNewItem()
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
         PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>(), collection);
     } else if (type==Zanshin::ProjectTodo) {
-        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem));
+        Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
+        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem), collection);
     } else if (type==Zanshin::CategoryRoot) {
         PimItemStructureInterface::create(PimNode::Context, summary);
     } else if (type==Zanshin::Category) {
