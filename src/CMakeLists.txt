@@ -75,7 +75,7 @@ install(TARGETS zanshin DESTINATION ${BIN_INSTALL_DIR})
 install(FILES zanshinui.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin)
 install(FILES contextviewui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
 install(FILES editorui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
-install(FILES zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(PROGRAMS zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
 ########### zanshin part ###############
 
