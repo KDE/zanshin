@@ -25,6 +25,7 @@
 #include "datestringbuilder.h"
 
 #include <klocale.h>
+#include <qcache.h>
 
 //namespace DateStringBuilder {
 
@@ -100,7 +101,13 @@ QString DateStringBuilder::getShortDate(const KDateTime &dateTime)
         return getDayName(dateTime);
     }
     if (currentDate.year() == dateTime.date().year()) { //this year
-        return dateTime.toString("%d.%m");
+        //Micro optimization because this function showed up as hotspot
+        static QCache<uint, QString> cache;
+        uint hash = dateTime.date().month() ^ dateTime.date().day();
+        if (!cache.contains(hash)) {
+            cache.insert(hash, new QString(dateTime.toString("%d.%m")));
+        }
+        return *cache[hash];
     }
     return dateTime.toString("%d.%m.%Y");
 }
