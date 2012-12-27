@@ -69,7 +69,7 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
     const Relation &rel = getRelationTree(id, item);
     Q_ASSERT(rel.id == id);
 //     qDebug() << " <<<<<<<<<<<<<<<<< " << item.url().url() << id << rel.id << rel.parentNodes.size();
-    mParents.remove(id);
+    mParents.removeLeft(id);
     foreach (const TreeNode &node, rel.parentNodes) {
         Q_ASSERT(id != node.id);
         mParents.insert(id, node.id);
@@ -122,15 +122,37 @@ bool PimItemRelationCache::isVirtual(Id id) const
     return !mItemIdCache.values().contains(id);
 }
 
+IdList values(Id key, const PimItemRelationCache::ParentMapping &map)
+{
+    IdList parentNodes;
+    PimItemRelationCache::ParentMapping::left_const_iterator i = map.constFindLeft(key);
+    while (i != map.leftConstEnd() && i.key() == key) {
+        parentNodes << i.value();
+        ++i;
+    }
+    return parentNodes;
+}
+
 IdList PimItemRelationCache::getParents(Id id)
 {
-    return mParents.values(id);
+    return values(id, mParents);
+}
+
+IdList keys(Id key, const PimItemRelationCache::ParentMapping &map)
+{
+    IdList parentNodes;
+    PimItemRelationCache::ParentMapping::right_const_iterator i = map.constFindRight(key);
+    while (i != map.rightConstEnd() && i.key() == key) {
+        parentNodes << i.value();
+        ++i;
+    }
+    return parentNodes;
 }
 
 IdList PimItemRelationCache::getChildNodes(Id id) const
 {
     IdList result;
-    const IdList &list = mParents.keys(id);
+    const IdList &list = keys(id, mParents);
     result.append(list);
     foreach (Id child, list) {
         result.append(getChildNodes(child));
@@ -140,7 +162,7 @@ IdList PimItemRelationCache::getChildNodes(Id id) const
 
 IdList PimItemRelationCache::getAffectedChildItems(Id id) const
 {
-    QList<Akonadi::Item::Id> itemList;
+    IdList itemList;
     IdList itemsToUpdate = getChildNodes(id);
 //     kDebug() << itemsToUpdate;
     foreach (Id update, itemsToUpdate) {
@@ -160,7 +182,7 @@ void PimItemRelationCache::moveNode(Id id, IdList parents)
         itemList << id;
     }
 
-    mParents.remove(id);
+    mParents.removeLeft(id);
     foreach(Id parent, parents) {
         mParents.insert(id, parent);
     }
@@ -172,11 +194,11 @@ void PimItemRelationCache::moveNode(Id id, IdList parents)
 void PimItemRelationCache::removeNodeRecursive(Id id)
 {
 //     kDebug() << id;
-    mParents.remove(id);
+    mParents.removeLeft(id);
 //     if (mItemIdCache.values().contains(id)) {
 //         mItemIdCache.remove(mItemIdCache.key(id));
 //     }
-    Q_ASSERT(!mParents.contains(id));
+    Q_ASSERT(!mParents.leftContains(id));
 
     const IdList &children = getChildNodes(id);
     foreach (Id child, children) {
@@ -186,7 +208,7 @@ void PimItemRelationCache::removeNodeRecursive(Id id)
 
 void PimItemRelationCache::removeNode(Id id)
 {
-    if (!mParents.contains(id)) { 
+    if (!mParents.leftContains(id)) {
         return;
     }
     const IdList &itemList = getAffectedChildItems(id);
@@ -263,7 +285,7 @@ void PimItemRelations::mergeNode(const TreeNode &node)
 
     PimItemRelationCache::mergeNode(node);
     //TODO emit changes if changed
-    mParents.remove(node.id);
+    mParents.removeLeft(node.id);
     foreach (const TreeNode &parentNode, node.parentNodes) {
         mParents.insert(node.id, parentNode.id);
         mergeNode(parentNode);
@@ -276,7 +298,7 @@ void PimItemRelations::mergeNode(const TreeNode &node)
             name = "noname";
         }
 //         Q_ASSERT(!node.name.isEmpty());
-        emit virtualNodeAdded(node.id, mParents.values(node.id), name);
+        emit virtualNodeAdded(node.id, values(node.id, mParents), name);
     }
 }
 
@@ -296,7 +318,7 @@ void PimItemRelations::removeNodeRecursive(Id id)
 
 void PimItemRelations::removeNode(Id id)
 {
-    if (!mParents.contains(id) && !mNames.contains(id)) {
+    if (!mParents.leftContains(id) && !mNames.contains(id)) {
         return;
     }
     PimItemRelationCache::removeNode(id);
@@ -363,7 +385,7 @@ Relation PimItemRelationsStructure::getRelationTree(Id id, const Akonadi::Item &
 QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
 {
     QList<PimItemTreeNode> list;
-    IdList parents = mParents.values(id);
+    IdList parents = values(id, mParents);
     foreach (Id parent, parents) {
         list << PimItemTreeNode(getUid(parent), mNames.value(parent), getParentTreeNodes(parent));
         kDebug() << mNames.value(parent);
@@ -395,7 +417,7 @@ void PimItemRelationsStructure::updateRelationTree(Akonadi::Item &item)
 QList<TreeNode> PimItemRelationsStructure::getParentList(Id id)
 {
     QList<TreeNode> list;
-    IdList parents = mParents.values(id);
+    IdList parents = values(id, mParents);
     foreach (Id parent, parents) {
         list << TreeNode(mNames.value(parent), parent, getParentList(parent));
     }
@@ -471,7 +493,8 @@ Id ProjectStructure::addCollection(const Akonadi::Collection &col)
 
 bool ProjectStructure::hasChildren(Id id) const
 {
-    return mParents.values().contains(id);
+    //FIXME hotspot
+    return mParents.rightContains(id);
 }
 
 Id ProjectStructure::addItem(const Akonadi::Item &item)

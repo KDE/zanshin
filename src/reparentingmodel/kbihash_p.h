@@ -468,6 +468,15 @@ struct _containerType<QMap<T, U>, T, U>
   }
 };
 
+template<typename T, typename U>
+struct _containerType<QMultiMap<T, U>, T, U>
+{
+  operator const char *()
+  {
+    return "QMultiMap";
+  }
+};
+
 
 template<typename Container>
 static const char * containerType()
