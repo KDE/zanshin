@@ -23,6 +23,7 @@
 
 #include "todoproxymodelbase.h"
 #include "reparentingstrategy.h"
+#include "kbihash_p.h"
 
 /**
  * A generic reparenting model.
@@ -50,6 +51,7 @@ public:
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
+    typedef KBiAssociativeContainer< QMultiMap<Id, TodoNode*>, QMap<TodoNode*, Id> > NodeMapping;
 protected:
     virtual void resetInternalData();
 
@@ -82,7 +84,7 @@ private:
     void removeNodeFromParents(TodoNode *node);
     
     TodoNode *m_rootNode;
-    QMap<Id, TodoNode*> m_parentMap;
+    NodeMapping m_parentMap;
 
     QScopedPointer<ReparentingStrategy> m_strategy;
 };
