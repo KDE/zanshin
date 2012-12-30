@@ -138,22 +138,32 @@ public:
     }
 
     inline bool removeLeft(left_type t) {
-        const right_type u = _leftToRight.take(t);
-        return _rightToLeft.remove(u) != 0;
+        left_const_iterator i = _leftToRight.constFind(t);
+        bool ret = false;
+        while (i != _leftToRight.constEnd() && i.key() == t) {
+            ret = true;
+            _rightToLeft.remove(i.value());
+            ++i;
+        }
+        _leftToRight.remove(t);
+        return ret;
     }
 
     inline bool removeRight(right_type u) {
+        //FIXME leaves dangling items with multimap
         const left_type t = _rightToLeft.take(u);
         return _leftToRight.remove(t) != 0;
     }
 
     inline right_type takeLeft(left_type t) {
+        //FIXME leaves dangling items with multimap
         const right_type u = _leftToRight.take(t);
         _rightToLeft.remove(u);
         return u;
     }
 
     inline left_type takeRight(right_type u) {
+        //FIXME leaves dangling items with multimap
         const left_type t = _rightToLeft.take(u);
         _leftToRight.remove(t);
         return t;
@@ -266,10 +276,12 @@ public:
 
         // This means we need to hash u and t up to twice each. Could probably be done better using QHashNode.
 
-        if (_leftToRight.contains(t))
-            _rightToLeft.remove(_leftToRight.take(t));
-        if (_rightToLeft.contains(u))
-            _leftToRight.remove(_rightToLeft.take(u));
+        //FIXME this doesn't apply in our special case with the multimap as we never replace and removing is wrong as we explicitly want multiple items.
+        //A more generic fix with a dedicated insertMulti call or so would probably be better
+//         if (_leftToRight.contains(t))
+//             _rightToLeft.remove(_leftToRight.take(t));
+//         if (_rightToLeft.contains(u))
+//             _leftToRight.remove(_rightToLeft.take(u));
 
         _rightToLeft.insert(u, t);
         return _leftToRight.insert(t, u);
