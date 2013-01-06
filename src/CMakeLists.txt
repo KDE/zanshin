@@ -103,6 +103,3 @@ target_link_libraries(kontact_zanshinplugin ${KDE4_KPARTS_LIBS} ${KDEPIMLIBS_KON
 
 install(TARGETS kontact_zanshinplugin DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES zanshin_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR}/kontact)
-
-
-add_subdirectory(reparentingmodel)
