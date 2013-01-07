@@ -1,5 +1,6 @@
 /*
-    <one line to give the library's name and an idea of what it does.>
+    This file is part of Zanshin Todo.
+
     Copyright (C) 2012  Christian Mollekopf <chrigi_1@fastmail.fm>
 
     This library is free software; you can redistribute it and/or
