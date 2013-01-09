@@ -28,6 +28,7 @@
 #include <Akonadi/Item>
 #include <KDateTime>
 #include <QStringList>
+#include <kcalcore/attachment.h>
 
 class KJob;
 
@@ -190,6 +191,7 @@ public:
 
     bool textIsRich();
     bool titleIsRich();
+    virtual KCalCore::Attachment::List getAttachments();
 
     enum ChangedPart {
         Title = 0x01,
@@ -232,6 +234,7 @@ protected:
     bool m_dataFetched;
     bool m_textIsRich; //if content is rich
     bool m_titleIsRich;
+    KCalCore::Attachment::List m_attachments;
 
 private slots:
     void itemFetchDone(KJob *job);

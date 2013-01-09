@@ -129,6 +129,7 @@ void IncidenceItem::fetchData()
     m_text = inc->description();
     m_textIsRich = inc->descriptionIsRich();
     m_creationDate = inc->created();
+    m_attachments = inc->attachments();
     m_dataFetched = true;
 }
 

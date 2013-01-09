@@ -90,6 +90,7 @@ m_itemOutdated(false)
     m_textIsRich = item.textIsRich();
     m_text = item.getText();
     m_titleIsRich = item.titleIsRich();
+    m_attachments = item.getAttachments();
     m_dataFetched = true;
 }
 
@@ -414,6 +415,12 @@ bool AbstractPimItem::titleIsRich()
 {
     fetchData();
     return m_titleIsRich;
+}
+
+KCalCore::Attachment::List AbstractPimItem::getAttachments()
+{
+    fetchData();
+    return m_attachments;
 }
 
 
