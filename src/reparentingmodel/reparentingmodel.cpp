@@ -195,6 +195,12 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
     }
     Q_ASSERT(m_parentMap.leftContains(id));
     m_parentMap.removeLeft(id); //Make sure we have the pointer removed before calling onNodeRemoval which could again reenter this function and thus access an already deleted pointer
+    Q_ASSERT(!m_parentMap.leftContains(id));
+#ifndef QT_NO_DEBUG
+    foreach (TodoNode *root, rootNodes) {
+        Q_ASSERT(!m_parentMap.rightContains(root));
+    }
+#endif
     if (cleanupStrategy) {
         m_strategy->onNodeRemoval(id);
     }
@@ -548,7 +554,7 @@ QVariant ReparentingModel::data(const QModelIndex& index, int role) const
     if (!node) {
         return QVariant();
     }
-//     Q_ASSERT(node && m_parentMap.values().contains(node));
+    Q_ASSERT(node && m_parentMap.rightContains(node));
     bool forward = true;
     const QVariant &var = m_strategy->data(m_parentMap.rightToLeft(node), index.column(), role, forward);
     if (!forward) {
