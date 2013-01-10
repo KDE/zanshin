@@ -90,7 +90,7 @@ void ReparentingStrategy::updateParents(Id id, IdList parents)
 
 void ReparentingStrategy::updateParents(Id id)
 {
-    TodoNode *node = m_model->m_parentMap.value(id);
+    TodoNode *node = m_model->m_parentMap.leftToRight(id);
     if (!node || !node->rowSourceIndex().isValid()) {
 //         kDebug() << id;
         return;
@@ -116,7 +116,7 @@ bool ReparentingStrategy::reparentOnParentRemoval(Id) const
 
 QVariant ReparentingStrategy::getData(Id id, int role) const
 {
-    TodoNode *node = m_model->m_parentMap.value(id);
+    TodoNode *node = m_model->m_parentMap.leftToRight(id);
     Q_ASSERT(node);
     return node->data(0, role);
 }
@@ -124,7 +124,7 @@ QVariant ReparentingStrategy::getData(Id id, int role) const
 
 void ReparentingStrategy::setData(Id id, const QVariant& value, int role)
 {
-    TodoNode *node = m_model->m_parentMap.value(id);
+    TodoNode *node = m_model->m_parentMap.leftToRight(id);
     Q_ASSERT(node);
     node->setData(value, 0, role);
 }
@@ -132,7 +132,7 @@ void ReparentingStrategy::setData(Id id, const QVariant& value, int role)
 Akonadi::Collection ReparentingStrategy::getParentCollection(Id id)
 {
 
-    TodoNode *node = m_model->m_parentMap.value(id);
+    TodoNode *node = m_model->m_parentMap.leftToRight(id);
     Q_ASSERT(node);
     return node->rowSourceIndex().parent().data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
 }

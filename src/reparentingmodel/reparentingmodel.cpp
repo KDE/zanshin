@@ -27,6 +27,18 @@
 #include <KIcon>
 #include <QMimeData>
 
+QList<TodoNode*> values(Id key, const ReparentingModel::NodeMapping &map)
+{
+    QList<TodoNode*> parentNodes;
+    ReparentingModel::NodeMapping::left_const_iterator i = map.constFindLeft(key);
+    while (i != map.leftConstEnd() && i.key() == key) {
+        parentNodes << i.value();
+        ++i;
+    }
+    return parentNodes;
+}
+
+
 ReparentingModel::ReparentingModel(ReparentingStrategy* strategy, QObject* parent)
 :   TodoProxyModelBase(TodoProxyModelBase::MultiMapping, parent),
     m_strategy(strategy)
@@ -67,7 +79,7 @@ QList<TodoNode*> ReparentingModel::insertNode(const Id &identifier, const QStrin
         }
 
         Q_ASSERT(node);
-        m_parentMap.insertMulti(identifier, node);
+        m_parentMap.insert(identifier, node);
         m_manager->insertNode(node);
         endInsertRows();
         return QList<TodoNode*>() << node;
@@ -90,7 +102,7 @@ QList<TodoNode*> ReparentingModel::insertNode(const Id &identifier, const QStrin
         }
 
         Q_ASSERT(node);
-        m_parentMap.insertMulti(identifier, node);
+        m_parentMap.insert(identifier, node);
         m_manager->insertNode(node);
         endInsertRows();
 //         Q_ASSERT(!m_parentMap.values().contains(0));
@@ -103,7 +115,7 @@ QList<TodoNode*> ReparentingModel::createNode(const Id &identifier, const IdList
 {
 //     kDebug() << "add node" << name << identifier << parents << sourceIndex;
 
-    if (m_parentMap.contains(identifier)) { //We already have this node, we only need to update the temporary node FIXME this check is probably broken with multiparent?
+    if (m_parentMap.leftContains(identifier)) { //We already have this node, we only need to update the temporary node FIXME this check is probably broken with multiparent?
         QList<TodoNode*> nodes = reparentNode(identifier, parents, sourceIndex);
 //        kDebug() << "updating temporary nodes: " << identifier << nodes; 
         if (!sourceIndex.isValid() && !name.isEmpty()) {
@@ -122,12 +134,12 @@ QList<TodoNode*> ReparentingModel::createNode(const Id &identifier, const IdList
     QList<TodoNode*> nodeList;
     foreach (Id parentIdentifier, parents) {
         Q_ASSERT(parentIdentifier >= 0);
-        if (!m_parentMap.contains(parentIdentifier)) {
+        if (!m_parentMap.leftContains(parentIdentifier)) {
 //            kDebug() << "creating missing parent: " << parentIdentifier;
             createNode(parentIdentifier, IdList(), "unknown");
         }
-        Q_ASSERT(m_parentMap.contains(parentIdentifier));
-        QList<TodoNode*> parentNodes = m_parentMap.values(parentIdentifier);
+        Q_ASSERT(m_parentMap.leftContains(parentIdentifier));
+        QList<TodoNode*> parentNodes = values(parentIdentifier, m_parentMap);
         Q_ASSERT(!parentNodes.isEmpty());
         nodeList.append(insertNode(identifier, name, parentNodes, sourceIndex));
         //TODO create children
@@ -137,18 +149,18 @@ QList<TodoNode*> ReparentingModel::createNode(const Id &identifier, const IdList
 
 void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrategy)
 {
-    if (!m_parentMap.contains(id)) {
+    if (!m_parentMap.leftContains(id)) {
         kWarning() << "no such item " << id;
         return;
     }
-    const QList<TodoNode*> &rootNodes = m_parentMap.values(id);
+    const QList<TodoNode*> &rootNodes = values(id, m_parentMap);
     foreach (TodoNode *root, rootNodes) {
 //        kDebug() << "removeNode " << id;
 
         if (removeChildren) {
             foreach(TodoNode *childNode, root->children()) {
-                Q_ASSERT(m_parentMap.values().contains(childNode));
-                Id childId = m_parentMap.key(childNode);
+                Q_ASSERT(m_parentMap.rightContains(childNode));
+                Id childId = m_parentMap.rightToLeft(childNode);
                 if (m_strategy->reparentOnParentRemoval(childId)) {
 //                    kDebug() << "child " << childId;
                     IdList parents = m_strategy->getParents(childNode->rowSourceIndex(), IdList() << id);//Don't try to re-add it to the current parent (which is not yet removed)
@@ -163,10 +175,10 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
             }
         }
         //If a strategy removes/moves a parent node after it's children have been removed, the pointer may be invalid at this point. We should probably be using smart pointers to detect such problems better.
-        if (!m_parentMap.values().contains(root)) {
+        if (!m_parentMap.rightContains(root)) {
             return;
         }
-        Q_ASSERT(m_parentMap.values().contains(root));
+        Q_ASSERT(m_parentMap.rightContains(root));
         QModelIndex proxyParentIndex = m_manager->indexForNode(root->parent(), 0);
         int row = 0;
 
@@ -182,8 +194,14 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
         delete root;
         endRemoveRows();
     }
-    Q_ASSERT(m_parentMap.contains(id));
-    m_parentMap.remove(id); //Make sure we have the pointer removed before calling onNodeRemoval which could again reenter this function and thus access an already deleted pointer
+    Q_ASSERT(m_parentMap.leftContains(id));
+    m_parentMap.removeLeft(id); //Make sure we have the pointer removed before calling onNodeRemoval which could again reenter this function and thus access an already deleted pointer
+    Q_ASSERT(!m_parentMap.leftContains(id));
+#ifndef QT_NO_DEBUG
+    foreach (TodoNode *root, rootNodes) {
+        Q_ASSERT(!m_parentMap.rightContains(root));
+    }
+#endif
     if (cleanupStrategy) {
         m_strategy->onNodeRemoval(id);
     }
@@ -191,7 +209,7 @@ void ReparentingModel::removeNode(Id id, bool removeChildren, bool cleanupStrate
 
 void ReparentingModel::removeNodeById(Id id) //TODO remove
 {
-    if (!m_parentMap.contains(id)) {
+    if (!m_parentMap.leftContains(id)) {
         kDebug() << "no such item " << id;
         return;
     }
@@ -200,10 +218,10 @@ void ReparentingModel::removeNodeById(Id id) //TODO remove
 
 void ReparentingModel::removeNodeFromParents(TodoNode *node)
 {
-    QMap<Id, TodoNode*>::iterator i = m_parentMap.begin();
-    while (i != m_parentMap.end()) {
+    NodeMapping::left_iterator i = m_parentMap.leftBegin();
+    while (i != m_parentMap.leftEnd()) {
         if (i.value() == node) {
-            i = m_parentMap.erase(i);
+            i = m_parentMap.eraseLeft(i);
             return;
         } else {
             ++i;
@@ -217,6 +235,7 @@ void ReparentingModel::removeChildren(const QList<TodoNode*> &children)
         removeChildren(child->children());
         m_manager->removeNode(child);
         removeNodeFromParents(child); //TODO check if this is really required
+        Q_ASSERT(!m_parentMap.rightContains(child));
         delete child;
     }
 }
@@ -226,7 +245,7 @@ QList<TodoNode*> ReparentingModel::cloneChildren(const QList<TodoNode*> &childre
     QList<TodoNode*> list;
     foreach (TodoNode *node, children) {
         Q_ASSERT(node);
-        Id id = m_parentMap.key(node);
+        Id id = m_parentMap.rightToLeft(node);
         TodoNode *newNode;
         if (node->rowSourceIndex().isValid()) {
             newNode = new TodoNode(node->rowSourceIndex());
@@ -244,7 +263,7 @@ QList<TodoNode*> ReparentingModel::cloneChildren(const QList<TodoNode*> &childre
             //Never add to the node manager before a parent is set, otherwise the nodes end up in the root-set as well
             m_manager->insertNode(newChild);
         }
-        m_parentMap.insertMulti(id, newNode);
+        m_parentMap.insert(id, newNode);
         list.append(newNode);
     }
     return list;
@@ -258,7 +277,7 @@ QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& paren
         return QList<TodoNode*>();
     }
 //     kDebug() << p << parents << sourceIndex;
-    QList<TodoNode*> oldNodes = m_parentMap.values(p);
+    QList<TodoNode*> oldNodes = values(p, m_parentMap);
     Q_ASSERT(!oldNodes.isEmpty());
 
     //First check if we need to update anything
@@ -270,8 +289,8 @@ QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& paren
 //             kDebug() << "updating the sourceindex";
             updateSourceIndex = true;
         }
-        if (m_parentMap.values().contains(node->parent())) {
-            Id id = m_parentMap.key(node->parent());
+        if (m_parentMap.rightContains(node->parent())) {
+            Id id = m_parentMap.rightToLeft(node->parent());
             if (!oldParents.contains(id)) {
                 oldParents << id;
             }
@@ -346,8 +365,8 @@ QList<TodoNode*> ReparentingModel::reparentNode(const Id& p, const IdList& paren
 void ReparentingModel::renameNode(const Id& identifier, const QString& name)
 {
 //     kDebug() << "renamed " << identifier << " to " << name;
-    Q_ASSERT(m_parentMap.contains(identifier));
-    QList<TodoNode*> nodes = m_parentMap.values(identifier);
+    Q_ASSERT(m_parentMap.leftContains(identifier));
+    QList<TodoNode*> nodes = values(identifier, m_parentMap);
     foreach(TodoNode *node, nodes) {
         node->setData(name, 0, Qt::DisplayRole);
         node->setData(name, 0, Qt::EditRole);
@@ -372,7 +391,7 @@ void ReparentingModel::onSourceInsertRows(const QModelIndex& sourceIndex, int be
         bool replaceTemporaryNode = false;
         if (id > 0) {
             IdList parents = m_strategy->getParents(sourceChildIndex);
-            replaceTemporaryNode = m_parentMap.contains(id);
+            replaceTemporaryNode = m_parentMap.leftContains(id);
 //             kDebug() << "replacing existing node " << replaceTemporaryNode << id;
             createNode(id, parents, QString(), sourceChildIndex);
         }/* else {
@@ -397,7 +416,7 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
             //TODO write a test for the case that an item becomes hidden after being already in the model
             QList<TodoNode *>nodes = m_manager->nodesForSourceIndex(index);
             if (!nodes.isEmpty()) {
-                Id oldId = m_parentMap.key(nodes.first());
+                Id oldId = m_parentMap.rightToLeft(nodes.first());
                 removeNode(oldId, true); //remove if the sourceindex was in this model but is now hidden
             }
             continue;
@@ -405,7 +424,7 @@ void ReparentingModel::onSourceDataChanged(const QModelIndex& begin, const QMode
         const IdList &parents = m_strategy->getParents(index);
 //         kDebug() << index.data(Qt::DisplayRole).toString() << id << parents;
 
-        if (m_parentMap.contains(id)) { //In case we get updates for indexes which haven't been inserted yet
+        if (m_parentMap.leftContains(id)) { //In case we get updates for indexes which haven't been inserted yet
             reparentNode(id, parents, index);
         } else {
 //             kWarning() << id << " is missing";
@@ -489,8 +508,8 @@ bool ReparentingModel::dropMimeData(const QMimeData* mimeData, Qt::DropAction ac
         target = m_manager->nodeForIndex(index(row, column, parent));
     }
     Q_ASSERT(target);
-    Q_ASSERT(m_parentMap.values().contains(target));
-    if (m_strategy->onDropMimeData(m_parentMap.key(target), mimeData, action)) {
+    Q_ASSERT(m_parentMap.rightContains(target));
+    if (m_strategy->onDropMimeData(m_parentMap.rightToLeft(target), mimeData, action)) {
         return true;
     }
     //Calling the QAbstractItemModel implementation results in a crash, maybe add an implementation to todoproxymodelbase?
@@ -520,8 +539,8 @@ bool ReparentingModel::setData(const QModelIndex &index, const QVariant &value, 
         return TodoProxyModelBase::setData(index, value, role);
     }
     TodoNode *node = m_manager->nodeForIndex(index);
-    Q_ASSERT(node && m_parentMap.values().contains(node));
-    if (m_strategy->onSetData(m_parentMap.key(node), value, role, index.column())) {
+    Q_ASSERT(node && m_parentMap.rightContains(node));
+    if (m_strategy->onSetData(m_parentMap.rightToLeft(node), value, role, index.column())) {
         return true;
     }
     return TodoProxyModelBase::setData(index, value, role);
@@ -536,9 +555,9 @@ QVariant ReparentingModel::data(const QModelIndex& index, int role) const
     if (!node) {
         return QVariant();
     }
-    Q_ASSERT(node && m_parentMap.values().contains(node));
+    Q_ASSERT(node && m_parentMap.rightContains(node));
     bool forward = true;
-    const QVariant &var = m_strategy->data(m_parentMap.key(node), index.column(), role, forward);
+    const QVariant &var = m_strategy->data(m_parentMap.rightToLeft(node), index.column(), role, forward);
     if (!forward) {
         return var;
     }

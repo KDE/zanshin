@@ -23,6 +23,7 @@
 #define PIMITEMRELATIONS_H
 #include <QDateTime>
 #include <akonadi/item.h>
+#include "kbihash_p.h"
 #include "globaldefs.h"
 #include "utils/abstractpimitem.h"
 
@@ -83,6 +84,7 @@ public:
     //for all nodes
     void moveNode(Id, IdList parents);
     virtual bool isVirtual(Id) const;
+    typedef KBiAssociativeContainer< QMultiMap<Id, Id>, QMultiMap<Id, Id> > ParentMapping;
 
 signals:
     //for all nodes
@@ -102,7 +104,7 @@ protected:
     void addUidMapping(const QByteArray &uid, Id);
     Id getUidMapping(const QByteArray &uid);
     
-    QMultiMap<Id, Id> mParents;
+    ParentMapping mParents;
     QMap<Akonadi::Item::Id, Id> mItemIdCache;
     Id getNextId();
 private:

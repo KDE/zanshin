@@ -56,18 +56,19 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
-         case Zanshin::Category:
-         case Zanshin::CategoryRoot: {
+         case Zanshin::Category: {
              PimNode node (PimNode::Context);
              node.relationId = index.data(Zanshin::RelationIdRole).value<Id>();
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
-         case Zanshin::Topic:
-         case Zanshin::TopicRoot: {
+         case Zanshin::Topic: {
              PimNode node (PimNode::Topic);
              node.relationId = index.data(Zanshin::RelationIdRole).value<Id>();
              node.uid = index.data(Zanshin::UidRole).toString();
+             if (node.uid.isEmpty()) {
+                 kWarning() << "empty uid";
+             }
              return node;
          }
          case Zanshin::StandardTodo: {
@@ -76,8 +77,12 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
+         case Zanshin::Inbox:
+         case Zanshin::TopicRoot:
+         case Zanshin::CategoryRoot:
+             return PimNode(PimNode::Invalid);
          default:
-             qWarning() << "unhandled type: " << itemType;
+             kWarning() << "unhandled type: " << itemType;
      }
      Q_ASSERT(false);
      return PimNode(PimNode::Invalid);
@@ -125,8 +130,9 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
                 break;
             case PimNode::Note:
                 collection = Configuration::instance().defaultNoteCollection();
+                break;
             default:
-                qWarning() << "unhandled type: " << type;
+                kWarning() << "unhandled type: " << type;
         }
         if (!collection.isValid()) {
             kWarning() << "no valid collection to create item";
