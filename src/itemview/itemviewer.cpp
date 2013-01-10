@@ -64,9 +64,11 @@
 #include "ui_properties.h"
 #include <KConfigGroup>
 #include <incidenceitem.h>
-
-
-
+#include <kurl.h>
+#include <krun.h>
+#include <KTemporaryFile>
+#include <kmimetype.h>
+#include <kmessagebox.h>
 
 using namespace Ui;
 
@@ -76,7 +78,8 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     m_currentItem(0),
     m_autosaveTimer(new QTimer(this)),
     m_autosaveTimeout(5000),
-    ui_properties(new properties())
+    ui_properties(new properties()),
+    m_attachmentsList(new QListWidget(this))
 {
     setupUi(this);
 
@@ -113,6 +116,13 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     connect(ui_properties->editableEventDate, SIGNAL(dateChanged(KDateTime)), this, SLOT(setEventDate(KDateTime)));
     toolbox->addWidget(propertiesWidget, i18n("Properties"));
 
+    QWidget *attachmentsWidget = new QWidget(toolbox);
+    QVBoxLayout *attachmentsLayout = new QVBoxLayout;
+    connect(m_attachmentsList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(viewAttachment(QListWidgetItem*)));
+    attachmentsLayout->addWidget(m_attachmentsList);
+    attachmentsWidget->setLayout(attachmentsLayout);
+    toolbox->addWidget(attachmentsWidget, i18n("Attachments"));
+    
     setEnabled(false);
 
     connect(m_autosaveTimer, SIGNAL(timeout()), this, SLOT(autosave()));
@@ -379,6 +389,17 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
         ui_properties->editableEventDate->hide();
     }
     
+    m_attachmentsList->clear();
+    const KCalCore::Attachment::List attachments = m_currentItem->getAttachments();
+    KCalCore::Attachment::List::ConstIterator it;
+    KCalCore::Attachment::List::ConstIterator end( attachments.constEnd() );
+    for ( it = attachments.constBegin(); it != end; ++it ) {
+        QListWidgetItem* attachmentItem = new QListWidgetItem(m_attachmentsList);
+        attachmentItem->setText((*it)->label());
+        attachmentItem->setData(Qt::UserRole, (*it)->uri());
+        m_attachmentsList->addItem(attachmentItem);
+    }
+    
     //Set Focus for new items to title bar
     //TODO If it should be possible to have notes without titles this is not a good idea, but otherwise it works very well
     //kDebug() << m_currentItem->getLastModifiedDate() << KDateTime(QDateTime::currentDateTime().addSecs(-1));
@@ -441,3 +462,54 @@ void ItemViewer::itemRemoved()
     setEnabled(false);
 }
 
+// code taken from kdepim/calendarsupport/attachmenthandler.cpp
+static KTemporaryFile *s_tempFile = 0;
+static KUrl tempFileForAttachment( const KCalCore::Attachment::Ptr &attachment )
+{
+    KUrl url;
+
+    s_tempFile = new KTemporaryFile();
+    s_tempFile->setAutoRemove( false );
+    QStringList patterns = KMimeType::mimeType( attachment->mimeType() )->patterns();
+    if ( !patterns.empty() ) {
+        s_tempFile->setSuffix( QString( patterns.first() ).remove( '*' ) );
+    }
+    s_tempFile->open();
+    s_tempFile->setPermissions( QFile::ReadUser );
+    s_tempFile->write( QByteArray::fromBase64( attachment->data() ) );
+    s_tempFile->close();
+    QFile tf( s_tempFile->fileName() );
+    if ( tf.size() != attachment->size() ) {
+        //whoops. failed to write the entire attachment. return an invalid URL.
+        delete s_tempFile;
+        s_tempFile = 0;
+        return url;
+    }
+
+    url.setPath( s_tempFile->fileName() );
+    return url;
+}
+
+void ItemViewer::viewAttachment(QListWidgetItem* item)
+{
+    int index = item->listWidget()->currentRow();
+    const KCalCore::Attachment::List attachments = m_currentItem->getAttachments();
+    KCalCore::Attachment::Ptr attachment = attachments.at(index);
+    if (attachment->isUri()) {
+        const KUrl url = KUrl(attachment->uri());
+        new KRun(url, this);
+    } else {
+        // code taken from kdepim/calendarsupport/attachmenthandler.cpp
+        // put the attachment in a temporary file and launch it
+        KUrl tempUrl = tempFileForAttachment( attachment );
+        if ( tempUrl.isValid() ) {
+            KRun::runUrl( tempUrl, attachment->mimeType(), 0, true );
+        } else {
+            KMessageBox::error(
+                this,
+                i18n( "Cannot open the attachment." ) );
+        }
+        delete s_tempFile;
+        s_tempFile = 0;
+    }
+}

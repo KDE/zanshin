@@ -26,6 +26,7 @@
 
 #include "ui_itemview.h"
 #include <QFrame>
+#include <QListWidget>
 #include <KXMLGUIClient>
 
 #include <Akonadi/Item>
@@ -88,6 +89,7 @@ private slots:
     
     void setFullscreenEditor();
     void restoreState();
+    void viewAttachment(QListWidgetItem *);
 
 signals:
     void itemChanged();
@@ -97,6 +99,7 @@ private:
     QTimer *m_autosaveTimer;
     int m_autosaveTimeout;
     Ui::properties *ui_properties;
+    QListWidget *m_attachmentsList;
 
 };
 
