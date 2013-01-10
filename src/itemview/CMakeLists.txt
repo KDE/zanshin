@@ -2,6 +2,7 @@
 set(itemview_SRCS
 #     ${CMAKE_CURRENT_SOURCE_DIR}/itemcontext.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/itemviewer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/attachmentsviewer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/editablewidget.cpp
 #     ${CMAKE_CURRENT_SOURCE_DIR}/nepomukcontextmodel.cpp
 #     ${CMAKE_CURRENT_SOURCE_DIR}/nepomukcontextview.cpp
