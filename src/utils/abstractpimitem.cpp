@@ -417,7 +417,7 @@ bool AbstractPimItem::titleIsRich()
     return m_titleIsRich;
 }
 
-KCalCore::Attachment::List AbstractPimItem::getAttachments()
+const KCalCore::Attachment::List AbstractPimItem::getAttachments()
 {
     fetchData();
     return m_attachments;

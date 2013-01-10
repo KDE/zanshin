@@ -191,7 +191,7 @@ public:
 
     bool textIsRich();
     bool titleIsRich();
-    virtual KCalCore::Attachment::List getAttachments();
+    virtual const KCalCore::Attachment::List getAttachments();
 
     enum ChangedPart {
         Title = 0x01,
