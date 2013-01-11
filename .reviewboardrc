@@ -1,0 +1,3 @@
+REVIEWBOARD_URL = 'https://reviewboard.kde.org/'
+REPOSITORY = 'zanshin'
+TARGET_GROUPS = 'zanshin'
