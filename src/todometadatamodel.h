@@ -25,7 +25,6 @@
 #define ZANSHIN_TODOMETADATAMODEL_H
 
 #include "kidentityproxymodel.h"
-#include <QtCore/QPersistentModelIndex>
 
 #include "globaldefs.h"
 
@@ -45,11 +44,6 @@ public:
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-
-    virtual void setSourceModel(QAbstractItemModel *model);
-
-private:
-    Zanshin::ItemType itemTypeFromItem(const Akonadi::Item &item) const;
 };
 
 #endif

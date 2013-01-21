@@ -24,8 +24,6 @@
 #include "todometadatamodel.h"
 
 #include <KDebug>
-#include <KIcon>
-#include <KLocale>
 
 #include "globaldefs.h"
 #include <abstractpimitem.h>
@@ -91,20 +89,17 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     }
 
     const Akonadi::Item &item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-    if (pimitem.isNull()) {
-        if (role==Zanshin::ItemTypeRole) {
-            Akonadi::Collection collection = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-            if (collection.isValid()) {
-                return Zanshin::Collection;
-            }
+    if (!item.isValid()) {
+        if (role == Zanshin::ItemTypeRole) {
+            return Zanshin::Collection;
         }
         return KIdentityProxyModel::data(index, role);
     }
+    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    Q_ASSERT(!pimitem.isNull());
     switch (role) {
     case Qt::CheckStateRole:
-        if ((pimitem->itemType() == AbstractPimItem::Todo) && index.column()==0 && itemTypeFromItem(item)==Zanshin::StandardTodo) {
+        if ((pimitem->itemType() == AbstractPimItem::Todo) && index.column()==0 && !static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
             return (pimitem->getStatus() == AbstractPimItem::Complete) ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();
@@ -114,7 +109,10 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     case Zanshin::ParentUidRole:
         return getParentProjects(pimitem->getRelations());
     case Zanshin::ItemTypeRole:
-        return itemTypeFromItem(item);
+        if ((pimitem->itemType() == AbstractPimItem::Todo) && static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
+            return Zanshin::ProjectTodo;
+        }
+        return Zanshin::StandardTodo;
     case Zanshin::DataTypeRole:
         switch (index.column()) {
             case 1 :
@@ -130,24 +128,3 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     return KIdentityProxyModel::data(index, role);
 }
 
-Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item) const
-{
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
-    if (pimitem.isNull() || (pimitem->itemType() != AbstractPimItem::Todo)) {
-        return Zanshin::StandardTodo;
-    }
-
-    const QString uid = pimitem->getUid();
-
-    if (static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
-        return Zanshin::ProjectTodo;
-    } else {
-        return Zanshin::StandardTodo;
-    }
-}
-
-
-void TodoMetadataModel::setSourceModel(QAbstractItemModel *model)
-{
-    KIdentityProxyModel::setSourceModel(model);
-}
