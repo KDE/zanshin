@@ -90,7 +90,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
 
     const Akonadi::Item &item = sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     if (!item.isValid()) {
-        if (role == Zanshin::ItemTypeRole) {
+        if ((role == Zanshin::ItemTypeRole) && sourceModel()->data(mapToSource(index), Akonadi::EntityTreeModel::CollectionRole).isValid()) {
             return Zanshin::Collection;
         }
         return KIdentityProxyModel::data(index, role);

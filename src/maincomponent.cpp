@@ -55,8 +55,6 @@ MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient 
     m_sidebar = new SideBar(models, ac, parent);
     m_itemViewer = new ItemViewer(parent, client);
     m_editor = new ActionListEditor(models,
-                                    m_sidebar->projectSelection(),
-                                    m_sidebar->categoriesSelection(),
                                     ac, parent, client, m_itemViewer);
     setupActions(ac);
 

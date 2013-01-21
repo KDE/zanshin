@@ -59,13 +59,11 @@
 
 
 ActionListEditor::ActionListEditor(ModelStack *models,
-                                   QItemSelectionModel *projectSelection,
-                                   QItemSelectionModel *categoriesSelection,
                                    KActionCollection *ac,
                                    QWidget *parent, KXMLGUIClient *client, ItemViewer *itemViewer)
     : QWidget(parent),
-      m_projectSelection(projectSelection),
-      m_categoriesSelection(categoriesSelection),
+      m_projectSelection(models->treeSelection()),
+      m_categoriesSelection(models->categoriesSelection()),
       m_knowledgeSelection(models->knowledgeSelection()),
       m_models(models),
       m_selectorProxy(new ItemSelectorProxy(this))
@@ -76,15 +74,12 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    connect(projectSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+    connect(m_projectSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
-    connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+    connect(m_categoriesSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
     connect(m_knowledgeSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
-
-    models->setItemTreeSelectionModel(projectSelection);
-    models->setItemCategorySelectionModel(categoriesSelection);
 
     setupActions(ac);
 

@@ -38,6 +38,7 @@
 #include "pimitemrelationinterface.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
+                         QItemSelectionModel *selectionModel,
                          const QList<QAction*> &contextActions,
                          QWidget *parent)
     : QWidget(parent)
@@ -67,6 +68,10 @@ SideBarPage::SideBarPage(QAbstractItemModel *model,
 
     m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
     m_treeView->addActions(contextActions);
+
+    QItemSelectionModel *oldSelectionModel = m_treeView->selectionModel();
+    m_treeView->setSelectionModel(selectionModel);
+    oldSelectionModel->deleteLater();
 }
 
 QItemSelectionModel *SideBarPage::selectionModel() const

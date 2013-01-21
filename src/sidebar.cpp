@@ -52,15 +52,14 @@ SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    createPage(models->treeSideBarModel());
-    createPage(models->categoriesSideBarModel());
-    createPage(models->knowledgeSidebarModel());
-    models->setKnowledgeSelectionModel(static_cast<SideBarPage*>(m_stack->widget(2))->selectionModel());
+    createPage(models->treeSideBarModel(), models->treeSelection());
+    createPage(models->categoriesSideBarModel(), models->categoriesSelection());
+    createPage(models->knowledgeSidebarModel(), models->knowledgeSelection());
     
     setupToolBar();
 }
 
-void SideBar::createPage(QAbstractItemModel *model)
+void SideBar::createPage(QAbstractItemModel *model, QItemSelectionModel *selectionModel)
 {
     QAction *separator = new QAction(this);
     separator->setSeparator(true);
@@ -71,9 +70,9 @@ void SideBar::createPage(QAbstractItemModel *model)
                    << separator
                    << m_rename;
 
-    SideBarPage *page = new SideBarPage(model, contextActions, m_stack);
+    SideBarPage *page = new SideBarPage(model, selectionModel, contextActions, m_stack);
 
-    connect(page->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+    connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(updateActions(QModelIndex)));
 
     m_stack->addWidget(page);
@@ -155,16 +154,6 @@ void SideBar::setMode(Zanshin::ApplicationMode mode)
     }
 
     updateActions(currentPage()->selectionModel()->currentIndex());
-}
-
-QItemSelectionModel *SideBar::projectSelection() const
-{
-    return static_cast<SideBarPage*>(m_stack->widget(0))->selectionModel();
-}
-
-QItemSelectionModel *SideBar::categoriesSelection() const
-{
-    return static_cast<SideBarPage*>(m_stack->widget(1))->selectionModel();
 }
 
 static Akonadi::Collection getCollection(const QModelIndex &index)

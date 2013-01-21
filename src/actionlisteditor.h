@@ -50,8 +50,6 @@ class ActionListEditor : public QWidget
 
 public:
     ActionListEditor(ModelStack *models,
-                     QItemSelectionModel *projectSelection,
-                     QItemSelectionModel *categoriesSelection,
                      KActionCollection *ac, QWidget *parent, KXMLGUIClient *client, ItemViewer *itemviewer);
 
     void setMode(Zanshin::ApplicationMode mode);

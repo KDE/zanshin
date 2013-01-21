@@ -41,6 +41,7 @@ class SideBarPage : public QWidget
 
 public:
     SideBarPage(QAbstractItemModel *model,
+                QItemSelectionModel *selectionModel,
                 const QList<QAction*> &contextActions,
                 QWidget *parent=0);
 

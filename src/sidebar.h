@@ -47,9 +47,6 @@ public:
 
     void setMode(Zanshin::ApplicationMode mode);
 
-    QItemSelectionModel *projectSelection() const;
-    QItemSelectionModel *categoriesSelection() const;
-
 private slots:
     void updateActions(const QModelIndex &index);
     void onAddItem();
@@ -60,7 +57,7 @@ private slots:
     void onSynchronize();
 
 private:
-    void createPage(QAbstractItemModel *model);
+    void createPage(QAbstractItemModel *model, QItemSelectionModel *selectionModel);
     void setupToolBar();
     void setupActions(KActionCollection *ac);
 
