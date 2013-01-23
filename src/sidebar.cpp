@@ -54,7 +54,7 @@ SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)
 
     createPage(models->treeSideBarModel(), models->treeSelection());
     createPage(models->categoriesSideBarModel(), models->categoriesSelection());
-    createPage(models->knowledgeSidebarModel(), models->knowledgeSelection());
+    createPage(models->knowledgeSideBarModel(), models->knowledgeSelection());
     
     setupToolBar();
 }

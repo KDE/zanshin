@@ -280,7 +280,7 @@ QAbstractItemModel *ModelStack::topicsTreeModel()
     return m_topicsTreeModel;
 }
 
-QAbstractItemModel *ModelStack::knowledgeSidebarModel()
+QAbstractItemModel *ModelStack::knowledgeSideBarModel()
 {
     if (!m_knowledgeSidebarModel) {
         SideBarModel *sideBarModel = new SideBarModel(this);
@@ -293,7 +293,7 @@ QAbstractItemModel *ModelStack::knowledgeSidebarModel()
 QItemSelectionModel* ModelStack::knowledgeSelection()
 {
     if (!m_topicSelection) {
-        m_topicSelection = new QItemSelectionModel(knowledgeSidebarModel());
+        m_topicSelection = new QItemSelectionModel(knowledgeSideBarModel());
     }
     return m_topicSelection;
 }

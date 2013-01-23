@@ -59,7 +59,7 @@ public:
     
     QAbstractItemModel *knowledgeBaseModel();
     QAbstractItemModel *topicsTreeModel();
-    QAbstractItemModel *knowledgeSidebarModel();
+    QAbstractItemModel *knowledgeSideBarModel();
     QAbstractItemModel *knowledgeSelectionModel(); //Filter model
     QItemSelectionModel *knowledgeSelection();
     QAbstractItemModel *knowledgeCollectionsModel();

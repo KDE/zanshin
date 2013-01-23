@@ -77,14 +77,12 @@ private:
     void createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode, KXMLGUIClient *guiClient);
     void setupActions(KActionCollection *ac);
 
+    QAbstractItemModel *currentSidebarModel(Zanshin::ApplicationMode mode) const;
+    QItemSelectionModel *currentSelection(Zanshin::ApplicationMode mode) const;
     ActionListEditorPage *currentPage() const;
     ActionListEditorPage *page(int idx) const;
 
     QStackedWidget *m_stack;
-    QItemSelectionModel *m_projectSelection;
-    QItemSelectionModel *m_categoriesSelection;
-    QItemSelectionModel *m_knowledgeSelection;
-
 
     KAction *m_add;
     KAction *m_cancelAdd;
