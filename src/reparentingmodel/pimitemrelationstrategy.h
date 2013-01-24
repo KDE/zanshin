@@ -56,7 +56,7 @@ private:
     const Id mInbox;
     const Id mRoot;
     QScopedPointer<PimItemRelations> mRelations;
-    PimItemRelation::Type mType;
+    const PimItemRelation::Type mType; ///< Either PimItemRelation::Context or PimItemRelation::Topic
 };
 
 

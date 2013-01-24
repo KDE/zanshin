@@ -35,7 +35,7 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),
     mInbox(1),
     mRoot(2),
-    mRelations(type == PimItemRelation::Project ? (PimItemRelations*)new ProjectStructure() : (PimItemRelations*)new PimItemRelationsStructure(type)),
+    mRelations(new PimItemRelationsStructure(type)),
     mType(type)
 {
     switch (type) {
@@ -47,10 +47,8 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
             mReparentOnRemoval = true;
             static_cast<PimItemRelationInterface*>(&PimItemStructureInterface::topicInstance())->setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
             break;
-        case PimItemRelation::Project:
-            mReparentOnRemoval = false;
-            break;
         default:
+            Q_ASSERT_X( false, "PimItemRelationStrategy constructor", "Known 'type' argument" );
             qWarning() << "unhandled type: " << type;
     }
     connect(mRelations.data(), SIGNAL(virtualNodeAdded(Id, IdList, QString)), this, SLOT(createVirtualNode(Id, IdList, QString)));
@@ -64,18 +62,18 @@ void PimItemRelationStrategy::init()
 {
     ReparentingStrategy::init();
 
-    QString noRelation("No Relation");
-    QString noRelationTranslated(i18n("No Relation"));
-    QString relation("Relation");
-    QString relationTranslated(i18n("Relation"));
+    QString noRelation, noRelationTranslated, relation, relationTranslated;
     int rootType;
+
     if (mType == PimItemRelation::Context) {
         noRelation = "No Context";
         noRelationTranslated = i18n("No Context");
         relation = "Contexts";
         relationTranslated = i18n("Contexts");
         rootType = Zanshin::CategoryRoot;
-    } else if (mType == PimItemRelation::Topic) {
+    } else {
+        Q_ASSERT(mType == PimItemRelation::Topic);
+
         noRelation = "No Topic";
         noRelationTranslated = i18n("No Topic");
         relation = "Topics";
@@ -215,7 +213,8 @@ void PimItemRelationStrategy::setNodeData(TodoNode* node, Id id)
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
     if (mType == PimItemRelation::Context) {
         node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole); //TODO relation role
-    } else if(mType == PimItemRelation::Topic) {
+    } else {
+        Q_ASSERT(mType == PimItemRelation::Topic);
         node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
     }
 }
