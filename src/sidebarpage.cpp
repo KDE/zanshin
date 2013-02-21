@@ -38,6 +38,7 @@
 #include "pimitemrelationinterface.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
+                         QItemSelectionModel *selectionModel,
                          const QList<QAction*> &contextActions,
                          QWidget *parent)
     : QWidget(parent)
@@ -53,6 +54,9 @@ SideBarPage::SideBarPage(QAbstractItemModel *model,
     m_treeView->sortByColumn(0, Qt::AscendingOrder);
     m_treeView->setAnimated(true);
     m_treeView->setModel(model);
+    QItemSelectionModel *oldSelectionModel = m_treeView->selectionModel();
+    m_treeView->setSelectionModel(selectionModel);
+    oldSelectionModel->deleteLater();
     m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_treeView->setDragEnabled(true);
     m_treeView->viewport()->setAcceptDrops(true);

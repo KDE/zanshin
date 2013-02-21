@@ -43,6 +43,7 @@
 #include "reparentingmodel/reparentingmodel.h"
 #include "reparentingmodel/projectstrategy.h"
 #include "reparentingmodel/pimitemrelationstrategy.h"
+#include <qitemselectionmodel.h>
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -53,25 +54,25 @@ ModelStack::ModelStack(QObject *parent)
       m_treeSideBarModel(0),
       m_treeSelectionModel(0),
       m_treeComboModel(0),
+      m_treeSelection(0),
       m_knowledgeMonitor(0),
       m_knowledgeBaseModel(0),
       m_knowledgeSelectionModel(0),
       m_topicsTreeModel(0),
       m_knowledgeSidebarModel(0),
       m_knowledgeCollectionsModel(0),
+      m_topicSelection(0),
       m_categoriesModel(0),
       m_categoriesSideBarModel(0),
       m_categoriesSelectionModel(0),
       m_categoriesComboModel(0),
-      m_treeSelection(0),
-      m_categorySelection(0),
-      m_topicSelection(0)
+      m_categorySelection(0)
 {
 }
 
-QAbstractItemModel *ModelStack::baseModel()
+QAbstractItemModel *ModelStack::pimitemModel()
 {
-    if (!m_baseModel) {
+    if (!m_entityModel) {
         Akonadi::Session *session = new Akonadi::Session("zanshin", this);
 
         Akonadi::ItemFetchScope itemScope;
@@ -90,8 +91,15 @@ QAbstractItemModel *ModelStack::baseModel()
         changeRecorder->setSession(session);
 
         m_entityModel = new PimItemModel(changeRecorder, this);
+    }
+    return m_entityModel;
+}
+
+QAbstractItemModel *ModelStack::baseModel()
+{
+    if (!m_baseModel) {
         TodoMetadataModel *metadataModel = new TodoMetadataModel(this);
-        metadataModel->setSourceModel(m_entityModel);
+        metadataModel->setSourceModel(pimitemModel());
         m_baseModel = metadataModel;
     }
     return m_baseModel;
@@ -128,11 +136,19 @@ QAbstractItemModel *ModelStack::treeSideBarModel()
     return m_treeSideBarModel;
 }
 
+QItemSelectionModel *ModelStack::treeSelection()
+{
+    if (!m_treeSelection) {
+        m_treeSelection = new QItemSelectionModel(treeSideBarModel());
+    }
+    return m_treeSelection;
+}
+
 QAbstractItemModel *ModelStack::treeSelectionModel()
 {
     if (!m_treeSelectionModel) {
         SelectionProxyModel *treeSelectionModel = new SelectionProxyModel(this);
-        treeSelectionModel->setSelectionModel(m_treeSelection);
+        treeSelectionModel->setSelectionModel(treeSelection());
         treeSelectionModel->setSourceModel(treeModel());
         m_treeSelectionModel = treeSelectionModel;
     }
@@ -174,11 +190,19 @@ QAbstractItemModel *ModelStack::categoriesSideBarModel()
     return m_categoriesSideBarModel;
 }
 
+QItemSelectionModel *ModelStack::categoriesSelection()
+{
+    if (!m_categorySelection) {
+        m_categorySelection = new QItemSelectionModel(categoriesSideBarModel());
+    }
+    return m_categorySelection;
+}
+
 QAbstractItemModel *ModelStack::categoriesSelectionModel()
 {
     if (!m_categoriesSelectionModel) {
         SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
-        categoriesSelectionModel->setSelectionModel(m_categorySelection);
+        categoriesSelectionModel->setSelectionModel(categoriesSelection());
         categoriesSelectionModel->setSourceModel(categoriesModel());
         m_categoriesSelectionModel = categoriesSelectionModel;
     }
@@ -198,22 +222,6 @@ QAbstractItemModel *ModelStack::categoriesComboModel()
         m_categoriesComboModel = categoriesComboModel;
     }
     return m_categoriesComboModel;
-}
-
-void ModelStack::setItemTreeSelectionModel(QItemSelectionModel *selection)
-{
-    m_treeSelection = selection;
-    if (m_treeSelectionModel) {
-        static_cast<SelectionProxyModel*>(m_treeSelectionModel)->setSelectionModel(m_treeSelection);
-    }
-}
-
-void ModelStack::setItemCategorySelectionModel(QItemSelectionModel *selection)
-{
-    m_categorySelection = selection;
-    if (m_categoriesSelectionModel) {
-        static_cast<SelectionProxyModel*>(m_categoriesSelectionModel)->setSelectionModel(m_categorySelection);
-    }
 }
 
 QAbstractItemModel* ModelStack::knowledgeBaseModel()
@@ -272,7 +280,7 @@ QAbstractItemModel *ModelStack::topicsTreeModel()
     return m_topicsTreeModel;
 }
 
-QAbstractItemModel *ModelStack::knowledgeSidebarModel()
+QAbstractItemModel *ModelStack::knowledgeSideBarModel()
 {
     if (!m_knowledgeSidebarModel) {
         SideBarModel *sideBarModel = new SideBarModel(this);
@@ -282,16 +290,11 @@ QAbstractItemModel *ModelStack::knowledgeSidebarModel()
     return m_knowledgeSidebarModel;
 }
 
-void ModelStack::setKnowledgeSelectionModel(QItemSelectionModel *selection)
-{
-    m_topicSelection = selection;
-    if (m_knowledgeSelectionModel) {
-        static_cast<SelectionProxyModel*>(m_knowledgeSelectionModel)->setSelectionModel(m_topicSelection);
-    }
-}
-
 QItemSelectionModel* ModelStack::knowledgeSelection()
 {
+    if (!m_topicSelection) {
+        m_topicSelection = new QItemSelectionModel(knowledgeSideBarModel());
+    }
     return m_topicSelection;
 }
 
@@ -300,7 +303,7 @@ QAbstractItemModel* ModelStack::knowledgeSelectionModel()
 {
     if (!m_knowledgeSelectionModel) {
         SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
-        categoriesSelectionModel->setSelectionModel(m_topicSelection);
+        categoriesSelectionModel->setSelectionModel(knowledgeSelection());
         categoriesSelectionModel->setSourceModel(topicsTreeModel());
         m_knowledgeSelectionModel = categoriesSelectionModel;
     }

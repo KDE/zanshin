@@ -47,33 +47,9 @@ private slots:
         QVERIFY(stack.categoriesComboModel()!=0);
     }
 
-    void shouldLinkToExactlyOneSelectionModel()
-    {
-        ModelStack stack;
-
-        QItemSelectionModel selectionModel1(stack.baseModel());
-        QItemSelectionModel selectionModel2(stack.baseModel());
-
-        stack.setItemTreeSelectionModel(&selectionModel1);
-        stack.setItemCategorySelectionModel(&selectionModel2);
-
-        QVERIFY(stack.treeSelectionModel()!=0);
-        QVERIFY(stack.categoriesSelectionModel()!=0);
-
-        QVERIFY(stack.treeSelectionModel()!=0);
-        QVERIFY(stack.categoriesSelectionModel()!=0);
-
-        // It should raise asserts in the other cases, but since
-        // we don't have a QEXPECT_ASSERT...
-    }
-
     void shouldEnsureModelsAreConstant()
     {
         ModelStack stack;
-
-        QItemSelectionModel selectionModel(stack.baseModel());
-        stack.setItemTreeSelectionModel(&selectionModel);
-        stack.setItemCategorySelectionModel(&selectionModel);
 
         QList<QAbstractItemModel*> models;
         models << stack.baseModel()

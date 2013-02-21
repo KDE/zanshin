@@ -59,14 +59,9 @@
 
 
 ActionListEditor::ActionListEditor(ModelStack *models,
-                                   QItemSelectionModel *projectSelection,
-                                   QItemSelectionModel *categoriesSelection,
                                    KActionCollection *ac,
                                    QWidget *parent, KXMLGUIClient *client, ItemViewer *itemViewer)
     : QWidget(parent),
-      m_projectSelection(projectSelection),
-      m_categoriesSelection(categoriesSelection),
-      m_knowledgeSelection(models->knowledgeSelection()),
       m_models(models),
       m_selectorProxy(new ItemSelectorProxy(this))
 {
@@ -76,15 +71,12 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     layout()->addWidget(m_stack);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    connect(projectSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+    connect(models->treeSelection(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
-    connect(categoriesSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+    connect(models->categoriesSelection(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
-    connect(m_knowledgeSelection, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+    connect(models->knowledgeSelection(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
-
-    models->setItemTreeSelectionModel(projectSelection);
-    models->setItemCategorySelectionModel(categoriesSelection);
 
     setupActions(ac);
 
@@ -94,10 +86,37 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     connect(m_selectorProxy, SIGNAL(itemSelected(Akonadi::Item)), itemViewer, SLOT(setItem(const Akonadi::Item &)));
     //connect(&AkonadiCollection::instance(), SIGNAL(itemCreated(const Akonadi::Item &)), m_selectorProxy, SLOT(selectItem(const Akonadi::Item &)));
-
     updateActions();
     setMode(Zanshin::ProjectMode);
     m_cancelAdd->setEnabled(false);
+}
+
+QAbstractItemModel *ActionListEditor::currentSidebarModel(Zanshin::ApplicationMode mode) const
+{
+    switch (mode) {
+    case Zanshin::ProjectMode:
+        return m_models->treeSideBarModel();
+    case Zanshin::CategoriesMode:
+        return m_models->categoriesSideBarModel();
+    case Zanshin::KnowledgeMode:
+        return m_models->knowledgeSideBarModel();
+    }
+    Q_ASSERT(0);
+    return 0;
+}
+
+QItemSelectionModel *ActionListEditor::currentSelection(Zanshin::ApplicationMode mode) const
+{
+    switch (mode) {
+    case Zanshin::ProjectMode:
+        return m_models->treeSelection();
+    case Zanshin::CategoriesMode:
+        return m_models->categoriesSelection();
+    case Zanshin::KnowledgeMode:
+        return m_models->knowledgeSelection();
+    }
+    Q_ASSERT(0);
+    return 0;
 }
 
 void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
@@ -106,20 +125,17 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     switch (mode) {
     case Zanshin::ProjectMode:
         m_stack->setCurrentIndex(0);
-        onSideBarSelectionChanged(m_projectSelection->currentIndex());
-        m_selectorProxy->setView(currentPage()->treeView());
         break;
     case Zanshin::CategoriesMode:
         m_stack->setCurrentIndex(1);
-        onSideBarSelectionChanged(m_categoriesSelection->currentIndex());
-        m_selectorProxy->setView(currentPage()->treeView());
         break;
     case Zanshin::KnowledgeMode:
         m_stack->setCurrentIndex(2);
-        onSideBarSelectionChanged(m_knowledgeSelection->currentIndex());
-        m_selectorProxy->setView(currentPage()->treeView());
+        break;
         break;
     }
+    onSideBarSelectionChanged(currentSelection(mode)->currentIndex());
+    m_selectorProxy->setView(currentPage()->treeView());
 }
 
 static Akonadi::Collection getCollection(const QModelIndex &index)
@@ -283,30 +299,24 @@ void ActionListEditor::onRemoveAction()
 
 void ActionListEditor::onMoveAction()
 {
-    QAbstractItemModel *model;
-    QModelIndex currentSelection;
-    if (currentPage()->mode()==Zanshin::ProjectMode) {
-        model = m_models->treeSideBarModel();
-        currentSelection = m_projectSelection->currentIndex();
-    } else {
-        model = m_models->categoriesSideBarModel();
-        currentSelection = m_categoriesSelection->currentIndex();
-    }
+    const Zanshin::ApplicationMode mode = currentPage()->mode();
+    QAbstractItemModel *model = currentSidebarModel(mode);
+    QModelIndex currentIndex = currentSelection(mode)->currentIndex();
 
-    QuickSelectDialog dlg(this, model, currentPage()->mode(),
+    QuickSelectDialog dlg(this, model, mode,
                           QuickSelectDialog::MoveAction);
     if (dlg.exec()==QDialog::Accepted) {
         QModelIndexList list = currentPage()->selectionModel()->selectedRows();
-        if (currentSelection.isValid() && !list.isEmpty()) {
-            KModelIndexProxyMapper mapper(currentSelection.model(), list.first().model());
+        if (currentIndex.isValid() && !list.isEmpty()) {
+            KModelIndexProxyMapper mapper(currentIndex.model(), list.first().model());
             foreach (QModelIndex current, list) {
                 if (!current.isValid()) {
                     return;
                 }
 
-                if (currentPage()->mode()==Zanshin::ProjectMode) {
+                if (mode==Zanshin::ProjectMode) {
                     PimItemStructureInterface::moveTo(PimItemStructureInterface::fromIndex(current), PimItemStructureInterface::fromIndex(dlg.selectedIndex()));
-                } else if (currentPage()->mode()==Zanshin::CategoriesMode){
+                } else if (mode==Zanshin::CategoriesMode){
                     PimItemStructureInterface::linkTo(PimItemStructureInterface::fromIndex(current), PimItemStructureInterface::fromIndex(dlg.selectedIndex()));
                 } else {
                     qWarning() << "not implemented";

@@ -55,8 +55,6 @@ MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient 
     m_sidebar = new SideBar(models, ac, parent);
     m_itemViewer = new ItemViewer(parent, client);
     m_editor = new ActionListEditor(models,
-                                    m_sidebar->projectSelection(),
-                                    m_sidebar->categoriesSelection(),
                                     ac, parent, client, m_itemViewer);
     setupActions(ac);
 
@@ -131,9 +129,8 @@ void MainComponent::onSynchronizeAll()
     while (!agents.isEmpty()) {
         Akonadi::AgentInstance agent = agents.takeFirst();
 
-        if (agent.type().mimeTypes().contains("application/x-vnd.akonadi.calendar.todo")) {
-            agent.synchronize();
-        } else if (agent.type().mimeTypes().contains(AbstractPimItem::mimeType(AbstractPimItem::Note))) {
+        if (agent.type().mimeTypes().contains(AbstractPimItem::mimeType(AbstractPimItem::Todo)) ||
+            agent.type().mimeTypes().contains(AbstractPimItem::mimeType(AbstractPimItem::Note))) {
             agent.synchronize();
         }
     }

@@ -40,33 +40,30 @@ class ModelStack : public QObject
 public:
     explicit ModelStack(QObject *parent = 0);
 
+    QAbstractItemModel *pimitemModel();
     QAbstractItemModel *baseModel();
 
     QAbstractItemModel *collectionsModel();
 
     QAbstractItemModel *treeModel();
     QAbstractItemModel *treeSideBarModel();
+    QItemSelectionModel *treeSelection();
     QAbstractItemModel *treeSelectionModel();
     QAbstractItemModel *treeComboModel();
 
     QAbstractItemModel *categoriesModel();
     QAbstractItemModel *categoriesSideBarModel();
+    QItemSelectionModel *categoriesSelection();
     QAbstractItemModel *categoriesSelectionModel();
     QAbstractItemModel *categoriesComboModel();
     
     QAbstractItemModel *knowledgeBaseModel();
     QAbstractItemModel *topicsTreeModel();
-    QAbstractItemModel *knowledgeSidebarModel();
-    //QAbstractItemModel *categoriesModel();
-    //QAbstractItemModel *categoriesSideBarModel();
+    QAbstractItemModel *knowledgeSideBarModel();
     QAbstractItemModel *knowledgeSelectionModel(); //Filter model
-    void setKnowledgeSelectionModel(QItemSelectionModel *selection);
-    //QAbstractItemModel *categoriesComboModel();
     QItemSelectionModel *knowledgeSelection();
     QAbstractItemModel *knowledgeCollectionsModel();
 
-    void setItemTreeSelectionModel(QItemSelectionModel *selection);
-    void setItemCategorySelectionModel(QItemSelectionModel *selection);
 
 private:
     QAbstractItemModel *m_entityModel;
@@ -77,6 +74,7 @@ private:
     QAbstractItemModel *m_treeSideBarModel;
     QAbstractItemModel *m_treeSelectionModel;
     QAbstractItemModel *m_treeComboModel;
+    QItemSelectionModel *m_treeSelection;
     
     Akonadi::ChangeRecorder *m_knowledgeMonitor;
     QAbstractItemModel *m_knowledgeBaseModel;
@@ -84,14 +82,13 @@ private:
     QAbstractItemModel *m_topicsTreeModel;
     QAbstractItemModel *m_knowledgeSidebarModel;
     QAbstractItemModel *m_knowledgeCollectionsModel;
+    QItemSelectionModel *m_topicSelection;
 
     QAbstractItemModel *m_categoriesModel;
     QAbstractItemModel *m_categoriesSideBarModel;
     QAbstractItemModel *m_categoriesSelectionModel;
     QAbstractItemModel *m_categoriesComboModel;
-    QItemSelectionModel *m_treeSelection;
     QItemSelectionModel *m_categorySelection;
-    QItemSelectionModel *m_topicSelection;
 };
 
 #endif
