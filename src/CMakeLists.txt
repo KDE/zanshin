@@ -1,29 +1,26 @@
-include_directories(utils pimlistview pimlistview/abstractmodels itemview reparentingmodel)
+include_directories(. utils pimlistview pimlistview/abstractmodels itemview reparentingmodel)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/utils)
 
+add_subdirectory( reparentingmodel )
+add_subdirectory( core )
 add_subdirectory( icons )
 add_subdirectory( runner )
 add_subdirectory( utils )
 add_subdirectory( pimlistview )
 add_subdirectory( itemview )
-add_subdirectory( reparentingmodel )
 
 ########### zanshin core ###############
 
 set(zanshin_core_SRCS
    combomodel.cpp
-   modelstack.cpp
    selectionproxymodel.cpp
    sidebarmodel.cpp
    todohelpers.cpp
-   todoproxymodelbase.cpp
-   todometadatamodel.cpp
-   todonode.cpp
-   todonodemanager.cpp
+   configuration.cpp
+   ${core_SRCS}
+   ${reparentingmodel_SRCS}
    ${pimlistview_SRCS}
    ${itemview_SRCS}
-   ${reparentingmodel_SRCS}
-   configuration.cpp
 )
 
 set(zanshin_core_LIBS

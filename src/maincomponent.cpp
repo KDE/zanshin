@@ -42,9 +42,9 @@
 #include "configdialog.h"
 #include "globaldefs.h"
 #include "sidebar.h"
-#include <itemviewer.h>
+#include "itemviewer.h"
 #include "itemselectorproxy.h"
-#include "modelstack.h"
+#include "core/modelstack.h"
 
 MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient *client)
     : QObject(parent),

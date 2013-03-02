@@ -32,7 +32,7 @@
 #include "aboutdata.h"
 #include "actionlisteditor.h"
 #include "maincomponent.h"
-#include "modelstack.h"
+#include "core/modelstack.h"
 #include "sidebar.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)

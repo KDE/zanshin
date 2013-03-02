@@ -30,7 +30,7 @@
 #include <QModelIndex>
 
 #include "globaldefs.h"
-#include <abstractpimitem.h>
+#include "core/abstractpimitem.h"
 
 namespace TodoHelpers
 {

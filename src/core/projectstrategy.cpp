@@ -19,15 +19,15 @@
 */
 
 
-#include "projectstrategy.h"
-#include "reparentingmodel.h"
-#include "pimitemrelationinterface.h"
-#include <globaldefs.h>
-#include <todonode.h>
-#include <todohelpers.h>
+#include "globaldefs.h"
+#include "core/projectstrategy.h"
+#include "core/pimitemrelationinterface.h"
+#include "core/incidenceitem.h"
+#include "core/pimitemmodel.h"
+#include "reparentingmodel/todonode.h"
+#include "reparentingmodel/reparentingmodel.h"
+#include "todohelpers.h"
 #include "pimitem.h"
-#include <incidenceitem.h>
-#include <pimitemmodel.h>
 #include <KLocalizedString>
 #include <KIcon>
 #include <QMimeData>

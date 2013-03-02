@@ -46,15 +46,14 @@
 
 #include "actionlistdelegate.h"
 #include "actionlisteditorpage.h"
-#include "categorymanager.h"
 #include "globaldefs.h"
-#include "modelstack.h"
+#include "core/modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
 #include "configuration.h"
 #include <itemviewer.h>
 #include <itemselectorproxy.h>
-#include <pimitemrelationinterface.h>
+#include "core/pimitemrelationinterface.h"
 
 
 

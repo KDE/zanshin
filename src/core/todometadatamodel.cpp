@@ -26,9 +26,9 @@
 #include <KDebug>
 
 #include "globaldefs.h"
-#include <abstractpimitem.h>
+#include "core/abstractpimitem.h"
+#include "core/incidenceitem.h"
 #include <pimitem.h>
-#include <incidenceitem.h>
 
 QStringList getParentProjects(const QList<PimItemRelation> &relations)
 {

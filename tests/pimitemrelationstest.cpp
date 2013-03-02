@@ -23,8 +23,8 @@
 
 #include <qtest_kde.h>
 
-#include <reparentingmodel/pimitemrelations.h>
-#include <utils/incidenceitem.h>
+#include <core/pimitemrelations.h>
+#include <core/incidenceitem.h>
 
 Q_DECLARE_METATYPE(QModelIndex)
 

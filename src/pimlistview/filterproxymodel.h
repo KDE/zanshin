@@ -27,7 +27,7 @@
 #include <QString>
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
-#include "pimitemmodel.h"
+#include "core/pimitemmodel.h"
 
 namespace Akonadi {
 class ItemSearchJob;

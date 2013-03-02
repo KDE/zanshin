@@ -32,17 +32,16 @@
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QVBoxLayout>
 
-#include "modelstack.h"
+#include "core/modelstack.h"
+#include "core/note.h"
 #include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
-#include "categorymanager.h"
 #include "globaldefs.h"
 #include "todotreeview.h"
 #include "todohelpers.h"
 #include "configuration.h"
 #include <KXMLGUIClient>
 #include <filterproxymodel.h>
-#include <note.h>
 #include <QComboBox>
 #include <KPassivePopup>
 #include <KLineEdit>
@@ -50,8 +49,8 @@
 #include <Akonadi/ItemDeleteJob>
 #include <KGlobal>
 #include <KLocalizedString>
-#include <searchbar.h>
-#include <pimitemrelationinterface.h>
+#include "searchbar.h"
+#include "core/pimitemrelationinterface.h"
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 

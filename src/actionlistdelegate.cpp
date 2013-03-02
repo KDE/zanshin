@@ -28,17 +28,17 @@
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QStyledItemDelegate>
 
-#include "combomodel.h"
-#include "globaldefs.h"
-#include "kdescendantsproxymodel.h"
-#include "kdateedit.h"
+#include <kdescendantsproxymodel.h>
+#include <kdateedit.h>
 #include <klocale.h>
 #include <kglobal.h>
 #include <kmodelindexproxymapper.h>
-#include "modelstack.h"
-#include <abstractpimitem.h>
-#include <pimitem.h>
-#include "categorymanager.h"
+
+#include "combomodel.h"
+#include "globaldefs.h"
+#include "core/modelstack.h"
+#include "core/abstractpimitem.h"
+#include "pimitem.h"
 
 using namespace KPIM;
 Q_DECLARE_METATYPE(QItemSelectionModel*)

@@ -38,8 +38,8 @@
 #include <QtGui/QVBoxLayout>
 
 #include "globaldefs.h"
-#include "modelstack.h"
 #include "sidebarpage.h"
+#include "core/modelstack.h"
 
 
 SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)

@@ -23,9 +23,9 @@
 #define PIMITEMRELATIONS_H
 #include <QDateTime>
 #include <akonadi/item.h>
-#include "kbihash_p.h"
 #include "globaldefs.h"
-#include "utils/abstractpimitem.h"
+#include "reparentingmodel/kbihash_p.h"
+#include "core/abstractpimitem.h"
 
 
 /**

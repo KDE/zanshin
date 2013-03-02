@@ -3,9 +3,6 @@ include_directories(${SOPRANO_INCLUDE_DIR})
 find_package(SharedDesktopOntologies)
 
 set(utils_SRCS
-    abstractpimitem.cpp
-    incidenceitem.cpp
-    note.cpp
     queries.cpp
     guiclient.cpp
     datestringbuilder.cpp

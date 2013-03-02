@@ -22,8 +22,8 @@
 */
 #include "pimitem.h"
 
-#include "note.h"
-#include "incidenceitem.h"
+#include "core/note.h"
+#include "core/incidenceitem.h"
 #include <Nepomuk2/Vocabulary/NIE>
 #include <Nepomuk2/Variant>
 #include "queries.h"

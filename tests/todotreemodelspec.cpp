@@ -27,13 +27,13 @@
 #include <QtGui/QStandardItemModel>
 #include <QtTest/QSignalSpy>
 
-#include "todometadatamodel.h"
-#include <reparentingmodel/reparentingmodel.h>
-#include <reparentingmodel/projectstrategy.h>
-#include <reparentingmodel/pimitemrelationstrategy.h>
-#include <reparentingmodel/pimitemrelationinterface.h>
-#include <utils/note.h>
-#include <pimlistview/pimitemmodel.h>
+#include "core/todometadatamodel.h"
+#include "reparentingmodel/reparentingmodel.h"
+#include "core/projectstrategy.h"
+#include "core/pimitemrelationstrategy.h"
+#include "core/pimitemrelationinterface.h"
+#include "core/note.h"
+#include "core/pimitemmodel.h"
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modeltest.h"

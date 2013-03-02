@@ -32,9 +32,9 @@
 
 #include "globaldefs.h"
 #include "todohelpers.h"
-#include <pimitem.h>
-#include <note.h>
-#include <configuration.h>
+#include "pimitem.h"
+#include "core/note.h"
+#include "configuration.h"
 
 K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
 K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)

@@ -25,7 +25,7 @@
 
 #include <QtGui/QItemSelectionModel>
 
-#include "modelstack.h"
+#include "core/modelstack.h"
 
 class ModelStackTest : public QObject
 {

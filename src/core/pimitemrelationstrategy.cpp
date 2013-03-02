@@ -20,16 +20,15 @@
 
 
 #include "pimitemrelationstrategy.h"
-#include <todohelpers.h>
-#include <todonode.h>
 #include <KIcon>
 #include <KUrl>
 #include <KLocalizedString>
 #include <QMimeData>
 
-#include "reparentingmodel.h"
-#include "pimitemrelationinterface.h"
-#include <categorymanager.h>
+#include "reparentingmodel/reparentingmodel.h"
+#include "reparentingmodel/todonode.h"
+#include "core/pimitemrelationinterface.h"
+#include "todohelpers.h"
 
 PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),

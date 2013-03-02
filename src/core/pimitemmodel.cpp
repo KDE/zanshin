@@ -30,13 +30,13 @@
 #include <KIcon>
 #include <KLocale>
 #include <KUrl>
-
-#include <KDE/Akonadi/ItemModifyJob>
-#include <abstractpimitem.h>
-#include <pimitem.h>
-#include <datestringbuilder.h>
 #include <QBrush>
-#include <incidenceitem.h>
+#include <KDE/Akonadi/ItemModifyJob>
+
+#include "core/abstractpimitem.h"
+#include "core/incidenceitem.h"
+#include "pimitem.h"
+#include "datestringbuilder.h"
 
 PimItemModel::PimItemModel(Akonadi::ChangeRecorder *monitor, QObject *parent)
     : Akonadi::EntityTreeModel(monitor, parent)

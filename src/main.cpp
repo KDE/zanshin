@@ -29,7 +29,7 @@
 #include "aboutdata.h"
 #include "debugwindow.h"
 #include "mainwindow.h"
-#include "modelstack.h"
+#include "core/modelstack.h"
 
 /*
 template<class ProxyModel>

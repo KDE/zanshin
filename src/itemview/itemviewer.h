@@ -31,7 +31,7 @@
 
 #include <Akonadi/Item>
 
-#include "abstractpimitem.h"
+#include "core/abstractpimitem.h"
 
 namespace Nepomuk2 {
 class Resource;

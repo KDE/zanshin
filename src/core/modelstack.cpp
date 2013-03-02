@@ -30,7 +30,6 @@
 #include <KDE/Akonadi/EntityMimeTypeFilterModel>
 #include <KDE/Akonadi/ItemFetchScope>
 
-#include "categorymanager.h"
 #include "combomodel.h"
 #include "sidebarmodel.h"
 #include "selectionproxymodel.h"
@@ -41,8 +40,8 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include "pimitemmodel.h"
 #include "reparentingmodel/reparentingmodel.h"
-#include "reparentingmodel/projectstrategy.h"
-#include "reparentingmodel/pimitemrelationstrategy.h"
+#include "core/projectstrategy.h"
+#include "core/pimitemrelationstrategy.h"
 #include <qitemselectionmodel.h>
 
 ModelStack::ModelStack(QObject *parent)

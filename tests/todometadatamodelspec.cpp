@@ -25,7 +25,7 @@
 
 #include <QtGui/QStandardItemModel>
 
-#include "todometadatamodel.h"
+#include "core/todometadatamodel.h"
 #include "testlib/testlib.h"
 #include "testlib/modelbuilderbehavior.h"
 

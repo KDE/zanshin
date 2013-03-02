@@ -62,7 +62,7 @@
 // #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
-#include <incidenceitem.h>
+#include "core/incidenceitem.h"
 
 using namespace Ui;
 

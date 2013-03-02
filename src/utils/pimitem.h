@@ -23,7 +23,7 @@
 #ifndef PIMITEM_H
 #define PIMITEM_H
 
-#include "abstractpimitem.h"
+#include "core/abstractpimitem.h"
 
 namespace Nepomuk2 {
 class Resource;

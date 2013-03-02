@@ -29,14 +29,13 @@
 #include <Akonadi/EntityTreeModel>
 #include <QItemSelectionModel>
 
-#include "pimitemmodel.h"
-#include "pimitem.h"
-
 #include <KDebug>
 #include <KCalCore/Incidence>
 
 #include "searchfiltercacheproxy.h"
-#include <incidenceitem.h>
+#include "core/incidenceitem.h"
+#include "core/pimitemmodel.h"
+#include "pimitem.h"
 
 FilterProxyModel::FilterProxyModel(QObject *parent)
 :   QSortFilterProxyModel(parent),

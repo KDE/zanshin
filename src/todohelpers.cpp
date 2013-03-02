@@ -38,9 +38,8 @@
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
 
-#include "categorymanager.h"
 #include "globaldefs.h"
-#include "utils/incidenceitem.h"
+#include "core/incidenceitem.h"
 
 void TodoHelpers::addTodo(const QString &summary, const QList<PimItemRelation> relations, const Akonadi::Collection &collection, bool isProject)
 {

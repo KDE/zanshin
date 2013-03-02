@@ -26,7 +26,7 @@
 
 #include <Akonadi/EntityTreeView>
 
-#include "modelstack.h"
+#include "core/modelstack.h"
 
 DebugWindow::DebugWindow(ModelStack *models, QWidget *parent)
     : QTabWidget(parent)

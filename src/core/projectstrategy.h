@@ -22,8 +22,8 @@
 #ifndef PROJECTSTRATEGY_H
 #define PROJECTSTRATEGY_H
 
-#include "reparentingstrategy.h"
-#include "pimitemrelations.h"
+#include "reparentingmodel/reparentingstrategy.h"
+#include "core/pimitemrelations.h"
 
 class ProjectStrategy : public QObject, public ReparentingStrategy
 {
