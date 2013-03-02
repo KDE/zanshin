@@ -59,7 +59,6 @@
 #include <KAction>
 
 #include "toolbox.h"
-#include "itemmonitor.h"
 // #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
