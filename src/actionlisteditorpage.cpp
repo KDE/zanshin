@@ -34,12 +34,12 @@
 
 #include "core/modelstack.h"
 #include "core/note.h"
+#include "core/configuration.h"
 #include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "globaldefs.h"
 #include "todotreeview.h"
 #include "todohelpers.h"
-#include "configuration.h"
 #include <KXMLGUIClient>
 #include <filterproxymodel.h>
 #include <QComboBox>
