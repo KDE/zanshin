@@ -16,8 +16,6 @@ set(zanshin_core_SRCS
    selectionproxymodel.cpp
    sidebarmodel.cpp
    todohelpers.cpp
-   app/configdialog.cpp
-   app/maincomponent.cpp
    ${core_SRCS}
    ${reparentingmodel_SRCS}
    ${pimlistview_SRCS}
@@ -55,8 +53,10 @@ kde4_add_ui_files(zanshin_gui_SRCS itemview/properties.ui)
 ########### zanshin app ###############
 
 set(zanshin_SRCS
+   app/configdialog.cpp
    app/debugwindow.cpp
    app/main.cpp
+   app/maincomponent.cpp
    app/mainwindow.cpp
    ${zanshin_core_SRCS}
    ${zanshin_gui_SRCS}
@@ -76,6 +76,8 @@ install(PROGRAMS app/zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 ########### zanshin part ###############
 
 set(zanshin_part_SRCS
+   app/configdialog.cpp
+   app/maincomponent.cpp
    app/part.cpp
    ${zanshin_core_SRCS}
    ${zanshin_gui_SRCS}
