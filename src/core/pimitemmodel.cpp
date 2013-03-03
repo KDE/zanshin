@@ -35,8 +35,8 @@
 
 #include "core/abstractpimitem.h"
 #include "core/incidenceitem.h"
-#include "pimitem.h"
-#include "datestringbuilder.h"
+#include "utils/pimitem.h"
+#include "utils/datestringbuilder.h"
 
 PimItemModel::PimItemModel(Akonadi::ChangeRecorder *monitor, QObject *parent)
     : Akonadi::EntityTreeModel(monitor, parent)

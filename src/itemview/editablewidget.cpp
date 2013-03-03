@@ -24,8 +24,8 @@
 
 #include "editablewidget.h"
 
-#include <kdateedit.h>
-#include <datestringbuilder.h>
+#include "utils/kdateedit.h"
+#include "utils/datestringbuilder.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>

@@ -20,7 +20,7 @@
 
 
 #include "pimitemrelations.h"
-#include <pimitem.h>
+#include "utils/pimitem.h"
 #include <quuid.h>
 #include <KUrl>
 

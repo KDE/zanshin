@@ -111,13 +111,13 @@
   <customwidget>
    <class>EditableDate</class>
    <extends>QWidget</extends>
-   <header>editablewidget.h</header>
+   <header>itemview/editablewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>CheckableEditableDate</class>
    <extends>QWidget</extends>
-   <header>editablewidget.h</header>
+   <header>itemview/editablewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

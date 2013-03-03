@@ -42,8 +42,8 @@
 #include "configdialog.h"
 #include "globaldefs.h"
 #include "sidebar.h"
-#include "itemviewer.h"
-#include "itemselectorproxy.h"
+#include "itemview/itemviewer.h"
+#include "pimlistview/itemselectorproxy.h"
 #include "core/modelstack.h"
 
 MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient *client)

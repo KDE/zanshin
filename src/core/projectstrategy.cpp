@@ -27,7 +27,7 @@
 #include "reparentingmodel/todonode.h"
 #include "reparentingmodel/reparentingmodel.h"
 #include "todohelpers.h"
-#include "pimitem.h"
+#include "utils/pimitem.h"
 #include <KLocalizedString>
 #include <KIcon>
 #include <QMimeData>

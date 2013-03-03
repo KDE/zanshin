@@ -51,8 +51,8 @@
 #include "quickselectdialog.h"
 #include "todohelpers.h"
 #include "core/configuration.h"
-#include <itemviewer.h>
-#include <itemselectorproxy.h>
+#include "itemview/itemviewer.h"
+#include "pimlistview/itemselectorproxy.h"
 #include "core/pimitemrelationinterface.h"
 
 

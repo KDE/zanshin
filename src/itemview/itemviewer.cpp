@@ -36,7 +36,7 @@
 #include <KInputDialog>
 
 #include "itemcontext.h"
-#include "pimitem.h"
+#include "utils/pimitem.h"
 
 #include <kxmlguiclient.h>
 #include <kxmlguiwindow.h>
@@ -52,7 +52,7 @@
 
 #include <QTimer>
 
-#include "datestringbuilder.h"
+#include "utils/datestringbuilder.h"
 #include <QInputDialog>
 #include <QApplication>
 #include <QLayout>

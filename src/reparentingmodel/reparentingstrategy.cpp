@@ -23,7 +23,7 @@
 #include "globaldefs.h"
 #include "reparentingmodel.h"
 #include "todonode.h"
-#include <pimitem.h>
+#include "utils/pimitem.h"
 #include <klocalizedstring.h>
 #include <KIcon>
 

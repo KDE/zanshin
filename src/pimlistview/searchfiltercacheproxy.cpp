@@ -35,7 +35,6 @@
 #include <Nepomuk2/Vocabulary/PIMO>
 #include <Nepomuk2/Vocabulary/NFO>
 #include <Soprano/Vocabulary/NAO>
-#include <aneo.h>
 
 #include <nepomuk2/orterm.h>
 #include <nepomuk2/comparisonterm.h>
@@ -46,8 +45,9 @@
 #include <nepomuk2/resourcewatcher.h>
 
 #include "core/abstractpimitem.h"
-#include "queries.h"
+#include "utils/queries.h"
 #include "reparentingmodel/todoproxymodelbase.h"
+#include "utils/aneo.h"
 
 SearchFilterCache::SearchFilterCache(QObject* parent)
 : KIdentityProxyModel(parent),

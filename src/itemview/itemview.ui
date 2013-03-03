@@ -39,19 +39,19 @@
   <customwidget>
    <class>EditableString</class>
    <extends>QWidget</extends>
-   <header>editablewidget.h</header>
+   <header>itemview/editablewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>EditorWidget</class>
    <extends>QWidget</extends>
-   <header>editorwidget.h</header>
+   <header>itemview/editorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Toolbox</class>
    <extends>QWidget</extends>
-   <header>toolbox.h</header>
+   <header>itemview/toolbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

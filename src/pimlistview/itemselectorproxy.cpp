@@ -23,7 +23,7 @@
 
 
 #include "itemselectorproxy.h"
-#include "todoproxymodelbase.h"
+#include "reparentingmodel/todoproxymodelbase.h"
 
 #include <Akonadi/EntityTreeModel>
 #include <QModelIndex>

@@ -29,7 +29,7 @@
 #include <QtGui/QStyledItemDelegate>
 
 #include <kdescendantsproxymodel.h>
-#include <kdateedit.h>
+#include "utils/kdateedit.h"
 #include <klocale.h>
 #include <kglobal.h>
 #include <kmodelindexproxymapper.h>
@@ -38,7 +38,7 @@
 #include "globaldefs.h"
 #include "core/modelstack.h"
 #include "core/abstractpimitem.h"
-#include "pimitem.h"
+#include "utils/pimitem.h"
 
 using namespace KPIM;
 Q_DECLARE_METATYPE(QItemSelectionModel*)
