@@ -55,7 +55,6 @@ target_link_libraries(zanshin ${KDE4_KDEUI_LIBS} ${zanshin_core_LIBS})
 
 install(TARGETS zanshin DESTINATION ${BIN_INSTALL_DIR})
 install(FILES app/zanshinui.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin)
-install(FILES gui/itemeditor/contextviewui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
 install(FILES gui/itemeditor/editorui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
 install(PROGRAMS app/zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 

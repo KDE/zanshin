@@ -1,9 +1,0 @@
-<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="contextview" version="1">
-
-    <Menu name="nepomuk_contextview_contextmenu">
-        <Action name="file_open"/>
-        <Action name="context_remove"/>
-    </Menu>
-
-</kpartgui>

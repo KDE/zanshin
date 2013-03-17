@@ -35,8 +35,6 @@
 
 #include <KInputDialog>
 
-#include "itemcontext.h"
-
 #include <kxmlguiclient.h>
 #include <kxmlguiwindow.h>
 #include <kmenubar.h>
