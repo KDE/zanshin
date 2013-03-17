@@ -23,7 +23,7 @@
 #define PROJECTSTRATEGY_H
 
 #include "reparentingmodel/reparentingstrategy.h"
-#include "core/pimitemrelations.h"
+#include "core/pimitemstructurecache.h"
 
 class ProjectStrategy : public QObject, public ReparentingStrategy
 {

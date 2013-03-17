@@ -28,6 +28,7 @@
 #include "reparentingmodel/reparentingmodel.h"
 #include "reparentingmodel/todonode.h"
 #include "core/pimitemservices.h"
+#include "core/pimitemstructurecache.h"
 #include "todohelpers.h"
 
 PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)

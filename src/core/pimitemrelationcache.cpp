@@ -19,6 +19,24 @@
 #include "pimitem.h"
 #include "pimitemfactory.h"
 
+TreeNode::TreeNode(const QString& n, const Id& i, const QList< TreeNode >& p)
+:   name(n),
+    id(i),
+    parentNodes(p)
+{
+}
+
+Relation::Relation(Id i, const QList< TreeNode >& p)
+:   id(i),
+    parentNodes(p)
+{
+}
+
+Relation::Relation()
+:   id(-1)
+{
+}
+
 PimItemRelationCache::PimItemRelationCache()
 :   QObject(),
     mIdCounter(1)

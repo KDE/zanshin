@@ -22,6 +22,7 @@
 #include "globaldefs.h"
 #include "pimitemrelations.h"
 
+class PimItemRelationCache;
 class ProjectStructureInterface;
 class PimItemRelationInterface;
 

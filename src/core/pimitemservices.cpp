@@ -34,6 +34,7 @@
 #include "todohelpers.h"
 #include "core/noteitem.h"
 #include "settings.h"
+#include "pimitemstructurecache.h"
 
 K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
 K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)

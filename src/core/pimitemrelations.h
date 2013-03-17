@@ -21,11 +21,7 @@
 
 #ifndef PIMITEMRELATIONS_H
 #define PIMITEMRELATIONS_H
-#include <QDateTime>
-#include <akonadi/item.h>
 #include "globaldefs.h"
-#include "reparentingmodel/kbihash_p.h"
-#include "pimitemrelationcache.h"
 
 struct PimItemTreeNode {
     PimItemTreeNode(const QByteArray &uid, const QString &name = QString(), const QList<PimItemTreeNode> &parentNodes = QList<PimItemTreeNode>());
@@ -55,39 +51,4 @@ PimItemRelation relationFromXML(const QByteArray &xml);
 QString relationToXML(const PimItemRelation &rel);
 PimItemRelation removeDuplicates(const PimItemRelation &);
 
-
-
-class PimItemStructureCache: public VirtualRelationCache {
-public:
-    PimItemStructureCache(PimItemRelation::Type);
-    void addNode(const QString &name, const IdList &parents);
-//     Id getCategoryId(const QString& categoryPath) const;
-    virtual void updateRelationTree(Akonadi::Item& item);
-protected:
-    //Build a relation tree from the category of an item
-    Relation getRelationTree(Id id, const Akonadi::Item &item);
-private:
-    TreeNode createNode(const PimItemTreeNode &node);
-    Relation createRelation(const PimItemRelation &relation, const Id itemId);
-    QList<PimItemTreeNode> getParentTreeNodes(Id id);
-    QList<TreeNode> getParentList(Id id);
-    PimItemRelation::Type mType;
-};
-
-class ProjectStructureCache: public VirtualRelationCache {
-public:
-    ProjectStructureCache();
-    virtual void updateRelationTree(Akonadi::Item& item);
-    Id addCollection(const Akonadi::Collection &);
-    virtual Id addItem(const Akonadi::Item& );
-    bool hasChildren(Id) const;
-    void printCache();
-
-    Akonadi::Item::Id itemId(Id id) const;
-    IdList getChildren(Id id) const;
-protected:
-    Relation getRelationTree(Id id, const Akonadi::Item &item);
-private:
-    QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
-};
 #endif // PIMITEMRELATIONS_H

@@ -21,6 +21,7 @@
 #include "reparentingmodel/reparentingstrategy.h"
 #include "core/pimitemrelations.h"
 
+class VirtualRelationCache;
 class PimItemRelationStrategy : public QObject, public ReparentingStrategy
 {
     Q_OBJECT
