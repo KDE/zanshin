@@ -21,7 +21,7 @@
    USA.
 */
 
-#include "note.h"
+#include "noteitem.h"
 
 #include <Akonadi/EntityDisplayAttribute>
 #include <akonadi/notes/noteutils.h>
@@ -29,14 +29,14 @@
 #include <KMime/Message>
 #include <QCoreApplication>
 
-Note::Note(QObject *parent)
+NoteItem::NoteItem(QObject *parent)
 :   PimItem(parent)
 {
     //init payload, mimetype, and displayattribute
     commitData();
 }
 /*
-Note::Note(const Note &note)
+NoteItem::Note(const Note &note)
 :   PimItem(note.getItem())
 {
     m_text = note.m_text;
@@ -44,20 +44,20 @@ Note::Note(const Note &note)
     m_creationDate = note.m_creationDate;
 }*/
 
-Note::Note(const Akonadi::Item &item, QObject *parent)
+NoteItem::NoteItem(const Akonadi::Item &item, QObject *parent)
 :   PimItem(item, parent)
 {
     fetchData();
 }
 
-Note::Note(PimItem &item, QObject* parent)
+NoteItem::NoteItem(PimItem &item, QObject* parent)
 :   PimItem(item, parent)
 {
     commitData();
 }
 
 
-bool Note::hasValidPayload()
+bool NoteItem::hasValidPayload()
 {
     if (m_item.hasPayload<KMime::Message::Ptr>()) {
         return true;
@@ -66,7 +66,7 @@ bool Note::hasValidPayload()
 }
 
 
-void Note::commitData()
+void NoteItem::commitData()
 {
     m_item.setMimeType(Akonadi::NoteUtils::noteMimeType());
     Akonadi::NoteUtils::NoteMessageWrapper messageWrapper;
@@ -84,7 +84,7 @@ void Note::commitData()
     m_item.addAttribute(eda);
 }
 
-void Note::fetchData()
+void NoteItem::fetchData()
 {
     if (m_dataFetched) {
         return;
@@ -109,29 +109,29 @@ void Note::fetchData()
 }
 
 
-QString Note::mimeType()
+QString NoteItem::mimeType()
 {
     Q_ASSERT(PimItem::mimeType(PimItem::Note) == Akonadi::NoteUtils::noteMimeType());
     return PimItem::mimeType(PimItem::Note);
 }
 
-PimItem::ItemStatus Note::getStatus() const
+PimItem::ItemStatus NoteItem::getStatus() const
 {
     return PimItem::Later;
 }
 
 
-KDateTime Note::getPrimaryDate()
+KDateTime NoteItem::getPrimaryDate()
 {
     return getLastModifiedDate();
 }
 
-QString Note::getIconName()
+QString NoteItem::getIconName()
 {
     return Akonadi::NoteUtils::noteIconName();
 }
 
-KDateTime Note::getLastModifiedDate()
+KDateTime NoteItem::getLastModifiedDate()
 {
     if (m_lastModifiedDate.isValid()) {
         return m_lastModifiedDate.toLocalZone();
@@ -139,12 +139,12 @@ KDateTime Note::getLastModifiedDate()
     return PimItem::getLastModifiedDate();
 }
 
-PimItem::ItemType Note::itemType()
+PimItem::ItemType NoteItem::itemType()
 {
     return PimItem::Note;
 }
 
-QList< PimItemRelation > Note::getRelations()
+QList< PimItemRelation > NoteItem::getRelations()
 {
     KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
     Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
@@ -157,7 +157,7 @@ QList< PimItemRelation > Note::getRelations()
     return relations;
 }
 
-void Note::setRelations(const QList< PimItemRelation > &relations)
+void NoteItem::setRelations(const QList< PimItemRelation > &relations)
 {
     KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
     Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);

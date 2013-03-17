@@ -1,7 +1,7 @@
 set(core_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/incidenceitem.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/note.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/noteitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/modelstack.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/todometadatamodel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/projectstrategy.cpp

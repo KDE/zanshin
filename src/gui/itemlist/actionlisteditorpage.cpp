@@ -33,7 +33,7 @@
 #include <QtGui/QVBoxLayout>
 
 #include "core/modelstack.h"
-#include "core/note.h"
+#include "core/noteitem.h"
 #include "core/configuration.h"
 #include "actionlistcombobox.h"
 #include "actionlistdelegate.h"

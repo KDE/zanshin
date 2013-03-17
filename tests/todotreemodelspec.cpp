@@ -32,7 +32,7 @@
 #include "core/projectstrategy.h"
 #include "core/pimitemrelationstrategy.h"
 #include "core/pimitemrelationinterface.h"
-#include "core/note.h"
+#include "core/noteitem.h"
 #include "core/pimitemmodel.h"
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
@@ -165,7 +165,7 @@ private slots:
         {
             G n1(100, Qt::DisplayRole, "note1");
             n1.data.insert(PimItemModel::ItemTypeRole, PimItem::Note);
-            Note note;
+            NoteItem note;
             note.setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(t1.uid.toLatin1())));
             Akonadi::Item item = note.getItem();
             item.setId(234);

@@ -16,7 +16,7 @@
  */
 
 #include "pimitemfactory.h"
-#include "note.h"
+#include "noteitem.h"
 #include "incidenceitem.h"
 #include <Nepomuk2/Resource>
 #include <Nepomuk2/Vocabulary/NIE>
@@ -29,9 +29,9 @@ PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item, QObject* parent)
     }
     PimItem::ItemType itemType = PimItem::itemType(item);
     if (itemType & PimItem::Note) {
-        return PimItem::Ptr(new Note(item, parent));
+        return NoteItem::Ptr(new NoteItem(item, parent));
     } else if (itemType & PimItem::Incidence) {
-        return PimItem::Ptr(new IncidenceItem(item, parent));
+        return IncidenceItem::Ptr(new IncidenceItem(item, parent));
     }
     return PimItem::Ptr();
 }

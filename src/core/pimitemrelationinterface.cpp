@@ -32,7 +32,7 @@
 
 #include "globaldefs.h"
 #include "todohelpers.h"
-#include "core/note.h"
+#include "core/noteitem.h"
 #include "configuration.h"
 
 K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
@@ -163,7 +163,7 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
             break;
         }
         case PimNode::Note: {
-            Note note;
+            NoteItem note;
             note.setTitle(name);
             note.setRelations(relations);
             new Akonadi::ItemCreateJob(note.getItem(), collection);

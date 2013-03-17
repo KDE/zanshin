@@ -36,24 +36,24 @@
 /**
  *
  */
-class Note : public PimItem
+class NoteItem : public PimItem
 {
 public:
-    typedef QSharedPointer<Note> Ptr;
+    typedef QSharedPointer<NoteItem> Ptr;
     /**
      * For creating a new note
      */
-    Note(QObject *parent = 0);
+    NoteItem(QObject *parent = 0);
 
     /**
      * For acessing existing notes
      */
-    Note(const Akonadi::Item&, QObject *parent = 0);
+    NoteItem(const Akonadi::Item&, QObject *parent = 0);
 
     /**
      * For converting other items into notes
      */
-    Note(PimItem&, QObject *parent = 0);
+    NoteItem(PimItem&, QObject *parent = 0);
 
     //~Note();
 
