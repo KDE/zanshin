@@ -19,8 +19,9 @@
 #define PIMITEMSERVICES_H
 
 #include <QtCore/QPointer>
+#include <Akonadi/Item>
+#include <Akonadi/Collection>
 #include "globaldefs.h"
-#include "pimitemrelations.h"
 
 class PimItemRelationCache;
 class ProjectStructureInterface;
@@ -125,7 +126,6 @@ public:
 //     bool unlink(const Akonadi::Item &item, const QModelIndex &parent);
 //     bool rename(const QModelIndex &node, const QString &name);
 private:
-    friend class PimItemRelationsStructure;
 //     bool remove(const Id &relation);
 };
 // 
@@ -136,7 +136,6 @@ public:
     bool moveTo(const PimNode &node, const PimNode &parent);
     void remove(const QList<PimNode> &nodes, QWidget *);
     void remove(const PimNode &node, QWidget *);
-    
 };
 
 #endif // PIMITEMRELATIONINTERFACE_H

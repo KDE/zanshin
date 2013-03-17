@@ -20,7 +20,10 @@
 
 
 #include "pimitemrelations.h"
+
 #include <QDomElement>
+#include <QStringList>
+#include <KDebug>
 
 PimItemRelation::PimItemRelation(PimItemRelation::Type t, const QList< PimItemTreeNode >& p)
 :   type(t),
@@ -31,7 +34,6 @@ PimItemRelation::PimItemRelation(PimItemRelation::Type t, const QList< PimItemTr
 PimItemRelation::PimItemRelation()
 :   type(Invalid)
 {
-
 }
 
 PimItemTreeNode::PimItemTreeNode(const QByteArray &u, const QString &n, const QList<PimItemTreeNode> &p)
@@ -39,8 +41,8 @@ PimItemTreeNode::PimItemTreeNode(const QByteArray &u, const QString &n, const QL
     name(n),
     parentNodes(p)
 {
-
 }
+
 QDomDocument loadDocument(const QByteArray &xml)
 {
     QString errorMsg;
@@ -172,34 +174,6 @@ PimItemRelation getRelation(QDomElement parent)
   }
   return PimItemRelation(typeFromString(type), nodes);
 } 
-
-/*
-void NoteMessageWrapper::NoteMessageWrapperPrivate::parseRelationsPart(KMime::Content *part)
-{
-  QDomDocument document = loadDocument(part);
-  if (document.isNull()) {
-    return;
-  }
-  QDomElement top = document.documentElement();
-  if ( top.tagName() != "relations" ) {
-    qWarning( "XML error: Top tag was %s instead of the expected relations",
-              top.tagName().toAscii().data() );
-    return;
-  }
-
-  for ( QDomNode n = top.firstChild(); !n.isNull(); n = n.nextSibling() ) {
-    if ( n.isElement() ) {
-      QDomElement e = n.toElement();
-      relations.append(getRelation(e));
-    } else {
-      kDebug() <<"Node is not an element";
-      Q_ASSERT(false);
-    }
-
-  }
-}
-*/
-
 
 QString relationToXML(const PimItemRelation &rel)
 {

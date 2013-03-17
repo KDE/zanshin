@@ -19,8 +19,8 @@
 #define PIMITEMRELATIONCACHE_H
 
 #include <akonadi/item.h>
-#include "globaldefs.h"
 #include "reparentingmodel/kbihash_p.h"
+#include "globaldefs.h"
 
 /**
  * A relation tree

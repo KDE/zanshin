@@ -48,8 +48,8 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
             PimItemServices::topicInstance().setRelationsStructure(static_cast<PimItemStructureCache*>(mRelations.data()));
             break;
         default:
-            Q_ASSERT_X( false, "PimItemRelationStrategy constructor", "Known 'type' argument" );
             qWarning() << "unhandled type: " << type;
+            Q_ASSERT_X( false, "PimItemRelationStrategy constructor", "Unknown 'type' argument" );
     }
     connect(mRelations.data(), SIGNAL(virtualNodeAdded(Id, IdList, QString)), this, SLOT(createVirtualNode(Id, IdList, QString)));
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));

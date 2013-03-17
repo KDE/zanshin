@@ -30,9 +30,8 @@
 #include <KDE/KMessageBox>
 #include <KUrl>
 
-#include "globaldefs.h"
 #include "todohelpers.h"
-#include "core/noteitem.h"
+#include "noteitem.h"
 #include "settings.h"
 #include "pimitemstructurecache.h"
 
@@ -528,6 +527,3 @@ void ProjectStructureInterface::remove(const PimNode& node, QWidget *parent)
     projects << node;
     return remove(projects, parent);
 }
-
-
-

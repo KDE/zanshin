@@ -21,7 +21,9 @@
 
 #ifndef PIMITEMRELATIONS_H
 #define PIMITEMRELATIONS_H
-#include "globaldefs.h"
+#include <QByteArray>
+#include <QString>
+#include <QList>
 
 struct PimItemTreeNode {
     PimItemTreeNode(const QByteArray &uid, const QString &name = QString(), const QList<PimItemTreeNode> &parentNodes = QList<PimItemTreeNode>());
