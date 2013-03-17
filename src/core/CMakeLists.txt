@@ -7,7 +7,7 @@ set(core_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/projectstrategy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemrelationstrategy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemrelations.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/pimitemrelationinterface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/pimitemservices.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemmodel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemfactory.cpp

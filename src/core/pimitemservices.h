@@ -15,14 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PIMITEMRELATIONINTERFACE_H
-#define PIMITEMRELATIONINTERFACE_H
+#ifndef PIMITEMSERVICES_H
+#define PIMITEMSERVICES_H
 
 #include <QtCore/QPointer>
 #include "globaldefs.h"
 #include "pimitemrelations.h"
 
 class ProjectStructureInterface;
+class PimItemRelationInterface;
 
 /**
  * The purpose of this interface is to change the structure of a relation tree when we don't have direct access to the model.
@@ -72,13 +73,13 @@ class ProjectStructureInterface;
         QString uid;
     };
 
-class PimItemStructureInterface
+class PimItemServices
 {
 public:
-    PimItemStructureInterface(){};
-    virtual ~PimItemStructureInterface(){};
-    static PimItemStructureInterface &contextInstance();
-    static PimItemStructureInterface &topicInstance();
+    PimItemServices(){};
+    virtual ~PimItemServices(){};
+    static PimItemRelationInterface &contextInstance();
+    static PimItemRelationInterface &topicInstance();
     static ProjectStructureInterface &projectInstance();
 
     static PimNode fromIndex(const QModelIndex &);
@@ -110,7 +111,7 @@ protected:
     QPointer<PimItemRelationCache> mStructure;
 };
 
-class PimItemRelationInterface : public PimItemStructureInterface
+class PimItemRelationInterface : public PimItemServices
 {
 public:
     PimItemRelationInterface();
@@ -127,7 +128,7 @@ private:
 //     bool remove(const Id &relation);
 };
 // 
-class ProjectStructureInterface: public PimItemStructureInterface
+class ProjectStructureInterface: public PimItemServices
 {
 public:
     ProjectStructureInterface();

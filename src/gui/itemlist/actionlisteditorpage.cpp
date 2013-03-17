@@ -35,6 +35,7 @@
 #include "core/modelstack.h"
 #include "core/noteitem.h"
 #include "core/settings.h"
+#include "core/pimitemservices.h"
 #include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "globaldefs.h"
@@ -50,7 +51,6 @@
 #include <KGlobal>
 #include <KLocalizedString>
 #include "searchbar.h"
-#include "core/pimitemrelationinterface.h"
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";
 
@@ -459,13 +459,13 @@ void ActionListEditorPage::addNewItem(const QString& summary)
         }
     } else if (m_mode == Zanshin::ProjectMode) { //This actually only happens when there is no Project in a collection which could be shown in this view (and for which we could create todos).
         collection = m_currentCollection;
-        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
+        PimItemServices::create(PimNode::Project, summary, QList<PimNode>() << PimItemServices::fromIndex(current), collection);
         return;
     }
     if (m_mode == Zanshin::KnowledgeMode) {
-        PimItemStructureInterface::create(PimNode::Note, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
+        PimItemServices::create(PimNode::Note, summary, QList<PimNode>() << PimItemServices::fromIndex(current), collection);
     } else {
-        PimItemStructureInterface::create(PimNode::Todo, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(current), collection);
+        PimItemServices::create(PimNode::Todo, summary, QList<PimNode>() << PimItemServices::fromIndex(current), collection);
     }
 }
 
@@ -476,9 +476,9 @@ void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
     }
     if (m_mode == Zanshin::CategoriesMode) {
         //FIXME
-//        PimItemStructureInterface::unlink(current.data(Zanshin::UriRole).toUrl(), PimItemStructureInterface::allContexts());
+//        PimItemServices::unlink(current.data(Zanshin::UriRole).toUrl(), PimItemServices::allContexts());
     } else if (m_mode == Zanshin::KnowledgeMode) {
-//        PimItemStructureInterface::unlink(current.data(Zanshin::UriRole).toUrl(), PimItemStructureInterface::allTopics());
+//        PimItemServices::unlink(current.data(Zanshin::UriRole).toUrl(), PimItemServices::allTopics());
     }
 }
 

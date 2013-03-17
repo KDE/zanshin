@@ -27,7 +27,7 @@
 
 #include "reparentingmodel/reparentingmodel.h"
 #include "reparentingmodel/todonode.h"
-#include "core/pimitemrelationinterface.h"
+#include "core/pimitemservices.h"
 #include "todohelpers.h"
 
 PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
@@ -40,11 +40,11 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
     switch (type) {
         case PimItemRelation::Context:
             mReparentOnRemoval = true;
-            static_cast<PimItemRelationInterface*>(&PimItemStructureInterface::contextInstance())->setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+            PimItemServices::contextInstance().setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
             break;
         case PimItemRelation::Topic:
             mReparentOnRemoval = true;
-            static_cast<PimItemRelationInterface*>(&PimItemStructureInterface::topicInstance())->setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+            PimItemServices::topicInstance().setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
             break;
         default:
             Q_ASSERT_X( false, "PimItemRelationStrategy constructor", "Known 'type' argument" );

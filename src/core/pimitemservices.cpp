@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "pimitemrelationinterface.h"
+#include "pimitemservices.h"
 
 #include <QtCore/QAbstractItemModel>
 
@@ -39,7 +39,7 @@ K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
 K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)
 K_GLOBAL_STATIC(ProjectStructureInterface, s_projectManager)
 
-PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
+PimNode PimItemServices::fromIndex(const QModelIndex &index)
 {
      Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
      kDebug() << index << itemType;
@@ -87,38 +87,38 @@ PimNode PimItemStructureInterface::fromIndex(const QModelIndex &index)
      return PimNode(PimNode::Invalid);
 }
 
-// PimNode PimItemStructureInterface::projectNode(const Akonadi::Item& )
+// PimNode PimItemServices::projectNode(const Akonadi::Item& )
 // {
 // 
 // }
 // 
-// PimNode PimItemStructureInterface::contextNode(Id )
+// PimNode PimItemServices::contextNode(Id )
 // {
 // 
 // }
 // 
-// PimNode PimItemStructureInterface::topicNode(Id )
+// PimNode PimItemServices::topicNode(Id )
 // {
 // 
 // }
 // 
-// PimNode PimItemStructureInterface::todoNode(const Akonadi::Item& )
+// PimNode PimItemServices::todoNode(const Akonadi::Item& )
 // {
 // 
 // }
 // 
-// PimNode PimItemStructureInterface::noteNode(const Akonadi::Item& )
+// PimNode PimItemServices::noteNode(const Akonadi::Item& )
 // {
 // 
 // }
 // 
-// PimNode PimItemStructureInterface::collectionNode(const Akonadi::Collection& )
+// PimNode PimItemServices::collectionNode(const Akonadi::Collection& )
 // {
 // 
 // }
 // 
 
-void PimItemStructureInterface::create(PimNode::NodeType type, const QString& name, const QList< PimNode >& parents, const Akonadi::Collection& col)
+void PimItemServices::create(PimNode::NodeType type, const QString& name, const QList< PimNode >& parents, const Akonadi::Collection& col)
 {
     Akonadi::Collection collection = col;
     if (!collection.isValid()) {
@@ -170,21 +170,21 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
             break;
         }
         case PimNode::Context:
-            PimItemStructureInterface::contextInstance().add(name, parents);
+            PimItemServices::contextInstance().add(name, parents);
             break;
         case PimNode::Topic:
-            PimItemStructureInterface::topicInstance().add(name, parents);
+            PimItemServices::topicInstance().add(name, parents);
             break;
         default:
             Q_ASSERT(0);
     }
 }
 
-void PimItemStructureInterface::remove(const PimNode& node, QWidget *parent)
+void PimItemServices::remove(const PimNode& node, QWidget *parent)
 {
     switch (node.type) {
         case PimNode::Project:
-            PimItemStructureInterface::projectInstance().remove(node, parent);
+            PimItemServices::projectInstance().remove(node, parent);
             break;
         case PimNode::Todo:
         case PimNode::Note:
@@ -192,63 +192,63 @@ void PimItemStructureInterface::remove(const PimNode& node, QWidget *parent)
             new Akonadi::ItemDeleteJob(node.item);
             break;
         case PimNode::Context:
-            PimItemStructureInterface::contextInstance().remove(node, parent);
+            PimItemServices::contextInstance().remove(node, parent);
             break;
         case PimNode::Topic:
-            PimItemStructureInterface::topicInstance().remove(node, parent);
+            PimItemServices::topicInstance().remove(node, parent);
             break;
         default:
             Q_ASSERT(0);
     }
 }
 
-void PimItemStructureInterface::remove(const QList< PimNode >& nodes, QWidget *parent)
+void PimItemServices::remove(const QList< PimNode >& nodes, QWidget *parent)
 {
     foreach(const PimNode &node, nodes) {
         remove(node, parent);
     }
 }
 
-void PimItemStructureInterface::moveTo(const PimNode& /*node*/, const PimNode& /*parent*/)
+void PimItemServices::moveTo(const PimNode& /*node*/, const PimNode& /*parent*/)
 {
 
 }
 
-void PimItemStructureInterface::linkTo(const PimNode& /*node*/, const PimNode& /*parent*/)
+void PimItemServices::linkTo(const PimNode& /*node*/, const PimNode& /*parent*/)
 {
 
 }
 
-void PimItemStructureInterface::unlink(const PimNode& /*node*/, const PimNode& /*parent*/)
+void PimItemServices::unlink(const PimNode& /*node*/, const PimNode& /*parent*/)
 {
 
 }
 
-void PimItemStructureInterface::rename(const PimNode& /*node*/, const QString& /*name*/)
+void PimItemServices::rename(const PimNode& /*node*/, const QString& /*name*/)
 {
 
 }
 
 
-PimItemStructureInterface &PimItemStructureInterface::contextInstance()
+PimItemRelationInterface &PimItemServices::contextInstance()
 {
     Q_ASSERT(s_contextManager);
     return *s_contextManager;
 }
 
-PimItemStructureInterface &PimItemStructureInterface::topicInstance()
+PimItemRelationInterface &PimItemServices::topicInstance()
 {
     Q_ASSERT(s_topicManager);
     return *s_topicManager;
 }
 
-ProjectStructureInterface& PimItemStructureInterface::projectInstance()
+ProjectStructureInterface& PimItemServices::projectInstance()
 {
     Q_ASSERT(s_projectManager);
     return *s_projectManager;
 }
 
-void PimItemStructureInterface::setRelationsStructure(PimItemRelationCache *s)
+void PimItemServices::setRelationsStructure(PimItemRelationCache *s)
 {
     mStructure = s;
 }
@@ -406,11 +406,11 @@ void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& pa
 // // }
 //
 // const char *todoScheme = "Todo";
-// static PimNode nodeUri(PimItemStructureInterface::NodeType type, const QString &uid)
+// static PimNode nodeUri(PimItemServices::NodeType type, const QString &uid)
 // {
 //     PimNode uri;
 //     switch (type) {
-//         case PimItemStructureInterface::Todo:
+//         case PimItemServices::Todo:
 //             uri.setScheme(todoScheme);
 //             break;
 //     }
@@ -418,12 +418,12 @@ void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& pa
 //     return uri;
 // }
 // 
-// static PimItemStructureInterface::NodeType getNodeType(const PimNode &uri)
+// static PimItemServices::NodeType getNodeType(const PimNode &uri)
 // {
 //     if (uri.scheme() == todoScheme) {
-//         return PimItemStructureInterface::Todo;
+//         return PimItemServices::Todo;
 //     }
-//     return PimItemStructureInterface::Invalid;
+//     return PimItemServices::Invalid;
 // }
 
 ProjectStructureInterface::ProjectStructureInterface()

@@ -35,7 +35,7 @@
 #include "globaldefs.h"
 #include "todohelpers.h"
 #include "gui/shared/todotreeview.h"
-#include "core/pimitemrelationinterface.h"
+#include "core/pimitemservices.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,
                          QItemSelectionModel *selectionModel,
@@ -115,18 +115,18 @@ void SideBarPage::addNewItem()
 
     if (type==Zanshin::Collection) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>(), collection);
+        PimItemServices::create(PimNode::Project, summary, QList<PimNode>(), collection);
     } else if (type==Zanshin::ProjectTodo) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
-        PimItemStructureInterface::create(PimNode::Project, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem), collection);
+        PimItemServices::create(PimNode::Project, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem), collection);
     } else if (type==Zanshin::CategoryRoot) {
-        PimItemStructureInterface::create(PimNode::Context, summary);
+        PimItemServices::create(PimNode::Context, summary);
     } else if (type==Zanshin::Category) {
-        PimItemStructureInterface::create(PimNode::Context, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem));
+        PimItemServices::create(PimNode::Context, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem));
     } else if (type==Zanshin::TopicRoot) {
-        PimItemStructureInterface::create(PimNode::Topic, summary);
+        PimItemServices::create(PimNode::Topic, summary);
     } else if (type==Zanshin::Topic) {
-        PimItemStructureInterface::create(PimNode::Topic, summary, QList<PimNode>() << PimItemStructureInterface::fromIndex(parentItem));
+        PimItemServices::create(PimNode::Topic, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem));
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }
@@ -144,7 +144,7 @@ void SideBarPage::removeCurrentItem()
     if (!current.isValid()) {
         return;
     }
-    PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(current), this);
+    PimItemServices::remove(PimItemServices::fromIndex(current), this);
     //TODO only if remove succeeded
     m_treeView->setCurrentIndex(current.parent());
 }

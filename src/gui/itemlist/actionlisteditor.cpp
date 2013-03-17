@@ -53,7 +53,7 @@
 #include "core/settings.h"
 #include "gui/itemeditor/itemviewer.h"
 #include "itemselectorproxy.h"
-#include "core/pimitemrelationinterface.h"
+#include "core/pimitemservices.h"
 
 
 
@@ -292,7 +292,7 @@ void ActionListEditor::onRemoveAction()
 {
     QModelIndexList currentIndexes = currentPage()->selectionModel()->selectedRows();
     foreach (QModelIndex index, currentIndexes) {
-        PimItemStructureInterface::remove(PimItemStructureInterface::fromIndex(index), this);
+        PimItemServices::remove(PimItemServices::fromIndex(index), this);
     }
 }
 
@@ -314,9 +314,9 @@ void ActionListEditor::onMoveAction()
                 }
 
                 if (mode==Zanshin::ProjectMode) {
-                    PimItemStructureInterface::moveTo(PimItemStructureInterface::fromIndex(current), PimItemStructureInterface::fromIndex(dlg.selectedIndex()));
+                    PimItemServices::moveTo(PimItemServices::fromIndex(current), PimItemServices::fromIndex(dlg.selectedIndex()));
                 } else if (mode==Zanshin::CategoriesMode){
-                    PimItemStructureInterface::linkTo(PimItemStructureInterface::fromIndex(current), PimItemStructureInterface::fromIndex(dlg.selectedIndex()));
+                    PimItemServices::linkTo(PimItemServices::fromIndex(current), PimItemServices::fromIndex(dlg.selectedIndex()));
                 } else {
                     qWarning() << "not implemented";
                 }

@@ -21,9 +21,9 @@
 
 #include "globaldefs.h"
 #include "core/projectstrategy.h"
-#include "core/pimitemrelationinterface.h"
 #include "core/incidenceitem.h"
 #include "core/pimitemmodel.h"
+#include "core/pimitemservices.h"
 #include "reparentingmodel/todonode.h"
 #include "reparentingmodel/reparentingmodel.h"
 #include "todohelpers.h"
@@ -40,7 +40,7 @@ ProjectStrategy::ProjectStrategy(ProjectStructure *structure)
     mInbox(1),
     mRelations(structure)
 {
-    PimItemStructureInterface::projectInstance().setRelationsStructure(mRelations.data());
+    PimItemServices::projectInstance().setRelationsStructure(mRelations.data());
     mReparentOnRemoval = false;
     connect(mRelations.data(), SIGNAL(nodeRemoved(Id)), this, SLOT(doRemoveNode(Id)));
     connect(mRelations.data(), SIGNAL(parentsChanged(Id,IdList)), this, SLOT(doChangeParents(Id, IdList)));

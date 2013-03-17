@@ -31,7 +31,7 @@
 #include "reparentingmodel/reparentingmodel.h"
 #include "core/projectstrategy.h"
 #include "core/pimitemrelationstrategy.h"
-#include "core/pimitemrelationinterface.h"
+#include "core/pimitemservices.h"
 #include "core/noteitem.h"
 #include "core/pimitemmodel.h"
 #include "testlib/testlib.h"
