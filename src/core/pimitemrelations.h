@@ -25,8 +25,36 @@
 #include <akonadi/item.h>
 #include "globaldefs.h"
 #include "reparentingmodel/kbihash_p.h"
-#include "core/pimitem.h"
 
+struct PimItemTreeNode;
+
+struct PimItemTreeNode {
+    PimItemTreeNode(const QByteArray &uid, const QString &name = QString(), const QList<PimItemTreeNode> &parentNodes = QList<PimItemTreeNode>());
+    QByteArray uid;
+    QString name;
+    QList<PimItemTreeNode> parentNodes;
+};
+
+struct PimItemRelation
+{
+  enum Type {
+    Invalid,
+    Project,
+    Context,
+    Topic
+  };
+  
+  PimItemRelation(Type type, const QList<PimItemTreeNode> &parentNodes);
+  PimItemRelation();
+  
+  //     QDateTime timestamp; //for merging
+  Type type;
+  QList<PimItemTreeNode> parentNodes;
+};
+
+PimItemRelation relationFromXML(const QByteArray &xml);
+QString relationToXML(const PimItemRelation &rel);
+PimItemRelation removeDuplicates(const PimItemRelation &);
 
 /**
  * A relation tree
@@ -40,8 +68,6 @@
  *
  */
 
-struct PimItemRelation;
-class PimItemTreeNode;
 struct TreeNode {
     TreeNode(const QString &name, const Id &uid, const QList<TreeNode> &parentNodes = QList<TreeNode>());
     QString name;
@@ -60,10 +86,8 @@ struct Relation
 
 /*
  * PimItemRelationCache: A cache which assigns an id to each of the passed in objects, and allows queries by UID
- * PimItemRelations: Allows additionally the creatinon of virtual items (which have an name).
- *
+ * PimItemRelations: Allows additionally the creation of virtual items (which have a name).
  */
-
 class PimItemRelationCache: public QObject
 {
     Q_OBJECT
@@ -135,11 +159,11 @@ private:
  * After all both solutions are perfectly possible, but since I want a uniform solution for all three relation threes, i opted for getting rid of the TodoMetadataModel.
  * (It is also easier to implement a good api for modifications there)
  */
-class PimItemRelations: public PimItemRelationCache
+class VirtualRelationCache: public PimItemRelationCache
 {
     Q_OBJECT
 public:
-    PimItemRelations();
+    VirtualRelationCache();
 
     virtual void removeNode(Id);
 
@@ -165,9 +189,9 @@ protected:
 };
 
 
-class PimItemRelationsStructure: public PimItemRelations {
+class PimItemStructureCache: public VirtualRelationCache {
 public:
-    PimItemRelationsStructure(PimItemRelation::Type);
+    PimItemStructureCache(PimItemRelation::Type);
     void addNode(const QString &name, const IdList &parents);
 //     Id getCategoryId(const QString& categoryPath) const;
     virtual void updateRelationTree(Akonadi::Item& item);
@@ -182,9 +206,9 @@ private:
     PimItemRelation::Type mType;
 };
 
-class ProjectStructure: public PimItemRelationCache {
+class ProjectStructureCache: public VirtualRelationCache {
 public:
-    ProjectStructure();
+    ProjectStructureCache();
     virtual void updateRelationTree(Akonadi::Item& item);
     Id addCollection(const Akonadi::Collection &);
     virtual Id addItem(const Akonadi::Item& );

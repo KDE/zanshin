@@ -509,9 +509,9 @@ void ProjectStructureInterface::remove(const QList< PimNode >& nodes, QWidget *p
     foreach (const PimNode &node, nodes) {
         Q_ASSERT(node.item.isValid());
         Id id = mStructure->getItemId(node.item);
-        IdList children = static_cast<ProjectStructure*>(mStructure.data())->getChildren(id);
+        IdList children = static_cast<ProjectStructureCache*>(mStructure.data())->getChildren(id);
         foreach (Id child, children) {
-            Akonadi::Item item(static_cast<ProjectStructure*>(mStructure.data())->itemId(child));
+            Akonadi::Item item(static_cast<ProjectStructureCache*>(mStructure.data())->itemId(child));
             kDebug() << "remove " << item.id();
             new Akonadi::ItemDeleteJob(item, sequence);
         }

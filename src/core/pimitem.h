@@ -29,6 +29,7 @@
 #include <KDateTime>
 #include <QStringList>
 #include <kcalcore/attachment.h>
+#include "pimitemrelations.h"
 
 class KJob;
 
@@ -36,36 +37,6 @@ namespace Akonadi {
     class Monitor;
     class Session;
 }
-
-struct PimItemTreeNode;
-
-struct PimItemTreeNode {
-    PimItemTreeNode(const QByteArray &uid, const QString &name = QString(), const QList<PimItemTreeNode> &parentNodes = QList<PimItemTreeNode>());
-    QByteArray uid;
-    QString name;
-    QList<PimItemTreeNode> parentNodes;
-};
-
-struct PimItemRelation
-{
-  enum Type {
-    Invalid,
-    Project,
-    Context,
-    Topic
-  };
-  
-  PimItemRelation(Type type, const QList<PimItemTreeNode> &parentNodes);
-  PimItemRelation();
-  
-  //     QDateTime timestamp; //for merging
-  Type type;
-  QList<PimItemTreeNode> parentNodes;
-};
-
-PimItemRelation relationFromXML(const QByteArray &xml);
-QString relationToXML(const PimItemRelation &rel);
-PimItemRelation removeDuplicates(const PimItemRelation &);
 
 
 /**

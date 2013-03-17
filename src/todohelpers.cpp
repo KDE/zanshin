@@ -41,6 +41,7 @@
 #include "globaldefs.h"
 #include "core/incidenceitem.h"
 #include "core/pimitemfactory.h"
+#include "core/pimitemrelations.h"
 
 void TodoHelpers::addTodo(const QString &summary, const QList<PimItemRelation> relations, const Akonadi::Collection &collection, bool isProject)
 {

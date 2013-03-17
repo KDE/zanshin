@@ -29,6 +29,7 @@
 #include "core/pimitem.h"
 #include "core/incidenceitem.h"
 #include "pimitemfactory.h"
+#include "pimitemrelations.h"
 
 QStringList getParentProjects(const QList<PimItemRelation> &relations)
 {

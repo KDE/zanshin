@@ -27,7 +27,6 @@
 #include <KIcon>
 
 
-
 ReparentingStrategy::ReparentingStrategy()
 :   mReparentOnRemoval(true),
     m_model(0),

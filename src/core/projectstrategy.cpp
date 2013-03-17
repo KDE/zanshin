@@ -35,7 +35,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <KUrl>
 
-ProjectStrategy::ProjectStrategy(ProjectStructure *structure)
+ProjectStrategy::ProjectStrategy(ProjectStructureCache *structure)
 :   ReparentingStrategy(),
     mInbox(1),
     mRelations(structure)

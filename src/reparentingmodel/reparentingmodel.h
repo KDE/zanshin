@@ -89,5 +89,6 @@ private:
 
     QScopedPointer<ReparentingStrategy> m_strategy;
 };
+Q_DECLARE_METATYPE(IdList)
 
 #endif // REPARENTINGMODEL_H

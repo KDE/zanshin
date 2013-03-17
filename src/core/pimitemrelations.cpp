@@ -23,6 +23,248 @@
 #include "pimitemfactory.h"
 #include <quuid.h>
 #include <KUrl>
+#include <QDomElement>
+
+PimItemRelation::PimItemRelation(PimItemRelation::Type t, const QList< PimItemTreeNode >& p)
+:   type(t),
+    parentNodes(p)
+{
+
+}
+
+PimItemRelation::PimItemRelation()
+:   type(Invalid)
+{
+
+}
+
+PimItemTreeNode::PimItemTreeNode(const QByteArray &u, const QString &n, const QList<PimItemTreeNode> &p)
+:   uid(u),
+    name(n),
+    parentNodes(p)
+{
+
+}
+QDomDocument loadDocument(const QByteArray &xml)
+{
+    QString errorMsg;
+    int errorLine, errorColumn;
+    QDomDocument document;
+    bool ok = document.setContent( xml, &errorMsg, &errorLine, &errorColumn );
+    if ( !ok ) {
+        kWarning() << xml;
+        qWarning( "Error loading document: %s, line %d, column %d", qPrintable( errorMsg ), errorLine, errorColumn );
+        return QDomDocument();
+    }
+    return document;
+}
+
+
+PimItemRelation::Type typeFromString(const QString &type)
+{
+    if (type == QLatin1String("Project")) {
+        return PimItemRelation::Project;
+    } else if (type == QLatin1String("Context")) {
+        return PimItemRelation::Context;
+    } else if (type == QLatin1String("Topic")) {
+        return PimItemRelation::Topic;
+    }
+    qWarning() << type;
+    Q_ASSERT(0);
+    return PimItemRelation::Project;
+}
+
+QString typeToString(PimItemRelation::Type type)
+{
+    switch (type) {
+        case PimItemRelation::Project:
+            return QLatin1String("Project");
+        case PimItemRelation::Context:
+            return QLatin1String("Context");
+        case PimItemRelation::Topic:
+            return QLatin1String("Topic");
+        default:
+            qWarning() << "unhandled type" << type;
+    }
+    qWarning() << type;
+    Q_ASSERT(0);
+    return QString();
+}
+
+
+QDomDocument createXMLDocument()
+{
+    QDomDocument document;
+    QString p = "version=\"1.0\" encoding=\"UTF-8\"";
+    document.appendChild(document.createProcessingInstruction( "xml", p ) );
+    return document;
+}
+
+void addElement(QDomElement &element, const QString &name, const QString &value)
+{
+    QDomElement e = element.ownerDocument().createElement( name );
+    QDomText t = element.ownerDocument().createTextNode( value );
+    e.appendChild( t );
+    element.appendChild( e );
+}
+
+void addNodes(const QList < PimItemTreeNode > &nodes, QDomElement &element)
+{
+    foreach(const PimItemTreeNode &node, nodes) {
+        if (node.uid.isEmpty()) {
+            kWarning() << "Empty uid in relation, skipping. name: " << node.name;
+            continue;
+        }
+        QDomElement e = element.ownerDocument().createElement( "tree" );
+        addElement(e, "uid", node.uid);
+        addElement(e, "name", node.name);
+        addNodes(node.parentNodes, e);
+        element.appendChild( e );
+    }
+}
+
+PimItemTreeNode getTreeNode(QDomElement e)
+{
+  QString name;
+  QString uid;
+  QList<PimItemTreeNode> nodes;
+  for ( QDomNode n = e.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    if ( n.isElement() ) {
+      QDomElement e = n.toElement();
+      if (e.tagName() == "tree") {
+        nodes.append(getTreeNode(n.toElement()));
+      } else if (e.tagName() == "uid") {
+        uid = e.text();
+      } else if (e.tagName() == "name") {
+        name = e.text();
+      } else {
+        kDebug() <<"Unknown element";
+        Q_ASSERT(false);
+      }
+    } else {
+      kDebug() << "Node is not an element";
+      Q_ASSERT(false);
+    }
+  }
+  return PimItemTreeNode(uid.toLatin1(), name, nodes);
+}
+
+PimItemRelation getRelation(QDomElement parent)
+{
+  QString type;
+  QList<PimItemTreeNode> nodes;
+  for ( QDomNode n = parent.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    if ( n.isElement() ) {
+      QDomElement e = n.toElement();
+      if (e.tagName() == "tree") {
+        const PimItemTreeNode node = getTreeNode(n.toElement());
+        if (node.uid.isEmpty()) {
+            kWarning() << "Found node with empty uid, skipping.";
+            continue;
+        }
+        nodes.append(node);
+      } else if (e.tagName() == "type") {
+        type = e.text();
+      } else {
+        kDebug() <<"Unknown element";
+        Q_ASSERT(false);
+      }
+    } else {
+      kDebug() <<"Node is not an element";
+      Q_ASSERT(false);
+    }
+  }
+  return PimItemRelation(typeFromString(type), nodes);
+} 
+
+/*
+void NoteMessageWrapper::NoteMessageWrapperPrivate::parseRelationsPart(KMime::Content *part)
+{
+  QDomDocument document = loadDocument(part);
+  if (document.isNull()) {
+    return;
+  }
+  QDomElement top = document.documentElement();
+  if ( top.tagName() != "relations" ) {
+    qWarning( "XML error: Top tag was %s instead of the expected relations",
+              top.tagName().toAscii().data() );
+    return;
+  }
+
+  for ( QDomNode n = top.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+    if ( n.isElement() ) {
+      QDomElement e = n.toElement();
+      relations.append(getRelation(e));
+    } else {
+      kDebug() <<"Node is not an element";
+      Q_ASSERT(false);
+    }
+
+  }
+}
+*/
+
+
+QString relationToXML(const PimItemRelation &rel)
+{
+    QDomDocument document = createXMLDocument();
+    QDomElement element = document.createElement( "relations" );
+    element.setAttribute( "version", "1.0" );
+    QDomElement e = document.createElement( "relation" );
+    addNodes(rel.parentNodes, e);
+    addElement(e, "type", typeToString(rel.type));
+    element.appendChild(e);
+    document.appendChild(element);
+    kDebug() << document.toString();
+    return document.toString();
+}
+
+PimItemRelation relationFromXML(const QByteArray &xml)
+{
+    QDomDocument document = loadDocument(xml);
+    if (document.isNull()) {
+        return PimItemRelation();
+    }
+    QDomElement top = document.documentElement();
+    if ( top.tagName() != "relations" ) {
+        qWarning( "XML error: Top tag was %s instead of the expected relations",
+                top.tagName().toAscii().data() );
+        return PimItemRelation();
+    }
+
+    for ( QDomNode n = top.firstChild(); !n.isNull(); n = n.nextSibling() ) {
+        if ( n.isElement() ) {
+            QDomElement e = n.toElement();
+            return getRelation(e);
+        } else {
+            kDebug() <<"Node is not an element";
+            Q_ASSERT(false);
+        }
+
+    }
+    return PimItemRelation();
+}
+
+PimItemRelation removeDuplicates(const PimItemRelation &rel)
+{
+    if (rel.type != PimItemRelation::Project) {
+        return rel;
+    }
+    QList<PimItemTreeNode> projects;
+    QStringList existingProjects;
+    foreach(const PimItemTreeNode &node, rel.parentNodes) {
+        if (existingProjects.contains(node.uid)) {
+            continue;
+        }
+        existingProjects << node.uid;
+        projects << node;
+    }
+    return PimItemRelation(PimItemRelation::Project, projects);
+}
+
+
+
+
 
 TreeNode::TreeNode(const QString& n, const Id& i, const QList< TreeNode >& p)
 :   name(n),
@@ -263,13 +505,13 @@ Id PimItemRelationCache::getUidMapping(const QByteArray& uid)
 
 
 
-PimItemRelations::PimItemRelations()
+VirtualRelationCache::VirtualRelationCache()
 :   PimItemRelationCache()
 {
 
 }
 
-void PimItemRelations::mergeNode(const TreeNode &node)
+void VirtualRelationCache::mergeNode(const TreeNode &node)
 {
 //     kDebug() << node.id << node.name;
     bool created = false;
@@ -303,21 +545,21 @@ void PimItemRelations::mergeNode(const TreeNode &node)
     }
 }
 
-QString PimItemRelations::getName(Id id)
+QString VirtualRelationCache::getName(Id id)
 {
 //     kDebug() << id << mNames.value(id);
 //     Q_ASSERT(mNames.contains(id));
     return mNames.value(id);
 }
 
-void PimItemRelations::removeNodeRecursive(Id id)
+void VirtualRelationCache::removeNodeRecursive(Id id)
 {
     mNames.remove(id);
     Q_ASSERT(!mNames.contains(id));
     PimItemRelationCache::removeNodeRecursive(id);
 }
 
-void PimItemRelations::removeNode(Id id)
+void VirtualRelationCache::removeNode(Id id)
 {
     if (!mParents.leftContains(id) && !mNames.contains(id)) {
         return;
@@ -325,7 +567,7 @@ void PimItemRelations::removeNode(Id id)
     PimItemRelationCache::removeNode(id);
 }
 
-void PimItemRelations::renameNode(Id id, const QString &name)
+void VirtualRelationCache::renameNode(Id id, const QString &name)
 {
     if (name == mNames.value(id)) {
         return;
@@ -342,14 +584,14 @@ void PimItemRelations::renameNode(Id id, const QString &name)
 
 
 
-PimItemRelationsStructure::PimItemRelationsStructure(PimItemRelation::Type type)
-:   PimItemRelations(),
+PimItemStructureCache::PimItemStructureCache(PimItemRelation::Type type)
+:   VirtualRelationCache(),
     mType(type)
 {
 
 }
 
-TreeNode PimItemRelationsStructure::createNode(const PimItemTreeNode &node)
+TreeNode PimItemStructureCache::createNode(const PimItemTreeNode &node)
 {
     Id id = getUidMapping(node.uid);
     QList<TreeNode> parents;
@@ -360,7 +602,7 @@ TreeNode PimItemRelationsStructure::createNode(const PimItemTreeNode &node)
 }
 
 
-Relation PimItemRelationsStructure::createRelation(const PimItemRelation &relation, const Id itemId)
+Relation PimItemStructureCache::createRelation(const PimItemRelation &relation, const Id itemId)
 {
     QList<TreeNode> parents;
     foreach(const PimItemTreeNode &n, relation.parentNodes) {
@@ -370,7 +612,7 @@ Relation PimItemRelationsStructure::createRelation(const PimItemRelation &relati
 }
 
 
-Relation PimItemRelationsStructure::getRelationTree(Id id, const Akonadi::Item &item)
+Relation PimItemStructureCache::getRelationTree(Id id, const Akonadi::Item &item)
 {
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (!pimitem.isNull());
@@ -383,7 +625,7 @@ Relation PimItemRelationsStructure::getRelationTree(Id id, const Akonadi::Item &
     return Relation(id, QList<TreeNode>());
 }
 
-QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
+QList<PimItemTreeNode> PimItemStructureCache::getParentTreeNodes(Id id)
 {
     QList<PimItemTreeNode> list;
     IdList parents = values(id, mParents);
@@ -394,7 +636,7 @@ QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
     return list;
 }
 
-void PimItemRelationsStructure::updateRelationTree(Akonadi::Item &item)
+void PimItemStructureCache::updateRelationTree(Akonadi::Item &item)
 {
 //     kDebug() << item.id();
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
@@ -415,7 +657,7 @@ void PimItemRelationsStructure::updateRelationTree(Akonadi::Item &item)
     item = pimitem->getItem();
 }
 
-QList<TreeNode> PimItemRelationsStructure::getParentList(Id id)
+QList<TreeNode> PimItemStructureCache::getParentList(Id id)
 {
     QList<TreeNode> list;
     IdList parents = values(id, mParents);
@@ -425,7 +667,7 @@ QList<TreeNode> PimItemRelationsStructure::getParentList(Id id)
     return list;
 }
 
-void PimItemRelationsStructure::addNode(const QString& name, const IdList& parents)
+void PimItemStructureCache::addNode(const QString& name, const IdList& parents)
 {
 //     foreach (Id id, mNames.keys()) {
 //         kDebug() << id << mNames.value(id);
@@ -449,12 +691,12 @@ void PimItemRelationsStructure::addNode(const QString& name, const IdList& paren
 
 
 
-ProjectStructure::ProjectStructure()
+ProjectStructureCache::ProjectStructureCache()
 {
 
 }
 
-Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
+Relation ProjectStructureCache::getRelationTree(Id id, const Akonadi::Item& item)
 {
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (!pimitem.isNull());
@@ -479,12 +721,12 @@ Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
     return Relation(id, parents);
 }
 
-void ProjectStructure::updateRelationTree(Akonadi::Item& /*item*/)
+void ProjectStructureCache::updateRelationTree(Akonadi::Item& /*item*/)
 {
 
 }
 
-Id ProjectStructure::addCollection(const Akonadi::Collection &col)
+Id ProjectStructureCache::addCollection(const Akonadi::Collection &col)
 {
     if (!mCollectionMapping.contains(col.id())) {
         mCollectionMapping.insert(col.id(), getNextId());
@@ -492,18 +734,18 @@ Id ProjectStructure::addCollection(const Akonadi::Collection &col)
     return mCollectionMapping.value(col.id());
 }
 
-bool ProjectStructure::hasChildren(Id id) const
+bool ProjectStructureCache::hasChildren(Id id) const
 {
     //FIXME hotspot
     return mParents.rightContains(id);
 }
 
-Id ProjectStructure::addItem(const Akonadi::Item &item)
+Id ProjectStructureCache::addItem(const Akonadi::Item &item)
 {
     return PimItemRelationCache::addItem(item);
 }
 
-Akonadi::Entity::Id ProjectStructure::itemId(Id id) const
+Akonadi::Entity::Id ProjectStructureCache::itemId(Id id) const
 {
     if (!mItemIdCache.values().contains(id)) {
         return -1;
@@ -511,13 +753,13 @@ Akonadi::Entity::Id ProjectStructure::itemId(Id id) const
     return mItemIdCache.key(id);
 }
 
-IdList ProjectStructure::getChildren(Id id) const
+IdList ProjectStructureCache::getChildren(Id id) const
 {
     return getAffectedChildItems(id);
 }
 
 
-void ProjectStructure::printCache()
+void ProjectStructureCache::printCache()
 {
 //     qDebug() << "itemids: " << mItemIdCache;
 //     qDebug() << "collections: " << mCollectionMapping;

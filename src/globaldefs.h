@@ -67,7 +67,6 @@ namespace Zanshin
 }
 typedef qint64 Id;
 typedef QList<qint64> IdList;
-Q_DECLARE_METATYPE(IdList)
 Q_DECLARE_METATYPE(QModelIndexList)
 
 #endif

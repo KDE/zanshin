@@ -23,6 +23,7 @@
 
 
 #include "incidenceitem.h"
+#include "pimitemrelations.h"
 
 #include <Akonadi/EntityDisplayAttribute>
 

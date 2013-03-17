@@ -29,7 +29,7 @@ class ProjectStrategy : public QObject, public ReparentingStrategy
 {
     Q_OBJECT
 public:
-    ProjectStrategy(ProjectStructure *structure = new ProjectStructure());
+    ProjectStrategy(ProjectStructureCache *structure = new ProjectStructureCache());
     virtual void init();
     virtual Id getId(const QModelIndex& );
     virtual IdList getParents(const QModelIndex&, const IdList &ignore = IdList());
@@ -51,7 +51,7 @@ private:
 //     QHash<QString, Id> mUidMapping;
 //     QHash<Akonadi::Collection::Id, Id> mCollectionMapping;
     const Id mInbox;
-    QScopedPointer<ProjectStructure> mRelations;
+    QScopedPointer<ProjectStructureCache> mRelations;
 };
 
 #endif // PROJECTSTRATEGY_H

@@ -28,7 +28,7 @@
 
 Q_DECLARE_METATYPE(QModelIndex)
 
-class PimItemRelationsTest : public QObject
+class VirtualRelationCacheTest : public QObject
 {
     Q_OBJECT
 private slots:
@@ -68,16 +68,16 @@ private slots:
         return inc.getUid().toLatin1();
     }
 
-    PimItemRelationsStructure *getStructure()
+    PimItemStructureCache *getStructure()
     {
-        return new PimItemRelationsStructure(PimItemRelation::Context);
+        return new PimItemStructureCache(PimItemRelation::Context);
     }
 
     void returnCorrectItemId()
     {
         Akonadi::Item item = getEventItem();
         
-        QScopedPointer<PimItemRelations> relation(getStructure());
+        QScopedPointer<VirtualRelationCache> relation(getStructure());
         Id id = relation->addItem(item);
         QVERIFY(id >= 0);
         QCOMPARE(relation->getItemId(item), id);
@@ -87,7 +87,7 @@ private slots:
     {
         Akonadi::Item item = getEventItem();
         
-        QScopedPointer<PimItemRelations> relation(getStructure());
+        QScopedPointer<VirtualRelationCache> relation(getStructure());
         Id id = relation->addItem(item);
         qDebug() << relation->getParents(id);
         QCOMPARE(relation->getParents(id), IdList());
@@ -97,7 +97,7 @@ private slots:
     {
         Akonadi::Item item = getContextItem(1, PimItemTreeNode("uid", "name"));
         
-        QScopedPointer<PimItemRelations> relation(getStructure());
+        QScopedPointer<VirtualRelationCache> relation(getStructure());
         Id id = relation->addItem(item);
         QCOMPARE(relation->getItemId(item), id);
         QCOMPARE(relation->getParents(id).size(), 1);
@@ -111,7 +111,7 @@ private slots:
         PimItemTreeNode parent1("uid", "name", QList<PimItemTreeNode>() << parent2);
         Akonadi::Item item = getContextItem(1, parent1);
         
-        QScopedPointer<PimItemRelations> relation(getStructure());
+        QScopedPointer<VirtualRelationCache> relation(getStructure());
         Id id = relation->addItem(item);
         Id firstParent = relation->getParents(id).first();
         QCOMPARE(relation->getName(firstParent), QLatin1String("name"));
@@ -130,7 +130,7 @@ private slots:
         PimItemTreeNode parent3("uid", "name", QList<PimItemTreeNode>() << parent4);
         Akonadi::Item item2 = getContextItem(2, parent3);
         
-        QScopedPointer<PimItemRelations> relation(getStructure());
+        QScopedPointer<VirtualRelationCache> relation(getStructure());
         Id id = relation->addItem(item1);
         relation->addItem(item2);
         Id firstParent = relation->getParents(id).first();
@@ -145,7 +145,7 @@ private slots:
         Akonadi::Item item = getContextItem(1, PimItemTreeNode("uid", "name"));
         Akonadi::Item item2 = getContextItem(2, PimItemTreeNode(getUid(item), "name"));
         
-        QScopedPointer<PimItemRelations> relation(getStructure());
+        QScopedPointer<VirtualRelationCache> relation(getStructure());
         Id id = relation->addItem(item);
         relation->addItem(item2);
         QCOMPARE(relation->getParents(id).size(), 0);
@@ -158,7 +158,7 @@ private slots:
     {
         Akonadi::Item item = getProjectItem();
         
-        QScopedPointer<ProjectStructure> relation(new ProjectStructure());
+        QScopedPointer<ProjectStructureCache> relation(new ProjectStructureCache());
         Id id = relation->addItem(item);
         QCOMPARE(relation->getItemId(item), id);
         QCOMPARE(relation->getParents(id).size(), 1);
@@ -170,7 +170,7 @@ private slots:
         Akonadi::Item item = getProjectItem(1, PimItemTreeNode("uid", "name"));
         Akonadi::Item item2 = getProjectItem(2, PimItemTreeNode(getUid(item), "name"));
         
-        QScopedPointer<ProjectStructure> relation(new ProjectStructure());
+        QScopedPointer<ProjectStructureCache> relation(new ProjectStructureCache());
         Id id = relation->addItem(item);
         Id id2 = relation->addItem(item2);
         QCOMPARE(relation->getParents(id2).first(), id);
@@ -181,7 +181,7 @@ private slots:
         Akonadi::Item item = getProjectItem(1, PimItemTreeNode("uid", "name"));
         Akonadi::Item item2 = getProjectItem(2, PimItemTreeNode(getUid(item), "name"));
         
-        QScopedPointer<ProjectStructure> relation(new ProjectStructure());
+        QScopedPointer<ProjectStructureCache> relation(new ProjectStructureCache());
         Id id2 = relation->addItem(item2);
         Id id = relation->addItem(item);
         QCOMPARE(relation->getParents(id2).first(), id);
@@ -192,7 +192,7 @@ private slots:
         Akonadi::Item item = getProjectItem(1, PimItemTreeNode("uid", "name"));
         Akonadi::Item item2 = getProjectItem(2, PimItemTreeNode(getUid(item), "name"));
         
-        QScopedPointer<ProjectStructure> relation(new ProjectStructure());
+        QScopedPointer<ProjectStructureCache> relation(new ProjectStructureCache());
         Id id = relation->addItem(item);
         relation->addItem(item2);
         QCOMPARE(relation->getParents(id).size(), 1);
@@ -201,13 +201,13 @@ private slots:
     void getIdFromUid()
     {
         Akonadi::Item item = getProjectItem(1, PimItemTreeNode("uid", "name"));
-        QScopedPointer<ProjectStructure> relation(new ProjectStructure());
+        QScopedPointer<ProjectStructureCache> relation(new ProjectStructureCache());
         Id id = relation->addItem(item);
         QCOMPARE(relation->getId(getUid(item)), id);
     }
 
 };
 
-QTEST_KDEMAIN(PimItemRelationsTest, GUI)
+QTEST_KDEMAIN(VirtualRelationCacheTest, GUI)
 
 #include "pimitemrelationstest.moc"

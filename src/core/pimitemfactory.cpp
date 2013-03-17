@@ -20,7 +20,7 @@
 #include "incidenceitem.h"
 #include <Nepomuk2/Resource>
 #include <Nepomuk2/Vocabulary/NIE>
-#include <Nepomuk2/Variant>
+// #include <Nepomuk2/Variant>
 
 PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item, QObject* parent)
 {
@@ -36,20 +36,20 @@ PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item, QObject* parent)
     return PimItem::Ptr();
 }
 
-Akonadi::Item PimItemFactory::getItemFromResource(const Nepomuk2::Resource &resource)
-{
-    //TODO add property to Nepomuk2::Resource
-    //kDebug() << resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl();
-    if (!resource.hasProperty(Nepomuk2::Vocabulary::NIE::url())) {
-        kWarning() << "url property is missing (did you pass a thing instead of the grounding occurence?)";
-        kWarning() << resource.uri();
-        return Akonadi::Item();
-    }
-    Akonadi::Item item = Akonadi::Item::fromUrl(resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl());
-    if (item.isValid()) {
-        //kDebug() << "found item" << item.url();
-        return item;
-    }
-    kWarning() << "no item found";
-    return Akonadi::Item();
-}
+// Akonadi::Item PimItemFactory::getItemFromResource(const Nepomuk2::Resource &resource)
+// {
+//     //TODO add property to Nepomuk2::Resource
+//     //kDebug() << resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl();
+//     if (!resource.hasProperty(Nepomuk2::Vocabulary::NIE::url())) {
+//         kWarning() << "url property is missing (did you pass a thing instead of the grounding occurence?)";
+//         kWarning() << resource.uri();
+//         return Akonadi::Item();
+//     }
+//     Akonadi::Item item = Akonadi::Item::fromUrl(resource.property(Nepomuk2::Vocabulary::NIE::url()).toUrl());
+//     if (item.isValid()) {
+//         //kDebug() << "found item" << item.url();
+//         return item;
+//     }
+//     kWarning() << "no item found";
+//     return Akonadi::Item();
+// }

@@ -55,7 +55,7 @@ private slots:
 private:
     const Id mInbox;
     const Id mRoot;
-    QScopedPointer<PimItemRelations> mRelations;
+    QScopedPointer<VirtualRelationCache> mRelations;
     const PimItemRelation::Type mType; ///< Either PimItemRelation::Context or PimItemRelation::Topic
 };
 

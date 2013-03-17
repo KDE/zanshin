@@ -597,7 +597,7 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
-        ProjectStructure *structure = new ProjectStructure();
+        ProjectStructureCache *structure = new ProjectStructureCache();
         ProjectStructureInterface *interface = new ProjectStructureInterface();
         interface->setRelationsStructure(structure);
         ReparentingModel treeModel(new ProjectStrategy(structure));

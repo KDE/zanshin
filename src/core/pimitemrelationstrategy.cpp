@@ -34,17 +34,17 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),
     mInbox(1),
     mRoot(2),
-    mRelations(new PimItemRelationsStructure(type)),
+    mRelations(new PimItemStructureCache(type)),
     mType(type)
 {
     switch (type) {
         case PimItemRelation::Context:
             mReparentOnRemoval = true;
-            PimItemServices::contextInstance().setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+            PimItemServices::contextInstance().setRelationsStructure(static_cast<PimItemStructureCache*>(mRelations.data()));
             break;
         case PimItemRelation::Topic:
             mReparentOnRemoval = true;
-            PimItemServices::topicInstance().setRelationsStructure(static_cast<PimItemRelationsStructure*>(mRelations.data()));
+            PimItemServices::topicInstance().setRelationsStructure(static_cast<PimItemStructureCache*>(mRelations.data()));
             break;
         default:
             Q_ASSERT_X( false, "PimItemRelationStrategy constructor", "Known 'type' argument" );

@@ -22,6 +22,7 @@
 */
 
 #include "noteitem.h"
+#include "pimitemrelations.h"
 
 #include <Akonadi/EntityDisplayAttribute>
 #include <akonadi/notes/noteutils.h>
