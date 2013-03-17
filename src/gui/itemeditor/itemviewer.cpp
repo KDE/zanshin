@@ -244,16 +244,6 @@ void ItemViewer::clearView()
     }
 }
 
-// void ItemViewer::setItem(const Nepomuk2::Resource &res)
-// {
-//     Akonadi::Item item = PimItemFactory::getItemFromResource(res);    
-//     if (!item.isValid()) {
-//         kWarning() << "invalid item passed" << res.uri().toString();
-//         return;
-//     }
-//     setItem(item);
-// }
-
 void ItemViewer::setItem(const KUrl &url)
 {
     Akonadi::Item item = Akonadi::Item::fromUrl(url);

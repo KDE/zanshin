@@ -31,7 +31,6 @@ class Resource;
 
 namespace PimItemFactory {
     PimItem::Ptr getItem(const Akonadi::Item &item, QObject *parent = 0);
-//     Akonadi::Item getItemFromResource(const Nepomuk2::Resource &resource);
 };
 
 #endif // PIMITEMFACTORY_H

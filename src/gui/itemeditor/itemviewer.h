@@ -65,8 +65,6 @@ public slots:
      *
      */
     void setItem(const Akonadi::Item &);
-    
-//     void setItem(const Nepomuk2::Resource &res);
 
     /**
      * This will fetch the given item first, before setting it on the editor
