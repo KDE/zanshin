@@ -18,8 +18,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
-#include "pimitemrelationstrategy.h"
+#include "structurecachestrategy.h"
 #include <KIcon>
 #include <KUrl>
 #include <KLocalizedString>
@@ -31,7 +30,7 @@
 #include "core/pimitemstructurecache.h"
 #include "todohelpers.h"
 
-PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
+StructureCacheStrategy::StructureCacheStrategy(PimItemRelation::Type type)
 :   ReparentingStrategy(),
     mInbox(1),
     mRoot(2),
@@ -58,7 +57,7 @@ PimItemRelationStrategy::PimItemRelationStrategy(PimItemRelation::Type type)
     connect(mRelations.data(), SIGNAL(updateItems(IdList)), this, SLOT(doUpdateItems(IdList)));
 }
 
-void PimItemRelationStrategy::init()
+void StructureCacheStrategy::init()
 {
     ReparentingStrategy::init();
 
@@ -126,7 +125,7 @@ bool isIgnored(const QModelIndex &sourceChildIndex)
     return false;
 }
 
-Id PimItemRelationStrategy::getId(const QModelIndex &sourceChildIndex)
+Id StructureCacheStrategy::getId(const QModelIndex &sourceChildIndex)
 {
 //     kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
     if (isIgnored(sourceChildIndex)) { //Filter all other items
@@ -139,7 +138,7 @@ Id PimItemRelationStrategy::getId(const QModelIndex &sourceChildIndex)
     return translateFrom(id);
 }
 
-IdList PimItemRelationStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
+IdList StructureCacheStrategy::getParents(const QModelIndex &sourceChildIndex, const IdList& ignore)
 {
 //     kDebug() << sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>().id();
     if (isIgnored(sourceChildIndex)) {
@@ -158,7 +157,7 @@ IdList PimItemRelationStrategy::getParents(const QModelIndex &sourceChildIndex, 
     return parents;
 }
 
-void PimItemRelationStrategy::createVirtualNode(Id id, IdList parents, const QString& name)
+void StructureCacheStrategy::createVirtualNode(Id id, IdList parents, const QString& name)
 {
     IdList p = translateFrom(parents);
     if (p.isEmpty()) {
@@ -167,23 +166,23 @@ void PimItemRelationStrategy::createVirtualNode(Id id, IdList parents, const QSt
     createNode(translateFrom(id), p, name);
 }
 
-void PimItemRelationStrategy::doRemoveNode(Id id)
+void StructureCacheStrategy::doRemoveNode(Id id)
 {
     kDebug() << id;
     ReparentingStrategy::removeNode(translateFrom(id));
 }
 
-void PimItemRelationStrategy::doChangeParents(Id id, IdList parents)
+void StructureCacheStrategy::doChangeParents(Id id, IdList parents)
 {
     ReparentingStrategy::updateParents(translateFrom(id), translateFrom(parents));
 }
 
-void PimItemRelationStrategy::doRenameParent(Id id, const QString& name)
+void StructureCacheStrategy::doRenameParent(Id id, const QString& name)
 {
     ReparentingStrategy::renameNode(translateFrom(id), name);
 }
 
-void PimItemRelationStrategy::doUpdateItems(const IdList &itemsToUpdate)
+void StructureCacheStrategy::doUpdateItems(const IdList &itemsToUpdate)
 {
     kDebug() << itemsToUpdate;
     foreach (Id id , itemsToUpdate) {
@@ -200,7 +199,7 @@ void PimItemRelationStrategy::doUpdateItems(const IdList &itemsToUpdate)
     }
 }
 
-void PimItemRelationStrategy::setNodeData(TodoNode* node, Id id)
+void StructureCacheStrategy::setNodeData(TodoNode* node, Id id)
 {
 //     kDebug() << id;
     if (id == mInbox || id == mRoot) {
@@ -219,7 +218,7 @@ void PimItemRelationStrategy::setNodeData(TodoNode* node, Id id)
     }
 }
 
-bool PimItemRelationStrategy::reparentOnParentRemoval(Id child) const
+bool StructureCacheStrategy::reparentOnParentRemoval(Id child) const
 {
 //     kDebug() << child;
     if (mRelations->isVirtual(translateTo(child))) {
@@ -228,15 +227,13 @@ bool PimItemRelationStrategy::reparentOnParentRemoval(Id child) const
     return true;
 }
 
-
-void PimItemRelationStrategy::onNodeRemoval(const Id& changed)
+void StructureCacheStrategy::onNodeRemoval(const Id& changed)
 {
     kDebug() << changed;
     mRelations->removeNode(translateTo(changed));
 }
 
-
-QMimeData* PimItemRelationStrategy::mimeData(const QModelIndexList& indexes) const
+QMimeData* StructureCacheStrategy::mimeData(const QModelIndexList& indexes) const
 {
     QStringList ids;
     foreach (const QModelIndex &proxyIndex, indexes) {
@@ -252,17 +249,17 @@ QMimeData* PimItemRelationStrategy::mimeData(const QModelIndexList& indexes) con
     return 0;
 }
 
-QStringList PimItemRelationStrategy::mimeTypes()
+QStringList StructureCacheStrategy::mimeTypes()
 {
     return QStringList() << "application/x-vnd.zanshin.relationid";
 }
 
-Qt::DropActions PimItemRelationStrategy::supportedDropActions() const
+Qt::DropActions StructureCacheStrategy::supportedDropActions() const
 {
     return /*Qt::MoveAction|*/Qt::LinkAction;
 }
 
-Qt::ItemFlags PimItemRelationStrategy::flags(const QModelIndex& index, Qt::ItemFlags flags)
+Qt::ItemFlags StructureCacheStrategy::flags(const QModelIndex& index, Qt::ItemFlags flags)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
     if (type == Zanshin::Inbox || type == Zanshin::CategoryRoot) {
@@ -271,7 +268,7 @@ Qt::ItemFlags PimItemRelationStrategy::flags(const QModelIndex& index, Qt::ItemF
     return flags | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 }
 
-bool PimItemRelationStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::DropAction action)
+bool StructureCacheStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt::DropAction action)
 {
     if (!KUrl::List::canDecode(mimeData) && !mimeData->hasFormat("application/x-vnd.zanshin.relationid")) {
         kWarning() << "invalid drop " << KUrl::List::canDecode(mimeData);
@@ -319,7 +316,7 @@ bool PimItemRelationStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Q
     return true;
 }
 
-bool PimItemRelationStrategy::onSetData(Id id, const QVariant& value, int /*role*/, int /*column*/)
+bool StructureCacheStrategy::onSetData(Id id, const QVariant& value, int /*role*/, int /*column*/)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) getData(id, Zanshin::ItemTypeRole).toInt();
     kWarning() << id << type;
@@ -331,12 +328,12 @@ bool PimItemRelationStrategy::onSetData(Id id, const QVariant& value, int /*role
     return false;
 }
 
-void PimItemRelationStrategy::reset()
+void StructureCacheStrategy::reset()
 {
     ReparentingStrategy::reset();
 }
 
-QVariant PimItemRelationStrategy::data(Id id, int /*column*/, int role, bool &/*forward*/) const
+QVariant StructureCacheStrategy::data(Id id, int /*column*/, int role, bool &/*forward*/) const
 {
     const Id translatedId = translateTo(id);
     if (role == Zanshin::RelationIdRole) {
@@ -347,6 +344,3 @@ QVariant PimItemRelationStrategy::data(Id id, int /*column*/, int role, bool &/*
     }
     return QVariant();
 }
-
-
-

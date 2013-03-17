@@ -41,7 +41,7 @@
 #include "pimitemmodel.h"
 #include "reparentingmodel/reparentingmodel.h"
 #include "core/projectstrategy.h"
-#include "core/pimitemrelationstrategy.h"
+#include "core/structurecachestrategy.h"
 #include <qitemselectionmodel.h>
 
 ModelStack::ModelStack(QObject *parent)
@@ -172,7 +172,7 @@ QAbstractItemModel *ModelStack::treeComboModel()
 QAbstractItemModel *ModelStack::categoriesModel()
 {
     if (!m_categoriesModel) {
-        ReparentingModel *categoriesModel = new ReparentingModel(new PimItemRelationStrategy(PimItemRelation::Context), this);
+        ReparentingModel *categoriesModel = new ReparentingModel(new StructureCacheStrategy(PimItemRelation::Context), this);
         categoriesModel->setSourceModel(baseModel());
         m_categoriesModel = categoriesModel;
     }
@@ -270,7 +270,7 @@ QAbstractItemModel *ModelStack::topicsTreeModel()
 {
     if (!m_topicsTreeModel) {
 //         ParentStructureModel *treeModel = new ParentStructureModel(new NepomukParentStructureStrategy(this), this);
-        ReparentingModel *treeModel = new ReparentingModel(new PimItemRelationStrategy(PimItemRelation::Topic), this);
+        ReparentingModel *treeModel = new ReparentingModel(new StructureCacheStrategy(PimItemRelation::Topic), this);
         treeModel->setSourceModel(knowledgeBaseModel());
         m_topicsTreeModel = treeModel;
 

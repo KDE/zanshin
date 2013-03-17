@@ -5,7 +5,7 @@ set(core_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/modelstack.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/todometadatamodel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/projectstrategy.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/pimitemrelationstrategy.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/structurecachestrategy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemrelations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemrelationcache.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemstructurecache.cpp
