@@ -25,15 +25,15 @@
 #define CONFIGURATION_H
 #include <Akonadi/Collection>
 
-class Configuration: public QObject
+class Settings: public QObject
 {
     Q_OBJECT
 private:
-    Configuration();
-    Configuration(const Configuration &);
+    Settings();
+    Settings(const Settings &);
 public:
-    static Configuration &instance() {
-        static Configuration i;
+    static Settings &instance() {
+        static Settings i;
         return i;
     }
     

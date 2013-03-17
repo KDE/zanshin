@@ -33,7 +33,7 @@
 #include "globaldefs.h"
 #include "todohelpers.h"
 #include "core/noteitem.h"
-#include "configuration.h"
+#include "settings.h"
 
 K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
 K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)
@@ -125,10 +125,10 @@ void PimItemStructureInterface::create(PimNode::NodeType type, const QString& na
         switch (type) {
             case PimNode::Project:
             case PimNode::Todo:
-                collection = Configuration::instance().defaultTodoCollection();
+                collection = Settings::instance().defaultTodoCollection();
                 break;
             case PimNode::Note:
-                collection = Configuration::instance().defaultNoteCollection();
+                collection = Settings::instance().defaultNoteCollection();
                 break;
             default:
                 kWarning() << "unhandled type: " << type;

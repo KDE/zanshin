@@ -21,39 +21,39 @@
    USA.
 */
 
-#include "configuration.h"
+#include "settings.h"
 #include <KGlobal>
 #include <KConfigGroup>
 #include <KConfig>
 
 
-Configuration::Configuration()
+Settings::Settings()
 : QObject()
 {
 }
 
 
-void Configuration::setDefaultTodoCollection(const Akonadi::Collection &collection) {
+void Settings::setDefaultTodoCollection(const Akonadi::Collection &collection) {
     KConfigGroup config(KGlobal::config(), "General");
     config.writeEntry("defaultCollection", QString::number(collection.id()));
     config.sync();
     emit defaultTodoCollectionChanged(collection);
 }
 
-Akonadi::Collection Configuration::defaultTodoCollection() {
+Akonadi::Collection Settings::defaultTodoCollection() {
     KConfigGroup config(KGlobal::config(), "General");
     Akonadi::Collection::Id id = config.readEntry("defaultCollection", -1);
     return Akonadi::Collection(id);
 }
 
-void Configuration::setDefaultNoteCollection(const Akonadi::Collection &collection) {
+void Settings::setDefaultNoteCollection(const Akonadi::Collection &collection) {
     KConfigGroup config(KGlobal::config(), "General");
     config.writeEntry("defaultNoteCollection", QString::number(collection.id()));
     config.sync();
     emit defaultNoteCollectionChanged(collection);
 }
 
-Akonadi::Collection Configuration::defaultNoteCollection() {
+Akonadi::Collection Settings::defaultNoteCollection() {
     KConfigGroup config(KGlobal::config(), "General");
     Akonadi::Collection::Id id = config.readEntry("defaultNoteCollection", -1);
     return Akonadi::Collection(id);
