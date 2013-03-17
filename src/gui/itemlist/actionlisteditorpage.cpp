@@ -315,11 +315,11 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     QString mimeTypeFilter;
     if (mode == Zanshin::KnowledgeMode) {
         sourceModel = models->knowledgeCollectionsModel();
-        mimeTypeFilter = AbstractPimItem::mimeType(AbstractPimItem::Note);
+        mimeTypeFilter = PimItem::mimeType(PimItem::Note);
         m_defaultCollectionId = Configuration::instance().defaultNoteCollection().id();
     } else {
         sourceModel = models->collectionsModel();
-        mimeTypeFilter = AbstractPimItem::mimeType(AbstractPimItem::Todo);
+        mimeTypeFilter = PimItem::mimeType(PimItem::Todo);
         m_defaultCollectionId = Configuration::instance().defaultTodoCollection().id();
     }
     KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);

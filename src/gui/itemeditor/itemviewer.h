@@ -31,7 +31,7 @@
 
 #include <Akonadi/Item>
 
-#include "core/abstractpimitem.h"
+#include "core/pimitem.h"
 
 namespace Nepomuk2 {
 class Resource;
@@ -77,7 +77,7 @@ private slots:
     ///add tag from tag edit
     void itemsReceived(const Akonadi::Item::List&);
     void saveItem();
-    void updateContent(AbstractPimItem::ChangedParts parts = AbstractPimItem::AllParts);
+    void updateContent(PimItem::ChangedParts parts = PimItem::AllParts);
     void itemRemoved();
     void clearView();
 
@@ -94,7 +94,7 @@ signals:
     void itemChanged();
 private:
 
-    AbstractPimItem::Ptr m_currentItem;
+    PimItem::Ptr m_currentItem;
     QTimer *m_autosaveTimer;
     int m_autosaveTimeout;
     Ui::properties *ui_properties;

@@ -34,7 +34,7 @@
 #include "gui/sidebar/sidebarmodel.h"
 #include "gui/shared/selectionproxymodel.h"
 #include "todometadatamodel.h"
-#include "abstractpimitem.h"
+#include "pimitem.h"
 
 #include "kdescendantsproxymodel.h"
 #include <Akonadi/EntityDisplayAttribute>
@@ -83,8 +83,8 @@ QAbstractItemModel *ModelStack::pimitemModel()
 
         Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder(this);
         changeRecorder->setCollectionMonitored(Akonadi::Collection::root());
-        changeRecorder->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Todo));
-        changeRecorder->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note));
+        changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItem::Todo));
+        changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note));
         changeRecorder->setCollectionFetchScope(collectionScope);
         changeRecorder->setItemFetchScope(itemScope);
         changeRecorder->setSession(session);
@@ -247,8 +247,8 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
     m_knowledgeMonitor->setCollectionMonitored(Akonadi::Collection::root());
     m_knowledgeMonitor->setSession(session);
 
-    //m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Incidence), true);
-    m_knowledgeMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
+    //m_knowledgeMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Incidence), true);
+    m_knowledgeMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
 
     PimItemModel *notetakerModel = new PimItemModel ( m_knowledgeMonitor, this );
     notetakerModel->setSupportedDragActions(Qt::MoveAction);
@@ -317,7 +317,7 @@ QAbstractItemModel *ModelStack::knowledgeCollectionsModel()
         collectionsMonitor->fetchCollection( true );
         collectionsMonitor->setCollectionMonitored(Akonadi::Collection::root());
         collectionsMonitor->setSession(session);
-        collectionsMonitor->setMimeTypeMonitored(AbstractPimItem::mimeType(AbstractPimItem::Note), true);
+        collectionsMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
 
         Akonadi::EntityTreeModel *model = new Akonadi::EntityTreeModel(collectionsMonitor, this);
 

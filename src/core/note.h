@@ -31,12 +31,12 @@
 #include <Akonadi/Item>
 #include <QString>
 
-#include "abstractpimitem.h"
+#include "pimitem.h"
 
 /**
  *
  */
-class Note : public AbstractPimItem
+class Note : public PimItem
 {
 public:
     typedef QSharedPointer<Note> Ptr;
@@ -53,7 +53,7 @@ public:
     /**
      * For converting other items into notes
      */
-    Note(AbstractPimItem&, QObject *parent = 0);
+    Note(PimItem&, QObject *parent = 0);
 
     //~Note();
 

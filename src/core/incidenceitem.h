@@ -25,13 +25,13 @@
 #ifndef INCIDENCEITEM_H
 #define INCIDENCEITEM_H
 
-#include "abstractpimitem.h"
+#include "pimitem.h"
 
 /**
  * A wrapper class for kcal incidences (todos/events)
  *
  */
-class IncidenceItem : public AbstractPimItem
+class IncidenceItem : public PimItem
 {
 
 public:
@@ -39,7 +39,7 @@ public:
     /**
      * Create a new item
      */
-    IncidenceItem(AbstractPimItem::ItemType type, QObject *parent = 0);
+    IncidenceItem(PimItem::ItemType type, QObject *parent = 0);
     /**
      * Access an existing item
      */
@@ -47,7 +47,7 @@ public:
     /**
      * For converting other items into todos/events
      */
-    IncidenceItem(AbstractPimItem::ItemType type, AbstractPimItem&, QObject *parent = 0);
+    IncidenceItem(PimItem::ItemType type, PimItem&, QObject *parent = 0);
 
     virtual QString mimeType();
 
@@ -60,7 +60,7 @@ public:
     void setEventStart(const KDateTime&);
 
     void setTodoStatus(ItemStatus status);
-    AbstractPimItem::ItemStatus getStatus() const;
+    PimItem::ItemStatus getStatus() const;
     
     void setParentTodo(const IncidenceItem &);
     

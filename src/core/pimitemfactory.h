@@ -23,14 +23,14 @@
 
 #ifndef PIMITEMFACTORY_H
 #define PIMITEMFACTORY_H
-#include "abstractpimitem.h"
+#include "pimitem.h"
 
 namespace Nepomuk2 {
 class Resource;
 }
 
 namespace PimItemFactory {
-    AbstractPimItem::Ptr getItem(const Akonadi::Item &item, QObject *parent = 0);
+    PimItem::Ptr getItem(const Akonadi::Item &item, QObject *parent = 0);
     Akonadi::Item getItemFromResource(const Nepomuk2::Resource &resource);
 };
 

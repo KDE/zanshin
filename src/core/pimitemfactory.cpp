@@ -22,18 +22,18 @@
 #include <Nepomuk2/Vocabulary/NIE>
 #include <Nepomuk2/Variant>
 
-AbstractPimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item, QObject* parent)
+PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item, QObject* parent)
 {
     if (!item.isValid()) {
-        return AbstractPimItem::Ptr();
+        return PimItem::Ptr();
     }
-    AbstractPimItem::ItemType itemType = AbstractPimItem::itemType(item);
-    if (itemType & AbstractPimItem::Note) {
-        return AbstractPimItem::Ptr(new Note(item, parent));
-    } else if (itemType & AbstractPimItem::Incidence) {
-        return AbstractPimItem::Ptr(new IncidenceItem(item, parent));
+    PimItem::ItemType itemType = PimItem::itemType(item);
+    if (itemType & PimItem::Note) {
+        return PimItem::Ptr(new Note(item, parent));
+    } else if (itemType & PimItem::Incidence) {
+        return PimItem::Ptr(new IncidenceItem(item, parent));
     }
-    return AbstractPimItem::Ptr();
+    return PimItem::Ptr();
 }
 
 Akonadi::Item PimItemFactory::getItemFromResource(const Nepomuk2::Resource &resource)

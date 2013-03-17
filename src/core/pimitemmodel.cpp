@@ -33,7 +33,7 @@
 #include <QBrush>
 #include <KDE/Akonadi/ItemModifyJob>
 
-#include "core/abstractpimitem.h"
+#include "core/pimitem.h"
 #include "core/incidenceitem.h"
 #include "pimitemfactory.h"
 #include "utils/datestringbuilder.h"
@@ -94,7 +94,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
         kWarning() << "invalid item" << column << role;
         return QVariant();
     }
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     if (pimitem.isNull()) {
         return QVariant();
     }
@@ -109,13 +109,13 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                     return modelIndexForCollection(this, item.parentCollection()).data();
                 case Status:
                     switch (pimitem->getStatus()) {
-                        case AbstractPimItem::Now:
+                        case PimItem::Now:
                             return QBrush(Qt::green);
-                        case AbstractPimItem::Later:
+                        case PimItem::Later:
                             return QBrush(Qt::yellow);
-                        case AbstractPimItem::Complete:
+                        case PimItem::Complete:
                             return QBrush(Qt::lightGray);
-                        case AbstractPimItem::Attention:
+                        case PimItem::Attention:
                             return QBrush(Qt::red);
                         default:
                             kDebug() << "unhandled status" << item.id() << pimitem->getStatus();
@@ -134,13 +134,13 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                     return modelIndexForCollection(this, item.parentCollection()).data();
                 case Status: //TODO status editor?
                     switch (pimitem->getStatus()) {
-                        case AbstractPimItem::Now:
+                        case PimItem::Now:
                             return QBrush(Qt::green);
-                        case AbstractPimItem::Later:
+                        case PimItem::Later:
                             return QBrush(Qt::yellow);
-                        case AbstractPimItem::Complete:
+                        case PimItem::Complete:
                             return QBrush(Qt::lightGray);
-                        case AbstractPimItem::Attention:
+                        case PimItem::Attention:
                             return QBrush(Qt::red);
                         default:
                             qWarning() << "unhandled status " << pimitem->getStatus();
@@ -154,7 +154,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             //kDebug() << pimitem->getCreationDate().dateTime() << pimitem->getLastModifiedDate().dateTime();
             d.append(QString::fromLatin1("Created: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getCreationDate())));
             d.append(QString::fromLatin1("Modified: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getLastModifiedDate())));
-            if (pimitem->itemType()&AbstractPimItem::Todo && static_cast<IncidenceItem*>(pimitem.data())->hasDueDate()) {
+            if (pimitem->itemType()&PimItem::Todo && static_cast<IncidenceItem*>(pimitem.data())->hasDueDate()) {
                 d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getPrimaryDate())));
             }
             d.append(QString::fromLatin1("Akonadi: %1\n").arg(item.url().url()));
@@ -175,7 +175,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             return QVariant();
         }
         /*case Qt::BackgroundRole: {
-            if (pimitem->itemType() & AbstractPimItem::Todo) {
+            if (pimitem->itemType() & PimItem::Todo) {
                 IncidenceItem *inc = static_cast<IncidenceItem*>(pimitem);
                 if (inc->getTodoStatus() == IncidenceItem::Now) {
                     return QBrush(Qt::green);
@@ -247,7 +247,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
     }
 
     Akonadi::Item item = data(index, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     if (pimitem.isNull()) {
         return false;
     }
@@ -257,11 +257,11 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
     case 0:
         if (role==Qt::EditRole) {
             pimitem->setTitle(value.toString());
-        } else if (role==Qt::CheckStateRole && pimitem->itemType() == AbstractPimItem::Todo) {
+        } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItem::Todo) {
             if (value.toInt()==Qt::Checked) {
-                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(AbstractPimItem::Complete);
+                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);
             } else {
-                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(AbstractPimItem::NotComplete);
+                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::NotComplete);
             }
         }
         break;
@@ -272,7 +272,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
         pimitem->setCategories(value.toStringList());
         break;
     case 3:
-        if (pimitem->itemType() == AbstractPimItem::Todo) {
+        if (pimitem->itemType() == PimItem::Todo) {
             static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()), true);
         }
 //         todo->setAllDay(true); TODO

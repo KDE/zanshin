@@ -26,7 +26,7 @@
 #include <KDebug>
 
 #include "globaldefs.h"
-#include "core/abstractpimitem.h"
+#include "core/pimitem.h"
 #include "core/incidenceitem.h"
 #include "pimitemfactory.h"
 
@@ -95,12 +95,12 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         }
         return KIdentityProxyModel::data(index, role);
     }
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimitem.isNull());
     switch (role) {
     case Qt::CheckStateRole:
-        if ((pimitem->itemType() == AbstractPimItem::Todo) && index.column()==0 && !static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
-            return (pimitem->getStatus() == AbstractPimItem::Complete) ? Qt::Checked : Qt::Unchecked;
+        if ((pimitem->itemType() == PimItem::Todo) && index.column()==0 && !static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
+            return (pimitem->getStatus() == PimItem::Complete) ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();
         }
@@ -109,7 +109,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     case Zanshin::ParentUidRole:
         return getParentProjects(pimitem->getRelations());
     case Zanshin::ItemTypeRole:
-        if ((pimitem->itemType() == AbstractPimItem::Todo) && static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
+        if ((pimitem->itemType() == PimItem::Todo) && static_cast<IncidenceItem*>(pimitem.data())->isProject()) {
             return Zanshin::ProjectTodo;
         }
         return Zanshin::StandardTodo;

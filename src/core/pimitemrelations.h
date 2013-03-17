@@ -25,7 +25,7 @@
 #include <akonadi/item.h>
 #include "globaldefs.h"
 #include "reparentingmodel/kbihash_p.h"
-#include "core/abstractpimitem.h"
+#include "core/pimitem.h"
 
 
 /**

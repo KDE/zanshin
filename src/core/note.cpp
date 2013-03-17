@@ -30,14 +30,14 @@
 #include <QCoreApplication>
 
 Note::Note(QObject *parent)
-:   AbstractPimItem(parent)
+:   PimItem(parent)
 {
     //init payload, mimetype, and displayattribute
     commitData();
 }
 /*
 Note::Note(const Note &note)
-:   AbstractPimItem(note.getItem())
+:   PimItem(note.getItem())
 {
     m_text = note.m_text;
     m_title = note.m_title;
@@ -45,13 +45,13 @@ Note::Note(const Note &note)
 }*/
 
 Note::Note(const Akonadi::Item &item, QObject *parent)
-:   AbstractPimItem(item, parent)
+:   PimItem(item, parent)
 {
     fetchData();
 }
 
-Note::Note(AbstractPimItem &item, QObject* parent)
-:   AbstractPimItem(item, parent)
+Note::Note(PimItem &item, QObject* parent)
+:   PimItem(item, parent)
 {
     commitData();
 }
@@ -111,13 +111,13 @@ void Note::fetchData()
 
 QString Note::mimeType()
 {
-    Q_ASSERT(AbstractPimItem::mimeType(AbstractPimItem::Note) == Akonadi::NoteUtils::noteMimeType());
-    return AbstractPimItem::mimeType(AbstractPimItem::Note);
+    Q_ASSERT(PimItem::mimeType(PimItem::Note) == Akonadi::NoteUtils::noteMimeType());
+    return PimItem::mimeType(PimItem::Note);
 }
 
-AbstractPimItem::ItemStatus Note::getStatus() const
+PimItem::ItemStatus Note::getStatus() const
 {
-    return AbstractPimItem::Later;
+    return PimItem::Later;
 }
 
 
@@ -136,12 +136,12 @@ KDateTime Note::getLastModifiedDate()
     if (m_lastModifiedDate.isValid()) {
         return m_lastModifiedDate.toLocalZone();
     }
-    return AbstractPimItem::getLastModifiedDate();
+    return PimItem::getLastModifiedDate();
 }
 
-AbstractPimItem::ItemType Note::itemType()
+PimItem::ItemType Note::itemType()
 {
-    return AbstractPimItem::Note;
+    return PimItem::Note;
 }
 
 QList< PimItemRelation > Note::getRelations()

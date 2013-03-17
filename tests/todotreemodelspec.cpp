@@ -164,7 +164,7 @@ private slots:
         }
         {
             G n1(100, Qt::DisplayRole, "note1");
-            n1.data.insert(PimItemModel::ItemTypeRole, AbstractPimItem::Note);
+            n1.data.insert(PimItemModel::ItemTypeRole, PimItem::Note);
             Note note;
             note.setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(t1.uid.toLatin1())));
             Akonadi::Item item = note.getItem();

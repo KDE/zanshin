@@ -99,7 +99,7 @@ Id PimItemRelationCache::getOrCreateItemId(const Akonadi::Item &item)
         return mItemIdCache.value(item.id());
     }
     Id id;
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (!pimitem.isNull());
     QByteArray uid = pimitem->getUid().toLatin1();
     if (uid.isEmpty()) {
@@ -372,7 +372,7 @@ Relation PimItemRelationsStructure::createRelation(const PimItemRelation &relati
 
 Relation PimItemRelationsStructure::getRelationTree(Id id, const Akonadi::Item &item)
 {
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (!pimitem.isNull());
     foreach(const PimItemRelation &rel, pimitem->getRelations()) {
 //         kDebug() << rel.type;
@@ -397,7 +397,7 @@ QList<PimItemTreeNode> PimItemRelationsStructure::getParentTreeNodes(Id id)
 void PimItemRelationsStructure::updateRelationTree(Akonadi::Item &item)
 {
 //     kDebug() << item.id();
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimitem.isNull());
     Q_ASSERT(mItemIdCache.contains(item.id()));
     const Id id = mItemIdCache.value(item.id());
@@ -456,7 +456,7 @@ ProjectStructure::ProjectStructure()
 
 Relation ProjectStructure::getRelationTree(Id id, const Akonadi::Item& item)
 {
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (!pimitem.isNull());
     const QByteArray uid = pimitem->getUid().toLatin1();
 //     qDebug() << "######### " << item.url().url() << id << uid << pimitem->getRelations().size();

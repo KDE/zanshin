@@ -44,7 +44,7 @@
 #include <Nepomuk2/Query/Result>
 #include <nepomuk2/resourcewatcher.h>
 
-#include "core/abstractpimitem.h"
+#include "core/pimitem.h"
 #include "utils/queries.h"
 #include "reparentingmodel/todoproxymodelbase.h"
 #include "utils/aneo.h"

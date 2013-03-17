@@ -36,7 +36,7 @@
 
 #include "globaldefs.h"
 #include "core/modelstack.h"
-#include "core/abstractpimitem.h"
+#include "core/pimitem.h"
 #include <core/pimitemfactory.h>
 
 using namespace KPIM;
@@ -116,20 +116,20 @@ void ActionListDelegate::paint(QPainter *painter,
 
 bool ActionListDelegate::isCompleted(const QModelIndex &index) const
 {
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
     if (pimitem.isNull()) {
         return false;
     }
-    return pimitem->getStatus() == AbstractPimItem::Complete;
+    return pimitem->getStatus() == PimItem::Complete;
 }
 
 bool ActionListDelegate::isOverdue(const QModelIndex &index) const
 {
-    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    PimItem::Ptr pimitem(PimItemFactory::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
     if (pimitem.isNull()) {
         return false;
     }
-    return pimitem->getStatus() == AbstractPimItem::Attention;
+    return pimitem->getStatus() == PimItem::Attention;
 }
 
 QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,

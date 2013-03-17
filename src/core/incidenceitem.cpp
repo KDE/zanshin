@@ -38,13 +38,13 @@ T unwrap(const Akonadi::Item &item)
     return item.hasPayload<T>() ? item.payload<T>() : T();
 }
 
-IncidenceItem::IncidenceItem(AbstractPimItem::ItemType type, QObject *parent)
-: AbstractPimItem(parent)
+IncidenceItem::IncidenceItem(PimItem::ItemType type, QObject *parent)
+: PimItem(parent)
 {
     KCalCore::Incidence *newItem = 0;
-    if (type == AbstractPimItem::Todo) {
+    if (type == PimItem::Todo) {
         newItem = new KCalCore::Todo();
-    } else if (type == AbstractPimItem::Event) {
+    } else if (type == PimItem::Event) {
         newItem = new KCalCore::Event();
     }
     Q_ASSERT(newItem);
@@ -55,18 +55,18 @@ IncidenceItem::IncidenceItem(AbstractPimItem::ItemType type, QObject *parent)
 }
 
 IncidenceItem::IncidenceItem(const Akonadi::Item &item, QObject *parent)
-:   AbstractPimItem(item, parent)
+:   PimItem(item, parent)
 {
     fetchData();
 }
 
-IncidenceItem::IncidenceItem(AbstractPimItem::ItemType type, AbstractPimItem &item, QObject* parent)
-:   AbstractPimItem(item, parent)
+IncidenceItem::IncidenceItem(PimItem::ItemType type, PimItem &item, QObject* parent)
+:   PimItem(item, parent)
 {
     KCalCore::Incidence *newItem = 0;
-    if (type == AbstractPimItem::Todo) {
+    if (type == PimItem::Todo) {
         newItem = new KCalCore::Todo();
-    } else if (type == AbstractPimItem::Event) {
+    } else if (type == PimItem::Event) {
         newItem = new KCalCore::Event();
     }
     Q_ASSERT(newItem);
@@ -249,7 +249,7 @@ void IncidenceItem::setComplete(bool state)
     kWarning() << "not a todo";
 }*/
 
-void IncidenceItem::setTodoStatus(AbstractPimItem::ItemStatus status)
+void IncidenceItem::setTodoStatus(PimItem::ItemStatus status)
 {
     if (!m_item.hasPayload()) {
         kDebug() << "no payload";
@@ -281,7 +281,7 @@ void IncidenceItem::setTodoStatus(AbstractPimItem::ItemStatus status)
 }
 
 
-AbstractPimItem::ItemStatus IncidenceItem::getStatus() const
+PimItem::ItemStatus IncidenceItem::getStatus() const
 {
     if (!m_item.hasPayload()) {
         kDebug() << "no payload";
@@ -359,21 +359,21 @@ QString IncidenceItem::getIconName()
     return QLatin1String( "network-wired" );
 }
 
-AbstractPimItem::ItemType IncidenceItem::itemType()
+PimItem::ItemType IncidenceItem::itemType()
 {
     KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item);
     if (!old) {
         kWarning() << "invalid item";
-        return AbstractPimItem::Incidence;
+        return PimItem::Incidence;
     }
     if ( old->type() == KCalCore::IncidenceBase::TypeTodo ) {
-        return AbstractPimItem::Todo;
+        return PimItem::Todo;
     } else if ( old->type() == KCalCore::IncidenceBase::TypeJournal ) {
-        return AbstractPimItem::Journal;
+        return PimItem::Journal;
     } else if ( old->type() == KCalCore::IncidenceBase::TypeEvent ) {
-        return AbstractPimItem::Event;
+        return PimItem::Event;
     }
-    return AbstractPimItem::Incidence;
+    return PimItem::Incidence;
 }
 
 void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)

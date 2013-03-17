@@ -78,14 +78,14 @@ PimItemRelation removeDuplicates(const PimItemRelation &);
  * some values which are only in the payload, fetch it first via fetchPayload.
  *
  */
-class AbstractPimItem : public QObject
+class PimItem : public QObject
 {
     Q_OBJECT
 
 public:
-    typedef QSharedPointer<AbstractPimItem> Ptr;
-    AbstractPimItem(QObject *parent = 0);
-    AbstractPimItem(const Akonadi::Item &, QObject *parent = 0);
+    typedef QSharedPointer<PimItem> Ptr;
+    PimItem(QObject *parent = 0);
+    PimItem(const Akonadi::Item &, QObject *parent = 0);
     /**
      * Copy Constructor used to create a new Item from with the same content as another item
      *
@@ -95,8 +95,8 @@ public:
      *
      * creation date and last modified date are not copied
      */
-    AbstractPimItem(AbstractPimItem &item, QObject* parent = 0);
-    virtual ~AbstractPimItem();
+    PimItem(PimItem &item, QObject* parent = 0);
+    virtual ~PimItem();
 
     enum ItemType {
         None = 0,
@@ -171,8 +171,8 @@ public:
     /**
      * store the item, and update our copy afterwards
      *
-     * This does not emit changed() for this AbstractPimItem,
-     * but if there are other AbstractPimItem refering to the same akonadi item,
+     * This does not emit changed() for this PimItem,
+     * but if there are other PimItem refering to the same akonadi item,
      * changed will be emitted there
      * 
      * If the item is not yet created in the akonadi store (invalid id), this will just update the payload of the item, but not save it to the akonadi store.
@@ -207,9 +207,9 @@ public:
 signals:
     void payloadFetchComplete();
     /**
-     * emitted if the akonadi item was changed from somwhere else than this instance of AbstractPimItem
+     * emitted if the akonadi item was changed from somwhere else than this instance of PimItem
      */
-    void changed(AbstractPimItem::ChangedParts);
+    void changed(PimItem::ChangedParts);
     /**
      * emitted after item was removed from storage
      */
@@ -251,14 +251,14 @@ private slots:
     void modifyDone( KJob *job );
 
 private:
-    Q_DISABLE_COPY(AbstractPimItem);
+    Q_DISABLE_COPY(PimItem);
 
     Akonadi::Monitor *m_monitor;
     bool m_itemOutdated;
 };
-Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractPimItem::ItemTypes)
-Q_DECLARE_METATYPE(AbstractPimItem::ItemTypes)
-Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractPimItem::ChangedParts)
-Q_DECLARE_METATYPE(AbstractPimItem::ChangedParts)
+Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)
+Q_DECLARE_METATYPE(PimItem::ItemTypes)
+Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ChangedParts)
+Q_DECLARE_METATYPE(PimItem::ChangedParts)
 
 #endif // ABSTRACTPIMITEM_H

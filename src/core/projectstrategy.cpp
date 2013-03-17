@@ -150,7 +150,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     Id id = mRelations->getItemId(item);
     parents = translateFrom(mRelations->getParents(id));
-    bool isNote = (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == AbstractPimItem::Note);
+    bool isNote = (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == PimItem::Note);
     if (parents.isEmpty() || isNote) {
         if (!isProject(translateFrom(id), type) && !isNote) {
             return IdList() << mInbox;
@@ -255,9 +255,9 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
             Q_ASSERT(job->items().size()==1);
             Akonadi::Item item = job->items().first();
             Q_ASSERT(item.isValid());
-            if (AbstractPimItem::itemType(item) == AbstractPimItem::Todo) {
+            if (PimItem::itemType(item) == PimItem::Todo) {
                 return TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
-            } else if (AbstractPimItem::itemType(item) == AbstractPimItem::Note) {
+            } else if (PimItem::itemType(item) == PimItem::Note) {
                 TodoHelpers::moveToProject(item, parentUid);
                 setData(id, QVariant::fromValue<Akonadi::Item>(item), Akonadi::EntityTreeModel::ItemRole);
                 return true;

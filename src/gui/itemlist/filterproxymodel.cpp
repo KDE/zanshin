@@ -80,7 +80,7 @@ bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &source
     }
 
     //generic things
-    AbstractPimItem::Ptr pimItem(PimItemFactory::getItem(item));
+    PimItem::Ptr pimItem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimItem.isNull());
 
     //search trough title

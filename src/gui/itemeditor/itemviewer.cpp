@@ -298,7 +298,7 @@ void ItemViewer::setItem(const Akonadi::Item& item)
 
     Q_ASSERT(m_currentItem);
     connect(m_currentItem.data(), SIGNAL(payloadFetchComplete()), this, SLOT(updateContent()));
-    connect(m_currentItem.data(), SIGNAL(changed(AbstractPimItem::ChangedParts)), this, SLOT(updateContent(AbstractPimItem::ChangedParts)));
+    connect(m_currentItem.data(), SIGNAL(changed(PimItem::ChangedParts)), this, SLOT(updateContent(PimItem::ChangedParts)));
     connect(m_currentItem.data(), SIGNAL(removed()), this, SLOT(itemRemoved()));
 
     m_currentItem->fetchPayload(); //in case the payload is not yet fetched (model does not automatically fetch
@@ -306,7 +306,7 @@ void ItemViewer::setItem(const Akonadi::Item& item)
 
 }
 
-void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
+void ItemViewer::updateContent(PimItem::ChangedParts parts)
 {
     kDebug();
     Q_ASSERT(ui_properties);
@@ -314,7 +314,7 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
      * TODO check for changed content, if there is changed content we have a conflict,
      * and the user should be allowed to save the current content
      */
-    if ((editor->editor()->hasFocus() && (parts & AbstractPimItem::Text)) || (title->lineEdit().hasFocus() && (parts & AbstractPimItem::Title))) { //were currently editing, and the item has changed in the background, so there is probably a conflict
+    if ((editor->editor()->hasFocus() && (parts & PimItem::Text)) || (title->lineEdit().hasFocus() && (parts & PimItem::Title))) { //were currently editing, and the item has changed in the background, so there is probably a conflict
         kWarning() << "conflict";
         KDialog *dialog = new KDialog( this );
         dialog->setCaption( "Conflict" );
@@ -329,13 +329,13 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
     Q_ASSERT(m_currentItem);
     //kDebug() << m_currentItem->hasValidPayload() << m_currentItem->getText();
 
-    if (parts & AbstractPimItem::Text) {
+    if (parts & PimItem::Text) {
         kDebug() << "text changed";
         editor->editor()->setTextOrHtml(m_currentItem->getText());
         editor->editor()->document()->setModified(false);
     }
 
-    if (parts & AbstractPimItem::Title) {
+    if (parts & PimItem::Title) {
         kDebug() << "title changed";
         title->setText(m_currentItem->getTitle());
         title->lineEdit().setModified(false);
@@ -346,7 +346,7 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
     ui_properties->creationTime->setText(DateStringBuilder::getFullDate(m_currentItem->getCreationDate()));
     ui_properties->lastModifiedTime->setText(DateStringBuilder::getFullDate(m_currentItem->getLastModifiedDate()));
 
-    if (m_currentItem->itemType() & AbstractPimItem::Todo) {
+    if (m_currentItem->itemType() & PimItem::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         //Due Date
         bool hasDue = inc->hasDueDate();
@@ -365,7 +365,7 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
         ui_properties->lb_dueDate->hide();
     }
 
-    if (m_currentItem->itemType() & AbstractPimItem::Event) {
+    if (m_currentItem->itemType() & PimItem::Event) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         //Event Start
         ui_properties->editableEventDate->show();
@@ -413,7 +413,7 @@ void ItemViewer::setEventDate(KDateTime dateTime)
         return;
     }
     Q_ASSERT(m_currentItem);
-    if (m_currentItem->itemType() & AbstractPimItem::Event) {
+    if (m_currentItem->itemType() & PimItem::Event) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setEventStart(dateTime);
         m_currentItem->saveItem();
@@ -427,7 +427,7 @@ void ItemViewer::setDueDate(KDateTime dateTime, bool enabled)
         return;
     }
     Q_ASSERT(m_currentItem);
-    if (m_currentItem->itemType() & AbstractPimItem::Todo) {
+    if (m_currentItem->itemType() & PimItem::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setDueDate(dateTime, enabled);
         m_currentItem->saveItem();

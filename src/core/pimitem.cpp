@@ -22,7 +22,7 @@
 */
 
 
-#include "abstractpimitem.h"
+#include "pimitem.h"
 
 #include <Akonadi/EntityDisplayAttribute>
 #include <akonadi/itemfetchjob.h>
@@ -56,7 +56,7 @@ PimItemTreeNode::PimItemTreeNode(const QByteArray &u, const QString &n, const QL
 
 
 
-AbstractPimItem::AbstractPimItem(QObject *parent)
+PimItem::PimItem(QObject *parent)
 : QObject(parent),
 m_dataFetched(false),
 m_textIsRich(false),
@@ -67,7 +67,7 @@ m_itemOutdated(false)
 
 }
 
-AbstractPimItem::AbstractPimItem(const Akonadi::Item &item, QObject *parent)
+PimItem::PimItem(const Akonadi::Item &item, QObject *parent)
 : QObject(parent),
 m_dataFetched(false),
 m_textIsRich(false),
@@ -78,7 +78,7 @@ m_itemOutdated(false)
     m_item = item;
 }
 
-AbstractPimItem::AbstractPimItem(AbstractPimItem &item, QObject* parent)
+PimItem::PimItem(PimItem &item, QObject* parent)
 :   QObject(parent),
 m_dataFetched(false),
 m_textIsRich(false),
@@ -94,12 +94,12 @@ m_itemOutdated(false)
     m_dataFetched = true;
 }
 
-AbstractPimItem::~AbstractPimItem()
+PimItem::~PimItem()
 {
 
 }
 
-void AbstractPimItem::enableMonitor()
+void PimItem::enableMonitor()
 {
     if (!m_item.isValid()) {
         kWarning() << "item is not valid, monitor not enabled";
@@ -123,7 +123,7 @@ void AbstractPimItem::enableMonitor()
     kDebug() << "monitoring of item " << m_item.id() << " started";
 }
 
-AbstractPimItem::ItemType AbstractPimItem::itemType(const Akonadi::Item &item)
+PimItem::ItemType PimItem::itemType(const Akonadi::Item &item)
 {
     Q_ASSERT(!item.mimeType().isEmpty());
     if (item.mimeType() == mimeType(Note)) {
@@ -138,25 +138,25 @@ AbstractPimItem::ItemType AbstractPimItem::itemType(const Akonadi::Item &item)
     return Unknown;
 }
 
-QString AbstractPimItem::getUid()
+QString PimItem::getUid()
 {
     fetchData();
     return m_uid;
 }
 
-void AbstractPimItem::setText(const QString &text, bool isRich)
+void PimItem::setText(const QString &text, bool isRich)
 {
     m_textIsRich = isRich;
     m_text = text;
 }
 
-QString AbstractPimItem::getText()
+QString PimItem::getText()
 {
     fetchData();
     return m_text;
 }
 
-void AbstractPimItem::setTitle(const QString &text, bool isRich)
+void PimItem::setTitle(const QString &text, bool isRich)
 {
     m_titleIsRich = isRich;
     m_title = text;
@@ -165,7 +165,7 @@ void AbstractPimItem::setTitle(const QString &text, bool isRich)
     }
 }
 
-QString AbstractPimItem::getTitle()
+QString PimItem::getTitle()
 {
     if (m_item.hasAttribute<Akonadi::EntityDisplayAttribute>()) {
         Akonadi::EntityDisplayAttribute *att = m_item.attribute<Akonadi::EntityDisplayAttribute>();
@@ -176,7 +176,7 @@ QString AbstractPimItem::getTitle()
     return m_title;
 }
 
-KDateTime AbstractPimItem::getLastModifiedDate()
+KDateTime PimItem::getLastModifiedDate()
 {
     if (!m_item.isValid()) {
         kWarning() << "invalid item";
@@ -186,18 +186,18 @@ KDateTime AbstractPimItem::getLastModifiedDate()
 }
 
 
-void AbstractPimItem::setCreationDate(const KDateTime &creationDate)
+void PimItem::setCreationDate(const KDateTime &creationDate)
 {
     m_creationDate = creationDate;
 }
 
-KDateTime AbstractPimItem::getCreationDate()
+KDateTime PimItem::getCreationDate()
 {
     fetchData();
     return m_creationDate;
 }
 
-QString AbstractPimItem::mimeType(AbstractPimItem::ItemType type)
+QString PimItem::mimeType(PimItem::ItemType type)
 {
     switch (type) {
         case Note:
@@ -215,7 +215,7 @@ QString AbstractPimItem::mimeType(AbstractPimItem::ItemType type)
     return QString();
 }
 
-QStringList AbstractPimItem::mimeTypes()
+QStringList PimItem::mimeTypes()
 {
     QStringList list;
     list << mimeType(Note);
@@ -224,7 +224,7 @@ QStringList AbstractPimItem::mimeTypes()
     return list;
 }
 
-void AbstractPimItem::fetchPayload(bool blocking)
+void PimItem::fetchPayload(bool blocking)
 {
     if (hasValidPayload()) {
         kDebug() << "has validpayload";
@@ -243,7 +243,7 @@ void AbstractPimItem::fetchPayload(bool blocking)
     m_itemOutdated = true;
 }
 
-void AbstractPimItem::itemFetchDone( KJob *job )
+void PimItem::itemFetchDone( KJob *job )
 {
     Akonadi::ItemFetchJob *fetchJob = static_cast<Akonadi::ItemFetchJob*>( job );
     if ( job->error() ) {
@@ -265,7 +265,7 @@ void AbstractPimItem::itemFetchDone( KJob *job )
 }
 
 
-bool AbstractPimItem::payloadFetched()
+bool PimItem::payloadFetched()
 {
     if (m_item.hasPayload()) {
         return true;
@@ -273,7 +273,7 @@ bool AbstractPimItem::payloadFetched()
     return false;
 }
 
-const Akonadi::Item& AbstractPimItem::getItem() const
+const Akonadi::Item& PimItem::getItem() const
 {
     if (m_itemOutdated) {
         kWarning() << "the item is outdated";
@@ -285,7 +285,7 @@ const Akonadi::Item& AbstractPimItem::getItem() const
 }
 
 //TODO return false if this fails, so the user is notified. Otherwise this could result in dataloss
-void AbstractPimItem::saveItem()
+void PimItem::saveItem()
 {
     kDebug();
     if (m_itemOutdated) {
@@ -324,7 +324,7 @@ void AbstractPimItem::saveItem()
 }
 
 
-void AbstractPimItem::modifyDone( KJob *job )
+void PimItem::modifyDone( KJob *job )
 {
     //Updateing the item does not help because the akonadi resource will modifiy the item again to update the remote revision,
     //which will result anyways in an outdate item here if the monitor is not enabled
@@ -339,7 +339,7 @@ void AbstractPimItem::modifyDone( KJob *job )
     kDebug() << "item modified";
 }
 
-void AbstractPimItem::updateItem(const Akonadi::Item &item, const QSet<QByteArray> &changes)
+void PimItem::updateItem(const Akonadi::Item &item, const QSet<QByteArray> &changes)
 {
     kDebug() << "new item" << item.id() << item.revision() << item.modificationTime() << "old item" << m_item.id() << m_item.revision() << m_item.modificationTime();
     kDebug() << changes;
@@ -405,31 +405,31 @@ void AbstractPimItem::updateItem(const Akonadi::Item &item, const QSet<QByteArra
 }
 
 
-bool AbstractPimItem::textIsRich()
+bool PimItem::textIsRich()
 {
     fetchData();
     return m_textIsRich;
 }
 
-bool AbstractPimItem::titleIsRich()
+bool PimItem::titleIsRich()
 {
     fetchData();
     return m_titleIsRich;
 }
 
-const KCalCore::Attachment::List AbstractPimItem::getAttachments()
+const KCalCore::Attachment::List PimItem::getAttachments()
 {
     fetchData();
     return m_attachments;
 }
 
 
-void AbstractPimItem::setCategories(const QStringList& )
+void PimItem::setCategories(const QStringList& )
 {
 
 }
 
-QStringList AbstractPimItem::getCategories()
+QStringList PimItem::getCategories()
 {
     return QStringList();
 }

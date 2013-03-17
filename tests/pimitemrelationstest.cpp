@@ -39,7 +39,7 @@ private slots:
 
     static Akonadi::Item getEventItem(const QList<PimItemRelation> &relations = QList<PimItemRelation>())
     {
-        IncidenceItem inc(AbstractPimItem::Event);
+        IncidenceItem inc(PimItem::Event);
         inc.setRelations(relations);
         Akonadi::Item item = inc.getItem();
         item.setId(1);

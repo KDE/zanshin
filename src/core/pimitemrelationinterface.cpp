@@ -457,7 +457,7 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
 //     }
 
 //     const Akonadi::Item parentItem = parent.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-//     QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(parentItem));
+//     QScopedPointer<PimItem> pimitem(PimItemUtils::getItem(parentItem));
 //     Q_ASSERT(pimitem);
 //     Akonadi::Collection parentCollection;
 // 

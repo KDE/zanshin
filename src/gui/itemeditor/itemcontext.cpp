@@ -33,7 +33,7 @@
 #include <Nepomuk2/ResourceManager>
 #include <Akonadi/Item>
 #include <KDebug>
-#include "abstractpimitem.h"
+#include "pimitem.h"
 #include "nepomukcontextmodel.h"
 #include "nepomukcontextview.h"
 
