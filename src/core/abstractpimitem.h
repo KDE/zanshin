@@ -83,6 +83,7 @@ class AbstractPimItem : public QObject
     Q_OBJECT
 
 public:
+    typedef QSharedPointer<AbstractPimItem> Ptr;
     AbstractPimItem(QObject *parent = 0);
     AbstractPimItem(const Akonadi::Item &, QObject *parent = 0);
     /**

@@ -36,7 +36,6 @@
 #include <KInputDialog>
 
 #include "itemcontext.h"
-#include "utils/pimitem.h"
 
 #include <kxmlguiclient.h>
 #include <kxmlguiwindow.h>
@@ -63,6 +62,7 @@
 #include "ui_properties.h"
 #include <KConfigGroup>
 #include "core/incidenceitem.h"
+#include <core/pimitemfactory.h>
 
 using namespace Ui;
 
@@ -126,9 +126,8 @@ ItemViewer::~ItemViewer()
 
     saveItem();
     if (m_currentItem) {
-        disconnect(m_currentItem, 0, this, 0);
-        m_currentItem->deleteLater();
-        m_currentItem = 0;
+        disconnect(m_currentItem.data(), 0, this, 0);
+        m_currentItem.clear();
     }
 
     delete ui_properties;
@@ -240,15 +239,14 @@ void ItemViewer::clearView()
     title->lineEdit().clearFocus();
 
     if (m_currentItem) {
-        disconnect(m_currentItem, 0, this, 0);
-        m_currentItem->deleteLater();
-        m_currentItem = 0;
+        disconnect(m_currentItem.data(), 0, this, 0);
+        m_currentItem.clear();
     }
 }
 
 void ItemViewer::setItem(const Nepomuk2::Resource &res)
 {
-    Akonadi::Item item = PimItemUtils::getItemFromResource(res);    
+    Akonadi::Item item = PimItemFactory::getItemFromResource(res);    
     if (!item.isValid()) {
         kWarning() << "invalid item passed" << res.uri().toString();
         return;
@@ -290,7 +288,7 @@ void ItemViewer::setItem(const Akonadi::Item& item)
 
     connect(&title->lineEdit(), SIGNAL(editingFinished()), this, SLOT(saveItem())); //update title also in listview as soon as it is set
 
-    m_currentItem = PimItemUtils::getItem(item, this);
+    m_currentItem = PimItemFactory::getItem(item, this);
     if (!m_currentItem) {
         setEnabled(false);
         kWarning() << "invalid item";
@@ -299,9 +297,9 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     setEnabled(true);
 
     Q_ASSERT(m_currentItem);
-    connect(m_currentItem, SIGNAL(payloadFetchComplete()), this, SLOT(updateContent()));
-    connect(m_currentItem, SIGNAL(changed(AbstractPimItem::ChangedParts)), this, SLOT(updateContent(AbstractPimItem::ChangedParts)));
-    connect(m_currentItem, SIGNAL(removed()), this, SLOT(itemRemoved()));
+    connect(m_currentItem.data(), SIGNAL(payloadFetchComplete()), this, SLOT(updateContent()));
+    connect(m_currentItem.data(), SIGNAL(changed(AbstractPimItem::ChangedParts)), this, SLOT(updateContent(AbstractPimItem::ChangedParts)));
+    connect(m_currentItem.data(), SIGNAL(removed()), this, SLOT(itemRemoved()));
 
     m_currentItem->fetchPayload(); //in case the payload is not yet fetched (model does not automatically fetch
     m_currentItem->enableMonitor();
@@ -349,7 +347,7 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
     ui_properties->lastModifiedTime->setText(DateStringBuilder::getFullDate(m_currentItem->getLastModifiedDate()));
 
     if (m_currentItem->itemType() & AbstractPimItem::Todo) {
-        IncidenceItem *inc = static_cast<IncidenceItem*>(m_currentItem);
+        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         //Due Date
         bool hasDue = inc->hasDueDate();
 
@@ -368,7 +366,7 @@ void ItemViewer::updateContent(AbstractPimItem::ChangedParts parts)
     }
 
     if (m_currentItem->itemType() & AbstractPimItem::Event) {
-        IncidenceItem *inc = static_cast<IncidenceItem*>(m_currentItem);
+        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         //Event Start
         ui_properties->editableEventDate->show();
         ui_properties->lb_eventDate->show();
@@ -416,7 +414,7 @@ void ItemViewer::setEventDate(KDateTime dateTime)
     }
     Q_ASSERT(m_currentItem);
     if (m_currentItem->itemType() & AbstractPimItem::Event) {
-        IncidenceItem *inc = static_cast<IncidenceItem*>(m_currentItem);
+        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setEventStart(dateTime);
         m_currentItem->saveItem();
     }
@@ -430,7 +428,7 @@ void ItemViewer::setDueDate(KDateTime dateTime, bool enabled)
     }
     Q_ASSERT(m_currentItem);
     if (m_currentItem->itemType() & AbstractPimItem::Todo) {
-        IncidenceItem *inc = static_cast<IncidenceItem*>(m_currentItem);
+        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setDueDate(dateTime, enabled);
         m_currentItem->saveItem();
     }

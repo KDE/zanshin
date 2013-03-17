@@ -32,7 +32,6 @@
 
 #include "globaldefs.h"
 #include "todohelpers.h"
-#include "utils/pimitem.h"
 #include "core/note.h"
 #include "configuration.h"
 

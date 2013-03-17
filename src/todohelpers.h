@@ -43,6 +43,7 @@ namespace TodoHelpers
 //     bool moveTodoToProject(const QModelIndex &todo, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection);
     bool moveTodoToProject(const Akonadi::Item &todo, const QString &parentUid, const Zanshin::ItemType parentType, const Akonadi::Collection &parentCollection);
     bool promoteTodo(const QModelIndex &index);
+    void moveToProject(Akonadi::Item &item, const QString &parentUid, bool linkOnly = false);
 }
 
 #endif

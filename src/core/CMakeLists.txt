@@ -10,4 +10,5 @@ set(core_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemrelationinterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemmodel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/configuration.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/pimitemfactory.cpp
     PARENT_SCOPE)

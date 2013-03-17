@@ -35,7 +35,7 @@
 #include "searchfiltercacheproxy.h"
 #include "core/incidenceitem.h"
 #include "core/pimitemmodel.h"
-#include "utils/pimitem.h"
+#include <core/pimitemfactory.h>
 
 FilterProxyModel::FilterProxyModel(QObject *parent)
 :   QSortFilterProxyModel(parent),
@@ -80,7 +80,7 @@ bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &source
     }
 
     //generic things
-    QScopedPointer<AbstractPimItem> pimItem(PimItemUtils::getItem(item));
+    AbstractPimItem::Ptr pimItem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimItem.isNull());
 
     //search trough title

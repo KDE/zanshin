@@ -37,7 +37,7 @@
 #include "globaldefs.h"
 #include "core/modelstack.h"
 #include "core/abstractpimitem.h"
-#include "utils/pimitem.h"
+#include <core/pimitemfactory.h>
 
 using namespace KPIM;
 Q_DECLARE_METATYPE(QItemSelectionModel*)
@@ -116,7 +116,7 @@ void ActionListDelegate::paint(QPainter *painter,
 
 bool ActionListDelegate::isCompleted(const QModelIndex &index) const
 {
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
     if (pimitem.isNull()) {
         return false;
     }
@@ -125,7 +125,7 @@ bool ActionListDelegate::isCompleted(const QModelIndex &index) const
 
 bool ActionListDelegate::isOverdue(const QModelIndex &index) const
 {
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
+    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>()));
     if (pimitem.isNull()) {
         return false;
     }

@@ -35,7 +35,7 @@
 
 #include "core/abstractpimitem.h"
 #include "core/incidenceitem.h"
-#include "utils/pimitem.h"
+#include "pimitemfactory.h"
 #include "utils/datestringbuilder.h"
 
 PimItemModel::PimItemModel(Akonadi::ChangeRecorder *monitor, QObject *parent)
@@ -94,7 +94,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
         kWarning() << "invalid item" << column << role;
         return QVariant();
     }
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
     if (pimitem.isNull()) {
         return QVariant();
     }
@@ -247,7 +247,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
     }
 
     Akonadi::Item item = data(index, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
     if (pimitem.isNull()) {
         return false;
     }

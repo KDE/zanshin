@@ -40,6 +40,7 @@
 
 #include "globaldefs.h"
 #include "core/incidenceitem.h"
+#include "core/pimitemfactory.h"
 
 void TodoHelpers::addTodo(const QString &summary, const QList<PimItemRelation> relations, const Akonadi::Collection &collection, bool isProject)
 {
@@ -279,3 +280,33 @@ bool TodoHelpers::promoteTodo(const QModelIndex &index)
     new Akonadi::ItemModifyJob(item);
     return true;
 }
+
+void TodoHelpers::moveToProject(Akonadi::Item &item, const QString &parentUid, bool linkOnly)
+{
+    kDebug() << item.id() << parentUid;
+    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    Q_ASSERT(!pimitem.isNull());
+    QList<PimItemRelation> relations = pimitem->getRelations();
+    int i = 0;
+    QList<PimItemTreeNode> list;
+    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+        if (rel.type == PimItemRelation::Project) {
+            if (linkOnly) { 
+                const PimItemRelation existingRelation = relations.takeAt(i);
+                list << existingRelation.parentNodes;
+            } else {
+                relations.removeAt(i);
+            }
+        }
+        i++;
+    }
+    if (!parentUid.isEmpty()) {
+        list << PimItemTreeNode(parentUid.toLatin1());
+    }
+    if (!list.isEmpty()) {
+        relations << PimItemRelation(PimItemRelation::Project, list);
+    }
+    pimitem->setRelations(relations);
+    item = pimitem->getItem();
+}
+    

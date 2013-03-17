@@ -5,7 +5,6 @@ find_package(SharedDesktopOntologies)
 set(utils_SRCS
     queries.cpp
     datestringbuilder.cpp
-    pimitem.cpp
     kdateedit.cpp
     kdatepickerpopup.cpp
  )

@@ -94,7 +94,7 @@ signals:
     void itemChanged();
 private:
 
-    AbstractPimItem *m_currentItem;
+    AbstractPimItem::Ptr m_currentItem;
     QTimer *m_autosaveTimer;
     int m_autosaveTimeout;
     Ui::properties *ui_properties;

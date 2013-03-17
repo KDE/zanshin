@@ -28,7 +28,7 @@
 #include "globaldefs.h"
 #include "core/abstractpimitem.h"
 #include "core/incidenceitem.h"
-#include "utils/pimitem.h"
+#include "pimitemfactory.h"
 
 QStringList getParentProjects(const QList<PimItemRelation> &relations)
 {
@@ -95,7 +95,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         }
         return KIdentityProxyModel::data(index, role);
     }
-    QScopedPointer<AbstractPimItem> pimitem(PimItemUtils::getItem(item));
+    AbstractPimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimitem.isNull());
     switch (role) {
     case Qt::CheckStateRole:

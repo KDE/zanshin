@@ -35,6 +35,7 @@ class IncidenceItem : public AbstractPimItem
 {
 
 public:
+    typedef QSharedPointer<IncidenceItem> Ptr;
     /**
      * Create a new item
      */

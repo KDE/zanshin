@@ -39,6 +39,7 @@
 class Note : public AbstractPimItem
 {
 public:
+    typedef QSharedPointer<Note> Ptr;
     /**
      * For creating a new note
      */

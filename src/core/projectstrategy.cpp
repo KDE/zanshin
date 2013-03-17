@@ -27,7 +27,6 @@
 #include "reparentingmodel/todonode.h"
 #include "reparentingmodel/reparentingmodel.h"
 #include "todohelpers.h"
-#include "utils/pimitem.h"
 #include <KLocalizedString>
 #include <KIcon>
 #include <QMimeData>
@@ -259,7 +258,7 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
             if (AbstractPimItem::itemType(item) == AbstractPimItem::Todo) {
                 return TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
             } else if (AbstractPimItem::itemType(item) == AbstractPimItem::Note) {
-                PimItemUtils::moveToProject(item, parentUid);
+                TodoHelpers::moveToProject(item, parentUid);
                 setData(id, QVariant::fromValue<Akonadi::Item>(item), Akonadi::EntityTreeModel::ItemRole);
                 return true;
             }
