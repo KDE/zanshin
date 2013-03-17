@@ -30,10 +30,10 @@
 #include <QtGui/QSplitter>
 
 #include "aboutdata.h"
-#include "actionlisteditor.h"
+#include "gui/itemlist/actionlisteditor.h"
 #include "maincomponent.h"
 #include "core/modelstack.h"
-#include "sidebar.h"
+#include "gui/sidebar/sidebar.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
 K_EXPORT_PLUGIN(PartFactory(Zanshin::getAboutData()))

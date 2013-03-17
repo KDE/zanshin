@@ -21,14 +21,10 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="EditableString" name="title" native="true">
-     <zorder>toolBox</zorder>
-    </widget>
+    <widget class="EditableString" name="title" native="true"/>
    </item>
    <item>
-    <widget class="EditorWidget" name="editor" native="true">
-     <zorder>toolBox</zorder>
-    </widget>
+    <widget class="EditorWidget" name="editor" native="true"/>
    </item>
    <item>
     <widget class="Toolbox" name="toolbox" native="true"/>
@@ -39,19 +35,19 @@
   <customwidget>
    <class>EditableString</class>
    <extends>QWidget</extends>
-   <header>itemview/editablewidget.h</header>
+   <header>gui/itemeditor/editablewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>EditorWidget</class>
    <extends>QWidget</extends>
-   <header>itemview/editorwidget.h</header>
+   <header>gui/itemeditor/editorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>Toolbox</class>
    <extends>QWidget</extends>
-   <header>itemview/toolbox.h</header>
+   <header>gui/itemeditor/toolbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

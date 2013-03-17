@@ -30,9 +30,9 @@
 #include <KDE/Akonadi/EntityMimeTypeFilterModel>
 #include <KDE/Akonadi/ItemFetchScope>
 
-#include "combomodel.h"
-#include "sidebarmodel.h"
-#include "selectionproxymodel.h"
+#include "gui/itemeditor/combomodel.h"
+#include "gui/sidebar/sidebarmodel.h"
+#include "gui/shared/selectionproxymodel.h"
 #include "todometadatamodel.h"
 #include "abstractpimitem.h"
 

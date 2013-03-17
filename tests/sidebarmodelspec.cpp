@@ -25,7 +25,7 @@
 
 #include <QtGui/QItemSelectionModel>
 
-#include "sidebarmodel.h"
+#include "gui/sidebar/sidebarmodel.h"
 #include "core/todometadatamodel.h"
 #include "core/projectstrategy.h"
 #include "reparentingmodel/reparentingmodel.h"

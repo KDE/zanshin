@@ -35,12 +35,12 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QHeaderView>
 
-#include "actionlisteditor.h"
+#include "gui/itemlist/actionlisteditor.h"
 #include "configdialog.h"
 #include "globaldefs.h"
 #include "maincomponent.h"
-#include "sidebar.h"
-#include "itemview/itemviewer.h"
+#include "gui/sidebar/sidebar.h"
+#include "gui/itemeditor/itemviewer.h"
 
 MainWindow::MainWindow(ModelStack *models, QWidget *parent)
     : KXmlGuiWindow(parent),

@@ -5,20 +5,15 @@ add_subdirectory( core )
 add_subdirectory( icons )
 add_subdirectory( runner )
 add_subdirectory( utils )
-add_subdirectory( pimlistview )
-add_subdirectory( itemview )
+add_subdirectory( gui )
 
 ########### zanshin core ###############
 
 set(zanshin_core_SRCS
-   combomodel.cpp
-   selectionproxymodel.cpp
-   sidebarmodel.cpp
    todohelpers.cpp
    ${core_SRCS}
    ${reparentingmodel_SRCS}
-   ${pimlistview_SRCS}
-   ${itemview_SRCS}
+   ${gui_SRCS}
 )
 
 set(zanshin_core_LIBS
@@ -33,25 +28,17 @@ endif(KDE4_BUILD_TESTS)
 ########### zanshin gui ###############
 
 set(zanshin_gui_SRCS
-   aboutdata.cpp
-   actionduedatedelegate.cpp
-   actionlistcombobox.cpp
-   actionlistdelegate.cpp
-   actionlisteditor.cpp
-   actionlisteditorpage.cpp
-   quickselectdialog.cpp
-   sidebar.cpp
-   sidebarpage.cpp
-   todotreeview.cpp
+   ${gui_SRCS}
 )
 
-kde4_add_ui_files(zanshin_gui_SRCS itemview/itemview.ui)
-kde4_add_ui_files(zanshin_gui_SRCS itemview/tags.ui)
-kde4_add_ui_files(zanshin_gui_SRCS itemview/properties.ui)
+kde4_add_ui_files(zanshin_gui_SRCS gui/itemeditor/itemview.ui)
+kde4_add_ui_files(zanshin_gui_SRCS gui/itemeditor/tags.ui)
+kde4_add_ui_files(zanshin_gui_SRCS gui/itemeditor/properties.ui)
 
 ########### zanshin app ###############
 
 set(zanshin_SRCS
+   app/aboutdata.cpp
    app/configdialog.cpp
    app/debugwindow.cpp
    app/main.cpp
@@ -68,13 +55,14 @@ target_link_libraries(zanshin ${KDE4_KDEUI_LIBS} ${zanshin_core_LIBS})
 
 install(TARGETS zanshin DESTINATION ${BIN_INSTALL_DIR})
 install(FILES app/zanshinui.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin)
-install(FILES contextviewui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
-install(FILES editorui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
+install(FILES gui/itemeditor/contextviewui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
+install(FILES gui/itemeditor/editorui.rc  DESTINATION  ${DATA_INSTALL_DIR}/zanshin )
 install(PROGRAMS app/zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
 ########### zanshin part ###############
 
 set(zanshin_part_SRCS
+   app/aboutdata.cpp
    app/configdialog.cpp
    app/maincomponent.cpp
    app/part.cpp

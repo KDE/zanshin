@@ -1,0 +1,10 @@
+add_subdirectory(sidebar)
+add_subdirectory(itemlist)
+add_subdirectory(itemeditor)
+add_subdirectory(shared)
+set(gui_SRCS
+    ${sidebar_SRCS}
+    ${itemlist_SRCS}
+    ${itemeditor_SRCS}
+    ${shared_SRCS}
+    PARENT_SCOPE)

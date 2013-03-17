@@ -38,10 +38,10 @@
 #include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "globaldefs.h"
-#include "todotreeview.h"
+#include "gui/shared/todotreeview.h"
 #include "todohelpers.h"
 #include <KXMLGUIClient>
-#include "pimlistview/filterproxymodel.h"
+#include "filterproxymodel.h"
 #include <QComboBox>
 #include <KPassivePopup>
 #include <KLineEdit>
@@ -49,7 +49,7 @@
 #include <Akonadi/ItemDeleteJob>
 #include <KGlobal>
 #include <KLocalizedString>
-#include "pimlistview/searchbar.h"
+#include "searchbar.h"
 #include "core/pimitemrelationinterface.h"
 
 static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAvAAAAAFAQEAAQAAAAAAAAAAAAAAAGT/////AAAAgQAAAAAAAAAFAAABNgAAAAEAAAAAAAAAlAAAAAEAAAAAAAAAjQAAAAEAAAAAAAAAcgAAAAEAAAAAAAAAJwAAAAEAAAAA";

@@ -34,7 +34,6 @@
 #include <kglobal.h>
 #include <kmodelindexproxymapper.h>
 
-#include "combomodel.h"
 #include "globaldefs.h"
 #include "core/modelstack.h"
 #include "core/abstractpimitem.h"

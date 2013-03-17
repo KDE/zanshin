@@ -26,7 +26,7 @@
 #include <QtGui/QItemSelectionModel>
 #include <QtGui/QStandardItemModel>
 
-#include "selectionproxymodel.h"
+#include "gui/shared/selectionproxymodel.h"
 #include "testlib/testlib.h"
 
 using namespace Zanshin::Test;

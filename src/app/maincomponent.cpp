@@ -38,12 +38,12 @@
 #include <QtCore/QTimer>
 #include <QtGui/QHeaderView>
 
-#include "actionlisteditor.h"
 #include "configdialog.h"
 #include "globaldefs.h"
-#include "sidebar.h"
-#include "itemview/itemviewer.h"
-#include "pimlistview/itemselectorproxy.h"
+#include "gui/sidebar/sidebar.h"
+#include "gui/itemeditor/itemviewer.h"
+#include "gui/itemlist/actionlisteditor.h"
+#include "gui/itemlist/itemselectorproxy.h"
 #include "core/modelstack.h"
 
 MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient *client)

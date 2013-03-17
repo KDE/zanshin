@@ -34,7 +34,7 @@
 
 #include "globaldefs.h"
 #include "todohelpers.h"
-#include "todotreeview.h"
+#include "gui/shared/todotreeview.h"
 #include "core/pimitemrelationinterface.h"
 
 SideBarPage::SideBarPage(QAbstractItemModel *model,

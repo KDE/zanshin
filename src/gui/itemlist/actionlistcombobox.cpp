@@ -22,7 +22,6 @@
 */
 
 #include "actionlistcombobox.h"
-#include "combomodel.h"
 
 #include <QtCore/QEvent>
 #include <QtCore/QTimer>

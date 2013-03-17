@@ -4,7 +4,6 @@ find_package(SharedDesktopOntologies)
 
 set(utils_SRCS
     queries.cpp
-    guiclient.cpp
     datestringbuilder.cpp
     pimitem.cpp
     kdateedit.cpp
