@@ -60,14 +60,14 @@
 #include "ui_properties.h"
 #include <KConfigGroup>
 #include "core/incidenceitem.h"
-#include <core/pimitemfactory.h>
+#include "core/pimitemfactory.h"
 
 using namespace Ui;
 
 ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
 :   QFrame(parent),
     KXMLGUIClient(parentClient),
-    m_currentItem(0),
+    m_itemMonitor(0),
     m_autosaveTimer(new QTimer(this)),
     m_autosaveTimeout(5000),
     ui_properties(new properties()),
@@ -236,8 +236,12 @@ void ItemViewer::clearView()
     editor->editor()->clearFocus();
     title->lineEdit().clearFocus();
 
+    if (m_itemMonitor) {
+        disconnect(m_itemMonitor, 0, this, 0);
+        m_itemMonitor->deleteLater();
+        m_itemMonitor = 0;
+    }
     if (m_currentItem) {
-        disconnect(m_currentItem.data(), 0, this, 0);
         m_currentItem.clear();
     }
 }
@@ -275,26 +279,21 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     clearView();
 
     connect(&title->lineEdit(), SIGNAL(editingFinished()), this, SLOT(saveItem())); //update title also in listview as soon as it is set
-
-    m_currentItem = PimItemFactory::getItem(item, this);
-    if (!m_currentItem) {
+    if (!item.isValid()) {
         setEnabled(false);
         kWarning() << "invalid item";
         return;
     }
+
+    m_currentItem = PimItemFactory::getItem(item);
+    m_itemMonitor = new PimItemMonitor(m_currentItem, this);
     setEnabled(true);
-
-    Q_ASSERT(m_currentItem);
-    connect(m_currentItem.data(), SIGNAL(payloadFetchComplete()), this, SLOT(updateContent()));
-    connect(m_currentItem.data(), SIGNAL(changed(PimItem::ChangedParts)), this, SLOT(updateContent(PimItem::ChangedParts)));
-    connect(m_currentItem.data(), SIGNAL(removed()), this, SLOT(itemRemoved()));
-
-    m_currentItem->fetchPayload(); //in case the payload is not yet fetched (model does not automatically fetch
-    m_currentItem->enableMonitor();
-
+    connect(m_itemMonitor, SIGNAL(payloadFetchComplete()), this, SLOT(updateContent()));
+    connect(m_itemMonitor, SIGNAL(changed(PimItem::ChangedParts)), this, SLOT(updateContent(PimItem::ChangedParts)));
+    connect(m_itemMonitor, SIGNAL(removed()), this, SLOT(itemRemoved()));
 }
 
-void ItemViewer::updateContent(PimItem::ChangedParts parts)
+void ItemViewer::updateContent(PimItemMonitor::ChangedParts parts)
 {
     kDebug();
     Q_ASSERT(ui_properties);
@@ -302,7 +301,7 @@ void ItemViewer::updateContent(PimItem::ChangedParts parts)
      * TODO check for changed content, if there is changed content we have a conflict,
      * and the user should be allowed to save the current content
      */
-    if ((editor->editor()->hasFocus() && (parts & PimItem::Text)) || (title->lineEdit().hasFocus() && (parts & PimItem::Title))) { //were currently editing, and the item has changed in the background, so there is probably a conflict
+    if ((editor->editor()->hasFocus() && (parts & PimItemMonitor::Text)) || (title->lineEdit().hasFocus() && (parts & PimItemMonitor::Title))) { //were currently editing, and the item has changed in the background, so there is probably a conflict
         kWarning() << "conflict";
         KDialog *dialog = new KDialog( this );
         dialog->setCaption( "Conflict" );
@@ -314,16 +313,13 @@ void ItemViewer::updateContent(PimItem::ChangedParts parts)
         }
     }
 
-    Q_ASSERT(m_currentItem);
-    //kDebug() << m_currentItem->hasValidPayload() << m_currentItem->getText();
-
-    if (parts & PimItem::Text) {
+    if (parts & PimItemMonitor::Text) {
         kDebug() << "text changed";
         editor->editor()->setTextOrHtml(m_currentItem->getText());
         editor->editor()->document()->setModified(false);
     }
 
-    if (parts & PimItem::Title) {
+    if (parts & PimItemMonitor::Title) {
         kDebug() << "title changed";
         title->setText(m_currentItem->getTitle());
         title->lineEdit().setModified(false);

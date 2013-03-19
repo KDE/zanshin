@@ -140,51 +140,18 @@ public:
     const Akonadi::Item &getItem() const;
 
     /**
-     * store the item, and update our copy afterwards
-     *
-     * This does not emit changed() for this PimItem,
-     * but if there are other PimItem refering to the same akonadi item,
-     * changed will be emitted there
-     * 
-     * If the item is not yet created in the akonadi store (invalid id), this will just update the payload of the item, but not save it to the akonadi store.
-     *
-     * If subsequent writes are needed, the monitor must be enabled to keep our copy up to date, otherwise there will be conflicts.
+     * store the item
      */
     void saveItem();
-
-    /**
-     * enable monitor for the given item, so changed() is emitted,
-     * always do this if an item is used over a period of time, and you plan to save it back,
-     * since it could always change in the background (modified by another application, etc.)
-     *
-     * This will also enable the removed signal
-     */
-    void enableMonitor();
 
     bool textIsRich();
     bool titleIsRich();
     virtual const KCalCore::Attachment::List getAttachments();
-
-    enum ChangedPart {
-        Title = 0x01,
-        Text = 0x02,
-        CreationDate = 0x04,
-        LastModifiedDate = 0x08,
-        Payload = 0x10, //The payload of the akonadi item has changed in any way
-        AllParts = Title|Text|CreationDate|LastModifiedDate|Payload
-    };
-    Q_DECLARE_FLAGS(ChangedParts, ChangedPart)
     
-signals:
-    void payloadFetchComplete();
     /**
-     * emitted if the akonadi item was changed from somwhere else than this instance of PimItem
+     * sync data to akonadi item
      */
-    void changed(PimItem::ChangedParts);
-    /**
-     * emitted after item was removed from storage
-     */
-    void removed();
+    virtual void commitData() = 0;
 
 protected:
     QString m_uid;
@@ -192,10 +159,6 @@ protected:
     QString m_title;
     KDateTime m_creationDate;
 
-    /**
-     * sync data to akonadi item
-     */
-    virtual void commitData() = 0;
     /**
      * sync data from akonadi item
      */
@@ -207,29 +170,13 @@ protected:
     bool m_textIsRich; //if content is rich
     bool m_titleIsRich;
     KCalCore::Attachment::List m_attachments;
-
-private slots:
-    void itemFetchDone(KJob *job);
-
-    /**
-     * Update our copy, after a an external modification (update local variables) and emti changed signal
-     */
-    void updateItem(const Akonadi::Item &, const QSet<QByteArray>&);
-    /**
-     * update item after akonadi item was modified from this instance (local variables are already up to date)
-     */
-    //void itemModified(const Akonadi::Item &);
-    void modifyDone( KJob *job );
-
 private:
+    friend class PimItemMonitor;
     Q_DISABLE_COPY(PimItem);
 
-    Akonadi::Monitor *m_monitor;
     bool m_itemOutdated;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)
 Q_DECLARE_METATYPE(PimItem::ItemTypes)
-Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ChangedParts)
-Q_DECLARE_METATYPE(PimItem::ChangedParts)
 
 #endif // ABSTRACTPIMITEM_H

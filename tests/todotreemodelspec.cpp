@@ -30,7 +30,6 @@
 #include "core/todometadatamodel.h"
 #include "reparentingmodel/reparentingmodel.h"
 #include "core/projectstrategy.h"
-#include "core/pimitemrelationstrategy.h"
 #include "core/pimitemservices.h"
 #include "core/noteitem.h"
 #include "core/pimitemmodel.h"
