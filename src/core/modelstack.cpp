@@ -269,12 +269,9 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
 QAbstractItemModel *ModelStack::topicsTreeModel()
 {
     if (!m_topicsTreeModel) {
-//         ParentStructureModel *treeModel = new ParentStructureModel(new NepomukParentStructureStrategy(this), this);
         ReparentingModel *treeModel = new ReparentingModel(new StructureCacheStrategy(PimItemRelation::Topic), this);
         treeModel->setSourceModel(knowledgeBaseModel());
         m_topicsTreeModel = treeModel;
-
-//         m_topicsTreeModel = knowledgeBaseModel();
     }
     return m_topicsTreeModel;
 }

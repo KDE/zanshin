@@ -81,7 +81,7 @@ bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &source
 
     //generic things
     PimItem::Ptr pimItem(PimItemFactory::getItem(item));
-    Q_ASSERT(!pimItem.isNull());
+    Q_ASSERT(pimItem);
 
     //search trough title
     //TODO could be replaced by the corresponding nepomuk searches
