@@ -38,35 +38,19 @@ namespace Akonadi {
     class Session;
 }
 
-
 /**
  * A wrapper around akonadi item
  *
  * There are two subclasses for Notes and Incidences
  *
- * The default strategy is, to avoid loading the payload if possible (by using available attributes),
- * and loading the whole payload only as needed. This does not happen automatically though, if you want to access
- * some values which are only in the payload, fetch it first via fetchPayload.
- *
+ * This class should allow to deal with notes and various incidences in a uniform way in a lot of cases.
  */
-class PimItem : public QObject
+class PimItem
 {
-    Q_OBJECT
-
 public:
     typedef QSharedPointer<PimItem> Ptr;
-    PimItem(QObject *parent = 0);
-    PimItem(const Akonadi::Item &, QObject *parent = 0);
-    /**
-     * Copy Constructor used to create a new Item from with the same content as another item
-     *
-     * Copies only the fields which are accessible in all item types:
-     * -title
-     * -text
-     *
-     * creation date and last modified date are not copied
-     */
-    PimItem(PimItem &item, QObject* parent = 0);
+    PimItem();
+    PimItem(const Akonadi::Item &);
     virtual ~PimItem();
 
     enum ItemType {
@@ -82,9 +66,7 @@ public:
     };
     Q_DECLARE_FLAGS(ItemTypes, ItemType)
 
-    /**
-     * FIXME this works only if the mimetype of the akonadi item has been saved already
-     */
+    //based on item mimetype of item
     static ItemType itemType(const Akonadi::Item &);
     virtual ItemType itemType() = 0;
 
@@ -92,22 +74,8 @@ public:
     static QString mimeType(ItemType);
     //Returns a list of all supported mimetypes
     static QStringList mimeTypes();
-
-    virtual QString getUid();
-    virtual void setText(const QString &, bool isRich = false);
-    virtual QString getText();
-    virtual void setTitle(const QString &, bool isRich = false);
-    virtual QString getTitle();
-    virtual void setCreationDate(const KDateTime &);
-    virtual KDateTime getCreationDate();
-    virtual KDateTime getLastModifiedDate();
-    virtual QString getIconName() = 0;
-    /**
-     * Note: last modified
-     * Todo: todo due date
-     * Event: start date
-     */
-    virtual KDateTime getPrimaryDate() = 0;
+    
+    virtual bool hasValidPayload() = 0;
 
     enum ItemStatus {
         Complete = 1,
@@ -124,59 +92,42 @@ public:
      */
     virtual ItemStatus getStatus() const = 0;
 
+    virtual QString getUid() = 0;
+    virtual void setText(const QString &, bool isRich = false) = 0;
+    virtual QString getText() = 0;
+    virtual void setTitle(const QString &, bool isRich = false) = 0;
+    virtual QString getTitle() = 0;
+    virtual void setCreationDate(const KDateTime &) = 0;
+    virtual KDateTime getCreationDate() = 0;
+    virtual KDateTime getLastModifiedDate();
+    virtual QString getIconName() = 0;
+    virtual bool textIsRich();
+    virtual bool titleIsRich();
+    /**
+     * Note: last modified
+     * Todo: todo due date
+     * Event: start date
+     */
+    virtual KDateTime getPrimaryDate() = 0;
+
     virtual void setRelations(const QList<PimItemRelation> &) = 0;
     virtual QList<PimItemRelation> getRelations() = 0;
     virtual void setCategories(const QStringList &);
     virtual QStringList getCategories();
-
-    /**
-     * this will fetch the payload if not already fetched,
-     * and emit payloadFetchComplete on completion
-     */
-    void fetchPayload(bool blocking = false);
-    bool payloadFetched();
-    virtual bool hasValidPayload() = 0;
+    virtual const KCalCore::Attachment::List getAttachments();
 
     const Akonadi::Item &getItem() const;
-
-    /**
-     * store the item
-     */
-    void saveItem();
-
-    bool textIsRich();
-    bool titleIsRich();
-    virtual const KCalCore::Attachment::List getAttachments();
-    
-    /**
-     * sync data to akonadi item
-     */
-    virtual void commitData() = 0;
+    KJob *saveItem();
 
 protected:
-    QString m_uid;
-    QString m_text;
-    QString m_title;
-    KDateTime m_creationDate;
-
-    /**
-     * sync data from akonadi item
-     */
-    virtual void fetchData() = 0;
-
     Akonadi::Item m_item;
-
-    bool m_dataFetched;
-    bool m_textIsRich; //if content is rich
-    bool m_titleIsRich;
-    KCalCore::Attachment::List m_attachments;
+    virtual void setItem(const Akonadi::Item &);
 private:
     friend class PimItemMonitor;
     Q_DISABLE_COPY(PimItem);
-
-    bool m_itemOutdated;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)
 Q_DECLARE_METATYPE(PimItem::ItemTypes)
+Q_DECLARE_METATYPE(PimItem::Ptr)
 
 #endif // ABSTRACTPIMITEM_H

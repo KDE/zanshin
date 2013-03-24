@@ -124,7 +124,7 @@ ItemViewer::~ItemViewer()
 
     saveItem();
     if (m_currentItem) {
-        disconnect(m_currentItem.data(), 0, this, 0);
+        disconnect(m_itemMonitor, 0, this, 0);
         m_currentItem.clear();
     }
 

@@ -21,14 +21,15 @@
 
 PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item, QObject* parent)
 {
+    Q_UNUSED(parent);
     if (!item.isValid()) {
         return PimItem::Ptr();
     }
     PimItem::ItemType itemType = PimItem::itemType(item);
     if (itemType & PimItem::Note) {
-        return NoteItem::Ptr(new NoteItem(item, parent));
+        return NoteItem::Ptr(new NoteItem(item));
     } else if (itemType & PimItem::Incidence) {
-        return IncidenceItem::Ptr(new IncidenceItem(item, parent));
+        return IncidenceItem::Ptr(new IncidenceItem(item));
     }
     return PimItem::Ptr();
 }

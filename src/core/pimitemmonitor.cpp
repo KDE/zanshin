@@ -16,6 +16,7 @@
  */
 
 #include "pimitemmonitor.h"
+#include "pimitemfactory.h"
 
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
@@ -34,31 +35,13 @@ PimItemMonitor::PimItemMonitor(const PimItem::Ptr &item, QObject* parent)
     QMetaObject::invokeMethod(this, "fetchPayload");
 }
 
-
-//TODO return false if this fails, so the user is notified. Otherwise this could result in dataloss
-void PimItemMonitor::saveItem()
+bool PimItemMonitor::saveItem()
 {
     kDebug();
     if (m_itemOutdated) {
         kWarning() << "item fetch in progress, cannot save without conflict";
-        return;
+        return false;
     }
-    
-//     if (!m_item.isValid()) {
-//         commitData(); //We still commit the data also to an invalid item (so we can create the item afterwards
-//         kWarning() << "invalid item";
-//         return;
-//     }
-// 
-//     if (!hasValidPayload()) { //TODO is this really invalid, or couldn't we save also if ther is no payload?
-//         kWarning() << "tried to save item without payload";
-//         return;
-//     }
-    if (!m_dataFetched) {
-        kDebug() << "data not fetched from payload yet, fetching";
-        mItem->fetchData();
-    }
-    mItem->commitData();
     m_itemOutdated = true;
 
     //create a session which is ignored by this monitor, other items still receive the changed signal from the monitor
@@ -72,8 +55,8 @@ void PimItemMonitor::saveItem()
     Akonadi::ItemModifyJob *modifyJob = new Akonadi::ItemModifyJob(mItem->getItem(), session);
     connect(modifyJob, SIGNAL(result(KJob*)), SLOT(modifyDone(KJob*)) );
     connect(modifyJob, SIGNAL(result(KJob*)), session, SLOT(deleteLater())); //This will delete the session as soon as the job finished which will in turn delete the job
+    return true;
 }
-
 
 void PimItemMonitor::modifyDone( KJob *job )
 {
@@ -104,7 +87,6 @@ void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray
 
     int parts = 0;
 
-    //TODO this sould always be true, right?
     if (item.modificationTime() != mItem->m_item.modificationTime()) {
         parts |= LastModifiedDate;
     }
@@ -114,36 +96,31 @@ void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray
      * during the time where we wait for the updated content after the item save
      */
     Q_ASSERT(item.isValid());
-    mItem->m_item = item;
+    PimItem::Ptr oldItem(PimItemFactory::getItem(mItem->getItem()));
+    mItem->setItem(item);
     m_itemOutdated = false;
 
     //TODO check what has changed, i.e we don't care about a change of the remoteid
     //TODO what about lastModified
     //FIXME the changes strings seem to be subject to change (PLD: -> PLD:RFC822), is there a not string based version?
     if (changes.contains("ATR:ENTITYDISPLAY") || changes.contains("PLD:RFC822")) { //only the displayattribute and the payload are relevant for the content
-        const QString oldText = mItem->m_text;
-        const QString oldTitle = mItem->m_title;
-        //kDebug() << "old: " << m_creationDate << m_title << m_text;
 
         //TODO update local variable like m_text, m_title, etc. otherwise the changes are overwritten on the next save item
         //we have to figure out though which data was update in case i.e. the title is stored in the entitydisplayattribue and the payload
-        m_dataFetched = false;
-        mItem->fetchData(); //this loads the title from the payload
         parts |= Payload;
 
         if (changes.contains("ATR:ENTITYDISPLAY")) { //the entitydisplayattribue was modified, so it is more up to date than the title from the payload
-            Q_ASSERT(mItem->m_item.hasAttribute<Akonadi::EntityDisplayAttribute>());
+            Q_ASSERT(mItem->getItem().hasAttribute<Akonadi::EntityDisplayAttribute>());
             Akonadi::EntityDisplayAttribute *att = mItem->m_item.attribute<Akonadi::EntityDisplayAttribute>();
-            mItem->m_title = att->displayName();
+            mItem->setTitle(att->displayName());
             //kDebug() << "displayattribute was modified " << m_title;
         }
-//         kDebug() << "new: " << m_creationDate << m_title << m_text;
 
-        if (oldText != mItem->m_text) {
+        if (oldItem->getText() != mItem->getText()) {
             kDebug() << "text changed";
             parts |= Text;
         }
-        if (oldText != mItem->m_title) {
+        if (oldItem->getTitle() != mItem->getTitle()) {
             kDebug() << "title changed";
             parts |= Title;
         }
@@ -183,24 +160,14 @@ void PimItemMonitor::itemFetchDone( KJob *job )
     }
     Q_ASSERT(mItem->m_item.hasPayload());
     kDebug() << "item fetch complete";
-    mItem->fetchData();
     m_itemOutdated = false;
     emit payloadFetchComplete();
 
 }
 
-
-bool PimItemMonitor::payloadFetched()
-{
-    if (mItem->m_item.hasPayload()) {
-        return true;
-    }
-    return false;
-}
-
 void PimItemMonitor::enableMonitor()
 {
-    if (!mItem->m_item.isValid()) {
+    if (!mItem->getItem().isValid()) {
         kWarning() << "item is not valid, monitor not enabled";
         return;
     }
@@ -214,10 +181,8 @@ void PimItemMonitor::enableMonitor()
      */
     m_monitor->itemFetchScope().fetchFullPayload();
     m_monitor->itemFetchScope().fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
-    Q_ASSERT(mItem->m_item.isValid());
-    m_monitor->setItemMonitored(mItem->m_item);
+    m_monitor->setItemMonitored(mItem->getItem());
     connect( m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SLOT(updateItem(Akonadi::Item,QSet<QByteArray>)));
     connect( m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(removed()));
-
     kDebug() << "monitoring of item " << mItem->m_item.id() << " started";
 }

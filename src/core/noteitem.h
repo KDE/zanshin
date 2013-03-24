@@ -21,21 +21,19 @@
    USA.
 */
 
-#ifndef KJOTS_NOTE_H
-#define KJOTS_NOTE_H
+#ifndef NOTEITEM_H
+#define NOTEITEM_H
 
 #include <QtCore/QString>
 
 #include <kdatetime.h>
 
 #include <Akonadi/Item>
+#include <akonadi/notes/noteutils.h>
 #include <QString>
 
 #include "pimitem.h"
 
-/**
- *
- */
 class NoteItem : public PimItem
 {
 public:
@@ -43,44 +41,36 @@ public:
     /**
      * For creating a new note
      */
-    NoteItem(QObject *parent = 0);
+    NoteItem();
 
     /**
      * For acessing existing notes
      */
-    NoteItem(const Akonadi::Item&, QObject *parent = 0);
-
-    /**
-     * For converting other items into notes
-     */
-    NoteItem(PimItem&, QObject *parent = 0);
-
-    //~Note();
+    NoteItem(const Akonadi::Item&);
 
     QString mimeType();
-
-    KDateTime getPrimaryDate();
-    QString getIconName();
-    virtual KDateTime getLastModifiedDate();
-
-    virtual bool hasValidPayload();
-
-    /**
-     * Returns Note
-     */
     ItemType itemType();
+    virtual bool hasValidPayload();
+    virtual ItemStatus getStatus() const;
+
+    virtual QString getUid();
+    virtual void setText(const QString &, bool isRich = false);
+    virtual QString getText();
+    virtual void setTitle(const QString &, bool isRich = false);
+    virtual QString getTitle();
+    virtual void setCreationDate(const KDateTime &);
+    virtual KDateTime getCreationDate();
+    virtual QString getIconName();
+    KDateTime getPrimaryDate();
+    virtual KDateTime getLastModifiedDate();
 
     virtual QList< PimItemRelation > getRelations();
     virtual void setRelations(const QList< PimItemRelation >& );
 
-protected:
-    KDateTime m_lastModifiedDate;
-
-    virtual ItemStatus getStatus() const;
-
+private:
+    virtual void setItem(const Akonadi::Item& );
     void commitData();
-    void fetchData();
+    QSharedPointer<Akonadi::NoteUtils::NoteMessageWrapper> messageWrapper;
 };
-
 
 #endif

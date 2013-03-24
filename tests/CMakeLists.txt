@@ -26,5 +26,6 @@ ZANSHIN_UNIT_TESTS(
   parentstructuremodelspec
   reparentingmodelspec
   pimitemrelationstest
+  pimitemtest
 )
 

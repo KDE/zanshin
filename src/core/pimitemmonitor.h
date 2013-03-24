@@ -47,7 +47,7 @@ public:
      *
      * If subsequent writes are needed, the monitor must be enabled to keep our copy up to date, otherwise there will be conflicts.
      */
-    void saveItem();
+    bool saveItem();
     
 signals:
     void payloadFetchComplete();
@@ -66,7 +66,6 @@ private slots:
      * and emit payloadFetchComplete on completion
      */
     void fetchPayload();
-    bool payloadFetched();
     void itemFetchDone(KJob *job);
 
     /**
@@ -76,7 +75,6 @@ private slots:
     /**
      * update item after akonadi item was modified from this instance (local variables are already up to date)
      */
-    //void itemModified(const Akonadi::Item &);
     void modifyDone( KJob *job );
 private:
     Q_DISABLE_COPY(PimItemMonitor);
@@ -84,7 +82,6 @@ private:
 
     Akonadi::Monitor *m_monitor;
     bool m_itemOutdated;
-    bool m_dataFetched;
     PimItem::Ptr mItem;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(PimItemMonitor::ChangedParts)

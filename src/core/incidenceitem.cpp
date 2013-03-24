@@ -33,14 +33,18 @@
 #include <kcalcore/todo.h>
 
 template<class T>
-T unwrap(const Akonadi::Item &item)
+typename T::Ptr unwrap(const Akonadi::Item &item)
 {
-    Q_ASSERT(item.hasPayload<T>());
-    return item.hasPayload<T>() ? item.payload<T>() : T();
+    if (!item.hasPayload<typename T::Ptr>()) {
+        kWarning() << "invalid item";
+        //FIXME return dummy event or todo based on T
+        return typename T::Ptr();
+    }
+    return item.payload< typename T::Ptr>();
 }
 
-IncidenceItem::IncidenceItem(PimItem::ItemType type, QObject *parent)
-: PimItem(parent)
+IncidenceItem::IncidenceItem(PimItem::ItemType type)
+: PimItem()
 {
     KCalCore::Incidence *newItem = 0;
     if (type == PimItem::Todo) {
@@ -52,56 +56,67 @@ IncidenceItem::IncidenceItem(PimItem::ItemType type, QObject *parent)
     KCalCore::Incidence::Ptr newPtr(newItem);
     m_item.setPayload<KCalCore::Incidence::Ptr>(newPtr);
     m_item.setMimeType(mimeType());
-    commitData();
-}
-
-IncidenceItem::IncidenceItem(const Akonadi::Item &item, QObject *parent)
-:   PimItem(item, parent)
-{
-    fetchData();
-}
-
-IncidenceItem::IncidenceItem(PimItem::ItemType type, PimItem &item, QObject* parent)
-:   PimItem(item, parent)
-{
-    KCalCore::Incidence *newItem = 0;
-    if (type == PimItem::Todo) {
-        newItem = new KCalCore::Todo();
-    } else if (type == PimItem::Event) {
-        newItem = new KCalCore::Event();
-    }
-    Q_ASSERT(newItem);
-    KCalCore::Incidence::Ptr newPtr(newItem);
-    m_item.setPayload<KCalCore::Incidence::Ptr>(newPtr);
-    m_item.setMimeType(mimeType());
-    commitData();
-}
-
-
-
-
-void IncidenceItem::commitData()
-{
-    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item);
-    if (!old) {
-        kDebug() << "invalid item, cannot commit data";
-        return;
-    }
-
-    old->setDescription(m_text, m_textIsRich);
-    old->setSummary(m_title, m_titleIsRich);
-    if (m_creationDate.isValid()) {
-        old->setCreated(m_creationDate);
-    }
-
-    m_item.setPayload<KCalCore::Incidence::Ptr>(old); //TODO probably not required (shared ptr)
-    m_item.setMimeType(mimeType());
-
-    //kDebug() << m_title;
     Akonadi::EntityDisplayAttribute *eda = new Akonadi::EntityDisplayAttribute();
     eda->setIconName(getIconName());
-    eda->setDisplayName(m_title);
     m_item.addAttribute(eda);
+}
+
+IncidenceItem::IncidenceItem(const Akonadi::Item &item)
+:   PimItem(item)
+{
+}
+
+QString IncidenceItem::getUid()
+{
+    return unwrap<KCalCore::Incidence>(m_item)->uid();
+}
+
+void IncidenceItem::setTitle(const QString &title, bool isRich)
+{
+    unwrap<KCalCore::Incidence>(m_item)->setSummary(title, isRich);
+    Akonadi::EntityDisplayAttribute *eda = m_item.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Entity::AddIfMissing);
+    eda->setIconName(getIconName());
+    eda->setDisplayName(title);
+}
+
+QString IncidenceItem::getTitle()
+{
+    return unwrap<KCalCore::Incidence>(m_item)->summary();
+}
+
+bool IncidenceItem::titleIsRich()
+{
+    return unwrap<KCalCore::Incidence>(m_item)->summaryIsRich();
+}
+
+void IncidenceItem::setText(const QString &text, bool isRich)
+{
+    unwrap<KCalCore::Incidence>(m_item)->setDescription(text, isRich);
+}
+
+QString IncidenceItem::getText()
+{
+    return unwrap<KCalCore::Incidence>(m_item)->description();
+}
+
+bool IncidenceItem::textIsRich()
+{
+    return unwrap<KCalCore::Incidence>(m_item)->descriptionIsRich();
+}
+
+void IncidenceItem::setCreationDate(const KDateTime &dt)
+{
+    unwrap<KCalCore::Incidence>(m_item)->setCreated(dt);
+}
+
+KDateTime IncidenceItem::getCreationDate()
+{
+    return unwrap<KCalCore::Incidence>(m_item)->created();
+}
+
+KDateTime IncidenceItem::getLastModifiedDate()
+{
+    return unwrap<KCalCore::Incidence>(m_item)->lastModified();
 }
 
 bool IncidenceItem::hasValidPayload()
@@ -109,37 +124,14 @@ bool IncidenceItem::hasValidPayload()
     return m_item.hasPayload<KCalCore::Incidence::Ptr>();
 }
 
-void IncidenceItem::fetchData()
+const KCalCore::Attachment::List IncidenceItem::getAttachments()
 {
-    if (m_dataFetched) {
-        //kDebug() << "payload already fetched";
-        return;
-    }
-
-    if (!hasValidPayload()) {
-        kDebug() << "invalid payload" << m_item.payloadData();
-        return;
-    }
-
-    KCalCore::Incidence::Ptr inc = m_item.payload<KCalCore::Incidence::Ptr>();
-    Q_ASSERT(inc);
-
-    m_uid = inc->uid();
-    m_title = inc->summary();
-    m_titleIsRich = inc->summaryIsRich();
-    m_text = inc->description();
-    m_textIsRich = inc->descriptionIsRich();
-    m_creationDate = inc->created();
-    m_attachments = inc->attachments();
-    m_dataFetched = true;
+    return unwrap<KCalCore::Incidence>(m_item)->attachments();
 }
-
-
-
 
 QString IncidenceItem::mimeType()
 {
-    const KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item); //same as hasValidPayload + getting payload
+    const KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence>(m_item); //same as hasValidPayload + getting payload
     if (!old) {
         kWarning() << "invalid item";
         return QString();
@@ -149,10 +141,7 @@ QString IncidenceItem::mimeType()
 
 bool IncidenceItem::hasStartDate() const
 {
-    if (!m_item.hasPayload()) {
-        kWarning() << "no payload";
-    }
-    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
         return t->dtStart().isValid();
     }
     return false;
@@ -161,11 +150,7 @@ bool IncidenceItem::hasStartDate() const
 
 KDateTime IncidenceItem::getEventStart()
 {
-    if (!m_item.hasPayload()) {
-        kWarning() << "no payload";
-        //        fetchPayload(true);
-    }
-    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
         return t->dtStart();
     }
     kWarning() << "not an event, or no start date";
@@ -174,16 +159,15 @@ KDateTime IncidenceItem::getEventStart()
 
 void IncidenceItem::setEventStart(const KDateTime &date)
 {
-    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
         t->setDtStart(date);
     }
 }
 
-
 void IncidenceItem::setParentTodo(const IncidenceItem &parent)
 {
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
-        const KCalCore::Todo::Ptr p = unwrap<KCalCore::Todo::Ptr>(parent.getItem());
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
+        const KCalCore::Todo::Ptr p = unwrap<KCalCore::Todo>(parent.getItem());
         t->setRelatedTo(p->uid());
     }
 }
@@ -191,7 +175,7 @@ void IncidenceItem::setParentTodo(const IncidenceItem &parent)
 
 void IncidenceItem::setDueDate(const KDateTime &date, bool hasDueDate)
 {
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         t->setDtDue(date);
         t->setHasDueDate(hasDueDate);
     }
@@ -199,11 +183,7 @@ void IncidenceItem::setDueDate(const KDateTime &date, bool hasDueDate)
 
 KDateTime IncidenceItem::getDueDate()
 {
-    if (!m_item.hasPayload()) {
-        kWarning() << "no payload";
-        //        fetchPayload(true);
-    }
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         if (t->hasDueDate()) {
             //kDebug() << "due date: " << t->dtDue();
             return t->dtDue();
@@ -215,10 +195,7 @@ KDateTime IncidenceItem::getDueDate()
 
 bool IncidenceItem::hasDueDate() const
 {
-    if (!m_item.hasPayload()) {
-        kWarning() << "no payload";
-    }
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         return t->hasDueDate();
     }
     return false;
@@ -252,12 +229,8 @@ void IncidenceItem::setComplete(bool state)
 
 void IncidenceItem::setTodoStatus(PimItem::ItemStatus status)
 {
-    if (!m_item.hasPayload()) {
-        kDebug() << "no payload";
-        //        fetchPayload(true);
-    }
     //kDebug() << status;
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         switch (status) {
             case NotComplete:
                 t->setCompleted(false);
@@ -284,11 +257,7 @@ void IncidenceItem::setTodoStatus(PimItem::ItemStatus status)
 
 PimItem::ItemStatus IncidenceItem::getStatus() const
 {
-    if (!m_item.hasPayload()) {
-        kDebug() << "no payload";
-        //        fetchPayload(true);
-    }
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         if (t->isCompleted()) {
             //kDebug() << "iscomplete";
             return Complete;
@@ -303,7 +272,7 @@ PimItem::ItemStatus IncidenceItem::getStatus() const
         //kDebug() << "Later";
         return Later;
     }
-    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event::Ptr>(m_item) ) {
+    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
         if (!t->dtStart().isValid() || t->dtStart() > KDateTime::currentLocalDateTime()) {
             return Later;
         }
@@ -319,11 +288,7 @@ PimItem::ItemStatus IncidenceItem::getStatus() const
 
 KDateTime IncidenceItem::getPrimaryDate()
 {
-    if (!m_item.hasPayload()) {
-        kDebug() << "no payload";
-//        fetchPayload(true);
-    }
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo::Ptr>(m_item) ) {
+    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         if (t->hasDueDate()) {
             //kDebug() << "due date: " << t->dtDue();
             return t->dtDue();
@@ -331,11 +296,11 @@ KDateTime IncidenceItem::getPrimaryDate()
             //kDebug() << "mod date: " << modificationTime();
             return getLastModifiedDate();
         }
-    } else if ( const KCalCore::Event::Ptr e = unwrap<KCalCore::Event::Ptr>(m_item) ) {
+    } else if ( const KCalCore::Event::Ptr e = unwrap<KCalCore::Event>(m_item) ) {
         //if ( !e->recurs() && !e->isMultiDay() ) {
             return e->dtStart();
         //}
-    } else if ( const KCalCore::Journal::Ptr j = unwrap<KCalCore::Journal::Ptr>(m_item) ) {
+    } else if ( const KCalCore::Journal::Ptr j = unwrap<KCalCore::Journal>(m_item) ) {
         return j->dtStart();
     }
     kWarning() << "unknown item";
@@ -344,7 +309,7 @@ KDateTime IncidenceItem::getPrimaryDate()
 
 QString IncidenceItem::getIconName()
 {
-    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence>(m_item);
     if (!old) {
         kWarning() << "invalid item";
         return QLatin1String( "network-wired" );
@@ -362,7 +327,7 @@ QString IncidenceItem::getIconName()
 
 PimItem::ItemType IncidenceItem::itemType()
 {
-    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence>(m_item);
     if (!old) {
         kWarning() << "invalid item";
         return PimItem::Incidence;
@@ -379,7 +344,7 @@ PimItem::ItemType IncidenceItem::itemType()
 
 void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)
 {
-    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(m_item);
     QMap<QByteArray, QString> map = i->customProperties();
     map.remove("X-pimitemrelation");
     i->removeNonKDECustomProperty("X-pimitemrelation");
@@ -398,7 +363,7 @@ void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)
 
 QList< PimItemRelation > IncidenceItem::getRelations()
 {
-    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(m_item);
     QList<PimItemRelation> relations;
     if (!i->relatedTo().isEmpty()) {
         relations << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(i->relatedTo().toUtf8()));
@@ -416,15 +381,13 @@ QList< PimItemRelation > IncidenceItem::getRelations()
 
 void IncidenceItem::setCategories(const QStringList &categories)
 {
-    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
-    i->setCategories(categories);
+    unwrap<KCalCore::Incidence>(m_item)->setCategories(categories);
 }
 
 
 QStringList IncidenceItem::getCategories()
 {
-    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
-    return i->categories();
+    return unwrap<KCalCore::Incidence>(m_item)->categories();
 }
 
 void IncidenceItem::setProject()
@@ -432,17 +395,14 @@ void IncidenceItem::setProject()
     if (isProject()) {
         return;
     }
-    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
-    i->setCustomProperty("Zanshin", "Project", "true");
+    unwrap<KCalCore::Incidence>(m_item)->setCustomProperty("Zanshin", "Project", "true");
 }
 
 bool IncidenceItem::isProject() const
 {
-    KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence::Ptr>(m_item);
+    const KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(m_item);
     if (i->comments().contains("X-Zanshin-Project")) {
         return true;
     }
     return !i->customProperty("Zanshin", "Project").isEmpty();
 }
-
-
