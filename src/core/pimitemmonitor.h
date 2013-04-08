@@ -76,9 +76,9 @@ private slots:
      * update item after akonadi item was modified from this instance (local variables are already up to date)
      */
     void modifyDone( KJob *job );
+    void enableMonitor();
 private:
     Q_DISABLE_COPY(PimItemMonitor);
-    void enableMonitor();
 
     Akonadi::Monitor *m_monitor;
     bool m_itemOutdated;

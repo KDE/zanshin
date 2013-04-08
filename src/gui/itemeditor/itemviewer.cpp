@@ -289,7 +289,7 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     m_itemMonitor = new PimItemMonitor(m_currentItem, this);
     setEnabled(true);
     connect(m_itemMonitor, SIGNAL(payloadFetchComplete()), this, SLOT(updateContent()));
-    connect(m_itemMonitor, SIGNAL(changed(PimItem::ChangedParts)), this, SLOT(updateContent(PimItem::ChangedParts)));
+    connect(m_itemMonitor, SIGNAL(changed(PimItemMonitor::ChangedParts)), this, SLOT(updateContent(PimItemMonitor::ChangedParts)));
     connect(m_itemMonitor, SIGNAL(removed()), this, SLOT(itemRemoved()));
 }
 
