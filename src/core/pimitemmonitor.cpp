@@ -31,8 +31,8 @@ PimItemMonitor::PimItemMonitor(const PimItem::Ptr &item, QObject* parent)
     m_itemOutdated(false),
     mItem(item)
 {
-    QMetaObject::invokeMethod(this, "enableMonitor");
-    QMetaObject::invokeMethod(this, "fetchPayload");
+    QMetaObject::invokeMethod(this, "enableMonitor", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, "fetchPayload", Qt::QueuedConnection);
 }
 
 bool PimItemMonitor::saveItem()
