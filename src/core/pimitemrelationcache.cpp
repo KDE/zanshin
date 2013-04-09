@@ -91,8 +91,8 @@ Id PimItemRelationCache::getOrCreateItemId(const Akonadi::Item &item)
     }
     Id id;
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
-    Q_ASSERT (!pimitem.isNull());
-    QByteArray uid = pimitem->getUid().toLatin1();
+    Q_ASSERT (pimitem);
+    const QByteArray uid = pimitem->getUid().toLatin1();
     if (uid.isEmpty()) {
         kWarning() << "empty uid: " << item.id();
         return -1;
@@ -245,6 +245,11 @@ Id PimItemRelationCache::getUidMapping(const QByteArray& uid)
         mUidMapping.insert(uid, getNextId());
     }
     return getId(uid);
+}
+
+QHash< QByteArray, Id > PimItemRelationCache::uidMapping() const
+{
+    return mUidMapping;
 }
 
 

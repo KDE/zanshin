@@ -37,20 +37,21 @@ public:
     Q_DECLARE_FLAGS(ChangedParts, ChangedPart)
     
     /**
-     * store the item, and update our copy afterwards
+     * store the item
      *
      * This does not emit changed() for this PimItem,
      * but if there are other PimItem refering to the same akonadi item,
      * changed will be emitted there
-     * 
-     * If the item is not yet created in the akonadi store (invalid id), this will just update the payload of the item, but not save it to the akonadi store.
      *
-     * If subsequent writes are needed, the monitor must be enabled to keep our copy up to date, otherwise there will be conflicts.
+     * If subsequent writes are needed, the monitor keeps our copy up to date, otherwise there would be conflicts.
      */
     bool saveItem();
     
 signals:
-    void payloadFetchComplete();
+    /**
+     * emitted as soon as the item is ready to be accessed.
+     */
+	void payloadFetchComplete();
     /**
      * emitted if the akonadi item was changed from somwhere else than this instance of PimItem
      */

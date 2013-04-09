@@ -58,7 +58,7 @@ bool PimItemMonitor::saveItem()
     return true;
 }
 
-void PimItemMonitor::modifyDone( KJob *job )
+void PimItemMonitor::modifyDone(KJob* job)
 {
     //Updateing the item does not help because the akonadi resource will modifiy the item again to update the remote revision,
     //which will result anyways in an outdate item here if the monitor is not enabled
@@ -66,11 +66,6 @@ void PimItemMonitor::modifyDone( KJob *job )
         kWarning() << job->errorString();
         return;
     }
-//     Akonadi::ItemModifyJob *modjob = qobject_cast<Akonadi::ItemModifyJob*>(job);
-//     m_item->setItem(modjob->item());
-//     m_itemOutdated = false;
-//     Q_ASSERT(m_item.isValid());
-//     kDebug() << "item modified";
 }
 
 void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray> &changes)
@@ -102,26 +97,20 @@ void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray
 
     //TODO check what has changed, i.e we don't care about a change of the remoteid
     //TODO what about lastModified
-    //FIXME the changes strings seem to be subject to change (PLD: -> PLD:RFC822), is there a not string based version?
     if (changes.contains("ATR:ENTITYDISPLAY") || changes.contains("PLD:RFC822")) { //only the displayattribute and the payload are relevant for the content
-
-        //TODO update local variable like m_text, m_title, etc. otherwise the changes are overwritten on the next save item
-        //we have to figure out though which data was update in case i.e. the title is stored in the entitydisplayattribue and the payload
         parts |= Payload;
-
         if (changes.contains("ATR:ENTITYDISPLAY")) { //the entitydisplayattribue was modified, so it is more up to date than the title from the payload
             Q_ASSERT(mItem->getItem().hasAttribute<Akonadi::EntityDisplayAttribute>());
             Akonadi::EntityDisplayAttribute *att = mItem->m_item.attribute<Akonadi::EntityDisplayAttribute>();
             mItem->setTitle(att->displayName());
-            //kDebug() << "displayattribute was modified " << m_title;
         }
 
         if (oldItem->getText() != mItem->getText()) {
-            kDebug() << "text changed";
+            // kDebug() << "text changed";
             parts |= Text;
         }
         if (oldItem->getTitle() != mItem->getTitle()) {
-            kDebug() << "title changed";
+            // kDebug() << "title changed";
             parts |= Title;
         }
     }
@@ -134,7 +123,6 @@ void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray
 void PimItemMonitor::fetchPayload()
 {
     if (mItem->hasValidPayload()) {
-        kDebug() << "has validpayload";
         emit payloadFetchComplete();
         return;
     }
@@ -176,13 +164,11 @@ void PimItemMonitor::enableMonitor()
         return;
     }
     m_monitor = new Akonadi::Monitor(this);
-    /*
-     * when monitoring is enabled, we work for a longer period with the item, and also save the item, so we will need the full payload
-     */
     m_monitor->itemFetchScope().fetchFullPayload();
     m_monitor->itemFetchScope().fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
     m_monitor->setItemMonitored(mItem->getItem());
     connect( m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SLOT(updateItem(Akonadi::Item,QSet<QByteArray>)));
     connect( m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(removed()));
-    kDebug() << "monitoring of item " << mItem->m_item.id() << " started";
+    // kDebug() << "monitoring of item " << mItem->m_item.id() << " started";
 }
+

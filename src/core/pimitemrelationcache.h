@@ -98,6 +98,8 @@ protected:
     ParentMapping mParents;
     QMap<Akonadi::Item::Id, Id> mItemIdCache;
     Id getNextId();
+    //Only for debugging
+    QHash<QByteArray, Id> uidMapping() const;
 private:
     QHash<QByteArray, Id> mUidMapping;
     Id mIdCounter;
