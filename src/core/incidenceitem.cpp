@@ -172,7 +172,6 @@ void IncidenceItem::setParentTodo(const IncidenceItem &parent)
     }
 }
 
-
 void IncidenceItem::setDueDate(const KDateTime &date, bool hasDueDate)
 {
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
@@ -373,8 +372,7 @@ QList< PimItemRelation > IncidenceItem::getRelations()
         if (key != "X-pimitemrelation") {
             continue;
         }
-        const PimItemRelation &rel = relationFromXML(i->customProperties().value(key).toLatin1());
-        relations << rel;
+        relations << relationFromXML(i->customProperties().value(key).toLatin1());
     }
     return relations;
 }
@@ -383,7 +381,6 @@ void IncidenceItem::setCategories(const QStringList &categories)
 {
     unwrap<KCalCore::Incidence>(m_item)->setCategories(categories);
 }
-
 
 QStringList IncidenceItem::getCategories()
 {

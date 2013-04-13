@@ -155,11 +155,6 @@ Relation ProjectStructureCache::getRelationTree(Id id, const Akonadi::Item& item
     return Relation(id, parents);
 }
 
-void ProjectStructureCache::updateRelationTree(Akonadi::Item& /*item*/)
-{
-
-}
-
 Id ProjectStructureCache::addCollection(const Akonadi::Collection &col)
 {
     if (!mCollectionMapping.contains(col.id())) {
@@ -172,11 +167,6 @@ bool ProjectStructureCache::hasChildren(Id id) const
 {
     //FIXME hotspot
     return mParents.rightContains(id);
-}
-
-Id ProjectStructureCache::addItem(const Akonadi::Item &item)
-{
-    return PimItemRelationCache::addItem(item);
 }
 
 Akonadi::Entity::Id ProjectStructureCache::itemId(Id id) const

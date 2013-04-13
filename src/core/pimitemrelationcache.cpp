@@ -276,10 +276,7 @@ VirtualRelationCache::VirtualRelationCache()
 void VirtualRelationCache::mergeNode(const TreeNode &node)
 {
 //     kDebug() << node.id << node.name;
-    bool created = false;
-    if (!mNames.contains(node.id)) {
-        created = true;
-    }
+    const bool created = !mNames.contains(node.id);
     if (mNames.value(node.id) != node.name || created) {
         mNames.insert(node.id, node.name);
         //TODO the names need some changing for projects as the name comes from the item itself and not one of its children
