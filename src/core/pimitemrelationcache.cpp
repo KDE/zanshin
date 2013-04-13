@@ -22,7 +22,15 @@
 TreeNode::TreeNode(const QString& n, const Id& i, const QList< TreeNode >& p)
 :   name(n),
     id(i),
-    parentNodes(p)
+    parentNodes(p),
+    knowsParents(true)
+{
+}
+
+TreeNode::TreeNode(const QString& n, const Id& i)
+:   name(n),
+    id(i),
+    knowsParents(false)
 {
 }
 
@@ -282,10 +290,12 @@ void VirtualRelationCache::mergeNode(const TreeNode &node)
 
     PimItemRelationCache::mergeNode(node);
     //TODO emit changes if changed
-    mParents.removeLeft(node.id);
-    foreach (const TreeNode &parentNode, node.parentNodes) {
-        mParents.insert(node.id, parentNode.id);
-        mergeNode(parentNode);
+    if (node.knowsParents) {
+        mParents.removeLeft(node.id);
+        foreach (const TreeNode &parentNode, node.parentNodes) {
+            mParents.insert(node.id, parentNode.id);
+            mergeNode(parentNode);
+        }
     }
     
     if (created) {

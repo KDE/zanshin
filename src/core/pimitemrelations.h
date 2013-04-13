@@ -26,10 +26,12 @@
 #include <QList>
 
 struct PimItemTreeNode {
-    PimItemTreeNode(const QByteArray &uid, const QString &name = QString(), const QList<PimItemTreeNode> &parentNodes = QList<PimItemTreeNode>());
+    PimItemTreeNode(const QByteArray &uid, const QString &name, const QList<PimItemTreeNode> &parentNodes);
+    PimItemTreeNode(const QByteArray &uid, const QString &name = QString());
     QByteArray uid;
     QString name;
     QList<PimItemTreeNode> parentNodes;
+    bool knowsParents;
 };
 
 struct PimItemRelation

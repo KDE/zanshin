@@ -30,6 +30,9 @@ PimItemStructureCache::PimItemStructureCache(PimItemRelation::Type type)
 TreeNode PimItemStructureCache::createNode(const PimItemTreeNode &node)
 {
     Id id = getUidMapping(node.uid);
+    if (!node.knowsParents) {
+        return TreeNode(node.name, id);
+    }
     QList<TreeNode> parents;
     foreach(const PimItemTreeNode &parentNode, node.parentNodes) {
         parents << createNode(parentNode);

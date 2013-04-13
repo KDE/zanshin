@@ -35,10 +35,12 @@
  */
 
 struct TreeNode {
-    TreeNode(const QString &name, const Id &uid, const QList<TreeNode> &parentNodes = QList<TreeNode>());
+    TreeNode(const QString &name, const Id &uid, const QList<TreeNode> &parentNodes);
+    TreeNode(const QString &name, const Id &uid);
     QString name;
     Id id;
     QList<TreeNode> parentNodes;
+    bool knowsParents;
 };
 
 struct Relation
