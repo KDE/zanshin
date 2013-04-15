@@ -41,7 +41,7 @@
 #include "configdialog.h"
 #include "globaldefs.h"
 #include "gui/sidebar/sidebar.h"
-#include "gui/itemeditor/itemviewer.h"
+#include "gui/itemeditor/itemeditor.h"
 #include "gui/itemlist/actionlisteditor.h"
 #include "gui/itemlist/itemselectorproxy.h"
 #include "core/modelstack.h"
@@ -53,7 +53,7 @@ MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient 
     KActionCollection *ac = client->actionCollection();
 
     m_sidebar = new SideBar(models, ac, parent);
-    m_itemViewer = new ItemViewer(parent, client);
+    m_itemViewer = new ItemEditor(parent, client);
     m_editor = new ActionListEditor(models,
                                     ac, parent, client, m_itemViewer);
     setupActions(ac);
@@ -142,7 +142,7 @@ void MainComponent::showConfigDialog()
     dialog.exec();
 }
 
-ItemViewer* MainComponent::itemViewer() const
+ItemEditor* MainComponent::itemViewer() const
 {
     return m_itemViewer;
 }

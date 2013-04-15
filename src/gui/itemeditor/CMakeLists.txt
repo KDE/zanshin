@@ -2,7 +2,7 @@ set(itemeditor_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/attachmentsviewer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/combomodel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/editablewidget.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/itemviewer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/itemeditor.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/editorwidget.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/guiclient.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/toolbox.cpp

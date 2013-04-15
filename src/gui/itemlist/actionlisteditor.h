@@ -31,7 +31,7 @@
 #include <KXMLGUIClient>
 
 class CollectionsFilterProxyModel;
-class ItemViewer;
+class ItemEditor;
 class ItemSelectorProxy;
 class ActionListEditorPage;
 class KAction;
@@ -50,7 +50,7 @@ class ActionListEditor : public QWidget
 
 public:
     ActionListEditor(ModelStack *models,
-                     KActionCollection *ac, QWidget *parent, KXMLGUIClient *client, ItemViewer *itemviewer);
+                     KActionCollection *ac, QWidget *parent, KXMLGUIClient *client, ItemEditor *itemviewer);
 
     void setMode(Zanshin::ApplicationMode mode);
 

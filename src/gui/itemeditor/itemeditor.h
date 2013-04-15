@@ -21,8 +21,8 @@
    USA.
 */
 
-#ifndef ITEMVIEWER_H
-#define ITEMVIEWER_H
+#ifndef ITEMEDITOR_H
+#define ITEMEDITOR_H
 
 #include "ui_itemview.h"
 #include "attachmentsviewer.h"
@@ -53,12 +53,12 @@ namespace Ui {
 /**
  * The editor part for editing notes/todos/events
  */
-class ItemViewer : public QFrame, private Ui_itemView, public KXMLGUIClient
+class ItemEditor : public QFrame, private Ui_itemView, public KXMLGUIClient
 {
     Q_OBJECT
 public:
-    explicit ItemViewer(QWidget* parent, KXMLGUIClient *parentClient);
-    virtual ~ItemViewer();
+    explicit ItemEditor(QWidget* parent, KXMLGUIClient *parentClient);
+    virtual ~ItemEditor();
 
 public slots:
     /**

@@ -33,7 +33,7 @@ class KXMLGUIClient;
 class ActionListEditor;
 class ModelStack;
 class SideBar;
-class ItemViewer;
+class ItemEditor;
 
 class MainComponent : public QObject
 {
@@ -44,7 +44,7 @@ public:
 
     SideBar *sideBar() const;
     ActionListEditor *editor() const;
-    ItemViewer *itemViewer() const;
+    ItemEditor *itemViewer() const;
 
     void saveColumnsState(KConfigGroup &group) const;
     void restoreColumnsState(const KConfigGroup &group);
@@ -61,7 +61,7 @@ private:
 
     SideBar *m_sidebar;
     ActionListEditor *m_editor;
-    ItemViewer *m_itemViewer;
+    ItemEditor *m_itemViewer;
 };
 
 #endif

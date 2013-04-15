@@ -51,7 +51,7 @@
 #include "quickselectdialog.h"
 #include "todohelpers.h"
 #include "core/settings.h"
-#include "gui/itemeditor/itemviewer.h"
+#include "gui/itemeditor/itemeditor.h"
 #include "itemselectorproxy.h"
 #include "core/pimitemservices.h"
 
@@ -59,7 +59,7 @@
 
 ActionListEditor::ActionListEditor(ModelStack *models,
                                    KActionCollection *ac,
-                                   QWidget *parent, KXMLGUIClient *client, ItemViewer *itemViewer)
+                                   QWidget *parent, KXMLGUIClient *client, ItemEditor *itemViewer)
     : QWidget(parent),
       m_models(models),
       m_selectorProxy(new ItemSelectorProxy(this))

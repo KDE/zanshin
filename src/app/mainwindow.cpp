@@ -40,7 +40,7 @@
 #include "globaldefs.h"
 #include "maincomponent.h"
 #include "gui/sidebar/sidebar.h"
-#include "gui/itemeditor/itemviewer.h"
+#include "gui/itemeditor/itemeditor.h"
 
 MainWindow::MainWindow(ModelStack *models, QWidget *parent)
     : KXmlGuiWindow(parent),

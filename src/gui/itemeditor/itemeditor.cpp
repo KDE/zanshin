@@ -21,7 +21,7 @@
    USA.
 */
 
-#include "itemviewer.h"
+#include "itemeditor.h"
 
 #include <Akonadi/Item>
 #include <Akonadi/ItemFetchJob>
@@ -64,7 +64,7 @@
 
 using namespace Ui;
 
-ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
+ItemEditor::ItemEditor(QWidget* parent, KXMLGUIClient *parentClient)
 :   QFrame(parent),
     KXMLGUIClient(parentClient),
     m_itemMonitor(0),
@@ -116,9 +116,9 @@ ItemViewer::ItemViewer(QWidget* parent, KXMLGUIClient *parentClient)
     QTimer::singleShot(0, this, SLOT(restoreState())); //delayed so we can check if the toolbar is visible or not
 }
 
-ItemViewer::~ItemViewer()
+ItemEditor::~ItemEditor()
 {
-    KConfigGroup config(KGlobal::config(), "ItemViewer");
+    KConfigGroup config(KGlobal::config(), "ItemEditor");
     config.writeEntry("activeToolbox", toolbox->currentIndex());
     config.writeEntry("toolbarHidden", actionCollection()->action( "hide_toolbar" )->isChecked()); //The widget is already hidden, but the action still has the correct state
 
@@ -132,9 +132,9 @@ ItemViewer::~ItemViewer()
     ui_properties = 0;
 }
 
-void ItemViewer::restoreState()
+void ItemEditor::restoreState()
 {
-    KConfigGroup config(KGlobal::config(), "ItemViewer");
+    KConfigGroup config(KGlobal::config(), "ItemEditor");
     int activeToolbox= config.readEntry( "activeToolbox", 0);
     toolbox->activateWidget(activeToolbox);
     bool toolbarHidden = config.readEntry( "toolbarHidden", false);
@@ -144,7 +144,7 @@ void ItemViewer::restoreState()
 }
 
 
-void ItemViewer::setFullscreenEditor()
+void ItemEditor::setFullscreenEditor()
 {
     if (!m_currentItem) {
         return;
@@ -160,14 +160,14 @@ void ItemViewer::setFullscreenEditor()
 }
 
 
-void ItemViewer::autosave()
+void ItemEditor::autosave()
 {
     //kDebug();
     saveItem();
 }
 
 
-void ItemViewer::saveItem()
+void ItemEditor::saveItem()
 {
     //kDebug();
     if (!m_currentItem) {
@@ -199,14 +199,14 @@ void ItemViewer::saveItem()
 }
 /*
  TODO this widget never has the focus, check the focus of the editor->editor() instead
-void ItemViewer::focusInEvent(QFocusEvent* event)
+void ItemEditor::focusInEvent(QFocusEvent* event)
 {
     connect(title, SIGNAL(editingFinished()), this, SLOT(saveItem()));
     QWidget::focusInEvent(event);
 }
 
 
-void ItemViewer::focusOutEvent(QFocusEvent* event)
+void ItemEditor::focusOutEvent(QFocusEvent* event)
 {
     kDebug();
     //So the item is saved only once, if we loose focus after editing the title
@@ -215,7 +215,7 @@ void ItemViewer::focusOutEvent(QFocusEvent* event)
     QWidget::focusOutEvent(event);
 }*/
 
-void ItemViewer::clearView()
+void ItemEditor::clearView()
 {
     m_autosaveTimer->stop();
     editor->editor()->clear();
@@ -246,7 +246,7 @@ void ItemViewer::clearView()
     }
 }
 
-void ItemViewer::setItem(const KUrl &url)
+void ItemEditor::setItem(const KUrl &url)
 {
     Akonadi::Item item = Akonadi::Item::fromUrl(url);
     if (!item.isValid()) {
@@ -257,7 +257,7 @@ void ItemViewer::setItem(const KUrl &url)
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(itemsReceived(Akonadi::Item::List)));
 }
 
-void ItemViewer::itemsReceived( const Akonadi::Item::List &list )
+void ItemEditor::itemsReceived( const Akonadi::Item::List &list )
 {
     if (list.isEmpty()) {
         kWarning() << "no items retrieved";
@@ -268,7 +268,7 @@ void ItemViewer::itemsReceived( const Akonadi::Item::List &list )
 }
 
 
-void ItemViewer::setItem(const Akonadi::Item& item)
+void ItemEditor::setItem(const Akonadi::Item& item)
 {
     kDebug();
     //reset pending signals from last item
@@ -293,7 +293,7 @@ void ItemViewer::setItem(const Akonadi::Item& item)
     connect(m_itemMonitor, SIGNAL(removed()), this, SLOT(itemRemoved()));
 }
 
-void ItemViewer::updateContent(PimItemMonitor::ChangedParts parts)
+void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
 {
     kDebug();
     Q_ASSERT(ui_properties);
@@ -391,7 +391,7 @@ void ItemViewer::updateContent(PimItemMonitor::ChangedParts parts)
 */
 }
 
-void ItemViewer::setEventDate(KDateTime dateTime)
+void ItemEditor::setEventDate(KDateTime dateTime)
 {
     if (!m_currentItem) {
         return;
@@ -405,7 +405,7 @@ void ItemViewer::setEventDate(KDateTime dateTime)
 }
 
 
-void ItemViewer::setDueDate(KDateTime dateTime, bool enabled)
+void ItemEditor::setDueDate(KDateTime dateTime, bool enabled)
 {
     if (!m_currentItem) {
         return;
@@ -418,7 +418,7 @@ void ItemViewer::setDueDate(KDateTime dateTime, bool enabled)
     }
 }
 
-void ItemViewer::itemRemoved()
+void ItemEditor::itemRemoved()
 {
     clearView();
     setEnabled(false);
