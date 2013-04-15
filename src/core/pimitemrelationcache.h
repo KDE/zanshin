@@ -145,7 +145,7 @@ public:
     void renameNode(Id, const QString &);
 
     //Store current relations to item
-    virtual void updateRelationTree(Akonadi::Item &item) {};
+    virtual void updateRelationTree(Akonadi::Item &/* item */) {};
 
 signals:
     //only for virtual nodes
