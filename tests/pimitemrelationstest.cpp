@@ -140,6 +140,10 @@ private slots:
         QCOMPARE(relation->getName(secondParent), QLatin1String("name3"));
     }
     
+    /*
+     * Each child contains the information about all parents.
+     * Or in other words: with virtual parents the child defines the parent structure.
+     */
     void cleanupParentsAfterChildInsert()
     {
         Akonadi::Item item = getContextItem(1, PimItemTreeNode("uid", "name"));
@@ -187,6 +191,10 @@ private slots:
         QCOMPARE(relation->getParents(id2).first(), id);
     }
     
+    /*
+     * Children only hold their parent project, but projects are themselves already in a structure.
+     * Therfore we don't want to loose the parent projects structure when inserting a new item.
+     */
     void dontLooseParentInformationOnChildInsert()
     {
         Akonadi::Item item = getProjectItem(1, PimItemTreeNode("uid", "name"));

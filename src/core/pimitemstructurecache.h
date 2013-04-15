@@ -40,9 +40,7 @@ private:
 class ProjectStructureCache: public VirtualRelationCache {
 public:
     ProjectStructureCache();
-    virtual void updateRelationTree(Akonadi::Item& item);
     Id addCollection(const Akonadi::Collection &);
-    virtual Id addItem(const Akonadi::Item& );
     bool hasChildren(Id) const;
     void printCache();
 

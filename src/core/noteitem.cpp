@@ -29,86 +29,90 @@
 
 #include <KMime/Message>
 #include <QCoreApplication>
+#include <quuid.h>
 
-NoteItem::NoteItem(QObject *parent)
-:   PimItem(parent)
-{
-    //init payload, mimetype, and displayattribute
-    commitData();
-}
-/*
-NoteItem::Note(const Note &note)
-:   PimItem(note.getItem())
-{
-    m_text = note.m_text;
-    m_title = note.m_title;
-    m_creationDate = note.m_creationDate;
-}*/
+typedef Akonadi::NoteUtils::NoteMessageWrapper NoteWrapper;
+typedef QSharedPointer<Akonadi::NoteUtils::NoteMessageWrapper> NoteWrapperPtr;
 
-NoteItem::NoteItem(const Akonadi::Item &item, QObject *parent)
-:   PimItem(item, parent)
+NoteWrapperPtr unpack(const Akonadi::Item &item)
 {
-    fetchData();
+    return NoteWrapperPtr(new Akonadi::NoteUtils::NoteMessageWrapper(item.payload<KMime::Message::Ptr>()));
 }
 
-NoteItem::NoteItem(PimItem &item, QObject* parent)
-:   PimItem(item, parent)
+NoteItem::NoteItem()
+:   PimItem(),
+    messageWrapper(new Akonadi::NoteUtils::NoteMessageWrapper)
 {
+    messageWrapper->setUid(QUuid::createUuid());
     commitData();
 }
 
+NoteItem::NoteItem(const Akonadi::Item &item)
+:   PimItem(item),
+    messageWrapper(unpack(item))
+{
+}
+
+void NoteItem::setItem(const Akonadi::Item &item)
+{
+    PimItem::setItem(item);
+    messageWrapper = unpack(item);
+}
 
 bool NoteItem::hasValidPayload()
 {
-    if (m_item.hasPayload<KMime::Message::Ptr>()) {
-        return true;
-    }
-    return false;
+    return m_item.hasPayload<KMime::Message::Ptr>();
 }
 
+QString NoteItem::getUid()
+{
+    return messageWrapper->uid();
+}
+
+void NoteItem::setText(const QString &text, bool isRich)
+{ 
+    messageWrapper->setText(text, isRich ? Qt::RichText : Qt::PlainText);
+    commitData();
+}
+
+QString NoteItem::getText()
+{
+    return messageWrapper->text();
+}
+
+void NoteItem::setTitle(const QString &title, bool isRich)
+{
+    Q_UNUSED(isRich);
+    messageWrapper->setTitle(title);
+    Akonadi::EntityDisplayAttribute *eda = m_item.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Entity::AddIfMissing);
+    eda->setIconName(getIconName());
+    eda->setDisplayName(title);
+    commitData();
+}
+
+QString NoteItem::getTitle()
+{
+    return messageWrapper->title();
+}
+
+void NoteItem::setCreationDate(const KDateTime &date)
+{
+    messageWrapper->setCreationDate(date);
+    commitData();
+}
+
+KDateTime NoteItem::getCreationDate()
+{
+    return messageWrapper->creationDate();
+}
 
 void NoteItem::commitData()
 {
     m_item.setMimeType(Akonadi::NoteUtils::noteMimeType());
-    Akonadi::NoteUtils::NoteMessageWrapper messageWrapper;
-    messageWrapper.setTitle(m_title);
-    messageWrapper.setText(m_text, m_textIsRich ? Qt::RichText : Qt::PlainText);
-    messageWrapper.setCreationDate(m_creationDate);
-    messageWrapper.setFrom(QCoreApplication::applicationName()+QCoreApplication::applicationVersion());
-    messageWrapper.setLastModifiedDate(KDateTime::currentUtcDateTime());
-    messageWrapper.setUid(m_uid);
-    m_item.setPayload(messageWrapper.message());
-    
-    Akonadi::EntityDisplayAttribute *eda = new Akonadi::EntityDisplayAttribute();
-    eda->setIconName(getIconName());
-    eda->setDisplayName(m_title);
-    m_item.addAttribute(eda);
+    messageWrapper->setFrom(QCoreApplication::applicationName()+QCoreApplication::applicationVersion());
+    messageWrapper->setLastModifiedDate(KDateTime::currentUtcDateTime());
+    m_item.setPayload(messageWrapper->message());
 }
-
-void NoteItem::fetchData()
-{
-    if (m_dataFetched) {
-        return;
-    }
-    
-    if ( !hasValidPayload()) {
-        kDebug() << "invalid payload";
-        return;
-    }
-    
-    KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
-    Q_ASSERT(msg.get());
-    Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
-    m_textIsRich = messageWrapper.textFormat() == Qt::RichText;
-    m_titleIsRich = false;
-    m_title = messageWrapper.title();
-    m_text = messageWrapper.text();
-    m_creationDate = messageWrapper.creationDate();
-    m_lastModifiedDate = messageWrapper.lastModifiedDate();
-    m_uid = messageWrapper.uid();
-    m_dataFetched = true;
-}
-
 
 QString NoteItem::mimeType()
 {
@@ -120,7 +124,6 @@ PimItem::ItemStatus NoteItem::getStatus() const
 {
     return PimItem::Later;
 }
-
 
 KDateTime NoteItem::getPrimaryDate()
 {
@@ -134,8 +137,9 @@ QString NoteItem::getIconName()
 
 KDateTime NoteItem::getLastModifiedDate()
 {
-    if (m_lastModifiedDate.isValid()) {
-        return m_lastModifiedDate.toLocalZone();
+    const KDateTime lastMod = messageWrapper->lastModifiedDate();
+    if (lastMod.isValid()) {
+        return lastMod.toLocalZone();
     }
     return PimItem::getLastModifiedDate();
 }
@@ -147,12 +151,9 @@ PimItem::ItemType NoteItem::itemType()
 
 QList< PimItemRelation > NoteItem::getRelations()
 {
-    KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
-    Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
-    QList<QString> xml = messageWrapper.custom().values("x-related");
+    const QList<QString> xml = messageWrapper->custom().values("x-related");
     QList< PimItemRelation > relations;
     foreach(const QString &x, xml) {
-//         kDebug() << xml;
         relations << relationFromXML(x.toLatin1());
     }
     return relations;
@@ -160,13 +161,9 @@ QList< PimItemRelation > NoteItem::getRelations()
 
 void NoteItem::setRelations(const QList< PimItemRelation > &relations)
 {
-    KMime::Message::Ptr msg = m_item.payload<KMime::Message::Ptr>();
-    Akonadi::NoteUtils::NoteMessageWrapper messageWrapper(msg);
-    messageWrapper.custom().remove("x-related");
+    messageWrapper->custom().remove("x-related");
     foreach(const PimItemRelation &rel, relations) {
-        messageWrapper.custom().insert("x-related", relationToXML(removeDuplicates(rel)));
+        messageWrapper->custom().insert("x-related", relationToXML(removeDuplicates(rel)));
     }
-    m_item.setPayload(messageWrapper.message());
-//     kDebug() << messageWrapper.message()->encodedContent();
+    commitData();
 }
-

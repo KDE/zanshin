@@ -30,6 +30,9 @@ PimItemStructureCache::PimItemStructureCache(PimItemRelation::Type type)
 TreeNode PimItemStructureCache::createNode(const PimItemTreeNode &node)
 {
     Id id = getUidMapping(node.uid);
+    if (!node.knowsParents) {
+        return TreeNode(node.name, id);
+    }
     QList<TreeNode> parents;
     foreach(const PimItemTreeNode &parentNode, node.parentNodes) {
         parents << createNode(parentNode);
@@ -152,11 +155,6 @@ Relation ProjectStructureCache::getRelationTree(Id id, const Akonadi::Item& item
     return Relation(id, parents);
 }
 
-void ProjectStructureCache::updateRelationTree(Akonadi::Item& /*item*/)
-{
-
-}
-
 Id ProjectStructureCache::addCollection(const Akonadi::Collection &col)
 {
     if (!mCollectionMapping.contains(col.id())) {
@@ -169,11 +167,6 @@ bool ProjectStructureCache::hasChildren(Id id) const
 {
     //FIXME hotspot
     return mParents.rightContains(id);
-}
-
-Id ProjectStructureCache::addItem(const Akonadi::Item &item)
-{
-    return PimItemRelationCache::addItem(item);
 }
 
 Akonadi::Entity::Id ProjectStructureCache::itemId(Id id) const

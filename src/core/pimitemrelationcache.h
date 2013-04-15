@@ -35,10 +35,12 @@
  */
 
 struct TreeNode {
-    TreeNode(const QString &name, const Id &uid, const QList<TreeNode> &parentNodes = QList<TreeNode>());
+    TreeNode(const QString &name, const Id &uid, const QList<TreeNode> &parentNodes);
+    TreeNode(const QString &name, const Id &uid);
     QString name;
     Id id;
     QList<TreeNode> parentNodes;
+    bool knowsParents;
 };
 
 struct Relation
@@ -98,6 +100,8 @@ protected:
     ParentMapping mParents;
     QMap<Akonadi::Item::Id, Id> mItemIdCache;
     Id getNextId();
+    //Only for debugging
+    QHash<QByteArray, Id> uidMapping() const;
 private:
     QHash<QByteArray, Id> mUidMapping;
     Id mIdCounter;
@@ -141,7 +145,7 @@ public:
     void renameNode(Id, const QString &);
 
     //Store current relations to item
-    virtual void updateRelationTree(Akonadi::Item &item) = 0;
+    virtual void updateRelationTree(Akonadi::Item &item) {};
 
 signals:
     //only for virtual nodes

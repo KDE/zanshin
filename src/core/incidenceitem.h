@@ -27,27 +27,18 @@
 
 #include "pimitem.h"
 
-/**
- * A wrapper class for kcal incidences (todos/events)
- *
- */
 class IncidenceItem : public PimItem
 {
-
 public:
     typedef QSharedPointer<IncidenceItem> Ptr;
     /**
      * Create a new item
      */
-    IncidenceItem(PimItem::ItemType type, QObject *parent = 0);
+    IncidenceItem(PimItem::ItemType type);
     /**
      * Access an existing item
      */
-    IncidenceItem(const Akonadi::Item&, QObject *parent = 0);
-    /**
-     * For converting other items into todos/events
-     */
-    IncidenceItem(PimItem::ItemType type, PimItem&, QObject *parent = 0);
+    IncidenceItem(const Akonadi::Item&);
 
     virtual QString mimeType();
 
@@ -58,6 +49,19 @@ public:
     bool hasStartDate() const;
     KDateTime getEventStart();
     void setEventStart(const KDateTime&);
+    
+    virtual QString getUid();
+    virtual void setText(const QString &, bool isRich = false);
+    virtual QString getText();
+    virtual bool textIsRich();
+    virtual void setTitle(const QString &, bool isRich = false);
+    virtual QString getTitle();
+    virtual bool titleIsRich();
+    virtual void setCreationDate(const KDateTime &);
+    virtual KDateTime getCreationDate();
+    virtual KDateTime getLastModifiedDate();
+    
+    virtual const KCalCore::Attachment::List getAttachments();
 
     void setTodoStatus(ItemStatus status);
     PimItem::ItemStatus getStatus() const;
@@ -81,11 +85,6 @@ public:
      * Returns Todo/Event/Journal
      */
     ItemType itemType();
-
-protected:
-    void commitData();
-    void fetchData();
- 
 };
 
 #endif // INCIDENCEITEM_H

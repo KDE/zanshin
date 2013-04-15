@@ -95,7 +95,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
         return QVariant();
     }
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
-    if (pimitem.isNull()) {
+    if (!pimitem) {
         return QVariant();
     }
     switch(role) {
@@ -154,7 +154,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             //kDebug() << pimitem->getCreationDate().dateTime() << pimitem->getLastModifiedDate().dateTime();
             d.append(QString::fromLatin1("Created: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getCreationDate())));
             d.append(QString::fromLatin1("Modified: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getLastModifiedDate())));
-            if (pimitem->itemType()&PimItem::Todo && static_cast<IncidenceItem*>(pimitem.data())->hasDueDate()) {
+            if (pimitem->itemType() & PimItem::Todo && pimitem.staticCast<IncidenceItem>()->hasDueDate()) {
                 d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getPrimaryDate())));
             }
             d.append(QString::fromLatin1("Akonadi: %1\n").arg(item.url().url()));
