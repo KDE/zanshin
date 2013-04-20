@@ -30,7 +30,7 @@ class Resource;
 }
 
 namespace PimItemFactory {
-    PimItem::Ptr getItem(const Akonadi::Item &item, QObject *parent = 0);
+    PimItem::Ptr getItem(const Akonadi::Item &item);
 };
 
 #endif // PIMITEMFACTORY_H

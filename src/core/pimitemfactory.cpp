@@ -19,9 +19,8 @@
 #include "noteitem.h"
 #include "incidenceitem.h"
 
-PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item, QObject* parent)
+PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item)
 {
-    Q_UNUSED(parent);
     if (!item.isValid()) {
         return PimItem::Ptr();
     }
