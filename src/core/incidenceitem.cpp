@@ -35,11 +35,7 @@
 template<class T>
 typename T::Ptr unwrap(const Akonadi::Item &item)
 {
-    if (!item.hasPayload<typename T::Ptr>()) {
-        kWarning() << "invalid item";
-        //FIXME return dummy event or todo based on T
-        return typename T::Ptr();
-    }
+    Q_ASSERT(item.hasPayload<typename T::Ptr>());
     return item.payload< typename T::Ptr>();
 }
 

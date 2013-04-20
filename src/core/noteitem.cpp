@@ -36,6 +36,7 @@ typedef QSharedPointer<Akonadi::NoteUtils::NoteMessageWrapper> NoteWrapperPtr;
 
 NoteWrapperPtr unpack(const Akonadi::Item &item)
 {
+    Q_ASSERT(item.hasPayload<KMime::Message::Ptr>());
     return NoteWrapperPtr(new Akonadi::NoteUtils::NoteMessageWrapper(item.payload<KMime::Message::Ptr>()));
 }
 
