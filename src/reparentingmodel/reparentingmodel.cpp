@@ -61,52 +61,38 @@ TodoNode* ReparentingModel::createInbox() const
     return 0;
 }
 
-QList<TodoNode*> ReparentingModel::insertNode(const Id &identifier, const QString &name, QList<TodoNode*> parentNodes, const QModelIndex &sourceIndex)
+TodoNode* ReparentingModel::insertNodeForParent(const Id &identifier, const QString &name, const QModelIndex &sourceIndex, const int row, TodoNode * const parentNode)
 {
-    if (parentNodes.isEmpty()) {
-        TodoNode *parentNode = 0;
-        int row = m_manager->roots().size();
-        beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
-        TodoNode *node;
-        if (sourceIndex.isValid()) {
-            node = new TodoNode(sourceIndex, parentNode);
-            //Don't set anything on real nodes
-        } else { //For virtual nodes
-            node = new TodoNode(parentNode);
-            node->setData(name, 0, Qt::DisplayRole);
-            node->setData(name, 0, Qt::EditRole);
-            m_strategy->setNodeData(node, identifier);
-        }
-
-        Q_ASSERT(node);
-        m_parentMap.insert(identifier, node);
-        m_manager->insertNode(node);
-        endInsertRows();
-        return QList<TodoNode*>() << node;
+    beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
+    TodoNode *node;
+    if (sourceIndex.isValid()) {
+        node = new TodoNode(sourceIndex, parentNode);
+        //Don't set anything on real nodes
+    } else { //For virtual nodes
+        node = new TodoNode(parentNode);
+        node->setData(name, 0, Qt::DisplayRole);
+        node->setData(name, 0, Qt::EditRole);
+        m_strategy->setNodeData(node, identifier);
     }
 
+    Q_ASSERT(node);
+    m_parentMap.insert(identifier, node);
+    m_manager->insertNode(node);
+    endInsertRows();
+    return node;
+}
 
+QList<TodoNode*> ReparentingModel::insertNode(const Id &identifier, const QString &name, const QList<TodoNode*> &parentNodes, const QModelIndex &sourceIndex)
+{
     QList<TodoNode*> nodes;
-    foreach (TodoNode *parentNode, parentNodes) {
-        int row = parentNode->children().size();
-        beginInsertRows(m_manager->indexForNode(parentNode, 0), row, row);
-        TodoNode *node;
-        if (sourceIndex.isValid()) {
-            node = new TodoNode(sourceIndex, parentNode);
-            //Don't set anything on real nodes
-        } else { //For virtual nodes
-            node = new TodoNode(parentNode);
-            node->setData(name, 0, Qt::DisplayRole);
-            node->setData(name, 0, Qt::EditRole);
-            m_strategy->setNodeData(node, identifier);
+    if (parentNodes.isEmpty()) {
+        const int row = m_manager->roots().size();
+        nodes << insertNodeForParent(identifier, name, sourceIndex, row, 0);
+    } else {
+        foreach (TodoNode *parentNode, parentNodes) {
+            const int row = parentNode->children().size();
+            nodes << insertNodeForParent(identifier, name, sourceIndex, row, parentNode);
         }
-
-        Q_ASSERT(node);
-        m_parentMap.insert(identifier, node);
-        m_manager->insertNode(node);
-        endInsertRows();
-//         Q_ASSERT(!m_parentMap.values().contains(0));
-        nodes.append(node);
     }
     return nodes;
 }

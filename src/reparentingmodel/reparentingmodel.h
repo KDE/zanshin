@@ -74,7 +74,8 @@ private:
 //     void itemParentsChanged(const QModelIndex &sourceIndex, const IdList &parents);
     QList<TodoNode*> reparentNode(const Id& p, const IdList& parents, const QModelIndex &index = QModelIndex());
 
-    QList<TodoNode*> insertNode(const Id &identifier, const QString &name, QList<TodoNode*> parentNodes, const QModelIndex &sourceIndex);
+    TodoNode* insertNodeForParent(const Id &identifier, const QString &name, const QModelIndex &sourceIndex, const int row, TodoNode * const parentNode);
+    QList<TodoNode*> insertNode(const Id &identifier, const QString &name, const QList<TodoNode*> &parentNodes, const QModelIndex &sourceIndex);
     QList<TodoNode*> createNode(const Id &identifier, const IdList &parentIdentifier, const QString &name = QString(), const QModelIndex &index = QModelIndex());
     void removeNode(Id id, bool removeChildren = false, bool cleanupStrategy = true);
     void removeNodeById(Id);
