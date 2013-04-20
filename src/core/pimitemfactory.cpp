@@ -24,7 +24,7 @@ PimItem::Ptr PimItemFactory::getItem(const Akonadi::Item& item)
     if (!item.isValid()) {
         return PimItem::Ptr();
     }
-    PimItem::ItemType itemType = PimItem::itemType(item);
+    const PimItem::ItemType itemType = PimItem::itemType(item);
     if (itemType & PimItem::Note) {
         return NoteItem::Ptr(new NoteItem(item));
     } else if (itemType & PimItem::Incidence) {
