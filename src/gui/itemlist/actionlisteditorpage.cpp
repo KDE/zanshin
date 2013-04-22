@@ -298,7 +298,11 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     m_addActionEdit = new KLineEdit(bottomBar);
     m_addActionEdit->installEventFilter(this);
     bottomBar->layout()->addWidget(m_addActionEdit);
-    m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
+    if(m_mode == Zanshin::KnowledgeMode) {
+        m_addActionEdit->setClickMessage(i18n("Type and press enter to add a note"));
+    } else {
+        m_addActionEdit->setClickMessage(i18n("Type and press enter to add an action"));
+    }
     m_addActionEdit->setClearButtonShown(true);
     connect(m_addActionEdit, SIGNAL(returnPressed()),
             this, SLOT(onAddActionRequested()));
@@ -541,7 +545,12 @@ void ActionListEditorPage::focusActionEdit()
     QPoint pos = m_addActionEdit->geometry().topLeft();
     pos = m_addActionEdit->parentWidget()->mapToGlobal(pos);
 
-    KPassivePopup *popup = KPassivePopup::message(i18n("Type and press enter to add an action"), m_addActionEdit);
+    KPassivePopup *popup;
+    if(m_mode == Zanshin::KnowledgeMode) {
+        popup = KPassivePopup::message(i18n("Type and press enter to add a note"), m_addActionEdit);
+    } else {
+        popup = KPassivePopup::message(i18n("Type and press enter to add an action"), m_addActionEdit);
+    }
     popup->move(pos-QPoint(0, popup->height()));
     m_addActionEdit->setFocus();
 }
