@@ -218,7 +218,8 @@ bool TodoHelpers::moveTodoToProject(const Akonadi::Item &item, const QString &pa
     Q_ASSERT(todo);
 
     if ((!parentUid.isEmpty() && todo->relatedTo()==parentUid)
-     || parentType == Zanshin::StandardTodo) {
+     || parentType == Zanshin::StandardTodo
+     || parentUid == todo->uid()) {
         return false;
     }
 
