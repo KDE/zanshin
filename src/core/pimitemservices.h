@@ -22,6 +22,7 @@
 #include <Akonadi/Item>
 #include <Akonadi/Collection>
 #include "globaldefs.h"
+#include "pimitemrelations.h"
 
 class PimItemRelationCache;
 class ProjectStructureInterface;
@@ -83,6 +84,7 @@ public:
     static PimItemRelationInterface &contextInstance();
     static PimItemRelationInterface &topicInstance();
     static ProjectStructureInterface &projectInstance();
+    static PimItemServices &getInstance(PimItemRelation::Type type);
 
     static PimNode fromIndex(const QModelIndex &);
 
@@ -109,6 +111,8 @@ public:
 //     virtual bool linkTo(const QModelIndex &/*node*/, const QModelIndex &parent) {return false;};
 //     virtual bool unlink(const Akonadi::Item &/*item*/, QModelIndex parent) {return false;};
 //     virtual bool rename(const QModelIndex &node, const QString &name) {return false;};
+ 
+    virtual PimItemTreeNode getNode(Id relationId) const;
 protected:
     QPointer<PimItemRelationCache> mStructure;
 };

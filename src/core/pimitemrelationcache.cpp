@@ -306,7 +306,7 @@ void VirtualRelationCache::mergeNode(const TreeNode &node)
     }
 }
 
-QString VirtualRelationCache::getName(Id id)
+QString VirtualRelationCache::getName(Id id) const
 {
 //     kDebug() << id << mNames.value(id);
 //     Q_ASSERT(mNames.contains(id));
@@ -341,5 +341,10 @@ void VirtualRelationCache::renameNode(Id id, const QString &name)
     rebuildCache();
     emit virtualNodeRenamed(id, name);
     emit updateItems(itemList);
+}
+
+PimItemTreeNode VirtualRelationCache::getNode(Id id) const
+{
+    return PimItemTreeNode(getUid(id), getName(id));
 }
 

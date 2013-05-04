@@ -118,6 +118,40 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
 // }
 // 
 
+PimItemTreeNode PimItemServices::getNode(Id relationId) const
+{
+    return mStructure->getNode(relationId);
+}
+
+PimItemServices &PimItemServices::getInstance(PimItemRelation::Type type) {
+    switch (type) {
+        case PimItemRelation::Project:
+            return projectInstance();
+        case PimItemRelation::Context:
+            return contextInstance();
+        case PimItemRelation::Topic:
+            return topicInstance();
+        case PimItemRelation::Invalid:
+            kWarning() << "invalid relationtype";
+    }
+    Q_ASSERT(false);
+    return projectInstance();
+}
+
+static PimItemRelation::Type getRelationType(PimNode::NodeType parentType)
+{
+    switch (parentType) {
+        case PimNode::Project:
+            return PimItemRelation::Project;
+        case PimNode::Context:
+            return PimItemRelation::Context;
+        case PimNode::Topic:
+            return PimItemRelation::Topic;
+        default:
+            return PimItemRelation::Invalid;
+    }
+}
+
 static bool isVirtualType(PimNode::NodeType type)
 {
     return (type == PimNode::Context || type == PimNode::Topic);
@@ -147,16 +181,12 @@ void PimItemServices::create(PimNode::NodeType type, const QString& name, const 
     if (!parents.isEmpty()) {
         const PimNode parent = parents.first();
         kDebug() << "relation " << parent.uid;
-        if (parent.type == PimNode::Project) {
-            relations << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
-        }
-        if (parent.type == PimNode::Context) {
-            relations << PimItemRelation(PimItemRelation::Context, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
-        }
-        if (parent.type == PimNode::Topic) {
-            relations << PimItemRelation(PimItemRelation::Topic, QList<PimItemTreeNode>() << PimItemTreeNode(parent.uid.toLatin1()));
+        const PimItemRelation::Type relationType = getRelationType(parent.type);
+        if (relationType != PimItemRelation::Invalid) {
+            relations << PimItemRelation(relationType, QList<PimItemTreeNode>() << getInstance(relationType).getNode(parent.relationId));
         }
     }
+ 
     switch (type) {
         case PimNode::Project:
             kDebug() << "adding project: " << name << collection.url().url();

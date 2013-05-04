@@ -21,6 +21,7 @@
 #include <akonadi/item.h>
 #include "reparentingmodel/kbihash_p.h"
 #include "globaldefs.h"
+#include "pimitemrelations.h"
 
 /**
  * A relation tree
@@ -72,6 +73,8 @@ public:
     //for all nodes
     IdList getParents(Id child);
     
+    virtual PimItemTreeNode getNode(Id id) const = 0;
+ 
     virtual void addNode(const QString &/*name*/, const IdList &/*parents*/){};
     //for all nodes
     void moveNode(Id, IdList parents);
@@ -139,13 +142,15 @@ public:
     virtual void removeNode(Id);
 
     //only for virtual nodes
-    QString getName(Id);
+    QString getName(Id) const;
 
     //only for virtual nodes
     void renameNode(Id, const QString &);
 
     //Store current relations to item
     virtual void updateRelationTree(Akonadi::Item &/* item */) {};
+ 
+    virtual PimItemTreeNode getNode(Id id) const;
 
 signals:
     //only for virtual nodes
