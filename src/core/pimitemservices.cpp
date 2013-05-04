@@ -118,10 +118,15 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
 // }
 // 
 
+static bool isVirtualType(PimNode::NodeType type)
+{
+    return (type == PimNode::Context || type == PimNode::Topic);
+}
+
 void PimItemServices::create(PimNode::NodeType type, const QString& name, const QList< PimNode >& parents, const Akonadi::Collection& col)
 {
     Akonadi::Collection collection = col;
-    if (!collection.isValid()) {
+    if (!collection.isValid() && !isVirtualType(type)) {
         switch (type) {
             case PimNode::Project:
             case PimNode::Todo:
