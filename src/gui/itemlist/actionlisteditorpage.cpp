@@ -60,6 +60,7 @@ public:
     GroupLabellingProxyModel(QObject *parent = 0)
         : QSortFilterProxyModel(parent)
     {
+        setDynamicSortFilter(true);
     }
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const
@@ -100,6 +101,7 @@ public:
         : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
+        setFilterCaseSensitivity(Qt::CaseInsensitive);
     }
 
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const
@@ -123,6 +125,7 @@ public:
         : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
+        setFilterCaseSensitivity(Qt::CaseInsensitive);
     }
 
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -137,6 +140,14 @@ public:
             && type!=Zanshin::TopicRoot
             && !sizeHint.isNull(); // SelectionProxyModel uses the null size for items we shouldn't display
     }
+
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
+    {
+        if (sourceModel()) {
+            sourceModel()->sort(column, order);
+        }
+    }
+
 };
 
 
@@ -201,6 +212,13 @@ public:
         QModelIndex sourceParent = mapToSource(parent);
         return sourceModel()->dropMimeData(data, action, row, column, sourceParent);
     }
+
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
+    {
+        if (sourceModel()) {
+            sourceModel()->sort(column, order);
+        }
+    }
 };
 
 class CollectionsFilterProxyModel : public QSortFilterProxyModel
@@ -223,6 +241,12 @@ public:
             && (col.rights() & (Akonadi::Collection::CanChangeItem|Akonadi::Collection::CanCreateItem));
     }
 
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
+    {
+        if (sourceModel()) {
+            sourceModel()->sort(column, order);
+        }
+    }
 private:
     const QString m_mimetype;
 };
