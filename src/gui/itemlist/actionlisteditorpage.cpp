@@ -98,7 +98,8 @@ class GroupSortingProxyModel : public QSortFilterProxyModel
 {
 public:
     GroupSortingProxyModel(QObject *parent = 0)
-        : QSortFilterProxyModel(parent)
+        : QSortFilterProxyModel(parent),
+          m_currentOrder(Qt::AscendingOrder)
     {
         setDynamicSortFilter(true);
         setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -109,13 +110,27 @@ public:
         int leftType = left.data(Zanshin::ItemTypeRole).toInt();
         int rightType = right.data(Zanshin::ItemTypeRole).toInt();
 
-        return leftType==Zanshin::Inbox
-            || (leftType==Zanshin::CategoryRoot && rightType!=Zanshin::Inbox)
-            || (leftType==Zanshin::Collection && rightType!=Zanshin::Inbox)
-            || (leftType==Zanshin::StandardTodo && rightType!=Zanshin::StandardTodo)
-            || (leftType==Zanshin::ProjectTodo && rightType==Zanshin::Collection)
-            || (leftType == rightType && QSortFilterProxyModel::lessThan(left, right));
+        if (leftType == rightType) {
+            return QSortFilterProxyModel::lessThan(left, right);
+        }
+
+        const bool ascendingLessThan = leftType==Zanshin::Inbox
+                                    || (leftType==Zanshin::CategoryRoot && rightType!=Zanshin::Inbox)
+                                    || (leftType==Zanshin::Collection && rightType!=Zanshin::Inbox)
+                                    || (leftType==Zanshin::StandardTodo && rightType!=Zanshin::StandardTodo)
+                                    || (leftType==Zanshin::ProjectTodo && rightType==Zanshin::Collection);
+
+        return m_currentOrder == Qt::AscendingOrder ? ascendingLessThan : !ascendingLessThan;
     }
+
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder)
+    {
+        m_currentOrder = order;
+        QSortFilterProxyModel::sort(column, order);
+    }
+
+private:
+    Qt::SortOrder m_currentOrder;
 };
 
 class TypeFilterProxyModel : public QSortFilterProxyModel
