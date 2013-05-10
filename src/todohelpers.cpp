@@ -278,7 +278,7 @@ bool TodoHelpers::promoteTodo(const QModelIndex &index)
     KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
     Q_ASSERT(todo);
 
-    todo->addComment("X-Zanshin-Project");
+    todo->setCustomProperty("Zanshin", "Project", "1");
     new Akonadi::ItemModifyJob(item);
     return true;
 }
