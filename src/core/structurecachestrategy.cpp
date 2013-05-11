@@ -69,7 +69,7 @@ void StructureCacheStrategy::init()
         noRelationTranslated = i18n("No Context");
         relation = "Contexts";
         relationTranslated = i18n("Contexts");
-        rootType = Zanshin::CategoryRoot;
+        rootType = Zanshin::ContextRoot;
     } else {
         Q_ASSERT(mType == PimItemRelation::Topic);
 
@@ -206,12 +206,12 @@ void StructureCacheStrategy::setNodeData(TodoNode* node, Id id)
         return;
     }
 
-    const QString &categoryName = mRelations->getName(translateTo(id));
-    node->setData(categoryName, 0, Qt::DisplayRole);
-    node->setData(categoryName, 0, Qt::EditRole);
+    const QString &contextName = mRelations->getName(translateTo(id));
+    node->setData(contextName, 0, Qt::DisplayRole);
+    node->setData(contextName, 0, Qt::EditRole);
     node->setData(KIcon("view-pim-notes"), 0, Qt::DecorationRole);
     if (mType == PimItemRelation::Context) {
-        node->setRowData(Zanshin::Category, Zanshin::ItemTypeRole); //TODO relation role
+        node->setRowData(Zanshin::Context, Zanshin::ItemTypeRole); //TODO relation role
     } else {
         Q_ASSERT(mType == PimItemRelation::Topic);
         node->setRowData(Zanshin::Topic, Zanshin::ItemTypeRole);
@@ -242,8 +242,8 @@ QMimeData* StructureCacheStrategy::mimeData(const QModelIndexList& indexes) cons
 
     if (!ids.isEmpty()) {
         QMimeData *mimeData = new QMimeData();
-        QByteArray categories = ids.join(",").toUtf8();
-        mimeData->setData("application/x-vnd.zanshin.relationid", categories);
+        QByteArray contexts = ids.join(",").toUtf8();
+        mimeData->setData("application/x-vnd.zanshin.relationid", contexts);
         return mimeData;
     }
     return 0;
@@ -262,7 +262,7 @@ Qt::DropActions StructureCacheStrategy::supportedDropActions() const
 Qt::ItemFlags StructureCacheStrategy::flags(const QModelIndex& index, Qt::ItemFlags flags)
 {
     Zanshin::ItemType type = (Zanshin::ItemType) index.data(Zanshin::ItemTypeRole).toInt();
-    if (type == Zanshin::Inbox || type == Zanshin::CategoryRoot) {
+    if (type == Zanshin::Inbox || type == Zanshin::ContextRoot) {
         return Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
     }
     return flags | Qt::ItemIsDropEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
@@ -276,10 +276,10 @@ bool StructureCacheStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt
     }
 
     Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
-    if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot &&
+    if (parentType!=Zanshin::Context && parentType!=Zanshin::ContextRoot &&
         parentType!=Zanshin::Topic && parentType!=Zanshin::TopicRoot
     ) { //TODO Check if virtual instead (so it works also for topics)
-        kWarning() << "not a category";
+        kWarning() << "not a context";
         return false;
     }
     if (action != Qt::MoveAction && action != Qt::LinkAction) {
@@ -304,7 +304,7 @@ bool StructureCacheStrategy::onDropMimeData(Id id, const QMimeData *mimeData, Qt
             sourceItems << source.toLongLong();
         }
         //TODO if multiple nodes of a hierarchy are dropped, all nodes are added as direct child (the hierarchy is destroyed).
-        //TODO move only dragged node and not all (remove a single category and add the new one from the parent list)
+        //TODO move only dragged node and not all (remove a single context and add the new one from the parent list)
     }
     foreach (const Id &s, sourceItems) {
         if (action == Qt::MoveAction) {
@@ -320,7 +320,7 @@ bool StructureCacheStrategy::onSetData(Id id, const QVariant& value, int /*role*
 {
     Zanshin::ItemType type = (Zanshin::ItemType) getData(id, Zanshin::ItemTypeRole).toInt();
     kWarning() << id << type;
-    if (type==Zanshin::Category) {
+    if (type==Zanshin::Context) {
         kDebug() << value.toString();
         mRelations->renameNode(translateTo(id), value.toString());
         return true;

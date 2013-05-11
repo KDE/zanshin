@@ -42,9 +42,9 @@ private slots:
         QVERIFY(stack.treeSideBarModel()!=0);
         QVERIFY(stack.treeComboModel()!=0);
 
-        QVERIFY(stack.categoriesModel()!=0);
-        QVERIFY(stack.categoriesSideBarModel()!=0);
-        QVERIFY(stack.categoriesComboModel()!=0);
+        QVERIFY(stack.contextsModel()!=0);
+        QVERIFY(stack.contextsSideBarModel()!=0);
+        QVERIFY(stack.contextsComboModel()!=0);
     }
 
     void shouldEnsureModelsAreConstant()
@@ -58,10 +58,10 @@ private slots:
                << stack.treeSideBarModel()
                << stack.treeSelectionModel()
                << stack.treeComboModel()
-               << stack.categoriesModel()
-               << stack.categoriesSideBarModel()
-               << stack.categoriesSelectionModel()
-               << stack.categoriesComboModel();
+               << stack.contextsModel()
+               << stack.contextsSideBarModel()
+               << stack.contextsSelectionModel()
+               << stack.contextsComboModel();
 
         for (int i=0; i<3; i++) {
             QList<QAbstractItemModel*> list = models;
@@ -71,10 +71,10 @@ private slots:
             QCOMPARE(stack.treeSideBarModel(), list.takeFirst());
             QCOMPARE(stack.treeSelectionModel(), list.takeFirst());
             QCOMPARE(stack.treeComboModel(), list.takeFirst());
-            QCOMPARE(stack.categoriesModel(), list.takeFirst());
-            QCOMPARE(stack.categoriesSideBarModel(), list.takeFirst());
-            QCOMPARE(stack.categoriesSelectionModel(), list.takeFirst());
-            QCOMPARE(stack.categoriesComboModel(), list.takeFirst());
+            QCOMPARE(stack.contextsModel(), list.takeFirst());
+            QCOMPARE(stack.contextsSideBarModel(), list.takeFirst());
+            QCOMPARE(stack.contextsSelectionModel(), list.takeFirst());
+            QCOMPARE(stack.contextsComboModel(), list.takeFirst());
         }
     }
 };

@@ -117,9 +117,9 @@ private slots:
 
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
 
-        ReparentingModel categoriesModel(testadapter, this);
+        ReparentingModel contextsModel(testadapter, this);
                 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
         //Parents
         testadapter->addParent(1, -1, "topic1");
@@ -128,14 +128,14 @@ private slots:
         //Items
         ModelUtils::create(&source, sourceStructure);
 
-        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        ModelTest t1(&contextsModel); //The sourcemodel must be populated for the test to pass
         
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
         
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
     
     void itemsBeforeParents_data()
@@ -196,33 +196,33 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
-        ReparentingModel categoriesModel(testadapter, this);
+        ReparentingModel contextsModel(testadapter, this);
         
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
                 
         //items
         ModelUtils::create(&source, sourceStructure);
         
-        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        ModelTest t1(&contextsModel); //The sourcemodel must be populated for the test to pass
 
 //         Helper::printModel(&source);
-//         Helper::printModel(&categoriesModel);
+//         Helper::printModel(&contextsModel);
         
         //parents
         testadapter->addParent(1, -1, "topic1");
         testadapter->addParent(2, -1, "topic2");
 
 //         Helper::printModel(&source);
-//         Helper::printModel(&categoriesModel);
+//         Helper::printModel(&contextsModel);
                 
-        ModelTest t2(&categoriesModel);
+        ModelTest t2(&contextsModel);
         
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
         
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
     
     void shouldReparentFromInbox_data()
@@ -303,19 +303,19 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
-        ReparentingModel categoriesModel(testadapter, this);
+        ReparentingModel contextsModel(testadapter, this);
         
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
         
         //items
         ModelUtils::create(&source, sourceStructure);
         
-        ModelTest t1(&categoriesModel);
+        ModelTest t1(&contextsModel);
         
         QStandardItemModel intermediate;
         QFETCH(ModelStructure, intermediateStructure);
         ModelUtils::create(&intermediate, intermediateStructure);
-        QCOMPARE(categoriesModel, intermediate);
+        QCOMPARE(contextsModel, intermediate);
         
         //parents
         testadapter->addParent(1, -1, "topic1");
@@ -329,14 +329,14 @@ private slots:
             source.setData(index, 1, TestParentStructureStrategy::TopicParentRole);
         }
                 
-        ModelTest t2(&categoriesModel);
+        ModelTest t2(&contextsModel);
         
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
         
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
         
     }
     
@@ -402,9 +402,9 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
-        ReparentingModel categoriesModel(testadapter, this);
+        ReparentingModel contextsModel(testadapter, this);
         
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
         
         //Parents
         testadapter->addParent(1, -1, "topic1");
@@ -413,14 +413,14 @@ private slots:
         //Items
         ModelUtils::create(&source, sourceStructure);
         
-        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        ModelTest t1(&contextsModel); //The sourcemodel must be populated for the test to pass
         
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
         
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
     
     void reparentingStructures_data()
@@ -486,28 +486,28 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
-        ReparentingModel categoriesModel(testadapter, this);
+        ReparentingModel contextsModel(testadapter, this);
         
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
         
         //Parents
         testadapter->addParent(1, -1, "topic1");
         testadapter->addParent(3, 2, "topic3");
         testadapter->addParent(2, 1, "topic2");
         
-//         Helper::printModel(&categoriesModel);
+//         Helper::printModel(&contextsModel);
         
         //Items
         ModelUtils::create(&source, sourceStructure);
         
-        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        ModelTest t1(&contextsModel); //The sourcemodel must be populated for the test to pass
         
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
         
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
     
     void onNodeRemoval_data()
@@ -586,28 +586,28 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
-        ReparentingModel categoriesModel(testadapter, this);
+        ReparentingModel contextsModel(testadapter, this);
         
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
         
         //Parents
         testadapter->addParent(1, -1, "topic1");
         testadapter->addParent(2, 1, "topic2");
         testadapter->addParent(3, 2, "topic3");
         
-//         Helper::printModel(&categoriesModel);
+//         Helper::printModel(&contextsModel);
         
         //Items
         ModelUtils::create(&source, sourceStructure);
         
-        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        ModelTest t1(&contextsModel); //The sourcemodel must be populated for the test to pass
         
         //THEN
         QFETCH(ModelStructure, inputStructure);
         QStandardItemModel input;
         ModelUtils::create(&input, inputStructure);
         
-        QCOMPARE(categoriesModel, input);
+        QCOMPARE(contextsModel, input);
         
         testadapter->removeParent(2);
         
@@ -615,10 +615,10 @@ private slots:
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
 
-        Helper::printModel(&categoriesModel);
+        Helper::printModel(&contextsModel);
         Helper::printModel(&output);
         
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
     
     
@@ -681,26 +681,26 @@ private slots:
         
         TestParentStructureStrategy *testadapter = new TestParentStructureStrategy();
         
-        ReparentingModel categoriesModel(testadapter, this);
+        ReparentingModel contextsModel(testadapter, this);
         
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
         
         //Parents
         testadapter->addParent(1, -1, "topic1");
         
-        Helper::printModel(&categoriesModel);
+        Helper::printModel(&contextsModel);
         
         //Items
         ModelUtils::create(&source, sourceStructure);
         
-        ModelTest t1(&categoriesModel); //The sourcemodel must be populated for the test to pass
+        ModelTest t1(&contextsModel); //The sourcemodel must be populated for the test to pass
         
         //THEN
         QFETCH(ModelStructure, inputStructure);
         QStandardItemModel input;
         ModelUtils::create(&input, inputStructure);
         
-        QCOMPARE(categoriesModel, input);
+        QCOMPARE(contextsModel, input);
         
         QFETCH(ModelPath, itemToChange);
         QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
@@ -712,7 +712,7 @@ private slots:
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
         
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
     
     

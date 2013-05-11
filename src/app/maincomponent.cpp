@@ -84,12 +84,12 @@ void MainComponent::setupActions(KActionCollection *ac)
     action->setData(Zanshin::ProjectMode);
     modeGroup->addAction(action);
 
-    action = ac->addAction("categories_mode", this, SLOT(onModeSwitch()));
+    action = ac->addAction("contexts_mode", this, SLOT(onModeSwitch()));
     action->setText(i18n("Context View"));
     action->setIcon(KIcon("view-pim-notes"));
     action->setShortcut(Qt::CTRL | Qt::Key_O);
     action->setCheckable(true);
-    action->setData(Zanshin::CategoriesMode);
+    action->setData(Zanshin::ContextsMode);
     modeGroup->addAction(action);
 
     action = ac->addAction("knowledge_mode", this, SLOT(onModeSwitch()));

@@ -47,7 +47,7 @@ public:
 
     virtual QList<QStandardItem*> expandTodo(const T &todo) = 0;
     virtual QList<QStandardItem*> expandCollection(const C &collection) = 0;
-    virtual QList<QStandardItem*> expandCategory(const Cat &category) = 0;
+    virtual QList<QStandardItem*> expandContext(const Cat &context) = 0;
     virtual QList<QStandardItem*> expandVirtual(const V &virt) = 0;
     virtual QList<QStandardItem*> expandGeneric(const G &generic) = 0;
 };
@@ -60,7 +60,7 @@ public:
 
     virtual QList<QStandardItem*> expandTodo(const T &todo);
     virtual QList<QStandardItem*> expandCollection(const C &collection);
-    virtual QList<QStandardItem*> expandCategory(const Cat &category);
+    virtual QList<QStandardItem*> expandContext(const Cat &context);
     virtual QList<QStandardItem*> expandVirtual(const V &virt);
     virtual QList<QStandardItem*> expandGeneric(const G &generic);
 
@@ -72,7 +72,7 @@ public:
 
 private:
     void addTodoMetadata(QStandardItem*, const T &todo);
-    void addCategoryMetadata(QStandardItem*);
+    void addContextMetadata(QStandardItem*);
     void addCollectionMetadata(QStandardItem*);
     bool m_metadataCreationEnabled;
     bool m_singleColumnEnabled;

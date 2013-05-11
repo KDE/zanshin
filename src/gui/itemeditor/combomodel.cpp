@@ -46,5 +46,5 @@ bool ComboModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent
     QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
     return sourceChild.data(Zanshin::ItemTypeRole).toInt() != Zanshin::Inbox
         && sourceChild.data(Zanshin::ItemTypeRole).toInt() != Zanshin::Collection
-        && sourceChild.data(Zanshin::ItemTypeRole).toInt() != Zanshin::CategoryRoot;
+        && sourceChild.data(Zanshin::ItemTypeRole).toInt() != Zanshin::ContextRoot;
 }

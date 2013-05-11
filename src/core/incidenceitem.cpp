@@ -373,12 +373,12 @@ QList< PimItemRelation > IncidenceItem::getRelations()
     return relations;
 }
 
-void IncidenceItem::setCategories(const QStringList &categories)
+void IncidenceItem::setContexts(const QStringList &contexts)
 {
-    unwrap<KCalCore::Incidence>(m_item)->setCategories(categories);
+    unwrap<KCalCore::Incidence>(m_item)->setCategories(contexts);
 }
 
-QStringList IncidenceItem::getCategories()
+QStringList IncidenceItem::getContexts()
 {
     return unwrap<KCalCore::Incidence>(m_item)->categories();
 }

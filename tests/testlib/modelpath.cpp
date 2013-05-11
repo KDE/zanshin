@@ -41,9 +41,9 @@ ModelPath::ModelPath(const T &todo)
     m_path << QVariant::fromValue(todo);
 }
 
-ModelPath::ModelPath(const Cat &category)
+ModelPath::ModelPath(const Cat &context)
 {
-    m_path << QVariant::fromValue(category);
+    m_path << QVariant::fromValue(context);
 }
 
 ModelPath::ModelPath(const V &virt)
@@ -68,15 +68,15 @@ ModelPath::ModelPath(const C &collection, const T &todo)
            << QVariant::fromValue(todo);
 }
 
-ModelPath::ModelPath(const Cat &category1, const Cat &category2)
+ModelPath::ModelPath(const Cat &context1, const Cat &context2)
 {
-    m_path << QVariant::fromValue(category1)
-           << QVariant::fromValue(category2);
+    m_path << QVariant::fromValue(context1)
+           << QVariant::fromValue(context2);
 }
 
-ModelPath::ModelPath(const Cat &category, const T &todo)
+ModelPath::ModelPath(const Cat &context, const T &todo)
 {
-    m_path << QVariant::fromValue(category)
+    m_path << QVariant::fromValue(context)
            << QVariant::fromValue(todo);
 }
 
@@ -104,10 +104,10 @@ ModelPath::ModelPath(const ModelPath &path, const T &todo)
     m_path << QVariant::fromValue(todo);
 }
 
-ModelPath::ModelPath(const ModelPath &path, const Cat &category)
+ModelPath::ModelPath(const ModelPath &path, const Cat &context)
 {
     m_path = path.m_path;
-    m_path << QVariant::fromValue(category);
+    m_path << QVariant::fromValue(context);
 }
 
 ModelPath::ModelPath(const ModelPath& path, const G& g)
@@ -132,14 +132,14 @@ ModelPath operator%(const C &collection, const T &todo)
     return ModelPath(collection, todo);
 }
 
-ModelPath operator%(const Cat &category1, const Cat &category2)
+ModelPath operator%(const Cat &context1, const Cat &context2)
 {
-    return ModelPath(category1, category2);
+    return ModelPath(context1, context2);
 }
 
-ModelPath operator%(const Cat &category, const T &todo)
+ModelPath operator%(const Cat &context, const T &todo)
 {
-    return ModelPath(category, todo);
+    return ModelPath(context, todo);
 }
 
 ModelPath operator%(const G& g, const T& todo)
@@ -162,9 +162,9 @@ ModelPath operator%(const ModelPath &path, const T &todo)
     return ModelPath(path, todo);
 }
 
-ModelPath operator%(const ModelPath &path, const Cat &category)
+ModelPath operator%(const ModelPath &path, const Cat &context)
 {
-    return ModelPath(path, category);
+    return ModelPath(path, context);
 }
 
 ModelPath operator%(const ModelPath& path, const G& g)

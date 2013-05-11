@@ -55,7 +55,7 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
-         case Zanshin::Category: {
+         case Zanshin::Context: {
              PimNode node (PimNode::Context);
              node.relationId = index.data(Zanshin::RelationIdRole).value<Id>();
              node.uid = index.data(Zanshin::UidRole).toString();
@@ -78,7 +78,7 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
          }
          case Zanshin::Inbox:
          case Zanshin::TopicRoot:
-         case Zanshin::CategoryRoot:
+         case Zanshin::ContextRoot:
              return PimNode(PimNode::Invalid);
          default:
              kWarning() << "unhandled type: " << itemType;
@@ -323,20 +323,20 @@ void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& pa
 // {
 //     IdList relationIds = toId(relations);
 //     if (widget) {
-//         QStringList categoryList;
-//         foreach (Id category, relationIds) {
-//             categoryList << mStructure->getName(category);
+//         QStringList contextList;
+//         foreach (Id context, relationIds) {
+//             contextList << mStructure->getName(context);
 //         }
-//         QString categoryName = categoryList.join(", ");
-//         kDebug() << relationIds << categoryList;
+//         QString contextName = contextList.join(", ");
+//         kDebug() << relationIds << contextList;
 //         QString title;
 //         QString text;
 //         //TODO adjust Context/Topic
 //         if (relationIds.size() > 1) {
-//             text = i18n("Do you really want to delete the context '%1'? All actions won't be associated to this context anymore.", categoryName);
+//             text = i18n("Do you really want to delete the context '%1'? All actions won't be associated to this context anymore.", contextName);
 //             title = i18n("Delete Context");
 //         } else {
-//             text = i18n("Do you really want to delete the contexts '%1'? All actions won't be associated to those contexts anymore.", categoryName);
+//             text = i18n("Do you really want to delete the contexts '%1'? All actions won't be associated to those contexts anymore.", contextName);
 //             title = i18n("Delete Contexts");
 //         }
 //         int button = KMessageBox::questionYesNo(widget, text, title);
@@ -366,7 +366,7 @@ void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& pa
 //     Id id = toId(node);
 //     Id parentId = toId(parent);
 //     kDebug() << id << parentId;
-//     if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) { //TODO shouldn't be necessary
+//     if (parentType!=Zanshin::Context && parentType!=Zanshin::ContextRoot) { //TODO shouldn't be necessary
 //         return false;
 //     }
 //     mStructure->moveNode(id, IdList() << parentId);
@@ -378,7 +378,7 @@ void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& pa
 //     Id id = toId(node);
 //     Id parentId = toId(parent);
 //     kDebug() << id << parentId;
-// //     if (parentType!=Zanshin::Category && parentType!=Zanshin::CategoryRoot) { //TODO shouldn't be necessary
+// //     if (parentType!=Zanshin::Context && parentType!=Zanshin::ContextRoot) { //TODO shouldn't be necessary
 // //         return false;
 // //     }
 //     IdList parents = mStructure->getParents(id);

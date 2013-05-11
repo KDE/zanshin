@@ -74,8 +74,8 @@ public:
     virtual void setRelations(const QList< PimItemRelation >& );
     virtual QList< PimItemRelation > getRelations();
 
-    virtual void setCategories(const QStringList& );
-    virtual QStringList getCategories();
+    virtual void setContexts(const QStringList& );
+    virtual QStringList getContexts();
 
     void setProject();
     bool isProject() const;

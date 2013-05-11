@@ -136,12 +136,12 @@ const KCalCore::Attachment::List PimItem::getAttachments()
     return KCalCore::Attachment::List();
 }
 
-void PimItem::setCategories(const QStringList& )
+void PimItem::setContexts(const QStringList& )
 {
 
 }
 
-QStringList PimItem::getCategories()
+QStringList PimItem::getContexts()
 {
     return QStringList();
 }

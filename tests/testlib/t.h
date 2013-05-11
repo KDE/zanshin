@@ -58,7 +58,7 @@ public:
       TodoState state = Done,
       TodoTag todoTag = NoTag,
       const QString &date = QString(),
-      const QString &categories = QString());
+      const QString &contexts = QString());
 
     bool operator==(const T &other) const;
 
@@ -70,7 +70,7 @@ public:
     TodoTag todoTag;
     QString summary;
     KDateTime dueDate;
-    QStringList categories;
+    QStringList contexts;
 };
 
 } // namespace Test

@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     view->show();
 
     createViews<TodoTreeModel>(todoModel);
-    createViews<TodoCategoriesModel>(todoModel);
+    createViews<TodoContextsModel>(todoModel);
     */
 
     return app.exec();

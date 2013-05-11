@@ -32,7 +32,7 @@ namespace Zanshin
 namespace Test
 {
 
-struct Cat // Stands for category
+struct Cat // Stands for context
 {
 public:
     typedef QList<Cat> List;

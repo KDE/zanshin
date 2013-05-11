@@ -119,7 +119,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
             case 1 :
                 return Zanshin::ProjectType;
             case 2 :
-                return Zanshin::CategoryType;
+                return Zanshin::ContextType;
             default:
                 return Zanshin::StandardType;
         }

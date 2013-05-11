@@ -91,8 +91,8 @@ void SideBarPage::addNewItem()
         title = i18n("New Project");
         text = i18n("Enter project name:");
 
-    } else if (type==Zanshin::CategoryRoot
-            || type==Zanshin::Category) {
+    } else if (type==Zanshin::ContextRoot
+            || type==Zanshin::Context) {
         title = i18n("New Context");
         text = i18n("Enter context name:");
 
@@ -119,9 +119,9 @@ void SideBarPage::addNewItem()
     } else if (type==Zanshin::ProjectTodo) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
         PimItemServices::create(PimNode::Project, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem), collection);
-    } else if (type==Zanshin::CategoryRoot) {
+    } else if (type==Zanshin::ContextRoot) {
         PimItemServices::create(PimNode::Context, summary);
-    } else if (type==Zanshin::Category) {
+    } else if (type==Zanshin::Context) {
         PimItemServices::create(PimNode::Context, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem));
     } else if (type==Zanshin::TopicRoot) {
         PimItemServices::create(PimNode::Topic, summary);

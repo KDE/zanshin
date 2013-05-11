@@ -34,8 +34,8 @@ namespace Test
 
 enum VirtualType {
     Inbox=0,
-    NoCategory,
-    Categories
+    NoContext,
+    Contexts
 };
 
 struct V // Stands for collection

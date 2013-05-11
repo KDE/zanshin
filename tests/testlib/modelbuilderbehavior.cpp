@@ -59,7 +59,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
     todo->setUid(t.uid);
     todo->setRelatedTo(t.parentUid);
     todo->setSummary(t.summary);
-    todo->setCategories(t.categories);
+    todo->setCategories(t.contexts);
     todo->setCompleted(t.state==Done);
     if (t.dueDate.isValid()) {
         todo->setDtDue(t.dueDate);
@@ -93,7 +93,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
     addTodoMetadata(item, t);
     row << item;
 
-    item = new QStandardItem(t.categories.join(", "));
+    item = new QStandardItem(t.contexts.join(", "));
     item->setData(QVariant::fromValue(it), Akonadi::EntityTreeModel::ItemRole);
     addTodoMetadata(item, t);
     row << item;
@@ -111,13 +111,13 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
     return row;
 }
 
-QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCategory(const Cat &c)
+QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandContext(const Cat &c)
 {
     QList<QStandardItem*> row;
 
     QStandardItem *item = new QStandardItem(c.name);
-//     item->setData(QVariant::fromValue(QString(c.parentPath + c.name)), Zanshin::CategoryPathRole);
-    addCategoryMetadata(item);
+//     item->setData(QVariant::fromValue(QString(c.parentPath + c.name)), Zanshin::ContextPathRole);
+    addContextMetadata(item);
     row << item;
 
     if (m_singleColumnEnabled) {
@@ -126,7 +126,7 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandCategor
 
     for (int i=0; i<4; i++) {
         item = new QStandardItem;
-        addCategoryMetadata(item);
+        addContextMetadata(item);
         row << item;
     }
 
@@ -171,11 +171,11 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandVirtual
         int type = 0;
         switch (virt.type) {
         case Inbox:
-        case NoCategory:
+        case NoContext:
             type = Zanshin::Inbox;
             break;
-        case Categories:
-            type = Zanshin::CategoryRoot;
+        case Contexts:
+            type = Zanshin::ContextRoot;
             break;
         }
 
@@ -245,10 +245,10 @@ void Zanshin::Test::StandardModelBuilderBehavior::addTodoMetadata(QStandardItem 
     }
 }
 
-void Zanshin::Test::StandardModelBuilderBehavior::addCategoryMetadata(QStandardItem *item)
+void Zanshin::Test::StandardModelBuilderBehavior::addContextMetadata(QStandardItem *item)
 {
     if (m_metadataCreationEnabled) {
-        item->setData(QVariant::fromValue((int)Zanshin::Category), Zanshin::ItemTypeRole);
+        item->setData(QVariant::fromValue((int)Zanshin::Context), Zanshin::ItemTypeRole);
     }
 }
 

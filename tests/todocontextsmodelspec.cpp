@@ -23,7 +23,7 @@
 
 #include <qtest_kde.h>
 
-#include "categorymanager.h"
+#include "contextmanager.h"
 #include "todometadatamodel.h"
 #include "testlib/testlib.h"
 #include "testlib/mockmodel.h"
@@ -42,7 +42,7 @@ Q_DECLARE_METATYPE(QModelIndex)
 /*
  * TODO: Remove and replace by PimItemRelationStructure test + PimItemRelationStrategy test (using a mock structure)
  */
-class TodoCategoriesModelSpec : public QObject
+class TodoContextsModelSpec : public QObject
 {
     Q_OBJECT
 private slots:
@@ -78,8 +78,8 @@ private slots:
         QTest::addColumn<ModelStructure>( "outputStructure" );
 
         // Base items
-        V nocat(NoCategory);
-        V cats(Categories);
+        V nocat(NoContext);
+        V cats(Contexts);
         C c1(1, 0, "c1");
         C c2(2, 0, "c2");
         Cat cat1("cat1");
@@ -163,13 +163,13 @@ private slots:
         QStandardItemModel source;
         ModelUtils::create(&source, sourceStructure);
 
-        //create categoriesModel
-        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-        ModelTest t1(&categoriesModel);
+        //create contextsModel
+        ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ModelTest t1(&contextsModel);
 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
-        Helper::printModel(&categoriesModel);
+        Helper::printModel(&contextsModel);
 
         //THEN
         QFETCH(ModelStructure, outputStructure);
@@ -177,7 +177,7 @@ private slots:
         ModelUtils::create(&output, outputStructure);
         Helper::printModel(&output);
 
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
     
 
@@ -188,8 +188,8 @@ private slots:
         QTest::addColumn<ModelStructure>( "outputStructure" );
 
         // Base items
-        V nocat(NoCategory);
-        V cats(Categories);
+        V nocat(NoContext);
+        V cats(Contexts);
         C c1(1, 0, "c1");
         C c2(2, 0, "c2");
         Cat cat1("cat1");
@@ -268,11 +268,11 @@ private slots:
         QStandardItemModel source;
         ModelUtils::create(&source, sourceStructure);
 
-        //create categoriesModel
-        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-        ModelTest t1(&categoriesModel);
+        //create contextsModel
+        ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ModelTest t1(&contextsModel);
 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
         Helper::printModel(&source);
 
@@ -285,19 +285,19 @@ private slots:
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
 
-        Helper::printModel(&categoriesModel);
+        Helper::printModel(&contextsModel);
 
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
 
-    void shouldReparentBasedOnCategories_data()
+    void shouldReparentBasedOnContexts_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
         QTest::addColumn<ModelStructure>( "outputStructure" );
 
         // Base items
-        V nocat(NoCategory);
-        V cats(Categories);
+        V nocat(NoContext);
+        V cats(Contexts);
         C c1(1, 0, "c1");
         C c2(2, 0, "c2");
         Cat cat1("cat1");
@@ -358,7 +358,7 @@ private slots:
 //         }
     }
 
-    void shouldReparentBasedOnCategories()
+    void shouldReparentBasedOnContexts()
     {
         //GIVEN
         QFETCH(ModelStructure, sourceStructure);
@@ -368,19 +368,19 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //WHEN
-        //create categoriesModel
-        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-        ModelTest t1(&categoriesModel);
+        //create contextsModel
+        ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ModelTest t1(&contextsModel);
 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
-        Helper::printModel(&categoriesModel);
+        Helper::printModel(&contextsModel);
         Helper::printModel(&output);
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
 
     void shouldReactToSourceRowInserts_data()
@@ -392,8 +392,8 @@ private slots:
         QTest::addColumn<ModelStructure>( "outputStructure" );
 
         // Base items
-        V nocat(NoCategory);
-        V cats(Categories);
+        V nocat(NoContext);
+        V cats(Contexts);
         C c1(1, 0, "c1");
         C c2(2, 0, "c2");
         Cat cat1("cat1");
@@ -466,7 +466,7 @@ private slots:
 //                             << __+t4
 //                             << __+t2;
 // 
-//             QTest::newRow( "add todo with several categories" ) << sourceStructure << sourceParentPath
+//             QTest::newRow( "add todo with several contexts" ) << sourceStructure << sourceParentPath
 //                                                                 << sourceSiblingPaths << insertedStructure
 //                                                                 << outputStructure;
 //         }
@@ -482,10 +482,10 @@ private slots:
         ModelUtils::create(&source, sourceStructure);
 
         //create treeModel
-        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-        ModelTest t1(&categoriesModel);
+        ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ModelTest t1(&contextsModel);
 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
         // What row number will we expect?
         QFETCH(ModelPath::List, sourceSiblingPaths);
@@ -495,10 +495,10 @@ private slots:
 
         foreach (const ModelPath &sourceSiblingPath, sourceSiblingPaths) {
             QModelIndex sourceSibling = ModelUtils::locateItem(&source, sourceSiblingPath);
-            QModelIndexList proxySiblings = categoriesModel.mapFromSourceAll(sourceSibling);
+            QModelIndexList proxySiblings = contextsModel.mapFromSourceAll(sourceSibling);
             Q_ASSERT(proxySiblings.size()==1);
             parentIndexes << proxySiblings.first().parent();
-            expectedRows << categoriesModel.rowCount(parentIndexes.last());
+            expectedRows << contextsModel.rowCount(parentIndexes.last());
         }
 
         //WHEN
@@ -506,8 +506,8 @@ private slots:
         QFETCH(ModelStructure, insertedStructure);
 
         // Collect data to ensure we signalled the outside properly
-        QSignalSpy aboutToInsertSpy(&categoriesModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)));
-        QSignalSpy insertSpy(&categoriesModel, SIGNAL(rowsInserted(QModelIndex,int,int)));
+        QSignalSpy aboutToInsertSpy(&contextsModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)));
+        QSignalSpy insertSpy(&contextsModel, SIGNAL(rowsInserted(QModelIndex,int,int)));
 
         ModelUtils::create(&source, insertedStructure, sourceParentPath);
 
@@ -516,9 +516,9 @@ private slots:
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
 
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
 
-        //FIXME check is invalid, we get an inserted signal for the created category and one for the todo itself
+        //FIXME check is invalid, we get an inserted signal for the created context and one for the todo itself
 //         QCOMPARE(aboutToInsertSpy.size(), parentIndexes.count());
 //         QCOMPARE(insertSpy.size(), parentIndexes.count());
 // 
@@ -545,8 +545,8 @@ private slots:
         QTest::addColumn<ModelStructure>( "outputStructure" );
 
         // Base items
-        V nocat(NoCategory);
-        V cats(Categories);
+        V nocat(NoContext);
+        V cats(Contexts);
         C c1(1, 0, "c1");
         Cat cat1("cat1");
         Cat cat2("cat2");
@@ -575,7 +575,7 @@ private slots:
                                         << value << role
                                         << outputStructure;
 
-//         //FIXME we're evaluating the item not the categories role
+//         //FIXME we're evaluating the item not the contexts role
 
 //         sourceStructure.clear();
 //         sourceStructure << c1
@@ -583,11 +583,11 @@ private slots:
 //                         << _+t3;
 // 
 //         itemToChange = c1 % t3;
-//         QStringList categoriesAdded;
-//         categoriesAdded << "cat1";
+//         QStringList contextsAdded;
+//         contextsAdded << "cat1";
 // 
-//         value = categoriesAdded;
-//         role = Zanshin::CategoriesRole;
+//         value = contextsAdded;
+//         role = Zanshin::ContextsRole;
 // 
 //         outputStructure.clear();
 //         outputStructure << nocat
@@ -596,7 +596,7 @@ private slots:
 //                         << __+t1
 //                         << __+t3;
 // 
-//         QTest::newRow( "Todo with no category which gets a new category" ) << sourceStructure << itemToChange
+//         QTest::newRow( "Todo with no context which gets a new context" ) << sourceStructure << itemToChange
 //                                                                            << value << role
 //                                                                            << outputStructure;
 
@@ -606,10 +606,10 @@ private slots:
 //                         << _+t4;
 // 
 //         itemToChange = c1 % t1;
-//         categoriesAdded.clear();
+//         contextsAdded.clear();
 // 
-//         value = categoriesAdded;
-//         role = Zanshin::CategoriesRole;
+//         value = contextsAdded;
+//         role = Zanshin::ContextsRole;
 // 
 //         outputStructure.clear();
 //         outputStructure << nocat
@@ -620,7 +620,7 @@ private slots:
 //                         << _+cat2
 //                         << __+t4;
 // 
-//         QTest::newRow( "Todo with categories which looses all its categories" ) << sourceStructure << itemToChange
+//         QTest::newRow( "Todo with contexts which looses all its contexts" ) << sourceStructure << itemToChange
 //                                                                                 << value << role
 //                                                                                 << outputStructure;
 // 
@@ -630,12 +630,12 @@ private slots:
 //                         << _+t4;
 // 
 //         itemToChange = c1 % t1;
-//         categoriesAdded.clear();
-//         categoriesAdded << "cat1";
-//         categoriesAdded << "cat2";
+//         contextsAdded.clear();
+//         contextsAdded << "cat1";
+//         contextsAdded << "cat2";
 // 
-//         value = categoriesAdded;
-//         role = Zanshin::CategoriesRole;
+//         value = contextsAdded;
+//         role = Zanshin::ContextsRole;
 // 
 //         outputStructure.clear();
 //         outputStructure << nocat
@@ -647,7 +647,7 @@ private slots:
 //                         << __+t4
 //                         << __+t1;
 // 
-//         QTest::newRow( "Todo with categories which gets a new category" ) << sourceStructure << itemToChange
+//         QTest::newRow( "Todo with contexts which gets a new context" ) << sourceStructure << itemToChange
 //                                                                           << value << role
 //                                                                           << outputStructure;
 // 
@@ -657,11 +657,11 @@ private slots:
 //                         << _+t4;
 // 
 //         itemToChange = c1 % t4;
-//         categoriesAdded.clear();
-//         categoriesAdded << "cat1";
+//         contextsAdded.clear();
+//         contextsAdded << "cat1";
 // 
-//         value = categoriesAdded;
-//         role = Zanshin::CategoriesRole;
+//         value = contextsAdded;
+//         role = Zanshin::ContextsRole;
 // 
 //         outputStructure.clear();
 //         outputStructure << nocat
@@ -671,7 +671,7 @@ private slots:
 //                         << __+t4
 //                         << _+cat2;
 // 
-//         QTest::newRow( "Todo with categories which looses one category" ) << sourceStructure << itemToChange
+//         QTest::newRow( "Todo with contexts which looses one context" ) << sourceStructure << itemToChange
 //                                                                           << value << role
 //                                                                           << outputStructure;
     }
@@ -685,11 +685,11 @@ private slots:
         QStandardItemModel source;
         ModelUtils::create(&source, sourceStructure);
 
-        //create categoriesModel
-        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-        ModelTest t1(&categoriesModel);
+        //create contextsModel
+        ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ModelTest t1(&contextsModel);
 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
         //WHEN
         QFETCH(ModelPath, itemToChange);
@@ -705,9 +705,9 @@ private slots:
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
 
-        Helper::printModel(&categoriesModel);
+        Helper::printModel(&contextsModel);
 
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
 
 
@@ -718,10 +718,10 @@ private slots:
 //         QTest::addColumn<ModelStructure>( "insertedStructure" );
 //         QTest::addColumn<ModelStructure>( "outputStructure" );
 // 
-//         //TODO do we really want to apply categories of parent projects?
+//         //TODO do we really want to apply contexts of parent projects?
 //         // Base items
-//         V nocat(NoCategory);
-//         V cats(Categories);
+//         V nocat(NoContext);
+//         V cats(Contexts);
 //         C c1(1, 0, "c1");
 //         Cat cat1("cat1");
 //         Cat cat2("cat2");
@@ -792,16 +792,16 @@ private slots:
 //         TodoMetadataModel metadataModel;
 //         ModelTest t1(&metadataModel);
 // 
-//         //Kick up category manager
-// //         CategoryManager::instance().setModel(&metadataModel);
+//         //Kick up context manager
+// //         ContextManager::instance().setModel(&metadataModel);
 // 
 //         metadataModel.setSourceModel(&source);
 // 
-//         //create categoriesModel
-//         ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-//         ModelTest t2(&categoriesModel);
+//         //create contextsModel
+//         ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+//         ModelTest t2(&contextsModel);
 // 
-//         categoriesModel.setSourceModel(&metadataModel);
+//         contextsModel.setSourceModel(&metadataModel);
 // 
 //         //WHEN
 //         QFETCH(ModelPath, sourceParentPath);
@@ -814,7 +814,7 @@ private slots:
 //         QStandardItemModel output;
 //         ModelUtils::create(&output, outputStructure);
 // 
-//         QCOMPARE(categoriesModel, output);
+//         QCOMPARE(contextsModel, output);
 //     }
 
     void shouldReactToModelReset_data()
@@ -846,35 +846,35 @@ private slots:
         MockModel source;
         ModelUtils::create(&source, sourceStructure);
 
-        //create categoriesModel
-        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-        ModelTest t2(&categoriesModel);
+        //create contextsModel
+        ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ModelTest t2(&contextsModel);
 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
         //WHEN
         source.clearData();
 
         //THEN
         MockModel output;
-        ReparentingModel* categoriesModelOutput = new ReparentingModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ReparentingModel* contextsModelOutput = new ReparentingModel(new PimItemRelationStrategy(PimItemRelation::Context));
 
-        categoriesModelOutput->setSourceModel(&output);
+        contextsModelOutput->setSourceModel(&output);
 
-        QAbstractItemModel* abstractModel = categoriesModelOutput;
-        QCOMPARE(categoriesModel, *abstractModel);
-        delete categoriesModelOutput;
+        QAbstractItemModel* abstractModel = contextsModelOutput;
+        QCOMPARE(contextsModel, *abstractModel);
+        delete contextsModelOutput;
     }
 
-    void shouldReactToCategoryRemoval_data()
+    void shouldReactToContextRemoval_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
-        QTest::addColumn<QString>( "categoryToRemove" );
+        QTest::addColumn<QString>( "contextToRemove" );
         QTest::addColumn<ModelStructure>( "outputStructure" );
 
         // Base items
-        V nocat(NoCategory);
-        V cats(Categories);
+        V nocat(NoContext);
+        V cats(Contexts);
         Cat cat1("cat1");
         Cat cat2("cat1"+Cat::pathSeparator()+"cat2");
         T t1(3, 1, "t1", QString(), "t1", InProgress, NoTag, QString(), cat1.name);
@@ -888,7 +888,7 @@ private slots:
                             << _+t1
                             << cats;
 
-            QTest::newRow( "remove category" ) << sourceStructure <<  cat1.name << outputStructure;
+            QTest::newRow( "remove context" ) << sourceStructure <<  cat1.name << outputStructure;
         }
         {
             ModelStructure sourceStructure;
@@ -903,72 +903,72 @@ private slots:
                             << _+cat1
                             << __+t1;
 
-            QTest::newRow( "remove sub-category" ) << sourceStructure <<  cat2.name << outputStructure;
+            QTest::newRow( "remove sub-context" ) << sourceStructure <<  cat2.name << outputStructure;
         }
     }
 
-    void shouldReactToCategoryRemoval()
+    void shouldReactToContextRemoval()
     {
         //GIVEN
         QFETCH(ModelStructure, sourceStructure);
 
         //Source model
         QStandardItemModel source;
-        //Kick up category manager
+        //Kick up context manager
         ModelUtils::create(&source, sourceStructure);
 
-        //create categoriesModel
-        ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-        ModelTest t1(&categoriesModel);
+        //create contextsModel
+        ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+        ModelTest t1(&contextsModel);
 
-        categoriesModel.setSourceModel(&source);
+        contextsModel.setSourceModel(&source);
 
         //WHEN FIXME remove by id
-//         QFETCH(Id, categoryToRemove);
-//         CategoryManager::instance().removeCategories(0, IdList() << categoryToRemove);
+//         QFETCH(Id, contextToRemove);
+//         ContextManager::instance().removeContexts(0, IdList() << contextToRemove);
 
         //THEN
         QFETCH(ModelStructure, outputStructure);
         QStandardItemModel output;
         ModelUtils::create(&output, outputStructure);
 
-        Helper::printModel(&categoriesModel);
+        Helper::printModel(&contextsModel);
 
-        QCOMPARE(categoriesModel, output);
+        QCOMPARE(contextsModel, output);
     }
 
-//     void shouldReactToCategoryMove()
+//     void shouldReactToContextMove()
 //     {
 //         //GIVEN
 //         QFETCH(ModelStructure, sourceStructure);
 // 
 //         //Source model
 //         QStandardItemModel source;
-//         //Kick up category manager
+//         //Kick up context manager
 //         ModelUtils::create(&source, sourceStructure);
 // 
-//         //create categoriesModel
-//         ReparentingModel categoriesModel(new PimItemRelationStrategy(PimItemRelation::Context));
-//         ModelTest t1(&categoriesModel);
+//         //create contextsModel
+//         ReparentingModel contextsModel(new PimItemRelationStrategy(PimItemRelation::Context));
+//         ModelTest t1(&contextsModel);
 // 
-//         categoriesModel.setSourceModel(&source);
+//         contextsModel.setSourceModel(&source);
 // 
 //         //WHEN
-//         QFETCH(QString, categoryToRemove);
-//         CategoryManager::instance().moveToCategory(0, categoryToRemove);
+//         QFETCH(QString, contextToRemove);
+//         ContextManager::instance().moveToContext(0, contextToRemove);
 // 
 //         //THEN
 //         QFETCH(ModelStructure, outputStructure);
 //         QStandardItemModel output;
 //         ModelUtils::create(&output, outputStructure);
 // 
-//         Helper::printModel(&categoriesModel);
+//         Helper::printModel(&contextsModel);
 // 
-//         QCOMPARE(categoriesModel, output);
+//         QCOMPARE(contextsModel, output);
 //     }
     
 };
 
-QTEST_KDEMAIN(TodoCategoriesModelSpec, GUI)
+QTEST_KDEMAIN(TodoContextsModelSpec, GUI)
 
-#include "todocategoriesmodelspec.moc"
+#include "todocontextsmodelspec.moc"

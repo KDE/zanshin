@@ -27,7 +27,7 @@ public:
     void addNode(const QString &name, const IdList &parents);
     virtual void updateRelationTree(Akonadi::Item& item);
 protected:
-    //Build a relation tree from the category of an item
+    //Build a relation tree from the context of an item
     Relation getRelationTree(Id id, const Akonadi::Item &item);
 private:
     TreeNode createNode(const PimItemTreeNode &node);

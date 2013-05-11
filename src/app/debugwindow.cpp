@@ -37,9 +37,9 @@ DebugWindow::DebugWindow(ModelStack *models, QWidget *parent)
     addTab(view, "TodoModel");
 
     view = new Akonadi::EntityTreeView(this);
-    view->setModel(models->categoriesModel());
+    view->setModel(models->contextsModel());
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    addTab(view, "TodoCategoriesModel");
+    addTab(view, "TodoContextsModel");
 
     view = new Akonadi::EntityTreeView(this);
     view->setModel(models->treeModel());

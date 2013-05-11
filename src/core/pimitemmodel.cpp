@@ -269,7 +269,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
         pimitem->setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(value.toString().toUtf8())));
         break;
     case 2:
-        pimitem->setCategories(value.toStringList());
+        pimitem->setContexts(value.toStringList());
         break;
     case 3:
         if (pimitem->itemType() == PimItem::Todo) {

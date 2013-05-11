@@ -31,7 +31,7 @@ namespace Zanshin
 {
     enum ApplicationMode {
         ProjectMode = 0,
-        CategoriesMode = 1,
+        ContextsMode = 1,
         KnowledgeMode = 2
     };
 
@@ -39,10 +39,10 @@ namespace Zanshin
     {
         StandardTodo = 0,
         ProjectTodo,
-        Category,
+        Context,
         Collection,
         Inbox,
-        CategoryRoot,
+        ContextRoot,
         Topic,
         TopicRoot
     };
@@ -60,7 +60,7 @@ namespace Zanshin
 
     enum DataType {
         StandardType = 0,
-        CategoryType,
+        ContextType,
         ProjectType
     };
 

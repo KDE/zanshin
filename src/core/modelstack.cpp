@@ -61,11 +61,11 @@ ModelStack::ModelStack(QObject *parent)
       m_knowledgeSidebarModel(0),
       m_knowledgeCollectionsModel(0),
       m_topicSelection(0),
-      m_categoriesModel(0),
-      m_categoriesSideBarModel(0),
-      m_categoriesSelectionModel(0),
-      m_categoriesComboModel(0),
-      m_categorySelection(0)
+      m_contextsModel(0),
+      m_contextsSideBarModel(0),
+      m_contextsSelectionModel(0),
+      m_contextsComboModel(0),
+      m_contextSelection(0)
 {
 }
 
@@ -169,58 +169,58 @@ QAbstractItemModel *ModelStack::treeComboModel()
     return m_treeComboModel;
 }
 
-QAbstractItemModel *ModelStack::categoriesModel()
+QAbstractItemModel *ModelStack::contextsModel()
 {
-    if (!m_categoriesModel) {
-        ReparentingModel *categoriesModel = new ReparentingModel(new StructureCacheStrategy(PimItemRelation::Context), this);
-        categoriesModel->setSourceModel(baseModel());
-        m_categoriesModel = categoriesModel;
+    if (!m_contextsModel) {
+        ReparentingModel *contextsModel = new ReparentingModel(new StructureCacheStrategy(PimItemRelation::Context), this);
+        contextsModel->setSourceModel(baseModel());
+        m_contextsModel = contextsModel;
     }
-    return m_categoriesModel;
+    return m_contextsModel;
 }
 
-QAbstractItemModel *ModelStack::categoriesSideBarModel()
+QAbstractItemModel *ModelStack::contextsSideBarModel()
 {
-    if (!m_categoriesSideBarModel) {
-        SideBarModel *categoriesSideBarModel = new SideBarModel(this);
-        categoriesSideBarModel->setSourceModel(categoriesModel());
-        m_categoriesSideBarModel = categoriesSideBarModel;
+    if (!m_contextsSideBarModel) {
+        SideBarModel *contextsSideBarModel = new SideBarModel(this);
+        contextsSideBarModel->setSourceModel(contextsModel());
+        m_contextsSideBarModel = contextsSideBarModel;
     }
-    return m_categoriesSideBarModel;
+    return m_contextsSideBarModel;
 }
 
-QItemSelectionModel *ModelStack::categoriesSelection()
+QItemSelectionModel *ModelStack::contextsSelection()
 {
-    if (!m_categorySelection) {
-        m_categorySelection = new QItemSelectionModel(categoriesSideBarModel());
+    if (!m_contextSelection) {
+        m_contextSelection = new QItemSelectionModel(contextsSideBarModel());
     }
-    return m_categorySelection;
+    return m_contextSelection;
 }
 
-QAbstractItemModel *ModelStack::categoriesSelectionModel()
+QAbstractItemModel *ModelStack::contextsSelectionModel()
 {
-    if (!m_categoriesSelectionModel) {
-        SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
-        categoriesSelectionModel->setSelectionModel(categoriesSelection());
-        categoriesSelectionModel->setSourceModel(categoriesModel());
-        m_categoriesSelectionModel = categoriesSelectionModel;
+    if (!m_contextsSelectionModel) {
+        SelectionProxyModel *contextsSelectionModel = new SelectionProxyModel(this);
+        contextsSelectionModel->setSelectionModel(contextsSelection());
+        contextsSelectionModel->setSourceModel(contextsModel());
+        m_contextsSelectionModel = contextsSelectionModel;
     }
-    return m_categoriesSelectionModel;
+    return m_contextsSelectionModel;
 }
 
-QAbstractItemModel *ModelStack::categoriesComboModel()
+QAbstractItemModel *ModelStack::contextsComboModel()
 {
-    if (!m_categoriesComboModel) {
-        ComboModel *categoriesComboModel = new ComboModel(this);
+    if (!m_contextsComboModel) {
+        ComboModel *contextsComboModel = new ComboModel(this);
 
-        KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(categoriesComboModel);
-        descendantProxyModel->setSourceModel(categoriesSideBarModel());
+        KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(contextsComboModel);
+        descendantProxyModel->setSourceModel(contextsSideBarModel());
         descendantProxyModel->setDisplayAncestorData(true);
 
-        categoriesComboModel->setSourceModel(descendantProxyModel);
-        m_categoriesComboModel = categoriesComboModel;
+        contextsComboModel->setSourceModel(descendantProxyModel);
+        m_contextsComboModel = contextsComboModel;
     }
-    return m_categoriesComboModel;
+    return m_contextsComboModel;
 }
 
 QAbstractItemModel* ModelStack::knowledgeBaseModel()
@@ -298,10 +298,10 @@ QItemSelectionModel* ModelStack::knowledgeSelection()
 QAbstractItemModel* ModelStack::knowledgeSelectionModel()
 {
     if (!m_knowledgeSelectionModel) {
-        SelectionProxyModel *categoriesSelectionModel = new SelectionProxyModel(this);
-        categoriesSelectionModel->setSelectionModel(knowledgeSelection());
-        categoriesSelectionModel->setSourceModel(topicsTreeModel());
-        m_knowledgeSelectionModel = categoriesSelectionModel;
+        SelectionProxyModel *contextsSelectionModel = new SelectionProxyModel(this);
+        contextsSelectionModel->setSelectionModel(knowledgeSelection());
+        contextsSelectionModel->setSourceModel(topicsTreeModel());
+        m_knowledgeSelectionModel = contextsSelectionModel;
     }
     return m_knowledgeSelectionModel;
 }

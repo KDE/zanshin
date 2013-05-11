@@ -51,11 +51,11 @@ public:
     QAbstractItemModel *treeSelectionModel();
     QAbstractItemModel *treeComboModel();
 
-    QAbstractItemModel *categoriesModel();
-    QAbstractItemModel *categoriesSideBarModel();
-    QItemSelectionModel *categoriesSelection();
-    QAbstractItemModel *categoriesSelectionModel();
-    QAbstractItemModel *categoriesComboModel();
+    QAbstractItemModel *contextsModel();
+    QAbstractItemModel *contextsSideBarModel();
+    QItemSelectionModel *contextsSelection();
+    QAbstractItemModel *contextsSelectionModel();
+    QAbstractItemModel *contextsComboModel();
     
     QAbstractItemModel *knowledgeBaseModel();
     QAbstractItemModel *topicsTreeModel();
@@ -84,11 +84,11 @@ private:
     QAbstractItemModel *m_knowledgeCollectionsModel;
     QItemSelectionModel *m_topicSelection;
 
-    QAbstractItemModel *m_categoriesModel;
-    QAbstractItemModel *m_categoriesSideBarModel;
-    QAbstractItemModel *m_categoriesSelectionModel;
-    QAbstractItemModel *m_categoriesComboModel;
-    QItemSelectionModel *m_categorySelection;
+    QAbstractItemModel *m_contextsModel;
+    QAbstractItemModel *m_contextsSideBarModel;
+    QAbstractItemModel *m_contextsSelectionModel;
+    QAbstractItemModel *m_contextsComboModel;
+    QItemSelectionModel *m_contextSelection;
 };
 
 #endif

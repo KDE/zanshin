@@ -71,7 +71,7 @@ public:
             int type = index.data(Zanshin::ItemTypeRole).toInt();
 
             if (type!=Zanshin::ProjectTodo
-             && type!=Zanshin::Category) {
+             && type!=Zanshin::Context) {
                 return QSortFilterProxyModel::data(index, role);
 
             } else {
@@ -81,7 +81,7 @@ public:
                 type = currentIndex.data(Zanshin::ItemTypeRole).toInt();
 
                 while (type==Zanshin::ProjectTodo
-                    || type==Zanshin::Category) {
+                    || type==Zanshin::Context) {
                     display = currentIndex.data().toString() + ": " + display;
 
                     currentIndex = currentIndex.parent();
@@ -115,7 +115,7 @@ public:
         }
 
         const bool ascendingLessThan = leftType==Zanshin::Inbox
-                                    || (leftType==Zanshin::CategoryRoot && rightType!=Zanshin::Inbox)
+                                    || (leftType==Zanshin::ContextRoot && rightType!=Zanshin::Inbox)
                                     || (leftType==Zanshin::Collection && rightType!=Zanshin::Inbox)
                                     || (leftType==Zanshin::StandardTodo && rightType!=Zanshin::StandardTodo)
                                     || (leftType==Zanshin::ProjectTodo && rightType==Zanshin::Collection);
@@ -151,7 +151,7 @@ public:
         QSize sizeHint = sourceChild.data(Qt::SizeHintRole).toSize();
 
         return type!=Zanshin::Collection
-            && type!=Zanshin::CategoryRoot
+            && type!=Zanshin::ContextRoot
             && type!=Zanshin::TopicRoot
             && !sizeHint.isNull(); // SelectionProxyModel uses the null size for items we shouldn't display
     }
@@ -517,7 +517,7 @@ void ActionListEditorPage::dissociateTodo(const QModelIndex &current)
     if (!current.isValid()) {
         return;
     }
-    if (m_mode == Zanshin::CategoriesMode) {
+    if (m_mode == Zanshin::ContextsMode) {
         //FIXME
 //        PimItemServices::unlink(current.data(Zanshin::UriRole).toUrl(), PimItemServices::allContexts());
     } else if (m_mode == Zanshin::KnowledgeMode) {

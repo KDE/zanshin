@@ -67,8 +67,8 @@ QModelIndex ModelUtils::locateItem(QAbstractItemModel *model, const ModelPath &r
             } else if (variant.canConvert<int>() && pathPart.canConvert<V>()) {
                 Zanshin::ItemType type = (Zanshin::ItemType)variant.toInt();
                 V v2 = pathPart.value<V>();
-                if ((type==Zanshin::Inbox && (v2.type==Inbox || v2.type==NoCategory))
-                 || (type==Zanshin::CategoryRoot && v2.type==Categories)) {
+                if ((type==Zanshin::Inbox && (v2.type==Inbox || v2.type==NoContext))
+                 || (type==Zanshin::ContextRoot && v2.type==Contexts)) {
                     found = true;
                 }
             } else if (variant.canConvert<V>()) {
@@ -154,7 +154,7 @@ QList<QStandardItem*> ModelUtils::createItem(const ModelStructureTreeNode *node,
         row = behavior->expandTodo(t);
     } else if (variant.canConvert<Cat>()) {
         Cat cat = variant.value<Cat>();
-        row = behavior->expandCategory(cat);
+        row = behavior->expandContext(cat);
     } else if (variant.canConvert<V>()) {
         V v = variant.value<V>();
         row = behavior->expandVirtual(v);

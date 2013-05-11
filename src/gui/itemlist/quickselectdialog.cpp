@@ -44,7 +44,7 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent, QAbstractItemModel *model,
 {
     QString caption;
 
-    if (mode==Zanshin::CategoriesMode) {
+    if (mode==Zanshin::ContextsMode) {
         switch (action) {
         case MoveAction:
             caption = i18n("Move Actions to Context");
@@ -133,7 +133,7 @@ void QuickSelectDialog::applyPattern(const QString &pattern)
 {
     if (pattern.isEmpty()) {
         QString type = i18n("projects");
-        if (m_mode==Zanshin::CategoriesMode) {
+        if (m_mode==Zanshin::ContextsMode) {
             type = i18n("contexts");
         }
 

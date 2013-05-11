@@ -44,7 +44,7 @@ public:
     ModelNode();
     ModelNode(const C &collection, const Indent &indent = Indent());
     ModelNode(const T &todo, const Indent &indent = Indent());
-    ModelNode(const Cat &category, const Indent &indent = Indent());
+    ModelNode(const Cat &context, const Indent &indent = Indent());
     ModelNode(const V &virt, const Indent &indent = Indent());
     ModelNode(const G &virt, const Indent &indent = Indent());
 
@@ -61,7 +61,7 @@ private:
 
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::C &collection);
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::T &todo);
-Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::Cat &category);
+Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::Cat &context);
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::V &virt);
 Zanshin::Test::ModelNode operator+(const Zanshin::Test::Indent& indent, const Zanshin::Test::G &virt);
 

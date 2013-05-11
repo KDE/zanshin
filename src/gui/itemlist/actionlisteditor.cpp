@@ -72,7 +72,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
 
     connect(models->treeSelection(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
-    connect(models->categoriesSelection(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+    connect(models->contextsSelection(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
     connect(models->knowledgeSelection(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onSideBarSelectionChanged(QModelIndex)));
@@ -80,7 +80,7 @@ ActionListEditor::ActionListEditor(ModelStack *models,
     setupActions(ac);
 
     createPage(models->treeSelectionModel(), models, Zanshin::ProjectMode, client);
-    createPage(models->categoriesSelectionModel(), models, Zanshin::CategoriesMode, client);
+    createPage(models->contextsSelectionModel(), models, Zanshin::ContextsMode, client);
     createPage(models->knowledgeSelectionModel(), models, Zanshin::KnowledgeMode, client);
 
     connect(m_selectorProxy, SIGNAL(itemSelected(Akonadi::Item)), itemViewer, SLOT(setItem(const Akonadi::Item &)));
@@ -95,8 +95,8 @@ QAbstractItemModel *ActionListEditor::currentSidebarModel(Zanshin::ApplicationMo
     switch (mode) {
     case Zanshin::ProjectMode:
         return m_models->treeSideBarModel();
-    case Zanshin::CategoriesMode:
-        return m_models->categoriesSideBarModel();
+    case Zanshin::ContextsMode:
+        return m_models->contextsSideBarModel();
     case Zanshin::KnowledgeMode:
         return m_models->knowledgeSideBarModel();
     }
@@ -109,8 +109,8 @@ QItemSelectionModel *ActionListEditor::currentSelection(Zanshin::ApplicationMode
     switch (mode) {
     case Zanshin::ProjectMode:
         return m_models->treeSelection();
-    case Zanshin::CategoriesMode:
-        return m_models->categoriesSelection();
+    case Zanshin::ContextsMode:
+        return m_models->contextsSelection();
     case Zanshin::KnowledgeMode:
         return m_models->knowledgeSelection();
     }
@@ -125,7 +125,7 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     case Zanshin::ProjectMode:
         m_stack->setCurrentIndex(0);
         break;
-    case Zanshin::CategoriesMode:
+    case Zanshin::ContextsMode:
         m_stack->setCurrentIndex(1);
         break;
     case Zanshin::KnowledgeMode:
@@ -157,8 +157,8 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
     int type = index.data(Zanshin::ItemTypeRole).toInt();
 
     currentPage()->setCollectionSelectorVisible(type == Zanshin::Inbox
-                        || type == Zanshin::Category
-                        || type == Zanshin::CategoryRoot
+                        || type == Zanshin::Context
+                        || type == Zanshin::ContextRoot
                         || type == Zanshin::Topic
                         || type == Zanshin::TopicRoot);
 
@@ -170,14 +170,14 @@ void ActionListEditor::onSideBarSelectionChanged(const QModelIndex &index)
 void ActionListEditor::createPage(QAbstractItemModel *model, ModelStack *models, Zanshin::ApplicationMode mode, KXMLGUIClient *client)
 {
     QList<QAction*> contextActions;
-    if (mode == Zanshin::CategoriesMode || mode == Zanshin::ProjectMode) {
+    if (mode == Zanshin::ContextsMode || mode == Zanshin::ProjectMode) {
         contextActions << m_add
                       << m_remove
                       << m_move
                       << m_promote;
     }
 
-    if (mode==Zanshin::CategoriesMode) {
+    if (mode==Zanshin::ContextsMode) {
         contextActions << m_dissociate;
     }
     ActionListEditorPage *page = new ActionListEditorPage(model, models, mode, contextActions, QList<QAction*>() << m_cancelAdd, m_stack, client);
@@ -231,7 +231,7 @@ void ActionListEditor::updateActions()
     Akonadi::Collection collection;
     if ( type==Zanshin::Collection ) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-    } else if (type==Zanshin::Category) {
+    } else if (type==Zanshin::Context) {
         collection = Settings::instance().defaultTodoCollection();
     } else if (type==Zanshin::Topic) {
         collection = Settings::instance().defaultNoteCollection();
@@ -257,7 +257,7 @@ void ActionListEditor::updateActions()
     m_add->setEnabled(index.isValid()
                   && (collection.rights() & Akonadi::Collection::CanCreateItem)
                   && (type==Zanshin::ProjectTodo
-                   || type==Zanshin::Category
+                   || type==Zanshin::Context
                    || type==Zanshin::Topic
                    || type==Zanshin::Inbox
                    || type==Zanshin::StandardTodo));
@@ -268,13 +268,13 @@ void ActionListEditor::updateActions()
                      && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                      && ((type==Zanshin::StandardTodo)
                        || type==Zanshin::ProjectTodo
-                       || type==Zanshin::Category
+                       || type==Zanshin::Context
                        || type==Zanshin::Topic));
 
     m_move->setEnabled(index.isValid()
                    && (collection.rights() & Akonadi::Collection::CanDeleteItem)
                    && (type==Zanshin::StandardTodo
-                    || type==Zanshin::Category
+                    || type==Zanshin::Context
                     || type==Zanshin::Topic
                     || type==Zanshin::ProjectTodo));
 
@@ -315,7 +315,7 @@ void ActionListEditor::onMoveAction()
 
                 if (mode==Zanshin::ProjectMode) {
                     PimItemServices::moveTo(PimItemServices::fromIndex(current), PimItemServices::fromIndex(dlg.selectedIndex()));
-                } else if (mode==Zanshin::CategoriesMode){
+                } else if (mode==Zanshin::ContextsMode){
                     PimItemServices::linkTo(PimItemServices::fromIndex(current), PimItemServices::fromIndex(dlg.selectedIndex()));
                 } else {
                     qWarning() << "not implemented";
@@ -377,14 +377,14 @@ bool ActionListEditor::eventFilter(QObject *watched, QEvent *event)
 void ActionListEditor::saveColumnsState(KConfigGroup &config) const
 {
     page(0)->saveColumnsState(config, "ProjectHeaderState");
-    page(1)->saveColumnsState(config, "CategoriesHeaderState");
+    page(1)->saveColumnsState(config, "ContextsHeaderState");
     page(2)->saveColumnsState(config, "TopicsHeaderState");
 }
 
 void ActionListEditor::restoreColumnsState(const KConfigGroup &config)
 {
     page(0)->restoreColumnsState(config, "ProjectHeaderState");
-    page(1)->restoreColumnsState(config, "CategoriesHeaderState");
+    page(1)->restoreColumnsState(config, "ContextsHeaderState");
     page(2)->restoreColumnsState(config, "TopicsHeaderState");
 }
 

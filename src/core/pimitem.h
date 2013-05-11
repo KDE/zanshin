@@ -112,8 +112,8 @@ public:
 
     virtual void setRelations(const QList<PimItemRelation> &) = 0;
     virtual QList<PimItemRelation> getRelations() = 0;
-    virtual void setCategories(const QStringList &);
-    virtual QStringList getCategories();
+    virtual void setContexts(const QStringList &);
+    virtual QStringList getContexts();
     virtual const KCalCore::Attachment::List getAttachments();
 
     const Akonadi::Item &getItem() const;

@@ -53,7 +53,7 @@ SideBar::SideBar(ModelStack *models, KActionCollection *ac, QWidget *parent)
     layout()->setContentsMargins(0, 0, 0, 0);
 
     createPage(models->treeSideBarModel(), models->treeSelection());
-    createPage(models->categoriesSideBarModel(), models->categoriesSelection());
+    createPage(models->contextsSideBarModel(), models->contextsSelection());
     createPage(models->knowledgeSideBarModel(), models->knowledgeSelection());
     
     setupToolBar();
@@ -135,7 +135,7 @@ void SideBar::setMode(Zanshin::ApplicationMode mode)
         m_next->setText(i18n("Next Project"));
         break;
 
-    case Zanshin::CategoriesMode:
+    case Zanshin::ContextsMode:
         m_stack->setCurrentIndex(1);
         m_add->setText(i18n("New Context"));
         m_remove->setText(i18n("Remove Context"));
@@ -178,19 +178,19 @@ void SideBar::updateActions(const QModelIndex &index)
     m_add->setEnabled((col.rights() & Akonadi::Collection::CanCreateItem)
                   && ( type == Zanshin::Collection
                     || type == Zanshin::ProjectTodo
-                    || type == Zanshin::CategoryRoot
-                    || type == Zanshin::Category
+                    || type == Zanshin::ContextRoot
+                    || type == Zanshin::Context
                     || type == Zanshin::TopicRoot 
                     || type == Zanshin::Topic ));
 
     m_remove->setEnabled((col.rights() & Akonadi::Collection::CanDeleteItem)
                       && (type == Zanshin::ProjectTodo
-                       || type == Zanshin::Category 
+                       || type == Zanshin::Context 
                        || type == Zanshin::Topic ));
 
     m_rename->setEnabled((col.rights() & Akonadi::Collection::CanChangeItem)
                       && (type == Zanshin::ProjectTodo
-                       || type == Zanshin::Category 
+                       || type == Zanshin::Context 
                        || type == Zanshin::Topic ));
 
     QString name;

@@ -266,9 +266,9 @@ private slots:
         T t2(2, 1, "t2", "t1", "t2");
         T t3(3, 2, "t3", "t3", "t3");
         V inbox(Inbox);
-        V categoryRoot(Categories);
-        V nocategory(NoCategory);
-        Cat category("cat");
+        V contextRoot(Contexts);
+        V nocontext(NoContext);
+        Cat context("cat");
 
         ModelStructure sourceStructure;
         sourceStructure << c1;
@@ -307,25 +307,25 @@ private slots:
         QTest::newRow( "check inbox type" ) << sourceStructure << type;
 
         sourceStructure.clear();
-        sourceStructure << categoryRoot;
+        sourceStructure << contextRoot;
 
         type = 0;
 
-        QTest::newRow( "check category root type" ) << sourceStructure << type;
+        QTest::newRow( "check context root type" ) << sourceStructure << type;
 
         sourceStructure.clear();
-        sourceStructure << nocategory;
+        sourceStructure << nocontext;
 
         type = 0;
 
-        QTest::newRow( "check no category type" ) << sourceStructure << type;
+        QTest::newRow( "check no context type" ) << sourceStructure << type;
 
         sourceStructure.clear();
-        sourceStructure << category;
+        sourceStructure << context;
 
         type = 0;
 
-        QTest::newRow( "check category type" ) << sourceStructure << type;
+        QTest::newRow( "check context type" ) << sourceStructure << type;
     }
 
     void shouldRetrieveItemType()
@@ -353,10 +353,10 @@ private slots:
         QCOMPARE(index.data(Zanshin::ItemTypeRole).toInt(), type);
     }
 
-    void shouldRetrieveItemCategories_data()
+    void shouldRetrieveItemContexts_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
-        QTest::addColumn<QStringList>( "categories" );
+        QTest::addColumn<QStringList>( "contexts" );
 
         C c1(1, 0, "c1");
         T t1(1, 1, "t1", QString(), "t1");
@@ -372,23 +372,23 @@ private slots:
         ModelStructure sourceStructure;
         sourceStructure << c1;
 
-        QStringList categories;
-        QTest::newRow( "get category list on collection" ) << sourceStructure << categories;
+        QStringList contexts;
+        QTest::newRow( "get context list on collection" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
                         << _+t1;
 
-        QTest::newRow( "check todo without category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo without context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
                         << _+t1
                         << _+t2;
 
-        categories << "cat1";
+        contexts << "cat1";
 
-        QTest::newRow( "check todo with category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
@@ -396,11 +396,11 @@ private slots:
                         << _+t2
                         << _+t3;
 
-        categories.clear();
-        categories << "cat1"
+        contexts.clear();
+        contexts << "cat1"
                    << "cat2";
 
-        QTest::newRow( "check todo with the different category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with the different context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
@@ -409,11 +409,11 @@ private slots:
                         << _+t3
                         << _+t4;
 
-        categories.clear();
-        categories << "cat2"
+        contexts.clear();
+        contexts << "cat2"
                    << "cat1";
 
-        QTest::newRow( "check todo with the same category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with the same context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
@@ -427,20 +427,20 @@ private slots:
                         << _+t8
                         << _+t9;
 
-        categories.clear();
-        categories << "cat5"
+        contexts.clear();
+        contexts << "cat5"
                    << "cat4"
                    << "cat3"
                    << "cat2"
                    << "cat1";
 
-        QTest::newRow( "check todo with some category duplicate" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with some context duplicate" ) << sourceStructure << contexts;
     }
 
-    void shouldRetrieveItemAncestorsCategories_data()
+    void shouldRetrieveItemAncestorsContexts_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );
-        QTest::addColumn<QStringList>( "categories" );
+        QTest::addColumn<QStringList>( "contexts" );
 
         C c1(1, 0, "c1");
         T t1(1, 1, "t1", QString(), "t1");
@@ -456,21 +456,21 @@ private slots:
         ModelStructure sourceStructure;
         sourceStructure << c1;
 
-        QStringList categories;
-        QTest::newRow( "get category list on collection" ) << sourceStructure << categories;
+        QStringList contexts;
+        QTest::newRow( "get context list on collection" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
                         << _+t1;
 
-        QTest::newRow( "check todo without category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo without context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
                         << _+t1
                         << _+t2;
 
-        QTest::newRow( "check todo with category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
@@ -478,9 +478,9 @@ private slots:
                         << _+t2
                         << _+t3;
 
-        categories << "cat1";
+        contexts << "cat1";
 
-        QTest::newRow( "check todo with the different category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with the different context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
@@ -489,11 +489,11 @@ private slots:
                         << _+t3
                         << _+t4;
 
-        categories.clear();
-        categories << "cat2"
+        contexts.clear();
+        contexts << "cat2"
                    << "cat1";
 
-        QTest::newRow( "check todo with the same category set" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with the same context set" ) << sourceStructure << contexts;
 
         sourceStructure.clear();
         sourceStructure << c1
@@ -507,14 +507,14 @@ private slots:
                         << _+t8
                         << _+t9;
 
-        categories.clear();
-        categories << "cat5"
+        contexts.clear();
+        contexts << "cat5"
                    << "cat4"
                    << "cat3"
                    << "cat2"
                    << "cat1";
 
-        QTest::newRow( "check todo with some category duplicate" ) << sourceStructure << categories;
+        QTest::newRow( "check todo with some context duplicate" ) << sourceStructure << contexts;
     }
 
     void shouldRetrieveItemDataType_data()
@@ -534,7 +534,7 @@ private slots:
         QTest::newRow( "check data type for column 1" ) << sourceStructure << column << type;
 
         column = 2;
-        type = Zanshin::CategoryType;
+        type = Zanshin::ContextType;
 
         QTest::newRow( "check data type for column 2" ) << sourceStructure << column << type;
 
@@ -584,9 +584,9 @@ private slots:
         T t1(1, 1, "t1", QString(), "t1", InProgress, ProjectTag);
         T t2(2, 1, "t2", "t1", "t2");
         V inbox(Inbox);
-        V categoryRoot(Categories);
-        V nocategory(NoCategory);
-        Cat category("cat");
+        V contextRoot(Contexts);
+        V nocontext(NoContext);
+        Cat context("cat");
 
         ModelStructure sourceStructure;
         sourceStructure << c1;
@@ -623,25 +623,25 @@ private slots:
         QTest::newRow( "get flags on inbox" ) << sourceStructure << column << flags;
 
         sourceStructure.clear();
-        sourceStructure << category;
+        sourceStructure << context;
 
         flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
-        QTest::newRow( "get flags on category" ) << sourceStructure << column << flags;
+        QTest::newRow( "get flags on context" ) << sourceStructure << column << flags;
 
         sourceStructure.clear();
-        sourceStructure << categoryRoot;
+        sourceStructure << contextRoot;
 
         flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
-        QTest::newRow( "get flags on category root" ) << sourceStructure << column << flags;
+        QTest::newRow( "get flags on context root" ) << sourceStructure << column << flags;
 
         sourceStructure.clear();
-        sourceStructure << nocategory;
+        sourceStructure << nocontext;
 
         flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
-        QTest::newRow( "get flags on NoCategory" ) << sourceStructure << column << flags;
+        QTest::newRow( "get flags on NoContext" ) << sourceStructure << column << flags;
     }
 
     void shouldRetrieveItemFlags()

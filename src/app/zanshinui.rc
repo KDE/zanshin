@@ -17,7 +17,7 @@
   <Menu name="go">
    <text>&amp;Go</text>
    <Action name="project_mode" />
-   <Action name="categories_mode" />
+   <Action name="contexts_mode" />
    <Action name="knowledge_mode" />
    <Separator />
    <Action name="sidebar_go_next" />
@@ -32,7 +32,7 @@
  <ToolBar noMerge="1" name="mainToolBar" >
   <text context="@title:menu">Main Toolbar</text>
   <Action name="project_mode" />
-  <Action name="categories_mode" />
+  <Action name="contexts_mode" />
   <Action name="knowledge_mode" />
   <Separator name="separator_0" />
   <Action name="editor_add_action" />

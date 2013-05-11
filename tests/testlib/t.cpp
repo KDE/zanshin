@@ -53,7 +53,7 @@ T::T(qint64 i,
         Q_ASSERT(dueDate.isValid());
     }
 
-    categories = c.split(QRegExp("\\s*,\\s*"), QString::SkipEmptyParts);
+    contexts = c.split(QRegExp("\\s*,\\s*"), QString::SkipEmptyParts);
 }
 
 bool T::operator==(const T &other) const
@@ -66,6 +66,6 @@ bool T::operator==(const T &other) const
         && todoTag==other.todoTag
         && summary==other.summary
         && dueDate==other.dueDate
-        && categories==other.categories;
+        && contexts==other.contexts;
 }
 

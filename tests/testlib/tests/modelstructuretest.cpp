@@ -56,7 +56,7 @@ private slots:
         C c2(2, 0, "c2");
         C c3(3, 2, "c3");
         C c4(4, 3, "c4");
-        Cat c5("category");
+        Cat c5("context");
         T t1(1, 3, "t1", QString(), "t1");
         T t2(2, 3, "t2", QString(), "t2");
         T t3(3, 4, "t3", QString(), "t3");
@@ -83,7 +83,7 @@ private slots:
         QCOMPARE(model.data(model.index(0, 0)).toString(), QString("c1"));
         QCOMPARE(model.data(model.index(1, 0)).toString(), QString("c2"));
         QCOMPARE(model.data(model.index(2, 0)).toString(), QString("t5"));
-        QCOMPARE(model.data(model.index(3, 0)).toString(), QString("category"));
+        QCOMPARE(model.data(model.index(3, 0)).toString(), QString("context"));
 
         // Verify c1 leaf
         QModelIndex c1Idx = model.index(0, 0);
