@@ -231,7 +231,8 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
 
     Akonadi::Collection collection;
-    Zanshin::ItemType parentType = (Zanshin::ItemType)getData(id, Zanshin::ItemTypeRole).toInt();
+    bool forward;
+    Zanshin::ItemType parentType = (Zanshin::ItemType)data(id, 0, Zanshin::ItemTypeRole, forward).toInt();
     if (parentType == Zanshin::Collection) {
         collection = getData(id, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     } else {
