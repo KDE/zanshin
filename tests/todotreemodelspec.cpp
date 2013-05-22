@@ -369,6 +369,36 @@ private slots:
                                                << outputStructure << insertRows;
 
         sourceStructure.clear();
+        sourceStructure << c1
+                        << _+t1
+                        << __+t2;
+
+        sourceParentPath = c1 % t1 %t2;
+
+        proxyParentPathList.clear();
+        proxyParentPathList << c1
+                            << inbox
+                            << c1 % t2
+                            << c1 % t2 % t3;
+
+        insertedStructure.clear();
+        insertedStructure << t3;
+
+        outputStructure.clear();
+        outputStructure << inbox
+                        << c1
+                        << _+t1
+                        << __+t2
+                        << ___+t3;
+
+        insertRows.clear();
+        insertRows << 0;
+
+        QTest::newRow( "add todo to project without project tag" ) << sourceStructure << sourceParentPath
+                                                                   << proxyParentPathList << insertedStructure
+                                                                   << outputStructure;
+
+        sourceStructure.clear();
         sourceStructure << c1;
 
         sourceParentPath = c1;
@@ -587,6 +617,92 @@ private slots:
     }
 
     void shouldHandleProjectMoves()
+    {
+        //GIVEN
+        QFETCH(ModelStructure, sourceStructure);
+
+        //Source model
+        QStandardItemModel source;
+        ModelUtils::create(&source, sourceStructure);
+
+        //create treeModel
+        ProjectStructureCache *structure = new ProjectStructureCache();
+        ProjectStructureInterface *interface = new ProjectStructureInterface();
+        interface->setRelationsStructure(structure);
+        ReparentingModel treeModel(new ProjectStrategy(structure));
+        ModelTest t1(&treeModel);
+
+        treeModel.setSourceModel(&source);
+
+        //WHEN
+        QFETCH(ModelPath, itemToChange);
+        QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
+
+        QFETCH(QString, parentUid);
+        if (!parentUid.isEmpty()) {
+            PimNode parent(PimNode::Project);
+            parent.uid = parentUid;
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
+        } else {
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimNode(PimNode::Empty));
+        }
+
+        //THEN
+        QFETCH(ModelStructure, outputStructure);
+        QStandardItemModel output;
+        ModelUtils::create(&output, outputStructure);
+
+        QCOMPARE(treeModel, output);
+    }
+
+    void shouldHandleTodoMoves_data()
+    {
+        QTest::addColumn<ModelStructure>( "sourceStructure" );
+        QTest::addColumn<ModelPath>( "itemToChange" );
+        QTest::addColumn<QString>( "parentUid" );
+        QTest::addColumn<ModelStructure>( "outputStructure" );
+
+        // Base items
+        V inbox(Inbox);
+        C c1(1, 0, "c1");
+        T p1(1, 1, "p1", QString(), "p1", InProgress, ProjectTag);
+        T p2(2, 1, "p2", "p1", "p2", InProgress, ProjectTag);
+        T t1(11, 1, "t1", "p2", "t1");
+        T t2(22, 1, "t2", "p2", "t2");
+        T t3(33, 1, "t3", "p1", "t3");
+        T t4(44, 1, "t4", "t3", "t4");
+
+        {
+            ModelStructure sourceStructure;
+            sourceStructure << c1
+                            << _+p1
+                            << __+p2
+                            << ___+t1
+                            << ___+t2
+                            << __+t3
+                            << ___+t4;
+
+            ModelPath itemToChange = c1 % p1 % p2 % t2;
+
+            QString parentUid = "t3";
+
+            ModelStructure outputStructure;
+            outputStructure << inbox
+                            << c1
+                            << _+p1
+                            << __+p2
+                            << ___+t1
+                            << __+t3
+                            << ___+t4
+                            << ___+t2;
+
+            QTest::newRow( "todo moved under another project without project tag" )
+                << sourceStructure << itemToChange
+                << parentUid << outputStructure;
+        }
+    }
+
+    void shouldHandleTodoMoves()
     {
         //GIVEN
         QFETCH(ModelStructure, sourceStructure);
