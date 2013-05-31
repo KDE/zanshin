@@ -68,7 +68,7 @@ class PimItemRelationInterface;
             Todo,
             Note
         };
-        PimNode(NodeType t): type(t){};
+        PimNode(NodeType t): type(t), relationId(-1){};
         NodeType type;
         Akonadi::Item item;
         Id relationId;
@@ -112,7 +112,7 @@ public:
 //     virtual bool unlink(const Akonadi::Item &/*item*/, QModelIndex parent) {return false;};
 //     virtual bool rename(const QModelIndex &node, const QString &name) {return false;};
  
-    virtual PimItemTreeNode getNode(Id relationId) const;
+    virtual PimItemTreeNode getNode(const PimNode &) const;
 protected:
     QPointer<PimItemRelationCache> mStructure;
 };

@@ -118,9 +118,13 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
 // }
 // 
 
-PimItemTreeNode PimItemServices::getNode(Id relationId) const
+PimItemTreeNode PimItemServices::getNode(const PimNode &node) const
 {
-    return mStructure->getNode(relationId);
+    if( node.relationId >= 0 ) {
+        return mStructure->getNode(node.relationId);
+    }
+    Q_ASSERT(!node.uid.isEmpty());
+    return PimItemTreeNode(node.uid.toLatin1());
 }
 
 PimItemServices &PimItemServices::getInstance(PimItemRelation::Type type) {
@@ -180,10 +184,9 @@ void PimItemServices::create(PimNode::NodeType type, const QString& name, const 
     QList<PimItemRelation> relations;
     if (!parents.isEmpty()) {
         const PimNode parent = parents.first();
-        kDebug() << "relation " << parent.uid;
         const PimItemRelation::Type relationType = getRelationType(parent.type);
         if (relationType != PimItemRelation::Invalid) {
-            relations << PimItemRelation(relationType, QList<PimItemTreeNode>() << getInstance(relationType).getNode(parent.relationId));
+            relations << PimItemRelation(relationType, QList<PimItemTreeNode>() << getInstance(relationType).getNode(parent));
         }
     }
  
