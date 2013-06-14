@@ -247,9 +247,26 @@ void PimItemServices::remove(const QList< PimNode >& nodes, QWidget *parent)
     }
 }
 
-void PimItemServices::moveTo(const PimNode& /*node*/, const PimNode& /*parent*/)
+void PimItemServices::moveTo(const PimNode &node, const PimNode &parent)
 {
-
+    switch (parent.type) {
+    case PimNode::Project:
+        switch (node.type) {
+        case PimNode::Project:
+        case PimNode::Todo:
+        case PimNode::Note:
+        case PimNode::PimItem:
+            projectInstance().moveTo(node, parent);
+            break;
+        default:
+            qFatal("Unsupported move operation");
+            break;
+        }
+        break;
+    default:
+        qFatal("Unsupported move operation");
+        break;
+    }
 }
 
 void PimItemServices::linkTo(const PimNode& /*node*/, const PimNode& /*parent*/)
@@ -476,6 +493,31 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
 //    const Akonadi::Item item = node.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
     if (nodeType == PimNode::Invalid || parentType == PimNode::Invalid) {
+        return false;
+    }
+
+    Zanshin::ItemType parentItemType = Zanshin::StandardTodo;
+    Akonadi::Collection collection;
+    switch (parentType) {
+    case PimNode::Empty:
+        parentItemType = Zanshin::Inbox;
+        collection = node.item.parentCollection();
+        break;
+    case PimNode::Collection:
+        parentItemType = Zanshin::Collection;
+        collection = node.collection;
+        break;
+    case PimNode::Project:
+        parentItemType = Zanshin::ProjectTodo;
+    case PimNode::Todo: // Fall through
+        collection = parent.item.parentCollection();
+        break;
+    default:
+        qFatal("Unsupported parent type");
+        break;
+    }
+
+    if (!TodoHelpers::moveTodoToProject(node.item, parent.uid, parentItemType, collection)) {
         return false;
     }
 
