@@ -30,6 +30,7 @@
 #include <KDE/KMessageBox>
 #include <KUrl>
 
+#include "datastoreinterface.h"
 #include "todohelpers.h"
 #include "noteitem.h"
 #include "settings.h"
@@ -496,33 +497,10 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
         return false;
     }
 
-    Zanshin::ItemType parentItemType = Zanshin::StandardTodo;
-    Akonadi::Collection collection;
-    switch (parentType) {
-    case PimNode::Empty:
-        parentItemType = Zanshin::Inbox;
-        collection = node.item.parentCollection();
-        break;
-    case PimNode::Collection:
-        parentItemType = Zanshin::Collection;
-        collection = node.collection;
-        break;
-    case PimNode::Project:
-        parentItemType = Zanshin::ProjectTodo;
-    case PimNode::Todo: // Fall through
-        collection = parent.item.parentCollection();
-        break;
-    default:
-        qFatal("Unsupported parent type");
-        break;
-    }
-
-    if (!TodoHelpers::moveTodoToProject(node.item, parent.uid, parentItemType, collection)) {
-        return false;
-    }
+    DataStoreInterface::instance().moveTodoToProject(node, parent);
 
     IdList parents;
-    if (parent.type != PimNode::Empty) {
+    if (parentType != PimNode::Empty) {
         parents << mStructure->getId(parent.uid.toLatin1());
     }
     Id nodeId = mStructure->getItemId(node.item);
