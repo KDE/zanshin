@@ -34,6 +34,7 @@
 #include "core/noteitem.h"
 #include "core/pimitemmodel.h"
 #include "testlib/testlib.h"
+#include "testlib/mockdatastore.h"
 #include "testlib/mockmodel.h"
 #include "testlib/modeltest.h"
 #include "testlib/modelbuilderbehavior.h"
@@ -82,6 +83,7 @@ private slots:
               << Akonadi::EntityTreeModel::CollectionRole;
 
         QTest::setEvaluatedItemRoles(roles);
+        DataStoreInterface::overrideImplementation(new MockDataStore);
     }
 
     void shouldRememberItsSourceModel()
