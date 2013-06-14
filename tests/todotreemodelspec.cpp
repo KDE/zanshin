@@ -671,6 +671,7 @@ private slots:
         T t2(22, 1, "t2", "p2", "t2");
         T t3(33, 1, "t3", "p1", "t3");
         T t4(44, 1, "t4", "t3", "t4");
+        T t5(55, 1, "t5", "t3", "t5");
 
         {
             ModelStructure sourceStructure;
@@ -697,6 +698,66 @@ private slots:
                             << ___+t2;
 
             QTest::newRow( "todo moved under another project without project tag" )
+                << sourceStructure << itemToChange
+                << parentUid << outputStructure;
+        }
+
+        {
+            ModelStructure sourceStructure;
+            sourceStructure << c1
+                            << _+p1
+                            << __+p2
+                            << ___+t1
+                            << ___+t2
+                            << __+t3
+                            << ___+t4
+                            << ___+t5;
+
+            ModelPath itemToChange = c1 % p1 % t3 % t5;
+
+            QString parentUid = "p2";
+
+            ModelStructure outputStructure;
+            outputStructure << inbox
+                            << c1
+                            << _+p1
+                            << __+p2
+                            << ___+t1
+                            << ___+t2
+                            << ___+t5
+                            << __+t3
+                            << ___+t4;
+
+            QTest::newRow( "todo moved from project without tag under another project with project tag" )
+                << sourceStructure << itemToChange
+                << parentUid << outputStructure;
+        }
+
+        {
+            ModelStructure sourceStructure;
+            sourceStructure << c1
+                            << _+p1
+                            << __+p2
+                            << ___+t1
+                            << ___+t2
+                            << __+t3
+                            << ___+t4;
+
+            ModelPath itemToChange = c1 % p1 % t3 % t4;
+
+            QString parentUid = "p2";
+
+            ModelStructure outputStructure;
+            outputStructure << inbox
+                            << c1
+                            << _+p1
+                            << __+p2
+                            << ___+t1
+                            << ___+t2
+                            << ___+t4
+                            << __+t3;
+
+            QTest::newRow( "todo moved from project without tag with only this todo and the project should begun a todo" )
                 << sourceStructure << itemToChange
                 << parentUid << outputStructure;
         }
