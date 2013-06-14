@@ -230,17 +230,18 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
 
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
 
-    Akonadi::Collection collection;
+    PimNode parentNode(PimNode::Invalid);
     bool forward;
     Zanshin::ItemType parentType = (Zanshin::ItemType)data(id, 0, Zanshin::ItemTypeRole, forward).toInt();
     if (parentType == Zanshin::Collection) {
-        collection = getData(id, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        parentNode.collection = getData(id, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+        parentNode.type = PimNode::Collection;
     } else {
-        const Akonadi::Item parentItem = getData(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        collection = parentItem.parentCollection();
+        parentNode.item = getData(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        parentNode.collection = parentNode.item.parentCollection();
+        parentNode.type = PimNode::Project;
+        parentNode.uid = getData(id, Zanshin::UidRole).toString();
     }
-
-    QString parentUid = getData(id, Zanshin::UidRole).toString();
 
     foreach (const KUrl &url, urls) {
         const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
@@ -256,13 +257,17 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
             Q_ASSERT(job->items().size()==1);
             Akonadi::Item item = job->items().first();
             Q_ASSERT(item.isValid());
+
+            PimNode node(PimNode::Invalid);
             if (PimItem::itemType(item) == PimItem::Todo) {
-                return TodoHelpers::moveTodoToProject(item, parentUid, parentType, collection);
-            } else if (PimItem::itemType(item) == PimItem::Note) {
-                TodoHelpers::moveToProject(item, parentUid);
-                setData(id, QVariant::fromValue<Akonadi::Item>(item), Akonadi::EntityTreeModel::ItemRole);
-                return true;
+                node.type = PimNode::Todo;
+            } else {
+                node.type = PimNode::Note;
             }
+            node.item = item;
+
+            PimItemServices::moveTo(node, parentNode);
+            return true;
         }
     }
 
