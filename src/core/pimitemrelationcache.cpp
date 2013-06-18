@@ -71,7 +71,10 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
 //     qDebug() << " <<<<<<<<<<<<<<<<< " << item.url().url() << id << rel.id << rel.parentNodes.size();
     mParents.removeLeft(id);
     foreach (const TreeNode &node, rel.parentNodes) {
-        Q_ASSERT(id != node.id);
+        if (id == node.id) {
+            kWarning() << "item related to itself" << item.id() << ". Skipping relation";
+            continue;
+        }
         mParents.insert(id, node.id);
         mergeNode(node);
     }

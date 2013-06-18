@@ -213,6 +213,24 @@ private slots:
         Id id = relation->addItem(item);
         QCOMPARE(relation->getId(getUid(item)), id);
     }
+    
+    void relatedToSelf()
+    {
+        IncidenceItem inc(PimItem::Event);
+        PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(inc.getUid().toLatin1(), "name") << PimItemTreeNode("uid", "name"));
+        inc.setRelations(QList<PimItemRelation>() << rel);
+        Akonadi::Item item = inc.getItem();
+        item.setId(1);
+        
+        QScopedPointer<ProjectStructureCache> relation(new ProjectStructureCache());
+        const Id id = relation->addItem(item);
+        QCOMPARE(relation->getId(getUid(item)), id);
+        const IdList parents = relation->getParents(id);
+        //TODO once we support multiple parent relations, make sure that the second relation is still available
+        QVERIFY(parents.isEmpty());
+//         QCOMPARE(parents.size(), 1);
+//         QCOMPARE(relation->getUid(parents.at(0)), QByteArray("uid"));
+    }
 
 };
 
