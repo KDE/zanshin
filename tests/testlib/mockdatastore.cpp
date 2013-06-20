@@ -32,7 +32,7 @@ MockDataStore::~MockDataStore()
 {
 }
 
-bool MockDataStore::moveTodoToProject(const PimNode &/*node*/, const PimNode &/*parent*/)
+bool MockDataStore::moveTodoToProject(const PimItemIndex &/*node*/, const PimItemIndex &/*parent*/)
 {
     return true;
 }

@@ -35,7 +35,7 @@ public:
 
     virtual ~DataStoreInterface();
 
-    virtual bool moveTodoToProject(const PimNode &node, const PimNode &parent) = 0;
+    virtual bool moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent) = 0;
 
 private:
     static QScopedPointer<DataStoreInterface> s_implementation;

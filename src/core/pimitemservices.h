@@ -23,6 +23,7 @@
 #include <Akonadi/Collection>
 #include "globaldefs.h"
 #include "pimitemrelations.h"
+#include "pimitemindex.h"
 
 class PimItemRelationCache;
 class ProjectStructureInterface;
@@ -53,29 +54,6 @@ class PimItemRelationInterface;
  * Collection: collection
  * 
  */
-
-
-    struct PimNode {
-        
-        enum NodeType {
-            Invalid,
-            Empty,
-            Collection,
-            Project,
-            Context,
-            Topic,
-            PimItem,
-            Todo,
-            Note
-        };
-        PimNode(NodeType t): type(t), relationId(-1){};
-        NodeType type;
-        Akonadi::Item item;
-        Id relationId;
-        Akonadi::Collection collection;
-        QString uid;
-    };
-
 class PimItemServices
 {
 public:
@@ -86,7 +64,7 @@ public:
     static ProjectStructureInterface &projectInstance();
     static PimItemServices &getInstance(PimItemRelation::Type type);
 
-    static PimNode fromIndex(const QModelIndex &);
+    static PimItemIndex fromIndex(const QModelIndex &);
 
 //     static PimNode projectNode(const Akonadi::Item &);
 //     static PimNode contextNode(Id);
@@ -95,24 +73,24 @@ public:
 //     static PimNode noteNode(const Akonadi::Item &);
 //     static PimNode collectionNode(const Akonadi::Collection &);
 
-    static void create(PimNode::NodeType type, const QString &name, const QList<PimNode> &parents = QList<PimNode>(), const Akonadi::Collection &col = Akonadi::Collection());
-    static void remove(const PimNode &node, QWidget *);
-    static void remove(const QList<PimNode> &nodes, QWidget *);
-    static void moveTo(const PimNode &node, const PimNode &parent);
-    static void linkTo(const PimNode &node, const PimNode &parent);
-    static void unlink(const PimNode &node, const PimNode &parent);
-    static void rename(const PimNode &node, const QString &name);
+    static void create(PimItemIndex::ItemType type, const QString &name, const QList<PimItemIndex> &parents = QList<PimItemIndex>(), const Akonadi::Collection &col = Akonadi::Collection());
+    static void remove(const PimItemIndex &node, QWidget *);
+    static void remove(const QList<PimItemIndex> &nodes, QWidget *);
+    static void moveTo(const PimItemIndex &node, const PimItemIndex &parent);
+    static void linkTo(const PimItemIndex &node, const PimItemIndex &parent);
+    static void unlink(const PimItemIndex &node, const PimItemIndex &parent);
+    static void rename(const PimItemIndex &node, const QString &name);
 
     void setRelationsStructure(PimItemRelationCache *);
 
-    virtual void add(const QString &/*name*/, const QList<PimNode> &parents = QList<PimNode>()) {Q_UNUSED(parents);};
+    virtual void add(const QString &/*name*/, const QList<PimItemIndex> &parents = QList<PimItemIndex>()) {Q_UNUSED(parents);};
 //     virtual bool remove(QWidget * /*widget*/, const QModelIndexList &relations) {return false;};
 //     virtual bool moveTo(const QModelIndex &/*node*/, const QModelIndex &parent) = 0;
 //     virtual bool linkTo(const QModelIndex &/*node*/, const QModelIndex &parent) {return false;};
 //     virtual bool unlink(const Akonadi::Item &/*item*/, QModelIndex parent) {return false;};
 //     virtual bool rename(const QModelIndex &node, const QString &name) {return false;};
  
-    virtual PimItemTreeNode getNode(const PimNode &) const;
+    virtual PimItemTreeNode getNode(const PimItemIndex &) const;
 protected:
     QPointer<PimItemRelationCache> mStructure;
 };
@@ -123,7 +101,7 @@ public:
     PimItemRelationInterface();
     virtual ~PimItemRelationInterface();
 
-    void add(const QString &name, const QList<PimNode> &parents = QList<PimNode>());
+    void add(const QString &name, const QList<PimItemIndex> &parents = QList<PimItemIndex>());
 //     bool remove(QWidget *widget, const QModelIndexList &relations);
 //     bool moveTo(const QModelIndex &node, const QModelIndex &parent);
 //     bool linkTo(const QModelIndex &node, const QModelIndex &parent);
@@ -137,9 +115,9 @@ class ProjectStructureInterface: public PimItemServices
 {
 public:
     ProjectStructureInterface();
-    bool moveTo(const PimNode &node, const PimNode &parent);
-    void remove(const QList<PimNode> &nodes, QWidget *);
-    void remove(const PimNode &node, QWidget *);
+    bool moveTo(const PimItemIndex &node, const PimItemIndex &parent);
+    void remove(const QList<PimItemIndex> &nodes, QWidget *);
+    void remove(const PimItemIndex &node, QWidget *);
 };
 
 #endif // PIMITEMRELATIONINTERFACE_H

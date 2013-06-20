@@ -230,16 +230,16 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
 
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
 
-    PimNode parentNode(PimNode::Invalid);
+    PimItemIndex parentNode(PimItemIndex::Invalid);
     bool forward;
     Zanshin::ItemType parentType = (Zanshin::ItemType)data(id, 0, Zanshin::ItemTypeRole, forward).toInt();
     if (parentType == Zanshin::Collection) {
         parentNode.collection = getData(id, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        parentNode.type = PimNode::Collection;
+        parentNode.type = PimItemIndex::Collection;
     } else {
         parentNode.item = getData(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         parentNode.collection = parentNode.item.parentCollection();
-        parentNode.type = PimNode::Project;
+        parentNode.type = PimItemIndex::Project;
         parentNode.uid = getData(id, Zanshin::UidRole).toString();
     }
 
@@ -258,11 +258,11 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
             Akonadi::Item item = job->items().first();
             Q_ASSERT(item.isValid());
 
-            PimNode node(PimNode::Invalid);
+            PimItemIndex node(PimItemIndex::Invalid);
             if (PimItem::itemType(item) == PimItem::Todo) {
-                node.type = PimNode::Todo;
+                node.type = PimItemIndex::Todo;
             } else {
-                node.type = PimNode::Note;
+                node.type = PimItemIndex::Note;
             }
             node.item = item;
 

@@ -33,23 +33,23 @@ AkonadiDataStore::~AkonadiDataStore()
 {
 }
 
-bool AkonadiDataStore::moveTodoToProject(const PimNode &node, const PimNode &parent)
+bool AkonadiDataStore::moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent)
 {
-    PimNode::NodeType parentType = parent.type;
+    PimItemIndex::ItemType parentType = parent.type;
     Zanshin::ItemType parentItemType = Zanshin::StandardTodo;
     Akonadi::Collection collection;
     switch (parentType) {
-    case PimNode::Empty:
+    case PimItemIndex::Empty:
         parentItemType = Zanshin::Inbox;
         collection = node.item.parentCollection();
         break;
-    case PimNode::Collection:
+    case PimItemIndex::Collection:
         parentItemType = Zanshin::Collection;
         collection = node.collection;
         break;
-    case PimNode::Project:
+    case PimItemIndex::Project:
         parentItemType = Zanshin::ProjectTodo;
-    case PimNode::Todo: // Fall through
+    case PimItemIndex::Todo: // Fall through
         collection = parent.item.parentCollection();
         break;
     default:

@@ -511,13 +511,13 @@ void ActionListEditorPage::addNewItem(const QString& summary)
         }
     } else if (m_mode == Zanshin::ProjectMode) { //This actually only happens when there is no Project in a collection which could be shown in this view (and for which we could create todos).
         collection = m_currentCollection;
-        PimItemServices::create(PimNode::Project, summary, QList<PimNode>() << PimItemServices::fromIndex(current), collection);
+        PimItemServices::create(PimItemIndex::Project, summary, QList<PimItemIndex>() << PimItemServices::fromIndex(current), collection);
         return;
     }
     if (m_mode == Zanshin::KnowledgeMode) {
-        PimItemServices::create(PimNode::Note, summary, QList<PimNode>() << PimItemServices::fromIndex(current), collection);
+        PimItemServices::create(PimItemIndex::Note, summary, QList<PimItemIndex>() << PimItemServices::fromIndex(current), collection);
     } else {
-        PimItemServices::create(PimNode::Todo, summary, QList<PimNode>() << PimItemServices::fromIndex(current), collection);
+        PimItemServices::create(PimItemIndex::Todo, summary, QList<PimItemIndex>() << PimItemServices::fromIndex(current), collection);
     }
 }
 

@@ -115,18 +115,18 @@ void SideBarPage::addNewItem()
 
     if (type==Zanshin::Collection) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        PimItemServices::create(PimNode::Project, summary, QList<PimNode>(), collection);
+        PimItemServices::create(PimItemIndex::Project, summary, QList<PimItemIndex>(), collection);
     } else if (type==Zanshin::ProjectTodo) {
         Akonadi::Collection collection = parentItem.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
-        PimItemServices::create(PimNode::Project, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem), collection);
+        PimItemServices::create(PimItemIndex::Project, summary, QList<PimItemIndex>() << PimItemServices::fromIndex(parentItem), collection);
     } else if (type==Zanshin::ContextRoot) {
-        PimItemServices::create(PimNode::Context, summary);
+        PimItemServices::create(PimItemIndex::Context, summary);
     } else if (type==Zanshin::Context) {
-        PimItemServices::create(PimNode::Context, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem));
+        PimItemServices::create(PimItemIndex::Context, summary, QList<PimItemIndex>() << PimItemServices::fromIndex(parentItem));
     } else if (type==Zanshin::TopicRoot) {
-        PimItemServices::create(PimNode::Topic, summary);
+        PimItemServices::create(PimItemIndex::Topic, summary);
     } else if (type==Zanshin::Topic) {
-        PimItemServices::create(PimNode::Topic, summary, QList<PimNode>() << PimItemServices::fromIndex(parentItem));
+        PimItemServices::create(PimItemIndex::Topic, summary, QList<PimItemIndex>() << PimItemServices::fromIndex(parentItem));
     } else {
         kFatal() << "We should never, ever, get in this case...";
     }

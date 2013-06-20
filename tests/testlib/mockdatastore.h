@@ -33,7 +33,7 @@ public:
     MockDataStore();
     virtual ~MockDataStore();
 
-    virtual bool moveTodoToProject(const PimNode &node, const PimNode &parent);
+    virtual bool moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent);
 
 };
 

@@ -40,30 +40,30 @@ K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
 K_GLOBAL_STATIC(PimItemRelationInterface, s_topicManager)
 K_GLOBAL_STATIC(ProjectStructureInterface, s_projectManager)
 
-PimNode PimItemServices::fromIndex(const QModelIndex &index)
+PimItemIndex PimItemServices::fromIndex(const QModelIndex &index)
 {
      Zanshin::ItemType itemType = (Zanshin::ItemType)index.data(Zanshin::ItemTypeRole).toInt();
      kDebug() << index << itemType;
      switch (itemType) {
          case Zanshin::Collection: {
-             PimNode node(PimNode::Collection);
+             PimItemIndex node(PimItemIndex::Collection);
              node.collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
              return node;
          }
          case Zanshin::ProjectTodo: {
-             PimNode node (PimNode::Project);
+             PimItemIndex node (PimItemIndex::Project);
              node.item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
          case Zanshin::Context: {
-             PimNode node (PimNode::Context);
+             PimItemIndex node (PimItemIndex::Context);
              node.relationId = index.data(Zanshin::RelationIdRole).value<Id>();
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
          }
          case Zanshin::Topic: {
-             PimNode node (PimNode::Topic);
+             PimItemIndex node (PimItemIndex::Topic);
              node.relationId = index.data(Zanshin::RelationIdRole).value<Id>();
              node.uid = index.data(Zanshin::UidRole).toString();
              if (node.uid.isEmpty()) {
@@ -72,7 +72,7 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
              return node;
          }
          case Zanshin::StandardTodo: {
-             PimNode node (PimNode::PimItem);
+             PimItemIndex node (PimItemIndex::PimItem);
              node.item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
@@ -80,12 +80,12 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
          case Zanshin::Inbox:
          case Zanshin::TopicRoot:
          case Zanshin::ContextRoot:
-             return PimNode(PimNode::Invalid);
+             return PimItemIndex(PimItemIndex::Invalid);
          default:
              kWarning() << "unhandled type: " << itemType;
      }
      Q_ASSERT(false);
-     return PimNode(PimNode::Invalid);
+     return PimItemIndex(PimItemIndex::Invalid);
 }
 
 // PimNode PimItemServices::projectNode(const Akonadi::Item& )
@@ -119,7 +119,7 @@ PimNode PimItemServices::fromIndex(const QModelIndex &index)
 // }
 // 
 
-PimItemTreeNode PimItemServices::getNode(const PimNode &node) const
+PimItemTreeNode PimItemServices::getNode(const PimItemIndex &node) const
 {
     if( node.relationId >= 0 ) {
         return mStructure->getNode(node.relationId);
@@ -143,35 +143,35 @@ PimItemServices &PimItemServices::getInstance(PimItemRelation::Type type) {
     return projectInstance();
 }
 
-static PimItemRelation::Type getRelationType(PimNode::NodeType parentType)
+static PimItemRelation::Type getRelationType(PimItemIndex::ItemType parentType)
 {
     switch (parentType) {
-        case PimNode::Project:
+        case PimItemIndex::Project:
             return PimItemRelation::Project;
-        case PimNode::Context:
+        case PimItemIndex::Context:
             return PimItemRelation::Context;
-        case PimNode::Topic:
+        case PimItemIndex::Topic:
             return PimItemRelation::Topic;
         default:
             return PimItemRelation::Invalid;
     }
 }
 
-static bool isVirtualType(PimNode::NodeType type)
+static bool isVirtualType(PimItemIndex::ItemType type)
 {
-    return (type == PimNode::Context || type == PimNode::Topic);
+    return (type == PimItemIndex::Context || type == PimItemIndex::Topic);
 }
 
-void PimItemServices::create(PimNode::NodeType type, const QString& name, const QList< PimNode >& parents, const Akonadi::Collection& col)
+void PimItemServices::create(PimItemIndex::ItemType type, const QString& name, const QList< PimItemIndex >& parents, const Akonadi::Collection& col)
 {
     Akonadi::Collection collection = col;
     if (!collection.isValid() && !isVirtualType(type)) {
         switch (type) {
-            case PimNode::Project:
-            case PimNode::Todo:
+            case PimItemIndex::Project:
+            case PimItemIndex::Todo:
                 collection = Settings::instance().defaultTodoCollection();
                 break;
-            case PimNode::Note:
+            case PimItemIndex::Note:
                 collection = Settings::instance().defaultNoteCollection();
                 break;
             default:
@@ -184,7 +184,7 @@ void PimItemServices::create(PimNode::NodeType type, const QString& name, const 
     }
     QList<PimItemRelation> relations;
     if (!parents.isEmpty()) {
-        const PimNode parent = parents.first();
+        const PimItemIndex parent = parents.first();
         const PimItemRelation::Type relationType = getRelationType(parent.type);
         if (relationType != PimItemRelation::Invalid) {
             relations << PimItemRelation(relationType, QList<PimItemTreeNode>() << getInstance(relationType).getNode(parent));
@@ -192,26 +192,26 @@ void PimItemServices::create(PimNode::NodeType type, const QString& name, const 
     }
  
     switch (type) {
-        case PimNode::Project:
+        case PimItemIndex::Project:
             kDebug() << "adding project: " << name << collection.url().url();
             TodoHelpers::addTodo(name, relations, collection, true);
             break;
-        case PimNode::Todo: {
+        case PimItemIndex::Todo: {
             kDebug() << "adding todo: " << name << collection.url().url();
             TodoHelpers::addTodo(name, relations, collection, false);
             break;
         }
-        case PimNode::Note: {
+        case PimItemIndex::Note: {
             NoteItem note;
             note.setTitle(name);
             note.setRelations(relations);
             new Akonadi::ItemCreateJob(note.getItem(), collection);
             break;
         }
-        case PimNode::Context:
+        case PimItemIndex::Context:
             PimItemServices::contextInstance().add(name, parents);
             break;
-        case PimNode::Topic:
+        case PimItemIndex::Topic:
             PimItemServices::topicInstance().add(name, parents);
             break;
         default:
@@ -219,21 +219,21 @@ void PimItemServices::create(PimNode::NodeType type, const QString& name, const 
     }
 }
 
-void PimItemServices::remove(const PimNode& node, QWidget *parent)
+void PimItemServices::remove(const PimItemIndex& node, QWidget *parent)
 {
     switch (node.type) {
-        case PimNode::Project:
+        case PimItemIndex::Project:
             PimItemServices::projectInstance().remove(node, parent);
             break;
-        case PimNode::Todo:
-        case PimNode::Note:
-        case PimNode::PimItem:
+        case PimItemIndex::Todo:
+        case PimItemIndex::Note:
+        case PimItemIndex::PimItem:
             new Akonadi::ItemDeleteJob(node.item);
             break;
-        case PimNode::Context:
+        case PimItemIndex::Context:
             PimItemServices::contextInstance().remove(node, parent);
             break;
-        case PimNode::Topic:
+        case PimItemIndex::Topic:
             PimItemServices::topicInstance().remove(node, parent);
             break;
         default:
@@ -241,22 +241,22 @@ void PimItemServices::remove(const PimNode& node, QWidget *parent)
     }
 }
 
-void PimItemServices::remove(const QList< PimNode >& nodes, QWidget *parent)
+void PimItemServices::remove(const QList< PimItemIndex >& nodes, QWidget *parent)
 {
-    foreach(const PimNode &node, nodes) {
+    foreach(const PimItemIndex &node, nodes) {
         remove(node, parent);
     }
 }
 
-void PimItemServices::moveTo(const PimNode &node, const PimNode &parent)
+void PimItemServices::moveTo(const PimItemIndex &node, const PimItemIndex &parent)
 {
     switch (parent.type) {
-    case PimNode::Project:
+    case PimItemIndex::Project:
         switch (node.type) {
-        case PimNode::Project:
-        case PimNode::Todo:
-        case PimNode::Note:
-        case PimNode::PimItem:
+        case PimItemIndex::Project:
+        case PimItemIndex::Todo:
+        case PimItemIndex::Note:
+        case PimItemIndex::PimItem:
             projectInstance().moveTo(node, parent);
             break;
         default:
@@ -270,17 +270,17 @@ void PimItemServices::moveTo(const PimNode &node, const PimNode &parent)
     }
 }
 
-void PimItemServices::linkTo(const PimNode& /*node*/, const PimNode& /*parent*/)
+void PimItemServices::linkTo(const PimItemIndex& /*node*/, const PimItemIndex& /*parent*/)
 {
 
 }
 
-void PimItemServices::unlink(const PimNode& /*node*/, const PimNode& /*parent*/)
+void PimItemServices::unlink(const PimItemIndex& /*node*/, const PimItemIndex& /*parent*/)
 {
 
 }
 
-void PimItemServices::rename(const PimNode& /*node*/, const QString& /*name*/)
+void PimItemServices::rename(const PimItemIndex& /*node*/, const QString& /*name*/)
 {
 
 }
@@ -325,16 +325,16 @@ PimItemRelationInterface::~PimItemRelationInterface()
 //     return index.relationId;
 // }
 
-static IdList toId(const QList<PimNode> &list)
+static IdList toId(const QList<PimItemIndex> &list)
 {
     IdList parentIds;
-    foreach (const PimNode &index, list) {
+    foreach (const PimItemIndex &index, list) {
         parentIds << index.relationId;
     }
     return parentIds;
 }
 
-void PimItemRelationInterface::add(const QString& name, const QList<PimNode>& parents)
+void PimItemRelationInterface::add(const QString& name, const QList<PimItemIndex>& parents)
 {
     kDebug() << name << toId(parents);
     mStructure->addNode(name, toId(parents));
@@ -487,20 +487,20 @@ ProjectStructureInterface::ProjectStructureInterface()
 
 }
 
-bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& parent)
+bool ProjectStructureInterface::moveTo(const PimItemIndex& node, const PimItemIndex& parent)
 {
-    PimNode::NodeType nodeType = node.type;
-    PimNode::NodeType parentType = parent.type;
+    PimItemIndex::ItemType nodeType = node.type;
+    PimItemIndex::ItemType parentType = parent.type;
 //    const Akonadi::Item item = node.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
-    if (nodeType == PimNode::Invalid || parentType == PimNode::Invalid) {
+    if (nodeType == PimItemIndex::Invalid || parentType == PimItemIndex::Invalid) {
         return false;
     }
 
     DataStoreInterface::instance().moveTodoToProject(node, parent);
 
     IdList parents;
-    if (parentType != PimNode::Empty) {
+    if (parentType != PimItemIndex::Empty) {
         parents << mStructure->getId(parent.uid.toLatin1());
     }
     Id nodeId = mStructure->getItemId(node.item);
@@ -522,7 +522,7 @@ bool ProjectStructureInterface::moveTo(const PimNode& node, const PimNode& paren
 //     return TodoHelpers::moveTodoToProject(item, pimitem->getUid(), parentType, parentCollection);
 }
 
-void ProjectStructureInterface::remove(const QList< PimNode >& nodes, QWidget *parent)
+void ProjectStructureInterface::remove(const QList< PimItemIndex >& nodes, QWidget *parent)
 {
     Q_ASSERT(mStructure);
     if (nodes.isEmpty()) {
@@ -564,7 +564,7 @@ void ProjectStructureInterface::remove(const QList< PimNode >& nodes, QWidget *p
     if (!canRemove) return;
 
     Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence();
-    foreach (const PimNode &node, nodes) {
+    foreach (const PimItemIndex &node, nodes) {
         Q_ASSERT(node.item.isValid());
         Id id = mStructure->getItemId(node.item);
         IdList children = static_cast<ProjectStructureCache*>(mStructure.data())->getChildren(id);
@@ -579,9 +579,9 @@ void ProjectStructureInterface::remove(const QList< PimNode >& nodes, QWidget *p
     sequence->start();
 }
 
-void ProjectStructureInterface::remove(const PimNode& node, QWidget *parent)
+void ProjectStructureInterface::remove(const PimItemIndex& node, QWidget *parent)
 {
-    QList<PimNode> projects;
+    QList<PimItemIndex> projects;
     projects << node;
     return remove(projects, parent);
 }
