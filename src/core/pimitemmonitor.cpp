@@ -28,6 +28,7 @@
 PimItemMonitor::PimItemMonitor(const PimItem::Ptr &item, QObject* parent)
 :   QObject(parent),
     m_monitor(0),
+    m_session(new Akonadi::Session("zanshinpimitemmonitor", this)),
     m_itemOutdated(false),
     mItem(item)
 {
@@ -44,28 +45,20 @@ bool PimItemMonitor::saveItem()
     }
     m_itemOutdated = true;
 
-    //create a session which is ignored by this monitor, other items still receive the changed signal from the monitor
-    //FIXME this doesn't work. Noone will receive signals about this change since everyone listens to the main session. At least thats what the tests say, according to the docs it should be different. Investigate.
-    Akonadi::Session *session = new Akonadi::Session();
-    if (m_monitor) {
-        m_monitor->ignoreSession(session);
-    }
-    //kDebug() << m_item.revision();
-
-    Akonadi::ItemModifyJob *modifyJob = new Akonadi::ItemModifyJob(mItem->getItem(), session);
+    Akonadi::ItemModifyJob *modifyJob = new Akonadi::ItemModifyJob(mItem->getItem(), m_session);
     connect(modifyJob, SIGNAL(result(KJob*)), SLOT(modifyDone(KJob*)) );
-    connect(modifyJob, SIGNAL(result(KJob*)), session, SLOT(deleteLater())); //This will delete the session as soon as the job finished which will in turn delete the job
     return true;
 }
 
 void PimItemMonitor::modifyDone(KJob* job)
 {
-    //Updateing the item does not help because the akonadi resource will modifiy the item again to update the remote revision,
-    //which will result anyways in an outdate item here if the monitor is not enabled
     if ( job->error() ) {
         kWarning() << job->errorString();
+        m_itemOutdated = false;
         return;
     }
+    Akonadi::ItemModifyJob *modifyJob = static_cast<Akonadi::ItemModifyJob*>(job);
+    itemUpdated(modifyJob->item());
 }
 
 void PimItemMonitor::itemUpdated(const Akonadi::Item &newItem)
@@ -166,6 +159,9 @@ void PimItemMonitor::enableMonitor()
     m_monitor->itemFetchScope().fetchFullPayload();
     m_monitor->itemFetchScope().fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
     m_monitor->setItemMonitored(mItem->getItem());
+    //ignore this session so we can ignore our own changes
+    //FIXME this doesn't work. Noone will receive signals about this change since everyone listens to the main session. At least thats what the tests say, according to the docs it should be different. Investigate.
+    m_monitor->ignoreSession(m_session);
     connect( m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SLOT(updateItem(Akonadi::Item,QSet<QByteArray>)));
     connect( m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(removed()));
     // kDebug() << "monitoring of item " << mItem->m_item.id() << " started";

@@ -22,6 +22,7 @@
 
 namespace Akonadi {
 class Monitor;
+class Session;
 }
 
 class PimItemMonitor: public QObject
@@ -88,6 +89,7 @@ private:
     void itemUpdated(const Akonadi::Item &);
     
     Akonadi::Monitor *m_monitor;
+    Akonadi::Session *m_session;
     bool m_itemOutdated;
     PimItem::Ptr mItem;
 };

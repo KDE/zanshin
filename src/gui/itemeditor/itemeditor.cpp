@@ -194,7 +194,7 @@ void ItemEditor::saveItem()
     }
     if (modified) {
         kDebug() << "save item";
-        m_currentItem->saveItem();
+        m_itemMonitor->saveItem();
     }
 }
 /*
@@ -400,7 +400,7 @@ void ItemEditor::setEventDate(KDateTime dateTime)
     if (m_currentItem->itemType() & PimItem::Event) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setEventStart(dateTime);
-        m_currentItem->saveItem();
+        m_itemMonitor->saveItem();
     }
 }
 
@@ -414,7 +414,7 @@ void ItemEditor::setDueDate(KDateTime dateTime, bool enabled)
     if (m_currentItem->itemType() & PimItem::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setDueDate(dateTime, enabled);
-        m_currentItem->saveItem();
+        m_itemMonitor->saveItem();
     }
 }
 
