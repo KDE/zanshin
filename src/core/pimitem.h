@@ -33,11 +33,6 @@
 
 class KJob;
 
-namespace Akonadi {
-    class Monitor;
-    class Session;
-}
-
 /**
  * A wrapper around akonadi item
  *

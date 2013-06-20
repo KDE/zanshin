@@ -20,6 +20,10 @@
 #include <QObject>
 #include "pimitem.h"
 
+namespace Akonadi {
+class Monitor;
+}
+
 class PimItemMonitor: public QObject
 {
     Q_OBJECT

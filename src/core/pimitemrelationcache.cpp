@@ -62,7 +62,7 @@ Id PimItemRelationCache::addItem(const Akonadi::Item &item)
     //TODO cache
     
 //     kDebug() << pimitem->itemType();
-    Id id = getOrCreateItemId(item);
+    const Id id = getOrCreateItemId(item);
     if (id < 0) {
         return -1;
     }
