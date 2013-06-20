@@ -25,10 +25,6 @@
 #define PIMITEMFACTORY_H
 #include "pimitem.h"
 
-namespace Nepomuk2 {
-class Resource;
-}
-
 namespace PimItemFactory {
     PimItem::Ptr getItem(const Akonadi::Item &item);
 };
