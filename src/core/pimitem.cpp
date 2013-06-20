@@ -110,6 +110,7 @@ const Akonadi::Item& PimItem::getItem() const
 void PimItem::setItem(const Akonadi::Item &item)
 {
     m_item = item;
+    Q_ASSERT(hasValidPayload());
 }
 
 KJob *PimItem::saveItem()

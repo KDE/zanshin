@@ -81,6 +81,8 @@ private slots:
 private:
     Q_DISABLE_COPY(PimItemMonitor);
 
+    void itemUpdated(const Akonadi::Item &);
+    
     Akonadi::Monitor *m_monitor;
     bool m_itemOutdated;
     PimItem::Ptr mItem;

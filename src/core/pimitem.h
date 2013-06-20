@@ -120,10 +120,10 @@ public:
     KJob *saveItem();
 
 protected:
-    Akonadi::Item m_item;
-    virtual void setItem(const Akonadi::Item &);
-private:
     friend class PimItemMonitor;
+    virtual void setItem(const Akonadi::Item &);
+    Akonadi::Item m_item;
+private:
     Q_DISABLE_COPY(PimItem);
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)

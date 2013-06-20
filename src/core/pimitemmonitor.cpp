@@ -68,15 +68,22 @@ void PimItemMonitor::modifyDone(KJob* job)
     }
 }
 
+void PimItemMonitor::itemUpdated(const Akonadi::Item &newItem)
+{
+    mItem->setItem(newItem);
+    m_itemOutdated = false;
+}
+
 void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray> &changes)
 {
 //     kDebug() << "new item" << item.id() << item.revision() << item.modificationTime() << "old item" << m_item.id() << m_item.revision() << m_item.modificationTime();
     kDebug() << changes;
+    Q_ASSERT(item.isValid());
     Q_ASSERT(item.id() == mItem->getItem().id());
 
     if (changes.contains("REMOTEID") && changes.size() == 1) { //we don't care if the remoteid changed
         kDebug() << "remoteid changed";
-        mItem->m_item = item;
+        itemUpdated(item);
         return;
     }
 
@@ -90,18 +97,15 @@ void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray
      * It could be possible that we receive a foreign update (another app changed the same akonadi item),
      * during the time where we wait for the updated content after the item save
      */
-    Q_ASSERT(item.isValid());
     PimItem::Ptr oldItem(PimItemFactory::getItem(mItem->getItem()));
-    mItem->setItem(item);
-    m_itemOutdated = false;
+    itemUpdated(item);
 
-    //TODO check what has changed, i.e we don't care about a change of the remoteid
     //TODO what about lastModified
     if (changes.contains("ATR:ENTITYDISPLAY") || changes.contains("PLD:RFC822")) { //only the displayattribute and the payload are relevant for the content
         parts |= Payload;
         if (changes.contains("ATR:ENTITYDISPLAY")) { //the entitydisplayattribue was modified, so it is more up to date than the title from the payload
-            Q_ASSERT(mItem->getItem().hasAttribute<Akonadi::EntityDisplayAttribute>());
-            Akonadi::EntityDisplayAttribute *att = mItem->m_item.attribute<Akonadi::EntityDisplayAttribute>();
+            Q_ASSERT(item.hasAttribute<Akonadi::EntityDisplayAttribute>());
+            Akonadi::EntityDisplayAttribute *att = item.attribute<Akonadi::EntityDisplayAttribute>();
             mItem->setTitle(att->displayName());
         }
 
@@ -127,7 +131,7 @@ void PimItemMonitor::fetchPayload()
         return;
     }
     kDebug() << "no valid payload, fetching...";
-    Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(mItem->m_item, this);
+    Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(mItem->getItem(), this);
     fetchJob->fetchScope().fetchFullPayload();
     connect( fetchJob, SIGNAL( result( KJob* ) ),this, SLOT( itemFetchDone( KJob* ) ) );
     m_itemOutdated = true;
@@ -140,17 +144,12 @@ void PimItemMonitor::itemFetchDone( KJob *job )
         kError() << job->errorString();
         return;
     }
-
-    mItem->m_item = fetchJob->items().first();
-    if (!mItem->m_item.isValid()) {
-        kWarning() << "Item not valid";
-        return;
-    }
-    Q_ASSERT(mItem->m_item.hasPayload());
+    const Akonadi::Item item = fetchJob->items().first();
+    Q_ASSERT(item.isValid());
+    Q_ASSERT(item.hasPayload());
+    itemUpdated(item);
     kDebug() << "item fetch complete";
-    m_itemOutdated = false;
     emit payloadFetchComplete();
-
 }
 
 void PimItemMonitor::enableMonitor()
