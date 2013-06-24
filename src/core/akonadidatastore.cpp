@@ -39,7 +39,7 @@ bool AkonadiDataStore::moveTodoToProject(const PimItemIndex &node, const PimItem
     Zanshin::ItemType parentItemType = Zanshin::StandardTodo;
     Akonadi::Collection collection;
     switch (parentType) {
-    case PimItemIndex::Empty:
+    case PimItemIndex::Inbox:
         parentItemType = Zanshin::Inbox;
         collection = node.item.parentCollection();
         break;

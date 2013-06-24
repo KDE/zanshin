@@ -117,8 +117,8 @@ void NoteItem::commitData()
 
 QString NoteItem::mimeType()
 {
-    Q_ASSERT(PimItem::mimeType(PimItem::Note) == Akonadi::NoteUtils::noteMimeType());
-    return PimItem::mimeType(PimItem::Note);
+    Q_ASSERT(PimItem::mimeType(PimItemIndex::Note) == Akonadi::NoteUtils::noteMimeType());
+    return PimItem::mimeType(PimItemIndex::Note);
 }
 
 PimItem::ItemStatus NoteItem::getStatus() const
@@ -145,9 +145,9 @@ KDateTime NoteItem::getLastModifiedDate()
     return PimItem::getLastModifiedDate();
 }
 
-PimItem::ItemType NoteItem::itemType()
+PimItemIndex::ItemType NoteItem::itemType()
 {
-    return PimItem::Note;
+    return PimItemIndex::Note;
 }
 
 QList< PimItemRelation > NoteItem::getRelations()

@@ -39,13 +39,13 @@ typename T::Ptr unwrap(const Akonadi::Item &item)
     return item.payload< typename T::Ptr>();
 }
 
-IncidenceItem::IncidenceItem(PimItem::ItemType type)
+IncidenceItem::IncidenceItem(PimItemIndex::ItemType type)
 : PimItem()
 {
     KCalCore::Incidence *newItem = 0;
-    if (type == PimItem::Todo) {
+    if (type == PimItemIndex::Todo) {
         newItem = new KCalCore::Todo();
-    } else if (type == PimItem::Event) {
+    } else if (type == PimItemIndex::Event) {
         newItem = new KCalCore::Event();
     }
     Q_ASSERT(newItem);
@@ -320,21 +320,21 @@ QString IncidenceItem::getIconName()
     return QLatin1String( "network-wired" );
 }
 
-PimItem::ItemType IncidenceItem::itemType()
+PimItemIndex::ItemType IncidenceItem::itemType()
 {
     KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence>(m_item);
     if (!old) {
         kWarning() << "invalid item";
-        return PimItem::Incidence;
+        return PimItemIndex::NoType;
     }
     if ( old->type() == KCalCore::IncidenceBase::TypeTodo ) {
-        return PimItem::Todo;
+        return PimItemIndex::Todo;
     } else if ( old->type() == KCalCore::IncidenceBase::TypeJournal ) {
-        return PimItem::Journal;
+        return PimItemIndex::Journal;
     } else if ( old->type() == KCalCore::IncidenceBase::TypeEvent ) {
-        return PimItem::Event;
+        return PimItemIndex::Event;
     }
-    return PimItem::Incidence;
+    return PimItemIndex::NoType;
 }
 
 void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)

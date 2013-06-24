@@ -72,7 +72,7 @@ PimItemIndex PimItemServices::fromIndex(const QModelIndex &index)
              return node;
          }
          case Zanshin::StandardTodo: {
-             PimItemIndex node (PimItemIndex::PimItem);
+             PimItemIndex node (PimItemIndex::Todo);
              node.item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
              node.uid = index.data(Zanshin::UidRole).toString();
              return node;
@@ -80,12 +80,12 @@ PimItemIndex PimItemServices::fromIndex(const QModelIndex &index)
          case Zanshin::Inbox:
          case Zanshin::TopicRoot:
          case Zanshin::ContextRoot:
-             return PimItemIndex(PimItemIndex::Invalid);
+             return PimItemIndex(PimItemIndex::NoType);
          default:
              kWarning() << "unhandled type: " << itemType;
      }
      Q_ASSERT(false);
-     return PimItemIndex(PimItemIndex::Invalid);
+     return PimItemIndex(PimItemIndex::NoType);
 }
 
 // PimNode PimItemServices::projectNode(const Akonadi::Item& )
@@ -227,7 +227,6 @@ void PimItemServices::remove(const PimItemIndex& node, QWidget *parent)
             break;
         case PimItemIndex::Todo:
         case PimItemIndex::Note:
-        case PimItemIndex::PimItem:
             new Akonadi::ItemDeleteJob(node.item);
             break;
         case PimItemIndex::Context:
@@ -256,7 +255,6 @@ void PimItemServices::moveTo(const PimItemIndex &node, const PimItemIndex &paren
         case PimItemIndex::Project:
         case PimItemIndex::Todo:
         case PimItemIndex::Note:
-        case PimItemIndex::PimItem:
             projectInstance().moveTo(node, parent);
             break;
         default:
@@ -493,14 +491,14 @@ bool ProjectStructureInterface::moveTo(const PimItemIndex& node, const PimItemIn
     PimItemIndex::ItemType parentType = parent.type;
 //    const Akonadi::Item item = node.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
-    if (nodeType == PimItemIndex::Invalid || parentType == PimItemIndex::Invalid) {
+    if (nodeType == PimItemIndex::NoType || parentType == PimItemIndex::NoType) {
         return false;
     }
 
     DataStoreInterface::instance().moveTodoToProject(node, parent);
 
     IdList parents;
-    if (parentType != PimItemIndex::Empty) {
+    if (parentType != PimItemIndex::Inbox) {
         parents << mStructure->getId(parent.uid.toLatin1());
     }
     Id nodeId = mStructure->getItemId(node.item);

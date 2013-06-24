@@ -367,11 +367,11 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     QString mimeTypeFilter;
     if (mode == Zanshin::KnowledgeMode) {
         sourceModel = models->knowledgeCollectionsModel();
-        mimeTypeFilter = PimItem::mimeType(PimItem::Note);
+        mimeTypeFilter = PimItem::mimeType(PimItemIndex::Note);
         m_defaultCollectionId = Settings::instance().defaultNoteCollection().id();
     } else {
         sourceModel = models->collectionsModel();
-        mimeTypeFilter = PimItem::mimeType(PimItem::Todo);
+        mimeTypeFilter = PimItem::mimeType(PimItemIndex::Todo);
         m_defaultCollectionId = Settings::instance().defaultTodoCollection().id();
     }
     KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);

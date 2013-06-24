@@ -30,6 +30,7 @@
 #include <QStringList>
 #include <kcalcore/attachment.h>
 #include "pimitemrelations.h"
+#include "pimitemindex.h"
 
 class KJob;
 
@@ -48,25 +49,12 @@ public:
     PimItem(const Akonadi::Item &);
     virtual ~PimItem();
 
-    enum ItemType {
-        None = 0,
-        Unknown = 1,
-        Note = 2,
-        //Calendar Items
-        Event = 4,
-        Todo = 8,
-        Journal = 16,
-        Incidence = Event | Todo | Journal, //All calendar Items
-        All = Note | Event | Todo | Journal
-    };
-    Q_DECLARE_FLAGS(ItemTypes, ItemType)
-
     //based on item mimetype of item
-    static ItemType itemType(const Akonadi::Item &);
-    virtual ItemType itemType() = 0;
+    static PimItemIndex::ItemType itemType(const Akonadi::Item &);
+    virtual PimItemIndex::ItemType itemType() = 0;
 
     virtual QString mimeType() = 0 ;
-    static QString mimeType(ItemType);
+    static QString mimeType(PimItemIndex::ItemType);
     //Returns a list of all supported mimetypes
     static QStringList mimeTypes();
     
@@ -121,8 +109,8 @@ protected:
 private:
     Q_DISABLE_COPY(PimItem);
 };
-Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)
-Q_DECLARE_METATYPE(PimItem::ItemTypes)
+//Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)
+//Q_DECLARE_METATYPE(PimItem::ItemTypes)
 Q_DECLARE_METATYPE(PimItem::Ptr)
 
 #endif // ABSTRACTPIMITEM_H

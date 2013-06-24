@@ -165,7 +165,7 @@ private slots:
         }
         {
             G n1(100, Qt::DisplayRole, "note1");
-            n1.data.insert(PimItemModel::ItemTypeRole, PimItem::Note);
+            n1.data.insert(PimItemModel::ItemTypeRole, PimItemIndex::Note);
             NoteItem note;
             note.setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(t1.uid.toLatin1())));
             Akonadi::Item item = note.getItem();
@@ -646,7 +646,7 @@ private slots:
             parent.uid = parentUid;
             interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
         } else {
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItemIndex::Empty));
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItemIndex::Inbox));
         }
 
         //THEN
@@ -793,7 +793,7 @@ private slots:
             parent.uid = parentUid;
             interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
         } else {
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItemIndex::Empty));
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItemIndex::Inbox));
         }
 
         //THEN

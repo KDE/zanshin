@@ -100,7 +100,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     Q_ASSERT(pimitem);
     switch (role) {
     case Qt::CheckStateRole:
-        if ((pimitem->itemType() == PimItem::Todo) && index.column()==0 && !pimitem.staticCast<IncidenceItem>()->isProject()) {
+        if ((pimitem->itemType() == PimItemIndex::Todo) && index.column()==0 && !pimitem.staticCast<IncidenceItem>()->isProject()) {
             return (pimitem->getStatus() == PimItem::Complete) ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();
@@ -110,7 +110,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     case Zanshin::ParentUidRole:
         return getParentProjects(pimitem->getRelations());
     case Zanshin::ItemTypeRole:
-        if ((pimitem->itemType() == PimItem::Todo) && pimitem.staticCast<IncidenceItem>()->isProject()) {
+        if ((pimitem->itemType() == PimItemIndex::Todo) && pimitem.staticCast<IncidenceItem>()->isProject()) {
             return Zanshin::ProjectTodo;
         }
         return Zanshin::StandardTodo;

@@ -42,19 +42,19 @@ PimItem::~PimItem()
 
 }
 
-PimItem::ItemType PimItem::itemType(const Akonadi::Item &item)
+PimItemIndex::ItemType PimItem::itemType(const Akonadi::Item &item)
 {
     //this works only if the mimetype of the akonadi item has been saved already
     Q_ASSERT(!item.mimeType().isEmpty());
-    if (item.mimeType() == mimeType(Note)) {
-        return Note;
-    } else if (item.mimeType() == mimeType(Event)) {
-        return Event;
-    } else if (item.mimeType() == mimeType(Todo)) {
-        return Todo;
+    if (item.mimeType() == mimeType(PimItemIndex::Note)) {
+        return PimItemIndex::Note;
+    } else if (item.mimeType() == mimeType(PimItemIndex::Event)) {
+        return PimItemIndex::Event;
+    } else if (item.mimeType() == mimeType(PimItemIndex::Todo)) {
+        return PimItemIndex::Todo;
     }
     kWarning() << "unknown type" << item.mimeType();
-    return Unknown;
+    return PimItemIndex::NoType;
 }
 
 QString PimItem::getTitle()
@@ -75,17 +75,15 @@ KDateTime PimItem::getLastModifiedDate()
     return KDateTime(m_item.modificationTime(), KDateTime::LocalZone);
 }
 
-QString PimItem::mimeType(PimItem::ItemType type)
+QString PimItem::mimeType(PimItemIndex::ItemType type)
 {
     switch (type) {
-        case Note:
+        case PimItemIndex::Note:
             return QString::fromLatin1( "text/x-vnd.akonadi.note" );
-        case Event:
+        case PimItemIndex::Event:
             return QString::fromLatin1( "application/x-vnd.akonadi.calendar.event" );
-        case Todo:
+        case PimItemIndex::Todo:
             return QString::fromLatin1( "application/x-vnd.akonadi.calendar.todo" );
-        case Incidence:
-            return QString::fromLatin1( "text/calendar" );
         default:
             kWarning() << "not implemented";
             Q_ASSERT(0);
@@ -96,9 +94,9 @@ QString PimItem::mimeType(PimItem::ItemType type)
 QStringList PimItem::mimeTypes()
 {
     QStringList list;
-    list << mimeType(Note);
-    list << mimeType(Event);
-    list << mimeType(Todo);
+    list << mimeType(PimItemIndex::Note);
+    list << mimeType(PimItemIndex::Event);
+    list << mimeType(PimItemIndex::Todo);
     return list;
 }
 

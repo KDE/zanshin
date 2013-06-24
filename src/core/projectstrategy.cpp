@@ -150,7 +150,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     Id id = mRelations->getItemId(item);
     parents = translateFrom(mRelations->getParents(id));
-    bool isNote = (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == PimItem::Note);
+    bool isNote = (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == PimItemIndex::Note);
     if (parents.isEmpty() || isNote) {
         if (!isProject(translateFrom(id), type) && !isNote) {
             return IdList() << mInbox;
@@ -230,7 +230,7 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
 
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
 
-    PimItemIndex parentNode(PimItemIndex::Invalid);
+    PimItemIndex parentNode(PimItemIndex::NoType);
     bool forward;
     Zanshin::ItemType parentType = (Zanshin::ItemType)data(id, 0, Zanshin::ItemTypeRole, forward).toInt();
     if (parentType == Zanshin::Collection) {
@@ -258,8 +258,8 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
             Akonadi::Item item = job->items().first();
             Q_ASSERT(item.isValid());
 
-            PimItemIndex node(PimItemIndex::Invalid);
-            if (PimItem::itemType(item) == PimItem::Todo) {
+            PimItemIndex node(PimItemIndex::NoType);
+            if (PimItem::itemType(item) == PimItemIndex::Todo) {
                 node.type = PimItemIndex::Todo;
             } else {
                 node.type = PimItemIndex::Note;

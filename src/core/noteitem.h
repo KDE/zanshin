@@ -49,7 +49,7 @@ public:
     NoteItem(const Akonadi::Item&);
 
     QString mimeType();
-    ItemType itemType();
+    PimItemIndex::ItemType itemType();
     virtual bool hasValidPayload();
     virtual ItemStatus getStatus() const;
 

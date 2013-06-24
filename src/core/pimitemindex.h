@@ -26,15 +26,20 @@ class PimItemIndex
 {
 public:
     enum ItemType {
-        Invalid,
-        Empty,
-        Collection,
+        NoType,
+
+        Inbox,
+        FolderRoot,
+
         Project,
         Context,
         Topic,
-        PimItem,
+
+        Collection,
+        Note,
+        Event,
         Todo,
-        Note
+        Journal
     };
 
     PimItemIndex(ItemType t);

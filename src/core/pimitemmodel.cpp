@@ -154,7 +154,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             //kDebug() << pimitem->getCreationDate().dateTime() << pimitem->getLastModifiedDate().dateTime();
             d.append(QString::fromLatin1("Created: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getCreationDate())));
             d.append(QString::fromLatin1("Modified: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getLastModifiedDate())));
-            if (pimitem->itemType() & PimItem::Todo && pimitem.staticCast<IncidenceItem>()->hasDueDate()) {
+            if (pimitem->itemType() & PimItemIndex::Todo && pimitem.staticCast<IncidenceItem>()->hasDueDate()) {
                 d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getPrimaryDate())));
             }
             d.append(QString::fromLatin1("Akonadi: %1\n").arg(item.url().url()));
@@ -259,7 +259,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
     case 0:
         if (role==Qt::EditRole) {
             pimitem->setTitle(value.toString());
-        } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItem::Todo) {
+        } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItemIndex::Todo) {
             if (value.toInt()==Qt::Checked) {
                 static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);
             } else {
@@ -274,7 +274,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
         pimitem->setContexts(value.toStringList());
         break;
     case 3:
-        if (pimitem->itemType() == PimItem::Todo) {
+        if (pimitem->itemType() == PimItemIndex::Todo) {
             static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()), true);
         }
 //         todo->setAllDay(true); TODO

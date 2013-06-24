@@ -34,7 +34,7 @@ public:
     /**
      * Create a new item
      */
-    IncidenceItem(PimItem::ItemType type);
+    IncidenceItem(PimItemIndex::ItemType type);
     /**
      * Access an existing item
      */
@@ -84,7 +84,7 @@ public:
     /**
      * Returns Todo/Event/Journal
      */
-    ItemType itemType();
+    PimItemIndex::ItemType itemType();
 };
 
 #endif // INCIDENCEITEM_H
