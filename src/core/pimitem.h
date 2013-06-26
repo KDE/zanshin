@@ -51,8 +51,6 @@ public:
 
     virtual QString mimeType() = 0 ;
     static QString mimeType(PimItemIndex::ItemType);
-    //Returns a list of all supported mimetypes
-    static QStringList mimeTypes();
     
     virtual bool hasValidPayload() = 0;
 

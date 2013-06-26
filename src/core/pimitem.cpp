@@ -50,15 +50,6 @@ QString PimItem::mimeType(PimItemIndex::ItemType type)
     return QString();
 }
 
-QStringList PimItem::mimeTypes()
-{
-    QStringList list;
-    list << mimeType(PimItemIndex::Note);
-    list << mimeType(PimItemIndex::Event);
-    list << mimeType(PimItemIndex::Todo);
-    return list;
-}
-
 bool PimItem::textIsRich()
 {
     return false;
