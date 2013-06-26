@@ -187,7 +187,7 @@ void CheckableEditableDate::checkStatusChanged(bool status)
     } else {
         display();
         enable(false);
-        emit dateChanged(KDateTime(), false);
+        emit dateChanged(KDateTime());
     }
 
 }
@@ -195,7 +195,7 @@ void CheckableEditableDate::checkStatusChanged(bool status)
 void CheckableEditableDate::buttonPressed()
 {
     if (m_editMode) {
-        emit dateChanged(KDateTime(m_dateTimeWidget->date()), true);
+        emit dateChanged(KDateTime(m_dateTimeWidget->date()));
     }
     EditableDate::buttonPressed();
 }

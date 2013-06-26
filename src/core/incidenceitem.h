@@ -44,7 +44,7 @@ public:
 
     bool hasDueDate() const;
     KDateTime getDueDate();
-    void setDueDate(const KDateTime&, bool hasDueDate=true);
+    void setDueDate(const KDateTime&);
 
     bool hasStartDate() const;
     KDateTime getEventStart();

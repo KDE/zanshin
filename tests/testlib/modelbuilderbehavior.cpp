@@ -63,7 +63,6 @@ QList<QStandardItem*> Zanshin::Test::StandardModelBuilderBehavior::expandTodo(co
     todo->setCompleted(t.state==Done);
     if (t.dueDate.isValid()) {
         todo->setDtDue(t.dueDate);
-        todo->setHasDueDate(true);
         todo->setAllDay(true);
     }
 

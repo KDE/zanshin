@@ -101,7 +101,7 @@ public:
 
     bool isEnabled();
 signals:
-    void dateChanged(KDateTime, bool);
+    void dateChanged(KDateTime);
 public slots:
     void enable(bool enable);
 public slots:

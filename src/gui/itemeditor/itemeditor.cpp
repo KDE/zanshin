@@ -104,7 +104,7 @@ ItemEditor::ItemEditor(QWidget* parent, KXMLGUIClient *parentClient)
     //Toolbox
     QWidget *propertiesWidget = new QWidget(toolbox);
     ui_properties->setupUi(propertiesWidget);
-    connect(ui_properties->editableDueDate, SIGNAL(dateChanged(KDateTime, bool)), this, SLOT(setDueDate(KDateTime, bool)));
+    connect(ui_properties->editableDueDate, SIGNAL(dateChanged(KDateTime, bool)), this, SLOT(setDueDate(KDateTime)));
     connect(ui_properties->editableEventDate, SIGNAL(dateChanged(KDateTime)), this, SLOT(setEventDate(KDateTime)));
     toolbox->addWidget(propertiesWidget, i18n("Properties"));
 
@@ -405,7 +405,7 @@ void ItemEditor::setEventDate(KDateTime dateTime)
 }
 
 
-void ItemEditor::setDueDate(KDateTime dateTime, bool enabled)
+void ItemEditor::setDueDate(KDateTime dateTime)
 {
     if (!m_currentItem) {
         return;
@@ -413,7 +413,7 @@ void ItemEditor::setDueDate(KDateTime dateTime, bool enabled)
     Q_ASSERT(m_currentItem);
     if (m_currentItem->itemType() == PimItemIndex::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
-        inc->setDueDate(dateTime, enabled);
+        inc->setDueDate(dateTime);
         m_itemMonitor->saveItem();
     }
 }

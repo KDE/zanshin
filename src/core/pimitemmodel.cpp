@@ -275,7 +275,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
         break;
     case 3:
         if (pimitem->itemType() == PimItemIndex::Todo) {
-            static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()), true);
+            static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()));
         }
 //         todo->setAllDay(true); TODO
         break;

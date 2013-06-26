@@ -168,11 +168,10 @@ void IncidenceItem::setParentTodo(const IncidenceItem &parent)
     }
 }
 
-void IncidenceItem::setDueDate(const KDateTime &date, bool hasDueDate)
+void IncidenceItem::setDueDate(const KDateTime &date)
 {
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         t->setDtDue(date);
-        t->setHasDueDate(hasDueDate);
     }
 }
 
@@ -235,7 +234,7 @@ void IncidenceItem::setTodoStatus(PimItem::ItemStatus status)
                 break;
             case Later:
                 t->setCompleted(false);
-                t->setHasStartDate(false);
+                t->setDtStart(KDateTime());
                 break;
             case Now:
                 t->setCompleted(false);

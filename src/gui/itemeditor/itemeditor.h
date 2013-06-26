@@ -80,7 +80,7 @@ private slots:
     void itemRemoved();
     void clearView();
 
-    void setDueDate(KDateTime, bool);
+    void setDueDate(KDateTime);
 
     void setEventDate(KDateTime);
 
