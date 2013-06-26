@@ -40,7 +40,7 @@ typename T::Ptr unwrap(const Akonadi::Item &item)
 }
 
 IncidenceItem::IncidenceItem(PimItemIndex::ItemType type)
-: PimItem()
+    : AkonadiBaseItem()
 {
     KCalCore::Incidence *newItem = 0;
     if (type == PimItemIndex::Todo) {
@@ -58,7 +58,7 @@ IncidenceItem::IncidenceItem(PimItemIndex::ItemType type)
 }
 
 IncidenceItem::IncidenceItem(const Akonadi::Item &item)
-:   PimItem(item)
+    : AkonadiBaseItem(item)
 {
 }
 

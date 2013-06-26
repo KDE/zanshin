@@ -25,9 +25,9 @@
 #ifndef INCIDENCEITEM_H
 #define INCIDENCEITEM_H
 
-#include "pimitem.h"
+#include "akonadibaseitem.h"
 
-class IncidenceItem : public PimItem
+class IncidenceItem : public AkonadiBaseItem
 {
 public:
     typedef QSharedPointer<IncidenceItem> Ptr;

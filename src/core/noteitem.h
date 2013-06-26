@@ -32,9 +32,9 @@
 #include <akonadi/notes/noteutils.h>
 #include <QString>
 
-#include "pimitem.h"
+#include "akonadibaseitem.h"
 
-class NoteItem : public PimItem
+class NoteItem : public AkonadiBaseItem
 {
 public:
     typedef QSharedPointer<NoteItem> Ptr;

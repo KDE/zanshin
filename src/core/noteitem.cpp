@@ -41,7 +41,7 @@ NoteWrapperPtr unpack(const Akonadi::Item &item)
 }
 
 NoteItem::NoteItem()
-:   PimItem(),
+:   AkonadiBaseItem(),
     messageWrapper(new Akonadi::NoteUtils::NoteMessageWrapper)
 {
     messageWrapper->setUid(QUuid::createUuid());
@@ -49,14 +49,14 @@ NoteItem::NoteItem()
 }
 
 NoteItem::NoteItem(const Akonadi::Item &item)
-:   PimItem(item),
+:   AkonadiBaseItem(item),
     messageWrapper(unpack(item))
 {
 }
 
 void NoteItem::setItem(const Akonadi::Item &item)
 {
-    PimItem::setItem(item);
+    AkonadiBaseItem::setItem(item);
     messageWrapper = unpack(item);
 }
 
@@ -142,7 +142,7 @@ KDateTime NoteItem::getLastModifiedDate()
     if (lastMod.isValid()) {
         return lastMod.toLocalZone();
     }
-    return PimItem::getLastModifiedDate();
+    return AkonadiBaseItem::getLastModifiedDate();
 }
 
 PimItemIndex::ItemType NoteItem::itemType()
