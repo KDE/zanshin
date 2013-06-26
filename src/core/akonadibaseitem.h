@@ -31,8 +31,26 @@ Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
 class AkonadiBaseItem : public PimItem
 {
 public:
+    typedef QSharedPointer<AkonadiBaseItem> Ptr;
+
     AkonadiBaseItem();
     AkonadiBaseItem(const Akonadi::Item &item);
+
+    //based on item mimetype of item
+    static PimItemIndex::ItemType typeFromItem(const Akonadi::Item &item);
+
+    const Akonadi::Item &getItem() const;
+
+    QString getTitle();
+    KDateTime getLastModifiedDate();
+    KJob *saveItem();
+
+protected:
+    friend class PimItemMonitor;
+    virtual void setItem(const Akonadi::Item &);
+    Akonadi::Item m_item;
 };
+
+Q_DECLARE_METATYPE(AkonadiBaseItem::Ptr)
 
 #endif

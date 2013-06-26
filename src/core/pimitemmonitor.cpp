@@ -25,7 +25,7 @@
 #include <Akonadi/Session>
 #include <Akonadi/EntityDisplayAttribute>
 
-PimItemMonitor::PimItemMonitor(const PimItem::Ptr &item, QObject* parent)
+PimItemMonitor::PimItemMonitor(const AkonadiBaseItem::Ptr &item, QObject* parent)
 :   QObject(parent),
     m_monitor(0),
     m_session(new Akonadi::Session("zanshinpimitemmonitor", this)),

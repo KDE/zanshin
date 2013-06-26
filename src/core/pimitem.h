@@ -25,7 +25,6 @@
 #ifndef ABSTRACTPIMITEM_H
 #define ABSTRACTPIMITEM_H
 
-#include <Akonadi/Item>
 #include <KDateTime>
 #include <QStringList>
 #include <kcalcore/attachment.h>
@@ -46,11 +45,8 @@ class PimItem
 public:
     typedef QSharedPointer<PimItem> Ptr;
     PimItem();
-    PimItem(const Akonadi::Item &);
     virtual ~PimItem();
 
-    //based on item mimetype of item
-    static PimItemIndex::ItemType itemType(const Akonadi::Item &);
     virtual PimItemIndex::ItemType itemType() = 0;
 
     virtual QString mimeType() = 0 ;
@@ -82,7 +78,7 @@ public:
     virtual QString getTitle() = 0;
     virtual void setCreationDate(const KDateTime &) = 0;
     virtual KDateTime getCreationDate() = 0;
-    virtual KDateTime getLastModifiedDate();
+    virtual KDateTime getLastModifiedDate() = 0;
     virtual QString getIconName() = 0;
     virtual bool textIsRich();
     virtual bool titleIsRich();
@@ -99,13 +95,8 @@ public:
     virtual QStringList getContexts();
     virtual const KCalCore::Attachment::List getAttachments();
 
-    const Akonadi::Item &getItem() const;
-    KJob *saveItem();
+    virtual KJob *saveItem() = 0;
 
-protected:
-    friend class PimItemMonitor;
-    virtual void setItem(const Akonadi::Item &);
-    Akonadi::Item m_item;
 private:
     Q_DISABLE_COPY(PimItem);
 };

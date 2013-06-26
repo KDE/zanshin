@@ -24,55 +24,14 @@
 
 #include "pimitem.h"
 
-#include <Akonadi/ItemModifyJob>
-#include <Akonadi/EntityDisplayAttribute>
-
 PimItem::PimItem()
 {
 
 }
 
-PimItem::PimItem(const Akonadi::Item &item)
-    : m_item(item)
-{
-}
-
 PimItem::~PimItem()
 {
 
-}
-
-PimItemIndex::ItemType PimItem::itemType(const Akonadi::Item &item)
-{
-    //this works only if the mimetype of the akonadi item has been saved already
-    Q_ASSERT(!item.mimeType().isEmpty());
-    if (item.mimeType() == mimeType(PimItemIndex::Note)) {
-        return PimItemIndex::Note;
-    } else if (item.mimeType() == mimeType(PimItemIndex::Event)) {
-        return PimItemIndex::Event;
-    } else if (item.mimeType() == mimeType(PimItemIndex::Todo)) {
-        return PimItemIndex::Todo;
-    }
-    kWarning() << "unknown type" << item.mimeType();
-    return PimItemIndex::NoType;
-}
-
-QString PimItem::getTitle()
-{
-    if (m_item.hasAttribute<Akonadi::EntityDisplayAttribute>()) {
-        Akonadi::EntityDisplayAttribute *att = m_item.attribute<Akonadi::EntityDisplayAttribute>();
-        return att->displayName();
-    }
-    return QString();
-}
-
-KDateTime PimItem::getLastModifiedDate()
-{
-    if (!m_item.isValid()) {
-        kWarning() << "invalid item";
-        return KDateTime();
-    }
-    return KDateTime(m_item.modificationTime(), KDateTime::LocalZone);
 }
 
 QString PimItem::mimeType(PimItemIndex::ItemType type)
@@ -98,26 +57,6 @@ QStringList PimItem::mimeTypes()
     list << mimeType(PimItemIndex::Event);
     list << mimeType(PimItemIndex::Todo);
     return list;
-}
-
-const Akonadi::Item& PimItem::getItem() const
-{
-    return m_item;
-}
-
-void PimItem::setItem(const Akonadi::Item &item)
-{
-    m_item = item;
-    Q_ASSERT(hasValidPayload());
-}
-
-KJob *PimItem::saveItem()
-{
-    if (!hasValidPayload()) {
-        kWarning() << "tried to save item without payload";
-        return 0;
-    }
-    return new Akonadi::ItemModifyJob(m_item);
 }
 
 bool PimItem::textIsRich()

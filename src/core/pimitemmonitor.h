@@ -18,7 +18,7 @@
 #ifndef PIMITEMMONITOR_H
 #define PIMITEMMONITOR_H
 #include <QObject>
-#include "pimitem.h"
+#include "akonadibaseitem.h"
 
 namespace Akonadi {
 class Monitor;
@@ -29,7 +29,7 @@ class PimItemMonitor: public QObject
 {
     Q_OBJECT
 public:
-    explicit PimItemMonitor(const PimItem::Ptr &item, QObject* parent = 0);
+    explicit PimItemMonitor(const AkonadiBaseItem::Ptr &item, QObject* parent = 0);
     
     enum ChangedPart {
         Title = 0x01,
@@ -91,7 +91,7 @@ private:
     Akonadi::Monitor *m_monitor;
     Akonadi::Session *m_session;
     bool m_itemOutdated;
-    PimItem::Ptr mItem;
+    AkonadiBaseItem::Ptr mItem;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(PimItemMonitor::ChangedParts)
 Q_DECLARE_METATYPE(PimItemMonitor::ChangedParts)

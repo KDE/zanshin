@@ -286,7 +286,7 @@ bool TodoHelpers::promoteTodo(const QModelIndex &index)
 void TodoHelpers::moveToProject(Akonadi::Item &item, const QString &parentUid, bool linkOnly)
 {
     kDebug() << item.id() << parentUid;
-    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    AkonadiBaseItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimitem.isNull());
     QList<PimItemRelation> relations = pimitem->getRelations();
     int i = 0;

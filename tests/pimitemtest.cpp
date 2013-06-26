@@ -35,15 +35,15 @@ class PimItemTest : public QObject
 private slots:
     void testGetAndSet_data()
     {
-        QTest::addColumn<PimItem::Ptr>("item");
-        QTest::newRow("event") << PimItem::Ptr(new IncidenceItem(PimItemIndex::Event));
-        QTest::newRow("note") << PimItem::Ptr(new NoteItem());
+        QTest::addColumn<AkonadiBaseItem::Ptr>("item");
+        QTest::newRow("event") << AkonadiBaseItem::Ptr(new IncidenceItem(PimItemIndex::Event));
+        QTest::newRow("note") << AkonadiBaseItem::Ptr(new NoteItem());
     }
     
     //Ensure save and load from akonadi item works
     void testGetAndSet()
     {
-        QFETCH(PimItem::Ptr, item);
+        QFETCH(AkonadiBaseItem::Ptr, item);
         item->setTitle("title");
         item->setText("text");
         

@@ -31,7 +31,7 @@
 
 #include <Akonadi/Item>
 
-#include "core/pimitem.h"
+#include "core/akonadibaseitem.h"
 #include "core/pimitemmonitor.h"
 
 namespace Nepomuk2 {
@@ -94,7 +94,7 @@ signals:
 private:
 
     PimItemMonitor *m_itemMonitor;
-    PimItem::Ptr m_currentItem;
+    AkonadiBaseItem::Ptr m_currentItem;
     QTimer *m_autosaveTimer;
     int m_autosaveTimeout;
     Ui::properties *ui_properties;

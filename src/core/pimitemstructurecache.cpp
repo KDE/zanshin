@@ -77,7 +77,7 @@ QList<PimItemTreeNode> PimItemStructureCache::getParentTreeNodes(Id id)
 void PimItemStructureCache::updateRelationTree(Akonadi::Item &item)
 {
 //     kDebug() << item.id();
-    PimItem::Ptr pimitem(PimItemFactory::getItem(item));
+    AkonadiBaseItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimitem.isNull());
     Q_ASSERT(mItemIdCache.contains(item.id()));
     const Id id = mItemIdCache.value(item.id());

@@ -23,10 +23,10 @@
 
 #ifndef PIMITEMFACTORY_H
 #define PIMITEMFACTORY_H
-#include "pimitem.h"
+#include "akonadibaseitem.h"
 
 namespace PimItemFactory {
-    PimItem::Ptr getItem(const Akonadi::Item &item);
+    AkonadiBaseItem::Ptr getItem(const Akonadi::Item &item);
 };
 
 #endif // PIMITEMFACTORY_H

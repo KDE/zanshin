@@ -259,7 +259,7 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
             Q_ASSERT(item.isValid());
 
             PimItemIndex node(PimItemIndex::NoType);
-            if (PimItem::itemType(item) == PimItemIndex::Todo) {
+            if (AkonadiBaseItem::typeFromItem(item) == PimItemIndex::Todo) {
                 node.type = PimItemIndex::Todo;
             } else {
                 node.type = PimItemIndex::Note;
