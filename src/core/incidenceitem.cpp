@@ -283,13 +283,8 @@ PimItem::ItemStatus IncidenceItem::status() const
 KDateTime IncidenceItem::primaryDate() const
 {
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
-        if (t->hasDueDate()) {
-            //kDebug() << "due date: " << t->dtDue();
-            return t->dtDue();
-        } else {
-            //kDebug() << "mod date: " << modificationTime();
-            return lastModifiedDate();
-        }
+        //kDebug() << "due date: " << t->dtDue();
+        return t->dtDue();
     } else if ( const KCalCore::Event::Ptr e = unwrap<KCalCore::Event>(m_item) ) {
         //if ( !e->recurs() && !e->isMultiDay() ) {
             return e->dtStart();
