@@ -40,23 +40,6 @@ public:
     PimItemModel(Akonadi::ChangeRecorder *monitor, QObject *parent = 0);
     virtual ~PimItemModel();
 
-    enum Column {
-        Summary=0,
-        Date,
-        Collection,
-        Status,
-        ColumnCount
-    };
-    
-    enum CustomRoles {
-        SortRole=Zanshin::UserRole,
-        TitleRole,
-        DateRole,
-        ItemTypeRole,
-        StatusRole,
-        UserRole
-    };
-
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     virtual int entityColumnCount(HeaderGroup headerGroup) const;

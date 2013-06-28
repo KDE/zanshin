@@ -164,11 +164,11 @@ private slots:
             QTest::newRow( "don't move projects to inbox" ) << sourceStructure << outputStructure;
         }
         {
+            NoteItem::Ptr note(new NoteItem);
             G n1(100, Qt::DisplayRole, "note1");
-            n1.data.insert(PimItemModel::ItemTypeRole, PimItemIndex::Note);
-            NoteItem note;
-            note.setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(t1.uid.toLatin1())));
-            Akonadi::Item item = note.getItem();
+            n1.data.insert(Zanshin::PimItemRole, QVariant::fromValue(PimItem::Ptr(note)));
+            note->setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(t1.uid.toLatin1())));
+            Akonadi::Item item = note->getItem();
             item.setId(234);
             item.setParentCollection(Akonadi::Collection(c2.id));
             n1.data.insert(Akonadi::EntityTreeModel::ItemRole, QVariant::fromValue<Akonadi::Item>(item));

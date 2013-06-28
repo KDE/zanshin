@@ -41,7 +41,7 @@
 PimItemModel::PimItemModel(Akonadi::ChangeRecorder *monitor, QObject *parent)
     : Akonadi::EntityTreeModel(monitor, parent)
 {
-    m_itemHeaders << i18n("Summary") << i18n("Date") << i18n("Collection");
+    m_itemHeaders << i18n("Summary") << i18n("Date");
 
     //For QML
 //     QHash<int, QByteArray> roles = EntityTreeModel::roleNames();
@@ -56,10 +56,10 @@ PimItemModel::~PimItemModel()
 
 Qt::ItemFlags PimItemModel::flags(const QModelIndex &index) const
 {
-    if (index.column() == TitleRole) {
-        return Akonadi::EntityTreeModel::flags(index) | Qt::ItemIsEditable;
-    }
-    return Akonadi::EntityTreeModel::flags(index);
+    const PimItem::Ptr pimitem(index.data(Zanshin::PimItemRole).value<PimItem::Ptr>());
+    const bool isEditable = index.column() == 0 || (pimitem && pimitem->itemType() == PimItemIndex::Todo );
+    const Qt::ItemFlags extra = isEditable ? Qt::ItemIsEditable : Qt::NoItemFlags;
+    return Akonadi::EntityTreeModel::flags(index) | extra;
 }
 
 int PimItemModel::entityColumnCount(HeaderGroup headerGroup) const
@@ -67,25 +67,23 @@ int PimItemModel::entityColumnCount(HeaderGroup headerGroup) const
     if (headerGroup == CollectionTreeHeaders) {
         return 1;
     } else {
-        return ColumnCount;
+        return m_itemHeaders.size();
     }
 }
 
 QVariant PimItemModel::entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const
 {
-    if (orientation == Qt::Vertical) {
+    if (orientation == Qt::Vertical || role != Qt::DisplayRole) {
         return EntityTreeModel::entityHeaderData(section, orientation, role, headerGroup);
     }
 
     if (headerGroup == CollectionTreeHeaders) {
         return i18n("Summary");
-    } else if (role == Qt::DisplayRole) {
-        if (role == Qt::DisplayRole) {
-            return m_itemHeaders.value(section);
-        }
+    } else if (section > -1 && section < m_itemHeaders.size()){
+        return m_itemHeaders.at(section);
     }
 
-    return EntityTreeModel::entityHeaderData(section, orientation, role, headerGroup);
+    return QVariant();
 }
 
 QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int role) const
@@ -95,139 +93,25 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
         return QVariant();
     }
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
-    if (!pimitem) {
+    if (!pimitem || column < 0 || column > 1) {
         return QVariant();
     }
-    switch(role) {
-        case Qt::DisplayRole: {
-            switch (column) {
-                case Summary:
-                    return pimitem->title();
-                case Date:
-                    return DateStringBuilder::getShortDate(pimitem->primaryDate());
-                case Collection:
-                    return modelIndexForCollection(this, item.parentCollection()).data();
-                case Status:
-                    switch (pimitem->status()) {
-                        case PimItem::Now:
-                            return QBrush(Qt::green);
-                        case PimItem::Later:
-                            return QBrush(Qt::yellow);
-                        case PimItem::Complete:
-                            return QBrush(Qt::lightGray);
-                        case PimItem::Attention:
-                            return QBrush(Qt::red);
-                        default:
-                            kDebug() << "unhandled status" << item.id() << pimitem->status();
-                    }
-                    break;
-            }
-            break;
-        }
-        case Qt::EditRole:
-            switch (column) {
-                case Summary:
-                    return pimitem->title();
-                case Date:
-                    return pimitem->primaryDate().dateTime();
-                case Collection:
-                    return modelIndexForCollection(this, item.parentCollection()).data();
-                case Status: //TODO status editor?
-                    switch (pimitem->status()) {
-                        case PimItem::Now:
-                            return QBrush(Qt::green);
-                        case PimItem::Later:
-                            return QBrush(Qt::yellow);
-                        case PimItem::Complete:
-                            return QBrush(Qt::lightGray);
-                        case PimItem::Attention:
-                            return QBrush(Qt::red);
-                        default:
-                            qWarning() << "unhandled status " << pimitem->status();
-                    }
-                    break;
-            }
-            break;
-        case Qt::ToolTipRole: {
-            QString d;
-            d.append(QString::fromLatin1("Subject: %1\n").arg(pimitem->title()));
-            //kDebug() << pimitem->getCreationDate().dateTime() << pimitem->getLastModifiedDate().dateTime();
-            d.append(QString::fromLatin1("Created: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->creationDate())));
-            d.append(QString::fromLatin1("Modified: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->lastModifiedDate())));
-            if (pimitem->itemType() & PimItemIndex::Todo && pimitem.staticCast<IncidenceItem>()->hasDueDate()) {
-                d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->primaryDate())));
-            }
-            d.append(QString::fromLatin1("Akonadi: %1\n").arg(item.url().url()));
-//             d.append(QString::fromLatin1("Nepomuk Resource: %1\n").arg(PimItemUtils::getResource(item).resourceUri().toString()));
-//             d.append(QString::fromLatin1("Nepomuk Thing: %1\n").arg(PimItemUtils::getThing(item).resourceUri().toString()));
-            d.append(QString::fromLatin1("Akonadi Collection: %1\n").arg(item.parentCollection().id()));
-            return d;
-        }
-        case Qt::DecorationRole: { 
-            if (column==Collection) {
-                return modelIndexForCollection(this, item.parentCollection()).data(Qt::DecorationRole);
-            }
-            //only needed because the calendar doesnt set the display attribute properly, so we cant rely on it
-//             if (column==Summary) {
-//                 return SmallIcon(pimitem->getIconName());
-//             }
-//             return EntityTreeModel::entityData(item, column, role);
-            return QVariant();
-        }
-        /*case Qt::BackgroundRole: {
-            if (pimitem->itemType() & PimItem::Todo) {
-                IncidenceItem *inc = static_cast<IncidenceItem*>(pimitem);
-                if (inc->getTodoStatus() == IncidenceItem::Now) {
-                    return QBrush(Qt::green);
-                } else if (inc->getTodoStatus() == IncidenceItem::Later) {
-                    return QBrush(Qt::yellow);
-                } else if (inc->getTodoStatus() == IncidenceItem::Complete) {
-                    return QBrush(Qt::lightGray);
-                }
-            }
-            break;
-        }*/
-        case SortRole: {
-            switch( column ) {
-                case Summary:
-                    return pimitem->title();
-                case Date:
-                    return pimitem->primaryDate().dateTime();
-                case Status: {
-                        //kDebug() << "status: " <<inc->getTodoStatus();
-                    switch (pimitem->status()) {
-                        case IncidenceItem::Attention:
-                            return 0;
-                        case IncidenceItem::Now:
-                            return 1;
-                        case IncidenceItem::Later:
-                            return 2;
-                        case IncidenceItem::Complete:
-                            return 3;
-                        default:
-                            qWarning() << "unhandled status: " << pimitem->status();
-                    }
-                }
-                default:
-                    return QVariant();
-            }
-        }
-        case TitleRole:
+    switch (role) {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        if (column == 0)
             return pimitem->title();
-        case DateRole:
-            return pimitem->primaryDate().dateTime().toString("ddd, hh:mm:ss");
-        case ItemTypeRole:
-            return pimitem->itemType();
-        case StatusRole:
-            return pimitem->getStatus();
-        default:
-            return QVariant();
+        else
+            return pimitem->primaryDate().toString();
+
+    case Zanshin::PimItemRole:
+        return QVariant::fromValue(pimitem);
+
+    default:
+        return QVariant();
     }
 
-    //kWarning() << "Not a message" << item.id() << item.remoteId() << item.mimeType();
-
     return Akonadi::EntityTreeModel::entityData(item, column, role);
-
 }
 
 bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -254,39 +138,23 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
         return false;
     }
 
-    bool shouldModifyItem = true;
-    switch (index.column()) {
-    case 0:
-        if (role==Qt::EditRole) {
+    if (index.column() < 0 || index.column() > 1)
+        return false;
+
+    if (role == Qt::EditRole) {
+        if (index.column() == 0)
             pimitem->setTitle(value.toString());
-        } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItemIndex::Todo) {
-            if (value.toInt()==Qt::Checked) {
-                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);
-            } else {
-                static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::NotComplete);
-            }
-        }
-        break;
-    case 1:
-        pimitem->setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(value.toString().toUtf8())));
-        break;
-    case 2:
-        pimitem->setContexts(value.toStringList());
-        break;
-    case 3:
-        if (pimitem->itemType() == PimItemIndex::Todo) {
+        else if (pimitem->itemType() == PimItemIndex::Todo)
             static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()));
+    } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItemIndex::Todo) {
+        if (value.toInt() == Qt::Checked) {
+            static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);
+        } else {
+            static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::NotComplete);
         }
-//         todo->setAllDay(true); TODO
-        break;
-    default:
-        shouldModifyItem = false;
     }
 
-    if (shouldModifyItem) {
-        pimitem->saveItem();
-    }
-
+    pimitem->saveItem();
     return true;
 }
 

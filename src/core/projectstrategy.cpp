@@ -150,7 +150,8 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     const Akonadi::Item &item = sourceChildIndex.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
     Id id = mRelations->getItemId(item);
     parents = translateFrom(mRelations->getParents(id));
-    bool isNote = (sourceChildIndex.data(PimItemModel::ItemTypeRole).toInt() == PimItemIndex::Note);
+    PimItem::Ptr pimItem(sourceChildIndex.data(Zanshin::PimItemRole).value<PimItem::Ptr>());
+    bool isNote = (pimItem && pimItem->itemType() == PimItemIndex::Note);
     if (parents.isEmpty() || isNote) {
         if (!isProject(translateFrom(id), type) && !isNote) {
             return IdList() << mInbox;

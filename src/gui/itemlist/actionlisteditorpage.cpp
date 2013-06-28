@@ -111,13 +111,13 @@ public:
         int rightType = right.data(Zanshin::ItemTypeRole).toInt();
 
         if (leftType == rightType) {
-            const PimItem::ItemStatus leftStatus = static_cast<PimItem::ItemStatus>(left.data(PimItemModel::StatusRole).toInt());
-            const PimItem::ItemStatus rightStatus = static_cast<PimItem::ItemStatus>(right.data(PimItemModel::StatusRole).toInt());
-            if (leftStatus == PimItem::Complete &&
-                rightStatus != PimItem::Complete) {
+            const PimItem::Ptr leftItem(left.data(Zanshin::PimItemRole).value<PimItem::Ptr>());
+            const PimItem::Ptr rightItem(right.data(Zanshin::PimItemRole).value<PimItem::Ptr>());
+            if (leftItem->status() == PimItem::Complete &&
+                rightItem->status() != PimItem::Complete) {
                 return false;
-            } else if (leftStatus != PimItem::Complete &&
-                rightStatus == PimItem::Complete) {
+            } else if (leftItem->status() != PimItem::Complete &&
+                rightItem->status() == PimItem::Complete) {
                 return true;
             }
             return QSortFilterProxyModel::lessThan(left, right);
@@ -476,10 +476,6 @@ void ActionListEditorPage::restoreColumnsState(const KConfigGroup &config, const
     }
 
     m_treeView->header()->restoreState(m_normalStateCache);
-
-    m_treeView->setColumnHidden(PimItemModel::Date, false);
-    m_treeView->setColumnHidden(PimItemModel::Collection, true);
-    m_treeView->setColumnHidden(PimItemModel::Status, true);
 }
 
 
