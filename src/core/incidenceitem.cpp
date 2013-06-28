@@ -24,6 +24,7 @@
 
 #include "incidenceitem.h"
 #include "pimitemrelations.h"
+#include "pimitemservices.h"
 
 #include <Akonadi/EntityDisplayAttribute>
 
@@ -322,7 +323,10 @@ PimItemIndex::ItemType IncidenceItem::itemType() const
         return PimItemIndex::NoType;
     }
     if ( old->type() == KCalCore::IncidenceBase::TypeTodo ) {
-        return PimItemIndex::Todo;
+        if (isProject())
+            return PimItemIndex::Project;
+        else
+            return PimItemIndex::Todo;
     } else if ( old->type() == KCalCore::IncidenceBase::TypeJournal ) {
         return PimItemIndex::Journal;
     } else if ( old->type() == KCalCore::IncidenceBase::TypeEvent ) {
@@ -388,8 +392,9 @@ void IncidenceItem::setProject()
 bool IncidenceItem::isProject() const
 {
     const KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(m_item);
-    if (i->comments().contains("X-Zanshin-Project")) {
+    if (i->comments().contains("X-Zanshin-Project")
+     || !i->customProperty("Zanshin", "Project").isEmpty()) {
         return true;
     }
-    return !i->customProperty("Zanshin", "Project").isEmpty();
+    return PimItemServices::projectInstance().hasChildren(uid());
 }

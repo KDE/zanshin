@@ -485,6 +485,13 @@ ProjectStructureInterface::ProjectStructureInterface()
 
 }
 
+bool ProjectStructureInterface::hasChildren(const QString &uid)
+{
+    if (!mStructure) return false;
+    Id nodeId = mStructure->getId(uid.toLatin1());
+    return static_cast<ProjectStructureCache*>(mStructure.data())->hasChildren(nodeId);
+}
+
 bool ProjectStructureInterface::moveTo(const PimItemIndex& node, const PimItemIndex& parent)
 {
     PimItemIndex::ItemType nodeType = node.type;

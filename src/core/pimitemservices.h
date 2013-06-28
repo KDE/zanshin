@@ -115,6 +115,7 @@ class ProjectStructureInterface: public PimItemServices
 {
 public:
     ProjectStructureInterface();
+    bool hasChildren(const QString &uid);
     bool moveTo(const PimItemIndex &node, const PimItemIndex &parent);
     void remove(const QList<PimItemIndex> &nodes, QWidget *);
     void remove(const PimItemIndex &node, QWidget *);
