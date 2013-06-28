@@ -36,6 +36,7 @@
 #include "core/noteitem.h"
 #include "core/settings.h"
 #include "core/pimitemservices.h"
+#include "actionduedatedelegate.h"
 #include "actionlistcombobox.h"
 #include "actionlistdelegate.h"
 #include "globaldefs.h"
@@ -312,6 +313,7 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
 
     m_treeView->setModel(filter);
     m_treeView->setItemDelegate(new ActionListDelegate(models, m_treeView));
+    m_treeView->setItemDelegateForColumn(1, new ActionDueDateDelegate(models, m_treeView));
 
     m_treeView->header()->setSortIndicatorShown(true);
     m_treeView->setSortingEnabled(true);
