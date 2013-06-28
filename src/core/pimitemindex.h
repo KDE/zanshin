@@ -42,6 +42,7 @@ public:
         Journal
     };
 
+    PimItemIndex();
     PimItemIndex(ItemType t);
 
     ItemType type;
@@ -50,5 +51,7 @@ public:
     Akonadi::Collection collection;
     QString uid;
 };
+
+Q_DECLARE_METATYPE(PimItemIndex)
 
 #endif // PIMITEMINDEX_H
