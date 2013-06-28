@@ -48,7 +48,9 @@ namespace Zanshin
     };
 
     enum Roles {
-        UidRole = Akonadi::EntityTreeModel::UserRole + 1,
+        PimItemIndexRole = Akonadi::EntityTreeModel::UserRole + 1,
+        PimItemRole,
+        UidRole,
         ParentUidRole,
         ItemTypeRole,
         DataTypeRole,
