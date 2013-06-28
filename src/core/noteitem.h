@@ -48,23 +48,23 @@ public:
      */
     NoteItem(const Akonadi::Item&);
 
-    QString mimeType();
-    PimItemIndex::ItemType itemType();
-    virtual bool hasValidPayload();
-    virtual ItemStatus getStatus() const;
+    QString mimeType() const;
+    PimItemIndex::ItemType itemType() const;
+    virtual bool hasValidPayload() const;
+    virtual ItemStatus status() const;
 
-    virtual QString getUid();
+    virtual QString uid() const;
     virtual void setText(const QString &, bool isRich = false);
-    virtual QString getText();
+    virtual QString text() const;
     virtual void setTitle(const QString &, bool isRich = false);
-    virtual QString getTitle();
+    virtual QString title() const;
     virtual void setCreationDate(const KDateTime &);
-    virtual KDateTime getCreationDate();
-    virtual QString getIconName();
-    KDateTime getPrimaryDate();
-    virtual KDateTime getLastModifiedDate();
+    virtual KDateTime creationDate() const;
+    virtual QString iconName() const;
+    KDateTime primaryDate() const;
+    virtual KDateTime lastModifiedDate() const;
 
-    virtual QList< PimItemRelation > getRelations();
+    virtual QList< PimItemRelation > relations() const;
     virtual void setRelations(const QList< PimItemRelation >& );
 
 private:

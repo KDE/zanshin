@@ -54,7 +54,7 @@ Relation PimItemStructureCache::getRelationTree(Id id, const Akonadi::Item &item
 {
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (!pimitem.isNull());
-    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+    foreach(const PimItemRelation &rel, pimitem->relations()) {
 //         kDebug() << rel.type;
         if (rel.type == mType) {
             return createRelation(rel, id); //TODO merge multiple relations
@@ -82,9 +82,9 @@ void PimItemStructureCache::updateRelationTree(Akonadi::Item &item)
     Q_ASSERT(mItemIdCache.contains(item.id()));
     const Id id = mItemIdCache.value(item.id());
 //     kDebug() << id;
-    QList<PimItemRelation> relations = pimitem->getRelations();
+    QList<PimItemRelation> relations = pimitem->relations();
     int i = 0;
-    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+    foreach(const PimItemRelation &rel, pimitem->relations()) {
         if (rel.type == mType) {
             relations.removeAt(i);
         }
@@ -134,11 +134,11 @@ Relation ProjectStructureCache::getRelationTree(Id id, const Akonadi::Item& item
 {
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (!pimitem.isNull());
-    const QByteArray uid = pimitem->getUid().toLatin1();
+    const QByteArray uid = pimitem->uid().toLatin1();
 //     qDebug() << "######### " << item.url().url() << id << uid << pimitem->getRelations().size();
     addUidMapping(uid, id);
     QList<TreeNode> parents;
-    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+    foreach(const PimItemRelation &rel, pimitem->relations()) {
 //         qDebug() << "relation " << rel.type << rel.parentNodes.size();
         if (rel.type == PimItemRelation::Project) {
             foreach (const PimItemTreeNode &p, rel.parentNodes) {

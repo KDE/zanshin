@@ -86,7 +86,7 @@ bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &source
     //search trough title
     //TODO could be replaced by the corresponding nepomuk searches
     //though the nepomuk serach behaves a little different (explicit regex needed, i.e. Bub does not match Bubikon)
-    if (m_filterString.isEmpty() || m_cache->isFulltextMatch(item) || pimItem->getTitle().contains(filterRegExp())) {
+    if (m_filterString.isEmpty() || m_cache->isFulltextMatch(item) || pimItem->title().contains(filterRegExp())) {
         return true;
     }
     return false;

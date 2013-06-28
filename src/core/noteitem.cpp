@@ -60,12 +60,12 @@ void NoteItem::setItem(const Akonadi::Item &item)
     messageWrapper = unpack(item);
 }
 
-bool NoteItem::hasValidPayload()
+bool NoteItem::hasValidPayload() const
 {
     return m_item.hasPayload<KMime::Message::Ptr>();
 }
 
-QString NoteItem::getUid()
+QString NoteItem::uid() const
 {
     return messageWrapper->uid();
 }
@@ -76,7 +76,7 @@ void NoteItem::setText(const QString &text, bool isRich)
     commitData();
 }
 
-QString NoteItem::getText()
+QString NoteItem::text() const
 {
     return messageWrapper->text();
 }
@@ -86,12 +86,12 @@ void NoteItem::setTitle(const QString &title, bool isRich)
     Q_UNUSED(isRich);
     messageWrapper->setTitle(title);
     Akonadi::EntityDisplayAttribute *eda = m_item.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Entity::AddIfMissing);
-    eda->setIconName(getIconName());
+    eda->setIconName(iconName());
     eda->setDisplayName(title);
     commitData();
 }
 
-QString NoteItem::getTitle()
+QString NoteItem::title() const
 {
     return messageWrapper->title();
 }
@@ -102,7 +102,7 @@ void NoteItem::setCreationDate(const KDateTime &date)
     commitData();
 }
 
-KDateTime NoteItem::getCreationDate()
+KDateTime NoteItem::creationDate() const
 {
     return messageWrapper->creationDate();
 }
@@ -115,42 +115,42 @@ void NoteItem::commitData()
     m_item.setPayload(messageWrapper->message());
 }
 
-QString NoteItem::mimeType()
+QString NoteItem::mimeType() const
 {
     Q_ASSERT(PimItem::mimeType(PimItemIndex::Note) == Akonadi::NoteUtils::noteMimeType());
     return PimItem::mimeType(PimItemIndex::Note);
 }
 
-PimItem::ItemStatus NoteItem::getStatus() const
+PimItem::ItemStatus NoteItem::status() const
 {
     return PimItem::Later;
 }
 
-KDateTime NoteItem::getPrimaryDate()
+KDateTime NoteItem::primaryDate() const
 {
-    return getLastModifiedDate();
+    return lastModifiedDate();
 }
 
-QString NoteItem::getIconName()
+QString NoteItem::iconName() const
 {
     return Akonadi::NoteUtils::noteIconName();
 }
 
-KDateTime NoteItem::getLastModifiedDate()
+KDateTime NoteItem::lastModifiedDate() const
 {
     const KDateTime lastMod = messageWrapper->lastModifiedDate();
     if (lastMod.isValid()) {
         return lastMod.toLocalZone();
     }
-    return AkonadiBaseItem::getLastModifiedDate();
+    return AkonadiBaseItem::lastModifiedDate();
 }
 
-PimItemIndex::ItemType NoteItem::itemType()
+PimItemIndex::ItemType NoteItem::itemType() const
 {
     return PimItemIndex::Note;
 }
 
-QList< PimItemRelation > NoteItem::getRelations()
+QList< PimItemRelation > NoteItem::relations() const
 {
     const QList<QString> xml = messageWrapper->custom().values("x-related");
     QList< PimItemRelation > relations;

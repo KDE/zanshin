@@ -41,8 +41,8 @@ public:
 
     const Akonadi::Item &getItem() const;
 
-    QString getTitle();
-    KDateTime getLastModifiedDate();
+    QString title() const;
+    KDateTime lastModifiedDate() const;
     KJob *saveItem();
 
 protected:

@@ -47,12 +47,12 @@ public:
     PimItem();
     virtual ~PimItem();
 
-    virtual PimItemIndex::ItemType itemType() = 0;
+    virtual PimItemIndex::ItemType itemType() const = 0;
 
-    virtual QString mimeType() = 0 ;
+    virtual QString mimeType() const = 0 ;
     static QString mimeType(PimItemIndex::ItemType);
     
-    virtual bool hasValidPayload() = 0;
+    virtual bool hasValidPayload() const = 0;
 
     enum ItemStatus {
         Complete = 1,
@@ -67,36 +67,36 @@ public:
      * Todo: set by user (priority)
      * Event: In Future/ Today/ Passed
      */
-    virtual ItemStatus getStatus() const = 0;
+    virtual ItemStatus status() const = 0;
 
-    virtual QString getUid() = 0;
+    virtual QString uid() const = 0;
     virtual void setText(const QString &, bool isRich = false) = 0;
-    virtual QString getText() = 0;
+    virtual QString text() const = 0;
     virtual void setTitle(const QString &, bool isRich = false) = 0;
-    virtual QString getTitle() = 0;
+    virtual QString title() const = 0;
     virtual void setCreationDate(const KDateTime &) = 0;
-    virtual KDateTime getCreationDate() = 0;
-    virtual KDateTime getLastModifiedDate() = 0;
-    virtual QString getIconName() = 0;
-    virtual bool textIsRich();
-    virtual bool titleIsRich();
+    virtual KDateTime creationDate() const = 0;
+    virtual KDateTime lastModifiedDate() const = 0;
+    virtual QString iconName() const = 0;
+    virtual bool isTextRich() const;
+    virtual bool isTitleRich() const;
     /**
      * Note: last modified
      * Todo: todo due date
      * Event: start date
      */
-    virtual KDateTime getPrimaryDate() = 0;
+    virtual KDateTime primaryDate() const = 0;
 
     virtual void setRelations(const QList<PimItemRelation> &) = 0;
-    virtual QList<PimItemRelation> getRelations() = 0;
+    virtual QList<PimItemRelation> relations() const = 0;
     virtual void setContexts(const QStringList &);
-    virtual QStringList getContexts();
-    virtual const KCalCore::Attachment::List getAttachments();
+    virtual QStringList contexts() const;
+    virtual const KCalCore::Attachment::List attachments() const;
 
     virtual KJob *saveItem() = 0;
 
 private:
-    Q_DISABLE_COPY(PimItem);
+    Q_DISABLE_COPY(PimItem)
 };
 //Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)
 //Q_DECLARE_METATYPE(PimItem::ItemTypes)

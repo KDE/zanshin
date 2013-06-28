@@ -51,7 +51,7 @@ PimItemIndex::ItemType AkonadiBaseItem::typeFromItem(const Akonadi::Item &item)
     return PimItemIndex::NoType;
 }
 
-QString AkonadiBaseItem::getTitle()
+QString AkonadiBaseItem::title() const
 {
     if (m_item.hasAttribute<Akonadi::EntityDisplayAttribute>()) {
         Akonadi::EntityDisplayAttribute *att = m_item.attribute<Akonadi::EntityDisplayAttribute>();
@@ -60,7 +60,7 @@ QString AkonadiBaseItem::getTitle()
     return QString();
 }
 
-KDateTime AkonadiBaseItem::getLastModifiedDate()
+KDateTime AkonadiBaseItem::lastModifiedDate() const
 {
     if (!m_item.isValid()) {
         kWarning() << "invalid item";

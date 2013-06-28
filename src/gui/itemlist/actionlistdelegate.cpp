@@ -120,7 +120,7 @@ bool ActionListDelegate::isCompleted(const QModelIndex &index) const
     if (pimitem.isNull()) {
         return false;
     }
-    return pimitem->getStatus() == PimItem::Complete;
+    return pimitem->status() == PimItem::Complete;
 }
 
 bool ActionListDelegate::isOverdue(const QModelIndex &index) const
@@ -129,7 +129,7 @@ bool ActionListDelegate::isOverdue(const QModelIndex &index) const
     if (pimitem.isNull()) {
         return false;
     }
-    return pimitem->getStatus() == PimItem::Attention;
+    return pimitem->status() == PimItem::Attention;
 }
 
 QWidget *ActionListDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,

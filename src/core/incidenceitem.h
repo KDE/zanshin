@@ -40,51 +40,51 @@ public:
      */
     IncidenceItem(const Akonadi::Item&);
 
-    virtual QString mimeType();
+    virtual QString mimeType() const;
 
     bool hasDueDate() const;
-    KDateTime getDueDate();
+    KDateTime dueDate() const;
     void setDueDate(const KDateTime&);
 
     bool hasStartDate() const;
-    KDateTime getEventStart();
-    void setEventStart(const KDateTime&);
-    
-    virtual QString getUid();
+    KDateTime startDate() const;
+    void setStartDate(const KDateTime&);
+
+    virtual QString uid() const;
     virtual void setText(const QString &, bool isRich = false);
-    virtual QString getText();
-    virtual bool textIsRich();
+    virtual QString text() const;
+    virtual bool isTextRich() const;
     virtual void setTitle(const QString &, bool isRich = false);
-    virtual QString getTitle();
-    virtual bool titleIsRich();
+    virtual QString title() const;
+    virtual bool isTitleRich() const;
     virtual void setCreationDate(const KDateTime &);
-    virtual KDateTime getCreationDate();
-    virtual KDateTime getLastModifiedDate();
-    
-    virtual const KCalCore::Attachment::List getAttachments();
+    virtual KDateTime creationDate() const;
+    virtual KDateTime lastModifiedDate() const;
+
+    virtual const KCalCore::Attachment::List attachments() const;
 
     void setTodoStatus(ItemStatus status);
-    PimItem::ItemStatus getStatus() const;
-    
+    PimItem::ItemStatus status() const;
+
     void setParentTodo(const IncidenceItem &);
-    
-    KDateTime getPrimaryDate();
-    QString getIconName();
+
+    KDateTime primaryDate() const;
+    QString iconName() const;
 
     virtual void setRelations(const QList< PimItemRelation >& );
-    virtual QList< PimItemRelation > getRelations();
+    virtual QList< PimItemRelation > relations() const;
 
     virtual void setContexts(const QStringList& );
-    virtual QStringList getContexts();
+    virtual QStringList contexts() const;
 
     void setProject();
     bool isProject() const;
 
-    virtual bool hasValidPayload();
+    virtual bool hasValidPayload() const;
     /**
      * Returns Todo/Event/Journal
      */
-    PimItemIndex::ItemType itemType();
+    PimItemIndex::ItemType itemType() const;
 };
 
 #endif // INCIDENCEITEM_H

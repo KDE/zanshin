@@ -50,17 +50,17 @@ QString PimItem::mimeType(PimItemIndex::ItemType type)
     return QString();
 }
 
-bool PimItem::textIsRich()
+bool PimItem::isTextRich() const
 {
     return false;
 }
 
-bool PimItem::titleIsRich()
+bool PimItem::isTitleRich() const
 {
     return false;
 }
 
-const KCalCore::Attachment::List PimItem::getAttachments()
+const KCalCore::Attachment::List PimItem::attachments() const
 {
     return KCalCore::Attachment::List();
 }
@@ -70,7 +70,7 @@ void PimItem::setContexts(const QStringList& )
 
 }
 
-QStringList PimItem::getContexts()
+QStringList PimItem::contexts() const
 {
     return QStringList();
 }

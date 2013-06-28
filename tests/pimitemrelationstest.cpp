@@ -65,7 +65,7 @@ private slots:
     static QByteArray getUid(const Akonadi::Item &item)
     {
         IncidenceItem inc(item);
-        return inc.getUid().toLatin1();
+        return inc.uid().toLatin1();
     }
 
     PimItemStructureCache *getStructure()
@@ -217,7 +217,7 @@ private slots:
     void relatedToSelf()
     {
         IncidenceItem inc(PimItemIndex::Event);
-        PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(inc.getUid().toLatin1(), "name") << PimItemTreeNode("uid", "name"));
+        PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(inc.uid().toLatin1(), "name") << PimItemTreeNode("uid", "name"));
         inc.setRelations(QList<PimItemRelation>() << rel);
         Akonadi::Item item = inc.getItem();
         item.setId(1);

@@ -102,13 +102,13 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
         case Qt::DisplayRole: {
             switch (column) {
                 case Summary:
-                    return pimitem->getTitle();
+                    return pimitem->title();
                 case Date:
-                    return DateStringBuilder::getShortDate(pimitem->getPrimaryDate());
+                    return DateStringBuilder::getShortDate(pimitem->primaryDate());
                 case Collection:
                     return modelIndexForCollection(this, item.parentCollection()).data();
                 case Status:
-                    switch (pimitem->getStatus()) {
+                    switch (pimitem->status()) {
                         case PimItem::Now:
                             return QBrush(Qt::green);
                         case PimItem::Later:
@@ -118,7 +118,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                         case PimItem::Attention:
                             return QBrush(Qt::red);
                         default:
-                            kDebug() << "unhandled status" << item.id() << pimitem->getStatus();
+                            kDebug() << "unhandled status" << item.id() << pimitem->status();
                     }
                     break;
             }
@@ -127,13 +127,13 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
         case Qt::EditRole:
             switch (column) {
                 case Summary:
-                    return pimitem->getTitle();
+                    return pimitem->title();
                 case Date:
-                    return pimitem->getPrimaryDate().dateTime();
+                    return pimitem->primaryDate().dateTime();
                 case Collection:
                     return modelIndexForCollection(this, item.parentCollection()).data();
                 case Status: //TODO status editor?
-                    switch (pimitem->getStatus()) {
+                    switch (pimitem->status()) {
                         case PimItem::Now:
                             return QBrush(Qt::green);
                         case PimItem::Later:
@@ -143,19 +143,19 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                         case PimItem::Attention:
                             return QBrush(Qt::red);
                         default:
-                            qWarning() << "unhandled status " << pimitem->getStatus();
+                            qWarning() << "unhandled status " << pimitem->status();
                     }
                     break;
             }
             break;
         case Qt::ToolTipRole: {
             QString d;
-            d.append(QString::fromLatin1("Subject: %1\n").arg(pimitem->getTitle()));
+            d.append(QString::fromLatin1("Subject: %1\n").arg(pimitem->title()));
             //kDebug() << pimitem->getCreationDate().dateTime() << pimitem->getLastModifiedDate().dateTime();
-            d.append(QString::fromLatin1("Created: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getCreationDate())));
-            d.append(QString::fromLatin1("Modified: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getLastModifiedDate())));
+            d.append(QString::fromLatin1("Created: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->creationDate())));
+            d.append(QString::fromLatin1("Modified: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->lastModifiedDate())));
             if (pimitem->itemType() & PimItemIndex::Todo && pimitem.staticCast<IncidenceItem>()->hasDueDate()) {
-                d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->getPrimaryDate())));
+                d.append(QString::fromLatin1("Due: %1\n").arg(DateStringBuilder::getFullDateTime(pimitem->primaryDate())));
             }
             d.append(QString::fromLatin1("Akonadi: %1\n").arg(item.url().url()));
 //             d.append(QString::fromLatin1("Nepomuk Resource: %1\n").arg(PimItemUtils::getResource(item).resourceUri().toString()));
@@ -190,12 +190,12 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
         case SortRole: {
             switch( column ) {
                 case Summary:
-                    return pimitem->getTitle();
+                    return pimitem->title();
                 case Date:
-                    return pimitem->getPrimaryDate().dateTime();
+                    return pimitem->primaryDate().dateTime();
                 case Status: {
                         //kDebug() << "status: " <<inc->getTodoStatus();
-                    switch (pimitem->getStatus()) {
+                    switch (pimitem->status()) {
                         case IncidenceItem::Attention:
                             return 0;
                         case IncidenceItem::Now:
@@ -205,7 +205,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
                         case IncidenceItem::Complete:
                             return 3;
                         default:
-                            qWarning() << "unhandled status: " << pimitem->getStatus();
+                            qWarning() << "unhandled status: " << pimitem->status();
                     }
                 }
                 default:
@@ -213,9 +213,9 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             }
         }
         case TitleRole:
-            return pimitem->getTitle();
+            return pimitem->title();
         case DateRole:
-            return pimitem->getPrimaryDate().dateTime().toString("ddd, hh:mm:ss");
+            return pimitem->primaryDate().dateTime().toString("ddd, hh:mm:ss");
         case ItemTypeRole:
             return pimitem->itemType();
         case StatusRole:

@@ -51,9 +51,9 @@ private slots:
         akonadiItem.setId(1);
         
         PimItem::Ptr pimitem = PimItemFactory::getItem(akonadiItem);
-        QCOMPARE(pimitem->getUid(), item->getUid());
-        QCOMPARE(pimitem->getTitle(), item->getTitle());
-        QCOMPARE(pimitem->getText(), item->getText());
+        QCOMPARE(pimitem->uid(), item->uid());
+        QCOMPARE(pimitem->title(), item->title());
+        QCOMPARE(pimitem->text(), item->text());
     }
     
     void testUidConsistency_data()
@@ -66,9 +66,9 @@ private slots:
     void testUidConsistency()
     {
         QFETCH(PimItem::Ptr, item);
-        const QString &uid = item->getUid();
+        const QString &uid = item->uid();
         QVERIFY(!uid.isEmpty());
-        QCOMPARE(item->getUid(), uid);
+        QCOMPARE(item->uid(), uid);
     }
 };
 

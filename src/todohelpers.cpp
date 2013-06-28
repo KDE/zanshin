@@ -288,10 +288,10 @@ void TodoHelpers::moveToProject(Akonadi::Item &item, const QString &parentUid, b
     kDebug() << item.id() << parentUid;
     AkonadiBaseItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT(!pimitem.isNull());
-    QList<PimItemRelation> relations = pimitem->getRelations();
+    QList<PimItemRelation> relations = pimitem->relations();
     int i = 0;
     QList<PimItemTreeNode> list;
-    foreach(const PimItemRelation &rel, pimitem->getRelations()) {
+    foreach(const PimItemRelation &rel, pimitem->relations()) {
         if (rel.type == PimItemRelation::Project) {
             if (linkOnly) { 
                 const PimItemRelation existingRelation = relations.takeAt(i);

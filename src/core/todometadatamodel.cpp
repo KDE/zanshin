@@ -101,14 +101,14 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::CheckStateRole:
         if ((pimitem->itemType() == PimItemIndex::Todo) && index.column()==0 && !pimitem.staticCast<IncidenceItem>()->isProject()) {
-            return (pimitem->getStatus() == PimItem::Complete) ? Qt::Checked : Qt::Unchecked;
+            return (pimitem->status() == PimItem::Complete) ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();
         }
     case Zanshin::UidRole:
-        return pimitem->getUid();
+        return pimitem->uid();
     case Zanshin::ParentUidRole:
-        return getParentProjects(pimitem->getRelations());
+        return getParentProjects(pimitem->relations());
     case Zanshin::ItemTypeRole:
         if ((pimitem->itemType() == PimItemIndex::Todo) && pimitem.staticCast<IncidenceItem>()->isProject()) {
             return Zanshin::ProjectTodo;

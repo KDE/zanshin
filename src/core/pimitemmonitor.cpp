@@ -102,11 +102,11 @@ void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray
             mItem->setTitle(att->displayName());
         }
 
-        if (oldItem->getText() != mItem->getText()) {
+        if (oldItem->text() != mItem->text()) {
             // kDebug() << "text changed";
             parts |= Text;
         }
-        if (oldItem->getTitle() != mItem->getTitle()) {
+        if (oldItem->title() != mItem->title()) {
             // kDebug() << "title changed";
             parts |= Title;
         }

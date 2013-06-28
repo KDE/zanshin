@@ -103,7 +103,7 @@ Id PimItemRelationCache::getOrCreateItemId(const Akonadi::Item &item)
     Id id;
     PimItem::Ptr pimitem(PimItemFactory::getItem(item));
     Q_ASSERT (pimitem);
-    const QByteArray uid = pimitem->getUid().toLatin1();
+    const QByteArray uid = pimitem->uid().toLatin1();
     if (uid.isEmpty()) {
         kWarning() << "empty uid: " << item.id();
         return -1;
