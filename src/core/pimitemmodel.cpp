@@ -107,11 +107,31 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
     case Zanshin::PimItemRole:
         return QVariant::fromValue(pimitem);
 
+    case Zanshin::PimItemIndexRole: {
+        PimItemIndex index(pimitem->itemType());
+        index.item = static_cast<IncidenceItem*>(pimitem.data())->getItem();
+        index.collection = index.item.parentCollection();
+        index.uid = pimitem->uid();
+        return QVariant::fromValue(index);
+    }
+
+
     default:
         return QVariant();
     }
 
     return Akonadi::EntityTreeModel::entityData(item, column, role);
+}
+
+QVariant PimItemModel::entityData(const Akonadi::Collection &collection, int column, int role) const
+{
+    if (role == Zanshin::PimItemIndexRole) {
+        PimItemIndex index(PimItemIndex::Collection);
+        index.collection = collection;
+        return QVariant::fromValue(index);
+    }
+
+    return Akonadi::EntityTreeModel::entityData(collection, column, role);
 }
 
 bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int role)

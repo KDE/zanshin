@@ -45,7 +45,7 @@ public:
     virtual int entityColumnCount(HeaderGroup headerGroup) const;
     virtual QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const;
     virtual QVariant entityData(const Akonadi::Item &item, int column, int role) const;
-    using EntityTreeModel::entityData;
+    virtual QVariant entityData(const Akonadi::Collection &collection, int column, int role) const;
 
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 

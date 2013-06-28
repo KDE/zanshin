@@ -231,18 +231,7 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
 
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
 
-    PimItemIndex parentNode(PimItemIndex::NoType);
-    bool forward;
-    Zanshin::ItemType parentType = (Zanshin::ItemType)data(id, 0, Zanshin::ItemTypeRole, forward).toInt();
-    if (parentType == Zanshin::Collection) {
-        parentNode.collection = getData(id, Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-        parentNode.type = PimItemIndex::Collection;
-    } else {
-        parentNode.item = getData(id, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        parentNode.collection = parentNode.item.parentCollection();
-        parentNode.type = PimItemIndex::Project;
-        parentNode.uid = getData(id, Zanshin::UidRole).toString();
-    }
+    PimItemIndex parentNode = getData(id, Zanshin::PimItemIndexRole).value<PimItemIndex>();
 
     foreach (const KUrl &url, urls) {
         const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
