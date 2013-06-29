@@ -91,15 +91,44 @@ QString NoteItem::title() const
     return messageWrapper->title();
 }
 
-void NoteItem::setCreationDate(const KDateTime &date)
+KDateTime NoteItem::date(PimItem::DateRole role) const
 {
-    messageWrapper->setCreationDate(date);
-    commitData();
+    switch (role) {
+    case PimItem::CreationDate:
+        return messageWrapper->creationDate();
+
+    case PimItem::LastModifiedDate:
+    {
+        const KDateTime lastMod = messageWrapper->lastModifiedDate();
+        if (lastMod.isValid())
+            return lastMod.toLocalZone();
+        else
+            return AkonadiBaseItem::date(role);
+    }
+
+    default:
+        return AkonadiBaseItem::date(role);
+    }
 }
 
-KDateTime NoteItem::creationDate() const
+bool NoteItem::setDate(PimItem::DateRole role, const KDateTime &date)
 {
-    return messageWrapper->creationDate();
+    switch (role) {
+    case PimItem::CreationDate:
+        messageWrapper->setCreationDate(date);
+        commitData();
+        return true;
+
+    case PimItem::LastModifiedDate:
+        messageWrapper->setLastModifiedDate(date);
+        commitData();
+        return AkonadiBaseItem::setDate(role, date);
+
+    default:
+        return AkonadiBaseItem::setDate(role, date);
+    }
+
+    return false;
 }
 
 void NoteItem::commitData()
@@ -121,23 +150,9 @@ PimItem::ItemStatus NoteItem::status() const
     return PimItem::Later;
 }
 
-KDateTime NoteItem::primaryDate() const
-{
-    return lastModifiedDate();
-}
-
 QString NoteItem::iconName() const
 {
     return Akonadi::NoteUtils::noteIconName();
-}
-
-KDateTime NoteItem::lastModifiedDate() const
-{
-    const KDateTime lastMod = messageWrapper->lastModifiedDate();
-    if (lastMod.isValid()) {
-        return lastMod.toLocalZone();
-    }
-    return AkonadiBaseItem::lastModifiedDate();
 }
 
 PimItemIndex::ItemType NoteItem::itemType() const

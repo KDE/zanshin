@@ -86,6 +86,79 @@ bool IncidenceItem::isTitleRich() const
     return unwrap<KCalCore::Incidence>(m_item)->summaryIsRich();
 }
 
+KDateTime IncidenceItem::date(PimItem::DateRole role) const
+{
+    switch (role) {
+    case PimItem::CreationDate:
+        return unwrap<KCalCore::Incidence>(m_item)->created().toLocalZone();
+
+    case PimItem::LastModifiedDate:
+    {
+        const KDateTime lastMod = unwrap<KCalCore::Incidence>(m_item)->lastModified();
+        if (lastMod.isValid())
+            return lastMod.toLocalZone();
+        else
+            return AkonadiBaseItem::date(role);
+    }
+
+    case PimItem::StartDate:
+        return unwrap<KCalCore::Incidence>(m_item)->dtStart();
+
+    case PimItem::EndDate:
+        if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
+            return t->dtEnd();
+        } else {
+            return KDateTime();
+        }
+
+    case PimItem::DueDate:
+        if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
+            return t->dtDue();
+        } else {
+            return KDateTime();
+        }
+
+    default:
+        return AkonadiBaseItem::date(role);
+    }
+}
+
+bool IncidenceItem::setDate(PimItem::DateRole role, const KDateTime &date)
+{
+    switch (role) {
+    case PimItem::CreationDate:
+        unwrap<KCalCore::Incidence>(m_item)->setCreated(date);
+        return true;
+
+    case PimItem::LastModifiedDate:
+        unwrap<KCalCore::Incidence>(m_item)->setLastModified(date);
+        return AkonadiBaseItem::setDate(role, date);
+
+    case PimItem::StartDate:
+        unwrap<KCalCore::Incidence>(m_item)->setDtStart(date);
+        return true;
+
+    case PimItem::EndDate:
+        if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
+            t->setDtEnd(date);
+            return true;
+        } else {
+            return false;
+        }
+
+    case PimItem::DueDate:
+        if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
+            t->setDtDue(date);
+            return true;
+        } else {
+            return false;
+        }
+
+    default:
+        return AkonadiBaseItem::setDate(role, date);
+    }
+}
+
 void IncidenceItem::setText(const QString &text, bool isRich)
 {
     unwrap<KCalCore::Incidence>(m_item)->setDescription(text, isRich);
@@ -99,21 +172,6 @@ QString IncidenceItem::text() const
 bool IncidenceItem::isTextRich() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->descriptionIsRich();
-}
-
-void IncidenceItem::setCreationDate(const KDateTime &dt)
-{
-    unwrap<KCalCore::Incidence>(m_item)->setCreated(dt);
-}
-
-KDateTime IncidenceItem::creationDate() const
-{
-    return unwrap<KCalCore::Incidence>(m_item)->created();
-}
-
-KDateTime IncidenceItem::lastModifiedDate() const
-{
-    return unwrap<KCalCore::Incidence>(m_item)->lastModified();
 }
 
 const KCalCore::Attachment::List IncidenceItem::attachments() const
@@ -131,64 +189,12 @@ QString IncidenceItem::mimeType() const
     return old->mimeType();
 }
 
-bool IncidenceItem::hasStartDate() const
-{
-    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
-        return t->dtStart().isValid();
-    }
-    return false;
-}
-
-
-KDateTime IncidenceItem::startDate() const
-{
-    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
-        return t->dtStart();
-    }
-    kWarning() << "not an event, or no start date";
-    return KDateTime();
-}
-
-void IncidenceItem::setStartDate(const KDateTime &date)
-{
-    if ( const KCalCore::Event::Ptr t = unwrap<KCalCore::Event>(m_item) ) {
-        t->setDtStart(date);
-    }
-}
-
 void IncidenceItem::setParentTodo(const IncidenceItem &parent)
 {
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         const KCalCore::Todo::Ptr p = unwrap<KCalCore::Todo>(parent.getItem());
         t->setRelatedTo(p->uid());
     }
-}
-
-void IncidenceItem::setDueDate(const KDateTime &date)
-{
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
-        t->setDtDue(date);
-    }
-}
-
-KDateTime IncidenceItem::dueDate() const
-{
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
-        if (t->hasDueDate()) {
-            //kDebug() << "due date: " << t->dtDue();
-            return t->dtDue();
-        }
-    }
-    kWarning() << "not a todo, or no due date";
-    return KDateTime();
-}
-
-bool IncidenceItem::hasDueDate() const
-{
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
-        return t->hasDueDate();
-    }
-    return false;
 }
 
 /*
@@ -273,23 +279,6 @@ PimItem::ItemStatus IncidenceItem::status() const
     }
     kWarning() << "not a todo/event";
     return Later;
-}
-
-
-KDateTime IncidenceItem::primaryDate() const
-{
-    if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
-        //kDebug() << "due date: " << t->dtDue();
-        return t->dtDue();
-    } else if ( const KCalCore::Event::Ptr e = unwrap<KCalCore::Event>(m_item) ) {
-        //if ( !e->recurs() && !e->isMultiDay() ) {
-            return e->dtStart();
-        //}
-    } else if ( const KCalCore::Journal::Ptr j = unwrap<KCalCore::Journal>(m_item) ) {
-        return j->dtStart();
-    }
-    kWarning() << "unknown item";
-    return KDateTime();
 }
 
 QString IncidenceItem::iconName() const

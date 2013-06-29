@@ -42,14 +42,6 @@ public:
 
     virtual QString mimeType() const;
 
-    bool hasDueDate() const;
-    KDateTime dueDate() const;
-    void setDueDate(const KDateTime&);
-
-    bool hasStartDate() const;
-    KDateTime startDate() const;
-    void setStartDate(const KDateTime&);
-
     virtual QString uid() const;
     virtual void setText(const QString &, bool isRich = false);
     virtual QString text() const;
@@ -57,9 +49,9 @@ public:
     virtual void setTitle(const QString &, bool isRich = false);
     virtual QString title() const;
     virtual bool isTitleRich() const;
-    virtual void setCreationDate(const KDateTime &);
-    virtual KDateTime creationDate() const;
-    virtual KDateTime lastModifiedDate() const;
+
+    KDateTime date(DateRole role) const;
+    bool setDate(DateRole role, const KDateTime &date);
 
     virtual const KCalCore::Attachment::List attachments() const;
 
@@ -68,7 +60,6 @@ public:
 
     void setParentTodo(const IncidenceItem &);
 
-    KDateTime primaryDate() const;
     QString iconName() const;
 
     virtual void setRelations(const QList< PimItemRelation >& );

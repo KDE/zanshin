@@ -42,7 +42,11 @@ public:
     const Akonadi::Item &getItem() const;
 
     QString title() const;
-    KDateTime lastModifiedDate() const;
+
+    KDateTime date(DateRole role) const;
+    bool setDate(DateRole role, const KDateTime &date);
+
+
     KJob *saveItem();
 
 protected:

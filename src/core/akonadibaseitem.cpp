@@ -60,13 +60,26 @@ QString AkonadiBaseItem::title() const
     return QString();
 }
 
-KDateTime AkonadiBaseItem::lastModifiedDate() const
+KDateTime AkonadiBaseItem::date(PimItem::DateRole role) const
 {
-    if (!m_item.isValid()) {
-        kWarning() << "invalid item";
+    Q_ASSERT(m_item.isValid());
+
+    if (role == PimItem::LastModifiedDate)
+        return KDateTime(m_item.modificationTime(), KDateTime::LocalZone);
+    else
         return KDateTime();
+}
+
+bool AkonadiBaseItem::setDate(PimItem::DateRole role, const KDateTime &date)
+{
+    Q_ASSERT(m_item.isValid());
+
+    if (role == PimItem::LastModifiedDate) {
+        m_item.setModificationTime(date.toLocalZone().dateTime());
+        return true;
+    } else {
+        return false;
     }
-    return KDateTime(m_item.modificationTime(), KDateTime::LocalZone);
 }
 
 const Akonadi::Item &AkonadiBaseItem::getItem() const

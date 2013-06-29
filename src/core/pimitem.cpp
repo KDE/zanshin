@@ -60,6 +60,67 @@ bool PimItem::isTitleRich() const
     return false;
 }
 
+PimItem::DateRoles PimItem::supportedDateRolesForType(PimItemIndex::ItemType type)
+{
+    DateRoles roles = NoDateRole;
+
+    switch (type) {
+    case PimItemIndex::NoType:
+    case PimItemIndex::Inbox:
+    case PimItemIndex::FolderRoot:
+    case PimItemIndex::Context:
+    case PimItemIndex::Topic:
+    case PimItemIndex::Collection:
+        break;
+    case PimItemIndex::Project:
+    case PimItemIndex::Note:
+        roles = CreationDate | LastModifiedDate;
+        break;
+    case PimItemIndex::Journal:
+        roles = CreationDate | LastModifiedDate | StartDate;
+        break;
+    case PimItemIndex::Event:
+        roles = CreationDate | LastModifiedDate | StartDate | EndDate;
+        break;
+    case PimItemIndex::Todo:
+        roles = CreationDate | LastModifiedDate | StartDate | DueDate;
+        break;
+    }
+
+    return roles;
+}
+
+PimItem::DateRoles PimItem::supportedDateRoles() const
+{
+    return supportedDateRolesForType(itemType());
+}
+
+KDateTime PimItem::primaryDate() const
+{
+    switch (itemType()) {
+    case PimItemIndex::NoType:
+    case PimItemIndex::Inbox:
+    case PimItemIndex::FolderRoot:
+    case PimItemIndex::Context:
+    case PimItemIndex::Topic:
+    case PimItemIndex::Collection:
+    case PimItemIndex::Project:
+        return KDateTime();
+
+    case PimItemIndex::Note:
+        return date(LastModifiedDate);
+
+    case PimItemIndex::Journal:
+    case PimItemIndex::Event:
+        return date(StartDate);
+
+    case PimItemIndex::Todo:
+        return date(DueDate);
+    }
+
+    return KDateTime();
+}
+
 const KCalCore::Attachment::List PimItem::attachments() const
 {
     return KCalCore::Attachment::List();

@@ -327,22 +327,22 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
 
 
     //Properties
-    ui_properties->creationTime->setText(DateStringBuilder::getFullDate(m_currentItem->creationDate()));
-    ui_properties->lastModifiedTime->setText(DateStringBuilder::getFullDate(m_currentItem->lastModifiedDate()));
+    ui_properties->creationTime->setText(DateStringBuilder::getFullDate(m_currentItem->date(PimItem::CreationDate)));
+    ui_properties->lastModifiedTime->setText(DateStringBuilder::getFullDate(m_currentItem->date(PimItem::LastModifiedDate)));
 
     if (m_currentItem->itemType() == PimItemIndex::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         //Due Date
-        bool hasDue = inc->hasDueDate();
+        bool hasDue = inc->supportedDateRoles() & PimItem::DueDate;
 
         ui_properties->editableDueDate->show();
         ui_properties->lb_dueDate->show();
         if (hasDue) {
-            ui_properties->editableDueDate->setDate(inc->dueDate());
+            ui_properties->editableDueDate->setDate(inc->date(PimItem::DueDate));
         } else {
             ui_properties->editableDueDate->clear();
         }
-        ui_properties->editableDueDate->enable(hasDue); //set checked status
+        ui_properties->editableDueDate->enable(inc->date(PimItem::DueDate).isValid()); //set checked status
 
     } else { //not a todo
         ui_properties->editableDueDate->hide();
@@ -354,7 +354,7 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
         //Event Start
         ui_properties->editableEventDate->show();
         ui_properties->lb_eventDate->show();
-        ui_properties->editableEventDate->setDate(inc->startDate());
+        ui_properties->editableEventDate->setDate(inc->date(PimItem::StartDate));
     } else { //not a todo
         ui_properties->lb_eventDate->hide();
         ui_properties->editableEventDate->hide();
@@ -366,7 +366,7 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
     //TODO If it should be possible to have notes without titles this is not a good idea, but otherwise it works very well
     //kDebug() << m_currentItem->getLastModifiedDate() << KDateTime(QDateTime::currentDateTime().addSecs(-1));
     //FIXME this is broken if we going trough the list with the keyboard, looking at each note, because the focus doesn't stay on the list but goes to the linedit instead
-    if (m_currentItem->title().isEmpty() && m_currentItem->creationDate() >= KDateTime(QDateTime::currentDateTime().addSecs(-30))) {
+    if (m_currentItem->title().isEmpty() && m_currentItem->date(PimItem::CreationDate) >= KDateTime(QDateTime::currentDateTime().addSecs(-30))) {
             title->edit();
             title->lineEdit().setFocus();
             //TODO work with a focus proxy instead?
@@ -399,7 +399,7 @@ void ItemEditor::setEventDate(KDateTime dateTime)
     Q_ASSERT(m_currentItem);
     if (m_currentItem->itemType() == PimItemIndex::Event) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
-        inc->setStartDate(dateTime);
+        inc->setDate(PimItem::StartDate, dateTime);
         m_itemMonitor->saveItem();
     }
 }
@@ -413,7 +413,7 @@ void ItemEditor::setDueDate(KDateTime dateTime)
     Q_ASSERT(m_currentItem);
     if (m_currentItem->itemType() == PimItemIndex::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
-        inc->setDueDate(dateTime);
+        inc->setDate(PimItem::DueDate, dateTime);
         m_itemMonitor->saveItem();
     }
 }

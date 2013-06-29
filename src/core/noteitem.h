@@ -57,11 +57,11 @@ public:
     virtual QString text() const;
     virtual void setTitle(const QString &, bool isRich = false);
     virtual QString title() const;
-    virtual void setCreationDate(const KDateTime &);
-    virtual KDateTime creationDate() const;
+
+    KDateTime date(DateRole role) const;
+    bool setDate(DateRole role, const KDateTime &date);
+
     virtual QString iconName() const;
-    KDateTime primaryDate() const;
-    virtual KDateTime lastModifiedDate() const;
 
     virtual QList< PimItemRelation > relations() const;
     virtual void setRelations(const QList< PimItemRelation >& );

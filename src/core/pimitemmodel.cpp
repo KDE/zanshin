@@ -165,7 +165,7 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
         if (index.column() == 0)
             pimitem->setTitle(value.toString());
         else if (pimitem->itemType() == PimItemIndex::Todo)
-            static_cast<IncidenceItem*>(pimitem.data())->setDueDate(KDateTime(value.toDate()));
+            pimitem->setDate(PimItem::DueDate, KDateTime(value.toDate()));
     } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItemIndex::Todo) {
         if (value.toInt() == Qt::Checked) {
             static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);

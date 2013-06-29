@@ -68,22 +68,40 @@ public:
     virtual ItemStatus status() const = 0;
 
     virtual QString uid() const = 0;
+
+    virtual QString iconName() const = 0;
+
     virtual void setText(const QString &, bool isRich = false) = 0;
     virtual QString text() const = 0;
     virtual void setTitle(const QString &, bool isRich = false) = 0;
     virtual QString title() const = 0;
-    virtual void setCreationDate(const KDateTime &) = 0;
-    virtual KDateTime creationDate() const = 0;
-    virtual KDateTime lastModifiedDate() const = 0;
-    virtual QString iconName() const = 0;
     virtual bool isTextRich() const;
     virtual bool isTitleRich() const;
+
+
+    enum DateRole {
+        NoDateRole = 0,
+        CreationDate,
+        LastModifiedDate,
+        StartDate,
+        EndDate,
+        DueDate
+    };
+    Q_DECLARE_FLAGS(DateRoles, DateRole)
+
+    static DateRoles supportedDateRolesForType(PimItemIndex::ItemType type);
+    DateRoles supportedDateRoles() const;
+
+    virtual KDateTime date(DateRole role) const = 0;
+    virtual bool setDate(DateRole role, const KDateTime &date) = 0;
+
     /**
      * Note: last modified
      * Todo: todo due date
      * Event: start date
      */
-    virtual KDateTime primaryDate() const = 0;
+    KDateTime primaryDate() const;
+
 
     virtual void setRelations(const QList<PimItemRelation> &) = 0;
     virtual QList<PimItemRelation> relations() const = 0;
@@ -96,8 +114,9 @@ public:
 private:
     Q_DISABLE_COPY(PimItem)
 };
-//Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::ItemTypes)
-//Q_DECLARE_METATYPE(PimItem::ItemTypes)
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(PimItem::DateRoles)
+
 Q_DECLARE_METATYPE(PimItem::Ptr)
 
 #endif // ABSTRACTPIMITEM_H
