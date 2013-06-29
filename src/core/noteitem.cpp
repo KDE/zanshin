@@ -60,11 +60,6 @@ void NoteItem::setItem(const Akonadi::Item &item)
     messageWrapper = unpack(item);
 }
 
-bool NoteItem::hasValidPayload() const
-{
-    return m_item.hasPayload<KMime::Message::Ptr>();
-}
-
 QString NoteItem::uid() const
 {
     return messageWrapper->uid();

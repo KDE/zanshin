@@ -76,13 +76,13 @@ const Akonadi::Item &AkonadiBaseItem::getItem() const
 
 void AkonadiBaseItem::setItem(const Akonadi::Item &item)
 {
+    Q_ASSERT(item.hasPayload() && item.mimeType() == mimeType());
     m_item = item;
-    Q_ASSERT(hasValidPayload());
 }
 
 KJob *AkonadiBaseItem::saveItem()
 {
-    if (!hasValidPayload()) {
+    if (!m_item.hasPayload()) {
         kWarning() << "tried to save item without payload";
         return 0;
     }

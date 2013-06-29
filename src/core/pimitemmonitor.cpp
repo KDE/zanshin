@@ -119,7 +119,7 @@ void PimItemMonitor::updateItem(const Akonadi::Item &item, const QSet<QByteArray
 
 void PimItemMonitor::fetchPayload()
 {
-    if (mItem->hasValidPayload()) {
+    if (mItem->getItem().hasPayload()) {
         emit payloadFetchComplete();
         return;
     }

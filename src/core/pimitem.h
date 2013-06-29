@@ -52,8 +52,6 @@ public:
     virtual QString mimeType() const = 0 ;
     static QString mimeType(PimItemIndex::ItemType);
     
-    virtual bool hasValidPayload() const = 0;
-
     enum ItemStatus {
         Complete = 1,
         NotComplete,

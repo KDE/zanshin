@@ -50,7 +50,6 @@ public:
 
     QString mimeType() const;
     PimItemIndex::ItemType itemType() const;
-    virtual bool hasValidPayload() const;
     virtual ItemStatus status() const;
 
     virtual QString uid() const;

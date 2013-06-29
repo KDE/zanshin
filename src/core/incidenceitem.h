@@ -80,7 +80,6 @@ public:
     void setProject();
     bool isProject() const;
 
-    virtual bool hasValidPayload() const;
     /**
      * Returns Todo/Event/Journal
      */

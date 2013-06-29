@@ -116,11 +116,6 @@ KDateTime IncidenceItem::lastModifiedDate() const
     return unwrap<KCalCore::Incidence>(m_item)->lastModified();
 }
 
-bool IncidenceItem::hasValidPayload() const
-{
-    return m_item.hasPayload<KCalCore::Incidence::Ptr>();
-}
-
 const KCalCore::Attachment::List IncidenceItem::attachments() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->attachments();
