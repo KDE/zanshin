@@ -519,63 +519,6 @@ private slots:
         QTest::newRow( "check todo with some context duplicate" ) << sourceStructure << contexts;
     }
 
-    void shouldRetrieveItemDataType_data()
-    {
-        QTest::addColumn<ModelStructure>( "sourceStructure" );
-        QTest::addColumn<int>( "column" );
-        QTest::addColumn<int>( "type" );
-
-        T t1(1, 0, "t1", QString(), "t1");
-
-        ModelStructure sourceStructure;
-        sourceStructure << t1;
-
-        int column = 1;
-        int type = Zanshin::ProjectType;
-
-        QTest::newRow( "check data type for column 1" ) << sourceStructure << column << type;
-
-        column = 2;
-        type = Zanshin::ContextType;
-
-        QTest::newRow( "check data type for column 2" ) << sourceStructure << column << type;
-
-        column = 0;
-        type = Zanshin::StandardType;
-
-        QTest::newRow( "check data type for column 0" ) << sourceStructure << column << type;
-
-        column = 3;
-        type = Zanshin::StandardType;
-
-        QTest::newRow( "check data type for column 3" ) << sourceStructure << column << type;
-    }
-
-    void shouldRetrieveItemDataType()
-    {
-        //GIVEN
-        QFETCH(ModelStructure, sourceStructure);
-
-        //Source model
-        QStandardItemModel source;
-        StandardModelBuilderBehavior behavior;
-        behavior.setMetadataCreationEnabled(false);
-        ModelUtils::create(&source, sourceStructure, ModelPath(), &behavior);
-
-        //create metadataModel
-        TodoMetadataModel todoMetadataModel;
-        ModelTest t1(&todoMetadataModel);
-
-        //WHEN
-        todoMetadataModel.setSourceModel(&source);
-
-        //THEN
-        QFETCH(int, column);
-        QFETCH(int, type);
-        QModelIndex index = todoMetadataModel.index(0, column);
-        QCOMPARE(index.data(Zanshin::DataTypeRole).toInt(), type);
-    }
-
     void shouldRetrieveItemFlags_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );

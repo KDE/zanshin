@@ -114,15 +114,6 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
             return Zanshin::ProjectTodo;
         }
         return Zanshin::StandardTodo;
-    case Zanshin::DataTypeRole:
-        switch (index.column()) {
-            case 1 :
-                return Zanshin::ProjectType;
-            case 2 :
-                return Zanshin::ContextType;
-            default:
-                return Zanshin::StandardType;
-        }
     default:
         return KIdentityProxyModel::data(index, role);
     }

@@ -53,19 +53,11 @@ namespace Zanshin
         UidRole,
         ParentUidRole,
         ItemTypeRole,
-        DataTypeRole,
         RelationIdRole, //Id of node
         AncestorsRole, //List of all parents
         UriRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };
-
-    enum DataType {
-        StandardType = 0,
-        ContextType,
-        ProjectType
-    };
-
 }
 typedef qint64 Id;
 typedef QList<qint64> IdList;
