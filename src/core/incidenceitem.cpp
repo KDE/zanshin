@@ -22,6 +22,7 @@
 */
 
 
+#include "akonadidatastore.h"
 #include "incidenceitem.h"
 #include "pimitemrelations.h"
 #include "pimitemservices.h"
@@ -375,10 +376,5 @@ void IncidenceItem::setProject()
 
 bool IncidenceItem::isProject() const
 {
-    const KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(m_item);
-    if (i->comments().contains("X-Zanshin-Project")
-     || !i->customProperty("Zanshin", "Project").isEmpty()) {
-        return true;
-    }
-    return PimItemServices::projectInstance().hasChildren(uid());
+    return AkonadiDataStore::instance().isProject(m_item);
 }

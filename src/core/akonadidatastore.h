@@ -30,11 +30,15 @@
 class AkonadiDataStore : public DataStoreInterface
 {
 public:
+    static AkonadiDataStore &instance();
+
     AkonadiDataStore();
     virtual ~AkonadiDataStore();
 
-    virtual bool moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent);
+    bool isProject(const Akonadi::Item &item) const;
 
+
+    virtual bool moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent);
 };
 
 #endif // AKONADIDATASTOREIMPLEMENTATION_H

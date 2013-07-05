@@ -23,7 +23,24 @@
 */
 
 #include "akonadidatastore.h"
+#include "akonadibaseitem.h"
 #include "todohelpers.h"
+
+#include <KCalCore/Todo>
+
+template<class T>
+typename T::Ptr unwrap(const Akonadi::Item &item)
+{
+    Q_ASSERT(item.hasPayload<typename T::Ptr>());
+    return item.payload< typename T::Ptr>();
+}
+
+AkonadiDataStore &AkonadiDataStore::instance()
+{
+    AkonadiDataStore *store = dynamic_cast<AkonadiDataStore*>(&DataStoreInterface::instance());
+    Q_ASSERT(store != 0);
+    return *store;
+}
 
 AkonadiDataStore::AkonadiDataStore()
 {
@@ -31,6 +48,16 @@ AkonadiDataStore::AkonadiDataStore()
 
 AkonadiDataStore::~AkonadiDataStore()
 {
+}
+
+bool AkonadiDataStore::isProject(const Akonadi::Item &item) const
+{
+    const KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(item);
+    if (i->comments().contains("X-Zanshin-Project")
+     || !i->customProperty("Zanshin", "Project").isEmpty()) {
+        return true;
+    }
+    return PimItemServices::projectInstance().hasChildren(i->uid());
 }
 
 bool AkonadiDataStore::moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent)
