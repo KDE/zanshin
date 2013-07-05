@@ -26,6 +26,7 @@
 #include "core/pimitemservices.h"
 #include "reparentingmodel/todonode.h"
 #include "reparentingmodel/reparentingmodel.h"
+#include "datastoreinterface.h"
 #include "todohelpers.h"
 #include <KLocalizedString>
 #include <KIcon>
@@ -234,28 +235,9 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     PimItemIndex parentNode = getData(id, Zanshin::PimItemIndexRole).value<PimItemIndex>();
 
     foreach (const KUrl &url, urls) {
-        const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
         //TODO make sure we never get here during testing (although we normally shouldn't anyways
-        if (urlItem.isValid()) {
-            //TODO replace by getData/setData?
-            Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(urlItem);
-            job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-            job->fetchScope().fetchFullPayload();
-            if ( !job->exec() ) {
-                continue;
-            }
-            Q_ASSERT(job->items().size()==1);
-            Akonadi::Item item = job->items().first();
-            Q_ASSERT(item.isValid());
-
-            PimItemIndex node(PimItemIndex::NoType);
-            if (AkonadiBaseItem::typeFromItem(item) == PimItemIndex::Todo) {
-                node.type = PimItemIndex::Todo;
-            } else {
-                node.type = PimItemIndex::Note;
-            }
-            node.item = item;
-
+        PimItemIndex node = DataStoreInterface::instance().indexFromUrl(url);
+        if (node.type != PimItemIndex::NoType) {
             PimItemServices::moveTo(node, parentNode);
             return true;
         }

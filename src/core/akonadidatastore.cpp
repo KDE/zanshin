@@ -26,6 +26,8 @@
 #include "akonadibaseitem.h"
 #include "todohelpers.h"
 
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 #include <KCalCore/Todo>
 
 template<class T>
@@ -58,6 +60,36 @@ bool AkonadiDataStore::isProject(const Akonadi::Item &item) const
         return true;
     }
     return PimItemServices::projectInstance().hasChildren(i->uid());
+}
+
+PimItemIndex AkonadiDataStore::indexFromUrl(const KUrl &url) const
+{
+    const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
+    Q_ASSERT(urlItem.isValid());
+
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(urlItem);
+    job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    job->fetchScope().fetchFullPayload();
+    if ( !job->exec() ) {
+        return PimItemIndex();
+    }
+
+    Q_ASSERT(job->items().size()==1);
+    const Akonadi::Item resolvedItem = job->items().first();
+    Q_ASSERT(resolvedItem.isValid());
+
+    PimItemIndex index(PimItemIndex::NoType);
+    if (AkonadiBaseItem::typeFromItem(resolvedItem) == PimItemIndex::Todo) {
+        if (isProject(resolvedItem))
+            index.type = PimItemIndex::Project;
+        else
+            index.type = PimItemIndex::Todo;
+    } else {
+        index.type = PimItemIndex::Note;
+    }
+    index.item = resolvedItem;
+
+    return index;
 }
 
 bool AkonadiDataStore::moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent)

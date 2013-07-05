@@ -37,6 +37,7 @@ public:
 
     bool isProject(const Akonadi::Item &item) const;
 
+    virtual PimItemIndex indexFromUrl(const KUrl &url) const;
 
     virtual bool moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent);
 };

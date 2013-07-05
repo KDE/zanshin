@@ -33,6 +33,8 @@ public:
     MockDataStore();
     virtual ~MockDataStore();
 
+    virtual PimItemIndex indexFromUrl(const KUrl &url) const;
+
     virtual bool moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent);
 
 };
