@@ -17,6 +17,7 @@ X-KDE-PluginInfo-EnabledByDefault=true
 X-KDE-PluginInfo-AllowEmptySettings=true
 
 Comment=Kontact Zanshin Plugin
+Comment[bs]=Kontact Zanshin priključaka
 Comment[da]=Zanshin-plugin til Kontact
 Comment[de]=Zanshin-Modul für Kontakt
 Comment[es]=Complemento Kontact para Zanshin
@@ -39,6 +40,7 @@ Comment[tr]=Kontact ZANSHIN Eklentisi
 Comment[uk]=Додаток Zanshin до Kontact
 Comment[x-test]=xxKontact Zanshin Pluginxx
 Name=Todo Lists
+Name[bs]=Lista zadataka za uraditi
 Name[da]=Gøremålslister
 Name[de]=Aufgabenlisten
 Name[es]=Lista de tareas
