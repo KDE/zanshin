@@ -1,5 +1,6 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+add_subdirectory( app )
 add_subdirectory( reparentingmodel )
 add_subdirectory( core )
 add_subdirectory( icons )
@@ -38,12 +39,8 @@ kde4_add_ui_files(zanshin_gui_SRCS gui/itemeditor/properties.ui)
 ########### zanshin app ###############
 
 set(zanshin_SRCS
-   app/aboutdata.cpp
-   app/configdialog.cpp
-   app/debugwindow.cpp
-   app/main.cpp
-   app/maincomponent.cpp
-   app/mainwindow.cpp
+   ${app_SRCS}
+   ${mainApp_SRCS}
    ${zanshin_core_SRCS}
    ${zanshin_gui_SRCS}
 )
@@ -61,10 +58,8 @@ install(PROGRAMS app/zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 ########### zanshin part ###############
 
 set(zanshin_part_SRCS
-   app/aboutdata.cpp
-   app/configdialog.cpp
-   app/maincomponent.cpp
-   app/part.cpp
+   ${app_SRCS}
+   ${partApp_SRCS}
    ${zanshin_core_SRCS}
    ${zanshin_gui_SRCS}
 )
