@@ -25,26 +25,21 @@
 #define ZANSHIN_CONFIGDIALOG_H
 
 #include <KDE/KDialog>
+#include <kpagedialog.h>
 
-namespace Akonadi
-{
-    class AgentInstanceWidget;
-}
+class ResourceConfig;
+class CollectionConfig;
 
-class ConfigDialog : public KDialog
+class ConfigDialog : public KPageDialog
 {
     Q_OBJECT
 
 public:
     ConfigDialog(QWidget *parent = 0);
-
-private slots:
-    void addResource();
-    void removeResource();
-    void configureResource();
-
+    virtual void accept();
 private:
-    Akonadi::AgentInstanceWidget *m_agentInstanceWidget;
+    ResourceConfig *mResourceConfig;
+    CollectionConfig *mCollectionConfig;
 };
 
 #endif

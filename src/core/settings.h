@@ -42,6 +42,9 @@ public:
 
     void setDefaultNoteCollection(const Akonadi::Collection &collection);
     Akonadi::Collection defaultNoteCollection();
+    
+    void setActiveCollections(const QSet<Akonadi::Collection::Id> &);
+    QSet<Akonadi::Collection::Id> activeCollections();
 signals:
     void defaultTodoCollectionChanged(Akonadi::Collection);
     void defaultNoteCollectionChanged(Akonadi::Collection);

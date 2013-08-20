@@ -21,25 +21,29 @@
    USA.
 */
 
-#include "configdialog.h"
-#include "resourceconfig.h"
-#include "collectionconfig.h"
-#include <KLocalizedString>
+#ifndef ZANSHIN_RESOURCECONFIG_H
+#define ZANSHIN_RESOURCECONFIG_H
 
-ConfigDialog::ConfigDialog(QWidget *parent)
-    : KPageDialog(parent),
-    mResourceConfig(new ResourceConfig(this)),
-    mCollectionConfig(new CollectionConfig(this))
-{
-    setCaption(i18n("Settings..."));
-    resize(500, 450);
-    
-    addPage(mResourceConfig, i18n("Sources"));
-    addPage(mCollectionConfig, i18n("Used Folders"));
-}
+#include <QWidget>
 
-void ConfigDialog::accept()
+namespace Akonadi
 {
-    mCollectionConfig->accept();
-    QDialog::accept();
+    class AgentInstanceWidget;
 }
+class ResourceConfig : public QWidget
+{
+    Q_OBJECT
+
+public:
+    ResourceConfig(QWidget *parent = 0);
+
+private slots:
+    void addResource();
+    void removeResource();
+    void configureResource();
+
+private:
+    Akonadi::AgentInstanceWidget *m_agentInstanceWidget;
+};
+
+#endif

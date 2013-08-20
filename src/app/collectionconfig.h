@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo.
 
-   Copyright 2011 Kevin Ottens <ervin@kde.org>
+   Copyright 2013 Christian Mollekopf <chrigi_1@fastmail.fm>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,25 +21,20 @@
    USA.
 */
 
-#include "configdialog.h"
-#include "resourceconfig.h"
-#include "collectionconfig.h"
-#include <KLocalizedString>
+#ifndef ZANSHIN_COLLECTIONCONFIG_H
+#define ZANSHIN_COLLECTIONCONFIG_H
 
-ConfigDialog::ConfigDialog(QWidget *parent)
-    : KPageDialog(parent),
-    mResourceConfig(new ResourceConfig(this)),
-    mCollectionConfig(new CollectionConfig(this))
-{
-    setCaption(i18n("Settings..."));
-    resize(500, 450);
-    
-    addPage(mResourceConfig, i18n("Sources"));
-    addPage(mCollectionConfig, i18n("Used Folders"));
-}
+#include <QWidget>
 
-void ConfigDialog::accept()
+class SelectorModel;
+class CollectionConfig: public QWidget
 {
-    mCollectionConfig->accept();
-    QDialog::accept();
-}
+    Q_OBJECT
+public:
+    explicit CollectionConfig(QWidget *parent = 0);
+    void accept();
+private:
+    SelectorModel *mSelectorModel;
+};
+
+#endif

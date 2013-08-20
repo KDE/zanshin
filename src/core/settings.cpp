@@ -58,3 +58,17 @@ Akonadi::Collection Settings::defaultNoteCollection() {
     Akonadi::Collection::Id id = config.readEntry("defaultNoteCollection", -1);
     return Akonadi::Collection(id);
 }
+
+void Settings::setActiveCollections(const QSet< Akonadi::Entity::Id > &set)
+{
+    KConfigGroup config(KGlobal::config(), "General");
+    config.writeEntry("activeCollections", set.toList());
+    config.sync();
+}
+
+QSet< Akonadi::Entity::Id > Settings::activeCollections()
+{
+    KConfigGroup config(KGlobal::config(), "General");
+    return config.readEntry("activeCollections", QList<Akonadi::Collection::Id>()).toSet();
+}
+
