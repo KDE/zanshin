@@ -26,6 +26,7 @@
 
 #include <QtCore/QObject>
 
+class CollectionFilter;
 namespace Akonadi {
 class ChangeRecorder;
 }
@@ -63,9 +64,9 @@ public:
     QAbstractItemModel *knowledgeSelectionModel(); //Filter model
     QItemSelectionModel *knowledgeSelection();
     QAbstractItemModel *knowledgeCollectionsModel();
-
-
+    
 private:
+    Akonadi::ChangeRecorder *m_itemMonitor;
     QAbstractItemModel *m_entityModel;
     QAbstractItemModel *m_baseModel;
     QAbstractItemModel *m_collectionsModel;
@@ -88,6 +89,23 @@ private:
     QAbstractItemModel *m_contextsSelectionModel;
     QAbstractItemModel *m_contextsComboModel;
     QItemSelectionModel *m_contextSelection;
+
+};
+
+#include <QSortFilterProxyModel>
+#include <QSet>
+#include <Akonadi/Collection>
+class CollectionFilter: public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    CollectionFilter(QObject *parent = 0);
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
+
+public slots:
+    void setActiveCollections(const QSet<Akonadi::Collection::Id> &set);
+private:
+    QSet<Akonadi::Collection::Id> mActiveCollections;
 };
 
 #endif

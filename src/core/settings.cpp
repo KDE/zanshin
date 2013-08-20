@@ -63,7 +63,8 @@ void Settings::setActiveCollections(const QSet< Akonadi::Entity::Id > &set)
 {
     KConfigGroup config(KGlobal::config(), "General");
     config.writeEntry("activeCollections", set.toList());
-    config.sync();
+    config.sync();  
+    emit activeCollectionsChanged(set);
 }
 
 QSet< Akonadi::Entity::Id > Settings::activeCollections()

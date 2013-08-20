@@ -48,6 +48,7 @@ public:
 signals:
     void defaultTodoCollectionChanged(Akonadi::Collection);
     void defaultNoteCollectionChanged(Akonadi::Collection);
+    void activeCollectionsChanged(QSet<Akonadi::Collection::Id>);
 };
 
 #endif // CONFIGURATION_H

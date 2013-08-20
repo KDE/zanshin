@@ -38,11 +38,39 @@
 
 #include "kdescendantsproxymodel.h"
 #include <Akonadi/EntityDisplayAttribute>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/CollectionFetchJob>
 #include "pimitemmodel.h"
 #include "reparentingmodel/reparentingmodel.h"
 #include "core/projectstrategy.h"
 #include "core/structurecachestrategy.h"
+#include "core/settings.h"
 #include <qitemselectionmodel.h>
+
+CollectionFilter::CollectionFilter(QObject *parent)
+: QSortFilterProxyModel(parent)
+{
+}
+
+bool CollectionFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
+{
+    const QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
+    const QVariant var = sourceChild.data(Akonadi::EntityTreeModel::CollectionIdRole);
+    if (!var.isValid()) {
+        return true;
+    }
+    const Akonadi::Collection::Id id = var.value<Akonadi::Collection::Id>();
+    if (id < 0 || mActiveCollections.contains(id)) {
+        return true;
+    }
+    return false;
+}
+
+void CollectionFilter::setActiveCollections(const QSet<Akonadi::Collection::Id> &set)
+{
+    mActiveCollections = set;
+    invalidateFilter();
+}
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
@@ -80,15 +108,20 @@ QAbstractItemModel *ModelStack::pimitemModel()
         Akonadi::CollectionFetchScope collectionScope;
         collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
 
-        Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder(this);
-        changeRecorder->setCollectionMonitored(Akonadi::Collection::root());
-        changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItem::Todo));
-        changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note));
-        changeRecorder->setCollectionFetchScope(collectionScope);
-        changeRecorder->setItemFetchScope(itemScope);
-        changeRecorder->setSession(session);
+        m_itemMonitor = new Akonadi::ChangeRecorder(this);
+        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Todo));
+        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note));
+        m_itemMonitor->setCollectionFetchScope(collectionScope);
+        m_itemMonitor->setItemFetchScope(itemScope);
+        m_itemMonitor->setSession(session);
 
-        m_entityModel = new PimItemModel(changeRecorder, this);
+        PimItemModel *pimModel = new PimItemModel(m_itemMonitor, this);
+        CollectionFilter *collectionFilter = new CollectionFilter(this);
+        collectionFilter->setActiveCollections(Settings::instance().activeCollections());
+        connect(&Settings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
+        collectionFilter->setSourceModel(pimModel);
+        m_entityModel = collectionFilter;
+        
     }
     return m_entityModel;
 }
@@ -244,10 +277,15 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
     PimItemModel *notetakerModel = new PimItemModel(monitor, this);
     notetakerModel->setSupportedDragActions(Qt::MoveAction);
     //notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
+    
+    CollectionFilter *collectionFilter = new CollectionFilter(this);
+    collectionFilter->setActiveCollections(Settings::instance().activeCollections());
+    connect(&Settings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
+    collectionFilter->setSourceModel(notetakerModel);
 
     //FIXME because invisible collectionfetch is broken we use this instead
     KDescendantsProxyModel *desc = new KDescendantsProxyModel(this);
-    desc->setSourceModel(notetakerModel);
+    desc->setSourceModel(collectionFilter);
     Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
     collectionsModel->addMimeTypeExclusionFilter( Akonadi::Collection::mimeType() );
     collectionsModel->setSourceModel(desc);
