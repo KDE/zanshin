@@ -76,7 +76,6 @@ private:
     QAbstractItemModel *m_treeComboModel;
     QItemSelectionModel *m_treeSelection;
     
-    Akonadi::ChangeRecorder *m_knowledgeMonitor;
     QAbstractItemModel *m_knowledgeBaseModel;
     QAbstractItemModel *m_knowledgeSelectionModel;
     QAbstractItemModel *m_topicsTreeModel;

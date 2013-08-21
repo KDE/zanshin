@@ -54,7 +54,6 @@ ModelStack::ModelStack(QObject *parent)
       m_treeSelectionModel(0),
       m_treeComboModel(0),
       m_treeSelection(0),
-      m_knowledgeMonitor(0),
       m_knowledgeBaseModel(0),
       m_knowledgeSelectionModel(0),
       m_topicsTreeModel(0),
@@ -232,28 +231,19 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
     Akonadi::ItemFetchScope scope;
     scope.fetchFullPayload( true ); // Need to have full item when adding it to the internal data structure
     scope.fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
-    //scope.fetchAttribute<Akonadi::EntityDeletedAttribute>(true);
-    //scope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
-
-    //Akonadi::CollectionFetchScope collectionScope;
-    //collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
 
     Akonadi::Session *session = new Akonadi::Session("zanshin", this);
 
-    m_knowledgeMonitor = new Akonadi::ChangeRecorder( this );
-    m_knowledgeMonitor->fetchCollection( true );
-    m_knowledgeMonitor->setItemFetchScope( scope );
-    //m_knowledgeMonitor->setCollectionFetchScope( collectionScope );
-    m_knowledgeMonitor->setCollectionMonitored(Akonadi::Collection::root());
-    m_knowledgeMonitor->setSession(session);
+    Akonadi::ChangeRecorder *monitor = new Akonadi::ChangeRecorder(this);
+    monitor->fetchCollection( true );
+    monitor->setItemFetchScope( scope );
+    monitor->setCollectionMonitored(Akonadi::Collection::root());
+    monitor->setSession(session);
+    monitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
 
-    //m_knowledgeMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Incidence), true);
-    m_knowledgeMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
-
-    PimItemModel *notetakerModel = new PimItemModel ( m_knowledgeMonitor, this );
+    PimItemModel *notetakerModel = new PimItemModel(monitor, this);
     notetakerModel->setSupportedDragActions(Qt::MoveAction);
     //notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
-    //m_knowledgeBaseModel = notetakerModel;
 
     //FIXME because invisible collectionfetch is broken we use this instead
     KDescendantsProxyModel *desc = new KDescendantsProxyModel(this);
