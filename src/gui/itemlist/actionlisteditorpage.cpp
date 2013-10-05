@@ -111,6 +111,15 @@ public:
         int rightType = right.data(Zanshin::ItemTypeRole).toInt();
 
         if (leftType == rightType) {
+            const PimItem::ItemStatus leftStatus = static_cast<PimItem::ItemStatus>(left.data(PimItemModel::StatusRole).toInt());
+            const PimItem::ItemStatus rightStatus = static_cast<PimItem::ItemStatus>(right.data(PimItemModel::StatusRole).toInt());
+            if (leftStatus == PimItem::Complete &&
+                rightStatus != PimItem::Complete) {
+                return false;
+            } else if (leftStatus != PimItem::Complete &&
+                rightStatus == PimItem::Complete) {
+                return true;
+            }
             return QSortFilterProxyModel::lessThan(left, right);
         }
 

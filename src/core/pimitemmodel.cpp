@@ -218,6 +218,8 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
             return pimitem->getPrimaryDate().dateTime().toString("ddd, hh:mm:ss");
         case ItemTypeRole:
             return pimitem->itemType();
+        case StatusRole:
+            return pimitem->getStatus();
         default:
             return QVariant();
     }

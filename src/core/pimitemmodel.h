@@ -53,6 +53,7 @@ public:
         TitleRole,
         DateRole,
         ItemTypeRole,
+        StatusRole,
         UserRole
     };
 
