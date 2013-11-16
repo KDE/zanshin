@@ -49,7 +49,7 @@ void TodoHelpers::addTodo(const QString &summary, const QList<PimItemRelation> r
         return;
     }
 
-    IncidenceItem inc(PimItemIndex::Todo);
+    IncidenceItem inc(PimItem::Todo);
     inc.setTitle(summary);
     inc.setRelations(relations);
     if (isProject) {

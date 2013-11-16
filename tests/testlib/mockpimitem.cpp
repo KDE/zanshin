@@ -62,7 +62,7 @@ private:
 };
 
 MockPimItem::MockPimItem()
-    : m_itemType(PimItemIndex::Todo),
+    : m_itemType(Todo),
       m_status(NotComplete),
       m_errorCode(KJob::NoError)
 {
@@ -72,12 +72,12 @@ MockPimItem::~MockPimItem()
 {
 }
 
-void MockPimItem::setItemType(PimItemIndex::ItemType type)
+void MockPimItem::setItemType(ItemType type)
 {
     m_itemType = type;
 }
 
-PimItemIndex::ItemType MockPimItem::itemType() const
+PimItem::ItemType MockPimItem::itemType() const
 {
     return m_itemType;
 }
@@ -92,7 +92,7 @@ QString MockPimItem::mimeType() const
     return m_mimeType;
 }
 
-void MockPimItem::setStatus(PimItem::ItemStatus status)
+void MockPimItem::setStatus(ItemStatus status)
 {
     m_status = status;
 }
@@ -154,12 +154,12 @@ bool MockPimItem::isTitleRich() const
     return m_isTitleRich;
 }
 
-KDateTime MockPimItem::date(PimItem::DateRole role) const
+KDateTime MockPimItem::date(DateRole role) const
 {
     return m_dates.value(role);
 }
 
-bool MockPimItem::setDate(PimItem::DateRole role, const KDateTime &date)
+bool MockPimItem::setDate(DateRole role, const KDateTime &date)
 {
     m_dates.insert(role, date);
     return true;

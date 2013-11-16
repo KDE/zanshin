@@ -37,7 +37,7 @@ public:
     AkonadiBaseItem(const Akonadi::Item &item);
 
     //based on item mimetype of item
-    static PimItemIndex::ItemType typeFromItem(const Akonadi::Item &item);
+    static ItemType typeFromItem(const Akonadi::Item &item);
 
     const Akonadi::Item &getItem() const;
 

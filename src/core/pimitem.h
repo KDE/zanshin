@@ -29,7 +29,6 @@
 #include <QStringList>
 #include <kcalcore/attachment.h>
 #include "pimitemrelations.h"
-#include "pimitemindex.h"
 
 class KJob;
 
@@ -47,10 +46,27 @@ public:
     PimItem();
     virtual ~PimItem();
 
-    virtual PimItemIndex::ItemType itemType() const = 0;
+    enum ItemType {
+        NoType,
+
+        Inbox,
+        FolderRoot,
+
+        Project,
+        Context,
+        Topic,
+
+        Collection,
+        Note,
+        Event,
+        Todo,
+        Journal
+    };
+
+    virtual ItemType itemType() const = 0;
 
     virtual QString mimeType() const = 0 ;
-    static QString mimeType(PimItemIndex::ItemType);
+    static QString mimeType(PimItem::ItemType);
     
     enum ItemStatus {
         Complete = 1,
@@ -89,7 +105,7 @@ public:
     };
     Q_DECLARE_FLAGS(DateRoles, DateRole)
 
-    static DateRoles supportedDateRolesForType(PimItemIndex::ItemType type);
+    static DateRoles supportedDateRolesForType(PimItem::ItemType type);
     DateRoles supportedDateRoles() const;
 
     virtual KDateTime date(DateRole role) const = 0;

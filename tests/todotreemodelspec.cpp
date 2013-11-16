@@ -642,11 +642,11 @@ private slots:
 
         QFETCH(QString, parentUid);
         if (!parentUid.isEmpty()) {
-            PimItemIndex parent(PimItemIndex::Project);
+            PimItemIndex parent(PimItem::Project);
             parent.uid = parentUid;
             interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
         } else {
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItemIndex::Inbox));
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItem::Inbox));
         }
 
         //THEN
@@ -789,11 +789,11 @@ private slots:
 
         QFETCH(QString, parentUid);
         if (!parentUid.isEmpty()) {
-            PimItemIndex parent(PimItemIndex::Project);
+            PimItemIndex parent(PimItem::Project);
             parent.uid = parentUid;
             interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
         } else {
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItemIndex::Inbox));
+            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItem::Inbox));
         }
 
         //THEN

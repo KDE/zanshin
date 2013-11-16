@@ -334,7 +334,7 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
     ui_properties->creationTime->setText(DateStringBuilder::getFullDate(m_currentItem->date(PimItem::CreationDate)));
     ui_properties->lastModifiedTime->setText(DateStringBuilder::getFullDate(m_currentItem->date(PimItem::LastModifiedDate)));
 
-    if (m_currentItem->itemType() == PimItemIndex::Todo) {
+    if (m_currentItem->itemType() == PimItem::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         //Due Date
         bool hasDue = inc->supportedDateRoles() & PimItem::DueDate;
@@ -353,7 +353,7 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
         ui_properties->lb_dueDate->hide();
     }
 
-    if (m_currentItem->itemType() == PimItemIndex::Event) {
+    if (m_currentItem->itemType() == PimItem::Event) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         //Event Start
         ui_properties->editableEventDate->show();
@@ -401,7 +401,7 @@ void ItemEditor::setEventDate(KDateTime dateTime)
         return;
     }
     Q_ASSERT(m_currentItem);
-    if (m_currentItem->itemType() == PimItemIndex::Event) {
+    if (m_currentItem->itemType() == PimItem::Event) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setDate(PimItem::StartDate, dateTime);
         m_itemMonitor->saveItem();
@@ -415,7 +415,7 @@ void ItemEditor::setDueDate(KDateTime dateTime)
         return;
     }
     Q_ASSERT(m_currentItem);
-    if (m_currentItem->itemType() == PimItemIndex::Todo) {
+    if (m_currentItem->itemType() == PimItem::Todo) {
         IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
         inc->setDate(PimItem::DueDate, dateTime);
         m_itemMonitor->saveItem();

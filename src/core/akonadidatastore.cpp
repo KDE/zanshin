@@ -78,14 +78,14 @@ PimItemIndex AkonadiDataStore::indexFromUrl(const KUrl &url) const
     const Akonadi::Item resolvedItem = job->items().first();
     Q_ASSERT(resolvedItem.isValid());
 
-    PimItemIndex index(PimItemIndex::NoType);
-    if (AkonadiBaseItem::typeFromItem(resolvedItem) == PimItemIndex::Todo) {
+    PimItemIndex index(PimItem::NoType);
+    if (AkonadiBaseItem::typeFromItem(resolvedItem) == PimItem::Todo) {
         if (isProject(resolvedItem))
-            index.type = PimItemIndex::Project;
+            index.type = PimItem::Project;
         else
-            index.type = PimItemIndex::Todo;
+            index.type = PimItem::Todo;
     } else {
-        index.type = PimItemIndex::Note;
+        index.type = PimItem::Note;
     }
     index.item = resolvedItem;
 
@@ -94,21 +94,21 @@ PimItemIndex AkonadiDataStore::indexFromUrl(const KUrl &url) const
 
 bool AkonadiDataStore::moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent)
 {
-    PimItemIndex::ItemType parentType = parent.type;
+    PimItem::ItemType parentType = parent.type;
     Zanshin::ItemType parentItemType = Zanshin::StandardTodo;
     Akonadi::Collection collection;
     switch (parentType) {
-    case PimItemIndex::Inbox:
+    case PimItem::Inbox:
         parentItemType = Zanshin::Inbox;
         collection = node.item.parentCollection();
         break;
-    case PimItemIndex::Collection:
+    case PimItem::Collection:
         parentItemType = Zanshin::Collection;
         collection = node.collection;
         break;
-    case PimItemIndex::Project:
+    case PimItem::Project:
         parentItemType = Zanshin::ProjectTodo;
-    case PimItemIndex::Todo: // Fall through
+    case PimItem::Todo: // Fall through
         collection = parent.item.parentCollection();
         break;
     default:

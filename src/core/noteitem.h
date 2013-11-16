@@ -49,7 +49,7 @@ public:
     NoteItem(const Akonadi::Item&);
 
     QString mimeType() const;
-    PimItemIndex::ItemType itemType() const;
+    PimItem::ItemType itemType() const;
     virtual ItemStatus status() const;
 
     virtual QString uid() const;

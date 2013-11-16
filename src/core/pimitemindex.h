@@ -21,31 +21,15 @@
 #include <Akonadi/Item>
 #include <Akonadi/Collection>
 #include "globaldefs.h"
+#include "pimitem.h"
 
 class PimItemIndex
 {
 public:
-    enum ItemType {
-        NoType,
-
-        Inbox,
-        FolderRoot,
-
-        Project,
-        Context,
-        Topic,
-
-        Collection,
-        Note,
-        Event,
-        Todo,
-        Journal
-    };
-
     PimItemIndex();
-    PimItemIndex(ItemType t);
+    PimItemIndex(PimItem::ItemType t);
 
-    ItemType type;
+    PimItem::ItemType type;
     Akonadi::Item item;
     Id relationId;
     Akonadi::Collection collection;

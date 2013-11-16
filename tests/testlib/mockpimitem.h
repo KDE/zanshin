@@ -32,8 +32,8 @@ public:
     MockPimItem();
     virtual ~MockPimItem();
 
-    void setItemType(PimItemIndex::ItemType type);
-    virtual PimItemIndex::ItemType itemType() const;
+    void setItemType(PimItem::ItemType type);
+    virtual PimItem::ItemType itemType() const;
 
     void setMimeType(const QString &mimeType);
     virtual QString mimeType() const;
@@ -62,7 +62,7 @@ public:
     virtual KJob *saveItem();
 
 private:
-    PimItemIndex::ItemType m_itemType;
+    PimItem::ItemType m_itemType;
     ItemStatus m_status;
     QString m_mimeType;
     QString m_uid;

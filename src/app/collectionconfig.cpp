@@ -89,8 +89,8 @@ CollectionConfig::CollectionConfig(QWidget* parent)
     Akonadi::ChangeRecorder *changeRecorder = new Akonadi::ChangeRecorder(this);
     changeRecorder->fetchCollection(true);
     changeRecorder->setCollectionMonitored(Akonadi::Collection::root());
-    changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItemIndex::Todo));
-    changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItemIndex::Note));
+    changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItem::Todo));
+    changeRecorder->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note));
 
     Akonadi::EntityTreeModel *model = new Akonadi::EntityTreeModel(changeRecorder, this);
     

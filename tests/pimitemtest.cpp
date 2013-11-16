@@ -36,7 +36,7 @@ private slots:
     void testGetAndSet_data()
     {
         QTest::addColumn<AkonadiBaseItem::Ptr>("item");
-        QTest::newRow("event") << AkonadiBaseItem::Ptr(new IncidenceItem(PimItemIndex::Event));
+        QTest::newRow("event") << AkonadiBaseItem::Ptr(new IncidenceItem(PimItem::Event));
         QTest::newRow("note") << AkonadiBaseItem::Ptr(new NoteItem());
     }
     
@@ -59,7 +59,7 @@ private slots:
     void testUidConsistency_data()
     {
         QTest::addColumn<PimItem::Ptr>("item");
-        QTest::newRow("event") << PimItem::Ptr(new IncidenceItem(PimItemIndex::Event));
+        QTest::newRow("event") << PimItem::Ptr(new IncidenceItem(PimItem::Event));
         QTest::newRow("note") << PimItem::Ptr(new NoteItem());
     }
     

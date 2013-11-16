@@ -141,8 +141,8 @@ void NoteItem::commitData()
 
 QString NoteItem::mimeType() const
 {
-    Q_ASSERT(PimItem::mimeType(PimItemIndex::Note) == Akonadi::NoteUtils::noteMimeType());
-    return PimItem::mimeType(PimItemIndex::Note);
+    Q_ASSERT(PimItem::mimeType(PimItem::Note) == Akonadi::NoteUtils::noteMimeType());
+    return PimItem::mimeType(PimItem::Note);
 }
 
 PimItem::ItemStatus NoteItem::status() const
@@ -155,9 +155,9 @@ QString NoteItem::iconName() const
     return Akonadi::NoteUtils::noteIconName();
 }
 
-PimItemIndex::ItemType NoteItem::itemType() const
+PimItem::ItemType NoteItem::itemType() const
 {
-    return PimItemIndex::Note;
+    return PimItem::Note;
 }
 
 QList< PimItemRelation > NoteItem::relations() const

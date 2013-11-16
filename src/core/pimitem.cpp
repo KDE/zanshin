@@ -24,6 +24,9 @@
 
 #include "pimitem.h"
 
+#include <KCalCore/Attachment>
+#include <KDebug>
+
 PimItem::PimItem()
 {
 
@@ -34,14 +37,14 @@ PimItem::~PimItem()
 
 }
 
-QString PimItem::mimeType(PimItemIndex::ItemType type)
+QString PimItem::mimeType(ItemType type)
 {
     switch (type) {
-        case PimItemIndex::Note:
+        case Note:
             return QString::fromLatin1( "text/x-vnd.akonadi.note" );
-        case PimItemIndex::Event:
+        case Event:
             return QString::fromLatin1( "application/x-vnd.akonadi.calendar.event" );
-        case PimItemIndex::Todo:
+        case Todo:
             return QString::fromLatin1( "application/x-vnd.akonadi.calendar.todo" );
         default:
             kWarning() << "not implemented";
@@ -60,29 +63,29 @@ bool PimItem::isTitleRich() const
     return false;
 }
 
-PimItem::DateRoles PimItem::supportedDateRolesForType(PimItemIndex::ItemType type)
+PimItem::DateRoles PimItem::supportedDateRolesForType(ItemType type)
 {
     DateRoles roles = NoDateRole;
 
     switch (type) {
-    case PimItemIndex::NoType:
-    case PimItemIndex::Inbox:
-    case PimItemIndex::FolderRoot:
-    case PimItemIndex::Context:
-    case PimItemIndex::Topic:
-    case PimItemIndex::Collection:
+    case NoType:
+    case Inbox:
+    case FolderRoot:
+    case Context:
+    case Topic:
+    case Collection:
         break;
-    case PimItemIndex::Project:
-    case PimItemIndex::Note:
+    case Project:
+    case Note:
         roles = CreationDate | LastModifiedDate;
         break;
-    case PimItemIndex::Journal:
+    case Journal:
         roles = CreationDate | LastModifiedDate | StartDate;
         break;
-    case PimItemIndex::Event:
+    case Event:
         roles = CreationDate | LastModifiedDate | StartDate | EndDate;
         break;
-    case PimItemIndex::Todo:
+    case Todo:
         roles = CreationDate | LastModifiedDate | StartDate | DueDate;
         break;
     }
@@ -98,23 +101,23 @@ PimItem::DateRoles PimItem::supportedDateRoles() const
 KDateTime PimItem::primaryDate() const
 {
     switch (itemType()) {
-    case PimItemIndex::NoType:
-    case PimItemIndex::Inbox:
-    case PimItemIndex::FolderRoot:
-    case PimItemIndex::Context:
-    case PimItemIndex::Topic:
-    case PimItemIndex::Collection:
-    case PimItemIndex::Project:
+    case NoType:
+    case Inbox:
+    case FolderRoot:
+    case Context:
+    case Topic:
+    case Collection:
+    case Project:
         return KDateTime();
 
-    case PimItemIndex::Note:
+    case Note:
         return date(LastModifiedDate);
 
-    case PimItemIndex::Journal:
-    case PimItemIndex::Event:
+    case Journal:
+    case Event:
         return date(StartDate);
 
-    case PimItemIndex::Todo:
+    case Todo:
         return date(DueDate);
     }
 

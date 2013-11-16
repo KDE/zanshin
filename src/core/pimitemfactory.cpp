@@ -24,12 +24,12 @@ AkonadiBaseItem::Ptr PimItemFactory::getItem(const Akonadi::Item &item)
     if (!item.isValid()) {
         return AkonadiBaseItem::Ptr();
     }
-    const PimItemIndex::ItemType itemType = AkonadiBaseItem::typeFromItem(item);
-    if (itemType == PimItemIndex::Note) {
+    const PimItem::ItemType itemType = AkonadiBaseItem::typeFromItem(item);
+    if (itemType == PimItem::Note) {
         return NoteItem::Ptr(new NoteItem(item));
-    } else if (itemType == PimItemIndex::Event
-            || itemType == PimItemIndex::Todo
-            || itemType == PimItemIndex::Journal) {
+    } else if (itemType == PimItem::Event
+            || itemType == PimItem::Todo
+            || itemType == PimItem::Journal) {
         return IncidenceItem::Ptr(new IncidenceItem(item));
     }
     return AkonadiBaseItem::Ptr();

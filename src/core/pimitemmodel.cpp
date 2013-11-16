@@ -34,6 +34,7 @@
 #include <KDE/Akonadi/ItemModifyJob>
 
 #include "core/pimitem.h"
+#include "core/pimitemindex.h"
 #include "core/incidenceitem.h"
 #include "pimitemfactory.h"
 #include "utils/datestringbuilder.h"
@@ -57,7 +58,7 @@ PimItemModel::~PimItemModel()
 Qt::ItemFlags PimItemModel::flags(const QModelIndex &index) const
 {
     const PimItem::Ptr pimitem(index.data(Zanshin::PimItemRole).value<PimItem::Ptr>());
-    const bool isEditable = index.column() == 0 || (pimitem && pimitem->itemType() == PimItemIndex::Todo );
+    const bool isEditable = index.column() == 0 || (pimitem && pimitem->itemType() == PimItem::Todo );
     const Qt::ItemFlags extra = isEditable ? Qt::ItemIsEditable : Qt::NoItemFlags;
     return Akonadi::EntityTreeModel::flags(index) | extra;
 }
@@ -126,7 +127,7 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
 QVariant PimItemModel::entityData(const Akonadi::Collection &collection, int column, int role) const
 {
     if (role == Zanshin::PimItemIndexRole) {
-        PimItemIndex index(PimItemIndex::Collection);
+        PimItemIndex index(PimItem::Collection);
         index.collection = collection;
         return QVariant::fromValue(index);
     }
@@ -164,9 +165,9 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
     if (role == Qt::EditRole) {
         if (index.column() == 0)
             pimitem->setTitle(value.toString());
-        else if (pimitem->itemType() == PimItemIndex::Todo)
+        else if (pimitem->itemType() == PimItem::Todo)
             pimitem->setDate(PimItem::DueDate, KDateTime(value.toDate()));
-    } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItemIndex::Todo) {
+    } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItem::Todo) {
         if (value.toInt() == Qt::Checked) {
             static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);
         } else {

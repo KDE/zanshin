@@ -114,8 +114,8 @@ QAbstractItemModel *ModelStack::pimitemModel()
         collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
 
         m_itemMonitor = new Akonadi::ChangeRecorder(this);
-        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItemIndex::Todo));
-        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItemIndex::Note));
+        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Todo));
+        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note));
         m_itemMonitor->setCollectionFetchScope(collectionScope);
         m_itemMonitor->setItemFetchScope(itemScope);
         m_itemMonitor->setSession(session);
@@ -276,7 +276,7 @@ QAbstractItemModel* ModelStack::knowledgeBaseModel()
     monitor->setItemFetchScope( scope );
     monitor->setCollectionMonitored(Akonadi::Collection::root());
     monitor->setSession(session);
-    monitor->setMimeTypeMonitored(PimItem::mimeType(PimItemIndex::Note), true);
+    monitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
 
     PimItemModel *notetakerModel = new PimItemModel(monitor, this);
     notetakerModel->setSupportedDragActions(Qt::MoveAction);
@@ -346,7 +346,7 @@ QAbstractItemModel *ModelStack::knowledgeCollectionsModel()
         collectionsMonitor->fetchCollection( true );
         collectionsMonitor->setCollectionMonitored(Akonadi::Collection::root());
         collectionsMonitor->setSession(session);
-        collectionsMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItemIndex::Note), true);
+        collectionsMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
 
         Akonadi::EntityTreeModel *model = new Akonadi::EntityTreeModel(collectionsMonitor, this);
 

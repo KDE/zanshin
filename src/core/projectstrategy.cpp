@@ -152,7 +152,7 @@ IdList ProjectStrategy::getParents(const QModelIndex &sourceChildIndex, const Id
     Id id = mRelations->getItemId(item);
     parents = translateFrom(mRelations->getParents(id));
     PimItem::Ptr pimItem(sourceChildIndex.data(Zanshin::PimItemRole).value<PimItem::Ptr>());
-    bool isNote = (pimItem && pimItem->itemType() == PimItemIndex::Note);
+    bool isNote = (pimItem && pimItem->itemType() == PimItem::Note);
     if (parents.isEmpty() || isNote) {
         if (!isProject(translateFrom(id), type) && !isNote) {
             return IdList() << mInbox;
@@ -237,7 +237,7 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
     foreach (const KUrl &url, urls) {
         //TODO make sure we never get here during testing (although we normally shouldn't anyways
         PimItemIndex node = DataStoreInterface::instance().indexFromUrl(url);
-        if (node.type != PimItemIndex::NoType) {
+        if (node.type != PimItem::NoType) {
             PimItemServices::moveTo(node, parentNode);
             return true;
         }

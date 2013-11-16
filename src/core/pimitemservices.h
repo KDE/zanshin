@@ -73,7 +73,7 @@ public:
 //     static PimNode noteNode(const Akonadi::Item &);
 //     static PimNode collectionNode(const Akonadi::Collection &);
 
-    static void create(PimItemIndex::ItemType type, const QString &name, const QList<PimItemIndex> &parents = QList<PimItemIndex>(), const Akonadi::Collection &col = Akonadi::Collection());
+    static void create(PimItem::ItemType type, const QString &name, const QList<PimItemIndex> &parents = QList<PimItemIndex>(), const Akonadi::Collection &col = Akonadi::Collection());
     static void remove(const PimItemIndex &node, QWidget *);
     static void remove(const QList<PimItemIndex> &nodes, QWidget *);
     static void moveTo(const PimItemIndex &node, const PimItemIndex &parent);

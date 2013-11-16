@@ -129,8 +129,8 @@ void MainComponent::onSynchronizeAll()
     while (!agents.isEmpty()) {
         Akonadi::AgentInstance agent = agents.takeFirst();
 
-        if (agent.type().mimeTypes().contains(PimItem::mimeType(PimItemIndex::Todo)) ||
-            agent.type().mimeTypes().contains(PimItem::mimeType(PimItemIndex::Note))) {
+        if (agent.type().mimeTypes().contains(PimItem::mimeType(PimItem::Todo)) ||
+            agent.type().mimeTypes().contains(PimItem::mimeType(PimItem::Note))) {
             agent.synchronize();
         }
     }

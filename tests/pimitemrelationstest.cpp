@@ -39,7 +39,7 @@ private slots:
 
     static Akonadi::Item getEventItem(const QList<PimItemRelation> &relations = QList<PimItemRelation>())
     {
-        IncidenceItem inc(PimItemIndex::Event);
+        IncidenceItem inc(PimItem::Event);
         inc.setRelations(relations);
         Akonadi::Item item = inc.getItem();
         item.setId(1);
@@ -216,7 +216,7 @@ private slots:
     
     void relatedToSelf()
     {
-        IncidenceItem inc(PimItemIndex::Event);
+        IncidenceItem inc(PimItem::Event);
         PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(inc.uid().toLatin1(), "name") << PimItemTreeNode("uid", "name"));
         inc.setRelations(QList<PimItemRelation>() << rel);
         Akonadi::Item item = inc.getItem();

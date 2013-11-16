@@ -18,12 +18,12 @@
 #include "pimitemindex.h"
 
 PimItemIndex::PimItemIndex()
-    : type(NoType), relationId(-1)
+    : type(PimItem::NoType), relationId(-1)
 {
 
 }
 
-PimItemIndex::PimItemIndex(ItemType t)
+PimItemIndex::PimItemIndex(PimItem::ItemType t)
     : type(t), relationId(-1)
 {
 }

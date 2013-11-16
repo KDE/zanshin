@@ -36,19 +36,19 @@ AkonadiBaseItem::AkonadiBaseItem(const Akonadi::Item &item)
 {
 }
 
-PimItemIndex::ItemType AkonadiBaseItem::typeFromItem(const Akonadi::Item &item)
+PimItem::ItemType AkonadiBaseItem::typeFromItem(const Akonadi::Item &item)
 {
     //this works only if the mimetype of the akonadi item has been saved already
     Q_ASSERT(!item.mimeType().isEmpty());
-    if (item.mimeType() == mimeType(PimItemIndex::Note)) {
-        return PimItemIndex::Note;
-    } else if (item.mimeType() == mimeType(PimItemIndex::Event)) {
-        return PimItemIndex::Event;
-    } else if (item.mimeType() == mimeType(PimItemIndex::Todo)) {
-        return PimItemIndex::Todo;
+    if (item.mimeType() == mimeType(Note)) {
+        return Note;
+    } else if (item.mimeType() == mimeType(Event)) {
+        return Event;
+    } else if (item.mimeType() == mimeType(Todo)) {
+        return Todo;
     }
     kWarning() << "unknown type" << item.mimeType();
-    return PimItemIndex::NoType;
+    return NoType;
 }
 
 QString AkonadiBaseItem::title() const
