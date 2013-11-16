@@ -40,7 +40,7 @@ class SelectorModel: public KIdentityProxyModel
 public:
     explicit SelectorModel(QObject* parent = 0): KIdentityProxyModel(parent){};
     
-    virtual Qt::ItemFlags flags(const QModelIndex& index) const
+    virtual Qt::ItemFlags flags(const QModelIndex& /*index*/) const
     {
         return Qt::ItemIsUserCheckable|Qt::ItemIsEnabled;
     }
