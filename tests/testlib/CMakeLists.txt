@@ -9,6 +9,7 @@ set(zanshin_testlib_SRCS
    indent.cpp
    mockdatastore.cpp
    mockmodel.cpp
+   mockpimitem.cpp
    modelbuilderbehavior.cpp
    modelnode.cpp
    modelpath.cpp
