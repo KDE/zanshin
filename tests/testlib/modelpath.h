@@ -46,6 +46,8 @@ public:
 
     ModelPath();
 
+    bool isEmpty();
+
     ModelPath(const C &collection);
     ModelPath(const T &todo);
     ModelPath(const Cat &context);

@@ -31,6 +31,11 @@ ModelPath::ModelPath()
 {
 }
 
+bool ModelPath::isEmpty()
+{
+    return m_path.isEmpty();
+}
+
 ModelPath::ModelPath(const C &collection)
 {
     m_path << QVariant::fromValue(collection);
