@@ -64,9 +64,9 @@ private:
 MockPimItem::MockPimItem()
     : m_itemType(Todo),
       m_status(NotComplete),
-      m_errorCode(KJob::NoError),
       m_isTextRich(false),
-      m_isTitleRich(false)
+      m_isTitleRich(false),
+      m_errorCode(KJob::NoError)
 {
 }
 
