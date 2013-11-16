@@ -23,6 +23,7 @@
 
 #include <qtest_kde.h>
 
+#include <QStandardItemModel>
 #include <QtGui/QItemSelectionModel>
 
 #include "core/modelstack.h"
@@ -34,6 +35,7 @@ private slots:
     void shouldEnsureModelsAreAvailable()
     {
         ModelStack stack;
+        stack.setOverridePimModel(new QStandardItemModel);
 
         QVERIFY(stack.baseModel()!=0);
         QVERIFY(stack.collectionsModel()!=0);
@@ -50,6 +52,7 @@ private slots:
     void shouldEnsureModelsAreConstant()
     {
         ModelStack stack;
+        stack.setOverridePimModel(new QStandardItemModel);
 
         QList<QAbstractItemModel*> models;
         models << stack.baseModel()

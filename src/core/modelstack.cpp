@@ -96,6 +96,11 @@ ModelStack::ModelStack(QObject *parent)
 {
 }
 
+void ModelStack::setOverridePimModel(QAbstractItemModel *model)
+{
+    m_entityModel = model;
+}
+
 QAbstractItemModel *ModelStack::pimitemModel()
 {
     if (!m_entityModel) {

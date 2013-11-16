@@ -40,6 +40,7 @@ class ModelStack : public QObject
 
 public:
     explicit ModelStack(QObject *parent = 0);
+    void setOverridePimModel(QAbstractItemModel *model);
 
     QAbstractItemModel *pimitemModel();
     QAbstractItemModel *baseModel();
