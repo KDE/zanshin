@@ -21,11 +21,6 @@ set(zanshin_core_LIBS
    ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} nepomuk nepomukutils kio soprano ${NEPOMUK_CORE_LIBRARY}
 )
 
-if(KDE4_BUILD_TESTS)
-   kde4_add_library(zanshin_static STATIC ${zanshin_core_SRCS})
-   target_link_libraries(zanshin_static ${KDE4_KDEUI_LIBS} ${zanshin_core_LIBS})
-endif(KDE4_BUILD_TESTS)
-
 ########### zanshin gui ###############
 
 set(zanshin_gui_SRCS
@@ -82,3 +77,11 @@ target_link_libraries(kontact_zanshinplugin ${KDE4_KPARTS_LIBS} ${KDEPIMLIBS_KON
 
 install(TARGETS kontact_zanshinplugin DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES app/zanshin_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR}/kontact)
+
+########### zanshin static version ###############
+
+if(KDE4_BUILD_TESTS)
+   kde4_add_library(zanshin_static STATIC ${zanshin_core_SRCS})
+   target_link_libraries(zanshin_static ${KDE4_KDEUI_LIBS} ${zanshin_core_LIBS})
+   add_dependencies(zanshin_static zanshin)
+endif(KDE4_BUILD_TESTS)
