@@ -36,9 +36,9 @@ public:
 
     virtual ~DataStoreInterface();
 
-    virtual PimItemIndex indexFromUrl(const KUrl &url) const = 0;
+    virtual PimItem::Ptr indexFromUrl(const KUrl &url) const = 0;
 
-    virtual bool moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent) = 0;
+    virtual bool moveTodoToProject(const PimItem::Ptr &item, const PimItem::Ptr &parent) = 0;
 
 private:
     static QScopedPointer<DataStoreInterface> s_implementation;

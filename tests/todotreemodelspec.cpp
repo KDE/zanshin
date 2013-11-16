@@ -578,8 +578,6 @@ private slots:
 
             ModelPath itemToChange = c1 % p2;
 
-            QString parentUid = "p1";
-
             ModelStructure outputStructure;
             outputStructure << inbox
                             << c1
@@ -587,9 +585,11 @@ private slots:
                             << __+p2
                             << ___+t2;
 
+            ModelPath parentPath = c1 % p1;
+
             QTest::newRow( "root project moved under another project of the same collection" )
                 << sourceStructure << itemToChange
-                << parentUid << outputStructure;
+                << parentPath << outputStructure;
         }
         {
             ModelStructure sourceStructure;
@@ -601,7 +601,7 @@ private slots:
                             << _+p3;
 
             ModelPath itemToChange = c1 % p3;
-            QString parentUid = QString();
+
             ModelStructure outputStructure;
             outputStructure << inbox
                             << c1
@@ -610,10 +610,12 @@ private slots:
                             << __+t2
                             << _+p3
                             << __+t3;
-                            
+
+            ModelPath parentPath = inbox;
+
             QTest::newRow( "sub-project moved as root in the same collection" )
                 << sourceStructure << itemToChange
-                << parentUid << outputStructure;
+                << parentPath << outputStructure;
         }
 
     }
@@ -640,14 +642,10 @@ private slots:
         QFETCH(ModelPath, itemToChange);
         QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
 
-        QFETCH(QString, parentUid);
-        if (!parentUid.isEmpty()) {
-            PimItemIndex parent(PimItem::Project);
-            parent.uid = parentUid;
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
-        } else {
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItem::Inbox));
-        }
+        QFETCH(ModelPath, parentPath);
+        QModelIndex parentIndex = ModelUtils::locateItem(&treeModel, parentPath);
+        interface->moveTo(PimItemServices::fromIndex(index),
+                          PimItemServices::fromIndex(parentIndex));
 
         //THEN
         QFETCH(ModelStructure, outputStructure);
@@ -687,8 +685,6 @@ private slots:
 
             ModelPath itemToChange = c1 % p1 % p2 % t2;
 
-            QString parentUid = "t3";
-
             ModelStructure outputStructure;
             outputStructure << inbox
                             << c1
@@ -699,9 +695,11 @@ private slots:
                             << ___+t4
                             << ___+t2;
 
+            ModelPath parentPath = c1 % p1 % t3;
+
             QTest::newRow( "todo moved under another project without project tag" )
                 << sourceStructure << itemToChange
-                << parentUid << outputStructure;
+                << parentPath << outputStructure;
         }
 
         {
@@ -717,8 +715,6 @@ private slots:
 
             ModelPath itemToChange = c1 % p1 % t3 % t5;
 
-            QString parentUid = "p2";
-
             ModelStructure outputStructure;
             outputStructure << inbox
                             << c1
@@ -730,9 +726,11 @@ private slots:
                             << __+t3
                             << ___+t4;
 
+            ModelPath parentPath = c1 % p1 % p2;
+
             QTest::newRow( "todo moved from project without tag under another project with project tag" )
                 << sourceStructure << itemToChange
-                << parentUid << outputStructure;
+                << parentPath << outputStructure;
         }
 
         {
@@ -747,8 +745,6 @@ private slots:
 
             ModelPath itemToChange = c1 % p1 % t3 % t4;
 
-            QString parentUid = "p2";
-
             ModelStructure outputStructure;
             outputStructure << inbox
                             << c1
@@ -759,9 +755,11 @@ private slots:
                             << ___+t4
                             << __+t3;
 
+            ModelPath parentPath = c1 % p1 % p2;
+
             QTest::newRow( "todo moved from project without tag with only this todo and the project should begun a todo" )
                 << sourceStructure << itemToChange
-                << parentUid << outputStructure;
+                << parentPath << outputStructure;
         }
     }
 
@@ -787,14 +785,10 @@ private slots:
         QFETCH(ModelPath, itemToChange);
         QModelIndex index = ModelUtils::locateItem(&source, itemToChange);
 
-        QFETCH(QString, parentUid);
-        if (!parentUid.isEmpty()) {
-            PimItemIndex parent(PimItem::Project);
-            parent.uid = parentUid;
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), parent);
-        } else {
-            interface->moveTo(PimItemRelationInterface::fromIndex(index), PimItemIndex(PimItem::Inbox));
-        }
+        QFETCH(ModelPath, parentPath);
+        QModelIndex parentIndex = ModelUtils::locateItem(&treeModel, parentPath);
+        interface->moveTo(PimItemServices::fromIndex(index),
+                          PimItemServices::fromIndex(parentIndex));
 
         //THEN
         QFETCH(ModelStructure, outputStructure);

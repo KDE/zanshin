@@ -232,13 +232,13 @@ bool ProjectStrategy::onDropMimeData(Id id, const QMimeData* mimeData, Qt::DropA
 
     KUrl::List urls = KUrl::List::fromMimeData(mimeData);
 
-    PimItemIndex parentNode = getData(id, Zanshin::PimItemIndexRole).value<PimItemIndex>();
+    PimItem::Ptr parentItem = getData(id, Zanshin::PimItemRole).value<PimItem::Ptr>();
 
     foreach (const KUrl &url, urls) {
         //TODO make sure we never get here during testing (although we normally shouldn't anyways
-        PimItemIndex node = DataStoreInterface::instance().indexFromUrl(url);
-        if (node.type != PimItem::NoType) {
-            PimItemServices::moveTo(node, parentNode);
+        PimItem::Ptr item = DataStoreInterface::instance().indexFromUrl(url);
+        if (item->itemType() != PimItem::NoType) {
+            PimItemServices::moveTo(item, parentItem);
             return true;
         }
     }

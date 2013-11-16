@@ -32,13 +32,13 @@ MockDataStore::~MockDataStore()
 {
 }
 
-PimItemIndex MockDataStore::indexFromUrl(const KUrl &url) const
+PimItem::Ptr MockDataStore::indexFromUrl(const KUrl &url) const
 {
     Q_UNUSED(url)
-    return PimItemIndex();
+    return PimItem::Ptr();
 }
 
-bool MockDataStore::moveTodoToProject(const PimItemIndex &/*node*/, const PimItemIndex &/*parent*/)
+bool MockDataStore::moveTodoToProject(const PimItem::Ptr &/*item*/, const PimItem::Ptr &/*parent*/)
 {
     return true;
 }

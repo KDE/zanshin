@@ -34,7 +34,6 @@
 #include <KDE/Akonadi/ItemModifyJob>
 
 #include "core/pimitem.h"
-#include "core/pimitemindex.h"
 #include "core/incidenceitem.h"
 #include "pimitemfactory.h"
 #include "utils/datestringbuilder.h"
@@ -108,15 +107,6 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
     case Zanshin::PimItemRole:
         return QVariant::fromValue(pimitem);
 
-    case Zanshin::PimItemIndexRole: {
-        PimItemIndex index(pimitem->itemType());
-        index.item = static_cast<IncidenceItem*>(pimitem.data())->getItem();
-        index.collection = index.item.parentCollection();
-        index.uid = pimitem->uid();
-        return QVariant::fromValue(index);
-    }
-
-
     default:
         return QVariant();
     }
@@ -126,12 +116,6 @@ QVariant PimItemModel::entityData(const Akonadi::Item &item, int column, int rol
 
 QVariant PimItemModel::entityData(const Akonadi::Collection &collection, int column, int role) const
 {
-    if (role == Zanshin::PimItemIndexRole) {
-        PimItemIndex index(PimItem::Collection);
-        index.collection = collection;
-        return QVariant::fromValue(index);
-    }
-
     return Akonadi::EntityTreeModel::entityData(collection, column, role);
 }
 

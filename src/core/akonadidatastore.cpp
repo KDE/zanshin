@@ -23,7 +23,10 @@
 */
 
 #include "akonadidatastore.h"
-#include "akonadibaseitem.h"
+#include "collectionitem.h"
+#include "incidenceitem.h"
+#include "noteitem.h"
+#include "virtualitem.h"
 #include "todohelpers.h"
 
 #include <Akonadi/ItemFetchJob>
@@ -62,7 +65,7 @@ bool AkonadiDataStore::isProject(const Akonadi::Item &item) const
     return PimItemServices::projectInstance().hasChildren(i->uid());
 }
 
-PimItemIndex AkonadiDataStore::indexFromUrl(const KUrl &url) const
+PimItem::Ptr AkonadiDataStore::indexFromUrl(const KUrl &url) const
 {
     const Akonadi::Item urlItem = Akonadi::Item::fromUrl(url);
     Q_ASSERT(urlItem.isValid());
@@ -71,52 +74,45 @@ PimItemIndex AkonadiDataStore::indexFromUrl(const KUrl &url) const
     job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
     job->fetchScope().fetchFullPayload();
     if ( !job->exec() ) {
-        return PimItemIndex();
+        return PimItem::Ptr();
     }
 
     Q_ASSERT(job->items().size()==1);
     const Akonadi::Item resolvedItem = job->items().first();
     Q_ASSERT(resolvedItem.isValid());
 
-    PimItemIndex index(PimItem::NoType);
     if (AkonadiBaseItem::typeFromItem(resolvedItem) == PimItem::Todo) {
-        if (isProject(resolvedItem))
-            index.type = PimItem::Project;
-        else
-            index.type = PimItem::Todo;
+        return PimItem::Ptr(new IncidenceItem(resolvedItem));
     } else {
-        index.type = PimItem::Note;
+        return PimItem::Ptr(new NoteItem(resolvedItem));
     }
-    index.item = resolvedItem;
-
-    return index;
 }
 
-bool AkonadiDataStore::moveTodoToProject(const PimItemIndex &node, const PimItemIndex &parent)
+bool AkonadiDataStore::moveTodoToProject(const PimItem::Ptr &item, const PimItem::Ptr &parent)
 {
-    PimItem::ItemType parentType = parent.type;
     Zanshin::ItemType parentItemType = Zanshin::StandardTodo;
     Akonadi::Collection collection;
-    switch (parentType) {
+    switch (parent->itemType()) {
     case PimItem::Inbox:
         parentItemType = Zanshin::Inbox;
-        collection = node.item.parentCollection();
+        collection = item.dynamicCast<AkonadiBaseItem>()->getItem().parentCollection();
         break;
     case PimItem::Collection:
         parentItemType = Zanshin::Collection;
-        collection = node.collection;
+        collection = parent.dynamicCast<CollectionItem>()->collection();
         break;
     case PimItem::Project:
         parentItemType = Zanshin::ProjectTodo;
     case PimItem::Todo: // Fall through
-        collection = parent.item.parentCollection();
+        collection = parent.dynamicCast<AkonadiBaseItem>()->getItem().parentCollection();
         break;
     default:
         qFatal("Unsupported parent type");
         break;
     }
 
-    if (!TodoHelpers::moveTodoToProject(node.item, parent.uid, parentItemType, collection)) {
+    if (!TodoHelpers::moveTodoToProject(item.dynamicCast<AkonadiBaseItem>()->getItem(),
+                                        parent->uid(), parentItemType, collection)) {
         return false;
     }
 
