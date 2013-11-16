@@ -74,6 +74,7 @@ void CollectionFilter::setActiveCollections(const QSet<Akonadi::Collection::Id> 
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
+      m_itemMonitor(0),
       m_entityModel(0),
       m_baseModel(0),
       m_collectionsModel(0),

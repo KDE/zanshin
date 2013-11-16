@@ -52,6 +52,7 @@ GuiClient::~GuiClient()
 
 void GuiClient::setupActions(QWidget* widget)
 {
+    delete m_builder;
     m_builder = new KXMLGUIBuilder(widget);
     m_factory = new KXMLGUIFactory(m_builder);
     m_factory->addClient(this);

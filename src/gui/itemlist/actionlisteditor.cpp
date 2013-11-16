@@ -131,7 +131,6 @@ void ActionListEditor::setMode(Zanshin::ApplicationMode mode)
     case Zanshin::KnowledgeMode:
         m_stack->setCurrentIndex(2);
         break;
-        break;
     }
     onSideBarSelectionChanged(currentSelection(mode)->currentIndex());
     m_selectorProxy->setView(currentPage()->treeView());

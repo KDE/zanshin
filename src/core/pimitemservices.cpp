@@ -528,18 +528,20 @@ void ProjectStructureInterface::remove(const QList< PimItem::Ptr >& items, QWidg
     bool canRemove = true;
     QString summary;
     IdList projectList;
+#if 0
     if (items.size() > 1) {
-//         QStringList projectList;
-//         foreach (QModelIndex project, projects) {
-//             projectList << project.data().toString();
-//         }
-//         summary = projectList.join(", ");
+         QStringList projectList;
+         foreach (QModelIndex project, projects) {
+             projectList << project.data().toString();
+         }
+         summary = projectList.join(", ");
     } else {
-//         QModelIndexList children = projects[0].data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
-//         if (!children.isEmpty()) {
-//             summary = projects[0].data().toString();
-//         }
+         QModelIndexList children = projects[0].data(Zanshin::ChildIndexesRole).value<QModelIndexList>();
+         if (!children.isEmpty()) {
+             summary = projects[0].data().toString();
+         }
     }
+#endif
 
     if (!summary.isEmpty()) {
         QString title;

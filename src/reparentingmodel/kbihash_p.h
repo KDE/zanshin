@@ -133,7 +133,7 @@ public:
         *this = other;
     }
 
-    const KBiAssociativeContainer<LeftContainer, RightContainer> &operator=(const KBiAssociativeContainer<LeftContainer, RightContainer> &other) {
+    KBiAssociativeContainer<LeftContainer, RightContainer> &operator=(const KBiAssociativeContainer<LeftContainer, RightContainer> &other) {
         _leftToRight = other._leftToRight; _rightToLeft = other._rightToLeft; return *this;
     }
 
