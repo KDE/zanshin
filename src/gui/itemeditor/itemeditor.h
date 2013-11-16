@@ -24,7 +24,6 @@
 #ifndef ITEMEDITOR_H
 #define ITEMEDITOR_H
 
-#include "ui_itemview.h"
 #include "attachmentsviewer.h"
 #include <QFrame>
 #include <KXMLGUIClient>
@@ -48,12 +47,13 @@ class QTimer;
 namespace Ui {
     class tags;
     class properties;
+    class itemView;
 }
 
 /**
  * The editor part for editing notes/todos/events
  */
-class ItemEditor : public QFrame, private Ui_itemView, public KXMLGUIClient
+class ItemEditor : public QFrame, public KXMLGUIClient
 {
     Q_OBJECT
 public:
@@ -97,9 +97,9 @@ private:
     AkonadiBaseItem::Ptr m_currentItem;
     QTimer *m_autosaveTimer;
     int m_autosaveTimeout;
+    Ui::itemView *ui_itemView;
     Ui::properties *ui_properties;
     AttachmentsViewer *m_attachmentsViewer;
-
 };
 
 #endif // ITEMVIEWER_H

@@ -56,6 +56,7 @@
 #include <KAction>
 
 #include "toolbox.h"
+#include "ui_itemview.h"
 // #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
@@ -70,25 +71,26 @@ ItemEditor::ItemEditor(QWidget* parent, KXMLGUIClient *parentClient)
     m_itemMonitor(0),
     m_autosaveTimer(new QTimer(this)),
     m_autosaveTimeout(5000),
+    ui_itemView(new itemView),
     ui_properties(new properties()),
     m_attachmentsViewer(new AttachmentsViewer(this))
 {
-    setupUi(this);
+    ui_itemView->setupUi(this);
 
     setXMLFile("editorui.rc");
 
     //Title
     //TODO set focus to end of edit, instead of beginning
-    connect(&title->lineEdit(), SIGNAL(returnPressed()), editor->editor(), SLOT(setFocus()));
-    title->lineEdit().setPlaceholderText(i18n("Title..."));
+    connect(&ui_itemView->title->lineEdit(), SIGNAL(returnPressed()), ui_itemView->editor->editor(), SLOT(setFocus()));
+    ui_itemView->title->lineEdit().setPlaceholderText(i18n("Title..."));
     QFont font = QApplication::font();
     font.setBold(true);
     font.setPointSize(11);
-    title->setDisplayFont(font);
+    ui_itemView->title->setDisplayFont(font);
     
     //Editor
-    editor->setXmlGuiClient(this);
-    connect(editor, SIGNAL(fullscreenToggled(bool)), SLOT(setFullscreenEditor()));
+    ui_itemView->editor->setXmlGuiClient(this);
+    connect(ui_itemView->editor, SIGNAL(fullscreenToggled(bool)), SLOT(setFullscreenEditor()));
     
     KAction *action = actionCollection()->addAction( "fullscreen_editor" );
     action->setText( i18n( "Fullscreen &Editor" ) );
@@ -96,19 +98,19 @@ ItemEditor::ItemEditor(QWidget* parent, KXMLGUIClient *parentClient)
     action->setShortcut(QKeySequence(Qt::Key_F5));
     connect( action, SIGNAL(triggered()), SLOT(setFullscreenEditor()) );
     
-    editor->addAction(action);
+    ui_itemView->editor->addAction(action);
     
     
-    static_cast<QVBoxLayout*>(layout())->setStretchFactor(editor, 5);
+    static_cast<QVBoxLayout*>(layout())->setStretchFactor(ui_itemView->editor, 5);
 
     //Toolbox
-    QWidget *propertiesWidget = new QWidget(toolbox);
+    QWidget *propertiesWidget = new QWidget(ui_itemView->toolbox);
     ui_properties->setupUi(propertiesWidget);
     connect(ui_properties->editableDueDate, SIGNAL(dateChanged(KDateTime, bool)), this, SLOT(setDueDate(KDateTime)));
     connect(ui_properties->editableEventDate, SIGNAL(dateChanged(KDateTime)), this, SLOT(setEventDate(KDateTime)));
-    toolbox->addWidget(propertiesWidget, i18n("Properties"));
+    ui_itemView->toolbox->addWidget(propertiesWidget, i18n("Properties"));
 
-    toolbox->addWidget(m_attachmentsViewer, i18n("Attachments"));
+    ui_itemView->toolbox->addWidget(m_attachmentsViewer, i18n("Attachments"));
     
     setEnabled(false);
 
@@ -119,7 +121,7 @@ ItemEditor::ItemEditor(QWidget* parent, KXMLGUIClient *parentClient)
 ItemEditor::~ItemEditor()
 {
     KConfigGroup config(KGlobal::config(), "ItemEditor");
-    config.writeEntry("activeToolbox", toolbox->currentIndex());
+    config.writeEntry("activeToolbox", ui_itemView->toolbox->currentIndex());
     config.writeEntry("toolbarHidden", actionCollection()->action( "hide_toolbar" )->isChecked()); //The widget is already hidden, but the action still has the correct state
 
     saveItem();
@@ -130,16 +132,18 @@ ItemEditor::~ItemEditor()
 
     delete ui_properties;
     ui_properties = 0;
+    delete ui_itemView;
+    ui_itemView = 0;
 }
 
 void ItemEditor::restoreState()
 {
     KConfigGroup config(KGlobal::config(), "ItemEditor");
     int activeToolbox= config.readEntry( "activeToolbox", 0);
-    toolbox->activateWidget(activeToolbox);
+    ui_itemView->toolbox->activateWidget(activeToolbox);
     bool toolbarHidden = config.readEntry( "toolbarHidden", false);
     if (toolbarHidden) {
-        editor->toggleToolbarVisibility();
+        ui_itemView->editor->toggleToolbarVisibility();
     }
 }
 
@@ -149,14 +153,14 @@ void ItemEditor::setFullscreenEditor()
     if (!m_currentItem) {
         return;
     }
-    if (editor->windowState() & Qt::WindowFullScreen) {
-        editor->setParent(this);
-        static_cast<QVBoxLayout*>(layout())->insertWidget(1, editor, 5);
+    if (ui_itemView->editor->windowState() & Qt::WindowFullScreen) {
+        ui_itemView->editor->setParent(this);
+        static_cast<QVBoxLayout*>(layout())->insertWidget(1, ui_itemView->editor, 5);
     } else {
-        editor->setParent(0);
+        ui_itemView->editor->setParent(0);
     }
-    editor->setWindowState(editor->windowState() ^ Qt::WindowFullScreen);
-    editor->show();
+    ui_itemView->editor->setWindowState(ui_itemView->editor->windowState() ^ Qt::WindowFullScreen);
+    ui_itemView->editor->show();
 }
 
 
@@ -176,20 +180,20 @@ void ItemEditor::saveItem()
     }
     bool modified = false;
     
-    if (editor->editor()->document()->isModified()) {
-        bool isRichText = KPIMTextEdit::TextUtils::containsFormatting( editor->editor()->document() );
+    if (ui_itemView->editor->editor()->document()->isModified()) {
+        bool isRichText = KPIMTextEdit::TextUtils::containsFormatting( ui_itemView->editor->editor()->document() );
         if (isRichText) {
-            m_currentItem->setText(editor->editor()->toHtml(), true);
+            m_currentItem->setText(ui_itemView->editor->editor()->toHtml(), true);
         } else {
-            m_currentItem->setText(editor->editor()->toPlainText(), false);
+            m_currentItem->setText(ui_itemView->editor->editor()->toPlainText(), false);
         }
-        editor->editor()->document()->setModified(false);
+        ui_itemView->editor->editor()->document()->setModified(false);
         modified = true;
     }
 
-    if (title->lineEdit().isModified()) {
-        m_currentItem->setTitle(title->text());
-        title->lineEdit().setModified(false);
+    if (ui_itemView->title->lineEdit().isModified()) {
+        m_currentItem->setTitle(ui_itemView->title->text());
+        ui_itemView->title->lineEdit().setModified(false);
         modified = true;
     }
     if (modified) {
@@ -218,7 +222,7 @@ void ItemEditor::focusOutEvent(QFocusEvent* event)
 void ItemEditor::clearView()
 {
     m_autosaveTimer->stop();
-    editor->editor()->clear();
+    ui_itemView->editor->editor()->clear();
     //Reset action from last text (i.e. if bold text was enabled)
     /*foreach (QAction *action, guiWindow->actionCollection()->actions()) {
         kDebug() << "reset: " << action->text();
@@ -226,15 +230,15 @@ void ItemEditor::clearView()
     }*/
     //Reset formatting actions from last text (i.e. if bold text was enabled)
     //maybe it would be cleaner to set the default values in the QDocument (i.e. setDefaultFont())
-    editor->editor()->switchToPlainText();
-    editor->editor()->enableRichTextMode();
+    ui_itemView->editor->editor()->switchToPlainText();
+    ui_itemView->editor->editor()->enableRichTextMode();
 
-    title->clear();
-    title->lineEdit().setModified(false);
-    editor->editor()->document()->setModified(false);
+    ui_itemView->title->clear();
+    ui_itemView->title->lineEdit().setModified(false);
+    ui_itemView->editor->editor()->document()->setModified(false);
     //we're not editing anymore, so clear focus. Otherwise a conflict will be detected
-    editor->editor()->clearFocus();
-    title->lineEdit().clearFocus();
+    ui_itemView->editor->editor()->clearFocus();
+    ui_itemView->title->lineEdit().clearFocus();
 
     if (m_itemMonitor) {
         disconnect(m_itemMonitor, 0, this, 0);
@@ -272,13 +276,13 @@ void ItemEditor::setItem(const Akonadi::Item& item)
 {
     kDebug();
     //reset pending signals from last item
-    disconnect(&title->lineEdit(), SIGNAL(editingFinished()), this, SLOT(saveItem()));
+    disconnect(&ui_itemView->title->lineEdit(), SIGNAL(editingFinished()), this, SLOT(saveItem()));
     emit itemChanged();
     saveItem();
 
     clearView();
 
-    connect(&title->lineEdit(), SIGNAL(editingFinished()), this, SLOT(saveItem())); //update title also in listview as soon as it is set
+    connect(&ui_itemView->title->lineEdit(), SIGNAL(editingFinished()), this, SLOT(saveItem())); //update title also in listview as soon as it is set
     if (!item.isValid()) {
         setEnabled(false);
         kWarning() << "invalid item";
@@ -301,7 +305,7 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
      * TODO check for changed content, if there is changed content we have a conflict,
      * and the user should be allowed to save the current content
      */
-    if ((editor->editor()->hasFocus() && (parts & PimItemMonitor::Text)) || (title->lineEdit().hasFocus() && (parts & PimItemMonitor::Title))) { //were currently editing, and the item has changed in the background, so there is probably a conflict
+    if ((ui_itemView->editor->editor()->hasFocus() && (parts & PimItemMonitor::Text)) || (ui_itemView->title->lineEdit().hasFocus() && (parts & PimItemMonitor::Title))) { //were currently editing, and the item has changed in the background, so there is probably a conflict
         kWarning() << "conflict";
         KDialog *dialog = new KDialog( this );
         dialog->setCaption( "Conflict" );
@@ -315,14 +319,14 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
 
     if (parts & PimItemMonitor::Text) {
         kDebug() << "text changed";
-        editor->editor()->setTextOrHtml(m_currentItem->text());
-        editor->editor()->document()->setModified(false);
+        ui_itemView->editor->editor()->setTextOrHtml(m_currentItem->text());
+        ui_itemView->editor->editor()->document()->setModified(false);
     }
 
     if (parts & PimItemMonitor::Title) {
         kDebug() << "title changed";
-        title->setText(m_currentItem->title());
-        title->lineEdit().setModified(false);
+        ui_itemView->title->setText(m_currentItem->title());
+        ui_itemView->title->lineEdit().setModified(false);
     }
 
 
@@ -367,8 +371,8 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
     //kDebug() << m_currentItem->getLastModifiedDate() << KDateTime(QDateTime::currentDateTime().addSecs(-1));
     //FIXME this is broken if we going trough the list with the keyboard, looking at each note, because the focus doesn't stay on the list but goes to the linedit instead
     if (m_currentItem->title().isEmpty() && m_currentItem->date(PimItem::CreationDate) >= KDateTime(QDateTime::currentDateTime().addSecs(-30))) {
-            title->edit();
-            title->lineEdit().setFocus();
+            ui_itemView->title->edit();
+            ui_itemView->title->lineEdit().setFocus();
             //TODO work with a focus proxy instead?
             //only set the focusproxy, and wait until this widget gets focus, it will then forward the focus to either the titel or textedit
     }
