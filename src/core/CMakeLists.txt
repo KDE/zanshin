@@ -1,6 +1,7 @@
 set(core_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/akonadibaseitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/collectionitem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/virtualitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitemindex.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/incidenceitem.cpp
