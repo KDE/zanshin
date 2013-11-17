@@ -24,12 +24,42 @@
 
 #include "mockdatastore.h"
 
+#include <QStandardItemModel>
+
 MockDataStore::MockDataStore()
+    : m_todoBaseModel(new QStandardItemModel),
+      m_todoCollectionModel(new QStandardItemModel),
+      m_noteBaseModel(new QStandardItemModel),
+      m_noteCollectionModel(new QStandardItemModel)
 {
 }
 
 MockDataStore::~MockDataStore()
 {
+    delete m_todoBaseModel;
+    delete m_todoCollectionModel;
+    delete m_noteBaseModel;
+    delete m_noteCollectionModel;
+}
+
+QAbstractItemModel *MockDataStore::todoBaseModel()
+{
+    return m_todoBaseModel;
+}
+
+QAbstractItemModel *MockDataStore::todoCollectionModel()
+{
+    return m_todoCollectionModel;
+}
+
+QAbstractItemModel *MockDataStore::noteBaseModel()
+{
+    return m_noteBaseModel;
+}
+
+QAbstractItemModel *MockDataStore::noteCollectionModel()
+{
+    return m_noteCollectionModel;
 }
 
 PimItem::Ptr MockDataStore::indexFromUrl(const KUrl &url) const

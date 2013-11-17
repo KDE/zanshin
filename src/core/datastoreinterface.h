@@ -28,6 +28,8 @@
 #include "pimitem.h"
 #include "pimitemservices.h"
 
+class QAbstractItemModel;
+
 class DataStoreInterface
 {
 public:
@@ -36,8 +38,12 @@ public:
 
     virtual ~DataStoreInterface();
 
-    virtual PimItem::Ptr indexFromUrl(const KUrl &url) const = 0;
+    virtual QAbstractItemModel *todoBaseModel() = 0;
+    virtual QAbstractItemModel *todoCollectionModel() = 0;
+    virtual QAbstractItemModel *noteBaseModel() = 0;
+    virtual QAbstractItemModel *noteCollectionModel() = 0;
 
+    virtual PimItem::Ptr indexFromUrl(const KUrl &url) const = 0;
     virtual bool moveTodoToProject(const PimItem::Ptr &item, const PimItem::Ptr &parent) = 0;
 
 private:

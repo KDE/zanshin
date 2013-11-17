@@ -27,16 +27,27 @@
 
 #include "core/datastoreinterface.h"
 
+class QStandardItemModel;
+
 class MockDataStore : public DataStoreInterface
 {
 public:
     MockDataStore();
     virtual ~MockDataStore();
 
-    virtual PimItem::Ptr indexFromUrl(const KUrl &url) const;
+    virtual QAbstractItemModel *todoBaseModel();
+    virtual QAbstractItemModel *todoCollectionModel();
+    virtual QAbstractItemModel *noteBaseModel();
+    virtual QAbstractItemModel *noteCollectionModel();
 
+    virtual PimItem::Ptr indexFromUrl(const KUrl &url) const;
     virtual bool moveTodoToProject(const PimItem::Ptr &item, const PimItem::Ptr &parent);
 
+private:
+    QStandardItemModel *m_todoBaseModel;
+    QStandardItemModel *m_todoCollectionModel;
+    QStandardItemModel *m_noteBaseModel;
+    QStandardItemModel *m_noteCollectionModel;
 };
 
 #endif // MOCKDATASTORE

@@ -27,15 +27,20 @@
 #include <QtGui/QItemSelectionModel>
 
 #include "core/modelstack.h"
+#include "testlib/mockdatastore.h"
 
 class ModelStackTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void initTestCase()
+    {
+        DataStoreInterface::overrideImplementation(new MockDataStore);
+    }
+
     void shouldEnsureModelsAreAvailable()
     {
         ModelStack stack;
-        stack.setOverridePimModel(new QStandardItemModel);
 
         QVERIFY(stack.baseModel()!=0);
         QVERIFY(stack.collectionsModel()!=0);
@@ -52,7 +57,6 @@ private slots:
     void shouldEnsureModelsAreConstant()
     {
         ModelStack stack;
-        stack.setOverridePimModel(new QStandardItemModel);
 
         QList<QAbstractItemModel*> models;
         models << stack.baseModel()

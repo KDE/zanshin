@@ -27,19 +27,49 @@
 
 #include "datastoreinterface.h"
 
-class AkonadiDataStore : public DataStoreInterface
+#include <QSortFilterProxyModel>
+#include <QSet>
+#include <Akonadi/Collection>
+
+class CollectionFilter: public QSortFilterProxyModel
 {
+    Q_OBJECT
+public:
+    CollectionFilter(QObject *parent = 0);
+    virtual bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
+
+public slots:
+    void setActiveCollections(const QSet<Akonadi::Collection::Id> &set);
+private:
+    QSet<Akonadi::Collection::Id> mActiveCollections;
+};
+
+
+class AkonadiDataStore : public QObject, public DataStoreInterface
+{
+    Q_OBJECT
 public:
     static AkonadiDataStore &instance();
 
     AkonadiDataStore();
     virtual ~AkonadiDataStore();
 
+    virtual QAbstractItemModel *todoBaseModel();
+    virtual QAbstractItemModel *todoCollectionModel();
+    virtual QAbstractItemModel *noteBaseModel();
+    virtual QAbstractItemModel *noteCollectionModel();
+
     bool isProject(const Akonadi::Item &item) const;
 
     virtual PimItem::Ptr indexFromUrl(const KUrl &url) const;
 
     virtual bool moveTodoToProject(const PimItem::Ptr &item, const PimItem::Ptr &parent);
+
+private:
+    QAbstractItemModel *m_todoBaseModel;
+    QAbstractItemModel *m_todoCollectionModel;
+    QAbstractItemModel *m_noteBaseModel;
+    QAbstractItemModel *m_noteCollectionModel;
 };
 
 #endif // AKONADIDATASTOREIMPLEMENTATION_H

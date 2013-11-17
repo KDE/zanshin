@@ -24,58 +24,20 @@
 
 #include "modelstack.h"
 
-#include <KDE/Akonadi/ChangeRecorder>
-#include <KDE/Akonadi/Session>
-#include <KDE/Akonadi/CollectionFetchScope>
-#include <KDE/Akonadi/EntityMimeTypeFilterModel>
-#include <KDE/Akonadi/ItemFetchScope>
-
 #include "gui/itemeditor/combomodel.h"
 #include "gui/sidebar/sidebarmodel.h"
 #include "gui/shared/selectionproxymodel.h"
 #include "todometadatamodel.h"
-#include "pimitem.h"
 
 #include "kdescendantsproxymodel.h"
-#include <Akonadi/EntityDisplayAttribute>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/CollectionFetchJob>
-#include "pimitemmodel.h"
 #include "reparentingmodel/reparentingmodel.h"
 #include "core/projectstrategy.h"
 #include "core/structurecachestrategy.h"
-#include "core/settings.h"
+#include "core/datastoreinterface.h"
 #include <qitemselectionmodel.h>
-
-CollectionFilter::CollectionFilter(QObject *parent)
-: QSortFilterProxyModel(parent)
-{
-}
-
-bool CollectionFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
-{
-    const QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
-    const QVariant var = sourceChild.data(Akonadi::EntityTreeModel::CollectionIdRole);
-    if (!var.isValid()) {
-        return true;
-    }
-    const Akonadi::Collection::Id id = var.value<Akonadi::Collection::Id>();
-    if (id < 0 || mActiveCollections.contains(id)) {
-        return true;
-    }
-    return false;
-}
-
-void CollectionFilter::setActiveCollections(const QSet<Akonadi::Collection::Id> &set)
-{
-    mActiveCollections = set;
-    invalidateFilter();
-}
 
 ModelStack::ModelStack(QObject *parent)
     : QObject(parent),
-      m_itemMonitor(0),
-      m_entityModel(0),
       m_baseModel(0),
       m_collectionsModel(0),
       m_treeModel(0),
@@ -83,7 +45,6 @@ ModelStack::ModelStack(QObject *parent)
       m_treeSelectionModel(0),
       m_treeComboModel(0),
       m_treeSelection(0),
-      m_knowledgeBaseModel(0),
       m_knowledgeSelectionModel(0),
       m_topicsTreeModel(0),
       m_knowledgeSidebarModel(0),
@@ -97,38 +58,9 @@ ModelStack::ModelStack(QObject *parent)
 {
 }
 
-void ModelStack::setOverridePimModel(QAbstractItemModel *model)
-{
-    m_entityModel = model;
-}
-
 QAbstractItemModel *ModelStack::pimitemModel()
 {
-    if (!m_entityModel) {
-        Akonadi::Session *session = new Akonadi::Session("zanshin", this);
-
-        Akonadi::ItemFetchScope itemScope;
-        itemScope.fetchFullPayload();
-        itemScope.setAncestorRetrieval(Akonadi::ItemFetchScope::All);
-
-        Akonadi::CollectionFetchScope collectionScope;
-        collectionScope.setAncestorRetrieval(Akonadi::CollectionFetchScope::All);
-
-        m_itemMonitor = new Akonadi::ChangeRecorder(this);
-        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Todo));
-        m_itemMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note));
-        m_itemMonitor->setCollectionFetchScope(collectionScope);
-        m_itemMonitor->setItemFetchScope(itemScope);
-        m_itemMonitor->setSession(session);
-
-        PimItemModel *pimModel = new PimItemModel(m_itemMonitor, this);
-        CollectionFilter *collectionFilter = new CollectionFilter(this);
-        collectionFilter->setActiveCollections(Settings::instance().activeCollections());
-        connect(&Settings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
-        collectionFilter->setSourceModel(pimModel);
-        m_entityModel = collectionFilter;
-    }
-    return m_entityModel;
+    return DataStoreInterface::instance().todoBaseModel();
 }
 
 QAbstractItemModel *ModelStack::baseModel()
@@ -143,13 +75,7 @@ QAbstractItemModel *ModelStack::baseModel()
 
 QAbstractItemModel *ModelStack::collectionsModel()
 {
-    if (!m_collectionsModel) {
-        Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
-        collectionsModel->addMimeTypeInclusionFilter( Akonadi::Collection::mimeType() );
-        collectionsModel->setSourceModel(m_entityModel);
-        m_collectionsModel = collectionsModel;
-    }
-    return m_collectionsModel;
+    return DataStoreInterface::instance().todoCollectionModel();
 }
 
 QAbstractItemModel *ModelStack::treeModel()
@@ -262,41 +188,7 @@ QAbstractItemModel *ModelStack::contextsComboModel()
 
 QAbstractItemModel* ModelStack::knowledgeBaseModel()
 {
-    if (m_knowledgeBaseModel) {
-        return m_knowledgeBaseModel;
-    }
-    
-    Akonadi::ItemFetchScope scope;
-    scope.fetchFullPayload( true ); // Need to have full item when adding it to the internal data structure
-    scope.fetchAttribute<Akonadi::EntityDisplayAttribute>(true);
-
-    Akonadi::Session *session = new Akonadi::Session("zanshin", this);
-
-    Akonadi::ChangeRecorder *monitor = new Akonadi::ChangeRecorder(this);
-    monitor->fetchCollection( true );
-    monitor->setItemFetchScope( scope );
-    monitor->setCollectionMonitored(Akonadi::Collection::root());
-    monitor->setSession(session);
-    monitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
-
-    PimItemModel *notetakerModel = new PimItemModel(monitor, this);
-    notetakerModel->setSupportedDragActions(Qt::MoveAction);
-    //notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
-    
-    CollectionFilter *collectionFilter = new CollectionFilter(this);
-    collectionFilter->setActiveCollections(Settings::instance().activeCollections());
-    connect(&Settings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
-    collectionFilter->setSourceModel(notetakerModel);
-
-    //FIXME because invisible collectionfetch is broken we use this instead
-    KDescendantsProxyModel *desc = new KDescendantsProxyModel(this);
-    desc->setSourceModel(collectionFilter);
-    Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
-    collectionsModel->addMimeTypeExclusionFilter( Akonadi::Collection::mimeType() );
-    collectionsModel->setSourceModel(desc);
-    m_knowledgeBaseModel = collectionsModel;
-
-    return m_knowledgeBaseModel;
+    return DataStoreInterface::instance().noteBaseModel();
 }
 
 QAbstractItemModel *ModelStack::topicsTreeModel()
@@ -341,20 +233,5 @@ QAbstractItemModel* ModelStack::knowledgeSelectionModel()
 
 QAbstractItemModel *ModelStack::knowledgeCollectionsModel()
 {
-    if (!m_knowledgeCollectionsModel) {
-        Akonadi::Session *session = new Akonadi::Session("zanshin", this);
-        Akonadi::ChangeRecorder *collectionsMonitor = new Akonadi::ChangeRecorder( this );
-        collectionsMonitor->fetchCollection( true );
-        collectionsMonitor->setCollectionMonitored(Akonadi::Collection::root());
-        collectionsMonitor->setSession(session);
-        collectionsMonitor->setMimeTypeMonitored(PimItem::mimeType(PimItem::Note), true);
-
-        Akonadi::EntityTreeModel *model = new Akonadi::EntityTreeModel(collectionsMonitor, this);
-
-        Akonadi::EntityMimeTypeFilterModel *collectionsModel = new Akonadi::EntityMimeTypeFilterModel(this);
-        collectionsModel->addMimeTypeInclusionFilter( Akonadi::Collection::mimeType() );
-        collectionsModel->setSourceModel(model);
-        m_knowledgeCollectionsModel = collectionsModel;
-    }
-    return m_knowledgeCollectionsModel;
+    return DataStoreInterface::instance().noteCollectionModel();
 }
