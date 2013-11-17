@@ -34,7 +34,7 @@
 #include <KDE/Akonadi/ItemModifyJob>
 
 #include "core/pimitem.h"
-#include "core/incidenceitem.h"
+#include "core/akonadiincidenceitem.h"
 #include "pimitemfactory.h"
 #include "utils/datestringbuilder.h"
 
@@ -153,9 +153,9 @@ bool PimItemModel::setData(const QModelIndex &index, const QVariant &value, int 
             pimitem->setDate(PimItem::DueDate, KDateTime(value.toDate()));
     } else if (role==Qt::CheckStateRole && pimitem->itemType() == PimItem::Todo) {
         if (value.toInt() == Qt::Checked) {
-            static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);
+            static_cast<AkonadiIncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::Complete);
         } else {
-            static_cast<IncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::NotComplete);
+            static_cast<AkonadiIncidenceItem*>(pimitem.data())->setTodoStatus(PimItem::NotComplete);
         }
     }
 

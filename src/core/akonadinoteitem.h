@@ -21,8 +21,8 @@
    USA.
 */
 
-#ifndef NOTEITEM_H
-#define NOTEITEM_H
+#ifndef AKONADINOTEITEM_H
+#define AKONADINOTEITEM_H
 
 #include <QtCore/QString>
 
@@ -34,19 +34,19 @@
 
 #include "akonadibaseitem.h"
 
-class NoteItem : public AkonadiBaseItem
+class AkonadiNoteItem : public AkonadiBaseItem
 {
 public:
-    typedef QSharedPointer<NoteItem> Ptr;
+    typedef QSharedPointer<AkonadiNoteItem> Ptr;
     /**
      * For creating a new note
      */
-    NoteItem();
+    AkonadiNoteItem();
 
     /**
      * For acessing existing notes
      */
-    NoteItem(const Akonadi::Item&);
+    AkonadiNoteItem(const Akonadi::Item&);
 
     QString mimeType() const;
     PimItem::ItemType itemType() const;

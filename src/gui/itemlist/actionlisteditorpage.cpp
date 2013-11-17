@@ -33,7 +33,7 @@
 #include <QtGui/QVBoxLayout>
 
 #include "core/modelstack.h"
-#include "core/noteitem.h"
+#include "core/akonadinoteitem.h"
 #include "core/settings.h"
 #include "core/pimitemservices.h"
 #include "actionduedatedelegate.h"

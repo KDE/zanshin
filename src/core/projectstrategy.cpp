@@ -21,7 +21,7 @@
 
 #include "globaldefs.h"
 #include "core/projectstrategy.h"
-#include "core/incidenceitem.h"
+#include "core/akonadiincidenceitem.h"
 #include "core/pimitemmodel.h"
 #include "core/pimitemservices.h"
 #include "reparentingmodel/todonode.h"

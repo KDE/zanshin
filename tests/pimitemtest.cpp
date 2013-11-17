@@ -22,9 +22,9 @@
 
 #include <qtest_kde.h>
 
-#include <core/incidenceitem.h>
+#include <core/akonadiincidenceitem.h>
 #include <core/pimitemfactory.h>
-#include <core/noteitem.h>
+#include <core/akonadinoteitem.h>
 
 Q_DECLARE_METATYPE(QModelIndex)
 
@@ -36,8 +36,8 @@ private slots:
     void testGetAndSet_data()
     {
         QTest::addColumn<AkonadiBaseItem::Ptr>("item");
-        QTest::newRow("event") << AkonadiBaseItem::Ptr(new IncidenceItem(PimItem::Event));
-        QTest::newRow("note") << AkonadiBaseItem::Ptr(new NoteItem());
+        QTest::newRow("event") << AkonadiBaseItem::Ptr(new AkonadiIncidenceItem(PimItem::Event));
+        QTest::newRow("note") << AkonadiBaseItem::Ptr(new AkonadiNoteItem());
     }
     
     //Ensure save and load from akonadi item works
@@ -59,8 +59,8 @@ private slots:
     void testUidConsistency_data()
     {
         QTest::addColumn<PimItem::Ptr>("item");
-        QTest::newRow("event") << PimItem::Ptr(new IncidenceItem(PimItem::Event));
-        QTest::newRow("note") << PimItem::Ptr(new NoteItem());
+        QTest::newRow("event") << PimItem::Ptr(new AkonadiIncidenceItem(PimItem::Event));
+        QTest::newRow("note") << PimItem::Ptr(new AkonadiNoteItem());
     }
     
     void testUidConsistency()

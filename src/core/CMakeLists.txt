@@ -1,10 +1,10 @@
 set(core_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/akonadibaseitem.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/collectionitem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/akonadicollectionitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtualitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/pimitem.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/incidenceitem.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/noteitem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/akonadiincidenceitem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/akonadinoteitem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/modelstack.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/todometadatamodel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/projectstrategy.cpp

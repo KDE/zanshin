@@ -27,7 +27,7 @@
 
 #include "globaldefs.h"
 #include "core/pimitem.h"
-#include "core/incidenceitem.h"
+#include "core/akonadiincidenceitem.h"
 #include "pimitemfactory.h"
 #include "pimitemrelations.h"
 
@@ -100,7 +100,7 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
     Q_ASSERT(pimitem);
     switch (role) {
     case Qt::CheckStateRole:
-        if ((pimitem->itemType() == PimItem::Todo) && index.column()==0 && !pimitem.staticCast<IncidenceItem>()->isProject()) {
+        if ((pimitem->itemType() == PimItem::Todo) && index.column()==0 && !pimitem.staticCast<AkonadiIncidenceItem>()->isProject()) {
             return (pimitem->status() == PimItem::Complete) ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();

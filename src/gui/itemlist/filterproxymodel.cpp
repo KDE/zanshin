@@ -32,7 +32,7 @@
 #include <KDebug>
 #include <KCalCore/Incidence>
 
-#include "core/incidenceitem.h"
+#include "core/akonadiincidenceitem.h"
 #include "core/pimitemmodel.h"
 #include <core/pimitemfactory.h>
 

@@ -23,7 +23,7 @@
 
 #include <qtest_kde.h>
 
-#include <core/incidenceitem.h>
+#include <core/akonadiincidenceitem.h>
 #include <core/pimitemstructurecache.h>
 
 Q_DECLARE_METATYPE(QModelIndex)
@@ -39,7 +39,7 @@ private slots:
 
     static Akonadi::Item getEventItem(const QList<PimItemRelation> &relations = QList<PimItemRelation>())
     {
-        IncidenceItem inc(PimItem::Event);
+        AkonadiIncidenceItem inc(PimItem::Event);
         inc.setRelations(relations);
         Akonadi::Item item = inc.getItem();
         item.setId(1);
@@ -64,7 +64,7 @@ private slots:
 
     static QByteArray getUid(const Akonadi::Item &item)
     {
-        IncidenceItem inc(item);
+        AkonadiIncidenceItem inc(item);
         return inc.uid().toLatin1();
     }
 
@@ -216,7 +216,7 @@ private slots:
     
     void relatedToSelf()
     {
-        IncidenceItem inc(PimItem::Event);
+        AkonadiIncidenceItem inc(PimItem::Event);
         PimItemRelation rel(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(inc.uid().toLatin1(), "name") << PimItemTreeNode("uid", "name"));
         inc.setRelations(QList<PimItemRelation>() << rel);
         Akonadi::Item item = inc.getItem();

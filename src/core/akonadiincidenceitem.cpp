@@ -23,7 +23,7 @@
 
 
 #include "akonadidatastore.h"
-#include "incidenceitem.h"
+#include "akonadiincidenceitem.h"
 #include "pimitemrelations.h"
 #include "pimitemservices.h"
 
@@ -41,7 +41,7 @@ typename T::Ptr unwrap(const Akonadi::Item &item)
     return item.payload< typename T::Ptr>();
 }
 
-IncidenceItem::IncidenceItem(ItemType type)
+AkonadiIncidenceItem::AkonadiIncidenceItem(ItemType type)
     : AkonadiBaseItem()
 {
     KCalCore::Incidence *newItem = 0;
@@ -59,17 +59,17 @@ IncidenceItem::IncidenceItem(ItemType type)
     m_item.addAttribute(eda);
 }
 
-IncidenceItem::IncidenceItem(const Akonadi::Item &item)
+AkonadiIncidenceItem::AkonadiIncidenceItem(const Akonadi::Item &item)
     : AkonadiBaseItem(item)
 {
 }
 
-QString IncidenceItem::uid() const
+QString AkonadiIncidenceItem::uid() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->uid();
 }
 
-void IncidenceItem::setTitle(const QString &title, bool isRich)
+void AkonadiIncidenceItem::setTitle(const QString &title, bool isRich)
 {
     unwrap<KCalCore::Incidence>(m_item)->setSummary(title, isRich);
     Akonadi::EntityDisplayAttribute *eda = m_item.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Entity::AddIfMissing);
@@ -77,17 +77,17 @@ void IncidenceItem::setTitle(const QString &title, bool isRich)
     eda->setDisplayName(title);
 }
 
-QString IncidenceItem::title() const
+QString AkonadiIncidenceItem::title() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->summary();
 }
 
-bool IncidenceItem::isTitleRich() const
+bool AkonadiIncidenceItem::isTitleRich() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->summaryIsRich();
 }
 
-KDateTime IncidenceItem::date(PimItem::DateRole role) const
+KDateTime AkonadiIncidenceItem::date(PimItem::DateRole role) const
 {
     switch (role) {
     case PimItem::CreationDate:
@@ -124,7 +124,7 @@ KDateTime IncidenceItem::date(PimItem::DateRole role) const
     }
 }
 
-bool IncidenceItem::setDate(PimItem::DateRole role, const KDateTime &date)
+bool AkonadiIncidenceItem::setDate(PimItem::DateRole role, const KDateTime &date)
 {
     switch (role) {
     case PimItem::CreationDate:
@@ -160,27 +160,27 @@ bool IncidenceItem::setDate(PimItem::DateRole role, const KDateTime &date)
     }
 }
 
-void IncidenceItem::setText(const QString &text, bool isRich)
+void AkonadiIncidenceItem::setText(const QString &text, bool isRich)
 {
     unwrap<KCalCore::Incidence>(m_item)->setDescription(text, isRich);
 }
 
-QString IncidenceItem::text() const
+QString AkonadiIncidenceItem::text() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->description();
 }
 
-bool IncidenceItem::isTextRich() const
+bool AkonadiIncidenceItem::isTextRich() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->descriptionIsRich();
 }
 
-const KCalCore::Attachment::List IncidenceItem::attachments() const
+const KCalCore::Attachment::List AkonadiIncidenceItem::attachments() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->attachments();
 }
 
-QString IncidenceItem::mimeType() const
+QString AkonadiIncidenceItem::mimeType() const
 {
     const KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence>(m_item); //same as hasValidPayload + getting payload
     if (!old) {
@@ -190,7 +190,7 @@ QString IncidenceItem::mimeType() const
     return old->mimeType();
 }
 
-void IncidenceItem::setParentTodo(const IncidenceItem &parent)
+void AkonadiIncidenceItem::setParentTodo(const AkonadiIncidenceItem &parent)
 {
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         const KCalCore::Todo::Ptr p = unwrap<KCalCore::Todo>(parent.getItem());
@@ -224,7 +224,7 @@ void IncidenceItem::setComplete(bool state)
     kWarning() << "not a todo";
 }*/
 
-void IncidenceItem::setTodoStatus(PimItem::ItemStatus status)
+void AkonadiIncidenceItem::setTodoStatus(PimItem::ItemStatus status)
 {
     //kDebug() << status;
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
@@ -252,7 +252,7 @@ void IncidenceItem::setTodoStatus(PimItem::ItemStatus status)
 }
 
 
-PimItem::ItemStatus IncidenceItem::status() const
+PimItem::ItemStatus AkonadiIncidenceItem::status() const
 {
     if ( const KCalCore::Todo::Ptr t = unwrap<KCalCore::Todo>(m_item) ) {
         if (t->isCompleted()) {
@@ -282,7 +282,7 @@ PimItem::ItemStatus IncidenceItem::status() const
     return Later;
 }
 
-QString IncidenceItem::iconName() const
+QString AkonadiIncidenceItem::iconName() const
 {
     KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence>(m_item);
     if (!old) {
@@ -300,7 +300,7 @@ QString IncidenceItem::iconName() const
     return QLatin1String( "network-wired" );
 }
 
-PimItem::ItemType IncidenceItem::itemType() const
+PimItem::ItemType AkonadiIncidenceItem::itemType() const
 {
     KCalCore::Incidence::Ptr old = unwrap<KCalCore::Incidence>(m_item);
     if (!old) {
@@ -320,7 +320,7 @@ PimItem::ItemType IncidenceItem::itemType() const
     return NoType;
 }
 
-void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)
+void AkonadiIncidenceItem::setRelations(const QList< PimItemRelation > &relations)
 {
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(m_item);
     QMap<QByteArray, QString> map = i->customProperties();
@@ -339,7 +339,7 @@ void IncidenceItem::setRelations(const QList< PimItemRelation > &relations)
     i->setCustomProperties(map);
 }
 
-QList< PimItemRelation > IncidenceItem::relations() const
+QList< PimItemRelation > AkonadiIncidenceItem::relations() const
 {
     KCalCore::Incidence::Ptr i = unwrap<KCalCore::Incidence>(m_item);
     QList<PimItemRelation> relations;
@@ -356,17 +356,17 @@ QList< PimItemRelation > IncidenceItem::relations() const
     return relations;
 }
 
-void IncidenceItem::setContexts(const QStringList &contexts)
+void AkonadiIncidenceItem::setContexts(const QStringList &contexts)
 {
     unwrap<KCalCore::Incidence>(m_item)->setCategories(contexts);
 }
 
-QStringList IncidenceItem::contexts() const
+QStringList AkonadiIncidenceItem::contexts() const
 {
     return unwrap<KCalCore::Incidence>(m_item)->categories();
 }
 
-void IncidenceItem::setProject()
+void AkonadiIncidenceItem::setProject()
 {
     if (isProject()) {
         return;
@@ -374,7 +374,7 @@ void IncidenceItem::setProject()
     unwrap<KCalCore::Incidence>(m_item)->setCustomProperty("Zanshin", "Project", "true");
 }
 
-bool IncidenceItem::isProject() const
+bool AkonadiIncidenceItem::isProject() const
 {
     return AkonadiDataStore::instance().isProject(m_item);
 }

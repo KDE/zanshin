@@ -22,23 +22,23 @@
 */
 
 
-#ifndef INCIDENCEITEM_H
-#define INCIDENCEITEM_H
+#ifndef AKONADIINCIDENCEITEM_H
+#define AKONADIINCIDENCEITEM_H
 
 #include "akonadibaseitem.h"
 
-class IncidenceItem : public AkonadiBaseItem
+class AkonadiIncidenceItem : public AkonadiBaseItem
 {
 public:
-    typedef QSharedPointer<IncidenceItem> Ptr;
+    typedef QSharedPointer<AkonadiIncidenceItem> Ptr;
     /**
      * Create a new item
      */
-    IncidenceItem(ItemType type);
+    AkonadiIncidenceItem(ItemType type);
     /**
      * Access an existing item
      */
-    IncidenceItem(const Akonadi::Item&);
+    AkonadiIncidenceItem(const Akonadi::Item&);
 
     virtual QString mimeType() const;
 
@@ -58,7 +58,7 @@ public:
     void setTodoStatus(ItemStatus status);
     PimItem::ItemStatus status() const;
 
-    void setParentTodo(const IncidenceItem &);
+    void setParentTodo(const AkonadiIncidenceItem &);
 
     QString iconName() const;
 

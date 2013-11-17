@@ -23,9 +23,9 @@
 */
 
 #include "akonadidatastore.h"
-#include "collectionitem.h"
-#include "incidenceitem.h"
-#include "noteitem.h"
+#include "akonadicollectionitem.h"
+#include "akonadiincidenceitem.h"
+#include "akonadinoteitem.h"
 #include "virtualitem.h"
 #include "todohelpers.h"
 #include "kdescendantsproxymodel.h"
@@ -197,9 +197,9 @@ PimItem::Ptr AkonadiDataStore::indexFromUrl(const KUrl &url) const
     Q_ASSERT(resolvedItem.isValid());
 
     if (AkonadiBaseItem::typeFromItem(resolvedItem) == PimItem::Todo) {
-        return PimItem::Ptr(new IncidenceItem(resolvedItem));
+        return PimItem::Ptr(new AkonadiIncidenceItem(resolvedItem));
     } else {
-        return PimItem::Ptr(new NoteItem(resolvedItem));
+        return PimItem::Ptr(new AkonadiNoteItem(resolvedItem));
     }
 }
 
@@ -214,7 +214,7 @@ bool AkonadiDataStore::moveTodoToProject(const PimItem::Ptr &item, const PimItem
         break;
     case PimItem::Collection:
         parentItemType = Zanshin::Collection;
-        collection = parent.dynamicCast<CollectionItem>()->collection();
+        collection = parent.dynamicCast<AkonadiCollectionItem>()->collection();
         break;
     case PimItem::Project:
         parentItemType = Zanshin::ProjectTodo;

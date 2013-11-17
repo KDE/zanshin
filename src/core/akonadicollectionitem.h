@@ -21,20 +21,20 @@
    USA.
 */
 
-#ifndef COLLECTIONITEM_H
-#define COLLECTIONITEM_H
+#ifndef AKONADICOLLECTIONITEM_H
+#define AKONADICOLLECTIONITEM_H
 
 #include <Akonadi/Collection>
 
 #include "pimitem.h"
 
-class CollectionItem : public PimItem
+class AkonadiCollectionItem : public PimItem
 {
 public:
-    typedef QSharedPointer<CollectionItem> Ptr;
+    typedef QSharedPointer<AkonadiCollectionItem> Ptr;
 
-    CollectionItem();
-    CollectionItem(const Akonadi::Collection &collection);
+    AkonadiCollectionItem();
+    AkonadiCollectionItem(const Akonadi::Collection &collection);
 
     Akonadi::Collection collection() const;
 

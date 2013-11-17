@@ -31,7 +31,7 @@
 #include "reparentingmodel/reparentingmodel.h"
 #include "core/projectstrategy.h"
 #include "core/pimitemservices.h"
-#include "core/noteitem.h"
+#include "core/akonadinoteitem.h"
 #include "core/pimitemmodel.h"
 #include "testlib/testlib.h"
 #include "testlib/mockdatastore.h"
@@ -164,7 +164,7 @@ private slots:
             QTest::newRow( "don't move projects to inbox" ) << sourceStructure << outputStructure;
         }
         {
-            NoteItem::Ptr note(new NoteItem);
+            AkonadiNoteItem::Ptr note(new AkonadiNoteItem);
             G n1(100, Qt::DisplayRole, "note1");
             n1.data.insert(Zanshin::PimItemRole, QVariant::fromValue(PimItem::Ptr(note)));
             note->setRelations(QList<PimItemRelation>() << PimItemRelation(PimItemRelation::Project, QList<PimItemTreeNode>() << PimItemTreeNode(t1.uid.toLatin1())));

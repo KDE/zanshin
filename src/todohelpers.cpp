@@ -39,7 +39,7 @@
 #include <KDE/KMessageBox>
 
 #include "globaldefs.h"
-#include "core/incidenceitem.h"
+#include "core/akonadiincidenceitem.h"
 #include "core/pimitemfactory.h"
 #include "core/pimitemrelations.h"
 
@@ -49,7 +49,7 @@ void TodoHelpers::addTodo(const QString &summary, const QList<PimItemRelation> r
         return;
     }
 
-    IncidenceItem inc(PimItem::Todo);
+    AkonadiIncidenceItem inc(PimItem::Todo);
     inc.setTitle(summary);
     inc.setRelations(relations);
     if (isProject) {

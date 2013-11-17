@@ -32,9 +32,9 @@
 
 #include "datastoreinterface.h"
 #include "todohelpers.h"
-#include "collectionitem.h"
-#include "incidenceitem.h"
-#include "noteitem.h"
+#include "akonadicollectionitem.h"
+#include "akonadiincidenceitem.h"
+#include "akonadinoteitem.h"
 #include "virtualitem.h"
 #include "settings.h"
 #include "pimitemstructurecache.h"
@@ -50,12 +50,12 @@ PimItem::Ptr PimItemServices::fromIndex(const QModelIndex &index)
      switch (itemType) {
          case Zanshin::Collection: {
              Akonadi::Collection collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-             return PimItem::Ptr(new CollectionItem(collection));
+             return PimItem::Ptr(new AkonadiCollectionItem(collection));
          }
          case Zanshin::StandardTodo:
          case Zanshin::ProjectTodo: {
              Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-             return PimItem::Ptr(new IncidenceItem(item));
+             return PimItem::Ptr(new AkonadiIncidenceItem(item));
          }
          case Zanshin::Context: {
              VirtualItem *item = new VirtualItem(PimItem::Context);
@@ -194,7 +194,7 @@ void PimItemServices::create(PimItem::ItemType type, const QString& name, const 
             break;
         }
         case PimItem::Note: {
-            NoteItem note;
+            AkonadiNoteItem note;
             note.setTitle(name);
             note.setRelations(relations);
             new Akonadi::ItemCreateJob(note.getItem(), collection);

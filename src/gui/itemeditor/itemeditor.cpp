@@ -59,7 +59,7 @@
 #include "ui_itemview.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
-#include "core/incidenceitem.h"
+#include "core/akonadiincidenceitem.h"
 #include "core/pimitemfactory.h"
 
 using namespace Ui;
@@ -334,7 +334,7 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
     ui_properties->lastModifiedTime->setText(DateStringBuilder::getFullDate(m_currentItem->date(PimItem::LastModifiedDate)));
 
     if (m_currentItem->itemType() == PimItem::Todo) {
-        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
+        AkonadiIncidenceItem::Ptr inc = m_currentItem.staticCast<AkonadiIncidenceItem>();
         //Due Date
         bool hasDue = inc->supportedDateRoles() & PimItem::DueDate;
 
@@ -353,7 +353,7 @@ void ItemEditor::updateContent(PimItemMonitor::ChangedParts parts)
     }
 
     if (m_currentItem->itemType() == PimItem::Event) {
-        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
+        AkonadiIncidenceItem::Ptr inc = m_currentItem.staticCast<AkonadiIncidenceItem>();
         //Event Start
         ui_properties->editableEventDate->show();
         ui_properties->lb_eventDate->show();
@@ -401,7 +401,7 @@ void ItemEditor::setEventDate(KDateTime dateTime)
     }
     Q_ASSERT(m_currentItem);
     if (m_currentItem->itemType() == PimItem::Event) {
-        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
+        AkonadiIncidenceItem::Ptr inc = m_currentItem.staticCast<AkonadiIncidenceItem>();
         inc->setDate(PimItem::StartDate, dateTime);
         m_itemMonitor->saveItem();
     }
@@ -415,7 +415,7 @@ void ItemEditor::setDueDate(KDateTime dateTime)
     }
     Q_ASSERT(m_currentItem);
     if (m_currentItem->itemType() == PimItem::Todo) {
-        IncidenceItem::Ptr inc = m_currentItem.staticCast<IncidenceItem>();
+        AkonadiIncidenceItem::Ptr inc = m_currentItem.staticCast<AkonadiIncidenceItem>();
         inc->setDate(PimItem::DueDate, dateTime);
         m_itemMonitor->saveItem();
     }

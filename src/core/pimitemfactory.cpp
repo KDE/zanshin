@@ -16,8 +16,8 @@
  */
 
 #include "pimitemfactory.h"
-#include "noteitem.h"
-#include "incidenceitem.h"
+#include "akonadinoteitem.h"
+#include "akonadiincidenceitem.h"
 
 AkonadiBaseItem::Ptr PimItemFactory::getItem(const Akonadi::Item &item)
 {
@@ -26,11 +26,11 @@ AkonadiBaseItem::Ptr PimItemFactory::getItem(const Akonadi::Item &item)
     }
     const PimItem::ItemType itemType = AkonadiBaseItem::typeFromItem(item);
     if (itemType == PimItem::Note) {
-        return NoteItem::Ptr(new NoteItem(item));
+        return AkonadiNoteItem::Ptr(new AkonadiNoteItem(item));
     } else if (itemType == PimItem::Event
             || itemType == PimItem::Todo
             || itemType == PimItem::Journal) {
-        return IncidenceItem::Ptr(new IncidenceItem(item));
+        return AkonadiIncidenceItem::Ptr(new AkonadiIncidenceItem(item));
     }
     return AkonadiBaseItem::Ptr();
 }

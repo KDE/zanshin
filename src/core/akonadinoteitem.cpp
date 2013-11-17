@@ -21,7 +21,7 @@
    USA.
 */
 
-#include "noteitem.h"
+#include "akonadinoteitem.h"
 #include "pimitemrelations.h"
 
 #include <Akonadi/EntityDisplayAttribute>
@@ -40,7 +40,7 @@ NoteWrapperPtr unpack(const Akonadi::Item &item)
     return NoteWrapperPtr(new Akonadi::NoteUtils::NoteMessageWrapper(item.payload<KMime::Message::Ptr>()));
 }
 
-NoteItem::NoteItem()
+AkonadiNoteItem::AkonadiNoteItem()
 :   AkonadiBaseItem(),
     messageWrapper(new Akonadi::NoteUtils::NoteMessageWrapper)
 {
@@ -48,35 +48,35 @@ NoteItem::NoteItem()
     commitData();
 }
 
-NoteItem::NoteItem(const Akonadi::Item &item)
+AkonadiNoteItem::AkonadiNoteItem(const Akonadi::Item &item)
 :   AkonadiBaseItem(item),
     messageWrapper(unpack(item))
 {
 }
 
-void NoteItem::setItem(const Akonadi::Item &item)
+void AkonadiNoteItem::setItem(const Akonadi::Item &item)
 {
     AkonadiBaseItem::setItem(item);
     messageWrapper = unpack(item);
 }
 
-QString NoteItem::uid() const
+QString AkonadiNoteItem::uid() const
 {
     return messageWrapper->uid();
 }
 
-void NoteItem::setText(const QString &text, bool isRich)
+void AkonadiNoteItem::setText(const QString &text, bool isRich)
 { 
     messageWrapper->setText(text, isRich ? Qt::RichText : Qt::PlainText);
     commitData();
 }
 
-QString NoteItem::text() const
+QString AkonadiNoteItem::text() const
 {
     return messageWrapper->text();
 }
 
-void NoteItem::setTitle(const QString &title, bool isRich)
+void AkonadiNoteItem::setTitle(const QString &title, bool isRich)
 {
     Q_UNUSED(isRich);
     messageWrapper->setTitle(title);
@@ -86,12 +86,12 @@ void NoteItem::setTitle(const QString &title, bool isRich)
     commitData();
 }
 
-QString NoteItem::title() const
+QString AkonadiNoteItem::title() const
 {
     return messageWrapper->title();
 }
 
-KDateTime NoteItem::date(PimItem::DateRole role) const
+KDateTime AkonadiNoteItem::date(PimItem::DateRole role) const
 {
     switch (role) {
     case PimItem::CreationDate:
@@ -111,7 +111,7 @@ KDateTime NoteItem::date(PimItem::DateRole role) const
     }
 }
 
-bool NoteItem::setDate(PimItem::DateRole role, const KDateTime &date)
+bool AkonadiNoteItem::setDate(PimItem::DateRole role, const KDateTime &date)
 {
     switch (role) {
     case PimItem::CreationDate:
@@ -131,7 +131,7 @@ bool NoteItem::setDate(PimItem::DateRole role, const KDateTime &date)
     return false;
 }
 
-void NoteItem::commitData()
+void AkonadiNoteItem::commitData()
 {
     m_item.setMimeType(Akonadi::NoteUtils::noteMimeType());
     messageWrapper->setFrom(QCoreApplication::applicationName()+QCoreApplication::applicationVersion());
@@ -139,28 +139,28 @@ void NoteItem::commitData()
     m_item.setPayload(messageWrapper->message());
 }
 
-QString NoteItem::mimeType() const
+QString AkonadiNoteItem::mimeType() const
 {
     Q_ASSERT(PimItem::mimeType(PimItem::Note) == Akonadi::NoteUtils::noteMimeType());
     return PimItem::mimeType(PimItem::Note);
 }
 
-PimItem::ItemStatus NoteItem::status() const
+PimItem::ItemStatus AkonadiNoteItem::status() const
 {
     return PimItem::Later;
 }
 
-QString NoteItem::iconName() const
+QString AkonadiNoteItem::iconName() const
 {
     return Akonadi::NoteUtils::noteIconName();
 }
 
-PimItem::ItemType NoteItem::itemType() const
+PimItem::ItemType AkonadiNoteItem::itemType() const
 {
     return PimItem::Note;
 }
 
-QList< PimItemRelation > NoteItem::relations() const
+QList< PimItemRelation > AkonadiNoteItem::relations() const
 {
     const QList<QString> xml = messageWrapper->custom().values("x-related");
     QList< PimItemRelation > relations;
@@ -170,7 +170,7 @@ QList< PimItemRelation > NoteItem::relations() const
     return relations;
 }
 
-void NoteItem::setRelations(const QList< PimItemRelation > &relations)
+void AkonadiNoteItem::setRelations(const QList< PimItemRelation > &relations)
 {
     messageWrapper->custom().remove("x-related");
     foreach(const PimItemRelation &rel, relations) {

@@ -21,91 +21,91 @@
    USA.
 */
 
-#include "collectionitem.h"
+#include "akonadicollectionitem.h"
 
 #include <Akonadi/CollectionModifyJob>
 #include <Akonadi/EntityDisplayAttribute>
 
-CollectionItem::CollectionItem()
+AkonadiCollectionItem::AkonadiCollectionItem()
 {
 }
 
-CollectionItem::CollectionItem(const Akonadi::Collection &collection)
+AkonadiCollectionItem::AkonadiCollectionItem(const Akonadi::Collection &collection)
     : m_collection(collection)
 {
 }
 
-Akonadi::Collection CollectionItem::collection() const
+Akonadi::Collection AkonadiCollectionItem::collection() const
 {
     return m_collection;
 }
 
-PimItem::ItemType CollectionItem::itemType() const
+PimItem::ItemType AkonadiCollectionItem::itemType() const
 {
     return m_collection.isValid() ? PimItem::Collection : PimItem::NoType;
 }
 
-QString CollectionItem::mimeType() const
+QString AkonadiCollectionItem::mimeType() const
 {
     return Akonadi::Collection::mimeType();
 }
 
-PimItem::ItemStatus CollectionItem::status() const
+PimItem::ItemStatus AkonadiCollectionItem::status() const
 {
     return Complete;
 }
 
-QString CollectionItem::uid() const
+QString AkonadiCollectionItem::uid() const
 {
     return QString::number(m_collection.id());
 }
 
-QString CollectionItem::iconName() const
+QString AkonadiCollectionItem::iconName() const
 {
     return "folder";
 }
 
-void CollectionItem::setText(const QString &, bool)
+void AkonadiCollectionItem::setText(const QString &, bool)
 {
 
 }
 
-QString CollectionItem::text() const
-{
-    return QString();
-}
-
-void CollectionItem::setTitle(const QString &, bool)
-{
-
-}
-
-QString CollectionItem::title() const
+QString AkonadiCollectionItem::text() const
 {
     return QString();
 }
 
-KDateTime CollectionItem::date(PimItem::DateRole) const
+void AkonadiCollectionItem::setTitle(const QString &, bool)
+{
+
+}
+
+QString AkonadiCollectionItem::title() const
+{
+    return QString();
+}
+
+KDateTime AkonadiCollectionItem::date(PimItem::DateRole) const
 {
     return KDateTime();
 }
 
-bool CollectionItem::setDate(PimItem::DateRole, const KDateTime &)
+bool AkonadiCollectionItem::setDate(PimItem::DateRole, const KDateTime &)
 {
     return false;
 }
 
-void CollectionItem::setRelations(const QList<PimItemRelation> &)
+void AkonadiCollectionItem::setRelations(const QList<PimItemRelation> &)
 {
 
 }
 
-QList<PimItemRelation> CollectionItem::relations() const
+QList<PimItemRelation> AkonadiCollectionItem::relations() const
 {
     return QList<PimItemRelation>();
 }
 
-KJob *CollectionItem::saveItem()
+KJob *AkonadiCollectionItem::saveItem()
 {
     return new Akonadi::CollectionModifyJob(m_collection);
 }
