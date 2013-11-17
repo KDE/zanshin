@@ -53,8 +53,6 @@ namespace Zanshin
         ParentUidRole,
         ItemTypeRole,
         RelationIdRole, //Id of node
-        AncestorsRole, //List of all parents
-        UriRole,
         UserRole = Akonadi::EntityTreeModel::UserRole + 100
     };
 }
