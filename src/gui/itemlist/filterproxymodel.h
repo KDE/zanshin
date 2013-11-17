@@ -53,7 +53,6 @@ protected:
 
 private:
     QString m_filterString;
-    class SearchFilterCache *m_cache;
 };
 
 #endif // NOTESORTFILTERPROXYMODEL_H

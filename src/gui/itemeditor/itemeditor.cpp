@@ -57,7 +57,6 @@
 
 #include "toolbox.h"
 #include "ui_itemview.h"
-// #include "ui_tags.h"
 #include "ui_properties.h"
 #include <KConfigGroup>
 #include "core/incidenceitem.h"

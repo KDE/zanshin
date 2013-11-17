@@ -33,10 +33,6 @@
 #include "core/akonadibaseitem.h"
 #include "core/pimitemmonitor.h"
 
-namespace Nepomuk2 {
-class Resource;
-}
-
 class ItemContext;
 class QFocusEvent;
 
@@ -45,7 +41,6 @@ class KXMLGUIClient;
 class QTimer;
 
 namespace Ui {
-    class tags;
     class properties;
     class itemView;
 }

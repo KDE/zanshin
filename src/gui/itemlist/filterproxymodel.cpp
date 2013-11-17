@@ -32,14 +32,12 @@
 #include <KDebug>
 #include <KCalCore/Incidence>
 
-#include "searchfiltercacheproxy.h"
 #include "core/incidenceitem.h"
 #include "core/pimitemmodel.h"
 #include <core/pimitemfactory.h>
 
 FilterProxyModel::FilterProxyModel(QObject *parent)
-:   QSortFilterProxyModel(parent),
-    m_cache(new SearchFilterCache(this))
+:   QSortFilterProxyModel(parent)
 {
     setFilterKeyColumn(0); //search title columns
     setDynamicSortFilter(true);
@@ -53,16 +51,13 @@ void FilterProxyModel::setFilterString(const QString &string)
 {
     kDebug() << string;
     m_filterString = string;
-    m_cache->setFulltextSearch(string);
     setFilterRegExp(string);
     invalidateFilter();
 }
 
 void FilterProxyModel::setSourceModel(QAbstractItemModel* s)
 {
-    Q_ASSERT(m_cache);
-    m_cache->setSourceModel(s);
-    QSortFilterProxyModel::setSourceModel(m_cache);
+    QSortFilterProxyModel::setSourceModel(s);
 }
 
 bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -84,9 +79,7 @@ bool FilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &source
     Q_ASSERT(pimItem);
 
     //search trough title
-    //TODO could be replaced by the corresponding nepomuk searches
-    //though the nepomuk serach behaves a little different (explicit regex needed, i.e. Bub does not match Bubikon)
-    if (m_filterString.isEmpty() || m_cache->isFulltextMatch(item) || pimItem->title().contains(filterRegExp())) {
+    if (m_filterString.isEmpty() || pimItem->title().contains(filterRegExp())) {
         return true;
     }
     return false;

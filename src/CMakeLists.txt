@@ -18,7 +18,7 @@ set(zanshin_core_SRCS
 )
 
 set(zanshin_core_LIBS
-   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} nepomuk nepomukutils kio soprano ${NEPOMUK_CORE_LIBRARY}
+   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} kio
 )
 
 ########### zanshin gui ###############
@@ -28,7 +28,6 @@ set(zanshin_gui_SRCS
 )
 
 kde4_add_ui_files(zanshin_gui_SRCS gui/itemeditor/itemview.ui)
-kde4_add_ui_files(zanshin_gui_SRCS gui/itemeditor/tags.ui)
 kde4_add_ui_files(zanshin_gui_SRCS gui/itemeditor/properties.ui)
 
 ########### zanshin app ###############

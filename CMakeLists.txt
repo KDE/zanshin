@@ -3,9 +3,7 @@ project (zanshin)
 find_package (KDE4 REQUIRED)
 find_package (KdepimLibs REQUIRED)
 find_package (Boost REQUIRED)
-find_package(Soprano REQUIRED)
 macro_log_feature(KDEPIMLIBS_FOUND "kdepimlibs" "KDE PIM libraries" "The KDE PIM libs are required to build Zanshin" "http://www.kde.org")
-find_package (NepomukCore REQUIRED)
 
 include(KDE4Defaults)
 
@@ -19,8 +17,6 @@ include_directories (
     ${KDE4_INCLUDES}
     ${KDEPIMLIBS_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
-    ${NEPOMUK_CORE_INCLUDE_DIR}
-    ${SOPRANO_INCLUDE_DIR}
 )
 
 add_subdirectory(src)
