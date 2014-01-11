@@ -1,5 +1,6 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+add_subdirectory( domain )
 add_subdirectory( app )
 add_subdirectory( reparentingmodel )
 add_subdirectory( core )
@@ -18,7 +19,7 @@ set(zanshin_core_SRCS
 )
 
 set(zanshin_core_LIBS
-   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} kio
+   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} kio domain
 )
 
 ########### zanshin gui ###############

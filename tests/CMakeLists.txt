@@ -10,10 +10,12 @@ MACRO(ZANSHIN_AUTO_TESTS)
                                        ${KDEPIMLIBS_KCALCORE_LIBS} ${QT_QTTEST_LIBRARY}
                                        zanshin_static
                                        zanshin_testlib
+                                       domain
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AUTO_TESTS)
 
+add_subdirectory(units)
 ########### automated tests ###############
 
 ZANSHIN_AUTO_TESTS(
