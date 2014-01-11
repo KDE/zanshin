@@ -21,8 +21,8 @@ ZANSHIN_UNIT_TESTS(
   selectionproxymodeltest
   sidebarmodelspec
 #  todocontextsmodelspec
-  todometadatamodelspec
-  todotreemodelspec
+#  todometadatamodelspec
+#  todotreemodelspec
   parentstructuremodelspec
   reparentingmodelspec
   pimitemrelationstest
