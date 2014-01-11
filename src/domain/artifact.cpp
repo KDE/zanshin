@@ -34,6 +34,7 @@ Artifact::Artifact(QObject *parent)
 Artifact::~Artifact()
 {
 }
+
 QString Artifact::text() const
 {
     return m_text;
@@ -47,6 +48,7 @@ void Artifact::setText(const QString &text)
     m_text = text;
     emit textChanged(text);
 }
+
 QString Artifact::title() const
 {
     return m_title;
@@ -60,5 +62,4 @@ void Artifact::setTitle(const QString &title)
     m_title = title;
     emit titleChanged(title);
 }
-
 
