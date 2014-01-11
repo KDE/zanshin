@@ -107,8 +107,6 @@ QVariant TodoMetadataModel::data(const QModelIndex &index, int role) const
         }
     case Zanshin::UidRole:
         return pimitem->uid();
-    case Zanshin::ParentUidRole:
-        return getParentProjects(pimitem->relations());
     case Zanshin::ItemTypeRole:
         if ((pimitem->itemType() == PimItem::Project)) {
             return Zanshin::ProjectTodo;

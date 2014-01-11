@@ -232,9 +232,6 @@ bool Zanshin::Test::StandardModelBuilderBehavior::isMetadataCreationEnabled()
 void Zanshin::Test::StandardModelBuilderBehavior::addTodoMetadata(QStandardItem *item, const T &todo)
 {
     if (m_metadataCreationEnabled) {
-        if (!todo.parentUid.isEmpty()) {
-            item->setData(QStringList() << todo.parentUid, Zanshin::ParentUidRole);
-        }
         item->setData(todo.uid, Zanshin::UidRole);
         if (todo.todoTag==ProjectTag || todo.todoTag==ReferencedTag) {
             item->setData(QVariant::fromValue((int)Zanshin::ProjectTodo), Zanshin::ItemTypeRole);
