@@ -1,5 +1,6 @@
 set(domain_SRCS
     artifact.cpp
+    task.cpp
 )
 
 kde4_add_library(domain STATIC ${domain_SRCS})
