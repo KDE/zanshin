@@ -1,5 +1,7 @@
 set(domain_SRCS
     artifact.cpp
+    project.cpp
+    tag.cpp
     task.cpp
 )
 
