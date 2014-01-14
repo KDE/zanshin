@@ -1,6 +1,6 @@
-/* This file is part of Zanshin Todo.
+/* This file is part of Zanshin
 
-   Copyright 2011 Christian Mollekopf <chrigi_1@fastmail.fm>
+   Copyright 2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
