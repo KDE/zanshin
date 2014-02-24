@@ -39,6 +39,7 @@ class Artifact : public QObject
 
 public:
     typedef QSharedPointer<Artifact> Ptr;
+    typedef QList<Artifact::Ptr> List;
 
     Artifact(QObject *parent = 0);
     virtual ~Artifact();

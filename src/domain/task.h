@@ -39,6 +39,7 @@ class Task : public Artifact
 
 public:
     typedef QSharedPointer<Task> Ptr;
+    typedef QList<Task::Ptr> List;
 
     Task(QObject *parent = 0);
     virtual ~Task();

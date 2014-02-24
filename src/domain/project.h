@@ -38,6 +38,7 @@ class Project : public QObject
 
 public:
     typedef QSharedPointer<Project> Ptr;
+    typedef QList<Project::Ptr> List;
 
     Project(QObject *parent = 0);
     virtual ~Project();
