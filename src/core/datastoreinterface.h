@@ -34,7 +34,6 @@ class DataStoreInterface
 {
 public:
     static DataStoreInterface &instance();
-    static void overrideImplementation(DataStoreInterface *implementation);
 
     virtual ~DataStoreInterface();
 
@@ -47,7 +46,7 @@ public:
     virtual bool moveTodoToProject(const PimItem::Ptr &item, const PimItem::Ptr &parent) = 0;
 
 private:
-    static QScopedPointer<DataStoreInterface> s_implementation;
+    static DataStoreInterface *s_implementation;
 };
 
 #endif // DATASTOREINTERFACE_H

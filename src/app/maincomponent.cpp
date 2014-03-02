@@ -45,11 +45,15 @@
 #include "gui/itemlist/actionlisteditor.h"
 #include "gui/itemlist/itemselectorproxy.h"
 #include "core/modelstack.h"
+#include "core/akonadidatastore.h"
+#include "utils/dependencymanager.h"
 
 MainComponent::MainComponent(ModelStack *models, QWidget *parent, KXMLGUIClient *client)
     : QObject(parent),
         m_itemViewer(0)
 {
+    Utils::DependencyManager::globalInstance().add<DataStoreInterface, AkonadiDataStore>();
+
     KActionCollection *ac = client->actionCollection();
 
     m_sidebar = new SideBar(models, ac, parent);

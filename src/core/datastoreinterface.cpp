@@ -23,23 +23,18 @@
 */
 
 #include "datastoreinterface.h"
-#include "akonadidatastore.h"
+#include "utils/dependencymanager.h"
 
 
-QScopedPointer<DataStoreInterface> DataStoreInterface::s_implementation;
+DataStoreInterface *DataStoreInterface::s_implementation = 0;
 
 DataStoreInterface &DataStoreInterface::instance()
 {
     if (!s_implementation) {
-        s_implementation.reset(new AkonadiDataStore);
+        s_implementation = Utils::DependencyManager::globalInstance().create<DataStoreInterface>();
     }
 
     return *s_implementation;
-}
-
-void DataStoreInterface::overrideImplementation(DataStoreInterface *implementation)
-{
-    s_implementation.reset(implementation);
 }
 
 DataStoreInterface::~DataStoreInterface()

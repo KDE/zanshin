@@ -26,9 +26,11 @@
 #include <QtGui/QItemSelectionModel>
 
 #include "gui/sidebar/sidebarmodel.h"
+#include "core/akonadidatastore.h"
 #include "core/todometadatamodel.h"
 #include "core/projectstrategy.h"
 #include "reparentingmodel/reparentingmodel.h"
+#include "utils/dependencymanager.h"
 
 #include "testlib/testlib.h"
 #include "testlib/modelbuilderbehavior.h"
@@ -39,6 +41,11 @@ class SideBarModelTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void initTestCase()
+    {
+        Utils::DependencyManager::globalInstance().add<DataStoreInterface, AkonadiDataStore>();
+    }
+
     void shouldReactToSourceRowRemovals_data()
     {
         QTest::addColumn<ModelStructure>( "sourceStructure" );

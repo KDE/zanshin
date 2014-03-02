@@ -28,6 +28,7 @@
 
 #include "core/modelstack.h"
 #include "testlib/mockdatastore.h"
+#include "utils/dependencymanager.h"
 
 class ModelStackTest : public QObject
 {
@@ -35,7 +36,7 @@ class ModelStackTest : public QObject
 private slots:
     void initTestCase()
     {
-        DataStoreInterface::overrideImplementation(new MockDataStore);
+        Utils::DependencyManager::globalInstance().add<DataStoreInterface, MockDataStore>();
     }
 
     void shouldEnsureModelsAreAvailable()
