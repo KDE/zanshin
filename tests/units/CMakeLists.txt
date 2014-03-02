@@ -1,7 +1,9 @@
 zanshin_auto_tests(
   artifacttest
   dependencymanagertest
+  jobtest
   projecttest
+  queryresulttest
   tagtest
   tasktest
 )
