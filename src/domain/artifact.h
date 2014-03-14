@@ -41,7 +41,7 @@ public:
     typedef QSharedPointer<Artifact> Ptr;
     typedef QList<Artifact::Ptr> List;
 
-    Artifact(QObject *parent = 0);
+    explicit Artifact(QObject *parent = 0);
     virtual ~Artifact();
 
     QString text() const;
