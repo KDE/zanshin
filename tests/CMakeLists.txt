@@ -1,6 +1,7 @@
 add_subdirectory(testlib)
 
-include_directories( ${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/3rdparty)
 
 MACRO(ZANSHIN_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
