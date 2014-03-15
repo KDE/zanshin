@@ -30,6 +30,10 @@
 
 #include <utility>
 
+#ifdef Q_COMPILER_LAMBDA
+#include <functional>
+#endif
+
 namespace Utils {
 
 class DependencyManager;
@@ -45,7 +49,11 @@ namespace Internal {
     class Provider
     {
     public:
+#ifdef Q_COMPILER_LAMBDA
+        typedef std::function<Iface*()> FactoryType;
+#else
         typedef Iface *(*FactoryType)();
+#endif
 
         Provider()
             : m_factory(0)
@@ -121,12 +129,18 @@ public:
     DependencyManager();
     ~DependencyManager();
 
+    template<class Iface>
+    void add(const typename Internal::Provider<Iface>::FactoryType &factory)
+    {
+        Internal::Provider<Iface> provider(factory);
+        Internal::Supplier<Iface>::setProvider(this, provider);
+        m_cleanupFunctions << Internal::Supplier<Iface>::removeProvider;
+    }
+
     template<class Iface, class Impl>
     void add()
     {
-        Internal::Provider<Iface> provider(Internal::standardFactory<Iface, Impl>);
-        Internal::Supplier<Iface>::setProvider(this, provider);
-        m_cleanupFunctions << Internal::Supplier<Iface>::removeProvider;
+        add<Iface>(Internal::standardFactory<Iface, Impl>);
     }
 
     template<class Iface>

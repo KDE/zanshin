@@ -50,6 +50,15 @@ public:
 class DependencyManagerTest : public QObject
 {
     Q_OBJECT
+private:
+    static bool s_firstImplFactoryCalled;
+
+    static Interface *firstImplFactory()
+    {
+        s_firstImplFactoryCalled = true;
+        return new FirstImplementation;
+    }
+
 private slots:
     void shouldMemorizeDependency()
     {
@@ -57,6 +66,31 @@ private slots:
         deps.add<Interface, FirstImplementation>();
         Interface *object = deps.create<Interface>();
         QVERIFY(dynamic_cast<FirstImplementation*>(object) != 0);
+    }
+
+    void shouldAllowOurOwnFactory()
+    {
+        s_firstImplFactoryCalled = false;
+        DependencyManager deps;
+        deps.add<Interface>(&DependencyManagerTest::firstImplFactory);
+        Interface *object = deps.create<Interface>();
+        QVERIFY(dynamic_cast<FirstImplementation*>(object) != 0);
+        QVERIFY(s_firstImplFactoryCalled);
+    }
+
+    void shouldAllowOurOwnFactoryAsLambda()
+    {
+#ifdef Q_COMPILER_LAMBDA
+        bool ownFactoryCalled = false;
+        DependencyManager deps;
+        deps.add<Interface>([&]() -> Interface* {
+            ownFactoryCalled = true;
+            return new FirstImplementation;
+        });
+        Interface *object = deps.create<Interface>();
+        QVERIFY(dynamic_cast<FirstImplementation*>(object) != 0);
+        QVERIFY(ownFactoryCalled);
+#endif
     }
 
     void shouldMakeManagerSpecificDependencies()
@@ -94,6 +128,8 @@ private slots:
         QCOMPARE(Internal::Supplier<Interface>::providersCount(), 0);
     }
 };
+
+bool DependencyManagerTest::s_firstImplFactoryCalled = false;
 
 QTEST_MAIN(DependencyManagerTest)
 
