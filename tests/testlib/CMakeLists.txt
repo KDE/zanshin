@@ -4,6 +4,7 @@ add_subdirectory(tests)
 ########### testlib ###############
 
 set(zanshin_testlib_SRCS
+   akonadimocks.cpp
    c.cpp
    cat.cpp
    indent.cpp

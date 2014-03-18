@@ -2,6 +2,7 @@ add_subdirectory(testlib)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/3rdparty)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 MACRO(ZANSHIN_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
@@ -11,6 +12,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
                                        ${KDEPIMLIBS_KCALCORE_LIBS} ${QT_QTTEST_LIBRARY}
                                        zanshin_static
                                        zanshin_testlib
+                                       akonadi
                                        domain
     )
   ENDFOREACH(_testname)

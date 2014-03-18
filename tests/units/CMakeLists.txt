@@ -1,4 +1,5 @@
 zanshin_auto_tests(
+  akonaditaskqueriestest
   artifacttest
   dependencymanagertest
   jobtest
