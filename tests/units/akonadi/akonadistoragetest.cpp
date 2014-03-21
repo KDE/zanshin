@@ -23,18 +23,30 @@
 
 #include <QtTest>
 
-#include <KJob>
+#include <KCalCore/Todo>
 
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionStatistics>
+#include <Akonadi/EntityDisplayAttribute>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemDeleteJob>
+#include <Akonadi/ItemModifyJob>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
+#include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadistorage.h"
 
 class AkonadiStorageTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit AkonadiStorageTest(QObject *parent = 0)
+        : QObject(parent)
+    {
+        qRegisterMetaType<Akonadi::Item>();
+    }
+
 private slots:
     void shouldListOnlyNotesAndTodoCollections()
     {
@@ -51,7 +63,6 @@ private slots:
         QStringList collectionNames;
         for (const auto &collection : collections) {
             collectionNames << collection.name();
-            qDebug() << collection.id() << collection.name();
         }
         collectionNames.sort();
 
@@ -83,13 +94,11 @@ private slots:
     {
         // GIVEN
         Akonadi::Storage storage;
-        // Calendar2 is supposed to get this id, hopefully this won't be too fragile
-        Akonadi::Collection collection(6);
         const QStringList expectedRemoteIds = { "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
                                                 "{7824df00-2fd6-47a4-8319-52659dc82005}" };
 
         // WHEN
-        auto job = storage.fetchItems(collection);
+        auto job = storage.fetchItems(calendar2());
         job->kjob()->exec();
 
         // THEN
@@ -111,6 +120,125 @@ private slots:
         itemRemoteIds.sort();
 
         QCOMPARE(itemRemoteIds, expectedRemoteIds);
+    }
+
+    void shouldNotifyItemAdded()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemAdded(Akonadi::Item)));
+
+        // A todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary("summary");
+        todo->setDescription("content");
+        todo->setCompleted(false);
+        todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
+        todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+
+        // ... as payload of an item...
+        Akonadi::Item item;
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.addAttribute(new Akonadi::EntityDisplayAttribute);
+
+        // WHEN
+        (new Akonadi::ItemCreateJob(item, calendar2()))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+        QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
+
+        auto parent = notifiedItem.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
+        }
+    }
+
+    void shouldNotifyItemRemoved()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+
+        // An existing item (if we trust the test data)
+        Akonadi::Item item(2);
+
+        // WHEN
+        (new Akonadi::ItemDeleteJob(item))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
+    }
+
+    void shouldNotifyItemChanged()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+
+        // A todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary("summary");
+        todo->setDescription("content");
+        todo->setCompleted(false);
+        todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
+        todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+
+        // ... as payload of an existing item (if we trust the test data)...
+        Akonadi::Item item(1);
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.addAttribute(new Akonadi::EntityDisplayAttribute);
+
+        // WHEN
+        (new Akonadi::ItemModifyJob(item))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
+        QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+        QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
+
+        auto parent = notifiedItem.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
+        }
+    }
+
+private:
+    Akonadi::Collection calendar2()
+    {
+        // Calendar2 is supposed to get this id, hopefully this won't be too fragile
+        return Akonadi::Collection(6);
     }
 };
 
