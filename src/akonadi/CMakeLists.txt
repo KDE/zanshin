@@ -3,6 +3,7 @@ set(akonadi_SRCS
     akonadiitemfetchjobinterface.cpp
     akonadimonitorinterface.cpp
     akonadiserializerinterface.cpp
+    akonadiserializer.cpp
     akonadistorageinterface.cpp
     akonaditaskqueries.cpp
 )
