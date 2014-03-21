@@ -38,9 +38,9 @@ public:
     virtual ~MonitorInterface();
 
 signals:
-    void itemAdded(const Item &item);
-    void itemRemoved(const Item &item);
-    void itemChanged(const Item &items);
+    void itemAdded(const Akonadi::Item &item);
+    void itemRemoved(const Akonadi::Item &item);
+    void itemChanged(const Akonadi::Item &items);
 };
 
 }

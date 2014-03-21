@@ -57,9 +57,9 @@ public:
     ArtifactResult::Ptr findChildren(const Domain::Task::Ptr &task) const;
 
 private slots:
-    void onItemAdded(const Item &item);
-    void onItemRemoved(const Item &item);
-    void onItemChanged(const Item &item);
+    void onItemAdded(const Akonadi::Item &item);
+    void onItemRemoved(const Akonadi::Item &item);
+    void onItemChanged(const Akonadi::Item &item);
     void handleJobResult(KJob *job);
 
 private:

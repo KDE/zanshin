@@ -44,9 +44,9 @@ TaskQueries::TaskQueries(StorageInterface *storage, SerializerInterface *seriali
       m_serializer(serializer),
       m_monitor(monitor)
 {
-    connect(monitor, SIGNAL(itemAdded(Item)), this, SLOT(onItemAdded(Item)));
-    connect(monitor, SIGNAL(itemRemoved(Item)), this, SLOT(onItemRemoved(Item)));
-    connect(monitor, SIGNAL(itemChanged(Item)), this, SLOT(onItemChanged(Item)));
+    connect(monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
 }
 
 TaskQueries::~TaskQueries()
