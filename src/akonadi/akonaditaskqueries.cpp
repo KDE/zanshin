@@ -46,6 +46,7 @@ TaskQueries::TaskQueries(StorageInterface *storage, SerializerInterface *seriali
 {
     connect(monitor, SIGNAL(itemAdded(Item)), this, SLOT(onItemAdded(Item)));
     connect(monitor, SIGNAL(itemRemoved(Item)), this, SLOT(onItemRemoved(Item)));
+    connect(monitor, SIGNAL(itemChanged(Item)), this, SLOT(onItemChanged(Item)));
 }
 
 TaskQueries::~TaskQueries()
@@ -109,6 +110,20 @@ void TaskQueries::onItemRemoved(const Item &item)
     }
 }
 
+void TaskQueries::onItemChanged(const Item &item)
+{
+    TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
+
+    if (provider) {
+        for (int i = 0; i < provider->data().size(); i++) {
+            auto task = provider->data().at(i);
+            if (isTaskItem(task, item)) {
+                m_serializer->updateTaskFromItem(task, item);
+            }
+        }
+    }
+}
+
 void TaskQueries::handleJobResult(KJob *job)
 {
     Q_ASSERT(m_jobHandlers.contains(job));
@@ -129,7 +144,7 @@ bool TaskQueries::isTaskItem(const Domain::Task::Ptr &task, const Item &item) co
 
 Domain::Task::Ptr TaskQueries::deserializeTask(const Item &item) const
 {
-    auto task = m_serializer->deserializeTask(item);
+    auto task = m_serializer->createTaskFromItem(item);
     task->setProperty("itemId", item.id());
     return task;
 }

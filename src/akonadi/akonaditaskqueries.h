@@ -59,6 +59,7 @@ public:
 private slots:
     void onItemAdded(const Item &item);
     void onItemRemoved(const Item &item);
+    void onItemChanged(const Item &item);
     void handleJobResult(KJob *job);
 
 private:

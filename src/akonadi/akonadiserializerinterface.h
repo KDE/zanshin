@@ -36,7 +36,8 @@ public:
     SerializerInterface();
     virtual ~SerializerInterface();
 
-    virtual Domain::Task::Ptr deserializeTask(Akonadi::Item item) = 0;
+    virtual Domain::Task::Ptr createTaskFromItem(Akonadi::Item item) = 0;
+    virtual void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item) = 0;
 };
 
 }

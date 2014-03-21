@@ -40,6 +40,7 @@ public:
 signals:
     void itemAdded(const Item &item);
     void itemRemoved(const Item &item);
+    void itemChanged(const Item &items);
 };
 
 }

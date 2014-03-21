@@ -78,6 +78,7 @@ public:
 
     void addItem(const Akonadi::Item &item);
     void removeItem(const Akonadi::Item &item);
+    void changeItem(const Akonadi::Item &item);
 };
 
 #endif // ZANSHIN_TESTLIB_AKONADIMOCKS_H

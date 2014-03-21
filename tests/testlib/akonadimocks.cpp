@@ -95,3 +95,8 @@ void MockMonitor::removeItem(const Akonadi::Item &item)
 {
     emit itemRemoved(item);
 }
+
+void MockMonitor::changeItem(const Akonadi::Item &item)
+{
+    emit itemChanged(item);
+}
