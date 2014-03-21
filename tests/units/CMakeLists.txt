@@ -1,11 +1,3 @@
-zanshin_auto_tests(
-  akonaditaskqueriestest
-  artifacttest
-  dependencymanagertest
-  jobtest
-  mockitotest
-  projecttest
-  queryresulttest
-  tagtest
-  tasktest
-)
+add_subdirectory(akonadi)
+add_subdirectory(domain)
+add_subdirectory(utils)
