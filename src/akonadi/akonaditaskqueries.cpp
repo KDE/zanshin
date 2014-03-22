@@ -123,6 +123,7 @@ void TaskQueries::onItemChanged(const Item &item)
             auto task = provider->data().at(i);
             if (isTaskItem(task, item)) {
                 m_serializer->updateTaskFromItem(task, item);
+                provider->replace(i, task);
             }
         }
     }

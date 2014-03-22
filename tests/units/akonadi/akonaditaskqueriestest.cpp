@@ -316,6 +316,12 @@ private slots:
                                                                              &serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
+        // Even though the pointer didn't change it's convenient to user if we call
+        // the replace handlers
+        bool replaceHandlerCalled = false;
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
+                                          replaceHandlerCalled = true;
+                                      });
         QTest::qWait(150);
         QCOMPARE(result->data().size(), 3);
 
@@ -336,6 +342,7 @@ private slots:
         QCOMPARE(result->data().at(0), task1);
         QCOMPARE(result->data().at(1), task2);
         QCOMPARE(result->data().at(2), task3);
+        QVERIFY(replaceHandlerCalled);
     }
 };
 
