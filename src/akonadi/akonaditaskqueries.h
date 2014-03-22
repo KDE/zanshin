@@ -71,6 +71,7 @@ private:
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
     MonitorInterface *m_monitor;
+    bool m_ownInterfaces;
 
     mutable QHash<KJob *, std::function<void()>> m_jobHandlers;
     mutable TaskProvider::WeakPtr m_taskProvider;

@@ -26,23 +26,28 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadimonitorinterface.h"
-#include "akonadiserializerinterface.h"
-#include "akonadistorageinterface.h"
+#include "akonadimonitorimpl.h"
+#include "akonadiserializer.h"
+#include "akonadistorage.h"
 
 using namespace Akonadi;
 
 TaskQueries::TaskQueries()
-    : m_storage(0),
-      m_serializer(0),
-      m_monitor(0)
+    : m_storage(new Storage),
+      m_serializer(new Serializer),
+      m_monitor(new MonitorImpl),
+      m_ownInterfaces(true)
 {
+    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
 }
 
 TaskQueries::TaskQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor)
     : m_storage(storage),
       m_serializer(serializer),
-      m_monitor(monitor)
+      m_monitor(monitor),
+      m_ownInterfaces(false)
 {
     connect(monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
     connect(monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
@@ -51,6 +56,11 @@ TaskQueries::TaskQueries(StorageInterface *storage, SerializerInterface *seriali
 
 TaskQueries::~TaskQueries()
 {
+    if (m_ownInterfaces) {
+        delete m_storage;
+        delete m_serializer;
+        delete m_monitor;
+    }
 }
 
 TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
