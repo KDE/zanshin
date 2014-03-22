@@ -41,7 +41,7 @@ public:
     explicit Job(QObject *parent = 0);
 
     void addHandler(const ResultHandler &handler);
-    void addHandler(const ResultHandlerWithJob &handler);
+    void addHandlerWithJob(const ResultHandlerWithJob &handler);
 
 private slots:
     void onResult(KJob *job);

@@ -80,12 +80,12 @@ private slots:
 
         FakeJob *job1 = new FakeJob(this);
         job1->addHandler(handler);
-        job1->addHandler(handlerWithJob);
+        job1->addHandlerWithJob(handlerWithJob);
         job1->start();
 
         FakeJob *job2 = new FakeJob(this);
         job2->addHandler(handler);
-        job2->addHandler(handlerWithJob);
+        job2->addHandlerWithJob(handlerWithJob);
         job2->start();
 
         QTest::qWait(FakeJob::DURATION + 10);

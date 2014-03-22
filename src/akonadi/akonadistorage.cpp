@@ -41,7 +41,8 @@ using namespace Akonadi;
 class CollectionJob : public CollectionFetchJob, public CollectionFetchJobInterface
 {
 public:
-    using CollectionFetchJob::CollectionFetchJob;
+    explicit CollectionJob(const Collection &collection, Type type, QObject *parent = 0)
+        : CollectionFetchJob(collection, type, parent) {}
 
     Collection::List collections() const
     {
@@ -64,7 +65,8 @@ public:
 class ItemJob : public ItemFetchJob, public ItemFetchJobInterface
 {
 public:
-    using ItemFetchJob::ItemFetchJob;
+    explicit ItemJob(const Collection &collection, QObject *parent = 0)
+        : ItemFetchJob(collection, parent) {}
 
     Item::List items() const { return ItemFetchJob::items(); }
 };
