@@ -70,7 +70,9 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
             ItemFetchJobInterface *job = m_storage->fetchItems(collection);
             registerJobHandler(job->kjob(), [provider, job, this] {
                 for (auto item : job->items()) {
-                    provider->append(deserializeTask(item));
+                    auto task = deserializeTask(item);
+                    if (task)
+                        provider->append(task);
                 }
             });
         }
@@ -91,7 +93,9 @@ void TaskQueries::onItemAdded(const Item &item)
     TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
 
     if (provider) {
-        provider->append(deserializeTask(item));
+        auto task = deserializeTask(item);
+        if (task)
+            provider->append(task);
     }
 }
 
@@ -145,6 +149,7 @@ bool TaskQueries::isTaskItem(const Domain::Task::Ptr &task, const Item &item) co
 Domain::Task::Ptr TaskQueries::deserializeTask(const Item &item) const
 {
     auto task = m_serializer->createTaskFromItem(item);
-    task->setProperty("itemId", item.id());
+    if (task)
+        task->setProperty("itemId", item.id());
     return task;
 }
