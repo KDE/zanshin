@@ -132,12 +132,12 @@ QString QuickSelectDialog::pattern() const
 void QuickSelectDialog::applyPattern(const QString &pattern)
 {
     if (pattern.isEmpty()) {
-        QString type = i18n("projects");
+        QString text = i18n("You can start typing to filter the list of projects.");
         if (m_mode==Zanshin::ContextsMode) {
-            type = i18n("contexts");
+            text = i18n("You can start typing to filter the list of contexts.");
         }
 
-        m_label->setText(i18n("You can start typing to filter the list of %1.", type));
+        m_label->setText(text);
     } else {
         m_label->setText(i18n("Path: %1", pattern));
     }
