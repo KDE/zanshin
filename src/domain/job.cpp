@@ -40,7 +40,7 @@ void Job::addHandler(const ResultHandler &handler)
     m_handlers << handler;
 }
 
-void Job::addHandlerWithJob(const ResultHandlerWithJob &handler)
+void Job::addHandler(const ResultHandlerWithJob &handler)
 {
     m_handlersWithJob << handler;
 }

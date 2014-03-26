@@ -32,10 +32,6 @@
 
 #include "queryresult.h"
 
-// Since mem_fn doesn't seem to cut it with gcc 4.7
-#define DOMAIN_QRP_MEM_FN(member) \
-    [](typename QueryResult<ItemType>::Ptr result) { return result->member(); }
-
 namespace Domain {
 
 template<typename ItemType>
@@ -64,60 +60,74 @@ public:
     void append(const ItemType &item)
     {
         cleanupResults();
-        callChangeHandlers(item, m_list.size(), DOMAIN_QRP_MEM_FN(preInsertHandlers));
+        callChangeHandlers(item, m_list.size(),
+                           std::mem_fn(&QueryResult<ItemType>::preInsertHandlers));
         m_list.append(item);
-        callChangeHandlers(item, m_list.size()-1, DOMAIN_QRP_MEM_FN(postInsertHandlers));
+        callChangeHandlers(item, m_list.size()-1,
+                           std::mem_fn(&QueryResult<ItemType>::postInsertHandlers));
     }
 
     void prepend(const ItemType &item)
     {
         cleanupResults();
-        callChangeHandlers(item, 0, DOMAIN_QRP_MEM_FN(preInsertHandlers));
+        callChangeHandlers(item, 0,
+                           std::mem_fn(&QueryResult<ItemType>::preInsertHandlers));
         m_list.prepend(item);
-        callChangeHandlers(item, 0, DOMAIN_QRP_MEM_FN(postInsertHandlers));
+        callChangeHandlers(item, 0,
+                           std::mem_fn(&QueryResult<ItemType>::postInsertHandlers));
     }
 
     void insert(int index, const ItemType &item)
     {
         cleanupResults();
-        callChangeHandlers(item, index, DOMAIN_QRP_MEM_FN(preInsertHandlers));
+        callChangeHandlers(item, index,
+                           std::mem_fn(&QueryResult<ItemType>::preInsertHandlers));
         m_list.insert(index, item);
-        callChangeHandlers(item, index, DOMAIN_QRP_MEM_FN(postInsertHandlers));
+        callChangeHandlers(item, index,
+                           std::mem_fn(&QueryResult<ItemType>::postInsertHandlers));
     }
 
     void removeFirst()
     {
         cleanupResults();
         const ItemType item = m_list.first();
-        callChangeHandlers(item, 0, DOMAIN_QRP_MEM_FN(preRemoveHandlers));
+        callChangeHandlers(item, 0,
+                           std::mem_fn(&QueryResult<ItemType>::preRemoveHandlers));
         m_list.removeFirst();
-        callChangeHandlers(item, 0, DOMAIN_QRP_MEM_FN(postRemoveHandlers));
+        callChangeHandlers(item, 0,
+                           std::mem_fn(&QueryResult<ItemType>::postRemoveHandlers));
     }
 
     void removeLast()
     {
         cleanupResults();
         const ItemType item = m_list.last();
-        callChangeHandlers(item, m_list.size()-1, DOMAIN_QRP_MEM_FN(preRemoveHandlers));
+        callChangeHandlers(item, m_list.size()-1,
+                           std::mem_fn(&QueryResult<ItemType>::preRemoveHandlers));
         m_list.removeLast();
-        callChangeHandlers(item, m_list.size(), DOMAIN_QRP_MEM_FN(postRemoveHandlers));
+        callChangeHandlers(item, m_list.size(),
+                           std::mem_fn(&QueryResult<ItemType>::postRemoveHandlers));
     }
 
     void removeAt(int index)
     {
         cleanupResults();
         const ItemType item = m_list.at(index);
-        callChangeHandlers(item, index, DOMAIN_QRP_MEM_FN(preRemoveHandlers));
+        callChangeHandlers(item, index,
+                           std::mem_fn(&QueryResult<ItemType>::preRemoveHandlers));
         m_list.removeAt(index);
-        callChangeHandlers(item, index, DOMAIN_QRP_MEM_FN(postRemoveHandlers));
+        callChangeHandlers(item, index,
+                           std::mem_fn(&QueryResult<ItemType>::postRemoveHandlers));
     }
 
     void replace(int index, const ItemType &item)
     {
         cleanupResults();
-        callChangeHandlers(m_list.at(index), index, DOMAIN_QRP_MEM_FN(preReplaceHandlers));
+        callChangeHandlers(m_list.at(index), index,
+                           std::mem_fn(&QueryResult<ItemType>::preReplaceHandlers));
         m_list.replace(index, item);
-        callChangeHandlers(item, index, DOMAIN_QRP_MEM_FN(postReplaceHandlers));
+        callChangeHandlers(item, index,
+                           std::mem_fn(&QueryResult<ItemType>::postReplaceHandlers));
     }
 
     QueryResultProvider &operator<< (const ItemType &item)
