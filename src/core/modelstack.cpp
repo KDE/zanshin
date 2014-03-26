@@ -101,7 +101,8 @@ QAbstractItemModel *ModelStack::treeSideBarModel()
 QItemSelectionModel *ModelStack::treeSelection()
 {
     if (!m_treeSelection) {
-        m_treeSelection = new QItemSelectionModel(treeSideBarModel());
+        QItemSelectionModel *selection = new QItemSelectionModel(treeSideBarModel(), this);
+        m_treeSelection = selection;
     }
     return m_treeSelection;
 }
@@ -155,7 +156,8 @@ QAbstractItemModel *ModelStack::contextsSideBarModel()
 QItemSelectionModel *ModelStack::contextsSelection()
 {
     if (!m_contextSelection) {
-        m_contextSelection = new QItemSelectionModel(contextsSideBarModel());
+        QItemSelectionModel *selection = new QItemSelectionModel(contextsSideBarModel());
+        m_contextSelection = selection;
     }
     return m_contextSelection;
 }
@@ -214,7 +216,8 @@ QAbstractItemModel *ModelStack::knowledgeSideBarModel()
 QItemSelectionModel* ModelStack::knowledgeSelection()
 {
     if (!m_topicSelection) {
-        m_topicSelection = new QItemSelectionModel(knowledgeSideBarModel());
+        QItemSelectionModel *selection = new QItemSelectionModel(knowledgeSideBarModel());
+        m_topicSelection = selection;
     }
     return m_topicSelection;
 }

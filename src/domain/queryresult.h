@@ -84,31 +84,43 @@ private:
     {
     }
 
+    // cppcheck can't figure out the friend class
+    // cppcheck-suppress unusedPrivateFunction
     ChangeHandlerList preInsertHandlers() const
     {
         return m_preInsertHandlers;
     }
 
+    // cppcheck can't figure out the friend class
+    // cppcheck-suppress unusedPrivateFunction
     ChangeHandlerList postInsertHandlers() const
     {
         return m_postInsertHandlers;
     }
 
+    // cppcheck can't figure out the friend class
+    // cppcheck-suppress unusedPrivateFunction
     ChangeHandlerList preRemoveHandlers() const
     {
         return m_preRemoveHandlers;
     }
 
+    // cppcheck can't figure out the friend class
+    // cppcheck-suppress unusedPrivateFunction
     ChangeHandlerList postRemoveHandlers() const
     {
         return m_postRemoveHandlers;
     }
 
+    // cppcheck can't figure out the friend class
+    // cppcheck-suppress unusedPrivateFunction
     ChangeHandlerList preReplaceHandlers() const
     {
         return m_preReplaceHandlers;
     }
 
+    // cppcheck can't figure out the friend class
+    // cppcheck-suppress unusedPrivateFunction
     ChangeHandlerList postReplaceHandlers() const
     {
         return m_postReplaceHandlers;
