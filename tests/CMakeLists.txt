@@ -37,6 +37,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
 ENDMACRO(ZANSHIN_AUTO_TESTS)
 
 add_subdirectory(manual)
+add_subdirectory(benchmarks)
 add_subdirectory(units)
 ########### automated tests ###############
 
