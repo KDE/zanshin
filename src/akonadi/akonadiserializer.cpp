@@ -59,6 +59,19 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setDone(todo->isCompleted());
     task->setStartDate(todo->dtStart().dateTime());
     task->setDueDate(todo->dtDue().dateTime());
+    task->setProperty("todoUid", todo->uid());
+}
+
+bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
+{
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return false;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    if (todo->relatedTo() == task->property("todoUid"))
+        return true;
+
+    return false;
 }
 
 Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)

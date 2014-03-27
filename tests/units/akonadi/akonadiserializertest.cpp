@@ -79,6 +79,7 @@ private slots:
         QCOMPARE(task->isDone(), isDone);
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
+        QCOMPARE(task->property("todoUid").toString(), todo->uid());
     }
 
     void shouldCreateNullTaskFromInvalidItem()
@@ -157,6 +158,7 @@ private slots:
         QCOMPARE(task->isDone(), updatedDone);
         QCOMPARE(task->startDate(), updatedStartDate);
         QCOMPARE(task->dueDate(), updatedDueDate);
+        QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
     }
 
     void shouldNotUpdateTaskFromInvalidItem()
@@ -244,6 +246,80 @@ private slots:
         QCOMPARE(todo->isCompleted(), isDone);
         QCOMPARE(todo->dtStart().dateTime(), startDate);
         QCOMPARE(todo->dtDue().dateTime(), dueDate);
+    }
+
+    void shouldVerifyIfAnItemIsATaskChild_data()
+    {
+        QTest::addColumn<Domain::Task::Ptr>("task");
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<bool>("isParent");
+
+        // Create task
+        const QString summary = "summary";
+        const QString content = "content";
+        const bool isDone = true;
+        const QDateTime startDate(QDate(2013, 11, 24));
+        const QDateTime dueDate(QDate(2014, 03, 01));
+
+        // ... create a task
+        Domain::Task::Ptr task(new Domain::Task);
+        task->setTitle(summary);
+        task->setText(content);
+        task->setDone(isDone);
+        task->setStartDate(startDate);
+        task->setDueDate(dueDate);
+        task->setProperty("todoUid", "1");
+
+        // Create Child item
+        KCalCore::Todo::Ptr childTodo(new KCalCore::Todo);
+        childTodo->setSummary(summary);
+        childTodo->setDescription(content);
+        childTodo->setCompleted(isDone);
+        childTodo->setDtStart(KDateTime(startDate));
+        childTodo->setDtDue(KDateTime(dueDate));
+
+        Akonadi::Item childItem;
+        childItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        childItem.setPayload<KCalCore::Todo::Ptr>(childTodo);
+
+        QTest::newRow("without parent") << task << childItem << false;
+
+        // Create Child Item with parent
+        KCalCore::Todo::Ptr childTodo2(new KCalCore::Todo);
+        childTodo2->setSummary(summary);
+        childTodo2->setDescription(content);
+        childTodo2->setCompleted(isDone);
+        childTodo2->setDtStart(KDateTime(startDate));
+        childTodo2->setDtDue(KDateTime(dueDate));
+        childTodo2->setRelatedTo("1");
+
+        Akonadi::Item childItem2;
+        childItem2.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        childItem2.setPayload<KCalCore::Todo::Ptr>(childTodo2);
+
+        QTest::newRow("with parent") << task << childItem2 << true;
+
+        Domain::Task::Ptr invalidTask(new Domain::Task);
+        QTest::newRow("with invalid task") << invalidTask << childItem << false;
+
+        Akonadi::Item invalidItem;
+        QTest::newRow("with invalid item") << task << invalidItem << false;
+
+    }
+
+    void shouldVerifyIfAnItemIsATaskChild()
+    {
+        // GIVEN
+        QFETCH(Domain::Task::Ptr, task);
+        QFETCH(Akonadi::Item, item);
+        QFETCH(bool, isParent);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        bool value = serializer.isTaskChild(task, item);
+
+        // THEN
+        QCOMPARE(value, isParent);
     }
 };
 

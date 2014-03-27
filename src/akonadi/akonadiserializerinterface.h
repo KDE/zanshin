@@ -39,6 +39,7 @@ public:
     virtual Domain::Task::Ptr createTaskFromItem(Akonadi::Item item) = 0;
     virtual void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual Akonadi::Item createItemFromTask(Domain::Task::Ptr task) = 0;
+    virtual bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item) = 0;
 };
 
 }
