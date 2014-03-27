@@ -95,9 +95,30 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 
 TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) const
 {
-    qFatal("Not implemented yet");
-    Q_UNUSED(task);
-    return TaskProvider::createResult(TaskProvider::Ptr());
+    TaskProvider::Ptr provider(new TaskProvider);
+
+    TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
+
+    Akonadi::Item item(task->property("itemId").value<Akonadi::Entity::Id>());
+
+    ItemFetchJobInterface *job = m_storage->fetchItem(item);
+    registerJobHandler(job->kjob(), [provider, job, task, this] {
+        Q_ASSERT(job->items().size() == 1);
+        auto item = job->items()[0];
+        Q_ASSERT(item.parentCollection().isValid());
+        ItemFetchJobInterface *job = m_storage->fetchItems(item.parentCollection());
+        registerJobHandler(job->kjob(), [provider, job, task, this] {
+            for (auto item : job->items()) {
+                if (m_serializer->isTaskChild(task, item)) {
+                    auto task = deserializeTask(item);
+                    if (task)
+                        provider->append(task);
+                }
+            }
+        });
+    });
+
+    return result;
 }
 
 TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const
