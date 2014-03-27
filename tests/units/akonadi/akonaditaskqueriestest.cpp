@@ -45,7 +45,7 @@ private slots:
         Akonadi::Collection col1(42);
         col1.setParentCollection(Akonadi::Collection::root());
         Akonadi::Collection col2(43);
-        col1.setParentCollection(Akonadi::Collection::root());
+        col2.setParentCollection(Akonadi::Collection::root());
         MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
