@@ -30,43 +30,48 @@
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 
-class MockCollectionFetchJob : public KJob, public Akonadi::CollectionFetchJobInterface
+class MockAkonadiJob : public KJob
 {
     Q_OBJECT
 public:
-    explicit MockCollectionFetchJob(QObject *parent = 0);
+    explicit MockAkonadiJob(QObject *parent = 0);
+
+private:
+    void start();
+
+private slots:
+    void onTimeout();
+
+protected:
+    bool isDone() const;
+
+private:
+    bool m_done;
+};
+
+class MockCollectionFetchJob : public MockAkonadiJob, public Akonadi::CollectionFetchJobInterface
+{
+    Q_OBJECT
+public:
+    using MockAkonadiJob::MockAkonadiJob;
 
     void setCollections(const Akonadi::Collection::List &collections);
     Akonadi::Collection::List collections() const;
 
 private:
-    void start();
-
-private slots:
-    void onTimeout();
-
-private:
-    bool m_done;
     Akonadi::Collection::List m_collections;
 };
 
-class MockItemFetchJob : public KJob, public Akonadi::ItemFetchJobInterface
+class MockItemFetchJob : public MockAkonadiJob, public Akonadi::ItemFetchJobInterface
 {
     Q_OBJECT
 public:
-    explicit MockItemFetchJob(QObject *parent = 0);
+    using MockAkonadiJob::MockAkonadiJob;
 
     void setItems(const Akonadi::Item::List &items);
     Akonadi::Item::List items() const;
 
 private:
-    void start();
-
-private slots:
-    void onTimeout();
-
-private:
-    bool m_done;
     Akonadi::Item::List m_items;
 };
 

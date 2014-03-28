@@ -25,11 +25,28 @@
 
 #include <QTimer>
 
-MockCollectionFetchJob::MockCollectionFetchJob(QObject *parent)
+MockAkonadiJob::MockAkonadiJob(QObject *parent)
     : KJob(parent), m_done(false)
 {
     start();
 }
+
+void MockAkonadiJob::start()
+{
+    QTimer::singleShot(50, this, SLOT(onTimeout()));
+}
+
+void MockAkonadiJob::onTimeout()
+{
+    m_done = true;
+    emitResult();
+}
+
+bool MockAkonadiJob::isDone() const
+{
+    return m_done;
+}
+
 
 void MockCollectionFetchJob::setCollections(const Akonadi::Collection::List &collections)
 {
@@ -38,26 +55,9 @@ void MockCollectionFetchJob::setCollections(const Akonadi::Collection::List &col
 
 Akonadi::Collection::List MockCollectionFetchJob::collections() const
 {
-    return m_done ? m_collections : Akonadi::Collection::List();
+    return isDone() ? m_collections : Akonadi::Collection::List();
 }
 
-void MockCollectionFetchJob::start()
-{
-    QTimer::singleShot(50, this, SLOT(onTimeout()));
-}
-
-void MockCollectionFetchJob::onTimeout()
-{
-    m_done = true;
-    emitResult();
-}
-
-
-MockItemFetchJob::MockItemFetchJob(QObject *parent)
-    : KJob(parent), m_done(false)
-{
-    start();
-}
 
 void MockItemFetchJob::setItems(const Akonadi::Item::List &items)
 {
@@ -66,18 +66,7 @@ void MockItemFetchJob::setItems(const Akonadi::Item::List &items)
 
 Akonadi::Item::List MockItemFetchJob::items() const
 {
-    return m_done ? m_items : Akonadi::Item::List();
-}
-
-void MockItemFetchJob::start()
-{
-    QTimer::singleShot(50, this, SLOT(onTimeout()));
-}
-
-void MockItemFetchJob::onTimeout()
-{
-    m_done = true;
-    emitResult();
+    return isDone() ? m_items : Akonadi::Item::List();
 }
 
 
