@@ -2,7 +2,6 @@ set(domain_SRCS
     artifact.cpp
     artifactqueries.cpp
     artifactrepository.cpp
-    job.cpp
     project.cpp
     projectqueries.cpp
     projectrepository.cpp

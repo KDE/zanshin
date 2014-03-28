@@ -1,6 +1,5 @@
 zanshin_auto_tests(
   artifacttest
-  jobtest
   mockitotest
   projecttest
   queryresulttest
