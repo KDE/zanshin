@@ -2,6 +2,7 @@
 set(utils_SRCS
     datestringbuilder.cpp
     dependencymanager.cpp
+    jobhandler.cpp
     kdateedit.cpp
     kdatepickerpopup.cpp
  )

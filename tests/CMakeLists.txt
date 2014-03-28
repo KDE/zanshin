@@ -15,6 +15,7 @@ MACRO(ZANSHIN_MANUAL_TESTS)
                                        akonadi
                                        domain
                                        presentation
+                                       utils
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_MANUAL_TESTS)
@@ -30,6 +31,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
                                        akonadi
                                        domain
                                        presentation
+                                       utils
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AUTO_TESTS)
