@@ -60,11 +60,8 @@ private slots:
     void onItemAdded(const Akonadi::Item &item);
     void onItemRemoved(const Akonadi::Item &item);
     void onItemChanged(const Akonadi::Item &item);
-    void handleJobResult(KJob *job);
 
 private:
-    void registerJobHandler(KJob *job, const std::function<void()> &handler) const;
-
     bool isTaskItem(const Domain::Task::Ptr &task, const Item &item) const;
     Domain::Task::Ptr deserializeTask(const Item &item) const;
 
@@ -73,7 +70,6 @@ private:
     MonitorInterface *m_monitor;
     bool m_ownInterfaces;
 
-    mutable QHash<KJob *, std::function<void()>> m_jobHandlers;
     mutable TaskProvider::WeakPtr m_taskProvider;
 };
 

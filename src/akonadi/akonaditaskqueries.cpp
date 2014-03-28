@@ -30,6 +30,8 @@
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
 
+#include "utils/jobhandler.h"
+
 using namespace Akonadi;
 
 TaskQueries::TaskQueries()
@@ -75,10 +77,10 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
     TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive);
-    registerJobHandler(job->kjob(), [provider, job, this] {
+    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
         for (auto collection : job->collections()) {
             ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-            registerJobHandler(job->kjob(), [provider, job, this] {
+            Utils::JobHandler::install(job->kjob(), [provider, job, this] {
                 for (auto item : job->items()) {
                     auto task = deserializeTask(item);
                     if (task)
@@ -137,19 +139,6 @@ void TaskQueries::onItemChanged(const Item &item)
             }
         }
     }
-}
-
-void TaskQueries::handleJobResult(KJob *job)
-{
-    Q_ASSERT(m_jobHandlers.contains(job));
-    auto handler = m_jobHandlers.take(job);
-    handler();
-}
-
-void TaskQueries::registerJobHandler(KJob *job, const std::function<void()> &handler) const
-{
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(handleJobResult(KJob*)));
-    m_jobHandlers.insert(job, handler);
 }
 
 bool TaskQueries::isTaskItem(const Domain::Task::Ptr &task, const Item &item) const
