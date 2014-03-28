@@ -2,6 +2,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory( akonadi )
 add_subdirectory( domain )
+add_subdirectory( presentation )
 add_subdirectory( app )
 add_subdirectory( reparentingmodel )
 add_subdirectory( core )

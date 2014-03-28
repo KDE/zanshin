@@ -21,29 +21,34 @@
    USA.
 */
 
-#include <KAboutData>
-#include <KApplication>
-#include <KCmdLineArgs>
 
-#include <QListView>
+#ifndef PRESENTATION_TASKLISTMODEL_H
+#define PRESENTATION_TASKLISTMODEL_H
 
-#include "akonadi/akonaditaskqueries.h"
-#include "presentation/tasklistmodel.h"
+#include <QAbstractListModel>
 
-int main(int argc, char **argv)
+#include "domain/queryresult.h"
+#include "domain/queryresultprovider.h"
+#include "domain/task.h"
+
+namespace Presentation {
+
+class TaskListModel : public QAbstractListModel
 {
-    KAboutData about("tasklister", "tasklister",
-                     ki18n("Lists all the tasks"), "1.0");
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    Q_OBJECT
+public:
+    typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
 
-    Akonadi::TaskQueries queries;
-    auto taskList = queries.findAll();
+    explicit TaskListModel(const TaskList::Ptr &taskList, QObject *parent = 0);
+    ~TaskListModel();
 
-    QListView view;
-    view.setModel(new Presentation::TaskListModel(taskList, &view));
-    view.resize(640, 480);
-    view.show();
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-    return app.exec();
+private:
+    TaskList::Ptr m_taskList;
+};
+
 }
+
+#endif // PRESENTATION_TASKLISTMODEL_H
