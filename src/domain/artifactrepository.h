@@ -25,7 +25,8 @@
 #define DOMAIN_ARTIFACTREPOSITORY_H
 
 #include "artifact.h"
-#include "job.h"
+
+class KJob;
 
 namespace Domain {
 
@@ -35,8 +36,8 @@ public:
     ArtifactRepository();
     virtual ~ArtifactRepository();
 
-    virtual Job *save(const Artifact::Ptr &artifact) = 0;
-    virtual Job *remove(const Artifact::Ptr &artifact) = 0;
+    virtual KJob *save(const Artifact::Ptr &artifact) = 0;
+    virtual KJob *remove(const Artifact::Ptr &artifact) = 0;
 };
 
 }

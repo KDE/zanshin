@@ -25,8 +25,9 @@
 #define DOMAIN_TAGREPOSITORY_H
 
 #include "artifact.h"
-#include "job.h"
 #include "tag.h"
+
+class KJob;
 
 namespace Domain {
 
@@ -36,14 +37,14 @@ public:
     TagRepository();
     virtual ~TagRepository();
 
-    virtual Job *save(const Tag::Ptr &tag) = 0;
-    virtual Job *remove(const Tag::Ptr &tag) = 0;
+    virtual KJob *save(const Tag::Ptr &tag) = 0;
+    virtual KJob *remove(const Tag::Ptr &tag) = 0;
 
-    virtual Job *associate(const Tag::Ptr &parent, const Artifact::Ptr &child) = 0;
-    virtual Job *dissociate(const Tag::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *associate(const Tag::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *dissociate(const Tag::Ptr &parent, const Artifact::Ptr &child) = 0;
 
-    virtual Job *associate(const Tag::Ptr &parent, const Tag::Ptr &child) = 0;
-    virtual Job *dissociate(const Tag::Ptr &parent, const Tag::Ptr &child) = 0;
+    virtual KJob *associate(const Tag::Ptr &parent, const Tag::Ptr &child) = 0;
+    virtual KJob *dissociate(const Tag::Ptr &parent, const Tag::Ptr &child) = 0;
 };
 
 }

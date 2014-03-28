@@ -25,8 +25,9 @@
 #define DOMAIN_PROJECTREPOSITORY_H
 
 #include "artifact.h"
-#include "job.h"
 #include "project.h"
+
+class KJob;
 
 namespace Domain {
 
@@ -36,11 +37,11 @@ public:
     ProjectRepository();
     virtual ~ProjectRepository();
 
-    virtual Job *save(const Project::Ptr &project) = 0;
-    virtual Job *remove(const Project::Ptr &project) = 0;
+    virtual KJob *save(const Project::Ptr &project) = 0;
+    virtual KJob *remove(const Project::Ptr &project) = 0;
 
-    virtual Job *associate(const Project::Ptr &parent, const Artifact::Ptr &child) = 0;
-    virtual Job *dissociate(const Project::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *associate(const Project::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *dissociate(const Project::Ptr &parent, const Artifact::Ptr &child) = 0;
 };
 
 }

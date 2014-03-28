@@ -24,8 +24,9 @@
 #ifndef DOMAIN_TASKREPOSITORY_H
 #define DOMAIN_TASKREPOSITORY_H
 
-#include "job.h"
 #include "task.h"
+
+class KJob;
 
 namespace Domain {
 
@@ -35,11 +36,11 @@ public:
     TaskRepository();
     virtual ~TaskRepository();
 
-    virtual Job *save(const Task::Ptr &task) = 0;
-    virtual Job *remove(const Task::Ptr &task) = 0;
+    virtual KJob *save(const Task::Ptr &task) = 0;
+    virtual KJob *remove(const Task::Ptr &task) = 0;
 
-    virtual Job *associate(const Task::Ptr &parent, const Artifact::Ptr &child) = 0;
-    virtual Job *dissociate(const Task::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *associate(const Task::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *dissociate(const Task::Ptr &parent, const Artifact::Ptr &child) = 0;
 };
 
 }
