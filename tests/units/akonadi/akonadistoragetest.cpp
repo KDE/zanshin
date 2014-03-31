@@ -326,6 +326,35 @@ private slots:
         QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
     }
 
+    void shouldRetrieveItem()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+        Akonadi::Item findItem(1);
+
+        // WHEN
+        auto job = storage.fetchItem(findItem);
+        job->kjob()->exec();
+
+        // THEN
+        auto items = job->items();
+        QCOMPARE(items.size(), 1);
+
+        const auto &item = items[0];
+
+        QCOMPARE(item.id(), 1LL);
+        QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
+        QVERIFY(!item.attributes().isEmpty());
+        QVERIFY(item.modificationTime().isValid());
+        QVERIFY(!item.flags().isEmpty());
+
+        auto parent = item.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
+        }
+    }
+
 private:
     Akonadi::Collection calendar2()
     {

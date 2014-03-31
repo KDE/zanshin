@@ -28,6 +28,7 @@
 
 #include <Akonadi/CollectionFetchJob>
 
+class ItemJob;
 namespace Akonadi {
 
 class Storage : public StorageInterface
@@ -43,9 +44,11 @@ public:
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth);
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection);
+    virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item);
 
 private:
     CollectionFetchJob::Type jobTypeFromDepth(StorageInterface::FetchDepth depth);
+    void configureItemFetchJob(ItemJob *job);
 };
 
 }

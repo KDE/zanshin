@@ -52,6 +52,7 @@ public:
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) = 0;
+    virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item) = 0;
 };
 
 }

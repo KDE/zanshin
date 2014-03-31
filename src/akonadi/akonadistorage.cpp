@@ -112,11 +112,16 @@ ItemFetchJobInterface *Storage::fetchItems(Collection collection)
 {
     auto job = new ItemJob(collection);
 
-    auto scope = job->fetchScope();
-    scope.fetchFullPayload();
-    scope.fetchAllAttributes();
-    scope.setAncestorRetrieval(ItemFetchScope::All);
-    job->setFetchScope(scope);
+    configureItemFetchJob(job);
+
+    return job;
+}
+
+ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item)
+{
+    auto job = new ItemJob(item);
+
+    configureItemFetchJob(job);
 
     return job;
 }
@@ -141,4 +146,13 @@ CollectionFetchJob::Type Storage::jobTypeFromDepth(StorageInterface::FetchDepth 
     }
 
     return jobType;
+}
+
+void Storage::configureItemFetchJob(ItemJob *job)
+{
+    auto scope = job->fetchScope();
+    scope.fetchFullPayload();
+    scope.fetchAllAttributes();
+    scope.setAncestorRetrieval(ItemFetchScope::All);
+    job->setFetchScope(scope);
 }
