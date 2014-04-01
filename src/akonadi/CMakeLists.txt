@@ -8,6 +8,7 @@ set(akonadi_SRCS
     akonadistorageinterface.cpp
     akonadistorage.cpp
     akonaditaskqueries.cpp
+    akonaditaskrepository.cpp
 )
 
 kde4_add_library(akonadi STATIC ${akonadi_SRCS})

@@ -60,3 +60,10 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setStartDate(todo->dtStart().dateTime());
     task->setDueDate(todo->dtDue().dateTime());
 }
+
+Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
+{
+    Q_UNUSED(task);
+    qFatal("Not implemented yet");
+    return Akonadi::Item();
+}

@@ -21,33 +21,40 @@
    USA.
 */
 
-#ifndef AKONADI_STORAGE_H
-#define AKONADI_STORAGE_H
+#ifndef AKONADI_TASKREPOSITORY_H
+#define AKONADI_TASKREPOSITORY_H
 
-#include "akonadistorageinterface.h"
+#include "domain/taskrepository.h"
 
-#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/Collection>
 
 namespace Akonadi {
 
-class Storage : public StorageInterface
+class SerializerInterface;
+class StorageInterface;
+
+class TaskRepository : public Domain::TaskRepository
 {
 public:
-    Storage();
-    virtual ~Storage();
+    TaskRepository();
+    TaskRepository(StorageInterface *storage, SerializerInterface *serializer);
+    virtual ~TaskRepository();
 
-    virtual Akonadi::Collection defaultTaskCollection();
+    Akonadi::Collection defaultCollection() const;
+    void setDefaultCollection(const Akonadi::Collection &defaultCollection);
 
-    virtual KJob *createItem(Item item, Collection collection);
-    virtual KJob *updateItem(Item item);
+    virtual KJob *save(const Domain::Task::Ptr &task);
+    virtual KJob *remove(const Domain::Task::Ptr &task);
 
-    virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth);
-    virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection);
+    virtual KJob *associate(const Domain::Task::Ptr &parent, const Domain::Artifact::Ptr &child);
+    virtual KJob *dissociate(const Domain::Task::Ptr &parent, const Domain::Artifact::Ptr &child);
 
 private:
-    CollectionFetchJob::Type jobTypeFromDepth(StorageInterface::FetchDepth depth);
+    StorageInterface *m_storage;
+    SerializerInterface *m_serializer;
+    bool m_ownInterfaces;
 };
 
 }
 
-#endif // AKONADI_STORAGE_H
+#endif // AKONADI_TASKREPOSITORY_H

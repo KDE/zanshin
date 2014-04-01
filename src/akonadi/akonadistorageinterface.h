@@ -24,10 +24,13 @@
 #ifndef AKONADI_STORAGEINTERFACE_H
 #define AKONADI_STORAGEINTERFACE_H
 
+class KJob;
+
 namespace Akonadi {
 
 class Collection;
 class CollectionFetchJobInterface;
+class Item;
 class ItemFetchJobInterface;
 
 class StorageInterface
@@ -41,6 +44,11 @@ public:
 
     StorageInterface();
     virtual ~StorageInterface();
+
+    virtual Akonadi::Collection defaultTaskCollection() = 0;
+
+    virtual KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) = 0;
+    virtual KJob *updateItem(Akonadi::Item item) = 0;
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) = 0;

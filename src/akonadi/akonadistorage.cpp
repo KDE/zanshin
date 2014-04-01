@@ -77,6 +77,27 @@ Storage::~Storage()
 {
 }
 
+Collection Storage::defaultTaskCollection()
+{
+    qFatal("Not implemented yet");
+    return Akonadi::Collection();
+}
+
+KJob *Storage::createItem(Item item, Collection collection)
+{
+    Q_UNUSED(item);
+    Q_UNUSED(collection);
+    qFatal("Not implemented yet");
+    return 0;
+}
+
+KJob *Storage::updateItem(Item item)
+{
+    Q_UNUSED(item);
+    qFatal("Not implemented yet");
+    return 0;
+}
+
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
 {
     auto job = new CollectionJob(collection, jobTypeFromDepth(depth));
