@@ -32,6 +32,7 @@
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
+#include <Akonadi/ItemModifyJob>
 #include <Akonadi/Notes/NoteUtils>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
@@ -91,9 +92,7 @@ KJob *Storage::createItem(Item item, Collection collection)
 
 KJob *Storage::updateItem(Item item)
 {
-    Q_UNUSED(item);
-    qFatal("Not implemented yet");
-    return 0;
+    return new ItemModifyJob(item);
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)

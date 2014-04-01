@@ -24,6 +24,7 @@
 #include <QtTest>
 
 #include <KCalCore/Todo>
+#include <KCalCore/ICalFormat>
 
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionStatistics>
@@ -270,6 +271,43 @@ private slots:
         QCOMPARE(spy.size(), 1);
         auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
         QCOMPARE(notifiedItem.parentCollection(), calendar2());
+        QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+    }
+
+    void shouldUpdateItem()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+
+        // A todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary("new summary");
+        todo->setDescription("new content");
+
+        // ... as payload of an existing item (if we trust the test data)...
+        Akonadi::Item item(1);
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // WHEN
+        (storage.updateItem(item))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        // Apparently notified twice, before and after change is applied
+        QCOMPARE(spy.size(), 2);
+        auto notifiedItem = spy.takeAt(1).takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
         QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
     }
 
