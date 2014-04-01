@@ -234,6 +234,45 @@ private slots:
         }
     }
 
+    void shouldCreateItem()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemAdded(Akonadi::Item)));
+
+        // A todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary("summary");
+        todo->setDescription("content");
+        todo->setCompleted(false);
+        todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
+        todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+
+        // ... as payload of a new item
+        Akonadi::Item item;
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // WHEN
+        (storage.createItem(item, calendar2()))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.parentCollection(), calendar2());
+        QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+    }
+
 private:
     Akonadi::Collection calendar2()
     {

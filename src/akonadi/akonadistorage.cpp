@@ -29,6 +29,7 @@
 #include <KCalCore/Todo>
 
 #include <Akonadi/CollectionFetchScope>
+#include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Notes/NoteUtils>
@@ -85,10 +86,7 @@ Collection Storage::defaultTaskCollection()
 
 KJob *Storage::createItem(Item item, Collection collection)
 {
-    Q_UNUSED(item);
-    Q_UNUSED(collection);
-    qFatal("Not implemented yet");
-    return 0;
+    return new ItemCreateJob(item, collection);
 }
 
 KJob *Storage::updateItem(Item item)
