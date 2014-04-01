@@ -198,6 +198,53 @@ private slots:
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
     }
+
+    void shouldCreateItemFromTask_data()
+    {
+        QTest::addColumn<QString>("summary");
+        QTest::addColumn<QString>("content");
+        QTest::addColumn<bool>("isDone");
+        QTest::addColumn<QDateTime>("startDate");
+        QTest::addColumn<QDateTime>("dueDate");
+
+        QTest::newRow("nominal case") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01));
+        QTest::newRow("done case") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01));
+        QTest::newRow("empty case") << QString() << QString() << false << QDateTime() << QDateTime();
+    }
+
+    void shouldCreateItemFromTask()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, summary);
+        QFETCH(QString, content);
+        QFETCH(bool, isDone);
+        QFETCH(QDateTime, startDate);
+        QFETCH(QDateTime, dueDate);
+
+        // ... stored in a task
+        auto task = Domain::Task::Ptr::create();
+        task->setTitle(summary);
+        task->setText(content);
+        task->setDone(isDone);
+        task->setStartDate(startDate);
+        task->setDueDate(dueDate);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto item = serializer.createItemFromTask(task);
+
+        // THEN
+        QCOMPARE(item.mimeType(), KCalCore::Todo::todoMimeType());
+
+        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        QCOMPARE(todo->summary(), summary);
+        QCOMPARE(todo->description(), content);
+        QCOMPARE(todo->isCompleted(), isDone);
+        QCOMPARE(todo->dtStart().dateTime(), startDate);
+        QCOMPARE(todo->dtDue().dateTime(), dueDate);
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)

@@ -63,7 +63,16 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
 
 Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 {
-    Q_UNUSED(task);
-    qFatal("Not implemented yet");
-    return Akonadi::Item();
+    auto todo = KCalCore::Todo::Ptr::create();
+
+    todo->setSummary(task->title());
+    todo->setDescription(task->text());
+    todo->setCompleted(task->isDone());
+    todo->setDtStart(KDateTime(task->startDate()));
+    todo->setDtDue(KDateTime(task->dueDate()));
+
+    Akonadi::Item item;
+    item.setMimeType(KCalCore::Todo::todoMimeType());
+    item.setPayload(todo);
+    return item;
 }
