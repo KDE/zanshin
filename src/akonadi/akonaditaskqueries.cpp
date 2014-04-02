@@ -102,12 +102,12 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
     Akonadi::Item item(task->property("itemId").value<Akonadi::Entity::Id>());
 
     ItemFetchJobInterface *job = m_storage->fetchItem(item);
-    registerJobHandler(job->kjob(), [provider, job, task, this] {
+    Utils::JobHandler::install(job->kjob(), [provider, job, task, this] {
         Q_ASSERT(job->items().size() == 1);
         auto item = job->items()[0];
         Q_ASSERT(item.parentCollection().isValid());
         ItemFetchJobInterface *job = m_storage->fetchItems(item.parentCollection());
-        registerJobHandler(job->kjob(), [provider, job, task, this] {
+        Utils::JobHandler::install(job->kjob(), [provider, job, task, this] {
             for (auto item : job->items()) {
                 if (m_serializer->isTaskChild(task, item)) {
                     auto task = deserializeTask(item);

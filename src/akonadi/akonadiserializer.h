@@ -40,6 +40,7 @@ public:
     void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item);
     Akonadi::Item createItemFromTask(Domain::Task::Ptr task);
     bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item);
+    QString relatedUidFromItem(Akonadi::Item item);
 };
 
 }

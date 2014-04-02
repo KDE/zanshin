@@ -40,6 +40,7 @@ public:
     virtual void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual Akonadi::Item createItemFromTask(Domain::Task::Ptr task) = 0;
     virtual bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item) = 0;
+    virtual QString relatedUidFromItem(Akonadi::Item item) = 0;
 };
 
 }

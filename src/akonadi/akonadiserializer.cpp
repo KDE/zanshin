@@ -89,3 +89,12 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     item.setPayload(todo);
     return item;
 }
+
+QString Serializer::relatedUidFromItem(Akonadi::Item item)
+{
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return QString();
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    return todo->relatedTo();
+}
