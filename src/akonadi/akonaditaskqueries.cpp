@@ -194,6 +194,26 @@ void TaskQueries::onItemChanged(const Item &item)
             }
         }
     }
+
+    if (m_taskChildProviders.isEmpty())
+        return;
+
+    auto uid = m_serializer->relatedUidFromItem(item);
+    if (m_uidtoIdCache.contains(uid)) {
+        auto parentId = m_uidtoIdCache.value(uid);
+        if (m_taskChildProviders.contains(parentId)) {
+            TaskProvider::Ptr childProvider(m_taskChildProviders.value(parentId).toStrongRef());
+            if (childProvider) {
+                for (int i = 0; i < childProvider->data().size(); i++) {
+                    auto task = childProvider->data().at(i);
+                    if (isTaskItem(task, item)) {
+                        m_serializer->updateTaskFromItem(task, item);
+                        childProvider->replace(i, task);
+                    }
+                }
+            }
+        }
+    }
 }
 
 bool TaskQueries::isTaskItem(const Domain::Task::Ptr &task, const Item &item) const
