@@ -48,8 +48,8 @@ public:
     virtual QVariant data(const QModelIndex& proxyIndex, int role = Qt::DisplayRole) const
     {
         if (role == Qt::CheckStateRole) {
-            const Akonadi::Collection::Id colId = proxyIndex.data(Akonadi::EntityTreeModel::CollectionIdRole).value<Akonadi::Collection::Id>();
-            if (mSelected.contains(colId)) {
+            const Akonadi::Collection col = proxyIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+            if (mSelected.contains(col)) {
                 return Qt::Checked;
             }
             return Qt::Unchecked;
@@ -60,12 +60,12 @@ public:
     virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole)
     {
         if (role == Qt::CheckStateRole) {
-            const Akonadi::Collection::Id colId = index.data(Akonadi::EntityTreeModel::CollectionIdRole).value<Akonadi::Collection::Id>();
-            if (colId >= 0) {
+            const Akonadi::Collection col = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
+            if (col.isValid() && col.id() >= 0) {
                 if (value.toBool()) {
-                    mSelected.insert(colId);
+                    mSelected.append(col);
                 } else {
-                    mSelected.remove(colId);
+                    mSelected.removeAll(col);
                 }
             }
             return true;
@@ -73,7 +73,7 @@ public:
         return KIdentityProxyModel::setData(index, value, role);
     }
     
-    QSet<Akonadi::Collection::Id> mSelected;
+    Akonadi::Collection::List mSelected;
 };
 
 CollectionConfig::CollectionConfig(QWidget* parent)

@@ -92,7 +92,7 @@ QAbstractItemModel *AkonadiDataStore::todoBaseModel()
         PimItemModel *pimModel = new PimItemModel(itemMonitor, this);
         CollectionFilter *collectionFilter = new CollectionFilter(this);
         collectionFilter->setActiveCollections(Akonadi::StorageSettings::instance().activeCollections());
-        connect(&Akonadi::StorageSettings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
+        connect(&Akonadi::StorageSettings::instance(), SIGNAL(activeCollectionsChanged(Akonadi::Collection::List)), collectionFilter, SLOT(setActiveCollections(Akonadi::Collection::List)));
         collectionFilter->setSourceModel(pimModel);
         m_todoBaseModel = collectionFilter;
     }
@@ -134,7 +134,7 @@ QAbstractItemModel *AkonadiDataStore::noteBaseModel()
 
         CollectionFilter *collectionFilter = new CollectionFilter(this);
         collectionFilter->setActiveCollections(Akonadi::StorageSettings::instance().activeCollections());
-        connect(&Akonadi::StorageSettings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
+        connect(&Akonadi::StorageSettings::instance(), SIGNAL(activeCollectionsChanged(Akonadi::Collection::List)), collectionFilter, SLOT(setActiveCollections(Akonadi::Collection::List)));
         collectionFilter->setSourceModel(notetakerModel);
 
         //FIXME because invisible collectionfetch is broken we use this instead
@@ -244,19 +244,19 @@ CollectionFilter::CollectionFilter(QObject *parent)
 bool CollectionFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const
 {
     const QModelIndex sourceChild = sourceModel()->index(sourceRow, 0, sourceParent);
-    const QVariant var = sourceChild.data(Akonadi::EntityTreeModel::CollectionIdRole);
+    const QVariant var = sourceChild.data(Akonadi::EntityTreeModel::CollectionRole);
     if (!var.isValid()) {
         return true;
     }
-    const Akonadi::Collection::Id id = var.value<Akonadi::Collection::Id>();
-    if (id < 0 || mActiveCollections.contains(id)) {
+    const Akonadi::Collection col = var.value<Akonadi::Collection>();
+    if (col.id() < 0 || mActiveCollections.contains(col)) {
         return true;
     }
     return false;
 }
 
-void CollectionFilter::setActiveCollections(const QSet<Akonadi::Collection::Id> &set)
+void CollectionFilter::setActiveCollections(const Akonadi::Collection::List &list)
 {
-    mActiveCollections = set;
+    mActiveCollections = list;
     invalidateFilter();
 }

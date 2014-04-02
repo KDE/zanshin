@@ -41,6 +41,7 @@ public:
         : QObject(parent)
     {
         qRegisterMetaType<Akonadi::Collection>();
+        qRegisterMetaType<Akonadi::Collection::List>();
         qRegisterMetaType<QSet<Akonadi::Collection::Id>>();
     }
 
@@ -55,6 +56,15 @@ private:
         QList<Akonadi::Collection::Id> list;
         for (int i = 1; i < max; i++) {
             list << i;
+        }
+        return list;
+    }
+
+    Akonadi::Collection::List colList(int max)
+    {
+        Akonadi::Collection::List list;
+        for (auto id : idList(max)) {
+            list << Collection(id);
         }
         return list;
     }
@@ -75,7 +85,7 @@ private slots:
             // THEN
             QCOMPARE(StorageSettings::instance().defaultTaskCollection(), Collection(i));
             QCOMPARE(StorageSettings::instance().defaultNoteCollection(), Collection(i + 1));
-            QCOMPARE(StorageSettings::instance().activeCollections(), idList(i + 2).toSet());
+            QCOMPARE(StorageSettings::instance().activeCollections(), colList(i + 2));
         }
     }
 
@@ -89,13 +99,12 @@ private slots:
             // WHEN
             StorageSettings::instance().setDefaultTaskCollection(Collection(i));
             StorageSettings::instance().setDefaultNoteCollection(Collection(i + 1));
-            StorageSettings::instance().setActiveCollections(idList(i + 2).toSet());
+            StorageSettings::instance().setActiveCollections(colList(i + 2));
 
             // THEN
             QCOMPARE(g.readEntry("defaultCollection", -1), i);
             QCOMPARE(g.readEntry("defaultNoteCollection", -1), i + 1);
-            QCOMPARE(g.readEntry("activeCollections", QList<Akonadi::Collection::Id>()).toSet(),
-                     idList(i + 2).toSet());
+            QCOMPARE(g.readEntry("activeCollections", QList<Akonadi::Collection::Id>()), idList(i + 2));
         }
     }
 
@@ -138,18 +147,18 @@ private slots:
     void shouldNotifyActiveCollectionsChanges()
     {
         StorageSettings &settings = StorageSettings::instance();
-        QSignalSpy spy(&settings, SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)));
-        settings.setActiveCollections(idList(2).toSet());
+        QSignalSpy spy(&settings, SIGNAL(activeCollectionsChanged(Akonadi::Collection::List)));
+        settings.setActiveCollections(colList(2));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().value<QSet<Akonadi::Collection::Id>>(), idList(2).toSet());
+        QCOMPARE(spy.first().first().value<Akonadi::Collection::List>(), colList(2));
     }
 
     void shouldNotNotifyIdenticalActiveCollectionsChanges()
     {
         StorageSettings &settings = StorageSettings::instance();
-        settings.setActiveCollections(idList(4).toSet());
-        QSignalSpy spy(&settings, SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)));
-        settings.setActiveCollections(idList(4).toSet());
+        settings.setActiveCollections(colList(4));
+        QSignalSpy spy(&settings, SIGNAL(activeCollectionsChanged(Akonadi::Collection::List)));
+        settings.setActiveCollections(colList(4));
         QCOMPARE(spy.count(), 0);
     }
 };

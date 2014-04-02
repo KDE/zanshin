@@ -39,9 +39,9 @@ public:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
 
 public slots:
-    void setActiveCollections(const QSet<Akonadi::Collection::Id> &set);
+    void setActiveCollections(const Akonadi::Collection::List &set);
 private:
-    QSet<Akonadi::Collection::Id> mActiveCollections;
+    Akonadi::Collection::List mActiveCollections;
 };
 
 
