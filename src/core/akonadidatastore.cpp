@@ -30,7 +30,7 @@
 #include "todohelpers.h"
 #include "kdescendantsproxymodel.h"
 #include "pimitemmodel.h"
-#include "settings.h"
+#include "akonadi/akonadistoragesettings.h"
 
 #include <KDE/Akonadi/ChangeRecorder>
 #include <KDE/Akonadi/Session>
@@ -91,8 +91,8 @@ QAbstractItemModel *AkonadiDataStore::todoBaseModel()
 
         PimItemModel *pimModel = new PimItemModel(itemMonitor, this);
         CollectionFilter *collectionFilter = new CollectionFilter(this);
-        collectionFilter->setActiveCollections(Settings::instance().activeCollections());
-        connect(&Settings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
+        collectionFilter->setActiveCollections(Akonadi::StorageSettings::instance().activeCollections());
+        connect(&Akonadi::StorageSettings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
         collectionFilter->setSourceModel(pimModel);
         m_todoBaseModel = collectionFilter;
     }
@@ -133,8 +133,8 @@ QAbstractItemModel *AkonadiDataStore::noteBaseModel()
         //notetakerModel->setCollectionFetchStrategy(EntityTreeModel::InvisibleCollectionFetch); //List of Items, collections are hidden
 
         CollectionFilter *collectionFilter = new CollectionFilter(this);
-        collectionFilter->setActiveCollections(Settings::instance().activeCollections());
-        connect(&Settings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
+        collectionFilter->setActiveCollections(Akonadi::StorageSettings::instance().activeCollections());
+        connect(&Akonadi::StorageSettings::instance(), SIGNAL(activeCollectionsChanged(QSet<Akonadi::Collection::Id>)), collectionFilter, SLOT(setActiveCollections(QSet<Akonadi::Collection::Id>)));
         collectionFilter->setSourceModel(notetakerModel);
 
         //FIXME because invisible collectionfetch is broken we use this instead

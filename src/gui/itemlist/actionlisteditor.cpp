@@ -50,7 +50,7 @@
 #include "core/modelstack.h"
 #include "quickselectdialog.h"
 #include "todohelpers.h"
-#include "core/settings.h"
+#include "akonadi/akonadistoragesettings.h"
 #include "gui/itemeditor/itemeditor.h"
 #include "itemselectorproxy.h"
 #include "core/pimitemservices.h"
@@ -231,9 +231,9 @@ void ActionListEditor::updateActions()
     if ( type==Zanshin::Collection ) {
         collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     } else if (type==Zanshin::Context) {
-        collection = Settings::instance().defaultTodoCollection();
+        collection = Akonadi::StorageSettings::instance().defaultTaskCollection();
     } else if (type==Zanshin::Topic) {
-        collection = Settings::instance().defaultNoteCollection();
+        collection = Akonadi::StorageSettings::instance().defaultNoteCollection();
     } else if (type==Zanshin::StandardTodo) {
         QModelIndex parent = index;
         int parentType = type;
@@ -243,7 +243,7 @@ void ActionListEditor::updateActions()
         }
 
         if (parentType!=Zanshin::ProjectTodo) {
-            collection = Settings::instance().defaultTodoCollection();
+            collection = Akonadi::StorageSettings::instance().defaultTaskCollection();
         } else {
             collection = index.data(Akonadi::EntityTreeModel::ParentCollectionRole).value<Akonadi::Collection>();
         }

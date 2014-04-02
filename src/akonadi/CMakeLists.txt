@@ -6,6 +6,7 @@ set(akonadi_SRCS
     akonadiserializerinterface.cpp
     akonadiserializer.cpp
     akonadistorageinterface.cpp
+    akonadistoragesettings.cpp
     akonadistorage.cpp
     akonaditaskqueries.cpp
     akonaditaskrepository.cpp

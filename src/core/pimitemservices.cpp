@@ -36,7 +36,7 @@
 #include "akonadiincidenceitem.h"
 #include "akonadinoteitem.h"
 #include "virtualitem.h"
-#include "settings.h"
+#include "akonadi/akonadistoragesettings.h"
 #include "pimitemstructurecache.h"
 
 K_GLOBAL_STATIC(PimItemRelationInterface, s_contextManager)
@@ -161,10 +161,10 @@ void PimItemServices::create(PimItem::ItemType type, const QString& name, const 
         switch (type) {
             case PimItem::Project:
             case PimItem::Todo:
-                collection = Settings::instance().defaultTodoCollection();
+                collection = Akonadi::StorageSettings::instance().defaultTaskCollection();
                 break;
             case PimItem::Note:
-                collection = Settings::instance().defaultNoteCollection();
+                collection = Akonadi::StorageSettings::instance().defaultNoteCollection();
                 break;
             default:
                 kWarning() << "unhandled type: " << type;

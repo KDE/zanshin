@@ -1,6 +1,7 @@
 /* This file is part of Zanshin Todo.
 
    Copyright 2012 Christian Mollekopf <chrigi_1@fastmail.fm>
+   Copyright 2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,34 +22,38 @@
    USA.
 */
 
-#ifndef CONFIGURATION_H
-#define CONFIGURATION_H
+#ifndef AKONADI_STORAGESETTINGS_H
+#define AKONADI_STORAGESETTINGS_H
+
 #include <Akonadi/Collection>
 
-class Settings: public QObject
+namespace Akonadi
+{
+
+class StorageSettings : public QObject
 {
     Q_OBJECT
 private:
-    Settings();
-    Settings(const Settings &);
-public:
-    static Settings &instance() {
-        static Settings i;
-        return i;
-    }
-    
-    void setDefaultTodoCollection(const Akonadi::Collection &collection);
-    Akonadi::Collection defaultTodoCollection();
+    StorageSettings();
 
-    void setDefaultNoteCollection(const Akonadi::Collection &collection);
-    Akonadi::Collection defaultNoteCollection();
+public:
+    static StorageSettings &instance();
     
-    void setActiveCollections(const QSet<Akonadi::Collection::Id> &);
     QSet<Akonadi::Collection::Id> activeCollections();
+    Akonadi::Collection defaultNoteCollection();
+    Akonadi::Collection defaultTaskCollection();
+
+public slots:
+    void setActiveCollections(const QSet<Akonadi::Collection::Id> &collections);
+    void setDefaultNoteCollection(const Akonadi::Collection &collection);
+    void setDefaultTaskCollection(const Akonadi::Collection &collection);
+
 signals:
-    void defaultTodoCollectionChanged(Akonadi::Collection);
-    void defaultNoteCollectionChanged(Akonadi::Collection);
-    void activeCollectionsChanged(QSet<Akonadi::Collection::Id>);
+    void activeCollectionsChanged(const QSet<Akonadi::Collection::Id> &collections);
+    void defaultNoteCollectionChanged(const Akonadi::Collection &collection);
+    void defaultTaskCollectionChanged(const Akonadi::Collection &collection);
 };
 
-#endif // CONFIGURATION_H
+}
+
+#endif // AKONADI_STORAGESETTINGS_H

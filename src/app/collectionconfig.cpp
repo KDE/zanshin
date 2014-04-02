@@ -22,7 +22,7 @@
 */
 #include "collectionconfig.h"
 #include <core/pimitem.h>
-#include <core/settings.h>
+#include <akonadi/akonadistoragesettings.h>
 #include <Akonadi/EntityTreeView>
 #include <Akonadi/EntityTreeModel>
 #include <Akonadi/ItemFetchScope>
@@ -99,7 +99,7 @@ CollectionConfig::CollectionConfig(QWidget* parent)
     collectionsModel->setSourceModel(model);
     
     mSelectorModel = new SelectorModel(this);
-    mSelectorModel->mSelected = Settings::instance().activeCollections();
+    mSelectorModel->mSelected = Akonadi::StorageSettings::instance().activeCollections();
     mSelectorModel->setSourceModel(collectionsModel); 
     
     Akonadi::EntityTreeView *etv = new Akonadi::EntityTreeView(this);
@@ -109,6 +109,6 @@ CollectionConfig::CollectionConfig(QWidget* parent)
 
 void CollectionConfig::accept()
 {
-    Settings::instance().setActiveCollections(mSelectorModel->mSelected);
+    Akonadi::StorageSettings::instance().setActiveCollections(mSelectorModel->mSelected);
 }
 

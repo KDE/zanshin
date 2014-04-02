@@ -34,7 +34,7 @@
 
 #include "core/modelstack.h"
 #include "core/akonadinoteitem.h"
-#include "core/settings.h"
+#include "akonadi/akonadistoragesettings.h"
 #include "core/pimitemservices.h"
 #include "actionduedatedelegate.h"
 #include "actionlistcombobox.h"
@@ -370,11 +370,11 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     if (mode == Zanshin::KnowledgeMode) {
         sourceModel = models->knowledgeCollectionsModel();
         mimeTypeFilter = PimItem::mimeType(PimItem::Note);
-        m_defaultCollectionId = Settings::instance().defaultNoteCollection().id();
+        m_defaultCollectionId = Akonadi::StorageSettings::instance().defaultNoteCollection().id();
     } else {
         sourceModel = models->collectionsModel();
         mimeTypeFilter = PimItem::mimeType(PimItem::Todo);
-        m_defaultCollectionId = Settings::instance().defaultTodoCollection().id();
+        m_defaultCollectionId = Akonadi::StorageSettings::instance().defaultTaskCollection().id();
     }
     KDescendantsProxyModel *descendantProxyModel = new KDescendantsProxyModel(m_comboBox);
     descendantProxyModel->setSourceModel(sourceModel);
@@ -399,8 +399,8 @@ ActionListEditorPage::ActionListEditorPage(QAbstractItemModel *model,
     toolBar->addActions(toolbarActions);
     onComboBoxChanged();
     
-    connect(&Settings::instance(), SIGNAL(defaultNoteCollectionChanged(Akonadi::Collection)), this, SLOT(setDefaultNoteCollection(Akonadi::Collection)));
-    connect(&Settings::instance(), SIGNAL(defaultTodoCollectionChanged(Akonadi::Collection)), this, SLOT(setDefaultCollection(Akonadi::Collection)));
+    connect(&Akonadi::StorageSettings::instance(), SIGNAL(defaultNoteCollectionChanged(Akonadi::Collection)), this, SLOT(setDefaultNoteCollection(Akonadi::Collection)));
+    connect(&Akonadi::StorageSettings::instance(), SIGNAL(defaultTaskCollectionChanged(Akonadi::Collection)), this, SLOT(setDefaultCollection(Akonadi::Collection)));
 
 }
 
@@ -414,9 +414,9 @@ void ActionListEditorPage::onComboBoxChanged()
     QModelIndex collectionIndex = m_comboBox->model()->index( m_comboBox->currentIndex(), 0 );
     Akonadi::Collection collection = collectionIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
     if (m_mode == Zanshin::KnowledgeMode) { //TODO based on content not viewtype
-        Settings::instance().setDefaultNoteCollection(collection);
+        Akonadi::StorageSettings::instance().setDefaultNoteCollection(collection);
     } else {
-        Settings::instance().setDefaultTodoCollection(collection);
+        Akonadi::StorageSettings::instance().setDefaultTaskCollection(collection);
     }
 
 }

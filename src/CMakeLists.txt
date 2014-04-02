@@ -21,7 +21,7 @@ set(zanshin_core_SRCS
 )
 
 set(zanshin_core_LIBS
-   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} kio domain
+   ${KDEPIMLIBS_AKONADI_LIBS} ${KDEPIMLIBS_KCALCORE_LIBS} akonadi utils ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS} kio domain
 )
 
 ########### zanshin gui ###############
