@@ -37,6 +37,7 @@
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadistorage.h"
+#include "akonadi/akonadistoragesettings.h"
 
 class AkonadiStorageTest : public QObject
 {
@@ -233,6 +234,20 @@ private slots:
             QVERIFY(parent.isValid());
             parent = parent.parentCollection();
         }
+    }
+
+    void shouldReadDefaultTaskCollectionFromSettings()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // WHEN
+        Akonadi::StorageSettings::instance().setDefaultTaskCollection(Akonadi::Collection(24));
+
+        // THEN
+        QCOMPARE(storage.defaultTaskCollection(), Akonadi::Collection(24));
     }
 
     void shouldCreateItem()

@@ -37,6 +37,7 @@
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
+#include "akonadi/akonadistoragesettings.h"
 
 using namespace Akonadi;
 
@@ -81,8 +82,7 @@ Storage::~Storage()
 
 Collection Storage::defaultTaskCollection()
 {
-    qFatal("Not implemented yet");
-    return Akonadi::Collection();
+    return StorageSettings::instance().defaultTaskCollection();
 }
 
 KJob *Storage::createItem(Item item, Collection collection)
