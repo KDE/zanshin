@@ -95,11 +95,22 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 
 TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) const
 {
-    TaskProvider::Ptr provider(new TaskProvider);
+    Akonadi::Entity::Id id = task->property("itemId").value<Akonadi::Entity::Id>();
+    TaskProvider::Ptr provider;
+
+    if (m_taskChildProviders.contains(id)) {
+        provider = m_taskChildProviders.value(id).toStrongRef();
+        return TaskProvider::createResult(provider);
+    }
+
+    provider = TaskProvider::Ptr(new TaskProvider);
+    m_taskChildProviders[id] = provider;
 
     TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
 
-    Akonadi::Item item(task->property("itemId").value<Akonadi::Entity::Id>());
+    addItemIdInCache(task, id);
+
+    Akonadi::Item item(id);
 
     ItemFetchJobInterface *job = m_storage->fetchItem(item);
     Utils::JobHandler::install(job->kjob(), [provider, job, task, this] {
@@ -131,11 +142,27 @@ TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task
 void TaskQueries::onItemAdded(const Item &item)
 {
     TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
+    auto task = deserializeTask(item);
+
+    if (!task)
+        return;
 
     if (provider) {
-        auto task = deserializeTask(item);
-        if (task)
-            provider->append(task);
+        provider->append(task);
+    }
+
+    if (m_taskChildProviders.isEmpty())
+        return;
+
+    auto uid = m_serializer->relatedUidFromItem(item);
+    if (m_uidtoIdCache.contains(uid)) {
+        auto parentId = m_uidtoIdCache.value(uid);
+        if (m_taskChildProviders.contains(parentId)) {
+            TaskProvider::Ptr childProvider(m_taskChildProviders.value(parentId).toStrongRef());
+            if (childProvider) {
+                childProvider->append(task);
+            }
+        }
     }
 }
 
@@ -177,7 +204,14 @@ bool TaskQueries::isTaskItem(const Domain::Task::Ptr &task, const Item &item) co
 Domain::Task::Ptr TaskQueries::deserializeTask(const Item &item) const
 {
     auto task = m_serializer->createTaskFromItem(item);
-    if (task)
+    if (task) {
         task->setProperty("itemId", item.id());
+        addItemIdInCache(task, item.id());
+    }
     return task;
+}
+
+void TaskQueries::addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const
+{
+    m_uidtoIdCache[task->property("todoUid").toString()] = id;
 }

@@ -27,6 +27,7 @@
 #include <functional>
 
 #include <QHash>
+#include <Akonadi/Item>
 
 #include "domain/taskqueries.h"
 
@@ -65,6 +66,7 @@ private slots:
 private:
     bool isTaskItem(const Domain::Task::Ptr &task, const Item &item) const;
     Domain::Task::Ptr deserializeTask(const Item &item) const;
+    void addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const;
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
@@ -72,6 +74,8 @@ private:
     bool m_ownInterfaces;
 
     mutable TaskProvider::WeakPtr m_taskProvider;
+    mutable QHash<Akonadi::Entity::Id, TaskProvider::WeakPtr> m_taskChildProviders;
+    mutable QHash<QString, Akonadi::Entity::Id> m_uidtoIdCache;
 };
 
 }
