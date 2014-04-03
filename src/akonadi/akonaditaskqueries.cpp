@@ -154,15 +154,9 @@ void TaskQueries::onItemAdded(const Item &item)
     if (m_taskChildProviders.isEmpty())
         return;
 
-    auto uid = m_serializer->relatedUidFromItem(item);
-    if (m_uidtoIdCache.contains(uid)) {
-        auto parentId = m_uidtoIdCache.value(uid);
-        if (m_taskChildProviders.contains(parentId)) {
-            TaskProvider::Ptr childProvider(m_taskChildProviders.value(parentId).toStrongRef());
-            if (childProvider) {
-                childProvider->append(task);
-            }
-        }
+    TaskProvider::Ptr childProvider = childProviderFromItem(item);
+    if (childProvider) {
+        childProvider->append(task);
     }
 }
 
@@ -183,19 +177,13 @@ void TaskQueries::onItemRemoved(const Item &item)
     if (m_taskChildProviders.isEmpty())
         return;
 
-    auto uid = m_serializer->relatedUidFromItem(item);
-    if (m_uidtoIdCache.contains(uid)) {
-        auto parentId = m_uidtoIdCache.value(uid);
-        if (m_taskChildProviders.contains(parentId)) {
-            TaskProvider::Ptr childProvider(m_taskChildProviders.value(parentId).toStrongRef());
-            if (childProvider) {
-                for (int i = 0; i < childProvider->data().size(); i++) {
-                    auto task = childProvider->data().at(i);
-                    if (isTaskItem(task, item)) {
-                        childProvider->removeAt(i);
-                        i--;
-                    }
-                }
+    TaskProvider::Ptr childProvider = childProviderFromItem(item);
+    if (childProvider) {
+        for (int i = 0; i < childProvider->data().size(); i++) {
+            auto task = childProvider->data().at(i);
+            if (isTaskItem(task, item)) {
+                childProvider->removeAt(i);
+                i--;
             }
         }
     }
@@ -218,19 +206,13 @@ void TaskQueries::onItemChanged(const Item &item)
     if (m_taskChildProviders.isEmpty())
         return;
 
-    auto uid = m_serializer->relatedUidFromItem(item);
-    if (m_uidtoIdCache.contains(uid)) {
-        auto parentId = m_uidtoIdCache.value(uid);
-        if (m_taskChildProviders.contains(parentId)) {
-            TaskProvider::Ptr childProvider(m_taskChildProviders.value(parentId).toStrongRef());
-            if (childProvider) {
-                for (int i = 0; i < childProvider->data().size(); i++) {
-                    auto task = childProvider->data().at(i);
-                    if (isTaskItem(task, item)) {
-                        m_serializer->updateTaskFromItem(task, item);
-                        childProvider->replace(i, task);
-                    }
-                }
+    TaskProvider::Ptr childProvider = childProviderFromItem(item);
+    if (childProvider) {
+        for (int i = 0; i < childProvider->data().size(); i++) {
+            auto task = childProvider->data().at(i);
+            if (isTaskItem(task, item)) {
+                m_serializer->updateTaskFromItem(task, item);
+                childProvider->replace(i, task);
             }
         }
     }
@@ -254,4 +236,17 @@ Domain::Task::Ptr TaskQueries::deserializeTask(const Item &item) const
 void TaskQueries::addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const
 {
     m_uidtoIdCache[task->property("todoUid").toString()] = id;
+}
+
+TaskQueries::TaskProvider::Ptr TaskQueries::childProviderFromItem(const Item &item) const
+{
+    TaskProvider::Ptr childProvider;
+
+    auto uid = m_serializer->relatedUidFromItem(item);
+    if (m_uidtoIdCache.contains(uid)) {
+        auto parentId = m_uidtoIdCache.value(uid);
+        if (m_taskChildProviders.contains(parentId))
+            childProvider = m_taskChildProviders.value(parentId).toStrongRef();
+    }
+    return childProvider;
 }
