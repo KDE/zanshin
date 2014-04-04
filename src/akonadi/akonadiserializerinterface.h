@@ -25,6 +25,7 @@
 #define AKONADI_SERIALIZERINTERFACE_H
 
 #include "domain/task.h"
+#include "domain/note.h"
 
 namespace Akonadi {
 
@@ -41,6 +42,9 @@ public:
     virtual Akonadi::Item createItemFromTask(Domain::Task::Ptr task) = 0;
     virtual bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual QString relatedUidFromItem(Akonadi::Item item) = 0;
+
+    virtual Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) = 0;
+    virtual void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) = 0;
 };
 
 }

@@ -9,6 +9,7 @@ set(akonadi_SRCS
     akonadistorageinterface.cpp
     akonadistoragesettings.cpp
     akonaditaskqueries.cpp
+    akonadinotequeries.cpp
     akonaditaskrepository.cpp
 )
 

@@ -98,3 +98,17 @@ QString Serializer::relatedUidFromItem(Akonadi::Item item)
     auto todo = item.payload<KCalCore::Todo::Ptr>();
     return todo->relatedTo();
 }
+
+Domain::Note::Ptr Serializer::createNoteFromItem(Akonadi::Item item)
+{
+    Q_UNUSED(item)
+    qFatal("Not implemented yet");
+    return Domain::Note::Ptr();
+}
+
+void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
+{
+    Q_UNUSED(note)
+    Q_UNUSED(item)
+    qFatal("Not implemented yet");
+}
