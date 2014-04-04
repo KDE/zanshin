@@ -13,4 +13,8 @@ set(akonadi_SRCS
 )
 
 kde4_add_library(akonadi STATIC ${akonadi_SRCS})
-target_link_libraries(akonadi ${QT4_QTCORE_LIBRARY})
+target_link_libraries(akonadi
+    ${KDEPIMLIBS_AKONADI_LIBS}
+    ${KDEPIMLIBS_AKONADI_NOTES_LIBS}
+    ${KDEPIMLIBS_KCALCORE_LIBS}
+)

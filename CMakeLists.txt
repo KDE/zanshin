@@ -25,6 +25,7 @@ include_directories (
     ${Boost_INCLUDE_DIR}
 )
 
+add_subdirectory(attic)
 add_subdirectory(src)
 add_subdirectory(tests)
 

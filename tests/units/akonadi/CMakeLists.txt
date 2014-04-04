@@ -4,10 +4,9 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
     target_link_libraries(${_testname} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_AKONADI_LIBS}
                                        ${KDEPIMLIBS_KCALCORE_LIBS} ${QT_QTTEST_LIBRARY}
-                                       zanshin_static
-                                       zanshin_testlib
                                        akonadi
                                        domain
+                                       utils
     )
 
     get_target_property(_location ${_testname} LOCATION)
