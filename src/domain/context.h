@@ -21,28 +21,42 @@
    USA.
 */
 
-#ifndef DOMAIN_TASKREPOSITORY_H
-#define DOMAIN_TASKREPOSITORY_H
 
-#include "task.h"
+#ifndef DOMAIN_CONTEXT_H
+#define DOMAIN_CONTEXT_H
 
-class KJob;
+#include <QMetaType>
+#include <QSharedPointer>
+#include <QString>
 
 namespace Domain {
 
-class TaskRepository
+class Context : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+
 public:
-    TaskRepository();
-    virtual ~TaskRepository();
+    typedef QSharedPointer<Context> Ptr;
+    typedef QList<Context::Ptr> List;
 
-    virtual KJob *save(Task::Ptr task) = 0;
-    virtual KJob *remove(Task::Ptr task) = 0;
+    explicit Context(QObject *parent = 0);
+    virtual ~Context();
 
-    virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
-    virtual KJob *dissociate(Task::Ptr parent, Task::Ptr child) = 0;
+    QString name() const;
+
+public slots:
+    void setName(const QString &name);
+
+signals:
+    void nameChanged(const QString &name);
+
+private:
+    QString m_name;
 };
 
 }
 
-#endif // DOMAIN_TASKREPOSITORY_H
+Q_DECLARE_METATYPE(Domain::Context::Ptr)
+
+#endif // DOMAIN_CONTEXT_H

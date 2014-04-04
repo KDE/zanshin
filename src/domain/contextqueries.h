@@ -21,32 +21,28 @@
    USA.
 */
 
-#ifndef DOMAIN_TAGREPOSITORY_H
-#define DOMAIN_TAGREPOSITORY_H
+#ifndef DOMAIN_CONTEXTQUERIES_H
+#define DOMAIN_CONTEXTQUERIES_H
 
-#include "artifact.h"
-#include "tag.h"
-
-class KJob;
+#include "context.h"
+#include "queryresult.h"
+#include "queryresultprovider.h"
+#include "task.h"
 
 namespace Domain {
 
-class TagRepository
+class ContextQueries
 {
 public:
-    TagRepository();
-    virtual ~TagRepository();
+    ContextQueries();
+    virtual ~ContextQueries();
 
-    virtual KJob *save(Tag::Ptr tag) = 0;
-    virtual KJob *remove(Tag::Ptr tag) = 0;
+    virtual QueryResult<Context::Ptr>::Ptr findAll() const = 0;
+    virtual QueryResult<Context::Ptr>::Ptr findChildren(Context::Ptr context) const = 0;
 
-    virtual KJob *associate(Tag::Ptr parent, Artifact::Ptr child) = 0;
-    virtual KJob *dissociate(Tag::Ptr parent, Artifact::Ptr child) = 0;
-
-    virtual KJob *associate(Tag::Ptr parent, Tag::Ptr child) = 0;
-    virtual KJob *dissociate(Tag::Ptr parent, Tag::Ptr child) = 0;
+    virtual QueryResult<Task::Ptr>::Ptr findTasks(Context::Ptr context) const = 0;
 };
 
 }
 
-#endif // DOMAIN_TAGREPOSITORY_H
+#endif // DOMAIN_CONTEXTQUERIES_H

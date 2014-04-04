@@ -21,29 +21,16 @@
    USA.
 */
 
-#ifndef DOMAIN_ARTIFACTQUERIES_H
-#define DOMAIN_ARTIFACTQUERIES_H
 
-#include "artifact.h"
-#include "project.h"
-#include "queryresult.h"
-#include "queryresultprovider.h"
-#include "tag.h"
+#include "noterepository.h"
 
-namespace Domain {
+using namespace Domain;
 
-class ArtifactQueries
+NoteRepository::NoteRepository()
 {
-public:
-    ArtifactQueries();
-    virtual ~ArtifactQueries();
-
-    virtual QueryResult<Artifact::Ptr>::Ptr findAll() const = 0;
-    virtual QueryResult<Artifact::Ptr>::Ptr findAllNotes() const = 0;
-
-    virtual QueryResult<Tag::Ptr>::Ptr findTags(Artifact::Ptr artifact) const = 0;
-};
-
 }
 
-#endif // DOMAIN_ARTIFACTQUERIES_H
+NoteRepository::~NoteRepository()
+{
+}
+

@@ -24,6 +24,7 @@
 #ifndef DOMAIN_TASKQUERIES_H
 #define DOMAIN_TASKQUERIES_H
 
+#include "context.h"
 #include "queryresult.h"
 #include "queryresultprovider.h"
 #include "task.h"
@@ -38,7 +39,9 @@ public:
 
     virtual QueryResult<Task::Ptr>::Ptr findAll() const = 0;
 
-    virtual QueryResult<Artifact::Ptr>::Ptr findChildren(Task::Ptr task) const = 0;
+    virtual QueryResult<Task::Ptr>::Ptr findChildren(Task::Ptr task) const = 0;
+
+    virtual QueryResult<Context::Ptr>::Ptr findContexts(Task::Ptr task) const = 0;
 };
 
 }

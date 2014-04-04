@@ -93,11 +93,18 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
     return result;
 }
 
-TaskQueries::ArtifactResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) const
+TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) const
 {
     qFatal("Not implemented yet");
     Q_UNUSED(task);
-    return ArtifactProvider::createResult(ArtifactProvider::Ptr());
+    return TaskProvider::createResult(TaskProvider::Ptr());
+}
+
+TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const
+{
+    qFatal("Not implemented yet");
+    Q_UNUSED(task);
+    return ContextProvider::createResult(ContextProvider::Ptr());
 }
 
 void TaskQueries::onItemAdded(const Item &item)

@@ -21,25 +21,32 @@
    USA.
 */
 
-#ifndef DOMAIN_ARTIFACTREPOSITORY_H
-#define DOMAIN_ARTIFACTREPOSITORY_H
+#ifndef DOMAIN_CONTEXTREPOSITORY_H
+#define DOMAIN_CONTEXTREPOSITORY_H
 
-#include "artifact.h"
+#include "context.h"
+#include "task.h"
 
 class KJob;
 
 namespace Domain {
 
-class ArtifactRepository
+class ContextRepository
 {
 public:
-    ArtifactRepository();
-    virtual ~ArtifactRepository();
+    ContextRepository();
+    virtual ~ContextRepository();
 
-    virtual KJob *save(Artifact::Ptr artifact) = 0;
-    virtual KJob *remove(Artifact::Ptr artifact) = 0;
+    virtual KJob *save(Context::Ptr context) = 0;
+    virtual KJob *remove(Context::Ptr context) = 0;
+
+    virtual KJob *associate(Context::Ptr parent, Task::Ptr child) = 0;
+    virtual KJob *dissociate(Context::Ptr parent, Task::Ptr child) = 0;
+
+    virtual KJob *associate(Context::Ptr parent, Context::Ptr child) = 0;
+    virtual KJob *dissociate(Context::Ptr parent, Context::Ptr child) = 0;
 };
 
 }
 
-#endif // DOMAIN_ARTIFACTREPOSITORY_H
+#endif // DOMAIN_CONTEXTREPOSITORY_H

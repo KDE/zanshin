@@ -21,28 +21,28 @@
    USA.
 */
 
-#ifndef DOMAIN_TASKREPOSITORY_H
-#define DOMAIN_TASKREPOSITORY_H
 
-#include "task.h"
+#ifndef DOMAIN_NOTE_H
+#define DOMAIN_NOTE_H
 
-class KJob;
+#include "artifact.h"
 
 namespace Domain {
 
-class TaskRepository
+class Note : public Artifact
 {
+    Q_OBJECT
+
 public:
-    TaskRepository();
-    virtual ~TaskRepository();
+    typedef QSharedPointer<Note> Ptr;
+    typedef QList<Note::Ptr> List;
 
-    virtual KJob *save(Task::Ptr task) = 0;
-    virtual KJob *remove(Task::Ptr task) = 0;
-
-    virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
-    virtual KJob *dissociate(Task::Ptr parent, Task::Ptr child) = 0;
+    explicit Note(QObject *parent = 0);
+    virtual ~Note();
 };
 
 }
 
-#endif // DOMAIN_TASKREPOSITORY_H
+Q_DECLARE_METATYPE(Domain::Note::Ptr)
+
+#endif // DOMAIN_NOTE_H

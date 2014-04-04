@@ -22,15 +22,15 @@
 */
 
 
-#include "artifactqueries.h"
+#include "notequeries.h"
 
 using namespace Domain;
 
-ArtifactQueries::ArtifactQueries()
+NoteQueries::NoteQueries()
 {
 }
 
-ArtifactQueries::~ArtifactQueries()
+NoteQueries::~NoteQueries()
 {
 }
 

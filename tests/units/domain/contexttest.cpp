@@ -21,28 +21,41 @@
    USA.
 */
 
-#ifndef DOMAIN_TASKREPOSITORY_H
-#define DOMAIN_TASKREPOSITORY_H
+#include <QtTest>
 
-#include "task.h"
+#include "domain/context.h"
 
-class KJob;
+using namespace Domain;
 
-namespace Domain {
-
-class TaskRepository
+class ContextTest : public QObject
 {
-public:
-    TaskRepository();
-    virtual ~TaskRepository();
+    Q_OBJECT
+private slots:
+    void shouldHaveEmptyPropertiesByDefault()
+    {
+        Context c;
+        QCOMPARE(c.name(), QString());
+    }
 
-    virtual KJob *save(Task::Ptr task) = 0;
-    virtual KJob *remove(Task::Ptr task) = 0;
+    void shouldNotifyNameChanges()
+    {
+        Context c;
+        QSignalSpy spy(&c, SIGNAL(nameChanged(QString)));
+        c.setName("foo");
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toString(), QString("foo"));
+    }
 
-    virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
-    virtual KJob *dissociate(Task::Ptr parent, Task::Ptr child) = 0;
+    void shouldNotNotifyIdenticalNameChanges()
+    {
+        Context c;
+        c.setName("foo");
+        QSignalSpy spy(&c, SIGNAL(nameChanged(QString)));
+        c.setName("foo");
+        QCOMPARE(spy.count(), 0);
+    }
 };
 
-}
+QTEST_MAIN(ContextTest)
 
-#endif // DOMAIN_TASKREPOSITORY_H
+#include "contexttest.moc"

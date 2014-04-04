@@ -21,16 +21,41 @@
    USA.
 */
 
+#include <QtTest>
 
-#include "tagrepository.h"
+#include "domain/topic.h"
 
 using namespace Domain;
 
-TagRepository::TagRepository()
+class TopicTest : public QObject
 {
-}
+    Q_OBJECT
+private slots:
+    void shouldHaveEmptyPropertiesByDefault()
+    {
+        Topic t;
+        QCOMPARE(t.name(), QString());
+    }
 
-TagRepository::~TagRepository()
-{
-}
+    void shouldNotifyNameChanges()
+    {
+        Topic t;
+        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
+        t.setName("foo");
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toString(), QString("foo"));
+    }
 
+    void shouldNotNotifyIdenticalNameChanges()
+    {
+        Topic t;
+        t.setName("foo");
+        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
+        t.setName("foo");
+        QCOMPARE(spy.count(), 0);
+    }
+};
+
+QTEST_MAIN(TopicTest)
+
+#include "topictest.moc"

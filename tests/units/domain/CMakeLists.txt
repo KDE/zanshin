@@ -1,8 +1,10 @@
 zanshin_auto_tests(
   artifacttest
+  contexttest
   mockitotest
+  notetest
   projecttest
   queryresulttest
-  tagtest
   tasktest
+  topictest
 )

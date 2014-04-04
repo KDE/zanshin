@@ -46,8 +46,8 @@ public:
     virtual KJob *save(Domain::Task::Ptr task);
     virtual KJob *remove(Domain::Task::Ptr task);
 
-    virtual KJob *associate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child);
-    virtual KJob *dissociate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child);
+    virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child);
+    virtual KJob *dissociate(Domain::Task::Ptr parent, Domain::Task::Ptr child);
 
 private:
     StorageInterface *m_storage;

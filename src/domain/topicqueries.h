@@ -21,28 +21,28 @@
    USA.
 */
 
-#ifndef DOMAIN_TAGQUERIES_H
-#define DOMAIN_TAGQUERIES_H
+#ifndef DOMAIN_TOPICQUERIES_H
+#define DOMAIN_TOPICQUERIES_H
 
-#include "artifact.h"
+#include "note.h"
 #include "queryresult.h"
 #include "queryresultprovider.h"
-#include "tag.h"
+#include "topic.h"
 
 namespace Domain {
 
-class TagQueries
+class TopicQueries
 {
 public:
-    TagQueries();
-    virtual ~TagQueries();
+    TopicQueries();
+    virtual ~TopicQueries();
 
-    virtual QueryResult<Tag::Ptr>::Ptr findAll() const = 0;
-    virtual QueryResult<Tag::Ptr>::Ptr findChildren(Tag::Ptr tag) const = 0;
+    virtual QueryResult<Topic::Ptr>::Ptr findAll() const = 0;
+    virtual QueryResult<Topic::Ptr>::Ptr findChildren(Topic::Ptr topic) const = 0;
 
-    virtual QueryResult<Artifact::Ptr>::Ptr findArtifacts(Tag::Ptr tag) const = 0;
+    virtual QueryResult<Note::Ptr>::Ptr findNotes(Topic::Ptr topic) const = 0;
 };
 
 }
 
-#endif // DOMAIN_TAGQUERIES_H
+#endif // DOMAIN_TOPICQUERIES_H

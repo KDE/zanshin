@@ -22,15 +22,29 @@
 */
 
 
-#include "artifactrepository.h"
+#include "topic.h"
 
 using namespace Domain;
 
-ArtifactRepository::ArtifactRepository()
+Topic::Topic(QObject *parent)
+    : QObject(parent)
 {
 }
 
-ArtifactRepository::~ArtifactRepository()
+Topic::~Topic()
 {
 }
 
+QString Topic::name() const
+{
+    return m_name;
+}
+
+void Topic::setName(const QString &name)
+{
+    if (m_name == name)
+        return;
+
+    m_name = name;
+    emit nameChanged(name);
+}

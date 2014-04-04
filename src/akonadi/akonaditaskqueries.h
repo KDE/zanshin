@@ -46,15 +46,16 @@ public:
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
 
-    typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
-    typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
+    typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
+    typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
 
     TaskQueries();
     TaskQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
     virtual ~TaskQueries();
 
     TaskResult::Ptr findAll() const;
-    ArtifactResult::Ptr findChildren(Domain::Task::Ptr task) const;
+    TaskResult::Ptr findChildren(Domain::Task::Ptr task) const;
+    ContextResult::Ptr findContexts(Domain::Task::Ptr task) const;
 
 private slots:
     void onItemAdded(const Akonadi::Item &item);

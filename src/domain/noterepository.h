@@ -21,42 +21,25 @@
    USA.
 */
 
+#ifndef DOMAIN_NOTEREPOSITORY_H
+#define DOMAIN_NOTEREPOSITORY_H
 
-#ifndef DOMAIN_TAG_H
-#define DOMAIN_TAG_H
+#include "note.h"
 
-#include <QMetaType>
-#include <QSharedPointer>
-#include <QString>
+class KJob;
 
 namespace Domain {
 
-class Tag : public QObject
+class NoteRepository
 {
-    Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-
 public:
-    typedef QSharedPointer<Tag> Ptr;
-    typedef QList<Tag::Ptr> List;
+    NoteRepository();
+    virtual ~NoteRepository();
 
-    explicit Tag(QObject *parent = 0);
-    virtual ~Tag();
-
-    QString name() const;
-
-public slots:
-    void setName(const QString &name);
-
-signals:
-    void nameChanged(const QString &name);
-
-private:
-    QString m_name;
+    virtual KJob *save(Note::Ptr note) = 0;
+    virtual KJob *remove(Note::Ptr note) = 0;
 };
 
 }
 
-Q_DECLARE_METATYPE(Domain::Tag::Ptr)
-
-#endif // DOMAIN_TAG_H
+#endif // DOMAIN_NOTEREPOSITORY_H

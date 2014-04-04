@@ -21,28 +21,16 @@
    USA.
 */
 
-#ifndef DOMAIN_TASKREPOSITORY_H
-#define DOMAIN_TASKREPOSITORY_H
 
-#include "task.h"
+#include "contextqueries.h"
 
-class KJob;
+using namespace Domain;
 
-namespace Domain {
-
-class TaskRepository
+ContextQueries::ContextQueries()
 {
-public:
-    TaskRepository();
-    virtual ~TaskRepository();
-
-    virtual KJob *save(Task::Ptr task) = 0;
-    virtual KJob *remove(Task::Ptr task) = 0;
-
-    virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
-    virtual KJob *dissociate(Task::Ptr parent, Task::Ptr child) = 0;
-};
-
 }
 
-#endif // DOMAIN_TASKREPOSITORY_H
+ContextQueries::~ContextQueries()
+{
+}
+

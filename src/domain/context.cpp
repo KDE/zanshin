@@ -22,15 +22,29 @@
 */
 
 
-#include "tagqueries.h"
+#include "context.h"
 
 using namespace Domain;
 
-TagQueries::TagQueries()
+Context::Context(QObject *parent)
+    : QObject(parent)
 {
 }
 
-TagQueries::~TagQueries()
+Context::~Context()
 {
 }
 
+QString Context::name() const
+{
+    return m_name;
+}
+
+void Context::setName(const QString &name)
+{
+    if (m_name == name)
+        return;
+
+    m_name = name;
+    emit nameChanged(name);
+}

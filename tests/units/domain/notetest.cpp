@@ -21,28 +21,24 @@
    USA.
 */
 
-#ifndef DOMAIN_TASKREPOSITORY_H
-#define DOMAIN_TASKREPOSITORY_H
+#include <QtTest>
 
-#include "task.h"
+#include "domain/note.h"
 
-class KJob;
+using namespace Domain;
 
-namespace Domain {
-
-class TaskRepository
+class NoteTest : public QObject
 {
-public:
-    TaskRepository();
-    virtual ~TaskRepository();
-
-    virtual KJob *save(Task::Ptr task) = 0;
-    virtual KJob *remove(Task::Ptr task) = 0;
-
-    virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
-    virtual KJob *dissociate(Task::Ptr parent, Task::Ptr child) = 0;
+    Q_OBJECT
+private slots:
+    void shouldHaveEmptyPropertiesByDefault()
+    {
+        Note n;
+        QCOMPARE(n.text(), QString());
+        QCOMPARE(n.title(), QString());
+    }
 };
 
-}
+QTEST_MAIN(NoteTest)
 
-#endif // DOMAIN_TASKREPOSITORY_H
+#include "notetest.moc"

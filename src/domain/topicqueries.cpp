@@ -22,29 +22,15 @@
 */
 
 
-#include "tag.h"
+#include "topicqueries.h"
 
 using namespace Domain;
 
-Tag::Tag(QObject *parent)
-    : QObject(parent)
+TopicQueries::TopicQueries()
 {
 }
 
-Tag::~Tag()
+TopicQueries::~TopicQueries()
 {
 }
 
-QString Tag::name() const
-{
-    return m_name;
-}
-
-void Tag::setName(const QString &name)
-{
-    if (m_name == name)
-        return;
-
-    m_name = name;
-    emit nameChanged(name);
-}

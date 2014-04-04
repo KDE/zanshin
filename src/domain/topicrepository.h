@@ -21,41 +21,32 @@
    USA.
 */
 
-#include <QtTest>
+#ifndef DOMAIN_TOPICREPOSITORY_H
+#define DOMAIN_TOPICREPOSITORY_H
 
-#include "domain/tag.h"
+#include "note.h"
+#include "topic.h"
 
-using namespace Domain;
+class KJob;
 
-class TagTest : public QObject
+namespace Domain {
+
+class TopicRepository
 {
-    Q_OBJECT
-private slots:
-    void shouldHaveEmptyPropertiesByDefault()
-    {
-        Tag t;
-        QCOMPARE(t.name(), QString());
-    }
+public:
+    TopicRepository();
+    virtual ~TopicRepository();
 
-    void shouldNotifyNameChanges()
-    {
-        Tag t;
-        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
-        t.setName("foo");
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("foo"));
-    }
+    virtual KJob *save(Topic::Ptr topic) = 0;
+    virtual KJob *remove(Topic::Ptr topic) = 0;
 
-    void shouldNotNotifyIdenticalNameChanges()
-    {
-        Tag t;
-        t.setName("foo");
-        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
-        t.setName("foo");
-        QCOMPARE(spy.count(), 0);
-    }
+    virtual KJob *associate(Topic::Ptr parent, Note::Ptr child) = 0;
+    virtual KJob *dissociate(Topic::Ptr parent, Note::Ptr child) = 0;
+
+    virtual KJob *associate(Topic::Ptr parent, Topic::Ptr child) = 0;
+    virtual KJob *dissociate(Topic::Ptr parent, Topic::Ptr child) = 0;
 };
 
-QTEST_MAIN(TagTest)
+}
 
-#include "tagtest.moc"
+#endif // DOMAIN_TOPICREPOSITORY_H

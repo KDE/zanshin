@@ -21,28 +21,28 @@
    USA.
 */
 
-#ifndef DOMAIN_TASKREPOSITORY_H
-#define DOMAIN_TASKREPOSITORY_H
+#ifndef DOMAIN_NOTEQUERIES_H
+#define DOMAIN_NOTEQUERIES_H
 
-#include "task.h"
-
-class KJob;
+#include "note.h"
+#include "project.h"
+#include "queryresult.h"
+#include "queryresultprovider.h"
+#include "topic.h"
 
 namespace Domain {
 
-class TaskRepository
+class NoteQueries
 {
 public:
-    TaskRepository();
-    virtual ~TaskRepository();
+    NoteQueries();
+    virtual ~NoteQueries();
 
-    virtual KJob *save(Task::Ptr task) = 0;
-    virtual KJob *remove(Task::Ptr task) = 0;
+    virtual QueryResult<Note::Ptr>::Ptr findAll() const = 0;
 
-    virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
-    virtual KJob *dissociate(Task::Ptr parent, Task::Ptr child) = 0;
+    virtual QueryResult<Topic::Ptr>::Ptr findTopics(Note::Ptr note) const = 0;
 };
 
 }
 
-#endif // DOMAIN_TASKREPOSITORY_H
+#endif // DOMAIN_NOTEQUERIES_H

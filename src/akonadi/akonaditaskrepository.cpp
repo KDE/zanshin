@@ -72,7 +72,7 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
     return 0;
 }
 
-KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child)
+KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
 {
     Q_UNUSED(parent);
     Q_UNUSED(child);
@@ -80,7 +80,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Artifact::Ptr 
     return 0;
 }
 
-KJob *TaskRepository::dissociate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child)
+KJob *TaskRepository::dissociate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
 {
     Q_UNUSED(parent);
     Q_UNUSED(child);
