@@ -36,11 +36,11 @@ public:
     TaskRepository();
     virtual ~TaskRepository();
 
-    virtual KJob *save(const Task::Ptr &task) = 0;
-    virtual KJob *remove(const Task::Ptr &task) = 0;
+    virtual KJob *save(Task::Ptr task) = 0;
+    virtual KJob *remove(Task::Ptr task) = 0;
 
-    virtual KJob *associate(const Task::Ptr &parent, const Artifact::Ptr &child) = 0;
-    virtual KJob *dissociate(const Task::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *associate(Task::Ptr parent, Artifact::Ptr child) = 0;
+    virtual KJob *dissociate(Task::Ptr parent, Artifact::Ptr child) = 0;
 };
 
 }

@@ -53,7 +53,7 @@ TaskRepository::~TaskRepository()
     }
 }
 
-KJob *TaskRepository::save(const Domain::Task::Ptr &task)
+KJob *TaskRepository::save(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
 
@@ -65,14 +65,14 @@ KJob *TaskRepository::save(const Domain::Task::Ptr &task)
     }
 }
 
-KJob *TaskRepository::remove(const Domain::Task::Ptr &task)
+KJob *TaskRepository::remove(Domain::Task::Ptr task)
 {
     Q_UNUSED(task);
     qFatal("Not implemented yet");
     return 0;
 }
 
-KJob *TaskRepository::associate(const Domain::Task::Ptr &parent, const Domain::Artifact::Ptr &child)
+KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child)
 {
     Q_UNUSED(parent);
     Q_UNUSED(child);
@@ -80,7 +80,7 @@ KJob *TaskRepository::associate(const Domain::Task::Ptr &parent, const Domain::A
     return 0;
 }
 
-KJob *TaskRepository::dissociate(const Domain::Task::Ptr &parent, const Domain::Artifact::Ptr &child)
+KJob *TaskRepository::dissociate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child)
 {
     Q_UNUSED(parent);
     Q_UNUSED(child);

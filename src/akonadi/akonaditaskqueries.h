@@ -54,7 +54,7 @@ public:
     virtual ~TaskQueries();
 
     TaskResult::Ptr findAll() const;
-    ArtifactResult::Ptr findChildren(const Domain::Task::Ptr &task) const;
+    ArtifactResult::Ptr findChildren(Domain::Task::Ptr task) const;
 
 private slots:
     void onItemAdded(const Akonadi::Item &item);

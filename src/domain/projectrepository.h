@@ -37,11 +37,11 @@ public:
     ProjectRepository();
     virtual ~ProjectRepository();
 
-    virtual KJob *save(const Project::Ptr &project) = 0;
-    virtual KJob *remove(const Project::Ptr &project) = 0;
+    virtual KJob *save(Project::Ptr project) = 0;
+    virtual KJob *remove(Project::Ptr project) = 0;
 
-    virtual KJob *associate(const Project::Ptr &parent, const Artifact::Ptr &child) = 0;
-    virtual KJob *dissociate(const Project::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *associate(Project::Ptr &parent, Artifact::Ptr child) = 0;
+    virtual KJob *dissociate(Project::Ptr &parent, Artifact::Ptr child) = 0;
 };
 
 }

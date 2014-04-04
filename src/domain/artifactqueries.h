@@ -41,7 +41,7 @@ public:
     virtual QueryResult<Artifact::Ptr>::Ptr findAll() const = 0;
     virtual QueryResult<Artifact::Ptr>::Ptr findAllNotes() const = 0;
 
-    virtual QueryResult<Tag::Ptr>::Ptr findTags(const Artifact::Ptr &artifact) const = 0;
+    virtual QueryResult<Tag::Ptr>::Ptr findTags(Artifact::Ptr artifact) const = 0;
 };
 
 }

@@ -38,7 +38,7 @@ public:
 
     virtual QueryResult<Task::Ptr>::Ptr findAll() const = 0;
 
-    virtual QueryResult<Artifact::Ptr>::Ptr findChildren(const Task::Ptr &task) const = 0;
+    virtual QueryResult<Artifact::Ptr>::Ptr findChildren(Task::Ptr task) const = 0;
 };
 
 }

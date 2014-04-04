@@ -93,7 +93,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
     return result;
 }
 
-TaskQueries::ArtifactResult::Ptr TaskQueries::findChildren(const Domain::Task::Ptr &task) const
+TaskQueries::ArtifactResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) const
 {
     qFatal("Not implemented yet");
     Q_UNUSED(task);

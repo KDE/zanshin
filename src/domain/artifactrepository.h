@@ -36,8 +36,8 @@ public:
     ArtifactRepository();
     virtual ~ArtifactRepository();
 
-    virtual KJob *save(const Artifact::Ptr &artifact) = 0;
-    virtual KJob *remove(const Artifact::Ptr &artifact) = 0;
+    virtual KJob *save(Artifact::Ptr artifact) = 0;
+    virtual KJob *remove(Artifact::Ptr artifact) = 0;
 };
 
 }

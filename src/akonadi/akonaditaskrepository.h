@@ -43,11 +43,11 @@ public:
     Akonadi::Collection defaultCollection() const;
     void setDefaultCollection(const Akonadi::Collection &defaultCollection);
 
-    virtual KJob *save(const Domain::Task::Ptr &task);
-    virtual KJob *remove(const Domain::Task::Ptr &task);
+    virtual KJob *save(Domain::Task::Ptr task);
+    virtual KJob *remove(Domain::Task::Ptr task);
 
-    virtual KJob *associate(const Domain::Task::Ptr &parent, const Domain::Artifact::Ptr &child);
-    virtual KJob *dissociate(const Domain::Task::Ptr &parent, const Domain::Artifact::Ptr &child);
+    virtual KJob *associate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child);
+    virtual KJob *dissociate(Domain::Task::Ptr parent, Domain::Artifact::Ptr child);
 
 private:
     StorageInterface *m_storage;

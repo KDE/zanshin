@@ -38,9 +38,9 @@ public:
     virtual ~TagQueries();
 
     virtual QueryResult<Tag::Ptr>::Ptr findAll() const = 0;
-    virtual QueryResult<Tag::Ptr>::Ptr findChildren(const Tag::Ptr &tag) const = 0;
+    virtual QueryResult<Tag::Ptr>::Ptr findChildren(Tag::Ptr tag) const = 0;
 
-    virtual QueryResult<Artifact::Ptr>::Ptr findArtifacts(const Tag::Ptr &tag) const = 0;
+    virtual QueryResult<Artifact::Ptr>::Ptr findArtifacts(Tag::Ptr tag) const = 0;
 };
 
 }

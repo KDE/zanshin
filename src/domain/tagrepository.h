@@ -37,14 +37,14 @@ public:
     TagRepository();
     virtual ~TagRepository();
 
-    virtual KJob *save(const Tag::Ptr &tag) = 0;
-    virtual KJob *remove(const Tag::Ptr &tag) = 0;
+    virtual KJob *save(Tag::Ptr tag) = 0;
+    virtual KJob *remove(Tag::Ptr tag) = 0;
 
-    virtual KJob *associate(const Tag::Ptr &parent, const Artifact::Ptr &child) = 0;
-    virtual KJob *dissociate(const Tag::Ptr &parent, const Artifact::Ptr &child) = 0;
+    virtual KJob *associate(Tag::Ptr parent, Artifact::Ptr child) = 0;
+    virtual KJob *dissociate(Tag::Ptr parent, Artifact::Ptr child) = 0;
 
-    virtual KJob *associate(const Tag::Ptr &parent, const Tag::Ptr &child) = 0;
-    virtual KJob *dissociate(const Tag::Ptr &parent, const Tag::Ptr &child) = 0;
+    virtual KJob *associate(Tag::Ptr parent, Tag::Ptr child) = 0;
+    virtual KJob *dissociate(Tag::Ptr parent, Tag::Ptr child) = 0;
 };
 
 }

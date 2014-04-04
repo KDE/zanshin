@@ -38,8 +38,8 @@ public:
     virtual ~ProjectQueries();
 
     virtual QueryResult<Project::Ptr>::Ptr findAll() const = 0;
-    virtual QueryResult<Artifact::Ptr>::Ptr findArtifacts(const Project::Ptr &project) const = 0;
-    virtual QueryResult<Artifact::Ptr>::Ptr findTopLevelArtifacts(const Project::Ptr &project) const = 0;
+    virtual QueryResult<Artifact::Ptr>::Ptr findArtifacts(Project::Ptr project) const = 0;
+    virtual QueryResult<Artifact::Ptr>::Ptr findTopLevelArtifacts(Project::Ptr project) const = 0;
 };
 
 }
