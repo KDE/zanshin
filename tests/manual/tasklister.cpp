@@ -28,6 +28,7 @@
 #include <QListView>
 
 #include "akonadi/akonaditaskqueries.h"
+#include "akonadi/akonaditaskrepository.h"
 #include "presentation/tasklistmodel.h"
 
 int main(int argc, char **argv)
@@ -37,11 +38,12 @@ int main(int argc, char **argv)
     KCmdLineArgs::init(argc, argv, &about);
     KApplication app;
 
+    Akonadi::TaskRepository repository;
     Akonadi::TaskQueries queries;
     auto taskList = queries.findAll();
 
     QListView view;
-    view.setModel(new Presentation::TaskListModel(taskList, &view));
+    view.setModel(new Presentation::TaskListModel(taskList, &repository, &view));
     view.resize(640, 480);
     view.show();
 

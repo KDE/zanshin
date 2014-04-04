@@ -24,11 +24,14 @@
 
 #include "tasklistmodel.h"
 
+#include "domain/taskrepository.h"
+
 using namespace Presentation;
 
-TaskListModel::TaskListModel(const TaskList::Ptr &taskList, QObject *parent)
+TaskListModel::TaskListModel(const TaskList::Ptr &taskList, Domain::TaskRepository *repository, QObject *parent)
     : QAbstractListModel(parent),
-      m_taskList(taskList)
+      m_taskList(taskList),
+      m_repository(repository)
 {
     m_taskList->addPreInsertHandler([this](const Domain::Task::Ptr &, int index) {
                                         beginInsertRows(QModelIndex(), index, index);
@@ -51,6 +54,15 @@ TaskListModel::~TaskListModel()
 {
 }
 
+Qt::ItemFlags TaskListModel::flags(const QModelIndex &index) const
+{
+    if (!isModelIndexValid(index)) {
+        return Qt::NoItemFlags;
+    }
+
+    return QAbstractListModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+}
+
 int TaskListModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
@@ -61,8 +73,7 @@ int TaskListModel::rowCount(const QModelIndex &parent) const
 
 QVariant TaskListModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.column() != 0
-     || index.row() < 0 || index.row() >= m_taskList->data().size()) {
+    if (!isModelIndexValid(index)) {
         return QVariant();
     }
 
@@ -70,9 +81,43 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    Domain::Task::Ptr task = m_taskList->data().at(index.row());
+    const auto task = taskForIndex(index);
     if (role == Qt::DisplayRole)
         return task->title();
     else
         return task->isDone() ? Qt::Checked : Qt::Unchecked;
+}
+
+bool TaskListModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!isModelIndexValid(index)) {
+        return false;
+    }
+
+    if (role != Qt::EditRole && role != Qt::CheckStateRole) {
+        return false;
+    }
+
+    auto task = taskForIndex(index);
+    if (role == Qt::EditRole) {
+        task->setTitle(value.toString());
+    } else {
+        task->setDone(value.toInt() == Qt::Checked);
+    }
+
+    m_repository->save(task);
+    return true;
+}
+
+Domain::Task::Ptr TaskListModel::taskForIndex(const QModelIndex &index) const
+{
+    return m_taskList->data().at(index.row());
+}
+
+bool TaskListModel::isModelIndexValid(const QModelIndex &index) const
+{
+    return index.isValid()
+        && index.column() == 0
+        && index.row() >= 0
+        && index.row() < m_taskList->data().size();
 }

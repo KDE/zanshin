@@ -23,7 +23,12 @@
 
 #include <QtTest>
 
+#include <mockitopp/mockitopp.hpp>
+
+#include "domain/taskrepository.h"
 #include "presentation/tasklistmodel.h"
+
+using namespace mockitopp;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
@@ -67,7 +72,7 @@ private slots:
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
         // WHEN
-        Presentation::TaskListModel model(list);
+        Presentation::TaskListModel model(list, 0);
 
         // THEN
         QCOMPARE(model.rowCount(), tasks.size());
@@ -92,7 +97,7 @@ private slots:
         provider->append(tasks.at(1));
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
-        Presentation::TaskListModel model(list);
+        Presentation::TaskListModel model(list, 0);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
 
@@ -119,7 +124,7 @@ private slots:
             provider->append(task);
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
-        Presentation::TaskListModel model(list);
+        Presentation::TaskListModel model(list, 0);
         QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
         QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
 
@@ -146,7 +151,7 @@ private slots:
             provider->append(task);
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
-        Presentation::TaskListModel model(list);
+        Presentation::TaskListModel model(list, 0);
         QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
         // WHEN
@@ -157,6 +162,60 @@ private slots:
         QCOMPARE(dataChangedSpy.size(), 1);
         QCOMPARE(dataChangedSpy.first().at(0).value<QModelIndex>(), model.index(2));
         QCOMPARE(dataChangedSpy.first().at(1).value<QModelIndex>(), model.index(2));
+    }
+
+    void shouldAllowEditsAndChecks()
+    {
+        // GIVEN
+        auto tasks = createTasks();
+        auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        for (auto task : tasks)
+            provider->append(task);
+        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+
+        Presentation::TaskListModel model(list, 0);
+
+        // WHEN
+        // Nothing particular
+
+        // THEN
+        for (int row = 0; row < tasks.size(); row++) {
+            QVERIFY(model.flags(model.index(row)) & Qt::ItemIsEditable);
+            QVERIFY(model.flags(model.index(row)) & Qt::ItemIsUserCheckable);
+        }
+    }
+
+    void shouldSaveChanges()
+    {
+        // GIVEN
+        auto tasks = createTasks();
+        const int taskPos = 1;
+        const auto task = tasks[taskPos];
+
+        auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        for (auto task : tasks)
+            provider->append(task);
+        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+
+        mock_object<Domain::TaskRepository> repositoryMock;
+        repositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(0);
+
+        Presentation::TaskListModel model(list, &repositoryMock.getInstance());
+        QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
+        QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));
+
+        // WHEN
+        const auto index = model.index(taskPos);
+        model.setData(index, "alternate second");
+        model.setData(index, Qt::Checked, Qt::CheckStateRole);
+
+        // THEN
+        QVERIFY(repositoryMock(&Domain::TaskRepository::save).when(task).exactly(2));
+
+        QCOMPARE(titleChangedSpy.size(), 1);
+        QCOMPARE(titleChangedSpy.first().first().toString(), QString("alternate second"));
+        QCOMPARE(doneChangedSpy.size(), 1);
+        QCOMPARE(doneChangedSpy.first().first().toBool(), true);
     }
 };
 

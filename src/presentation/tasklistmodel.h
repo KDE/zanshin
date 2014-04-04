@@ -31,6 +31,11 @@
 #include "domain/queryresultprovider.h"
 #include "domain/task.h"
 
+namespace Domain
+{
+    class TaskRepository;
+}
+
 namespace Presentation {
 
 class TaskListModel : public QAbstractListModel
@@ -39,14 +44,23 @@ class TaskListModel : public QAbstractListModel
 public:
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
 
-    explicit TaskListModel(const TaskList::Ptr &taskList, QObject *parent = 0);
+    explicit TaskListModel(const TaskList::Ptr &taskList,
+                           Domain::TaskRepository *repository,
+                           QObject *parent = 0);
     ~TaskListModel();
+
+    Qt::ItemFlags flags(const QModelIndex &index) const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 private:
+    Domain::Task::Ptr taskForIndex(const QModelIndex &index) const;
+    bool isModelIndexValid(const QModelIndex &index) const;
+
     TaskList::Ptr m_taskList;
+    Domain::TaskRepository *m_repository;
 };
 
 }
