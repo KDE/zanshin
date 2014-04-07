@@ -7,9 +7,26 @@ macro_log_feature(KDEPIMLIBS_FOUND "kdepimlibs" "KDE PIM libraries" "The KDE PIM
 
 include(KDE4Defaults)
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel" AND NOT WIN32)
+macro(assert_min_ver version)
+    set(error_msg "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_VERSION} not supported")
+    if("${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "${version}")
+        message(FATAL_ERROR "${msg}")
+    endif()
+endmacro()
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # using Clang >= 3.3
+    assert_min_ver("3.3")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # using GCC >= 4.8
+    assert_min_ver("4.8")
+elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+    # currently Intel compiler does not support all required C++11 features in zanshin
+    # http://software.intel.com/en-us/articles/c0x-features-supported-by-intel-c-compiler
+    assert_min_ver("15.0")
+endif()
+
+if(UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 endif()
 
