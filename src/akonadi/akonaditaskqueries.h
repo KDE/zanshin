@@ -76,6 +76,7 @@ private:
     bool m_ownInterfaces;
 
     mutable TaskProvider::WeakPtr m_taskProvider;
+    mutable TaskProvider::WeakPtr m_topTaskProvider;
     mutable QHash<Akonadi::Entity::Id, TaskProvider::WeakPtr> m_taskChildProviders;
     mutable QHash<QString, Akonadi::Entity::Id> m_uidtoIdCache;
 };

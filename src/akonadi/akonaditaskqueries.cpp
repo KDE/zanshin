@@ -134,8 +134,32 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
 
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
-    qFatal("Not implemented yet");
-    return TaskProvider::createResult(TaskProvider::Ptr());
+    TaskProvider::Ptr provider(m_topTaskProvider.toStrongRef());
+
+    if (!provider) {
+        provider = TaskProvider::Ptr(new TaskProvider);
+        m_topTaskProvider = provider.toWeakRef();
+    }
+
+    TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
+
+    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive);
+    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+        for (auto collection : job->collections()) {
+            ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+            Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+                for (auto item : job->items()) {
+                    if (m_serializer->relatedUidFromItem(item).isEmpty()) {
+                        auto task = deserializeTask(item);
+                        if (task)
+                            provider->append(task);
+                    }
+                }
+            });
+        }
+    });
+
+    return result;
 }
 
 TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const
