@@ -41,6 +41,8 @@ public:
 
     virtual QueryResult<Task::Ptr>::Ptr findChildren(Task::Ptr task) const = 0;
 
+    virtual QueryResult<Task::Ptr>::Ptr findTopLevel() const = 0;
+
     virtual QueryResult<Context::Ptr>::Ptr findContexts(Task::Ptr task) const = 0;
 };
 

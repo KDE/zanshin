@@ -132,6 +132,12 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
     return result;
 }
 
+TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
+{
+    qFatal("Not implemented yet");
+    return TaskProvider::createResult(TaskProvider::Ptr());
+}
+
 TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const
 {
     qFatal("Not implemented yet");

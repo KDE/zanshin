@@ -56,6 +56,7 @@ public:
 
     TaskResult::Ptr findAll() const;
     TaskResult::Ptr findChildren(Domain::Task::Ptr task) const;
+    TaskResult::Ptr findTopLevel() const;
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const;
 
 private slots:
