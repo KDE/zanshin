@@ -69,6 +69,7 @@ private:
     Domain::Task::Ptr deserializeTask(const Item &item) const;
     void addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const;
     TaskProvider::Ptr childProviderFromItem(const Item &item) const;
+    void removeItemFromChildProviders(const Item &item);
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
@@ -79,6 +80,7 @@ private:
     mutable TaskProvider::WeakPtr m_topTaskProvider;
     mutable QHash<Akonadi::Entity::Id, TaskProvider::WeakPtr> m_taskChildProviders;
     mutable QHash<QString, Akonadi::Entity::Id> m_uidtoIdCache;
+    mutable QHash<Akonadi::Entity::Id, QString> m_idToRelatedUidCache;
 };
 
 }

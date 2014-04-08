@@ -277,6 +277,8 @@ void TaskQueries::onItemChanged(const Item &item)
                 childProvider->replace(i, task);
             }
         }
+    } else {
+        removeItemFromChildProviders(item);
     }
 }
 
@@ -291,7 +293,9 @@ Domain::Task::Ptr TaskQueries::deserializeTask(const Item &item) const
     if (task) {
         task->setProperty("itemId", item.id());
         addItemIdInCache(task, item.id());
+        m_idToRelatedUidCache[item.id()] = m_serializer->relatedUidFromItem(item);
     }
+
     return task;
 }
 
@@ -311,4 +315,30 @@ TaskQueries::TaskProvider::Ptr TaskQueries::childProviderFromItem(const Item &it
             childProvider = m_taskChildProviders.value(parentId).toStrongRef();
     }
     return childProvider;
+}
+
+void TaskQueries::removeItemFromChildProviders(const Item &item)
+{
+    if (m_idToRelatedUidCache.contains(item.id())) {
+        auto lastRelatedUid = m_idToRelatedUidCache.value(item.id());
+        auto relatedUid = m_serializer->relatedUidFromItem(item);
+        if (lastRelatedUid == relatedUid)
+            return;
+
+        if (m_uidtoIdCache.contains(lastRelatedUid)) {
+            auto parentId = m_uidtoIdCache.value(lastRelatedUid);
+            if (m_taskChildProviders.contains(parentId)) {
+                TaskProvider::Ptr childProvider = m_taskChildProviders.value(parentId).toStrongRef();
+                if (childProvider) {
+                    for (int i = 0; i < childProvider->data().size(); i++) {
+                        auto task = childProvider->data().at(i);
+                        if (isTaskItem(task, item)) {
+                            childProvider->removeAt(i);
+                            i--;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
