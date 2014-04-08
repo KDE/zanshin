@@ -260,6 +260,9 @@ void TaskQueries::onItemChanged(const Item &item)
                 if (m_serializer->relatedUidFromItem(item).isEmpty()) {
                     m_serializer->updateTaskFromItem(task, item);
                     topLevelProvider->replace(i, task);
+                } else {
+                    topLevelProvider->removeAt(i);
+                    i--;
                 }
             }
         }
