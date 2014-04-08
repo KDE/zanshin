@@ -210,6 +210,19 @@ void TaskQueries::onItemRemoved(const Item &item)
         }
     }
 
+    TaskProvider::Ptr topLevelProvider(m_topTaskProvider.toStrongRef());
+    if (topLevelProvider) {
+        if (m_serializer->relatedUidFromItem(item).isEmpty()) {
+            for (int i = 0; i < topLevelProvider->data().size(); i++) {
+                auto task = topLevelProvider->data().at(i);
+                if (isTaskItem(task, item)) {
+                    topLevelProvider->removeAt(i);
+                    i--;
+                }
+            }
+        }
+    }
+
     if (m_taskChildProviders.isEmpty())
         return;
 
