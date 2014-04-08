@@ -181,6 +181,12 @@ void TaskQueries::onItemAdded(const Item &item)
         provider->append(task);
     }
 
+    TaskProvider::Ptr topLevelProvider(m_topTaskProvider.toStrongRef());
+    if (topLevelProvider) {
+        if (m_serializer->relatedUidFromItem(item).isEmpty())
+            topLevelProvider->append(task);
+    }
+
     if (m_taskChildProviders.isEmpty())
         return;
 
