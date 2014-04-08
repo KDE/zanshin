@@ -254,10 +254,13 @@ void TaskQueries::onItemChanged(const Item &item)
 
     TaskProvider::Ptr topLevelProvider(m_topTaskProvider.toStrongRef());
     if (topLevelProvider) {
+        bool itemFound = false;
+        QString uid = m_serializer->relatedUidFromItem(item);
         for (int i = 0; i < topLevelProvider->data().size(); i++) {
             auto task = topLevelProvider->data().at(i);
             if (isTaskItem(task, item)) {
-                if (m_serializer->relatedUidFromItem(item).isEmpty()) {
+                itemFound = true;
+                if (uid.isEmpty()) {
                     m_serializer->updateTaskFromItem(task, item);
                     topLevelProvider->replace(i, task);
                 } else {
@@ -265,6 +268,11 @@ void TaskQueries::onItemChanged(const Item &item)
                     i--;
                 }
             }
+        }
+        if (!itemFound && uid.isEmpty()) {
+            auto task = deserializeTask(item);
+            if (task)
+                topLevelProvider->append(task);
         }
     }
 
