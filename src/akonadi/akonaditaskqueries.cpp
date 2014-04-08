@@ -270,12 +270,20 @@ void TaskQueries::onItemChanged(const Item &item)
 
     TaskProvider::Ptr childProvider = childProviderFromItem(item);
     if (childProvider) {
+        bool itemUpdated = false;
         for (int i = 0; i < childProvider->data().size(); i++) {
             auto task = childProvider->data().at(i);
             if (isTaskItem(task, item)) {
                 m_serializer->updateTaskFromItem(task, item);
                 childProvider->replace(i, task);
+                itemUpdated = true;
             }
+        }
+
+        if (!itemUpdated) {
+            auto task = deserializeTask(item);
+            if (task)
+                childProvider->append(task);
         }
     } else {
         removeItemFromChildProviders(item);
