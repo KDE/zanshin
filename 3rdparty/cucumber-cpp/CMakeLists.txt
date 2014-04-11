@@ -4,9 +4,9 @@ project(Cucumber-Cpp)
 
 set(CUKE_USE_STATIC_BOOST ${MSVC} CACHE BOOL "Statically link Boost (except boost::test)")
 set(CUKE_DISABLE_BOOST_TEST OFF CACHE BOOL "Disable boost:test")
-set(CUKE_DISABLE_CPPSPEC OFF CACHE BOOL "Disable CppSpec")
-set(CUKE_DISABLE_GTEST OFF CACHE BOOL "Disable Google Test framework")
-set(CUKE_DISABLE_FUNCTIONAL OFF CACHE BOOL "Disable Functional Tests")
+#set(CUKE_DISABLE_CPPSPEC OFF CACHE BOOL "Disable CppSpec")
+#set(CUKE_DISABLE_GTEST OFF CACHE BOOL "Disable Google Test framework")
+#set(CUKE_DISABLE_FUNCTIONAL OFF CACHE BOOL "Disable Functional Tests")
 set(CUKE_ENABLE_EXAMPLES OFF CACHE BOOL "Enable the examples")
 
 enable_testing()
