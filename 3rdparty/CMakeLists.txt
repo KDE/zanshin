@@ -2,5 +2,7 @@ find_package(Boost "1.40" COMPONENTS thread system regex date_time unit_test_fra
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
     set(CUKE_DISABLE_FUNCTIONAL TRUE)
+    set(CUKE_DISABLE_CPPSPEC TRUE)
+    set(CUKE_DISABLE_GTEST TRUE)
     add_subdirectory(cucumber-cpp)
 endif()
