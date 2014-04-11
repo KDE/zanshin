@@ -32,6 +32,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AUTO_TESTS)
 
+add_subdirectory(features)
 add_subdirectory(manual)
 add_subdirectory(benchmarks)
 add_subdirectory(testlib)

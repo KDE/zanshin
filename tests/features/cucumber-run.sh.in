@@ -1,0 +1,16 @@
+#! /bin/sh
+
+_pwd=$PWD
+
+restorepwd() {
+	cd $_pwd
+}
+
+trap "restorepwd" EXIT
+
+cd @CUCUMBER_CWD@
+@zanshin-cuke-steps@ &
+usleep 500000
+
+cucumber $*
+exit $?
