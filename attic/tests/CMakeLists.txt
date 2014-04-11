@@ -1,6 +1,7 @@
 add_subdirectory(testlib)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/tests)
 include_directories(${CMAKE_SOURCE_DIR}/attic/src)
 include_directories(${CMAKE_SOURCE_DIR}/3rdparty)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -16,6 +17,7 @@ MACRO(ZANSHIN_MANUAL_TESTS)
                                        akonadi
                                        domain
                                        presentation
+                                       testlib
                                        utils
     )
   ENDFOREACH(_testname)
@@ -32,6 +34,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
                                        akonadi
                                        domain
                                        presentation
+                                       testlib
                                        utils
     )
   ENDFOREACH(_testname)

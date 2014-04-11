@@ -27,6 +27,7 @@
 
 #include "domain/taskrepository.h"
 #include "presentation/tasklistmodel.h"
+#include "testlib/modeltest.h"
 
 using namespace mockitopp;
 
@@ -73,6 +74,7 @@ private slots:
 
         // WHEN
         Presentation::TaskListModel model(list, 0);
+        new ModelTest(&model);
 
         // THEN
         QCOMPARE(model.rowCount(), tasks.size());
@@ -98,6 +100,7 @@ private slots:
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
         Presentation::TaskListModel model(list, 0);
+        new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
 
@@ -125,6 +128,7 @@ private slots:
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
         Presentation::TaskListModel model(list, 0);
+        new ModelTest(&model);
         QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
         QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
 
@@ -152,6 +156,7 @@ private slots:
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
         Presentation::TaskListModel model(list, 0);
+        new ModelTest(&model);
         QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
         // WHEN
@@ -174,6 +179,7 @@ private slots:
         auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
 
         Presentation::TaskListModel model(list, 0);
+        new ModelTest(&model);
 
         // WHEN
         // Nothing particular
@@ -201,6 +207,7 @@ private slots:
         repositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(0);
 
         Presentation::TaskListModel model(list, &repositoryMock.getInstance());
+        new ModelTest(&model);
         QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
         QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));
 

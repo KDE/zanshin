@@ -23,10 +23,10 @@ MACRO(ZANSHIN_AUTO_TESTS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
     target_link_libraries(${_testname}
       ${QT_QTTEST_LIBRARY}
+      testlib
       akonadi
       domain
       presentation
-      testlib
       utils
     )
   ENDFOREACH(_testname)
