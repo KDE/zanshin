@@ -226,6 +226,17 @@ void TaskQueries::onItemRemoved(const Item &item)
     if (m_taskChildProviders.isEmpty())
         return;
 
+    if (m_taskChildProviders.contains(item.id())) {
+        TaskProvider::Ptr childProvider = m_taskChildProviders.value(item.id());
+        if (childProvider) {
+            while (!childProvider->data().isEmpty()) {
+                auto task = childProvider->takeFirst();
+                if (topLevelProvider)
+                    topLevelProvider->append(task);
+            }
+        }
+    }
+
     TaskProvider::Ptr childProvider = childProviderFromItem(item);
     if (childProvider) {
         for (int i = 0; i < childProvider->data().size(); i++) {

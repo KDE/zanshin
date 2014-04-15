@@ -1235,6 +1235,95 @@ private slots:
         QCOMPARE(result->data().at(0), task1);
         QCOMPARE(result->data().at(1), task2);
     }
+
+    void shouldRemoveParentNodeAndMoveChildrenInTopLevelResult()
+    {
+        // GIVEN
+
+        // One top level collections
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+
+        // Three task in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        Domain::Task::Ptr task1(new Domain::Task);
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col);
+        Domain::Task::Ptr task2(new Domain::Task);
+        task2->setProperty("itemId", 43);
+        task2->setProperty("todoUid", "2");
+        Akonadi::Item item3(44);
+        item3.setParentCollection(col);
+        Domain::Task::Ptr task3(new Domain::Task);
+        task3->setProperty("itemId", 44);
+        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item2);
+        MockItemFetchJob *itemFetchJob3 = new MockItemFetchJob(this);
+        itemFetchJob3->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive)
+                                                                 .thenReturn(collectionFetchJob);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob1)
+                                                           .thenReturn(itemFetchJob3);
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item2)
+                                                           .thenReturn(itemFetchJob2);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        // Serializer mock returning if the item has a relatedItem
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
+
+        // Serializer mock returning if task1 is parent of items
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item3).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
+                                                                             &serializerMock.getInstance(),
+                                                                             monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr resultChild = queries->findChildren(task2);
+        QTest::qWait(150);
+        QCOMPARE(resultChild->data().size(), 1);
+
+        // WHEN
+        monitor->removeItem(item2);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive)
+                                                                         .exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(2));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).exactly(2));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).exactly(4));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).exactly(2));
+
+        QCOMPARE(resultChild->data().size(), 0);
+        QCOMPARE(result->data().size(), 2);
+    }
 };
 
 QTEST_MAIN(AkonadiTaskQueriesTest)
