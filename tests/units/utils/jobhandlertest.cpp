@@ -37,13 +37,17 @@ public:
 
     explicit FakeJob(QObject *parent = 0)
         : KJob(parent)
+        , m_launched(false)
     {
         setAutoDelete(true);
     }
 
     void start()
     {
-        QTimer::singleShot(DURATION, this, SLOT(onTimeout()));
+        if (!m_launched) {
+            m_launched = true;
+            QTimer::singleShot(DURATION, this, SLOT(onTimeout()));
+        }
     }
 
 private slots:
@@ -51,6 +55,9 @@ private slots:
     {
         emitResult();
     }
+
+private:
+    bool m_launched;
 };
 
 class JobHandlerTest : public QObject

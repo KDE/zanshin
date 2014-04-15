@@ -47,6 +47,7 @@ protected:
 
 private:
     bool m_done;
+    bool m_launched;
 };
 
 class MockCollectionFetchJob : public MockAkonadiJob, public Akonadi::CollectionFetchJobInterface

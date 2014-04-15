@@ -26,14 +26,16 @@
 #include <QTimer>
 
 MockAkonadiJob::MockAkonadiJob(QObject *parent)
-    : KJob(parent), m_done(false)
+    : KJob(parent), m_done(false), m_launched(false)
 {
-    start();
 }
 
 void MockAkonadiJob::start()
 {
-    QTimer::singleShot(50, this, SLOT(onTimeout()));
+    if (!m_launched) {
+        m_launched = true;
+        QTimer::singleShot(50, this, SLOT(onTimeout()));
+    }
 }
 
 void MockAkonadiJob::onTimeout()
