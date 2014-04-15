@@ -87,7 +87,7 @@ public:
                            std::mem_fn(&QueryResult<ItemType>::postInsertHandlers));
     }
 
-    void removeFirst()
+    ItemType takeFirst()
     {
         cleanupResults();
         const ItemType item = m_list.first();
@@ -96,9 +96,15 @@ public:
         m_list.removeFirst();
         callChangeHandlers(item, 0,
                            std::mem_fn(&QueryResult<ItemType>::postRemoveHandlers));
+        return item;
     }
 
-    void removeLast()
+    void removeFirst()
+    {
+        takeFirst();
+    }
+
+    ItemType takeLast()
     {
         cleanupResults();
         const ItemType item = m_list.last();
@@ -107,9 +113,15 @@ public:
         m_list.removeLast();
         callChangeHandlers(item, m_list.size(),
                            std::mem_fn(&QueryResult<ItemType>::postRemoveHandlers));
+        return item;
     }
 
-    void removeAt(int index)
+    void removeLast()
+    {
+        takeLast();
+    }
+
+    ItemType takeAt(int index)
     {
         cleanupResults();
         const ItemType item = m_list.at(index);
@@ -118,6 +130,12 @@ public:
         m_list.removeAt(index);
         callChangeHandlers(item, index,
                            std::mem_fn(&QueryResult<ItemType>::postRemoveHandlers));
+        return item;
+    }
+
+    void removeAt(int index)
+    {
+        takeAt(index);
     }
 
     void replace(int index, const ItemType &item)

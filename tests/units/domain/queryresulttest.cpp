@@ -170,6 +170,45 @@ private slots:
         QCOMPARE(postRemovesPos, expectedRemovesPos);
     }
 
+    void shouldNotifyTakes()
+    {
+        QList<QString> preRemoves, postRemoves, taken;
+        QList<int> preRemovesPos, postRemovesPos;
+
+        QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
+        *provider << "Foo" << "Bar" << "Baz" << "Bazz";
+
+        QueryResult<QString>::Ptr result = QueryResultProvider<QString>::createResult(provider);
+
+        result->addPreRemoveHandler(
+            [&](const QString &value, int pos)
+            {
+                preRemoves << value;
+                preRemovesPos << pos;
+            }
+        );
+
+        result->addPostRemoveHandler(
+            [&](const QString &value, int pos)
+            {
+                postRemoves << value;
+                postRemovesPos << pos;
+            }
+        );
+
+        taken << provider->takeAt(1);
+        taken << provider->takeFirst();
+        taken << provider->takeLast();
+
+        const QList<QString> expectedRemoves = {"Bar", "Foo", "Bazz"};
+        const QList<int> expectedRemovesPos = {1, 0, 1};
+        QCOMPARE(preRemoves, expectedRemoves);
+        QCOMPARE(preRemovesPos, expectedRemovesPos);
+        QCOMPARE(postRemoves, expectedRemoves);
+        QCOMPARE(postRemovesPos, expectedRemovesPos);
+        QCOMPARE(taken, expectedRemoves);
+    }
+
     void shouldNotifyReplaces()
     {
         QList<QString> preReplaces, postReplaces;
