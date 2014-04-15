@@ -274,9 +274,25 @@ QVariant TaskTreeModel::data(const QModelIndex &index, int role) const
         return task->isDone() ? Qt::Checked : Qt::Unchecked;
 }
 
-bool TaskTreeModel::setData(const QModelIndex &/*index*/, const QVariant &/*value*/, int /*role*/)
+bool TaskTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    return false;
+    if (!isModelIndexValid(index)) {
+        return false;
+    }
+
+    if (role != Qt::EditRole && role != Qt::CheckStateRole) {
+        return false;
+    }
+
+    auto task = taskForIndex(index);
+    if (role == Qt::EditRole) {
+        task->setTitle(value.toString());
+    } else {
+        task->setDone(value.toInt() == Qt::Checked);
+    }
+
+    m_repository->save(task);
+    return true;
 }
 
 Domain::Task::Ptr TaskTreeModel::taskForIndex(const QModelIndex &index) const

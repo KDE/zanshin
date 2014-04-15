@@ -356,6 +356,100 @@ private slots:
         QCOMPARE(dataChangedSpy.last().at(0).value<QModelIndex>(), model.index(2, 0, model.index(0, 0)));
         QCOMPARE(dataChangedSpy.last().at(1).value<QModelIndex>(), model.index(2, 0, model.index(0, 0)));
     }
+
+    void shouldAllowEditsAndChecks()
+    {
+        // GIVEN
+        auto tasks = createTasks();
+        auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        for (auto task : tasks)
+            provider->append(task);
+        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+
+        auto childrenTasks = createChildrenTasks();
+        auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        for (auto task : childrenTasks)
+            childrenProvider->append(task);
+
+        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+
+        mock_object<Domain::TaskQueries> queryMock;
+        queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
+        queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(0)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(1)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
+
+        // WHEN
+        Presentation::TaskTreeModel model(list, &queryMock.getInstance(), 0);
+        new ModelTest(&model);
+
+        // WHEN
+        // Nothing particular
+
+        // THEN
+        for (int row = 0; row < tasks.size(); row++) {
+            QVERIFY(model.flags(model.index(row, 0)) & Qt::ItemIsEditable);
+            QVERIFY(model.flags(model.index(row, 0)) & Qt::ItemIsUserCheckable);
+        }
+        for (int row = 0; row < childrenTasks.size(); row++) {
+            QVERIFY(model.flags(model.index(row, 0, model.index(0, 0))) & Qt::ItemIsEditable);
+            QVERIFY(model.flags(model.index(row, 0, model.index(0, 0))) & Qt::ItemIsUserCheckable);
+        }
+    }
+
+    void shouldSaveChanges()
+    {
+        // GIVEN
+        auto tasks = createTasks();
+        const int taskPos = 1;
+        const auto task = tasks[taskPos];
+        auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        for (auto task : tasks)
+            provider->append(task);
+        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+
+        auto childrenTasks = createChildrenTasks();
+        auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        for (auto task : childrenTasks)
+            childrenProvider->append(task);
+        
+        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+            
+        mock_object<Domain::TaskQueries> queryMock; 
+        queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
+        queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(0)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(1)).thenReturn(emptyList);
+        queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
+
+        mock_object<Domain::TaskRepository> repositoryMock;
+        repositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(0);
+
+        Presentation::TaskTreeModel model(list, &queryMock.getInstance(), &repositoryMock.getInstance());
+        new ModelTest(&model);
+        QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
+        QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));
+
+        // WHEN
+        const auto index = model.index(taskPos, 0);
+        model.setData(index, "alternate second");
+        model.setData(index, Qt::Checked, Qt::CheckStateRole);
+
+        // THEN
+        QVERIFY(repositoryMock(&Domain::TaskRepository::save).when(task).exactly(2));
+
+        QCOMPARE(titleChangedSpy.size(), 1);
+        QCOMPARE(titleChangedSpy.first().first().toString(), QString("alternate second"));
+        QCOMPARE(doneChangedSpy.size(), 1);
+        QCOMPARE(doneChangedSpy.first().first().toBool(), true);
+    }
 };
 
 QTEST_MAIN(TaskTreeModelTest)
