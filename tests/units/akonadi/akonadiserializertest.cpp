@@ -25,6 +25,7 @@
 
 #include "akonadi/akonadiserializer.h"
 
+#include <Akonadi/Collection>
 #include <Akonadi/Item>
 #include <KCalCore/Todo>
 
@@ -32,6 +33,105 @@ class AkonadiSerializerTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void shouldCreateDataSourceFromCollection_data()
+    {
+        QTest::addColumn<QString>("name");
+
+        QTest::newRow("nominal case") << "name";
+        QTest::newRow("empty case") << QString();
+    }
+
+    void shouldCreateDataSourceFromCollection()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, name);
+
+        // ... stored in a collection
+        Akonadi::Collection collection(42);
+        collection.setName(name);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto dataSource = serializer.createDataSourceFromCollection(collection);
+
+        // THEN
+        QCOMPARE(dataSource->name(), name);
+    }
+
+    void shouldCreateNullDataSourceFromInvalidCollection()
+    {
+        // GIVEN
+        Akonadi::Collection collection;
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto dataSource = serializer.createDataSourceFromCollection(collection);
+
+        // THEN
+        QVERIFY(dataSource.isNull());
+    }
+
+    void shouldUpdateDataSourceFromCollection_data()
+    {
+        QTest::addColumn<QString>("updatedName");
+
+        QTest::newRow("no change") << "name";
+        QTest::newRow("changed") << "new name";
+    }
+
+    void shouldUpdateDataSourceFromCollection()
+    {
+        // GIVEN
+
+        // A collection...
+        Akonadi::Collection originalCollection(42);
+        originalCollection.setName("name");
+
+        // ... deserialized as a data source
+        Akonadi::Serializer serializer;
+        auto dataSource = serializer.createDataSourceFromCollection(originalCollection);
+
+        // WHEN
+
+        // Data...
+        QFETCH(QString, updatedName);
+
+        // ... in a new collection
+        Akonadi::Collection updatedCollection(42);
+        updatedCollection.setName(updatedName);
+
+        serializer.updateDataSourceFromCollection(dataSource, updatedCollection);
+
+        // THEN
+        QCOMPARE(dataSource->name(), updatedName);
+    }
+
+    void shouldNotUpdateDataSourceFromInvalidCollection()
+    {
+        // GIVEN
+
+        // Data...
+        const QString name = "name";
+
+        // ... stored in a collection...
+        Akonadi::Collection originalCollection(42);
+        originalCollection.setName(name);
+
+        // ... deserialized as a data source
+        Akonadi::Serializer serializer;
+        auto dataSource = serializer.createDataSourceFromCollection(originalCollection);
+
+        // WHEN
+        Akonadi::Collection invalidCollection;
+        invalidCollection.setName("foo");
+        serializer.updateDataSourceFromCollection(dataSource, invalidCollection);
+
+        // THEN
+        QCOMPARE(dataSource->name(), name);
+    }
+
     void shouldCreateTaskFromItem_data()
     {
         QTest::addColumn<QString>("summary");

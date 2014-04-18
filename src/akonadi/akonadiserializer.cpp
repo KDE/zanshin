@@ -40,16 +40,20 @@ Serializer::~Serializer()
 
 Domain::DataSource::Ptr Serializer::createDataSourceFromCollection(Collection collection)
 {
-    Q_UNUSED(collection)
-    qFatal("Not implemented yet");
-    return Domain::DataSource::Ptr();
+    if (!collection.isValid())
+        return Domain::DataSource::Ptr();
+
+    auto dataSource = Domain::DataSource::Ptr::create();
+    updateDataSourceFromCollection(dataSource, collection);
+    return dataSource;
 }
 
 void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Collection collection)
 {
-    Q_UNUSED(dataSource)
-    Q_UNUSED(collection)
-    qFatal("Not implemented yet");
+    if (!collection.isValid())
+        return;
+
+    dataSource->setName(collection.name());
 }
 
 Domain::Task::Ptr Serializer::createTaskFromItem(Item item)
