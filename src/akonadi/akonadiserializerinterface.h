@@ -24,11 +24,13 @@
 #ifndef AKONADI_SERIALIZERINTERFACE_H
 #define AKONADI_SERIALIZERINTERFACE_H
 
+#include "domain/datasource.h"
 #include "domain/task.h"
 #include "domain/note.h"
 
 namespace Akonadi {
 
+class Collection;
 class Item;
 
 class SerializerInterface
@@ -36,6 +38,9 @@ class SerializerInterface
 public:
     SerializerInterface();
     virtual ~SerializerInterface();
+
+    virtual Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection) = 0;
+    virtual void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection) = 0;
 
     virtual Domain::Task::Ptr createTaskFromItem(Akonadi::Item item) = 0;
     virtual void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item) = 0;

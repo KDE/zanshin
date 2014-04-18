@@ -24,6 +24,7 @@
 
 #include "akonadiserializer.h"
 
+#include <Akonadi/Collection>
 #include <Akonadi/Item>
 #include <KCalCore/Todo>
 
@@ -35,6 +36,20 @@ Serializer::Serializer()
 
 Serializer::~Serializer()
 {
+}
+
+Domain::DataSource::Ptr Serializer::createDataSourceFromCollection(Collection collection)
+{
+    Q_UNUSED(collection)
+    qFatal("Not implemented yet");
+    return Domain::DataSource::Ptr();
+}
+
+void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Collection collection)
+{
+    Q_UNUSED(dataSource)
+    Q_UNUSED(collection)
+    qFatal("Not implemented yet");
 }
 
 Domain::Task::Ptr Serializer::createTaskFromItem(Item item)

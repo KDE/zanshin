@@ -86,6 +86,10 @@ class MockMonitor : public Akonadi::MonitorInterface
 public:
     explicit MockMonitor(QObject *parent = 0);
 
+    void addCollection(const Akonadi::Collection &collection);
+    void removeCollection(const Akonadi::Collection &collection);
+    void changeCollection(const Akonadi::Collection &collection);
+
     void addItem(const Akonadi::Item &item);
     void removeItem(const Akonadi::Item &item);
     void changeItem(const Akonadi::Item &item);

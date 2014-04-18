@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QTest>
 
+#include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "presentation/tasklistmodel.h"
@@ -42,6 +43,7 @@ private:
 public:
     ZanshinContext()
         : model(0),
+          dataSourceQueries(new Akonadi::DataSourceQueries),
           queries(new Akonadi::TaskQueries()),
           repository(new Akonadi::TaskRepository())
     {
@@ -50,11 +52,13 @@ public:
     ~ZanshinContext()
     {
         delete model;
+        delete dataSourceQueries;
         delete queries;
         delete repository;
     }
 
     QAbstractItemModel *model;
+    Domain::DataSourceQueries *dataSourceQueries;
     Domain::TaskQueries *queries;
     Domain::TaskRepository *repository;
     QList<QPersistentModelIndex> indices;
@@ -71,8 +75,7 @@ GIVEN("^I got a task list$") {
 
 GIVEN("^I got a data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
-    auto queries = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+    auto queries = context->dataSourceQueries->findAll();
     context->model = new Presentation::DataSourceListModel(queries);
     QTest::qWait(500);
 }

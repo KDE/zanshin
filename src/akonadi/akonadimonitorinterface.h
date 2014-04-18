@@ -28,6 +28,7 @@
 
 namespace Akonadi {
 
+class Collection;
 class Item;
 
 class MonitorInterface : public QObject
@@ -38,6 +39,10 @@ public:
     virtual ~MonitorInterface();
 
 signals:
+    void collectionAdded(const Akonadi::Collection &collection);
+    void collectionRemoved(const Akonadi::Collection &collection);
+    void collectionChanged(const Akonadi::Collection &collection);
+
     void itemAdded(const Akonadi::Item &item);
     void itemRemoved(const Akonadi::Item &item);
     void itemChanged(const Akonadi::Item &items);

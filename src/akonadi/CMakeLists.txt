@@ -1,5 +1,6 @@
 set(akonadi_SRCS
     akonadicollectionfetchjobinterface.cpp
+    akonadidatasourcequeries.cpp
     akonadiitemfetchjobinterface.cpp
     akonadimonitorimpl.cpp
     akonadimonitorinterface.cpp

@@ -36,6 +36,9 @@ public:
     Serializer();
     virtual ~Serializer();
 
+    Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection);
+    void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection);
+
     Domain::Task::Ptr createTaskFromItem(Akonadi::Item item);
     void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item);
     Akonadi::Item createItemFromTask(Domain::Task::Ptr task);

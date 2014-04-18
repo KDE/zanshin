@@ -92,6 +92,21 @@ MockMonitor::MockMonitor(QObject *parent)
 {
 }
 
+void MockMonitor::addCollection(const Akonadi::Collection &collection)
+{
+    emit collectionAdded(collection);
+}
+
+void MockMonitor::removeCollection(const Akonadi::Collection &collection)
+{
+    emit collectionRemoved(collection);
+}
+
+void MockMonitor::changeCollection(const Akonadi::Collection &collection)
+{
+    emit collectionChanged(collection);
+}
+
 void MockMonitor::addItem(const Akonadi::Item &item)
 {
     emit itemAdded(item);
