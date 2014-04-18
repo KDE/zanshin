@@ -26,8 +26,13 @@
 #include <QTimer>
 
 MockAkonadiJob::MockAkonadiJob(QObject *parent)
-    : KJob(parent), m_done(false), m_launched(false)
+    : KJob(parent), m_done(false), m_launched(false), m_errorCode(KJob::NoError)
 {
+}
+
+void MockAkonadiJob::setExpectedError(int errorCode)
+{
+    m_errorCode = errorCode;
 }
 
 void MockAkonadiJob::start()
@@ -40,7 +45,10 @@ void MockAkonadiJob::start()
 
 void MockAkonadiJob::onTimeout()
 {
-    m_done = true;
+    if (m_errorCode == KJob::NoError) 
+        m_done = true;
+
+    setError(m_errorCode);
     emitResult();
 }
 

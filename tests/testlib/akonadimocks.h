@@ -36,6 +36,8 @@ class MockAkonadiJob : public KJob
 public:
     explicit MockAkonadiJob(QObject *parent = 0);
 
+    void setExpectedError(int errorCode);
+
 private:
     void start();
 
@@ -48,6 +50,7 @@ protected:
 private:
     bool m_done;
     bool m_launched;
+    int m_errorCode;
 };
 
 class MockCollectionFetchJob : public MockAkonadiJob, public Akonadi::CollectionFetchJobInterface

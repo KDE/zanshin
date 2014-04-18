@@ -114,6 +114,9 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
 
     ItemFetchJobInterface *job = m_storage->fetchItem(item);
     Utils::JobHandler::install(job->kjob(), [provider, job, task, this] {
+        if (job->kjob()->error() != KJob::NoError)
+            return;
+
         Q_ASSERT(job->items().size() == 1);
         auto item = job->items()[0];
         Q_ASSERT(item.parentCollection().isValid());

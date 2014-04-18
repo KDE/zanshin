@@ -1324,6 +1324,51 @@ private slots:
         QCOMPARE(resultChild->data().size(), 0);
         QCOMPARE(result->data().size(), 2);
     }
+
+    void shouldNotCrashDuringFindChildrenWhenJobIsKilled()
+    {
+        // GIVEN
+
+        // One top level collections
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+
+        // Three task in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        Domain::Task::Ptr task1(new Domain::Task);
+        task1->setProperty("itemId", 42);
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col);
+        Domain::Task::Ptr task2(new Domain::Task);
+        Akonadi::Item item3(44);
+        item3.setParentCollection(col);
+        Domain::Task::Ptr task3(new Domain::Task);
+        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        itemFetchJob1->setExpectedError(KJob::KilledJobError);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
+                                                           .thenReturn(itemFetchJob1);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
+                                                                             &serializerMock.getInstance(),
+                                                                             new MockMonitor(this)));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item1).exactly(1));
+
+        QCOMPARE(result->data().size(), 0);
+    }
 };
 
 QTEST_MAIN(AkonadiTaskQueriesTest)
