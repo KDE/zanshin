@@ -27,6 +27,9 @@
 #include <KCalCore/ICalFormat>
 
 #include <Akonadi/Collection>
+#include <Akonadi/CollectionCreateJob>
+#include <Akonadi/CollectionDeleteJob>
+#include <Akonadi/CollectionModifyJob>
 #include <Akonadi/CollectionStatistics>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/ItemCreateJob>
@@ -46,6 +49,7 @@ public:
     explicit AkonadiStorageTest(QObject *parent = 0)
         : QObject(parent)
     {
+        qRegisterMetaType<Akonadi::Collection>();
         qRegisterMetaType<Akonadi::Item>();
     }
 
@@ -54,7 +58,7 @@ private slots:
     {
         // GIVEN
         Akonadi::Storage storage;
-        const QStringList expectedNames = { "Calendar1", "Calendar2", "Calendar3", "Notes" };
+        const QStringList expectedNames = { "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" };
 
         // WHEN
         auto job = storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
@@ -123,6 +127,99 @@ private slots:
 
         QCOMPARE(itemRemoteIds, expectedRemoteIds);
     }
+
+    void shouldNotifyCollectionAdded()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(collectionAdded(Akonadi::Collection)));
+
+        // A collection
+        Akonadi::Collection collection;
+        collection.setParentCollection(calendar2());
+        collection.setName("Foo!");
+        collection.setContentMimeTypes(QStringList() << "application/x-vnd.akonadi.calendar.todo");
+
+        // WHEN
+        (new Akonadi::CollectionCreateJob(collection))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedCollection = spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.name(), collection.name());
+
+        auto parent = notifiedCollection.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
+        }
+    }
+
+    void shouldNotifyCollectionRemoved()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(collectionRemoved(Akonadi::Collection)));
+
+        // An existing item (if we trust the test data)
+        Akonadi::Collection collection(6);
+
+        // WHEN
+        (new Akonadi::CollectionDeleteJob(collection))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedCollection= spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.id(), collection.id());
+    }
+
+    void shouldNotifyCollectionChanged()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+
+        // A colection with an existing id (if we trust the test data)
+        Akonadi::Collection collection(7);
+        collection.setName("Bar!");
+
+        // WHEN
+        (new Akonadi::CollectionModifyJob(collection))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedCollection = spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.id(), collection.id());
+        QCOMPARE(notifiedCollection.name(), collection.name());
+
+        auto parent = notifiedCollection.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
+        }
+    }
+
 
     void shouldNotifyItemAdded()
     {
@@ -387,7 +484,7 @@ private:
     Akonadi::Collection calendar2()
     {
         // Calendar2 is supposed to get this id, hopefully this won't be too fragile
-        return Akonadi::Collection(6);
+        return Akonadi::Collection(8);
     }
 };
 

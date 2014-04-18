@@ -26,6 +26,7 @@
 
 #include <KCalCore/Todo>
 
+#include <Akonadi/CollectionFetchScope>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Monitor>
 #include <Akonadi/Notes/NoteUtils>
@@ -35,8 +36,21 @@ using namespace Akonadi;
 MonitorImpl::MonitorImpl()
     : m_monitor(new Akonadi::Monitor)
 {
+    m_monitor->fetchCollection(true);
+    m_monitor->setCollectionMonitored(Akonadi::Collection::root());
+
     m_monitor->setMimeTypeMonitored(KCalCore::Todo::todoMimeType());
     m_monitor->setMimeTypeMonitored(NoteUtils::noteMimeType());
+
+    auto collectionScope = m_monitor->collectionFetchScope();
+    collectionScope.setContentMimeTypes(m_monitor->mimeTypesMonitored());
+    collectionScope.setIncludeStatistics(true);
+    collectionScope.setAncestorRetrieval(CollectionFetchScope::All);
+    m_monitor->setCollectionFetchScope(collectionScope);
+
+    connect(m_monitor, SIGNAL(collectionAdded(Akonadi::Collection,Akonadi::Collection)), this, SIGNAL(collectionAdded(Akonadi::Collection)));
+    connect(m_monitor, SIGNAL(collectionRemoved(Akonadi::Collection)), this, SIGNAL(collectionRemoved(Akonadi::Collection)));
+    connect(m_monitor, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)), this, SIGNAL(collectionChanged(Akonadi::Collection)));
 
     auto itemScope = m_monitor->itemFetchScope();
     itemScope.fetchFullPayload();
