@@ -7,7 +7,9 @@ Feature: Task listing
   Scenario: Top level list
     Given I got a task list
     When I list the model
-    Then the list contains: "Buy kiwis"
-    And the list contains: "Buy pears"
-    And the list contains: "Buy apples"
-    And the list contains: "Buy cheese"
+    Then the list is:
+       | display    |
+       | Buy kiwis  |
+       | Buy pears  |
+       | Buy apples |
+       | Buy cheese |

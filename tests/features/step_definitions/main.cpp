@@ -79,9 +79,17 @@ WHEN("^I list the model$") {
 }
 
 
-THEN("^the list contains: \"(.*)\"$") {
-    REGEX_PARAM(QString, lookupString);
+THEN("^the list is") {
+    TABLE_PARAM(tableParam);
+
+    QStringList list;
+    for (const auto it : tableParam.hashes()) {
+        list << cucumber::internal::fromString<QString>(std::string(it.at("display")));
+    }
+    list.sort();
 
     ScenarioScope<ZanshinContext> context;
-    BOOST_CHECK(context->titles.contains(lookupString));
+    auto titles = context->titles;
+    titles.sort();
+    BOOST_CHECK(list == titles);
 }
