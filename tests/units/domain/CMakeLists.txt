@@ -1,6 +1,7 @@
 zanshin_auto_tests(
   artifacttest
   contexttest
+  datasourcetest
   mockitotest
   notetest
   projecttest

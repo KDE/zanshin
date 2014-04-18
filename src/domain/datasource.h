@@ -42,7 +42,16 @@ public:
     explicit DataSource(QObject *parent = 0);
     virtual ~DataSource();
 
+    QString name() const;
+
+public slots:
+    void setName(const QString &name);
+
+signals:
+    void nameChanged(const QString &name);
+
 private:
+    QString m_name;
 };
 
 }

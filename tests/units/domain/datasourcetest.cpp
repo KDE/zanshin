@@ -21,30 +21,41 @@
    USA.
 */
 
+#include <QtTest>
 
-#include "datasource.h"
+#include "domain/datasource.h"
 
 using namespace Domain;
 
-DataSource::DataSource(QObject *parent)
-    : QObject(parent)
+class DataSourceTest : public QObject
 {
-}
+    Q_OBJECT
+private slots:
+    void shouldHaveEmptyPropertiesByDefault()
+    {
+        DataSource ds;
+        QCOMPARE(ds.name(), QString());
+    }
 
-DataSource::~DataSource()
-{
-}
+    void shouldNotifyNameChanges()
+    {
+        DataSource ds;
+        QSignalSpy spy(&ds, SIGNAL(nameChanged(QString)));
+        ds.setName("Foo");
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toString(), QString("Foo"));
+    }
 
-QString DataSource::name() const
-{
-    return m_name;
-}
+    void shouldNotNotifyIdenticalNameChanges()
+    {
+        DataSource ds;
+        ds.setName("Foo");
+        QSignalSpy spy(&ds, SIGNAL(nameChanged(QString)));
+        ds.setName("Foo");
+        QCOMPARE(spy.count(), 0);
+    }
+};
 
-void DataSource::setName(const QString &name)
-{
-    if (m_name == name)
-        return;
+QTEST_MAIN(DataSourceTest)
 
-    m_name = name;
-    emit nameChanged(name);
-}
+#include "datasourcetest.moc"
