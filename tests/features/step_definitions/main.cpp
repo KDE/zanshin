@@ -8,6 +8,7 @@
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "presentation/tasklistmodel.h"
+#include "presentation/datasourcelistmodel.h"
 
 static int argc = 0;
 static QApplication app(argc, 0);
@@ -65,6 +66,14 @@ GIVEN("^I got a task list$") {
     ScenarioScope<ZanshinContext> context;
     auto queries = context->queries->findAll();
     context->model = new Presentation::TaskListModel(queries, context->repository);
+    QTest::qWait(500);
+}
+
+GIVEN("^I got a data source list model$") {
+    ScenarioScope<ZanshinContext> context;
+    auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+    auto queries = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+    context->model = new Presentation::DataSourceListModel(queries);
     QTest::qWait(500);
 }
 
