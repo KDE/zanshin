@@ -53,7 +53,15 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
     if (!collection.isValid())
         return;
 
-    dataSource->setName(collection.name());
+    QString name = collection.displayName();
+
+    auto parent = collection.parentCollection();
+    while (parent.isValid() && parent != Akonadi::Collection::root()) {
+        name = parent.displayName() + "/" + name;
+        parent = parent.parentCollection();
+    }
+
+    dataSource->setName(name);
 }
 
 Domain::Task::Ptr Serializer::createTaskFromItem(Item item)

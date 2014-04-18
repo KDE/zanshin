@@ -26,6 +26,7 @@
 #include "akonadi/akonadiserializer.h"
 
 #include <Akonadi/Collection>
+#include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Item>
 #include <KCalCore/Todo>
 
@@ -130,6 +131,38 @@ private slots:
 
         // THEN
         QCOMPARE(dataSource->name(), name);
+    }
+
+    void shouldNameDataSourceFromCollectionPath()
+    {
+        // GIVEN
+
+        // Data...
+        const QString name = "name";
+        const QString parentName = "parent";
+
+        // ... stored in a collection with a parent
+        Akonadi::Collection collection(42);
+        collection.setName(name);
+        Akonadi::Collection parentCollection(41);
+        parentCollection.setName("Foo");
+        auto attribute = new Akonadi::EntityDisplayAttribute;
+        attribute->setDisplayName(parentName);
+        parentCollection.addAttribute(attribute);
+        collection.setParentCollection(parentCollection);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto dataSource1 = serializer.createDataSourceFromCollection(collection);
+
+        // Give it another try with the root
+        parentCollection.setParentCollection(Akonadi::Collection::root());
+        collection.setParentCollection(parentCollection);
+        auto dataSource2 = serializer.createDataSourceFromCollection(collection);
+
+        // THEN
+        QCOMPARE(dataSource1->name(), QString(parentName + "/" + name));
+        QCOMPARE(dataSource2->name(), QString(parentName + "/" + name));
     }
 
     void shouldCreateTaskFromItem_data()
