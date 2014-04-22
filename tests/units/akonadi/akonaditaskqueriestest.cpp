@@ -1559,6 +1559,110 @@ private slots:
 
         QCOMPARE(result->data().size(), 0);
     }
+
+    void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty_data()
+    {
+        QTest::addColumn<Akonadi::Collection>("col");
+        QTest::addColumn<MockCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<bool>("deleteQuery");
+        QTest::addColumn<bool>("fechItemsIsCalled");
+
+        // One top level collections
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+
+        // Three task in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        Domain::Task::Ptr task1(new Domain::Task);
+        task1->setProperty("itemId", 42);
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col);
+        Domain::Task::Ptr task2(new Domain::Task);
+        Akonadi::Item item3(44);
+        item3.setParentCollection(col);
+        Domain::Task::Ptr task3(new Domain::Task);
+
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+
+        QTest::newRow("No error with empty collection list") << col << collectionFetchJob << itemFetchJob << false << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        itemFetchJob = new MockItemFetchJob(this);
+
+        QTest::newRow("Error with empty collection list") << col << collectionFetchJob << itemFetchJob << true << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        itemFetchJob = new MockItemFetchJob(this);
+
+        QTest::newRow("Error with collection list") <<  col << collectionFetchJob << itemFetchJob  << true << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        itemFetchJob = new MockItemFetchJob(this);
+
+        QTest::newRow("No error with empty item list") << col << collectionFetchJob << itemFetchJob << false << true;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setExpectedError(KJob::KilledJobError);
+
+        QTest::newRow("Error with empty item list") << col << collectionFetchJob << itemFetchJob << true << true;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setExpectedError(KJob::KilledJobError);
+        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+
+        QTest::newRow("Error with item list") << col << collectionFetchJob << itemFetchJob << true << true;
+    }
+
+    void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Collection, col);
+        QFETCH(MockCollectionFetchJob*, collectionFetchJob);
+        QFETCH(MockItemFetchJob*, itemFetchJob);
+        QFETCH(bool, deleteQuery);
+        QFETCH(bool, fechItemsIsCalled);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive)
+                                                                 .thenReturn(collectionFetchJob);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
+                                                                             &serializerMock.getInstance(),
+                                                                             new MockMonitor(this)));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
+
+        if (deleteQuery)
+            delete queries.take();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive).exactly(1));
+        if (fechItemsIsCalled)
+            QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
+
+        QCOMPARE(result->data().size(), 0);
+    }
 };
 
 QTEST_MAIN(AkonadiTaskQueriesTest)
