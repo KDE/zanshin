@@ -33,6 +33,8 @@
 
 using namespace mockitopp;
 
+Q_DECLARE_METATYPE(MockItemFetchJob*);
+
 class AkonadiTaskQueriesTest : public QObject
 {
     Q_OBJECT
@@ -1365,6 +1367,89 @@ private slots:
         // THEN
         QVERIFY(result->data().isEmpty());
         QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item1).exactly(1));
+
+        QCOMPARE(result->data().size(), 0);
+    }
+
+
+    void shouldNotCrashDuringFindChildrenWhenItemsJobReceiveResult_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item1");
+        QTest::addColumn<MockItemFetchJob*>("itemFetchJob1");
+        QTest::addColumn<Akonadi::Collection>("col");
+        QTest::addColumn<MockItemFetchJob*>("itemFetchJob2");
+        QTest::addColumn<Domain::Task::Ptr>("task1");
+        QTest::addColumn<bool>("deleteQuery");
+
+        // One top level collections
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+
+        // Three task in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        Domain::Task::Ptr task1(new Domain::Task);
+        task1->setProperty("itemId", 42);
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col);
+        Domain::Task::Ptr task2(new Domain::Task);
+        Akonadi::Item item3(44);
+        item3.setParentCollection(col);
+        Domain::Task::Ptr task3(new Domain::Task);
+        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+
+        QTest::newRow("No error with empty list") << item1 << itemFetchJob1 << col << itemFetchJob2 << task1 << false;
+
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("Error with empty list") << item1 << itemFetchJob1 << col << itemFetchJob2 << task1 << true;
+
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setExpectedError(KJob::KilledJobError);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+        QTest::newRow("Error with list") <<  item1 << itemFetchJob1 << col << itemFetchJob2 << task1 << true;
+    }
+
+    void shouldNotCrashDuringFindChildrenWhenItemsJobReceiveResult()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item1);
+        QFETCH(MockItemFetchJob*, itemFetchJob1);
+        QFETCH(Akonadi::Collection, col);
+        QFETCH(MockItemFetchJob*, itemFetchJob2);
+        QFETCH(Domain::Task::Ptr, task1);
+        QFETCH(bool, deleteQuery);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
+                                                           .thenReturn(itemFetchJob1);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob2);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
+                                                                             &serializerMock.getInstance(),
+                                                                             new MockMonitor(this)));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
+
+        if (deleteQuery)
+            delete queries.take();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item1).exactly(1));
 
         QCOMPARE(result->data().size(), 0);

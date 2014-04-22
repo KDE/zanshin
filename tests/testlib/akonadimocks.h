@@ -46,6 +46,7 @@ private slots:
 
 protected:
     bool isDone() const;
+    int expectedError() const;
 
 private:
     bool m_done;

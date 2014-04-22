@@ -57,6 +57,10 @@ bool MockAkonadiJob::isDone() const
     return m_done;
 }
 
+int MockAkonadiJob::expectedError() const
+{
+    return m_errorCode;
+}
 
 void MockCollectionFetchJob::setCollections(const Akonadi::Collection::List &collections)
 {
@@ -76,6 +80,9 @@ void MockItemFetchJob::setItems(const Akonadi::Item::List &items)
 
 Akonadi::Item::List MockItemFetchJob::items() const
 {
+    if (expectedError() != KJob::NoError)
+        return m_items;
+
     return isDone() ? m_items : Akonadi::Item::List();
 }
 

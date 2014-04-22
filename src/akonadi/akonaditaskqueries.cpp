@@ -122,6 +122,9 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
         Q_ASSERT(item.parentCollection().isValid());
         ItemFetchJobInterface *job = m_storage->fetchItems(item.parentCollection());
         Utils::JobHandler::install(job->kjob(), [provider, job, task, this] {
+            if (job->kjob()->error() != KJob::NoError)
+                return;
+
             for (auto item : job->items()) {
                 if (m_serializer->isTaskChild(task, item)) {
                     auto task = deserializeTask(item);
