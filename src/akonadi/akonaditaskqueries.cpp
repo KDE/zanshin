@@ -78,9 +78,15 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive);
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+        if (job->kjob()->error() != KJob::NoError)
+            return;
+
         for (auto collection : job->collections()) {
             ItemFetchJobInterface *job = m_storage->fetchItems(collection);
             Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+                if (job->kjob()->error() != KJob::NoError)
+                    return;
+
                 for (auto item : job->items()) {
                     auto task = deserializeTask(item);
                     if (task)
