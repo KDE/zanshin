@@ -107,6 +107,34 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item).exactly(1));
     }
+
+    void shouldRemoveATask()
+    {
+        // GIVEN
+        Akonadi::Item item(42);
+        Domain::Task::Ptr task(new Domain::Task);
+
+        // A mock delete job
+        auto itemDeleteJob = new MockAkonadiJob(this);
+
+        // Storage mock returning the delete job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::removeItem).when(item)
+                                                           .thenReturn(itemDeleteJob);
+
+        // Serializer mock returning the item for the task
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).thenReturn(item);
+
+        // WHEN
+        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
+                                                                                       &serializerMock.getInstance()));
+        repository->remove(task)->exec();
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::removeItem).when(item).exactly(1));
+    }
 };
 
 QTEST_MAIN(AkonadiTaskRepositoryTest)
