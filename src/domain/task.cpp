@@ -27,7 +27,8 @@
 using namespace Domain;
 
 Task::Task(QObject *parent)
-    : Artifact(parent)
+    : Artifact(parent),
+      m_done(false)
 {
 }
 
