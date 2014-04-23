@@ -324,7 +324,6 @@ private slots:
         // THEN
         QCOMPARE(spy.size(), 1);
         auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
-        qDebug() << "notifiedItem" << notifiedItem.id();
         QCOMPARE(notifiedItem.parentCollection(), calendar2());
         QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
     }
