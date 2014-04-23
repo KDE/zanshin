@@ -357,6 +357,32 @@ private slots:
         }
     }
 
+    void shouldDeleteItem()
+    {
+        //GIVEN
+        Akonadi::Storage storage;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+
+        // An existing item (if we trust the test data)
+        Akonadi::Item item(3);
+
+        //When
+        (storage.removeItem(item))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
+    }
+
 private:
     Akonadi::Collection calendar2()
     {

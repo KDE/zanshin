@@ -30,6 +30,7 @@
 
 #include <Akonadi/CollectionFetchScope>
 #include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemDeleteJob>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ItemModifyJob>
@@ -93,6 +94,11 @@ KJob *Storage::createItem(Item item, Collection collection)
 KJob *Storage::updateItem(Item item)
 {
     return new ItemModifyJob(item);
+}
+
+KJob *Storage::removeItem(Item item)
+{
+    return new ItemDeleteJob(item);
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
