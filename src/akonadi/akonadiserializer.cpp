@@ -144,6 +144,15 @@ QString Serializer::relatedUidFromItem(Akonadi::Item item)
     return todo->relatedTo();
 }
 
+void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
+{
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    todo->setRelatedTo(parent->property("todoUid").toString());
+}
+
 Domain::Note::Ptr Serializer::createNoteFromItem(Akonadi::Item item)
 {
     if (!item.hasPayload<KMime::Message::Ptr>())

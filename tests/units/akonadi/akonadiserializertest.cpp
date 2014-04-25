@@ -656,6 +656,47 @@ private slots:
         QCOMPARE(note->title(), title);
         QCOMPARE(note->text(), text);
     }
+
+    void shouldUpdateItemParent_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<Domain::Task::Ptr>("parent");
+        QTest::addColumn<QString>("expectedRelatedToUid");
+
+        Akonadi::Item item1;
+        KCalCore::Todo::Ptr todo1(new KCalCore::Todo);
+        item1.setPayload<KCalCore::Todo::Ptr>(todo1);
+
+        Domain::Task::Ptr parent(new Domain::Task);
+        parent->setProperty("todoUid", "1");
+
+        QTest::newRow("nominal case") << item1 << parent << "1";
+
+        Akonadi::Item item2;
+        QTest::newRow("update item without payload") << item2 << parent << QString();
+
+        Domain::Task::Ptr parent2(new Domain::Task);
+        QTest::newRow("update item with a empty parent uid") << item1 << parent2 << QString();
+    }
+
+    void shouldUpdateItemParent()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item);
+        QFETCH(Domain::Task::Ptr, parent);
+        QFETCH(QString, expectedRelatedToUid);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        serializer.updateItemParent(item, parent);
+
+        // THEN
+        if (item.hasPayload<KCalCore::Todo::Ptr>()) {
+            auto todo = item.payload<KCalCore::Todo::Ptr>();
+            QString relatedUid = todo->relatedTo();
+            QCOMPARE(relatedUid, expectedRelatedToUid);
+        }
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)
