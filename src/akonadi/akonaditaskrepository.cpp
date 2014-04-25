@@ -26,10 +26,13 @@
 
 #include <Akonadi/Item>
 
+#include "akonadiitemfetchjobinterface.h"
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
+#include "utils/compositejob.h"
 
 using namespace Akonadi;
+using namespace Utils;
 
 TaskRepository::TaskRepository()
     : m_storage(new Storage),
@@ -73,10 +76,23 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
 
 KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
 {
-    Q_UNUSED(parent);
-    Q_UNUSED(child);
-    qFatal("Not implemented yet");
-    return 0;
+    auto childItem = m_serializer->createItemFromTask(child);
+
+    auto job = new CompositeJob();
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, parent, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+           return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+        m_serializer->updateItemParent(childItem, parent);
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+
+    return job;
 }
 
 KJob *TaskRepository::dissociate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
