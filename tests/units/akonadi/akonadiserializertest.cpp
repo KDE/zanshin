@@ -28,7 +28,9 @@
 #include <Akonadi/Collection>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Item>
+#include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
+#include <KMime/Message>
 
 class AkonadiSerializerTest : public QObject
 {
@@ -522,6 +524,137 @@ private slots:
 
         // THEN
         QCOMPARE(uid, expectedUid);
+    }
+
+    void shouldCreateNoteFromItem_data()
+    {
+        QTest::addColumn<QString>("title");
+        QTest::addColumn<QString>("text");
+
+        QTest::newRow("nominal case") << "A note title" << "A note content.\nWith two lines.";
+        QTest::newRow("empty case") << QString() << QString();
+    }
+
+    void shouldCreateNoteFromItem()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, title);
+        QFETCH(QString, text);
+
+        // ... stored in a message...
+        KMime::Message::Ptr message(new KMime::Message);
+        message->subject(true)->fromUnicodeString(title, "utf-8");
+        message->mainBodyPart()->fromUnicodeString(text);
+
+        // ... as payload of an item.
+        Akonadi::Item item;
+        item.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        item.setPayload<KMime::Message::Ptr>(message);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Note::Ptr note = serializer.createNoteFromItem(item);
+
+        // THEN
+        QCOMPARE(note->title(), title);
+        QCOMPARE(note->text(), text);
+    }
+
+    void shouldCreateNullNoteFromInvalidItem()
+    {
+        // GIVEN
+        Akonadi::Item item;
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Note::Ptr note = serializer.createNoteFromItem(item);
+
+        // THEN
+        QVERIFY(note.isNull());
+    }
+
+    void shouldUpdateNoteFromItem_data()
+    {
+        QTest::addColumn<QString>("updatedTitle");
+        QTest::addColumn<QString>("updatedText");
+
+        QTest::newRow("no change") << "title" << "content";
+        QTest::newRow("data changed") << "A new title" << "A new content";
+    }
+
+    void shouldUpdateNoteFromItem()
+    {
+        // GIVEN
+
+        // A message...
+        KMime::Message::Ptr message(new KMime::Message);
+        message->subject(true)->fromUnicodeString("title", "utf-8");
+        message->mainBodyPart()->fromUnicodeString("text");
+
+        //... as the payload of an item...
+        Akonadi::Item item;
+        item.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        item.setPayload<KMime::Message::Ptr>(message);
+
+        //... deserialized as a note
+        Akonadi::Serializer serializer;
+        auto note = serializer.createNoteFromItem(item);
+
+        // WHEN
+
+        // Data...
+        QFETCH(QString, updatedTitle);
+        QFETCH(QString, updatedText);
+
+        //... stored in a new message...
+        KMime::Message::Ptr updatedMessage(new KMime::Message);
+        updatedMessage->subject(true)->fromUnicodeString(updatedTitle, "utf-8");
+        updatedMessage->mainBodyPart()->fromUnicodeString(updatedText);
+
+        //... as the payload of a new item...
+        Akonadi::Item updatedItem;
+        updatedItem.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        updatedItem.setPayload<KMime::Message::Ptr>(updatedMessage);
+
+        serializer.updateNoteFromItem(note, updatedItem);
+
+        // THEN
+        QCOMPARE(note->title(), updatedTitle);
+        QCOMPARE(note->text(), updatedText);
+    }
+
+    void shouldNotUpdateNoteFromInvalidItem()
+    {
+        // GIVEN
+
+        // Data...
+        QString title = "A title";
+        QString text = "A note content";
+
+        // ... stored in a message...
+        KMime::Message::Ptr message(new KMime::Message);
+        message->subject(true)->fromUnicodeString(title, "utf-8");
+        message->mainBodyPart()->fromUnicodeString(text);
+
+        //... as the payload of an item...
+        Akonadi::Item item;
+        item.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        item.setPayload<KMime::Message::Ptr>(message);
+
+        //... deserialized as a note
+        Akonadi::Serializer serializer;
+        auto note = serializer.createNoteFromItem(item);
+
+        // WHEN
+        Akonadi::Item invalidItem;
+
+        serializer.updateNoteFromItem(note, invalidItem);
+
+        //THEN
+        QCOMPARE(note->title(), title);
+        QCOMPARE(note->text(), text);
     }
 };
 

@@ -29,6 +29,7 @@
 #include <Akonadi/Item>
 #include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
+#include <KMime/Message>
 
 using namespace Akonadi;
 
@@ -145,14 +146,22 @@ QString Serializer::relatedUidFromItem(Akonadi::Item item)
 
 Domain::Note::Ptr Serializer::createNoteFromItem(Akonadi::Item item)
 {
-    Q_UNUSED(item)
-    qFatal("Not implemented yet");
-    return Domain::Note::Ptr();
+    if (!item.hasPayload<KMime::Message::Ptr>())
+        return Domain::Note::Ptr();
+
+    Domain::Note::Ptr note = Domain::Note::Ptr::create();
+    updateNoteFromItem(note, item);
+
+    return note;
 }
 
 void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
 {
-    Q_UNUSED(note)
-    Q_UNUSED(item)
-    qFatal("Not implemented yet");
+    if (!item.hasPayload<KMime::Message::Ptr>())
+        return;
+
+    NoteUtils::NoteMessageWrapper wrappedNote(item.payload<KMime::Message::Ptr>());
+
+    note->setTitle(wrappedNote.title());
+    note->setText(wrappedNote.text());
 }

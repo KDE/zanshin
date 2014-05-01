@@ -3,7 +3,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
     kde4_add_executable(${_testname} TEST ${_testname}.cpp)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
     target_link_libraries(${_testname} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_AKONADI_LIBS}
-                                       ${KDEPIMLIBS_KCALCORE_LIBS} ${QT_QTTEST_LIBRARY}
+                                       ${KDEPIMLIBS_KCALCORE_LIBS} ${KDEPIMLIBS_KMIME_LIBS} ${QT_QTTEST_LIBRARY}
                                        akonadi
                                        domain
                                        utils
