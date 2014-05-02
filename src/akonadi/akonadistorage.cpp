@@ -50,6 +50,13 @@ public:
     Collection::List collections() const
     {
         auto collections = CollectionFetchJob::collections();
+
+        // Memorize them to reconstruct the ancestor chain later
+        QMap<Collection::Id, Collection> collectionsMap;
+        for (auto collection : collections) {
+            collectionsMap[collection.id()] = collection;
+        }
+
         // Why the hell isn't fetchScope() const and returning a reference???
         auto self = const_cast<CollectionJob*>(this);
         const auto allowedMimeTypes = self->fetchScope().contentMimeTypes().toSet();
@@ -60,6 +67,25 @@ public:
                                             return mimeTypes.intersect(allowedMimeTypes).isEmpty();
                                          }),
                           collections.end());
+
+        // Replace the dummy parents in the ancestor chain with proper ones
+        // full of juicy data
+        std::function<Collection(const Collection&)> reconstructAncestors =
+        [collectionsMap, &reconstructAncestors] (const Collection &collection) {
+            Q_ASSERT(collection.isValid());
+            auto parent = collection.parentCollection();
+            if (parent == Akonadi::Collection::root())
+                return collection;
+
+            auto reconstructedParent = reconstructAncestors(collectionsMap[parent.id()]);
+
+            auto result = collection;
+            result.setParentCollection(reconstructedParent);
+            return result;
+        };
+
+        std::transform(collections.begin(), collections.end(),
+                       collections.begin(), reconstructAncestors);
 
         return collections;
     }

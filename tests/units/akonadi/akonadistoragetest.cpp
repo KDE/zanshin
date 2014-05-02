@@ -90,6 +90,7 @@ private slots:
             auto parent = collection.parentCollection();
             while (parent != Akonadi::Collection::root()) {
                 QVERIFY(parent.isValid());
+                QVERIFY(!parent.displayName().isEmpty());
                 parent = parent.parentCollection();
             }
         }
