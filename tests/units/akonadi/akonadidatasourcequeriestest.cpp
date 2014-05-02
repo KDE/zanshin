@@ -70,7 +70,7 @@ private slots:
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
                                                                                          &serializerMock.getInstance(),
                                                                                          new MockMonitor(this)));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAll();
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTasks();
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -122,7 +122,7 @@ private slots:
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
                                                                                          &serializerMock.getInstance(),
                                                                                          new MockMonitor(this)));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAll();
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTasks();
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -161,7 +161,7 @@ private slots:
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
                                                                                          &serializerMock.getInstance(),
                                                                                          monitor));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAll();
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTasks();
         QTest::qWait(150);
         QVERIFY(result->data().isEmpty());
 
@@ -221,7 +221,7 @@ private slots:
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
                                                                                          &serializerMock.getInstance(),
                                                                                          monitor));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAll();
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTasks();
         QTest::qWait(150);
         QCOMPARE(result->data().size(), 3);
 
@@ -277,7 +277,7 @@ private slots:
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
                                                                                          &serializerMock.getInstance(),
                                                                                          monitor));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAll();
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTasks();
         // Even though the pointer didn't change it's convenient to user if we call
         // the replace handlers
         bool replaceHandlerCalled = false;

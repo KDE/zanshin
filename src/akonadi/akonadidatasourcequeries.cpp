@@ -65,7 +65,7 @@ DataSourceQueries::~DataSourceQueries()
     }
 }
 
-DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findAll() const
+DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
 {
     DataSourceProvider::Ptr provider(m_dataSourceProvider.toStrongRef());
 
@@ -86,6 +86,12 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findAll() const
     });
 
     return result;
+}
+
+DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
+{
+    qFatal("Not implemented yet");
+    return DataSourceResult::Ptr();
 }
 
 void DataSourceQueries::onCollectionAdded(const Collection &collection)

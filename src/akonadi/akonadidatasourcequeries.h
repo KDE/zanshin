@@ -51,7 +51,8 @@ public:
     DataSourceQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
     virtual ~DataSourceQueries();
 
-    DataSourceResult::Ptr findAll() const;
+    DataSourceResult::Ptr findTasks() const;
+    DataSourceResult::Ptr findNotes() const;
 
 private slots:
     void onCollectionAdded(const Akonadi::Collection &collection);

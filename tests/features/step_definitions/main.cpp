@@ -73,9 +73,16 @@ GIVEN("^I got a task list$") {
     QTest::qWait(500);
 }
 
-GIVEN("^I got a data source list model$") {
+GIVEN("^I got a task data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    auto queries = context->dataSourceQueries->findAll();
+    auto queries = context->dataSourceQueries->findTasks();
+    context->model = new Presentation::DataSourceListModel(queries);
+    QTest::qWait(500);
+}
+
+GIVEN("^I got a note data source list model$") {
+    ScenarioScope<ZanshinContext> context;
+    auto queries = context->dataSourceQueries->findNotes();
     context->model = new Presentation::DataSourceListModel(queries);
     QTest::qWait(500);
 }

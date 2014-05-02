@@ -36,7 +36,8 @@ public:
     DataSourceQueries();
     virtual ~DataSourceQueries();
 
-    virtual QueryResult<DataSource::Ptr>::Ptr findAll() const = 0;
+    virtual QueryResult<DataSource::Ptr>::Ptr findTasks() const = 0;
+    virtual QueryResult<DataSource::Ptr>::Ptr findNotes() const = 0;
 };
 
 }
