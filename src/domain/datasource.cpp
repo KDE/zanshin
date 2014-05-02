@@ -40,6 +40,11 @@ QString DataSource::name() const
     return m_name;
 }
 
+QString DataSource::iconName() const
+{
+    return m_iconName;
+}
+
 void DataSource::setName(const QString &name)
 {
     if (m_name == name)
@@ -47,4 +52,13 @@ void DataSource::setName(const QString &name)
 
     m_name = name;
     emit nameChanged(name);
+}
+
+void DataSource::setIconName(const QString &iconName)
+{
+    if (m_iconName == iconName)
+        return;
+
+    m_iconName = iconName;
+    emit iconNameChanged(iconName);
 }

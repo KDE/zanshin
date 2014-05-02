@@ -43,15 +43,19 @@ public:
     virtual ~DataSource();
 
     QString name() const;
+    QString iconName() const;
 
 public slots:
     void setName(const QString &name);
+    void setIconName(const QString &iconName);
 
 signals:
     void nameChanged(const QString &name);
+    void iconNameChanged(const QString &iconName);
 
 private:
     QString m_name;
+    QString m_iconName;
 };
 
 }

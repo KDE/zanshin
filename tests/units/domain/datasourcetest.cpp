@@ -35,6 +35,7 @@ private slots:
     {
         DataSource ds;
         QCOMPARE(ds.name(), QString());
+        QCOMPARE(ds.iconName(), QString());
     }
 
     void shouldNotifyNameChanges()
@@ -52,6 +53,24 @@ private slots:
         ds.setName("Foo");
         QSignalSpy spy(&ds, SIGNAL(nameChanged(QString)));
         ds.setName("Foo");
+        QCOMPARE(spy.count(), 0);
+    }
+
+    void shouldNotifyIconNameChanges()
+    {
+        DataSource ds;
+        QSignalSpy spy(&ds, SIGNAL(iconNameChanged(QString)));
+        ds.setIconName("Foo");
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toString(), QString("Foo"));
+    }
+
+    void shouldNotNotifyIdenticalIconNameChanges()
+    {
+        DataSource ds;
+        ds.setIconName("Foo");
+        QSignalSpy spy(&ds, SIGNAL(iconNameChanged(QString)));
+        ds.setIconName("Foo");
         QCOMPARE(spy.count(), 0);
     }
 };
