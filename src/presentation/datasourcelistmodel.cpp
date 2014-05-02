@@ -24,12 +24,18 @@
 
 #include "datasourcelistmodel.h"
 
+#include <QIcon>
+
 using namespace Presentation;
 
 DataSourceListModel::DataSourceListModel(const DataSourceList::Ptr &dataSourceList, QObject *parent)
     : QAbstractListModel(parent),
       m_dataSourceList(dataSourceList)
 {
+    auto roles = roleNames();
+    roles.insert(IconNameRole, "icon");
+    setRoleNames(roles);
+
     m_dataSourceList->addPreInsertHandler([this](const Domain::DataSource::Ptr &, int index) {
                                         beginInsertRows(QModelIndex(), index, index);
                                     });
@@ -74,15 +80,17 @@ QVariant DataSourceListModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+    const auto dataSource = dataSourceForIndex(index);
+    switch (role) {
+    case Qt::DisplayRole:
+        return dataSource->name();
+    case Qt::DecorationRole:
+        return QIcon::fromTheme(data(index, IconNameRole).toString());
+    case IconNameRole:
+        return dataSource->iconName().isEmpty() ? "folder" : dataSource->iconName();
+    default:
         return QVariant();
     }
-
-    const auto dataSource = dataSourceForIndex(index);
-    if (role == Qt::DisplayRole)
-        return dataSource->name();
-    else
-        return QVariant();
 }
 
 Domain::DataSource::Ptr DataSourceListModel::dataSourceForIndex(const QModelIndex &index) const

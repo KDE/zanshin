@@ -37,10 +37,14 @@ class DataSourceListModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    enum {
+        IconNameRole = Qt::UserRole + 1
+    };
+
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceList;
 
     explicit DataSourceListModel(const DataSourceList::Ptr &dataSourceList,
-                           QObject *parent = 0);
+                                 QObject *parent = 0);
     ~DataSourceListModel();
 
     Qt::ItemFlags flags(const QModelIndex &index) const;

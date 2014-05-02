@@ -2,6 +2,7 @@
   <collection content="inode/directory" rid="root" name="Knut test data">
     <attribute type="ENTITYDISPLAY">("TestData" "" "" ())</attribute>
     <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo,application/x-vnd.akonadi.calendar.event" rid="{cdc229c7-a9b5-4d37-989d-a28e372be2a9}" name="Calendar1">
+      <attribute type="ENTITYDISPLAY">("" "view-calendar-tasks" "" ())</attribute>
       <attribute type="AccessRights">a</attribute>
       <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{0aa4dc30-a2c2-4e08-8241-033b3344debc}">
         <payload>BEGIN:VCALENDAR
@@ -61,6 +62,7 @@ END:VEVENT&#xd;
 END:VCALENDAR</payload>
       </item>
       <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{e682b8b5-b67c-4538-8689-6166f64177f0}" name="Calendar2">
+        <attribute type="ENTITYDISPLAY">("" "view-calendar-tasks" "" ())</attribute>
         <attribute type="AccessRights">a</attribute>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{7824df00-2fd6-47a4-8319-52659dc82005}">
           <payload>BEGIN:VCALENDAR
