@@ -37,9 +37,10 @@ private slots:
     void shouldCreateDataSourceFromCollection_data()
     {
         QTest::addColumn<QString>("name");
+        QTest::addColumn<QString>("iconName");
 
-        QTest::newRow("nominal case") << "name";
-        QTest::newRow("empty case") << QString();
+        QTest::newRow("nominal case") << "name" << "icon";
+        QTest::newRow("empty case") << QString() << QString();
     }
 
     void shouldCreateDataSourceFromCollection()
@@ -48,10 +49,14 @@ private slots:
 
         // Data...
         QFETCH(QString, name);
+        QFETCH(QString, iconName);
 
         // ... stored in a collection
         Akonadi::Collection collection(42);
         collection.setName(name);
+        auto attribute = new Akonadi::EntityDisplayAttribute;
+        attribute->setIconName(iconName);
+        collection.addAttribute(attribute);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -59,6 +64,7 @@ private slots:
 
         // THEN
         QCOMPARE(dataSource->name(), name);
+        QCOMPARE(dataSource->iconName(), iconName);
     }
 
     void shouldCreateNullDataSourceFromInvalidCollection()

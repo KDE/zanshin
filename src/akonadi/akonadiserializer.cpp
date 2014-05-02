@@ -25,6 +25,7 @@
 #include "akonadiserializer.h"
 
 #include <Akonadi/Collection>
+#include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Item>
 #include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
@@ -63,6 +64,11 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
     }
 
     dataSource->setName(name);
+
+    if (collection.hasAttribute<Akonadi::EntityDisplayAttribute>()) {
+        auto iconName = collection.attribute<Akonadi::EntityDisplayAttribute>()->iconName();
+        dataSource->setIconName(iconName);
+    }
 }
 
 bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)
