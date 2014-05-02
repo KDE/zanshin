@@ -96,7 +96,9 @@ private slots:
         Akonadi::Storage storage;
 
         // WHEN
-        auto job = storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
+        auto job = storage.fetchCollections(Akonadi::Collection::root(),
+                                            Akonadi::Storage::Recursive,
+                                            Akonadi::Storage::Tasks|Akonadi::Storage::Notes);
         job->kjob()->exec();
 
         // THEN
