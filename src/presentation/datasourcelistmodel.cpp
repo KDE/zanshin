@@ -78,11 +78,14 @@ QVariant DataSourceListModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    const auto datasource = datasourceForIndex(index);
-    return QVariant();
+    const auto dataSource = dataSourceForIndex(index);
+    if (role == Qt::DisplayRole)
+        return dataSource->name();
+    else
+        return QVariant();
 }
 
-Domain::DataSource::Ptr DataSourceListModel::datasourceForIndex(const QModelIndex &index) const
+Domain::DataSource::Ptr DataSourceListModel::dataSourceForIndex(const QModelIndex &index) const
 {
     return m_dataSourceList->data().at(index.row());
 }

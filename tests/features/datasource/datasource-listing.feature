@@ -1,4 +1,3 @@
-@wip
 Feature: Tasks data sources listing
   As an advanced user
   I can list sources

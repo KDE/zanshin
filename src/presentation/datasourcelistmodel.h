@@ -49,7 +49,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 private:
-    Domain::DataSource::Ptr datasourceForIndex(const QModelIndex &index) const;
+    Domain::DataSource::Ptr dataSourceForIndex(const QModelIndex &index) const;
     bool isModelIndexValid(const QModelIndex &index) const;
 
     DataSourceList::Ptr m_dataSourceList;
