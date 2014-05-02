@@ -76,7 +76,9 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
 
     NoteQueries::NoteResult::Ptr result = NoteProvider::createResult(provider);
 
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive);
+    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                   StorageInterface::Recursive,
+                                                                   StorageInterface::Notes);
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {
         for (auto collection : job->collections()) {
             ItemFetchJobInterface *job = m_storage->fetchItems(collection);

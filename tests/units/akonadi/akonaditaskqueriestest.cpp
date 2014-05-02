@@ -73,7 +73,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
                                                            .thenReturn(itemFetchJob1);
@@ -102,7 +102,7 @@ private slots:
         QTest::qWait(150);
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
@@ -141,7 +141,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -165,7 +165,7 @@ private slots:
         QTest::qWait(150);
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -186,7 +186,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the tasks from the items
@@ -216,7 +216,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
@@ -252,7 +252,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -284,7 +284,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -323,7 +323,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -362,7 +362,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -873,7 +873,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
                                                            .thenReturn(itemFetchJob1);
@@ -901,7 +901,7 @@ private slots:
         QTest::qWait(150);
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
@@ -927,7 +927,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the tasks from the items
@@ -958,7 +958,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
@@ -996,7 +996,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -1027,7 +1027,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -1066,7 +1066,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -1104,7 +1104,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -1147,7 +1147,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -1178,7 +1178,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -1217,7 +1217,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -1248,7 +1248,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -1295,7 +1295,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob1)
@@ -1339,7 +1339,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(2));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
@@ -1557,7 +1557,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -1579,7 +1579,7 @@ private slots:
         QTest::qWait(150);
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         if (fechItemsIsCalled)
             QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
@@ -1664,7 +1664,7 @@ private slots:
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob);
@@ -1686,7 +1686,7 @@ private slots:
         QTest::qWait(150);
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                                Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                                               Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         if (fechItemsIsCalled)
             QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));

@@ -76,7 +76,9 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 
     TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
 
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive);
+    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                   StorageInterface::Recursive,
+                                                                   StorageInterface::Tasks);
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {
         if (job->kjob()->error() != KJob::NoError)
             return;
@@ -155,7 +157,9 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 
     TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
 
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive);
+    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                   StorageInterface::Recursive,
+                                                                   StorageInterface::Tasks);
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {
         if (job->kjob()->error() != KJob::NoError)
             return;
