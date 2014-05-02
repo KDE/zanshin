@@ -57,7 +57,8 @@ private slots:
         // Storage mock returning the fetch jobs
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive)
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the data sources from the items
@@ -76,7 +77,8 @@ private slots:
         QVERIFY(result->data().isEmpty());
         QTest::qWait(150);
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive)
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
@@ -109,7 +111,8 @@ private slots:
         // Storage mock returning the fetch jobs
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive)
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the data sources from the items
@@ -128,7 +131,8 @@ private slots:
         QVERIFY(result->data().isEmpty());
         QTest::qWait(150);
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive)
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
@@ -149,7 +153,8 @@ private slots:
         // Storage mock returning the fetch jobs
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive)
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the data sources from the items
@@ -177,7 +182,8 @@ private slots:
 
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive)
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
@@ -206,7 +212,8 @@ private slots:
         // Storage mock returning the fetch jobs
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive)
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the data sources from the collections
@@ -230,7 +237,8 @@ private slots:
 
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive)
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
@@ -261,7 +269,8 @@ private slots:
         // Storage mock returning the fetch jobs
         mock_object<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive)
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the data sources from the collections
@@ -292,7 +301,8 @@ private slots:
 
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive)
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));

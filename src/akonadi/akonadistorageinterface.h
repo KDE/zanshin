@@ -24,6 +24,8 @@
 #ifndef AKONADI_STORAGEINTERFACE_H
 #define AKONADI_STORAGEINTERFACE_H
 
+#include <QFlags>
+
 class KJob;
 
 namespace Akonadi {
@@ -42,6 +44,12 @@ public:
         Recursive
     };
 
+    enum FetchContentType {
+        Tasks = 0x1,
+        Notes = 0x2
+    };
+    Q_DECLARE_FLAGS(FetchContentTypes, FetchContentType)
+
     StorageInterface();
     virtual ~StorageInterface();
 
@@ -51,11 +59,13 @@ public:
     virtual KJob *updateItem(Akonadi::Item item) = 0;
     virtual KJob *removeItem(Akonadi::Item item) = 0;
 
-    virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) = 0;
+    virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types = FetchContentTypes(Tasks|Notes)) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) = 0;
     virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item) = 0;
 };
 
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Akonadi::StorageInterface::FetchContentTypes)
 
 #endif // AKONADI_STORAGEINTERFACE_H

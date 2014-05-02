@@ -127,7 +127,7 @@ KJob *Storage::removeItem(Item item)
     return new ItemDeleteJob(item);
 }
 
-CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
+CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
 {
     auto job = new CollectionJob(collection, jobTypeFromDepth(depth));
 
