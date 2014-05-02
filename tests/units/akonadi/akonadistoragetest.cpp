@@ -54,14 +54,29 @@ public:
     }
 
 private slots:
-    void shouldListOnlyNotesAndTodoCollections()
+    void shouldListCollections_data()
+    {
+        QTest::addColumn<QStringList>("expectedNames");
+        QTest::addColumn<int>("contentTypes");
+
+        QTest::newRow("all") << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
+                             << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks);
+        QTest::newRow("notes") << QStringList({ "Notes" })
+                               << int(Akonadi::StorageInterface::Notes);
+        QTest::newRow("tasks") << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!" })
+                               << int(Akonadi::StorageInterface::Tasks);
+    }
+
+    void shouldListCollections()
     {
         // GIVEN
         Akonadi::Storage storage;
-        const QStringList expectedNames = { "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" };
+        QFETCH(QStringList, expectedNames);
+        QFETCH(int, contentTypes);
 
         // WHEN
-        auto job = storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
+        auto job = storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive,
+                                            Akonadi::StorageInterface::FetchContentTypes(contentTypes));
         job->kjob()->exec();
 
         // THEN

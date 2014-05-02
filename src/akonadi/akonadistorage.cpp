@@ -129,10 +129,19 @@ KJob *Storage::removeItem(Item item)
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
 {
+    QStringList contentMimeTypes;
+    if (types & Notes)
+        contentMimeTypes << NoteUtils::noteMimeType();
+    if (types & Tasks)
+        contentMimeTypes << KCalCore::Todo::todoMimeType();
+
+
+    Q_ASSERT(!contentMimeTypes.isEmpty());
+
     auto job = new CollectionJob(collection, jobTypeFromDepth(depth));
 
     auto scope = job->fetchScope();
-    scope.setContentMimeTypes({ KCalCore::Todo::todoMimeType(), NoteUtils::noteMimeType() });
+    scope.setContentMimeTypes(contentMimeTypes);
     scope.setIncludeStatistics(true);
     scope.setAncestorRetrieval(CollectionFetchScope::All);
     job->setFetchScope(scope);
