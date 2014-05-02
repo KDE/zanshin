@@ -67,16 +67,16 @@ DataSourceQueries::~DataSourceQueries()
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
 {
-    DataSourceProvider::Ptr provider(m_dataSourceProvider.toStrongRef());
+    DataSourceProvider::Ptr provider(m_taskDataSourceProvider.toStrongRef());
 
     if (!provider) {
         provider = DataSourceProvider::Ptr(new DataSourceProvider);
-        m_dataSourceProvider = provider.toWeakRef();
+        m_taskDataSourceProvider = provider.toWeakRef();
     }
 
     DataSourceQueries::DataSourceResult::Ptr result = DataSourceProvider::createResult(provider);
 
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive);
+    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Tasks);
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {
         for (auto collection : job->collections()) {
             auto dataSource = deserializeDataSource(collection);
@@ -90,13 +90,32 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
 {
-    qFatal("Not implemented yet");
-    return DataSourceResult::Ptr();
+    DataSourceProvider::Ptr provider(m_noteDataSourceProvider.toStrongRef());
+
+    if (!provider) {
+        provider = DataSourceProvider::Ptr(new DataSourceProvider);
+        m_noteDataSourceProvider = provider.toWeakRef();
+    }
+
+    DataSourceQueries::DataSourceResult::Ptr result = DataSourceProvider::createResult(provider);
+
+    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Notes);
+    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+        for (auto collection : job->collections()) {
+            auto dataSource = deserializeDataSource(collection);
+            if (dataSource)
+                provider->append(dataSource);
+        }
+    });
+
+    return result;
 }
 
 void DataSourceQueries::onCollectionAdded(const Collection &collection)
 {
-    DataSourceProvider::Ptr provider(m_dataSourceProvider.toStrongRef());
+    DataSourceProvider::Ptr provider = m_serializer->isNoteCollection(collection) ? m_noteDataSourceProvider.toStrongRef()
+                                     : m_serializer->isTaskCollection(collection) ? m_taskDataSourceProvider.toStrongRef()
+                                     : DataSourceProvider::Ptr();
     auto dataSource = deserializeDataSource(collection);
 
     if (!dataSource)
@@ -109,9 +128,14 @@ void DataSourceQueries::onCollectionAdded(const Collection &collection)
 
 void DataSourceQueries::onCollectionRemoved(const Collection &collection)
 {
-    DataSourceProvider::Ptr provider(m_dataSourceProvider.toStrongRef());
+    QList<DataSourceProvider::Ptr> providers;
+    providers << m_taskDataSourceProvider.toStrongRef()
+              << m_noteDataSourceProvider.toStrongRef();
 
-    if (provider) {
+    for (auto provider : providers) {
+        if (!provider)
+            continue;
+
         for (int i = 0; i < provider->data().size(); i++) {
             auto dataSource = provider->data().at(i);
             if (isDataSourceCollection(dataSource, collection)) {
@@ -124,9 +148,13 @@ void DataSourceQueries::onCollectionRemoved(const Collection &collection)
 
 void DataSourceQueries::onCollectionChanged(const Collection &collection)
 {
-    DataSourceProvider::Ptr provider(m_dataSourceProvider.toStrongRef());
+    QList<DataSourceProvider::Ptr> providers;
+    providers << m_taskDataSourceProvider.toStrongRef()
+              << m_noteDataSourceProvider.toStrongRef();
 
-    if (provider) {
+    for (auto provider : providers) {
+        if (!provider)
+            continue;
         for (int i = 0; i < provider->data().size(); i++) {
             auto dataSource = provider->data().at(i);
             if (isDataSourceCollection(dataSource, collection)) {

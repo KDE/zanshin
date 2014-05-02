@@ -64,6 +64,18 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
     dataSource->setName(name);
 }
 
+bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)
+{
+    qFatal("Not implemented yet");
+    return false;
+}
+
+bool Akonadi::Serializer::isTaskCollection(Akonadi::Collection collection)
+{
+    qFatal("Not implemented yet");
+    return false;
+}
+
 Domain::Task::Ptr Serializer::createTaskFromItem(Item item)
 {
     if (!item.hasPayload<KCalCore::Todo::Ptr>())

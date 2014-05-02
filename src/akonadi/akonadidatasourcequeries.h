@@ -68,7 +68,8 @@ private:
     MonitorInterface *m_monitor;
     bool m_ownInterfaces;
 
-    mutable DataSourceProvider::WeakPtr m_dataSourceProvider;
+    mutable DataSourceProvider::WeakPtr m_taskDataSourceProvider;
+    mutable DataSourceProvider::WeakPtr m_noteDataSourceProvider;
 };
 
 }
