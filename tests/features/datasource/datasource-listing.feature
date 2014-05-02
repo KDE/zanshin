@@ -1,4 +1,3 @@
-@wip
 Feature: Data sources listing
   As an advanced user
   I can list sources

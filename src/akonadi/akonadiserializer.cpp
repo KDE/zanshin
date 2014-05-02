@@ -26,6 +26,7 @@
 
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
+#include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
 
 using namespace Akonadi;
@@ -66,14 +67,12 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
 
 bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)
 {
-    qFatal("Not implemented yet");
-    return false;
+    return collection.contentMimeTypes().contains(NoteUtils::noteMimeType());
 }
 
 bool Akonadi::Serializer::isTaskCollection(Akonadi::Collection collection)
 {
-    qFatal("Not implemented yet");
-    return false;
+    return collection.contentMimeTypes().contains(KCalCore::Todo::todoMimeType());
 }
 
 Domain::Task::Ptr Serializer::createTaskFromItem(Item item)

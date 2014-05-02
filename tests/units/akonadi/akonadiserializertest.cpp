@@ -165,6 +165,37 @@ private slots:
         QCOMPARE(dataSource2->name(), QString(parentName + "/" + name));
     }
 
+    void shouldVerifyCollectionContents_data()
+    {
+        QTest::addColumn<QString>("mimeType");
+        QTest::addColumn<bool>("expectedNotes");
+        QTest::addColumn<bool>("expectedTasks");
+
+        QTest::newRow("task collection") << "application/x-vnd.akonadi.calendar.todo" << false << true;
+        QTest::newRow("note collection") << "text/x-vnd.akonadi.note" << true << false;
+    }
+
+    void shouldVerifyCollectionContents()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, mimeType);
+
+        // ... stored in a collection
+        Akonadi::Collection collection(42);
+        collection.setContentMimeTypes(QStringList() << mimeType);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        QFETCH(bool, expectedNotes);
+        QFETCH(bool, expectedTasks);
+
+        // THEN
+        QCOMPARE(serializer.isNoteCollection(collection), expectedNotes);
+        QCOMPARE(serializer.isTaskCollection(collection), expectedTasks);
+    }
+
     void shouldCreateTaskFromItem_data()
     {
         QTest::addColumn<QString>("summary");
