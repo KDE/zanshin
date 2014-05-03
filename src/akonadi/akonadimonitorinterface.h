@@ -46,6 +46,7 @@ signals:
     void itemAdded(const Akonadi::Item &item);
     void itemRemoved(const Akonadi::Item &item);
     void itemChanged(const Akonadi::Item &items);
+    void itemMoved(const Akonadi::Item &item);
 };
 
 }

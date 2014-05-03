@@ -119,6 +119,8 @@ private slots:
         // GIVEN
         Akonadi::Storage storage;
         const QStringList expectedRemoteIds = { "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
+                                                "{1d33862f-f274-4c67-ab6c-362d56521ff5}",
+                                                "{1d33862f-f274-4c67-ab6c-362d56521ff6}",
                                                 "{7824df00-2fd6-47a4-8319-52659dc82005}" };
 
         // WHEN
@@ -472,6 +474,29 @@ private slots:
         }
     }
 
+    void shouldMoveItem()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+
+        Akonadi::Item item(3);
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spyMoved(&monitor, SIGNAL(itemMoved(Akonadi::Item)));
+
+        (storage.moveItem(item, calendar1()))->exec();
+
+        for (int i = 0; i < 10; i++) {
+            if (!spyMoved.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        QCOMPARE(spyMoved.size(), 1);
+        auto movedItem = spyMoved.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(movedItem.id(), item.id());
+    }
+
     void shouldDeleteItem()
     {
         //GIVEN
@@ -482,7 +507,7 @@ private slots:
         QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
 
         // An existing item (if we trust the test data)
-        Akonadi::Item item(3);
+        Akonadi::Item item(1);
 
         //When
         (storage.removeItem(item))->exec();
@@ -499,6 +524,12 @@ private slots:
     }
 
 private:
+    Akonadi::Collection calendar1()
+    {
+        // Calendar1 is supposed to get this id, hopefully this won't be too fragile
+        return Akonadi::Collection(3);
+    }
+
     Akonadi::Collection calendar2()
     {
         // Calendar2 is supposed to get this id, hopefully this won't be too fragile

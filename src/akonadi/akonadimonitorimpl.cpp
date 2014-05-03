@@ -61,6 +61,7 @@ MonitorImpl::MonitorImpl()
     connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item, Akonadi::Collection)), this, SIGNAL(itemAdded(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(itemRemoved(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SIGNAL(itemChanged(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemMoved(Akonadi::Item,Akonadi::Collection,Akonadi::Collection)), this, SIGNAL(itemMoved(Akonadi::Item)));
 }
 
 MonitorImpl::~MonitorImpl()

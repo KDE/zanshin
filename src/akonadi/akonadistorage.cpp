@@ -34,6 +34,7 @@
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ItemModifyJob>
+#include <Akonadi/ItemMoveJob>
 #include <Akonadi/Notes/NoteUtils>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
@@ -125,6 +126,11 @@ KJob *Storage::updateItem(Item item)
 KJob *Storage::removeItem(Item item)
 {
     return new ItemDeleteJob(item);
+}
+
+KJob *Storage::moveItem(Item item, Collection collection)
+{
+    return new ItemMoveJob(item, collection);
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
