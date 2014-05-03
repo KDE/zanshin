@@ -21,50 +21,26 @@
    USA.
 */
 
-#include <QtTest>
+#include "fakejob.h"
 
-#include "utils/jobhandler.h"
-#include "utils/compositejob.h"
+#include <QTimer>
 
-#include "testlib/fakejob.h"
-
-using namespace Utils;
-
-class JobHandlerTest : public QObject
+FakeJob::FakeJob(QObject *parent)
+    : KJob(parent)
+    , m_launched(false)
 {
-    Q_OBJECT
-private slots:
-    void shouldCallHandlers()
-    {
-        int callCount = 0;
-        QList<KJob*> seenJobs;
+    setAutoDelete(true);
+}
 
-        auto handler = [&]() {
-            callCount++;
-        };
-
-        auto handlerWithJob = [&](KJob *job) {
-            callCount++;
-            seenJobs << job;
-        };
-
-        FakeJob *job1 = new FakeJob(this);
-        JobHandler::install(job1, handler);
-        JobHandler::install(job1, handlerWithJob);
-        job1->start();
-
-        FakeJob *job2 = new FakeJob(this);
-        JobHandler::install(job2, handler);
-        JobHandler::install(job2, handlerWithJob);
-        job2->start();
-
-        QTest::qWait(FakeJob::DURATION + 10);
-
-        QCOMPARE(callCount, 4);
-        QCOMPARE(seenJobs.toSet(), QSet<KJob*>() << job1 << job2);
+void FakeJob::start()
+{
+    if (!m_launched) {
+        m_launched = true;
+        QTimer::singleShot(DURATION, this, SLOT(onTimeout()));
     }
-};
+}
 
-QTEST_MAIN(JobHandlerTest)
-
-#include "jobhandlertest.moc"
+void FakeJob::onTimeout()
+{
+    emitResult();
+}
