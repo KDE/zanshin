@@ -1,7 +1,7 @@
 Feature: Data sources listing
   As an advanced user
   I can list sources
-  In order to list and store artefaces
+  In order to list and store artifacts
 
   Scenario: Flat task data sources
     Given I got a task data source list model
