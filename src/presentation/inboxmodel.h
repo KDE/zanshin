@@ -27,14 +27,27 @@
 
 #include <QObject>
 
+#include "domain/datasource.h"
+
+namespace Domain {
+    class TaskRepository;
+}
+
 namespace Presentation {
 
 class InboxModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource)
 public:
-    explicit InboxModel(QObject *parent = 0);
+    explicit InboxModel(Domain::TaskRepository *taskRepository, QObject *parent = 0);
     ~InboxModel();
+
+    Domain::DataSource::Ptr defaultTaskDataSource() const;
+    void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
+
+private:
+    Domain::TaskRepository *m_taskRepository;
 };
 
 }

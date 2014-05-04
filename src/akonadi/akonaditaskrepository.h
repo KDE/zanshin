@@ -40,8 +40,8 @@ public:
     TaskRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~TaskRepository();
 
-    Akonadi::Collection defaultCollection() const;
-    void setDefaultCollection(const Akonadi::Collection &defaultCollection);
+    virtual Domain::DataSource::Ptr defaultSource() const;
+    virtual void setDefaultSource(Domain::DataSource::Ptr source);
 
     virtual KJob *save(Domain::Task::Ptr task);
     virtual KJob *remove(Domain::Task::Ptr task);

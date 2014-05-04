@@ -24,13 +24,28 @@
 
 #include "inboxmodel.h"
 
+#include "domain/taskrepository.h"
+#include "utils/dependencymanager.h"
+
 using namespace Presentation;
 
-InboxModel::InboxModel(QObject *parent)
-    : QObject(parent)
+InboxModel::InboxModel(Domain::TaskRepository *taskRepository, QObject *parent)
+    : QObject(parent),
+      m_taskRepository(taskRepository)
 {
+    qRegisterMetaType<Domain::DataSource::Ptr>();
 }
 
 InboxModel::~InboxModel()
 {
+}
+
+Domain::DataSource::Ptr InboxModel::defaultTaskDataSource() const
+{
+    return m_taskRepository->defaultSource();
+}
+
+void InboxModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)
+{
+    m_taskRepository->setDefaultSource(source);
 }

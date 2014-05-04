@@ -24,6 +24,7 @@
 #ifndef DOMAIN_TASKREPOSITORY_H
 #define DOMAIN_TASKREPOSITORY_H
 
+#include "datasource.h"
 #include "task.h"
 
 class KJob;
@@ -35,6 +36,9 @@ class TaskRepository
 public:
     TaskRepository();
     virtual ~TaskRepository();
+
+    virtual DataSource::Ptr defaultSource() const = 0;
+    virtual void setDefaultSource(DataSource::Ptr source) = 0;
 
     virtual KJob *save(Task::Ptr task) = 0;
     virtual KJob *remove(Task::Ptr task) = 0;

@@ -56,6 +56,18 @@ TaskRepository::~TaskRepository()
     }
 }
 
+Domain::DataSource::Ptr TaskRepository::defaultSource() const
+{
+    qFatal("Not implemented yet");
+    return Domain::DataSource::Ptr();
+}
+
+void TaskRepository::setDefaultSource(Domain::DataSource::Ptr source)
+{
+    Q_UNUSED(source);
+    qFatal("Not implemented yet");
+}
+
 KJob *TaskRepository::save(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
