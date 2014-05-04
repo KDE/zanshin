@@ -7,9 +7,14 @@
 #include <QStandardItemModel>
 #include <QTest>
 
+#include <KConfig>
+#include <KConfigGroup>
+#include <KGlobal>
+
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
+#include "presentation/inboxmodel.h"
 #include "presentation/tasklistmodel.h"
 #include "presentation/datasourcelistmodel.h"
 
@@ -44,7 +49,8 @@ private:
     ZanshinContext(const ZanshinContext &);
 public:
     ZanshinContext()
-        : proxyModel(new QSortFilterProxyModel),
+        : presentation(0),
+          proxyModel(new QSortFilterProxyModel),
           dataSourceQueries(new Akonadi::DataSourceQueries),
           queries(new Akonadi::TaskQueries()),
           repository(new Akonadi::TaskRepository())
@@ -76,6 +82,7 @@ public:
     Domain::TaskQueries *queries;
     Domain::TaskRepository *repository;
     QList<QPersistentModelIndex> indices;
+    QObject *presentation;
 
 private:
     QSortFilterProxyModel *proxyModel;
@@ -102,12 +109,25 @@ GIVEN("^I got a note data source list model$") {
     QTest::qWait(500);
 }
 
+GIVEN("^I'm looking at the inbox view$") {
+    ScenarioScope<ZanshinContext> context;
+    context->presentation = new Presentation::InboxModel;
+}
+
 
 WHEN("^I list the model$") {
     ScenarioScope<ZanshinContext> context;
     for (int row = 0; row < context->model()->rowCount(); row++) {
         context->indices << context->model()->index(row, 0);
     }
+}
+
+WHEN("^the setting key (\\S+) is (\\d+)$") {
+    REGEX_PARAM(QString, keyName);
+    REGEX_PARAM(qint64, id);
+
+    KConfigGroup config(KGlobal::config(), "General");
+    config.writeEntry(keyName, id);
 }
 
 
@@ -146,4 +166,13 @@ THEN("^the list is") {
         }
     }
     BOOST_REQUIRE(proxy.rowCount() == context->indices.size());
+}
+
+THEN("^the default task data source is (\\S+)$") {
+    REGEX_PARAM(QString, expectedName);
+
+    ScenarioScope<ZanshinContext> context;
+    auto source = context->presentation->property("defaultTaskDataSource").value<Domain::DataSource::Ptr>();
+    BOOST_REQUIRE(!source.isNull());
+    BOOST_REQUIRE(source->name() == expectedName);
 }
