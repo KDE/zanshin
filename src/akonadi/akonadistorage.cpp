@@ -133,6 +133,11 @@ KJob *Storage::moveItem(Item item, Collection collection)
     return new ItemMoveJob(item, collection);
 }
 
+KJob *Storage::moveItems(Item::List items, Collection collection)
+{
+    return new ItemMoveJob(items, collection);
+}
+
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
 {
     QStringList contentMimeTypes;

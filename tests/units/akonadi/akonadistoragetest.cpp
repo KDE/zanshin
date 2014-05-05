@@ -497,6 +497,31 @@ private slots:
         QCOMPARE(movedItem.id(), item.id());
     }
 
+    void shouldMoveItems()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+
+        Akonadi::Item item(4);
+        Akonadi::Item::List list;
+        list << item;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spyMoved(&monitor, SIGNAL(itemMoved(Akonadi::Item)));
+
+        (storage.moveItems(list, calendar1()))->exec();
+
+        for (int i = 0; i < 10; i++) {
+            if (!spyMoved.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        QCOMPARE(spyMoved.size(), 1);
+        auto movedItem = spyMoved.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(movedItem.id(), item.id());
+    }
+
     void shouldDeleteItem()
     {
         //GIVEN

@@ -43,6 +43,7 @@ public:
     virtual KJob *updateItem(Item item);
     virtual KJob *removeItem(Akonadi::Item item);
     virtual KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection);
+    virtual KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection);
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types);
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection);
