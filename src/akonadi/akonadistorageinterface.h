@@ -28,6 +28,7 @@
 #include <Akonadi/Item>
 
 class KJob;
+class QObject;
 
 namespace Akonadi {
 
@@ -56,10 +57,11 @@ public:
     virtual Akonadi::Collection defaultTaskCollection() = 0;
 
     virtual KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) = 0;
-    virtual KJob *updateItem(Akonadi::Item item) = 0;
+    virtual KJob *updateItem(Akonadi::Item item, QObject *parent = 0) = 0;
     virtual KJob *removeItem(Akonadi::Item item) = 0;
-    virtual KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection) = 0;
-    virtual KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection) = 0;
+    virtual KJob *moveItem(Item item, Collection collection, QObject *parent = 0) = 0;
+    virtual KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0) = 0;
+    virtual KJob *createTransaction() = 0;
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) = 0;

@@ -40,10 +40,11 @@ public:
     virtual Akonadi::Collection defaultTaskCollection();
 
     virtual KJob *createItem(Item item, Collection collection);
-    virtual KJob *updateItem(Item item);
+    virtual KJob *updateItem(Item item, QObject *parent = 0);
     virtual KJob *removeItem(Akonadi::Item item);
-    virtual KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection);
-    virtual KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection);
+    virtual KJob *moveItem(Item item, Collection collection, QObject *parent = 0);
+    virtual KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0);
+    virtual KJob *createTransaction();
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types);
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection);

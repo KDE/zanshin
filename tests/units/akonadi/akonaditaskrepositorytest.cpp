@@ -93,7 +93,7 @@ private slots:
 
         // Storage mock returning the create job
         mock_object<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateItem).when(item)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the task
@@ -107,7 +107,7 @@ private slots:
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0).exactly(1));
     }
 
     void shouldRemoveATask()
@@ -180,7 +180,7 @@ private slots:
 
         // Storage mock returning the create job
         mock_object<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateItem).when(childItem)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, 0)
                                                            .thenReturn(itemModifyJob);
         storageMock(&Akonadi::StorageInterface::fetchItem).when(childItem)
                                                           .thenReturn(itemFetchJob);
@@ -203,7 +203,7 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(childItem).exactly(1));
         if (execJob) {
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateItemParent).when(childItem, parent).exactly(1));
-            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem).exactly(1));
+            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, 0).exactly(1));
         }
     }
 };

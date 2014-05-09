@@ -36,6 +36,7 @@
 #include <Akonadi/ItemModifyJob>
 #include <Akonadi/ItemMoveJob>
 #include <Akonadi/Notes/NoteUtils>
+#include <Akonadi/TransactionSequence>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
@@ -118,9 +119,9 @@ KJob *Storage::createItem(Item item, Collection collection)
     return new ItemCreateJob(item, collection);
 }
 
-KJob *Storage::updateItem(Item item)
+KJob *Storage::updateItem(Item item, QObject *parent)
 {
-    return new ItemModifyJob(item);
+    return new ItemModifyJob(item, parent);
 }
 
 KJob *Storage::removeItem(Item item)
@@ -128,14 +129,19 @@ KJob *Storage::removeItem(Item item)
     return new ItemDeleteJob(item);
 }
 
-KJob *Storage::moveItem(Item item, Collection collection)
+KJob *Storage::moveItem(Item item, Collection collection, QObject *parent)
 {
-    return new ItemMoveJob(item, collection);
+    return new ItemMoveJob(item, collection, parent);
 }
 
-KJob *Storage::moveItems(Item::List items, Collection collection)
+KJob *Storage::moveItems(Item::List items, Collection collection, QObject *parent)
 {
-    return new ItemMoveJob(items, collection);
+    return new ItemMoveJob(items, collection, parent);
+}
+
+KJob *Storage::createTransaction()
+{
+    return new TransactionSequence();
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)

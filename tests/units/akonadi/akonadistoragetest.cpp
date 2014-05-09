@@ -522,6 +522,64 @@ private slots:
         QCOMPARE(movedItem.id(), item.id());
     }
 
+    void shouldUseTransaction()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+
+        Akonadi::Item item1(5);
+        Akonadi::Item item2(6);
+        // create wrong item
+        Akonadi::Item item3(18);
+        item3.setRemoteId("wrongId");
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spyUpdated(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+
+        auto job = storage.fetchItem(item1);
+        job->kjob()->exec();
+        QCOMPARE(job->items().size(), 1);
+        item1 = job->items()[0];
+
+        job = storage.fetchItem(item2);
+        job->kjob()->exec();
+        QCOMPARE(job->items().size(), 1);
+        item2 = job->items()[0];
+
+        auto todo = item1.payload<KCalCore::Todo::Ptr>();
+        todo->setSummary("Buy tomatoes");
+
+        todo = item2.payload<KCalCore::Todo::Ptr>();
+        todo->setSummary("Buy chocolate");
+
+        auto transaction = storage.createTransaction();
+        storage.updateItem(item1, transaction);
+        storage.updateItem(item3, transaction); // this job should failed
+        storage.updateItem(item2, transaction);
+        transaction->exec();
+
+        for (int i = 0; i < 10; i++) {
+            if (spyUpdated.size() == 3) break;
+            QTest::qWait(50);
+        }
+
+        // Then
+        QCOMPARE(spyUpdated.size(), 0);
+        job = storage.fetchItem(item1);
+        job->kjob()->exec();
+        QCOMPARE(job->items().size(), 1);
+        item1 = job->items()[0];
+
+        job = storage.fetchItem(item2);
+        job->kjob()->exec();
+        QCOMPARE(job->items().size(), 1);
+        item2 = job->items()[0];
+
+        QCOMPARE(item1.payload<KCalCore::Todo::Ptr>()->summary(), QString("Buy kiwis"));
+        QCOMPARE(item2.payload<KCalCore::Todo::Ptr>()->summary(), QString("Buy cheese"));
+    }
+
     void shouldDeleteItem()
     {
         //GIVEN
