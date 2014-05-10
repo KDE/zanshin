@@ -697,6 +697,67 @@ private slots:
             QCOMPARE(relatedUid, expectedRelatedToUid);
         }
     }
+
+    void shouldFilterChildrenItem_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<Akonadi::Item::List>("items");
+        QTest::addColumn<int>("size");
+
+        Akonadi::Item item(12);
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setUid("1");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        Akonadi::Item::List items;
+
+        QTest::newRow("empty list") << item << items << 0;
+
+        Akonadi::Item item2(13);
+        KCalCore::Todo::Ptr todo2(new KCalCore::Todo);
+        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        Akonadi::Item::List items2;
+        items2 << item2;
+
+        QTest::newRow("list without child") << item << items2 << 0;
+
+        Akonadi::Item item3(14);
+        KCalCore::Todo::Ptr todo3(new KCalCore::Todo);
+        todo3->setUid("3");
+        todo3->setRelatedTo("1");
+        item3.setPayload<KCalCore::Todo::Ptr>(todo3);
+        Akonadi::Item::List items3;
+        items3 << item2 << item3;
+
+        QTest::newRow("list with child") << item << items3 << 1;
+
+        Akonadi::Item item4(15);
+        KCalCore::Todo::Ptr todo4(new KCalCore::Todo);
+        todo4->setRelatedTo("3");
+        item4.setPayload<KCalCore::Todo::Ptr>(todo4);
+        Akonadi::Item::List items4;
+        items4 << item2 << item3 << item4;
+
+        QTest::newRow("list with child with a child") << item << items4 << 2;
+
+        Akonadi::Item::List items5;
+        items5 << item << item2 << item3 << item4;
+        QTest::newRow("list with filter in list") << item << items5 << 2;
+    }
+
+    void shouldFilterChildrenItem()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item);
+        QFETCH(Akonadi::Item::List, items);
+        QFETCH(int, size);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Akonadi::Item::List list = serializer.filterDescendantItems(items, item);
+
+        // THEN
+        QCOMPARE(list.size(), size);
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)

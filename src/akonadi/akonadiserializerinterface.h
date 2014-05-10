@@ -28,6 +28,8 @@
 #include "domain/task.h"
 #include "domain/note.h"
 
+#include <Akonadi/Item>
+
 namespace Akonadi {
 
 class Collection;
@@ -50,6 +52,7 @@ public:
     virtual bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual QString relatedUidFromItem(Akonadi::Item item) = 0;
     virtual void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent) = 0;
+    virtual Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) = 0;
 
     virtual Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) = 0;
     virtual void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) = 0;

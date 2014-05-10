@@ -153,6 +153,35 @@ void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
     todo->setRelatedTo(parent->property("todoUid").toString());
 }
 
+Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem)
+{
+    if (potentialChildren.isEmpty())
+        return Akonadi::Item::List();
+
+    Akonadi::Item::List itemsToProcess = potentialChildren;
+    Q_ASSERT(ancestorItem.isValid() && ancestorItem.hasPayload<KCalCore::Todo::Ptr>());
+    KCalCore::Todo::Ptr todo = ancestorItem.payload<KCalCore::Todo::Ptr>();
+
+    const auto bound = std::partition(itemsToProcess.begin(), itemsToProcess.end(),
+                                      [ancestorItem, todo](Akonadi::Item currentItem) {
+                                          return (!currentItem.hasPayload<KCalCore::Todo::Ptr>()
+                                               || currentItem == ancestorItem
+                                               || currentItem.payload<KCalCore::Todo::Ptr>()->relatedTo() != todo->uid());
+                                      });
+
+    Akonadi::Item::List itemsRemoved;
+    std::copy(itemsToProcess.begin(), bound, std::back_inserter(itemsRemoved));
+    itemsToProcess.erase(itemsToProcess.begin(), bound);
+
+    auto result = std::accumulate(itemsToProcess.begin(), itemsToProcess.end(), Akonadi::Item::List(),
+                                 [this, itemsRemoved](Akonadi::Item::List result, Akonadi::Item currentItem) {
+                                     result << currentItem;
+                                     return result += filterDescendantItems(itemsRemoved, currentItem);
+                                 });
+
+    return result;
+}
+
 Domain::Note::Ptr Serializer::createNoteFromItem(Akonadi::Item item)
 {
     if (!item.hasPayload<KMime::Message::Ptr>())
