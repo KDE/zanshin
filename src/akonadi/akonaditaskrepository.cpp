@@ -129,8 +129,34 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
 
 KJob *TaskRepository::dissociate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
 {
-    Q_UNUSED(parent);
-    Q_UNUSED(child);
-    qFatal("Not implemented yet");
-    return 0;
+    auto job = new CompositeJob();
+    auto parentItem = m_serializer->createItemFromTask(parent);
+    ItemFetchJobInterface *fetchParentItemJob = m_storage->fetchItem(parentItem);
+    job->install(fetchParentItemJob->kjob(), [fetchParentItemJob, child, job, this] {
+        if (fetchParentItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchParentItemJob->items().size() == 1);
+        auto parentItem = fetchParentItemJob->items().first();
+
+        Q_ASSERT(m_serializer->isTaskChild(child, parentItem));
+
+        auto childItem = m_serializer->createItemFromTask(child);
+        ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+        job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
+            if (fetchItemJob->kjob()->error() != KJob::NoError)
+                return;
+
+            Q_ASSERT(fetchItemJob->items().size() == 1);
+            auto childItem = fetchItemJob->items().first();
+
+            m_serializer->removeItemParent(childItem);
+
+            auto updateJob = m_storage->updateItem(childItem);
+            job->addSubjob(updateJob);
+            updateJob->start();
+        });
+    });
+
+    return job;
 }
