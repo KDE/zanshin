@@ -758,6 +758,35 @@ private slots:
         // THEN
         QCOMPARE(list.size(), size);
     }
+
+    void shouldRemoveItemParent_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+
+        Akonadi::Item item(15);
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setRelatedTo("3");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        QTest::newRow("nominal case") << item;
+
+        Akonadi::Item item2(16);
+        QTest::newRow("parent invalid") << item2;
+    }
+
+    void shouldRemoveItemParent()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        serializer.removeItemParent(item);
+
+        // THEN
+        if (item.hasPayload<KCalCore::Todo::Ptr>())
+            QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QString());
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)

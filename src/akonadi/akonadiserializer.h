@@ -47,6 +47,7 @@ public:
     bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item);
     QString relatedUidFromItem(Akonadi::Item item);
     void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent);
+    void removeItemParent(Akonadi::Item item);
     Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem);
 
     Domain::Note::Ptr createNoteFromItem(Akonadi::Item item);

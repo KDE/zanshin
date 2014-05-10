@@ -153,6 +153,15 @@ void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
     todo->setRelatedTo(parent->property("todoUid").toString());
 }
 
+void Serializer::removeItemParent(Akonadi::Item item)
+{
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    todo->setRelatedTo(QString());
+}
+
 Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem)
 {
     if (potentialChildren.isEmpty())
