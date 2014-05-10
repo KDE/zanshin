@@ -87,9 +87,41 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
         Q_ASSERT(fetchItemJob->items().size() == 1);
         auto childItem = fetchItemJob->items().first();
         m_serializer->updateItemParent(childItem, parent);
-        auto updateJob = m_storage->updateItem(childItem);
-        job->addSubjob(updateJob);
-        updateJob->start();
+
+        // Check collections to know if we need to move child
+        auto parentItem = m_serializer->createItemFromTask(parent);
+        ItemFetchJobInterface *fetchParentItemJob = m_storage->fetchItem(parentItem);
+        job->install(fetchParentItemJob->kjob(), [fetchParentItemJob, childItem, job, this] {
+            if (fetchParentItemJob->kjob()->error() != KJob::NoError)
+                return;
+
+            Q_ASSERT(fetchParentItemJob->items().size() == 1);
+            auto parentItem = fetchParentItemJob->items().first();
+
+            const int itemCollectionId = childItem.parentCollection().id();
+            const int parentCollectionId = parentItem.parentCollection().id();
+
+            if (itemCollectionId != parentCollectionId) {
+                ItemFetchJobInterface *fetchChildrenItemJob = m_storage->fetchItems(childItem.parentCollection());
+                job->install(fetchChildrenItemJob->kjob(), [fetchChildrenItemJob, childItem, parentItem, job, this] {
+                    if (fetchChildrenItemJob->kjob()->error() != KJob::NoError)
+                        return;
+
+                    Item::List childItems = m_serializer->filterDescendantItems(fetchChildrenItemJob->items(), childItem);
+
+                    auto transaction = m_storage->createTransaction();
+                    m_storage->updateItem(childItem, transaction);
+                    childItems.push_front(childItem);
+                    m_storage->moveItems(childItems, parentItem.parentCollection(), transaction);
+                    job->addSubjob(transaction);
+                    transaction->start();
+                });
+            } else {
+                auto updateJob = m_storage->updateItem(childItem);
+                job->addSubjob(updateJob);
+                updateJob->start();
+            }
+        });
     });
 
     return job;

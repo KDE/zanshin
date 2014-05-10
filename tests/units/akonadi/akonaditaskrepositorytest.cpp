@@ -141,54 +141,128 @@ private slots:
     void shouldAssociateATaskToAnother_data()
     {
         QTest::addColumn<Akonadi::Item>("childItem");
+        QTest::addColumn<Akonadi::Item>("parentItem");
         QTest::addColumn<Domain::Task::Ptr>("child");
         QTest::addColumn<Domain::Task::Ptr>("parent");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<MockItemFetchJob*>("itemFetchJob1");
+        QTest::addColumn<MockItemFetchJob*>("itemFetchJob2");
+        QTest::addColumn<MockItemFetchJob*>("itemFetchJob3");
         QTest::addColumn<bool>("execJob");
+        QTest::addColumn<bool>("execParentJob");
+        QTest::addColumn<Akonadi::Item::List>("list");
+
+        Akonadi::Collection col(40);
 
         Akonadi::Item childItem(42);
+        childItem.setParentCollection(col);
         Domain::Task::Ptr child(new Domain::Task);
 
+        Akonadi::Item parentItem(41);
+        parentItem.setParentCollection(col);
         Domain::Task::Ptr parent(new Domain::Task);
 
-        auto itemFetchJob = new MockItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << childItem);
+        auto itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
+        auto itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
+        auto itemFetchJob3 = new MockItemFetchJob(this);
 
-        QTest::newRow("nominal case") << childItem << child << parent << itemFetchJob << true;
+        Akonadi::Item::List list;
 
-        itemFetchJob = new MockItemFetchJob(this);
-        itemFetchJob->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("job error with empty list") << childItem << child << parent << itemFetchJob << false;
+        QTest::newRow("nominal case") << childItem << parentItem << child << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list;
 
-        itemFetchJob = new MockItemFetchJob(this);
-        itemFetchJob->setExpectedError(KJob::KilledJobError);
-        itemFetchJob->setItems(Akonadi::Item::List() << childItem);
-        QTest::newRow("job error with item") << childItem << child << parent << itemFetchJob << false;
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("child job error with empty list") << childItem << parentItem << child << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
+
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setExpectedError(KJob::KilledJobError);
+        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
+        QTest::newRow("child job error with item") << childItem << parentItem << child << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
+
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
+        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("parent job error with empty list") << childItem << parentItem << child << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
+
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
+        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setExpectedError(KJob::KilledJobError);
+        itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
+        QTest::newRow("parent job error with item") << childItem << parentItem << child << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
+
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
+        itemFetchJob2 = new MockItemFetchJob(this);
+        Akonadi::Collection col2(39);
+        Akonadi::Item parentItem2(41);
+        parentItem2.setParentCollection(col2);
+        itemFetchJob2->setItems(Akonadi::Item::List() << parentItem2);
+        itemFetchJob3 = new MockItemFetchJob(this);
+        QTest::newRow("update and move item") << childItem << parentItem2 << child << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list;
+
+        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
+        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << parentItem2);
+        itemFetchJob3 = new MockItemFetchJob(this);
+        Akonadi::Item childItem2(43);
+        Akonadi::Item::List list2;
+        list2 << childItem2;
+        itemFetchJob3->setItems(list2);
+        QTest::newRow("update and move item and his child") << childItem << parentItem2 << child << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list2;
     }
 
     void shouldAssociateATaskToAnother()
     {
         // GIVEN
         QFETCH(Akonadi::Item, childItem);
+        QFETCH(Akonadi::Item, parentItem);
         QFETCH(Domain::Task::Ptr, child);
         QFETCH(Domain::Task::Ptr, parent);
-        QFETCH(MockItemFetchJob*, itemFetchJob);
+        QFETCH(MockItemFetchJob*, itemFetchJob1);
+        QFETCH(MockItemFetchJob*, itemFetchJob2);
+        QFETCH(MockItemFetchJob*, itemFetchJob3);
         QFETCH(bool, execJob);
+        QFETCH(bool, execParentJob);
+        QFETCH(Akonadi::Item::List, list);
 
         // A mock create job
         auto itemModifyJob = new MockAkonadiJob(this);
+        auto transactionJob = new MockAkonadiJob(this);
+        auto itemsMoveJob = new MockAkonadiJob(this);
+
+        Akonadi::Item::List movedList;
+        movedList << childItem << list;
 
         // Storage mock returning the create job
         mock_object<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, 0)
-                                                           .thenReturn(itemModifyJob);
         storageMock(&Akonadi::StorageInterface::fetchItem).when(childItem)
-                                                          .thenReturn(itemFetchJob);
+                                                          .thenReturn(itemFetchJob1);
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(parentItem)
+                                                          .thenReturn(itemFetchJob2);
+        if (parentItem.parentCollection().id() != childItem.parentCollection().id()) {
+            storageMock(&Akonadi::StorageInterface::fetchItems).when(childItem.parentCollection())
+                                                               .thenReturn(itemFetchJob3);
+            storageMock(&Akonadi::StorageInterface::createTransaction).when().thenReturn(transactionJob);
+            storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, transactionJob)
+                                                               .thenReturn(itemModifyJob);
+            storageMock(&Akonadi::StorageInterface::moveItems).when(movedList, parentItem.parentCollection(), transactionJob)
+                                                              .thenReturn(itemsMoveJob);
+        } else {
+            storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, 0)
+                                                               .thenReturn(itemModifyJob);
+        }
 
         // Serializer mock returning the item for the task
         mock_object<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child).thenReturn(childItem);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(parent).thenReturn(parentItem);
         serializerMock(&Akonadi::SerializerInterface::updateItemParent).when(childItem, parent).thenReturn();
+        if (execParentJob)
+            serializerMock(&Akonadi::SerializerInterface::filterDescendantItems).when(list, childItem).thenReturn(list);
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
@@ -203,7 +277,19 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(childItem).exactly(1));
         if (execJob) {
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateItemParent).when(childItem, parent).exactly(1));
-            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, 0).exactly(1));
+            QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(parent).exactly(1));
+            QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(parentItem).exactly(1));
+            if (execParentJob) {
+                if (parentItem.parentCollection().id() == childItem.parentCollection().id())
+                    QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, 0).exactly(1));
+                else {
+                    //QVERIFY(serializerMock(&Akonadi::SerializerInterface::filterDescendantItems).when(list, childItem).exactly(1));
+                    QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(childItem.parentCollection()).exactly(1));
+                    QVERIFY(storageMock(&Akonadi::StorageInterface::createTransaction).when().thenReturn(transactionJob).exactly(1));
+                    QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, transactionJob).exactly(1));
+                    QVERIFY(storageMock(&Akonadi::StorageInterface::moveItems).when(movedList, parentItem.parentCollection(), transactionJob).exactly(1));
+                }
+            }
         }
     }
 };
