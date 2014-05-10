@@ -47,7 +47,11 @@ using namespace Akonadi;
 class CollectionJob : public CollectionFetchJob, public CollectionFetchJobInterface
 {
 public:
-    using CollectionFetchJob::CollectionFetchJob;
+    CollectionJob (const Collection &collection, Type type=FirstLevel, QObject *parent=0)
+        : CollectionFetchJob(collection, type, parent),
+          m_collection(collection)
+    {
+    }
 
     Collection::List collections() const
     {
@@ -55,6 +59,7 @@ public:
 
         // Memorize them to reconstruct the ancestor chain later
         QMap<Collection::Id, Collection> collectionsMap;
+        collectionsMap[m_collection.id()] = m_collection;
         for (auto collection : collections) {
             collectionsMap[collection.id()] = collection;
         }
@@ -73,12 +78,13 @@ public:
         // Replace the dummy parents in the ancestor chain with proper ones
         // full of juicy data
         std::function<Collection(const Collection&)> reconstructAncestors =
-        [collectionsMap, &reconstructAncestors] (const Collection &collection) {
+        [collectionsMap, &reconstructAncestors, this] (const Collection &collection) {
             Q_ASSERT(collection.isValid());
-            auto parent = collection.parentCollection();
-            if (parent == Akonadi::Collection::root())
+
+            if (collection == m_collection)
                 return collection;
 
+            auto parent = collection.parentCollection();
             auto reconstructedParent = reconstructAncestors(collectionsMap[parent.id()]);
 
             auto result = collection;
@@ -91,6 +97,9 @@ public:
 
         return collections;
     }
+
+private:
+    const Collection m_collection;
 };
 
 class ItemJob : public ItemFetchJob, public ItemFetchJobInterface

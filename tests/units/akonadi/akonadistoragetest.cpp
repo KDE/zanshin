@@ -42,6 +42,8 @@
 #include "akonadi/akonadistorage.h"
 #include "akonadi/akonadistoragesettings.h"
 
+Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth);
+
 class AkonadiStorageTest : public QObject
 {
     Q_OBJECT
@@ -56,26 +58,48 @@ public:
 private slots:
     void shouldListCollections_data()
     {
+        QTest::addColumn<Akonadi::Collection>("collection");
         QTest::addColumn<QStringList>("expectedNames");
+        QTest::addColumn<Akonadi::StorageInterface::FetchDepth>("depth");
         QTest::addColumn<int>("contentTypes");
 
-        QTest::newRow("all") << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
+        QTest::newRow("all") << Akonadi::Collection::root()
+                             << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
+                             << Akonadi::Storage::Recursive
                              << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks);
-        QTest::newRow("notes") << QStringList({ "Notes" })
+        QTest::newRow("notes") << Akonadi::Collection::root()
+                               << QStringList({ "Notes" })
+                               << Akonadi::Storage::Recursive
                                << int(Akonadi::StorageInterface::Notes);
-        QTest::newRow("tasks") << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!" })
+        QTest::newRow("tasks") << Akonadi::Collection::root()
+                               << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!" })
+                               << Akonadi::Storage::Recursive
                                << int(Akonadi::StorageInterface::Tasks);
+        QTest::newRow("base type") << calendar2()
+                                   << QStringList({"Calendar2"})
+                                   << Akonadi::Storage::Base
+                                   << int(Akonadi::StorageInterface::Tasks);
+        QTest::newRow("firstLevel type") << calendar1()
+                                   << QStringList({"Calendar2"})
+                                   << Akonadi::Storage::FirstLevel
+                                   << int(Akonadi::StorageInterface::Tasks);
+        QTest::newRow("recursive type") << calendar1()
+                                        << QStringList({"Calendar2", "Calendar3"})
+                                        << Akonadi::Storage::Recursive
+                                        << int(Akonadi::StorageInterface::Tasks);
     }
 
     void shouldListCollections()
     {
         // GIVEN
         Akonadi::Storage storage;
+        QFETCH(Akonadi::Collection, collection);
         QFETCH(QStringList, expectedNames);
+        QFETCH(Akonadi::StorageInterface::FetchDepth, depth);
         QFETCH(int, contentTypes);
 
         // WHEN
-        auto job = storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive,
+        auto job = storage.fetchCollections(collection, depth,
                                             Akonadi::StorageInterface::FetchContentTypes(contentTypes));
         job->kjob()->exec();
 
