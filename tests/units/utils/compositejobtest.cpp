@@ -55,6 +55,7 @@ private slots:
         FakeJob *job1 = new FakeJob(this);
         FakeJob *job2 = new FakeJob(this);
         CompositeJob *compositeJob = new CompositeJob(this);
+        compositeJob->setAutoDelete(false);
         QVERIFY(compositeJob->install(job1, handler));
         QVERIFY(compositeJob->install(job2, handler));
 
@@ -65,6 +66,7 @@ private slots:
         // THEN
         QCOMPARE(callCount, 2);
         QVERIFY(!compositeJob->error());
+        delete compositeJob;
     }
 
     void shouldCallHandlersWithJob()
@@ -81,6 +83,7 @@ private slots:
         FakeJob *job1 = new FakeJob(this);
         FakeJob *job2 = new FakeJob(this);
         CompositeJob *compositeJob = new CompositeJob(this);
+        compositeJob->setAutoDelete(false);
         QVERIFY(compositeJob->install(job1, handlerWithJob));
         QVERIFY(compositeJob->install(job2, handlerWithJob));
 
@@ -92,6 +95,7 @@ private slots:
         QCOMPARE(callCount, 2);
         QCOMPARE(seenJobs.toSet(), QSet<KJob*>() << job1 << job2);
         QVERIFY(!compositeJob->error());
+        delete compositeJob;
     }
 
     void handleJobResult(KJob*)
@@ -103,6 +107,7 @@ private slots:
     {
         // GIVEN
         CompositeJob *compositeJob = new CompositeJob(this);
+        compositeJob->setAutoDelete(false);
 
         auto handler = [&]() {
             FakeJob *job2 = new FakeJob(this);
@@ -120,6 +125,7 @@ private slots:
 
         QCOMPARE(m_callCount, 1);
         QVERIFY(!compositeJob->error());
+        delete compositeJob;
     }
 };
 
