@@ -8,7 +8,6 @@ Feature: Data sources defaults
     When the setting key defaultCollection changes to 7
     Then the default task data source is TestData/Calendar1/Calendar2
 
-  @wip
   Scenario: Change the default data source for tasks in the inbox
     Given I'm looking at the inbox view
     And the setting key defaultCollection changes to 42

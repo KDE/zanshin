@@ -67,8 +67,8 @@ bool TaskRepository::isDefaultSource(Domain::DataSource::Ptr source) const
 
 void TaskRepository::setDefaultSource(Domain::DataSource::Ptr source)
 {
-    Q_UNUSED(source);
-    qFatal("Not implemented yet");
+    auto collection = m_serializer->createCollectionFromDataSource(source);
+    StorageSettings::instance().setDefaultTaskCollection(collection);
 }
 
 KJob *TaskRepository::save(Domain::Task::Ptr task)
