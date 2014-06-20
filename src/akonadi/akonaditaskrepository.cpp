@@ -29,6 +29,8 @@
 #include "akonadiitemfetchjobinterface.h"
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
+#include "akonadistoragesettings.h"
+
 #include "utils/compositejob.h"
 
 using namespace Akonadi;
@@ -58,9 +60,9 @@ TaskRepository::~TaskRepository()
 
 bool TaskRepository::isDefaultSource(Domain::DataSource::Ptr source) const
 {
-    Q_UNUSED(source);
-    qFatal("Not implemented yet");
-    return false;
+    auto settingsCollection = StorageSettings::instance().defaultTaskCollection();
+    auto sourceCollection = m_serializer->createCollectionFromDataSource(source);
+    return settingsCollection == sourceCollection;
 }
 
 void TaskRepository::setDefaultSource(Domain::DataSource::Ptr source)

@@ -1,4 +1,3 @@
-@wip
 Feature: Data sources defaults
   As an advanced user
   I can choose the default data sources
