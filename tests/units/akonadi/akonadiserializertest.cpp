@@ -175,6 +175,37 @@ private slots:
         QCOMPARE(dataSource2->name(), QString(parentName + "/" + name));
     }
 
+    void shouldCreateCollectionFromDataSource_data()
+    {
+        QTest::addColumn<QString>("name");
+        QTest::addColumn<QString>("iconName");
+
+        QTest::newRow("nominal case") << "name" << "icon-name";
+        QTest::newRow("empty case") << QString() << QString();
+    }
+
+    void shouldCreateCollectionFromDataSource()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, name);
+        QFETCH(QString, iconName);
+
+        // ... stored in a data source
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName(name);
+        source->setIconName(iconName);
+        source->setProperty("collectionId", 42);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto collection = serializer.createCollectionFromDataSource(source);
+
+        // THEN
+        QCOMPARE(collection.id(), source->property("collectionId").value<Akonadi::Collection::Id>());
+    }
+
     void shouldVerifyCollectionContents_data()
     {
         QTest::addColumn<QString>("mimeType");

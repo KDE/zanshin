@@ -74,6 +74,12 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
     dataSource->setProperty("collectionId", collection.id());
 }
 
+Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr dataSource)
+{
+    const auto id = dataSource->property("collectionId").value<Collection::Id>();
+    return Collection(id);
+}
+
 bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)
 {
     return collection.contentMimeTypes().contains(NoteUtils::noteMimeType());

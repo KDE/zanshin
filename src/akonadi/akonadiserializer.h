@@ -38,6 +38,7 @@ public:
 
     Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection);
     void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection);
+    virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource);
     virtual bool isNoteCollection(Akonadi::Collection collection);
     virtual bool isTaskCollection(Akonadi::Collection collection);
 
