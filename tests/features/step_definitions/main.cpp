@@ -64,6 +64,7 @@ public:
         delete dataSourceQueries;
         delete queries;
         delete repository;
+        delete presentation;
     }
 
     void setModel(QAbstractItemModel *model)
@@ -123,12 +124,26 @@ WHEN("^I list the model$") {
     }
 }
 
-WHEN("^the setting key (\\S+) is (\\d+)$") {
+WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     REGEX_PARAM(QString, keyName);
     REGEX_PARAM(qint64, id);
 
     KConfigGroup config(KGlobal::config(), "General");
     config.writeEntry(keyName, id);
+}
+
+WHEN("^the user changes the default task data source to (.*)$") {
+    REGEX_PARAM(QString, sourceName);
+
+    ScenarioScope<ZanshinContext> context;
+    auto sourcesResult = context->dataSourceQueries->findTasks();
+    QTest::qWait(500);
+    auto sources = sourcesResult->data();
+    auto source = *std::find_if(sources.begin(), sources.end(),
+                                [=] (const Domain::DataSource::Ptr &source) {
+                                    return source->name() == sourceName;
+                                });
+    context->presentation->setProperty("defaultTaskDataSource", QVariant::fromValue(source));
 }
 
 
@@ -176,4 +191,13 @@ THEN("^the default task data source is (\\S+)$") {
     auto source = context->presentation->property("defaultTaskDataSource").value<Domain::DataSource::Ptr>();
     BOOST_REQUIRE(!source.isNull());
     BOOST_REQUIRE(source->name() == expectedName);
+}
+
+THEN("^the setting key (\\S+) is (\\d+)$") {
+    REGEX_PARAM(QString, keyName);
+    REGEX_PARAM(qint64, expectedId);
+
+    KConfigGroup config(KGlobal::config(), "General");
+    const qint64 id = config.readEntry(keyName, -1);
+    BOOST_REQUIRE(id == expectedId);
 }

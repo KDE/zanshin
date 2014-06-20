@@ -38,12 +38,14 @@ namespace Presentation {
 class InboxModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource)
+    Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
 public:
     explicit InboxModel(Domain::DataSourceQueries *sourceQueries, Domain::TaskRepository *taskRepository, QObject *parent = 0);
     ~InboxModel();
 
     Domain::DataSource::Ptr defaultTaskDataSource() const;
+
+public slots:
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 
 private:
