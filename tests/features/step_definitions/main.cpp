@@ -111,7 +111,8 @@ GIVEN("^I got a note data source list model$") {
 
 GIVEN("^I'm looking at the inbox view$") {
     ScenarioScope<ZanshinContext> context;
-    context->presentation = new Presentation::InboxModel(context->repository);
+    context->presentation = new Presentation::InboxModel(context->dataSourceQueries, context->repository);
+    QTest::qWait(500);
 }
 
 

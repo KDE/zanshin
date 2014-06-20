@@ -40,7 +40,7 @@ public:
     TaskRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~TaskRepository();
 
-    virtual Domain::DataSource::Ptr defaultSource() const;
+    virtual bool isDefaultSource(Domain::DataSource::Ptr source) const;
     virtual void setDefaultSource(Domain::DataSource::Ptr source);
 
     virtual KJob *save(Domain::Task::Ptr task);

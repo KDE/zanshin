@@ -27,7 +27,7 @@
 
 #include <QObject>
 
-#include "domain/datasource.h"
+#include "domain/datasourcequeries.h"
 
 namespace Domain {
     class TaskRepository;
@@ -40,14 +40,17 @@ class InboxModel : public QObject
     Q_OBJECT
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource)
 public:
-    explicit InboxModel(Domain::TaskRepository *taskRepository, QObject *parent = 0);
+    explicit InboxModel(Domain::DataSourceQueries *sourceQueries, Domain::TaskRepository *taskRepository, QObject *parent = 0);
     ~InboxModel();
 
     Domain::DataSource::Ptr defaultTaskDataSource() const;
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 
 private:
+    Domain::DataSourceQueries *m_sourceQueries;
     Domain::TaskRepository *m_taskRepository;
+
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_taskSources;
 };
 
 }

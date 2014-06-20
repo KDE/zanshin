@@ -29,9 +29,11 @@
 
 using namespace Presentation;
 
-InboxModel::InboxModel(Domain::TaskRepository *taskRepository, QObject *parent)
+InboxModel::InboxModel(Domain::DataSourceQueries *sourceQueries, Domain::TaskRepository *taskRepository, QObject *parent)
     : QObject(parent),
-      m_taskRepository(taskRepository)
+      m_sourceQueries(sourceQueries),
+      m_taskRepository(taskRepository),
+      m_taskSources(m_sourceQueries->findTasks())
 {
     qRegisterMetaType<Domain::DataSource::Ptr>();
 }
@@ -42,7 +44,20 @@ InboxModel::~InboxModel()
 
 Domain::DataSource::Ptr InboxModel::defaultTaskDataSource() const
 {
-    return m_taskRepository->defaultSource();
+    QList<Domain::DataSource::Ptr> sources = m_taskSources->data();
+
+    if (sources.isEmpty())
+        return Domain::DataSource::Ptr();
+
+    auto source = std::find_if(sources.begin(), sources.end(),
+                               [this] (const Domain::DataSource::Ptr &source) {
+                                   return m_taskRepository->isDefaultSource(source);
+                               });
+
+    if (source != sources.end())
+        return *source;
+    else
+        return sources.first();
 }
 
 void InboxModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)

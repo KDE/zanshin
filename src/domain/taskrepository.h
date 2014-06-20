@@ -37,7 +37,7 @@ public:
     TaskRepository();
     virtual ~TaskRepository();
 
-    virtual DataSource::Ptr defaultSource() const = 0;
+    virtual bool isDefaultSource(DataSource::Ptr source) const = 0;
     virtual void setDefaultSource(DataSource::Ptr source) = 0;
 
     virtual KJob *save(Task::Ptr task) = 0;

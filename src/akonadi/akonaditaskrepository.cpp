@@ -56,10 +56,11 @@ TaskRepository::~TaskRepository()
     }
 }
 
-Domain::DataSource::Ptr TaskRepository::defaultSource() const
+bool TaskRepository::isDefaultSource(Domain::DataSource::Ptr source) const
 {
+    Q_UNUSED(source);
     qFatal("Not implemented yet");
-    return Domain::DataSource::Ptr();
+    return false;
 }
 
 void TaskRepository::setDefaultSource(Domain::DataSource::Ptr source)
