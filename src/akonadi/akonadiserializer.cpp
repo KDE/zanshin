@@ -70,6 +70,8 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
         auto iconName = collection.attribute<Akonadi::EntityDisplayAttribute>()->iconName();
         dataSource->setIconName(iconName);
     }
+
+    dataSource->setProperty("collectionId", collection.id());
 }
 
 bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)

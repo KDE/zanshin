@@ -55,6 +55,7 @@ private slots:
 
         // ... stored in a collection
         Akonadi::Collection collection(42);
+        collection.setContentMimeTypes(QStringList() << "foo/bar");
         collection.setName(name);
         auto attribute = new Akonadi::EntityDisplayAttribute;
         attribute->setIconName(iconName);
@@ -67,6 +68,7 @@ private slots:
         // THEN
         QCOMPARE(dataSource->name(), name);
         QCOMPARE(dataSource->iconName(), iconName);
+        QCOMPARE(dataSource->property("collectionId").value<Akonadi::Collection::Id>(), collection.id());
     }
 
     void shouldCreateNullDataSourceFromInvalidCollection()
