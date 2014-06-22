@@ -30,6 +30,7 @@
 #include "domain/datasourcequeries.h"
 
 namespace Domain {
+    class NoteRepository;
     class TaskRepository;
 }
 
@@ -38,21 +39,30 @@ namespace Presentation {
 class InboxModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
 public:
-    explicit InboxModel(Domain::DataSourceQueries *sourceQueries, Domain::TaskRepository *taskRepository, QObject *parent = 0);
+    explicit InboxModel(Domain::DataSourceQueries *sourceQueries,
+                        Domain::TaskRepository *taskRepository,
+                        Domain::NoteRepository *noteRepository,
+                        QObject *parent = 0);
     ~InboxModel();
 
+    Domain::DataSource::Ptr defaultNoteDataSource() const;
     Domain::DataSource::Ptr defaultTaskDataSource() const;
 
 public slots:
+    void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 
 private:
     Domain::DataSourceQueries *m_sourceQueries;
-    Domain::TaskRepository *m_taskRepository;
 
+    Domain::TaskRepository *m_taskRepository;
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_taskSources;
+
+    Domain::NoteRepository *m_noteRepository;
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_noteSources;
 };
 
 }

@@ -53,7 +53,8 @@ public:
           proxyModel(new QSortFilterProxyModel),
           dataSourceQueries(new Akonadi::DataSourceQueries),
           queries(new Akonadi::TaskQueries()),
-          repository(new Akonadi::TaskRepository())
+          taskRepository(new Akonadi::TaskRepository()),
+          noteRepository(0)
     {
         proxyModel->setDynamicSortFilter(true);
     }
@@ -63,7 +64,7 @@ public:
         delete proxyModel;
         delete dataSourceQueries;
         delete queries;
-        delete repository;
+        delete taskRepository;
         delete presentation;
     }
 
@@ -81,7 +82,8 @@ public:
 
     Domain::DataSourceQueries *dataSourceQueries;
     Domain::TaskQueries *queries;
-    Domain::TaskRepository *repository;
+    Domain::TaskRepository *taskRepository;
+    Domain::NoteRepository *noteRepository;
     QList<QPersistentModelIndex> indices;
     QObject *presentation;
 
@@ -92,7 +94,7 @@ private:
 GIVEN("^I got a task list$") {
     ScenarioScope<ZanshinContext> context;
     auto queries = context->queries->findAll();
-    context->setModel(new Presentation::TaskListModel(queries, context->repository));
+    context->setModel(new Presentation::TaskListModel(queries, context->taskRepository));
     QTest::qWait(500);
 }
 
@@ -112,7 +114,9 @@ GIVEN("^I got a note data source list model$") {
 
 GIVEN("^I'm looking at the inbox view$") {
     ScenarioScope<ZanshinContext> context;
-    context->presentation = new Presentation::InboxModel(context->dataSourceQueries, context->repository);
+    context->presentation = new Presentation::InboxModel(context->dataSourceQueries,
+                                                         context->taskRepository,
+                                                         context->noteRepository);
     QTest::qWait(500);
 }
 

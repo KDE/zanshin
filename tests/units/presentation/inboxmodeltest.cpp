@@ -26,6 +26,7 @@
 #include <mockitopp/mockitopp.hpp>
 
 #include "domain/datasourcequeries.h"
+#include "domain/noterepository.h"
 #include "domain/taskrepository.h"
 #include "presentation/inboxmodel.h"
 
@@ -53,7 +54,11 @@ private slots:
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
+
+        // Dummy note repository
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
 
         // Repository mock returning the data source as default
         mock_object<Domain::TaskRepository> taskRepositoryMock;
@@ -62,7 +67,8 @@ private slots:
         }
 
         Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
-                                       &taskRepositoryMock.getInstance());
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
 
         // WHEN
         auto source = inbox.defaultTaskDataSource();
@@ -72,7 +78,7 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::isDefaultSource).when(expectedSource).exactly(1));
     }
 
-    void shouldGiveFirstCollectionAsDefaultIfNoneMatched()
+    void shouldGiveFirstTaskCollectionAsDefaultIfNoneMatched()
     {
         // GIVEN
 
@@ -86,7 +92,11 @@ private slots:
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
+
+        // Dummy note repository
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
 
         // Repository mock returning the data source as default
         mock_object<Domain::TaskRepository> taskRepositoryMock;
@@ -95,7 +105,8 @@ private slots:
         }
 
         Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
-                                       &taskRepositoryMock.getInstance());
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
 
         // WHEN
         auto source = inbox.defaultTaskDataSource();
@@ -104,7 +115,7 @@ private slots:
         QCOMPARE(source, provider->data().first());
     }
 
-    void shouldProvideNullPointerIfNoSourceIsAvailable()
+    void shouldProvideNullPointerIfNoTaskSourceIsAvailable()
     {
         // GIVEN
 
@@ -114,13 +125,18 @@ private slots:
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
+
+        // Dummy note repository
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
 
         // Repository mock returning the data source as default
         mock_object<Domain::TaskRepository> taskRepositoryMock;
 
         Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
-                                       &taskRepositoryMock.getInstance());
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
 
         // WHEN
         auto source = inbox.defaultTaskDataSource();
@@ -142,20 +158,168 @@ private slots:
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
+
+        // Dummy note repository
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
 
         // Repository mock setting the default data source
         mock_object<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::setDefaultSource).when(source).thenReturn();
 
         Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
-                                       &taskRepositoryMock.getInstance());
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
 
         // WHEN
         inbox.setDefaultTaskDataSource(source);
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::setDefaultSource).when(source).exactly(1));
+    }
+
+    void shouldRetrieveDefaultNoteCollectionFromRepository()
+    {
+        // GIVEN
+
+        // A data source
+        auto expectedSource = Domain::DataSource::Ptr::create();
+
+        // A source list containing the source we expect as default
+        auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+        provider->append(Domain::DataSource::Ptr::create());
+        provider->append(Domain::DataSource::Ptr::create());
+        provider->append(Domain::DataSource::Ptr::create());
+        provider->append(expectedSource);
+        provider->append(Domain::DataSource::Ptr::create());
+        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+
+        // Queries mock returning the list of data sources
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
+        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+
+        // Dummy task repository
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+
+        // Repository mock returning the data source as default
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        foreach (const Domain::DataSource::Ptr &source, provider->data()) {
+            noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
+        }
+
+        Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
+
+        // WHEN
+        auto source = inbox.defaultNoteDataSource();
+
+        // THEN
+        QCOMPARE(source, expectedSource);
+        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(expectedSource).exactly(1));
+    }
+
+    void shouldGiveFirstNoteCollectionAsDefaultIfNoneMatched()
+    {
+        // GIVEN
+
+        // A list of irrelevant sources
+        auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+        provider->append(Domain::DataSource::Ptr::create());
+        provider->append(Domain::DataSource::Ptr::create());
+        provider->append(Domain::DataSource::Ptr::create());
+        provider->append(Domain::DataSource::Ptr::create());
+        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+
+        // Queries mock returning the list of data sources
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
+        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+
+        // Dummy task repository
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+
+        // Repository mock returning the data source as default
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        foreach (const Domain::DataSource::Ptr &source, provider->data()) {
+            noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(false);
+        }
+
+        Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
+
+        // WHEN
+        auto source = inbox.defaultNoteDataSource();
+
+        // THEN
+        QCOMPARE(source, provider->data().first());
+    }
+
+    void shouldProvideNullPointerIfNoNoteSourceIsAvailable()
+    {
+        // GIVEN
+
+        // An empty source list
+        auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+
+        // Queries mock returning the list of data sources
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
+        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+
+        // Dummy task repository
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+
+        // Repository mock returning the data source as default
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
+
+        // WHEN
+        auto source = inbox.defaultNoteDataSource();
+
+        // THEN
+        QVERIFY(source.isNull());
+    }
+
+    void shouldForwardDefaultNoteCollectionToRepository()
+    {
+        // GIVEN
+
+        // A data source
+        auto source = Domain::DataSource::Ptr::create();
+
+        // A dummy source list
+        auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+
+        // Queries mock returning the list of data sources
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
+        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+
+        // Dummy task repository
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+
+        // Repository mock setting the default data source
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).thenReturn();
+
+        Presentation::InboxModel inbox(&sourceQueriesMock.getInstance(),
+                                       &taskRepositoryMock.getInstance(),
+                                       &noteRepositoryMock.getInstance());
+
+        // WHEN
+        inbox.setDefaultNoteDataSource(source);
+
+        // THEN
+        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).exactly(1));
     }
 };
 

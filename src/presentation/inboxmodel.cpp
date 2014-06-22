@@ -24,22 +24,46 @@
 
 #include "inboxmodel.h"
 
+#include "domain/noterepository.h"
 #include "domain/taskrepository.h"
 #include "utils/dependencymanager.h"
 
 using namespace Presentation;
 
-InboxModel::InboxModel(Domain::DataSourceQueries *sourceQueries, Domain::TaskRepository *taskRepository, QObject *parent)
+InboxModel::InboxModel(Domain::DataSourceQueries *sourceQueries,
+                       Domain::TaskRepository *taskRepository,
+                       Domain::NoteRepository *noteRepository,
+                       QObject *parent)
     : QObject(parent),
       m_sourceQueries(sourceQueries),
       m_taskRepository(taskRepository),
-      m_taskSources(m_sourceQueries->findTasks())
+      m_taskSources(m_sourceQueries->findTasks()),
+      m_noteRepository(noteRepository),
+      m_noteSources(m_sourceQueries->findNotes())
 {
     qRegisterMetaType<Domain::DataSource::Ptr>();
 }
 
 InboxModel::~InboxModel()
 {
+}
+
+Domain::DataSource::Ptr InboxModel::defaultNoteDataSource() const
+{
+    QList<Domain::DataSource::Ptr> sources = m_noteSources->data();
+
+    if (sources.isEmpty())
+        return Domain::DataSource::Ptr();
+
+    auto source = std::find_if(sources.begin(), sources.end(),
+                               [this] (const Domain::DataSource::Ptr &source) {
+                                   return m_noteRepository->isDefaultSource(source);
+                               });
+
+    if (source != sources.end())
+        return *source;
+    else
+        return sources.first();
 }
 
 Domain::DataSource::Ptr InboxModel::defaultTaskDataSource() const
@@ -58,6 +82,11 @@ Domain::DataSource::Ptr InboxModel::defaultTaskDataSource() const
         return *source;
     else
         return sources.first();
+}
+
+void InboxModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
+{
+    m_noteRepository->setDefaultSource(source);
 }
 
 void InboxModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)
