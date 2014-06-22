@@ -690,6 +690,44 @@ private slots:
         QCOMPARE(note->text(), text);
     }
 
+    void shouldCreateItemFromNote_data()
+    {
+        QTest::addColumn<QString>("title");
+        QTest::addColumn<QString>("content");
+        QTest::addColumn<QString>("expectedTitle");
+        QTest::addColumn<QString>("expectedContent");
+
+        QTest::newRow("nominal case") << "title" << "content" << "title" << "content";
+        QTest::newRow("empty case") << QString() << QString() << "New Note" << QString();
+    }
+
+    void shouldCreateItemFromNote()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, title);
+        QFETCH(QString, content);
+
+        // ... stored in a task
+        auto note = Domain::Note::Ptr::create();
+        note->setTitle(title);
+        note->setText(content);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto item = serializer.createItemFromNote(note);
+
+        // THEN
+        QCOMPARE(item.mimeType(), Akonadi::NoteUtils::noteMimeType());
+
+        QFETCH(QString, expectedTitle);
+        QFETCH(QString, expectedContent);
+        auto message = item.payload<KMime::Message::Ptr>();
+        QCOMPARE(message->subject(false)->asUnicodeString(), expectedTitle);
+        QCOMPARE(message->mainBodyPart()->decodedText(true), expectedContent);
+    }
+
     void shouldUpdateItemParent_data()
     {
         QTest::addColumn<Akonadi::Item>("item");

@@ -223,7 +223,12 @@ void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
 
 Item Serializer::createItemFromNote(Domain::Note::Ptr note)
 {
-    Q_UNUSED(note)
-    qFatal("Not implemented yet");
-    return Item();
+    NoteUtils::NoteMessageWrapper builder;
+    builder.setTitle(note->title());
+    builder.setText(note->text());
+
+    Akonadi::Item item;
+    item.setMimeType(Akonadi::NoteUtils::noteMimeType());
+    item.setPayload(builder.message());
+    return item;
 }
