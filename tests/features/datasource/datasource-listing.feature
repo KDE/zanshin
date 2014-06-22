@@ -18,3 +18,4 @@ Feature: Data sources listing
     Then the list is:
        | display                                | icon                |
        | TestData/Emails/Notes                  | folder              |
+       | TestData/Private Notes                 | folder              |

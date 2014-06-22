@@ -150,5 +150,8 @@ END:VCARD&#xd;
 </payload>
       </item>
     </collection>
+    <collection content="inode/directory,text/x-vnd.akonadi.note" rid="{40c7c9fe-03bb-45eb-a9f4-b9894ef2938d}" name="Private Notes">
+      <attribute type="AccessRights">a</attribute>
+    </collection>
   </collection>
 </knut>
