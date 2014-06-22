@@ -132,18 +132,26 @@ WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     config.writeEntry(keyName, id);
 }
 
-WHEN("^the user changes the default task data source to (.*)$") {
+WHEN("^the user changes the default (\\S+) data source to (.*)$") {
+    REGEX_PARAM(QString, sourceType);
     REGEX_PARAM(QString, sourceName);
 
     ScenarioScope<ZanshinContext> context;
-    auto sourcesResult = context->dataSourceQueries->findTasks();
+    auto sourcesResult = sourceType == "task" ? context->dataSourceQueries->findTasks()
+                       : sourceType == "note" ? context->dataSourceQueries->findNotes()
+                       : Domain::QueryResult<Domain::DataSource::Ptr>::Ptr();
     QTest::qWait(500);
     auto sources = sourcesResult->data();
     auto source = *std::find_if(sources.begin(), sources.end(),
                                 [=] (const Domain::DataSource::Ptr &source) {
                                     return source->name() == sourceName;
                                 });
-    context->presentation->setProperty("defaultTaskDataSource", QVariant::fromValue(source));
+
+
+    auto propertyName = sourceType == "task" ? "defaultTaskDataSource"
+                      : sourceType == "note" ? "defaultNoteDataSource"
+                      : 0;
+    context->presentation->setProperty(propertyName, QVariant::fromValue(source));
 }
 
 
@@ -184,11 +192,16 @@ THEN("^the list is") {
     BOOST_REQUIRE(proxy.rowCount() == context->indices.size());
 }
 
-THEN("^the default task data source is (\\S+)$") {
+THEN("^the default (\\S+) data source is (.*)$") {
+    REGEX_PARAM(QString, sourceType);
     REGEX_PARAM(QString, expectedName);
 
+    auto propertyName = sourceType == "task" ? "defaultTaskDataSource"
+                      : sourceType == "note" ? "defaultNoteDataSource"
+                      : 0;
+
     ScenarioScope<ZanshinContext> context;
-    auto source = context->presentation->property("defaultTaskDataSource").value<Domain::DataSource::Ptr>();
+    auto source = context->presentation->property(propertyName).value<Domain::DataSource::Ptr>();
     BOOST_REQUIRE(!source.isNull());
     BOOST_REQUIRE(source->name() == expectedName);
 }
