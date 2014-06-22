@@ -125,8 +125,7 @@ Collection Storage::defaultTaskCollection()
 
 Collection Storage::defaultNoteCollection()
 {
-    qFatal("Not implemented yet");
-    return Collection();
+    return StorageSettings::instance().defaultNoteCollection();
 }
 
 KJob *Storage::createItem(Item item, Collection collection)

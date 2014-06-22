@@ -379,6 +379,20 @@ private slots:
         }
     }
 
+    void shouldReadDefaultNoteCollectionFromSettings()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // WHEN
+        Akonadi::StorageSettings::instance().setDefaultNoteCollection(Akonadi::Collection(24));
+
+        // THEN
+        QCOMPARE(storage.defaultNoteCollection(), Akonadi::Collection(24));
+    }
+
     void shouldReadDefaultTaskCollectionFromSettings()
     {
         // GIVEN
