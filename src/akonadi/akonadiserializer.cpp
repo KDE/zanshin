@@ -220,3 +220,10 @@ void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
     note->setTitle(wrappedNote.title());
     note->setText(wrappedNote.text());
 }
+
+Item Serializer::createItemFromNote(Domain::Note::Ptr note)
+{
+    Q_UNUSED(note)
+    qFatal("Not implemented yet");
+    return Item();
+}

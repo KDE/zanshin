@@ -38,6 +38,7 @@ public:
     virtual ~Storage();
 
     virtual Akonadi::Collection defaultTaskCollection();
+    virtual Akonadi::Collection defaultNoteCollection();
 
     virtual KJob *createItem(Item item, Collection collection);
     virtual KJob *updateItem(Item item, QObject *parent = 0);

@@ -12,6 +12,7 @@
 #include <KGlobal>
 
 #include "akonadi/akonadidatasourcequeries.h"
+#include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "presentation/inboxmodel.h"
@@ -54,7 +55,7 @@ public:
           dataSourceQueries(new Akonadi::DataSourceQueries),
           queries(new Akonadi::TaskQueries()),
           taskRepository(new Akonadi::TaskRepository()),
-          noteRepository(0)
+          noteRepository(new Akonadi::NoteRepository())
     {
         proxyModel->setDynamicSortFilter(true);
     }

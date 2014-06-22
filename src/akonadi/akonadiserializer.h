@@ -53,6 +53,7 @@ public:
 
     Domain::Note::Ptr createNoteFromItem(Akonadi::Item item);
     void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item);
+    Akonadi::Item createItemFromNote(Domain::Note::Ptr note);
 };
 
 }

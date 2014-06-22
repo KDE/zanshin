@@ -123,6 +123,12 @@ Collection Storage::defaultTaskCollection()
     return StorageSettings::instance().defaultTaskCollection();
 }
 
+Collection Storage::defaultNoteCollection()
+{
+    qFatal("Not implemented yet");
+    return Collection();
+}
+
 KJob *Storage::createItem(Item item, Collection collection)
 {
     return new ItemCreateJob(item, collection);

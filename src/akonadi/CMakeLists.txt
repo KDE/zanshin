@@ -4,13 +4,14 @@ set(akonadi_SRCS
     akonadiitemfetchjobinterface.cpp
     akonadimonitorimpl.cpp
     akonadimonitorinterface.cpp
+    akonadinotequeries.cpp
+    akonadinoterepository.cpp
     akonadiserializer.cpp
     akonadiserializerinterface.cpp
     akonadistorage.cpp
     akonadistorageinterface.cpp
     akonadistoragesettings.cpp
     akonaditaskqueries.cpp
-    akonadinotequeries.cpp
     akonaditaskrepository.cpp
 )
 

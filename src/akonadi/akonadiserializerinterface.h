@@ -58,6 +58,7 @@ public:
 
     virtual Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) = 0;
     virtual void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) = 0;
+    virtual Akonadi::Item createItemFromNote(Domain::Note::Ptr note) = 0;
 };
 
 }

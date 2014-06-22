@@ -28,10 +28,11 @@ ENDMACRO(ZANSHIN_AKONADI_AUTO_TESTS)
 
 zanshin_auto_tests(
   akonadidatasourcequeriestest
+  akonadinotequeriestest
+  akonadinoterepositorytest
   akonadiserializertest
   akonadistoragesettingstest
   akonaditaskqueriestest
-  akonadinotequeriestest
   akonaditaskrepositorytest
 )
 
