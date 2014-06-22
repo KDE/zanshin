@@ -24,6 +24,7 @@
 #ifndef DOMAIN_NOTEREPOSITORY_H
 #define DOMAIN_NOTEREPOSITORY_H
 
+#include "datasource.h"
 #include "note.h"
 
 class KJob;
@@ -35,6 +36,9 @@ class NoteRepository
 public:
     NoteRepository();
     virtual ~NoteRepository();
+
+    virtual bool isDefaultSource(DataSource::Ptr source) const = 0;
+    virtual void setDefaultSource(DataSource::Ptr source) = 0;
 
     virtual KJob *save(Note::Ptr note) = 0;
     virtual KJob *remove(Note::Ptr note) = 0;
