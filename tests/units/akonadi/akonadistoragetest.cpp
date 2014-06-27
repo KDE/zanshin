@@ -359,23 +359,21 @@ private slots:
         (new Akonadi::ItemModifyJob(item))->exec();
         // Give some time for the backend to signal back
         for (int i = 0; i < 10; i++) {
-            if (spy.size() == 2) break;
+            if (!spy.isEmpty()) break;
             QTest::qWait(50);
         }
 
         // THEN
-        QCOMPARE(spy.size(), 2);
-        for (int i = 0; i < spy.size(); i++) {
-            auto notifiedItem = spy[i].takeFirst().value<Akonadi::Item>();
-            QCOMPARE(notifiedItem.id(), item.id());
-            QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
-            QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
+        QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+        QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
 
-            auto parent = notifiedItem.parentCollection();
-            while (parent != Akonadi::Collection::root()) {
-                QVERIFY(parent.isValid());
-                parent = parent.parentCollection();
-            }
+        auto parent = notifiedItem.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
         }
     }
 
