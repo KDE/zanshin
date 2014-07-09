@@ -1,6 +1,6 @@
 /* This file is part of Zanshin
 
-   Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Franck Arrecot <franck.arrecot@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,20 +21,24 @@
    USA.
 */
 
+#include "akonaditagfetchjobinterface.h"
+#include <KJob>
 
-#include "akonadiserializerinterface.h"
+using namespace Akonadi ;
 
-using namespace Akonadi;
-
-SerializerInterface::SerializerInterface()
+TagFetchJobInterface::TagFetchJobInterface()
 {
 }
 
-SerializerInterface::~SerializerInterface()
+TagFetchJobInterface::~TagFetchJobInterface()
 {
 }
 
-QByteArray SerializerInterface::contextTagType()
+KJob *TagFetchJobInterface::kjob()
 {
-    return QByteArray("Zanshin-Context");
+    KJob *job = dynamic_cast<KJob*>(this);
+    Q_ASSERT(job);
+    return job;
 }
+
+

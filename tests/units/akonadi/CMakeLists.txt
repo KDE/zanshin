@@ -27,6 +27,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
 ENDMACRO(ZANSHIN_AKONADI_AUTO_TESTS)
 
 zanshin_auto_tests(
+  akonadicontextqueriestest
   akonadidatasourcequeriestest
   akonadinotequeriestest
   akonadinoterepositorytest

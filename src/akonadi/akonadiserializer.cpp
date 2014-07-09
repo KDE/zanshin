@@ -232,3 +232,40 @@ Item Serializer::createItemFromNote(Domain::Note::Ptr note)
     item.setPayload(builder.message());
     return item;
 }
+
+Domain::Context::Ptr Serializer::createContextFromTag(Akonadi::Tag tag)
+{
+    if (!isContext(tag))
+        return Domain::Context::Ptr();
+
+    auto context = Domain::Context::Ptr::create();
+    updateContextFromTag(context, tag);
+    return context;
+}
+
+void Serializer::updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag)
+{
+    if (!isContext(tag))
+        return;
+
+    context->setProperty("tagId", tag.id());
+    context->setName(tag.name());
+}
+
+bool Serializer::isContext(const Akonadi::Tag &tag) const
+{
+    return (tag.type() == Akonadi::SerializerInterface::contextTagType());
+}
+
+bool Serializer::isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const
+{
+    return (context->property("tagId").value<Akonadi::Tag::Id>() == tag.id());
+}
+
+bool Serializer::isContextChild(const Domain::Context::Ptr &context, const Tag &tag) const
+{
+    // NOTE : Hierarchy support will be done later, waiting for a proper support of tag Parent()
+    Q_UNUSED(context);
+    Q_UNUSED(tag);
+    return false;
+}

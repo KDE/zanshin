@@ -1,5 +1,6 @@
 set(akonadi_SRCS
     akonadicollectionfetchjobinterface.cpp
+    akonadicontextqueries.cpp
     akonadidatasourcequeries.cpp
     akonadiitemfetchjobinterface.cpp
     akonadimonitorimpl.cpp
@@ -11,6 +12,7 @@ set(akonadi_SRCS
     akonadistorage.cpp
     akonadistorageinterface.cpp
     akonadistoragesettings.cpp
+    akonaditagfetchjobinterface.cpp
     akonaditaskqueries.cpp
     akonaditaskrepository.cpp
 )

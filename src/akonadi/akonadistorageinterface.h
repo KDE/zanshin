@@ -29,12 +29,15 @@
 
 class KJob;
 class QObject;
+class QByteArray;
 
 namespace Akonadi {
 
 class Collection;
 class CollectionFetchJobInterface;
 class ItemFetchJobInterface;
+class TagFetchJobInterface;
+
 
 class StorageInterface
 {
@@ -67,6 +70,7 @@ public:
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) = 0;
     virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item) = 0;
+    virtual TagFetchJobInterface *fetchTags() = 0;
 };
 
 }

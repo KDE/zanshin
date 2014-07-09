@@ -50,6 +50,7 @@ public:
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types);
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection);
     virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item);
+    virtual TagFetchJobInterface *fetchTags();
 
 private:
     CollectionFetchJob::Type jobTypeFromDepth(StorageInterface::FetchDepth depth);

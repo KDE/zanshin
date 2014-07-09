@@ -27,6 +27,7 @@
 #include "domain/datasource.h"
 #include "domain/task.h"
 #include "domain/note.h"
+#include "domain/context.h"
 
 #include <Akonadi/Item>
 
@@ -34,6 +35,7 @@ namespace Akonadi {
 
 class Collection;
 class Item;
+class Tag;
 
 class SerializerInterface
 {
@@ -50,6 +52,7 @@ public:
     virtual Domain::Task::Ptr createTaskFromItem(Akonadi::Item item) = 0;
     virtual void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual Akonadi::Item createItemFromTask(Domain::Task::Ptr task) = 0;
+
     virtual bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual QString relatedUidFromItem(Akonadi::Item item) = 0;
     virtual void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent) = 0;
@@ -58,7 +61,15 @@ public:
 
     virtual Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) = 0;
     virtual void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) = 0;
+
     virtual Akonadi::Item createItemFromNote(Domain::Note::Ptr note) = 0;
+
+    virtual Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) = 0;
+    virtual void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) = 0;
+    virtual bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
+    virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
+
+    static QByteArray contextTagType();
 };
 
 }

@@ -37,9 +37,12 @@
 #include <Akonadi/ItemMoveJob>
 #include <Akonadi/Notes/NoteUtils>
 #include <Akonadi/TransactionSequence>
-
+#include <Akonadi/TagFetchJob>
+#include <Akonadi/TagFetchScope>
+#include <Akonadi/TagAttribute>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
+#include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonadistoragesettings.h"
 
 using namespace Akonadi;
@@ -108,6 +111,14 @@ public:
     using ItemFetchJob::ItemFetchJob;
 
     Item::List items() const { return ItemFetchJob::items(); }
+};
+
+class TagJob : public TagFetchJob, public TagFetchJobInterface
+{
+public:
+    using TagFetchJob::TagFetchJob;
+
+    Tag::List tags() const { return TagFetchJob::tags(); }
 };
 
 Storage::Storage()
@@ -196,6 +207,12 @@ ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item)
     configureItemFetchJob(job);
 
     return job;
+}
+
+TagFetchJobInterface *Storage::fetchTags()
+{
+    qFatal("Not implemented yet");
+    return 0;
 }
 
 CollectionFetchJob::Type Storage::jobTypeFromDepth(StorageInterface::FetchDepth depth)

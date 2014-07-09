@@ -858,6 +858,108 @@ private slots:
         if (item.hasPayload<KCalCore::Todo::Ptr>())
             QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QString());
     }
+
+    void shouldCreateContextFromTag_data()
+    {
+        QTest::addColumn<QByteArray>("type");
+        QTest::addColumn<QString>("name");
+        QTest::addColumn<Akonadi::Tag::Id>("tagId");
+
+        const QByteArray rightTagType = Akonadi::Serializer::contextTagType() ;
+
+        QTest::newRow("nominal case") << rightTagType << "Context42" << Akonadi::Tag::Id(42);
+        QTest::newRow("empty name case") << rightTagType << "" << Akonadi::Tag::Id(43);
+    }
+
+    void shouldCreateContextFromTag()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QByteArray, type);
+        QFETCH(QString, name);
+        QFETCH(Akonadi::Tag::Id, tagId);
+
+        // ... stored as an Akonadi Tag
+        Akonadi::Tag tag(name);
+        tag.setType(type);
+        tag.setId(tagId);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Context::Ptr context = serializer.createContextFromTag(tag);
+
+        // THEN
+        QCOMPARE(context->name(), tag.name());
+        QCOMPARE(context->property("tagId").toLongLong(), tag.id());
+    }
+
+    void shouldNotCreateContextFromWrongTagType()
+    {
+        // GIVEN
+
+        // Data stored as an Akonadi Tag
+        Akonadi::Tag tag("context42");
+        tag.setType(QByteArray("wrongTagType"));
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Context::Ptr context = serializer.createContextFromTag(tag);
+
+        // THEN
+        QVERIFY(!context);
+    }
+
+    void shouldUpdateContextFromTag_data()
+    {
+        shouldCreateContextFromTag_data();
+    }
+
+    void shouldUpdateContextFromTag()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QByteArray, type);
+        QFETCH(QString, name);
+        QFETCH(Akonadi::Tag::Id, tagId);
+
+        // ... stored as an Akonadi Tag
+        Akonadi::Tag tag(name);
+        tag.setType(type);
+        tag.setId(tagId);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Context::Ptr context(new Domain::Context);
+
+        serializer.updateContextFromTag(context, tag);
+
+        // THEN
+        QCOMPARE(context->name(), tag.name());
+        QCOMPARE(context->property("tagId").toLongLong(), tag.id());
+    }
+
+    void shouldNotUpdateContextFromWrongTagType()
+    {
+        // GIVEN
+
+        Akonadi::Tag originalTag("Context42");
+        originalTag.setType(Akonadi::Serializer::contextTagType());
+        originalTag.setId(42);
+
+        Akonadi::Serializer serializer;
+        Domain::Context::Ptr context = serializer.createContextFromTag(originalTag);
+
+        // WHEN
+        Akonadi::Tag wrongTag("WrongContext42");
+        wrongTag.setType(QByteArray("wrongTypeTag"));
+        serializer.updateContextFromTag(context, wrongTag);
+
+        // THEN
+        QCOMPARE(context->name(), originalTag.name());
+        QCOMPARE(context->property("tagId").toLongLong(), originalTag.id());
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)

@@ -29,6 +29,7 @@
 namespace Akonadi {
 
 class Item;
+class Tag;
 
 class Serializer : public SerializerInterface
 {
@@ -54,6 +55,13 @@ public:
     Domain::Note::Ptr createNoteFromItem(Akonadi::Item item);
     void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item);
     Akonadi::Item createItemFromNote(Domain::Note::Ptr note);
+
+    Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag);
+    void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag);
+    bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const;
+    bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const;
+private:
+    bool isContext(const Akonadi::Tag &tag) const;
 };
 
 }

@@ -29,6 +29,7 @@
 #include "akonadi/akonadimonitorinterface.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
+#include "akonadi/akonaditagfetchjobinterface.h"
 
 class MockAkonadiJob : public KJob
 {
@@ -80,6 +81,19 @@ private:
     Akonadi::Item::List m_items;
 };
 
+class MockTagFetchJob : public MockAkonadiJob, public Akonadi::TagFetchJobInterface
+{
+    Q_OBJECT
+public:
+    using MockAkonadiJob::MockAkonadiJob;
+
+    void setTags(const Akonadi::Tag::List &tags);
+    Akonadi::Tag::List tags() const;
+
+private:
+    Akonadi::Tag::List m_tags;
+};
+
 class MockMonitor : public Akonadi::MonitorInterface
 {
     Q_OBJECT
@@ -93,6 +107,10 @@ public:
     void addItem(const Akonadi::Item &item);
     void removeItem(const Akonadi::Item &item);
     void changeItem(const Akonadi::Item &item);
+
+    void addTag(const Akonadi::Tag &tag);
+    void removeTag(const Akonadi::Tag &tag);
+    void changeTag(const Akonadi::Tag &tag);
 };
 
 #endif // ZANSHIN_TESTLIB_AKONADIMOCKS_H

@@ -86,6 +86,15 @@ Akonadi::Item::List MockItemFetchJob::items() const
     return isDone() ? m_items : Akonadi::Item::List();
 }
 
+void MockTagFetchJob::setTags(const Akonadi::Tag::List &tags)
+{
+    m_tags = tags;
+}
+
+Akonadi::Tag::List MockTagFetchJob::tags() const
+{
+    return isDone() ? m_tags : Akonadi::Tag::List();
+}
 
 MockMonitor::MockMonitor(QObject *parent)
     : Akonadi::MonitorInterface(parent)
@@ -121,3 +130,19 @@ void MockMonitor::changeItem(const Akonadi::Item &item)
 {
     emit itemChanged(item);
 }
+
+void MockMonitor::addTag(const Akonadi::Tag &tag)
+{
+    emit tagAdded(tag);
+}
+
+void MockMonitor::removeTag(const Akonadi::Tag &tag)
+{
+    emit tagRemoved(tag);
+}
+
+void MockMonitor::changeTag(const Akonadi::Tag &tag)
+{
+    emit tagChanged(tag);
+}
+
