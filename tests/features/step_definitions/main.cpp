@@ -122,6 +122,18 @@ GIVEN("^I'm looking at the inbox view$") {
 }
 
 
+WHEN("^I look at the central list$") {
+    ScenarioScope<ZanshinContext> context;
+
+    auto object = context->presentation->property("centralListModel").value<QObject*>();
+    auto model = static_cast<QAbstractItemModel*>(object);
+    context->setModel(model);
+
+    for (int row = 0; row < context->model()->rowCount(); row++) {
+        context->indices << context->model()->index(row, 0);
+    }
+}
+
 WHEN("^I list the model$") {
     ScenarioScope<ZanshinContext> context;
     for (int row = 0; row < context->model()->rowCount(); row++) {

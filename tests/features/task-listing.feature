@@ -8,8 +8,10 @@ Feature: Task listing
     Given I got a task list
     When I list the model
     Then the list is:
-       | display    |
-       | Buy kiwis  |
-       | Buy pears  |
-       | Buy apples |
-       | Buy cheese |
+       | display      |
+       | Buy kiwis    |
+       | Buy pears    |
+       | Buy apples   |
+       | Buy cheese   |
+       | A project    |
+       | A child task |
