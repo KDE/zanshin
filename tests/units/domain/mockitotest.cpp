@@ -30,7 +30,7 @@ class FakeInterface
 public:
     virtual ~FakeInterface();
     virtual void doSomething() = 0;
-    virtual int computeMe(const QString &input) = 0;
+    virtual int computeMe(QString input) = 0;
 };
 
 using namespace mockitopp;
@@ -69,7 +69,7 @@ private slots:
         }
 
         QVERIFY(mock(&FakeInterface::doSomething).when().exactly(2));
-        QVERIFY(mock(&FakeInterface::computeMe).when(any<const QString &>()).exactly(40));
+        QVERIFY(mock(&FakeInterface::computeMe).when(any<QString>()).exactly(40));
     }
 };
 
