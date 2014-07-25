@@ -193,4 +193,6 @@ END:VCARD&#xd;
   <tag name="Online" type="Zanshin-Context" gid="online-context" rid="online-context"/>
   <tag name="Physics" type="Zanshin-Topic" gid="physics-topic" rid="physics-topic"/>
   <tag name="Philosophy" type="Zanshin-Topic" gid="philosophy-topic" rid="philosophy-topic"/>
+  <tag name="Delete Me" type="PLAIN" gid="delete-me" rid="delete-me"/>
+  <tag name="Change Me" type="PLAIN" gid="change-me" rid="change-me"/>
 </knut>

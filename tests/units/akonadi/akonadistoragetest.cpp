@@ -36,6 +36,9 @@
 #include <Akonadi/ItemDeleteJob>
 #include <Akonadi/ItemModifyJob>
 #include <Akonadi/Tag>
+#include <Akonadi/TagCreateJob>
+#include <Akonadi/TagDeleteJob>
+#include <Akonadi/TagModifyJob>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
@@ -55,6 +58,7 @@ public:
     {
         qRegisterMetaType<Akonadi::Collection>();
         qRegisterMetaType<Akonadi::Item>();
+        qRegisterMetaType<Akonadi::Tag>();
     }
 
 private slots:
@@ -179,7 +183,9 @@ private slots:
     {
         // GIVEN
         Akonadi::Storage storage;
-        const QStringList expectedGids = { "errands-context",
+        const QStringList expectedGids = { "change-me",
+                                           "delete-me",
+                                           "errands-context",
                                            "online-context",
                                            "philosophy-topic",
                                            "physics-topic" };
@@ -405,6 +411,90 @@ private slots:
             parent = parent.parentCollection();
         }
     }
+
+
+    void shouldNotifyTagAdded()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(tagAdded(Akonadi::Tag)));
+
+        // A tag
+        Akonadi::Tag tag;
+        tag.setGid("gid");
+        tag.setName("name");
+        tag.setType("type");
+
+        // WHEN
+        (new Akonadi::TagCreateJob(tag))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+        QCOMPARE(notifiedTag.gid(), tag.gid());
+        QCOMPARE(notifiedTag.name(), tag.name());
+        QCOMPARE(notifiedTag.type(), tag.type());
+    }
+
+    void shouldNotifyTagRemoved()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(tagRemoved(Akonadi::Tag)));
+
+        // An existing tag (if we trust the test data)
+        Akonadi::Tag tag(5);
+
+        // WHEN
+        (new Akonadi::TagDeleteJob(tag))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+        QCOMPARE(notifiedTag.id(), tag.id());
+    }
+
+    void shouldNotifyTagChanged()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(tagChanged(Akonadi::Tag)));
+
+        // An existing tag (if we trust the test data)
+        Akonadi::Tag tag(6);
+        tag.setName("Oh it changed!");
+
+        // WHEN
+        (new Akonadi::TagModifyJob(tag))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+        QCOMPARE(notifiedTag.id(), tag.id());
+        QCOMPARE(notifiedTag.name(), tag.name());
+    }
+
 
     void shouldReadDefaultNoteCollectionFromSettings()
     {

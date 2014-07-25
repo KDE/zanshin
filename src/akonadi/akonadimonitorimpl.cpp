@@ -62,6 +62,10 @@ MonitorImpl::MonitorImpl()
     connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(itemRemoved(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SIGNAL(itemChanged(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemMoved(Akonadi::Item,Akonadi::Collection,Akonadi::Collection)), this, SIGNAL(itemMoved(Akonadi::Item)));
+
+    connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SIGNAL(tagAdded(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SIGNAL(tagRemoved(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SIGNAL(tagChanged(Akonadi::Tag)));
 }
 
 MonitorImpl::~MonitorImpl()
