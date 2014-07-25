@@ -33,8 +33,8 @@
 
 using namespace mockitopp;
 
-Q_DECLARE_METATYPE(MockItemFetchJob*);
-Q_DECLARE_METATYPE(MockCollectionFetchJob*);
+Q_DECLARE_METATYPE(MockItemFetchJob*)
+Q_DECLARE_METATYPE(MockCollectionFetchJob*)
 
 class AkonadiTaskQueriesTest : public QObject
 {

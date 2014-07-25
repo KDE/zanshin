@@ -47,7 +47,7 @@
 #include "akonadi/akonadistoragesettings.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 
-Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth);
+Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth)
 
 class AkonadiStorageTest : public QObject
 {
