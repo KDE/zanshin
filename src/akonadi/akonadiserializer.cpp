@@ -90,9 +90,18 @@ bool Akonadi::Serializer::isTaskCollection(Akonadi::Collection collection)
     return collection.contentMimeTypes().contains(KCalCore::Todo::todoMimeType());
 }
 
-Domain::Task::Ptr Serializer::createTaskFromItem(Item item)
+bool Serializer::isTaskItem(const Item &item)
 {
     if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return false;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    return todo->customProperty("Zanshin", "Project").isEmpty();
+}
+
+Domain::Task::Ptr Serializer::createTaskFromItem(Item item)
+{
+    if (!isTaskItem(item))
         return Domain::Task::Ptr();
 
     auto task = Domain::Task::Ptr::create();
@@ -102,7 +111,7 @@ Domain::Task::Ptr Serializer::createTaskFromItem(Item item)
 
 void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!isTaskItem(item))
         return;
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
@@ -117,7 +126,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
 
 bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!isTaskItem(item))
         return false;
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
@@ -145,7 +154,7 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 
 QString Serializer::relatedUidFromItem(Akonadi::Item item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!isTaskItem(item))
         return QString();
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
@@ -154,7 +163,7 @@ QString Serializer::relatedUidFromItem(Akonadi::Item item)
 
 void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!isTaskItem(item))
         return;
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
@@ -163,7 +172,7 @@ void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
 
 void Serializer::removeItemParent(Akonadi::Item item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!isTaskItem(item))
         return;
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
@@ -199,9 +208,14 @@ Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List 
     return result;
 }
 
+bool Serializer::isNoteItem(const Item &item)
+{
+    return item.hasPayload<KMime::Message::Ptr>();
+}
+
 Domain::Note::Ptr Serializer::createNoteFromItem(Akonadi::Item item)
 {
-    if (!item.hasPayload<KMime::Message::Ptr>())
+    if (!isNoteItem(item))
         return Domain::Note::Ptr();
 
     Domain::Note::Ptr note = Domain::Note::Ptr::create();
@@ -212,7 +226,7 @@ Domain::Note::Ptr Serializer::createNoteFromItem(Akonadi::Item item)
 
 void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
 {
-    if (!item.hasPayload<KMime::Message::Ptr>())
+    if (!isNoteItem(item))
         return;
 
     NoteUtils::NoteMessageWrapper wrappedNote(item.payload<KMime::Message::Ptr>());

@@ -13,5 +13,4 @@ Feature: Task listing
        | Buy pears    |
        | Buy apples   |
        | Buy cheese   |
-       | A project    |
        | A child task |

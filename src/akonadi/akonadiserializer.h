@@ -43,6 +43,7 @@ public:
     virtual bool isNoteCollection(Akonadi::Collection collection);
     virtual bool isTaskCollection(Akonadi::Collection collection);
 
+    bool isTaskItem(const Akonadi::Item &item);
     Domain::Task::Ptr createTaskFromItem(Akonadi::Item item);
     void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item);
     Akonadi::Item createItemFromTask(Domain::Task::Ptr task);
@@ -52,6 +53,7 @@ public:
     void removeItemParent(Akonadi::Item item);
     Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem);
 
+    bool isNoteItem(const Akonadi::Item &item);
     Domain::Note::Ptr createNoteFromItem(Akonadi::Item item);
     void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item);
     Akonadi::Item createItemFromNote(Domain::Note::Ptr note);

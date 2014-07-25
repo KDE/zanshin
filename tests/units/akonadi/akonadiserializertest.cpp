@@ -300,6 +300,28 @@ private slots:
         QVERIFY(task.isNull());
     }
 
+    void shouldCreateNullTaskFromProjectItem()
+    {
+        // GIVEN
+
+        // A todo with the project flag
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary("foo");
+        todo->setCustomProperty("Zanshin", "Project", "1");
+
+        // ... as payload of an item
+        Akonadi::Item item;
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Task::Ptr task = serializer.createTaskFromItem(item);
+
+        // THEN
+        QVERIFY(task.isNull());
+    }
+
     void shouldUpdateTaskFromItem_data()
     {
         QTest::addColumn<QString>("updatedSummary");
@@ -397,6 +419,54 @@ private slots:
         // WHEN
         Akonadi::Item invalidItem;
         serializer.updateTaskFromItem(task, invalidItem);
+
+        // THEN
+        QCOMPARE(task->title(), summary);
+        QCOMPARE(task->text(), content);
+        QCOMPARE(task->isDone(), isDone);
+        QCOMPARE(task->startDate(), startDate);
+        QCOMPARE(task->dueDate(), dueDate);
+    }
+
+    void shouldNotUpdateTaskFromProjectItem()
+    {
+        // GIVEN
+
+        // Data...
+        const QString summary = "summary";
+        const QString content = "content";
+        const bool isDone = true;
+        const QDateTime startDate(QDate(2013, 11, 24));
+        const QDateTime dueDate(QDate(2014, 03, 01));
+
+        // ... stored in a todo...
+        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        originalTodo->setSummary(summary);
+        originalTodo->setDescription(content);
+        originalTodo->setCompleted(isDone);
+        originalTodo->setDtStart(KDateTime(startDate));
+        originalTodo->setDtDue(KDateTime(dueDate));
+
+        // ... as payload of an item...
+        Akonadi::Item originalItem;
+        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+
+        // ... deserialized as a task
+        Akonadi::Serializer serializer;
+        auto task = serializer.createTaskFromItem(originalItem);
+
+        // WHEN
+        // A todo with the project flag
+        KCalCore::Todo::Ptr projectTodo(new KCalCore::Todo);
+        projectTodo->setSummary("foo");
+        projectTodo->setCustomProperty("Zanshin", "Project", "1");
+
+        // ... as payload of an item
+        Akonadi::Item projectItem;
+        projectItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        projectItem.setPayload<KCalCore::Todo::Ptr>(projectTodo);
+        serializer.updateTaskFromItem(task, projectItem);
 
         // THEN
         QCOMPARE(task->title(), summary);
