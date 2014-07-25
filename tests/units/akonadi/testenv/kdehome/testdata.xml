@@ -189,4 +189,8 @@ END:VCARD&#xd;
     <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{1f78b360-a01b-4785-9187-75450190342c}" name="Destroy me!"/>
     <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{28ef9f03-4ebc-4e33-970f-f379775894f9}" name="Change me!"/>
   </collection>
+  <tag name="Errands" type="Zanshin-Context" gid="errands-context" rid="errands-context"/>
+  <tag name="Online" type="Zanshin-Context" gid="online-context" rid="online-context"/>
+  <tag name="Physics" type="Zanshin-Topic" gid="physics-topic" rid="physics-topic"/>
+  <tag name="Philosophy" type="Zanshin-Topic" gid="philosophy-topic" rid="philosophy-topic"/>
 </knut>

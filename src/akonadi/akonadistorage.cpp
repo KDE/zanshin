@@ -211,8 +211,7 @@ ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item)
 
 TagFetchJobInterface *Storage::fetchTags()
 {
-    qFatal("Not implemented yet");
-    return 0;
+    return new TagJob;
 }
 
 CollectionFetchJob::Type Storage::jobTypeFromDepth(StorageInterface::FetchDepth depth)

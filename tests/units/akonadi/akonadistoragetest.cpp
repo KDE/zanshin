@@ -35,12 +35,14 @@
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemDeleteJob>
 #include <Akonadi/ItemModifyJob>
+#include <Akonadi/Tag>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadistorage.h"
 #include "akonadi/akonadistoragesettings.h"
+#include "akonadi/akonaditagfetchjobinterface.h"
 
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth);
 
@@ -170,6 +172,33 @@ private slots:
         itemRemoteIds.sort();
 
         QCOMPARE(itemRemoteIds, expectedRemoteIds);
+    }
+
+
+    void shouldListTags()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+        const QStringList expectedGids = { "errands-context",
+                                           "online-context",
+                                           "philosophy-topic",
+                                           "physics-topic" };
+
+        // WHEN
+        auto job = storage.fetchTags();
+        job->kjob()->exec();
+
+        // THEN
+        auto tags = job->tags();
+        QStringList tagGids;
+        for (const Akonadi::Tag &tag : tags) {
+            tagGids << tag.gid();
+            QVERIFY(!tag.name().isEmpty());
+            QVERIFY(!tag.type().isEmpty());
+        }
+        tagGids.sort();
+
+        QCOMPARE(tagGids, expectedGids);
     }
 
     void shouldNotifyCollectionAdded()
