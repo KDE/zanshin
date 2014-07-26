@@ -90,6 +90,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task2);
 
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn(QString());
+
         // WHEN
         QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(&storageMock.getInstance(),
                                                                                      &serializerMock.getInstance(),
@@ -153,6 +157,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
 
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
+
         // WHEN
         QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(&storageMock.getInstance(),
                                                                                      &serializerMock.getInstance(),
@@ -170,6 +177,82 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0).dynamicCast<Domain::Task>(), task1);
+    }
+
+    void shouldNotHaveArtifactsWithParentsInInbox()
+    {
+        // TODO: Note that this specification is kind of an over simplification which
+        // assumes that all the underlying data is correct. Ideally it should be checked
+        // that the uid refered to actually points to a todo which exists in a proper
+        // collection. We will need a cache to be able to implement that properly though.
+
+        // GIVEN
+
+        // One top level collection
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+
+        // Three items in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        Domain::Task::Ptr task1(new Domain::Task);
+        // Two of them will have a parent
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col);
+        Domain::Task::Ptr task2(new Domain::Task);
+        Akonadi::Item item3(44);
+        item3.setParentCollection(col);
+        Domain::Note::Ptr note3(new Domain::Note);
+        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob);
+
+        // Serializer mock returning the artifacts from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(Domain::Task::Ptr());
+        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
+
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("foo");
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("bar");
+
+
+        // WHEN
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(&storageMock.getInstance(),
+                                                                                     &serializerMock.getInstance(),
+                                                                                     new MockMonitor(this)));
+        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(0));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).exactly(0));
+
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).exactly(1));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0).dynamicCast<Domain::Task>(), task1);

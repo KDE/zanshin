@@ -84,6 +84,9 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
                     return;
 
                 for (auto item : job->items()) {
+                    if (!m_serializer->relatedUidFromItem(item).isEmpty())
+                        continue;
+
                     auto task = m_serializer->createTaskFromItem(item);
                     if (task) {
                         provider->append(task);
