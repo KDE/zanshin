@@ -611,8 +611,37 @@ private slots:
         todo2->setRelatedTo("1");
         item2.setPayload<KCalCore::Todo::Ptr>(todo2);
 
-        QTest::newRow("without related") << item1 << QString();
-        QTest::newRow("with related") << item2 << "1";
+        Akonadi::Item item3;
+        KMime::Message::Ptr message1(new KMime::Message);
+        message1->subject(true)->fromUnicodeString("foo", "utf-8");
+        message1->mainBodyPart()->fromUnicodeString("bar");
+        item3.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        item3.setPayload<KMime::Message::Ptr>(message1);
+
+        Akonadi::Item item4;
+        KMime::Message::Ptr message2(new KMime::Message);
+        message2->subject(true)->fromUnicodeString("foo", "utf-8");
+        message2->mainBodyPart()->fromUnicodeString("bar");
+        auto relatedHeader1 = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+        relatedHeader1->from7BitString("1");
+        message2->appendHeader(relatedHeader1);
+        item4.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        item4.setPayload<KMime::Message::Ptr>(message2);
+
+        Akonadi::Item item5;
+        KMime::Message::Ptr message3(new KMime::Message);
+        message3->subject(true)->fromUnicodeString("foo", "utf-8");
+        message3->mainBodyPart()->fromUnicodeString("bar");
+        auto relatedHeader2 = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+        message3->appendHeader(relatedHeader2);
+        item5.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        item5.setPayload<KMime::Message::Ptr>(message3);
+
+        QTest::newRow("task without related") << item1 << QString();
+        QTest::newRow("task with related") << item2 << "1";
+        QTest::newRow("note without related") << item3 << QString();
+        QTest::newRow("note with related") << item4 << "1";
+        QTest::newRow("note with empty related") << item5 << QString();
     }
 
     void shouldRetrieveRelatedUidFromItem()

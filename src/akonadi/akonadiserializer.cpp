@@ -154,11 +154,18 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 
 QString Serializer::relatedUidFromItem(Akonadi::Item item)
 {
-    if (!isTaskItem(item))
-        return QString();
+    if (isTaskItem(item)) {
+        const auto todo = item.payload<KCalCore::Todo::Ptr>();
+        return todo->relatedTo();
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
-    return todo->relatedTo();
+    } else if (isNoteItem(item)) {
+        const auto message = item.payload<KMime::Message::Ptr>();
+        const auto relatedHeader = message->headerByType("X-Zanshin-RelatedProjectUid");
+        return relatedHeader ? relatedHeader->asUnicodeString() : QString();
+
+    } else {
+        return QString();
+    }
 }
 
 void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
