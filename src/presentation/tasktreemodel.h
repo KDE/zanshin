@@ -66,6 +66,7 @@ public:
 
 private:
     friend class Node;
+    Node *nodeFromIndex(const QModelIndex &index) const;
     Domain::Task::Ptr taskForIndex(const QModelIndex &index) const;
     bool isModelIndexValid(const QModelIndex &index) const;
 

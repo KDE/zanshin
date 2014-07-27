@@ -167,7 +167,7 @@ QModelIndex TaskTreeModel::index(int row, int column, const QModelIndex &parent)
     if (row < 0 || column != 0)
         return QModelIndex();
 
-    const Node *parentNode = parent.isValid() ? static_cast<Node*>(parent.internalPointer()) : m_rootNode;
+    const Node *parentNode = nodeFromIndex(parent);
 
     if (row < parentNode->childCount()) {
         Node *node = parentNode->child(row);
@@ -179,11 +179,8 @@ QModelIndex TaskTreeModel::index(int row, int column, const QModelIndex &parent)
 
 QModelIndex TaskTreeModel::parent(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return QModelIndex();
-
-    Node *node = static_cast<Node*>(index.internalPointer());
-    if (node->parent() == m_rootNode)
+    Node *node = nodeFromIndex(index);
+    if (!node->parent() || node->parent() == m_rootNode)
         return QModelIndex();
     else
         return createIndex(node->parent()->row(), 0, node->parent());
@@ -191,8 +188,7 @@ QModelIndex TaskTreeModel::parent(const QModelIndex &index) const
 
 int TaskTreeModel::rowCount(const QModelIndex &index) const
 {
-    const Node *node = index.isValid() ? static_cast<Node*>(index.internalPointer()) : m_rootNode;
-    return node->childCount();
+    return nodeFromIndex(index)->childCount();
 }
 
 int TaskTreeModel::columnCount(const QModelIndex &) const
@@ -238,9 +234,14 @@ bool TaskTreeModel::setData(const QModelIndex &index, const QVariant &value, int
     return true;
 }
 
+Node *TaskTreeModel::nodeFromIndex(const QModelIndex &index) const
+{
+    return index.isValid() ? static_cast<Node*>(index.internalPointer()) : m_rootNode;
+}
+
 Domain::Task::Ptr TaskTreeModel::taskForIndex(const QModelIndex &index) const
 {
-    const Node *parentNode = index.parent().isValid() ? static_cast<Node*>(index.parent().internalPointer()) : m_rootNode;
+    const Node *parentNode = nodeFromIndex(index.parent());
     return parentNode->childTask(index.row());
 }
 
@@ -253,7 +254,7 @@ bool TaskTreeModel::isModelIndexValid(const QModelIndex &index) const
     if (!valid)
         return false;
 
-    const Node *parentNode = index.parent().isValid() ? static_cast<Node*>(index.parent().internalPointer()) : m_rootNode;
+    const Node *parentNode = nodeFromIndex(index.parent());
     const int count = parentNode->childCount();
     return index.row() < count;
 }
