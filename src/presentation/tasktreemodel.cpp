@@ -34,8 +34,14 @@ namespace Presentation {
 class Node
 {
 public:
-    Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model, const TaskTreeModel::QueryGenerator &queryGenerator);
+    Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
+         Domain::TaskRepository *repository,
+         const TaskTreeModel::QueryGenerator &queryGenerator);
     ~Node();
+
+    Qt::ItemFlags flags() const;
+    QVariant data(int role) const;
+    bool setData(const QVariant &value, int role);
 
     int row();
     Node *parent() const;
@@ -52,30 +58,33 @@ private:
     TaskTreeModel::TaskList::Ptr m_taskChildren;
     QList<Node*> m_childNode;
     TaskTreeModel *m_model;
+    Domain::TaskRepository *m_repository;
 };
 }
 
 using namespace Presentation;
 
 Node::Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
+           Domain::TaskRepository *repository,
            const TaskTreeModel::QueryGenerator &queryGenerator)
     : m_task(task),
       m_parent(parent),
-      m_model(model)
+      m_model(model),
+      m_repository(repository)
 {
     m_taskChildren = queryGenerator(task);
     for (auto task : m_taskChildren->data()) {
-        Node *node = new Node(task, this, model, queryGenerator);
+        Node *node = new Node(task, this, model, m_repository, queryGenerator);
         m_childNode.append(node);
     }
 
-    m_taskChildren->addPreInsertHandler([this, model, queryGenerator](const Domain::Task::Ptr &task, int index) {
-        Node *node = new Node(task, this, model, queryGenerator);
-        insertChild(index, node);
+    m_taskChildren->addPreInsertHandler([this, model](const Domain::Task::Ptr &, int index) {
         QModelIndex parentIndex = m_parent ? model->createIndex(row(), 0, this) : QModelIndex();
         model->beginInsertRows(parentIndex, index, index);
     });
-    m_taskChildren->addPostInsertHandler([this, model](const Domain::Task::Ptr &, int) {
+    m_taskChildren->addPostInsertHandler([this, model, queryGenerator](const Domain::Task::Ptr &task, int index) {
+        Node *node = new Node(task, this, model, m_repository, queryGenerator);
+        insertChild(index, node);
         model->endInsertRows();
     });
     m_taskChildren->addPreRemoveHandler([this, model](const Domain::Task::Ptr &, int index) {
@@ -95,6 +104,42 @@ Node::Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
 Node::~Node()
 {
     qDeleteAll(m_childNode);
+}
+
+Qt::ItemFlags Node::flags() const
+{
+    return Qt::ItemIsSelectable
+         | Qt::ItemIsEnabled
+         | Qt::ItemIsEditable
+         | Qt::ItemIsUserCheckable;
+}
+
+QVariant Node::data(int role) const
+{
+    if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+        return QVariant();
+    }
+
+    if (role == Qt::DisplayRole)
+        return m_task->title();
+    else
+        return m_task->isDone() ? Qt::Checked : Qt::Unchecked;
+}
+
+bool Node::setData(const QVariant &value, int role)
+{
+    if (role != Qt::EditRole && role != Qt::CheckStateRole) {
+        return false;
+    }
+
+    if (role == Qt::EditRole) {
+        m_task->setTitle(value.toString());
+    } else {
+        m_task->setDone(value.toInt() == Qt::Checked);
+    }
+
+    m_repository->save(m_task);
+    return true;
 }
 
 int Node::row()
@@ -143,8 +188,7 @@ Domain::Task::Ptr Node::childTask(int row) const
 
 TaskTreeModel::TaskTreeModel(const QueryGenerator &queryGenerator, Domain::TaskRepository *repository, QObject *parent)
     : QAbstractItemModel(parent),
-      m_repository(repository),
-      m_rootNode(new Node(Domain::Task::Ptr(), 0, this, queryGenerator))
+      m_rootNode(new Node(Domain::Task::Ptr(), 0, this, repository, queryGenerator))
 {
 }
 
@@ -159,7 +203,7 @@ Qt::ItemFlags TaskTreeModel::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
     }
 
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+    return nodeFromIndex(index)->flags();
 }
 
 QModelIndex TaskTreeModel::index(int row, int column, const QModelIndex &parent) const
@@ -202,15 +246,7 @@ QVariant TaskTreeModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-        return QVariant();
-    }
-
-    const auto task = taskForIndex(index);
-    if (role == Qt::DisplayRole)
-        return task->title();
-    else
-        return task->isDone() ? Qt::Checked : Qt::Unchecked;
+    return nodeFromIndex(index)->data(role);
 }
 
 bool TaskTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -219,30 +255,12 @@ bool TaskTreeModel::setData(const QModelIndex &index, const QVariant &value, int
         return false;
     }
 
-    if (role != Qt::EditRole && role != Qt::CheckStateRole) {
-        return false;
-    }
-
-    auto task = taskForIndex(index);
-    if (role == Qt::EditRole) {
-        task->setTitle(value.toString());
-    } else {
-        task->setDone(value.toInt() == Qt::Checked);
-    }
-
-    m_repository->save(task);
-    return true;
+    return nodeFromIndex(index)->setData(value, role);
 }
 
 Node *TaskTreeModel::nodeFromIndex(const QModelIndex &index) const
 {
     return index.isValid() ? static_cast<Node*>(index.internalPointer()) : m_rootNode;
-}
-
-Domain::Task::Ptr TaskTreeModel::taskForIndex(const QModelIndex &index) const
-{
-    const Node *parentNode = nodeFromIndex(index.parent());
-    return parentNode->childTask(index.row());
 }
 
 bool TaskTreeModel::isModelIndexValid(const QModelIndex &index) const
