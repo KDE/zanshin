@@ -36,8 +36,9 @@ class Node : public QObject
 public:
     typedef QSharedPointer<Node> Ptr;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
+    typedef std::function<TaskTreeModel::TaskList::Ptr(const Domain::Task::Ptr &)> QueryFunction;
 
-    Node(Domain::Task::Ptr task, Node *parent, Domain::TaskQueries *queries, TaskTreeModel *model);
+    Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model, const QueryFunction &childrenQuery);
     ~Node();
 
     int row();
@@ -60,38 +61,39 @@ private:
 
 using namespace Presentation;
 
-Node::Node(Domain::Task::Ptr task, Node *parent, Domain::TaskQueries *queries, TaskTreeModel *model)
+Node::Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
+           const QueryFunction &childrenQuery)
     : m_task(task),
       m_parent(parent),
       m_model(model)
 {
-    if (queries) {
-        m_taskChildren = queries->findChildren(task);
-        for (auto task : m_taskChildren->data()) {
-            Node *node = new Node(task, this, queries, model);
-            m_childNode.append(node);
-        }
-
-        m_taskChildren->addPreInsertHandler([this, queries, model](const Domain::Task::Ptr &task, int index) {
-                                        Node *node = new Node(task, this, queries, model);
-                                        insertChild(index, node);
-                                        model->beginInsertRows(model->createIndex(row(), 0, this), index, index);
-                                    });
-        m_taskChildren->addPostInsertHandler([this, model](const Domain::Task::Ptr &, int) {
-                                        model->endInsertRows();
-                                    });
-        m_taskChildren->addPreRemoveHandler([this, model](const Domain::Task::Ptr &, int index) {
-                                        model->beginRemoveRows(model->createIndex(row(), 0, this), index, index);
-                                    });
-        m_taskChildren->addPostRemoveHandler([this, model](const Domain::Task::Ptr &, int index) {
-                                         m_childNode.removeAt(index);
-                                         model->endRemoveRows();
-                                    });
-        m_taskChildren->addPostReplaceHandler([this, model](const Domain::Task::Ptr &, int idx) {
-                                         QModelIndex parentIndex = model->createIndex(row(), 0, this);
-                                         emit model->dataChanged(model->index(idx, 0, parentIndex), model->index(idx, 0, parentIndex));
-                                    });
+    m_taskChildren = childrenQuery(task);
+    for (auto task : m_taskChildren->data()) {
+        Node *node = new Node(task, this, model, childrenQuery);
+        m_childNode.append(node);
     }
+
+    m_taskChildren->addPreInsertHandler([this, model, childrenQuery](const Domain::Task::Ptr &task, int index) {
+        Node *node = new Node(task, this, model, childrenQuery);
+        insertChild(index, node);
+        QModelIndex parentIndex = m_parent ? model->createIndex(row(), 0, this) : QModelIndex();
+        model->beginInsertRows(parentIndex, index, index);
+    });
+    m_taskChildren->addPostInsertHandler([this, model](const Domain::Task::Ptr &, int) {
+        model->endInsertRows();
+    });
+    m_taskChildren->addPreRemoveHandler([this, model](const Domain::Task::Ptr &, int index) {
+        QModelIndex parentIndex = m_parent ? model->createIndex(row(), 0, this) : QModelIndex();
+        model->beginRemoveRows(parentIndex, index, index);
+    });
+    m_taskChildren->addPostRemoveHandler([this, model](const Domain::Task::Ptr &, int index) {
+        m_childNode.removeAt(index);
+        model->endRemoveRows();
+    });
+    m_taskChildren->addPostReplaceHandler([this, model](const Domain::Task::Ptr &, int idx) {
+        QModelIndex parentIndex = m_parent ? model->createIndex(row(), 0, this) : QModelIndex();
+        emit model->dataChanged(model->index(idx, 0, parentIndex), model->index(idx, 0, parentIndex));
+    });
 }
 
 Node::~Node()
@@ -101,10 +103,7 @@ Node::~Node()
 
 int Node::row()
 {
-    if (m_parent)
-        return m_parent->m_childNode.indexOf(this);
-    else
-        return m_model->m_rootNodes.indexOf(this);
+    return m_parent ? m_parent->m_childNode.indexOf(this) : -1;
 }
 
 Node *Node::parent() const
@@ -149,40 +148,20 @@ Domain::Task::Ptr Node::childTask(int row) const
 TaskTreeModel::TaskTreeModel(const std::function<TaskList::Ptr()> &rootQuery, Domain::TaskQueries *queries, Domain::TaskRepository *repository, QObject *parent)
     : QAbstractItemModel(parent),
       m_repository(repository),
-      m_queries(queries)
+      m_queries(queries),
+      m_rootNode(new Node(Domain::Task::Ptr(), 0, this,
+                          [=](const Domain::Task::Ptr &task) {
+                              if (!task)
+                                  return rootQuery();
+                              else
+                                  return queries->findChildren(task);
+                          }))
 {
-    m_taskList = rootQuery();
-
-    for (auto task : m_taskList->data()) {
-        Node *node = new Node(task, 0, m_queries, this);
-        m_rootNodes.append(node);
-    }
-
-    m_taskList->addPreInsertHandler([this](const Domain::Task::Ptr &task, int index) {
-                                        Node *node = new Node(task, 0, m_queries, this);
-                                        m_rootNodes.insert(index, node);
-                                        beginInsertRows(QModelIndex(), index, index);
-                                    });
-    m_taskList->addPostInsertHandler([this](const Domain::Task::Ptr &, int) {
-                                        endInsertRows();
-                                    });
-    m_taskList->addPreRemoveHandler([this](const Domain::Task::Ptr &, int index) {
-                                        beginRemoveRows(QModelIndex(), index, index);
-                                    });
-    m_taskList->addPostRemoveHandler([this](const Domain::Task::Ptr &, int index) {
-                                        Node *node = m_rootNodes.at(index);
-                                        m_rootNodes.removeAt(index);
-                                        delete node;
-                                        endRemoveRows();
-                                    });
-    m_taskList->addPostReplaceHandler([this](const Domain::Task::Ptr &, int idx) {
-                                        emit dataChanged(index(idx, 0), index(idx, 0));
-                                    });
 }
 
 TaskTreeModel::~TaskTreeModel()
 {
-    qDeleteAll(m_rootNodes);
+    delete m_rootNode;
 }
 
 Qt::ItemFlags TaskTreeModel::flags(const QModelIndex &index) const
@@ -199,23 +178,14 @@ QModelIndex TaskTreeModel::index(int row, int column, const QModelIndex &parent)
     if (row < 0 || column != 0)
         return QModelIndex();
 
-    Node *node = 0;
-    if (!parent.isValid()) {
-        if (row < m_taskList->data().size()
-         && !m_taskList->data().isEmpty()
-         && row < m_rootNodes.size()) {
-            node = m_rootNodes.value(row);
-        }
-    } else {
-        Node *parentNode = static_cast<Node*>(parent.internalPointer());
-        if (row < parentNode->childCount())
-            node = parentNode->child(row);
-    }
+    const Node *parentNode = parent.isValid() ? static_cast<Node*>(parent.internalPointer()) : m_rootNode;
 
-    if (node)
+    if (row < parentNode->childCount()) {
+        Node *node = parentNode->child(row);
         return createIndex(row, column, node);
-    else
+    } else {
         return QModelIndex();
+    }
 }
 
 QModelIndex TaskTreeModel::parent(const QModelIndex &index) const
@@ -224,7 +194,7 @@ QModelIndex TaskTreeModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     Node *node = static_cast<Node*>(index.internalPointer());
-    if (!node->parent())
+    if (node->parent() == m_rootNode)
         return QModelIndex();
     else
         return createIndex(node->parent()->row(), 0, node->parent());
@@ -232,25 +202,8 @@ QModelIndex TaskTreeModel::parent(const QModelIndex &index) const
 
 int TaskTreeModel::rowCount(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return m_taskList->data().size();
-
-    if (index.parent().isValid()) {
-        Node *parentNode = static_cast<Node*>(index.parent().internalPointer());
-        if (parentNode) {
-            Node *node = parentNode->child(index.row());
-            if (node)
-                return node->childCount();
-        }
-    }
-
-    if (index.isValid()) {
-        Node *node = static_cast<Node*>(index.internalPointer());
-        if (node)
-            return node->childCount();
-    }
-
-    return 0;
+    const Node *node = index.isValid() ? static_cast<Node*>(index.internalPointer()) : m_rootNode;
+    return node->childCount();
 }
 
 int TaskTreeModel::columnCount(const QModelIndex &) const
@@ -298,11 +251,8 @@ bool TaskTreeModel::setData(const QModelIndex &index, const QVariant &value, int
 
 Domain::Task::Ptr TaskTreeModel::taskForIndex(const QModelIndex &index) const
 {
-    if (index.parent().isValid()) {
-        Node *parent = static_cast<Node*>(index.parent().internalPointer());
-        return parent->childTask(index.row());
-    } else
-        return m_taskList->data().at(index.row());
+    const Node *parentNode = index.parent().isValid() ? static_cast<Node*>(index.parent().internalPointer()) : m_rootNode;
+    return parentNode->childTask(index.row());
 }
 
 bool TaskTreeModel::isModelIndexValid(const QModelIndex &index) const
@@ -314,8 +264,8 @@ bool TaskTreeModel::isModelIndexValid(const QModelIndex &index) const
     if (!valid)
         return false;
 
-    int count = index.parent().isValid() ? static_cast<Node*>(index.parent().internalPointer())->childCount()
-                                         : m_taskList->data().size();
+    const Node *parentNode = index.parent().isValid() ? static_cast<Node*>(index.parent().internalPointer()) : m_rootNode;
+    const int count = parentNode->childCount();
     return index.row() < count;
 }
 

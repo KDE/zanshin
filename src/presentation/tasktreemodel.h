@@ -69,10 +69,9 @@ private:
     Domain::Task::Ptr taskForIndex(const QModelIndex &index) const;
     bool isModelIndexValid(const QModelIndex &index) const;
 
-    TaskList::Ptr m_taskList;
     Domain::TaskRepository *m_repository;
     Domain::TaskQueries *m_queries;
-    QList<Node*> m_rootNodes;
+    Node *m_rootNode;
 };
 
 }
