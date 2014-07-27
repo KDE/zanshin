@@ -31,7 +31,7 @@
 
 
 namespace Presentation {
-class Node : public QObject
+class Node
 {
 public:
     Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model, const TaskTreeModel::QueryGenerator &queryGenerator);
