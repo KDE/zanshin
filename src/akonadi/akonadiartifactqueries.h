@@ -51,7 +51,14 @@ public:
 
     ArtifactResult::Ptr findInboxTopLevel() const;
 
+private slots:
+    void onItemAdded(const Akonadi::Item &item);
+    void onItemRemoved(const Akonadi::Item &item);
+    void onItemChanged(const Akonadi::Item &item);
+
 private:
+    bool isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const;
+
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
     MonitorInterface *m_monitor;

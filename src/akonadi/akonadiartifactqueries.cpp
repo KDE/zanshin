@@ -40,6 +40,9 @@ ArtifactQueries::ArtifactQueries()
       m_monitor(new MonitorImpl),
       m_ownInterfaces(true)
 {
+    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
 }
 
 ArtifactQueries::ArtifactQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor)
@@ -48,6 +51,9 @@ ArtifactQueries::ArtifactQueries(StorageInterface *storage, SerializerInterface 
       m_monitor(monitor),
       m_ownInterfaces(false)
 {
+    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
 }
 
 ArtifactQueries::~ArtifactQueries()
@@ -104,4 +110,87 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
     });
 
     return result;
+}
+
+void ArtifactQueries::onItemAdded(const Item &item)
+{
+    ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
+    if (!provider) {
+        return;
+    }
+
+    if (!m_serializer->relatedUidFromItem(item).isEmpty())
+        return;
+
+    auto task = m_serializer->createTaskFromItem(item);
+    if (task) {
+        provider->append(task);
+        return;
+    }
+
+    auto note = m_serializer->createNoteFromItem(item);
+    if (note) {
+        provider->append(note);
+        return;
+    }
+}
+
+void ArtifactQueries::onItemRemoved(const Item &item)
+{
+    ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
+
+    if (!provider) {
+        return;
+    }
+
+    for (int i = 0; i < provider->data().size(); i++) {
+        auto artifact = provider->data().at(i);
+        if (isArtifactItem(artifact, item)) {
+            provider->removeAt(i);
+            i--;
+        }
+    }
+}
+
+void ArtifactQueries::onItemChanged(const Item &item)
+{
+    ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
+
+    if (!provider) {
+        return;
+    }
+
+    bool itemFound = false;
+    for (int i = 0; i < provider->data().size(); i++) {
+        auto artifact = provider->data().at(i);
+        if (isArtifactItem(artifact, item)) {
+            itemFound = true;
+            if (m_serializer->relatedUidFromItem(item).isEmpty()) {
+                if (auto task = artifact.dynamicCast<Domain::Task>()) {
+                    m_serializer->updateTaskFromItem(task, item);
+                    provider->replace(i, task);
+                } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
+                    m_serializer->updateNoteFromItem(note, item);
+                    provider->replace(i, note);
+                }
+            } else {
+                provider->removeAt(i);
+                i--;
+            }
+        }
+    }
+    if (!itemFound) {
+        if (m_serializer->relatedUidFromItem(item).isEmpty()) {
+            if (auto task = m_serializer->createTaskFromItem(item)) {
+                provider->append(task);
+            } else if (auto note = m_serializer->createNoteFromItem(item)) {
+                provider->append(note);
+            }
+        }
+    }
+}
+
+bool ArtifactQueries::isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const
+{
+    return artifact->property("itemId").toLongLong() == item.id();
 }
