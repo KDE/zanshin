@@ -89,7 +89,6 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto listFunction = [&]{ return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider); };
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -109,7 +108,13 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
 
         // WHEN
-        Presentation::TaskTreeModel model(listFunction, &queryMock.getInstance(), 0);
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
+                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+            else
+                return queryMock.getInstance().findChildren(task);
+        };
+        Presentation::TaskTreeModel model(queryGenerator, 0);
         new ModelTest(&model);
 
         // THEN
@@ -150,7 +155,6 @@ private slots:
         auto  provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         provider->append(tasks.at(1));
         provider->append(tasks.at(2));
-        auto listFunction = [&]{ return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider); };
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -165,7 +169,13 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
 
-        Presentation::TaskTreeModel model(listFunction, &queryMock.getInstance(), 0);
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
+                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+            else
+                return queryMock.getInstance().findChildren(task);
+        };
+        Presentation::TaskTreeModel model(queryGenerator, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -195,7 +205,6 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto listFunction = [&]{ return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider); };
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -213,7 +222,13 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(0)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(1)).thenReturn(emptyList);
 
-        Presentation::TaskTreeModel model(listFunction, &queryMock.getInstance(), 0);
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
+                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+            else
+                return queryMock.getInstance().findChildren(task);
+        };
+        Presentation::TaskTreeModel model(queryGenerator, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -240,7 +255,6 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto listFunction = [&]{ return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider); };
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -259,7 +273,13 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
 
-        Presentation::TaskTreeModel model(listFunction, &queryMock.getInstance(), 0);
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
+                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+            else
+                return queryMock.getInstance().findChildren(task);
+        };
+        Presentation::TaskTreeModel model(queryGenerator, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
         QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
@@ -319,7 +339,6 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto listFunction = [&]{ return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider); };
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -339,7 +358,13 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
 
         // WHEN
-        Presentation::TaskTreeModel model(listFunction, &queryMock.getInstance(), 0);
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
+                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+            else
+                return queryMock.getInstance().findChildren(task);
+        };
+        Presentation::TaskTreeModel model(queryGenerator, 0);
         new ModelTest(&model);
         QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
@@ -364,7 +389,6 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto listFunction = [&]{ return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider); };
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -384,7 +408,13 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
 
         // WHEN
-        Presentation::TaskTreeModel model(listFunction, &queryMock.getInstance(), 0);
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
+                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+            else
+                return queryMock.getInstance().findChildren(task);
+        };
+        Presentation::TaskTreeModel model(queryGenerator, 0);
         new ModelTest(&model);
 
         // WHEN
@@ -410,7 +440,6 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto listFunction = [&]{ return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider); };
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -432,7 +461,13 @@ private slots:
         mock_object<Domain::TaskRepository> repositoryMock;
         repositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(0);
 
-        Presentation::TaskTreeModel model(listFunction, &queryMock.getInstance(), &repositoryMock.getInstance());
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
+                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+            else
+                return queryMock.getInstance().findChildren(task);
+        };
+        Presentation::TaskTreeModel model(queryGenerator, &repositoryMock.getInstance());
         new ModelTest(&model);
         QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
         QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));

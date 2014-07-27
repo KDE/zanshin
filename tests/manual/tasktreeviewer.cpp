@@ -41,9 +41,15 @@ int main(int argc, char **argv)
     Akonadi::TaskRepository repository;
     Akonadi::TaskQueries queries;
 
+    auto treeQuery = [&](const Domain::Task::Ptr &task) {
+        if (!task)
+            return queries.findTopLevel();
+        else
+            return queries.findChildren(task);
+    };
+
     QTreeView view;
-    view.setModel(new Presentation::TaskTreeModel([&]{ return queries.findTopLevel(); },
-                                                  &queries, &repository, &view));
+    view.setModel(new Presentation::TaskTreeModel(treeQuery, &repository, &view));
     view.resize(640, 480);
     view.show();
 

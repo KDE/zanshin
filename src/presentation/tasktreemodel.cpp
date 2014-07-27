@@ -34,11 +34,7 @@ namespace Presentation {
 class Node : public QObject
 {
 public:
-    typedef QSharedPointer<Node> Ptr;
-    typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
-    typedef std::function<TaskTreeModel::TaskList::Ptr(const Domain::Task::Ptr &)> QueryFunction;
-
-    Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model, const QueryFunction &childrenQuery);
+    Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model, const TaskTreeModel::QueryGenerator &queryGenerator);
     ~Node();
 
     int row();
@@ -53,7 +49,7 @@ public:
 private:
     Domain::Task::Ptr m_task;
     Node *m_parent;
-    TaskList::Ptr m_taskChildren;
+    TaskTreeModel::TaskList::Ptr m_taskChildren;
     QList<Node*> m_childNode;
     TaskTreeModel *m_model;
 };
@@ -62,19 +58,19 @@ private:
 using namespace Presentation;
 
 Node::Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
-           const QueryFunction &childrenQuery)
+           const TaskTreeModel::QueryGenerator &queryGenerator)
     : m_task(task),
       m_parent(parent),
       m_model(model)
 {
-    m_taskChildren = childrenQuery(task);
+    m_taskChildren = queryGenerator(task);
     for (auto task : m_taskChildren->data()) {
-        Node *node = new Node(task, this, model, childrenQuery);
+        Node *node = new Node(task, this, model, queryGenerator);
         m_childNode.append(node);
     }
 
-    m_taskChildren->addPreInsertHandler([this, model, childrenQuery](const Domain::Task::Ptr &task, int index) {
-        Node *node = new Node(task, this, model, childrenQuery);
+    m_taskChildren->addPreInsertHandler([this, model, queryGenerator](const Domain::Task::Ptr &task, int index) {
+        Node *node = new Node(task, this, model, queryGenerator);
         insertChild(index, node);
         QModelIndex parentIndex = m_parent ? model->createIndex(row(), 0, this) : QModelIndex();
         model->beginInsertRows(parentIndex, index, index);
@@ -145,17 +141,10 @@ Domain::Task::Ptr Node::childTask(int row) const
         return Domain::Task::Ptr();
 }
 
-TaskTreeModel::TaskTreeModel(const std::function<TaskList::Ptr()> &rootQuery, Domain::TaskQueries *queries, Domain::TaskRepository *repository, QObject *parent)
+TaskTreeModel::TaskTreeModel(const QueryGenerator &queryGenerator, Domain::TaskRepository *repository, QObject *parent)
     : QAbstractItemModel(parent),
       m_repository(repository),
-      m_queries(queries),
-      m_rootNode(new Node(Domain::Task::Ptr(), 0, this,
-                          [=](const Domain::Task::Ptr &task) {
-                              if (!task)
-                                  return rootQuery();
-                              else
-                                  return queries->findChildren(task);
-                          }))
+      m_rootNode(new Node(Domain::Task::Ptr(), 0, this, queryGenerator))
 {
 }
 

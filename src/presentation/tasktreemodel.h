@@ -48,9 +48,9 @@ class TaskTreeModel : public QAbstractItemModel
     Q_OBJECT
 public:
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
+    typedef std::function<TaskList::Ptr(const Domain::Task::Ptr &)> QueryGenerator;
 
-    explicit TaskTreeModel(const std::function<TaskList::Ptr()> &rootQuery,
-                           Domain::TaskQueries *queries,
+    explicit TaskTreeModel(const QueryGenerator &queryGenerator,
                            Domain::TaskRepository *repository,
                            QObject *parent = 0);
     ~TaskTreeModel();
