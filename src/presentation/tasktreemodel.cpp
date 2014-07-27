@@ -49,9 +49,6 @@ public:
     void insertChild(int row, Node *node);
     int childCount() const;
 
-    Domain::Task::Ptr task() const;
-    Domain::Task::Ptr childTask(int row) const;
-
 private:
     Domain::Task::Ptr m_task;
     Node *m_parent;
@@ -171,19 +168,6 @@ int Node::childCount() const
         return m_taskChildren->data().size();
     else
         return 0;
-}
-
-Domain::Task::Ptr Node::task() const
-{
-    return m_task;
-}
-
-Domain::Task::Ptr Node::childTask(int row) const
-{
-    if (m_taskChildren)
-        return m_taskChildren->data().at(row);
-    else
-        return Domain::Task::Ptr();
 }
 
 TaskTreeModel::TaskTreeModel(const QueryGenerator &queryGenerator, Domain::TaskRepository *repository, QObject *parent)
