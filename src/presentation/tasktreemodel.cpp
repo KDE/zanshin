@@ -146,13 +146,14 @@ Domain::Task::Ptr Node::childTask(int row) const
         return Domain::Task::Ptr();
 }
 
-TaskTreeModel::TaskTreeModel(const TaskList::Ptr &taskList, Domain::TaskQueries *queries, Domain::TaskRepository *repository, QObject *parent)
+TaskTreeModel::TaskTreeModel(const std::function<TaskList::Ptr()> &rootQuery, Domain::TaskQueries *queries, Domain::TaskRepository *repository, QObject *parent)
     : QAbstractItemModel(parent),
-      m_taskList(taskList),
       m_repository(repository),
       m_queries(queries)
 {
-    for (auto task : taskList->data()) {
+    m_taskList = rootQuery();
+
+    for (auto task : m_taskList->data()) {
         Node *node = new Node(task, 0, m_queries, this);
         m_rootNodes.append(node);
     }

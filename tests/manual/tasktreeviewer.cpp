@@ -40,10 +40,10 @@ int main(int argc, char **argv)
 
     Akonadi::TaskRepository repository;
     Akonadi::TaskQueries queries;
-    auto taskList = queries.findTopLevel();
 
     QTreeView view;
-    view.setModel(new Presentation::TaskTreeModel(taskList, &queries, &repository, &view));
+    view.setModel(new Presentation::TaskTreeModel([&]{ return queries.findTopLevel(); },
+                                                  &queries, &repository, &view));
     view.resize(640, 480);
     view.show();
 

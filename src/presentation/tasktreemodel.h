@@ -25,6 +25,8 @@
 #ifndef PRESENTATION_TASKTREEMODEL_H
 #define PRESENTATION_TASKTREEMODEL_H
 
+#include <functional>
+
 #include <QAbstractItemModel>
 
 #include "domain/queryresult.h"
@@ -47,7 +49,7 @@ class TaskTreeModel : public QAbstractItemModel
 public:
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
 
-    explicit TaskTreeModel(const TaskList::Ptr &taskList,
+    explicit TaskTreeModel(const std::function<TaskList::Ptr()> &rootQuery,
                            Domain::TaskQueries *queries,
                            Domain::TaskRepository *repository,
                            QObject *parent = 0);
