@@ -35,6 +35,24 @@ namespace Domain {
 template<typename ItemType>
 class QueryResultProvider;
 
+template<typename OutputType>
+class QueryResultInterface
+{
+public:
+    typedef std::function<void(OutputType, int)> ChangeHandler;
+
+    virtual ~QueryResultInterface() {}
+
+    virtual QList<OutputType> data() const = 0;
+
+    virtual void addPreInsertHandler(const ChangeHandler &handler) = 0;
+    virtual void addPostInsertHandler(const ChangeHandler &handler) = 0;
+    virtual void addPreRemoveHandler(const ChangeHandler &handler) = 0;
+    virtual void addPostRemoveHandler(const ChangeHandler &handler) = 0;
+    virtual void addPreReplaceHandler(const ChangeHandler &handler) = 0;
+    virtual void addPostReplaceHandler(const ChangeHandler &handler) = 0;
+};
+
 template<typename InputType>
 class QueryResultInputImpl
 {
@@ -46,36 +64,6 @@ public:
     typedef QList<ChangeHandler> ChangeHandlerList;
 
     virtual ~QueryResultInputImpl() {}
-
-    void addPreInsertHandler(const ChangeHandler &handler)
-    {
-        m_preInsertHandlers << handler;
-    }
-
-    void addPostInsertHandler(const ChangeHandler &handler)
-    {
-        m_postInsertHandlers << handler;
-    }
-
-    void addPreRemoveHandler(const ChangeHandler &handler)
-    {
-        m_preRemoveHandlers << handler;
-    }
-
-    void addPostRemoveHandler(const ChangeHandler &handler)
-    {
-        m_postRemoveHandlers << handler;
-    }
-
-    void addPreReplaceHandler(const ChangeHandler &handler)
-    {
-        m_preReplaceHandlers << handler;
-    }
-
-    void addPostReplaceHandler(const ChangeHandler &handler)
-    {
-        m_postReplaceHandlers << handler;
-    }
 
 protected:
     explicit QueryResultInputImpl(const ProviderPtr &provider)
@@ -146,7 +134,7 @@ protected:
 };
 
 template<typename InputType, typename OutputType = InputType>
-class QueryResult : public QueryResultInputImpl<InputType>
+class QueryResult : public QueryResultInputImpl<InputType>, public QueryResultInterface<OutputType>
 {
 public:
     typedef QSharedPointer<QueryResult<InputType, OutputType>> Ptr;
@@ -169,6 +157,36 @@ public:
     QList<OutputType> data() const
     {
         return dataImpl<OutputType>();
+    }
+
+    void addPreInsertHandler(const ChangeHandler &handler)
+    {
+        QueryResultInputImpl<InputType>::m_preInsertHandlers << handler;
+    }
+
+    void addPostInsertHandler(const ChangeHandler &handler)
+    {
+        QueryResultInputImpl<InputType>::m_postInsertHandlers << handler;
+    }
+
+    void addPreRemoveHandler(const ChangeHandler &handler)
+    {
+        QueryResultInputImpl<InputType>::m_preRemoveHandlers << handler;
+    }
+
+    void addPostRemoveHandler(const ChangeHandler &handler)
+    {
+        QueryResultInputImpl<InputType>::m_postRemoveHandlers << handler;
+    }
+
+    void addPreReplaceHandler(const ChangeHandler &handler)
+    {
+        QueryResultInputImpl<InputType>::m_preReplaceHandlers << handler;
+    }
+
+    void addPostReplaceHandler(const ChangeHandler &handler)
+    {
+        QueryResultInputImpl<InputType>::m_postReplaceHandlers << handler;
     }
 
 private:
