@@ -13,6 +13,7 @@ MACRO(ZANSHIN_MANUAL_TESTS)
       domain
       presentation
       utils
+      widgets
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_MANUAL_TESTS)
@@ -20,14 +21,16 @@ ENDMACRO(ZANSHIN_MANUAL_TESTS)
 MACRO(ZANSHIN_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
     kde4_add_unit_test(${_testname} TESTNAME zanshin-${_testname} ${_testname}.cpp)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS} -DQT_GUI_LIB")
     target_link_libraries(${_testname}
       ${QT_QTTEST_LIBRARY}
+      ${KDE4_KDEUI_LIBS}
       testlib
       akonadi
       domain
       presentation
       utils
+      widgets
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AUTO_TESTS)
