@@ -28,8 +28,7 @@
 
 #include <functional>
 
-#include "domain/queryresult.h"
-#include "domain/queryresultprovider.h"
+#include "domain/queryresultinterface.h"
 
 #include "querytreemodelbase.h"
 
@@ -39,7 +38,7 @@ template<typename ItemType>
 class QueryTreeNode : public QueryTreeNodeBase
 {
 public:
-    typedef Domain::QueryResult<ItemType> ItemQuery;
+    typedef Domain::QueryResultInterface<ItemType> ItemQuery;
     typedef typename ItemQuery::Ptr ItemQueryPtr;
 
     typedef std::function<ItemQueryPtr(const ItemType &)> QueryGenerator;
