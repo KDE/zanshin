@@ -69,6 +69,23 @@ private slots:
         QCOMPARE(result->data().last(), QString("Baz"));
     }
 
+    void shouldCreateResultFromAnotherResultOfSameType()
+    {
+        auto provider = QueryResultProvider<QString>::Ptr::create();
+        auto result = QueryResult<QString>::create(provider);
+
+        provider->append("Foo");
+        provider->append("Bar");
+        provider->append("Baz");
+
+        QVERIFY(!provider->data().isEmpty());
+        QVERIFY(!result->data().isEmpty());
+        QCOMPARE(result->data(), provider->data());
+
+        auto otherResult = QueryResult<QString>::create(result);
+        QCOMPARE(otherResult->data(), result->data());
+    }
+
     void shouldResultsKeepProviderAlive()
     {
         QueryResultProvider<QString>::WeakPtr provider;
@@ -81,12 +98,12 @@ private slots:
                 QueryResultProvider<QString>::Ptr strongProvider(new QueryResultProvider<QString>);
                 provider = strongProvider;
                 QVERIFY(!provider.isNull());
-                result1 = QueryResult<QString>::create(provider);
+                result1 = QueryResult<QString>::create(provider.toStrongRef());
             }
             QVERIFY(!provider.isNull());
 
             {
-                QueryResult<QString>::Ptr result2 = QueryResult<QString>::create(provider);
+                QueryResult<QString>::Ptr result2 = QueryResult<QString>::create(provider.toStrongRef());
                 Q_UNUSED(result2);
                 QVERIFY(!provider.isNull());
             }

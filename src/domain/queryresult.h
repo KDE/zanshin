@@ -50,6 +50,13 @@ public:
         return result;
     }
 
+    static Ptr create(const Ptr &other)
+    {
+        Ptr result(new QueryResult<ItemType>(other->m_provider));
+        other->m_provider->m_results << result;
+        return result;
+    }
+
     QList<ItemType> data() const
     {
         return m_provider->data();
