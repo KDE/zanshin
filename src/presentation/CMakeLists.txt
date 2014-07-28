@@ -1,7 +1,7 @@
 set(presentation_SRCS
     datasourcelistmodel.cpp
     inboxmodel.cpp
-    querytreemodel.cpp
+    querytreemodelbase.cpp
     tasklistmodel.cpp
 )
 

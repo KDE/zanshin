@@ -23,13 +23,7 @@
 */
 
 
-#include "querytreemodel.h"
-
-#include "domain/taskrepository.h"
-#include "domain/taskqueries.h"
-
-#include <QDebug>
-
+#include "querytreemodelbase.h"
 
 using namespace Presentation;
 
