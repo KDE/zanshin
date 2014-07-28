@@ -168,6 +168,30 @@ private slots:
         }
     }
 
+    void shouldDealWithNullQueriesProperly()
+    {
+        // GIVEN
+        auto queryGenerator = [](const QString &) {
+            return Domain::QueryResult<QString>::Ptr();
+        };
+        auto flagsFunction = [](const QString &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [](const QString &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [](const QString &, const QVariant &, int) {
+            return false;
+        };
+
+        // WHEN
+        Presentation::QueryTreeModel<QString> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        new ModelTest(&model);
+
+        // THEN
+        QCOMPARE(model.rowCount(), 0);
+    }
+
     void shouldReactToTaskAdd()
     {
         // GIVEN

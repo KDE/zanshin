@@ -58,6 +58,10 @@ public:
           m_setDataFunction(setDataFunction)
     {
         m_children = queryGenerator(m_item);
+
+        if (!m_children)
+            return;
+
         for (auto child : m_children->data()) {
             QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(child, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
             appendChild(node);
