@@ -41,7 +41,7 @@ namespace Domain
 
 namespace Presentation {
 
-class Node;
+class NodeBase;
 
 class TaskTreeModel : public QAbstractItemModel
 {
@@ -70,11 +70,11 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 private:
-    friend class Node;
-    Node *nodeFromIndex(const QModelIndex &index) const;
+    friend class NodeBase;
+    NodeBase *nodeFromIndex(const QModelIndex &index) const;
     bool isModelIndexValid(const QModelIndex &index) const;
 
-    Node *m_rootNode;
+    NodeBase *m_rootNode;
 };
 
 }
