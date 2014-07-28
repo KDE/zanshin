@@ -32,21 +32,21 @@
 
 
 namespace Presentation {
-class NodeBase
+class QueryTreeNodeBase
 {
 public:
-    NodeBase(NodeBase *parent, QueryTreeModel *model);
-    virtual ~NodeBase();
+    QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModel *model);
+    virtual ~QueryTreeNodeBase();
 
     virtual Qt::ItemFlags flags() const = 0;
     virtual QVariant data(int role) const = 0;
     virtual bool setData(const QVariant &value, int role) = 0;
 
     int row();
-    NodeBase *parent() const;
-    NodeBase *child(int row) const;
-    void insertChild(int row, NodeBase *node);
-    void appendChild(NodeBase *node);
+    QueryTreeNodeBase *parent() const;
+    QueryTreeNodeBase *child(int row) const;
+    void insertChild(int row, QueryTreeNodeBase *node);
+    void appendChild(QueryTreeNodeBase *node);
     void removeChildAt(int row);
     int childCount() const;
 
@@ -60,13 +60,13 @@ protected:
     void emitDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
 private:
-    NodeBase *m_parent;
-    QList<NodeBase*> m_childNode;
+    QueryTreeNodeBase *m_parent;
+    QList<QueryTreeNodeBase*> m_childNode;
     QueryTreeModel *m_model;
 };
 
 template<typename ItemType>
-class Node : public NodeBase
+class QueryTreeNode : public QueryTreeNodeBase
 {
 public:
     typedef typename ItemType::Ptr ItemTypePtr;
@@ -78,12 +78,12 @@ public:
     typedef std::function<QVariant(const ItemTypePtr &, int)> DataFunction;
     typedef std::function<bool(const ItemTypePtr &, const QVariant &, int)> SetDataFunction;
 
-    Node(const ItemTypePtr &item, NodeBase *parentNode, QueryTreeModel *model,
+    QueryTreeNode(const ItemTypePtr &item, QueryTreeNodeBase *parentNode, QueryTreeModel *model,
          const QueryGenerator &queryGenerator,
          const FlagsFunction &flagsFunction,
          const DataFunction &dataFunction,
          const SetDataFunction &setDataFunction)
-        : NodeBase(parentNode, model),
+        : QueryTreeNodeBase(parentNode, model),
           m_item(item),
           m_flagsFunction(flagsFunction),
           m_dataFunction(dataFunction),
@@ -91,7 +91,7 @@ public:
     {
         m_children = queryGenerator(m_item);
         for (auto child : m_children->data()) {
-            NodeBase *node = new Node<ItemType>(child, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
+            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(child, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
             appendChild(node);
         }
 
@@ -100,7 +100,7 @@ public:
             beginInsertRows(parentIndex, index, index);
         });
         m_children->addPostInsertHandler([this, model, queryGenerator](const ItemTypePtr &item, int index) {
-            NodeBase *node = new Node<ItemType>(item, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
+            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(item, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
             insertChild(index, node);
             endInsertRows();
         });
@@ -134,28 +134,28 @@ private:
 
 using namespace Presentation;
 
-NodeBase::NodeBase(NodeBase *parent, QueryTreeModel *model)
+QueryTreeNodeBase::QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModel *model)
     : m_parent(parent),
       m_model(model)
 {
 }
 
-NodeBase::~NodeBase()
+QueryTreeNodeBase::~QueryTreeNodeBase()
 {
     qDeleteAll(m_childNode);
 }
 
-int NodeBase::row()
+int QueryTreeNodeBase::row()
 {
     return m_parent ? m_parent->m_childNode.indexOf(this) : -1;
 }
 
-NodeBase *NodeBase::parent() const
+QueryTreeNodeBase *QueryTreeNodeBase::parent() const
 {
     return m_parent;
 }
 
-NodeBase *NodeBase::child(int row) const
+QueryTreeNodeBase *QueryTreeNodeBase::child(int row) const
 {
     if (row >= 0 && row < m_childNode.size())
         return m_childNode.value(row);
@@ -163,64 +163,64 @@ NodeBase *NodeBase::child(int row) const
         return 0;
 }
 
-void NodeBase::insertChild(int row, NodeBase *node)
+void QueryTreeNodeBase::insertChild(int row, QueryTreeNodeBase *node)
 {
     m_childNode.insert(row, node);
 }
 
-void NodeBase::appendChild(NodeBase *node)
+void QueryTreeNodeBase::appendChild(QueryTreeNodeBase *node)
 {
     m_childNode.append(node);
 }
 
-void NodeBase::removeChildAt(int row)
+void QueryTreeNodeBase::removeChildAt(int row)
 {
     delete m_childNode.takeAt(row);
 }
 
-int NodeBase::childCount() const
+int QueryTreeNodeBase::childCount() const
 {
     return m_childNode.size();
 }
 
-QModelIndex NodeBase::index(int row, int column, const QModelIndex &parent) const
+QModelIndex QueryTreeNodeBase::index(int row, int column, const QModelIndex &parent) const
 {
     return m_model->index(row, column, parent);
 }
 
-QModelIndex NodeBase::createIndex(int row, int column, void *data) const
+QModelIndex QueryTreeNodeBase::createIndex(int row, int column, void *data) const
 {
     return m_model->createIndex(row, column, data);
 }
 
-void NodeBase::beginInsertRows(const QModelIndex &parent, int first, int last)
+void QueryTreeNodeBase::beginInsertRows(const QModelIndex &parent, int first, int last)
 {
     m_model->beginInsertRows(parent, first, last);
 }
 
-void NodeBase::endInsertRows()
+void QueryTreeNodeBase::endInsertRows()
 {
     m_model->endInsertRows();
 }
 
-void NodeBase::beginRemoveRows(const QModelIndex &parent, int first, int last)
+void QueryTreeNodeBase::beginRemoveRows(const QModelIndex &parent, int first, int last)
 {
     m_model->beginRemoveRows(parent, first, last);
 }
 
-void NodeBase::endRemoveRows()
+void QueryTreeNodeBase::endRemoveRows()
 {
     m_model->endRemoveRows();
 }
 
-void NodeBase::emitDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+void QueryTreeNodeBase::emitDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     emit m_model->dataChanged(topLeft, bottomRight);
 }
 
 QueryTreeModel::QueryTreeModel(const QueryGenerator &queryGenerator, const FlagsFunction &flagsFunction, const DataFunction &dataFunction, const SetDataFunction &setDataFunction, QObject *parent)
     : QAbstractItemModel(parent),
-      m_rootNode(new Node<Domain::Task>(Domain::Task::Ptr(), 0, this, queryGenerator, flagsFunction, dataFunction, setDataFunction))
+      m_rootNode(new QueryTreeNode<Domain::Task>(Domain::Task::Ptr(), 0, this, queryGenerator, flagsFunction, dataFunction, setDataFunction))
 {
 }
 
@@ -243,10 +243,10 @@ QModelIndex QueryTreeModel::index(int row, int column, const QModelIndex &parent
     if (row < 0 || column != 0)
         return QModelIndex();
 
-    const NodeBase *parentNode = nodeFromIndex(parent);
+    const QueryTreeNodeBase *parentNode = nodeFromIndex(parent);
 
     if (row < parentNode->childCount()) {
-        NodeBase *node = parentNode->child(row);
+        QueryTreeNodeBase *node = parentNode->child(row);
         return createIndex(row, column, node);
     } else {
         return QModelIndex();
@@ -255,7 +255,7 @@ QModelIndex QueryTreeModel::index(int row, int column, const QModelIndex &parent
 
 QModelIndex QueryTreeModel::parent(const QModelIndex &index) const
 {
-    NodeBase *node = nodeFromIndex(index);
+    QueryTreeNodeBase *node = nodeFromIndex(index);
     if (!node->parent() || node->parent() == m_rootNode)
         return QModelIndex();
     else
@@ -290,9 +290,9 @@ bool QueryTreeModel::setData(const QModelIndex &index, const QVariant &value, in
     return nodeFromIndex(index)->setData(value, role);
 }
 
-NodeBase *QueryTreeModel::nodeFromIndex(const QModelIndex &index) const
+QueryTreeNodeBase *QueryTreeModel::nodeFromIndex(const QModelIndex &index) const
 {
-    return index.isValid() ? static_cast<NodeBase*>(index.internalPointer()) : m_rootNode;
+    return index.isValid() ? static_cast<QueryTreeNodeBase*>(index.internalPointer()) : m_rootNode;
 }
 
 bool QueryTreeModel::isModelIndexValid(const QModelIndex &index) const
@@ -304,7 +304,7 @@ bool QueryTreeModel::isModelIndexValid(const QModelIndex &index) const
     if (!valid)
         return false;
 
-    const NodeBase *parentNode = nodeFromIndex(index.parent());
+    const QueryTreeNodeBase *parentNode = nodeFromIndex(index.parent());
     const int count = parentNode->childCount();
     return index.row() < count;
 }

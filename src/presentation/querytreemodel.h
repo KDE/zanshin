@@ -42,7 +42,7 @@ namespace Domain
 
 namespace Presentation {
 
-class NodeBase;
+class QueryTreeNodeBase;
 
 class QueryTreeModel : public QAbstractItemModel
 {
@@ -71,11 +71,11 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
 private:
-    friend class NodeBase;
-    NodeBase *nodeFromIndex(const QModelIndex &index) const;
+    friend class QueryTreeNodeBase;
+    QueryTreeNodeBase *nodeFromIndex(const QModelIndex &index) const;
     bool isModelIndexValid(const QModelIndex &index) const;
 
-    NodeBase *m_rootNode;
+    QueryTreeNodeBase *m_rootNode;
 };
 
 }
