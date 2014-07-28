@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
+   Copyright 2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -29,7 +30,7 @@
 
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
-#include "presentation/tasktreemodel.h"
+#include "presentation/querytreemodel.h"
 
 int main(int argc, char **argv)
 {
@@ -82,7 +83,7 @@ int main(int argc, char **argv)
     };
 
     QTreeView view;
-    view.setModel(new Presentation::TaskTreeModel(treeQuery, treeFlags, treeData, treeSetData, &view));
+    view.setModel(new Presentation::QueryTreeModel(treeQuery, treeFlags, treeData, treeSetData, &view));
     view.resize(640, 480);
     view.show();
 

@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
+   Copyright 2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -27,18 +28,18 @@
 
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
-#include "presentation/tasktreemodel.h"
+#include "presentation/querytreemodel.h"
 #include "testlib/modeltest.h"
 
 using namespace mockitopp;
 
 Q_DECLARE_METATYPE(QModelIndex)
 
-class TaskTreeModelTest : public QObject
+class QueryTreeModelTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit TaskTreeModelTest(QObject *parent = 0)
+    explicit QueryTreeModelTest(QObject *parent = 0)
         : QObject(parent)
     {
         qRegisterMetaType<QModelIndex>();
@@ -133,7 +134,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
 
         // THEN
@@ -213,7 +214,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -285,7 +286,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -355,7 +356,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
         QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
@@ -459,7 +460,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
@@ -528,7 +529,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
 
         // WHEN
@@ -611,7 +612,7 @@ private slots:
             repositoryMock.getInstance().save(task);
             return true;
         };
-        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
         QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));
@@ -631,6 +632,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(TaskTreeModelTest)
+QTEST_MAIN(QueryTreeModelTest)
 
-#include "tasktreemodeltest.moc"
+#include "querytreemodeltest.moc"

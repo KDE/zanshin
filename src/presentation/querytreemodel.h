@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
+   Copyright 2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,8 +23,8 @@
 */
 
 
-#ifndef PRESENTATION_TASKTREEMODEL_H
-#define PRESENTATION_TASKTREEMODEL_H
+#ifndef PRESENTATION_QUERYTREEMODEL_H
+#define PRESENTATION_QUERYTREEMODEL_H
 
 #include <functional>
 
@@ -43,7 +44,7 @@ namespace Presentation {
 
 class NodeBase;
 
-class TaskTreeModel : public QAbstractItemModel
+class QueryTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
@@ -53,12 +54,12 @@ public:
     typedef std::function<QVariant(const Domain::Task::Ptr &, int)> DataFunction;
     typedef std::function<bool(const Domain::Task::Ptr &, const QVariant &, int)> SetDataFunction;
 
-    explicit TaskTreeModel(const QueryGenerator &queryGenerator,
+    explicit QueryTreeModel(const QueryGenerator &queryGenerator,
                            const FlagsFunction &flagsFunction,
                            const DataFunction &dataFunction,
                            const SetDataFunction &setDataFunction,
                            QObject *parent = 0);
-    ~TaskTreeModel();
+    ~QueryTreeModel();
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
@@ -79,4 +80,4 @@ private:
 
 }
 
-#endif // PRESENTATION_TASKTREEMODEL_H
+#endif // PRESENTATION_QUERYTREEMODEL_H

@@ -1,8 +1,8 @@
 set(presentation_SRCS
     datasourcelistmodel.cpp
     inboxmodel.cpp
+    querytreemodel.cpp
     tasklistmodel.cpp
-    tasktreemodel.cpp
 )
 
 kde4_add_library(presentation STATIC ${presentation_SRCS})

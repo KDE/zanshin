@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
+   Copyright 2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,7 +23,7 @@
 */
 
 
-#include "tasktreemodel.h"
+#include "querytreemodel.h"
 
 #include "domain/taskrepository.h"
 #include "domain/taskqueries.h"
@@ -34,7 +35,7 @@ namespace Presentation {
 class NodeBase
 {
 public:
-    NodeBase(NodeBase *parent, TaskTreeModel *model);
+    NodeBase(NodeBase *parent, QueryTreeModel *model);
     virtual ~NodeBase();
 
     virtual Qt::ItemFlags flags() const = 0;
@@ -61,7 +62,7 @@ protected:
 private:
     NodeBase *m_parent;
     QList<NodeBase*> m_childNode;
-    TaskTreeModel *m_model;
+    QueryTreeModel *m_model;
 };
 
 template<typename ItemType>
@@ -77,7 +78,7 @@ public:
     typedef std::function<QVariant(const ItemTypePtr &, int)> DataFunction;
     typedef std::function<bool(const ItemTypePtr &, const QVariant &, int)> SetDataFunction;
 
-    Node(const ItemTypePtr &item, NodeBase *parentNode, TaskTreeModel *model,
+    Node(const ItemTypePtr &item, NodeBase *parentNode, QueryTreeModel *model,
          const QueryGenerator &queryGenerator,
          const FlagsFunction &flagsFunction,
          const DataFunction &dataFunction,
@@ -133,7 +134,7 @@ private:
 
 using namespace Presentation;
 
-NodeBase::NodeBase(NodeBase *parent, TaskTreeModel *model)
+NodeBase::NodeBase(NodeBase *parent, QueryTreeModel *model)
     : m_parent(parent),
       m_model(model)
 {
@@ -217,18 +218,18 @@ void NodeBase::emitDataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     emit m_model->dataChanged(topLeft, bottomRight);
 }
 
-TaskTreeModel::TaskTreeModel(const QueryGenerator &queryGenerator, const FlagsFunction &flagsFunction, const DataFunction &dataFunction, const SetDataFunction &setDataFunction, QObject *parent)
+QueryTreeModel::QueryTreeModel(const QueryGenerator &queryGenerator, const FlagsFunction &flagsFunction, const DataFunction &dataFunction, const SetDataFunction &setDataFunction, QObject *parent)
     : QAbstractItemModel(parent),
       m_rootNode(new Node<Domain::Task>(Domain::Task::Ptr(), 0, this, queryGenerator, flagsFunction, dataFunction, setDataFunction))
 {
 }
 
-TaskTreeModel::~TaskTreeModel()
+QueryTreeModel::~QueryTreeModel()
 {
     delete m_rootNode;
 }
 
-Qt::ItemFlags TaskTreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags QueryTreeModel::flags(const QModelIndex &index) const
 {
     if (!isModelIndexValid(index)) {
         return Qt::NoItemFlags;
@@ -237,7 +238,7 @@ Qt::ItemFlags TaskTreeModel::flags(const QModelIndex &index) const
     return nodeFromIndex(index)->flags();
 }
 
-QModelIndex TaskTreeModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex QueryTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (row < 0 || column != 0)
         return QModelIndex();
@@ -252,7 +253,7 @@ QModelIndex TaskTreeModel::index(int row, int column, const QModelIndex &parent)
     }
 }
 
-QModelIndex TaskTreeModel::parent(const QModelIndex &index) const
+QModelIndex QueryTreeModel::parent(const QModelIndex &index) const
 {
     NodeBase *node = nodeFromIndex(index);
     if (!node->parent() || node->parent() == m_rootNode)
@@ -261,17 +262,17 @@ QModelIndex TaskTreeModel::parent(const QModelIndex &index) const
         return createIndex(node->parent()->row(), 0, node->parent());
 }
 
-int TaskTreeModel::rowCount(const QModelIndex &index) const
+int QueryTreeModel::rowCount(const QModelIndex &index) const
 {
     return nodeFromIndex(index)->childCount();
 }
 
-int TaskTreeModel::columnCount(const QModelIndex &) const
+int QueryTreeModel::columnCount(const QModelIndex &) const
 {
     return 1;
 }
 
-QVariant TaskTreeModel::data(const QModelIndex &index, int role) const
+QVariant QueryTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!isModelIndexValid(index)) {
         return QVariant();
@@ -280,7 +281,7 @@ QVariant TaskTreeModel::data(const QModelIndex &index, int role) const
     return nodeFromIndex(index)->data(role);
 }
 
-bool TaskTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool QueryTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!isModelIndexValid(index)) {
         return false;
@@ -289,12 +290,12 @@ bool TaskTreeModel::setData(const QModelIndex &index, const QVariant &value, int
     return nodeFromIndex(index)->setData(value, role);
 }
 
-NodeBase *TaskTreeModel::nodeFromIndex(const QModelIndex &index) const
+NodeBase *QueryTreeModel::nodeFromIndex(const QModelIndex &index) const
 {
     return index.isValid() ? static_cast<NodeBase*>(index.internalPointer()) : m_rootNode;
 }
 
-bool TaskTreeModel::isModelIndexValid(const QModelIndex &index) const
+bool QueryTreeModel::isModelIndexValid(const QModelIndex &index) const
 {
     bool valid = index.isValid()
         && index.column() == 0
