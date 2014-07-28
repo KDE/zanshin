@@ -35,6 +35,22 @@
 
 using namespace Presentation;
 
+InboxModel::InboxModel(QObject *parent)
+    : QObject(parent),
+      m_centralListModel(0),
+      m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
+      m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
+      m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
+      m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
+      m_taskSources(m_sourceQueries->findTasks()),
+      m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
+      m_noteSources(m_sourceQueries->findNotes()),
+      m_ownInterface(true)
+{
+    qRegisterMetaType<Domain::DataSource::Ptr>();
+    qRegisterMetaType<QAbstractItemModel*>();
+}
+
 InboxModel::InboxModel(Domain::ArtifactQueries *artifactQueries,
                        Domain::DataSourceQueries *sourceQueries,
                        Domain::TaskQueries *taskQueries,
@@ -49,7 +65,8 @@ InboxModel::InboxModel(Domain::ArtifactQueries *artifactQueries,
       m_taskRepository(taskRepository),
       m_taskSources(m_sourceQueries->findTasks()),
       m_noteRepository(noteRepository),
-      m_noteSources(m_sourceQueries->findNotes())
+      m_noteSources(m_sourceQueries->findNotes()),
+      m_ownInterface(false)
 {
     qRegisterMetaType<Domain::DataSource::Ptr>();
     qRegisterMetaType<QAbstractItemModel*>();

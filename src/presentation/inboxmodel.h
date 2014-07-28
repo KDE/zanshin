@@ -49,6 +49,8 @@ class InboxModel : public QObject
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
+    explicit InboxModel(QObject *parent = 0);
+
     explicit InboxModel(Domain::ArtifactQueries *artifactQueries,
                         Domain::DataSourceQueries *sourceQueries,
                         Domain::TaskQueries *taskQueries,
@@ -78,6 +80,8 @@ private:
 
     Domain::NoteRepository *m_noteRepository;
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_noteSources;
+
+    bool m_ownInterface;
 };
 
 }
