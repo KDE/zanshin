@@ -49,9 +49,14 @@ class TaskTreeModel : public QAbstractItemModel
 public:
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
     typedef std::function<TaskList::Ptr(const Domain::Task::Ptr &)> QueryGenerator;
+    typedef std::function<Qt::ItemFlags(const Domain::Task::Ptr &)> FlagsFunction;
+    typedef std::function<QVariant(const Domain::Task::Ptr &, int)> DataFunction;
+    typedef std::function<bool(const Domain::Task::Ptr &, const QVariant &, int)> SetDataFunction;
 
     explicit TaskTreeModel(const QueryGenerator &queryGenerator,
-                           Domain::TaskRepository *repository,
+                           const FlagsFunction &flagsFunction,
+                           const DataFunction &dataFunction,
+                           const SetDataFunction &setDataFunction,
                            QObject *parent = 0);
     ~TaskTreeModel();
 

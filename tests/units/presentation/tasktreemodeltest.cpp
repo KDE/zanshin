@@ -114,7 +114,26 @@ private slots:
             else
                 return queryMock.getInstance().findChildren(task);
         };
-        Presentation::TaskTreeModel model(queryGenerator, 0);
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::ItemIsSelectable
+                 | Qt::ItemIsEnabled
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsUserCheckable;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+                return QVariant();
+            }
+
+            if (role == Qt::DisplayRole)
+                return task->title();
+            else
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        };
+        auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
 
         // THEN
@@ -175,7 +194,26 @@ private slots:
             else
                 return queryMock.getInstance().findChildren(task);
         };
-        Presentation::TaskTreeModel model(queryGenerator, 0);
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::ItemIsSelectable
+                 | Qt::ItemIsEnabled
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsUserCheckable;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+                return QVariant();
+            }
+
+            if (role == Qt::DisplayRole)
+                return task->title();
+            else
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        };
+        auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -228,7 +266,26 @@ private slots:
             else
                 return queryMock.getInstance().findChildren(task);
         };
-        Presentation::TaskTreeModel model(queryGenerator, 0);
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::ItemIsSelectable
+                 | Qt::ItemIsEnabled
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsUserCheckable;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+                return QVariant();
+            }
+
+            if (role == Qt::DisplayRole)
+                return task->title();
+            else
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        };
+        auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -279,7 +336,26 @@ private slots:
             else
                 return queryMock.getInstance().findChildren(task);
         };
-        Presentation::TaskTreeModel model(queryGenerator, 0);
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::ItemIsSelectable
+                 | Qt::ItemIsEnabled
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsUserCheckable;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+                return QVariant();
+            }
+
+            if (role == Qt::DisplayRole)
+                return task->title();
+            else
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        };
+        auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
         QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
@@ -364,7 +440,26 @@ private slots:
             else
                 return queryMock.getInstance().findChildren(task);
         };
-        Presentation::TaskTreeModel model(queryGenerator, 0);
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::ItemIsSelectable
+                 | Qt::ItemIsEnabled
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsUserCheckable;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+                return QVariant();
+            }
+
+            if (role == Qt::DisplayRole)
+                return task->title();
+            else
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        };
+        auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
@@ -414,7 +509,26 @@ private slots:
             else
                 return queryMock.getInstance().findChildren(task);
         };
-        Presentation::TaskTreeModel model(queryGenerator, 0);
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::ItemIsSelectable
+                 | Qt::ItemIsEnabled
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsUserCheckable;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+                return QVariant();
+            }
+
+            if (role == Qt::DisplayRole)
+                return task->title();
+            else
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        };
+        auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
 
         // WHEN
@@ -467,7 +581,37 @@ private slots:
             else
                 return queryMock.getInstance().findChildren(task);
         };
-        Presentation::TaskTreeModel model(queryGenerator, &repositoryMock.getInstance());
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::ItemIsSelectable
+                 | Qt::ItemIsEnabled
+                 | Qt::ItemIsEditable
+                 | Qt::ItemIsUserCheckable;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+                return QVariant();
+            }
+
+            if (role == Qt::DisplayRole)
+                return task->title();
+            else
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        };
+        auto setDataFunction = [&](const Domain::Task::Ptr &task, const QVariant &value, int role) {
+            if (role != Qt::EditRole && role != Qt::CheckStateRole) {
+                return false;
+            }
+
+            if (role == Qt::EditRole) {
+                task->setTitle(value.toString());
+            } else {
+                task->setDone(value.toInt() == Qt::Checked);
+            }
+
+            repositoryMock.getInstance().save(task);
+            return true;
+        };
+        Presentation::TaskTreeModel model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
         new ModelTest(&model);
         QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
         QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));

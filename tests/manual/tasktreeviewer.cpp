@@ -48,8 +48,41 @@ int main(int argc, char **argv)
             return queries.findChildren(task);
     };
 
+    auto treeFlags = [](const Domain::Task::Ptr &) {
+        return Qt::ItemIsSelectable
+             | Qt::ItemIsEnabled
+             | Qt::ItemIsEditable
+             | Qt::ItemIsUserCheckable;
+    };
+
+    auto treeData = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+        if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+            return QVariant();
+        }
+
+        if (role == Qt::DisplayRole)
+            return task->title();
+        else
+            return task->isDone() ? Qt::Checked : Qt::Unchecked;
+    };
+
+    auto treeSetData = [&](const Domain::Task::Ptr &task, const QVariant &value, int role) {
+        if (role != Qt::EditRole && role != Qt::CheckStateRole) {
+            return false;
+        }
+
+        if (role == Qt::EditRole) {
+            task->setTitle(value.toString());
+        } else {
+            task->setDone(value.toInt() == Qt::Checked);
+        }
+
+        repository.save(task);
+        return true;
+    };
+
     QTreeView view;
-    view.setModel(new Presentation::TaskTreeModel(treeQuery, &repository, &view));
+    view.setModel(new Presentation::TaskTreeModel(treeQuery, treeFlags, treeData, treeSetData, &view));
     view.resize(640, 480);
     view.show();
 

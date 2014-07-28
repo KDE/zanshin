@@ -35,8 +35,10 @@ class Node
 {
 public:
     Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
-         Domain::TaskRepository *repository,
-         const TaskTreeModel::QueryGenerator &queryGenerator);
+         const TaskTreeModel::QueryGenerator &queryGenerator,
+         const TaskTreeModel::FlagsFunction &flagsFunction,
+         const TaskTreeModel::DataFunction &dataFunction,
+         const TaskTreeModel::SetDataFunction &setDataFunction);
     ~Node();
 
     Qt::ItemFlags flags() const;
@@ -55,23 +57,30 @@ private:
     TaskTreeModel::TaskList::Ptr m_taskChildren;
     QList<Node*> m_childNode;
     TaskTreeModel *m_model;
-    Domain::TaskRepository *m_repository;
+
+    TaskTreeModel::FlagsFunction m_flagsFunction;
+    TaskTreeModel::DataFunction m_dataFunction;
+    TaskTreeModel::SetDataFunction m_setDataFunction;
 };
 }
 
 using namespace Presentation;
 
 Node::Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
-           Domain::TaskRepository *repository,
-           const TaskTreeModel::QueryGenerator &queryGenerator)
+           const TaskTreeModel::QueryGenerator &queryGenerator,
+           const TaskTreeModel::FlagsFunction &flagsFunction,
+           const TaskTreeModel::DataFunction &dataFunction,
+           const TaskTreeModel::SetDataFunction &setDataFunction)
     : m_task(task),
       m_parent(parent),
       m_model(model),
-      m_repository(repository)
+      m_flagsFunction(flagsFunction),
+      m_dataFunction(dataFunction),
+      m_setDataFunction(setDataFunction)
 {
     m_taskChildren = queryGenerator(task);
     for (auto task : m_taskChildren->data()) {
-        Node *node = new Node(task, this, model, m_repository, queryGenerator);
+        Node *node = new Node(task, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
         m_childNode.append(node);
     }
 
@@ -80,7 +89,7 @@ Node::Node(Domain::Task::Ptr task, Node *parent, TaskTreeModel *model,
         model->beginInsertRows(parentIndex, index, index);
     });
     m_taskChildren->addPostInsertHandler([this, model, queryGenerator](const Domain::Task::Ptr &task, int index) {
-        Node *node = new Node(task, this, model, m_repository, queryGenerator);
+        Node *node = new Node(task, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
         insertChild(index, node);
         model->endInsertRows();
     });
@@ -105,38 +114,17 @@ Node::~Node()
 
 Qt::ItemFlags Node::flags() const
 {
-    return Qt::ItemIsSelectable
-         | Qt::ItemIsEnabled
-         | Qt::ItemIsEditable
-         | Qt::ItemIsUserCheckable;
+    return m_flagsFunction(m_task);
 }
 
 QVariant Node::data(int role) const
 {
-    if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-        return QVariant();
-    }
-
-    if (role == Qt::DisplayRole)
-        return m_task->title();
-    else
-        return m_task->isDone() ? Qt::Checked : Qt::Unchecked;
+    return m_dataFunction(m_task, role);
 }
 
 bool Node::setData(const QVariant &value, int role)
 {
-    if (role != Qt::EditRole && role != Qt::CheckStateRole) {
-        return false;
-    }
-
-    if (role == Qt::EditRole) {
-        m_task->setTitle(value.toString());
-    } else {
-        m_task->setDone(value.toInt() == Qt::Checked);
-    }
-
-    m_repository->save(m_task);
-    return true;
+    return m_setDataFunction(m_task, value, role);
 }
 
 int Node::row()
@@ -170,9 +158,9 @@ int Node::childCount() const
         return 0;
 }
 
-TaskTreeModel::TaskTreeModel(const QueryGenerator &queryGenerator, Domain::TaskRepository *repository, QObject *parent)
+TaskTreeModel::TaskTreeModel(const QueryGenerator &queryGenerator, const FlagsFunction &flagsFunction, const DataFunction &dataFunction, const SetDataFunction &setDataFunction, QObject *parent)
     : QAbstractItemModel(parent),
-      m_rootNode(new Node(Domain::Task::Ptr(), 0, this, repository, queryGenerator))
+      m_rootNode(new Node(Domain::Task::Ptr(), 0, this, queryGenerator, flagsFunction, dataFunction, setDataFunction))
 {
 }
 
