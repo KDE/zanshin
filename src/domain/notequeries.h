@@ -27,7 +27,6 @@
 #include "note.h"
 #include "project.h"
 #include "queryresult.h"
-#include "queryresultprovider.h"
 #include "topic.h"
 
 namespace Domain {

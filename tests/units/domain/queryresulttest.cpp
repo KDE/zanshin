@@ -24,7 +24,6 @@
 #include <QtTest>
 
 #include "domain/queryresult.h"
-#include "domain/queryresultprovider.h"
 
 using namespace Domain;
 

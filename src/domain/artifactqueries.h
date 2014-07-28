@@ -25,7 +25,6 @@
 #define DOMAIN_ARTIFACTQUERIES_H
 
 #include "queryresult.h"
-#include "queryresultprovider.h"
 #include "artifact.h"
 
 namespace Domain {

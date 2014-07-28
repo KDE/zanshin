@@ -26,7 +26,6 @@
 
 #include "datasource.h"
 #include "queryresult.h"
-#include "queryresultprovider.h"
 
 namespace Domain {
 

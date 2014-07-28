@@ -28,7 +28,6 @@
 #include <QAbstractListModel>
 
 #include "domain/queryresult.h"
-#include "domain/queryresultprovider.h"
 #include "domain/task.h"
 
 namespace Domain

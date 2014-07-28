@@ -27,7 +27,6 @@
 #include "artifact.h"
 #include "project.h"
 #include "queryresult.h"
-#include "queryresultprovider.h"
 
 namespace Domain {
 

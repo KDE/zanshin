@@ -26,7 +26,6 @@
 
 #include "context.h"
 #include "queryresult.h"
-#include "queryresultprovider.h"
 #include "task.h"
 
 namespace Domain {
