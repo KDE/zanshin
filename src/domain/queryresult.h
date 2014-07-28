@@ -26,32 +26,13 @@
 #define DOMAIN_QUERYRESULT_H
 
 #include <algorithm>
-#include <functional>
 
-#include <QSharedPointer>
+#include "queryresultinterface.h"
 
 namespace Domain {
 
 template<typename ItemType>
 class QueryResultProvider;
-
-template<typename OutputType>
-class QueryResultInterface
-{
-public:
-    typedef std::function<void(OutputType, int)> ChangeHandler;
-
-    virtual ~QueryResultInterface() {}
-
-    virtual QList<OutputType> data() const = 0;
-
-    virtual void addPreInsertHandler(const ChangeHandler &handler) = 0;
-    virtual void addPostInsertHandler(const ChangeHandler &handler) = 0;
-    virtual void addPreRemoveHandler(const ChangeHandler &handler) = 0;
-    virtual void addPostRemoveHandler(const ChangeHandler &handler) = 0;
-    virtual void addPreReplaceHandler(const ChangeHandler &handler) = 0;
-    virtual void addPostReplaceHandler(const ChangeHandler &handler) = 0;
-};
 
 template<typename InputType>
 class QueryResultInputImpl

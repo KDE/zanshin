@@ -13,6 +13,7 @@ set(domain_SRCS
     projectqueries.cpp
     projectrepository.cpp
     queryresult.cpp
+    queryresultinterface.cpp
     queryresultprovider.cpp
     task.cpp
     taskqueries.cpp
