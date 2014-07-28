@@ -74,7 +74,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
         m_taskProvider = provider.toWeakRef();
     }
 
-    TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
+    auto result = TaskResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
                                                                    StorageInterface::Recursive,
@@ -108,13 +108,13 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
 
     if (m_taskChildProviders.contains(id)) {
         provider = m_taskChildProviders.value(id).toStrongRef();
-        return TaskProvider::createResult(provider);
+        return TaskResult::create(provider);
     }
 
     provider = TaskProvider::Ptr(new TaskProvider);
     m_taskChildProviders[id] = provider;
 
-    TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
+    auto result = TaskResult::create(provider);
 
     addItemIdInCache(task, id);
 
@@ -155,7 +155,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
         m_topTaskProvider = provider.toWeakRef();
     }
 
-    TaskQueries::TaskResult::Ptr result = TaskProvider::createResult(provider);
+    auto result = TaskResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
                                                                    StorageInterface::Recursive,
@@ -188,7 +188,7 @@ TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task
 {
     qFatal("Not implemented yet");
     Q_UNUSED(task);
-    return ContextProvider::createResult(ContextProvider::Ptr());
+    return ContextResult::Ptr();
 }
 
 void TaskQueries::onItemAdded(const Item &item)

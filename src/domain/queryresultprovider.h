@@ -45,13 +45,6 @@ public:
     {
     }
 
-    static typename QueryResult<ItemType>::Ptr createResult(const Ptr &provider)
-    {
-        typename QueryResult<ItemType>::Ptr result(new QueryResult<ItemType>(provider));
-        provider->m_results << result;
-        return result;
-    }
-
     QList<ItemType> data() const
     {
         return m_list;
@@ -178,6 +171,7 @@ private:
         }
     }
 
+    friend class QueryResult<ItemType>;
     QList<ItemType> m_list;
     QList<typename QueryResult<ItemType>::WeakPtr> m_results;
 };

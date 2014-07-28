@@ -95,9 +95,9 @@ private slots:
         for (auto task : childrenTasks)
             childrenProvider->append(task);
 
-        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+        auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
         mock_object<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
@@ -110,7 +110,7 @@ private slots:
         // WHEN
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
-                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return queryMock.getInstance().findChildren(task);
         };
@@ -180,9 +180,9 @@ private slots:
         for (auto task : childrenTasks)
             childrenProvider->append(task);
 
-        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+        auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
         mock_object<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
@@ -190,7 +190,7 @@ private slots:
 
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
-                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return queryMock.getInstance().findChildren(task);
         };
@@ -249,9 +249,9 @@ private slots:
         childrenProvider->append(childrenTasks.at(0));
         childrenProvider->append(childrenTasks.at(1));
 
-        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+        auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
         mock_object<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
@@ -262,7 +262,7 @@ private slots:
 
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
-                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return queryMock.getInstance().findChildren(task);
         };
@@ -318,9 +318,9 @@ private slots:
         for (auto task : childrenTasks)
             childrenProvider->append(task);
 
-        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+        auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
         mock_object<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
@@ -332,7 +332,7 @@ private slots:
 
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
-                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return queryMock.getInstance().findChildren(task);
         };
@@ -421,9 +421,9 @@ private slots:
         for (auto task : childrenTasks)
             childrenProvider->append(task);
 
-        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+        auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
         mock_object<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
@@ -436,7 +436,7 @@ private slots:
         // WHEN
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
-                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return queryMock.getInstance().findChildren(task);
         };
@@ -490,9 +490,9 @@ private slots:
         for (auto task : childrenTasks)
             childrenProvider->append(task);
 
-        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+        auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
         mock_object<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
@@ -505,7 +505,7 @@ private slots:
         // WHEN
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
-                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return queryMock.getInstance().findChildren(task);
         };
@@ -560,9 +560,9 @@ private slots:
         for (auto task : childrenTasks)
             childrenProvider->append(task);
         
-        auto childrenList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(childrenProvider);
+        auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto emptyList = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(emptyProvider);
+        auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
             
         mock_object<Domain::TaskQueries> queryMock; 
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
@@ -577,7 +577,7 @@ private slots:
 
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
-                return Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return queryMock.getInstance().findChildren(task);
         };

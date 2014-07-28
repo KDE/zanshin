@@ -74,7 +74,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
         m_taskDataSourceProvider = provider.toWeakRef();
     }
 
-    DataSourceQueries::DataSourceResult::Ptr result = DataSourceProvider::createResult(provider);
+    auto result = DataSourceResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Tasks);
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {
@@ -97,7 +97,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
         m_noteDataSourceProvider = provider.toWeakRef();
     }
 
-    DataSourceQueries::DataSourceResult::Ptr result = DataSourceProvider::createResult(provider);
+    auto result = DataSourceResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Notes);
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {

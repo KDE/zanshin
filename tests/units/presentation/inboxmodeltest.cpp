@@ -50,7 +50,7 @@ private slots:
         provider->append(Domain::DataSource::Ptr::create());
         provider->append(expectedSource);
         provider->append(Domain::DataSource::Ptr::create());
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
@@ -88,7 +88,7 @@ private slots:
         provider->append(Domain::DataSource::Ptr::create());
         provider->append(Domain::DataSource::Ptr::create());
         provider->append(Domain::DataSource::Ptr::create());
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
@@ -121,7 +121,7 @@ private slots:
 
         // An empty source list
         auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
@@ -154,7 +154,7 @@ private slots:
 
         // A dummy source list
         auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
@@ -193,7 +193,7 @@ private slots:
         provider->append(Domain::DataSource::Ptr::create());
         provider->append(expectedSource);
         provider->append(Domain::DataSource::Ptr::create());
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
@@ -231,7 +231,7 @@ private slots:
         provider->append(Domain::DataSource::Ptr::create());
         provider->append(Domain::DataSource::Ptr::create());
         provider->append(Domain::DataSource::Ptr::create());
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
@@ -264,7 +264,7 @@ private slots:
 
         // An empty source list
         auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;
@@ -297,7 +297,7 @@ private slots:
 
         // A dummy source list
         auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
-        auto sourceResult = Domain::QueryResultProvider<Domain::DataSource::Ptr>::createResult(provider);
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
         mock_object<Domain::DataSourceQueries> sourceQueriesMock;

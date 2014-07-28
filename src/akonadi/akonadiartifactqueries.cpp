@@ -74,7 +74,7 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
         m_inboxProvider = provider.toWeakRef();
     }
 
-    ArtifactQueries::ArtifactResult::Ptr result = ArtifactProvider::createResult(provider);
+    ArtifactResult::Ptr result = ArtifactResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
                                                                    StorageInterface::Recursive,

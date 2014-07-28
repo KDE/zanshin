@@ -37,14 +37,14 @@ private slots:
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
         QVERIFY(provider->data().isEmpty());
 
-        QueryResult<QString>::Ptr result = QueryResultProvider<QString>::createResult(provider);
+        QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
         QVERIFY(result->data().isEmpty());
     }
 
     void shouldHaveSameContent()
     {
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
-        QueryResult<QString>::Ptr result = QueryResultProvider<QString>::createResult(provider);
+        QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
         provider->append("Bar");
 
@@ -81,12 +81,12 @@ private slots:
                 QueryResultProvider<QString>::Ptr strongProvider(new QueryResultProvider<QString>);
                 provider = strongProvider;
                 QVERIFY(!provider.isNull());
-                result1 = QueryResultProvider<QString>::createResult(provider);
+                result1 = QueryResult<QString>::create(provider);
             }
             QVERIFY(!provider.isNull());
 
             {
-                QueryResult<QString>::Ptr result2 = QueryResultProvider<QString>::createResult(provider);
+                QueryResult<QString>::Ptr result2 = QueryResult<QString>::create(provider);
                 Q_UNUSED(result2);
                 QVERIFY(!provider.isNull());
             }
@@ -101,7 +101,7 @@ private slots:
         QList<int> preInsertsPos, postInsertsPos;
 
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
-        QueryResult<QString>::Ptr result = QueryResultProvider<QString>::createResult(provider);
+        QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
         result->addPreInsertHandler(
             [&](const QString &value, int pos)
@@ -140,7 +140,7 @@ private slots:
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
         *provider << "Foo" << "Bar" << "Baz" << "Bazz";
 
-        QueryResult<QString>::Ptr result = QueryResultProvider<QString>::createResult(provider);
+        QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
         result->addPreRemoveHandler(
             [&](const QString &value, int pos)
@@ -178,7 +178,7 @@ private slots:
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
         *provider << "Foo" << "Bar" << "Baz" << "Bazz";
 
-        QueryResult<QString>::Ptr result = QueryResultProvider<QString>::createResult(provider);
+        QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
         result->addPreRemoveHandler(
             [&](const QString &value, int pos)
@@ -217,7 +217,7 @@ private slots:
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
         *provider << "Foo" << "Foo" << "Foo" << "Foo";
 
-        QueryResult<QString>::Ptr result = QueryResultProvider<QString>::createResult(provider);
+        QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
         result->addPreReplaceHandler(
             [&](const QString &value, int pos)

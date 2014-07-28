@@ -68,7 +68,7 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
         m_contextProvider = provider.toWeakRef();
     }
 
-    ContextQueries::ContextResult::Ptr result = ContextProvider::createResult(provider);
+    auto result = ContextResult::create(provider);
     TagFetchJobInterface *job = m_storage->fetchTags();
     Utils::JobHandler::install(job->kjob(), [provider, job, this] {
         for (Akonadi::Tag tag : job->tags()) {
@@ -86,7 +86,7 @@ ContextQueries::ContextResult::Ptr ContextQueries::findChildren(Domain::Context:
     qFatal("Not implemented yet");
     // TODO : cache system to store context children
     Q_UNUSED(context);
-    return ContextProvider::createResult(ContextProvider::Ptr());
+    return ContextResult::Ptr();
     // NOTE : will be done when tag parent support exists
 }
 
@@ -94,7 +94,7 @@ ContextQueries::TaskResult::Ptr ContextQueries::findTasks(Domain::Context::Ptr c
 {
     qFatal("Not implemented yet");
     Q_UNUSED(context);
-    return TaskProvider::createResult(TaskProvider::Ptr());
+    return TaskResult::Ptr();
 }
 
 void ContextQueries::onTagAdded(const Tag &tag)

@@ -70,7 +70,7 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+        auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         // WHEN
         Presentation::TaskListModel model(list, 0);
@@ -97,7 +97,7 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         provider->append(tasks.at(0));
         provider->append(tasks.at(1));
-        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+        auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         Presentation::TaskListModel model(list, 0);
         new ModelTest(&model);
@@ -125,7 +125,7 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+        auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         Presentation::TaskListModel model(list, 0);
         new ModelTest(&model);
@@ -153,7 +153,7 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+        auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         Presentation::TaskListModel model(list, 0);
         new ModelTest(&model);
@@ -176,7 +176,7 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+        auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         Presentation::TaskListModel model(list, 0);
         new ModelTest(&model);
@@ -201,7 +201,7 @@ private slots:
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         for (auto task : tasks)
             provider->append(task);
-        auto list = Domain::QueryResultProvider<Domain::Task::Ptr>::createResult(provider);
+        auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         mock_object<Domain::TaskRepository> repositoryMock;
         repositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(0);

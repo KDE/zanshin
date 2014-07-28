@@ -43,6 +43,13 @@ public:
     typedef std::function<void(ItemType, int)> ChangeHandler;
     typedef QList<ChangeHandler> ChangeHandlerList;
 
+    static Ptr create(const typename QueryResultProvider<ItemType>::Ptr &provider)
+    {
+        Ptr result(new QueryResult<ItemType>(provider));
+        provider->m_results << result;
+        return result;
+    }
+
     QList<ItemType> data() const
     {
         return m_provider->data();

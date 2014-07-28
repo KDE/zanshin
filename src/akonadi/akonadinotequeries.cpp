@@ -74,7 +74,7 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
         m_noteProvider = provider.toWeakRef();
     }
 
-    NoteQueries::NoteResult::Ptr result = NoteProvider::createResult(provider);
+    auto result = NoteResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
                                                                    StorageInterface::Recursive,
@@ -99,7 +99,7 @@ NoteQueries::TopicResult::Ptr NoteQueries::findTopics(Domain::Note::Ptr note) co
 {
     Q_UNUSED(note);
     qFatal("Not implemented yet");
-    return TopicProvider::createResult(TopicProvider::Ptr());
+    return TopicResult::Ptr();
 }
 
 void NoteQueries::onItemAdded(const Item &item)
