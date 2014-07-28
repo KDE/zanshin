@@ -120,6 +120,12 @@ private slots:
         QCOMPARE(otherResult->data(), baseList);
     }
 
+    void shouldProperlyCopyNullPointers()
+    {
+        QueryResult<QString>::Ptr result;
+        QVERIFY(QueryResult<QString>::copy(result).isNull());
+    }
+
     void shouldResultsKeepProviderAlive()
     {
         QueryResultProvider<QString>::WeakPtr provider;

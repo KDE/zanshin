@@ -50,6 +50,9 @@ public:
 
     static Ptr copy(const typename QueryResultInputImpl<InputType>::Ptr &other)
     {
+        if (!other)
+            return Ptr();
+
         auto provider = QueryResultInputImpl<InputType>::retrieveProvider(other);
         return create(provider);
     }
