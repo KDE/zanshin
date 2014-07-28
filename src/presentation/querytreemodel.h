@@ -42,12 +42,12 @@ namespace Domain
 
 namespace Presentation {
 
-class QueryTreeModel;
+class QueryTreeModelBase;
 
 class QueryTreeNodeBase
 {
 public:
-    QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModel *model);
+    QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModelBase *model);
     virtual ~QueryTreeNodeBase();
 
     virtual Qt::ItemFlags flags() const = 0;
@@ -74,25 +74,14 @@ protected:
 private:
     QueryTreeNodeBase *m_parent;
     QList<QueryTreeNodeBase*> m_childNode;
-    QueryTreeModel *m_model;
+    QueryTreeModelBase *m_model;
 };
 
-class QueryTreeModel : public QAbstractItemModel
+class QueryTreeModelBase : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
-    typedef std::function<TaskList::Ptr(const Domain::Task::Ptr &)> QueryGenerator;
-    typedef std::function<Qt::ItemFlags(const Domain::Task::Ptr &)> FlagsFunction;
-    typedef std::function<QVariant(const Domain::Task::Ptr &, int)> DataFunction;
-    typedef std::function<bool(const Domain::Task::Ptr &, const QVariant &, int)> SetDataFunction;
-
-    explicit QueryTreeModel(const QueryGenerator &queryGenerator,
-                           const FlagsFunction &flagsFunction,
-                           const DataFunction &dataFunction,
-                           const SetDataFunction &setDataFunction,
-                           QObject *parent = 0);
-    ~QueryTreeModel();
+    ~QueryTreeModelBase();
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
@@ -102,6 +91,10 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+
+protected:
+    explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,
+                                QObject *parent = 0);
 
 private:
     friend class QueryTreeNodeBase;
@@ -115,16 +108,15 @@ template<typename ItemType>
 class QueryTreeNode : public QueryTreeNodeBase
 {
 public:
-    typedef typename ItemType::Ptr ItemTypePtr;
-    typedef Domain::QueryResult<ItemTypePtr> ItemQuery;
+    typedef Domain::QueryResult<ItemType> ItemQuery;
     typedef typename ItemQuery::Ptr ItemQueryPtr;
 
-    typedef std::function<ItemQueryPtr(const ItemTypePtr &)> QueryGenerator;
-    typedef std::function<Qt::ItemFlags(const ItemTypePtr &)> FlagsFunction;
-    typedef std::function<QVariant(const ItemTypePtr &, int)> DataFunction;
-    typedef std::function<bool(const ItemTypePtr &, const QVariant &, int)> SetDataFunction;
+    typedef std::function<ItemQueryPtr(const ItemType &)> QueryGenerator;
+    typedef std::function<Qt::ItemFlags(const ItemType &)> FlagsFunction;
+    typedef std::function<QVariant(const ItemType &, int)> DataFunction;
+    typedef std::function<bool(const ItemType &, const QVariant &, int)> SetDataFunction;
 
-    QueryTreeNode(const ItemTypePtr &item, QueryTreeNodeBase *parentNode, QueryTreeModel *model,
+    QueryTreeNode(const ItemType &item, QueryTreeNodeBase *parentNode, QueryTreeModelBase *model,
          const QueryGenerator &queryGenerator,
          const FlagsFunction &flagsFunction,
          const DataFunction &dataFunction,
@@ -141,24 +133,24 @@ public:
             appendChild(node);
         }
 
-        m_children->addPreInsertHandler([this](const ItemTypePtr &, int index) {
+        m_children->addPreInsertHandler([this](const ItemType &, int index) {
             QModelIndex parentIndex = parent() ? createIndex(row(), 0, this) : QModelIndex();
             beginInsertRows(parentIndex, index, index);
         });
-        m_children->addPostInsertHandler([this, model, queryGenerator](const ItemTypePtr &item, int index) {
+        m_children->addPostInsertHandler([this, model, queryGenerator](const ItemType &item, int index) {
             QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(item, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
             insertChild(index, node);
             endInsertRows();
         });
-        m_children->addPreRemoveHandler([this](const ItemTypePtr &, int index) {
+        m_children->addPreRemoveHandler([this](const ItemType &, int index) {
             QModelIndex parentIndex = parent() ? createIndex(row(), 0, this) : QModelIndex();
             beginRemoveRows(parentIndex, index, index);
         });
-        m_children->addPostRemoveHandler([this](const ItemTypePtr &, int index) {
+        m_children->addPostRemoveHandler([this](const ItemType &, int index) {
             removeChildAt(index);
             endRemoveRows();
         });
-        m_children->addPostReplaceHandler([this](const ItemTypePtr &, int idx) {
+        m_children->addPostReplaceHandler([this](const ItemType &, int idx) {
             QModelIndex parentIndex = parent() ? createIndex(row(), 0, this) : QModelIndex();
             emitDataChanged(index(idx, 0, parentIndex), index(idx, 0, parentIndex));
         });
@@ -169,12 +161,31 @@ public:
     bool setData(const QVariant &value, int role) { return m_setDataFunction(m_item, value, role); }
 
 private:
-    ItemTypePtr m_item;
+    ItemType m_item;
     ItemQueryPtr m_children;
 
     FlagsFunction m_flagsFunction;
     DataFunction m_dataFunction;
     SetDataFunction m_setDataFunction;
+};
+
+template<typename ItemType>
+class QueryTreeModel : public QueryTreeModelBase
+{
+public:
+    typedef typename QueryTreeNode<ItemType>::QueryGenerator QueryGenerator;
+    typedef typename QueryTreeNode<ItemType>::FlagsFunction FlagsFunction;
+    typedef typename QueryTreeNode<ItemType>::DataFunction DataFunction;
+    typedef typename QueryTreeNode<ItemType>::SetDataFunction SetDataFunction;
+
+    explicit QueryTreeModel(const QueryGenerator &queryGenerator,
+                            const FlagsFunction &flagsFunction,
+                            const DataFunction &dataFunction,
+                            const SetDataFunction &setDataFunction,
+                            QObject *parent = 0)
+        : QueryTreeModelBase(new QueryTreeNode<ItemType>(ItemType(), 0, this, queryGenerator, flagsFunction, dataFunction, setDataFunction), parent)
+    {
+    }
 };
 
 }

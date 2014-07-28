@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     };
 
     QTreeView view;
-    view.setModel(new Presentation::QueryTreeModel(treeQuery, treeFlags, treeData, treeSetData, &view));
+    view.setModel(new Presentation::QueryTreeModel<Domain::Task::Ptr>(treeQuery, treeFlags, treeData, treeSetData, &view));
     view.resize(640, 480);
     view.show();
 

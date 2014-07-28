@@ -33,7 +33,7 @@
 
 using namespace Presentation;
 
-QueryTreeNodeBase::QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModel *model)
+QueryTreeNodeBase::QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModelBase *model)
     : m_parent(parent),
       m_model(model)
 {
@@ -117,18 +117,18 @@ void QueryTreeNodeBase::emitDataChanged(const QModelIndex &topLeft, const QModel
     emit m_model->dataChanged(topLeft, bottomRight);
 }
 
-QueryTreeModel::QueryTreeModel(const QueryGenerator &queryGenerator, const FlagsFunction &flagsFunction, const DataFunction &dataFunction, const SetDataFunction &setDataFunction, QObject *parent)
+QueryTreeModelBase::QueryTreeModelBase(QueryTreeNodeBase *rootNode, QObject *parent)
     : QAbstractItemModel(parent),
-      m_rootNode(new QueryTreeNode<Domain::Task>(Domain::Task::Ptr(), 0, this, queryGenerator, flagsFunction, dataFunction, setDataFunction))
+      m_rootNode(rootNode)
 {
 }
 
-QueryTreeModel::~QueryTreeModel()
+QueryTreeModelBase::~QueryTreeModelBase()
 {
     delete m_rootNode;
 }
 
-Qt::ItemFlags QueryTreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags QueryTreeModelBase::flags(const QModelIndex &index) const
 {
     if (!isModelIndexValid(index)) {
         return Qt::NoItemFlags;
@@ -137,7 +137,7 @@ Qt::ItemFlags QueryTreeModel::flags(const QModelIndex &index) const
     return nodeFromIndex(index)->flags();
 }
 
-QModelIndex QueryTreeModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex QueryTreeModelBase::index(int row, int column, const QModelIndex &parent) const
 {
     if (row < 0 || column != 0)
         return QModelIndex();
@@ -152,7 +152,7 @@ QModelIndex QueryTreeModel::index(int row, int column, const QModelIndex &parent
     }
 }
 
-QModelIndex QueryTreeModel::parent(const QModelIndex &index) const
+QModelIndex QueryTreeModelBase::parent(const QModelIndex &index) const
 {
     QueryTreeNodeBase *node = nodeFromIndex(index);
     if (!node->parent() || node->parent() == m_rootNode)
@@ -161,17 +161,17 @@ QModelIndex QueryTreeModel::parent(const QModelIndex &index) const
         return createIndex(node->parent()->row(), 0, node->parent());
 }
 
-int QueryTreeModel::rowCount(const QModelIndex &index) const
+int QueryTreeModelBase::rowCount(const QModelIndex &index) const
 {
     return nodeFromIndex(index)->childCount();
 }
 
-int QueryTreeModel::columnCount(const QModelIndex &) const
+int QueryTreeModelBase::columnCount(const QModelIndex &) const
 {
     return 1;
 }
 
-QVariant QueryTreeModel::data(const QModelIndex &index, int role) const
+QVariant QueryTreeModelBase::data(const QModelIndex &index, int role) const
 {
     if (!isModelIndexValid(index)) {
         return QVariant();
@@ -180,7 +180,7 @@ QVariant QueryTreeModel::data(const QModelIndex &index, int role) const
     return nodeFromIndex(index)->data(role);
 }
 
-bool QueryTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool QueryTreeModelBase::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!isModelIndexValid(index)) {
         return false;
@@ -189,12 +189,12 @@ bool QueryTreeModel::setData(const QModelIndex &index, const QVariant &value, in
     return nodeFromIndex(index)->setData(value, role);
 }
 
-QueryTreeNodeBase *QueryTreeModel::nodeFromIndex(const QModelIndex &index) const
+QueryTreeNodeBase *QueryTreeModelBase::nodeFromIndex(const QModelIndex &index) const
 {
     return index.isValid() ? static_cast<QueryTreeNodeBase*>(index.internalPointer()) : m_rootNode;
 }
 
-bool QueryTreeModel::isModelIndexValid(const QModelIndex &index) const
+bool QueryTreeModelBase::isModelIndexValid(const QModelIndex &index) const
 {
     bool valid = index.isValid()
         && index.column() == 0
@@ -207,4 +207,3 @@ bool QueryTreeModel::isModelIndexValid(const QModelIndex &index) const
     const int count = parentNode->childCount();
     return index.row() < count;
 }
-
