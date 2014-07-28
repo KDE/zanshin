@@ -28,6 +28,23 @@
 
 using namespace Domain;
 
+class Base
+{
+public:
+    typedef QSharedPointer<Base> Ptr;
+
+    virtual ~Base() {}
+    virtual QString whoAmI() { return "I'm Base"; }
+};
+
+class Derived : public Base
+{
+public:
+    typedef QSharedPointer<Derived> Ptr;
+
+    QString whoAmI() { return "I'm Derived"; }
+};
+
 class QueryResultTest : public QObject
 {
     Q_OBJECT
@@ -82,8 +99,26 @@ private slots:
         QVERIFY(!result->data().isEmpty());
         QCOMPARE(result->data(), provider->data());
 
-        auto otherResult = QueryResult<QString>::create(result);
+        auto otherResult = QueryResult<QString>::copy(result);
         QCOMPARE(otherResult->data(), result->data());
+    }
+
+    void shouldCreateResultFromAnotherResultOfCompatibleType()
+    {
+        auto provider = QueryResultProvider<Derived::Ptr>::Ptr::create();
+        auto result = QueryResult<Derived::Ptr>::create(provider);
+
+        provider->append(Derived::Ptr::create());
+
+        QList<Base::Ptr> baseList;
+        baseList << provider->data().first();
+
+        QVERIFY(!provider->data().isEmpty());
+        QVERIFY(!result->data().isEmpty());
+        QCOMPARE(result->data(), provider->data());
+
+        auto otherResult = QueryResult<Derived::Ptr, Base::Ptr>::copy(result);
+        QCOMPARE(otherResult->data(), baseList);
     }
 
     void shouldResultsKeepProviderAlive()
@@ -143,6 +178,42 @@ private slots:
 
         const QList<QString> expectedInserts = {"Bar", "Foo", "Baz", "Bazz"};
         const QList<int> expectedInsertsPos = {0, 0, 2, 1};
+        QCOMPARE(preInserts, expectedInserts);
+        QCOMPARE(preInsertsPos, expectedInsertsPos);
+        QCOMPARE(postInserts, expectedInserts);
+        QCOMPARE(postInsertsPos, expectedInsertsPos);
+    }
+
+    void shouldNotifyInsertsForCompatibleTypes()
+    {
+        QList<Base::Ptr> preInserts, postInserts;
+        QList<int> preInsertsPos, postInsertsPos;
+
+        auto provider = QueryResultProvider<Derived::Ptr>::Ptr::create();
+        auto derivedResult = QueryResult<Derived::Ptr>::create(provider);
+        auto baseResult = QueryResult<Derived::Ptr, Base::Ptr>::copy(derivedResult);
+
+        baseResult->addPreInsertHandler(
+            [&](const Base::Ptr &value, int pos)
+            {
+                preInserts << value;
+                preInsertsPos << pos;
+            }
+        );
+
+        baseResult->addPostInsertHandler(
+            [&](const Base::Ptr &value, int pos)
+            {
+                postInserts << value;
+                postInsertsPos << pos;
+            }
+        );
+
+        provider->append(Derived::Ptr::create());
+        provider->append(Derived::Ptr::create());
+
+        const QList<Base::Ptr> expectedInserts = { provider->data().first(), provider->data().last() };
+        const QList<int> expectedInsertsPos = {0, 1};
         QCOMPARE(preInserts, expectedInserts);
         QCOMPARE(preInsertsPos, expectedInsertsPos);
         QCOMPARE(postInserts, expectedInserts);

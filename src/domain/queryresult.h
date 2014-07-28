@@ -25,6 +25,7 @@
 #ifndef DOMAIN_QUERYRESULT_H
 #define DOMAIN_QUERYRESULT_H
 
+#include <algorithm>
 #include <functional>
 
 #include <QSharedPointer>
@@ -34,33 +35,17 @@ namespace Domain {
 template<typename ItemType>
 class QueryResultProvider;
 
-template<typename ItemType>
-class QueryResult
+template<typename InputType>
+class QueryResultInputImpl
 {
 public:
-    typedef QSharedPointer<QueryResult<ItemType> > Ptr;
-    typedef QWeakPointer<QueryResult<ItemType>> WeakPtr;
-    typedef std::function<void(ItemType, int)> ChangeHandler;
+    typedef typename QueryResultProvider<InputType>::Ptr ProviderPtr;
+    typedef QSharedPointer<QueryResultInputImpl<InputType> > Ptr;
+    typedef QWeakPointer<QueryResultInputImpl<InputType>> WeakPtr;
+    typedef std::function<void(InputType, int)> ChangeHandler;
     typedef QList<ChangeHandler> ChangeHandlerList;
 
-    static Ptr create(const typename QueryResultProvider<ItemType>::Ptr &provider)
-    {
-        Ptr result(new QueryResult<ItemType>(provider));
-        provider->m_results << result;
-        return result;
-    }
-
-    static Ptr create(const Ptr &other)
-    {
-        Ptr result(new QueryResult<ItemType>(other->m_provider));
-        other->m_provider->m_results << result;
-        return result;
-    }
-
-    QList<ItemType> data() const
-    {
-        return m_provider->data();
-    }
+    virtual ~QueryResultInputImpl() {}
 
     void addPreInsertHandler(const ChangeHandler &handler)
     {
@@ -92,10 +77,20 @@ public:
         m_postReplaceHandlers << handler;
     }
 
-private:
-    QueryResult(const typename QueryResultProvider<ItemType>::Ptr &provider)
+protected:
+    explicit QueryResultInputImpl(const ProviderPtr &provider)
         : m_provider(provider)
     {
+    }
+
+    static void registerResult(const ProviderPtr &provider, const Ptr &result)
+    {
+        provider->m_results << result;
+    }
+
+    static ProviderPtr retrieveProvider(const Ptr &result)
+    {
+        return result->m_provider;
     }
 
     // cppcheck can't figure out the friend class
@@ -140,14 +135,68 @@ private:
         return m_postReplaceHandlers;
     }
 
-    friend class QueryResultProvider<ItemType>;
-    typename QueryResultProvider<ItemType>::Ptr m_provider;
+    friend class QueryResultProvider<InputType>;
+    ProviderPtr m_provider;
     ChangeHandlerList m_preInsertHandlers;
     ChangeHandlerList m_postInsertHandlers;
     ChangeHandlerList m_preRemoveHandlers;
     ChangeHandlerList m_postRemoveHandlers;
     ChangeHandlerList m_preReplaceHandlers;
     ChangeHandlerList m_postReplaceHandlers;
+};
+
+template<typename InputType, typename OutputType = InputType>
+class QueryResult : public QueryResultInputImpl<InputType>
+{
+public:
+    typedef QSharedPointer<QueryResult<InputType, OutputType>> Ptr;
+    typedef QWeakPointer<QueryResult<InputType, OutputType>> WeakPtr;
+    typedef std::function<void(OutputType, int)> ChangeHandler;
+
+    static Ptr create(const typename QueryResultProvider<InputType>::Ptr &provider)
+    {
+        Ptr result(new QueryResult<InputType, OutputType>(provider));
+        QueryResultInputImpl<InputType>::registerResult(provider, result);
+        return result;
+    }
+
+    static Ptr copy(const typename QueryResultInputImpl<InputType>::Ptr &other)
+    {
+        auto provider = QueryResultInputImpl<InputType>::retrieveProvider(other);
+        return create(provider);
+    }
+
+    QList<OutputType> data() const
+    {
+        return dataImpl<OutputType>();
+    }
+
+private:
+    explicit QueryResult(const typename QueryResultProvider<InputType>::Ptr &provider)
+        : QueryResultInputImpl<InputType>(provider)
+    {
+    }
+
+    template<typename T>
+    typename std::enable_if<std::is_same<InputType, T>::value, QList<InputType>>::type
+    dataImpl() const
+    {
+        auto provider = QueryResultInputImpl<InputType>::m_provider;
+        return provider->data();
+    }
+
+    template<typename T>
+    typename std::enable_if<!std::is_same<InputType, T>::value, QList<T>>::type
+    dataImpl() const
+    {
+        auto provider = QueryResultInputImpl<InputType>::m_provider;
+        QList<InputType> inputData = provider->data();
+        QList<OutputType> outputData;
+        std::transform(inputData.constBegin(), inputData.constEnd(),
+                       std::back_inserter(outputData),
+                       [] (const InputType &input) { return OutputType(input); });
+        return outputData;
+    }
 };
 
 }
