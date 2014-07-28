@@ -29,8 +29,14 @@
 
 #include "domain/datasourcequeries.h"
 
+class QAbstractItemModel;
+
+Q_DECLARE_METATYPE(QAbstractItemModel*)
+
 namespace Domain {
+    class ArtifactQueries;
     class NoteRepository;
+    class TaskQueries;
     class TaskRepository;
 }
 
@@ -41,13 +47,17 @@ class InboxModel : public QObject
     Q_OBJECT
     Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
+    Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
-    explicit InboxModel(Domain::DataSourceQueries *sourceQueries,
+    explicit InboxModel(Domain::ArtifactQueries *artifactQueries,
+                        Domain::DataSourceQueries *sourceQueries,
+                        Domain::TaskQueries *taskQueries,
                         Domain::TaskRepository *taskRepository,
                         Domain::NoteRepository *noteRepository,
                         QObject *parent = 0);
     ~InboxModel();
 
+    QAbstractItemModel *centralListModel();
     Domain::DataSource::Ptr defaultNoteDataSource() const;
     Domain::DataSource::Ptr defaultTaskDataSource() const;
 
@@ -56,7 +66,12 @@ public slots:
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 
 private:
+    QAbstractItemModel *createCentralListModel();
+    QAbstractItemModel *m_centralListModel;
+
+    Domain::ArtifactQueries *m_artifactQueries;
     Domain::DataSourceQueries *m_sourceQueries;
+    Domain::TaskQueries *m_taskQueries;
 
     Domain::TaskRepository *m_taskRepository;
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_taskSources;

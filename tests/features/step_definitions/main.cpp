@@ -11,6 +11,7 @@
 #include <KConfigGroup>
 #include <KGlobal>
 
+#include "akonadi/akonadiartifactqueries.h"
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonaditaskqueries.h"
@@ -52,6 +53,7 @@ public:
     ZanshinContext()
         : presentation(0),
           proxyModel(new QSortFilterProxyModel),
+          artifactQueries(new Akonadi::ArtifactQueries),
           dataSourceQueries(new Akonadi::DataSourceQueries),
           queries(new Akonadi::TaskQueries()),
           taskRepository(new Akonadi::TaskRepository()),
@@ -63,6 +65,7 @@ public:
     ~ZanshinContext()
     {
         delete proxyModel;
+        delete artifactQueries;
         delete dataSourceQueries;
         delete queries;
         delete taskRepository;
@@ -81,6 +84,7 @@ public:
         return proxyModel;
     }
 
+    Domain::ArtifactQueries *artifactQueries;
     Domain::DataSourceQueries *dataSourceQueries;
     Domain::TaskQueries *queries;
     Domain::TaskRepository *taskRepository;
@@ -115,7 +119,9 @@ GIVEN("^I got a note data source list model$") {
 
 GIVEN("^I'm looking at the inbox view$") {
     ScenarioScope<ZanshinContext> context;
-    context->presentation = new Presentation::InboxModel(context->dataSourceQueries,
+    context->presentation = new Presentation::InboxModel(context->artifactQueries,
+                                                         context->dataSourceQueries,
+                                                         context->queries,
                                                          context->taskRepository,
                                                          context->noteRepository);
     QTest::qWait(500);
@@ -125,8 +131,8 @@ GIVEN("^I'm looking at the inbox view$") {
 WHEN("^I look at the central list$") {
     ScenarioScope<ZanshinContext> context;
 
-    auto object = context->presentation->property("centralListModel").value<QObject*>();
-    auto model = static_cast<QAbstractItemModel*>(object);
+    auto model = context->presentation->property("centralListModel").value<QAbstractItemModel*>();
+    QTest::qWait(500);
     context->setModel(model);
 
     for (int row = 0; row < context->model()->rowCount(); row++) {
