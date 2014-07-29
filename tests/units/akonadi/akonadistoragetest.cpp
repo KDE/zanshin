@@ -167,6 +167,14 @@ private slots:
             QVERIFY(item.modificationTime().isValid());
             QVERIFY(!item.flags().isEmpty());
 
+            Akonadi::Tag::List tags = item.tags();
+            QVERIFY(!item.tags().isEmpty());
+            for (const auto &tag : tags) {
+                QVERIFY(tag.isValid());
+                QVERIFY(!tag.name().isEmpty());
+                QVERIFY(!tag.type().isEmpty());
+            }
+
             auto parent = item.parentCollection();
             while (parent != Akonadi::Collection::root()) {
                 QVERIFY(parent.isValid());

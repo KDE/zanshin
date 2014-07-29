@@ -17,6 +17,7 @@ PERCENT-COMPLETE:0&#xd;
 END:VTODO&#xd;
 
 END:VCALENDAR</payload>
+        <tag>errands-context</tag>
       </item>
       <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{5dc1aba7-eead-4254-ba7a-58e397de1179}">
         <payload>BEGIN:VCALENDAR
@@ -33,6 +34,7 @@ PERCENT-COMPLETE:0&#xd;
 END:VTODO&#xd;
 
 END:VCALENDAR</payload>
+        <tag>errands-context</tag>
       </item>
       <item mimetype="application/x-vnd.akonadi.calendar.event" rid="{f45ee587-38ee-4131-a93f-eaad2f9e2ddb}">
         <payload>BEGIN:VCALENDAR
@@ -78,6 +80,7 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">foo</attribute>
           <flag>\SEEN</flag>
+          <tag>errands-context</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff4}">
           <payload>BEGIN:VCALENDAR
@@ -97,6 +100,7 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
+          <tag>errands-context</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff5}">
           <payload>BEGIN:VCALENDAR
@@ -116,6 +120,7 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
+          <tag>change-me</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff6}">
           <payload>BEGIN:VCALENDAR
@@ -136,6 +141,7 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
+          <tag>change-me</tag>
         </item>
         <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{c9a13610-a9f6-433d-96f2-3b8fdb728fe5}" name="Calendar3">
           <attribute type="AccessRights">a</attribute>
@@ -168,6 +174,7 @@ From: knotes@kde4
 MIME-Version: 1.0
 
 This is a note</payload>
+          <tag>philosophy-topic</tag>
         </item>
       </collection>
     </collection>
