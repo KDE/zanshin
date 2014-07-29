@@ -1,4 +1,3 @@
-@wip
 Feature: Inbox content
   As someone collecting tasks and notes
   I can display the Inbox
