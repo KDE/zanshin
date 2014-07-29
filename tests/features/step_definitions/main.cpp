@@ -16,7 +16,7 @@
 #include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
-#include "presentation/inboxmodel.h"
+#include "presentation/inboxpagemodel.h"
 #include "presentation/tasklistmodel.h"
 #include "presentation/datasourcelistmodel.h"
 
@@ -119,7 +119,7 @@ GIVEN("^I got a note data source list model$") {
 
 GIVEN("^I'm looking at the inbox view$") {
     ScenarioScope<ZanshinContext> context;
-    context->presentation = new Presentation::InboxModel(context->artifactQueries,
+    context->presentation = new Presentation::InboxPageModel(context->artifactQueries,
                                                          context->dataSourceQueries,
                                                          context->queries,
                                                          context->taskRepository,

@@ -24,6 +24,7 @@
 
 #include "pageview.h"
 
+#include <QHeaderView>
 #include <QTreeView>
 #include <QVBoxLayout>
 
@@ -36,6 +37,7 @@ PageView::PageView(QWidget *parent)
       m_centralView(new QTreeView(this))
 {
     m_centralView->setObjectName("centralView");
+    m_centralView->header()->hide();
 
     auto layout = new QVBoxLayout;
     layout->addWidget(m_centralView);

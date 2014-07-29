@@ -22,7 +22,7 @@
 */
 
 
-#include "inboxmodel.h"
+#include "inboxpagemodel.h"
 
 #include "domain/artifactqueries.h"
 #include "domain/noterepository.h"
@@ -35,7 +35,7 @@
 
 using namespace Presentation;
 
-InboxModel::InboxModel(QObject *parent)
+InboxPageModel::InboxPageModel(QObject *parent)
     : QObject(parent),
       m_centralListModel(0),
       m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
@@ -51,7 +51,7 @@ InboxModel::InboxModel(QObject *parent)
     qRegisterMetaType<QAbstractItemModel*>();
 }
 
-InboxModel::InboxModel(Domain::ArtifactQueries *artifactQueries,
+InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
                        Domain::DataSourceQueries *sourceQueries,
                        Domain::TaskQueries *taskQueries,
                        Domain::TaskRepository *taskRepository,
@@ -72,18 +72,18 @@ InboxModel::InboxModel(Domain::ArtifactQueries *artifactQueries,
     qRegisterMetaType<QAbstractItemModel*>();
 }
 
-InboxModel::~InboxModel()
+InboxPageModel::~InboxPageModel()
 {
 }
 
-QAbstractItemModel *InboxModel::centralListModel()
+QAbstractItemModel *InboxPageModel::centralListModel()
 {
     if (!m_centralListModel)
         m_centralListModel = createCentralListModel();
     return m_centralListModel;
 }
 
-Domain::DataSource::Ptr InboxModel::defaultNoteDataSource() const
+Domain::DataSource::Ptr InboxPageModel::defaultNoteDataSource() const
 {
     QList<Domain::DataSource::Ptr> sources = m_noteSources->data();
 
@@ -101,7 +101,7 @@ Domain::DataSource::Ptr InboxModel::defaultNoteDataSource() const
         return sources.first();
 }
 
-Domain::DataSource::Ptr InboxModel::defaultTaskDataSource() const
+Domain::DataSource::Ptr InboxPageModel::defaultTaskDataSource() const
 {
     QList<Domain::DataSource::Ptr> sources = m_taskSources->data();
 
@@ -119,17 +119,17 @@ Domain::DataSource::Ptr InboxModel::defaultTaskDataSource() const
         return sources.first();
 }
 
-void InboxModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
+void InboxPageModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
 {
     m_noteRepository->setDefaultSource(source);
 }
 
-void InboxModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)
+void InboxPageModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)
 {
     m_taskRepository->setDefaultSource(source);
 }
 
-QAbstractItemModel *InboxModel::createCentralListModel()
+QAbstractItemModel *InboxPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
         if (!artifact)

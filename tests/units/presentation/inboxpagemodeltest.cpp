@@ -30,13 +30,13 @@
 #include "domain/noterepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
-#include "presentation/inboxmodel.h"
+#include "presentation/inboxpagemodel.h"
 
 #include "testlib/fakejob.h"
 
 using namespace mockitopp;
 
-class InboxModelTest : public QObject
+class InboxPageModelTest : public QObject
 {
     Q_OBJECT
 private slots:
@@ -70,7 +70,7 @@ private slots:
             taskRepositoryMock(&Domain::TaskRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
         }
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -110,7 +110,7 @@ private slots:
             taskRepositoryMock(&Domain::TaskRepository::isDefaultSource).when(source).thenReturn(false);
         }
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -142,7 +142,7 @@ private slots:
         // Repository mock returning the data source as default
         mock_object<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -178,7 +178,7 @@ private slots:
         mock_object<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::setDefaultSource).when(source).thenReturn();
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -221,7 +221,7 @@ private slots:
             noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
         }
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -261,7 +261,7 @@ private slots:
             noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(false);
         }
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -293,7 +293,7 @@ private slots:
         // Repository mock returning the data source as default
         mock_object<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -329,7 +329,7 @@ private slots:
         mock_object<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).thenReturn();
 
-        Presentation::InboxModel inbox(0,
+        Presentation::InboxPageModel inbox(0,
                                        &sourceQueriesMock.getInstance(),
                                        0,
                                        &taskRepositoryMock.getInstance(),
@@ -379,7 +379,7 @@ private slots:
         mock_object<Domain::TaskRepository> taskRepositoryMock;
         mock_object<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::InboxModel inbox(&artifactQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(&artifactQueriesMock.getInstance(),
                                        &sourceQueriesMock.getInstance(),
                                        &taskQueriesMock.getInstance(),
                                        &taskRepositoryMock.getInstance(),
@@ -447,6 +447,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(InboxModelTest)
+QTEST_MAIN(InboxPageModelTest)
 
-#include "inboxmodeltest.moc"
+#include "inboxpagemodeltest.moc"

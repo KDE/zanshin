@@ -23,6 +23,7 @@
 
 #include <QtTest>
 
+#include <QHeaderView>
 #include <QTreeView>
 #include <QAbstractItemModel>
 #include <QStringListModel>
@@ -42,6 +43,7 @@ private slots:
         auto centralView = page.findChild<QTreeView*>("centralView");
         QVERIFY(centralView);
         QVERIFY(centralView->isVisibleTo(&page));
+        QVERIFY(!centralView->header()->isVisibleTo(&page));
     }
 
     void shouldDisplayListFromPageModel()

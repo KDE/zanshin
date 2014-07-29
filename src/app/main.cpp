@@ -23,7 +23,7 @@
 
 #include <QApplication>
 
-#include "presentation/inboxmodel.h"
+#include "presentation/inboxpagemodel.h"
 #include "utils/dependencymanager.h"
 #include "widgets/pageview.h"
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
     Widgets::PageView view;
-    view.setModel(new Presentation::InboxModel(&view));
+    view.setModel(new Presentation::InboxPageModel(&view));
     view.show();
 
     return app.exec();

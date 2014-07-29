@@ -22,8 +22,8 @@
 */
 
 
-#ifndef PRESENTATION_INBOXMODEL_H
-#define PRESENTATION_INBOXMODEL_H
+#ifndef PRESENTATION_INBOXPAGEMODEL_H
+#define PRESENTATION_INBOXPAGEMODEL_H
 
 #include <QObject>
 
@@ -42,22 +42,22 @@ namespace Domain {
 
 namespace Presentation {
 
-class InboxModel : public QObject
+class InboxPageModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
-    explicit InboxModel(QObject *parent = 0);
+    explicit InboxPageModel(QObject *parent = 0);
 
-    explicit InboxModel(Domain::ArtifactQueries *artifactQueries,
+    explicit InboxPageModel(Domain::ArtifactQueries *artifactQueries,
                         Domain::DataSourceQueries *sourceQueries,
                         Domain::TaskQueries *taskQueries,
                         Domain::TaskRepository *taskRepository,
                         Domain::NoteRepository *noteRepository,
                         QObject *parent = 0);
-    ~InboxModel();
+    ~InboxPageModel();
 
     QAbstractItemModel *centralListModel();
     Domain::DataSource::Ptr defaultNoteDataSource() const;
@@ -86,4 +86,4 @@ private:
 
 }
 
-#endif // PRESENTATION_INBOXMODEL_H
+#endif // PRESENTATION_INBOXPAGEMODEL_H
