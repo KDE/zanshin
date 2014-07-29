@@ -17,6 +17,7 @@
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "presentation/inboxpagemodel.h"
+#include "presentation/querytreemodelbase.h"
 #include "presentation/tasklistmodel.h"
 #include "presentation/datasourcelistmodel.h"
 
@@ -90,6 +91,7 @@ public:
     Domain::TaskRepository *taskRepository;
     Domain::NoteRepository *noteRepository;
     QList<QPersistentModelIndex> indices;
+    QPersistentModelIndex index;
     QObject *presentation;
 
 private:
@@ -127,6 +129,28 @@ GIVEN("^I'm looking at the inbox view$") {
     QTest::qWait(500);
 }
 
+GIVEN("^an item named \"(.+)\" in the central list$") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    QTest::qWait(500);
+
+    auto model = context->presentation->property("centralListModel").value<QAbstractItemModel*>();
+    QTest::qWait(500);
+    context->setModel(model);
+
+    for (int row = 0; row < context->model()->rowCount(); row++) {
+        QModelIndex index = context->model()->index(row, 0);
+        if (index.data().toString() == itemName) {
+            context->index = index;
+            return;
+        }
+    }
+
+    qDebug() << "Couldn't find an item named" << itemName;
+    BOOST_REQUIRE(false);
+}
+
 
 WHEN("^I look at the central list$") {
     ScenarioScope<ZanshinContext> context;
@@ -138,6 +162,11 @@ WHEN("^I look at the central list$") {
     for (int row = 0; row < context->model()->rowCount(); row++) {
         context->indices << context->model()->index(row, 0);
     }
+}
+
+WHEN("^I check the item$") {
+    ScenarioScope<ZanshinContext> context;
+    context->model()->setData(context->index, Qt::Checked, Qt::CheckStateRole);
 }
 
 WHEN("^I list the model$") {
@@ -213,6 +242,15 @@ THEN("^the list is") {
         }
     }
     BOOST_REQUIRE(proxy.rowCount() == context->indices.size());
+}
+
+THEN("^The task corresponding to the item is done$") {
+    ScenarioScope<ZanshinContext> context;
+    auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
+    BOOST_REQUIRE(artifact);
+    auto task = artifact.dynamicCast<Domain::Task>();
+    BOOST_REQUIRE(task);
+    BOOST_REQUIRE(task->isDone());
 }
 
 THEN("^the default (\\S+) data source is (.*)$") {
