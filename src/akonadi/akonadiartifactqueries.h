@@ -57,6 +57,7 @@ private slots:
     void onItemChanged(const Akonadi::Item &item);
 
 private:
+    bool isInboxItem(const Item &item) const;
     bool isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const;
     Domain::Artifact::Ptr deserializeArtifact(const Item &item) const;
 

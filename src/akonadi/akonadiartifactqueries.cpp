@@ -90,7 +90,7 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
                     return;
 
                 for (auto item : job->items()) {
-                    if (!m_serializer->relatedUidFromItem(item).isEmpty())
+                    if (!isInboxItem(item))
                         continue;
 
                     auto artifact = deserializeArtifact(item);
@@ -111,7 +111,7 @@ void ArtifactQueries::onItemAdded(const Item &item)
         return;
     }
 
-    if (!m_serializer->relatedUidFromItem(item).isEmpty())
+    if (!isInboxItem(item))
         return;
 
     auto artifact = deserializeArtifact(item);
@@ -149,7 +149,7 @@ void ArtifactQueries::onItemChanged(const Item &item)
         auto artifact = provider->data().at(i);
         if (isArtifactItem(artifact, item)) {
             itemFound = true;
-            if (m_serializer->relatedUidFromItem(item).isEmpty()) {
+            if (isInboxItem(item)) {
                 if (auto task = artifact.dynamicCast<Domain::Task>()) {
                     m_serializer->updateTaskFromItem(task, item);
                     provider->replace(i, task);
@@ -164,12 +164,17 @@ void ArtifactQueries::onItemChanged(const Item &item)
         }
     }
     if (!itemFound) {
-        if (m_serializer->relatedUidFromItem(item).isEmpty()) {
+        if (isInboxItem(item)) {
             auto artifact = deserializeArtifact(item);
             if (artifact)
                 provider->append(artifact);
         }
     }
+}
+
+bool ArtifactQueries::isInboxItem(const Item &item) const
+{
+    return m_serializer->relatedUidFromItem(item).isEmpty();
 }
 
 bool ArtifactQueries::isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const
