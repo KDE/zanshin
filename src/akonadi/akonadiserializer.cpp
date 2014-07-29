@@ -90,7 +90,7 @@ bool Akonadi::Serializer::isTaskCollection(Akonadi::Collection collection)
     return collection.contentMimeTypes().contains(KCalCore::Todo::todoMimeType());
 }
 
-bool Serializer::isTaskItem(const Item &item)
+bool Serializer::isTaskItem(Item item)
 {
     if (!item.hasPayload<KCalCore::Todo::Ptr>())
         return false;
@@ -215,7 +215,7 @@ Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List 
     return result;
 }
 
-bool Serializer::isNoteItem(const Item &item)
+bool Serializer::isNoteItem(Item item)
 {
     return item.hasPayload<KMime::Message::Ptr>();
 }

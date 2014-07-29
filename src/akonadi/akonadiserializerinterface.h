@@ -49,6 +49,7 @@ public:
     virtual bool isNoteCollection(Akonadi::Collection collection) = 0;
     virtual bool isTaskCollection(Akonadi::Collection collection) = 0;
 
+    virtual bool isTaskItem(Akonadi::Item item) = 0;
     virtual Domain::Task::Ptr createTaskFromItem(Akonadi::Item item) = 0;
     virtual void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual Akonadi::Item createItemFromTask(Domain::Task::Ptr task) = 0;
@@ -59,6 +60,7 @@ public:
     virtual void removeItemParent(Akonadi::Item item) = 0;
     virtual Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) = 0;
 
+    virtual bool isNoteItem(Akonadi::Item item) = 0;
     virtual Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) = 0;
     virtual void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) = 0;
 
