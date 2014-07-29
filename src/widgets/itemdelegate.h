@@ -22,48 +22,26 @@
 */
 
 
-#include "pageview.h"
+#ifndef WIDGETS_ITEMDELEGATE_H
+#define WIDGETS_ITEMDELEGATE_H
 
-#include <QHeaderView>
-#include <QTreeView>
-#include <QVBoxLayout>
+#include <QStyledItemDelegate>
 
-#include "itemdelegate.h"
+namespace Widgets {
 
-using namespace Widgets;
-
-Q_DECLARE_METATYPE(QAbstractItemModel*)
-
-PageView::PageView(QWidget *parent)
-    : QWidget(parent),
-      m_centralView(new QTreeView(this))
+class ItemDelegate : public QStyledItemDelegate
 {
-    m_centralView->setObjectName("centralView");
-    m_centralView->header()->hide();
-    m_centralView->setAlternatingRowColors(true);
-    m_centralView->setItemDelegate(new ItemDelegate(this));
+    Q_OBJECT
+public:
+    explicit ItemDelegate(QObject *parent = 0);
 
-    auto layout = new QVBoxLayout;
-    layout->addWidget(m_centralView);
-    setLayout(layout);
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index) const;
+    void paint(QPainter *painter,
+               const QStyleOptionViewItem &option,
+               const QModelIndex &index) const;
+};
+
 }
 
-QObject *PageView::model() const
-{
-    return m_model;
-}
-
-void PageView::setModel(QObject *model)
-{
-    if (model == m_model)
-        return;
-
-    m_centralView->setModel(0);
-
-    m_model = model;
-
-    QVariant modelProperty = m_model->property("centralListModel");
-    if (modelProperty.canConvert<QAbstractItemModel*>())
-        m_centralView->setModel(modelProperty.value<QAbstractItemModel*>());
-}
-
+#endif // WIDGETS_ITEMDELEGATE_H

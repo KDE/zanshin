@@ -1,4 +1,5 @@
 set(widgets_SRCS
+    itemdelegate.cpp
     pageview.cpp
 )
 

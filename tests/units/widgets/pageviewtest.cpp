@@ -28,6 +28,7 @@
 #include <QAbstractItemModel>
 #include <QStringListModel>
 
+#include "widgets/itemdelegate.h"
 #include "widgets/pageview.h"
 
 Q_DECLARE_METATYPE(QAbstractItemModel*)
@@ -44,6 +45,8 @@ private slots:
         QVERIFY(centralView);
         QVERIFY(centralView->isVisibleTo(&page));
         QVERIFY(!centralView->header()->isVisibleTo(&page));
+        QVERIFY(qobject_cast<Widgets::ItemDelegate*>(centralView->itemDelegate()));
+        QVERIFY(centralView->alternatingRowColors());
     }
 
     void shouldDisplayListFromPageModel()
