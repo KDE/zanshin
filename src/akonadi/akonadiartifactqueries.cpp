@@ -93,17 +93,9 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
                     if (!m_serializer->relatedUidFromItem(item).isEmpty())
                         continue;
 
-                    auto task = m_serializer->createTaskFromItem(item);
-                    if (task) {
-                        provider->append(task);
-                        continue;
-                    }
-
-                    auto note = m_serializer->createNoteFromItem(item);
-                    if (note) {
-                        provider->append(note);
-                        continue;
-                    }
+                    auto artifact = deserializeArtifact(item);
+                    if (artifact)
+                        provider->append(artifact);
                 }
             });
         }
@@ -122,17 +114,9 @@ void ArtifactQueries::onItemAdded(const Item &item)
     if (!m_serializer->relatedUidFromItem(item).isEmpty())
         return;
 
-    auto task = m_serializer->createTaskFromItem(item);
-    if (task) {
-        provider->append(task);
-        return;
-    }
-
-    auto note = m_serializer->createNoteFromItem(item);
-    if (note) {
-        provider->append(note);
-        return;
-    }
+    auto artifact = deserializeArtifact(item);
+    if (artifact)
+        provider->append(artifact);
 }
 
 void ArtifactQueries::onItemRemoved(const Item &item)
@@ -181,11 +165,9 @@ void ArtifactQueries::onItemChanged(const Item &item)
     }
     if (!itemFound) {
         if (m_serializer->relatedUidFromItem(item).isEmpty()) {
-            if (auto task = m_serializer->createTaskFromItem(item)) {
-                provider->append(task);
-            } else if (auto note = m_serializer->createNoteFromItem(item)) {
-                provider->append(note);
-            }
+            auto artifact = deserializeArtifact(item);
+            if (artifact)
+                provider->append(artifact);
         }
     }
 }
@@ -193,4 +175,21 @@ void ArtifactQueries::onItemChanged(const Item &item)
 bool ArtifactQueries::isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const
 {
     return artifact->property("itemId").toLongLong() == item.id();
+}
+
+Domain::Artifact::Ptr ArtifactQueries::deserializeArtifact(const Item &item) const
+{
+    auto task = m_serializer->createTaskFromItem(item);
+    if (task) {
+        task->setProperty("itemId", item.id());
+        return task;
+    }
+
+    auto note = m_serializer->createNoteFromItem(item);
+    if (note) {
+        note->setProperty("itemId", item.id());
+        return note;
+    }
+
+    return Domain::Artifact::Ptr();
 }

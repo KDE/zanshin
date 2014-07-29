@@ -58,6 +58,7 @@ private slots:
 
 private:
     bool isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const;
+    Domain::Artifact::Ptr deserializeArtifact(const Item &item) const;
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
