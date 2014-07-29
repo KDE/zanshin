@@ -70,6 +70,7 @@ public:
     virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
 
     static QByteArray contextTagType();
+    static QByteArray topicTagType();
 };
 
 }
