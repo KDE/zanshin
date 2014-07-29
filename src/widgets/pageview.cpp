@@ -25,6 +25,7 @@
 #include "pageview.h"
 
 #include <QHeaderView>
+#include <QLineEdit>
 #include <QTreeView>
 #include <QVBoxLayout>
 
@@ -36,15 +37,21 @@ Q_DECLARE_METATYPE(QAbstractItemModel*)
 
 PageView::PageView(QWidget *parent)
     : QWidget(parent),
-      m_centralView(new QTreeView(this))
+      m_centralView(new QTreeView(this)),
+      m_quickAddEdit(new QLineEdit(this))
 {
     m_centralView->setObjectName("centralView");
     m_centralView->header()->hide();
     m_centralView->setAlternatingRowColors(true);
     m_centralView->setItemDelegate(new ItemDelegate(this));
 
+    m_quickAddEdit->setObjectName("quickAddEdit");
+    m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an action"));
+    connect(m_quickAddEdit, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+
     auto layout = new QVBoxLayout;
     layout->addWidget(m_centralView);
+    layout->addWidget(m_quickAddEdit);
     setLayout(layout);
 }
 
@@ -67,3 +74,11 @@ void PageView::setModel(QObject *model)
         m_centralView->setModel(modelProperty.value<QAbstractItemModel*>());
 }
 
+void PageView::onEditingFinished()
+{
+    if (m_quickAddEdit->text().isEmpty())
+        return;
+
+    QMetaObject::invokeMethod(m_model, "addTask", Q_ARG(QString, m_quickAddEdit->text()));
+    m_quickAddEdit->clear();
+}

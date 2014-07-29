@@ -27,6 +27,7 @@
 
 #include <QWidget>
 
+class QLineEdit;
 class QTreeView;
 
 namespace Widgets {
@@ -42,9 +43,13 @@ public:
 public slots:
     void setModel(QObject *model);
 
+private slots:
+    void onEditingFinished();
+
 private:
     QObject *m_model;
     QTreeView *m_centralView;
+    QLineEdit *m_quickAddEdit;
 };
 
 }

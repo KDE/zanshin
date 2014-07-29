@@ -21,17 +21,31 @@
    USA.
 */
 
-#include <QtTest>
+#include <QtTestGui>
 
-#include <QHeaderView>
-#include <QTreeView>
 #include <QAbstractItemModel>
+#include <QHeaderView>
+#include <QLineEdit>
 #include <QStringListModel>
+#include <QTreeView>
 
 #include "widgets/itemdelegate.h"
 #include "widgets/pageview.h"
 
 Q_DECLARE_METATYPE(QAbstractItemModel*)
+
+class SlotSpy : public QObject
+{
+    Q_OBJECT
+public slots:
+    void addTask(const QString &name)
+    {
+        taskNames << name;
+    }
+
+public:
+    QStringList taskNames;
+};
 
 class PageViewTest : public QObject
 {
@@ -47,6 +61,12 @@ private slots:
         QVERIFY(!centralView->header()->isVisibleTo(&page));
         QVERIFY(qobject_cast<Widgets::ItemDelegate*>(centralView->itemDelegate()));
         QVERIFY(centralView->alternatingRowColors());
+
+        QLineEdit *quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+        QVERIFY(quickAddEdit);
+        QVERIFY(quickAddEdit->isVisibleTo(&page));
+        QVERIFY(quickAddEdit->text().isEmpty());
+        QCOMPARE(quickAddEdit->placeholderText(), tr("Type and press enter to add an action"));
     }
 
     void shouldDisplayListFromPageModel()
@@ -67,6 +87,27 @@ private slots:
 
         // THEN
         QCOMPARE(centralView->model(), &model);
+    }
+
+    void shouldCreateTasksWhenHittingReturn()
+    {
+        // GIVEN
+        SlotSpy stubPageModel;
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+
+        // WHEN
+        QTest::keyClick(quickAddEdit, Qt::Key_Return); // Does nothing (edit empty)
+        QTest::keyClicks(quickAddEdit, "Foo");
+        QTest::keyClick(quickAddEdit, Qt::Key_Return);
+        QTest::keyClick(quickAddEdit, Qt::Key_Return); // Does nothing (edit empty)
+        QTest::keyClicks(quickAddEdit, "Bar");
+        QTest::keyClick(quickAddEdit, Qt::Key_Return);
+        QTest::keyClick(quickAddEdit, Qt::Key_Return); // Does nothing (edit empty)
+
+        // THEN
+        QCOMPARE(stubPageModel.taskNames, QStringList() << "Foo" << "Bar");
     }
 };
 
