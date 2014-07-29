@@ -273,9 +273,30 @@ void Serializer::updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag
     context->setName(tag.name());
 }
 
+bool Serializer::hasContextTags(Item item) const
+{
+    using namespace std::placeholders;
+    Tag::List tags = item.tags();
+    return std::any_of(tags.constBegin(), tags.constEnd(),
+                       std::bind(std::mem_fn(&Serializer::isContext), this, _1));
+}
+
+bool Serializer::hasTopicTags(Item item) const
+{
+    using namespace std::placeholders;
+    Tag::List tags = item.tags();
+    return std::any_of(tags.constBegin(), tags.constEnd(),
+                       std::bind(std::mem_fn(&Serializer::isTopic), this, _1));
+}
+
 bool Serializer::isContext(const Akonadi::Tag &tag) const
 {
     return (tag.type() == Akonadi::SerializerInterface::contextTagType());
+}
+
+bool Serializer::isTopic(const Tag &tag) const
+{
+    return (tag.type() == Akonadi::SerializerInterface::topicTagType());
 }
 
 bool Serializer::isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const

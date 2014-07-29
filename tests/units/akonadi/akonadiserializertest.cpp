@@ -1059,6 +1059,52 @@ private slots:
         QCOMPARE(context->name(), originalTag.name());
         QCOMPARE(context->property("tagId").toLongLong(), originalTag.id());
     }
+
+    void shouldCheckIfAnItemHasContextsOrTopics_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<bool>("contextsExpected");
+        QTest::addColumn<bool>("topicsExpected");
+
+        Akonadi::Tag unrelatedTag("Foo");
+        Akonadi::Tag contextTag("Bar");
+        contextTag.setType(Akonadi::Serializer::contextTagType());
+        Akonadi::Tag topicTag("Baz");
+        topicTag.setType(Akonadi::Serializer::topicTagType());
+
+        Akonadi::Item item;
+        QTest::newRow("no tags") << item << false << false;
+
+        item.setTags({ unrelatedTag });
+        QTest::newRow("unrelated tags") << item << false << false;
+
+        item.setTags({ unrelatedTag, contextTag });
+        QTest::newRow("has contexts") << item << true << false;
+
+        item.setTags({ unrelatedTag, topicTag });
+        QTest::newRow("has topics") << item << false << true;
+
+        item.setTags({ unrelatedTag, contextTag, topicTag });
+        QTest::newRow("has both") << item << true << true;
+    }
+
+    void shouldCheckIfAnItemHasContextsOrTopics()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item);
+        QFETCH(bool, contextsExpected);
+        QFETCH(bool, topicsExpected);
+
+        Akonadi::Serializer serializer;
+
+        // WHEN
+        const bool hasContexts = serializer.hasContextTags(item);
+        const bool hasTopics = serializer.hasTopicTags(item);
+
+        // THEN
+        QCOMPARE(hasContexts, contextsExpected);
+        QCOMPARE(hasTopics, topicsExpected);
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)

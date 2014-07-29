@@ -62,8 +62,12 @@ public:
     void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag);
     bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const;
     bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const;
+
+    bool hasContextTags(Akonadi::Item item) const;
+    bool hasTopicTags(Akonadi::Item item) const;
 private:
     bool isContext(const Akonadi::Tag &tag) const;
+    bool isTopic(const Akonadi::Tag &tag) const;
 };
 
 }

@@ -69,6 +69,9 @@ public:
     virtual bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
     virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
 
+    virtual bool hasContextTags(Akonadi::Item item) const = 0;
+    virtual bool hasTopicTags(Akonadi::Item item) const = 0;
+
     static QByteArray contextTagType();
     static QByteArray topicTagType();
 };
