@@ -420,6 +420,52 @@ private slots:
         }
     }
 
+    void shouldNotifyItemTagAdded()
+    {
+        // GIVEN
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+
+        // An existing item (if we trust the test data)...
+        Akonadi::Item item(1);
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+
+        // An existing tag (if we trust the test data)
+        Akonadi::Tag tag(5);
+
+        // WHEN
+        item.setTag(tag);
+        (new Akonadi::ItemModifyJob(item))->exec();
+        // Give some time for the backend to signal back
+        for (int i = 0; i < 10; i++) {
+            if (!spy.isEmpty()) break;
+            QTest::qWait(50);
+        }
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
+        QVERIFY(notifiedItem.hasPayload<KCalCore::Todo::Ptr>());
+
+        Akonadi::Tag::List notifiedTags = notifiedItem.tags();
+
+        QVERIFY(notifiedTags.contains(tag));
+        for (const auto &tag : notifiedTags) {
+            QVERIFY(tag.isValid());
+            QVERIFY(!tag.name().isEmpty());
+            QVERIFY(!tag.type().isEmpty());
+        }
+
+        auto parent = notifiedItem.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
+        }
+    }
+
 
     void shouldNotifyTagAdded()
     {

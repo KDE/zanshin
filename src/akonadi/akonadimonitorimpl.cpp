@@ -30,6 +30,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Monitor>
 #include <Akonadi/Notes/NoteUtils>
+#include <Akonadi/TagFetchScope>
 
 using namespace Akonadi;
 
@@ -55,6 +56,8 @@ MonitorImpl::MonitorImpl()
     auto itemScope = m_monitor->itemFetchScope();
     itemScope.fetchFullPayload();
     itemScope.fetchAllAttributes();
+    itemScope.setFetchTags(true);
+    itemScope.tagFetchScope().setFetchIdOnly(false);
     itemScope.setAncestorRetrieval(ItemFetchScope::All);
     m_monitor->setItemFetchScope(itemScope);
 
