@@ -69,6 +69,11 @@ class QueryTreeModelBase : public QAbstractItemModel
 {
     Q_OBJECT
 public:
+    enum {
+        ObjectRole = Qt::UserRole + 1,
+        UserRole
+    };
+
     ~QueryTreeModelBase();
 
     Qt::ItemFlags flags(const QModelIndex &index) const;

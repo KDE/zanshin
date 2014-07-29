@@ -91,7 +91,15 @@ public:
     }
 
     Qt::ItemFlags flags() const { return m_flagsFunction(m_item); }
-    QVariant data(int role) const { return m_dataFunction(m_item, role); }
+
+    QVariant data(int role) const
+    {
+        if (role == QueryTreeModelBase::ObjectRole)
+            return QVariant::fromValue(m_item);
+
+        return m_dataFunction(m_item, role);
+    }
+
     bool setData(const QVariant &value, int role) { return m_setDataFunction(m_item, value, role); }
 
 private:

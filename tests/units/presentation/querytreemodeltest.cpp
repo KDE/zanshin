@@ -654,6 +654,41 @@ private slots:
         QCOMPARE(doneChangedSpy.size(), 1);
         QCOMPARE(doneChangedSpy.first().first().toBool(), true);
     }
+
+    void shouldProvideUnderlyingObject()
+    {
+        // GIVEN
+        auto provider = Domain::QueryResultProvider<QColor>::Ptr::create();
+        provider->append(Qt::red);
+        provider->append(Qt::green);
+        provider->append(Qt::blue);
+
+        auto queryGenerator = [&](const QColor &color) {
+            if (!color.isValid())
+                return Domain::QueryResult<QColor>::create(provider);
+            else
+                return Domain::QueryResult<QColor>::Ptr();
+        };
+        auto flagsFunction = [](const QColor &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [](const QColor &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [](const QColor &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction, dataFunction, setDataFunction);
+        new ModelTest(&model);
+
+        // WHEN
+        const QModelIndex index = model.index(1, 0);
+        const QVariant data = index.data(Presentation::QueryTreeModel<QColor>::ObjectRole);
+
+        // THEN
+        QVERIFY(data.isValid());
+        QCOMPARE(data.value<QColor>(), provider->data().at(1));
+    }
 };
 
 QTEST_MAIN(QueryTreeModelTest)
