@@ -26,6 +26,7 @@
 
 #include <Akonadi/Item>
 
+#include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
@@ -79,7 +80,31 @@ KJob *TaskRepository::save(Domain::Task::Ptr task)
         item.setId(task->property("itemId").toLongLong());
         return m_storage->updateItem(item);
     } else {
-        return m_storage->createItem(item, m_storage->defaultTaskCollection());
+        const Akonadi::Collection defaultCollection = m_storage->defaultTaskCollection();
+        if (defaultCollection.isValid()) {
+            return m_storage->createItem(item, defaultCollection);
+        } else {
+            auto job = new CompositeJob();
+            CollectionFetchJobInterface *fetchCollectionJob = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                                          StorageInterface::Recursive,
+                                                                                          StorageInterface::Tasks);
+            job->install(fetchCollectionJob->kjob(), [fetchCollectionJob, item, job, this] {
+                if (fetchCollectionJob->kjob()->error() != KJob::NoError)
+                    return;
+
+                Q_ASSERT(fetchCollectionJob->collections().size() > 0);
+                const Akonadi::Collection::List collections = fetchCollectionJob->collections();
+                Akonadi::Collection col = *std::find_if(collections.constBegin(), collections.constEnd(),
+                                                        [] (const Akonadi::Collection &c) {
+                                                            return c.rights() == Akonadi::Collection::AllRights;
+                                                        });
+                Q_ASSERT(col.isValid());
+                auto createJob = m_storage->createItem(item, col);
+                job->addSubjob(createJob);
+                createJob->start();
+            });
+            return job;
+        }
     }
 }
 
