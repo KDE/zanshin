@@ -9,6 +9,7 @@ Feature: Task listing
     When I list the model
     Then the list is:
        | display      |
+       | Buy a book   |
        | Buy kiwis    |
        | Buy pears    |
        | Buy apples   |

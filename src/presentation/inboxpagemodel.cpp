@@ -119,6 +119,13 @@ Domain::DataSource::Ptr InboxPageModel::defaultTaskDataSource() const
         return sources.first();
 }
 
+void InboxPageModel::addTask(const QString &title)
+{
+    auto task = Domain::Task::Ptr::create();
+    task->setTitle(title);
+    m_taskRepository->save(task);
+}
+
 void InboxPageModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
 {
     m_noteRepository->setDefaultSource(source);

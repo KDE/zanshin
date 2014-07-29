@@ -169,6 +169,13 @@ WHEN("^I check the item$") {
     context->model()->setData(context->index, Qt::Checked, Qt::CheckStateRole);
 }
 
+WHEN("^I add a task named \"(.+)\"$") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    BOOST_REQUIRE(QMetaObject::invokeMethod(context->presentation, "addTask", Q_ARG(QString, itemName)));
+}
+
 WHEN("^I list the model$") {
     ScenarioScope<ZanshinContext> context;
     for (int row = 0; row < context->model()->rowCount(); row++) {
@@ -242,6 +249,18 @@ THEN("^the list is") {
         }
     }
     BOOST_REQUIRE(proxy.rowCount() == context->indices.size());
+}
+
+THEN("^The list contains \"(.+)\"$") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    for (int row = 0; row < context->indices.size(); row++) {
+        if (context->indices.at(row).data().toString() == itemName)
+            return;
+    }
+
+    BOOST_REQUIRE(false);
 }
 
 THEN("^The task corresponding to the item is done$") {

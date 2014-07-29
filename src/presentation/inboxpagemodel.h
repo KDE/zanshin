@@ -64,6 +64,7 @@ public:
     Domain::DataSource::Ptr defaultTaskDataSource() const;
 
 public slots:
+    void addTask(const QString &title);
     void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 

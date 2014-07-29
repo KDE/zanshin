@@ -35,6 +35,7 @@
 #include "testlib/fakejob.h"
 
 using namespace mockitopp;
+using namespace mockitopp::matcher;
 
 class InboxPageModelTest : public QObject
 {
@@ -444,6 +445,39 @@ private slots:
 
         QCOMPARE(rootTask->isDone(), true);
         QCOMPARE(childTask->isDone(), false);
+    }
+
+    void shouldAddTasks()
+    {
+        // GIVEN
+
+        // We won't need source queries in that test...
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+
+        // ... in fact we won't list any model
+        mock_object<Domain::ArtifactQueries> artifactQueriesMock;
+        mock_object<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+
+        // We'll gladly create a task though
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::save).when(any<Domain::Task::Ptr>()).thenReturn(new FakeJob(this));
+
+        Presentation::InboxPageModel inbox(&artifactQueriesMock.getInstance(),
+                                           &sourceQueriesMock.getInstance(),
+                                           &taskQueriesMock.getInstance(),
+                                           &taskRepositoryMock.getInstance(),
+                                           &noteRepositoryMock.getInstance());
+
+        // WHEN
+        inbox.addTask("New task");
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(any<Domain::Task::Ptr>()).exactly(1));
     }
 };
 
