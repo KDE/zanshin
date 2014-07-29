@@ -108,7 +108,8 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
 
     if (m_taskChildProviders.contains(id)) {
         provider = m_taskChildProviders.value(id).toStrongRef();
-        return TaskResult::create(provider);
+        if (provider)
+            return TaskResult::create(provider);
     }
 
     provider = TaskProvider::Ptr(new TaskProvider);

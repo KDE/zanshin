@@ -459,6 +459,65 @@ private slots:
         QCOMPARE(result->data().at(1), task3);
     }
 
+    void shouldNotCrashWhenWeAskAgainTheSameChildrenList()
+    {
+        // GIVEN
+
+        // One top level collections
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+
+        // One task in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        Domain::Task::Ptr task1(new Domain::Task);
+        task1->setProperty("itemId", 42);
+
+        // We'll make the same queries twice
+        MockItemFetchJob *itemFetchJob11 = new MockItemFetchJob(this);
+        itemFetchJob11->setItems(Akonadi::Item::List() << item1);
+        MockItemFetchJob *itemFetchJob21 = new MockItemFetchJob(this);
+        itemFetchJob21->setItems(Akonadi::Item::List() << item1);
+        MockItemFetchJob *itemFetchJob12 = new MockItemFetchJob(this);
+        itemFetchJob12->setItems(Akonadi::Item::List() << item1);
+        MockItemFetchJob *itemFetchJob22 = new MockItemFetchJob(this);
+        itemFetchJob22->setItems(Akonadi::Item::List() << item1);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
+                                                          .thenReturn(itemFetchJob11)
+                                                          .thenReturn(itemFetchJob12);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob21)
+                                                           .thenReturn(itemFetchJob22);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
+
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
+                                                                             &serializerMock.getInstance(),
+                                                                             new MockMonitor(this)));
+
+        // The bug we're trying to hit here is the following:
+        //  - when findChildren is called the first time a provider is created internally
+        //  - result is deleted at the end of the loop, no one holds the provider with
+        //    a strong reference anymore so it is deleted as well
+        //  - when findChildren is called the second time, there's a risk of a dangling
+        //    pointer if the recycling of providers is wrongly implemented which can lead
+        //    to a crash, if it is properly done no crash will occur
+        for (int i = 0; i < 2; i++) {
+            // WHEN * 2
+            Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
+
+            // THEN * 2
+            QVERIFY(result->data().isEmpty());
+            QTest::qWait(150);
+            QVERIFY(result->data().isEmpty());
+        }
+    }
+
     void shouldReactToItemAddsForChildrenTask()
     {
         // GIVEN
