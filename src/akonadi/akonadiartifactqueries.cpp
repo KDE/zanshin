@@ -174,7 +174,11 @@ void ArtifactQueries::onItemChanged(const Item &item)
 
 bool ArtifactQueries::isInboxItem(const Item &item) const
 {
-    return m_serializer->relatedUidFromItem(item).isEmpty();
+    const bool excluded = !m_serializer->relatedUidFromItem(item).isEmpty()
+                       || (m_serializer->isTaskItem(item) && m_serializer->hasContextTags(item))
+                       || (m_serializer->isNoteItem(item) && m_serializer->hasTopicTags(item));
+
+    return !excluded;
 }
 
 bool ArtifactQueries::isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const
