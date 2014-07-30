@@ -71,6 +71,7 @@ class QueryTreeModelBase : public QAbstractItemModel
 public:
     enum {
         ObjectRole = Qt::UserRole + 1,
+        IconNameRole,
         UserRole
     };
 

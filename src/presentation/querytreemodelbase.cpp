@@ -115,6 +115,10 @@ QueryTreeModelBase::QueryTreeModelBase(QueryTreeNodeBase *rootNode, QObject *par
     : QAbstractItemModel(parent),
       m_rootNode(rootNode)
 {
+    auto roles = roleNames();
+    roles.insert(ObjectRole, "object");
+    roles.insert(IconNameRole, "icon");
+    setRoleNames(roles);
 }
 
 QueryTreeModelBase::~QueryTreeModelBase()

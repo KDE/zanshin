@@ -83,6 +83,32 @@ private:
     }
 
 private slots:
+    void shouldHaveRoleNames()
+    {
+        // GIVEN
+        auto queryGenerator = [](const QColor &) {
+            return Domain::QueryResult<QColor>::Ptr();
+        };
+        auto flagsFunction = [](const QColor &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [](const QColor &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [](const QColor &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction, dataFunction, setDataFunction);
+
+        // WHEN
+        auto roles = model.roleNames();
+
+        // THEN
+        QCOMPARE(roles.value(Qt::DisplayRole), QByteArray("display"));
+        QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::ObjectRole), QByteArray("object"));
+        QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::IconNameRole), QByteArray("icon"));
+    }
+
     void shouldListTasks()
     {
         // GIVEN
