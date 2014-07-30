@@ -60,12 +60,12 @@ public:
     ~ApplicationModel();
 
     QAbstractItemModel *noteSourcesModel();
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources() const;
-    Domain::DataSource::Ptr defaultNoteDataSource() const;
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources();
+    Domain::DataSource::Ptr defaultNoteDataSource();
 
     QAbstractItemModel *taskSourcesModel();
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources() const;
-    Domain::DataSource::Ptr defaultTaskDataSource() const;
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources();
+    Domain::DataSource::Ptr defaultTaskDataSource();
 
     QObject *currentPage();
 

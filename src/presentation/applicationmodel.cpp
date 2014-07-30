@@ -44,10 +44,8 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
       m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
-      m_taskSources(m_sourceQueries->findTasks()),
       m_taskSourcesModel(0),
       m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
-      m_noteSources(m_sourceQueries->findNotes()),
       m_noteSourcesModel(0),
       m_ownInterface(true)
 {
@@ -66,10 +64,8 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
       m_sourceQueries(sourceQueries),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_taskSources(m_sourceQueries->findTasks()),
       m_taskSourcesModel(0),
       m_noteRepository(noteRepository),
-      m_noteSources(m_sourceQueries->findNotes()),
       m_noteSourcesModel(0),
       m_ownInterface(false)
 {
@@ -89,12 +85,16 @@ QAbstractItemModel *ApplicationModel::noteSourcesModel()
     return m_noteSourcesModel;
 }
 
-Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::noteSources() const
+Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::noteSources()
 {
+    if (!m_noteSources) {
+        m_noteSources = m_sourceQueries->findNotes();
+    }
+
     return m_noteSources;
 }
 
-Domain::DataSource::Ptr ApplicationModel::defaultNoteDataSource() const
+Domain::DataSource::Ptr ApplicationModel::defaultNoteDataSource()
 {
     QList<Domain::DataSource::Ptr> sources = noteSources()->data();
 
@@ -121,12 +121,16 @@ QAbstractItemModel *ApplicationModel::taskSourcesModel()
     return m_taskSourcesModel;
 }
 
-Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::taskSources() const
+Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::taskSources()
 {
+    if (!m_taskSources) {
+        m_taskSources = m_sourceQueries->findTasks();
+    }
+
     return m_taskSources;
 }
 
-Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource() const
+Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource()
 {
     QList<Domain::DataSource::Ptr> sources = taskSources()->data();
 

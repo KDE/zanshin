@@ -47,11 +47,7 @@ private slots:
     void shouldDefaultToInboxPageAsCurrent()
     {
         // GIVEN
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
-        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
-        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
-
-        Presentation::ApplicationModel app(0, &sourceQueriesMock.getInstance(), 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0);
 
         // WHEN
         QObject *page = app.currentPage();

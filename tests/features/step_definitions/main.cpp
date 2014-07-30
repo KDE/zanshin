@@ -54,6 +54,9 @@ public:
                                    new Akonadi::TaskRepository(this),
                                    new Akonadi::NoteRepository(this),
                                    this);
+        // Since it is lazy loaded force ourselves in a known state
+        app->defaultNoteDataSource();
+        app->defaultTaskDataSource();
     }
 
     ~ZanshinContext()
