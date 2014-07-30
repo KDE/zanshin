@@ -48,15 +48,17 @@ public:
         using namespace Presentation;
         proxyModel->setDynamicSortFilter(true);
 
-        app = new ApplicationModel(new Akonadi::ArtifactQueries(this),
-                                   new Akonadi::DataSourceQueries(this),
-                                   new Akonadi::TaskQueries(this),
-                                   new Akonadi::TaskRepository(this),
-                                   new Akonadi::NoteRepository(this),
-                                   this);
+        auto appModel = new ApplicationModel(new Akonadi::ArtifactQueries(this),
+                                             new Akonadi::DataSourceQueries(this),
+                                             new Akonadi::TaskQueries(this),
+                                             new Akonadi::TaskRepository(this),
+                                             new Akonadi::NoteRepository(this),
+                                             this);
         // Since it is lazy loaded force ourselves in a known state
-        app->defaultNoteDataSource();
-        app->defaultTaskDataSource();
+        appModel->defaultNoteDataSource();
+        appModel->defaultTaskDataSource();
+
+        app = appModel;
     }
 
     ~ZanshinContext()
@@ -75,7 +77,7 @@ public:
         return proxyModel;
     }
 
-    Presentation::ApplicationModel *app;
+    QObject *app;
 
     QList<QPersistentModelIndex> indices;
     QPersistentModelIndex index;
@@ -87,19 +89,19 @@ private:
 
 GIVEN("^I got a task data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    context->setModel(context->app->taskSourcesModel());
+    context->setModel(context->app->property("taskSourcesModel").value<QAbstractItemModel*>());
     QTest::qWait(500);
 }
 
 GIVEN("^I got a note data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    context->setModel(context->app->noteSourcesModel());
+    context->setModel(context->app->property("noteSourcesModel").value<QAbstractItemModel*>());
     QTest::qWait(500);
 }
 
 GIVEN("^I'm looking at the inbox view$") {
     ScenarioScope<ZanshinContext> context;
-    context->presentation = context->app->currentPage();
+    context->presentation = context->app->property("currentPage").value<QObject*>();
     QTest::qWait(500);
 }
 
@@ -175,11 +177,15 @@ WHEN("^the user changes the default (\\S+) data source to (.*)$") {
     REGEX_PARAM(QString, sourceName);
 
     ScenarioScope<ZanshinContext> context;
-    auto sourcesResult = sourceType == "task" ? context->app->taskSources()
-                       : sourceType == "note" ? context->app->noteSources()
-                       : Domain::QueryResult<Domain::DataSource::Ptr>::Ptr();
+    auto sourcesModel = sourceType == "task" ? context->app->property("taskSourcesModel").value<QAbstractItemModel*>()
+                      : sourceType == "note" ? context->app->property("noteSourcesModel").value<QAbstractItemModel*>()
+                      : 0;
     QTest::qWait(500);
-    auto sources = sourcesResult->data();
+    // I wish models had iterators...
+    QList<Domain::DataSource::Ptr> sources;
+    for (int i = 0; i < sourcesModel->rowCount(); i++)
+        sources << sourcesModel->index(i, 0).data(Presentation::QueryTreeModelBase::ObjectRole)
+                                            .value<Domain::DataSource::Ptr>();
     auto source = *std::find_if(sources.begin(), sources.end(),
                                 [=] (const Domain::DataSource::Ptr &source) {
                                     return source->name() == sourceName;
