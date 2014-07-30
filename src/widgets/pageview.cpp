@@ -24,6 +24,7 @@
 
 #include "pageview.h"
 
+#include <QAction>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QTreeView>
@@ -53,6 +54,11 @@ PageView::PageView(QWidget *parent)
     layout->addWidget(m_centralView);
     layout->addWidget(m_quickAddEdit);
     setLayout(layout);
+
+    QAction *removeItemAction = new QAction(this);
+    removeItemAction->setShortcut(Qt::Key_Delete);
+    connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
+    addAction(removeItemAction);
 }
 
 QObject *PageView::model() const
@@ -81,4 +87,10 @@ void PageView::onEditingFinished()
 
     QMetaObject::invokeMethod(m_model, "addTask", Q_ARG(QString, m_quickAddEdit->text()));
     m_quickAddEdit->clear();
+}
+
+void PageView::onRemoveItemRequested()
+{
+    QModelIndex currentIndex = m_centralView->selectionModel()->currentIndex();
+    QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
 }

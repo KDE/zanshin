@@ -34,17 +34,31 @@
 
 Q_DECLARE_METATYPE(QAbstractItemModel*)
 
-class SlotSpy : public QObject
+class PageModelStub : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
+public:
+    QAbstractItemModel *centralListModel()
+    {
+        return &itemModel;
+    }
+
 public slots:
     void addTask(const QString &name)
     {
         taskNames << name;
     }
 
+    void removeItem(const QModelIndex &index)
+    {
+        removedIndices << index;
+    }
+
 public:
     QStringList taskNames;
+    QList<QPersistentModelIndex> removedIndices;
+    QStringListModel itemModel;
 };
 
 class PageViewTest : public QObject
@@ -92,7 +106,7 @@ private slots:
     void shouldCreateTasksWhenHittingReturn()
     {
         // GIVEN
-        SlotSpy stubPageModel;
+        PageModelStub stubPageModel;
         Widgets::PageView page;
         page.setModel(&stubPageModel);
         auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
@@ -108,6 +122,33 @@ private slots:
 
         // THEN
         QCOMPARE(stubPageModel.taskNames, QStringList() << "Foo" << "Bar");
+    }
+
+    void shouldDeleteItemWhenHittingTheDeleteKey()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.itemModel.setStringList(QStringList() << "A" << "B" << "C");
+        QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        centralView->setFocus();
+
+        // Needed for shortcuts to work
+        page.show();
+        QTest::qWaitForWindowShown(&page);
+
+        // WHEN
+        QTest::keyPress(centralView, Qt::Key_Delete);
+
+        // THEN
+        QCOMPARE(stubPageModel.removedIndices.size(), 1);
+        QCOMPARE(stubPageModel.removedIndices.first(), index);
     }
 };
 

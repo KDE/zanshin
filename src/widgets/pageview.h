@@ -45,6 +45,7 @@ public slots:
 
 private slots:
     void onEditingFinished();
+    void onRemoveItemRequested();
 
 private:
     QObject *m_model;
