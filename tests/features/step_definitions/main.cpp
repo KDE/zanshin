@@ -87,15 +87,15 @@ private:
     QSortFilterProxyModel *proxyModel;
 };
 
-GIVEN("^I got a task data source list model$") {
-    ScenarioScope<ZanshinContext> context;
-    context->setModel(context->app->property("taskSourcesModel").value<QAbstractItemModel*>());
-    QTest::qWait(500);
-}
+GIVEN("^I got a (\\S+) data source list model$") {
+    REGEX_PARAM(QString, sourceType);
 
-GIVEN("^I got a note data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    context->setModel(context->app->property("noteSourcesModel").value<QAbstractItemModel*>());
+    auto propertyName = sourceType == "task" ? "taskSourcesModel"
+                      : sourceType == "note" ? "noteSourcesModel"
+                      : 0;
+
+    context->setModel(context->app->property(propertyName).value<QAbstractItemModel*>());
     QTest::qWait(500);
 }
 
