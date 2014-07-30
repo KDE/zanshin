@@ -69,11 +69,12 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
 {
     DataSourceProvider::Ptr provider(m_taskDataSourceProvider.toStrongRef());
 
-    if (!provider) {
-        provider = DataSourceProvider::Ptr(new DataSourceProvider);
-        m_taskDataSourceProvider = provider.toWeakRef();
+    if (provider) {
+        return DataSourceResult::create(provider);
     }
 
+    provider = DataSourceProvider::Ptr(new DataSourceProvider);
+    m_taskDataSourceProvider = provider.toWeakRef();
     auto result = DataSourceResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Tasks);
@@ -92,11 +93,12 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
 {
     DataSourceProvider::Ptr provider(m_noteDataSourceProvider.toStrongRef());
 
-    if (!provider) {
-        provider = DataSourceProvider::Ptr(new DataSourceProvider);
-        m_noteDataSourceProvider = provider.toWeakRef();
+    if (provider) {
+        return DataSourceResult::create(provider);
     }
 
+    provider = DataSourceProvider::Ptr(new DataSourceProvider);
+    m_noteDataSourceProvider = provider.toWeakRef();
     auto result = DataSourceResult::create(provider);
 
     CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Notes);

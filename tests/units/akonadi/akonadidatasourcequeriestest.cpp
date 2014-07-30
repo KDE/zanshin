@@ -127,6 +127,65 @@ private slots:
         QCOMPARE(result->data().at(2), dataSource3);
     }
 
+    void shouldListDataSourcesOnlyOnce_data()
+    {
+        generateDataTable();
+    }
+
+    void shouldListDataSourcesOnlyOnce()
+    {
+        // GIVEN
+        QFETCH(Akonadi::StorageInterface::FetchContentType, contentType);
+        QFETCH(QueryFunction, queryFunction);
+
+        // Just one collection
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+        Domain::DataSource::Ptr dataSource(new Domain::DataSource);
+        MockCollectionFetchJob *collectionFetchJob1 = new MockCollectionFetchJob(this);
+        collectionFetchJob1->setCollections(Akonadi::Collection::List() << col);
+        MockCollectionFetchJob *collectionFetchJob2 = new MockCollectionFetchJob(this);
+        collectionFetchJob2->setCollections(Akonadi::Collection::List() << col);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       contentType)
+                                                                 .thenReturn(collectionFetchJob1)
+                                                                 .thenReturn(collectionFetchJob2);
+
+        // Serializer mock returning the data sources from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).thenReturn(dataSource);
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result1 = queryFunction(queries.data());
+        QVERIFY(result1->data().isEmpty());
+        QTest::qWait(150);
+        QCOMPARE(result1->data().size(), 1);
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result2 = queryFunction(queries.data());
+
+        // THEN
+        QCOMPARE(result1->data().size(), 1);
+        QCOMPARE(result2->data().size(), 1);
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               contentType)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).exactly(1));
+
+        QCOMPARE(result1->data().size(), 1);
+        QCOMPARE(result2->data().size(), 1);
+        QCOMPARE(result1->data().at(0), dataSource);
+        QCOMPARE(result2->data().at(0), dataSource);
+    }
+
     void shouldIgnoreCollectionsWhichAreNotDataSources_data()
     {
         generateDataTable();
