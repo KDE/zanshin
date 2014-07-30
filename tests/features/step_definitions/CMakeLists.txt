@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
 set(steps_SRCS main.cpp)
 
-add_executable(zanshin-cuke-steps ${steps_SRCS})
+kde4_add_executable(zanshin-cuke-steps ${steps_SRCS})
 target_link_libraries(zanshin-cuke-steps
     cucumber-cpp
     ${Boost_REGEX_LIBRARY}

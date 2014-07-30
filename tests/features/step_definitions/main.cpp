@@ -19,7 +19,6 @@
 #include "presentation/applicationmodel.h"
 #include "presentation/inboxpagemodel.h"
 #include "presentation/querytreemodelbase.h"
-#include "presentation/tasklistmodel.h"
 #include "presentation/datasourcelistmodel.h"
 
 static int argc = 0;
@@ -36,49 +35,29 @@ namespace cucumber {
 
 using namespace cucumber;
 
-
-QString indexToTitle(const QModelIndex &index)
+class ZanshinContext : public QObject
 {
-    return index.data().toString();
-}
-
-bool indexToDone(const QModelIndex &index)
-{
-    return index.data(Qt::CheckStateRole).toBool();
-}
-
-class ZanshinContext
-{
-private:
-    ZanshinContext(const ZanshinContext &);
+    Q_OBJECT
 public:
-    ZanshinContext()
-        : app(0),
+    explicit ZanshinContext(QObject *parent = 0)
+        : QObject(parent),
+          app(0),
           presentation(0),
-          proxyModel(new QSortFilterProxyModel),
-          artifactQueries(new Akonadi::ArtifactQueries),
-          dataSourceQueries(new Akonadi::DataSourceQueries),
-          queries(new Akonadi::TaskQueries()),
-          taskRepository(new Akonadi::TaskRepository()),
-          noteRepository(new Akonadi::NoteRepository())
+          proxyModel(new QSortFilterProxyModel(this))
     {
+        using namespace Presentation;
         proxyModel->setDynamicSortFilter(true);
 
-        app = new Presentation::ApplicationModel(artifactQueries,
-                                                 dataSourceQueries,
-                                                 queries,
-                                                 taskRepository,
-                                                 noteRepository);
+        app = new ApplicationModel(new Akonadi::ArtifactQueries(this),
+                                   new Akonadi::DataSourceQueries(this),
+                                   new Akonadi::TaskQueries(this),
+                                   new Akonadi::TaskRepository(this),
+                                   new Akonadi::NoteRepository(this),
+                                   this);
     }
 
     ~ZanshinContext()
     {
-        delete proxyModel;
-        delete artifactQueries;
-        delete dataSourceQueries;
-        delete queries;
-        delete taskRepository;
-        delete presentation;
     }
 
     void setModel(QAbstractItemModel *model)
@@ -94,11 +73,7 @@ public:
     }
 
     Presentation::ApplicationModel *app;
-    Domain::ArtifactQueries *artifactQueries;
-    Domain::DataSourceQueries *dataSourceQueries;
-    Domain::TaskQueries *queries;
-    Domain::TaskRepository *taskRepository;
-    Domain::NoteRepository *noteRepository;
+
     QList<QPersistentModelIndex> indices;
     QPersistentModelIndex index;
     QObject *presentation;
@@ -107,23 +82,16 @@ private:
     QSortFilterProxyModel *proxyModel;
 };
 
-GIVEN("^I got a task list$") {
-    ScenarioScope<ZanshinContext> context;
-    auto queries = context->queries->findAll();
-    context->setModel(new Presentation::TaskListModel(queries, context->taskRepository));
-    QTest::qWait(500);
-}
-
 GIVEN("^I got a task data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    auto queries = context->dataSourceQueries->findTasks();
+    auto queries = context->app->taskSources();
     context->setModel(new Presentation::DataSourceListModel(queries));
     QTest::qWait(500);
 }
 
 GIVEN("^I got a note data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    auto queries = context->dataSourceQueries->findNotes();
+    auto queries = context->app->noteSources();
     context->setModel(new Presentation::DataSourceListModel(queries));
     QTest::qWait(500);
 }
@@ -206,8 +174,8 @@ WHEN("^the user changes the default (\\S+) data source to (.*)$") {
     REGEX_PARAM(QString, sourceName);
 
     ScenarioScope<ZanshinContext> context;
-    auto sourcesResult = sourceType == "task" ? context->dataSourceQueries->findTasks()
-                       : sourceType == "note" ? context->dataSourceQueries->findNotes()
+    auto sourcesResult = sourceType == "task" ? context->app->taskSources()
+                       : sourceType == "note" ? context->app->noteSources()
                        : Domain::QueryResult<Domain::DataSource::Ptr>::Ptr();
     QTest::qWait(500);
     auto sources = sourcesResult->data();
@@ -313,3 +281,5 @@ THEN("^the setting key (\\S+) is (\\d+)$") {
     const qint64 id = config.readEntry(keyName, -1);
     BOOST_REQUIRE(id == expectedId);
 }
+
+#include "main.moc"
