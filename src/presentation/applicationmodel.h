@@ -60,11 +60,9 @@ public:
     ~ApplicationModel();
 
     QAbstractItemModel *noteSourcesModel();
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources();
     Domain::DataSource::Ptr defaultNoteDataSource();
 
     QAbstractItemModel *taskSourcesModel();
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources();
     Domain::DataSource::Ptr defaultTaskDataSource();
 
     QObject *currentPage();
@@ -74,6 +72,9 @@ public slots:
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 
 private:
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources();
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources();
+
     QObject *m_currentPage;
 
     Domain::ArtifactQueries *m_artifactQueries;
