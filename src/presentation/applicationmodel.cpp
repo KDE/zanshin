@@ -75,9 +75,14 @@ ApplicationModel::~ApplicationModel()
 {
 }
 
+Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::noteSources() const
+{
+    return m_noteSources;
+}
+
 Domain::DataSource::Ptr ApplicationModel::defaultNoteDataSource() const
 {
-    QList<Domain::DataSource::Ptr> sources = m_noteSources->data();
+    QList<Domain::DataSource::Ptr> sources = noteSources()->data();
 
     if (sources.isEmpty())
         return Domain::DataSource::Ptr();
@@ -93,9 +98,14 @@ Domain::DataSource::Ptr ApplicationModel::defaultNoteDataSource() const
         return sources.first();
 }
 
+Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::taskSources() const
+{
+    return m_taskSources;
+}
+
 Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource() const
 {
-    QList<Domain::DataSource::Ptr> sources = m_taskSources->data();
+    QList<Domain::DataSource::Ptr> sources = taskSources()->data();
 
     if (sources.isEmpty())
         return Domain::DataSource::Ptr();

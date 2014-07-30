@@ -55,7 +55,10 @@ public:
                               QObject *parent = 0);
     ~ApplicationModel();
 
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources() const;
     Domain::DataSource::Ptr defaultNoteDataSource() const;
+
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources() const;
     Domain::DataSource::Ptr defaultTaskDataSource() const;
 
     QObject *currentPage();
