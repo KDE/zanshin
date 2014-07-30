@@ -32,6 +32,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/applicationmodel.h"
+#include "presentation/datasourcelistmodel.h"
 #include "presentation/inboxpagemodel.h"
 
 #include "testlib/fakejob.h"
@@ -57,6 +58,24 @@ private slots:
 
         // THEN
         QVERIFY(qobject_cast<Presentation::InboxPageModel*>(page));
+    }
+
+    void shouldProvideDataSourceModels()
+    {
+        // GIVEN
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+
+        Presentation::ApplicationModel app(0, &sourceQueriesMock.getInstance(), 0, 0, 0);
+
+        // WHEN
+        auto tasks = app.taskSourcesModel();
+        auto notes = app.noteSourcesModel();
+
+        // THEN
+        QVERIFY(qobject_cast<Presentation::DataSourceListModel*>(tasks));
+        QVERIFY(qobject_cast<Presentation::DataSourceListModel*>(notes));
     }
 
     void shouldRetrieveDefaultTaskCollectionFromRepository()

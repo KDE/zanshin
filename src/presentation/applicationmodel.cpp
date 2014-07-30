@@ -29,6 +29,7 @@
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
+#include "presentation/datasourcelistmodel.h"
 #include "presentation/querytreemodel.h"
 #include "presentation/inboxpagemodel.h"
 
@@ -44,8 +45,10 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
       m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
       m_taskSources(m_sourceQueries->findTasks()),
+      m_taskSourcesModel(0),
       m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
       m_noteSources(m_sourceQueries->findNotes()),
+      m_noteSourcesModel(0),
       m_ownInterface(true)
 {
     qRegisterMetaType<Domain::DataSource::Ptr>();
@@ -64,8 +67,10 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
       m_taskSources(m_sourceQueries->findTasks()),
+      m_taskSourcesModel(0),
       m_noteRepository(noteRepository),
       m_noteSources(m_sourceQueries->findNotes()),
+      m_noteSourcesModel(0),
       m_ownInterface(false)
 {
     qRegisterMetaType<Domain::DataSource::Ptr>();
@@ -73,6 +78,15 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
 
 ApplicationModel::~ApplicationModel()
 {
+}
+
+QAbstractItemModel *ApplicationModel::noteSourcesModel()
+{
+    if (!m_noteSourcesModel) {
+        m_noteSourcesModel = new DataSourceListModel([this] { return noteSources(); }, this);
+    }
+
+    return m_noteSourcesModel;
 }
 
 Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::noteSources() const
@@ -96,6 +110,15 @@ Domain::DataSource::Ptr ApplicationModel::defaultNoteDataSource() const
         return *source;
     else
         return sources.first();
+}
+
+QAbstractItemModel *ApplicationModel::taskSourcesModel()
+{
+    if (!m_taskSourcesModel) {
+        m_taskSourcesModel = new DataSourceListModel([this] { return taskSources(); }, this);
+    }
+
+    return m_taskSourcesModel;
 }
 
 Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::taskSources() const

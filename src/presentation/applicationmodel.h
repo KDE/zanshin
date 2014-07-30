@@ -29,6 +29,8 @@
 
 #include "domain/datasourcequeries.h"
 
+class QAbstractItemModel;
+
 namespace Domain {
     class ArtifactQueries;
     class NoteRepository;
@@ -41,7 +43,9 @@ namespace Presentation {
 class ApplicationModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel* noteSourcesModel READ noteSourcesModel)
     Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
+    Q_PROPERTY(QAbstractItemModel* taskSourcesModel READ taskSourcesModel)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
     Q_PROPERTY(QObject* currentPage READ currentPage)
 public:
@@ -55,9 +59,11 @@ public:
                               QObject *parent = 0);
     ~ApplicationModel();
 
+    QAbstractItemModel *noteSourcesModel();
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources() const;
     Domain::DataSource::Ptr defaultNoteDataSource() const;
 
+    QAbstractItemModel *taskSourcesModel();
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources() const;
     Domain::DataSource::Ptr defaultTaskDataSource() const;
 
@@ -76,9 +82,11 @@ private:
 
     Domain::TaskRepository *m_taskRepository;
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_taskSources;
+    QAbstractItemModel *m_taskSourcesModel;
 
     Domain::NoteRepository *m_noteRepository;
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_noteSources;
+    QAbstractItemModel *m_noteSourcesModel;
 
     bool m_ownInterface;
 };

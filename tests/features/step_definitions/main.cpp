@@ -84,15 +84,13 @@ private:
 
 GIVEN("^I got a task data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    auto queries = context->app->taskSources();
-    context->setModel(new Presentation::DataSourceListModel([queries] { return queries; }));
+    context->setModel(context->app->taskSourcesModel());
     QTest::qWait(500);
 }
 
 GIVEN("^I got a note data source list model$") {
     ScenarioScope<ZanshinContext> context;
-    auto queries = context->app->noteSources();
-    context->setModel(new Presentation::DataSourceListModel([queries] { return queries; }));
+    context->setModel(context->app->noteSourcesModel());
     QTest::qWait(500);
 }
 
