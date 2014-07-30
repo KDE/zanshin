@@ -522,6 +522,48 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).exactly(1));
     }
+
+    // Clearly this one will go away when we'll get more support of notes
+    void shouldNotTryToDeleteNotes()
+    {
+        // GIVEN
+
+        // One task, one note
+        auto task1 = Domain::Task::Ptr::create();
+        auto note2 = Domain::Note::Ptr::create();
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(task1);
+        artifactProvider->append(note2);
+
+        // We won't need source queries in that test
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+        sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
+
+        mock_object<Domain::ArtifactQueries> artifactQueriesMock;
+        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
+
+        mock_object<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).thenReturn(new FakeJob(this));
+
+        Presentation::InboxPageModel inbox(&artifactQueriesMock.getInstance(),
+                                           &sourceQueriesMock.getInstance(),
+                                           &taskQueriesMock.getInstance(),
+                                           &taskRepositoryMock.getInstance(),
+                                           &noteRepositoryMock.getInstance());
+
+        // WHEN
+        const QModelIndex index = inbox.centralListModel()->index(1, 0);
+        inbox.removeItem(index);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).exactly(0));
+    }
 };
 
 QTEST_MAIN(InboxPageModelTest)

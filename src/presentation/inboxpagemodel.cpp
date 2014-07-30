@@ -131,7 +131,8 @@ void InboxPageModel::removeItem(const QModelIndex &index)
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
-    m_taskRepository->remove(task);
+    if (task)
+        m_taskRepository->remove(task);
 }
 
 void InboxPageModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
