@@ -16,6 +16,7 @@
 #include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
+#include "presentation/applicationmodel.h"
 #include "presentation/inboxpagemodel.h"
 #include "presentation/querytreemodelbase.h"
 #include "presentation/tasklistmodel.h"
@@ -52,7 +53,8 @@ private:
     ZanshinContext(const ZanshinContext &);
 public:
     ZanshinContext()
-        : presentation(0),
+        : app(0),
+          presentation(0),
           proxyModel(new QSortFilterProxyModel),
           artifactQueries(new Akonadi::ArtifactQueries),
           dataSourceQueries(new Akonadi::DataSourceQueries),
@@ -61,6 +63,12 @@ public:
           noteRepository(new Akonadi::NoteRepository())
     {
         proxyModel->setDynamicSortFilter(true);
+
+        app = new Presentation::ApplicationModel(artifactQueries,
+                                                 dataSourceQueries,
+                                                 queries,
+                                                 taskRepository,
+                                                 noteRepository);
     }
 
     ~ZanshinContext()
@@ -85,6 +93,7 @@ public:
         return proxyModel;
     }
 
+    Presentation::ApplicationModel *app;
     Domain::ArtifactQueries *artifactQueries;
     Domain::DataSourceQueries *dataSourceQueries;
     Domain::TaskQueries *queries;
@@ -122,10 +131,9 @@ GIVEN("^I got a note data source list model$") {
 GIVEN("^I'm looking at the inbox view$") {
     ScenarioScope<ZanshinContext> context;
     context->presentation = new Presentation::InboxPageModel(context->artifactQueries,
-                                                         context->dataSourceQueries,
-                                                         context->queries,
-                                                         context->taskRepository,
-                                                         context->noteRepository);
+                                                             context->queries,
+                                                             context->taskRepository,
+                                                             context->noteRepository);
     QTest::qWait(500);
 }
 
@@ -215,7 +223,7 @@ WHEN("^the user changes the default (\\S+) data source to (.*)$") {
     auto propertyName = sourceType == "task" ? "defaultTaskDataSource"
                       : sourceType == "note" ? "defaultNoteDataSource"
                       : 0;
-    context->presentation->setProperty(propertyName, QVariant::fromValue(source));
+    context->app->setProperty(propertyName, QVariant::fromValue(source));
 }
 
 
@@ -295,7 +303,7 @@ THEN("^the default (\\S+) data source is (.*)$") {
                       : 0;
 
     ScenarioScope<ZanshinContext> context;
-    auto source = context->presentation->property(propertyName).value<Domain::DataSource::Ptr>();
+    auto source = context->app->property(propertyName).value<Domain::DataSource::Ptr>();
     BOOST_REQUIRE(!source.isNull());
     BOOST_REQUIRE(source->name() == expectedName);
 }

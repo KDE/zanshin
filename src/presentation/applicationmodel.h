@@ -22,16 +22,12 @@
 */
 
 
-#ifndef PRESENTATION_INBOXPAGEMODEL_H
-#define PRESENTATION_INBOXPAGEMODEL_H
+#ifndef PRESENTATION_APPLICATIONMODEL_H
+#define PRESENTATION_APPLICATIONMODEL_H
 
 #include <QObject>
-#include <QMetaType>
 
-class QAbstractItemModel;
-class QModelIndex;
-
-Q_DECLARE_METATYPE(QAbstractItemModel*)
+#include "domain/datasourcequeries.h"
 
 namespace Domain {
     class ArtifactQueries;
@@ -42,39 +38,43 @@ namespace Domain {
 
 namespace Presentation {
 
-class InboxPageModel : public QObject
+class ApplicationModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
+    Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
+    Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
 public:
-    explicit InboxPageModel(QObject *parent = 0);
+    explicit ApplicationModel(QObject *parent = 0);
 
-    explicit InboxPageModel(Domain::ArtifactQueries *artifactQueries,
-                            Domain::TaskQueries *taskQueries,
-                            Domain::TaskRepository *taskRepository,
-                            Domain::NoteRepository *noteRepository,
-                            QObject *parent = 0);
-    ~InboxPageModel();
+    explicit ApplicationModel(Domain::ArtifactQueries *artifactQueries,
+                              Domain::DataSourceQueries *sourceQueries,
+                              Domain::TaskQueries *taskQueries,
+                              Domain::TaskRepository *taskRepository,
+                              Domain::NoteRepository *noteRepository,
+                              QObject *parent = 0);
+    ~ApplicationModel();
 
-    QAbstractItemModel *centralListModel();
+    Domain::DataSource::Ptr defaultNoteDataSource() const;
+    Domain::DataSource::Ptr defaultTaskDataSource() const;
 
 public slots:
-    void addTask(const QString &title);
-    void removeItem(const QModelIndex &index);
+    void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
+    void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 
 private:
-    QAbstractItemModel *createCentralListModel();
-    QAbstractItemModel *m_centralListModel;
-
     Domain::ArtifactQueries *m_artifactQueries;
+    Domain::DataSourceQueries *m_sourceQueries;
     Domain::TaskQueries *m_taskQueries;
 
     Domain::TaskRepository *m_taskRepository;
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_taskSources;
+
     Domain::NoteRepository *m_noteRepository;
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_noteSources;
 
     bool m_ownInterface;
 };
 
 }
 
-#endif // PRESENTATION_INBOXPAGEMODEL_H
+#endif // PRESENTATION_APPLICATIONMODEL_H

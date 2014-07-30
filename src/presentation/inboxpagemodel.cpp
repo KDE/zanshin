@@ -39,20 +39,15 @@ InboxPageModel::InboxPageModel(QObject *parent)
     : QObject(parent),
       m_centralListModel(0),
       m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
-      m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
       m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
-      m_taskSources(m_sourceQueries->findTasks()),
       m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
-      m_noteSources(m_sourceQueries->findNotes()),
       m_ownInterface(true)
 {
-    qRegisterMetaType<Domain::DataSource::Ptr>();
     qRegisterMetaType<QAbstractItemModel*>();
 }
 
 InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
-                       Domain::DataSourceQueries *sourceQueries,
                        Domain::TaskQueries *taskQueries,
                        Domain::TaskRepository *taskRepository,
                        Domain::NoteRepository *noteRepository,
@@ -60,15 +55,11 @@ InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
     : QObject(parent),
       m_centralListModel(0),
       m_artifactQueries(artifactQueries),
-      m_sourceQueries(sourceQueries),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_taskSources(m_sourceQueries->findTasks()),
       m_noteRepository(noteRepository),
-      m_noteSources(m_sourceQueries->findNotes()),
       m_ownInterface(false)
 {
-    qRegisterMetaType<Domain::DataSource::Ptr>();
     qRegisterMetaType<QAbstractItemModel*>();
 }
 
@@ -81,42 +72,6 @@ QAbstractItemModel *InboxPageModel::centralListModel()
     if (!m_centralListModel)
         m_centralListModel = createCentralListModel();
     return m_centralListModel;
-}
-
-Domain::DataSource::Ptr InboxPageModel::defaultNoteDataSource() const
-{
-    QList<Domain::DataSource::Ptr> sources = m_noteSources->data();
-
-    if (sources.isEmpty())
-        return Domain::DataSource::Ptr();
-
-    auto source = std::find_if(sources.begin(), sources.end(),
-                               [this] (const Domain::DataSource::Ptr &source) {
-                                   return m_noteRepository->isDefaultSource(source);
-                               });
-
-    if (source != sources.end())
-        return *source;
-    else
-        return sources.first();
-}
-
-Domain::DataSource::Ptr InboxPageModel::defaultTaskDataSource() const
-{
-    QList<Domain::DataSource::Ptr> sources = m_taskSources->data();
-
-    if (sources.isEmpty())
-        return Domain::DataSource::Ptr();
-
-    auto source = std::find_if(sources.begin(), sources.end(),
-                               [this] (const Domain::DataSource::Ptr &source) {
-                                   return m_taskRepository->isDefaultSource(source);
-                               });
-
-    if (source != sources.end())
-        return *source;
-    else
-        return sources.first();
 }
 
 void InboxPageModel::addTask(const QString &title)
@@ -133,16 +88,6 @@ void InboxPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     if (task)
         m_taskRepository->remove(task);
-}
-
-void InboxPageModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
-{
-    m_noteRepository->setDefaultSource(source);
-}
-
-void InboxPageModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)
-{
-    m_taskRepository->setDefaultSource(source);
 }
 
 QAbstractItemModel *InboxPageModel::createCentralListModel()

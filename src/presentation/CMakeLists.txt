@@ -1,4 +1,5 @@
 set(presentation_SRCS
+    applicationmodel.cpp
     datasourcelistmodel.cpp
     inboxpagemodel.cpp
     querytreemodelbase.cpp
