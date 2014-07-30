@@ -30,6 +30,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/querytreemodel.h"
+#include "presentation/inboxpagemodel.h"
 
 #include "utils/dependencymanager.h"
 
@@ -37,6 +38,7 @@ using namespace Presentation;
 
 ApplicationModel::ApplicationModel(QObject *parent)
     : QObject(parent),
+      m_currentPage(0),
       m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
       m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
@@ -56,6 +58,7 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
                        Domain::NoteRepository *noteRepository,
                        QObject *parent)
     : QObject(parent),
+      m_currentPage(0),
       m_artifactQueries(artifactQueries),
       m_sourceQueries(sourceQueries),
       m_taskQueries(taskQueries),
@@ -106,6 +109,16 @@ Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource() const
         return *source;
     else
         return sources.first();
+}
+
+QObject *ApplicationModel::currentPage()
+{
+    if (!m_currentPage) {
+        m_currentPage = new InboxPageModel(m_artifactQueries, m_taskQueries,
+                                           m_taskRepository, m_noteRepository);
+    }
+
+    return m_currentPage;
 }
 
 void ApplicationModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)

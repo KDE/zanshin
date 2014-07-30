@@ -43,6 +43,7 @@ class ApplicationModel : public QObject
     Q_OBJECT
     Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
+    Q_PROPERTY(QObject* currentPage READ currentPage)
 public:
     explicit ApplicationModel(QObject *parent = 0);
 
@@ -57,11 +58,15 @@ public:
     Domain::DataSource::Ptr defaultNoteDataSource() const;
     Domain::DataSource::Ptr defaultTaskDataSource() const;
 
+    QObject *currentPage();
+
 public slots:
     void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 
 private:
+    QObject *m_currentPage;
+
     Domain::ArtifactQueries *m_artifactQueries;
     Domain::DataSourceQueries *m_sourceQueries;
     Domain::TaskQueries *m_taskQueries;
