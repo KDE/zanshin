@@ -30,6 +30,7 @@
 #include "domain/datasourcequeries.h"
 
 class QAbstractItemModel;
+class QModelIndex;
 
 Q_DECLARE_METATYPE(QAbstractItemModel*)
 
@@ -65,6 +66,8 @@ public:
 
 public slots:
     void addTask(const QString &title);
+    void removeItem(const QModelIndex &index);
+
     void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
 

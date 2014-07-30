@@ -126,6 +126,14 @@ void InboxPageModel::addTask(const QString &title)
     m_taskRepository->save(task);
 }
 
+void InboxPageModel::removeItem(const QModelIndex &index)
+{
+    QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto task = artifact.objectCast<Domain::Task>();
+    m_taskRepository->remove(task);
+}
+
 void InboxPageModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
 {
     m_noteRepository->setDefaultSource(source);

@@ -169,6 +169,11 @@ WHEN("^I check the item$") {
     context->model()->setData(context->index, Qt::Checked, Qt::CheckStateRole);
 }
 
+WHEN("^I remove the item$") {
+    ScenarioScope<ZanshinContext> context;
+    BOOST_REQUIRE(QMetaObject::invokeMethod(context->presentation, "removeItem", Q_ARG(QModelIndex, context->index)));
+}
+
 WHEN("^I add a task named \"(.+)\"$") {
     REGEX_PARAM(QString, itemName);
 
@@ -261,6 +266,15 @@ THEN("^The list contains \"(.+)\"$") {
     }
 
     BOOST_REQUIRE(false);
+}
+
+THEN("^The list does not contain \"(.+)\"$") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    for (int row = 0; row < context->indices.size(); row++) {
+        BOOST_REQUIRE(context->indices.at(row).data().toString() != itemName);
+    }
 }
 
 THEN("^The task corresponding to the item is done$") {

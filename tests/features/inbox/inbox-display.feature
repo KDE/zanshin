@@ -8,7 +8,6 @@ Feature: Inbox content
    When I look at the central list
    Then the list is:
       | display          |
-      | Buy a book       |
       | Buy cheese       |
       | Buy apples       |
       | Buy pears        |
