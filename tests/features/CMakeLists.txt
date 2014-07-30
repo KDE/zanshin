@@ -5,11 +5,11 @@ if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
 
     set(CUCUMBER_CWD ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-    set(zanshin-cuke-steps ${CMAKE_CURRENT_BINARY_DIR}/step_definitions/zanshin-cuke-steps)
+    set(zanshin-cuke-steps "${CMAKE_CURRENT_BINARY_DIR}/step_definitions/zanshin-cuke-steps 2>&1")
     configure_file(cucumber-run.sh.in cucumber-run.sh)
 
     find_program(_akonaditest akonaditest)
-    set(cucumber-run-cmd ${_akonaditest} -c ${CMAKE_CURRENT_SOURCE_DIR}/testenv/config.xml sh ${CMAKE_CURRENT_BINARY_DIR}/cucumber-run.sh)
+    set(cucumber-run-cmd ${_akonaditest} -c ${CMAKE_CURRENT_SOURCE_DIR}/testenv/config.xml sh ${CMAKE_CURRENT_BINARY_DIR}/cucumber-run.sh 2> ${CMAKE_CURRENT_BINARY_DIR}/akonaditest.log)
 
     add_custom_target(cucumber-run
                       COMMAND ${cucumber-run-cmd}

@@ -8,6 +8,10 @@ restorepwd() {
 
 trap "restorepwd" EXIT
 
+echo
+echo "======================"
+echo
+
 cd @CUCUMBER_CWD@
 @zanshin-cuke-steps@ &
 usleep 500000
