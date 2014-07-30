@@ -28,80 +28,37 @@
 
 using namespace Presentation;
 
-DataSourceListModel::DataSourceListModel(const DataSourceList::Ptr &dataSourceList, QObject *parent)
-    : QAbstractListModel(parent),
-      m_dataSourceList(dataSourceList)
+DataSourceListModel::DataSourceListModel(const Query &query, QObject *parent)
+    : QueryTreeModel<Domain::DataSource::Ptr>(
+          [query] (const Domain::DataSource::Ptr &source) {
+              if (source)
+                  return Domain::QueryResultInterface<Domain::DataSource::Ptr>::Ptr();
+              else
+                  return query();
+          },
+
+          [] (const Domain::DataSource::Ptr &) {
+              return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+          },
+
+          [] (const Domain::DataSource::Ptr &source, int role) -> QVariant {
+              switch (role) {
+              case Qt::DisplayRole:
+                  return source->name();
+              case Qt::DecorationRole:
+                  return QIcon::fromTheme(source->iconName().isEmpty() ? "folder" : source->iconName());
+              case IconNameRole:
+                  return source->iconName().isEmpty() ? "folder" : source->iconName();
+              default:
+                  return QVariant();
+              }
+          },
+
+          [] (const Domain::DataSource::Ptr &, const QVariant &, int) {
+              return false;
+          },
+
+          parent
+      )
 {
-    auto roles = roleNames();
-    roles.insert(IconNameRole, "icon");
-    setRoleNames(roles);
-
-    m_dataSourceList->addPreInsertHandler([this](const Domain::DataSource::Ptr &, int index) {
-                                        beginInsertRows(QModelIndex(), index, index);
-                                    });
-    m_dataSourceList->addPostInsertHandler([this](const Domain::DataSource::Ptr &, int) {
-                                         endInsertRows();
-                                     });
-    m_dataSourceList->addPreRemoveHandler([this](const Domain::DataSource::Ptr &, int index) {
-                                        beginRemoveRows(QModelIndex(), index, index);
-                                    });
-    m_dataSourceList->addPostRemoveHandler([this](const Domain::DataSource::Ptr &, int) {
-                                         endRemoveRows();
-                                     });
-    m_dataSourceList->addPostReplaceHandler([this](const Domain::DataSource::Ptr &, int idx) {
-                                         emit dataChanged(index(idx), index(idx));
-                                     });
-}
-
-DataSourceListModel::~DataSourceListModel()
-{
-}
-
-Qt::ItemFlags DataSourceListModel::flags(const QModelIndex &index) const
-{
-    if (!isModelIndexValid(index)) {
-        return Qt::NoItemFlags;
-    }
-
-    return QAbstractListModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
-}
-
-int DataSourceListModel::rowCount(const QModelIndex &parent) const
-{
-    if (parent.isValid())
-        return 0;
-    else
-        return m_dataSourceList->data().size();
-}
-
-QVariant DataSourceListModel::data(const QModelIndex &index, int role) const
-{
-    if (!isModelIndexValid(index)) {
-        return QVariant();
-    }
-
-    const auto dataSource = dataSourceForIndex(index);
-    switch (role) {
-    case Qt::DisplayRole:
-        return dataSource->name();
-    case Qt::DecorationRole:
-        return QIcon::fromTheme(data(index, IconNameRole).toString());
-    case IconNameRole:
-        return dataSource->iconName().isEmpty() ? "folder" : dataSource->iconName();
-    default:
-        return QVariant();
-    }
-}
-
-Domain::DataSource::Ptr DataSourceListModel::dataSourceForIndex(const QModelIndex &index) const
-{
-    return m_dataSourceList->data().at(index.row());
-}
-
-bool DataSourceListModel::isModelIndexValid(const QModelIndex &index) const
-{
-    return index.isValid()
-        && index.column() == 0
-        && index.row() >= 0
-        && index.row() < m_dataSourceList->data().size();
 }

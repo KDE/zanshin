@@ -25,37 +25,18 @@
 #ifndef PRESENTATION_DATASOURCELISTMODEL_H
 #define PRESENTATION_DATASOURCELISTMODEL_H
 
-#include <QAbstractListModel>
-
-#include "domain/queryresult.h"
 #include "domain/datasource.h"
+#include "presentation/querytreemodel.h"
 
 namespace Presentation {
 
-class DataSourceListModel : public QAbstractListModel
+class DataSourceListModel : public QueryTreeModel<Domain::DataSource::Ptr>
 {
     Q_OBJECT
 public:
-    enum {
-        IconNameRole = Qt::UserRole + 1
-    };
+    typedef std::function<Domain::QueryResultInterface<Domain::DataSource::Ptr>::Ptr()> Query;
 
-    typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceList;
-
-    explicit DataSourceListModel(const DataSourceList::Ptr &dataSourceList,
-                                 QObject *parent = 0);
-    ~DataSourceListModel();
-
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-
-private:
-    Domain::DataSource::Ptr dataSourceForIndex(const QModelIndex &index) const;
-    bool isModelIndexValid(const QModelIndex &index) const;
-
-    DataSourceList::Ptr m_dataSourceList;
+    explicit DataSourceListModel(const Query &query, QObject *parent = 0);
 };
 
 }
