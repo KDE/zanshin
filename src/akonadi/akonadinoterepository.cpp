@@ -33,8 +33,9 @@
 
 using namespace Akonadi;
 
-NoteRepository::NoteRepository()
-    : m_storage(new Storage),
+NoteRepository::NoteRepository(QObject *parent)
+    : QObject(parent),
+      m_storage(new Storage),
       m_serializer(new Serializer),
       m_ownInterfaces(true)
 {

@@ -33,10 +33,11 @@ namespace Akonadi {
 class SerializerInterface;
 class StorageInterface;
 
-class TaskRepository : public Domain::TaskRepository
+class TaskRepository : public QObject, public Domain::TaskRepository
 {
+    Q_OBJECT
 public:
-    TaskRepository();
+    explicit TaskRepository(QObject *parent = 0);
     TaskRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~TaskRepository();
 

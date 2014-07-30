@@ -45,7 +45,7 @@ public:
     typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
-    ArtifactQueries();
+    explicit ArtifactQueries(QObject *parent = 0);
     ArtifactQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
     virtual ~ArtifactQueries();
 

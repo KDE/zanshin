@@ -33,10 +33,11 @@ namespace Akonadi {
 class SerializerInterface;
 class StorageInterface;
 
-class NoteRepository : public Domain::NoteRepository
+class NoteRepository : public QObject, public Domain::NoteRepository
 {
+    Q_OBJECT
 public:
-    NoteRepository();
+    explicit NoteRepository(QObject *parent = 0);
     NoteRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~NoteRepository();
 

@@ -37,8 +37,9 @@
 using namespace Akonadi;
 using namespace Utils;
 
-TaskRepository::TaskRepository()
-    : m_storage(new Storage),
+TaskRepository::TaskRepository(QObject *parent)
+    : QObject(parent),
+      m_storage(new Storage),
       m_serializer(new Serializer),
       m_ownInterfaces(true)
 {

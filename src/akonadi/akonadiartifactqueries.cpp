@@ -34,8 +34,9 @@
 
 using namespace Akonadi;
 
-ArtifactQueries::ArtifactQueries()
-    : m_storage(new Storage),
+ArtifactQueries::ArtifactQueries(QObject *parent)
+    : QObject(parent),
+      m_storage(new Storage),
       m_serializer(new Serializer),
       m_monitor(new MonitorImpl),
       m_ownInterfaces(true)

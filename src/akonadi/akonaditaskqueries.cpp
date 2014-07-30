@@ -34,8 +34,9 @@
 
 using namespace Akonadi;
 
-TaskQueries::TaskQueries()
-    : m_storage(new Storage),
+TaskQueries::TaskQueries(QObject *parent)
+    : QObject(parent),
+      m_storage(new Storage),
       m_serializer(new Serializer),
       m_monitor(new MonitorImpl),
       m_ownInterfaces(true)

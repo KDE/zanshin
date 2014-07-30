@@ -47,7 +47,7 @@ public:
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
-    DataSourceQueries();
+    explicit DataSourceQueries(QObject *parent = 0);
     DataSourceQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
     virtual ~DataSourceQueries();
 

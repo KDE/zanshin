@@ -50,7 +50,7 @@ public:
     typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
 
-    TaskQueries();
+    explicit TaskQueries(QObject *parent = 0);
     TaskQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
     virtual ~TaskQueries();
 

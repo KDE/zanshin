@@ -34,8 +34,9 @@
 
 using namespace Akonadi;
 
-DataSourceQueries::DataSourceQueries()
-    : m_storage(new Storage),
+DataSourceQueries::DataSourceQueries(QObject *parent)
+    : QObject(parent),
+      m_storage(new Storage),
       m_serializer(new Serializer),
       m_monitor(new MonitorImpl),
       m_ownInterfaces(true)
