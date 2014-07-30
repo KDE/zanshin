@@ -4,8 +4,9 @@ Feature: Adding tasks
   In order to collect ideas while reflecting on my life
 
   Scenario: Adding a task in the inbox
-  Given I'm looking at the inbox view
-  When I add a task named "Buy a book"
-  And I look at the central list
-  Then The list contains "Buy a book"
+    Given I display the inbox page
+    And I look at the central list
+    When I add a task named "Buy a book"
+    And I list the items
+    Then the list contains "Buy a book"
 

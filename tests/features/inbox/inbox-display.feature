@@ -4,11 +4,12 @@ Feature: Inbox content
   In order to see the artifacts which need to be organized (e.g. any task or note not associated to any project, context or topic)
 
   Scenario: Unorganized tasks and notes appear in the inbox
-   Given I'm looking at the inbox view
-   When I look at the central list
-   Then the list is:
-      | display          |
-      | Buy cheese       |
-      | Buy apples       |
-      | Buy pears        |
-      | 21/04/2014 14:49 |
+    Given I display the inbox page
+    And I look at the central list
+    When I list the items
+    Then the list is:
+       | display          |
+       | Buy cheese       |
+       | Buy apples       |
+       | Buy pears        |
+       | 21/04/2014 14:49 |

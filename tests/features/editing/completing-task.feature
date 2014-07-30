@@ -4,8 +4,8 @@ Feature: Completing tasks
   In order to have a warm feeling about getting it done
 
    Scenario: Checking task in the list
-   Given I'm looking at the inbox view
-   And an item named "Buy cheese" in the central list
-   When I check the item
-   Then The task corresponding to the item is done
+     Given I display the inbox page
+     And there is an item named "Buy cheese" in the central list
+     When I check the item
+     Then the task corresponding to the item is done
 

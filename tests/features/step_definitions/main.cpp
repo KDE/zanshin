@@ -87,7 +87,7 @@ private:
     QSortFilterProxyModel *proxyModel;
 };
 
-GIVEN("^I got a (\\S+) data source list model$") {
+GIVEN("^I display the available (\\S+) data sources$") {
     REGEX_PARAM(QString, sourceType);
 
     ScenarioScope<ZanshinContext> context;
@@ -99,13 +99,13 @@ GIVEN("^I got a (\\S+) data source list model$") {
     QTest::qWait(500);
 }
 
-GIVEN("^I'm looking at the inbox view$") {
+GIVEN("^I display the inbox page$") {
     ScenarioScope<ZanshinContext> context;
     context->presentation = context->app->property("currentPage").value<QObject*>();
     QTest::qWait(500);
 }
 
-GIVEN("^an item named \"(.+)\" in the central list$") {
+GIVEN("^there is an item named \"(.+)\" in the central list$") {
     REGEX_PARAM(QString, itemName);
 
     ScenarioScope<ZanshinContext> context;
@@ -134,20 +134,18 @@ WHEN("^I look at the central list$") {
     auto model = context->presentation->property("centralListModel").value<QAbstractItemModel*>();
     QTest::qWait(500);
     context->setModel(model);
-
-    for (int row = 0; row < context->model()->rowCount(); row++) {
-        context->indices << context->model()->index(row, 0);
-    }
 }
 
 WHEN("^I check the item$") {
     ScenarioScope<ZanshinContext> context;
     context->model()->setData(context->index, Qt::Checked, Qt::CheckStateRole);
+    QTest::qWait(500);
 }
 
 WHEN("^I remove the item$") {
     ScenarioScope<ZanshinContext> context;
     BOOST_REQUIRE(QMetaObject::invokeMethod(context->presentation, "removeItem", Q_ARG(QModelIndex, context->index)));
+    QTest::qWait(500);
 }
 
 WHEN("^I add a task named \"(.+)\"$") {
@@ -155,10 +153,12 @@ WHEN("^I add a task named \"(.+)\"$") {
 
     ScenarioScope<ZanshinContext> context;
     BOOST_REQUIRE(QMetaObject::invokeMethod(context->presentation, "addTask", Q_ARG(QString, itemName)));
+    QTest::qWait(500);
 }
 
-WHEN("^I list the model$") {
+WHEN("^I list the items$") {
     ScenarioScope<ZanshinContext> context;
+    context->indices.clear();
     for (int row = 0; row < context->model()->rowCount(); row++) {
         context->indices << context->model()->index(row, 0);
     }
@@ -236,7 +236,7 @@ THEN("^the list is") {
     BOOST_REQUIRE(proxy.rowCount() == context->indices.size());
 }
 
-THEN("^The list contains \"(.+)\"$") {
+THEN("^the list contains \"(.+)\"$") {
     REGEX_PARAM(QString, itemName);
 
     ScenarioScope<ZanshinContext> context;
@@ -248,7 +248,7 @@ THEN("^The list contains \"(.+)\"$") {
     BOOST_REQUIRE(false);
 }
 
-THEN("^The list does not contain \"(.+)\"$") {
+THEN("^the list does not contain \"(.+)\"$") {
     REGEX_PARAM(QString, itemName);
 
     ScenarioScope<ZanshinContext> context;
@@ -257,7 +257,7 @@ THEN("^The list does not contain \"(.+)\"$") {
     }
 }
 
-THEN("^The task corresponding to the item is done$") {
+THEN("^the task corresponding to the item is done$") {
     ScenarioScope<ZanshinContext> context;
     auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
     BOOST_REQUIRE(artifact);
