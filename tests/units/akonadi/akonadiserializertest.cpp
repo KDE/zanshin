@@ -483,10 +483,15 @@ private slots:
         QTest::addColumn<bool>("isDone");
         QTest::addColumn<QDateTime>("startDate");
         QTest::addColumn<QDateTime>("dueDate");
+        QTest::addColumn<qint64>("itemId");
 
-        QTest::newRow("nominal case") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01));
-        QTest::newRow("done case") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01));
-        QTest::newRow("empty case") << QString() << QString() << false << QDateTime() << QDateTime();
+        QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(-1);
+        QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(-1);
+        QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime() << QDateTime() << qint64(-1);
+
+        QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(42);
+        QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(42);
+        QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime() << QDateTime() << qint64(42);
     }
 
     void shouldCreateItemFromTask()
@@ -499,6 +504,7 @@ private slots:
         QFETCH(bool, isDone);
         QFETCH(QDateTime, startDate);
         QFETCH(QDateTime, dueDate);
+        QFETCH(qint64, itemId);
 
         // ... stored in a task
         auto task = Domain::Task::Ptr::create();
@@ -508,12 +514,20 @@ private slots:
         task->setStartDate(startDate);
         task->setDueDate(dueDate);
 
+        if (itemId > 0)
+            task->setProperty("itemId", itemId);
+
         // WHEN
         Akonadi::Serializer serializer;
         auto item = serializer.createItemFromTask(task);
 
         // THEN
         QCOMPARE(item.mimeType(), KCalCore::Todo::todoMimeType());
+
+        QCOMPARE(item.isValid(), itemId > 0);
+        if (itemId > 0) {
+            QCOMPARE(item.id(), itemId);
+        }
 
         auto todo = item.payload<KCalCore::Todo::Ptr>();
         QCOMPARE(todo->summary(), summary);

@@ -111,6 +111,7 @@ KJob *TaskRepository::save(Domain::Task::Ptr task)
 KJob *TaskRepository::remove(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
+    Q_ASSERT(item.isValid());
     return m_storage->removeItem(item);
 }
 

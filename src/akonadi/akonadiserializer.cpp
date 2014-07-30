@@ -147,6 +147,9 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     todo->setDtDue(KDateTime(task->dueDate()));
 
     Akonadi::Item item;
+    if (task->property("itemId").isValid()) {
+        item.setId(task->property("itemId").value<Akonadi::Item::Id>());
+    }
     item.setMimeType(KCalCore::Todo::todoMimeType());
     item.setPayload(todo);
     return item;
