@@ -150,6 +150,31 @@ private slots:
         QCOMPARE(stubPageModel.removedIndices.size(), 1);
         QCOMPARE(stubPageModel.removedIndices.first(), index);
     }
+
+    void shouldNoteTryToDeleteIfThereIsNoSelection()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.itemModel.setStringList(QStringList() << "A" << "B" << "C");
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        centralView->clearSelection();
+        page.findChild<QLineEdit*>("quickAddEdit")->setFocus();
+
+        // Needed for shortcuts to work
+        page.show();
+        QTest::qWaitForWindowShown(&page);
+
+        // WHEN
+        QTest::keyPress(centralView, Qt::Key_Delete);
+
+        // THEN
+        QVERIFY(stubPageModel.removedIndices.isEmpty());
+    }
 };
 
 QTEST_MAIN(PageViewTest)

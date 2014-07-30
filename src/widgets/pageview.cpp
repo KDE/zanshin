@@ -92,5 +92,8 @@ void PageView::onEditingFinished()
 void PageView::onRemoveItemRequested()
 {
     QModelIndex currentIndex = m_centralView->selectionModel()->currentIndex();
+    if (!currentIndex.isValid())
+        return;
+
     QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
 }
