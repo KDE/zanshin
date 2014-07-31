@@ -24,6 +24,8 @@
 
 #include <QtTest>
 
+#include <QColor>
+
 #include <mockitopp/mockitopp.hpp>
 
 #include "domain/taskqueries.h"
