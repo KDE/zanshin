@@ -1,4 +1,4 @@
-/* This file is part of Zanshin
+/* This file is part of Zanshin Todo.
 
    Copyright 2014 Kevin Ottens <ervin@kde.org>
 
@@ -21,22 +21,13 @@
    USA.
 */
 
-#include <QApplication>
+#ifndef APP_DEPENDENCIES_H
+#define APP_DEPENDENCIES_H
 
-#include "presentation/inboxpagemodel.h"
-#include "widgets/pageview.h"
-
-#include "dependencies.h"
-
-int main(int argc, char **argv)
+namespace App
 {
-    App::initializeDependencies();
-
-    QApplication app(argc, argv);
-
-    Widgets::PageView view;
-    view.setModel(new Presentation::InboxPageModel(&view));
-    view.show();
-
-    return app.exec();
+    void initializeDependencies();
 }
+
+#endif
+

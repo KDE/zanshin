@@ -21,22 +21,26 @@
    USA.
 */
 
-#include <QApplication>
-
-#include "presentation/inboxpagemodel.h"
-#include "widgets/pageview.h"
-
 #include "dependencies.h"
 
-int main(int argc, char **argv)
+#include "akonadi/akonadiartifactqueries.h"
+#include "akonadi/akonadicontextqueries.h"
+#include "akonadi/akonadidatasourcequeries.h"
+#include "akonadi/akonadinotequeries.h"
+#include "akonadi/akonadinoterepository.h"
+#include "akonadi/akonaditaskqueries.h"
+#include "akonadi/akonaditaskrepository.h"
+
+#include "utils/dependencymanager.h"
+
+void App::initializeDependencies()
 {
-    App::initializeDependencies();
-
-    QApplication app(argc, argv);
-
-    Widgets::PageView view;
-    view.setModel(new Presentation::InboxPageModel(&view));
-    view.show();
-
-    return app.exec();
+    auto &deps = Utils::DependencyManager::globalInstance();
+    deps.add<Domain::ArtifactQueries, Akonadi::ArtifactQueries>();
+    deps.add<Domain::ContextQueries, Akonadi::ContextQueries>();
+    deps.add<Domain::DataSourceQueries, Akonadi::DataSourceQueries>();
+    deps.add<Domain::NoteQueries, Akonadi::NoteQueries>();
+    deps.add<Domain::NoteRepository, Akonadi::NoteRepository>();
+    deps.add<Domain::TaskQueries, Akonadi::TaskQueries>();
+    deps.add<Domain::TaskRepository, Akonadi::TaskRepository>();
 }
