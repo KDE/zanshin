@@ -8,6 +8,8 @@ restorepwd() {
 
 trap "restorepwd" EXIT
 
+usleep 1000000
+
 echo
 echo "======================"
 echo
