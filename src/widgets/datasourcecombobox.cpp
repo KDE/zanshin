@@ -72,6 +72,11 @@ Domain::DataSource::Ptr DataSourceComboBox::itemSource(int index) const
     return source;
 }
 
+QAbstractItemModel *DataSourceComboBox::model() const
+{
+    return m_combo->model();
+}
+
 void DataSourceComboBox::setModel(QAbstractItemModel *model)
 {
     if (model == m_combo->model())
@@ -88,6 +93,16 @@ void DataSourceComboBox::setModel(QAbstractItemModel *model)
     connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(onRefreshDefaultSource()));
 
     onRefreshDefaultSource();
+}
+
+QObject *DataSourceComboBox::defaultSourceObject() const
+{
+    return m_object;
+}
+
+QByteArray DataSourceComboBox::defaultSourceProperty() const
+{
+    return m_property;
 }
 
 void DataSourceComboBox::setDefaultSourceProperty(QObject *object, const char *property)

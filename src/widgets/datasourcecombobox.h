@@ -45,7 +45,11 @@ public:
 
     Domain::DataSource::Ptr itemSource(int index) const;
 
+    QAbstractItemModel *model() const;
     void setModel(QAbstractItemModel *model);
+
+    QObject *defaultSourceObject() const;
+    QByteArray defaultSourceProperty() const;
     void setDefaultSourceProperty(QObject *object, const char *property);
 
 signals:
