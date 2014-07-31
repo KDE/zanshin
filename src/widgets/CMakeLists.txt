@@ -5,4 +5,4 @@ set(widgets_SRCS
 )
 
 kde4_add_library(widgets STATIC ${widgets_SRCS})
-target_link_libraries(widgets ${QT4_QTGUI_LIBRARY})
+target_link_libraries(widgets ${QT4_QTGUI_LIBRARY} presentation)
