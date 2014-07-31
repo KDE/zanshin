@@ -1,6 +1,6 @@
-/* This file is part of Zanshin Todo.
+/* This file is part of Zanshin
 
-   Copyright 2011 Kevin Ottens <ervin@kde.org>
+   Copyright 2011-2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -23,13 +23,13 @@
 
 #include "aboutdata.h"
 
-KAboutData Zanshin::getAboutData()
+KAboutData App::getAboutData()
 {
     KAboutData about("zanshin", "zanshin",
-                     ki18n("Zanshin Todo"), "0.2.1",
+                     ki18n("Zanshin Todo"), "0.2.50",
                      ki18n("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutData::License_GPL_V3,
-                     ki18n("Copyright 2008-2010, Kevin Ottens <ervin@kde.org>"));
+                     ki18n("Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"));
 
     about.addAuthor(ki18n("Kevin Ottens"),
                     ki18n("Lead Developer"),

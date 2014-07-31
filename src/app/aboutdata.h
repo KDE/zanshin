@@ -1,6 +1,6 @@
-/* This file is part of Zanshin Todo.
+/* This file is part of Zanshin
 
-   Copyright 2011 Kevin Ottens <ervin@kde.org>
+   Copyright 2011-2014 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,12 +21,12 @@
    USA.
 */
 
-#ifndef ZANSHIN_ABOUTDATA_H
-#define ZANSHIN_ABOUTDATA_H
+#ifndef APP_ABOUTDATA_H
+#define APP_ABOUTDATA_H
 
 #include <KDE/KAboutData>
 
-namespace Zanshin
+namespace App
 {
     KAboutData getAboutData();
 }

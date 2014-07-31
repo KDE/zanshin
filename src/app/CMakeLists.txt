@@ -1,4 +1,5 @@
 set(app_SRCS
+    aboutdata.cpp
     main.cpp
 )
 

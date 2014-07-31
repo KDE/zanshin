@@ -29,14 +29,14 @@
 
 #include <QtGui/QSplitter>
 
-#include "aboutdata.h"
+#include "../../src/app/aboutdata.h"
 #include "gui/itemlist/actionlisteditor.h"
 #include "maincomponent.h"
 #include "core/modelstack.h"
 #include "gui/sidebar/sidebar.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
-K_EXPORT_PLUGIN(PartFactory(Zanshin::getAboutData()))
+K_EXPORT_PLUGIN(PartFactory(App::getAboutData()))
 
 Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     : KParts::ReadOnlyPart(parent),

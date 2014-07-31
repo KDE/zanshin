@@ -26,7 +26,7 @@
 #include <KDE/KCmdLineArgs>
 #include <KDE/KLocale>
 
-#include "aboutdata.h"
+#include "../../src/app/aboutdata.h"
 #include "debugwindow.h"
 #include "mainwindow.h"
 #include "core/modelstack.h"
@@ -73,7 +73,7 @@ void createViews(TodoModel *baseModel)
 
 int main(int argc, char **argv)
 {
-    KAboutData about = Zanshin::getAboutData();
+    KAboutData about = App::getAboutData();
     KCmdLineArgs::init(argc, argv, &about);
 
     KCmdLineOptions options;
