@@ -32,9 +32,13 @@ class Monitor;
 
 class MonitorImpl : public MonitorInterface
 {
+    Q_OBJECT
 public:
     MonitorImpl();
     virtual ~MonitorImpl();
+
+private slots:
+    void onCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &parts);
 
 private:
     Akonadi::Monitor *m_monitor;

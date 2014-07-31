@@ -51,7 +51,7 @@ MonitorImpl::MonitorImpl()
 
     connect(m_monitor, SIGNAL(collectionAdded(Akonadi::Collection,Akonadi::Collection)), this, SIGNAL(collectionAdded(Akonadi::Collection)));
     connect(m_monitor, SIGNAL(collectionRemoved(Akonadi::Collection)), this, SIGNAL(collectionRemoved(Akonadi::Collection)));
-    connect(m_monitor, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)), this, SIGNAL(collectionChanged(Akonadi::Collection)));
+    connect(m_monitor, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)), this, SLOT(onCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
 
     auto itemScope = m_monitor->itemFetchScope();
     itemScope.fetchFullPayload();
@@ -73,4 +73,18 @@ MonitorImpl::MonitorImpl()
 
 MonitorImpl::~MonitorImpl()
 {
+}
+
+void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<QByteArray> &parts)
+{
+    // Will probably need to be expanded and to also fetch the full parent chain before emitting in some cases
+    static const QSet<QByteArray> allowedParts = QSet<QByteArray>() << "NAME"
+                                                                    << "REMOTEID"
+                                                                    << "AccessRights"
+                                                                    << "ENTITYDISPLAY";
+
+    QSet<QByteArray> intersection = parts;
+    intersection.intersect(allowedParts);
+    if (!intersection.isEmpty())
+        emit collectionChanged(collection);
 }
