@@ -31,21 +31,7 @@
 
 #include "presentation/querytreemodel.h"
 
-#include "utils/dependencymanager.h"
-
 using namespace Presentation;
-
-InboxPageModel::InboxPageModel(QObject *parent)
-    : QObject(parent),
-      m_centralListModel(0),
-      m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
-      m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
-      m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
-      m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
-      m_ownInterface(true)
-{
-    qRegisterMetaType<QAbstractItemModel*>();
-}
 
 InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
                        Domain::TaskQueries *taskQueries,
@@ -57,8 +43,7 @@ InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
       m_artifactQueries(artifactQueries),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository),
-      m_ownInterface(false)
+      m_noteRepository(noteRepository)
 {
     qRegisterMetaType<QAbstractItemModel*>();
 }

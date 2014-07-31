@@ -47,8 +47,6 @@ class InboxPageModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
-    explicit InboxPageModel(QObject *parent = 0);
-
     explicit InboxPageModel(Domain::ArtifactQueries *artifactQueries,
                             Domain::TaskQueries *taskQueries,
                             Domain::TaskRepository *taskRepository,
@@ -71,8 +69,6 @@ private:
 
     Domain::TaskRepository *m_taskRepository;
     Domain::NoteRepository *m_noteRepository;
-
-    bool m_ownInterface;
 };
 
 }
