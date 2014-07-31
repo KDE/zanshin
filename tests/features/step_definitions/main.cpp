@@ -87,7 +87,9 @@ private:
     QSortFilterProxyModel *proxyModel;
 };
 
-static void dumpIndices(const QList<QPersistentModelIndex> &indices)
+namespace Zanshin {
+
+void dumpIndices(const QList<QPersistentModelIndex> &indices)
 {
     qDebug() << "Dumping list of size:" << indices.size();
     for (int row = 0; row < indices.size(); row++) {
@@ -95,10 +97,62 @@ static void dumpIndices(const QList<QPersistentModelIndex> &indices)
     }
 }
 
-#define REQUIRE_OR_DUMP(condition) \
-    if (!(condition)) \
-        dumpIndices(context->indices); \
-    BOOST_REQUIRE(condition);
+inline bool verify(bool statement, const char *str,
+                   const char *file, int line)
+{
+    if (statement)
+        return true;
+
+    qDebug() << "Statement" << str << "returned FALSE";
+    qDebug() << "Loc:" << file << line;
+    return false;
+}
+
+template <typename T>
+inline bool compare(T const &t1, T const &t2,
+                    const char *actual, const char *expected,
+                    const char *file, int line)
+{
+    if (t1 == t2)
+        return true;
+
+    qDebug() << "Compared values are not the same";
+    qDebug() << "Actual (" << actual << ") :" << QTest::toString<T>(t1);
+    qDebug() << "Expected (" << expected << ") :" << QTest::toString<T>(t2);
+    qDebug() << "Loc:" << file << line;
+    return false;
+}
+
+} // namespace Zanshin
+
+#define COMPARE(actual, expected) \
+do {\
+    if (!Zanshin::compare(actual, expected, #actual, #expected, __FILE__, __LINE__))\
+        BOOST_REQUIRE(false);\
+} while (0)
+
+#define COMPARE_OR_DUMP(actual, expected) \
+do {\
+    if (!Zanshin::compare(actual, expected, #actual, #expected, __FILE__, __LINE__)) {\
+        Zanshin::dumpIndices(context->indices); \
+        BOOST_REQUIRE(false);\
+    }\
+} while (0)
+
+#define VERIFY(statement) \
+do {\
+    if (!Zanshin::verify((statement), #statement, __FILE__, __LINE__))\
+        BOOST_REQUIRE(false);\
+} while (0)
+
+#define VERIFY_OR_DUMP(statement) \
+do {\
+    if (!Zanshin::verify((statement), #statement, __FILE__, __LINE__)) {\
+        Zanshin::dumpIndices(context->indices); \
+        BOOST_REQUIRE(false);\
+    }\
+} while (0)
+
 
 GIVEN("^I display the available (\\S+) data sources$") {
     REGEX_PARAM(QString, sourceType);
@@ -137,7 +191,7 @@ GIVEN("^there is an item named \"(.+)\" in the central list$") {
     }
 
     qDebug() << "Couldn't find an item named" << itemName;
-    BOOST_REQUIRE(false);
+    VERIFY_OR_DUMP(false);
 }
 
 
@@ -157,7 +211,7 @@ WHEN("^I check the item$") {
 
 WHEN("^I remove the item$") {
     ScenarioScope<ZanshinContext> context;
-    BOOST_REQUIRE(QMetaObject::invokeMethod(context->presentation, "removeItem", Q_ARG(QModelIndex, context->index)));
+    VERIFY(QMetaObject::invokeMethod(context->presentation, "removeItem", Q_ARG(QModelIndex, context->index)));
     QTest::qWait(500);
 }
 
@@ -165,7 +219,7 @@ WHEN("^I add a task named \"(.+)\"$") {
     REGEX_PARAM(QString, itemName);
 
     ScenarioScope<ZanshinContext> context;
-    BOOST_REQUIRE(QMetaObject::invokeMethod(context->presentation, "addTask", Q_ARG(QString, itemName)));
+    VERIFY(QMetaObject::invokeMethod(context->presentation, "addTask", Q_ARG(QString, itemName)));
     QTest::qWait(500);
 }
 
@@ -226,7 +280,7 @@ THEN("^the list is") {
             const QByteArray roleName = it.first.data();
             const QString value = QString::fromUtf8(it.second.data());
             const int role = roleNames.key(roleName, -1);
-            REQUIRE_OR_DUMP(role != -1);
+            VERIFY_OR_DUMP(role != -1);
             item->setData(value, role);
             usedRoles.insert(role);
         }
@@ -243,10 +297,10 @@ THEN("^the list is") {
         QModelIndex resultIndex = context->indices.at(row);
 
         for (auto role : usedRoles) {
-            REQUIRE_OR_DUMP(expectedIndex.data(role).toString() == resultIndex.data(role).toString());
+            COMPARE_OR_DUMP(expectedIndex.data(role).toString(), resultIndex.data(role).toString());
         }
     }
-    REQUIRE_OR_DUMP(proxy.rowCount() == context->indices.size());
+    COMPARE_OR_DUMP(proxy.rowCount(), context->indices.size());
 }
 
 THEN("^the list contains \"(.+)\"$") {
@@ -258,7 +312,7 @@ THEN("^the list contains \"(.+)\"$") {
             return;
     }
 
-    REQUIRE_OR_DUMP(false);
+    VERIFY_OR_DUMP(false);
 }
 
 THEN("^the list does not contain \"(.+)\"$") {
@@ -266,17 +320,17 @@ THEN("^the list does not contain \"(.+)\"$") {
 
     ScenarioScope<ZanshinContext> context;
     for (int row = 0; row < context->indices.size(); row++) {
-        REQUIRE_OR_DUMP(context->indices.at(row).data().toString() != itemName);
+        VERIFY_OR_DUMP(context->indices.at(row).data().toString() != itemName);
     }
 }
 
 THEN("^the task corresponding to the item is done$") {
     ScenarioScope<ZanshinContext> context;
     auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
-    BOOST_REQUIRE(artifact);
+    VERIFY(artifact);
     auto task = artifact.dynamicCast<Domain::Task>();
-    BOOST_REQUIRE(task);
-    BOOST_REQUIRE(task->isDone());
+    VERIFY(task);
+    VERIFY(task->isDone());
 }
 
 THEN("^the default (\\S+) data source is (.*)$") {
@@ -289,8 +343,8 @@ THEN("^the default (\\S+) data source is (.*)$") {
 
     ScenarioScope<ZanshinContext> context;
     auto source = context->app->property(propertyName).value<Domain::DataSource::Ptr>();
-    BOOST_REQUIRE(!source.isNull());
-    BOOST_REQUIRE(source->name() == expectedName);
+    VERIFY(!source.isNull());
+    COMPARE(source->name(), expectedName);
 }
 
 THEN("^the setting key (\\S+) is (\\d+)$") {
@@ -299,7 +353,7 @@ THEN("^the setting key (\\S+) is (\\d+)$") {
 
     KConfigGroup config(KGlobal::config(), "General");
     const qint64 id = config.readEntry(keyName, -1);
-    BOOST_REQUIRE(id == expectedId);
+    COMPARE(id, expectedId);
 }
 
 #include "main.moc"
