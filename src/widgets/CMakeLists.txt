@@ -1,4 +1,5 @@
 set(widgets_SRCS
+    datasourcecombobox.cpp
     itemdelegate.cpp
     pageview.cpp
 )
