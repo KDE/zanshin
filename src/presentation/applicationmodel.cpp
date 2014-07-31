@@ -76,6 +76,13 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
 
 ApplicationModel::~ApplicationModel()
 {
+    if (m_ownInterface) {
+        delete m_artifactQueries;
+        delete m_sourceQueries;
+        delete m_taskQueries;
+        delete m_taskRepository;
+        delete m_noteRepository;
+    }
 }
 
 QAbstractItemModel *ApplicationModel::noteSourcesModel()
@@ -154,7 +161,7 @@ QObject *ApplicationModel::currentPage()
 {
     if (!m_currentPage) {
         m_currentPage = new InboxPageModel(m_artifactQueries, m_taskQueries,
-                                           m_taskRepository, m_noteRepository);
+                                           m_taskRepository, m_noteRepository, this);
     }
 
     return m_currentPage;
