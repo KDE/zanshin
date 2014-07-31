@@ -25,10 +25,14 @@
 
 #include <KDE/KPluginFactory>
 
+#include <QBoxLayout>
+
 #include "../app/aboutdata.h"
 #include "../app/dependencies.h"
 
-#include "presentation/inboxpagemodel.h"
+#include "presentation/applicationmodel.h"
+#include "widgets/applicationcomponents.h"
+#include "widgets/datasourcecombobox.h"
 #include "widgets/pageview.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
@@ -41,8 +45,20 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
 
     setComponentData(PartFactory::componentData());
 
-    auto view = new Widgets::PageView(parentWidget);
-    view->setModel(new Presentation::InboxPageModel(view));
+    auto view = new QWidget(parentWidget);
+    auto components = new Widgets::ApplicationComponents(view);
+    components->setModel(new Presentation::ApplicationModel(components));
+
+    QVBoxLayout *layout = new QVBoxLayout;
+
+    QHBoxLayout *hbox = new QHBoxLayout;
+    hbox->addWidget(components->defaultTaskSourceCombo());
+    hbox->addWidget(components->defaultNoteSourceCombo());
+
+    layout->addLayout(hbox);
+    layout->addWidget(components->pageView());
+    view->setLayout(layout);
+
     setWidget(view);
 }
 
