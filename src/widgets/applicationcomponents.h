@@ -21,38 +21,44 @@
    USA.
 */
 
-#include <QApplication>
-#include <QBoxLayout>
 
-#include "widgets/applicationcomponents.h"
-#include "widgets/datasourcecombobox.h"
-#include "widgets/pageview.h"
+#ifndef WIDGETS_APPLICATIONCOMPONENTS_H
+#define WIDGETS_APPLICATIONCOMPONENTS_H
 
-#include "presentation/applicationmodel.h"
+#include <QObject>
 
-#include "dependencies.h"
+class QWidget;
 
-int main(int argc, char **argv)
+namespace Widgets {
+
+class DataSourceComboBox;
+class PageView;
+
+class ApplicationComponents : public QObject
 {
-    App::initializeDependencies();
+    Q_OBJECT
+public:
+    explicit ApplicationComponents(QWidget *parent = 0);
 
-    QApplication app(argc, argv);
+    QObject *model() const;
 
-    QWidget window;
-    Widgets::ApplicationComponents components(&window);
-    components.setModel(new Presentation::ApplicationModel(&components));
+    PageView *pageView() const;
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    DataSourceComboBox *defaultNoteSourceCombo() const;
+    DataSourceComboBox *defaultTaskSourceCombo() const;
 
-    QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->addWidget(components.defaultTaskSourceCombo());
-    hbox->addWidget(components.defaultNoteSourceCombo());
+public slots:
+    void setModel(QObject *model);
 
-    layout->addLayout(hbox);
-    layout->addWidget(components.pageView());
+private:
+    QObject *m_model;
 
-    window.setLayout(layout);
-    window.show();
+    QWidget *m_parent;
+    PageView *m_pageView;
+    DataSourceComboBox *m_noteCombo;
+    DataSourceComboBox *m_taskCombo;
+};
 
-    return app.exec();
 }
+
+#endif // WIDGETS_APPLICATIONCOMPONENTS_H
