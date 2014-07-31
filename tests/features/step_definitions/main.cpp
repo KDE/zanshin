@@ -87,6 +87,19 @@ private:
     QSortFilterProxyModel *proxyModel;
 };
 
+static void dumpIndices(const QList<QPersistentModelIndex> &indices)
+{
+    qDebug() << "Dumping list of size:" << indices.size();
+    for (int row = 0; row < indices.size(); row++) {
+        qDebug() << row << indices.at(row).data().toString();
+    }
+}
+
+#define REQUIRE_OR_DUMP(condition) \
+    if (!(condition)) \
+        dumpIndices(context->indices); \
+    BOOST_REQUIRE(condition);
+
 GIVEN("^I display the available (\\S+) data sources$") {
     REGEX_PARAM(QString, sourceType);
 
@@ -213,7 +226,7 @@ THEN("^the list is") {
             const QByteArray roleName = it.first.data();
             const QString value = QString::fromUtf8(it.second.data());
             const int role = roleNames.key(roleName, -1);
-            BOOST_REQUIRE(role != -1);
+            REQUIRE_OR_DUMP(role != -1);
             item->setData(value, role);
             usedRoles.insert(role);
         }
@@ -230,10 +243,10 @@ THEN("^the list is") {
         QModelIndex resultIndex = context->indices.at(row);
 
         for (auto role : usedRoles) {
-            BOOST_REQUIRE(expectedIndex.data(role).toString() == resultIndex.data(role).toString());
+            REQUIRE_OR_DUMP(expectedIndex.data(role).toString() == resultIndex.data(role).toString());
         }
     }
-    BOOST_REQUIRE(proxy.rowCount() == context->indices.size());
+    REQUIRE_OR_DUMP(proxy.rowCount() == context->indices.size());
 }
 
 THEN("^the list contains \"(.+)\"$") {
@@ -245,7 +258,7 @@ THEN("^the list contains \"(.+)\"$") {
             return;
     }
 
-    BOOST_REQUIRE(false);
+    REQUIRE_OR_DUMP(false);
 }
 
 THEN("^the list does not contain \"(.+)\"$") {
@@ -253,7 +266,7 @@ THEN("^the list does not contain \"(.+)\"$") {
 
     ScenarioScope<ZanshinContext> context;
     for (int row = 0; row < context->indices.size(); row++) {
-        BOOST_REQUIRE(context->indices.at(row).data().toString() != itemName);
+        REQUIRE_OR_DUMP(context->indices.at(row).data().toString() != itemName);
     }
 }
 
