@@ -1,5 +1,6 @@
 set(presentation_SRCS
     applicationmodel.cpp
+    artifacteditormodel.cpp
     datasourcelistmodel.cpp
     inboxpagemodel.cpp
     querytreemodelbase.cpp
