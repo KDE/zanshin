@@ -91,7 +91,7 @@ KDateEdit::KDateEdit( QWidget *parent )
 
   connect( lineEdit(), SIGNAL(returnPressed()),
            this, SLOT(lineEnterPressed()) );
-  connect( this, SIGNAL(textChanged(QString)),
+  connect( this, SIGNAL(editTextChanged(QString)),
            SLOT(slotTextChanged(QString)) );
 
   mPopup = new KDatePickerPopup( KDatePickerPopup::DatePicker | KDatePickerPopup::Words,

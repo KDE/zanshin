@@ -1,7 +1,8 @@
+include_directories(${CMAKE_SOURCE_DIR}/src/pimlibs ${CMAKE_BINARY_DIR}/src/pimlibs)
 set(oldutils_SRCS
     datestringbuilder.cpp
-    kdateedit.cpp
-    kdatepickerpopup.cpp
+    ${CMAKE_SOURCE_DIR}/src/pimlibs/kdateedit.cpp
+    ${CMAKE_SOURCE_DIR}/src/pimlibs/kdatepickerpopup.cpp
 )
 
 kde4_add_library(oldutils STATIC ${oldutils_SRCS})

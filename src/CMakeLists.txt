@@ -11,3 +11,6 @@ add_subdirectory(presentation)
 add_subdirectory(utils)
 add_subdirectory(widgets)
 
+# should be in kdepimlibs
+add_subdirectory(pimlibs)
+

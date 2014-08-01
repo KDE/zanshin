@@ -29,7 +29,7 @@
 #include <QtGui/QStyledItemDelegate>
 
 #include <kdescendantsproxymodel.h>
-#include "utils/kdateedit.h"
+#include "pimlibs/kdateedit.h"
 #include <klocale.h>
 #include <kglobal.h>
 #include <kmodelindexproxymapper.h>
