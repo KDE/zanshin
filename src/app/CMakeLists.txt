@@ -10,6 +10,7 @@ target_link_libraries(zanshin-next
     ${KDE4_KDEUI_LIBS}
     akonadi
     domain
+    pimlibs
     presentation
     utils
     widgets

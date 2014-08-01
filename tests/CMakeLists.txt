@@ -11,6 +11,7 @@ MACRO(ZANSHIN_MANUAL_TESTS)
       ${KDE4_KDEUI_LIBS}
       akonadi
       domain
+      pimlibs
       presentation
       utils
       widgets
@@ -28,6 +29,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
       testlib
       akonadi
       domain
+      pimlibs
       presentation
       utils
       widgets
