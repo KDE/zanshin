@@ -9,3 +9,12 @@ Feature: Completing tasks
      When I check the item
      Then the task corresponding to the item is done
 
+   Scenario: Checking task in the editor
+     Given I display the inbox page
+     And there is an item named "Buy apples" in the central list
+     When I open the item in the editor
+     And I mark it done in the editor
+     And I open the item in the editor again
+     Then the task corresponding to the item is done
+     And the editor shows the task as done
+

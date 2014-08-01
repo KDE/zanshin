@@ -32,6 +32,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/applicationmodel.h"
+#include "presentation/artifacteditormodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/inboxpagemodel.h"
 
@@ -54,6 +55,18 @@ private slots:
 
         // THEN
         QVERIFY(qobject_cast<Presentation::InboxPageModel*>(page));
+    }
+
+    void shouldProvideArtifactEditorModel()
+    {
+        // GIVEN
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0);
+
+        // WHEN
+        QObject *page = app.editor();
+
+        // THEN
+        QVERIFY(qobject_cast<Presentation::ArtifactEditorModel*>(page));
     }
 
     void shouldProvideDataSourceModels()

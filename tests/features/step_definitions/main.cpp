@@ -43,6 +43,7 @@ public:
         : QObject(parent),
           app(0),
           presentation(0),
+          editor(0),
           proxyModel(new QSortFilterProxyModel(this))
     {
         using namespace Presentation;
@@ -82,6 +83,7 @@ public:
     QList<QPersistentModelIndex> indices;
     QPersistentModelIndex index;
     QObject *presentation;
+    QObject *editor;
 
 private:
     QSortFilterProxyModel *proxyModel;
@@ -231,6 +233,55 @@ WHEN("^I list the items$") {
     }
 }
 
+WHEN("^I open the item in the editor$") {
+    ScenarioScope<ZanshinContext> context;
+    auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole)
+                                  .value<Domain::Artifact::Ptr>();
+    VERIFY(artifact);
+    context->editor = context->app->property("editor").value<QObject*>();
+    VERIFY(context->editor);
+    VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(artifact)));
+}
+
+WHEN("^I mark it done in the editor$") {
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->editor->setProperty("done", true));
+}
+
+WHEN("^I change the editor (.*) to \"(.*)\"$") {
+    REGEX_PARAM(QString, field);
+    REGEX_PARAM(QString, string);
+
+    const QVariant value = (field == "text") ? string
+                         : (field == "title") ? string
+                         : (field == "start date") ? QDateTime::fromString(string, Qt::ISODate)
+                         : (field == "due date") ? QDateTime::fromString(string, Qt::ISODate)
+                         : QVariant();
+
+    const QByteArray property = (field == "text") ? field.toUtf8()
+                              : (field == "title") ? field.toUtf8()
+                              : (field == "start date") ? "startDate"
+                              : (field == "due date") ? "dueDate"
+                              : QByteArray();
+
+    VERIFY(value.isValid());
+    VERIFY(!property.isEmpty());
+
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->editor->setProperty(property, value));
+}
+
+WHEN("^I open the item in the editor again$") {
+    ScenarioScope<ZanshinContext> context;
+    auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole)
+                                  .value<Domain::Artifact::Ptr>();
+    VERIFY(artifact);
+    VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(Domain::Artifact::Ptr())));
+    VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(artifact)));
+    QTest::qWait(500);
+}
+
+
 WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     REGEX_PARAM(QString, keyName);
     REGEX_PARAM(qint64, id);
@@ -331,6 +382,34 @@ THEN("^the task corresponding to the item is done$") {
     auto task = artifact.dynamicCast<Domain::Task>();
     VERIFY(task);
     VERIFY(task->isDone());
+}
+
+THEN("^the editor shows the task as done$") {
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->editor->property("done").toBool());
+}
+
+THEN("^the editor shows \"(.*)\" as (.*)$") {
+    REGEX_PARAM(QString, string);
+    REGEX_PARAM(QString, field);
+
+    const QVariant value = (field == "text") ? string
+                         : (field == "title") ? string
+                         : (field == "start date") ? QDateTime::fromString(string, Qt::ISODate)
+                         : (field == "due date") ? QDateTime::fromString(string, Qt::ISODate)
+                         : QVariant();
+
+    const QByteArray property = (field == "text") ? field.toUtf8()
+                              : (field == "title") ? field.toUtf8()
+                              : (field == "start date") ? "startDate"
+                              : (field == "due date") ? "dueDate"
+                              : QByteArray();
+
+    VERIFY(value.isValid());
+    VERIFY(!property.isEmpty());
+
+    ScenarioScope<ZanshinContext> context;
+    COMPARE(context->editor->property(property), value);
 }
 
 THEN("^the default (\\S+) data source is (.*)$") {

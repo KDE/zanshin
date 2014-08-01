@@ -48,6 +48,7 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QAbstractItemModel* taskSourcesModel READ taskSourcesModel)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
     Q_PROPERTY(QObject* currentPage READ currentPage)
+    Q_PROPERTY(QObject* editor READ editor)
 public:
     explicit ApplicationModel(QObject *parent = 0);
 
@@ -66,6 +67,7 @@ public:
     Domain::DataSource::Ptr defaultTaskDataSource();
 
     QObject *currentPage();
+    QObject *editor();
 
 public slots:
     void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
@@ -76,6 +78,7 @@ private:
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources();
 
     QObject *m_currentPage;
+    QObject *m_editor;
 
     Domain::ArtifactQueries *m_artifactQueries;
     Domain::DataSourceQueries *m_sourceQueries;

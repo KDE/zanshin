@@ -29,6 +29,7 @@
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
+#include "presentation/artifacteditormodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/querytreemodel.h"
 #include "presentation/inboxpagemodel.h"
@@ -40,6 +41,7 @@ using namespace Presentation;
 ApplicationModel::ApplicationModel(QObject *parent)
     : QObject(parent),
       m_currentPage(0),
+      m_editor(0),
       m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
       m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
@@ -61,6 +63,7 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
                        QObject *parent)
     : QObject(parent),
       m_currentPage(0),
+      m_editor(0),
       m_artifactQueries(artifactQueries),
       m_sourceQueries(sourceQueries),
       m_taskQueries(taskQueries),
@@ -165,6 +168,15 @@ QObject *ApplicationModel::currentPage()
     }
 
     return m_currentPage;
+}
+
+QObject *ApplicationModel::editor()
+{
+    if (!m_editor) {
+        m_editor = new ArtifactEditorModel(m_taskRepository, m_noteRepository, this);
+    }
+
+    return m_editor;
 }
 
 void ApplicationModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
