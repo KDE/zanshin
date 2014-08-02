@@ -27,7 +27,10 @@
 
 #include <QWidget>
 
+#include "domain/artifact.h"
+
 class QLineEdit;
+class QModelIndex;
 class QTreeView;
 
 namespace Widgets {
@@ -43,9 +46,13 @@ public:
 public slots:
     void setModel(QObject *model);
 
+signals:
+    void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
+
 private slots:
     void onEditingFinished();
     void onRemoveItemRequested();
+    void onCurrentChanged(const QModelIndex &current);
 
 private:
     QObject *m_model;

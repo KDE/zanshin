@@ -32,6 +32,8 @@
 
 #include "itemdelegate.h"
 
+#include "presentation/querytreemodelbase.h"
+
 using namespace Widgets;
 
 Q_DECLARE_METATYPE(QAbstractItemModel*)
@@ -71,6 +73,10 @@ void PageView::setModel(QObject *model)
     if (model == m_model)
         return;
 
+    if (m_centralView->selectionModel()) {
+        disconnect(m_centralView->selectionModel(), 0, this, 0);
+    }
+
     m_centralView->setModel(0);
 
     m_model = model;
@@ -78,6 +84,9 @@ void PageView::setModel(QObject *model)
     QVariant modelProperty = m_model->property("centralListModel");
     if (modelProperty.canConvert<QAbstractItemModel*>())
         m_centralView->setModel(modelProperty.value<QAbstractItemModel*>());
+
+    connect(m_centralView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this, SLOT(onCurrentChanged(QModelIndex)));
 }
 
 void PageView::onEditingFinished()
@@ -96,4 +105,17 @@ void PageView::onRemoveItemRequested()
         return;
 
     QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
+}
+
+void PageView::onCurrentChanged(const QModelIndex &current)
+{
+    auto data = current.data(Presentation::QueryTreeModelBase::ObjectRole);
+    if (!data.isValid())
+        return;
+
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    if (!artifact)
+        return;
+
+    emit currentArtifactChanged(artifact);
 }

@@ -28,6 +28,7 @@
 #include <QWidget>
 
 #include "datasourcecombobox.h"
+#include "editorview.h"
 #include "pageview.h"
 
 #include "presentation/applicationmodel.h"
@@ -43,6 +44,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
       m_model(0),
       m_parent(parent),
       m_pageView(0),
+      m_editorView(0),
       m_noteCombo(0),
       m_taskCombo(0)
 {
@@ -63,9 +65,27 @@ PageView *ApplicationComponents::pageView() const
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
         self->m_pageView = pageView;
+
+        connect(self->m_pageView, SIGNAL(currentArtifactChanged(Domain::Artifact::Ptr)),
+                self, SLOT(onCurrentArtifactChanged(Domain::Artifact::Ptr)));
     }
 
     return m_pageView;
+}
+
+EditorView *ApplicationComponents::editorView() const
+{
+    if (!m_editorView) {
+        auto editorView = new EditorView(m_parent);
+        if (m_model) {
+            editorView->setModel(m_model->property("editor").value<QObject*>());
+        }
+
+        auto self = const_cast<ApplicationComponents*>(this);
+        self->m_editorView = editorView;
+    }
+
+    return m_editorView;
 }
 
 DataSourceComboBox *ApplicationComponents::defaultNoteSourceCombo() const
@@ -114,6 +134,9 @@ void ApplicationComponents::setModel(QObject *model)
     if (m_pageView)
         m_pageView->setModel(m_model->property("currentPage").value<QObject*>());
 
+    if (m_editorView)
+        m_editorView->setModel(m_model->property("editor").value<QObject*>());
+
     if (m_noteCombo) {
         m_noteCombo->setModel(m_model->property("noteSourcesModel").value<QAbstractItemModel*>());
         m_noteCombo->setDefaultSourceProperty(m_model, "defaultNoteDataSource");
@@ -127,4 +150,10 @@ void ApplicationComponents::setModel(QObject *model)
         connect(m_noteCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
                 m_model, SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
     }
+}
+
+void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact)
+{
+    auto editorModel = m_model->property("editor").value<QObject*>();
+    editorModel->setProperty("artifact", QVariant::fromValue(artifact));
 }

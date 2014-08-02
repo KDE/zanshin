@@ -27,11 +27,14 @@
 
 #include <QObject>
 
+#include "domain/artifact.h"
+
 class QWidget;
 
 namespace Widgets {
 
 class DataSourceComboBox;
+class EditorView;
 class PageView;
 
 class ApplicationComponents : public QObject
@@ -43,6 +46,7 @@ public:
     QObject *model() const;
 
     PageView *pageView() const;
+    EditorView *editorView() const;
 
     DataSourceComboBox *defaultNoteSourceCombo() const;
     DataSourceComboBox *defaultTaskSourceCombo() const;
@@ -50,11 +54,15 @@ public:
 public slots:
     void setModel(QObject *model);
 
+private slots:
+    void onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact);
+
 private:
     QObject *m_model;
 
     QWidget *m_parent;
     PageView *m_pageView;
+    EditorView *m_editorView;
     DataSourceComboBox *m_noteCombo;
     DataSourceComboBox *m_taskCombo;
 };
