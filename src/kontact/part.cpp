@@ -26,6 +26,7 @@
 #include <KDE/KPluginFactory>
 
 #include <QBoxLayout>
+#include <QSplitter>
 
 #include "../app/aboutdata.h"
 #include "../app/dependencies.h"
@@ -33,6 +34,7 @@
 #include "presentation/applicationmodel.h"
 #include "widgets/applicationcomponents.h"
 #include "widgets/datasourcecombobox.h"
+#include "widgets/editorview.h"
 #include "widgets/pageview.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
@@ -45,7 +47,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
 
     setComponentData(PartFactory::componentData());
 
-    auto view = new QWidget(parentWidget);
+    auto view = new QWidget;
     auto components = new Widgets::ApplicationComponents(view);
     components->setModel(new Presentation::ApplicationModel(components));
 
@@ -59,7 +61,10 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     layout->addWidget(components->pageView());
     view->setLayout(layout);
 
-    setWidget(view);
+    auto splitter = new QSplitter(parentWidget);
+    splitter->addWidget(view);
+    splitter->addWidget(components->editorView());
+    setWidget(splitter);
 }
 
 Part::~Part()

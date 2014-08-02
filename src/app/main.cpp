@@ -23,9 +23,12 @@
 
 #include <QApplication>
 #include <QBoxLayout>
+#include <QDockWidget>
+#include <QMainWindow>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/datasourcecombobox.h"
+#include "widgets/editorview.h"
 #include "widgets/pageview.h"
 
 #include "presentation/applicationmodel.h"
@@ -38,20 +41,27 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
-    QWidget window;
-    Widgets::ApplicationComponents components(&window);
-    components.setModel(new Presentation::ApplicationModel(&components));
+    auto widget = new QWidget;
+    auto components = new Widgets::ApplicationComponents(widget);
+    components->setModel(new Presentation::ApplicationModel(components));
 
     QVBoxLayout *layout = new QVBoxLayout;
 
     QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->addWidget(components.defaultTaskSourceCombo());
-    hbox->addWidget(components.defaultNoteSourceCombo());
+    hbox->addWidget(components->defaultTaskSourceCombo());
+    hbox->addWidget(components->defaultNoteSourceCombo());
 
     layout->addLayout(hbox);
-    layout->addWidget(components.pageView());
+    layout->addWidget(components->pageView());
 
-    window.setLayout(layout);
+    widget->setLayout(layout);
+
+    auto dock = new QDockWidget;
+    dock->setWidget(components->editorView());
+
+    QMainWindow window;
+    window.setCentralWidget(widget);
+    window.addDockWidget(Qt::RightDockWidgetArea, dock);
     window.show();
 
     return app.exec();
