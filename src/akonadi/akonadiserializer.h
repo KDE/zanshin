@@ -37,6 +37,7 @@ public:
     Serializer();
     virtual ~Serializer();
 
+    bool representsCollection(QObjectPtr object, Collection collection);
     bool representsItem(QObjectPtr object, Item item);
 
     Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection);

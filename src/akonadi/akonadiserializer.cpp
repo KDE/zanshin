@@ -41,6 +41,11 @@ Serializer::~Serializer()
 {
 }
 
+bool Serializer::representsCollection(SerializerInterface::QObjectPtr object, Collection collection)
+{
+    return object->property("collectionId").toLongLong() == collection.id();
+}
+
 bool Serializer::representsItem(QObjectPtr object, Item item)
 {
     return object->property("itemId").toLongLong() == item.id();
