@@ -257,6 +257,33 @@ Item Serializer::createItemFromNote(Domain::Note::Ptr note)
     return item;
 }
 
+bool Serializer::isProjectItem(Item item)
+{
+    Q_UNUSED(item);
+    qFatal("Not implemented yet");
+    return false;
+}
+
+Domain::Project::Ptr Serializer::createProjectFromItem(Item item)
+{
+    Q_UNUSED(item);
+    qFatal("Not implemented yet");
+    return Domain::Project::Ptr();
+}
+
+void Serializer::updateProjectFromItem(Domain::Project::Ptr project, Item item)
+{
+    Q_UNUSED(project);
+    Q_UNUSED(item);
+    qFatal("Not implemented yet");
+}
+
+Item Serializer::createItemFromProject(Domain::Project::Ptr project)
+{
+    Q_UNUSED(project);
+    return Item();
+}
+
 Domain::Context::Ptr Serializer::createContextFromTag(Akonadi::Tag tag)
 {
     if (!isContext(tag))

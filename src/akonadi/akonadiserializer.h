@@ -58,6 +58,12 @@ public:
     void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item);
     Akonadi::Item createItemFromNote(Domain::Note::Ptr note);
 
+    bool isProjectItem(Akonadi::Item item);
+    Domain::Project::Ptr createProjectFromItem(Akonadi::Item item);
+    void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item);
+    Akonadi::Item createItemFromProject(Domain::Project::Ptr project);
+
+
     Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag);
     void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag);
     bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const;

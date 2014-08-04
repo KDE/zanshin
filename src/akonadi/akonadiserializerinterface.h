@@ -27,6 +27,7 @@
 #include "domain/datasource.h"
 #include "domain/task.h"
 #include "domain/note.h"
+#include "domain/project.h"
 #include "domain/context.h"
 
 #include <Akonadi/Item>
@@ -65,6 +66,11 @@ public:
     virtual void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) = 0;
 
     virtual Akonadi::Item createItemFromNote(Domain::Note::Ptr note) = 0;
+
+    virtual bool isProjectItem(Akonadi::Item item) = 0;
+    virtual Domain::Project::Ptr createProjectFromItem(Akonadi::Item item) = 0;
+    virtual void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item) = 0;
+    virtual Akonadi::Item createItemFromProject(Domain::Project::Ptr project) = 0;
 
     virtual Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) = 0;
     virtual void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) = 0;
