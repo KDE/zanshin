@@ -32,6 +32,7 @@ zanshin_auto_tests(
   akonadidatasourcequeriestest
   akonadinotequeriestest
   akonadinoterepositorytest
+  akonadiprojectqueriestest
   akonadiserializertest
   akonadistoragesettingstest
   akonaditaskqueriestest
