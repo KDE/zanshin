@@ -540,14 +540,27 @@ private slots:
         QTest::addColumn<QDateTime>("startDate");
         QTest::addColumn<QDateTime>("dueDate");
         QTest::addColumn<qint64>("itemId");
+        QTest::addColumn<QString>("todoUid");
 
-        QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(-1);
-        QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(-1);
-        QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime() << QDateTime() << qint64(-1);
+        QTest::newRow("nominal case (no id)") << "summary" << "content" << false
+                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                              << qint64(-1) << QString();
+        QTest::newRow("done case (no id)") << "summary" << "content" << true
+                                           << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                           << qint64(-1) << QString();
+        QTest::newRow("empty case (no id)") << QString() << QString() << false
+                                            << QDateTime() << QDateTime()
+                                            << qint64(-1) << QString();
 
-        QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(42);
-        QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << qint64(42);
-        QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime() << QDateTime() << qint64(42);
+        QTest::newRow("nominal case (with id)") << "summary" << "content" << false
+                                                << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                                << qint64(42) << "my-uid";
+        QTest::newRow("done case (with id)") << "summary" << "content" << true
+                                             << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                             << qint64(42) << "my-uid";
+        QTest::newRow("empty case (with id)") << QString() << QString() << false
+                                              << QDateTime() << QDateTime()
+                                              << qint64(42) << "my-uid";
     }
 
     void shouldCreateItemFromTask()
@@ -561,6 +574,7 @@ private slots:
         QFETCH(QDateTime, startDate);
         QFETCH(QDateTime, dueDate);
         QFETCH(qint64, itemId);
+        QFETCH(QString, todoUid);
 
         // ... stored in a task
         auto task = Domain::Task::Ptr::create();
@@ -572,6 +586,9 @@ private slots:
 
         if (itemId > 0)
             task->setProperty("itemId", itemId);
+
+        if (!todoUid.isEmpty())
+            task->setProperty("todoUid", todoUid);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -591,6 +608,10 @@ private slots:
         QCOMPARE(todo->isCompleted(), isDone);
         QCOMPARE(todo->dtStart().dateTime(), startDate);
         QCOMPARE(todo->dtDue().dateTime(), dueDate);
+
+        if (!todoUid.isEmpty()) {
+            QCOMPARE(todo->uid(), todoUid);
+        }
     }
 
     void shouldVerifyIfAnItemIsATaskChild_data()
