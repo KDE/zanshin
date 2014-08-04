@@ -120,7 +120,7 @@ void NoteQueries::onItemRemoved(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto note = provider->data().at(i);
-            if (isNoteItem(note, item)) {
+            if (m_serializer->represents(note, item)) {
                 provider->removeAt(i);
                 i--;
             }
@@ -135,7 +135,7 @@ void NoteQueries::onItemChanged(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto note = provider->data().at(i);
-            if (isNoteItem(note, item)) {
+            if (m_serializer->represents(note, item)) {
                 m_serializer->updateNoteFromItem(note, item);
                 provider->replace(i, note);
             }
@@ -143,15 +143,7 @@ void NoteQueries::onItemChanged(const Item &item)
     }
 }
 
-bool NoteQueries::isNoteItem(const Domain::Note::Ptr &note, const Item &item) const
-{
-    return note->property("itemId").toLongLong() == item.id();
-}
-
 Domain::Note::Ptr NoteQueries::deserializeNote(const Item &item) const
 {
-    auto note = m_serializer->createNoteFromItem(item);
-    if (note)
-        note->setProperty("itemId", item.id());
-    return note;
+    return m_serializer->createNoteFromItem(item);
 }

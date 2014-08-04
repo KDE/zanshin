@@ -77,8 +77,7 @@ KJob *TaskRepository::save(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
 
-    if (task->property("itemId").isValid()) {
-        item.setId(task->property("itemId").toLongLong());
+    if (item.isValid()) {
         return m_storage->updateItem(item);
     } else {
         const Akonadi::Collection defaultCollection = m_storage->defaultTaskCollection();

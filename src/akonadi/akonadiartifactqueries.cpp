@@ -130,7 +130,7 @@ void ArtifactQueries::onItemRemoved(const Item &item)
 
     for (int i = 0; i < provider->data().size(); i++) {
         auto artifact = provider->data().at(i);
-        if (isArtifactItem(artifact, item)) {
+        if (m_serializer->represents(artifact, item)) {
             provider->removeAt(i);
             i--;
         }
@@ -148,7 +148,7 @@ void ArtifactQueries::onItemChanged(const Item &item)
     bool itemFound = false;
     for (int i = 0; i < provider->data().size(); i++) {
         auto artifact = provider->data().at(i);
-        if (isArtifactItem(artifact, item)) {
+        if (m_serializer->represents(artifact, item)) {
             itemFound = true;
             if (isInboxItem(item)) {
                 if (auto task = artifact.dynamicCast<Domain::Task>()) {
@@ -182,22 +182,15 @@ bool ArtifactQueries::isInboxItem(const Item &item) const
     return !excluded;
 }
 
-bool ArtifactQueries::isArtifactItem(const Domain::Artifact::Ptr &artifact, const Item &item) const
-{
-    return artifact->property("itemId").toLongLong() == item.id();
-}
-
 Domain::Artifact::Ptr ArtifactQueries::deserializeArtifact(const Item &item) const
 {
     auto task = m_serializer->createTaskFromItem(item);
     if (task) {
-        task->setProperty("itemId", item.id());
         return task;
     }
 
     auto note = m_serializer->createNoteFromItem(item);
     if (note) {
-        note->setProperty("itemId", item.id());
         return note;
     }
 

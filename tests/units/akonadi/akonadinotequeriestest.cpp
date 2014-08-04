@@ -255,6 +255,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
 
+        serializerMock(&Akonadi::SerializerInterface::represents).when(note1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(note2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(note3, item2).thenReturn(false);
+
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
 
@@ -321,6 +325,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
         serializerMock(&Akonadi::SerializerInterface::updateNoteFromItem).when(note2, item2).thenReturn();
+
+        serializerMock(&Akonadi::SerializerInterface::represents).when(note1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(note2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(note3, item2).thenReturn(false);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);

@@ -479,7 +479,6 @@ private slots:
         Akonadi::Item item(42);
         item.setParentCollection(col);
         Domain::Task::Ptr task(new Domain::Task);
-        task->setProperty("itemId", item.id());
         MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item);
 
@@ -500,6 +499,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task, item).thenReturn(true);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
@@ -564,7 +564,6 @@ private slots:
         QFETCH(bool, hasTopicsAfter);
 
         Akonadi::Item item;
-        artifact->setProperty("itemId", item.id());
         MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item);
 
@@ -591,6 +590,7 @@ private slots:
                                                                                 .thenReturn(hasContextsAfter);
         serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(hasTopicsBefore)
                                                                               .thenReturn(hasTopicsAfter);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(artifact, item).thenReturn(true);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);

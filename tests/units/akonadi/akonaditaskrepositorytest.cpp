@@ -139,7 +139,7 @@ private slots:
         Akonadi::Collection col(42);
 
         // A task and its corresponding item not existing in storage yet
-        Akonadi::Item item(42);
+        Akonadi::Item item;
         Domain::Task::Ptr task(new Domain::Task);
 
         // A mock create job
@@ -179,7 +179,7 @@ private slots:
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // A task and its corresponding item not existing in storage yet
-        Akonadi::Item item(42);
+        Akonadi::Item item;
         Domain::Task::Ptr task(new Domain::Task);
 
         // A mock create job
@@ -220,7 +220,6 @@ private slots:
         // A task and its corresponding item already existing in storage
         Akonadi::Item item(42);
         Domain::Task::Ptr task(new Domain::Task);
-        task->setProperty("itemId", item.id());
 
         // A mock create job
         auto itemModifyJob = new MockAkonadiJob(this);

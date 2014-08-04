@@ -263,6 +263,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
@@ -335,6 +339,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
         serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(task2, item2).thenReturn();
 
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
@@ -389,7 +397,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
         Domain::Task::Ptr task2(new Domain::Task);
@@ -410,6 +417,7 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
@@ -471,7 +479,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
 
         // We'll make the same queries twice
         MockItemFetchJob *itemFetchJob11 = new MockItemFetchJob(this);
@@ -494,6 +501,7 @@ private slots:
 
         // Serializer mock
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
@@ -530,7 +538,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         task1->setProperty("todoUid", "1");
 
         MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
@@ -548,6 +555,7 @@ private slots:
         // Serializer mock returning if task1 is parent of items
         mock_object<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
@@ -571,6 +579,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1");
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("1");
+
         monitor->addItem(item2);
         monitor->addItem(item3);
 
@@ -597,7 +606,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         task1->setProperty("todoUid", "1");
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
@@ -619,8 +627,13 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1");
@@ -680,7 +693,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         task1->setProperty("todoUid", "1");
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
@@ -702,8 +714,13 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if task1 is parent of items
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
@@ -755,7 +772,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         task1->setProperty("todoUid", "1");
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
@@ -777,8 +793,13 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if task1 is parent of items
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
@@ -836,7 +857,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         task1->setProperty("todoUid", "1");
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
@@ -858,8 +878,13 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1");
@@ -1065,6 +1090,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
@@ -1135,6 +1164,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(task2, item2).thenReturn();
+
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -1216,6 +1249,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString()).thenReturn("1");
@@ -1286,6 +1323,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1").thenReturn(QString());
@@ -1337,12 +1378,10 @@ private slots:
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
         Domain::Task::Ptr task2(new Domain::Task);
-        task2->setProperty("itemId", 43);
         task2->setProperty("todoUid", "2");
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        task3->setProperty("itemId", 44);
         MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2 << item3);
         MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
@@ -1364,9 +1403,14 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task2).thenReturn(item2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -1423,7 +1467,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
         Domain::Task::Ptr task2(new Domain::Task);
@@ -1441,6 +1484,7 @@ private slots:
 
         // Serializer mock
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
 
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
@@ -1474,7 +1518,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
         Domain::Task::Ptr task2(new Domain::Task);
@@ -1520,6 +1563,7 @@ private slots:
 
         // Serializer mock
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
 
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
@@ -1555,7 +1599,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
         Domain::Task::Ptr task2(new Domain::Task);
@@ -1662,7 +1705,6 @@ private slots:
         Akonadi::Item item1(42);
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
-        task1->setProperty("itemId", 42);
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
         Domain::Task::Ptr task2(new Domain::Task);

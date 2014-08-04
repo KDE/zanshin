@@ -139,7 +139,7 @@ private slots:
         Akonadi::Collection col(42);
 
         // A note and its corresponding item not existing in storage yet
-        Akonadi::Item item(42);
+        Akonadi::Item item;
         Domain::Note::Ptr note(new Domain::Note);
 
         // A mock create job
@@ -176,7 +176,6 @@ private slots:
         // A note and its corresponding item already existing in storage
         Akonadi::Item item(42);
         Domain::Note::Ptr note(new Domain::Note);
-        note->setProperty("itemId", item.id());
 
         // A mock create job
         auto itemModifyJob = new MockAkonadiJob(this);

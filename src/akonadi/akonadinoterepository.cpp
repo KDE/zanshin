@@ -73,8 +73,7 @@ KJob *NoteRepository::save(Domain::Note::Ptr note)
 {
     auto item = m_serializer->createItemFromNote(note);
 
-    if (note->property("itemId").isValid()) {
-        item.setId(note->property("itemId").toLongLong());
+    if (item.isValid()) {
         return m_storage->updateItem(item);
     } else {
         return m_storage->createItem(item, m_storage->defaultNoteCollection());
