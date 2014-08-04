@@ -141,7 +141,7 @@ void DataSourceQueries::onCollectionRemoved(const Collection &collection)
 
         for (int i = 0; i < provider->data().size(); i++) {
             auto dataSource = provider->data().at(i);
-            if (isDataSourceCollection(dataSource, collection)) {
+            if (m_serializer->representsCollection(dataSource, collection)) {
                 provider->removeAt(i);
                 i--;
             }
@@ -160,7 +160,7 @@ void DataSourceQueries::onCollectionChanged(const Collection &collection)
             continue;
         for (int i = 0; i < provider->data().size(); i++) {
             auto dataSource = provider->data().at(i);
-            if (isDataSourceCollection(dataSource, collection)) {
+            if (m_serializer->representsCollection(dataSource, collection)) {
                 m_serializer->updateDataSourceFromCollection(dataSource, collection);
                 provider->replace(i, dataSource);
             }
@@ -168,17 +168,7 @@ void DataSourceQueries::onCollectionChanged(const Collection &collection)
     }
 }
 
-bool DataSourceQueries::isDataSourceCollection(const Domain::DataSource::Ptr &dataSource, const Collection &collection) const
-{
-    return dataSource->property("collectionId").toLongLong() == collection.id();
-}
-
 Domain::DataSource::Ptr DataSourceQueries::deserializeDataSource(const Collection &collection) const
 {
-    auto dataSource = m_serializer->createDataSourceFromCollection(collection);
-    if (dataSource) {
-        dataSource->setProperty("collectionId", collection.id());
-    }
-
-    return dataSource;
+    return m_serializer->createDataSourceFromCollection(collection);
 }

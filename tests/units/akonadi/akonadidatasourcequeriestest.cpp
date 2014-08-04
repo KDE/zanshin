@@ -347,6 +347,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(dataSource2);
         serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(dataSource3);
 
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource1, col3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource2, col3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource3, col3).thenReturn(true);
+
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
 
@@ -411,6 +415,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(dataSource2);
         serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(dataSource3);
         serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(dataSource2, col2).thenReturn();
+
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource1, col2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource2, col2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource3, col2).thenReturn(false);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
