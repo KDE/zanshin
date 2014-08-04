@@ -36,6 +36,32 @@ class AkonadiSerializerTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void shouldKnowWhenAnObjectRepresentsAnItem()
+    {
+        // GIVEN
+        Akonadi::Serializer serializer;
+        auto object = Akonadi::Serializer::QObjectPtr::create();
+        Akonadi::Item item(42);
+
+        // WHEN
+        // Nothing yet
+
+        // THEN
+        QVERIFY(!serializer.represents(object, item));
+
+        // WHEN
+        object->setProperty("itemId", 42);
+
+        // THEN
+        QVERIFY(serializer.represents(object, item));
+
+        // WHEN
+        object->setProperty("itemId", 43);
+
+        // THEN
+        QVERIFY(!serializer.represents(object, item));
+    }
+
     void shouldCreateDataSourceFromCollection_data()
     {
         QTest::addColumn<QString>("name");
