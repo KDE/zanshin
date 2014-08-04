@@ -1166,6 +1166,80 @@ private slots:
         QCOMPARE(todo->uid(), todoUid);
     }
 
+    void shouldVerifyIfAnItemIsAProjectChild_data()
+    {
+        QTest::addColumn<Domain::Project::Ptr>("project");
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<bool>("isParent");
+
+        // Create project
+        auto project = Domain::Project::Ptr::create();
+        project->setName("project");
+        project->setProperty("todoUid", "1");
+
+        // Create unrelated todo
+        auto unrelatedTodo = KCalCore::Todo::Ptr::create();
+        unrelatedTodo->setSummary("summary");
+        Akonadi::Item unrelatedTodoItem;
+        unrelatedTodoItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        unrelatedTodoItem.setPayload<KCalCore::Todo::Ptr>(unrelatedTodo);
+
+        QTest::newRow("unrelated todo") << project << unrelatedTodoItem << false;
+
+        // Create child todo
+        auto childTodo = KCalCore::Todo::Ptr::create();
+        childTodo->setSummary("summary");
+        childTodo->setRelatedTo("1");
+        Akonadi::Item childTodoItem;
+        childTodoItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        childTodoItem.setPayload<KCalCore::Todo::Ptr>(childTodo);
+
+        QTest::newRow("child todo") << project << childTodoItem << true;
+
+        // Create unrelated note
+        KMime::Message::Ptr unrelatedNote(new KMime::Message);
+        unrelatedNote->subject(true)->fromUnicodeString("subject", "utf-8");
+        Akonadi::Item unrelatedNoteItem;
+        unrelatedNoteItem.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        unrelatedNoteItem.setPayload<KMime::Message::Ptr>(unrelatedNote);
+
+        QTest::newRow("unrelated note") << project << unrelatedNoteItem << false;
+
+        // Create child note
+        KMime::Message::Ptr childNote(new KMime::Message);
+        childNote->subject(true)->fromUnicodeString("subject", "utf-8");
+        auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+        relatedHeader->from7BitString("1");
+        childNote->appendHeader(relatedHeader);
+        Akonadi::Item childNoteItem;
+        childNoteItem.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        childNoteItem.setPayload<KMime::Message::Ptr>(childNote);
+
+        QTest::newRow("child todo") << project << childNoteItem << true;
+
+        auto invalidProject = Domain::Project::Ptr::create();
+        QTest::newRow("invalid project") << invalidProject << unrelatedNoteItem << false;
+
+        Akonadi::Item invalidItem;
+        QTest::newRow("invalid item") << project << invalidItem << false;
+
+    }
+
+    void shouldVerifyIfAnItemIsAProjectChild()
+    {
+        // GIVEN
+        QFETCH(Domain::Project::Ptr, project);
+        QFETCH(Akonadi::Item, item);
+        QFETCH(bool, isParent);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        bool value = serializer.isProjectChild(project, item);
+
+        // THEN
+        QCOMPARE(value, isParent);
+    }
+
     void shouldUpdateItemParent_data()
     {
         QTest::addColumn<Akonadi::Item>("item");

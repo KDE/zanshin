@@ -325,6 +325,16 @@ Item Serializer::createItemFromProject(Domain::Project::Ptr project)
     return item;
 }
 
+bool Serializer::isProjectChild(Domain::Project::Ptr project, Item item)
+{
+    const QString todoUid = project->property("todoUid").toString();
+    const QString relatedUid = relatedUidFromItem(item);
+
+    return !todoUid.isEmpty()
+        && !relatedUid.isEmpty()
+        && todoUid == relatedUid;
+}
+
 Domain::Context::Ptr Serializer::createContextFromTag(Akonadi::Tag tag)
 {
     if (!isContext(tag))

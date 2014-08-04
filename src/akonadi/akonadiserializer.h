@@ -65,6 +65,7 @@ public:
     Domain::Project::Ptr createProjectFromItem(Akonadi::Item item);
     void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item);
     Akonadi::Item createItemFromProject(Domain::Project::Ptr project);
+    bool isProjectChild(Domain::Project::Ptr project, Akonadi::Item item);
 
 
     Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag);

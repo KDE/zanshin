@@ -76,6 +76,7 @@ public:
     virtual Domain::Project::Ptr createProjectFromItem(Akonadi::Item item) = 0;
     virtual void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item) = 0;
     virtual Akonadi::Item createItemFromProject(Domain::Project::Ptr project) = 0;
+    virtual bool isProjectChild(Domain::Project::Ptr project, Akonadi::Item item) = 0;
 
     virtual Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) = 0;
     virtual void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) = 0;
