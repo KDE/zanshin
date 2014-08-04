@@ -47,19 +47,19 @@ private slots:
         // Nothing yet
 
         // THEN
-        QVERIFY(!serializer.represents(object, item));
+        QVERIFY(!serializer.representsItem(object, item));
 
         // WHEN
         object->setProperty("itemId", 42);
 
         // THEN
-        QVERIFY(serializer.represents(object, item));
+        QVERIFY(serializer.representsItem(object, item));
 
         // WHEN
         object->setProperty("itemId", 43);
 
         // THEN
-        QVERIFY(!serializer.represents(object, item));
+        QVERIFY(!serializer.representsItem(object, item));
     }
 
     void shouldCreateDataSourceFromCollection_data()

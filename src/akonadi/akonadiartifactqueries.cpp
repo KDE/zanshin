@@ -130,7 +130,7 @@ void ArtifactQueries::onItemRemoved(const Item &item)
 
     for (int i = 0; i < provider->data().size(); i++) {
         auto artifact = provider->data().at(i);
-        if (m_serializer->represents(artifact, item)) {
+        if (m_serializer->representsItem(artifact, item)) {
             provider->removeAt(i);
             i--;
         }
@@ -148,7 +148,7 @@ void ArtifactQueries::onItemChanged(const Item &item)
     bool itemFound = false;
     for (int i = 0; i < provider->data().size(); i++) {
         auto artifact = provider->data().at(i);
-        if (m_serializer->represents(artifact, item)) {
+        if (m_serializer->representsItem(artifact, item)) {
             itemFound = true;
             if (isInboxItem(item)) {
                 if (auto task = artifact.dynamicCast<Domain::Task>()) {

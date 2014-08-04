@@ -120,7 +120,7 @@ void NoteQueries::onItemRemoved(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto note = provider->data().at(i);
-            if (m_serializer->represents(note, item)) {
+            if (m_serializer->representsItem(note, item)) {
                 provider->removeAt(i);
                 i--;
             }
@@ -135,7 +135,7 @@ void NoteQueries::onItemChanged(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto note = provider->data().at(i);
-            if (m_serializer->represents(note, item)) {
+            if (m_serializer->representsItem(note, item)) {
                 m_serializer->updateNoteFromItem(note, item);
                 provider->replace(i, note);
             }

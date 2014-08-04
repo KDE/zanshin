@@ -261,9 +261,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createProjectFromItem).when(item1).thenReturn(project1);
         serializerMock(&Akonadi::SerializerInterface::createProjectFromItem).when(item2).thenReturn(project2);
         serializerMock(&Akonadi::SerializerInterface::createProjectFromItem).when(item3).thenReturn(project3);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(project1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(project2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(project3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(project1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(project2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(project3, item2).thenReturn(false);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
@@ -331,9 +331,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createProjectFromItem).when(item2).thenReturn(project2);
         serializerMock(&Akonadi::SerializerInterface::createProjectFromItem).when(item3).thenReturn(project3);
         serializerMock(&Akonadi::SerializerInterface::updateProjectFromItem).when(project2, item2).thenReturn();
-        serializerMock(&Akonadi::SerializerInterface::represents).when(project1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(project2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(project3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(project1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(project2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(project3, item2).thenReturn(false);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);

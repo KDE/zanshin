@@ -225,7 +225,7 @@ void TaskQueries::onItemRemoved(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto task = provider->data().at(i);
-            if (m_serializer->represents(task, item)) {
+            if (m_serializer->representsItem(task, item)) {
                 provider->removeAt(i);
                 i--;
             }
@@ -237,7 +237,7 @@ void TaskQueries::onItemRemoved(const Item &item)
         if (m_serializer->relatedUidFromItem(item).isEmpty()) {
             for (int i = 0; i < topLevelProvider->data().size(); i++) {
                 auto task = topLevelProvider->data().at(i);
-                if (m_serializer->represents(task, item)) {
+                if (m_serializer->representsItem(task, item)) {
                     topLevelProvider->removeAt(i);
                     i--;
                 }
@@ -263,7 +263,7 @@ void TaskQueries::onItemRemoved(const Item &item)
     if (childProvider) {
         for (int i = 0; i < childProvider->data().size(); i++) {
             auto task = childProvider->data().at(i);
-            if (m_serializer->represents(task, item)) {
+            if (m_serializer->representsItem(task, item)) {
                 childProvider->removeAt(i);
                 i--;
             }
@@ -278,7 +278,7 @@ void TaskQueries::onItemChanged(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto task = provider->data().at(i);
-            if (m_serializer->represents(task, item)) {
+            if (m_serializer->representsItem(task, item)) {
                 m_serializer->updateTaskFromItem(task, item);
                 provider->replace(i, task);
             }
@@ -291,7 +291,7 @@ void TaskQueries::onItemChanged(const Item &item)
         QString uid = m_serializer->relatedUidFromItem(item);
         for (int i = 0; i < topLevelProvider->data().size(); i++) {
             auto task = topLevelProvider->data().at(i);
-            if (m_serializer->represents(task, item)) {
+            if (m_serializer->representsItem(task, item)) {
                 itemFound = true;
                 if (uid.isEmpty()) {
                     m_serializer->updateTaskFromItem(task, item);
@@ -317,7 +317,7 @@ void TaskQueries::onItemChanged(const Item &item)
         bool itemUpdated = false;
         for (int i = 0; i < childProvider->data().size(); i++) {
             auto task = childProvider->data().at(i);
-            if (m_serializer->represents(task, item)) {
+            if (m_serializer->representsItem(task, item)) {
                 m_serializer->updateTaskFromItem(task, item);
                 childProvider->replace(i, task);
                 itemUpdated = true;
@@ -378,7 +378,7 @@ void TaskQueries::removeItemFromChildProviders(const Item &item)
                 if (childProvider) {
                     for (int i = 0; i < childProvider->data().size(); i++) {
                         auto task = childProvider->data().at(i);
-                        if (m_serializer->represents(task, item)) {
+                        if (m_serializer->representsItem(task, item)) {
                             childProvider->removeAt(i);
                             i--;
                         }

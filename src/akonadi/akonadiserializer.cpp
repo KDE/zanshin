@@ -41,7 +41,7 @@ Serializer::~Serializer()
 {
 }
 
-bool Serializer::represents(QObjectPtr object, Item item)
+bool Serializer::representsItem(QObjectPtr object, Item item)
 {
     return object->property("itemId").toLongLong() == item.id();
 }

@@ -129,7 +129,7 @@ void ProjectQueries::onItemRemoved(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto project = provider->data().at(i);
-            if (m_serializer->represents(project, item)) {
+            if (m_serializer->representsItem(project, item)) {
                 provider->removeAt(i);
                 i--;
             }
@@ -144,7 +144,7 @@ void ProjectQueries::onItemChanged(const Item &item)
     if (provider) {
         for (int i = 0; i < provider->data().size(); i++) {
             auto project = provider->data().at(i);
-            if (m_serializer->represents(project, item)) {
+            if (m_serializer->representsItem(project, item)) {
                 m_serializer->updateProjectFromItem(project, item);
                 provider->replace(i, project);
             }

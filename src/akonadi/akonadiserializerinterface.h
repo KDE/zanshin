@@ -46,7 +46,7 @@ public:
     SerializerInterface();
     virtual ~SerializerInterface();
 
-    virtual bool represents(QObjectPtr object, Akonadi::Item item) = 0;
+    virtual bool representsItem(QObjectPtr object, Akonadi::Item item) = 0;
 
     virtual Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection) = 0;
     virtual void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection) = 0;

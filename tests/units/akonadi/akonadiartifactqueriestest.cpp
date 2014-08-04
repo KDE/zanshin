@@ -499,7 +499,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task, item).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task, item).thenReturn(true);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
@@ -590,7 +590,7 @@ private slots:
                                                                                 .thenReturn(hasContextsAfter);
         serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(hasTopicsBefore)
                                                                               .thenReturn(hasTopicsAfter);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(artifact, item).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(artifact, item).thenReturn(true);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);

@@ -263,9 +263,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -339,9 +339,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
         serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(task2, item2).thenReturn();
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -631,9 +631,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1");
@@ -718,9 +718,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if task1 is parent of items
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
@@ -797,9 +797,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if task1 is parent of items
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
@@ -882,9 +882,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1");
@@ -1090,9 +1090,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -1165,9 +1165,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(task2, item2).thenReturn();
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -1249,9 +1249,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -1323,9 +1323,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
@@ -1408,9 +1408,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::represents).when(task3, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
