@@ -841,6 +841,238 @@ private slots:
         QCOMPARE(message->mainBodyPart()->decodedText(true), expectedContent);
     }
 
+    void shouldCreateProjectFromItem_data()
+    {
+        QTest::addColumn<QString>("summary");
+        QTest::addColumn<qint64>("itemId");
+
+        QTest::newRow("nominal case") << "summary";
+        QTest::newRow("empty case") << QString();
+    }
+
+    void shouldCreateProjectFromItem()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, summary);
+
+        // ... stored in a todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary(summary);
+        todo->setCustomProperty("Zanshin", "Project", "1");
+        QVERIFY(!todo->uid().isEmpty());
+
+        // ... as payload of an item
+        Akonadi::Item item(42);
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Project::Ptr project = serializer.createProjectFromItem(item);
+
+        // THEN
+        QCOMPARE(project->name(), summary);
+        QCOMPARE(project->property("itemId").toLongLong(), item.id());
+        QCOMPARE(project->property("todoUid").toString(), todo->uid());
+    }
+
+    void shouldCreateNullProjectFromInvalidItem()
+    {
+        // GIVEN
+        Akonadi::Item item;
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Project::Ptr project = serializer.createProjectFromItem(item);
+
+        // THEN
+        QVERIFY(project.isNull());
+    }
+
+    void shouldCreateNullProjectFromTaskItem()
+    {
+        // GIVEN
+
+        // A todo without the project flag
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary("foo");
+
+        // ... as payload of an item
+        Akonadi::Item item;
+        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Project::Ptr project = serializer.createProjectFromItem(item);
+
+        // THEN
+        QVERIFY(project.isNull());
+    }
+
+    void shouldUpdateProjectFromItem_data()
+    {
+        QTest::addColumn<QString>("updatedSummary");
+
+        QTest::newRow("no change") << "summary";
+        QTest::newRow("changed") << "new summary";
+    }
+
+    void shouldUpdateProjectFromItem()
+    {
+        // GIVEN
+
+        // A todo...
+        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        originalTodo->setSummary("summary");
+        originalTodo->setCustomProperty("Zanshin", "Project", "1");
+
+        // ... as payload of an item...
+        Akonadi::Item originalItem(42);
+        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+
+        // ... deserialized as a project
+        Akonadi::Serializer serializer;
+        auto project = serializer.createProjectFromItem(originalItem);
+
+        // WHEN
+
+        // Data...
+        QFETCH(QString, updatedSummary);
+
+        // ... in a new todo...
+        KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
+        updatedTodo->setSummary(updatedSummary);
+        updatedTodo->setCustomProperty("Zanshin", "Project", "1");
+        QVERIFY(!updatedTodo->uid().isEmpty());
+
+        // ... as payload of a new item
+        Akonadi::Item updatedItem(43);
+        updatedItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
+
+        serializer.updateProjectFromItem(project, updatedItem);
+
+        // THEN
+        QCOMPARE(project->name(), updatedSummary);
+        QCOMPARE(project->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(project->property("todoUid").toString(), updatedTodo->uid());
+    }
+
+    void shouldNotUpdateProjectFromInvalidItem()
+    {
+        // GIVEN
+
+        // Data...
+        const QString summary = "summary";
+
+        // ... stored in a todo...
+        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        originalTodo->setSummary(summary);
+        originalTodo->setCustomProperty("Zanshin", "Project", "1");
+
+        // ... as payload of an item...
+        Akonadi::Item originalItem;
+        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+
+        // ... deserialized as a project
+        Akonadi::Serializer serializer;
+        auto project = serializer.createProjectFromItem(originalItem);
+
+        // WHEN
+        Akonadi::Item invalidItem;
+        serializer.updateProjectFromItem(project, invalidItem);
+
+        // THEN
+        QCOMPARE(project->name(), summary);
+    }
+
+    void shouldNotUpdateProjectFromTaskItem()
+    {
+        // GIVEN
+
+        // Data...
+        const QString summary = "summary";
+
+        // ... stored in a todo...
+        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        originalTodo->setSummary(summary);
+        originalTodo->setCustomProperty("Zanshin", "Project", "1");
+
+        // ... as payload of an item...
+        Akonadi::Item originalItem;
+        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+
+        // ... deserialized as a project
+        Akonadi::Serializer serializer;
+        auto project = serializer.createProjectFromItem(originalItem);
+
+        // WHEN
+        // A todo without the project flag
+        KCalCore::Todo::Ptr projectTodo(new KCalCore::Todo);
+        projectTodo->setSummary("foo");
+
+        // ... as payload of an item
+        Akonadi::Item projectItem;
+        projectItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        projectItem.setPayload<KCalCore::Todo::Ptr>(projectTodo);
+        serializer.updateProjectFromItem(project, projectItem);
+
+        // THEN
+        QCOMPARE(project->name(), summary);
+    }
+
+    void shouldCreateItemFromProject_data()
+    {
+        QTest::addColumn<QString>("summary");
+        QTest::addColumn<qint64>("itemId");
+
+        QTest::newRow("nominal case (no id)") << "summary" << qint64(-1);
+        QTest::newRow("empty case (no id)") << QString() << qint64(-1);
+
+        QTest::newRow("nominal case (with id)") << "summary" << qint64(42);
+        QTest::newRow("empty case (with id)") << QString() << qint64(42);
+    }
+
+    void shouldCreateItemFromProject()
+    {
+        // GIVEN
+
+        // Data...
+        QFETCH(QString, summary);
+        QFETCH(qint64, itemId);
+        const QString todoUid = "test-uid";
+
+        // ... stored in a project
+        auto project = Domain::Project::Ptr::create();
+        project->setName(summary);
+        project->setProperty("todoUid", todoUid);
+
+        if (itemId > 0)
+            project->setProperty("itemId", itemId);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto item = serializer.createItemFromProject(project);
+
+        // THEN
+        QCOMPARE(item.mimeType(), KCalCore::Todo::todoMimeType());
+
+        QCOMPARE(item.isValid(), itemId > 0);
+        if (itemId > 0) {
+            QCOMPARE(item.id(), itemId);
+        }
+
+        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        QCOMPARE(todo->summary(), summary);
+        QCOMPARE(todo->uid(), todoUid);
+    }
+
     void shouldUpdateItemParent_data()
     {
         QTest::addColumn<Akonadi::Item>("item");

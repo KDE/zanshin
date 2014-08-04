@@ -259,29 +259,51 @@ Item Serializer::createItemFromNote(Domain::Note::Ptr note)
 
 bool Serializer::isProjectItem(Item item)
 {
-    Q_UNUSED(item);
-    qFatal("Not implemented yet");
-    return false;
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return false;
+
+    return !isTaskItem(item);
 }
 
 Domain::Project::Ptr Serializer::createProjectFromItem(Item item)
 {
-    Q_UNUSED(item);
-    qFatal("Not implemented yet");
-    return Domain::Project::Ptr();
+    if (!isProjectItem(item))
+        return Domain::Project::Ptr();
+
+    auto project = Domain::Project::Ptr::create();
+    updateProjectFromItem(project, item);
+    return project;
 }
 
 void Serializer::updateProjectFromItem(Domain::Project::Ptr project, Item item)
 {
-    Q_UNUSED(project);
-    Q_UNUSED(item);
-    qFatal("Not implemented yet");
+    if (!isProjectItem(item))
+        return;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+
+    project->setName(todo->summary());
+    project->setProperty("itemId", item.id());
+    project->setProperty("todoUid", todo->uid());
 }
 
 Item Serializer::createItemFromProject(Domain::Project::Ptr project)
 {
-    Q_UNUSED(project);
-    return Item();
+    auto todo = KCalCore::Todo::Ptr::create();
+
+    todo->setSummary(project->name());
+
+    if (project->property("todoUid").isValid()) {
+        todo->setUid(project->property("todoUid").toString());
+    }
+
+    Akonadi::Item item;
+    if (project->property("itemId").isValid()) {
+        item.setId(project->property("itemId").value<Akonadi::Item::Id>());
+    }
+    item.setMimeType(KCalCore::Todo::todoMimeType());
+    item.setPayload(todo);
+    return item;
 }
 
 Domain::Context::Ptr Serializer::createContextFromTag(Akonadi::Tag tag)
