@@ -126,6 +126,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setDone(todo->isCompleted());
     task->setStartDate(todo->dtStart().dateTime());
     task->setDueDate(todo->dtDue().dateTime());
+    task->setProperty("itemId", item.id());
     task->setProperty("todoUid", todo->uid());
 }
 
@@ -248,6 +249,7 @@ void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
 
     note->setTitle(wrappedNote.title());
     note->setText(wrappedNote.text());
+    note->setProperty("itemId", item.id());
 }
 
 Item Serializer::createItemFromNote(Domain::Note::Ptr note)
@@ -257,6 +259,9 @@ Item Serializer::createItemFromNote(Domain::Note::Ptr note)
     builder.setText(note->text());
 
     Akonadi::Item item;
+    if (note->property("itemId").isValid()) {
+        item.setId(note->property("itemId").value<Akonadi::Item::Id>());
+    }
     item.setMimeType(Akonadi::NoteUtils::noteMimeType());
     item.setPayload(builder.message());
     return item;

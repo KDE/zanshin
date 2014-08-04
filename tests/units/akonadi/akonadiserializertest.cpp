@@ -311,6 +311,7 @@ private slots:
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
         QCOMPARE(task->property("todoUid").toString(), todo->uid());
+        QCOMPARE(task->property("itemId").toLongLong(), item.id());
     }
 
     void shouldCreateNullTaskFromInvalidItem()
@@ -412,6 +413,7 @@ private slots:
         QCOMPARE(task->startDate(), updatedStartDate);
         QCOMPARE(task->dueDate(), updatedDueDate);
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
+        QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
     }
 
     void shouldNotUpdateTaskFromInvalidItem()
@@ -452,6 +454,7 @@ private slots:
         QCOMPARE(task->isDone(), isDone);
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
+        QCOMPARE(task->property("itemId").toLongLong(), originalItem.id());
     }
 
     void shouldNotUpdateTaskFromProjectItem()
@@ -500,6 +503,7 @@ private slots:
         QCOMPARE(task->isDone(), isDone);
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
+        QCOMPARE(task->property("itemId").toLongLong(), originalItem.id());
     }
 
     void shouldCreateItemFromTask_data()
@@ -732,6 +736,7 @@ private slots:
         // THEN
         QCOMPARE(note->title(), title);
         QCOMPARE(note->text(), text);
+        QCOMPARE(note->property("itemId").toLongLong(), item.id());
     }
 
     void shouldCreateNullNoteFromInvalidItem()
@@ -795,6 +800,7 @@ private slots:
         // THEN
         QCOMPARE(note->title(), updatedTitle);
         QCOMPARE(note->text(), updatedText);
+        QCOMPARE(note->property("itemId").toLongLong(), updatedItem.id());
     }
 
     void shouldNotUpdateNoteFromInvalidItem()
@@ -827,6 +833,7 @@ private slots:
         //THEN
         QCOMPARE(note->title(), title);
         QCOMPARE(note->text(), text);
+        QCOMPARE(note->property("itemId").toLongLong(), item.id());
     }
 
     void shouldCreateItemFromNote_data()
@@ -835,9 +842,13 @@ private slots:
         QTest::addColumn<QString>("content");
         QTest::addColumn<QString>("expectedTitle");
         QTest::addColumn<QString>("expectedContent");
+        QTest::addColumn<qint64>("itemId");
 
-        QTest::newRow("nominal case") << "title" << "content" << "title" << "content";
-        QTest::newRow("empty case") << QString() << QString() << "New Note" << QString();
+        QTest::newRow("nominal case (no id)") << "title" << "content" << "title" << "content" << qint64(-1);
+        QTest::newRow("empty case (no id)") << QString() << QString() << "New Note" << QString() << qint64(-1);
+
+        QTest::newRow("nominal case (with id)") << "title" << "content" << "title" << "content" << qint64(42);
+        QTest::newRow("empty case (with id)") << QString() << QString() << "New Note" << QString() << qint64(42);
     }
 
     void shouldCreateItemFromNote()
@@ -847,11 +858,15 @@ private slots:
         // Data...
         QFETCH(QString, title);
         QFETCH(QString, content);
+        QFETCH(qint64, itemId);
 
-        // ... stored in a task
+        // ... stored in a note
         auto note = Domain::Note::Ptr::create();
         note->setTitle(title);
         note->setText(content);
+
+        if (itemId > 0)
+            note->setProperty("itemId", itemId);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -859,6 +874,11 @@ private slots:
 
         // THEN
         QCOMPARE(item.mimeType(), Akonadi::NoteUtils::noteMimeType());
+
+        QCOMPARE(item.isValid(), itemId > 0);
+        if (itemId > 0) {
+            QCOMPARE(item.id(), itemId);
+        }
 
         QFETCH(QString, expectedTitle);
         QFETCH(QString, expectedContent);
