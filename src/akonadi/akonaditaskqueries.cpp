@@ -347,7 +347,7 @@ Domain::Task::Ptr TaskQueries::deserializeTask(const Item &item) const
 
 void TaskQueries::addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const
 {
-    m_uidtoIdCache[task->property("todoUid").toString()] = id;
+    m_uidtoIdCache[m_serializer->objectUid(task)] = id;
 }
 
 TaskQueries::TaskProvider::Ptr TaskQueries::childProviderFromItem(const Item &item) const
