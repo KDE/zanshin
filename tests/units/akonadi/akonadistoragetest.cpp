@@ -392,7 +392,7 @@ private slots:
         QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
 
         // An existing item (if we trust the test data)
-        Akonadi::Item item(2);
+        Akonadi::Item item(10);
 
         // WHEN
         (new Akonadi::ItemDeleteJob(item))->exec();
@@ -425,7 +425,7 @@ private slots:
         todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
 
         // ... as payload of an existing item (if we trust the test data)...
-        Akonadi::Item item(1);
+        Akonadi::Item item(7);
         item.setMimeType("application/x-vnd.akonadi.calendar.todo");
         item.setPayload<KCalCore::Todo::Ptr>(todo);
         item.addAttribute(new Akonadi::EntityDisplayAttribute);
@@ -630,7 +630,7 @@ private slots:
         todo->setDescription("new content");
 
         // ... as payload of an existing item (if we trust the test data)...
-        Akonadi::Item item(1);
+        Akonadi::Item item(7);
         item.setMimeType("application/x-vnd.akonadi.calendar.todo");
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
@@ -657,8 +657,8 @@ private slots:
         // GIVEN
         Akonadi::Storage storage;
 
-        Akonadi::Item item1(5);
-        Akonadi::Item item2(6);
+        Akonadi::Item item1(1);
+        Akonadi::Item item2(2);
         // create wrong item
         Akonadi::Item item3(18);
         item3.setRemoteId("wrongId");
@@ -753,7 +753,7 @@ private slots:
     {
         // GIVEN
         Akonadi::Storage storage;
-        Akonadi::Item findItem(1);
+        Akonadi::Item findItem(6);
 
         // WHEN
         auto job = storage.fetchItem(findItem);
@@ -765,7 +765,7 @@ private slots:
 
         const auto &item = items[0];
 
-        QCOMPARE(item.id(), 1LL);
+        QCOMPARE(item.id(), 6LL);
         QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
         QVERIFY(!item.attributes().isEmpty());
         QVERIFY(item.modificationTime().isValid());
@@ -783,7 +783,7 @@ private slots:
         // GIVEN
         Akonadi::Storage storage;
 
-        Akonadi::Item item(3);
+        Akonadi::Item item(8);
 
         // A spied monitor
         Akonadi::MonitorImpl monitor;
@@ -806,7 +806,7 @@ private slots:
         // GIVEN
         Akonadi::Storage storage;
 
-        Akonadi::Item item(4);
+        Akonadi::Item item(9);
         Akonadi::Item::List list;
         list << item;
 
