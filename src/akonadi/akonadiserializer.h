@@ -40,6 +40,8 @@ public:
     bool representsCollection(QObjectPtr object, Collection collection);
     bool representsItem(QObjectPtr object, Item item);
 
+    QString objectUid(QObjectPtr object);
+
     Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection);
     void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection);
     virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource);

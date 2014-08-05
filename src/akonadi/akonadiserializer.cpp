@@ -51,6 +51,11 @@ bool Serializer::representsItem(QObjectPtr object, Item item)
     return object->property("itemId").toLongLong() == item.id();
 }
 
+QString Serializer::objectUid(SerializerInterface::QObjectPtr object)
+{
+    return object->property("todoUid").toString();
+}
+
 Domain::DataSource::Ptr Serializer::createDataSourceFromCollection(Collection collection)
 {
     if (!collection.isValid())

@@ -88,6 +88,19 @@ private slots:
         QVERIFY(!serializer.representsItem(object, item));
     }
 
+    void shouldKnowObjectUid()
+    {
+        // GIVEN
+        Akonadi::Serializer serializer;
+        auto object = Akonadi::Serializer::QObjectPtr::create();
+
+        // WHEN
+        object->setProperty("todoUid", "my-uid");
+
+        // THEN
+        QCOMPARE(serializer.objectUid(object), QString("my-uid"));
+    }
+
     void shouldCreateDataSourceFromCollection_data()
     {
         QTest::addColumn<QString>("name");
