@@ -30,6 +30,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/artifacteditormodel.h"
+#include "presentation/availablepagesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/querytreemodel.h"
 #include "presentation/inboxpagemodel.h"
@@ -40,9 +41,11 @@ using namespace Presentation;
 
 ApplicationModel::ApplicationModel(QObject *parent)
     : QObject(parent),
+      m_availablePages(0),
       m_currentPage(0),
       m_editor(0),
       m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
+      m_projectQueries(Utils::DependencyManager::globalInstance().create<Domain::ProjectQueries>()),
       m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
       m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
@@ -55,15 +58,18 @@ ApplicationModel::ApplicationModel(QObject *parent)
 }
 
 ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
-                       Domain::DataSourceQueries *sourceQueries,
-                       Domain::TaskQueries *taskQueries,
-                       Domain::TaskRepository *taskRepository,
-                       Domain::NoteRepository *noteRepository,
-                       QObject *parent)
+                                   Domain::ProjectQueries *projectQueries,
+                                   Domain::DataSourceQueries *sourceQueries,
+                                   Domain::TaskQueries *taskQueries,
+                                   Domain::TaskRepository *taskRepository,
+                                   Domain::NoteRepository *noteRepository,
+                                   QObject *parent)
     : QObject(parent),
+      m_availablePages(0),
       m_currentPage(0),
       m_editor(0),
       m_artifactQueries(artifactQueries),
+      m_projectQueries(projectQueries),
       m_sourceQueries(sourceQueries),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
@@ -156,6 +162,14 @@ Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource()
         return *source;
     else
         return sources.first();
+}
+
+QObject *ApplicationModel::availablePages()
+{
+    if (!m_availablePages) {
+        m_availablePages = new AvailablePagesModel(m_projectQueries, this);
+    }
+    return m_availablePages;
 }
 
 QObject *ApplicationModel::currentPage()

@@ -1,6 +1,7 @@
 set(presentation_SRCS
     applicationmodel.cpp
     artifacteditormodel.cpp
+    availablepagesmodel.cpp
     datasourcelistmodel.cpp
     inboxpagemodel.cpp
     metatypes.cpp

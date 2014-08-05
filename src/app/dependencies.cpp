@@ -28,6 +28,7 @@
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadinotequeries.h"
 #include "akonadi/akonadinoterepository.h"
+#include "akonadi/akonadiprojectqueries.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 
@@ -41,6 +42,7 @@ void App::initializeDependencies()
     deps.add<Domain::DataSourceQueries, Akonadi::DataSourceQueries>();
     deps.add<Domain::NoteQueries, Akonadi::NoteQueries>();
     deps.add<Domain::NoteRepository, Akonadi::NoteRepository>();
+    deps.add<Domain::ProjectQueries, Akonadi::ProjectQueries>();
     deps.add<Domain::TaskQueries, Akonadi::TaskQueries>();
     deps.add<Domain::TaskRepository, Akonadi::TaskRepository>();
 }

@@ -14,6 +14,7 @@
 #include "akonadi/akonadiartifactqueries.h"
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadinoterepository.h"
+#include "akonadi/akonadiprojectqueries.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "presentation/applicationmodel.h"
@@ -50,6 +51,7 @@ public:
         proxyModel->setDynamicSortFilter(true);
 
         auto appModel = new ApplicationModel(new Akonadi::ArtifactQueries(this),
+                                             new Akonadi::ProjectQueries(this),
                                              new Akonadi::DataSourceQueries(this),
                                              new Akonadi::TaskQueries(this),
                                              new Akonadi::TaskRepository(this),
