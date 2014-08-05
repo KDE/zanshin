@@ -26,8 +26,11 @@
 #define PRESENTATION_METATYPES_H
 
 #include <QMetaType>
+#include <QSharedPointer>
 
 class QAbstractItemModel;
+
+typedef QSharedPointer<QObject> QObjectPtr;
 
 namespace Presentation {
 
@@ -41,5 +44,7 @@ namespace MetaTypes
 // cppcheck's parser somehow confuses it for a C-cast
 // cppcheck-suppress cstyleCast
 Q_DECLARE_METATYPE(QAbstractItemModel*)
+
+Q_DECLARE_METATYPE(QObjectPtr)
 
 #endif // PRESENTATION_METATYPES_H

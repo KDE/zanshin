@@ -31,5 +31,6 @@ using namespace Presentation;
 void MetaTypes::registerAll()
 {
     qRegisterMetaType<QAbstractItemModel*>();
+    qRegisterMetaType<QObjectPtr>();
     qRegisterMetaType<Domain::DataSource::Ptr>();
 }

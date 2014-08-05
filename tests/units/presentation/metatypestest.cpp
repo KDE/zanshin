@@ -40,6 +40,7 @@ private slots:
 
         // THEN
         QVERIFY(QMetaType::isRegistered(qMetaTypeId<QAbstractItemModel*>()));
+        QVERIFY(QMetaType::isRegistered(qMetaTypeId<QObjectPtr>()));
         QVERIFY(QMetaType::isRegistered(qMetaTypeId<Domain::DataSource::Ptr>()));
     }
 };
