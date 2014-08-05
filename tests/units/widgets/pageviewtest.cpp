@@ -142,6 +142,7 @@ private slots:
         // Needed for shortcuts to work
         page.show();
         QTest::qWaitForWindowShown(&page);
+        QTest::qWait(100);
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -168,6 +169,7 @@ private slots:
         // Needed for shortcuts to work
         page.show();
         QTest::qWaitForWindowShown(&page);
+        QTest::qWait(100);
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
