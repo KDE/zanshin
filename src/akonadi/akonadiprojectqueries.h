@@ -26,11 +26,12 @@
 
 #include "domain/projectqueries.h"
 
+#include <KDE/Akonadi/Item>
+
 class KJob;
 
 namespace Akonadi {
 
-class Item;
 class MonitorInterface;
 class SerializerInterface;
 class StorageInterface;
@@ -58,7 +59,10 @@ private slots:
     void onItemChanged(const Akonadi::Item &item);
 
 private:
-    bool isProjectItem(const Domain::Project::Ptr &project, const Item &item) const;
+    void addItemIdInCache(const Domain::Project::Ptr &project, Akonadi::Entity::Id id) const;
+    Domain::Artifact::Ptr deserializeArtifact(const Item &item) const;
+    ArtifactProvider::Ptr topLevelProviderForItem(const Item &item) const;
+    void removeItemFromTopLevelProviders(const Item &item);
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
@@ -66,6 +70,9 @@ private:
     bool m_ownInterfaces;
 
     mutable ProjectProvider::WeakPtr m_projectProvider;
+    mutable QHash<Akonadi::Entity::Id, ArtifactProvider::WeakPtr> m_topLevelProviders;
+    mutable QHash<QString, Akonadi::Entity::Id> m_uidtoIdCache;
+    mutable QHash<Akonadi::Entity::Id, QString> m_idToRelatedUidCache;
 };
 
 }
