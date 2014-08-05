@@ -15,6 +15,7 @@
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonadiprojectqueries.h"
+#include "akonadi/akonadiprojectrepository.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "presentation/applicationmodel.h"
@@ -52,6 +53,7 @@ public:
 
         auto appModel = new ApplicationModel(new Akonadi::ArtifactQueries(this),
                                              new Akonadi::ProjectQueries(this),
+                                             new Akonadi::ProjectRepository(this),
                                              new Akonadi::DataSourceQueries(this),
                                              new Akonadi::TaskQueries(this),
                                              new Akonadi::TaskRepository(this),

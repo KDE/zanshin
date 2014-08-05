@@ -35,6 +35,7 @@ namespace Domain {
     class ArtifactQueries;
     class NoteRepository;
     class ProjectQueries;
+    class ProjectRepository;
     class TaskQueries;
     class TaskRepository;
 }
@@ -54,7 +55,9 @@ class ApplicationModel : public QObject
 public:
     explicit ApplicationModel(QObject *parent = 0);
 
-    explicit ApplicationModel(Domain::ArtifactQueries *artifactQueries, Domain::ProjectQueries *projectQueries,
+    explicit ApplicationModel(Domain::ArtifactQueries *artifactQueries,
+                              Domain::ProjectQueries *projectQueries,
+                              Domain::ProjectRepository *projectRepository,
                               Domain::DataSourceQueries *sourceQueries,
                               Domain::TaskQueries *taskQueries,
                               Domain::TaskRepository *taskRepository,
@@ -85,7 +88,10 @@ private:
     QObject *m_editor;
 
     Domain::ArtifactQueries *m_artifactQueries;
+
     Domain::ProjectQueries *m_projectQueries;
+    Domain::ProjectRepository *m_projectRepository;
+
     Domain::DataSourceQueries *m_sourceQueries;
     Domain::TaskQueries *m_taskQueries;
 

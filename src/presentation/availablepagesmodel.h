@@ -31,6 +31,7 @@
 
 namespace Domain {
     class ProjectQueries;
+    class ProjectRepository;
 }
 
 namespace Presentation {
@@ -41,6 +42,7 @@ class AvailablePagesModel : public QObject
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
     explicit AvailablePagesModel(Domain::ProjectQueries *projectQueries,
+                                 Domain::ProjectRepository *projectRepository,
                                  QObject *parent = 0);
     ~AvailablePagesModel();
 
@@ -52,6 +54,7 @@ private:
     QAbstractItemModel *m_pageListModel;
 
     Domain::ProjectQueries *m_projectQueries;
+    Domain::ProjectRepository *m_projectRepository;
 };
 
 }

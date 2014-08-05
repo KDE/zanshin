@@ -32,7 +32,7 @@
 
 using namespace Presentation;
 
-AvailablePagesModel::AvailablePagesModel(Domain::ProjectQueries *projectQueries,
+AvailablePagesModel::AvailablePagesModel(Domain::ProjectQueries *projectQueries, Domain::ProjectRepository *projectRepository,
                                          QObject *parent)
     : QObject(parent),
       m_pageListModel(0),

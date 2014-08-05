@@ -46,6 +46,7 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_editor(0),
       m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
       m_projectQueries(Utils::DependencyManager::globalInstance().create<Domain::ProjectQueries>()),
+      m_projectRepository(Utils::DependencyManager::globalInstance().create<Domain::ProjectRepository>()),
       m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
       m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
@@ -59,6 +60,7 @@ ApplicationModel::ApplicationModel(QObject *parent)
 
 ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
                                    Domain::ProjectQueries *projectQueries,
+                                   Domain::ProjectRepository *projectRepository,
                                    Domain::DataSourceQueries *sourceQueries,
                                    Domain::TaskQueries *taskQueries,
                                    Domain::TaskRepository *taskRepository,
@@ -70,6 +72,7 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
       m_editor(0),
       m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
+      m_projectRepository(projectRepository),
       m_sourceQueries(sourceQueries),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
@@ -167,7 +170,9 @@ Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource()
 QObject *ApplicationModel::availablePages()
 {
     if (!m_availablePages) {
-        m_availablePages = new AvailablePagesModel(m_projectQueries, this);
+        m_availablePages = new AvailablePagesModel(m_projectQueries,
+                                                   m_projectRepository,
+                                                   this);
     }
     return m_availablePages;
 }

@@ -49,7 +49,7 @@ private slots:
     void shouldProvideAvailablePagesModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *available = app.availablePages();
@@ -61,7 +61,7 @@ private slots:
     void shouldDefaultToInboxPageAsCurrent()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *page = app.currentPage();
@@ -73,7 +73,7 @@ private slots:
     void shouldProvideArtifactEditorModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *page = app.editor();
@@ -89,7 +89,7 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        Presentation::ApplicationModel app(0, 0, &sourceQueriesMock.getInstance(), 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, &sourceQueriesMock.getInstance(), 0, 0, 0);
 
         // WHEN
         auto tasks = app.taskSourcesModel();
@@ -132,6 +132,7 @@ private slots:
 
         Presentation::ApplicationModel app(0,
                                            0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
@@ -173,6 +174,7 @@ private slots:
 
         Presentation::ApplicationModel app(0,
                                            0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
@@ -205,6 +207,7 @@ private slots:
         mock_object<Domain::TaskRepository> taskRepositoryMock;
 
         Presentation::ApplicationModel app(0,
+                                           0,
                                            0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
@@ -242,6 +245,7 @@ private slots:
         taskRepositoryMock(&Domain::TaskRepository::setDefaultSource).when(source).thenReturn();
 
         Presentation::ApplicationModel app(0,
+                                           0,
                                            0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
@@ -287,6 +291,7 @@ private slots:
 
         Presentation::ApplicationModel app(0,
                                            0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
@@ -328,6 +333,7 @@ private slots:
 
         Presentation::ApplicationModel app(0,
                                            0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
@@ -360,6 +366,7 @@ private slots:
         mock_object<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ApplicationModel app(0,
+                                           0,
                                            0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
@@ -397,6 +404,7 @@ private slots:
         noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).thenReturn();
 
         Presentation::ApplicationModel app(0,
+                                           0,
                                            0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
