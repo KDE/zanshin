@@ -25,6 +25,7 @@
 #define DOMAIN_PROJECTREPOSITORY_H
 
 #include "artifact.h"
+#include "datasource.h"
 #include "project.h"
 
 class KJob;
@@ -37,7 +38,8 @@ public:
     ProjectRepository();
     virtual ~ProjectRepository();
 
-    virtual KJob *save(Project::Ptr project) = 0;
+    virtual KJob *create(Project::Ptr project, DataSource::Ptr source) = 0;
+    virtual KJob *update(Project::Ptr project) = 0;
     virtual KJob *remove(Project::Ptr project) = 0;
 
     virtual KJob *associate(Project::Ptr &parent, Artifact::Ptr child) = 0;
