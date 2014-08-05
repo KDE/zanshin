@@ -47,6 +47,12 @@
 #include "akonadi/akonadistoragesettings.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/TagFetchJob>
+#include <Akonadi/TagFetchScope>
+
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth)
 
 class AkonadiStorageTest : public QObject
@@ -62,6 +68,32 @@ public:
     }
 
 private slots:
+    void dumpTree()
+    {
+        auto colJob = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
+                                                      Akonadi::CollectionFetchJob::Recursive,
+                                                      this);
+        colJob->exec();
+        for (const auto &col : colJob->collections()) {
+            qDebug() << "COL:" << col.id() << col.name();
+            auto itemJob = new Akonadi::ItemFetchJob(col, this);
+            itemJob->fetchScope().fetchFullPayload();
+            itemJob->exec();
+            for (const auto &item : itemJob->items()) {
+                QString summary;
+                if (item.hasPayload<KCalCore::Todo::Ptr>())
+                    summary = item.payload<KCalCore::Todo::Ptr>()->summary();
+                qDebug() << "\tITEM:" << item.id() << item.remoteId() << summary;
+            }
+        }
+
+        auto tagJob = new Akonadi::TagFetchJob(this);
+        tagJob->exec();
+        for (const auto &tag : tagJob->tags()) {
+            qDebug() << "TAG:" << tag.id() << tag.name();
+        }
+    }
+
     void shouldListCollections_data()
     {
         QTest::addColumn<Akonadi::Collection>("collection");
