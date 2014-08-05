@@ -196,6 +196,13 @@ GIVEN("^I display the available (\\S+) data sources$") {
     QTest::qWait(500);
 }
 
+GIVEN("^I display the available pages$") {
+    ScenarioScope<ZanshinContext> context;
+    context->presentation = context->app->property("availablePages").value<QObject*>();
+    context->setModel(context->presentation->property("pageListModel").value<QAbstractItemModel*>());
+    QTest::qWait(500);
+}
+
 GIVEN("^I display the inbox page$") {
     ScenarioScope<ZanshinContext> context;
     context->presentation = context->app->property("currentPage").value<QObject*>();

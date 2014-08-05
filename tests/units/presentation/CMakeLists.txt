@@ -1,6 +1,7 @@
 zanshin_auto_tests(
   applicationmodeltest
   artifacteditormodeltest
+  availablepagesmodeltest
   inboxpagemodeltest
   metatypestest
   querytreemodeltest

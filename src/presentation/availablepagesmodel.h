@@ -27,6 +27,8 @@
 
 #include <QObject>
 
+#include "domain/queryresult.h"
+
 #include "presentation/metatypes.h"
 
 namespace Domain {
@@ -55,6 +57,10 @@ private:
 
     Domain::ProjectQueries *m_projectQueries;
     Domain::ProjectRepository *m_projectRepository;
+
+    Domain::QueryResultProvider<QObjectPtr>::Ptr m_rootsProvider;
+    QObjectPtr m_inboxObject;
+    QObjectPtr m_projectsObject;
 };
 
 }

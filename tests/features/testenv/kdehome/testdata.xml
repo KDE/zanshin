@@ -74,7 +74,7 @@ CREATED:20120322T164413Z&#xd;
 UID:06ff6f36-f0a0-47b9-8c77-7a18207eb5ea&#xd;
 LAST-MODIFIED:20120322T164413Z&#xd;
 X-KDE-Zanshin-Project:1&#xd;
-SUMMARY:A project&#xd;
+SUMMARY:Read List&#xd;
 PERCENT-COMPLETE:0&#xd;
 END:VTODO&#xd;
 
@@ -136,6 +136,23 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
+        </item>
+        <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{04944d0e-43a5-4cc1-9ca0-bc3200981879}">
+          <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20120322T164413Z&#xd;
+CREATED:20120322T164413Z&#xd;
+UID:04944d0e-43a5-4cc1-9ca0-bc3200981879&#xd;
+LAST-MODIFIED:20120322T164413Z&#xd;
+X-KDE-Zanshin-Project:1&#xd;
+SUMMARY:Backlog&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
         </item>
         <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{c9a13610-a9f6-433d-96f2-3b8fdb728fe5}" name="Calendar3">
           <attribute type="AccessRights">a</attribute>
