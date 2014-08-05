@@ -4,4 +4,4 @@ set(pimlibs_SRCS
 )
 
 kde4_add_library(pimlibs STATIC ${pimlibs_SRCS})
-target_link_libraries(pimlibs ${KDE4_KDECORE_LIBS})
+target_link_libraries(pimlibs ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS})
