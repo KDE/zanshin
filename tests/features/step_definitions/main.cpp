@@ -93,11 +93,35 @@ private:
 
 namespace Zanshin {
 
+QString indexString(const QModelIndex &index, int role = Qt::DisplayRole)
+{
+    if (role != Qt::DisplayRole)
+        return index.data(role).toString();
+
+    QString data = index.data(role).toString();
+
+    if (index.parent().isValid())
+        return indexString(index.parent(), role) + " / " + data;
+    else
+        return data;
+}
+
+void collectIndices(ZanshinContext *context, const QModelIndex &root = QModelIndex())
+{
+    QAbstractItemModel *model = context->model();
+    for (int row = 0; row < model->rowCount(root); row++) {
+        const QModelIndex index = model->index(row, 0, root);
+        context->indices << index;
+        if (model->rowCount(index) > 0)
+            collectIndices(context, index);
+    }
+}
+
 void dumpIndices(const QList<QPersistentModelIndex> &indices)
 {
     qDebug() << "Dumping list of size:" << indices.size();
     for (int row = 0; row < indices.size(); row++) {
-        qDebug() << row << indices.at(row).data().toString();
+        qDebug() << row << indexString(indices.at(row));
     }
 }
 
@@ -188,7 +212,7 @@ GIVEN("^there is an item named \"(.+)\" in the central list$") {
 
     for (int row = 0; row < context->model()->rowCount(); row++) {
         QModelIndex index = context->model()->index(row, 0);
-        if (index.data().toString() == itemName) {
+        if (Zanshin::indexString(index) == itemName) {
             context->index = index;
             return;
         }
@@ -230,9 +254,7 @@ WHEN("^I add a task named \"(.+)\"$") {
 WHEN("^I list the items$") {
     ScenarioScope<ZanshinContext> context;
     context->indices.clear();
-    for (int row = 0; row < context->model()->rowCount(); row++) {
-        context->indices << context->model()->index(row, 0);
-    }
+    Zanshin::collectIndices(context.get());
 }
 
 WHEN("^I open the item in the editor$") {
@@ -350,7 +372,8 @@ THEN("^the list is") {
         QModelIndex resultIndex = context->indices.at(row);
 
         for (auto role : usedRoles) {
-            COMPARE_OR_DUMP(expectedIndex.data(role).toString(), resultIndex.data(role).toString());
+            COMPARE_OR_DUMP(Zanshin::indexString(expectedIndex, role),
+                            Zanshin::indexString(resultIndex, role));
         }
     }
     COMPARE_OR_DUMP(proxy.rowCount(), context->indices.size());
@@ -361,7 +384,7 @@ THEN("^the list contains \"(.+)\"$") {
 
     ScenarioScope<ZanshinContext> context;
     for (int row = 0; row < context->indices.size(); row++) {
-        if (context->indices.at(row).data().toString() == itemName)
+        if (Zanshin::indexString(context->indices.at(row)) == itemName)
             return;
     }
 
@@ -373,7 +396,7 @@ THEN("^the list does not contain \"(.+)\"$") {
 
     ScenarioScope<ZanshinContext> context;
     for (int row = 0; row < context->indices.size(); row++) {
-        VERIFY_OR_DUMP(context->indices.at(row).data().toString() != itemName);
+        VERIFY_OR_DUMP(Zanshin::indexString(context->indices.at(row)) != itemName);
     }
 }
 
