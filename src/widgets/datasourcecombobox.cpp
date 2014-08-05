@@ -31,8 +31,6 @@
 
 using namespace Widgets;
 
-Q_DECLARE_METATYPE(QAbstractItemModel*)
-
 DataSourceComboBox::DataSourceComboBox(QWidget *parent)
     : QWidget(parent),
       m_combo(new QComboBox(this)),

@@ -33,10 +33,6 @@
 
 #include "presentation/applicationmodel.h"
 
-// cppcheck's parser somehow confuses it for a C-cast
-// cppcheck-suppress cstyleCast
-Q_DECLARE_METATYPE(QAbstractItemModel*)
-
 using namespace Widgets;
 
 ApplicationComponents::ApplicationComponents(QWidget *parent)

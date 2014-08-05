@@ -26,12 +26,10 @@
 #define PRESENTATION_INBOXPAGEMODEL_H
 
 #include <QObject>
-#include <QMetaType>
 
-class QAbstractItemModel;
+#include "presentation/metatypes.h"
+
 class QModelIndex;
-
-Q_DECLARE_METATYPE(QAbstractItemModel*)
 
 namespace Domain {
     class ArtifactQueries;

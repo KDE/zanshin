@@ -32,11 +32,10 @@
 
 #include "itemdelegate.h"
 
+#include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
 using namespace Widgets;
-
-Q_DECLARE_METATYPE(QAbstractItemModel*)
 
 PageView::PageView(QWidget *parent)
     : QWidget(parent),

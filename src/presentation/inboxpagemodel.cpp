@@ -45,7 +45,6 @@ InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
       m_taskRepository(taskRepository),
       m_noteRepository(noteRepository)
 {
-    qRegisterMetaType<QAbstractItemModel*>();
 }
 
 InboxPageModel::~InboxPageModel()

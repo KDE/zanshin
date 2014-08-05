@@ -3,6 +3,7 @@ set(presentation_SRCS
     artifacteditormodel.cpp
     datasourcelistmodel.cpp
     inboxpagemodel.cpp
+    metatypes.cpp
     querytreemodelbase.cpp
     tasklistmodel.cpp
 )

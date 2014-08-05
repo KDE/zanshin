@@ -51,8 +51,7 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_noteSourcesModel(0),
       m_ownInterface(true)
 {
-    qRegisterMetaType<QAbstractItemModel*>();
-    qRegisterMetaType<Domain::DataSource::Ptr>();
+    MetaTypes::registerAll();
 }
 
 ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
@@ -73,8 +72,7 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
       m_noteSourcesModel(0),
       m_ownInterface(false)
 {
-    qRegisterMetaType<QAbstractItemModel*>();
-    qRegisterMetaType<Domain::DataSource::Ptr>();
+    MetaTypes::registerAll();
 }
 
 ApplicationModel::~ApplicationModel()

@@ -39,7 +39,6 @@
 
 typedef std::function<Widgets::DataSourceComboBox*(Widgets::ApplicationComponents*)> ComboGetterFunction;
 Q_DECLARE_METATYPE(ComboGetterFunction)
-Q_DECLARE_METATYPE(QAbstractItemModel*)
 
 class PageModelStub : public QObject
 {

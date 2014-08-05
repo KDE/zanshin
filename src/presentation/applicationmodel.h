@@ -29,7 +29,7 @@
 
 #include "domain/datasourcequeries.h"
 
-class QAbstractItemModel;
+#include "presentation/metatypes.h"
 
 namespace Domain {
     class ArtifactQueries;

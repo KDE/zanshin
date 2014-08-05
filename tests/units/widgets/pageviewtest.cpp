@@ -29,10 +29,10 @@
 #include <QStringListModel>
 #include <QTreeView>
 
+#include "presentation/metatypes.h"
+
 #include "widgets/itemdelegate.h"
 #include "widgets/pageview.h"
-
-Q_DECLARE_METATYPE(QAbstractItemModel*)
 
 class PageModelStub : public QObject
 {
