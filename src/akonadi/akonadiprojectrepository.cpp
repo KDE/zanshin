@@ -54,10 +54,11 @@ ProjectRepository::~ProjectRepository()
 
 KJob *ProjectRepository::create(Domain::Project::Ptr project, Domain::DataSource::Ptr source)
 {
-    Q_UNUSED(project);
-    Q_UNUSED(source);
-    qFatal("Not implemented yet");
-    return 0;
+    auto item = m_serializer->createItemFromProject(project);
+    Q_ASSERT(!item.isValid());
+    auto collection = m_serializer->createCollectionFromDataSource(source);
+    Q_ASSERT(collection.isValid());
+    return m_storage->createItem(item, collection);
 }
 
 KJob *ProjectRepository::update(Domain::Project::Ptr project)
@@ -69,9 +70,9 @@ KJob *ProjectRepository::update(Domain::Project::Ptr project)
 
 KJob *ProjectRepository::remove(Domain::Project::Ptr project)
 {
-    Q_UNUSED(project);
-    qFatal("Not implemented yet");
-    return 0;
+    auto item = m_serializer->createItemFromProject(project);
+    Q_ASSERT(item.isValid());
+    return m_storage->removeItem(item);
 }
 
 KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact::Ptr child)

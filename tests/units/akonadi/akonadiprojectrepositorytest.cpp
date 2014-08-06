@@ -36,6 +36,40 @@ class AkonadiProjectRepositoryTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void shouldCreateProjectInDataSource()
+    {
+        // GIVEN
+
+        // A project and its corresponding item already not existing in storage
+        Akonadi::Item item;
+        auto project = Domain::Project::Ptr::create();
+
+        // A data source and its corresponding collection existing in storage
+        Akonadi::Collection collection(42);
+        auto source = Domain::DataSource::Ptr::create();
+
+        // A mock create job
+        auto itemCreateJob = new MockAkonadiJob(this);
+
+        // Storage mock returning the create job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::createItem).when(item, collection)
+                                                           .thenReturn(itemCreateJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project).thenReturn(item);
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(collection);
+
+        // WHEN
+        QScopedPointer<Akonadi::ProjectRepository> repository(new Akonadi::ProjectRepository(&storageMock.getInstance(),
+                                                                                             &serializerMock.getInstance()));
+        repository->create(project, source)->exec();
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, collection).exactly(1));
+    }
+
     void shouldUpdateExistingProject()
     {
         // GIVEN
@@ -64,6 +98,35 @@ private slots:
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0).exactly(1));
+    }
+
+    void shouldRemoveExistingProject()
+    {
+        // GIVEN
+
+        // A project and its corresponding item already existing in storage
+        Akonadi::Item item(42);
+        auto project = Domain::Project::Ptr::create();
+
+        // A mock remove job
+        auto itemRemoveJob = new MockAkonadiJob(this);
+
+        // Storage mock returning the create job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::removeItem).when(item)
+                                                           .thenReturn(itemRemoveJob);
+
+        // Serializer mock returning the item for the project
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project).thenReturn(item);
+
+        // WHEN
+        QScopedPointer<Akonadi::ProjectRepository> repository(new Akonadi::ProjectRepository(&storageMock.getInstance(),
+                                                                                             &serializerMock.getInstance()));
+        repository->remove(project)->exec();
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::removeItem).when(item).exactly(1));
     }
 };
 
