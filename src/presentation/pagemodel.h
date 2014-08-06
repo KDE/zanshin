@@ -32,7 +32,6 @@
 class QModelIndex;
 
 namespace Domain {
-    class ArtifactQueries;
     class NoteRepository;
     class TaskQueries;
     class TaskRepository;
@@ -45,8 +44,7 @@ class PageModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
-    explicit PageModel(Domain::ArtifactQueries *artifactQueries,
-                       Domain::TaskQueries *taskQueries,
+    explicit PageModel(Domain::TaskQueries *taskQueries,
                        Domain::TaskRepository *taskRepository,
                        Domain::NoteRepository *noteRepository,
                        QObject *parent = 0);
@@ -58,7 +56,6 @@ public slots:
     virtual void removeItem(const QModelIndex &index) = 0;
 
 protected:
-    Domain::ArtifactQueries *artifactQueries() const;
     Domain::TaskQueries *taskQueries() const;
 
     Domain::TaskRepository *taskRepository() const;
@@ -69,7 +66,6 @@ private:
 
     QAbstractItemModel *m_centralListModel;
 
-    Domain::ArtifactQueries *m_artifactQueries;
     Domain::TaskQueries *m_taskQueries;
 
     Domain::TaskRepository *m_taskRepository;

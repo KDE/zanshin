@@ -26,14 +26,12 @@
 
 using namespace Presentation;
 
-PageModel::PageModel(Domain::ArtifactQueries *artifactQueries,
-                     Domain::TaskQueries *taskQueries,
+PageModel::PageModel(Domain::TaskQueries *taskQueries,
                      Domain::TaskRepository *taskRepository,
                      Domain::NoteRepository *noteRepository,
                      QObject *parent)
     : QObject(parent),
       m_centralListModel(0),
-      m_artifactQueries(artifactQueries),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
       m_noteRepository(noteRepository)
@@ -45,11 +43,6 @@ QAbstractItemModel *PageModel::centralListModel()
     if (!m_centralListModel)
         m_centralListModel = createCentralListModel();
     return m_centralListModel;
-}
-
-Domain::ArtifactQueries *PageModel::artifactQueries() const
-{
-    return m_artifactQueries;
 }
 
 Domain::TaskQueries *PageModel::taskQueries() const

@@ -38,11 +38,11 @@ InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
                                Domain::TaskRepository *taskRepository,
                                Domain::NoteRepository *noteRepository,
                                QObject *parent)
-    : PageModel(artifactQueries,
-                taskQueries,
+    : PageModel(taskQueries,
                 taskRepository,
                 noteRepository,
-                parent)
+                parent),
+      m_artifactQueries(artifactQueries)
 {
 }
 
@@ -66,7 +66,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
         if (!artifact)
-            return artifactQueries()->findInboxTopLevel();
+            return m_artifactQueries->findInboxTopLevel();
         else if (auto task = artifact.dynamicCast<Domain::Task>())
             return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(taskQueries()->findChildren(task));
         else

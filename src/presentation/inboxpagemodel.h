@@ -27,6 +27,10 @@
 
 #include "presentation/pagemodel.h"
 
+namespace Domain {
+    class ArtifactQueries;
+}
+
 namespace Presentation {
 
 class InboxPageModel : public PageModel
@@ -44,6 +48,8 @@ public:
 
 private:
     QAbstractItemModel *createCentralListModel();
+
+    Domain::ArtifactQueries *m_artifactQueries;
 };
 
 }
