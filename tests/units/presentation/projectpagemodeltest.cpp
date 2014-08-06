@@ -89,6 +89,8 @@ private slots:
         const QModelIndex rootNoteIndex = model->index(1, 0);
         const QModelIndex childTaskIndex = model->index(0, 0, rootTaskIndex);
 
+        QCOMPARE(page.project(), project);
+
         QCOMPARE(model->rowCount(), 2);
         QCOMPARE(model->rowCount(rootTaskIndex), 1);
         QCOMPARE(model->rowCount(rootNoteIndex), 0);

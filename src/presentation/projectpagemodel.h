@@ -47,6 +47,8 @@ public:
                               Domain::NoteRepository *noteRepository,
                               QObject *parent = 0);
 
+    Domain::Project::Ptr project() const;
+
     void addTask(const QString &title);
     void removeItem(const QModelIndex &index);
 

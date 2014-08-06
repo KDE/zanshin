@@ -48,6 +48,11 @@ ProjectPageModel::ProjectPageModel(const Domain::Project::Ptr &project,
 {
 }
 
+Domain::Project::Ptr ProjectPageModel::project() const
+{
+    return m_project;
+}
+
 void ProjectPageModel::addTask(const QString &title)
 {
     Q_UNUSED(title);
