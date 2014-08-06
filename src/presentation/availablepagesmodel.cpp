@@ -86,6 +86,13 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     return 0;
 }
 
+void AvailablePagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
+{
+    auto project = Domain::Project::Ptr::create();
+    project->setName(name);
+    m_projectRepository->create(project, source);
+}
+
 QAbstractItemModel *AvailablePagesModel::createPageListModel()
 {
     m_inboxObject = QObjectPtr::create();

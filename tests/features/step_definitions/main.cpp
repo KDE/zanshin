@@ -299,6 +299,27 @@ WHEN("^I add a task named \"(.+)\"$") {
     QTest::qWait(500);
 }
 
+WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
+    REGEX_PARAM(QString, projectName);
+    REGEX_PARAM(QString, sourceName);
+
+    ScenarioScope<ZanshinContext> context;
+
+    auto sourceList = context->app->property("taskSourcesModel").value<QAbstractItemModel*>();
+    VERIFY(sourceList);
+    QTest::qWait(500);
+    QModelIndex index = Zanshin::findIndex(sourceList, sourceName);
+    VERIFY(index.isValid());
+    auto source = index.data(Presentation::QueryTreeModelBase::ObjectRole)
+                       .value<Domain::DataSource::Ptr>();
+    VERIFY(source);
+
+    VERIFY(QMetaObject::invokeMethod(context->presentation, "addProject",
+                                     Q_ARG(QString, projectName),
+                                     Q_ARG(Domain::DataSource::Ptr, source)));
+    QTest::qWait(500);
+}
+
 WHEN("^I list the items$") {
     ScenarioScope<ZanshinContext> context;
     context->indices.clear();

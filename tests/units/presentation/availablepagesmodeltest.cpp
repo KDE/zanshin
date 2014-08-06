@@ -175,6 +175,30 @@ private slots:
         QVERIFY(qobject_cast<Presentation::ProjectPageModel*>(project2Page));
         QCOMPARE(qobject_cast<Presentation::ProjectPageModel*>(project2Page)->project(), project2);
     }
+
+    void shouldAddProjects()
+    {
+        // GIVEN
+
+        auto source = Domain::DataSource::Ptr::create();
+
+        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+        projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
+                                                                       any<Domain::DataSource::Ptr>())
+                                                                 .thenReturn(new FakeJob(this));
+
+        Presentation::AvailablePagesModel pages(0, 0,
+                                                &projectRepositoryMock.getInstance(),
+                                                0, 0, 0);
+
+        // WHEN
+        pages.addProject("Foo", source);
+
+        // THEN
+        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
+                                                                               any<Domain::DataSource::Ptr>())
+                                                                         .exactly(1));
+    }
 };
 
 QTEST_MAIN(AvailablePagesModelTest)

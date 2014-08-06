@@ -27,6 +27,7 @@
 
 #include <QObject>
 
+#include "domain/datasource.h"
 #include "domain/queryresult.h"
 
 #include "presentation/metatypes.h"
@@ -61,6 +62,9 @@ public:
     QAbstractItemModel *pageListModel();
 
     Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index);
+
+public slots:
+    void addProject(const QString &name, const Domain::DataSource::Ptr &source);
 
 private:
     QAbstractItemModel *createPageListModel();
