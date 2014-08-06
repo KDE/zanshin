@@ -103,6 +103,20 @@ private slots:
         QCOMPARE(centralView->model(), &model);
     }
 
+    void shouldNotCrashWithNullModel()
+    {
+        // GIVEN
+        Widgets::PageView page;
+        QObject stubPageModel;
+        page.setModel(&stubPageModel);
+
+        // WHEN
+        page.setModel(0);
+
+        // THEN
+        QVERIFY(!page.model());
+    }
+
     void shouldCreateTasksWhenHittingReturn()
     {
         // GIVEN

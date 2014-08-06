@@ -80,6 +80,9 @@ void PageView::setModel(QObject *model)
 
     m_model = model;
 
+    if (!m_model)
+        return;
+
     QVariant modelProperty = m_model->property("centralListModel");
     if (modelProperty.canConvert<QAbstractItemModel*>())
         m_centralView->setModel(modelProperty.value<QAbstractItemModel*>());
