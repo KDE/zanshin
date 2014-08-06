@@ -101,6 +101,8 @@ private slots:
                                                                                    new MockMonitor(this)));
 
         Domain::QueryResult<Domain::Context::Ptr>::Ptr result = queries->findAll();
+        result->data();
+        result = queries->findAll(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());

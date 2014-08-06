@@ -100,6 +100,8 @@ private slots:
                                                                              &serializerMock.getInstance(),
                                                                              new MockMonitor(this)));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
+        result->data();
+        result = queries->findAll(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -458,6 +460,8 @@ private slots:
                                                                              &serializerMock.getInstance(),
                                                                              new MockMonitor(this)));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
+        result->data();
+        result = queries->findChildren(task1); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -1023,6 +1027,8 @@ private slots:
                                                                              &serializerMock.getInstance(),
                                                                              new MockMonitor(this)));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
+        result->data();
+        result = queries->findTopLevel(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());

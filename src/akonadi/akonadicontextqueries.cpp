@@ -63,10 +63,11 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
 {
     ContextProvider::Ptr provider(m_contextProvider.toStrongRef());
 
-    if (!provider) {
-        provider = ContextProvider::Ptr::create();
-        m_contextProvider = provider.toWeakRef();
-    }
+    if (provider)
+        return ContextResult::create(provider);
+
+    provider = ContextProvider::Ptr::create();
+    m_contextProvider = provider.toWeakRef();
 
     auto result = ContextResult::create(provider);
     TagFetchJobInterface *job = m_storage->fetchTags();

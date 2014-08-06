@@ -70,10 +70,11 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 {
     TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
 
-    if (!provider) {
-        provider = TaskProvider::Ptr(new TaskProvider);
-        m_taskProvider = provider.toWeakRef();
-    }
+    if (provider)
+        return TaskResult::create(provider);
+
+    provider = TaskProvider::Ptr::create();
+    m_taskProvider = provider.toWeakRef();
 
     auto result = TaskResult::create(provider);
 
@@ -150,10 +151,11 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
     TaskProvider::Ptr provider(m_topTaskProvider.toStrongRef());
 
-    if (!provider) {
-        provider = TaskProvider::Ptr(new TaskProvider);
-        m_topTaskProvider = provider.toWeakRef();
-    }
+    if (provider)
+        return TaskResult::create(provider);
+
+    provider = TaskProvider::Ptr::create();
+    m_topTaskProvider = provider.toWeakRef();
 
     auto result = TaskResult::create(provider);
 

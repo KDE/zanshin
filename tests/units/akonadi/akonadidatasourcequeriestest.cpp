@@ -109,6 +109,8 @@ private slots:
                                                                                          &serializerMock.getInstance(),
                                                                                          new MockMonitor(this)));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queryFunction(queries.data());
+        result->data();
+        result = queryFunction(queries.data()); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());

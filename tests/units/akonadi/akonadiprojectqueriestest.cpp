@@ -96,6 +96,8 @@ private slots:
                                                                                    &serializerMock.getInstance(),
                                                                                    new MockMonitor(this)));
         Domain::QueryResult<Domain::Project::Ptr>::Ptr result = queries->findAll();
+        result->data();
+        result = queries->findAll(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -450,6 +452,8 @@ private slots:
                                                                                    &serializerMock.getInstance(),
                                                                                    new MockMonitor(this)));
         Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(project1);
+        result->data();
+        result = queries->findTopLevelArtifacts(project1); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());

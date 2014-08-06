@@ -70,10 +70,11 @@ ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
 {
     ProjectProvider::Ptr provider(m_projectProvider.toStrongRef());
 
-    if (!provider) {
-        provider = ProjectProvider::Ptr(new ProjectProvider);
-        m_projectProvider = provider.toWeakRef();
-    }
+    if (provider)
+        return ProjectResult::create(provider);
+
+    provider = ProjectProvider::Ptr::create();
+    m_projectProvider = provider.toWeakRef();
 
     auto result = ProjectResult::create(provider);
 

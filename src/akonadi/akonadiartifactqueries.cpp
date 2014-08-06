@@ -70,10 +70,11 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
 {
     ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
 
-    if (!provider) {
-        provider = ArtifactProvider::Ptr(new ArtifactProvider);
-        m_inboxProvider = provider.toWeakRef();
-    }
+    if (provider)
+        return ArtifactResult::create(provider);
+
+    provider = ArtifactProvider::Ptr::create();
+    m_inboxProvider = provider.toWeakRef();
 
     ArtifactResult::Ptr result = ArtifactResult::create(provider);
 

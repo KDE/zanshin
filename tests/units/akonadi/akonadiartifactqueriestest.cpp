@@ -114,6 +114,8 @@ private slots:
                                                                                      &serializerMock.getInstance(),
                                                                                      new MockMonitor(this)));
         Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
+        result->data();
+        result = queries->findInboxTopLevel(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());

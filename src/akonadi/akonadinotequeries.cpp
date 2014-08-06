@@ -69,10 +69,11 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
 {
     NoteProvider::Ptr provider(m_noteProvider.toStrongRef());
 
-    if (!provider) {
-        provider = NoteProvider::Ptr(new NoteProvider);
-        m_noteProvider = provider.toWeakRef();
-    }
+    if (provider)
+        return NoteResult::create(provider);
+
+    provider = NoteProvider::Ptr::create();
+    m_noteProvider = provider.toWeakRef();
 
     auto result = NoteResult::create(provider);
 
