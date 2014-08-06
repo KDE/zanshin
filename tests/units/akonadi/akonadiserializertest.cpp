@@ -1177,6 +1177,7 @@ private slots:
         auto todo = item.payload<KCalCore::Todo::Ptr>();
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->uid(), todoUid);
+        QVERIFY(!todo->customProperty("Zanshin", "Project").isEmpty());
     }
 
     void shouldVerifyIfAnItemIsAProjectChild_data()

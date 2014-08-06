@@ -316,6 +316,7 @@ Item Serializer::createItemFromProject(Domain::Project::Ptr project)
     auto todo = KCalCore::Todo::Ptr::create();
 
     todo->setSummary(project->name());
+    todo->setCustomProperty("Zanshin", "Project", "1");
 
     if (project->property("todoUid").isValid()) {
         todo->setUid(project->property("todoUid").toString());
