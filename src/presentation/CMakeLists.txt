@@ -6,6 +6,7 @@ set(presentation_SRCS
     inboxpagemodel.cpp
     metatypes.cpp
     pagemodel.cpp
+    projectpagemodel.cpp
     querytreemodelbase.cpp
     tasklistmodel.cpp
 )
