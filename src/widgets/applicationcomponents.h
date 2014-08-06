@@ -29,10 +29,13 @@
 
 #include "domain/artifact.h"
 
+#include "presentation/metatypes.h"
+
 class QWidget;
 
 namespace Widgets {
 
+class AvailablePagesView;
 class DataSourceComboBox;
 class EditorView;
 class PageView;
@@ -45,6 +48,7 @@ public:
 
     QObject *model() const;
 
+    AvailablePagesView *availablePagesView() const;
     PageView *pageView() const;
     EditorView *editorView() const;
 
@@ -55,12 +59,14 @@ public slots:
     void setModel(QObject *model);
 
 private slots:
+    void onCurrentPageChanged(const QObjectPtr &page);
     void onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact);
 
 private:
     QObject *m_model;
 
     QWidget *m_parent;
+    AvailablePagesView *m_availablePagesView;
     PageView *m_pageView;
     EditorView *m_editorView;
     DataSourceComboBox *m_noteCombo;

@@ -33,6 +33,7 @@
 #include "presentation/querytreemodelbase.h"
 
 #include "widgets/applicationcomponents.h"
+#include "widgets/availablepagesview.h"
 #include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
@@ -145,6 +146,39 @@ private slots:
 
         // THEN
         QCOMPARE(components.model(), &model);
+    }
+
+    void shouldApplyAvailablePagesModelToAvailablePagesView()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+        QObject model;
+        QObject availablePages;
+        model.setProperty("availablePages", QVariant::fromValue(&availablePages));
+
+        // WHEN
+        components.setModel(&model);
+
+        // THEN
+        QCOMPARE(components.availablePagesView()->model(), &availablePages);
+    }
+
+    void shouldApplyAvailablePagesModelAlsoToCreatedAvailablePagesView()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+        // Force creation
+        components.availablePagesView();
+
+        QObject model;
+        QObject availablePages;
+        model.setProperty("availablePages", QVariant::fromValue(&availablePages));
+
+        // WHEN
+        components.setModel(&model);
+
+        // THEN
+        QCOMPARE(components.availablePagesView()->model(), &availablePages);
     }
 
     void shouldApplyCurrentPageModelToPageView()

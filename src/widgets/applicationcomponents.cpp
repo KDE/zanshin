@@ -27,6 +27,7 @@
 #include <QVariant>
 #include <QWidget>
 
+#include "availablepagesview.h"
 #include "datasourcecombobox.h"
 #include "editorview.h"
 #include "pageview.h"
@@ -39,6 +40,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
     : QObject(parent),
       m_model(0),
       m_parent(parent),
+      m_availablePagesView(0),
       m_pageView(0),
       m_editorView(0),
       m_noteCombo(0),
@@ -49,6 +51,24 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
 QObject *ApplicationComponents::model() const
 {
     return m_model;
+}
+
+AvailablePagesView *ApplicationComponents::availablePagesView() const
+{
+    if (!m_availablePagesView) {
+        auto availablePagesView = new AvailablePagesView(m_parent);
+        if (m_model) {
+            availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
+        }
+
+        ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
+        self->m_availablePagesView = availablePagesView;
+
+        connect(self->m_availablePagesView, SIGNAL(currentPageChanged(QObjectPtr)),
+                self, SLOT(onCurrentPageChanged(QObjectPtr)));
+    }
+
+    return m_availablePagesView;
 }
 
 PageView *ApplicationComponents::pageView() const
@@ -127,6 +147,9 @@ void ApplicationComponents::setModel(QObject *model)
 
     m_model = model;
 
+    if (m_availablePagesView)
+        m_availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
+
     if (m_pageView)
         m_pageView->setModel(m_model->property("currentPage").value<QObject*>());
 
@@ -146,6 +169,12 @@ void ApplicationComponents::setModel(QObject *model)
         connect(m_noteCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
                 m_model, SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
     }
+}
+
+void ApplicationComponents::onCurrentPageChanged(const QObjectPtr &page)
+{
+    Q_UNUSED(page);
+    qWarning("Not implemented yet");
 }
 
 void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact)
