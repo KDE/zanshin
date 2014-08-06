@@ -47,6 +47,9 @@ EditorView::EditorView(QWidget *parent)
     m_dueDateEdit->setObjectName("dueDateEdit");
     m_doneButton->setObjectName("doneButton");
 
+    m_startDateEdit->setMinimumContentsLength(10);
+    m_dueDateEdit->setMinimumContentsLength(10);
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(m_textEdit);
     layout->addWidget(m_taskGroup);
@@ -55,12 +58,17 @@ EditorView::EditorView(QWidget *parent)
     QVBoxLayout *vbox = new QVBoxLayout;
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addWidget(new QLabel(tr("Start date"), m_taskGroup));
-    hbox->addWidget(m_startDateEdit);
+    hbox->addWidget(m_startDateEdit, 1);
     hbox->addWidget(new QLabel(tr("Due date"), m_taskGroup));
-    hbox->addWidget(m_dueDateEdit);
+    hbox->addWidget(m_dueDateEdit, 1);
     vbox->addLayout(hbox);
     vbox->addWidget(m_doneButton);
     m_taskGroup->setLayout(vbox);
+
+    // Make sure our minimum width is always the one with
+    // the task group visible
+    layout->activate();
+    setMinimumWidth(minimumSizeHint().width());
 
     m_taskGroup->setVisible(false);
 
