@@ -27,6 +27,7 @@
 #include <QMainWindow>
 
 #include "widgets/applicationcomponents.h"
+#include "widgets/availablepagesview.h"
 #include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
@@ -56,12 +57,16 @@ int main(int argc, char **argv)
 
     widget->setLayout(layout);
 
-    auto dock = new QDockWidget;
-    dock->setWidget(components->editorView());
+    auto pagesDock = new QDockWidget;
+    pagesDock->setWidget(components->availablePagesView());
+
+    auto editorDock = new QDockWidget;
+    editorDock->setWidget(components->editorView());
 
     QMainWindow window;
     window.setCentralWidget(widget);
-    window.addDockWidget(Qt::RightDockWidgetArea, dock);
+    window.addDockWidget(Qt::RightDockWidgetArea, editorDock);
+    window.addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
     window.show();
 
     return app.exec();

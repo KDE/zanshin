@@ -33,6 +33,7 @@
 
 #include "presentation/applicationmodel.h"
 #include "widgets/applicationcomponents.h"
+#include "widgets/availablepagesview.h"
 #include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
@@ -62,6 +63,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     view->setLayout(layout);
 
     auto splitter = new QSplitter(parentWidget);
+    splitter->addWidget(components->availablePagesView());
     splitter->addWidget(view);
     splitter->addWidget(components->editorView());
     setWidget(splitter);
