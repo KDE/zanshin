@@ -108,6 +108,26 @@ QString indexString(const QModelIndex &index, int role = Qt::DisplayRole)
         return data;
 }
 
+QModelIndex findIndex(QAbstractItemModel *model,
+                      const QString &string,
+                      int role = Qt::DisplayRole,
+                      const QModelIndex &root = QModelIndex())
+{
+    for (int row = 0; row < model->rowCount(root); row++) {
+        const QModelIndex index = model->index(row, 0, root);
+        if (indexString(index, role) == string)
+            return index;
+
+        if (model->rowCount(index) > 0) {
+            const QModelIndex found = findIndex(model, string, role, index);
+            if (found.isValid())
+                return found;
+        }
+    }
+
+    return QModelIndex();
+}
+
 void collectIndices(ZanshinContext *context, const QModelIndex &root = QModelIndex())
 {
     QAbstractItemModel *model = context->model();
@@ -203,8 +223,27 @@ GIVEN("^I display the available pages$") {
     QTest::qWait(500);
 }
 
-GIVEN("^I display the inbox page$") {
+GIVEN("^I display the \"(.*)\" page$") {
+    REGEX_PARAM(QString, pageName);
+
     ScenarioScope<ZanshinContext> context;
+    auto availablePages = context->app->property("availablePages").value<QObject*>();
+    VERIFY(availablePages);
+
+    auto pageListModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
+    VERIFY(pageListModel);
+    QTest::qWait(500);
+
+    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageName);
+    VERIFY(pageIndex.isValid());
+
+    QObject *page = 0;
+    QMetaObject::invokeMethod(availablePages, "createPageForIndex",
+                              Q_RETURN_ARG(QObject*, page),
+                              Q_ARG(QModelIndex, pageIndex));
+    VERIFY(page);
+
+    VERIFY(context->app->setProperty("currentPage", QVariant::fromValue(page)));
     context->presentation = context->app->property("currentPage").value<QObject*>();
     QTest::qWait(500);
 }
@@ -381,8 +420,8 @@ THEN("^the list is") {
         QModelIndex resultIndex = context->indices.at(row);
 
         for (auto role : usedRoles) {
-            COMPARE_OR_DUMP(Zanshin::indexString(expectedIndex, role),
-                            Zanshin::indexString(resultIndex, role));
+            COMPARE_OR_DUMP(Zanshin::indexString(resultIndex, role),
+                            Zanshin::indexString(expectedIndex, role));
         }
     }
     COMPARE_OR_DUMP(proxy.rowCount(), context->indices.size());

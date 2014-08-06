@@ -1,0 +1,13 @@
+Feature: Project content
+  As someone collecting tasks and notes
+  I can display a project
+  In order to see the artifacts associated to it
+
+  Scenario: Project tasks and notes appear in the corresponding page
+    Given I display the "Projects / Read List" page
+    And I look at the central list
+    When I list the items
+    Then the list is:
+       | display                              |
+       | "Clean Code" by Robert C Martin      |
+       | "Domain Driven Design" by Eric Evans |

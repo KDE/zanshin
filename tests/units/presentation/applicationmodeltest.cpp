@@ -58,16 +58,26 @@ private slots:
         QVERIFY(qobject_cast<Presentation::AvailablePagesModel*>(available));
     }
 
-    void shouldDefaultToInboxPageAsCurrent()
+    void shouldProvideCurrentPage()
     {
         // GIVEN
         Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
+        QVERIFY(!app.currentPage());
+        QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
         // WHEN
-        QObject *page = app.currentPage();
+        auto page = new QObject(this);
+        app.setCurrentPage(page);
 
         // THEN
-        QVERIFY(qobject_cast<Presentation::InboxPageModel*>(page));
+        QCOMPARE(app.currentPage(), page);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<QObject*>(), page);
+    }
+
+    void shouldAllowChangingPage()
+    {
+        // GIVEN
     }
 
     void shouldProvideArtifactEditorModel()

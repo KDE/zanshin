@@ -4,7 +4,7 @@ Feature: Removing tasks
   In order to clean up the old junk I accumulated
 
   Scenario: Removing a simple task from the inbox
-    Given I display the inbox page
+    Given I display the "Inbox" page
     And there is an item named "Buy a book" in the central list
     When I remove the item
     And I list the items

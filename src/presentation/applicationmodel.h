@@ -50,7 +50,7 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QAbstractItemModel* taskSourcesModel READ taskSourcesModel)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
     Q_PROPERTY(QObject* availablePages READ availablePages)
-    Q_PROPERTY(QObject* currentPage READ currentPage)
+    Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
 public:
     explicit ApplicationModel(QObject *parent = 0);
@@ -76,8 +76,12 @@ public:
     QObject *editor();
 
 public slots:
+    void setCurrentPage(QObject *page);
     void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
+
+signals:
+    void currentPageChanged(QObject *page);
 
 private:
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources();

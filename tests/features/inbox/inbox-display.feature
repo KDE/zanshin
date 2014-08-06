@@ -4,7 +4,7 @@ Feature: Inbox content
   In order to see the artifacts which need to be organized (e.g. any task or note not associated to any project, context or topic)
 
   Scenario: Unorganized tasks and notes appear in the inbox
-    Given I display the inbox page
+    Given I display the "Inbox" page
     And I look at the central list
     When I list the items
     Then the list is:

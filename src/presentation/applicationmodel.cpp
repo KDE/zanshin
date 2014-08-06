@@ -32,8 +32,6 @@
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodel.h"
 #include "presentation/datasourcelistmodel.h"
-#include "presentation/querytreemodel.h"
-#include "presentation/inboxpagemodel.h"
 
 #include "utils/dependencymanager.h"
 
@@ -183,11 +181,6 @@ QObject *ApplicationModel::availablePages()
 
 QObject *ApplicationModel::currentPage()
 {
-    if (!m_currentPage) {
-        m_currentPage = new InboxPageModel(m_artifactQueries, m_taskQueries,
-                                           m_taskRepository, m_noteRepository, this);
-    }
-
     return m_currentPage;
 }
 
@@ -198,6 +191,15 @@ QObject *ApplicationModel::editor()
     }
 
     return m_editor;
+}
+
+void ApplicationModel::setCurrentPage(QObject *page)
+{
+    if (page == m_currentPage)
+        return;
+
+    m_currentPage = page;
+    emit currentPageChanged(page);
 }
 
 void ApplicationModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
