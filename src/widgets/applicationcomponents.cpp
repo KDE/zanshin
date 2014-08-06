@@ -64,8 +64,8 @@ AvailablePagesView *ApplicationComponents::availablePagesView() const
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
         self->m_availablePagesView = availablePagesView;
 
-        connect(self->m_availablePagesView, SIGNAL(currentPageChanged(QObjectPtr)),
-                self, SLOT(onCurrentPageChanged(QObjectPtr)));
+        connect(self->m_availablePagesView, SIGNAL(currentPageChanged(QObject*)),
+                self, SLOT(onCurrentPageChanged(QObject*)));
     }
 
     return m_availablePagesView;
@@ -77,6 +77,8 @@ PageView *ApplicationComponents::pageView() const
         auto pageView = new PageView(m_parent);
         if (m_model) {
             pageView->setModel(m_model->property("currentPage").value<QObject*>());
+            connect(m_model, SIGNAL(currentPageChanged(QObject*)),
+                    pageView, SLOT(setModel(QObject*)));
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
@@ -150,8 +152,11 @@ void ApplicationComponents::setModel(QObject *model)
     if (m_availablePagesView)
         m_availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
 
-    if (m_pageView)
+    if (m_pageView) {
         m_pageView->setModel(m_model->property("currentPage").value<QObject*>());
+        connect(m_model, SIGNAL(currentPageChanged(QObject*)),
+                m_pageView, SLOT(setModel(QObject*)));
+    }
 
     if (m_editorView)
         m_editorView->setModel(m_model->property("editor").value<QObject*>());
@@ -171,10 +176,13 @@ void ApplicationComponents::setModel(QObject *model)
     }
 }
 
-void ApplicationComponents::onCurrentPageChanged(const QObjectPtr &page)
+void ApplicationComponents::onCurrentPageChanged(QObject *page)
 {
-    Q_UNUSED(page);
-    qWarning("Not implemented yet");
+    m_model->setProperty("currentPage", QVariant::fromValue(page));
+
+    QObject *editorModel = m_model->property("editor").value<QObject*>();
+    if (editorModel)
+        editorModel->setProperty("artifact", QVariant::fromValue(Domain::Artifact::Ptr()));
 }
 
 void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact)

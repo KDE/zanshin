@@ -27,8 +27,6 @@
 
 #include <QWidget>
 
-#include "presentation/metatypes.h"
-
 class QModelIndex;
 class QTreeView;
 
@@ -46,7 +44,7 @@ public slots:
     void setModel(QObject *model);
 
 signals:
-    void currentPageChanged(const QObjectPtr &page);
+    void currentPageChanged(QObject *page);
 
 private slots:
     void onCurrentChanged(const QModelIndex &current);

@@ -59,7 +59,7 @@ public slots:
     void setModel(QObject *model);
 
 private slots:
-    void onCurrentPageChanged(const QObjectPtr &page);
+    void onCurrentPageChanged(QObject *page);
     void onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact);
 
 private:

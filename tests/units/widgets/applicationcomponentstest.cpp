@@ -24,6 +24,7 @@
 #include <QtTestGui>
 
 #include <QStandardItemModel>
+#include <QStringListModel>
 #include <QTreeView>
 
 #include "domain/note.h"
@@ -40,6 +41,69 @@
 
 typedef std::function<Widgets::DataSourceComboBox*(Widgets::ApplicationComponents*)> ComboGetterFunction;
 Q_DECLARE_METATYPE(ComboGetterFunction)
+
+class ApplicationModelStub : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
+public:
+    explicit ApplicationModelStub(QObject *parent = 0)
+        : QObject(parent), m_currentPage(0) {}
+
+    QObject *currentPage()
+    {
+        return m_currentPage;
+    }
+
+    void setCurrentPage(QObject *page)
+    {
+        if (page == m_currentPage)
+            return;
+
+        m_currentPage = page;
+        emit currentPageChanged(m_currentPage);
+    }
+
+signals:
+    void currentPageChanged(QObject *page);
+
+private:
+    QObject *m_currentPage;
+};
+
+class AvailablePagesModelStub : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
+public:
+    explicit AvailablePagesModelStub(QObject *parent = 0)
+        : QObject(parent)
+    {
+        m_itemModel.setStringList(QStringList() << "Inbox" << "Project");
+    }
+
+    QAbstractItemModel *pageListModel()
+    {
+        return &m_itemModel;
+    }
+
+    Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index)
+    {
+        auto page = new QObject(this);
+        auto model = new QStringListModel(page);
+        model->setStringList(QStringList() << "Items" << "from" << index.data().toString());
+        page->setProperty("centralListModel",
+                          QVariant::fromValue<QAbstractItemModel*>(model));
+        createdPages << page;
+        return page;
+    }
+
+private:
+    QStringListModel m_itemModel;
+
+public:
+    QList<QObject*> createdPages;
+};
 
 class PageModelStub : public QObject
 {
@@ -245,6 +309,45 @@ private slots:
 
         // THEN
         QCOMPARE(components.editorView()->model(), editorModel);
+    }
+
+    void shouldApplyAvailablePagesSelectionToApplicationModel()
+    {
+        // GIVEN
+        ApplicationModelStub model;
+
+        AvailablePagesModelStub availablePagesModel;
+        model.setProperty("availablePages", QVariant::fromValue<QObject*>(&availablePagesModel));
+        model.setProperty("currentPage", QVariant::fromValue<QObject*>(0));
+
+        QObject editorModel;
+        editorModel.setProperty("artifact",
+                                QVariant::fromValue<Domain::Artifact::Ptr>(Domain::Task::Ptr::create()));
+        model.setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
+
+        Widgets::ApplicationComponents components;
+        components.setModel(&model);
+
+        Widgets::AvailablePagesView *availablePagesView = components.availablePagesView();
+        auto pagesView = availablePagesView->findChild<QTreeView*>("pagesView");
+        QVERIFY(pagesView);
+
+        Widgets::PageView *pageView = components.pageView();
+        QVERIFY(pageView);
+        QVERIFY(!pageView->model());
+
+        QModelIndex index = pagesView->model()->index(0, 0);
+
+        // WHEN
+        pagesView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+
+        // THEN
+        QCOMPARE(availablePagesModel.createdPages.size(), 1);
+        QCOMPARE(model.property("currentPage").value<QObject*>(),
+                 availablePagesModel.createdPages.first());
+        QCOMPARE(pageView->model(),
+                 availablePagesModel.createdPages.first());
+        QVERIFY(editorModel.property("artifact").value<Domain::Artifact::Ptr>().isNull());
     }
 
     void shouldApplyPageViewSelectionToEditorModel()

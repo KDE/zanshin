@@ -28,6 +28,7 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
+#include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
 using namespace Widgets;
@@ -73,13 +74,9 @@ void AvailablePagesView::setModel(QObject *model)
 
 void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 {
-    QVariant data = current.data(Presentation::QueryTreeModelBase::ObjectRole);
-    if (!data.isValid())
-        return;
-
-    auto object = data.value<QObjectPtr>();
-    if (!object)
-        return;
-
-    emit currentPageChanged(object);
+    QObject *page = 0;
+    QMetaObject::invokeMethod(m_model, "createPageForIndex",
+                              Q_RETURN_ARG(QObject*, page),
+                              Q_ARG(QModelIndex, current));
+    emit currentPageChanged(page);
 }
