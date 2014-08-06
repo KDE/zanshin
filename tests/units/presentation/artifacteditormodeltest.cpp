@@ -79,6 +79,12 @@ private slots:
 
         // WHEN
         model.setArtifact(task);
+        // To make sure we don't signal too much
+        model.setText(task->text());
+        model.setTitle(task->title());
+        model.setDone(task->isDone());
+        model.setStartDate(task->startDate());
+        model.setDueDate(task->dueDate());
 
         // THEN
         QVERIFY(model.hasTaskProperties());
@@ -120,6 +126,9 @@ private slots:
 
         // WHEN
         model.setArtifact(note);
+        // To make sure we don't signal too much
+        model.setText(note->text());
+        model.setTitle(note->title());
 
         // THEN
         QVERIFY(!model.hasTaskProperties());

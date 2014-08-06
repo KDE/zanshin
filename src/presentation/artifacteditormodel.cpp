@@ -143,30 +143,40 @@ int ArtifactEditorModel::autoSaveDelay()
 
 void ArtifactEditorModel::setText(const QString &text)
 {
+    if (m_text == text)
+        return;
     onTextChanged(text);
     setSaveNeeded(true);
 }
 
 void ArtifactEditorModel::setTitle(const QString &title)
 {
+    if (m_title == title)
+        return;
     onTitleChanged(title);
     setSaveNeeded(true);
 }
 
 void ArtifactEditorModel::setDone(bool done)
 {
+    if (m_done == done)
+        return;
     onDoneChanged(done);
     setSaveNeeded(true);
 }
 
 void ArtifactEditorModel::setStartDate(const QDateTime &start)
 {
+    if (m_start == start)
+        return;
     onStartDateChanged(start);
     setSaveNeeded(true);
 }
 
 void ArtifactEditorModel::setDueDate(const QDateTime &due)
 {
+    if (m_due == due)
+        return;
     onDueDateChanged(due);
     setSaveNeeded(true);
 }
