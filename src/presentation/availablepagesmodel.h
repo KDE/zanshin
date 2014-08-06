@@ -31,9 +31,15 @@
 
 #include "presentation/metatypes.h"
 
+class QModelIndex;
+
 namespace Domain {
+    class ArtifactQueries;
+    class NoteRepository;
     class ProjectQueries;
     class ProjectRepository;
+    class TaskQueries;
+    class TaskRepository;
 }
 
 namespace Presentation {
@@ -43,20 +49,33 @@ class AvailablePagesModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
-    explicit AvailablePagesModel(Domain::ProjectQueries *projectQueries,
+    explicit AvailablePagesModel(Domain::ArtifactQueries *artifactQueries,
+                                 Domain::ProjectQueries *projectQueries,
                                  Domain::ProjectRepository *projectRepository,
+                                 Domain::TaskQueries *taskQueries,
+                                 Domain::TaskRepository *taskRepository,
+                                 Domain::NoteRepository *noteRepository,
                                  QObject *parent = 0);
     ~AvailablePagesModel();
 
     QAbstractItemModel *pageListModel();
+
+    Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index);
 
 private:
     QAbstractItemModel *createPageListModel();
 
     QAbstractItemModel *m_pageListModel;
 
+    Domain::ArtifactQueries *m_artifactQueries;
+
     Domain::ProjectQueries *m_projectQueries;
     Domain::ProjectRepository *m_projectRepository;
+
+    Domain::TaskQueries *m_taskQueries;
+    Domain::TaskRepository *m_taskRepository;
+
+    Domain::NoteRepository *m_noteRepository;
 
     Domain::QueryResultProvider<QObjectPtr>::Ptr m_rootsProvider;
     QObjectPtr m_inboxObject;

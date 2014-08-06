@@ -29,18 +29,28 @@
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 
+#include "presentation/inboxpagemodel.h"
 #include "presentation/metatypes.h"
+#include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
 
 using namespace Presentation;
 
-AvailablePagesModel::AvailablePagesModel(Domain::ProjectQueries *projectQueries,
+AvailablePagesModel::AvailablePagesModel(Domain::ArtifactQueries *artifactQueries,
+                                         Domain::ProjectQueries *projectQueries,
                                          Domain::ProjectRepository *projectRepository,
+                                         Domain::TaskQueries *taskQueries,
+                                         Domain::TaskRepository *taskRepository,
+                                         Domain::NoteRepository *noteRepository,
                                          QObject *parent)
     : QObject(parent),
       m_pageListModel(0),
+      m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
-      m_projectRepository(projectRepository)
+      m_projectRepository(projectRepository),
+      m_taskQueries(taskQueries),
+      m_taskRepository(taskRepository),
+      m_noteRepository(noteRepository)
 {
 }
 
@@ -53,6 +63,27 @@ QAbstractItemModel *AvailablePagesModel::pageListModel()
     if (!m_pageListModel)
         m_pageListModel = createPageListModel();
     return m_pageListModel;
+}
+
+QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
+{
+    QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
+
+    if (object == m_inboxObject) {
+        return new InboxPageModel(m_artifactQueries,
+                                  m_taskQueries, m_taskRepository,
+                                  m_noteRepository,
+                                  this);
+
+    } else if (auto project = object.objectCast<Domain::Project>()) {
+        return new ProjectPageModel(project,
+                                    m_projectQueries,
+                                    m_taskQueries, m_taskRepository,
+                                    m_noteRepository,
+                                    this);
+    }
+
+    return 0;
 }
 
 QAbstractItemModel *AvailablePagesModel::createPageListModel()

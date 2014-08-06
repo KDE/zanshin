@@ -170,8 +170,12 @@ Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource()
 QObject *ApplicationModel::availablePages()
 {
     if (!m_availablePages) {
-        m_availablePages = new AvailablePagesModel(m_projectQueries,
+        m_availablePages = new AvailablePagesModel(m_artifactQueries,
+                                                   m_projectQueries,
                                                    m_projectRepository,
+                                                   m_taskQueries,
+                                                   m_taskRepository,
+                                                   m_noteRepository,
                                                    this);
     }
     return m_availablePages;

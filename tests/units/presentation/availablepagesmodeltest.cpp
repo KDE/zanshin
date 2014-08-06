@@ -29,6 +29,8 @@
 #include "domain/projectrepository.h"
 
 #include "presentation/availablepagesmodel.h"
+#include "presentation/inboxpagemodel.h"
+#include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodelbase.h"
 
 #include "testlib/fakejob.h"
@@ -59,8 +61,12 @@ private slots:
 
         mock_object<Domain::ProjectRepository> projectRepositoryMock;
 
-        Presentation::AvailablePagesModel pages(&projectQueriesMock.getInstance(),
-                                                &projectRepositoryMock.getInstance());
+        Presentation::AvailablePagesModel pages(0,
+                                                &projectQueriesMock.getInstance(),
+                                                &projectRepositoryMock.getInstance(),
+                                                0,
+                                                0,
+                                                0);
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -120,6 +126,54 @@ private slots:
 
         QCOMPARE(project1->name(), QString("New Project 1"));
         QCOMPARE(project2->name(), QString("New Project 2"));
+    }
+
+    void shouldCreatePages()
+    {
+        // GIVEN
+
+        // Two projects
+        auto project1 = Domain::Project::Ptr::create();
+        project1->setName("Project 1");
+        auto project2 = Domain::Project::Ptr::create();
+        project2->setName("Project 2");
+        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
+        projectProvider->append(project1);
+        projectProvider->append(project2);
+
+        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
+
+        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+
+        Presentation::AvailablePagesModel pages(0,
+                                                &projectQueriesMock.getInstance(),
+                                                &projectRepositoryMock.getInstance(),
+                                                0,
+                                                0,
+                                                0);
+
+        // WHEN
+        QAbstractItemModel *model = pages.pageListModel();
+
+        // THEN
+        const QModelIndex inboxIndex = model->index(0, 0);
+        const QModelIndex projectsIndex = model->index(1, 0);
+        const QModelIndex project1Index = model->index(0, 0, projectsIndex);
+        const QModelIndex project2Index = model->index(1, 0, projectsIndex);
+
+        QObject *inboxPage = pages.createPageForIndex(inboxIndex);
+        QObject *projectsPage = pages.createPageForIndex(projectsIndex);
+        QObject *project1Page = pages.createPageForIndex(project1Index);
+        QObject *project2Page = pages.createPageForIndex(project2Index);
+
+        QVERIFY(qobject_cast<Presentation::InboxPageModel*>(inboxPage));
+        QVERIFY(!projectsPage);
+        QVERIFY(qobject_cast<Presentation::ProjectPageModel*>(project1Page));
+        QCOMPARE(qobject_cast<Presentation::ProjectPageModel*>(project1Page)->project(), project1);
+        QVERIFY(qobject_cast<Presentation::ProjectPageModel*>(project2Page));
+        QCOMPARE(qobject_cast<Presentation::ProjectPageModel*>(project2Page)->project(), project2);
     }
 };
 
