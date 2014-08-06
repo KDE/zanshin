@@ -78,11 +78,12 @@ private slots:
         QCOMPARE(model->rowCount(project2Index), 0);
 
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
-                                         | Qt::ItemIsEnabled;
-        QCOMPARE(model->flags(inboxIndex), defaultFlags);
-        QCOMPARE(model->flags(projectsIndex), defaultFlags);
-        QCOMPARE(model->flags(project1Index), defaultFlags | Qt::ItemIsEditable);
-        QCOMPARE(model->flags(project2Index), defaultFlags | Qt::ItemIsEditable);
+                                         | Qt::ItemIsEnabled
+                                         | Qt::ItemIsEditable;
+        QCOMPARE(model->flags(inboxIndex), defaultFlags & ~(Qt::ItemIsEditable));
+        QCOMPARE(model->flags(projectsIndex), Qt::NoItemFlags);
+        QCOMPARE(model->flags(project1Index), defaultFlags);
+        QCOMPARE(model->flags(project2Index), defaultFlags);
 
         QCOMPARE(model->data(inboxIndex).toString(), tr("Inbox"));
         QCOMPARE(model->data(projectsIndex).toString(), tr("Projects"));

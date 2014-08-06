@@ -75,11 +75,18 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             return Domain::QueryResult<QObjectPtr>::Ptr();
     };
 
-    auto flags = [](const QObjectPtr &object) {
+    auto flags = [this](const QObjectPtr &object) {
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
-                                         | Qt::ItemIsEnabled;
+                                         | Qt::ItemIsEnabled
+                                         | Qt::ItemIsEditable;
+        const Qt::ItemFlags immutableNodeFlags = Qt::ItemIsSelectable
+                                               | Qt::ItemIsEnabled;
+        const Qt::ItemFlags structureNodeFlags = Qt::NoItemFlags;
 
-        return object.objectCast<Domain::Project>() ? (defaultFlags | Qt::ItemIsEditable) : defaultFlags;
+
+        return object.objectCast<Domain::Project>() ? defaultFlags
+             : object == m_inboxObject ? immutableNodeFlags
+             : structureNodeFlags;
     };
 
     auto data = [this](const QObjectPtr &object, int role) -> QVariant {
