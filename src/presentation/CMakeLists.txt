@@ -5,6 +5,7 @@ set(presentation_SRCS
     datasourcelistmodel.cpp
     inboxpagemodel.cpp
     metatypes.cpp
+    pagemodel.cpp
     querytreemodelbase.cpp
     tasklistmodel.cpp
 )

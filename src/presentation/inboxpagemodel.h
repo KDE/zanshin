@@ -25,48 +25,25 @@
 #ifndef PRESENTATION_INBOXPAGEMODEL_H
 #define PRESENTATION_INBOXPAGEMODEL_H
 
-#include <QObject>
-
-#include "presentation/metatypes.h"
-
-class QModelIndex;
-
-namespace Domain {
-    class ArtifactQueries;
-    class NoteRepository;
-    class TaskQueries;
-    class TaskRepository;
-}
+#include "presentation/pagemodel.h"
 
 namespace Presentation {
 
-class InboxPageModel : public QObject
+class InboxPageModel : public PageModel
 {
     Q_OBJECT
-    Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
     explicit InboxPageModel(Domain::ArtifactQueries *artifactQueries,
                             Domain::TaskQueries *taskQueries,
                             Domain::TaskRepository *taskRepository,
                             Domain::NoteRepository *noteRepository,
                             QObject *parent = 0);
-    ~InboxPageModel();
 
-    QAbstractItemModel *centralListModel();
-
-public slots:
     void addTask(const QString &title);
     void removeItem(const QModelIndex &index);
 
 private:
     QAbstractItemModel *createCentralListModel();
-    QAbstractItemModel *m_centralListModel;
-
-    Domain::ArtifactQueries *m_artifactQueries;
-    Domain::TaskQueries *m_taskQueries;
-
-    Domain::TaskRepository *m_taskRepository;
-    Domain::NoteRepository *m_noteRepository;
 };
 
 }

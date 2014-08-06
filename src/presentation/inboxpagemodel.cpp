@@ -34,35 +34,23 @@
 using namespace Presentation;
 
 InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
-                       Domain::TaskQueries *taskQueries,
-                       Domain::TaskRepository *taskRepository,
-                       Domain::NoteRepository *noteRepository,
-                       QObject *parent)
-    : QObject(parent),
-      m_centralListModel(0),
-      m_artifactQueries(artifactQueries),
-      m_taskQueries(taskQueries),
-      m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository)
+                               Domain::TaskQueries *taskQueries,
+                               Domain::TaskRepository *taskRepository,
+                               Domain::NoteRepository *noteRepository,
+                               QObject *parent)
+    : PageModel(artifactQueries,
+                taskQueries,
+                taskRepository,
+                noteRepository,
+                parent)
 {
-}
-
-InboxPageModel::~InboxPageModel()
-{
-}
-
-QAbstractItemModel *InboxPageModel::centralListModel()
-{
-    if (!m_centralListModel)
-        m_centralListModel = createCentralListModel();
-    return m_centralListModel;
 }
 
 void InboxPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    m_taskRepository->save(task);
+    taskRepository()->save(task);
 }
 
 void InboxPageModel::removeItem(const QModelIndex &index)
@@ -71,16 +59,16 @@ void InboxPageModel::removeItem(const QModelIndex &index)
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     if (task)
-        m_taskRepository->remove(task);
+        taskRepository()->remove(task);
 }
 
 QAbstractItemModel *InboxPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
         if (!artifact)
-            return m_artifactQueries->findInboxTopLevel();
+            return artifactQueries()->findInboxTopLevel();
         else if (auto task = artifact.dynamicCast<Domain::Task>())
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findChildren(task));
+            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(taskQueries()->findChildren(task));
         else
             return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
     };
@@ -120,7 +108,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            m_taskRepository->save(task);
+            taskRepository()->save(task);
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
@@ -128,7 +116,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
                 return false;
 
             note->setTitle(value.toString());
-            m_noteRepository->save(note);
+            noteRepository()->save(note);
             return true;
 
         }

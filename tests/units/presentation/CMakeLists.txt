@@ -4,6 +4,7 @@ zanshin_auto_tests(
   availablepagesmodeltest
   inboxpagemodeltest
   metatypestest
+  pagemodeltest
   querytreemodeltest
   tasklistmodeltest
 )
