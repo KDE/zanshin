@@ -1,5 +1,6 @@
 set(widgets_SRCS
     applicationcomponents.cpp
+    availablepagesview.cpp
     datasourcecombobox.cpp
     editorview.cpp
     itemdelegate.cpp
