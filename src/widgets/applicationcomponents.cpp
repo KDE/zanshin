@@ -59,6 +59,7 @@ AvailablePagesView *ApplicationComponents::availablePagesView() const
         auto availablePagesView = new AvailablePagesView(m_parent);
         if (m_model) {
             availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
+            availablePagesView->setProjectSourcesModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
@@ -149,8 +150,10 @@ void ApplicationComponents::setModel(QObject *model)
 
     m_model = model;
 
-    if (m_availablePagesView)
+    if (m_availablePagesView) {
         m_availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
+        m_availablePagesView->setProjectSourcesModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
+    }
 
     if (m_pageView) {
         m_pageView->setModel(m_model->property("currentPage").value<QObject*>());

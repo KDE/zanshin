@@ -36,6 +36,7 @@ using namespace Widgets;
 AvailablePagesView::AvailablePagesView(QWidget *parent)
     : QWidget(parent),
       m_model(0),
+      m_sources(0),
       m_pagesView(new QTreeView(this))
 {
     m_pagesView->setObjectName("pagesView");
@@ -49,6 +50,11 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
 QObject *AvailablePagesView::model() const
 {
     return m_model;
+}
+
+QAbstractItemModel *AvailablePagesView::projectSourcesModel() const
+{
+    return m_sources;
 }
 
 void AvailablePagesView::setModel(QObject *model)
@@ -70,6 +76,11 @@ void AvailablePagesView::setModel(QObject *model)
 
     connect(m_pagesView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onCurrentChanged(QModelIndex)));
+}
+
+void AvailablePagesView::setProjectSourcesModel(QAbstractItemModel *sources)
+{
+    m_sources = sources;
 }
 
 void AvailablePagesView::onCurrentChanged(const QModelIndex &current)

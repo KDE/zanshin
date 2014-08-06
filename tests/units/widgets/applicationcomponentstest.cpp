@@ -218,6 +218,8 @@ private slots:
         Widgets::ApplicationComponents components;
         QObject model;
         QObject availablePages;
+        QAbstractItemModel *sourcesModel = new QStandardItemModel(&model);
+        model.setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
         model.setProperty("availablePages", QVariant::fromValue(&availablePages));
 
         // WHEN
@@ -225,6 +227,7 @@ private slots:
 
         // THEN
         QCOMPARE(components.availablePagesView()->model(), &availablePages);
+        QCOMPARE(components.availablePagesView()->projectSourcesModel(), sourcesModel);
     }
 
     void shouldApplyAvailablePagesModelAlsoToCreatedAvailablePagesView()
@@ -236,6 +239,8 @@ private slots:
 
         QObject model;
         QObject availablePages;
+        QAbstractItemModel *sourcesModel = new QStandardItemModel(&model);
+        model.setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
         model.setProperty("availablePages", QVariant::fromValue(&availablePages));
 
         // WHEN
@@ -243,6 +248,7 @@ private slots:
 
         // THEN
         QCOMPARE(components.availablePagesView()->model(), &availablePages);
+        QCOMPARE(components.availablePagesView()->projectSourcesModel(), sourcesModel);
     }
 
     void shouldApplyCurrentPageModelToPageView()

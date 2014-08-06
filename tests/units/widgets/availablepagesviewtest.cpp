@@ -41,6 +41,7 @@ private slots:
         Widgets::AvailablePagesView available;
 
         QVERIFY(!available.model());
+        QVERIFY(!available.projectSourcesModel());
 
         auto pagesView = available.findChild<QTreeView*>("pagesView");
         QVERIFY(pagesView);

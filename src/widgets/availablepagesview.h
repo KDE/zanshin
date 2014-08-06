@@ -27,6 +27,7 @@
 
 #include <QWidget>
 
+class QAbstractItemModel;
 class QModelIndex;
 class QTreeView;
 
@@ -39,9 +40,11 @@ public:
     explicit AvailablePagesView(QWidget *parent = 0);
 
     QObject *model() const;
+    QAbstractItemModel *projectSourcesModel() const;
 
 public slots:
     void setModel(QObject *model);
+    void setProjectSourcesModel(QAbstractItemModel *sources);
 
 signals:
     void currentPageChanged(QObject *page);
@@ -51,6 +54,7 @@ private slots:
 
 private:
     QObject *m_model;
+    QAbstractItemModel *m_sources;
     QTreeView *m_pagesView;
 };
 
