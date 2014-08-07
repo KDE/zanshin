@@ -4,7 +4,13 @@ set(widgets_SRCS
     datasourcecombobox.cpp
     editorview.cpp
     itemdelegate.cpp
+    newpagedialog.cpp
+    newpagedialoginterface.cpp
     pageview.cpp
+)
+
+qt4_wrap_ui(widgets_SRCS
+    newpagedialog.ui
 )
 
 kde4_add_library(widgets STATIC ${widgets_SRCS})

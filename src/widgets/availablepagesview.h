@@ -27,35 +27,50 @@
 
 #include <QWidget>
 
+#include <QSharedPointer>
+
+#include <functional>
+
 class QAbstractItemModel;
 class QModelIndex;
+class QToolBar;
 class QTreeView;
 
 namespace Widgets {
+
+class NewPageDialogInterface;
 
 class AvailablePagesView : public QWidget
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<NewPageDialogInterface> DialogPtr;
+    typedef std::function<DialogPtr(QWidget*)> DialogFactory;
+
     explicit AvailablePagesView(QWidget *parent = 0);
 
     QObject *model() const;
     QAbstractItemModel *projectSourcesModel() const;
+    DialogFactory dialogFactory() const;
 
 public slots:
     void setModel(QObject *model);
     void setProjectSourcesModel(QAbstractItemModel *sources);
+    void setDialogFactory(const DialogFactory &factory);
 
 signals:
     void currentPageChanged(QObject *page);
 
 private slots:
     void onCurrentChanged(const QModelIndex &current);
+    void onAddTriggered();
 
 private:
     QObject *m_model;
     QAbstractItemModel *m_sources;
     QTreeView *m_pagesView;
+    QToolBar *m_actionBar;
+    DialogFactory m_dialogFactory;
 };
 
 }

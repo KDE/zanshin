@@ -24,12 +24,16 @@
 
 #include "availablepagesview.h"
 
+#include <QAction>
 #include <QHeaderView>
+#include <QToolBar>
 #include <QTreeView>
 #include <QVBoxLayout>
 
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
+
+#include "widgets/newpagedialog.h"
 
 using namespace Widgets;
 
@@ -37,14 +41,34 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     : QWidget(parent),
       m_model(0),
       m_sources(0),
-      m_pagesView(new QTreeView(this))
+      m_pagesView(new QTreeView(this)),
+      m_actionBar(new QToolBar(this))
 {
     m_pagesView->setObjectName("pagesView");
     m_pagesView->header()->hide();
 
+    m_actionBar->setObjectName("actionBar");
+    m_actionBar->setIconSize(QSize(16, 16));
+
+    QAction *addAction = new QAction(this);
+    addAction->setObjectName("addAction");
+    addAction->setText(tr("New page"));
+    addAction->setIcon(QIcon::fromTheme("list-add"));
+    connect(addAction, SIGNAL(triggered()), this, SLOT(onAddTriggered()));
+    m_actionBar->addAction(addAction);
+
+    QHBoxLayout *actionBarLayout = new QHBoxLayout;
+    actionBarLayout->setAlignment(Qt::AlignRight);
+    actionBarLayout->addWidget(m_actionBar);
+
     auto layout = new QVBoxLayout;
     layout->addWidget(m_pagesView);
+    layout->addLayout(actionBarLayout);
     setLayout(layout);
+
+    m_dialogFactory = [] (QWidget *parent) {
+        return DialogPtr(new NewPageDialog(parent));
+    };
 }
 
 QObject *AvailablePagesView::model() const
@@ -55,6 +79,11 @@ QObject *AvailablePagesView::model() const
 QAbstractItemModel *AvailablePagesView::projectSourcesModel() const
 {
     return m_sources;
+}
+
+AvailablePagesView::DialogFactory AvailablePagesView::dialogFactory() const
+{
+    return m_dialogFactory;
 }
 
 void AvailablePagesView::setModel(QObject *model)
@@ -83,6 +112,11 @@ void AvailablePagesView::setProjectSourcesModel(QAbstractItemModel *sources)
     m_sources = sources;
 }
 
+void AvailablePagesView::setDialogFactory(const AvailablePagesView::DialogFactory &factory)
+{
+    m_dialogFactory = factory;
+}
+
 void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 {
     QObject *page = 0;
@@ -90,4 +124,15 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
                               Q_RETURN_ARG(QObject*, page),
                               Q_ARG(QModelIndex, current));
     emit currentPageChanged(page);
+}
+
+void AvailablePagesView::onAddTriggered()
+{
+    NewPageDialogInterface::Ptr dialog = m_dialogFactory(this);
+    dialog->setDataSourcesModel(m_sources);
+    if (dialog->exec() == QDialog::Accepted) {
+        QMetaObject::invokeMethod(m_model, "addProject",
+                                  Q_ARG(QString, dialog->name()),
+                                  Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));
+    }
 }

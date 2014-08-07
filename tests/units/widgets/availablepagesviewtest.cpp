@@ -24,13 +24,76 @@
 #include <QtTestGui>
 
 #include <QAbstractItemModel>
+#include <QAction>
 #include <QHeaderView>
 #include <QStringListModel>
+#include <QToolBar>
 #include <QTreeView>
 
 #include "presentation/metatypes.h"
 
 #include "widgets/availablepagesview.h"
+#include "widgets/newpagedialog.h"
+
+class NewPageDialogStub : public Widgets::NewPageDialogInterface
+{
+public:
+    typedef QSharedPointer<NewPageDialogStub> Ptr;
+
+    explicit NewPageDialogStub()
+        : parent(0),
+          execCount(0),
+          sourceModel(0),
+          source(Domain::DataSource::Ptr::create())
+    {
+    }
+
+    int exec()
+    {
+        execCount++;
+        return QDialog::Accepted;
+    }
+
+    void setDataSourcesModel(QAbstractItemModel *model)
+    {
+        sourceModel = model;
+    }
+
+    QString name() const
+    {
+        return "name";
+    }
+
+    Domain::DataSource::Ptr dataSource() const
+    {
+        return source;
+    }
+
+    QWidget *parent;
+    int execCount;
+    QAbstractItemModel *sourceModel;
+    Domain::DataSource::Ptr source;
+};
+
+class AvailablePagesModelStub : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AvailablePagesModelStub(QObject *parent = 0)
+        : QObject(parent)
+    {
+    }
+public slots:
+    void addProject(const QString &name, const Domain::DataSource::Ptr &source)
+    {
+        projectNames << name;
+        sources << source;
+    }
+
+public:
+    QStringList projectNames;
+    QList<Domain::DataSource::Ptr> sources;
+};
 
 class AvailablePagesViewTest : public QObject
 {
@@ -47,6 +110,16 @@ private slots:
         QVERIFY(pagesView);
         QVERIFY(pagesView->isVisibleTo(&available));
         QVERIFY(!pagesView->header()->isVisibleTo(&available));
+
+        auto actionBar = available.findChild<QToolBar*>("actionBar");
+        QVERIFY(actionBar);
+        QVERIFY(actionBar->isVisibleTo(&available));
+
+        auto addAction = available.findChild<QAction*>("addAction");
+        QVERIFY(addAction);
+
+        auto factory = available.dialogFactory();
+        QVERIFY(factory(&available).dynamicCast<Widgets::NewPageDialog>());
     }
 
     void shouldDisplayListFromPageModel()
@@ -67,6 +140,35 @@ private slots:
 
         // THEN
         QCOMPARE(pagesView->model(), &model);
+    }
+
+    void shouldAddNewProjects()
+    {
+        // GIVEN
+        AvailablePagesModelStub model;
+        QStringListModel sourceModel;
+        auto dialogStub = NewPageDialogStub::Ptr::create();
+
+        Widgets::AvailablePagesView available;
+        available.setModel(&model);
+        available.setProjectSourcesModel(&sourceModel);
+        available.setDialogFactory([dialogStub] (QWidget *parent) {
+            dialogStub->parent = parent;
+            return dialogStub;
+        });
+
+        auto addAction = available.findChild<QAction*>("addAction");
+
+        // WHEN
+        addAction->trigger();
+
+        // THEN
+        QCOMPARE(dialogStub->execCount, 1);
+        QCOMPARE(dialogStub->sourceModel, &sourceModel);
+        QCOMPARE(model.projectNames.size(), 1);
+        QCOMPARE(model.projectNames.first(), dialogStub->name());
+        QCOMPARE(model.sources.size(), 1);
+        QCOMPARE(model.sources.first(), dialogStub->dataSource());
     }
 };
 

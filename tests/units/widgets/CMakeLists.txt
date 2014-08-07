@@ -3,5 +3,6 @@ zanshin_auto_tests(
   availablepagesviewtest
   datasourcecomboboxtest
   editorviewtest
+  newpagedialogtest
   pageviewtest
 )
