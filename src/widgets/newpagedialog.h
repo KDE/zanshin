@@ -47,6 +47,7 @@ public:
     void accept();
 
     void setDataSourcesModel(QAbstractItemModel *model);
+    void setDefaultSource(const Domain::DataSource::Ptr &source);
     QString name() const;
     Domain::DataSource::Ptr dataSource() const;
 

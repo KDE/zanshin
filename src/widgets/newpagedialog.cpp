@@ -57,6 +57,12 @@ void NewPageDialog::setDataSourcesModel(QAbstractItemModel *model)
     ui->sourceCombo->setModel(model);
 }
 
+void NewPageDialog::setDefaultSource(const Domain::DataSource::Ptr &source)
+{
+    setProperty("defaultSource", QVariant::fromValue(source));
+    ui->sourceCombo->setDefaultSourceProperty(this, "defaultSource");
+}
+
 QString NewPageDialog::name() const
 {
     return m_name;

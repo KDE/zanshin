@@ -59,6 +59,11 @@ public:
         sourceModel = model;
     }
 
+    void setDefaultSource(const Domain::DataSource::Ptr &source)
+    {
+        defaultSource = source;
+    }
+
     QString name() const
     {
         return "name";
@@ -72,6 +77,7 @@ public:
     QWidget *parent;
     int execCount;
     QAbstractItemModel *sourceModel;
+    Domain::DataSource::Ptr defaultSource;
     Domain::DataSource::Ptr source;
 };
 
@@ -105,6 +111,7 @@ private slots:
 
         QVERIFY(!available.model());
         QVERIFY(!available.projectSourcesModel());
+        QVERIFY(available.defaultProjectSource().isNull());
 
         auto pagesView = available.findChild<QTreeView*>("pagesView");
         QVERIFY(pagesView);
@@ -149,9 +156,12 @@ private slots:
         QStringListModel sourceModel;
         auto dialogStub = NewPageDialogStub::Ptr::create();
 
+        auto source = Domain::DataSource::Ptr::create();
+
         Widgets::AvailablePagesView available;
         available.setModel(&model);
         available.setProjectSourcesModel(&sourceModel);
+        available.setDefaultProjectSource(source);
         available.setDialogFactory([dialogStub] (QWidget *parent) {
             dialogStub->parent = parent;
             return dialogStub;
@@ -164,11 +174,14 @@ private slots:
 
         // THEN
         QCOMPARE(dialogStub->execCount, 1);
+        QCOMPARE(dialogStub->parent, &available);
         QCOMPARE(dialogStub->sourceModel, &sourceModel);
+        QCOMPARE(dialogStub->defaultSource, source);
         QCOMPARE(model.projectNames.size(), 1);
         QCOMPARE(model.projectNames.first(), dialogStub->name());
         QCOMPARE(model.sources.size(), 1);
         QCOMPARE(model.sources.first(), dialogStub->dataSource());
+        QCOMPARE(available.defaultProjectSource(), dialogStub->dataSource());
     }
 };
 

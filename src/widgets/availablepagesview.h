@@ -31,6 +31,8 @@
 
 #include <functional>
 
+#include "domain/datasource.h"
+
 class QAbstractItemModel;
 class QModelIndex;
 class QToolBar;
@@ -51,11 +53,13 @@ public:
 
     QObject *model() const;
     QAbstractItemModel *projectSourcesModel() const;
+    Domain::DataSource::Ptr defaultProjectSource() const;
     DialogFactory dialogFactory() const;
 
 public slots:
     void setModel(QObject *model);
     void setProjectSourcesModel(QAbstractItemModel *sources);
+    void setDefaultProjectSource(const Domain::DataSource::Ptr &source);
     void setDialogFactory(const DialogFactory &factory);
 
 signals:
@@ -68,6 +72,7 @@ private slots:
 private:
     QObject *m_model;
     QAbstractItemModel *m_sources;
+    Domain::DataSource::Ptr m_defaultSource;
     QTreeView *m_pagesView;
     QToolBar *m_actionBar;
     DialogFactory m_dialogFactory;

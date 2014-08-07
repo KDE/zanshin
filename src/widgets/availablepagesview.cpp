@@ -81,6 +81,11 @@ QAbstractItemModel *AvailablePagesView::projectSourcesModel() const
     return m_sources;
 }
 
+Domain::DataSource::Ptr AvailablePagesView::defaultProjectSource() const
+{
+    return m_defaultSource;
+}
+
 AvailablePagesView::DialogFactory AvailablePagesView::dialogFactory() const
 {
     return m_dialogFactory;
@@ -112,6 +117,11 @@ void AvailablePagesView::setProjectSourcesModel(QAbstractItemModel *sources)
     m_sources = sources;
 }
 
+void AvailablePagesView::setDefaultProjectSource(const Domain::DataSource::Ptr &source)
+{
+    m_defaultSource = source;
+}
+
 void AvailablePagesView::setDialogFactory(const AvailablePagesView::DialogFactory &factory)
 {
     m_dialogFactory = factory;
@@ -130,7 +140,9 @@ void AvailablePagesView::onAddTriggered()
 {
     NewPageDialogInterface::Ptr dialog = m_dialogFactory(this);
     dialog->setDataSourcesModel(m_sources);
+    dialog->setDefaultSource(m_defaultSource);
     if (dialog->exec() == QDialog::Accepted) {
+        m_defaultSource = dialog->dataSource();
         QMetaObject::invokeMethod(m_model, "addProject",
                                   Q_ARG(QString, dialog->name()),
                                   Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));

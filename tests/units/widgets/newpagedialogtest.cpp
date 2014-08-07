@@ -106,12 +106,30 @@ private slots:
         auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
         QVERIFY(sourceCombo);
         QVERIFY(sourceCombo->isVisibleTo(&dialog));
+        QVERIFY(!sourceCombo->defaultSourceObject());
+        QCOMPARE(sourceCombo->defaultSourceProperty(), QByteArray());
 
         auto buttonBox = dialog.findChild<QDialogButtonBox*>("buttonBox");
         QVERIFY(buttonBox);
         QVERIFY(buttonBox->isVisibleTo(&dialog));
         QVERIFY(buttonBox->button(QDialogButtonBox::Ok));
         QVERIFY(buttonBox->button(QDialogButtonBox::Cancel));
+    }
+
+    void shouldPositionDefaultProperty()
+    {
+        // GIVEN
+        Widgets::NewPageDialog dialog;
+        auto source = Domain::DataSource::Ptr::create();
+        auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
+
+        // WHEN
+        dialog.setDefaultSource(source);
+
+        // THEN
+        QCOMPARE(dialog.property("defaultSource").value<Domain::DataSource::Ptr>(), source);
+        QCOMPARE(sourceCombo->defaultSourceObject(), &dialog);
+        QCOMPARE(sourceCombo->defaultSourceProperty(), QByteArray("defaultSource"));
     }
 
     void shouldProvideUserInputWhenAccepted()
