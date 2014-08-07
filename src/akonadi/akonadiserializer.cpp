@@ -200,6 +200,24 @@ void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
     todo->setRelatedTo(parent->property("todoUid").toString());
 }
 
+void Serializer::updateItemProject(Item item, Domain::Project::Ptr project)
+{
+    if (isTaskItem(item)) {
+        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        todo->setRelatedTo(project->property("todoUid").toString());
+
+    } else if (isNoteItem(item)) {
+        auto note = item.payload<KMime::Message::Ptr>();
+        note->removeHeader("X-Zanshin-RelatedProjectUid");
+        const QByteArray parentUid = project->property("todoUid").toString().toUtf8();
+        if (!parentUid.isEmpty()) {
+            auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+            relatedHeader->from7BitString(parentUid);
+            note->appendHeader(relatedHeader);
+        }
+    }
+}
+
 void Serializer::removeItemParent(Akonadi::Item item)
 {
     if (!isTaskItem(item))

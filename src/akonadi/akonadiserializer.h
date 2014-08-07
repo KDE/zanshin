@@ -55,6 +55,7 @@ public:
     bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item);
     QString relatedUidFromItem(Akonadi::Item item);
     void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent);
+    void updateItemProject(Akonadi::Item item, Domain::Project::Ptr project);
     void removeItemParent(Akonadi::Item item);
     Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem);
 

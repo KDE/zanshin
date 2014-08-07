@@ -1295,6 +1295,59 @@ private slots:
         }
     }
 
+    void shouldUpdateItemProject_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<Domain::Project::Ptr>("parent");
+        QTest::addColumn<QString>("expectedRelatedToUid");
+
+        Akonadi::Item todoItem;
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todoItem.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        auto parent = Domain::Project::Ptr::create();
+        parent->setProperty("todoUid", "1");
+
+        QTest::newRow("nominal todo case") << todoItem << parent << "1";
+
+        auto invalidParent = Domain::Project::Ptr::create();
+        QTest::newRow("update todo item with a empty parent uid") << todoItem << invalidParent << QString();
+
+        Akonadi::Item noteItem;
+        KMime::Message::Ptr note(new KMime::Message);
+        noteItem.setPayload<KMime::Message::Ptr>(note);
+
+        QTest::newRow("nominal note case") << noteItem << parent << "1";
+        QTest::newRow("update note item with a empty parent uid") << noteItem << invalidParent << QString();
+
+        Akonadi::Item invalidItem;
+        QTest::newRow("update item without payload") << invalidItem << parent << QString();
+    }
+
+    void shouldUpdateItemProject()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item);
+        QFETCH(Domain::Project::Ptr, parent);
+        QFETCH(QString, expectedRelatedToUid);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        serializer.updateItemProject(item, parent);
+
+        // THEN
+        if (item.hasPayload<KCalCore::Todo::Ptr>()) {
+            auto todo = item.payload<KCalCore::Todo::Ptr>();
+            const QString relatedUid = todo->relatedTo();
+            QCOMPARE(relatedUid, expectedRelatedToUid);
+        } else if (item.hasPayload<KMime::Message::Ptr>()) {
+            auto note = item.payload<KMime::Message::Ptr>();
+            const auto relatedHeader = note->headerByType("X-Zanshin-RelatedProjectUid");
+            const QString relatedUid = relatedHeader ? relatedHeader->asUnicodeString() : QString();
+            QCOMPARE(relatedUid, expectedRelatedToUid);
+        }
+    }
+
     void shouldFilterChildrenItem_data()
     {
         QTest::addColumn<Akonadi::Item>("item");

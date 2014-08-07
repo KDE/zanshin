@@ -65,6 +65,7 @@ public:
     virtual bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item) = 0;
     virtual QString relatedUidFromItem(Akonadi::Item item) = 0;
     virtual void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent) = 0;
+    virtual void updateItemProject(Akonadi::Item item, Domain::Project::Ptr project) = 0;
     virtual void removeItemParent(Akonadi::Item item) = 0;
     virtual Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) = 0;
 
