@@ -45,17 +45,71 @@ public:
     typedef std::function<Qt::ItemFlags(const ItemType &)> FlagsFunction;
     typedef std::function<QVariant(const ItemType &, int)> DataFunction;
     typedef std::function<bool(const ItemType &, const QVariant &, int)> SetDataFunction;
+    typedef std::function<bool(const QMimeData *, Qt::DropAction, const ItemType &)> DropFunction;
+    typedef std::function<QMimeData*(const ItemType &)> DragFunction;
 
     QueryTreeNode(const ItemType &item, QueryTreeNodeBase *parentNode, QueryTreeModelBase *model,
-         const QueryGenerator &queryGenerator,
-         const FlagsFunction &flagsFunction,
-         const DataFunction &dataFunction,
-         const SetDataFunction &setDataFunction)
+                  const QueryGenerator &queryGenerator,
+                  const FlagsFunction &flagsFunction,
+                  const DataFunction &dataFunction,
+                  const SetDataFunction &setDataFunction)
         : QueryTreeNodeBase(parentNode, model),
           m_item(item),
           m_flagsFunction(flagsFunction),
           m_dataFunction(dataFunction),
           m_setDataFunction(setDataFunction)
+    {
+        init(model, queryGenerator);
+    }
+
+    QueryTreeNode(const ItemType &item, QueryTreeNodeBase *parentNode, QueryTreeModelBase *model,
+                  const QueryGenerator &queryGenerator,
+                  const FlagsFunction &flagsFunction,
+                  const DataFunction &dataFunction,
+                  const SetDataFunction &setDataFunction,
+                  const DropFunction &dropFunction,
+                  const DragFunction &dragFunction)
+        : QueryTreeNodeBase(parentNode, model),
+          m_item(item),
+          m_flagsFunction(flagsFunction),
+          m_dataFunction(dataFunction),
+          m_setDataFunction(setDataFunction),
+          m_dropFunction(dropFunction),
+          m_dragFunction(dragFunction)
+    {
+        init(model, queryGenerator);
+    }
+
+    Qt::ItemFlags flags() const { return m_flagsFunction(m_item); }
+
+    QVariant data(int role) const
+    {
+        if (role == QueryTreeModelBase::ObjectRole)
+            return QVariant::fromValue(m_item);
+
+        return m_dataFunction(m_item, role);
+    }
+
+    bool setData(const QVariant &value, int role) { return m_setDataFunction(m_item, value, role); }
+
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action)
+    {
+        if (m_dropFunction)
+            return m_dropFunction(data, action, m_item);
+        else
+            return false;
+    }
+
+    QMimeData *mimeData() const
+    {
+        if (m_dragFunction)
+            return m_dragFunction(m_item);
+        else
+            return 0;
+    }
+
+private:
+    void init(QueryTreeModelBase *model, const QueryGenerator &queryGenerator)
     {
         m_children = queryGenerator(m_item);
 
@@ -63,7 +117,11 @@ public:
             return;
 
         for (auto child : m_children->data()) {
-            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(child, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
+            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(child, this,
+                                                                  model, queryGenerator,
+                                                                  m_flagsFunction,
+                                                                  m_dataFunction, m_setDataFunction,
+                                                                  m_dropFunction, m_dragFunction);
             appendChild(node);
         }
 
@@ -72,7 +130,11 @@ public:
             beginInsertRows(parentIndex, index, index);
         });
         m_children->addPostInsertHandler([this, model, queryGenerator](const ItemType &item, int index) {
-            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(item, this, model, queryGenerator, m_flagsFunction, m_dataFunction, m_setDataFunction);
+            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(item, this,
+                                                                  model, queryGenerator,
+                                                                  m_flagsFunction,
+                                                                  m_dataFunction, m_setDataFunction,
+                                                                  m_dropFunction, m_dragFunction);
             insertChild(index, node);
             endInsertRows();
         });
@@ -90,25 +152,14 @@ public:
         });
     }
 
-    Qt::ItemFlags flags() const { return m_flagsFunction(m_item); }
-
-    QVariant data(int role) const
-    {
-        if (role == QueryTreeModelBase::ObjectRole)
-            return QVariant::fromValue(m_item);
-
-        return m_dataFunction(m_item, role);
-    }
-
-    bool setData(const QVariant &value, int role) { return m_setDataFunction(m_item, value, role); }
-
-private:
     ItemType m_item;
     ItemQueryPtr m_children;
 
     FlagsFunction m_flagsFunction;
     DataFunction m_dataFunction;
     SetDataFunction m_setDataFunction;
+    DropFunction m_dropFunction;
+    DragFunction m_dragFunction;
 };
 
 }

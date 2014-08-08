@@ -38,13 +38,33 @@ public:
     typedef typename QueryTreeNode<ItemType>::FlagsFunction FlagsFunction;
     typedef typename QueryTreeNode<ItemType>::DataFunction DataFunction;
     typedef typename QueryTreeNode<ItemType>::SetDataFunction SetDataFunction;
+    typedef typename QueryTreeNode<ItemType>::DropFunction DropFunction;
+    typedef typename QueryTreeNode<ItemType>::DragFunction DragFunction;
 
     explicit QueryTreeModel(const QueryGenerator &queryGenerator,
                             const FlagsFunction &flagsFunction,
                             const DataFunction &dataFunction,
                             const SetDataFunction &setDataFunction,
                             QObject *parent = 0)
-        : QueryTreeModelBase(new QueryTreeNode<ItemType>(ItemType(), 0, this, queryGenerator, flagsFunction, dataFunction, setDataFunction), parent)
+        : QueryTreeModelBase(new QueryTreeNode<ItemType>(ItemType(), 0, this,
+                                                         queryGenerator, flagsFunction,
+                                                         dataFunction, setDataFunction),
+                             parent)
+    {
+    }
+
+    explicit QueryTreeModel(const QueryGenerator &queryGenerator,
+                            const FlagsFunction &flagsFunction,
+                            const DataFunction &dataFunction,
+                            const SetDataFunction &setDataFunction,
+                            const DropFunction &dropFunction,
+                            const DragFunction &dragFunction,
+                            QObject *parent = 0)
+        : QueryTreeModelBase(new QueryTreeNode<ItemType>(ItemType(), 0, this,
+                                                         queryGenerator, flagsFunction,
+                                                         dataFunction, setDataFunction,
+                                                         dropFunction, dragFunction),
+                             parent)
     {
     }
 };

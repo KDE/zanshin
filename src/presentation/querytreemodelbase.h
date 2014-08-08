@@ -41,6 +41,8 @@ public:
     virtual Qt::ItemFlags flags() const = 0;
     virtual QVariant data(int role) const = 0;
     virtual bool setData(const QVariant &value, int role) = 0;
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action) = 0;
+    virtual QMimeData *mimeData() const = 0;
 
     int row();
     QueryTreeNodeBase *parent() const;
@@ -85,6 +87,9 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    QMimeData *mimeData(const QModelIndexList &indexes) const;
+    QStringList mimeTypes() const;
 
 protected:
     explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,

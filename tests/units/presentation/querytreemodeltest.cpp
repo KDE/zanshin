@@ -717,6 +717,123 @@ private slots:
         QVERIFY(data.isValid());
         QCOMPARE(data.value<QColor>(), provider->data().at(1));
     }
+
+    void shouldCreateMimeData()
+    {
+        // GIVEN
+        auto provider = Domain::QueryResultProvider<QColor>::Ptr::create();
+        provider->append(Qt::red);
+        provider->append(Qt::green);
+        provider->append(Qt::blue);
+
+        auto queryGenerator = [&] (const QColor &color) {
+            if (!color.isValid())
+                return Domain::QueryResult<QColor>::create(provider);
+            else
+                return Domain::QueryResult<QColor>::Ptr();
+        };
+        auto flagsFunction = [] (const QColor &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [] (const QColor &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [] (const QColor &, const QVariant &, int) {
+            return false;
+        };
+        auto dropFunction = [] (const QMimeData *, Qt::DropAction, const QColor &) {
+            return false;
+        };
+        auto dragFunction = [] (const QColor &color) {
+            auto mimeData = new QMimeData;
+            mimeData->setColorData(QVariant::fromValue(color));
+            return mimeData;
+        };
+
+        Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
+                                                   dataFunction, setDataFunction,
+                                                   dropFunction, dragFunction);
+        new ModelTest(&model);
+
+        // WHEN
+        auto data = model.mimeData(QList<QModelIndex>() << model.index(1, 0));
+
+        // THEN
+        QVERIFY(data);
+        QVERIFY(model.mimeTypes().contains("application/x-zanshin-object"));
+        QCOMPARE(data->colorData().value<QColor>(), QColor(Qt::green));
+    }
+
+    void shouldDropMimeData_data()
+    {
+        QTest::addColumn<int>("row");
+        QTest::addColumn<int>("column");
+        QTest::addColumn<int>("parentRow");
+        QTest::addColumn<bool>("callExpected");
+
+        QTest::newRow("drop on object") << -1 << -1 << 2 << true;
+        QTest::newRow("drop between object") << 1 << 0 << -1 << false;
+        QTest::newRow("drop in empty area") << -1 << -1 << -1 << true;
+    }
+
+    void shouldDropMimeData()
+    {
+        // GIVEN
+        QFETCH(int, row);
+        QFETCH(int, column);
+        QFETCH(int, parentRow);
+        QFETCH(bool, callExpected);
+        bool dropCalled = false;
+        const QMimeData *droppedData = 0;
+        QColor colorSeen;
+
+        auto provider = Domain::QueryResultProvider<QColor>::Ptr::create();
+        provider->append(Qt::red);
+        provider->append(Qt::green);
+        provider->append(Qt::blue);
+
+        auto queryGenerator = [&] (const QColor &color) {
+            if (!color.isValid())
+                return Domain::QueryResult<QColor>::create(provider);
+            else
+                return Domain::QueryResult<QColor>::Ptr();
+        };
+        auto flagsFunction = [] (const QColor &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [] (const QColor &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [] (const QColor &, const QVariant &, int) {
+            return false;
+        };
+        auto dropFunction = [&] (const QMimeData *data, Qt::DropAction, const QColor &color) {
+            dropCalled = true;
+            droppedData = data;
+            colorSeen = color;
+            return false;
+        };
+        auto dragFunction = [] (const QColor &) -> QMimeData* {
+            return 0;
+        };
+
+        Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
+                                                   dataFunction, setDataFunction,
+                                                   dropFunction, dragFunction);
+        new ModelTest(&model);
+
+        // WHEN
+        auto data = new QMimeData;
+        const QModelIndex parent = parentRow >= 0 ? model.index(parentRow, 0) : QModelIndex();
+        model.dropMimeData(data, Qt::MoveAction, row, column, parent);
+
+        // THEN
+        QCOMPARE(dropCalled, callExpected);
+        if (callExpected) {
+            QCOMPARE(droppedData, data);
+            QCOMPARE(colorSeen, parent.data(Presentation::QueryTreeModelBase::ObjectRole).value<QColor>());
+        }
+    }
 };
 
 QTEST_MAIN(QueryTreeModelTest)

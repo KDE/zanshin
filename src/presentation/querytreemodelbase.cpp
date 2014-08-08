@@ -25,6 +25,8 @@
 
 #include "querytreemodelbase.h"
 
+#include <QStringList>
+
 using namespace Presentation;
 
 QueryTreeNodeBase::QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModelBase *model)
@@ -185,6 +187,27 @@ bool QueryTreeModelBase::setData(const QModelIndex &index, const QVariant &value
     }
 
     return nodeFromIndex(index)->setData(value, role);
+}
+
+bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    if (row != -1 || column != -1)
+        return false;
+
+    return nodeFromIndex(parent)->dropMimeData(data, action);
+}
+
+QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
+{
+    if (indexes.size() != 1)
+        return 0;
+
+    return nodeFromIndex(indexes.first())->mimeData();
+}
+
+QStringList QueryTreeModelBase::mimeTypes() const
+{
+    return QAbstractItemModel::mimeTypes() << "application/x-zanshin-object";
 }
 
 QueryTreeNodeBase *QueryTreeModelBase::nodeFromIndex(const QModelIndex &index) const
