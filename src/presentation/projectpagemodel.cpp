@@ -24,6 +24,8 @@
 
 #include "projectpagemodel.h"
 
+#include <QMimeData>
+
 #include "domain/noterepository.h"
 #include "domain/projectqueries.h"
 #include "domain/taskqueries.h"
@@ -82,7 +84,8 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
     auto flags = [](const Domain::Artifact::Ptr &artifact) {
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
-                                         | Qt::ItemIsEditable;
+                                         | Qt::ItemIsEditable
+                                         | Qt::ItemIsDragEnabled;
 
         return artifact.dynamicCast<Domain::Task>() ? (defaultFlags | Qt::ItemIsUserCheckable) : defaultFlags;
     };
@@ -130,5 +133,19 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         return false;
     };
 
-    return new QueryTreeModel<Domain::Artifact::Ptr>(query, flags, data, setData, this);
+    auto drop = [this](const QMimeData *, Qt::DropAction, const Domain::Artifact::Ptr &) {
+        return false;
+    };
+
+    auto drag = [](const Domain::Artifact::Ptr &artifact) -> QMimeData* {
+        if (!artifact)
+            return 0;
+
+        QMimeData *data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("object", QVariant::fromValue(artifact));
+        return data;
+    };
+
+    return new QueryTreeModel<Domain::Artifact::Ptr>(query, flags, data, setData, drop, drag, this);
 }

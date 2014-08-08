@@ -92,7 +92,8 @@ private slots:
 
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
-                                         | Qt::ItemIsEditable;
+                                         | Qt::ItemIsEditable
+                                         | Qt::ItemIsDragEnabled;
         QCOMPARE(model->flags(rootTaskIndex), defaultFlags | Qt::ItemIsUserCheckable);
         QCOMPARE(model->flags(rootNoteIndex), defaultFlags);
         QCOMPARE(model->flags(childTaskIndex), defaultFlags | Qt::ItemIsUserCheckable);
@@ -136,6 +137,22 @@ private slots:
 
         QCOMPARE(rootTask->isDone(), true);
         QCOMPARE(childTask->isDone(), false);
+
+        // WHEN
+        QMimeData *data = model->mimeData(QModelIndexList() << childTaskIndex);
+
+        // THEN
+        QVERIFY(data->hasFormat("application/x-zanshin-object"));
+        QCOMPARE(data->property("object").value<Domain::Artifact::Ptr>(),
+                 Domain::Artifact::Ptr(childTask));
+
+        // WHEN
+        data = model->mimeData(QModelIndexList() << rootNoteIndex);
+
+        // THEN
+        QVERIFY(data->hasFormat("application/x-zanshin-object"));
+        QCOMPARE(data->property("object").value<Domain::Artifact::Ptr>(),
+                 Domain::Artifact::Ptr(rootNote));
     }
 
     void shouldAddTasks()
