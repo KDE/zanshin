@@ -46,6 +46,7 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
 {
     m_pagesView->setObjectName("pagesView");
     m_pagesView->header()->hide();
+    m_pagesView->setDragDropMode(QTreeView::DropOnly);
 
     m_actionBar->setObjectName("actionBar");
     m_actionBar->setIconSize(QSize(16, 16));

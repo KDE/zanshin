@@ -75,6 +75,7 @@ private slots:
         QVERIFY(!centralView->header()->isVisibleTo(&page));
         QVERIFY(qobject_cast<Widgets::ItemDelegate*>(centralView->itemDelegate()));
         QVERIFY(centralView->alternatingRowColors());
+        QCOMPARE(centralView->dragDropMode(), QTreeView::DragDrop);
 
         QLineEdit *quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
         QVERIFY(quickAddEdit);

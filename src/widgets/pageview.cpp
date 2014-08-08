@@ -46,6 +46,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->header()->hide();
     m_centralView->setAlternatingRowColors(true);
     m_centralView->setItemDelegate(new ItemDelegate(this));
+    m_centralView->setDragDropMode(QTreeView::DragDrop);
 
     m_quickAddEdit->setObjectName("quickAddEdit");
     m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an action"));

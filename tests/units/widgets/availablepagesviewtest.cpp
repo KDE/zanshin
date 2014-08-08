@@ -117,6 +117,7 @@ private slots:
         QVERIFY(pagesView);
         QVERIFY(pagesView->isVisibleTo(&available));
         QVERIFY(!pagesView->header()->isVisibleTo(&available));
+        QCOMPARE(pagesView->dragDropMode(), QTreeView::DropOnly);
 
         auto actionBar = available.findChild<QToolBar*>("actionBar");
         QVERIFY(actionBar);
