@@ -25,6 +25,7 @@
 #include "availablepagesmodel.h"
 
 #include <QIcon>
+#include <QMimeData>
 
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
@@ -116,7 +117,8 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
     auto flags = [this](const QObjectPtr &object) {
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
-                                         | Qt::ItemIsEditable;
+                                         | Qt::ItemIsEditable
+                                         | Qt::ItemIsDropEnabled;
         const Qt::ItemFlags immutableNodeFlags = Qt::ItemIsSelectable
                                                | Qt::ItemIsEnabled;
         const Qt::ItemFlags structureNodeFlags = Qt::NoItemFlags;
@@ -172,5 +174,25 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         return true;
     };
 
-    return new QueryTreeModel<QObjectPtr>(query, flags, data, setData, this);
+    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const QObjectPtr &object) {
+        auto project = object.objectCast<Domain::Project>();
+        if (!project)
+            return false;
+
+        if (!mimeData->hasFormat("application/x-zanshin-object"))
+            return false;
+
+        auto artifact = mimeData->property("object").value<Domain::Artifact::Ptr>();
+        if (!artifact)
+            return false;
+
+        m_projectRepository->associate(project, artifact);
+        return true;
+    };
+
+    auto drag = [](const QObjectPtr &) -> QMimeData* {
+        return 0;
+    };
+
+    return new QueryTreeModel<QObjectPtr>(query, flags, data, setData, drop, drag, this);
 }

@@ -27,6 +27,8 @@
 
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
+#include "domain/note.h"
+#include "domain/task.h"
 
 #include "presentation/availablepagesmodel.h"
 #include "presentation/inboxpagemodel.h"
@@ -55,6 +57,10 @@ private slots:
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
         projectProvider->append(project2);
+
+        // Two artifacts (used for dropping later on)
+        Domain::Artifact::Ptr taskToDrop(new Domain::Task);
+        Domain::Artifact::Ptr noteToDrop(new Domain::Note);
 
         mock_object<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
@@ -88,8 +94,8 @@ private slots:
                                          | Qt::ItemIsEditable;
         QCOMPARE(model->flags(inboxIndex), defaultFlags & ~(Qt::ItemIsEditable));
         QCOMPARE(model->flags(projectsIndex), Qt::NoItemFlags);
-        QCOMPARE(model->flags(project1Index), defaultFlags);
-        QCOMPARE(model->flags(project2Index), defaultFlags);
+        QCOMPARE(model->flags(project1Index), defaultFlags | Qt::ItemIsDropEnabled);
+        QCOMPARE(model->flags(project2Index), defaultFlags | Qt::ItemIsDropEnabled);
 
         QCOMPARE(model->data(inboxIndex).toString(), tr("Inbox"));
         QCOMPARE(model->data(projectsIndex).toString(), tr("Projects"));
@@ -126,6 +132,26 @@ private slots:
 
         QCOMPARE(project1->name(), QString("New Project 1"));
         QCOMPARE(project2->name(), QString("New Project 2"));
+
+        // WHEN
+        projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).thenReturn(new FakeJob(this));
+        QMimeData *data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("object", QVariant::fromValue(taskToDrop));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, project1Index);
+
+        // THEN
+        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).exactly(1));
+
+        // WHEN
+        projectRepositoryMock(&Domain::ProjectRepository::associate).when(project2, noteToDrop).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("object", QVariant::fromValue(noteToDrop));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, project2Index);
+
+        // THEN
+        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project2, noteToDrop).exactly(1));
     }
 
     void shouldCreatePages()
