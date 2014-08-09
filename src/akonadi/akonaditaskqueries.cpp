@@ -327,6 +327,7 @@ void TaskQueries::onItemChanged(const Item &item)
         }
 
         if (!itemUpdated) {
+            removeItemFromChildProviders(item);
             auto task = deserializeTask(item);
             if (task)
                 childProvider->append(task);

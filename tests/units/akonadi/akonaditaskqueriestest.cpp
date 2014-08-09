@@ -886,6 +886,110 @@ private slots:
         QVERIFY(!replaceHandlerCalled);
     }
 
+    void shouldMoveItemToCorrespondingResultWhenRelatedItemChangeForChildTask()
+    {
+        // GIVEN
+
+        // One top level collection
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+
+        // Two top level tasks and one child task in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        auto task1 = Domain::Task::Ptr::create();
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col);
+        auto task2 = Domain::Task::Ptr::create();
+        Akonadi::Item item3(44);
+        item3.setParentCollection(col);
+        auto task3 = Domain::Task::Ptr::create();
+
+        // Jobs
+        auto collectionFetchJob1 = new MockCollectionFetchJob(this);
+        collectionFetchJob1->setCollections(Akonadi::Collection::List() << col);
+        auto itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+
+        auto collectionFetchJob2 = new MockCollectionFetchJob(this);
+        collectionFetchJob2->setCollections(Akonadi::Collection::List() << col);
+        auto itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+
+        auto itemFetchJob3 = new MockItemFetchJob(this);
+        itemFetchJob3->setItems(Akonadi::Item::List() << item1);
+        auto itemFetchJob4 = new MockItemFetchJob(this);
+        itemFetchJob4->setItems(Akonadi::Item::List() << item2);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks)
+                                                                 .thenReturn(collectionFetchJob1)
+                                                                 .thenReturn(collectionFetchJob2);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob1)
+                                                           .thenReturn(itemFetchJob2);
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
+                                                          .thenReturn(itemFetchJob3);
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item2)
+                                                          .thenReturn(itemFetchJob4);
+
+        // Serializer mock returning the objects from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::objectUid).when(task1).thenReturn("1");
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
+
+        serializerMock(&Akonadi::SerializerInterface::objectUid).when(task2).thenReturn("2");
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task2).thenReturn(item2);
+
+        serializerMock(&Akonadi::SerializerInterface::objectUid).when(task3).thenReturn("3");
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item3).thenReturn(true);
+
+        // Serializer mock returning if the item has a relatedItem
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("1")
+                                                                                     .thenReturn("2");
+
+        // Serializer mock returning if project1 is parent of items
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true)
+                                                                                     .thenReturn(false);
+
+        // Serializer mock returning if project2 is parent of items
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item3).thenReturn(false)
+                                                                                     .thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
+                                                                             &serializerMock.getInstance(),
+                                                                             monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result1 = queries->findChildren(task1);
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result2 = queries->findChildren(task2);
+
+        QTest::qWait(150);
+        QCOMPARE(result1->data().size(), 1);
+        QCOMPARE(result1->data().at(0), task3);
+        QCOMPARE(result2->data().size(), 0);
+
+        // WHEN
+        monitor->changeItem(item3); // Now gets a different related id
+
+        // Then
+        QCOMPARE(result1->data().size(), 0);
+        QCOMPARE(result2->data().size(), 1);
+        QCOMPARE(result2->data().at(0), task3);
+    }
+
     void shouldReactToItemRemovesForChildrenTask()
     {
         // GIVEN

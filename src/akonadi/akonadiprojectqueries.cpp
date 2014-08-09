@@ -221,6 +221,7 @@ void ProjectQueries::onItemChanged(const Item &item)
         }
 
         if (!itemUpdated) {
+            removeItemFromTopLevelProviders(item);
             auto artifact = deserializeArtifact(item);
             if (artifact)
                 topLevelProvider->append(artifact);

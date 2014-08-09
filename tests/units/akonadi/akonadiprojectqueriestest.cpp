@@ -849,6 +849,101 @@ private slots:
         QCOMPARE(result->data().at(1).objectCast<Domain::Task>(), task2);
     }
 
+    void shouldMoveItemToCorrespondingResultWhenRelatedItemChangeForTopLevelArtifacts()
+    {
+        // GIVEN
+
+        // One top level collection
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+
+        // Two projects and one task in the collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col);
+        auto project1 = Domain::Project::Ptr::create();
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col);
+        auto project2 = Domain::Project::Ptr::create();
+        Akonadi::Item item3(44);
+        item3.setParentCollection(col);
+        auto task3 = Domain::Task::Ptr::create();
+
+        // Jobs
+        auto collectionFetchJob1 = new MockCollectionFetchJob(this);
+        collectionFetchJob1->setCollections(Akonadi::Collection::List() << col);
+        auto itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+
+        auto collectionFetchJob2 = new MockCollectionFetchJob(this);
+        collectionFetchJob2->setCollections(Akonadi::Collection::List() << col);
+        auto itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob1)
+                                                                 .thenReturn(collectionFetchJob2);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob1)
+                                                           .thenReturn(itemFetchJob2);
+
+        // Serializer mock returning the objects from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::objectUid).when(project1).thenReturn("1");
+        serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project1).thenReturn(item1);
+
+        serializerMock(&Akonadi::SerializerInterface::objectUid).when(project2).thenReturn("2");
+        serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project2).thenReturn(item2);
+
+        serializerMock(&Akonadi::SerializerInterface::createProjectFromItem).when(item3).thenReturn(Domain::Project::Ptr());
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item3).thenReturn(true);
+
+        // Serializer mock returning if the item has a relatedItem
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("1")
+                                                                                     .thenReturn("2");
+
+        // Serializer mock returning if project1 is parent of items
+        serializerMock(&Akonadi::SerializerInterface::isProjectChild).when(project1, item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isProjectChild).when(project1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isProjectChild).when(project1, item3).thenReturn(true)
+                                                                                           .thenReturn(false);
+
+        // Serializer mock returning if project2 is parent of items
+        serializerMock(&Akonadi::SerializerInterface::isProjectChild).when(project2, item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isProjectChild).when(project2, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isProjectChild).when(project2, item3).thenReturn(false)
+                                                                                           .thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result1 = queries->findTopLevelArtifacts(project1);
+        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result2 = queries->findTopLevelArtifacts(project2);
+
+        QTest::qWait(150);
+        QCOMPARE(result1->data().size(), 1);
+        QCOMPARE(result1->data().at(0).objectCast<Domain::Task>(), task3);
+        QCOMPARE(result2->data().size(), 0);
+
+        // WHEN
+        monitor->changeItem(item3); // Now gets a different related id
+
+        // Then
+        QCOMPARE(result1->data().size(), 0);
+        QCOMPARE(result2->data().size(), 1);
+        QCOMPARE(result2->data().at(0).objectCast<Domain::Task>(), task3);
+    }
+
     void shouldReactToItemRemovesForTopLevelArtifacts()
     {
         // GIVEN
