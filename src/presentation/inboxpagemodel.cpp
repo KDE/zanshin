@@ -81,7 +81,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
                                          | Qt::ItemIsEditable
                                          | Qt::ItemIsDragEnabled;
 
-        return artifact.dynamicCast<Domain::Task>() ? (defaultFlags | Qt::ItemIsUserCheckable) : defaultFlags;
+        return artifact.dynamicCast<Domain::Task>() ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
     };
 
     auto data = [](const Domain::Artifact::Ptr &artifact, int role) -> QVariant {
@@ -127,8 +127,24 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
         return false;
     };
 
-    auto drop = [this](const QMimeData *, Qt::DropAction, const Domain::Artifact::Ptr &) {
-        return false;
+    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Artifact::Ptr &artifact) {
+        auto parentTask = artifact.objectCast<Domain::Task>();
+        if (!parentTask)
+            return false;
+
+        if (!mimeData->hasFormat("application/x-zanshin-object"))
+            return false;
+
+        auto droppedArtifact = mimeData->property("object").value<Domain::Artifact::Ptr>();
+        if (!droppedArtifact)
+            return false;
+
+        auto childTask = droppedArtifact.objectCast<Domain::Task>();
+        if (!childTask)
+            return false;
+
+        taskRepository()->associate(parentTask, childTask);
+        return true;
     };
 
     auto drag = [](const Domain::Artifact::Ptr &artifact) -> QMimeData* {

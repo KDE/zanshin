@@ -94,9 +94,9 @@ private slots:
                                          | Qt::ItemIsEnabled
                                          | Qt::ItemIsEditable
                                          | Qt::ItemIsDragEnabled;
-        QCOMPARE(model->flags(rootTaskIndex), defaultFlags | Qt::ItemIsUserCheckable);
+        QCOMPARE(model->flags(rootTaskIndex), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(rootNoteIndex), defaultFlags);
-        QCOMPARE(model->flags(childTaskIndex), defaultFlags | Qt::ItemIsUserCheckable);
+        QCOMPARE(model->flags(childTaskIndex), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
 
         QCOMPARE(model->data(rootTaskIndex).toString(), rootTask->title());
         QCOMPARE(model->data(rootNoteIndex).toString(), rootNote->title());
@@ -153,6 +153,28 @@ private slots:
         QVERIFY(data->hasFormat("application/x-zanshin-object"));
         QCOMPARE(data->property("object").value<Domain::Artifact::Ptr>(),
                  Domain::Artifact::Ptr(rootNote));
+
+
+        // WHEN
+        auto childTask2 = Domain::Task::Ptr::create();
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask2).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("object", QVariant::fromValue(Domain::Artifact::Ptr(childTask2)));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, rootTaskIndex);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask2).exactly(1));
+
+
+        // WHEN
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("object", QVariant::fromValue(Domain::Artifact::Ptr(rootNote)));
+        bool result = model->dropMimeData(data, Qt::MoveAction, -1, -1, childTaskIndex);
+
+        // THEN
+        QVERIFY(!result);
     }
 
     void shouldAddTasks()
