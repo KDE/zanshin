@@ -26,6 +26,7 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QTreeView>
+#include <QWidgetAction>
 
 #include "domain/note.h"
 #include "domain/task.h"
@@ -450,6 +451,23 @@ private slots:
         QFETCH(QByteArray, defaultProperty);
         QCOMPARE(combo->defaultSourceObject(), &model);
         QCOMPARE(combo->defaultSourceProperty(), defaultProperty);
+    }
+
+    void shouldProvideSettingsAction()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+
+        // WHEN
+        QList<QAction*> actions = components.configureActions();
+        auto taskAction = qobject_cast<QWidgetAction*>(actions.at(0));
+        auto noteAction = qobject_cast<QWidgetAction*>(actions.at(1));
+
+        // THEN
+        QCOMPARE(taskAction->defaultWidget()->findChild<Widgets::DataSourceComboBox*>("taskSourceCombo"), components.defaultTaskSourceCombo());
+        QCOMPARE(taskAction->objectName(), QString("zanshin_settings_task_sources"));
+        QCOMPARE(noteAction->defaultWidget()->findChild<Widgets::DataSourceComboBox*>("noteSourceCombo"), components.defaultNoteSourceCombo());
+        QCOMPARE(noteAction->objectName(), QString("zanshin_settings_note_sources"));
     }
 };
 

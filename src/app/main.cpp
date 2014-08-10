@@ -25,6 +25,9 @@
 #include <QBoxLayout>
 #include <QDockWidget>
 #include <QMainWindow>
+#include <QMenu>
+#include <QToolBar>
+#include <QToolButton>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -57,14 +60,27 @@ int main(int argc, char **argv)
 
     widget->setLayout(layout);
 
-    auto pagesDock = new QDockWidget;
+    auto pagesDock = new QDockWidget(QObject::tr("Pages"));
     pagesDock->setWidget(components->availablePagesView());
 
-    auto editorDock = new QDockWidget;
+    auto editorDock = new QDockWidget(QObject::tr("Editor"));
     editorDock->setWidget(components->editorView());
+
+    auto configureMenu = new QMenu(widget);
+    foreach (QAction *action, components->configureActions()) {
+        configureMenu->addAction(action);
+    }
+
+    auto configureButton = new QToolButton(widget);
+    configureButton->setIcon(QIcon::fromTheme("configure"));
+    configureButton->setText(QObject::tr("Settings"));
+    configureButton->setToolTip(configureButton ->text());
+    configureButton->setPopupMode(QToolButton::InstantPopup);
+    configureButton->setMenu(configureMenu);
 
     QMainWindow window;
     window.setCentralWidget(widget);
+    window.addToolBar(QObject::tr("Main"))->addWidget(configureButton);
     window.addDockWidget(Qt::RightDockWidgetArea, editorDock);
     window.addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
     window.show();

@@ -23,8 +23,11 @@
 
 #include "part.h"
 
+#include <KDE/KActionCollection>
 #include <KDE/KPluginFactory>
+#include <KDE/KStandardDirs>
 
+#include <QAction>
 #include <QBoxLayout>
 #include <QSplitter>
 
@@ -48,25 +51,21 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
 
     setComponentData(PartFactory::componentData());
 
-    auto view = new QWidget;
-    auto components = new Widgets::ApplicationComponents(view);
+    auto splitter = new QSplitter(parentWidget);
+
+    auto components = new Widgets::ApplicationComponents(parentWidget);
     components->setModel(new Presentation::ApplicationModel(components));
 
-    QVBoxLayout *layout = new QVBoxLayout;
-
-    QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->addWidget(components->defaultTaskSourceCombo());
-    hbox->addWidget(components->defaultNoteSourceCombo());
-
-    layout->addLayout(hbox);
-    layout->addWidget(components->pageView());
-    view->setLayout(layout);
-
-    auto splitter = new QSplitter(parentWidget);
     splitter->addWidget(components->availablePagesView());
-    splitter->addWidget(view);
+    splitter->addWidget(components->pageView());
     splitter->addWidget(components->editorView());
     setWidget(splitter);
+
+    foreach (QAction *action, components->configureActions()) {
+        actionCollection()->addAction(action->objectName(), action);
+    }
+
+    setXMLFile(KStandardDirs::locate("data", "zanshin/zanshin-next_part.rc"));
 }
 
 Part::~Part()

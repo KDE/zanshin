@@ -31,6 +31,7 @@
 
 #include "presentation/metatypes.h"
 
+class QAction;
 class QWidget;
 
 namespace Widgets {
@@ -52,6 +53,8 @@ public:
     PageView *pageView() const;
     EditorView *editorView() const;
 
+    QList<QAction *> configureActions() const;
+
     DataSourceComboBox *defaultNoteSourceCombo() const;
     DataSourceComboBox *defaultTaskSourceCombo() const;
 
@@ -69,6 +72,8 @@ private:
     AvailablePagesView *m_availablePagesView;
     PageView *m_pageView;
     EditorView *m_editorView;
+
+    QList<QAction*> m_configureActions;
     DataSourceComboBox *m_noteCombo;
     DataSourceComboBox *m_taskCombo;
 };

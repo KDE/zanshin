@@ -24,8 +24,11 @@
 
 #include "applicationcomponents.h"
 
+#include <QBoxLayout>
+#include <QLabel>
 #include <QVariant>
 #include <QWidget>
+#include <QWidgetAction>
 
 #include "availablepagesview.h"
 #include "datasourcecombobox.h"
@@ -107,10 +110,44 @@ EditorView *ApplicationComponents::editorView() const
     return m_editorView;
 }
 
+QList<QAction *> ApplicationComponents::configureActions() const
+{
+    if (m_configureActions.isEmpty()) {
+        QList<QAction*> actions;
+
+        auto widget = new QWidget;
+        widget->setLayout(new QHBoxLayout);
+        widget->layout()->addWidget(new QLabel(tr("Default task source")));
+        widget->layout()->addWidget(defaultTaskSourceCombo());
+
+        auto comboAction = new QWidgetAction(m_parent);
+        comboAction->setObjectName("zanshin_settings_task_sources");
+        comboAction->setDefaultWidget(widget);
+        actions << comboAction;
+
+        widget = new QWidget;
+        widget->setLayout(new QHBoxLayout);
+        widget->layout()->addWidget(new QLabel(tr("Default note source")));
+        widget->layout()->addWidget(defaultNoteSourceCombo());
+
+        comboAction = new QWidgetAction(m_parent);
+        comboAction->setObjectName("zanshin_settings_note_sources");
+        comboAction->setDefaultWidget(widget);
+        actions << comboAction;
+
+        ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
+        self->m_configureActions = actions;
+    }
+
+    return m_configureActions;
+}
+
 DataSourceComboBox *ApplicationComponents::defaultNoteSourceCombo() const
 {
     if (!m_noteCombo) {
         auto combo = new DataSourceComboBox(m_parent);
+        combo->setObjectName("noteSourceCombo");
+        combo->setFixedWidth(300);
         if (m_model) {
             combo->setModel(m_model->property("noteSourcesModel").value<QAbstractItemModel*>());
             combo->setDefaultSourceProperty(m_model, "defaultNoteDataSource");
@@ -129,6 +166,8 @@ DataSourceComboBox *ApplicationComponents::defaultTaskSourceCombo() const
 {
     if (!m_taskCombo) {
         auto combo = new DataSourceComboBox(m_parent);
+        combo->setObjectName("taskSourceCombo");
+        combo->setFixedWidth(300);
         if (m_model) {
             combo->setModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
             combo->setDefaultSourceProperty(m_model, "defaultTaskDataSource");
