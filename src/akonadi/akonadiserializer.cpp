@@ -347,6 +347,7 @@ void Serializer::updateProjectFromItem(Domain::Project::Ptr project, Item item)
 
     project->setName(todo->summary());
     project->setProperty("itemId", item.id());
+    project->setProperty("parentCollectionId", item.parentCollection().id());
     project->setProperty("todoUid", todo->uid());
 }
 
@@ -364,6 +365,10 @@ Item Serializer::createItemFromProject(Domain::Project::Ptr project)
     Akonadi::Item item;
     if (project->property("itemId").isValid()) {
         item.setId(project->property("itemId").value<Akonadi::Item::Id>());
+    }
+    if (project->property("parentCollectionId").isValid()) {
+        auto parentId = project->property("parentCollectionId").value<Akonadi::Collection::Id>();
+        item.setParentCollection(Akonadi::Collection(parentId));
     }
     item.setMimeType(KCalCore::Todo::todoMimeType());
     item.setPayload(todo);

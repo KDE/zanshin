@@ -996,7 +996,6 @@ private slots:
     void shouldCreateProjectFromItem_data()
     {
         QTest::addColumn<QString>("summary");
-        QTest::addColumn<qint64>("itemId");
 
         QTest::newRow("nominal case") << "summary";
         QTest::newRow("empty case") << QString();
@@ -1020,6 +1019,10 @@ private slots:
         item.setMimeType("application/x-vnd.akonadi.calendar.todo");
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
+        // which has a prent collection
+        Akonadi::Collection collection(43);
+        item.setParentCollection(collection);
+
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Project::Ptr project = serializer.createProjectFromItem(item);
@@ -1027,6 +1030,7 @@ private slots:
         // THEN
         QCOMPARE(project->name(), summary);
         QCOMPARE(project->property("itemId").toLongLong(), item.id());
+        QCOMPARE(project->property("parentCollectionId").toLongLong(), collection.id());
         QCOMPARE(project->property("todoUid").toString(), todo->uid());
     }
 
@@ -1086,6 +1090,10 @@ private slots:
         originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
+        // ... which has a parent collection...
+        Akonadi::Collection originalCollection(43);
+        originalItem.setParentCollection(originalCollection);
+
         // ... deserialized as a project
         Akonadi::Serializer serializer;
         auto project = serializer.createProjectFromItem(originalItem);
@@ -1102,15 +1110,20 @@ private slots:
         QVERIFY(!updatedTodo->uid().isEmpty());
 
         // ... as payload of a new item
-        Akonadi::Item updatedItem(43);
+        Akonadi::Item updatedItem(44);
         updatedItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
         updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
+
+        // ... which has a new parent collection
+        Akonadi::Collection updatedCollection(45);
+        updatedItem.setParentCollection(updatedCollection);
 
         serializer.updateProjectFromItem(project, updatedItem);
 
         // THEN
         QCOMPARE(project->name(), updatedSummary);
         QCOMPARE(project->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(project->property("parentCollectionId").toLongLong(), updatedCollection.id());
         QCOMPARE(project->property("todoUid").toString(), updatedTodo->uid());
     }
 
@@ -1183,12 +1196,13 @@ private slots:
     {
         QTest::addColumn<QString>("summary");
         QTest::addColumn<qint64>("itemId");
+        QTest::addColumn<qint64>("parentCollectionId");
 
-        QTest::newRow("nominal case (no id)") << "summary" << qint64(-1);
-        QTest::newRow("empty case (no id)") << QString() << qint64(-1);
+        QTest::newRow("nominal case (no id)") << "summary" << qint64(-1) << qint64(-1);
+        QTest::newRow("empty case (no id)") << QString() << qint64(-1) << qint64(-1);
 
-        QTest::newRow("nominal case (with id)") << "summary" << qint64(42);
-        QTest::newRow("empty case (with id)") << QString() << qint64(42);
+        QTest::newRow("nominal case (with id)") << "summary" << qint64(42) << qint64(43);
+        QTest::newRow("empty case (with id)") << QString() << qint64(42) << qint64(43);
     }
 
     void shouldCreateItemFromProject()
@@ -1198,6 +1212,7 @@ private slots:
         // Data...
         QFETCH(QString, summary);
         QFETCH(qint64, itemId);
+        QFETCH(qint64, parentCollectionId);
         const QString todoUid = "test-uid";
 
         // ... stored in a project
@@ -1207,6 +1222,9 @@ private slots:
 
         if (itemId > 0)
             project->setProperty("itemId", itemId);
+
+        if (parentCollectionId > 0)
+            project->setProperty("parentCollectionId", parentCollectionId);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -1218,6 +1236,11 @@ private slots:
         QCOMPARE(item.isValid(), itemId > 0);
         if (itemId > 0) {
             QCOMPARE(item.id(), itemId);
+        }
+
+        QCOMPARE(item.parentCollection().isValid(), parentCollectionId > 0);
+        if (parentCollectionId > 0) {
+            QCOMPARE(item.parentCollection().id(), parentCollectionId);
         }
 
         auto todo = item.payload<KCalCore::Todo::Ptr>();
