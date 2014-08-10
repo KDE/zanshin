@@ -374,6 +374,39 @@ WHEN("^I open the item in the editor again$") {
     QTest::qWait(500);
 }
 
+WHEN("^I drop the item on \"(.*)\" in the central list") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->index.isValid());
+    const QMimeData *data = context->model()->mimeData(QModelIndexList() << context->index);
+
+    QAbstractItemModel *destModel = context->model();
+    QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
+    VERIFY(dropIndex.isValid());
+    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    QTest::qWait(500);
+}
+
+WHEN("^I drop the item on \"(.*)\" in the page list") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->index.isValid());
+    const QMimeData *data = context->model()->mimeData(QModelIndexList() << context->index);
+
+    auto availablePages = context->app->property("availablePages").value<QObject*>();
+    VERIFY(availablePages);
+
+    auto destModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
+    VERIFY(destModel);
+    QTest::qWait(500);
+
+    QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
+    VERIFY(dropIndex.isValid());
+    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    QTest::qWait(500);
+}
 
 WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     REGEX_PARAM(QString, keyName);
@@ -445,7 +478,7 @@ THEN("^the list is") {
                             Zanshin::indexString(expectedIndex, role));
         }
     }
-    COMPARE_OR_DUMP(proxy.rowCount(), context->indices.size());
+    COMPARE_OR_DUMP(context->indices.size(), proxy.rowCount());
 }
 
 THEN("^the list contains \"(.+)\"$") {
