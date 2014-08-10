@@ -22,47 +22,36 @@
 */
 
 
-#ifndef WIDGETS_PAGEVIEW_H
-#define WIDGETS_PAGEVIEW_H
+#ifndef WIDGETS_FILTERWIDGET_H
+#define WIDGETS_FILTERWIDGET_H
 
 #include <QWidget>
 
-#include "domain/artifact.h"
-
 class QLineEdit;
-class QModelIndex;
-class QTreeView;
+
+namespace Presentation
+{
+    class ArtifactFilterProxyModel;
+}
 
 namespace Widgets {
 
-class FilterWidget;
-
-class PageView : public QWidget
+class FilterWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PageView(QWidget *parent = 0);
+    explicit FilterWidget(QWidget *parent = 0);
 
-    QObject *model() const;
-
-public slots:
-    void setModel(QObject *model);
-
-signals:
-    void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
+    Presentation::ArtifactFilterProxyModel *proxyModel() const;
 
 private slots:
-    void onEditingFinished();
-    void onRemoveItemRequested();
-    void onCurrentChanged(const QModelIndex &current);
+    void onTextChanged(const QString &text);
 
 private:
-    QObject *m_model;
-    FilterWidget *m_filterWidget;
-    QTreeView *m_centralView;
-    QLineEdit *m_quickAddEdit;
+    Presentation::ArtifactFilterProxyModel *m_model;
+    QLineEdit *m_filterEdit;
 };
 
 }
 
-#endif // WIDGETS_PAGEVIEW_H
+#endif // WIDGETS_FILTERWIDGET_H

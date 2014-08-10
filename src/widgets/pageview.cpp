@@ -30,8 +30,10 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
+#include "filterwidget.h"
 #include "itemdelegate.h"
 
+#include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
@@ -39,20 +41,25 @@ using namespace Widgets;
 
 PageView::PageView(QWidget *parent)
     : QWidget(parent),
+      m_filterWidget(new FilterWidget(this)),
       m_centralView(new QTreeView(this)),
       m_quickAddEdit(new QLineEdit(this))
 {
+    m_filterWidget->setObjectName("filterWidget");
+
     m_centralView->setObjectName("centralView");
     m_centralView->header()->hide();
     m_centralView->setAlternatingRowColors(true);
     m_centralView->setItemDelegate(new ItemDelegate(this));
     m_centralView->setDragDropMode(QTreeView::DragDrop);
+    m_centralView->setModel(m_filterWidget->proxyModel());
 
     m_quickAddEdit->setObjectName("quickAddEdit");
     m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an action"));
     connect(m_quickAddEdit, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 
     auto layout = new QVBoxLayout;
+    layout->addWidget(m_filterWidget);
     layout->addWidget(m_centralView);
     layout->addWidget(m_quickAddEdit);
     setLayout(layout);
@@ -77,7 +84,7 @@ void PageView::setModel(QObject *model)
         disconnect(m_centralView->selectionModel(), 0, this, 0);
     }
 
-    m_centralView->setModel(0);
+    m_filterWidget->proxyModel()->setSourceModel(0);
 
     m_model = model;
 
@@ -86,7 +93,7 @@ void PageView::setModel(QObject *model)
 
     QVariant modelProperty = m_model->property("centralListModel");
     if (modelProperty.canConvert<QAbstractItemModel*>())
-        m_centralView->setModel(modelProperty.value<QAbstractItemModel*>());
+        m_filterWidget->proxyModel()->setSourceModel(modelProperty.value<QAbstractItemModel*>());
 
     connect(m_centralView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onCurrentChanged(QModelIndex)));

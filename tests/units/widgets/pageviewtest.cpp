@@ -29,8 +29,10 @@
 #include <QStringListModel>
 #include <QTreeView>
 
+#include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
 
+#include "widgets/filterwidget.h"
 #include "widgets/itemdelegate.h"
 #include "widgets/pageview.h"
 
@@ -77,6 +79,11 @@ private slots:
         QVERIFY(centralView->alternatingRowColors());
         QCOMPARE(centralView->dragDropMode(), QTreeView::DragDrop);
 
+        auto filter = page.findChild<Widgets::FilterWidget*>("filterWidget");
+        QVERIFY(filter);
+        QVERIFY(filter->proxyModel());
+        QCOMPARE(filter->proxyModel(), centralView->model());
+
         QLineEdit *quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
         QVERIFY(quickAddEdit);
         QVERIFY(quickAddEdit->isVisibleTo(&page));
@@ -95,13 +102,15 @@ private slots:
         Widgets::PageView page;
         auto centralView = page.findChild<QTreeView*>("centralView");
         QVERIFY(centralView);
-        QVERIFY(!centralView->model());
+        auto proxyModel = qobject_cast<Presentation::ArtifactFilterProxyModel*>(centralView->model());
+        QVERIFY(proxyModel);
+        QVERIFY(!proxyModel->sourceModel());
 
         // WHEN
         page.setModel(&stubPageModel);
 
         // THEN
-        QCOMPARE(centralView->model(), &model);
+        QCOMPARE(proxyModel->sourceModel(), &model);
     }
 
     void shouldNotCrashWithNullModel()

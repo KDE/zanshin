@@ -22,47 +22,37 @@
 */
 
 
-#ifndef WIDGETS_PAGEVIEW_H
-#define WIDGETS_PAGEVIEW_H
+#include "filterwidget.h"
 
-#include <QWidget>
+#include <QBoxLayout>
+#include <QLineEdit>
 
-#include "domain/artifact.h"
+#include "presentation/artifactfilterproxymodel.h"
 
-class QLineEdit;
-class QModelIndex;
-class QTreeView;
+using namespace Widgets;
 
-namespace Widgets {
-
-class FilterWidget;
-
-class PageView : public QWidget
+FilterWidget::FilterWidget(QWidget *parent)
+    : QWidget(parent),
+      m_model(new Presentation::ArtifactFilterProxyModel(this)),
+      m_filterEdit(new QLineEdit(this))
 {
-    Q_OBJECT
-public:
-    explicit PageView(QWidget *parent = 0);
+    m_filterEdit->setObjectName("filterEdit");
+    m_filterEdit->setPlaceholderText(tr("Filter..."));
 
-    QObject *model() const;
+    auto layout = new QHBoxLayout;
+    layout->addWidget(m_filterEdit);
+    setLayout(layout);
 
-public slots:
-    void setModel(QObject *model);
-
-signals:
-    void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
-
-private slots:
-    void onEditingFinished();
-    void onRemoveItemRequested();
-    void onCurrentChanged(const QModelIndex &current);
-
-private:
-    QObject *m_model;
-    FilterWidget *m_filterWidget;
-    QTreeView *m_centralView;
-    QLineEdit *m_quickAddEdit;
-};
-
+    connect(m_filterEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(onTextChanged(QString)));
 }
 
-#endif // WIDGETS_PAGEVIEW_H
+Presentation::ArtifactFilterProxyModel *FilterWidget::proxyModel() const
+{
+    return m_model;
+}
+
+void FilterWidget::onTextChanged(const QString &text)
+{
+    m_model->setFilterFixedString(text);
+}
