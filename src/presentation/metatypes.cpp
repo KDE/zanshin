@@ -24,6 +24,7 @@
 
 #include "metatypes.h"
 
+#include "domain/artifact.h"
 #include "domain/datasource.h"
 
 using namespace Presentation;
@@ -32,5 +33,6 @@ void MetaTypes::registerAll()
 {
     qRegisterMetaType<QAbstractItemModel*>();
     qRegisterMetaType<QObjectPtr>();
+    qRegisterMetaType<Domain::Artifact::Ptr>();
     qRegisterMetaType<Domain::DataSource::Ptr>();
 }
