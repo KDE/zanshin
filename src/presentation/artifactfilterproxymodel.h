@@ -32,11 +32,26 @@ namespace Presentation {
 class ArtifactFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_ENUMS(SortType)
 public:
+    enum SortType {
+        TitleSort = 0,
+        DateSort
+    };
+
     explicit ArtifactFilterProxyModel(QObject *parent = 0);
+
+    SortType sortType() const;
+    void setSortType(SortType type);
+
+    void setSortOrder(Qt::SortOrder order);
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+
+private:
+    SortType m_sortType;
 };
 
 }

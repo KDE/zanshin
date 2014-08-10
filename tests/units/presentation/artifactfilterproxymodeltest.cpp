@@ -31,15 +31,21 @@
 #include "presentation/artifactfilterproxymodel.h"
 #include "presentation/querytreemodelbase.h"
 
+Q_DECLARE_METATYPE(QList<QStandardItem*>)
+
 class ArtifactFilterProxyModelTest : public QObject
 {
     Q_OBJECT
 private:
-    QStandardItem *createTaskItem(const QString &title, const QString &text) const
+    QStandardItem *createTaskItem(const QString &title, const QString &text,
+                                  const QDate &start = QDate(),
+                                  const QDate &due = QDate()) const
     {
         auto task = Domain::Task::Ptr::create();
         task->setTitle(title);
         task->setText(text);
+        task->setStartDate(QDateTime(start));
+        task->setDueDate(QDateTime(due));
 
         auto item = new QStandardItem;
         item->setData(task->title(), Qt::DisplayRole);
@@ -62,6 +68,16 @@ private:
     }
 
 private slots:
+    void shouldHaveDefaultState()
+    {
+        Presentation::ArtifactFilterProxyModel proxy;
+        QVERIFY(!proxy.sourceModel());
+        QCOMPARE(proxy.sortColumn(), 0);
+        QCOMPARE(proxy.sortOrder(), Qt::AscendingOrder);
+        QCOMPARE(proxy.sortType(), Presentation::ArtifactFilterProxyModel::TitleSort);
+        QCOMPARE(proxy.sortCaseSensitivity(), Qt::CaseInsensitive);
+    }
+
     void shouldFilterByTextAndTitle()
     {
         // GIVEN
@@ -114,6 +130,123 @@ private slots:
         QCOMPARE(output.rowCount(parent), 2);
         QCOMPARE(output.index(0, 0, parent).data().toString(), QString("22. foo"));
         QCOMPARE(output.index(1, 0, parent).data().toString(), QString("23. find me"));
+    }
+
+    void shouldSortFollowingType_data()
+    {
+        QTest::addColumn<int>("sortType");
+        QTest::addColumn<int>("sortOrder");
+        QTest::addColumn<QList<QStandardItem*>>("inputItems");
+        QTest::addColumn<QStringList>("expectedOutputTitles");
+
+        QList<QStandardItem*> inputItems;
+        QStringList expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("B", "foo") << createNoteItem("A", "foo") << createTaskItem("C", "foo");
+        expectedOutputTitles << "A" << "B" << "C";
+        QTest::newRow("title ascending") << int(Presentation::ArtifactFilterProxyModel::TitleSort)
+                                         << int(Qt::AscendingOrder)
+                                         << inputItems << expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("B", "foo") << createNoteItem("A", "foo") << createTaskItem("C", "foo");
+        expectedOutputTitles << "C" << "B" << "A";
+        QTest::newRow("title descending") << int(Presentation::ArtifactFilterProxyModel::TitleSort)
+                                         << int(Qt::DescendingOrder)
+                                         << inputItems << expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("B", "foo", QDate(2014, 03, 10))
+                   << createNoteItem("A", "foo")
+                   << createTaskItem("C", "foo", QDate(2014, 03, 01))
+                   << createTaskItem("D", "foo");
+        expectedOutputTitles << "C" << "B" << "D" << "A";
+        QTest::newRow("start date ascending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+                                              << int(Qt::AscendingOrder)
+                                              << inputItems << expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("B", "foo", QDate(2014, 03, 10))
+                   << createNoteItem("A", "foo")
+                   << createTaskItem("C", "foo", QDate(2014, 03, 01))
+                   << createTaskItem("D", "foo");
+        expectedOutputTitles << "A" << "D" << "B" << "C";
+        QTest::newRow("start date descending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+                                               << int(Qt::DescendingOrder)
+                                               << inputItems << expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("B", "foo", QDate(), QDate(2014, 03, 10))
+                   << createNoteItem("A", "foo")
+                   << createTaskItem("C", "foo", QDate(), QDate(2014, 03, 01))
+                   << createTaskItem("D", "foo");
+        expectedOutputTitles << "C" << "B" << "D" << "A";
+        QTest::newRow("due date ascending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+                                            << int(Qt::AscendingOrder)
+                                            << inputItems << expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("B", "foo", QDate(), QDate(2014, 03, 10))
+                   << createNoteItem("A", "foo")
+                   << createTaskItem("C", "foo", QDate(), QDate(2014, 03, 01))
+                   << createTaskItem("D", "foo");
+        expectedOutputTitles << "A" << "D" << "B" << "C";
+        QTest::newRow("due date descending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+                                             << int(Qt::DescendingOrder)
+                                             << inputItems << expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("A", "foo", QDate(2014, 03, 01), QDate(2014, 03, 10))
+                   << createTaskItem("B", "foo", QDate(2014, 03, 10), QDate(2014, 03, 01));
+        expectedOutputTitles << "B" << "A";
+        QTest::newRow("due date over start date") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+                                                  << int(Qt::AscendingOrder)
+                                                  << inputItems << expectedOutputTitles;
+
+        inputItems.clear();
+        expectedOutputTitles.clear();
+        inputItems << createTaskItem("A", "foo", QDate(), QDate(2014, 03, 10))
+                   << createTaskItem("B", "foo", QDate(2014, 03, 01), QDate());
+        expectedOutputTitles << "B" << "A";
+        QTest::newRow("due date over start date") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+                                                  << int(Qt::AscendingOrder)
+                                                  << inputItems << expectedOutputTitles;
+    }
+
+    void shouldSortFollowingType()
+    {
+        // GIVEN
+        QFETCH(int, sortType);
+        QFETCH(int, sortOrder);
+        QFETCH(QList<QStandardItem*>, inputItems);
+        QFETCH(QStringList, expectedOutputTitles);
+
+        QStandardItemModel input;
+        foreach (QStandardItem *item, inputItems) {
+            input.appendRow(item);
+        }
+
+        // WHEN
+        Presentation::ArtifactFilterProxyModel output;
+        output.setSourceModel(&input);
+        output.setSortType(Presentation::ArtifactFilterProxyModel::SortType(sortType));
+        output.setSortOrder(Qt::SortOrder(sortOrder));
+
+        QStringList outputTitles;
+        for (int row = 0; row < output.rowCount(); row++) {
+            outputTitles << output.index(row, 0).data().toString();
+        }
+
+        // THEN
+        QCOMPARE(outputTitles, expectedOutputTitles);
     }
 };
 

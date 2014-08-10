@@ -24,16 +24,38 @@
 
 #include "artifactfilterproxymodel.h"
 
+#include <limits>
+
 #include "domain/artifact.h"
+#include "domain/task.h"
 
 #include "presentation/querytreemodelbase.h"
 
 using namespace Presentation;
 
 ArtifactFilterProxyModel::ArtifactFilterProxyModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
+    : QSortFilterProxyModel(parent),
+      m_sortType(TitleSort)
 {
     setDynamicSortFilter(true);
+    setSortCaseSensitivity(Qt::CaseInsensitive);
+    setSortOrder(Qt::AscendingOrder);
+}
+
+ArtifactFilterProxyModel::SortType ArtifactFilterProxyModel::sortType() const
+{
+    return m_sortType;
+}
+
+void ArtifactFilterProxyModel::setSortType(ArtifactFilterProxyModel::SortType type)
+{
+    m_sortType = type;
+    invalidate();
+}
+
+void ArtifactFilterProxyModel::setSortOrder(Qt::SortOrder order)
+{
+    sort(0, order);
 }
 
 bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -56,4 +78,33 @@ bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
     }
 
     return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
+}
+
+static QDateTime validDt(const QDateTime &date = QDateTime())
+{
+    if (date.isValid())
+        return date;
+
+    return QDateTime::fromTime_t(std::numeric_limits<uint>::max() - 1);
+}
+
+bool ArtifactFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    if (m_sortType != DateSort)
+        return QSortFilterProxyModel::lessThan(left, right);
+
+    const auto leftArtifact = left.data(QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
+    const auto rightArtifact = right.data(QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
+
+    const auto leftTask = leftArtifact.objectCast<Domain::Task>();
+    const auto rightTask = rightArtifact.objectCast<Domain::Task>();
+
+    const QDateTime leftDue = leftTask ? validDt(leftTask->dueDate()) : validDt().addSecs(1);
+    const QDateTime rightDue = rightTask ? validDt(rightTask->dueDate()) : validDt().addSecs(1);
+
+    const QDateTime leftStart = leftTask ? validDt(leftTask->startDate()) : validDt().addSecs(1);
+    const QDateTime rightStart = rightTask ? validDt(rightTask->startDate()) : validDt().addSecs(1);
+
+    return leftDue < rightDue
+        || leftStart < rightStart;
 }
