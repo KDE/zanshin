@@ -35,6 +35,7 @@
 #include "testlib/fakejob.h"
 
 using namespace mockitopp;
+using namespace mockitopp::matcher;
 
 class ProjectPageModelTest : public QObject
 {
@@ -181,6 +182,41 @@ private slots:
 
         // THEN
         QVERIFY(!result);
+    }
+
+    void shouldAddTasks()
+    {
+        // GIVEN
+
+        // One project
+        auto project = Domain::Project::Ptr::create();
+
+        // ... in fact we won't list any model
+        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        mock_object<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+
+        // We'll gladly create a task though
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::createInProject).when(any<Domain::Task::Ptr>(),
+                                                                          any<Domain::Project::Ptr>())
+                                                                    .thenReturn(new FakeJob(this));
+
+        Presentation::ProjectPageModel page(project,
+                                            &projectQueriesMock.getInstance(),
+                                            &taskQueriesMock.getInstance(),
+                                            &taskRepositoryMock.getInstance(),
+                                            &noteRepositoryMock.getInstance());
+
+        // WHEN
+        page.addTask("New task");
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInProject).when(any<Domain::Task::Ptr>(),
+                                                                                  any<Domain::Project::Ptr>())
+                                                                            .exactly(1));
     }
 
     void shouldDeleteItems()

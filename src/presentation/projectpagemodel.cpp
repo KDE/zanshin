@@ -57,8 +57,9 @@ Domain::Project::Ptr ProjectPageModel::project() const
 
 void ProjectPageModel::addTask(const QString &title)
 {
-    Q_UNUSED(title);
-    qWarning("Not implemented yet");
+    auto task = Domain::Task::Ptr::create();
+    task->setTitle(title);
+    taskRepository()->createInProject(task, m_project);
 }
 
 void ProjectPageModel::removeItem(const QModelIndex &index)
