@@ -24,10 +24,12 @@
 #include <QApplication>
 #include <QBoxLayout>
 #include <QDockWidget>
-#include <QMainWindow>
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
+
+#include <KDE/KConfigGroup>
+#include <KDE/KMainWindow>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -61,9 +63,11 @@ int main(int argc, char **argv)
     widget->setLayout(layout);
 
     auto pagesDock = new QDockWidget(QObject::tr("Pages"));
+    pagesDock->setObjectName("pagesDock");
     pagesDock->setWidget(components->availablePagesView());
 
     auto editorDock = new QDockWidget(QObject::tr("Editor"));
+    editorDock->setObjectName("editorDock");
     editorDock->setWidget(components->editorView());
 
     auto configureMenu = new QMenu(widget);
@@ -78,12 +82,19 @@ int main(int argc, char **argv)
     configureButton->setPopupMode(QToolButton::InstantPopup);
     configureButton->setMenu(configureMenu);
 
-    QMainWindow window;
-    window.setCentralWidget(widget);
-    window.addToolBar(QObject::tr("Main"))->addWidget(configureButton);
-    window.addDockWidget(Qt::RightDockWidgetArea, editorDock);
-    window.addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
-    window.show();
+    auto window = new KMainWindow;
+    window->resize(1024, 600);
+    window->setAutoSaveSettings("MainWindow");
+    window->setCentralWidget(widget);
+
+    QToolBar *mainToolBar = window->addToolBar(QObject::tr("Main"));
+    mainToolBar->setObjectName("mainToolBar");
+    mainToolBar->addWidget(configureButton);
+
+    window->addDockWidget(Qt::RightDockWidgetArea, editorDock);
+    window->addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
+
+    window->show();
 
     return app.exec();
 }
