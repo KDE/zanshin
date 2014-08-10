@@ -27,11 +27,16 @@
 
 #include <QWidget>
 
+class QComboBox;
 class QLineEdit;
 
 namespace Presentation
 {
     class ArtifactFilterProxyModel;
+}
+
+namespace Ui {
+    class FilterWidget;
 }
 
 namespace Widgets {
@@ -41,15 +46,19 @@ class FilterWidget : public QWidget
     Q_OBJECT
 public:
     explicit FilterWidget(QWidget *parent = 0);
+    ~FilterWidget();
 
     Presentation::ArtifactFilterProxyModel *proxyModel() const;
 
 private slots:
     void onTextChanged(const QString &text);
+    void onSortTypeChanged(int index);
+    void onAscendingClicked();
+    void onDescendingClicked();
 
 private:
+    Ui::FilterWidget *ui;
     Presentation::ArtifactFilterProxyModel *m_model;
-    QLineEdit *m_filterEdit;
 };
 
 }

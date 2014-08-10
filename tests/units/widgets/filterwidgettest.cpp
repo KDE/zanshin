@@ -23,6 +23,8 @@
 
 #include <QtTestGui>
 
+#include <QAbstractButton>
+#include <QComboBox>
 #include <QLineEdit>
 
 #include "widgets/filterwidget.h"
@@ -40,12 +42,37 @@ private slots:
         QVERIFY(filter.proxyModel());
         QVERIFY(!filter.proxyModel()->sourceModel());
         QCOMPARE(filter.proxyModel()->filterRegExp(), QRegExp());
+        QCOMPARE(filter.proxyModel()->sortOrder(), Qt::AscendingOrder);
+        QCOMPARE(filter.proxyModel()->sortType(), Presentation::ArtifactFilterProxyModel::TitleSort);
 
         QLineEdit *filterEdit = filter.findChild<QLineEdit*>("filterEdit");
         QVERIFY(filterEdit);
         QVERIFY(filterEdit->isVisibleTo(&filter));
         QVERIFY(filterEdit->text().isEmpty());
         QCOMPARE(filterEdit->placeholderText(), tr("Filter..."));
+
+        QAbstractButton *extensionButton = filter.findChild<QAbstractButton*>("extensionButton");
+        QVERIFY(extensionButton);
+        QVERIFY(extensionButton->isVisibleTo(&filter));
+        QVERIFY(!extensionButton->isChecked());
+        QCOMPARE(extensionButton->icon(), QIcon::fromTheme("arrow-down-double"));
+
+        QComboBox *sortTypeCombo = filter.findChild<QComboBox*>("sortTypeCombo");
+        QVERIFY(sortTypeCombo);
+        QVERIFY(!sortTypeCombo->isVisibleTo(&filter));
+        QCOMPARE(sortTypeCombo->currentIndex(), 0);
+
+        QAbstractButton *ascendingButton = filter.findChild<QAbstractButton*>("ascendingButton");
+        QVERIFY(ascendingButton);
+        QVERIFY(!ascendingButton->isVisibleTo(&filter));
+        QVERIFY(ascendingButton->isChecked());
+        QCOMPARE(ascendingButton->icon(), QIcon::fromTheme("arrow-up"));
+
+        QAbstractButton *descendingButton = filter.findChild<QAbstractButton*>("descendingButton");
+        QVERIFY(descendingButton);
+        QVERIFY(!descendingButton->isVisibleTo(&filter));
+        QVERIFY(!descendingButton->isChecked());
+        QCOMPARE(descendingButton->icon(), QIcon::fromTheme("arrow-down"));
     }
 
     void shouldChangeAppliedFilter()
@@ -61,6 +88,91 @@ private slots:
 
         // THEN
         QCOMPARE(filter.proxyModel()->filterRegExp().pattern(), QString("find me"));
+    }
+
+    void shouldShowExtension()
+    {
+        // GIVEN
+        Widgets::FilterWidget filter;
+
+        QAbstractButton *extensionButton = filter.findChild<QAbstractButton*>("extensionButton");
+        QVERIFY(extensionButton);
+
+        QComboBox *sortTypeCombo = filter.findChild<QComboBox*>("sortTypeCombo");
+        QVERIFY(sortTypeCombo);
+
+        QAbstractButton *ascendingButton = filter.findChild<QAbstractButton*>("ascendingButton");
+        QVERIFY(ascendingButton);
+
+        QAbstractButton *descendingButton = filter.findChild<QAbstractButton*>("descendingButton");
+        QVERIFY(descendingButton);
+
+        // WHEN
+        extensionButton->click();
+
+        // THEN
+        QVERIFY(extensionButton->isChecked());
+        QVERIFY(sortTypeCombo->isVisibleTo(&filter));
+        QVERIFY(descendingButton->isVisibleTo(&filter));
+        QVERIFY(descendingButton->isVisibleTo(&filter));
+
+        // WHEN
+        extensionButton->click();
+
+        // THEN
+        QVERIFY(!extensionButton->isChecked());
+        QVERIFY(!sortTypeCombo->isVisibleTo(&filter));
+        QVERIFY(!descendingButton->isVisibleTo(&filter));
+        QVERIFY(!descendingButton->isVisibleTo(&filter));
+    }
+
+    void shouldChangeSortType()
+    {
+        // GIVEN
+        Widgets::FilterWidget filter;
+
+        QComboBox *sortTypeCombo = filter.findChild<QComboBox*>("sortTypeCombo");
+        QVERIFY(sortTypeCombo);
+
+        // WHEN
+        sortTypeCombo->setCurrentIndex(1);
+
+        // THEN
+        QCOMPARE(filter.proxyModel()->sortType(), Presentation::ArtifactFilterProxyModel::DateSort);
+
+        // WHEN
+        sortTypeCombo->setCurrentIndex(0);
+
+        // THEN
+        QCOMPARE(filter.proxyModel()->sortType(), Presentation::ArtifactFilterProxyModel::TitleSort);
+    }
+
+    void shouldChangeSortOrder()
+    {
+        // GIVEN
+        Widgets::FilterWidget filter;
+
+        QAbstractButton *ascendingButton = filter.findChild<QAbstractButton*>("ascendingButton");
+        QVERIFY(ascendingButton);
+
+        QAbstractButton *descendingButton = filter.findChild<QAbstractButton*>("descendingButton");
+        QVERIFY(descendingButton);
+
+        // WHEN
+        descendingButton->click();
+
+        // THEN
+        QVERIFY(!ascendingButton->isChecked());
+        QVERIFY(descendingButton->isChecked());
+        QCOMPARE(filter.proxyModel()->sortOrder(), Qt::DescendingOrder);
+
+        // WHEN
+        ascendingButton->click();
+
+        // THEN
+        QVERIFY(ascendingButton->isChecked());
+        QVERIFY(!descendingButton->isChecked());
+        QCOMPARE(filter.proxyModel()->sortOrder(), Qt::AscendingOrder);
     }
 };
 

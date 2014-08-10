@@ -11,6 +11,7 @@ set(widgets_SRCS
 )
 
 qt4_wrap_ui(widgets_SRCS
+    filterwidget.ui
     newpagedialog.ui
 )
 

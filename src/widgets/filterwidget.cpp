@@ -25,26 +25,39 @@
 #include "filterwidget.h"
 
 #include <QBoxLayout>
+#include <QComboBox>
 #include <QLineEdit>
+#include <QToolButton>
 
 #include "presentation/artifactfilterproxymodel.h"
+
+#include "ui_filterwidget.h"
 
 using namespace Widgets;
 
 FilterWidget::FilterWidget(QWidget *parent)
     : QWidget(parent),
-      m_model(new Presentation::ArtifactFilterProxyModel(this)),
-      m_filterEdit(new QLineEdit(this))
+      ui(new Ui::FilterWidget),
+      m_model(new Presentation::ArtifactFilterProxyModel(this))
 {
-    m_filterEdit->setObjectName("filterEdit");
-    m_filterEdit->setPlaceholderText(tr("Filter..."));
+    ui->setupUi(this);
+    ui->extension->hide();
+    ui->sortTypeCombo->addItem(tr("Sort by title"), Presentation::ArtifactFilterProxyModel::TitleSort);
+    ui->sortTypeCombo->addItem(tr("Sort by date"), Presentation::ArtifactFilterProxyModel::DateSort);
 
-    auto layout = new QHBoxLayout;
-    layout->addWidget(m_filterEdit);
-    setLayout(layout);
-
-    connect(m_filterEdit, SIGNAL(textChanged(QString)),
+    connect(ui->filterEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onTextChanged(QString)));
+    connect(ui->sortTypeCombo, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onSortTypeChanged(int)));
+    connect(ui->ascendingButton, SIGNAL(clicked()),
+            this, SLOT(onAscendingClicked()));
+    connect(ui->descendingButton, SIGNAL(clicked()),
+            this, SLOT(onDescendingClicked()));
+}
+
+FilterWidget::~FilterWidget()
+{
+    delete ui;
 }
 
 Presentation::ArtifactFilterProxyModel *FilterWidget::proxyModel() const
@@ -55,4 +68,20 @@ Presentation::ArtifactFilterProxyModel *FilterWidget::proxyModel() const
 void FilterWidget::onTextChanged(const QString &text)
 {
     m_model->setFilterFixedString(text);
+}
+
+void FilterWidget::onSortTypeChanged(int index)
+{
+    const int data = ui->sortTypeCombo->itemData(index).toInt();
+    m_model->setSortType(Presentation::ArtifactFilterProxyModel::SortType(data));
+}
+
+void FilterWidget::onAscendingClicked()
+{
+    m_model->setSortOrder(Qt::AscendingOrder);
+}
+
+void FilterWidget::onDescendingClicked()
+{
+    m_model->setSortOrder(Qt::DescendingOrder);
 }
