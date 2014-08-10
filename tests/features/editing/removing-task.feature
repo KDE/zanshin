@@ -3,10 +3,15 @@ Feature: Removing tasks
   I can delete a task so it is removed
   In order to clean up the old junk I accumulated
 
-  Scenario: Removing a simple task from the inbox
-    Given I display the "Inbox" page
-    And there is an item named "Buy a book" in the central list
+  Scenario Outline: Removing a simple task from a page
+    Given I display the "<page>" page
+    And there is an item named "<title>" in the central list
     When I remove the item
     And I list the items
-    Then the list does not contain "Buy a book"
+    Then the list does not contain "<title>"
+
+  Examples:
+    | page               | title                 |
+    | Inbox              | Buy a book            |
+    | Projects / Backlog | Setup a release party |
 

@@ -3,10 +3,14 @@ Feature: Adding tasks
   I can create task by giving a title
   In order to collect ideas while reflecting on my life
 
-  Scenario: Adding a task in the inbox
-    Given I display the "Inbox" page
+  Scenario Outline: Adding a task in a page
+    Given I display the "<page>" page
     And I look at the central list
-    When I add a task named "Buy a book"
+    When I add a task named "<title>"
     And I list the items
-    Then the list contains "Buy a book"
+    Then the list contains "<title>"
 
+  Examples:
+    | page               | title                 |
+    | Inbox              | Buy a book            |
+    | Projects / Backlog | Setup a release party |
