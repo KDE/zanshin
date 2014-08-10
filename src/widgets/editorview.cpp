@@ -29,6 +29,8 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 
+#include "domain/artifact.h"
+
 #include "pimlibs/kdateedit.h"
 
 using namespace Widgets;
@@ -76,6 +78,8 @@ EditorView::EditorView(QWidget *parent)
     connect(m_startDateEdit, SIGNAL(dateEntered(QDate)), this, SLOT(onStartEditEntered(QDate)));
     connect(m_dueDateEdit, SIGNAL(dateEntered(QDate)), this, SLOT(onDueEditEntered(QDate)));
     connect(m_doneButton, SIGNAL(toggled(bool)), this, SLOT(onDoneButtonChanged(bool)));
+
+    setEnabled(false);
 }
 
 QObject *EditorView::model() const
@@ -95,12 +99,15 @@ void EditorView::setModel(QObject *model)
 
     m_model = model;
 
+    onArtifactChanged();
     onTextOrTitleChanged();
     onHasTaskPropertiesChanged();
     onStartDateChanged();
     onDueDateChanged();
     onDoneChanged();
 
+    connect(m_model, SIGNAL(artifactChanged(Domain::Artifact::Ptr)),
+            this, SLOT(onArtifactChanged()));
     connect(m_model, SIGNAL(hasTaskPropertiesChanged(bool)),
             this, SLOT(onHasTaskPropertiesChanged()));
     connect(m_model, SIGNAL(titleChanged(QString)), this, SLOT(onTextOrTitleChanged()));
@@ -114,6 +121,12 @@ void EditorView::setModel(QObject *model)
     connect(this, SIGNAL(startDateChanged(QDateTime)), m_model, SLOT(setStartDate(QDateTime)));
     connect(this, SIGNAL(dueDateChanged(QDateTime)), m_model, SLOT(setDueDate(QDateTime)));
     connect(this, SIGNAL(doneChanged(bool)), m_model, SLOT(setDone(bool)));
+}
+
+void EditorView::onArtifactChanged()
+{
+    auto artifact = m_model->property("artifact").value<Domain::Artifact::Ptr>();
+    setEnabled(artifact);
 }
 
 void EditorView::onHasTaskPropertiesChanged()

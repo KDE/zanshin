@@ -42,7 +42,9 @@ public:
             return;
 
         setProperty(name, value);
-        if (name == "text")
+        if (name == "artifact")
+            emit artifactChanged(value.value<Domain::Artifact::Ptr>());
+        else if (name == "text")
             emit textChanged(value.toString());
         else if (name == "title")
             emit titleChanged(value.toString());
@@ -59,6 +61,7 @@ public:
     }
 
 public slots:
+    void setArtifact(const Domain::Artifact::Ptr &artifact) { setPropertyAndSignal("artifact", QVariant::fromValue(artifact)); }
     void setTitle(const QString &title) { setPropertyAndSignal("title", title); }
     void setText(const QString &text) { setPropertyAndSignal("text", text); }
     void setDone(bool done) { setPropertyAndSignal("done", done); }
@@ -66,6 +69,7 @@ public slots:
     void setDueDate(const QDateTime &due) { setPropertyAndSignal("dueDate", due); }
 
 signals:
+    void artifactChanged(const Domain::Artifact::Ptr &artifact);
     void hasTaskPropertiesChanged(bool hasTaskProperties);
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
@@ -81,6 +85,8 @@ private slots:
     void shouldHaveDefaultState()
     {
         Widgets::EditorView editor;
+
+        QVERIFY(!editor.isEnabled());
 
         auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
         QVERIFY(textEdit);
@@ -122,6 +128,44 @@ private slots:
         QVERIFY(startDateEdit->isVisibleTo(&editor));
         QVERIFY(dueDateEdit->isVisibleTo(&editor));
         QVERIFY(doneButton->isVisibleTo(&editor));
+    }
+
+    void shouldBeEnabledOnlyWhenAnArtifactIsAvailable()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+
+        // WHEN
+        editor.setModel(&model);
+
+        // THEN
+        QVERIFY(!editor.isEnabled());
+
+        // WHEN
+        Domain::Artifact::Ptr artifact(new Domain::Task);
+        model.setPropertyAndSignal("artifact", QVariant::fromValue(artifact));
+
+        // THEN
+        QVERIFY(editor.isEnabled());
+
+        // WHEN
+        model.setPropertyAndSignal("artifact", QVariant::fromValue(Domain::Artifact::Ptr()));
+
+        // THEN
+        QVERIFY(!editor.isEnabled());
+
+
+
+        // GIVEN
+        EditorModelStub model2;
+        model2.setPropertyAndSignal("artifact", QVariant::fromValue(artifact));
+
+        // WHEN
+        editor.setModel(&model2);
+
+        // THEN
+        QVERIFY(editor.isEnabled());
     }
 
     void shouldReactToHasTaskPropertiesChanged()

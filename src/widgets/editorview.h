@@ -57,6 +57,7 @@ signals:
     void doneChanged(bool done);
 
 private slots:
+    void onArtifactChanged();
     void onHasTaskPropertiesChanged();
     void onTextOrTitleChanged();
     void onStartDateChanged();
