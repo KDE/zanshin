@@ -45,6 +45,8 @@ public:
     virtual void setDefaultSource(Domain::DataSource::Ptr source);
 
     virtual KJob *create(Domain::Task::Ptr task);
+    virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project);
+
     virtual KJob *update(Domain::Task::Ptr task);
     virtual KJob *remove(Domain::Task::Ptr task);
 

@@ -210,6 +210,46 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col2).exactly(1));
     }
 
+    void shouldCreateNewItemsInProjectCollection()
+    {
+        // GIVEN
+
+        // A project item with a collection
+        Akonadi::Collection col(42);
+        Akonadi::Item projectItem(43);
+        projectItem.setParentCollection(col);
+        auto project = Domain::Project::Ptr::create();
+
+        // A task and its corresponding item not existing in storage yet
+        Akonadi::Item taskItem;
+        auto task = Domain::Task::Ptr::create();
+
+        // A mock create job
+        auto itemCreateJob = new MockAkonadiJob(this);
+
+        // Storage mock returning the create job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, col)
+                                                           .thenReturn(itemCreateJob);
+
+        // Serializer mock returning the item for the task
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project).thenReturn(projectItem);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).thenReturn(taskItem);
+        serializerMock(&Akonadi::SerializerInterface::updateItemProject).when(taskItem, project).thenReturn();
+
+        // WHEN
+        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
+                                                                                       &serializerMock.getInstance()));
+        repository->createInProject(task, project)->exec();
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateItemProject).when(taskItem, project).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, col).exactly(1));
+    }
+
     void shouldUpdateExistingItems()
     {
         // GIVEN
