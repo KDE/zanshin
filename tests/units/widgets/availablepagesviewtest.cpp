@@ -145,9 +145,11 @@ private slots:
 
         // WHEN
         available.setModel(&stubPagesModel);
+        QTest::qWait(10);
 
         // THEN
         QCOMPARE(pagesView->model(), &model);
+        QCOMPARE(pagesView->selectionModel()->currentIndex(), model.index(0, 0));
     }
 
     void shouldAddNewProjects()

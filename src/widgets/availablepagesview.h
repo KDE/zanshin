@@ -68,6 +68,7 @@ signals:
 private slots:
     void onCurrentChanged(const QModelIndex &current);
     void onAddTriggered();
+    void onInitTimeout();
 
 private:
     QObject *m_model;

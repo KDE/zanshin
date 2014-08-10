@@ -111,6 +111,8 @@ void AvailablePagesView::setModel(QObject *model)
 
     connect(m_pagesView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(onCurrentChanged(QModelIndex)));
+
+    QMetaObject::invokeMethod(this, "onInitTimeout", Qt::QueuedConnection);
 }
 
 void AvailablePagesView::setProjectSourcesModel(QAbstractItemModel *sources)
@@ -147,5 +149,13 @@ void AvailablePagesView::onAddTriggered()
         QMetaObject::invokeMethod(m_model, "addProject",
                                   Q_ARG(QString, dialog->name()),
                                   Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));
+    }
+}
+
+void AvailablePagesView::onInitTimeout()
+{
+    if (m_pagesView->model()) {
+        m_pagesView->setCurrentIndex(m_pagesView->model()->index(0, 0));
+        m_pagesView->expandAll();
     }
 }
