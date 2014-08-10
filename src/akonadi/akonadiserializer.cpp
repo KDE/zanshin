@@ -220,6 +220,7 @@ void Serializer::updateItemProject(Item item, Domain::Project::Ptr project)
             relatedHeader->from7BitString(parentUid);
             note->appendHeader(relatedHeader);
         }
+        note->assemble();
     }
 }
 

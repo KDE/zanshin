@@ -1391,6 +1391,10 @@ private slots:
             const auto relatedHeader = note->headerByType("X-Zanshin-RelatedProjectUid");
             const QString relatedUid = relatedHeader ? relatedHeader->asUnicodeString() : QString();
             QCOMPARE(relatedUid, expectedRelatedToUid);
+            if (!expectedRelatedToUid.isEmpty())
+                QVERIFY(note->encodedContent().contains(QString("X-Zanshin-RelatedProjectUid: %1").arg(expectedRelatedToUid).toUtf8()));
+            else
+                QVERIFY(!note->encodedContent().contains("X-Zanshin-RelatedProjectUid:"));
         }
     }
 
