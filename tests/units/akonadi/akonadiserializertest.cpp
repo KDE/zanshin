@@ -333,6 +333,7 @@ private slots:
         todo->setCompleted(isDone);
         todo->setDtStart(KDateTime(startDate));
         todo->setDtDue(KDateTime(dueDate));
+        todo->setRelatedTo("my-uid");
 
         // ... as payload of an item
         Akonadi::Item item;
@@ -350,6 +351,7 @@ private slots:
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
         QCOMPARE(task->property("todoUid").toString(), todo->uid());
+        QCOMPARE(task->property("relatedUid").toString(), todo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), item.id());
     }
 
@@ -395,9 +397,10 @@ private slots:
         QTest::addColumn<bool>("updatedDone");
         QTest::addColumn<QDateTime>("updatedStartDate");
         QTest::addColumn<QDateTime>("updatedDueDate");
+        QTest::addColumn<QString>("updatedRelated");
 
-        QTest::newRow("no change") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01));
-        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02));
+        QTest::newRow("no change") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid";
+        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid";
     }
 
     void shouldUpdateTaskFromItem()
@@ -411,6 +414,7 @@ private slots:
         originalTodo->setCompleted(false);
         originalTodo->setDtStart(KDateTime(QDate(2013, 11, 24)));
         originalTodo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+        originalTodo->setRelatedTo("my-uid");
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -429,6 +433,7 @@ private slots:
         QFETCH(bool, updatedDone);
         QFETCH(QDateTime, updatedStartDate);
         QFETCH(QDateTime, updatedDueDate);
+        QFETCH(QString, updatedRelated);
 
         // ... in a new todo...
         KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
@@ -437,6 +442,7 @@ private slots:
         updatedTodo->setCompleted(updatedDone);
         updatedTodo->setDtStart(KDateTime(updatedStartDate));
         updatedTodo->setDtDue(KDateTime(updatedDueDate));
+        updatedTodo->setRelatedTo(updatedRelated);
 
         // ... as payload of a new item
         Akonadi::Item updatedItem;
@@ -452,6 +458,7 @@ private slots:
         QCOMPARE(task->startDate(), updatedStartDate);
         QCOMPARE(task->dueDate(), updatedDueDate);
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
+        QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
     }
 
@@ -603,6 +610,8 @@ private slots:
         if (!todoUid.isEmpty())
             task->setProperty("todoUid", todoUid);
 
+        task->setProperty("relatedUid", "parent-uid");
+
         // WHEN
         Akonadi::Serializer serializer;
         auto item = serializer.createItemFromTask(task);
@@ -625,6 +634,8 @@ private slots:
         if (!todoUid.isEmpty()) {
             QCOMPARE(todo->uid(), todoUid);
         }
+
+        QCOMPARE(todo->relatedTo(), QString("parent-uid"));
     }
 
     void shouldVerifyIfAnItemIsATaskChild_data()
@@ -766,9 +777,11 @@ private slots:
     {
         QTest::addColumn<QString>("title");
         QTest::addColumn<QString>("text");
+        QTest::addColumn<QString>("relatedUid");
 
-        QTest::newRow("nominal case") << "A note title" << "A note content.\nWith two lines.";
-        QTest::newRow("empty case") << QString() << QString();
+        QTest::newRow("nominal case (no related)") << "A note title" << "A note content.\nWith two lines." << QString();
+        QTest::newRow("nominal case (with related)") << "A note title" << "A note content.\nWith two lines." << "parent-uid";
+        QTest::newRow("empty case") << QString() << QString() << QString();
     }
 
     void shouldCreateNoteFromItem()
@@ -778,11 +791,18 @@ private slots:
         // Data...
         QFETCH(QString, title);
         QFETCH(QString, text);
+        QFETCH(QString, relatedUid);
 
         // ... stored in a message...
         KMime::Message::Ptr message(new KMime::Message);
         message->subject(true)->fromUnicodeString(title, "utf-8");
         message->mainBodyPart()->fromUnicodeString(text);
+
+        if (!relatedUid.isEmpty()) {
+            auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+            relatedHeader->from7BitString(relatedUid.toUtf8());
+            message->appendHeader(relatedHeader);
+        }
 
         // ... as payload of an item.
         Akonadi::Item item;
@@ -797,6 +817,7 @@ private slots:
         QCOMPARE(note->title(), title);
         QCOMPARE(note->text(), text);
         QCOMPARE(note->property("itemId").toLongLong(), item.id());
+        QCOMPARE(note->property("relatedUid").toString(), relatedUid);
     }
 
     void shouldCreateNullNoteFromInvalidItem()
@@ -816,9 +837,11 @@ private slots:
     {
         QTest::addColumn<QString>("updatedTitle");
         QTest::addColumn<QString>("updatedText");
+        QTest::addColumn<QString>("updatedRelatedUid");
 
-        QTest::newRow("no change") << "title" << "content";
-        QTest::newRow("data changed") << "A new title" << "A new content";
+        QTest::newRow("no change") << "title" << "content" << "parent-uid";
+        QTest::newRow("data changed (with related)") << "A new title" << "A new content" << "new-parent-uid";
+        QTest::newRow("data changed (with no related)") << "A new title" << "A new content" << QString();
     }
 
     void shouldUpdateNoteFromItem()
@@ -829,6 +852,9 @@ private slots:
         KMime::Message::Ptr message(new KMime::Message);
         message->subject(true)->fromUnicodeString("title", "utf-8");
         message->mainBodyPart()->fromUnicodeString("text");
+        auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+        relatedHeader->from7BitString("parent-uid");
+        message->appendHeader(relatedHeader);
 
         //... as the payload of an item...
         Akonadi::Item item;
@@ -844,11 +870,18 @@ private slots:
         // Data...
         QFETCH(QString, updatedTitle);
         QFETCH(QString, updatedText);
+        QFETCH(QString, updatedRelatedUid);
 
         //... stored in a new message...
         KMime::Message::Ptr updatedMessage(new KMime::Message);
         updatedMessage->subject(true)->fromUnicodeString(updatedTitle, "utf-8");
         updatedMessage->mainBodyPart()->fromUnicodeString(updatedText);
+
+        if (!updatedRelatedUid.isEmpty()) {
+            relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+            relatedHeader->from7BitString(updatedRelatedUid.toUtf8());
+            updatedMessage->appendHeader(relatedHeader);
+        }
 
         //... as the payload of a new item...
         Akonadi::Item updatedItem;
@@ -861,6 +894,7 @@ private slots:
         QCOMPARE(note->title(), updatedTitle);
         QCOMPARE(note->text(), updatedText);
         QCOMPARE(note->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(note->property("relatedUid").toString(), updatedRelatedUid);
     }
 
     void shouldNotUpdateNoteFromInvalidItem()
@@ -903,12 +937,13 @@ private slots:
         QTest::addColumn<QString>("expectedTitle");
         QTest::addColumn<QString>("expectedContent");
         QTest::addColumn<qint64>("itemId");
+        QTest::addColumn<QString>("relatedUid");
 
-        QTest::newRow("nominal case (no id)") << "title" << "content" << "title" << "content" << qint64(-1);
-        QTest::newRow("empty case (no id)") << QString() << QString() << "New Note" << QString() << qint64(-1);
+        QTest::newRow("nominal case (no id)") << "title" << "content" << "title" << "content" << qint64(-1) << QString();
+        QTest::newRow("empty case (no id)") << QString() << QString() << "New Note" << QString() << qint64(-1) << QString();
 
-        QTest::newRow("nominal case (with id)") << "title" << "content" << "title" << "content" << qint64(42);
-        QTest::newRow("empty case (with id)") << QString() << QString() << "New Note" << QString() << qint64(42);
+        QTest::newRow("nominal case (with id)") << "title" << "content" << "title" << "content" << qint64(42) << "parent-uid";
+        QTest::newRow("empty case (with id)") << QString() << QString() << "New Note" << QString() << qint64(42) << "parent-uid";
     }
 
     void shouldCreateItemFromNote()
@@ -919,6 +954,7 @@ private slots:
         QFETCH(QString, title);
         QFETCH(QString, content);
         QFETCH(qint64, itemId);
+        QFETCH(QString, relatedUid);
 
         // ... stored in a note
         auto note = Domain::Note::Ptr::create();
@@ -927,6 +963,9 @@ private slots:
 
         if (itemId > 0)
             note->setProperty("itemId", itemId);
+
+        if (!relatedUid.isEmpty())
+            note->setProperty("relatedUid", relatedUid);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -945,6 +984,13 @@ private slots:
         auto message = item.payload<KMime::Message::Ptr>();
         QCOMPARE(message->subject(false)->asUnicodeString(), expectedTitle);
         QCOMPARE(message->mainBodyPart()->decodedText(true), expectedContent);
+
+        if (relatedUid.isEmpty()) {
+            QVERIFY(!message->headerByType("X-Zanshin-RelatedProjectUid"));
+        } else {
+            QVERIFY(message->headerByType("X-Zanshin-RelatedProjectUid"));
+            QCOMPARE(message->headerByType("X-Zanshin-RelatedProjectUid")->asUnicodeString(), relatedUid);
+        }
     }
 
     void shouldCreateProjectFromItem_data()

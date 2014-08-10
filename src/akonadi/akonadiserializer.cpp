@@ -138,6 +138,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setDueDate(todo->dtDue().dateTime());
     task->setProperty("itemId", item.id());
     task->setProperty("todoUid", todo->uid());
+    task->setProperty("relatedUid", todo->relatedTo());
 }
 
 bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
@@ -164,6 +165,10 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 
     if (task->property("todoUid").isValid()) {
         todo->setUid(task->property("todoUid").toString());
+    }
+
+    if (task->property("relatedUid").isValid()) {
+        todo->setRelatedTo(task->property("relatedUid").toString());
     }
 
     Akonadi::Item item;
@@ -277,11 +282,18 @@ void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
     if (!isNoteItem(item))
         return;
 
-    NoteUtils::NoteMessageWrapper wrappedNote(item.payload<KMime::Message::Ptr>());
+    auto message = item.payload<KMime::Message::Ptr>();
+    NoteUtils::NoteMessageWrapper wrappedNote(message);
 
     note->setTitle(wrappedNote.title());
     note->setText(wrappedNote.text());
     note->setProperty("itemId", item.id());
+
+    if (auto relatedHeader = message->headerByType("X-Zanshin-RelatedProjectUid")) {
+        note->setProperty("relatedUid", relatedHeader->asUnicodeString());
+    } else {
+        note->setProperty("relatedUid", QVariant());
+    }
 }
 
 Item Serializer::createItemFromNote(Domain::Note::Ptr note)
@@ -290,12 +302,20 @@ Item Serializer::createItemFromNote(Domain::Note::Ptr note)
     builder.setTitle(note->title());
     builder.setText(note->text());
 
+    KMime::Message::Ptr message = builder.message();
+
+    if (!note->property("relatedUid").toString().isEmpty()) {
+        auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+        relatedHeader->from7BitString(note->property("relatedUid").toString().toUtf8());
+        message->appendHeader(relatedHeader);
+    }
+
     Akonadi::Item item;
     if (note->property("itemId").isValid()) {
         item.setId(note->property("itemId").value<Akonadi::Item::Id>());
     }
     item.setMimeType(Akonadi::NoteUtils::noteMimeType());
-    item.setPayload(builder.message());
+    item.setPayload(message);
     return item;
 }
 
