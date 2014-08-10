@@ -214,7 +214,8 @@ void TaskQueries::onItemAdded(const Item &item)
     if (m_taskChildProviders.isEmpty())
         return;
 
-    TaskProvider::Ptr childProvider = childProviderFromItem(item);
+    const QString uid = m_serializer->relatedUidFromItem(item);
+    TaskProvider::Ptr childProvider = childProviderFromUid(uid);
     if (childProvider) {
         childProvider->append(task);
     }
@@ -261,7 +262,8 @@ void TaskQueries::onItemRemoved(const Item &item)
         }
     }
 
-    TaskProvider::Ptr childProvider = childProviderFromItem(item);
+    const QString uid = m_idToRelatedUidCache.value(item.id());
+    TaskProvider::Ptr childProvider = childProviderFromUid(uid);
     if (childProvider) {
         for (int i = 0; i < childProvider->data().size(); i++) {
             auto task = childProvider->data().at(i);
@@ -314,7 +316,8 @@ void TaskQueries::onItemChanged(const Item &item)
     if (m_taskChildProviders.isEmpty())
         return;
 
-    TaskProvider::Ptr childProvider = childProviderFromItem(item);
+    const QString uid = m_serializer->relatedUidFromItem(item);
+    TaskProvider::Ptr childProvider = childProviderFromUid(uid);
     if (childProvider) {
         bool itemUpdated = false;
         for (int i = 0; i < childProvider->data().size(); i++) {
@@ -353,11 +356,10 @@ void TaskQueries::addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entit
     m_uidtoIdCache[m_serializer->objectUid(task)] = id;
 }
 
-TaskQueries::TaskProvider::Ptr TaskQueries::childProviderFromItem(const Item &item) const
+TaskQueries::TaskProvider::Ptr TaskQueries::childProviderFromUid(const QString &uid) const
 {
     TaskProvider::Ptr childProvider;
 
-    auto uid = m_serializer->relatedUidFromItem(item);
     if (m_uidtoIdCache.contains(uid)) {
         auto parentId = m_uidtoIdCache.value(uid);
         if (m_taskChildProviders.contains(parentId))

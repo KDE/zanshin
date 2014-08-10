@@ -68,7 +68,7 @@ private:
     bool isTaskItem(const Domain::Task::Ptr &task, const Item &item) const;
     Domain::Task::Ptr deserializeTask(const Item &item) const;
     void addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const;
-    TaskProvider::Ptr childProviderFromItem(const Item &item) const;
+    TaskProvider::Ptr childProviderFromUid(const QString &uid) const;
     void removeItemFromChildProviders(const Item &item);
 
     StorageInterface *m_storage;

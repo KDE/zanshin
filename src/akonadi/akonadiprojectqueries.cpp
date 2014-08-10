@@ -158,7 +158,8 @@ void ProjectQueries::onItemAdded(const Item &item)
         return;
     }
 
-    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForItem(item);
+    const QString uid = m_serializer->relatedUidFromItem(item);
+    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForUid(uid);
     if (topLevelProvider) {
         Domain::Artifact::Ptr artifact = deserializeArtifact(item);
         topLevelProvider->append(artifact);
@@ -179,7 +180,8 @@ void ProjectQueries::onItemRemoved(const Item &item)
         }
     }
 
-    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForItem(item);
+    const QString uid = m_idToRelatedUidCache.value(item.id());
+    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForUid(uid);
     if (topLevelProvider) {
         for (int i = 0; i < topLevelProvider->data().size(); i++) {
             auto artifact = topLevelProvider->data().at(i);
@@ -205,7 +207,8 @@ void ProjectQueries::onItemChanged(const Item &item)
         }
     }
 
-    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForItem(item);
+    const QString uid = m_serializer->relatedUidFromItem(item);
+    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForUid(uid);
     if (topLevelProvider) {
         bool itemUpdated = false;
         for (int i = 0; i < topLevelProvider->data().size(); i++) {
@@ -254,11 +257,10 @@ Domain::Artifact::Ptr ProjectQueries::deserializeArtifact(const Item &item) cons
     return Domain::Artifact::Ptr();
 }
 
-ProjectQueries::ArtifactProvider::Ptr ProjectQueries::topLevelProviderForItem(const Item &item) const
+ProjectQueries::ArtifactProvider::Ptr ProjectQueries::topLevelProviderForUid(const QString &uid) const
 {
     ArtifactProvider::Ptr topLevelProvider;
 
-    auto uid = m_serializer->relatedUidFromItem(item);
     if (m_uidtoIdCache.contains(uid)) {
         Akonadi::Entity::Id parentId = m_uidtoIdCache.value(uid);
         if (m_topLevelProviders.contains(parentId))

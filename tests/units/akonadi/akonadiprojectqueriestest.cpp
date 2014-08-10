@@ -990,7 +990,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(note3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1");
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1")
+                                                                                     .thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("1");
 
         // Serializer mock returning if task1 is parent of items

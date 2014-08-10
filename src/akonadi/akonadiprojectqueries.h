@@ -61,7 +61,7 @@ private slots:
 private:
     void addItemIdInCache(const Domain::Project::Ptr &project, Akonadi::Entity::Id id) const;
     Domain::Artifact::Ptr deserializeArtifact(const Item &item) const;
-    ArtifactProvider::Ptr topLevelProviderForItem(const Item &item) const;
+    ArtifactProvider::Ptr topLevelProviderForUid(const QString &uid) const;
     void removeItemFromTopLevelProviders(const Item &item);
 
     StorageInterface *m_storage;

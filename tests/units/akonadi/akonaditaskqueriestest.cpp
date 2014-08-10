@@ -1035,7 +1035,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Serializer mock returning if the item has a relatedItem
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1");
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("1")
+                                                                                     .thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("1");
 
         // Serializer mock returning if task1 is parent of items
@@ -1065,7 +1066,7 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item2).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).exactly(2));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).exactly(1));
 
         QCOMPARE(result->data().size(), 1);
@@ -1626,7 +1627,7 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).exactly(2));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).exactly(4));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).exactly(3));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).exactly(2));
 
         QCOMPARE(resultChild->data().size(), 0);
