@@ -626,7 +626,7 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
 
         mock_object<Domain::TaskRepository> repositoryMock;
-        repositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(0);
+        repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(0);
 
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
@@ -661,7 +661,7 @@ private slots:
                 task->setDone(value.toInt() == Qt::Checked);
             }
 
-            repositoryMock.getInstance().save(task);
+            repositoryMock.getInstance().update(task);
             return true;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
@@ -675,7 +675,7 @@ private slots:
         model.setData(index, Qt::Checked, Qt::CheckStateRole);
 
         // THEN
-        QVERIFY(repositoryMock(&Domain::TaskRepository::save).when(task).exactly(2));
+        QVERIFY(repositoryMock(&Domain::TaskRepository::update).when(task).exactly(2));
 
         QCOMPARE(titleChangedSpy.size(), 1);
         QCOMPARE(titleChangedSpy.first().first().toString(), QString("alternate second"));

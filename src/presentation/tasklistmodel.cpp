@@ -105,7 +105,7 @@ bool TaskListModel::setData(const QModelIndex &index, const QVariant &value, int
         task->setDone(value.toInt() == Qt::Checked);
     }
 
-    m_repository->save(task);
+    m_repository->update(task);
     return true;
 }
 

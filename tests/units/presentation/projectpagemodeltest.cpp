@@ -120,8 +120,8 @@ private slots:
         QCOMPARE(model->data(childTaskIndex, Qt::CheckStateRole).toBool(), childTask->isDone());
 
         // WHEN
-        taskRepositoryMock(&Domain::TaskRepository::save).when(rootTask).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::save).when(childTask).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).thenReturn(new FakeJob(this));
         noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).thenReturn(new FakeJob(this));
 
         QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
@@ -133,8 +133,8 @@ private slots:
         QVERIFY(model->setData(childTaskIndex, Qt::Unchecked, Qt::CheckStateRole));
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(rootTask).exactly(2));
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(childTask).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).exactly(2));
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).exactly(1));
 
         QCOMPARE(rootTask->title(), QString("newRootTask"));

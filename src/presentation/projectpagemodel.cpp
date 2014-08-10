@@ -117,7 +117,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            taskRepository()->save(task);
+            taskRepository()->update(task);
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {

@@ -52,7 +52,7 @@ void InboxPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    taskRepository()->save(task);
+    taskRepository()->create(task);
 }
 
 void InboxPageModel::removeItem(const QModelIndex &index)
@@ -111,7 +111,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            taskRepository()->save(task);
+            taskRepository()->update(task);
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {

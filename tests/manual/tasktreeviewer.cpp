@@ -78,7 +78,7 @@ int main(int argc, char **argv)
             task->setDone(value.toInt() == Qt::Checked);
         }
 
-        repository.save(task);
+        repository.update(task);
         return true;
     };
 

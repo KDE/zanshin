@@ -40,7 +40,8 @@ public:
     virtual bool isDefaultSource(DataSource::Ptr source) const = 0;
     virtual void setDefaultSource(DataSource::Ptr source) = 0;
 
-    virtual KJob *save(Task::Ptr task) = 0;
+    virtual KJob *create(Task::Ptr task) = 0;
+    virtual KJob *update(Task::Ptr task) = 0;
     virtual KJob *remove(Task::Ptr task) = 0;
 
     virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;

@@ -44,7 +44,8 @@ public:
     virtual bool isDefaultSource(Domain::DataSource::Ptr source) const;
     virtual void setDefaultSource(Domain::DataSource::Ptr source);
 
-    virtual KJob *save(Domain::Task::Ptr task);
+    virtual KJob *create(Domain::Task::Ptr task);
+    virtual KJob *update(Domain::Task::Ptr task);
     virtual KJob *remove(Domain::Task::Ptr task);
 
     virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child);

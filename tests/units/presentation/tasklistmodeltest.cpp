@@ -204,7 +204,7 @@ private slots:
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         mock_object<Domain::TaskRepository> repositoryMock;
-        repositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(0);
+        repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(0);
 
         Presentation::TaskListModel model(list, &repositoryMock.getInstance());
         new ModelTest(&model);
@@ -217,7 +217,7 @@ private slots:
         model.setData(index, Qt::Checked, Qt::CheckStateRole);
 
         // THEN
-        QVERIFY(repositoryMock(&Domain::TaskRepository::save).when(task).exactly(2));
+        QVERIFY(repositoryMock(&Domain::TaskRepository::update).when(task).exactly(2));
 
         QCOMPARE(titleChangedSpy.size(), 1);
         QCOMPARE(titleChangedSpy.first().first().toString(), QString("alternate second"));

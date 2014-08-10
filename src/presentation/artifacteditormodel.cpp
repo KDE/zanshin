@@ -225,7 +225,7 @@ void ArtifactEditorModel::save()
         task->setDone(m_done);
         task->setStartDate(m_start);
         task->setDueDate(m_due);
-        m_taskRepository->save(task);
+        m_taskRepository->update(task);
     } else {
         auto note = m_artifact.objectCast<Domain::Note>();
         Q_ASSERT(note);

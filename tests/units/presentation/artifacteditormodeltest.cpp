@@ -235,7 +235,7 @@ private slots:
         auto note = artifact.objectCast<Domain::Note>();
 
         mock_object<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
         mock_object<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
 
@@ -252,7 +252,7 @@ private slots:
         QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(task).exactly(0));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(0));
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(0));
 
         // WHEN (apply after delay)
@@ -261,7 +261,7 @@ private slots:
         // THEN
         QCOMPARE(artifact->property(propertyName), propertyValue);
         if (task) {
-            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(task).exactly(1));
+            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
             QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
         }
@@ -284,7 +284,7 @@ private slots:
         auto note = artifact.objectCast<Domain::Note>();
 
         mock_object<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
         mock_object<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
 
@@ -301,7 +301,7 @@ private slots:
         QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(task).exactly(0));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(0));
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(0));
 
         // WHEN (apply immediately)
@@ -310,7 +310,7 @@ private slots:
         // THEN
         QCOMPARE(artifact->property(propertyName), propertyValue);
         if (task) {
-            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(task).exactly(1));
+            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
             QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
         }
@@ -321,7 +321,7 @@ private slots:
         // THEN
         QCOMPARE(artifact->property(propertyName), propertyValue);
         if (task) {
-            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(task).exactly(1));
+            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
             QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
         }
@@ -344,7 +344,7 @@ private slots:
         auto note = artifact.objectCast<Domain::Note>();
 
         mock_object<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::save).when(task).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
         mock_object<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
 
@@ -361,7 +361,7 @@ private slots:
         QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
         QCOMPARE(model->property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(task).exactly(0));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(0));
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(0));
 
         // WHEN (apply immediately)
@@ -370,7 +370,7 @@ private slots:
         // THEN
         QCOMPARE(artifact->property(propertyName), propertyValue);
         if (task) {
-            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::save).when(task).exactly(1));
+            QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
             QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
         }

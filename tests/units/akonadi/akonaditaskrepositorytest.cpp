@@ -131,7 +131,7 @@ private slots:
     }
 
 
-    void shouldCreateNewItemsOnSave()
+    void shouldCreateNewItems()
     {
         // GIVEN
 
@@ -158,7 +158,7 @@ private slots:
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
                                                                                        &serializerMock.getInstance()));
-        repository->save(task)->exec();
+        repository->create(task)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
@@ -202,7 +202,7 @@ private slots:
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
                                                                                        &serializerMock.getInstance()));
-        repository->save(task)->exec();
+        repository->create(task)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
@@ -210,7 +210,7 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col2).exactly(1));
     }
 
-    void shouldUpdateExistingItemsOnSave()
+    void shouldUpdateExistingItems()
     {
         // GIVEN
 
@@ -236,7 +236,7 @@ private slots:
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
                                                                                        &serializerMock.getInstance()));
-        repository->save(task)->exec();
+        repository->update(task)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));

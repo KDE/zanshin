@@ -73,39 +73,43 @@ void TaskRepository::setDefaultSource(Domain::DataSource::Ptr source)
     StorageSettings::instance().setDefaultTaskCollection(collection);
 }
 
-KJob *TaskRepository::save(Domain::Task::Ptr task)
+KJob *TaskRepository::create(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
+    Q_ASSERT(!item.isValid());
 
-    if (item.isValid()) {
-        return m_storage->updateItem(item);
+    const Akonadi::Collection defaultCollection = m_storage->defaultTaskCollection();
+    if (defaultCollection.isValid()) {
+        return m_storage->createItem(item, defaultCollection);
     } else {
-        const Akonadi::Collection defaultCollection = m_storage->defaultTaskCollection();
-        if (defaultCollection.isValid()) {
-            return m_storage->createItem(item, defaultCollection);
-        } else {
-            auto job = new CompositeJob();
-            CollectionFetchJobInterface *fetchCollectionJob = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                          StorageInterface::Recursive,
-                                                                                          StorageInterface::Tasks);
-            job->install(fetchCollectionJob->kjob(), [fetchCollectionJob, item, job, this] {
-                if (fetchCollectionJob->kjob()->error() != KJob::NoError)
-                    return;
+        auto job = new CompositeJob();
+        CollectionFetchJobInterface *fetchCollectionJob = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                                      StorageInterface::Recursive,
+                                                                                      StorageInterface::Tasks);
+        job->install(fetchCollectionJob->kjob(), [fetchCollectionJob, item, job, this] {
+            if (fetchCollectionJob->kjob()->error() != KJob::NoError)
+                return;
 
-                Q_ASSERT(fetchCollectionJob->collections().size() > 0);
-                const Akonadi::Collection::List collections = fetchCollectionJob->collections();
-                Akonadi::Collection col = *std::find_if(collections.constBegin(), collections.constEnd(),
-                                                        [] (const Akonadi::Collection &c) {
-                                                            return c.rights() == Akonadi::Collection::AllRights;
-                                                        });
-                Q_ASSERT(col.isValid());
-                auto createJob = m_storage->createItem(item, col);
-                job->addSubjob(createJob);
-                createJob->start();
+            Q_ASSERT(fetchCollectionJob->collections().size() > 0);
+            const Akonadi::Collection::List collections = fetchCollectionJob->collections();
+            Akonadi::Collection col = *std::find_if(collections.constBegin(), collections.constEnd(),
+                                                    [] (const Akonadi::Collection &c) {
+                return c.rights() == Akonadi::Collection::AllRights;
             });
-            return job;
-        }
+            Q_ASSERT(col.isValid());
+            auto createJob = m_storage->createItem(item, col);
+            job->addSubjob(createJob);
+            createJob->start();
+        });
+        return job;
     }
+}
+
+KJob *TaskRepository::update(Domain::Task::Ptr task)
+{
+    auto item = m_serializer->createItemFromTask(task);
+    Q_ASSERT(item.isValid());
+    return m_storage->updateItem(item);
 }
 
 KJob *TaskRepository::remove(Domain::Task::Ptr task)
