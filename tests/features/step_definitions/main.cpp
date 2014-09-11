@@ -258,16 +258,8 @@ GIVEN("^there is an item named \"(.+)\" in the central list$") {
     QTest::qWait(500);
     context->setModel(model);
 
-    for (int row = 0; row < context->model()->rowCount(); row++) {
-        QModelIndex index = context->model()->index(row, 0);
-        if (Zanshin::indexString(index) == itemName) {
-            context->index = index;
-            return;
-        }
-    }
-
-    qDebug() << "Couldn't find an item named" << itemName;
-    VERIFY_OR_DUMP(false);
+    context->index = Zanshin::findIndex(context->model(), itemName);
+    VERIFY_OR_DUMP(context->index.isValid());
 }
 
 
