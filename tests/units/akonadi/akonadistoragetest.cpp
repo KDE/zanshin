@@ -26,6 +26,8 @@
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
 
+#include "akonadi/qtest_akonadi.h"
+
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionCreateJob>
 #include <Akonadi/CollectionDeleteJob>
@@ -52,6 +54,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/TagFetchJob>
 #include <Akonadi/TagFetchScope>
+#include <Akonadi/CollectionFetchScope>
 
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth)
 
@@ -75,7 +78,7 @@ private slots:
                                                       this);
         colJob->exec();
         for (const auto &col : colJob->collections()) {
-            qDebug() << "COL:" << col.id() << col.name();
+            qDebug() << "COL:" << col.id() << col.name() << col.remoteId();
             auto itemJob = new Akonadi::ItemFetchJob(col, this);
             itemJob->fetchScope().fetchFullPayload();
             itemJob->exec();
@@ -139,7 +142,7 @@ private slots:
         // WHEN
         auto job = storage.fetchCollections(collection, depth,
                                             Akonadi::StorageInterface::FetchContentTypes(contentTypes));
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
 
         // THEN
         auto collections = job->collections();
@@ -161,7 +164,7 @@ private slots:
         auto job = storage.fetchCollections(Akonadi::Collection::root(),
                                             Akonadi::Storage::Recursive,
                                             Akonadi::Storage::Tasks|Akonadi::Storage::Notes);
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
 
         // THEN
         auto collections = job->collections();
@@ -187,7 +190,7 @@ private slots:
 
         // WHEN
         auto job = storage.fetchItems(calendar2());
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
 
         // THEN
         auto items = job->items();
@@ -232,7 +235,7 @@ private slots:
 
         // WHEN
         auto job = storage.fetchTags();
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
 
         // THEN
         auto tags = job->tags();
@@ -262,12 +265,9 @@ private slots:
         collection.setContentMimeTypes(QStringList() << "application/x-vnd.akonadi.calendar.todo");
 
         // WHEN
-        (new Akonadi::CollectionCreateJob(collection))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::CollectionCreateJob(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -290,15 +290,13 @@ private slots:
         QSignalSpy spy(&monitor, SIGNAL(collectionRemoved(Akonadi::Collection)));
 
         // An existing item (if we trust the test data)
-        Akonadi::Collection collection(6);
+        Akonadi::Collection collection = fetchCollectionByRID("{1f78b360-a01b-4785-9187-75450190342c}");
+        QVERIFY(collection.isValid());
 
         // WHEN
-        (new Akonadi::CollectionDeleteJob(collection))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::CollectionDeleteJob(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -315,16 +313,14 @@ private slots:
         QSignalSpy spy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
 
         // A colection with an existing id (if we trust the test data)
-        Akonadi::Collection collection(7);
+        Akonadi::Collection collection = fetchCollectionByRID("{28ef9f03-4ebc-4e33-970f-f379775894f9}");
+        QVERIFY(collection.isValid());
         collection.setName("Bar!");
 
         // WHEN
-        (new Akonadi::CollectionModifyJob(collection))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::CollectionModifyJob(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -363,12 +359,9 @@ private slots:
         item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
         // WHEN
-        (new Akonadi::ItemCreateJob(item, calendar2()))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::ItemCreateJob(item, calendar2());
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -391,16 +384,14 @@ private slots:
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
 
-        // An existing item (if we trust the test data)
-        Akonadi::Item item(10);
+        const Akonadi::Collection notesCol = fetchCollectionByRID("{f5e3f1be-b998-4c56-aa3d-e3a6e7e5493a}");
+        Akonadi::Item item = fetchItemByRID("{d0159c99-0d23-41fa-bb5f-436570140f8b}", notesCol);
+        QVERIFY(item.isValid());
 
         // WHEN
-        (new Akonadi::ItemDeleteJob(item))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::ItemDeleteJob(item);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -425,18 +416,16 @@ private slots:
         todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
 
         // ... as payload of an existing item (if we trust the test data)...
-        Akonadi::Item item(7);
+        Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff6}", calendar2());
+        QVERIFY(item.isValid());
         item.setMimeType("application/x-vnd.akonadi.calendar.todo");
         item.setPayload<KCalCore::Todo::Ptr>(todo);
         item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
         // WHEN
-        (new Akonadi::ItemModifyJob(item))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::ItemModifyJob(item);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -461,7 +450,8 @@ private slots:
         QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
 
         // An existing item (if we trust the test data)...
-        Akonadi::Item item(1);
+        Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff5}", calendar2());
+        QVERIFY(item.isValid());
         item.setMimeType("application/x-vnd.akonadi.calendar.todo");
 
         // An existing tag (if we trust the test data)
@@ -469,12 +459,9 @@ private slots:
 
         // WHEN
         item.setTag(tag);
-        (new Akonadi::ItemModifyJob(item))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::ItemModifyJob(item);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -514,12 +501,9 @@ private slots:
         tag.setType("type");
 
         // WHEN
-        (new Akonadi::TagCreateJob(tag))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::TagCreateJob(tag);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -541,12 +525,9 @@ private slots:
         Akonadi::Tag tag(5);
 
         // WHEN
-        (new Akonadi::TagDeleteJob(tag))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::TagDeleteJob(tag);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -567,12 +548,9 @@ private slots:
         tag.setName("Oh it changed!");
 
         // WHEN
-        (new Akonadi::TagModifyJob(tag))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = new Akonadi::TagModifyJob(tag);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -630,17 +608,14 @@ private slots:
         todo->setDescription("new content");
 
         // ... as payload of an existing item (if we trust the test data)...
-        Akonadi::Item item(7);
+        Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff4}", calendar2());
         item.setMimeType("application/x-vnd.akonadi.calendar.todo");
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         // WHEN
-        (storage.updateItem(item))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = storage.updateItem(item);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -657,10 +632,12 @@ private slots:
         // GIVEN
         Akonadi::Storage storage;
 
-        Akonadi::Item item1(1);
-        Akonadi::Item item2(2);
+        Akonadi::Item item1 = fetchItemByRID("{0aa4dc30-a2c2-4e08-8241-033b3344debc}", calendar1());
+        QVERIFY(item1.isValid());
+        Akonadi::Item item2 = fetchItemByRID("{5dc1aba7-eead-4254-ba7a-58e397de1179}", calendar1());
+        QVERIFY(item2.isValid());
         // create wrong item
-        Akonadi::Item item3(18);
+        Akonadi::Item item3(10000);
         item3.setRemoteId("wrongId");
 
         // A spied monitor
@@ -668,12 +645,12 @@ private slots:
         QSignalSpy spyUpdated(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
 
         auto job = storage.fetchItem(item1);
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
         QCOMPARE(job->items().size(), 1);
         item1 = job->items()[0];
 
         job = storage.fetchItem(item2);
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
         QCOMPARE(job->items().size(), 1);
         item2 = job->items()[0];
 
@@ -687,7 +664,7 @@ private slots:
         storage.updateItem(item1, transaction);
         storage.updateItem(item3, transaction); // this job should fail
         storage.updateItem(item2, transaction);
-        transaction->exec();
+        QVERIFY(!transaction->exec());
 
         for (int i = 0; i < 10; i++) {
             if (spyUpdated.size() == 3) break;
@@ -697,12 +674,12 @@ private slots:
         // Then
         QCOMPARE(spyUpdated.size(), 0);
         job = storage.fetchItem(item1);
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
         QCOMPARE(job->items().size(), 1);
         item1 = job->items()[0];
 
         job = storage.fetchItem(item2);
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
         QCOMPARE(job->items().size(), 1);
         item2 = job->items()[0];
 
@@ -735,12 +712,9 @@ private slots:
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         // WHEN
-        (storage.createItem(item, calendar2()))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = storage.createItem(item, calendar2());
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -753,11 +727,12 @@ private slots:
     {
         // GIVEN
         Akonadi::Storage storage;
-        Akonadi::Item findItem(6);
+        Akonadi::Item findItem = fetchItemByRID("{7824df00-2fd6-47a4-8319-52659dc82005}", calendar2());
+        QVERIFY(findItem.isValid());
 
         // WHEN
         auto job = storage.fetchItem(findItem);
-        job->kjob()->exec();
+        AKVERIFYEXEC(job->kjob());
 
         // THEN
         auto items = job->items();
@@ -765,7 +740,7 @@ private slots:
 
         const auto &item = items[0];
 
-        QCOMPARE(item.id(), 6LL);
+        QCOMPARE(item.id(), findItem.id());
         QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
         QVERIFY(!item.attributes().isEmpty());
         QVERIFY(item.modificationTime().isValid());
@@ -783,18 +758,16 @@ private slots:
         // GIVEN
         Akonadi::Storage storage;
 
-        Akonadi::Item item(8);
+        Akonadi::Item item = fetchItemByRID("{7824df00-2fd6-47a4-8319-52659dc82005}", calendar2());
+        QVERIFY(item.isValid());
 
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spyMoved(&monitor, SIGNAL(itemMoved(Akonadi::Item)));
 
-        (storage.moveItem(item, calendar1()))->exec();
-
-        for (int i = 0; i < 10; i++) {
-            if (!spyMoved.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = storage.moveItem(item, calendar1());
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spyMoved.isEmpty());
 
         QCOMPARE(spyMoved.size(), 1);
         auto movedItem = spyMoved.takeFirst().takeFirst().value<Akonadi::Item>();
@@ -806,7 +779,8 @@ private slots:
         // GIVEN
         Akonadi::Storage storage;
 
-        Akonadi::Item item(9);
+        Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff4}", calendar2());
+        QVERIFY(item.isValid());
         Akonadi::Item::List list;
         list << item;
 
@@ -814,12 +788,9 @@ private slots:
         Akonadi::MonitorImpl monitor;
         QSignalSpy spyMoved(&monitor, SIGNAL(itemMoved(Akonadi::Item)));
 
-        (storage.moveItems(list, calendar1()))->exec();
-
-        for (int i = 0; i < 10; i++) {
-            if (!spyMoved.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = storage.moveItems(list, calendar1());
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spyMoved.isEmpty());
 
         QCOMPARE(spyMoved.size(), 1);
         auto movedItem = spyMoved.takeFirst().takeFirst().value<Akonadi::Item>();
@@ -836,15 +807,13 @@ private slots:
         QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
 
         // An existing item (if we trust the test data)
-        Akonadi::Item item(1);
+        Akonadi::Item item = fetchItemByRID("{0aa4dc30-a2c2-4e08-8241-033b3344debc}", calendar1());
+        QVERIFY(item.isValid());
 
         //When
-        (storage.removeItem(item))->exec();
-        // Give some time for the backend to signal back
-        for (int i = 0; i < 10; i++) {
-            if (!spy.isEmpty()) break;
-            QTest::qWait(50);
-        }
+        auto job = storage.removeItem(item);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -853,16 +822,54 @@ private slots:
     }
 
 private:
+    Akonadi::Item fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
+    {
+        Akonadi::Item item;
+        item.setRemoteId(remoteId);
+
+        auto job = new Akonadi::ItemFetchJob(item);
+        job->setCollection(collection);
+        if (!job->exec()) {
+            qWarning() << job->errorString();
+            return Akonadi::Item();
+        }
+
+        if (job->count() != 1) {
+            qWarning() << "Received unexpected amount of items: " << job->count();
+            return Akonadi::Item();
+        }
+
+        return job->items().first();
+    }
+
+    Akonadi::Collection fetchCollectionByRID(const QString &remoteId)
+    {
+        Akonadi::Collection collection;
+        collection.setRemoteId(remoteId);
+
+        auto job = new Akonadi::CollectionFetchJob(collection, Akonadi::CollectionFetchJob::Base);
+        job->fetchScope().setResource("akonadi_knut_resource_0");
+        if (!job->exec()) {
+            qWarning() << job->errorString();
+            return Akonadi::Collection();
+        }
+
+        if (job->collections().count() != 1) {
+            qWarning() << "Received unexpected amount of collections: " << job->collections().count();
+            return Akonadi::Collection();
+        }
+
+        return job->collections().first();
+    }
+
     Akonadi::Collection calendar1()
     {
-        // Calendar1 is supposed to get this id, hopefully this won't be too fragile
-        return Akonadi::Collection(3);
+        return fetchCollectionByRID("{cdc229c7-a9b5-4d37-989d-a28e372be2a9}");
     }
 
     Akonadi::Collection calendar2()
     {
-        // Calendar2 is supposed to get this id, hopefully this won't be too fragile
-        return Akonadi::Collection(8);
+        return fetchCollectionByRID("{e682b8b5-b67c-4538-8689-6166f64177f0}");
     }
 };
 
