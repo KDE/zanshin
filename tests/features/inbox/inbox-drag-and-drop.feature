@@ -16,3 +16,18 @@ Feature: Inbox task association
        | Buy cheese                                    |
        | Buy pears                                     |
        | 21/04/2014 14:49                              |
+
+  @wip
+  Scenario: Dropping a child task on the inbox makes it top-level
+    Given I display the "Inbox" page
+    And there is an item named "Errands / Buy apples" in the central list
+    When I drop the item on "Inbox" in the page list
+    And I list the items
+    Then the list is:
+       | display                                       |
+       | Errands                                       |
+       | Buy apples                                    |
+       | "The Pragmatic Programmer" by Hunt and Thomas |
+       | Buy cheese                                    |
+       | Buy pears                                     |
+       | 21/04/2014 14:49                              |
