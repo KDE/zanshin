@@ -43,7 +43,7 @@ public:
     virtual KJob *remove(Project::Ptr project) = 0;
 
     virtual KJob *associate(Project::Ptr parent, Artifact::Ptr child) = 0;
-    virtual KJob *dissociate(Project::Ptr parent, Artifact::Ptr child) = 0;
+    virtual KJob *dissociate(Artifact::Ptr child) = 0;
 };
 
 }

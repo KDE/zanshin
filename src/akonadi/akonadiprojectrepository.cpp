@@ -137,9 +137,8 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact
     return job;
 }
 
-KJob *ProjectRepository::dissociate(Domain::Project::Ptr parent, Domain::Artifact::Ptr child)
+KJob *ProjectRepository::dissociate(Domain::Artifact::Ptr child)
 {
-    Q_UNUSED(parent);
     Q_UNUSED(child);
     qFatal("Not implemented yet");
     return 0;

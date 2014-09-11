@@ -44,7 +44,7 @@ public:
     KJob *remove(Domain::Project::Ptr project);
 
     KJob *associate(Domain::Project::Ptr parent, Domain::Artifact::Ptr child);
-    KJob *dissociate(Domain::Project::Ptr parent, Domain::Artifact::Ptr child);
+    KJob *dissociate(Domain::Artifact::Ptr child);
 
 private:
     StorageInterface *m_storage;
