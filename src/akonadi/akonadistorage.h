@@ -37,20 +37,20 @@ public:
     Storage();
     virtual ~Storage();
 
-    virtual Akonadi::Collection defaultTaskCollection();
-    virtual Akonadi::Collection defaultNoteCollection();
+    Akonadi::Collection defaultTaskCollection() Q_DECL_OVERRIDE;
+    Akonadi::Collection defaultNoteCollection() Q_DECL_OVERRIDE;
 
-    virtual KJob *createItem(Item item, Collection collection);
-    virtual KJob *updateItem(Item item, QObject *parent = 0);
-    virtual KJob *removeItem(Akonadi::Item item);
-    virtual KJob *moveItem(Item item, Collection collection, QObject *parent = 0);
-    virtual KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0);
-    virtual KJob *createTransaction();
+    KJob *createItem(Item item, Collection collection) Q_DECL_OVERRIDE;
+    KJob *updateItem(Item item, QObject *parent = 0) Q_DECL_OVERRIDE;
+    KJob *removeItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    KJob *moveItem(Item item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
+    KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
+    KJob *createTransaction() Q_DECL_OVERRIDE;
 
-    virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types);
-    virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection);
-    virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item);
-    virtual TagFetchJobInterface *fetchTags();
+    CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) Q_DECL_OVERRIDE;
+    ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) Q_DECL_OVERRIDE;
+    ItemFetchJobInterface *fetchItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    TagFetchJobInterface *fetchTags() Q_DECL_OVERRIDE;
 
 private:
     CollectionFetchJob::Type jobTypeFromDepth(StorageInterface::FetchDepth depth);

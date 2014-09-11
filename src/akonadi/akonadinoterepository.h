@@ -41,11 +41,11 @@ public:
     NoteRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~NoteRepository();
 
-    virtual bool isDefaultSource(Domain::DataSource::Ptr source) const;
-    virtual void setDefaultSource(Domain::DataSource::Ptr source);
+    bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
+    void setDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
 
-    virtual KJob *save(Domain::Note::Ptr note);
-    virtual KJob *remove(Domain::Note::Ptr note);
+    KJob *save(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
+    KJob *remove(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
 
 private:
     StorageInterface *m_storage;
