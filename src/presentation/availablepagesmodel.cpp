@@ -29,11 +29,14 @@
 
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
+#include "domain/taskrepository.h"
 
 #include "presentation/inboxpagemodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
+
+#include "utils/jobhandler.h"
 
 using namespace Presentation;
 
@@ -120,9 +123,9 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
                                          | Qt::ItemIsEditable
                                          | Qt::ItemIsDropEnabled;
         const Qt::ItemFlags immutableNodeFlags = Qt::ItemIsSelectable
-                                               | Qt::ItemIsEnabled;
+                                               | Qt::ItemIsEnabled
+                                               | Qt::ItemIsDropEnabled;
         const Qt::ItemFlags structureNodeFlags = Qt::NoItemFlags;
-
 
         return object.objectCast<Domain::Project>() ? defaultFlags
              : object == m_inboxObject ? immutableNodeFlags
@@ -175,10 +178,6 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
     };
 
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const QObjectPtr &object) {
-        auto project = object.objectCast<Domain::Project>();
-        if (!project)
-            return false;
-
         if (!mimeData->hasFormat("application/x-zanshin-object"))
             return false;
 
@@ -186,8 +185,21 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         if (!artifact)
             return false;
 
-        m_projectRepository->associate(project, artifact);
-        return true;
+        auto project = object.objectCast<Domain::Project>();
+        if (project) {
+            m_projectRepository->associate(project, artifact);
+            return true;
+        } else if (object == m_inboxObject) {
+            auto job = m_projectRepository->dissociate(artifact);
+            if (auto task = artifact.objectCast<Domain::Task>()) {
+                Utils::JobHandler::install(job, [this, task] {
+                    m_taskRepository->dissociate(task);
+                });
+            }
+            return true;
+        }
+
+        return false;
     };
 
     auto drag = [](const QObjectPtr &) -> QMimeData* {

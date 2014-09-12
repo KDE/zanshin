@@ -29,6 +29,7 @@
 #include "domain/projectrepository.h"
 #include "domain/note.h"
 #include "domain/task.h"
+#include "domain/taskrepository.h"
 
 #include "presentation/availablepagesmodel.h"
 #include "presentation/inboxpagemodel.h"
@@ -66,12 +67,13 @@ private slots:
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
         mock_object<Domain::ProjectRepository> projectRepositoryMock;
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
 
         Presentation::AvailablePagesModel pages(0,
                                                 &projectQueriesMock.getInstance(),
                                                 &projectRepositoryMock.getInstance(),
                                                 0,
-                                                0,
+                                                &taskRepositoryMock.getInstance(),
                                                 0);
 
         // WHEN
@@ -92,7 +94,7 @@ private slots:
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
                                          | Qt::ItemIsEditable;
-        QCOMPARE(model->flags(inboxIndex), defaultFlags & ~(Qt::ItemIsEditable));
+        QCOMPARE(model->flags(inboxIndex), (defaultFlags & ~(Qt::ItemIsEditable)) | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(projectsIndex), Qt::NoItemFlags);
         QCOMPARE(model->flags(project1Index), defaultFlags | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(project2Index), defaultFlags | Qt::ItemIsDropEnabled);
@@ -142,6 +144,19 @@ private slots:
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).exactly(1));
+
+        // WHEN
+        projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("object", QVariant::fromValue(taskToDrop));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
+        QTest::qWait(150);
+
+        // THEN
+        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(taskToDrop.objectCast<Domain::Task>()).exactly(1));
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project2, noteToDrop).thenReturn(new FakeJob(this));

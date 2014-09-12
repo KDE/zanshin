@@ -17,7 +17,6 @@ Feature: Inbox task association
        | Buy pears                                     |
        | 21/04/2014 14:49                              |
 
-  @wip
   Scenario: Dropping a child task on the inbox makes it top-level
     Given I display the "Inbox" page
     And there is an item named "Errands / Buy apples" in the central list
