@@ -139,7 +139,29 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact
 
 KJob *ProjectRepository::dissociate(Domain::Artifact::Ptr child)
 {
-    Q_UNUSED(child);
-    qFatal("Not implemented yet");
-    return 0;
+    auto job = new Utils::CompositeJob();
+    const auto task = child.objectCast<Domain::Task>();
+    const auto note = child.objectCast<Domain::Note>();
+
+    const auto childItem = task ? m_serializer->createItemFromTask(task)
+                         : note ? m_serializer->createItemFromNote(note)
+                         : Akonadi::Item();
+    Q_ASSERT(childItem.isValid());
+
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+
+        m_serializer->removeItemParent(childItem);
+
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+
+    return job;
 }
