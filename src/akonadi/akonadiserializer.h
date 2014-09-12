@@ -37,47 +37,47 @@ public:
     Serializer();
     virtual ~Serializer();
 
-    bool representsCollection(QObjectPtr object, Collection collection);
-    bool representsItem(QObjectPtr object, Item item);
+    bool representsCollection(QObjectPtr object, Collection collection) Q_DECL_OVERRIDE;
+    bool representsItem(QObjectPtr object, Item item) Q_DECL_OVERRIDE;
 
-    QString objectUid(QObjectPtr object);
+    QString objectUid(QObjectPtr object) Q_DECL_OVERRIDE;
 
-    Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection);
-    void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection);
-    virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource);
-    virtual bool isNoteCollection(Akonadi::Collection collection);
-    virtual bool isTaskCollection(Akonadi::Collection collection);
+    Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
+    void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection) Q_DECL_OVERRIDE;
+    virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource) Q_DECL_OVERRIDE;
+    virtual bool isNoteCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
+    virtual bool isTaskCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
 
-    bool isTaskItem(Akonadi::Item item);
-    Domain::Task::Ptr createTaskFromItem(Akonadi::Item item);
-    void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item);
-    Akonadi::Item createItemFromTask(Domain::Task::Ptr task);
-    bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item);
-    QString relatedUidFromItem(Akonadi::Item item);
-    void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent);
-    void updateItemProject(Akonadi::Item item, Domain::Project::Ptr project);
-    void removeItemParent(Akonadi::Item item);
-    Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem);
+    bool isTaskItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    Domain::Task::Ptr createTaskFromItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    void updateTaskFromItem(Domain::Task::Ptr task, Akonadi::Item item) Q_DECL_OVERRIDE;
+    Akonadi::Item createItemFromTask(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
+    bool isTaskChild(Domain::Task::Ptr task, Akonadi::Item item) Q_DECL_OVERRIDE;
+    QString relatedUidFromItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent) Q_DECL_OVERRIDE;
+    void updateItemProject(Akonadi::Item item, Domain::Project::Ptr project) Q_DECL_OVERRIDE;
+    void removeItemParent(Akonadi::Item item) Q_DECL_OVERRIDE;
+    Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) Q_DECL_OVERRIDE;
 
-    bool isNoteItem(Akonadi::Item item);
-    Domain::Note::Ptr createNoteFromItem(Akonadi::Item item);
-    void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item);
-    Akonadi::Item createItemFromNote(Domain::Note::Ptr note);
+    bool isNoteItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) Q_DECL_OVERRIDE;
+    Akonadi::Item createItemFromNote(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
 
-    bool isProjectItem(Akonadi::Item item);
-    Domain::Project::Ptr createProjectFromItem(Akonadi::Item item);
-    void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item);
-    Akonadi::Item createItemFromProject(Domain::Project::Ptr project);
-    bool isProjectChild(Domain::Project::Ptr project, Akonadi::Item item);
+    bool isProjectItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    Domain::Project::Ptr createProjectFromItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item) Q_DECL_OVERRIDE;
+    Akonadi::Item createItemFromProject(Domain::Project::Ptr project) Q_DECL_OVERRIDE;
+    bool isProjectChild(Domain::Project::Ptr project, Akonadi::Item item) Q_DECL_OVERRIDE;
 
+    Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
+    void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) Q_DECL_OVERRIDE;
+    bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
+    bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
 
-    Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag);
-    void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag);
-    bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const;
-    bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const;
+    bool hasContextTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
+    bool hasTopicTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
 
-    bool hasContextTags(Akonadi::Item item) const;
-    bool hasTopicTags(Akonadi::Item item) const;
 private:
     bool isContext(const Akonadi::Tag &tag) const;
     bool isTopic(const Akonadi::Tag &tag) const;
