@@ -186,35 +186,23 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
     return job;
 }
 
-KJob *TaskRepository::dissociate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
+KJob *TaskRepository::dissociate(Domain::Task::Ptr child)
 {
     auto job = new CompositeJob();
-    auto parentItem = m_serializer->createItemFromTask(parent);
-    ItemFetchJobInterface *fetchParentItemJob = m_storage->fetchItem(parentItem);
-    job->install(fetchParentItemJob->kjob(), [fetchParentItemJob, child, job, this] {
-        if (fetchParentItemJob->kjob()->error() != KJob::NoError)
+    auto childItem = m_serializer->createItemFromTask(child);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;
 
-        Q_ASSERT(fetchParentItemJob->items().size() == 1);
-        auto parentItem = fetchParentItemJob->items().first();
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
 
-        Q_ASSERT(m_serializer->isTaskChild(child, parentItem));
+        m_serializer->removeItemParent(childItem);
 
-        auto childItem = m_serializer->createItemFromTask(child);
-        ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
-        job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
-            if (fetchItemJob->kjob()->error() != KJob::NoError)
-                return;
-
-            Q_ASSERT(fetchItemJob->items().size() == 1);
-            auto childItem = fetchItemJob->items().first();
-
-            m_serializer->removeItemParent(childItem);
-
-            auto updateJob = m_storage->updateItem(childItem);
-            job->addSubjob(updateJob);
-            updateJob->start();
-        });
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
     });
 
     return job;
