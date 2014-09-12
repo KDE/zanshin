@@ -21,7 +21,9 @@
    USA.
 */
 
-#include <QtTest>
+#include <QTest>
+#include <QSignalSpy>
+#include <testlib/testsafety.h>
 
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
@@ -71,6 +73,11 @@ public:
     }
 
 private slots:
+    void initTestCase()
+    {
+        QVERIFY(TestLib::TestSafety::checkTestIsIsolated());
+    }
+
     void dumpTree()
     {
         auto colJob = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
