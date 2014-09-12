@@ -17,3 +17,5 @@ zanshin_auto_tests(
 zanshin_akonadi_auto_tests(
   akonadistoragetest
 )
+
+target_link_libraries(akonadistoragetest testlib)
