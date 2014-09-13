@@ -1,0 +1,43 @@
+dans zanshin: KConfig read, QProcess migration
+
+
+KConfig read
+
+QHash< uid, { item, bool dirty } >
+
+fetchCollections
+fetchItems (ItemFetchJob)
+// TODO fetch all tags (probably none...)
+
+quand on a tout:
+
+// QSet<Tag> tags_a_creer
+// iteration qhash
+//  - for each category, if not in existing tags, add to tags_a_creer
+
+// transactionsequence (= composite job)
+// for each tags_a_creer
+//   TagCreateJob
+
+// fetch all tags again (to get remoteId)
+
+transactionsequence (= composite job)
+  iteration qhash
+   - si comment -> setAsProject(sequence, item)
+  iteration qhash
+   - si parent et parent->customprop est vide -> setAsProject(sequence, parent)
+  iteration qhash
+   - // TODO contexts (for each category, if (!item.hasTag()) item.setTag()
+
+setAsProject(sequence, item) {
+   setCustomProperty
+   ItemModifyJob(parent = sequence)
+}
+
+sequence.exec
+
+slotSequenceFinished()
+{
+    KConfig write
+}
+

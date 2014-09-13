@@ -1,0 +1,7 @@
+<config>
+  <kdehome>kdehome</kdehome>
+  <confighome>config</confighome>
+  <datahome>data</datahome>
+  <agent synchronize="true">akonadi_knut_resource</agent>
+  <envvar name="AKONADI_DISABLE_AGENT_AUTOSTART">true</envvar>
+</config>

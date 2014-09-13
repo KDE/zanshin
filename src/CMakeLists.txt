@@ -14,3 +14,5 @@ add_subdirectory(widgets)
 # should be in kdepimlibs
 add_subdirectory(pimlibs)
 
+# migrator
+add_subdirectory(migrator)
