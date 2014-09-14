@@ -106,7 +106,6 @@ private slots:
         checkExpectedIsProject(hash, m_expectedUids);
     }
 
-#if 0
     void shouldMigrateTaskWithChildrenToProject()
     {
         // GIVEN
@@ -126,7 +125,6 @@ private slots:
 
         checkExpectedIsProject(hash, m_expectedUids);
     }
-#endif
 
 private:
 

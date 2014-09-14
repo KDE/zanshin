@@ -69,6 +69,8 @@ public:
     static bool isProject(const Akonadi::Item &item);
 
 private:
+    void markAsProject(SeenItem &seenItem, Akonadi::TransactionSequence* sequence);
+
     Akonadi::Storage m_storage;
 
 };

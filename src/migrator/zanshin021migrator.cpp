@@ -66,23 +66,41 @@ Zanshin021Migrator::SeenItemHash Zanshin021Migrator::fetchAllItems()
     return hash;
 }
 
+void Zanshin021Migrator::markAsProject(SeenItem& seenItem, Akonadi::TransactionSequence* sequence)
+{
+    Akonadi::Item &item = seenItem.item();
+    if (!isProject(item)) {
+        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        todo->setCustomProperty("Zanshin", "Project", "1");
+        item.setPayload(todo);
+        seenItem.setDirty();
+        new Akonadi::ItemModifyJob(item, sequence);
+    }
+}
+
 void Zanshin021Migrator::migrateProjectComments(Zanshin021Migrator::SeenItemHash& items, Akonadi::TransactionSequence* sequence)
 {
     for (SeenItemHash::iterator it = items.begin(); it != items.end(); ++it) {
         SeenItem &seenItem = it.value();
         Akonadi::Item &item = seenItem.item();
         auto todo = item.payload<KCalCore::Todo::Ptr>();
-        if (!isProject(item) && todo->comments().contains("X-Zanshin-Project")) {
-            todo->setCustomProperty("Zanshin", "Project", "1");
-            item.setPayload(todo);
-            seenItem.setDirty();
-            new Akonadi::ItemModifyJob(item, sequence);
-        }
+        if (todo->comments().contains("X-Zanshin-Project"))
+            markAsProject(seenItem, sequence);
     }
 }
 
 void Zanshin021Migrator::migrateProjectWithChildren(Zanshin021Migrator::SeenItemHash& items, Akonadi::TransactionSequence* sequence)
 {
+    for (SeenItemHash::iterator it = items.begin(); it != items.end(); ++it) {
+        const SeenItem &seenItem = it.value();
+        const auto todo = seenItem.item().payload<KCalCore::Todo::Ptr>();
+        const QString parentUid = todo->relatedTo();
+        if (!parentUid.isEmpty()) {
+            auto parentIt = items.find(parentUid);
+            if (parentIt != items.end())
+                markAsProject(*parentIt, sequence);
+        }
+    }
 }
 
 int Zanshin021Migrator::run()
