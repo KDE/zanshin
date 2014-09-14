@@ -105,6 +105,10 @@ void Zanshin021Migrator::migrateProjectWithChildren(Zanshin021Migrator::SeenItem
 
 int Zanshin021Migrator::run()
 {
-    return 1;
+    SeenItemHash items = fetchAllItems();
+    Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence;
+    migrateProjectComments(items, sequence);
+    migrateProjectWithChildren(items, sequence);
+    return sequence->exec() ? 0 : 1;
 }
 

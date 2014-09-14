@@ -93,7 +93,7 @@ private slots:
         Zanshin021Migrator::SeenItemHash hash = migrator.fetchAllItems();
 
         // WHEN
-        Akonadi::TransactionSequence *sequence = 0; // new Akonadi::TransactionSequence(); not needed
+        Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence();
         migrator.migrateProjectComments(hash, sequence);
 
         // THEN
@@ -102,8 +102,11 @@ private slots:
         QVERIFY(item.isDirty());
 
         m_expectedUids["old-project-with-comment"] = true; // migrated!
-
         checkExpectedIsProject(hash, m_expectedUids);
+        m_expectedUids["old-project-with-comment"] = false; // revert for now
+
+        sequence->rollback();
+        sequence->exec();
     }
 
     void shouldMigrateTaskWithChildrenToProject()
@@ -113,7 +116,7 @@ private slots:
         Zanshin021Migrator::SeenItemHash hash = migrator.fetchAllItems();
 
         // WHEN
-        Akonadi::TransactionSequence *sequence = 0; // new Akonadi::TransactionSequence(); not needed
+        Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence();
         migrator.migrateProjectWithChildren(hash, sequence);
 
         // THEN
@@ -122,7 +125,26 @@ private slots:
         QVERIFY(item.isDirty());
 
         m_expectedUids["project-with-children"] = true; // migrated!
+        checkExpectedIsProject(hash, m_expectedUids);
+        m_expectedUids["project-with-children"] = false; // revert for now
 
+        sequence->rollback();
+        sequence->exec();
+    }
+
+    void shouldMigrateAll()
+    {
+        // GIVEN
+        Zanshin021Migrator migrator;
+
+        // WHEN
+        const int ret = migrator.run();
+
+        // THEN
+        QCOMPARE(ret, 0); // success
+        m_expectedUids["old-project-with-comment"] = true; // migrated!
+        m_expectedUids["project-with-children"] = true; // migrated!
+        Zanshin021Migrator::SeenItemHash hash = migrator.fetchAllItems();
         checkExpectedIsProject(hash, m_expectedUids);
     }
 
@@ -137,6 +159,7 @@ private:
         QCOMPARE(uids, QStringList(expectedItems.keys()));
 
         for (auto it = expectedItems.constBegin(); it != expectedItems.constEnd(); ++it) {
+            //qDebug() << it.key();
             QCOMPARE(Zanshin021Migrator::isProject(hash.value(it.key()).item()), it.value());
         }
     }
