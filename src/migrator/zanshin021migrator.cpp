@@ -103,12 +103,12 @@ void Zanshin021Migrator::migrateProjectWithChildren(Zanshin021Migrator::SeenItem
     }
 }
 
-int Zanshin021Migrator::run()
+bool Zanshin021Migrator::migrateProjects()
 {
     SeenItemHash items = fetchAllItems();
     Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence;
     migrateProjectComments(items, sequence);
     migrateProjectWithChildren(items, sequence);
-    return sequence->exec() ? 0 : 1;
+    return sequence->exec();
 }
 

@@ -63,7 +63,7 @@ public:
 
     void migrateProjectWithChildren(Zanshin021Migrator::SeenItemHash& items, Akonadi::TransactionSequence* sequence);
 
-    int run();
+    bool migrateProjects();
 
     // returns true if item is a "new style" project
     static bool isProject(const Akonadi::Item &item);

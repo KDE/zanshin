@@ -132,16 +132,16 @@ private slots:
         sequence->exec();
     }
 
-    void shouldMigrateAll()
+    void shouldMigrateProjects()
     {
         // GIVEN
         Zanshin021Migrator migrator;
 
         // WHEN
-        const int ret = migrator.run();
+        const bool ret = migrator.migrateProjects();
 
         // THEN
-        QCOMPARE(ret, 0); // success
+        QVERIFY(ret); // success
         m_expectedUids["old-project-with-comment"] = true; // migrated!
         m_expectedUids["project-with-children"] = true; // migrated!
         Zanshin021Migrator::SeenItemHash hash = migrator.fetchAllItems();

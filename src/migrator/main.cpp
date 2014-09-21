@@ -23,6 +23,8 @@
 */
 
 #include <QApplication>
+#include <KConfigGroup>
+#include <KSharedConfig>
 #include "zanshin021migrator.h"
 
 int main(int argc, char **argv)
@@ -30,6 +32,16 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
     Zanshin021Migrator migrator;
-    return migrator.run();
+
+    KSharedConfig::Ptr config("zanshin-migratorrc");
+    KConfigGroup group("Migrations");
+    if (!group.readEntry("Migrate021Projects", false)) {
+        if (!migrator.migrateProjects()) {
+            return 1;
+        }
+        group.writeEntry("Migrate021Projects", true);
+    }
+
+    return 0;
 };
 
