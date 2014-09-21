@@ -25,8 +25,12 @@
 #include <QBoxLayout>
 #include <QDockWidget>
 #include <QMenu>
+#include <QProcess>
 #include <QToolBar>
 #include <QToolButton>
+
+#include <KConfigGroup>
+#include <KSharedConfig>
 
 #include <KDE/KConfigGroup>
 #include <KDE/KMainWindow>
@@ -41,11 +45,23 @@
 
 #include "dependencies.h"
 
+#include <iostream>
+
 int main(int argc, char **argv)
 {
     App::initializeDependencies();
 
     QApplication app(argc, argv);
+
+    KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
+    KConfigGroup group = config->group("Migrations");
+    if (!group.readEntry("Migrated021Projects", false)) {
+        std::cerr << "Migrating data from zanshin 0.2, please wait..." << std::endl;
+        QProcess proc;
+        proc.start("zanshin-migrator");
+        proc.waitForFinished();
+        std::cerr << "Migration done" << std::endl;
+    }
 
     auto widget = new QWidget;
     auto components = new Widgets::ApplicationComponents(widget);

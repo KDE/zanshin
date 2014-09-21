@@ -74,6 +74,7 @@ void Zanshin021Migrator::markAsProject(SeenItem& seenItem, Akonadi::TransactionS
         todo->setCustomProperty("Zanshin", "Project", "1");
         item.setPayload(todo);
         seenItem.setDirty();
+        qDebug() << "Marking as project:" << item.id() << item.remoteId() << todo->summary();
         new Akonadi::ItemModifyJob(item, sequence);
     }
 }
