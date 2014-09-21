@@ -67,6 +67,7 @@ public slots:
     void setDone(bool done) { setPropertyAndSignal("done", done); }
     void setStartDate(const QDateTime &start) { setPropertyAndSignal("startDate", start); }
     void setDueDate(const QDateTime &due) { setPropertyAndSignal("dueDate", due); }
+    void makeTaskAvailable() { setArtifact(Domain::Artifact::Ptr(new Domain::Task)); }
 
 signals:
     void artifactChanged(const Domain::Artifact::Ptr &artifact);
@@ -143,6 +144,7 @@ private slots:
         QVERIFY(!editor.isEnabled());
 
         // WHEN
+        // like model.makeTaskAvailable() does:
         Domain::Artifact::Ptr artifact(new Domain::Task);
         model.setPropertyAndSignal("artifact", QVariant::fromValue(artifact));
 
@@ -173,6 +175,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         editor.setModel(&model);
 
         auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
@@ -198,6 +201,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         model.setProperty("hasTaskProperties", true);
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
@@ -227,6 +231,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
         model.setProperty("startDate", QDateTime::currentDateTime());
@@ -250,6 +255,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
         model.setProperty("startDate", QDateTime::currentDateTime());
@@ -273,6 +279,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         editor.setModel(&model);
 
         auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
@@ -290,6 +297,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
         model.setProperty("startDate", QDateTime::currentDateTime());
@@ -312,6 +320,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         editor.setModel(&model);
 
         auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
@@ -328,6 +337,7 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
         model.setProperty("startDate", QDateTime::currentDateTime());
@@ -349,13 +359,14 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         editor.setModel(&model);
 
         auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
         auto today = QDate::currentDate();
 
         // WHEN
-        startDateEdit->setEditText(today.toString(Qt::ISODate));
+        startDateEdit->setEditText(today.toString(Qt::ISODate)); // ### ISO? really? this only works because KLocale::readDate is clever, but it's not what the user would type
         QTest::keyClick(startDateEdit, Qt::Key_Enter);
 
         // THEN
@@ -388,12 +399,14 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
+        model.makeTaskAvailable();
         editor.setModel(&model);
 
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
         auto today = QDate::currentDate();
 
         // WHEN
+        QVERIFY(dueDateEdit->isEnabled());
         dueDateEdit->setEditText(today.toString(Qt::ISODate));
         QTest::keyClick(dueDateEdit, Qt::Key_Enter);
 
