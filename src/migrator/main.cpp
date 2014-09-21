@@ -35,11 +35,11 @@ int main(int argc, char **argv)
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
     KConfigGroup group = config->group("Migrations");
-    if (!group.readEntry("Migrate021Projects", false)) {
+    if (!group.readEntry("Migrated021Projects", false)) {
         if (!migrator.migrateProjects()) {
             return 1;
         }
-        group.writeEntry("Migrate021Projects", true);
+        group.writeEntry("Migrated021Projects", true);
     }
 
     return 0;
