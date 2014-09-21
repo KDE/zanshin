@@ -28,6 +28,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QPlainTextEdit>
+#include <QPushButton>
 
 #include "domain/artifact.h"
 
@@ -42,12 +43,14 @@ EditorView::EditorView(QWidget *parent)
       m_taskGroup(new QWidget(this)),
       m_startDateEdit(new KPIM::KDateEdit(m_taskGroup)),
       m_dueDateEdit(new KPIM::KDateEdit(m_taskGroup)),
+      m_startTodayButton(new QPushButton(tr("Start today"), m_taskGroup)),
       m_doneButton(new QCheckBox(tr("Done"), m_taskGroup))
 {
     m_textEdit->setObjectName("textEdit");
     m_startDateEdit->setObjectName("startDateEdit");
     m_dueDateEdit->setObjectName("dueDateEdit");
     m_doneButton->setObjectName("doneButton");
+    m_startTodayButton->setObjectName("startTodayButton");
 
     m_startDateEdit->setMinimumContentsLength(10);
     m_dueDateEdit->setMinimumContentsLength(10);
@@ -58,13 +61,17 @@ EditorView::EditorView(QWidget *parent)
     setLayout(layout);
 
     QVBoxLayout *vbox = new QVBoxLayout;
-    QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->addWidget(new QLabel(tr("Start date"), m_taskGroup));
-    hbox->addWidget(m_startDateEdit, 1);
-    hbox->addWidget(new QLabel(tr("Due date"), m_taskGroup));
-    hbox->addWidget(m_dueDateEdit, 1);
-    vbox->addLayout(hbox);
-    vbox->addWidget(m_doneButton);
+    QHBoxLayout *datesHBox = new QHBoxLayout;
+    datesHBox->addWidget(new QLabel(tr("Start date"), m_taskGroup));
+    datesHBox->addWidget(m_startDateEdit, 1);
+    datesHBox->addWidget(new QLabel(tr("Due date"), m_taskGroup));
+    datesHBox->addWidget(m_dueDateEdit, 1);
+    vbox->addLayout(datesHBox);
+    QHBoxLayout *bottomHBox = new QHBoxLayout;
+    bottomHBox->addWidget(m_startTodayButton);
+    bottomHBox->addWidget(m_doneButton);
+    bottomHBox->addStretch();
+    vbox->addLayout(bottomHBox);
     m_taskGroup->setLayout(vbox);
 
     // Make sure our minimum width is always the one with
@@ -78,6 +85,7 @@ EditorView::EditorView(QWidget *parent)
     connect(m_startDateEdit, SIGNAL(dateEntered(QDate)), this, SLOT(onStartEditEntered(QDate)));
     connect(m_dueDateEdit, SIGNAL(dateEntered(QDate)), this, SLOT(onDueEditEntered(QDate)));
     connect(m_doneButton, SIGNAL(toggled(bool)), this, SLOT(onDoneButtonChanged(bool)));
+    connect(m_startTodayButton, SIGNAL(clicked()), this, SLOT(onStartTodayClicked()));
 
     setEnabled(false);
 }
@@ -182,4 +190,11 @@ void EditorView::onDueEditEntered(const QDate &due)
 void EditorView::onDoneButtonChanged(bool checked)
 {
     emit doneChanged(checked);
+}
+
+void EditorView::onStartTodayClicked()
+{
+    QDate today(QDate::currentDate());
+    m_startDateEdit->setDate(today);
+    emit startDateChanged(QDateTime(today));
 }

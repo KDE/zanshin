@@ -32,6 +32,9 @@
 #include "pimlibs/kdateedit.h"
 #include "widgets/editorview.h"
 
+#include <kglobal.h>
+#include <klocale.h>
+
 class EditorModelStub : public QObject
 {
     Q_OBJECT
@@ -413,6 +416,29 @@ private slots:
         // THEN
         QCOMPARE(model.property("dueDate").toDateTime().date(), today);
     }
+
+    void shouldApplyStartTodayChanges()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        editor.setModel(&model);
+
+        QAbstractButton *startTodayButton = editor.findChild<QAbstractButton *>("startTodayButton");
+        QVERIFY(startTodayButton);
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto today = QDate::currentDate();
+
+        // WHEN
+        QVERIFY(startTodayButton->isEnabled());
+        startTodayButton->click();
+
+        // THEN
+        QCOMPARE(startDateEdit->currentText(), KGlobal::locale()->formatDate(today, KLocale::ShortDate));
+        QCOMPARE(model.property("startDate").toDateTime().date(), today);
+    }
+
 };
 
 QTEST_MAIN(EditorViewTest)

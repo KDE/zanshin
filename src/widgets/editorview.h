@@ -68,6 +68,7 @@ private slots:
     void onStartEditEntered(const QDate &start);
     void onDueEditEntered(const QDate &due);
     void onDoneButtonChanged(bool checked);
+    void onStartTodayClicked();
 
 private:
     QObject *m_model;
@@ -76,6 +77,7 @@ private:
     QWidget *m_taskGroup;
     KPIM::KDateEdit *m_startDateEdit;
     KPIM::KDateEdit *m_dueDateEdit;
+    QAbstractButton *m_startTodayButton;
     QAbstractButton *m_doneButton;
 };
 
