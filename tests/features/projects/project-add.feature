@@ -8,9 +8,10 @@ Feature: Project creation
     When I add a project named "Birthday" in the source named "TestData/Calendar1"
     And I list the items
     Then the list is:
-       | display              | icon                |
-       | Inbox                | mail-folder-inbox   |
-       | Projects             | folder              |
-       | Projects / Read List | view-pim-tasks      |
-       | Projects / Backlog   | view-pim-tasks      |
-       | Projects / Birthday  | view-pim-tasks      |
+       | display                           | icon                |
+       | Inbox                             | mail-folder-inbox   |
+       | Projects                          | folder              |
+       | Projects / Read List              | view-pim-tasks      |
+       | Projects / Backlog                | view-pim-tasks      |
+       | Projects / Prepare talk about TDD | view-pim-tasks      |
+       | Projects / Birthday               | view-pim-tasks      |
