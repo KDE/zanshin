@@ -801,6 +801,37 @@ private slots:
         QCOMPARE(notifiedItem.id(), item.id());
     }
 
+    void shouldDeleteItems()
+    {
+        //GIVEN
+        Akonadi::Storage storage;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+
+        // An existing item (if we trust the test data)
+        Akonadi::Item item = fetchItemByRID("{6c7bf5b9-4136-4203-9f45-54e32ea0eacb}", calendar1());
+        QVERIFY(item.isValid());
+        Akonadi::Item item2 = fetchItemByRID("{83cf0b15-8d61-436b-97ae-4bd88fb2fef9}", calendar1());
+        QVERIFY(item2.isValid());
+
+        Akonadi::Item::List list;
+        list << item << item2;
+
+        //When
+        auto job = storage.removeItems(list);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
+
+        // THEN
+        QCOMPARE(spy.size(), 2);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
+        notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item2.id());
+    }
+
 private:
     Akonadi::Item fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
     {

@@ -43,6 +43,7 @@ public:
     KJob *createItem(Item item, Collection collection) Q_DECL_OVERRIDE;
     KJob *updateItem(Item item, QObject *parent = 0) Q_DECL_OVERRIDE;
     KJob *removeItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    KJob *removeItems(Item::List items, QObject *parent = 0) Q_DECL_OVERRIDE;
     KJob *moveItem(Item item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
     KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
     KJob *createTransaction() Q_DECL_OVERRIDE;

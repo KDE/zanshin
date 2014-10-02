@@ -61,6 +61,91 @@ END:VEVENT&#xd;
 
 END:VCALENDAR</payload>
       </item>
+      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{f1a30fc7-d941-4c81-a083-7c1e9657ae24}">
+        <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20120322T164413Z&#xd;
+CREATED:20120322T164413Z&#xd;
+UID:f1a30fc7-d941-4c81-a083-7c1e9657ae24&#xd;
+LAST-MODIFIED:20120322T164413Z&#xd;
+SUMMARY: Prepare the talk on TDD&#xd;
+X-KDE-Zanshin-Project:1&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+      </item>
+      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{6c7bf5b9-4136-4203-9f45-54e32ea0eacb}">
+        <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20120322T164413Z&#xd;
+CREATED:20120322T164413Z&#xd;
+UID:6c7bf5b9-4136-4203-9f45-54e32ea0eacb&#xd;
+LAST-MODIFIED:20120322T164413Z&#xd;
+SUMMARY: Create Sozi SVG&#xd;
+RELATED-TO:f1a30fc7-d941-4c81-a083-7c1e9657ae24&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+      </item>
+      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{eec77c0a-e950-482f-9c67-51c9c46a390d}">
+        <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20120322T164413Z&#xd;
+CREATED:20120322T164413Z&#xd;
+UID:eec77c0a-e950-482f-9c67-51c9c46a390d&#xd;
+LAST-MODIFIED:20120322T164413Z&#xd;
+SUMMARY: Create examples and exercices &#xd;
+RELATED-TO:f1a30fc7-d941-4c81-a083-7c1e9657ae24&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+      </item>
+      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{d7eaa74b-d436-410c-bc15-8ce4f7562da6}">
+        <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20120322T164413Z&#xd;
+CREATED:20120322T164413Z&#xd;
+UID:d7eaa74b-d436-410c-bc15-8ce4f7562da6&#xd;
+LAST-MODIFIED:20120322T164413Z&#xd;
+SUMMARY: Train for FizzBuzz kata&#xd;
+RELATED-TO:eec77c0a-e950-482f-9c67-51c9c46a390d&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+      </item>
+      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{83cf0b15-8d61-436b-97ae-4bd88fb2fef9}">
+        <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20120322T164413Z&#xd;
+CREATED:20120322T164413Z&#xd;
+UID:83cf0b15-8d61-436b-97ae-4bd88fb2fef9&#xd;
+LAST-MODIFIED:20120322T164413Z&#xd;
+SUMMARY: Train for the Gilded Rose kata &#xd;
+RELATED-TO:eec77c0a-e950-482f-9c67-51c9c46a390d&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+      </item>
       <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{e682b8b5-b67c-4538-8689-6166f64177f0}" name="Calendar2">
         <attribute type="AccessRights">a</attribute>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{7824df00-2fd6-47a4-8319-52659dc82005}">
