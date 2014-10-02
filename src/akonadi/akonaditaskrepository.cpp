@@ -130,7 +130,31 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
     Q_ASSERT(item.isValid());
-    return m_storage->removeItem(item);
+
+    auto compositeJob = new CompositeJob();
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(item);
+    compositeJob->install(fetchItemJob->kjob(), [fetchItemJob, compositeJob, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+           return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto item = fetchItemJob->items().first();
+
+        ItemFetchJobInterface *fetchCollectionItemsJob = m_storage->fetchItems(item.parentCollection());
+        compositeJob->install(fetchCollectionItemsJob->kjob(), [fetchCollectionItemsJob, item, compositeJob, this] {
+            if (fetchCollectionItemsJob->kjob()->error() != KJob::NoError)
+                return;
+
+            Item::List childItems = m_serializer->filterDescendantItems(fetchCollectionItemsJob->items(), item);
+            childItems << item;
+
+            auto removeJob = m_storage->removeItems(childItems);
+            compositeJob->addSubjob(removeJob);
+            removeJob->start();
+        });
+    });
+
+    return compositeJob;
 }
 
 KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
