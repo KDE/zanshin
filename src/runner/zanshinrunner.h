@@ -1,6 +1,7 @@
 /* This file is part of Zanshin Todo.
 
    Copyright 2011 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -26,16 +27,22 @@
 
 #include <Plasma/AbstractRunner>
 
+namespace Domain {
+    class TaskRepository;
+}
+
 class ZanshinRunner : public Plasma::AbstractRunner
 {
     Q_OBJECT
 
-    public:
-        ZanshinRunner(QObject *parent, const QVariantList &args);
-        ~ZanshinRunner();
+public:
+    ZanshinRunner(QObject *parent, const QVariantList &args);
+    ~ZanshinRunner();
 
-        void match(Plasma::RunnerContext &context);
-        void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &action);
+    void match(Plasma::RunnerContext &context);
+    void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &action);
+private:
+    Domain::TaskRepository *m_taskRepository;
 };
 
 K_EXPORT_PLASMA_RUNNER(zanshin, ZanshinRunner)

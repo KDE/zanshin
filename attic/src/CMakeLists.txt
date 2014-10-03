@@ -6,7 +6,6 @@ add_subdirectory(core)
 add_subdirectory(gui)
 add_subdirectory(icons)
 add_subdirectory(reparentingmodel)
-add_subdirectory(runner)
 add_subdirectory(utils)
 
 ########### zanshin core ###############

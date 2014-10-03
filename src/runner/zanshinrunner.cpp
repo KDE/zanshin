@@ -1,6 +1,7 @@
 /* This file is part of Zanshin Todo.
 
    Copyright 2011 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -23,19 +24,16 @@
 
 #include "zanshinrunner.h"
 
-#include <KDE/Akonadi/CollectionFetchJob>
-#include <KDE/Akonadi/CollectionFetchScope>
-#include <KDE/Akonadi/Item>
-#include <KDE/Akonadi/ItemCreateJob>
-
-#include <KDE/KCalCore/Todo>
+#include "domain/task.h"
+#include "akonadi/akonaditaskrepository.h"
 
 #include <KDE/KDebug>
 #include <KDE/KIcon>
 #include <KDE/KLocale>
 
 ZanshinRunner::ZanshinRunner(QObject *parent, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, args)
+    : Plasma::AbstractRunner(parent, args),
+      m_taskRepository(new Akonadi::TaskRepository(parent))
 {
     setObjectName(QLatin1String("Zanshin"));
     setIgnoredTypes(Plasma::RunnerContext::Directory | Plasma::RunnerContext::File |
@@ -77,45 +75,9 @@ void ZanshinRunner::run(const Plasma::RunnerContext &context, const Plasma::Quer
 {
     Q_UNUSED(context)
 
-    Akonadi::CollectionFetchJob *job = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
-                                                                       Akonadi::CollectionFetchJob::Recursive);
-    job->fetchScope().setContentMimeTypes(QStringList() << "application/x-vnd.akonadi.calendar.todo");
-    job->exec();
-
-    Akonadi::Collection::List cols = job->collections();
-
-    if (cols.isEmpty()) {
-        return;
-    }
-
-    Akonadi::Collection collection;
-
-    KConfig zanshin("zanshinrc");
-    KConfigGroup config(&zanshin, "General");
-
-    qint64 defaultCollectionId = config.readEntry("defaultCollection", -1);
-
-    if (defaultCollectionId > 0) {
-        foreach (Akonadi::Collection col, cols) {
-            if (col.id() == defaultCollectionId) {
-                collection = col;
-                break;
-            }
-        }
-    }
-
-    if (!collection.isValid()) {
-        collection = cols.first();
-    }
-
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary(match.data().toString());
-
-    Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
-
-    new Akonadi::ItemCreateJob(item, collection);
+    auto task = Domain::Task::Ptr::create();
+    task->setTitle(match.data().toString());
+    m_taskRepository->create(task);
 }
 
 #include "zanshinrunner.moc"
