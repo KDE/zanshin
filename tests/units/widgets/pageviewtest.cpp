@@ -26,8 +26,11 @@
 #include <QAbstractItemModel>
 #include <QHeaderView>
 #include <QLineEdit>
-#include <QStringListModel>
+#include <QMessageBox>
+#include <QStandardItemModel>
 #include <QTreeView>
+
+#include "domain/task.h"
 
 #include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
@@ -46,6 +49,25 @@ public:
         return &itemModel;
     }
 
+    void addItem(const QString &title, QStandardItem *parentItem = 0)
+    {
+        QStandardItem *item = new QStandardItem;
+        item->setData(title, Qt::DisplayRole);
+        if (!parentItem)
+            itemModel.appendRow(item);
+        else
+            parentItem->appendRow(item);
+
+        taskNames << title;
+    }
+
+    void addItems(const QStringList &list)
+    {
+        foreach (const QString &title, list) {
+            addItem(title);
+        }
+    }
+
 public slots:
     void addTask(const QString &name)
     {
@@ -60,7 +82,7 @@ public slots:
 public:
     QStringList taskNames;
     QList<QPersistentModelIndex> removedIndices;
-    QStringListModel itemModel;
+    QStandardItemModel itemModel;
 };
 
 class PageViewTest : public QObject
@@ -94,7 +116,7 @@ private slots:
     void shouldDisplayListFromPageModel()
     {
         // GIVEN
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStandardItemModel model;
 
         QObject stubPageModel;
         stubPageModel.setProperty("centralListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
@@ -153,7 +175,7 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.itemModel.setStringList(QStringList() << "A" << "B" << "C");
+        stubPageModel.addItems(QStringList() << "A" << "B" << "C");
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
@@ -181,7 +203,7 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.itemModel.setStringList(QStringList() << "A" << "B" << "C");
+        stubPageModel.addItems(QStringList() << "A" << "B" << "C");
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
@@ -200,6 +222,39 @@ private slots:
 
         // THEN
         QVERIFY(stubPageModel.removedIndices.isEmpty());
+    }
+
+    void shouldDiplayNotificationWhenHittingTheDeleteKeyOnAnItemWithChildren()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addItems(QStringList() << "A" << "B");
+        QStandardItem *parentIndex = stubPageModel.itemModel.item(1, 0);
+        stubPageModel.addItem("C", parentIndex);
+        QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+        bool called = false;
+        page.setAskConfirmationFunction([&called](QWidget*) { called = true; return QMessageBox::Yes;});
+
+        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        centralView->setFocus();
+
+        // Needed for shortcuts to work
+        page.show();
+        QTest::qWaitForWindowShown(&page);
+        QTest::qWait(100);
+
+        // WHEN
+        QTest::keyPress(centralView, Qt::Key_Delete);
+
+        // THEN
+        QVERIFY(called);
+        QCOMPARE(stubPageModel.removedIndices.size(), 1);
+        QCOMPARE(stubPageModel.removedIndices.first(), index);
     }
 };
 

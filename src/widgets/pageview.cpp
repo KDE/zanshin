@@ -29,6 +29,7 @@
 #include <QLineEdit>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 #include "filterwidget.h"
 #include "itemdelegate.h"
@@ -68,6 +69,12 @@ PageView::PageView(QWidget *parent)
     removeItemAction->setShortcut(Qt::Key_Delete);
     connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
     addAction(removeItemAction);
+
+    m_askConfirmationFunction = [] (QWidget *parent) -> int {
+        QString title = tr("Delete Tasks");
+        QString text = tr("Do you really want to delete the tasks with all its descendants?");
+        return QMessageBox::question(parent, title, text, QMessageBox::Yes | QMessageBox::No);
+    };
 }
 
 QObject *PageView::model() const
@@ -99,6 +106,16 @@ void PageView::setModel(QObject *model)
             this, SLOT(onCurrentChanged(QModelIndex)));
 }
 
+PageView::AskConfirmationFunction PageView::askConfirmationFunction() const
+{
+    return m_askConfirmationFunction;
+}
+
+void PageView::setAskConfirmationFunction(const PageView::AskConfirmationFunction &askConfirmationFunction)
+{
+    m_askConfirmationFunction = askConfirmationFunction;
+}
+
 void PageView::onEditingFinished()
 {
     if (m_quickAddEdit->text().isEmpty())
@@ -113,6 +130,14 @@ void PageView::onRemoveItemRequested()
     QModelIndex currentIndex = m_centralView->selectionModel()->currentIndex();
     if (!currentIndex.isValid())
         return;
+
+    if (currentIndex.model()->rowCount(currentIndex) > 0) {
+        int button = m_askConfirmationFunction(this);
+        bool canRemove = (button == QMessageBox::Yes);
+
+        if (!canRemove)
+            return;
+    }
 
     QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
 }

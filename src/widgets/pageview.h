@@ -27,11 +27,16 @@
 
 #include <QWidget>
 
+#include <QSharedPointer>
+
+#include <functional>
+
 #include "domain/artifact.h"
 
 class QLineEdit;
 class QModelIndex;
 class QTreeView;
+class QMessageBox;
 
 namespace Widgets {
 
@@ -41,12 +46,16 @@ class PageView : public QWidget
 {
     Q_OBJECT
 public:
+    typedef std::function<int(QWidget*)> AskConfirmationFunction;
+
     explicit PageView(QWidget *parent = 0);
 
     QObject *model() const;
+    AskConfirmationFunction askConfirmationFunction() const;
 
 public slots:
     void setModel(QObject *model);
+    void setAskConfirmationFunction(const AskConfirmationFunction &factory);
 
 signals:
     void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
@@ -61,6 +70,7 @@ private:
     FilterWidget *m_filterWidget;
     QTreeView *m_centralView;
     QLineEdit *m_quickAddEdit;
+    AskConfirmationFunction m_askConfirmationFunction;
 };
 
 }
