@@ -46,7 +46,7 @@ class PageView : public QWidget
 {
     Q_OBJECT
 public:
-    typedef std::function<int(QWidget*)> AskConfirmationFunction;
+    typedef std::function<int(const QString&, QWidget*)> AskConfirmationFunction;
 
     explicit PageView(QWidget *parent = 0);
 

@@ -53,6 +53,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->setAlternatingRowColors(true);
     m_centralView->setItemDelegate(new ItemDelegate(this));
     m_centralView->setDragDropMode(QTreeView::DragDrop);
+    m_centralView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_centralView->setModel(m_filterWidget->proxyModel());
 
     m_quickAddEdit->setObjectName("quickAddEdit");
@@ -70,9 +71,8 @@ PageView::PageView(QWidget *parent)
     connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
     addAction(removeItemAction);
 
-    m_askConfirmationFunction = [] (QWidget *parent) -> int {
+    m_askConfirmationFunction = [] (const QString &text, QWidget *parent) -> int {
         QString title = tr("Delete Tasks");
-        QString text = tr("Do you really want to delete the tasks with all its descendants?");
         return QMessageBox::question(parent, title, text, QMessageBox::Yes | QMessageBox::No);
     };
 }
@@ -127,19 +127,51 @@ void PageView::onEditingFinished()
 
 void PageView::onRemoveItemRequested()
 {
-    QModelIndex currentIndex = m_centralView->selectionModel()->currentIndex();
-    if (!currentIndex.isValid())
+    const QModelIndexList &currentIndexes = m_centralView->selectionModel()->selectedIndexes();
+    if (currentIndexes.isEmpty())
         return;
 
-    if (currentIndex.model()->rowCount(currentIndex) > 0) {
-        int button = m_askConfirmationFunction(this);
+    QString text;
+    if (currentIndexes.size() > 1) {
+        bool hasDescendants = false;
+        foreach (const QModelIndex &currentIndex, currentIndexes) {
+            if (!currentIndex.isValid())
+                continue;
+
+            if (currentIndex.model()->rowCount(currentIndex) > 0) {
+                hasDescendants = true;
+                break;
+            }
+        }
+
+        if (hasDescendants)
+            text = tr("Do you really want to delete the selected items and their children?");
+        else
+            text = tr("Do you really want to delete the selected items?");
+
+    } else {
+        const QModelIndex &currentIndex = currentIndexes.first();
+        if (!currentIndex.isValid())
+            return;
+
+        if (currentIndex.model()->rowCount(currentIndex) > 0)
+            text = tr("Do you really want to delete the selected task and all its children?");
+    }
+
+    if (!text.isEmpty()) {
+        int button = m_askConfirmationFunction(text, this);
         bool canRemove = (button == QMessageBox::Yes);
 
         if (!canRemove)
             return;
     }
 
-    QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
+    foreach (const QModelIndex &currentIndex, currentIndexes) {
+        if (!currentIndex.isValid())
+            continue;
+
+        QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
+    }
 }
 
 void PageView::onCurrentChanged(const QModelIndex &current)

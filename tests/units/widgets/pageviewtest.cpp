@@ -237,7 +237,7 @@ private slots:
         Widgets::PageView page;
         page.setModel(&stubPageModel);
         bool called = false;
-        page.setAskConfirmationFunction([&called](QWidget*) { called = true; return QMessageBox::Yes;});
+        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes;});
 
         QTreeView *centralView = page.findChild<QTreeView*>("centralView");
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
@@ -255,6 +255,40 @@ private slots:
         QVERIFY(called);
         QCOMPARE(stubPageModel.removedIndices.size(), 1);
         QCOMPARE(stubPageModel.removedIndices.first(), index);
+    }
+
+    void shouldDeleteItemsWhenHittingTheDeleteKey()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addItems(QStringList() << "A" << "B" << "C");
+        QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
+        QPersistentModelIndex index2 = stubPageModel.itemModel.index(2, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+        bool called = false;
+        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes;});
+
+        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        centralView->selectionModel()->setCurrentIndex(index2, QItemSelectionModel::Select);
+        centralView->setFocus();
+
+        // Needed for shortcuts to work
+        page.show();
+        QTest::qWaitForWindowShown(&page);
+        QTest::qWait(100);
+
+        // WHEN
+        QTest::keyPress(centralView, Qt::Key_Delete);
+
+        // THEN
+        QVERIFY(called);
+        QCOMPARE(stubPageModel.removedIndices.size(), 2);
+        QCOMPARE(stubPageModel.removedIndices.first(), index);
+        QCOMPARE(stubPageModel.removedIndices.at(1), index2);
     }
 };
 
