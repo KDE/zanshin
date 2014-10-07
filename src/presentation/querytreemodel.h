@@ -28,6 +28,9 @@
 
 #include "querytreenode.h"
 
+#include <functional>
+#include <algorithm>
+
 namespace Presentation {
 
 template<typename ItemType>
@@ -39,7 +42,7 @@ public:
     typedef typename QueryTreeNode<ItemType>::DataFunction DataFunction;
     typedef typename QueryTreeNode<ItemType>::SetDataFunction SetDataFunction;
     typedef typename QueryTreeNode<ItemType>::DropFunction DropFunction;
-    typedef typename QueryTreeNode<ItemType>::DragFunction DragFunction;
+    typedef std::function<QMimeData*(const QList<ItemType> &)> DragFunction;
 
     explicit QueryTreeModel(const QueryGenerator &queryGenerator,
                             const FlagsFunction &flagsFunction,
@@ -63,10 +66,30 @@ public:
         : QueryTreeModelBase(new QueryTreeNode<ItemType>(ItemType(), 0, this,
                                                          queryGenerator, flagsFunction,
                                                          dataFunction, setDataFunction,
-                                                         dropFunction, dragFunction),
-                             parent)
+                                                         dropFunction),
+                             parent),
+          m_dragFunction(dragFunction)
     {
     }
+
+protected:
+    QMimeData *createMimeData(const QModelIndexList &indexes) const
+    {
+        if (m_dragFunction) {
+            QList<ItemType> items;
+            std::transform(indexes.begin(), indexes.end(),
+                           std::back_inserter(items),
+                           [this](const QModelIndex &index) {
+                               return static_cast<QueryTreeNode<ItemType>*>(nodeFromIndex(index))->item();
+                           });
+            return m_dragFunction(items);
+        } else {
+            return 0;
+        }
+    }
+
+private:
+    DragFunction m_dragFunction;
 };
 
 }

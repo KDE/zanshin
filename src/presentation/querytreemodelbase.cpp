@@ -27,6 +27,8 @@
 
 #include <QStringList>
 
+#include <algorithm>
+
 using namespace Presentation;
 
 QueryTreeNodeBase::QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModelBase *model)
@@ -199,10 +201,10 @@ bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
 QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
 {
-    if (indexes.size() != 1)
+    if (indexes.isEmpty())
         return 0;
 
-    return nodeFromIndex(indexes.first())->mimeData();
+    return createMimeData(indexes);
 }
 
 QStringList QueryTreeModelBase::mimeTypes() const

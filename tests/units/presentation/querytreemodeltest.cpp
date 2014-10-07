@@ -36,6 +36,7 @@
 using namespace mockitopp;
 
 Q_DECLARE_METATYPE(QModelIndex)
+Q_DECLARE_METATYPE(QList<QColor>)
 
 class QueryTreeModelTest : public QObject
 {
@@ -744,9 +745,9 @@ private slots:
         auto dropFunction = [] (const QMimeData *, Qt::DropAction, const QColor &) {
             return false;
         };
-        auto dragFunction = [] (const QColor &color) {
+        auto dragFunction = [] (const QList<QColor> &colors) {
             auto mimeData = new QMimeData;
-            mimeData->setColorData(QVariant::fromValue(color));
+            mimeData->setColorData(QVariant::fromValue(colors));
             return mimeData;
         };
 
@@ -756,12 +757,14 @@ private slots:
         new ModelTest(&model);
 
         // WHEN
-        auto data = model.mimeData(QList<QModelIndex>() << model.index(1, 0));
+        auto data = model.mimeData(QList<QModelIndex>() << model.index(1, 0) << model.index(2, 0));
 
         // THEN
         QVERIFY(data);
         QVERIFY(model.mimeTypes().contains("application/x-zanshin-object"));
-        QCOMPARE(data->colorData().value<QColor>(), QColor(Qt::green));
+        QList<QColor> colors;
+        colors << Qt::green << Qt::blue;
+        QCOMPARE(data->colorData().value<QList<QColor>>(), colors);
     }
 
     void shouldDropMimeData_data()
@@ -813,7 +816,7 @@ private slots:
             colorSeen = color;
             return false;
         };
-        auto dragFunction = [] (const QColor &) -> QMimeData* {
+        auto dragFunction = [] (const QList<QColor> &) -> QMimeData* {
             return 0;
         };
 

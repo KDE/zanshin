@@ -46,7 +46,6 @@ public:
     typedef std::function<QVariant(const ItemType &, int)> DataFunction;
     typedef std::function<bool(const ItemType &, const QVariant &, int)> SetDataFunction;
     typedef std::function<bool(const QMimeData *, Qt::DropAction, const ItemType &)> DropFunction;
-    typedef std::function<QMimeData*(const ItemType &)> DragFunction;
 
     QueryTreeNode(const ItemType &item, QueryTreeNodeBase *parentNode, QueryTreeModelBase *model,
                   const QueryGenerator &queryGenerator,
@@ -67,18 +66,18 @@ public:
                   const FlagsFunction &flagsFunction,
                   const DataFunction &dataFunction,
                   const SetDataFunction &setDataFunction,
-                  const DropFunction &dropFunction,
-                  const DragFunction &dragFunction)
+                  const DropFunction &dropFunction)
         : QueryTreeNodeBase(parentNode, model),
           m_item(item),
           m_flagsFunction(flagsFunction),
           m_dataFunction(dataFunction),
           m_setDataFunction(setDataFunction),
-          m_dropFunction(dropFunction),
-          m_dragFunction(dragFunction)
+          m_dropFunction(dropFunction)
     {
         init(model, queryGenerator);
     }
+
+    ItemType item() const { return m_item; }
 
     Qt::ItemFlags flags() const { return m_flagsFunction(m_item); }
 
@@ -100,14 +99,6 @@ public:
             return false;
     }
 
-    QMimeData *mimeData() const
-    {
-        if (m_dragFunction)
-            return m_dragFunction(m_item);
-        else
-            return 0;
-    }
-
 private:
     void init(QueryTreeModelBase *model, const QueryGenerator &queryGenerator)
     {
@@ -121,7 +112,7 @@ private:
                                                                   model, queryGenerator,
                                                                   m_flagsFunction,
                                                                   m_dataFunction, m_setDataFunction,
-                                                                  m_dropFunction, m_dragFunction);
+                                                                  m_dropFunction);
             appendChild(node);
         }
 
@@ -134,7 +125,7 @@ private:
                                                                   model, queryGenerator,
                                                                   m_flagsFunction,
                                                                   m_dataFunction, m_setDataFunction,
-                                                                  m_dropFunction, m_dragFunction);
+                                                                  m_dropFunction);
             insertChild(index, node);
             endInsertRows();
         });
@@ -159,7 +150,6 @@ private:
     DataFunction m_dataFunction;
     SetDataFunction m_setDataFunction;
     DropFunction m_dropFunction;
-    DragFunction m_dragFunction;
 };
 
 }

@@ -63,5 +63,6 @@ private:
 }
 
 Q_DECLARE_METATYPE(Domain::Artifact::Ptr)
+Q_DECLARE_METATYPE(Domain::Artifact::List)
 
 #endif // DOMAIN_ARTIFACT_H

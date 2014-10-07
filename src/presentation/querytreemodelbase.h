@@ -42,7 +42,6 @@ public:
     virtual QVariant data(int role) const = 0;
     virtual bool setData(const QVariant &value, int role) = 0;
     virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action) = 0;
-    virtual QMimeData *mimeData() const = 0;
 
     int row();
     QueryTreeNodeBase *parent() const;
@@ -94,10 +93,11 @@ public:
 protected:
     explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,
                                 QObject *parent = 0);
+    virtual QMimeData *createMimeData(const QModelIndexList &indexes) const = 0;
+    QueryTreeNodeBase *nodeFromIndex(const QModelIndex &index) const;
 
 private:
     friend class QueryTreeNodeBase;
-    QueryTreeNodeBase *nodeFromIndex(const QModelIndex &index) const;
     bool isModelIndexValid(const QModelIndex &index) const;
 
     QueryTreeNodeBase *m_rootNode;

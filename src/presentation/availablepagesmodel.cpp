@@ -181,20 +181,24 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         if (!mimeData->hasFormat("application/x-zanshin-object"))
             return false;
 
-        auto artifact = mimeData->property("object").value<Domain::Artifact::Ptr>();
-        if (!artifact)
+        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
+        if (droppedArtifacts.isEmpty())
             return false;
 
         auto project = object.objectCast<Domain::Project>();
         if (project) {
-            m_projectRepository->associate(project, artifact);
+            foreach (const auto &droppedArtifact, droppedArtifacts) {
+                m_projectRepository->associate(project, droppedArtifact);
+            }
             return true;
         } else if (object == m_inboxObject) {
-            auto job = m_projectRepository->dissociate(artifact);
-            if (auto task = artifact.objectCast<Domain::Task>()) {
-                Utils::JobHandler::install(job, [this, task] {
-                    m_taskRepository->dissociate(task);
-                });
+            foreach (const auto &droppedArtifact, droppedArtifacts) {
+                auto job = m_projectRepository->dissociate(droppedArtifact);
+                if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
+                    Utils::JobHandler::install(job, [this, task] {
+                        m_taskRepository->dissociate(task);
+                    });
+                }
             }
             return true;
         }
@@ -202,7 +206,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         return false;
     };
 
-    auto drag = [](const QObjectPtr &) -> QMimeData* {
+    auto drag = [](const QObjectPtrList &) -> QMimeData* {
         return 0;
     };
 
