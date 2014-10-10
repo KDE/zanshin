@@ -31,6 +31,7 @@
 class QAbstractItemModel;
 
 typedef QSharedPointer<QObject> QObjectPtr;
+typedef QList<QObjectPtr> QObjectPtrList;
 
 namespace Presentation {
 
@@ -46,5 +47,6 @@ namespace MetaTypes
 Q_DECLARE_METATYPE(QAbstractItemModel*)
 
 Q_DECLARE_METATYPE(QObjectPtr)
+Q_DECLARE_METATYPE(QObjectPtrList)
 
 #endif // PRESENTATION_METATYPES_H

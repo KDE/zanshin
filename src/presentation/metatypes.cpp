@@ -33,6 +33,7 @@ void MetaTypes::registerAll()
 {
     qRegisterMetaType<QAbstractItemModel*>();
     qRegisterMetaType<QObjectPtr>();
+    qRegisterMetaType<QObjectPtrList>();
     qRegisterMetaType<Domain::Artifact::Ptr>();
     qRegisterMetaType<Domain::DataSource::Ptr>();
 }
