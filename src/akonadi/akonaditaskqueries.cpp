@@ -68,122 +68,144 @@ TaskQueries::~TaskQueries()
 
 TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 {
-    TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
+    if (!m_findAll) {
+        {
+            TaskQueries *self = const_cast<TaskQueries*>(this);
+            self->m_findAll = self->createTaskQuery();
+        }
 
-    if (provider)
-        return TaskResult::create(provider);
-
-    provider = TaskProvider::Ptr::create();
-    m_taskProvider = provider.toWeakRef();
-
-    auto result = TaskResult::create(provider);
-
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                   StorageInterface::Recursive,
-                                                                   StorageInterface::Tasks);
-    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
-        if (job->kjob()->error() != KJob::NoError)
-            return;
-
-        for (auto collection : job->collections()) {
-            ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-            Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+        m_findAll->setFetchFunction([this] (const TaskQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
                 if (job->kjob()->error() != KJob::NoError)
                     return;
 
-                for (auto item : job->items()) {
-                    auto task = deserializeTask(item);
-                    if (task)
-                        provider->append(task);
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
+
+                        for (auto item : job->items()) {
+                            add(item);
+                        }
+                    });
                 }
             });
-        }
-    });
+        });
 
-    return result;
+        m_findAll->setConvertFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->createTaskFromItem(item);
+        });
+        m_findAll->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
+            m_serializer->updateTaskFromItem(task, item);
+        });
+        m_findAll->setPredicateFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->isTaskItem(item);
+        });
+        m_findAll->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
+            return m_serializer->representsItem(task, item);
+        });
+    }
+
+    return m_findAll->result();
 }
 
 TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) const
 {
-    Akonadi::Item item = m_serializer->createItemFromTask(task);
-    TaskProvider::Ptr provider;
+    Akonadi::Item item = m_serializer->createItemFromTask(task);   
+    if (!m_findChildren.contains(item.id())) {
+        TaskQuery::Ptr query;
 
-    if (m_taskChildProviders.contains(item.id())) {
-        provider = m_taskChildProviders.value(item.id()).toStrongRef();
-        if (provider)
-            return TaskResult::create(provider);
+        {
+            TaskQueries *self = const_cast<TaskQueries*>(this);
+            query = self->createTaskQuery();
+            self->m_findChildren.insert(item.id(), query);
+        }
+
+        query->setFetchFunction([this, item] (const TaskQuery::AddFunction &add) {
+            ItemFetchJobInterface *job = m_storage->fetchItem(item);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                if (job->kjob()->error() != KJob::NoError)
+                    return;
+
+                Q_ASSERT(job->items().size() == 1);
+                auto item = job->items()[0];
+                Q_ASSERT(item.parentCollection().isValid());
+                ItemFetchJobInterface *job = m_storage->fetchItems(item.parentCollection());
+                Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                    if (job->kjob()->error() != KJob::NoError)
+                        return;
+
+                    for (auto item : job->items())
+                        add(item);
+                });
+            });
+        });
+        query->setConvertFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->createTaskFromItem(item);
+        });
+        query->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
+            m_serializer->updateTaskFromItem(task, item);
+        });
+        query->setPredicateFunction([this, task] (const Akonadi::Item &item) {
+            return m_serializer->isTaskChild(task, item);
+        });
+        query->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
+            return m_serializer->representsItem(task, item);
+        });
     }
 
-    provider = TaskProvider::Ptr(new TaskProvider);
-    m_taskChildProviders[item.id()] = provider;
-
-    auto result = TaskResult::create(provider);
-
-    addItemIdInCache(task, item.id());
-
-    ItemFetchJobInterface *job = m_storage->fetchItem(item);
-    Utils::JobHandler::install(job->kjob(), [provider, job, task, this] {
-        if (job->kjob()->error() != KJob::NoError)
-            return;
-
-        Q_ASSERT(job->items().size() == 1);
-        auto item = job->items()[0];
-        Q_ASSERT(item.parentCollection().isValid());
-        ItemFetchJobInterface *job = m_storage->fetchItems(item.parentCollection());
-        Utils::JobHandler::install(job->kjob(), [provider, job, task, this] {
-            if (job->kjob()->error() != KJob::NoError)
-                return;
-
-            for (auto item : job->items()) {
-                if (m_serializer->isTaskChild(task, item)) {
-                    auto task = deserializeTask(item);
-                    if (task)
-                        provider->append(task);
-                }
-            }
-        });
-    });
-
-    return result;
+    return m_findChildren.value(item.id())->result();
 }
 
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
-    TaskProvider::Ptr provider(m_topTaskProvider.toStrongRef());
+    if (!m_findTopLevel) {
+        {
+            TaskQueries *self = const_cast<TaskQueries*>(this);
+            self->m_findTopLevel = self->createTaskQuery();
+        }
 
-    if (provider)
-        return TaskResult::create(provider);
-
-    provider = TaskProvider::Ptr::create();
-    m_topTaskProvider = provider.toWeakRef();
-
-    auto result = TaskResult::create(provider);
-
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                   StorageInterface::Recursive,
-                                                                   StorageInterface::Tasks);
-    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
-        if (job->kjob()->error() != KJob::NoError)
-            return;
-
-        for (auto collection : job->collections()) {
-            ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-            Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+        m_findTopLevel->setFetchFunction([this] (const TaskQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
                 if (job->kjob()->error() != KJob::NoError)
                     return;
 
-                for (auto item : job->items()) {
-                    if (m_serializer->relatedUidFromItem(item).isEmpty()) {
-                        auto task = deserializeTask(item);
-                        if (task)
-                            provider->append(task);
-                    }
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
+
+                        for (auto item : job->items()) {
+                            add(item);
+                        }
+                    });
                 }
             });
-        }
-    });
+        });
 
-    return result;
+        m_findTopLevel->setConvertFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->createTaskFromItem(item);
+        });
+        m_findTopLevel->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
+            m_serializer->updateTaskFromItem(task, item);
+        });
+        m_findTopLevel->setPredicateFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->relatedUidFromItem(item).isEmpty();
+        });
+        m_findTopLevel->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
+            return m_serializer->representsItem(task, item);
+        });
+    }
+
+    return m_findTopLevel->result();
 }
 
 TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const
@@ -195,201 +217,30 @@ TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task
 
 void TaskQueries::onItemAdded(const Item &item)
 {
-    TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
-    auto task = deserializeTask(item);
-
-    if (!task)
-        return;
-
-    if (provider) {
-        provider->append(task);
-    }
-
-    TaskProvider::Ptr topLevelProvider(m_topTaskProvider.toStrongRef());
-    if (topLevelProvider) {
-        if (m_serializer->relatedUidFromItem(item).isEmpty())
-            topLevelProvider->append(task);
-    }
-
-    if (m_taskChildProviders.isEmpty())
-        return;
-
-    const QString uid = m_serializer->relatedUidFromItem(item);
-    TaskProvider::Ptr childProvider = childProviderFromUid(uid);
-    if (childProvider) {
-        childProvider->append(task);
-    }
+    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+        query->onAdded(item);
 }
 
 void TaskQueries::onItemRemoved(const Item &item)
 {
-    TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
+    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+        query->onRemoved(item);
 
-    if (provider) {
-        for (int i = 0; i < provider->data().size(); i++) {
-            auto task = provider->data().at(i);
-            if (m_serializer->representsItem(task, item)) {
-                provider->removeAt(i);
-                i--;
-            }
-        }
-    }
-
-    TaskProvider::Ptr topLevelProvider(m_topTaskProvider.toStrongRef());
-    if (topLevelProvider) {
-        if (m_serializer->relatedUidFromItem(item).isEmpty()) {
-            for (int i = 0; i < topLevelProvider->data().size(); i++) {
-                auto task = topLevelProvider->data().at(i);
-                if (m_serializer->representsItem(task, item)) {
-                    topLevelProvider->removeAt(i);
-                    i--;
-                }
-            }
-        }
-    }
-
-    if (m_taskChildProviders.isEmpty())
-        return;
-
-    if (m_taskChildProviders.contains(item.id())) {
-        TaskProvider::Ptr childProvider = m_taskChildProviders.value(item.id());
-        if (childProvider) {
-            while (!childProvider->data().isEmpty()) {
-                auto task = childProvider->takeFirst();
-                if (topLevelProvider)
-                    topLevelProvider->append(task);
-            }
-        }
-    }
-
-    const QString uid = m_idToRelatedUidCache.value(item.id());
-    TaskProvider::Ptr childProvider = childProviderFromUid(uid);
-    if (childProvider) {
-        for (int i = 0; i < childProvider->data().size(); i++) {
-            auto task = childProvider->data().at(i);
-            if (m_serializer->representsItem(task, item)) {
-                childProvider->removeAt(i);
-                i--;
-            }
-        }
+    if (m_findChildren.contains(item.id())) {
+        auto query = m_findChildren.take(item.id());
+        m_taskQueries.removeAll(query);
     }
 }
 
 void TaskQueries::onItemChanged(const Item &item)
 {
-    TaskProvider::Ptr provider(m_taskProvider.toStrongRef());
-
-    if (provider) {
-        for (int i = 0; i < provider->data().size(); i++) {
-            auto task = provider->data().at(i);
-            if (m_serializer->representsItem(task, item)) {
-                m_serializer->updateTaskFromItem(task, item);
-                provider->replace(i, task);
-            }
-        }
-    }
-
-    TaskProvider::Ptr topLevelProvider(m_topTaskProvider.toStrongRef());
-    if (topLevelProvider) {
-        bool itemFound = false;
-        QString uid = m_serializer->relatedUidFromItem(item);
-        for (int i = 0; i < topLevelProvider->data().size(); i++) {
-            auto task = topLevelProvider->data().at(i);
-            if (m_serializer->representsItem(task, item)) {
-                itemFound = true;
-                if (uid.isEmpty()) {
-                    m_serializer->updateTaskFromItem(task, item);
-                    topLevelProvider->replace(i, task);
-                } else {
-                    topLevelProvider->removeAt(i);
-                    i--;
-                }
-            }
-        }
-        if (!itemFound && uid.isEmpty()) {
-            auto task = deserializeTask(item);
-            if (task)
-                topLevelProvider->append(task);
-        }
-    }
-
-    if (m_taskChildProviders.isEmpty())
-        return;
-
-    const QString uid = m_serializer->relatedUidFromItem(item);
-    TaskProvider::Ptr childProvider = childProviderFromUid(uid);
-    if (childProvider) {
-        bool itemUpdated = false;
-        for (int i = 0; i < childProvider->data().size(); i++) {
-            auto task = childProvider->data().at(i);
-            if (m_serializer->representsItem(task, item)) {
-                m_serializer->updateTaskFromItem(task, item);
-                childProvider->replace(i, task);
-                itemUpdated = true;
-            }
-        }
-
-        if (!itemUpdated) {
-            removeItemFromChildProviders(item);
-            auto task = deserializeTask(item);
-            if (task)
-                childProvider->append(task);
-        }
-    } else {
-        removeItemFromChildProviders(item);
-    }
+    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+        query->onChanged(item);
 }
 
-Domain::Task::Ptr TaskQueries::deserializeTask(const Item &item) const
+TaskQueries::TaskQuery::Ptr TaskQueries::createTaskQuery()
 {
-    auto task = m_serializer->createTaskFromItem(item);
-    if (task) {
-        addItemIdInCache(task, item.id());
-        m_idToRelatedUidCache[item.id()] = m_serializer->relatedUidFromItem(item);
-    }
-
-    return task;
-}
-
-void TaskQueries::addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const
-{
-    m_uidtoIdCache[m_serializer->objectUid(task)] = id;
-}
-
-TaskQueries::TaskProvider::Ptr TaskQueries::childProviderFromUid(const QString &uid) const
-{
-    TaskProvider::Ptr childProvider;
-
-    if (m_uidtoIdCache.contains(uid)) {
-        auto parentId = m_uidtoIdCache.value(uid);
-        if (m_taskChildProviders.contains(parentId))
-            childProvider = m_taskChildProviders.value(parentId).toStrongRef();
-    }
-    return childProvider;
-}
-
-void TaskQueries::removeItemFromChildProviders(const Item &item)
-{
-    if (m_idToRelatedUidCache.contains(item.id())) {
-        auto lastRelatedUid = m_idToRelatedUidCache.value(item.id());
-        auto relatedUid = m_serializer->relatedUidFromItem(item);
-        if (lastRelatedUid == relatedUid)
-            return;
-
-        if (m_uidtoIdCache.contains(lastRelatedUid)) {
-            auto parentId = m_uidtoIdCache.value(lastRelatedUid);
-            if (m_taskChildProviders.contains(parentId)) {
-                TaskProvider::Ptr childProvider = m_taskChildProviders.value(parentId).toStrongRef();
-                if (childProvider) {
-                    for (int i = 0; i < childProvider->data().size(); i++) {
-                        auto task = childProvider->data().at(i);
-                        if (m_serializer->representsItem(task, item)) {
-                            childProvider->removeAt(i);
-                            i--;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    auto query = TaskQueries::TaskQuery::Ptr::create();
+    m_taskQueries << query;
+    return query;
 }

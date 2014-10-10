@@ -29,6 +29,7 @@
 #include <QHash>
 #include <Akonadi/Item>
 
+#include "domain/livequery.h"
 #include "domain/taskqueries.h"
 
 class KJob;
@@ -44,6 +45,7 @@ class TaskQueries : public QObject, public Domain::TaskQueries
 {
     Q_OBJECT
 public:
+    typedef Domain::LiveQuery<Akonadi::Item, Domain::Task::Ptr> TaskQuery;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
 
@@ -65,22 +67,17 @@ private slots:
     void onItemChanged(const Akonadi::Item &item);
 
 private:
-    bool isTaskItem(const Domain::Task::Ptr &task, const Item &item) const;
-    Domain::Task::Ptr deserializeTask(const Item &item) const;
-    void addItemIdInCache(const Domain::Task::Ptr &task, Akonadi::Entity::Id id) const;
-    TaskProvider::Ptr childProviderFromUid(const QString &uid) const;
-    void removeItemFromChildProviders(const Item &item);
+    TaskQuery::Ptr createTaskQuery();
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
     MonitorInterface *m_monitor;
     bool m_ownInterfaces;
 
-    mutable TaskProvider::WeakPtr m_taskProvider;
-    mutable TaskProvider::WeakPtr m_topTaskProvider;
-    mutable QHash<Akonadi::Entity::Id, TaskProvider::WeakPtr> m_taskChildProviders;
-    mutable QHash<QString, Akonadi::Entity::Id> m_uidtoIdCache;
-    mutable QHash<Akonadi::Entity::Id, QString> m_idToRelatedUidCache;
+    TaskQuery::Ptr m_findAll;
+    QHash<Akonadi::Entity::Id, TaskQuery::Ptr> m_findChildren;
+    TaskQuery::Ptr m_findTopLevel;
+    TaskQuery::List m_taskQueries;
 };
 
 }
