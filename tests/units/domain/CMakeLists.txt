@@ -2,6 +2,7 @@ zanshin_auto_tests(
   artifacttest
   contexttest
   datasourcetest
+  livequerytest
   mockitotest
   notetest
   projecttest
