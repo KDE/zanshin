@@ -126,7 +126,6 @@ private slots:
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).exactly(1));
@@ -203,8 +202,8 @@ private slots:
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(0));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(0));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0).dynamicCast<Domain::Task>(), task1);

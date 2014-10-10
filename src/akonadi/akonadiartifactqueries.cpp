@@ -68,132 +68,94 @@ ArtifactQueries::~ArtifactQueries()
 
 ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
 {
-    ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
+    if (!m_findInbox) {
+        {
+            ArtifactQueries *self = const_cast<ArtifactQueries*>(this);
+            self->m_findInbox = self->createArtifactQuery();
+        }
 
-    if (provider)
-        return ArtifactResult::create(provider);
-
-    provider = ArtifactProvider::Ptr::create();
-    m_inboxProvider = provider.toWeakRef();
-
-    ArtifactResult::Ptr result = ArtifactResult::create(provider);
-
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                   StorageInterface::Recursive,
-                                                                   StorageInterface::Tasks|StorageInterface::Notes);
-    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
-        if (job->kjob()->error() != KJob::NoError)
-            return;
-
-        for (auto collection : job->collections()) {
-            ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-            Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+        m_findInbox->setFetchFunction([this] (const ArtifactQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks|StorageInterface::Notes);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
                 if (job->kjob()->error() != KJob::NoError)
                     return;
 
-                for (auto item : job->items()) {
-                    if (!isInboxItem(item))
-                        continue;
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
 
-                    auto artifact = deserializeArtifact(item);
-                    if (artifact)
-                        provider->append(artifact);
+                        for (auto item : job->items()) {
+                            add(item);
+                        }
+                    });
                 }
             });
-        }
-    });
+        });
 
-    return result;
+        m_findInbox->setConvertFunction([this] (const Akonadi::Item &item) {
+            if (m_serializer->isTaskItem(item)) {
+                auto task = m_serializer->createTaskFromItem(item);
+                return Domain::Artifact::Ptr(task);
+
+            } else if (m_serializer->isNoteItem(item)) {
+                auto note = m_serializer->createNoteFromItem(item);
+                return Domain::Artifact::Ptr(note);
+
+            } else {
+                return Domain::Artifact::Ptr();
+            }
+        });
+
+        m_findInbox->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Artifact::Ptr &artifact) {
+            if (auto task = artifact.dynamicCast<Domain::Task>()) {
+                m_serializer->updateTaskFromItem(task, item);
+            } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
+                m_serializer->updateNoteFromItem(note, item);
+            }
+        });
+
+        m_findInbox->setPredicateFunction([this] (const Akonadi::Item &item) {
+            const bool excluded = !m_serializer->relatedUidFromItem(item).isEmpty()
+                               || (!m_serializer->isTaskItem(item) && !m_serializer->isNoteItem(item))
+                               || (m_serializer->isTaskItem(item) && m_serializer->hasContextTags(item))
+                               || (m_serializer->isNoteItem(item) && m_serializer->hasTopicTags(item));
+
+            return !excluded;
+        });
+
+        m_findInbox->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Artifact::Ptr &artifact) {
+            return m_serializer->representsItem(artifact, item);
+        });
+    }
+
+    return m_findInbox->result();
 }
 
 void ArtifactQueries::onItemAdded(const Item &item)
 {
-    ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
-    if (!provider) {
-        return;
-    }
-
-    if (!isInboxItem(item))
-        return;
-
-    auto artifact = deserializeArtifact(item);
-    if (artifact)
-        provider->append(artifact);
+    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+        query->onAdded(item);
 }
 
 void ArtifactQueries::onItemRemoved(const Item &item)
 {
-    ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
-
-    if (!provider) {
-        return;
-    }
-
-    for (int i = 0; i < provider->data().size(); i++) {
-        auto artifact = provider->data().at(i);
-        if (m_serializer->representsItem(artifact, item)) {
-            provider->removeAt(i);
-            i--;
-        }
-    }
+    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+        query->onRemoved(item);
 }
 
 void ArtifactQueries::onItemChanged(const Item &item)
 {
-    ArtifactProvider::Ptr provider(m_inboxProvider.toStrongRef());
-
-    if (!provider) {
-        return;
-    }
-
-    bool itemFound = false;
-    for (int i = 0; i < provider->data().size(); i++) {
-        auto artifact = provider->data().at(i);
-        if (m_serializer->representsItem(artifact, item)) {
-            itemFound = true;
-            if (isInboxItem(item)) {
-                if (auto task = artifact.dynamicCast<Domain::Task>()) {
-                    m_serializer->updateTaskFromItem(task, item);
-                    provider->replace(i, task);
-                } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
-                    m_serializer->updateNoteFromItem(note, item);
-                    provider->replace(i, note);
-                }
-            } else {
-                provider->removeAt(i);
-                i--;
-            }
-        }
-    }
-    if (!itemFound) {
-        if (isInboxItem(item)) {
-            auto artifact = deserializeArtifact(item);
-            if (artifact)
-                provider->append(artifact);
-        }
-    }
+    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+        query->onChanged(item);
 }
 
-bool ArtifactQueries::isInboxItem(const Item &item) const
+ArtifactQueries::ArtifactQuery::Ptr ArtifactQueries::createArtifactQuery()
 {
-    const bool excluded = !m_serializer->relatedUidFromItem(item).isEmpty()
-                       || (m_serializer->isTaskItem(item) && m_serializer->hasContextTags(item))
-                       || (m_serializer->isNoteItem(item) && m_serializer->hasTopicTags(item));
-
-    return !excluded;
-}
-
-Domain::Artifact::Ptr ArtifactQueries::deserializeArtifact(const Item &item) const
-{
-    auto task = m_serializer->createTaskFromItem(item);
-    if (task) {
-        return task;
-    }
-
-    auto note = m_serializer->createNoteFromItem(item);
-    if (note) {
-        return note;
-    }
-
-    return Domain::Artifact::Ptr();
+    auto query = ArtifactQuery::Ptr::create();
+    m_artifactQueries << query;
+    return query;
 }
