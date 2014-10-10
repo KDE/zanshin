@@ -67,33 +67,49 @@ NoteQueries::~NoteQueries()
 
 NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
 {
-    NoteProvider::Ptr provider(m_noteProvider.toStrongRef());
+    if (!m_findAll) {
+        {
+            NoteQueries *self = const_cast<NoteQueries*>(this);
+            self->m_findAll = self->createNoteQuery();
+        }
 
-    if (provider)
-        return NoteResult::create(provider);
+        m_findAll->setFetchFunction([this] (const NoteQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Notes);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                if (job->kjob()->error() != KJob::NoError)
+                    return;
 
-    provider = NoteProvider::Ptr::create();
-    m_noteProvider = provider.toWeakRef();
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
 
-    auto result = NoteResult::create(provider);
-
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                   StorageInterface::Recursive,
-                                                                   StorageInterface::Notes);
-    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
-        for (auto collection : job->collections()) {
-            ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-            Utils::JobHandler::install(job->kjob(), [provider, job, this] {
-                for (auto item : job->items()) {
-                    auto note = deserializeNote(item);
-                    if (note)
-                        provider->append(note);
+                        for (auto item : job->items()) {
+                            add(item);
+                        }
+                    });
                 }
             });
-        }
-    });
+        });
 
-    return result;
+        m_findAll->setConvertFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->createNoteFromItem(item);
+        });
+        m_findAll->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Note::Ptr &note) {
+            m_serializer->updateNoteFromItem(note, item);
+        });
+        m_findAll->setPredicateFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->isNoteItem(item);
+        });
+        m_findAll->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Note::Ptr &note) {
+            return m_serializer->representsItem(note, item);
+        });
+    }
+
+    return m_findAll->result();
 }
 
 NoteQueries::TopicResult::Ptr NoteQueries::findTopics(Domain::Note::Ptr note) const
@@ -105,46 +121,25 @@ NoteQueries::TopicResult::Ptr NoteQueries::findTopics(Domain::Note::Ptr note) co
 
 void NoteQueries::onItemAdded(const Item &item)
 {
-    NoteProvider::Ptr provider(m_noteProvider.toStrongRef());
-
-    if (provider) {
-        auto note = deserializeNote(item);
-        if (note)
-            provider->append(note);
-    }
+    foreach (const NoteQuery::Ptr &query, m_noteQueries)
+        query->onAdded(item);
 }
 
 void NoteQueries::onItemRemoved(const Item &item)
 {
-    NoteProvider::Ptr provider(m_noteProvider.toStrongRef());
-
-    if (provider) {
-        for (int i = 0; i < provider->data().size(); i++) {
-            auto note = provider->data().at(i);
-            if (m_serializer->representsItem(note, item)) {
-                provider->removeAt(i);
-                i--;
-            }
-        }
-    }
+    foreach (const NoteQuery::Ptr &query, m_noteQueries)
+        query->onRemoved(item);
 }
 
 void NoteQueries::onItemChanged(const Item &item)
 {
-    NoteProvider::Ptr provider(m_noteProvider.toStrongRef());
-
-    if (provider) {
-        for (int i = 0; i < provider->data().size(); i++) {
-            auto note = provider->data().at(i);
-            if (m_serializer->representsItem(note, item)) {
-                m_serializer->updateNoteFromItem(note, item);
-                provider->replace(i, note);
-            }
-        }
-    }
+    foreach (const NoteQuery::Ptr &query, m_noteQueries)
+        query->onChanged(item);
 }
 
-Domain::Note::Ptr NoteQueries::deserializeNote(const Item &item) const
+NoteQueries::NoteQuery::Ptr NoteQueries::createNoteQuery()
 {
-    return m_serializer->createNoteFromItem(item);
+    auto query = NoteQueries::NoteQuery::Ptr::create();
+    m_noteQueries << query;
+    return query;
 }

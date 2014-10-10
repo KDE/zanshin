@@ -81,6 +81,10 @@ private slots:
 
         // Serializer mock returning the notes from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
@@ -146,6 +150,9 @@ private slots:
 
         // Serializer mock returning the notes from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
+
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
 
@@ -164,7 +171,7 @@ private slots:
                                                                          .exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(0));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0), note1);
@@ -202,6 +209,8 @@ private slots:
         Domain::Note::Ptr note1(new Domain::Note);
         Akonadi::Item item2(43);
         Domain::Note::Ptr note2;
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
         monitor->addItem(item1);
@@ -213,7 +222,7 @@ private slots:
                                                                                Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(0));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().first(), note1);
@@ -253,6 +262,10 @@ private slots:
 
         // Serializer mock returning the notes from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
@@ -323,6 +336,10 @@ private slots:
 
         // Serializer mock returning the notes from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
