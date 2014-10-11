@@ -68,230 +68,151 @@ ProjectQueries::~ProjectQueries()
 
 ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
 {
-    ProjectProvider::Ptr provider(m_projectProvider.toStrongRef());
+    if (!m_findAll) {
+        {
+            ProjectQueries *self = const_cast<ProjectQueries*>(this);
+            self->m_findAll = self->createProjectQuery();
+        }
 
-    if (provider)
-        return ProjectResult::create(provider);
-
-    provider = ProjectProvider::Ptr::create();
-    m_projectProvider = provider.toWeakRef();
-
-    auto result = ProjectResult::create(provider);
-
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                   StorageInterface::Recursive,
-                                                                   StorageInterface::Tasks);
-    Utils::JobHandler::install(job->kjob(), [provider, job, this] {
-        if (job->kjob()->error() != KJob::NoError)
-            return;
-
-        for (auto collection : job->collections()) {
-            ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-            Utils::JobHandler::install(job->kjob(), [provider, job, this] {
+        m_findAll->setFetchFunction([this] (const ProjectQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
                 if (job->kjob()->error() != KJob::NoError)
                     return;
 
-                for (auto item : job->items()) {
-                    auto project = m_serializer->createProjectFromItem(item);
-                    if (project)
-                        provider->append(project);
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
+
+                        for (auto item : job->items()) {
+                            add(item);
+                        }
+                    });
                 }
             });
-        }
-    });
+        });
 
-    return result;
+        m_findAll->setConvertFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->createProjectFromItem(item);
+        });
+        m_findAll->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Project::Ptr &project) {
+            m_serializer->updateProjectFromItem(project, item);
+        });
+        m_findAll->setPredicateFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->isProjectItem(item);
+        });
+        m_findAll->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Project::Ptr &project) {
+            return m_serializer->representsItem(project, item);
+        });
+    }
+
+    return m_findAll->result();
 }
 
 ProjectQueries::ArtifactResult::Ptr ProjectQueries::findTopLevelArtifacts(Domain::Project::Ptr project) const
 {
     Akonadi::Item item = m_serializer->createItemFromProject(project);
-    ArtifactProvider::Ptr provider;
+    if (!m_findTopLevel.contains(item.id())) {
+        ArtifactQuery::Ptr query;
 
-    if (m_topLevelProviders.contains(item.id())) {
-        provider = m_topLevelProviders.value(item.id()).toStrongRef();
-        if (provider)
-            return ArtifactResult::create(provider);
-    }
+        {
+            ProjectQueries *self = const_cast<ProjectQueries*>(this);
+            query = self->createArtifactQuery();
+            self->m_findTopLevel.insert(item.id(), query);
+        }
 
-    provider = ArtifactProvider::Ptr::create();
-    m_topLevelProviders[item.id()] = provider;
-
-    auto result = ArtifactResult::create(provider);
-
-    addItemIdInCache(project, item.id());
-
-    CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                   StorageInterface::Recursive,
-                                                                   StorageInterface::Tasks | StorageInterface::Notes);
-    Utils::JobHandler::install(job->kjob(), [provider, job, project, this] {
-        if (job->kjob()->error() != KJob::NoError)
-            return;
-
-        for (auto collection : job->collections()) {
-            ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-            Utils::JobHandler::install(job->kjob(), [provider, job, project, this] {
+        query->setFetchFunction([this, item] (const ArtifactQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks | StorageInterface::Notes);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
                 if (job->kjob()->error() != KJob::NoError)
                     return;
 
-                for (auto item : job->items()) {
-                    if (m_serializer->isProjectChild(project, item)) {
-                        auto artifact = deserializeArtifact(item);
-                        if (artifact)
-                            provider->append(artifact);
-                    }
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
+
+                        for (auto item : job->items())
+                            add(item);
+                    });
                 }
             });
-        }
-    });
+        });
+        query->setConvertFunction([this] (const Akonadi::Item &item) {
+            if (m_serializer->isTaskItem(item)) {
+                auto task = m_serializer->createTaskFromItem(item);
+                return Domain::Artifact::Ptr(task);
 
-    return result;
+            } else if (m_serializer->isNoteItem(item)) {
+                auto note = m_serializer->createNoteFromItem(item);
+                return Domain::Artifact::Ptr(note);
+
+            } else {
+                return Domain::Artifact::Ptr();
+            }
+        });
+        query->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Artifact::Ptr &artifact) {
+            if (auto task = artifact.dynamicCast<Domain::Task>()) {
+                m_serializer->updateTaskFromItem(task, item);
+            } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
+                m_serializer->updateNoteFromItem(note, item);
+            }
+        });
+        query->setPredicateFunction([this, project] (const Akonadi::Item &item) {
+            return m_serializer->isProjectChild(project, item);
+        });
+        query->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Artifact::Ptr &artifact) {
+            return m_serializer->representsItem(artifact, item);
+        });
+    }
+
+    return m_findTopLevel.value(item.id())->result();
 }
 
 void ProjectQueries::onItemAdded(const Item &item)
 {
-    ProjectProvider::Ptr provider(m_projectProvider.toStrongRef());
-    auto project = m_serializer->createProjectFromItem(item);
+    foreach (const ProjectQuery::Ptr &query, m_projectQueries)
+        query->onAdded(item);
 
-    if (provider && project) {
-        provider->append(project);
-        return;
-    }
-
-    const QString uid = m_serializer->relatedUidFromItem(item);
-    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForUid(uid);
-    if (topLevelProvider) {
-        Domain::Artifact::Ptr artifact = deserializeArtifact(item);
-        topLevelProvider->append(artifact);
-    }
+    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+        query->onAdded(item);
 }
 
 void ProjectQueries::onItemRemoved(const Item &item)
 {
-    ProjectProvider::Ptr provider(m_projectProvider.toStrongRef());
+    foreach (const ProjectQuery::Ptr &query, m_projectQueries)
+        query->onRemoved(item);
 
-    if (provider) {
-        for (int i = 0; i < provider->data().size(); i++) {
-            auto project = provider->data().at(i);
-            if (m_serializer->representsItem(project, item)) {
-                provider->removeAt(i);
-                i--;
-            }
-        }
-    }
-
-    const QString uid = m_idToRelatedUidCache.value(item.id());
-    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForUid(uid);
-    if (topLevelProvider) {
-        for (int i = 0; i < topLevelProvider->data().size(); i++) {
-            auto artifact = topLevelProvider->data().at(i);
-            if (m_serializer->representsItem(artifact, item)) {
-                topLevelProvider->removeAt(i);
-                i--;
-            }
-        }
-    }
+    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+        query->onRemoved(item);
 }
 
 void ProjectQueries::onItemChanged(const Item &item)
 {
-    ProjectProvider::Ptr provider(m_projectProvider.toStrongRef());
+    foreach (const ProjectQuery::Ptr &query, m_projectQueries)
+        query->onChanged(item);
 
-    if (provider) {
-        for (int i = 0; i < provider->data().size(); i++) {
-            auto project = provider->data().at(i);
-            if (m_serializer->representsItem(project, item)) {
-                m_serializer->updateProjectFromItem(project, item);
-                provider->replace(i, project);
-            }
-        }
-    }
-
-    const QString uid = m_serializer->relatedUidFromItem(item);
-    ArtifactProvider::Ptr topLevelProvider = topLevelProviderForUid(uid);
-    if (topLevelProvider) {
-        bool itemUpdated = false;
-        for (int i = 0; i < topLevelProvider->data().size(); i++) {
-            auto artifact = topLevelProvider->data().at(i);
-            if (m_serializer->representsItem(artifact, item)) {
-                if (auto task = artifact.dynamicCast<Domain::Task>())
-                    m_serializer->updateTaskFromItem(task, item);
-                else if (auto note = artifact.dynamicCast<Domain::Note>())
-                    m_serializer->updateNoteFromItem(note, item);
-                topLevelProvider->replace(i, artifact);
-                itemUpdated = true;
-            }
-        }
-
-        if (!itemUpdated) {
-            removeItemFromTopLevelProviders(item);
-            auto artifact = deserializeArtifact(item);
-            if (artifact)
-                topLevelProvider->append(artifact);
-        }
-    } else {
-        removeItemFromTopLevelProviders(item);
-    }
-
+    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+        query->onChanged(item);
 }
 
-void ProjectQueries::addItemIdInCache(const Domain::Project::Ptr &project, Entity::Id id) const
+ProjectQueries::ProjectQuery::Ptr ProjectQueries::createProjectQuery()
 {
-    m_uidtoIdCache[m_serializer->objectUid(project)] = id;
+    auto query = ProjectQueries::ProjectQuery::Ptr::create();
+    m_projectQueries << query;
+    return query;
 }
 
-Domain::Artifact::Ptr ProjectQueries::deserializeArtifact(const Item &item) const
+ProjectQueries::ArtifactQuery::Ptr ProjectQueries::createArtifactQuery()
 {
-    m_idToRelatedUidCache[item.id()] = m_serializer->relatedUidFromItem(item);
-
-    auto task = m_serializer->createTaskFromItem(item);
-    if (task) {
-        return task;
-    }
-
-    auto note = m_serializer->createNoteFromItem(item);
-    if (note) {
-        return note;
-    }
-
-    return Domain::Artifact::Ptr();
-}
-
-ProjectQueries::ArtifactProvider::Ptr ProjectQueries::topLevelProviderForUid(const QString &uid) const
-{
-    ArtifactProvider::Ptr topLevelProvider;
-
-    if (m_uidtoIdCache.contains(uid)) {
-        Akonadi::Entity::Id parentId = m_uidtoIdCache.value(uid);
-        if (m_topLevelProviders.contains(parentId))
-            topLevelProvider = m_topLevelProviders.value(parentId).toStrongRef();
-    }
-
-    return topLevelProvider;
-}
-
-void ProjectQueries::removeItemFromTopLevelProviders(const Item &item)
-{
-    if (m_idToRelatedUidCache.contains(item.id())) {
-        auto lastRelatedUid = m_idToRelatedUidCache.value(item.id());
-        auto relatedUid = m_serializer->relatedUidFromItem(item);
-        if (lastRelatedUid == relatedUid)
-            return;
-
-        if (m_uidtoIdCache.contains(lastRelatedUid)) {
-            auto parentId = m_uidtoIdCache.value(lastRelatedUid);
-            if (m_topLevelProviders.contains(parentId)) {
-                ArtifactProvider::Ptr topLevelProvider = m_topLevelProviders.value(parentId).toStrongRef();
-                if (topLevelProvider) {
-                    for (int i = 0; i < topLevelProvider->data().size(); i++) {
-                        auto artifact = topLevelProvider->data().at(i);
-                        if (m_serializer->representsItem(artifact, item)) {
-                            topLevelProvider->removeAt(i);
-                            i--;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    auto query = ProjectQueries::ArtifactQuery::Ptr::create();
+    m_artifactQueries << query;
+    return query;
 }

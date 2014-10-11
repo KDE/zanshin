@@ -24,11 +24,10 @@
 #ifndef AKONADI_PROJECTQUERIES_H
 #define AKONADI_PROJECTQUERIES_H
 
-#include "domain/projectqueries.h"
-
 #include <KDE/Akonadi/Item>
 
-class KJob;
+#include "domain/livequery.h"
+#include "domain/projectqueries.h"
 
 namespace Akonadi {
 
@@ -40,9 +39,11 @@ class ProjectQueries : public QObject, public Domain::ProjectQueries
 {
     Q_OBJECT
 public:
+    typedef Domain::LiveQuery<Akonadi::Item, Domain::Project::Ptr> ProjectQuery;
     typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
 
+    typedef Domain::LiveQuery<Akonadi::Item, Domain::Artifact::Ptr> ArtifactQuery;
     typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
@@ -59,20 +60,19 @@ private slots:
     void onItemChanged(const Akonadi::Item &item);
 
 private:
-    void addItemIdInCache(const Domain::Project::Ptr &project, Akonadi::Entity::Id id) const;
-    Domain::Artifact::Ptr deserializeArtifact(const Item &item) const;
-    ArtifactProvider::Ptr topLevelProviderForUid(const QString &uid) const;
-    void removeItemFromTopLevelProviders(const Item &item);
+    ProjectQuery::Ptr createProjectQuery();
+    ArtifactQuery::Ptr createArtifactQuery();
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
     MonitorInterface *m_monitor;
     bool m_ownInterfaces;
 
-    mutable ProjectProvider::WeakPtr m_projectProvider;
-    mutable QHash<Akonadi::Entity::Id, ArtifactProvider::WeakPtr> m_topLevelProviders;
-    mutable QHash<QString, Akonadi::Entity::Id> m_uidtoIdCache;
-    mutable QHash<Akonadi::Entity::Id, QString> m_idToRelatedUidCache;
+    ProjectQuery::Ptr m_findAll;
+    ProjectQuery::List m_projectQueries;
+
+    QHash<Akonadi::Entity::Id, ArtifactQuery::Ptr> m_findTopLevel;
+    ArtifactQuery::List m_artifactQueries;
 };
 
 }
