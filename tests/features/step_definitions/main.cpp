@@ -312,6 +312,24 @@ WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
     QTest::qWait(500);
 }
 
+WHEN("^I rename a project named \"(.*)\" to \"(.*)\"$") {
+    REGEX_PARAM(QString, projectName);
+    REGEX_PARAM(QString, newName);
+
+    ScenarioScope<ZanshinContext> context;
+    auto availablePages = context->app->property("availablePages").value<QObject*>();
+    VERIFY(availablePages);
+
+    auto pageListModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
+    VERIFY(pageListModel);
+    QTest::qWait(500);
+
+    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, "Projects / " + projectName);
+    VERIFY(pageIndex.isValid());
+
+    pageListModel->setData(pageIndex, newName);
+}
+
 WHEN("^I list the items$") {
     ScenarioScope<ZanshinContext> context;
     context->indices.clear();
