@@ -45,15 +45,11 @@ public:
     typedef Domain::QueryResultProvider<Domain::Note::Ptr> NoteProvider;
     typedef Domain::QueryResult<Domain::Note::Ptr> NoteResult;
 
-    typedef Domain::QueryResultProvider<Domain::Topic::Ptr> TopicProvider;
-    typedef Domain::QueryResult<Domain::Topic::Ptr> TopicResult;
-
     NoteQueries();
     NoteQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
     virtual ~NoteQueries();
 
     NoteResult::Ptr findAll() const;
-    TopicResult::Ptr findTopics(Domain::Note::Ptr note) const;
 
 private slots:
     void onItemAdded(const Akonadi::Item &item);

@@ -7,6 +7,6 @@ zanshin_auto_tests(
   notetest
   projecttest
   queryresulttest
+  tagtest
   tasktest
-  topictest
 )

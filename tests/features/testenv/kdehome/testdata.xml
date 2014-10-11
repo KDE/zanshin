@@ -319,7 +319,7 @@ From: knotes@kde4
 MIME-Version: 1.0
 
 This is a note</payload>
-          <tag>physics-topic</tag>
+          <tag>physics-tag</tag>
         </item>
         <item mimetype="text/x-vnd.akonadi.note" rid="{5d9d24a9-d836-438b-898f-04d9d415cba1}">
           <payload>Subject: 21/04/2014 14:49
@@ -354,6 +354,6 @@ END:VCARD&#xd;
   </collection>
   <tag name="Errands" type="Zanshin-Context" gid="errands-context" rid="errands-context"/>
   <tag name="Online" type="Zanshin-Context" gid="online-context" rid="online-context"/>
-  <tag name="Physics" type="Zanshin-Topic" gid="physics-topic" rid="physics-topic"/>
-  <tag name="Philosophy" type="Zanshin-Topic" gid="philosophy-topic" rid="philosophy-topic"/>
+  <tag name="Physics" type="PLAIN" gid="physics-tag" rid="physics-tag"/>
+  <tag name="Philosophy" type="PLAIN" gid="philosophy-tag" rid="philosophy-tag"/>
 </knut>

@@ -21,32 +21,26 @@
    USA.
 */
 
-#ifndef DOMAIN_TOPICREPOSITORY_H
-#define DOMAIN_TOPICREPOSITORY_H
+#ifndef DOMAIN_TAGQUERIES_H
+#define DOMAIN_TAGQUERIES_H
 
-#include "note.h"
-#include "topic.h"
-
-class KJob;
+#include "artifact.h"
+#include "queryresult.h"
+#include "tag.h"
 
 namespace Domain {
 
-class TopicRepository
+class TagQueries
 {
 public:
-    TopicRepository();
-    virtual ~TopicRepository();
+    TagQueries();
+    virtual ~TagQueries();
 
-    virtual KJob *save(Topic::Ptr topic) = 0;
-    virtual KJob *remove(Topic::Ptr topic) = 0;
+    virtual QueryResult<Tag::Ptr>::Ptr findAll() const = 0;
 
-    virtual KJob *associate(Topic::Ptr parent, Note::Ptr child) = 0;
-    virtual KJob *dissociate(Topic::Ptr parent, Note::Ptr child) = 0;
-
-    virtual KJob *associate(Topic::Ptr parent, Topic::Ptr child) = 0;
-    virtual KJob *dissociate(Topic::Ptr parent, Topic::Ptr child) = 0;
+    virtual QueryResult<Artifact::Ptr>::Ptr findArtifacts(Tag::Ptr tag) const = 0;
 };
 
 }
 
-#endif // DOMAIN_TOPICREPOSITORY_H
+#endif // DOMAIN_TAGQUERIES_H

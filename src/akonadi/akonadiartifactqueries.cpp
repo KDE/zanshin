@@ -122,7 +122,7 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
             const bool excluded = !m_serializer->relatedUidFromItem(item).isEmpty()
                                || (!m_serializer->isTaskItem(item) && !m_serializer->isNoteItem(item))
                                || (m_serializer->isTaskItem(item) && m_serializer->hasContextTags(item))
-                               || (m_serializer->isNoteItem(item) && m_serializer->hasTopicTags(item));
+                               || m_serializer->hasPlainTags(item);
 
             return !excluded;
         });
@@ -133,6 +133,13 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
     }
 
     return m_findInbox->result();
+}
+
+ArtifactQueries::TagResult::Ptr ArtifactQueries::findTags(Domain::Artifact::Ptr artifact) const
+{
+    Q_UNUSED(artifact);
+    qFatal("Not implemented yet");
+    return TagResult::Ptr();
 }
 
 void ArtifactQueries::onItemAdded(const Item &item)

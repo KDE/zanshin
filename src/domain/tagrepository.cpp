@@ -22,41 +22,15 @@
 */
 
 
-#ifndef DOMAIN_TOPIC_H
-#define DOMAIN_TOPIC_H
+#include "tagrepository.h"
 
-#include <QMetaType>
-#include <QSharedPointer>
-#include <QString>
+using namespace Domain;
 
-namespace Domain {
-
-class Topic : public QObject
+TagRepository::TagRepository()
 {
-    Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-
-public:
-    typedef QSharedPointer<Topic> Ptr;
-    typedef QList<Topic::Ptr> List;
-
-    explicit Topic(QObject *parent = 0);
-    virtual ~Topic();
-
-    QString name() const;
-
-public slots:
-    void setName(const QString &name);
-
-signals:
-    void nameChanged(const QString &name);
-
-private:
-    QString m_name;
-};
-
 }
 
-Q_DECLARE_METATYPE(Domain::Topic::Ptr)
+TagRepository::~TagRepository()
+{
+}
 
-#endif // DOMAIN_TOPIC_H

@@ -3,7 +3,7 @@ Feature: Available pages content
   I can see all the pages available to me
   In order to display them and add tasks or notes to them
 
-  Scenario: Inbox, projects, contexts and topics appear in the list
+  Scenario: Inbox, projects, contexts and tags appear in the list
     Given I display the available pages
     When I list the items
     Then the list is:

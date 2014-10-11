@@ -98,9 +98,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item3).thenReturn(false);
 
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item3).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
@@ -179,8 +179,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
 
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(false);
@@ -262,9 +262,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item3).thenReturn(false);
 
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item3).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
@@ -299,27 +299,27 @@ private slots:
         QCOMPARE(result->data().at(0).dynamicCast<Domain::Task>(), task1);
     }
 
-    void shouldNotHaveArtifactsWithContextsOrTopicsInInbox_data()
+    void shouldNotHaveArtifactsWithContextsOrTagsInInbox_data()
     {
         QTest::addColumn<Domain::Artifact::Ptr>("artifact");
         QTest::addColumn<bool>("hasContexts");
-        QTest::addColumn<bool>("hasTopics");
+        QTest::addColumn<bool>("hasTags");
         QTest::addColumn<bool>("isExpectedInInbox");
 
         Domain::Artifact::Ptr task(new Domain::Task);
         QTest::newRow("task with no tags") << task << false << false << true;
-        QTest::newRow("task with topics") << task << false << true << true;
+        QTest::newRow("task with tags") << task << false << true << false;
         QTest::newRow("task with contexts") << task << true << false << false;
         QTest::newRow("task with both") << task << true << true << false;
 
         Domain::Artifact::Ptr note(new Domain::Note);
         QTest::newRow("note with no tags") << note << false << false << true;
-        QTest::newRow("note with topics") << note << false << true << false;
+        QTest::newRow("note with tags") << note << false << true << false;
         QTest::newRow("note with contexts") << note << true << false << true;
         QTest::newRow("note with both") << note << true << true << false;
     }
 
-    void shouldNotHaveArtifactsWithContextsOrTopicsInInbox()
+    void shouldNotHaveArtifactsWithContextsOrTagsInInbox()
     {
         // GIVEN
 
@@ -334,7 +334,7 @@ private slots:
         item.setParentCollection(col);
         QFETCH(Domain::Artifact::Ptr, artifact);
         QFETCH(bool, hasContexts);
-        QFETCH(bool, hasTopics);
+        QFETCH(bool, hasTags);
         QFETCH(bool, isExpectedInInbox);
         MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item);
@@ -355,7 +355,7 @@ private slots:
 
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContexts);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(hasTopics);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(hasTags);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Task>().isNull());
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Note>().isNull());
@@ -384,18 +384,18 @@ private slots:
         QTest::addColumn<Domain::Artifact::Ptr>("artifact");
         QTest::addColumn<QString>("relatedUid");
         QTest::addColumn<bool>("hasContexts");
-        QTest::addColumn<bool>("hasTopics");
+        QTest::addColumn<bool>("hasTags");
 
         Domain::Artifact::Ptr task(new Domain::Task);
         QTest::newRow("task which should be in inbox") << true << task << QString() << false << false;
         QTest::newRow("task with related uid") << false << task << "foo" << false << false;
         QTest::newRow("task with context") << false << task << QString() << true << false;
-        QTest::newRow("task with topic") << true << task << QString() << false << true;
+        QTest::newRow("task with tag") << false << task << QString() << false << true;
 
         Domain::Artifact::Ptr note(new Domain::Note);
         QTest::newRow("note which should be in inbox") << true << note << QString() << false << false;
         QTest::newRow("note with related uid") << false << note << "foo" << false << false;
-        QTest::newRow("note with topic") << false << note << QString() << false << true;
+        QTest::newRow("note with tag") << false << note << QString() << false << true;
         QTest::newRow("note with context") << true << note << QString() << true << false;
     }
 
@@ -436,7 +436,7 @@ private slots:
         QFETCH(Domain::Artifact::Ptr, artifact);
         QFETCH(QString, relatedUid);
         QFETCH(bool, hasContexts);
-        QFETCH(bool, hasTopics);
+        QFETCH(bool, hasTags);
 
         Akonadi::Item item;
 
@@ -447,14 +447,14 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Note>());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(relatedUid);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContexts);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(hasTopics);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(hasTags);
 
         monitor->addItem(item);
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).atMost(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).atMost(1));
 
@@ -499,7 +499,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(task);
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(task, item).thenReturn(true);
 
         // Monitor mock
@@ -528,8 +528,8 @@ private slots:
         QTest::addColumn<QString>("relatedUidAfter");
         QTest::addColumn<bool>("hasContextsBefore");
         QTest::addColumn<bool>("hasContextsAfter");
-        QTest::addColumn<bool>("hasTopicsBefore");
-        QTest::addColumn<bool>("hasTopicsAfter");
+        QTest::addColumn<bool>("hasTagsBefore");
+        QTest::addColumn<bool>("hasTagsAfter");
 
         Domain::Artifact::Ptr task(new Domain::Task);
         QTest::newRow("task appears in inbox (related uid)") << true << task << "foo" << QString() << false << false << false << false;
@@ -540,8 +540,8 @@ private slots:
         Domain::Artifact::Ptr note(new Domain::Note);
         QTest::newRow("note appears in inbox (related uid)") << true << note << "foo" << QString() << false << false << false << false;
         QTest::newRow("note disappears from inbox (related uid)") << false << note << QString() << "foo" << false << false << false << false;
-        QTest::newRow("note appears in inbox (topic)") << true << note << QString() << QString() << false << false << true << false;
-        QTest::newRow("note disappears from inbox (topic)") << false << note << QString() << QString() << false << false << false << true;
+        QTest::newRow("note appears in inbox (tag)") << true << note << QString() << QString() << false << false << true << false;
+        QTest::newRow("note disappears from inbox (tag)") << false << note << QString() << QString() << false << false << false << true;
     }
 
     void shouldReactToItemChangesForInbox()
@@ -561,8 +561,8 @@ private slots:
         QFETCH(QString, relatedUidAfter);
         QFETCH(bool, hasContextsBefore);
         QFETCH(bool, hasContextsAfter);
-        QFETCH(bool, hasTopicsBefore);
-        QFETCH(bool, hasTopicsAfter);
+        QFETCH(bool, hasTagsBefore);
+        QFETCH(bool, hasTagsAfter);
 
         Akonadi::Item item;
         MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
@@ -589,8 +589,8 @@ private slots:
                                                                                     .thenReturn(relatedUidAfter);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContextsBefore)
                                                                                 .thenReturn(hasContextsAfter);
-        serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).thenReturn(hasTopicsBefore)
-                                                                              .thenReturn(hasTopicsAfter);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(hasTagsBefore)
+                                                                              .thenReturn(hasTagsAfter);
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(artifact, item).thenReturn(true);
 
         // Monitor mock
@@ -617,7 +617,7 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateNoteFromItem).when(artifact.dynamicCast<Domain::Note>(), item).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).atMost(2));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).atMost(2));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasTopicTags).when(item).atMost(2));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).atMost(2));
 
         if (inListAfterChange) {
             QCOMPARE(result->data().size(), 1);

@@ -27,7 +27,6 @@
 #include "note.h"
 #include "project.h"
 #include "queryresult.h"
-#include "topic.h"
 
 namespace Domain {
 
@@ -38,8 +37,6 @@ public:
     virtual ~NoteQueries();
 
     virtual QueryResult<Note::Ptr>::Ptr findAll() const = 0;
-
-    virtual QueryResult<Topic::Ptr>::Ptr findTopics(Note::Ptr note) const = 0;
 };
 
 }

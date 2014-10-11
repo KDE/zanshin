@@ -112,13 +112,6 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
     return m_findAll->result();
 }
 
-NoteQueries::TopicResult::Ptr NoteQueries::findTopics(Domain::Note::Ptr note) const
-{
-    Q_UNUSED(note);
-    qFatal("Not implemented yet");
-    return TopicResult::Ptr();
-}
-
 void NoteQueries::onItemAdded(const Item &item)
 {
     foreach (const NoteQuery::Ptr &query, m_noteQueries)

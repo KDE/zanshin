@@ -1,7 +1,7 @@
 Feature: Inbox content
   As someone collecting tasks and notes
   I can display the Inbox
-  In order to see the artifacts which need to be organized (e.g. any task or note not associated to any project, context or topic)
+  In order to see the artifacts which need to be organized (e.g. any task or note not associated to any project, context or tag)
 
   Scenario: Unorganized tasks and notes appear in the inbox
     Given I display the "Inbox" page

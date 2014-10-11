@@ -21,41 +21,30 @@
    USA.
 */
 
-#include <QtTest>
 
-#include "domain/topic.h"
+#include "tag.h"
 
 using namespace Domain;
 
-class TopicTest : public QObject
+Tag::Tag(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
-private slots:
-    void shouldHaveEmptyPropertiesByDefault()
-    {
-        Topic t;
-        QCOMPARE(t.name(), QString());
-    }
+}
 
-    void shouldNotifyNameChanges()
-    {
-        Topic t;
-        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
-        t.setName("foo");
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("foo"));
-    }
+Tag::~Tag()
+{
+}
 
-    void shouldNotNotifyIdenticalNameChanges()
-    {
-        Topic t;
-        t.setName("foo");
-        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
-        t.setName("foo");
-        QCOMPARE(spy.count(), 0);
-    }
-};
+QString Tag::name() const
+{
+    return m_name;
+}
 
-QTEST_MAIN(TopicTest)
+void Tag::setName(const QString &name)
+{
+    if (m_name == name)
+        return;
 
-#include "topictest.moc"
+    m_name = name;
+    emit nameChanged(name);
+}

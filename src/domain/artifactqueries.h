@@ -26,6 +26,7 @@
 
 #include "queryresult.h"
 #include "artifact.h"
+#include "tag.h"
 
 namespace Domain {
 
@@ -36,6 +37,8 @@ public:
     virtual ~ArtifactQueries();
 
     virtual QueryResult<Artifact::Ptr>::Ptr findInboxTopLevel() const = 0;
+
+    virtual QueryResult<Tag::Ptr>::Ptr findTags(Artifact::Ptr artifact) const = 0;
 };
 
 }

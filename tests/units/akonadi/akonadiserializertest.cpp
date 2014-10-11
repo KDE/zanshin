@@ -1613,17 +1613,18 @@ private slots:
         QCOMPARE(context->property("tagId").toLongLong(), originalTag.id());
     }
 
-    void shouldCheckIfAnItemHasContextsOrTopics_data()
+    void shouldCheckIfAnItemHasContextsOrTags_data()
     {
         QTest::addColumn<Akonadi::Item>("item");
         QTest::addColumn<bool>("contextsExpected");
-        QTest::addColumn<bool>("topicsExpected");
+        QTest::addColumn<bool>("tagsExpected");
 
         Akonadi::Tag unrelatedTag("Foo");
+        unrelatedTag.setType("unrelated");
         Akonadi::Tag contextTag("Bar");
         contextTag.setType(Akonadi::Serializer::contextTagType());
-        Akonadi::Tag topicTag("Baz");
-        topicTag.setType(Akonadi::Serializer::topicTagType());
+        Akonadi::Tag plainTag("Baz");
+        plainTag.setType(Akonadi::Tag::PLAIN);
 
         Akonadi::Item item;
         QTest::newRow("no tags") << item << false << false;
@@ -1634,29 +1635,29 @@ private slots:
         item.setTags({ unrelatedTag, contextTag });
         QTest::newRow("has contexts") << item << true << false;
 
-        item.setTags({ unrelatedTag, topicTag });
-        QTest::newRow("has topics") << item << false << true;
+        item.setTags({ unrelatedTag, plainTag });
+        QTest::newRow("has tags") << item << false << true;
 
-        item.setTags({ unrelatedTag, contextTag, topicTag });
+        item.setTags({ unrelatedTag, contextTag, plainTag });
         QTest::newRow("has both") << item << true << true;
     }
 
-    void shouldCheckIfAnItemHasContextsOrTopics()
+    void shouldCheckIfAnItemHasContextsOrTags()
     {
         // GIVEN
         QFETCH(Akonadi::Item, item);
         QFETCH(bool, contextsExpected);
-        QFETCH(bool, topicsExpected);
+        QFETCH(bool, tagsExpected);
 
         Akonadi::Serializer serializer;
 
         // WHEN
         const bool hasContexts = serializer.hasContextTags(item);
-        const bool hasTopics = serializer.hasTopicTags(item);
+        const bool hasTags = serializer.hasPlainTags(item);
 
         // THEN
         QCOMPARE(hasContexts, contextsExpected);
-        QCOMPARE(hasTopics, topicsExpected);
+        QCOMPARE(hasTags, tagsExpected);
     }
 };
 

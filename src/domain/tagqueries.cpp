@@ -22,15 +22,15 @@
 */
 
 
-#include "topicrepository.h"
+#include "tagqueries.h"
 
 using namespace Domain;
 
-TopicRepository::TopicRepository()
+TagQueries::TagQueries()
 {
 }
 
-TopicRepository::~TopicRepository()
+TagQueries::~TagQueries()
 {
 }
 

@@ -38,8 +38,3 @@ QByteArray SerializerInterface::contextTagType()
 {
     return QByteArray("Zanshin-Context");
 }
-
-QByteArray SerializerInterface::topicTagType()
-{
-    return QByteArray("Zanshin-Topic");
-}

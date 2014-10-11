@@ -76,11 +76,11 @@ public:
     bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
 
     bool hasContextTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
-    bool hasTopicTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
+    bool hasPlainTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
 
 private:
     bool isContext(const Akonadi::Tag &tag) const;
-    bool isTopic(const Akonadi::Tag &tag) const;
+    bool isPlainTag(const Akonadi::Tag &tag) const;
 };
 
 }

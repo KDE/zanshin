@@ -210,8 +210,8 @@ private slots:
                                            "delete-me",
                                            "errands-context",
                                            "online-context",
-                                           "philosophy-topic",
-                                           "physics-topic" };
+                                           "philosophy-tag",
+                                           "physics-tag" };
 
         // WHEN
         auto job = storage.fetchTags();

@@ -21,30 +21,29 @@
    USA.
 */
 
+#ifndef DOMAIN_TAGREPOSITORY_H
+#define DOMAIN_TAGREPOSITORY_H
 
-#include "topic.h"
+#include "artifact.h"
+#include "tag.h"
 
-using namespace Domain;
+class KJob;
 
-Topic::Topic(QObject *parent)
-    : QObject(parent)
+namespace Domain {
+
+class TagRepository
 {
+public:
+    TagRepository();
+    virtual ~TagRepository();
+
+    virtual KJob *save(Tag::Ptr tag) = 0;
+    virtual KJob *remove(Tag::Ptr tag) = 0;
+
+    virtual KJob *associate(Tag::Ptr parent, Artifact::Ptr child) = 0;
+    virtual KJob *dissociate(Tag::Ptr parent, Artifact::Ptr child) = 0;
+};
+
 }
 
-Topic::~Topic()
-{
-}
-
-QString Topic::name() const
-{
-    return m_name;
-}
-
-void Topic::setName(const QString &name)
-{
-    if (m_name == name)
-        return;
-
-    m_name = name;
-    emit nameChanged(name);
-}
+#endif // DOMAIN_TAGREPOSITORY_H

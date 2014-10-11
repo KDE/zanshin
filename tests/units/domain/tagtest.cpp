@@ -21,27 +21,41 @@
    USA.
 */
 
-#ifndef DOMAIN_TOPICQUERIES_H
-#define DOMAIN_TOPICQUERIES_H
+#include <QtTest>
 
-#include "note.h"
-#include "queryresult.h"
-#include "topic.h"
+#include "domain/tag.h"
 
-namespace Domain {
+using namespace Domain;
 
-class TopicQueries
+class TagTest : public QObject
 {
-public:
-    TopicQueries();
-    virtual ~TopicQueries();
+    Q_OBJECT
+private slots:
+    void shouldHaveEmptyPropertiesByDefault()
+    {
+        Tag t;
+        QCOMPARE(t.name(), QString());
+    }
 
-    virtual QueryResult<Topic::Ptr>::Ptr findAll() const = 0;
-    virtual QueryResult<Topic::Ptr>::Ptr findChildren(Topic::Ptr topic) const = 0;
+    void shouldNotifyNameChanges()
+    {
+        Tag t;
+        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
+        t.setName("foo");
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toString(), QString("foo"));
+    }
 
-    virtual QueryResult<Note::Ptr>::Ptr findNotes(Topic::Ptr topic) const = 0;
+    void shouldNotNotifyIdenticalNameChanges()
+    {
+        Tag t;
+        t.setName("foo");
+        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
+        t.setName("foo");
+        QCOMPARE(spy.count(), 0);
+    }
 };
 
-}
+QTEST_MAIN(TagTest)
 
-#endif // DOMAIN_TOPICQUERIES_H
+#include "tagtest.moc"

@@ -22,15 +22,41 @@
 */
 
 
-#include "topicqueries.h"
+#ifndef DOMAIN_TAG_H
+#define DOMAIN_TAG_H
 
-using namespace Domain;
+#include <QMetaType>
+#include <QSharedPointer>
+#include <QString>
 
-TopicQueries::TopicQueries()
+namespace Domain {
+
+class Tag : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+
+public:
+    typedef QSharedPointer<Tag> Ptr;
+    typedef QList<Tag::Ptr> List;
+
+    explicit Tag(QObject *parent = 0);
+    virtual ~Tag();
+
+    QString name() const;
+
+public slots:
+    void setName(const QString &name);
+
+signals:
+    void nameChanged(const QString &name);
+
+private:
+    QString m_name;
+};
+
 }
 
-TopicQueries::~TopicQueries()
-{
-}
+Q_DECLARE_METATYPE(Domain::Tag::Ptr)
 
+#endif // DOMAIN_TAG_H
