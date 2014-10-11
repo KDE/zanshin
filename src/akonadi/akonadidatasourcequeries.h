@@ -27,9 +27,11 @@
 #include <functional>
 
 #include <QHash>
-#include <Akonadi/Item>
+
+#include <Akonadi/Collection>
 
 #include "domain/datasourcequeries.h"
+#include "domain/livequery.h"
 
 class KJob;
 
@@ -44,6 +46,7 @@ class DataSourceQueries : public QObject, public Domain::DataSourceQueries
 {
     Q_OBJECT
 public:
+    typedef Domain::LiveQuery<Akonadi::Collection, Domain::DataSource::Ptr> DataSourceQuery;
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
@@ -60,16 +63,16 @@ private slots:
     void onCollectionChanged(const Akonadi::Collection &collection);
 
 private:
-    bool isDataSourceCollection(const Domain::DataSource::Ptr &dataSource, const Collection &collection) const;
-    Domain::DataSource::Ptr deserializeDataSource(const Collection &collection) const;
+    DataSourceQuery::Ptr createDataSourceQuery();
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
     MonitorInterface *m_monitor;
     bool m_ownInterfaces;
 
-    mutable DataSourceProvider::WeakPtr m_taskDataSourceProvider;
-    mutable DataSourceProvider::WeakPtr m_noteDataSourceProvider;
+    DataSourceQuery::Ptr m_findTasks;
+    DataSourceQuery::Ptr m_findNotes;
+    DataSourceQuery::List m_dataSourceQueries;
 };
 
 }
