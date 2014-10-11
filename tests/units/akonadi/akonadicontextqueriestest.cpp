@@ -159,7 +159,7 @@ private slots:
 
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTags).when().exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createContextFromTag).when(tag1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createContextFromTag).when(tag2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createContextFromTag).when(tag2).exactly(0));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0), context1);

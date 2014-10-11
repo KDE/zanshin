@@ -27,6 +27,7 @@
 #include <Akonadi/Item>
 
 #include "domain/contextqueries.h"
+#include "domain/livequery.h"
 
 namespace Akonadi {
 
@@ -41,6 +42,7 @@ public:
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
 
+    typedef Domain::LiveQuery<Akonadi::Tag, Domain::Context::Ptr> ContextQuery;
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
     typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
 
@@ -59,12 +61,15 @@ private slots:
     void onTagChanged(const Akonadi::Tag &tag);
 
 private:
-    mutable ContextProvider::WeakPtr m_contextProvider;
+    ContextQuery::Ptr createContextQuery();
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
     MonitorInterface *m_monitor;
     bool m_ownInterfaces;
+
+    ContextQuery::Ptr m_findAll;
+    ContextQuery::List m_contextQueries;
 };
 
 } // akonadi namespace
