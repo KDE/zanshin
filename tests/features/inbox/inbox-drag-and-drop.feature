@@ -30,3 +30,20 @@ Feature: Inbox task association
        | Buy cheese                                    |
        | Buy pears                                     |
        | 21/04/2014 14:49                              |
+
+  Scenario: Dropping two tasks on another one makes them children
+    Given I display the "Inbox" page
+    And the central list contains items named:
+        | display    |
+        | Buy apples |
+        | Buy pears  |
+    When I drop items on "Errands" in the central list
+    And I list the items
+    Then the list is:
+       | display                                       |
+       | Errands                                       |
+       | Errands / Buy apples                          |
+       | Errands / Buy pears                           |
+       | "The Pragmatic Programmer" by Hunt and Thomas |
+       | Buy cheese                                    |
+       | 21/04/2014 14:49                              |

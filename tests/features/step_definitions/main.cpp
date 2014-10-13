@@ -94,6 +94,7 @@ public:
     QPersistentModelIndex index;
     QObject *presentation;
     QObject *editor;
+    QList<QPersistentModelIndex> dragIndices;
 
 private:
     QSortFilterProxyModel *proxyModel;
@@ -299,6 +300,26 @@ GIVEN("^there is an item named \"(.+)\" in the available data sources$") {
     VERIFY_OR_DUMP(context->index.isValid());
 }
 
+GIVEN("^the central list contains items named:") {
+    TABLE_PARAM(tableParam);
+
+    ScenarioScope<ZanshinContext> context;
+    context->dragIndices.clear();
+    QTest::qWait(500);
+
+    auto model = context->presentation->property("centralListModel").value<QAbstractItemModel*>();
+    QTest::qWait(500);
+    context->setModel(model);
+
+    for (const auto row : tableParam.hashes()) {
+        for (const auto it : row) {
+            const QString itemName = QString::fromUtf8(it.second.data());
+            QModelIndex index = Zanshin::findIndex(context->model(), itemName);
+            VERIFY_OR_DUMP(index.isValid());
+            context->dragIndices << index;
+        }
+    }
+}
 
 WHEN("^I look at the central list$") {
     ScenarioScope<ZanshinContext> context;
@@ -468,6 +489,28 @@ WHEN("^I drop the item on \"(.*)\" in the central list") {
     ScenarioScope<ZanshinContext> context;
     VERIFY(context->index.isValid());
     const QMimeData *data = context->model()->mimeData(QModelIndexList() << context->index);
+
+    QAbstractItemModel *destModel = context->model();
+    QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
+    VERIFY(dropIndex.isValid());
+    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    QTest::qWait(500);
+}
+
+WHEN("^I drop items on \"(.*)\" in the central list") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(!context->dragIndices.isEmpty());
+    QModelIndexList indexes;
+    std::transform(context->dragIndices.constBegin(), context->dragIndices.constEnd(),
+                   std::back_inserter(indexes),
+                   [] (const QPersistentModelIndex &index) {
+                        VERIFY(index.isValid());
+                        return index;
+                   });
+
+    const QMimeData *data = context->model()->mimeData(indexes);
 
     QAbstractItemModel *destModel = context->model();
     QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
