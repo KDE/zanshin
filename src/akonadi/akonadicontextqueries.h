@@ -52,7 +52,6 @@ public:
 
 
     ContextResult::Ptr findAll() const;
-    ContextResult::Ptr findChildren(Domain::Context::Ptr context) const;
     TaskResult::Ptr findTasks(Domain::Context::Ptr context) const;
 
 private slots:

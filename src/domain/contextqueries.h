@@ -37,7 +37,6 @@ public:
     virtual ~ContextQueries();
 
     virtual QueryResult<Context::Ptr>::Ptr findAll() const = 0;
-    virtual QueryResult<Context::Ptr>::Ptr findChildren(Context::Ptr context) const = 0;
 
     virtual QueryResult<Task::Ptr>::Ptr findTasks(Context::Ptr context) const = 0;
 };

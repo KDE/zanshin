@@ -93,15 +93,6 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
     return m_findAll->result();
 }
 
-ContextQueries::ContextResult::Ptr ContextQueries::findChildren(Domain::Context::Ptr context) const
-{
-    qFatal("Not implemented yet");
-    // TODO : cache system to store context children
-    Q_UNUSED(context);
-    return ContextResult::Ptr();
-    // NOTE : will be done when tag parent support exists
-}
-
 ContextQueries::TaskResult::Ptr ContextQueries::findTasks(Domain::Context::Ptr context) const
 {
     qFatal("Not implemented yet");
