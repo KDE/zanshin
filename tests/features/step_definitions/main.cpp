@@ -539,6 +539,34 @@ WHEN("^I drop the item on \"(.*)\" in the page list") {
     QTest::qWait(500);
 }
 
+WHEN("^I drop items on \"(.*)\" in the page list") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(!context->dragIndices.isEmpty());
+    QModelIndexList indexes;
+    std::transform(context->dragIndices.constBegin(), context->dragIndices.constEnd(),
+                   std::back_inserter(indexes),
+                   [] (const QPersistentModelIndex &index) {
+                        VERIFY(index.isValid());
+                        return index;
+                   });
+
+    const QMimeData *data = context->model()->mimeData(indexes);
+
+    auto availablePages = context->app->property("availablePages").value<QObject*>();
+    VERIFY(availablePages);
+
+    auto destModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
+    VERIFY(destModel);
+    QTest::qWait(500);
+
+    QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
+    VERIFY(dropIndex.isValid());
+    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    QTest::qWait(500);
+}
+
 WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     REGEX_PARAM(QString, keyName);
     REGEX_PARAM(qint64, id);
