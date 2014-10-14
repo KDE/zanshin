@@ -31,6 +31,7 @@
 
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodel.h"
+#include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 
 #include "utils/dependencymanager.h"
@@ -163,6 +164,15 @@ Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource()
         return *source;
     else
         return sources.first();
+}
+
+QObject *ApplicationModel::availableSources()
+{
+    if (!m_availableSources) {
+        m_availableSources = new AvailableSourcesModel(m_sourceQueries,
+                                                       this);
+    }
+    return m_availableSources;
 }
 
 QObject *ApplicationModel::availablePages()

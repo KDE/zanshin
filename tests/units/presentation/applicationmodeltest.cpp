@@ -34,6 +34,7 @@
 #include "presentation/applicationmodel.h"
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodel.h"
+#include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/inboxpagemodel.h"
 
@@ -46,6 +47,18 @@ class ApplicationModelTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void shouldProvideAvailableSourcesModel()
+    {
+        // GIVEN
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
+
+        // WHEN
+        QObject *available = app.availableSources();
+
+        // THEN
+        QVERIFY(qobject_cast<Presentation::AvailableSourcesModel*>(available));
+    }
+
     void shouldProvideAvailablePagesModel()
     {
         // GIVEN

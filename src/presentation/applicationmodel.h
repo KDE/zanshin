@@ -49,6 +49,7 @@ class ApplicationModel : public QObject
     Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
     Q_PROPERTY(QAbstractItemModel* taskSourcesModel READ taskSourcesModel)
     Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
+    Q_PROPERTY(QObject* availableSources READ availableSources)
     Q_PROPERTY(QObject* availablePages READ availablePages)
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
@@ -71,6 +72,7 @@ public:
     QAbstractItemModel *taskSourcesModel();
     Domain::DataSource::Ptr defaultTaskDataSource();
 
+    QObject *availableSources();
     QObject *availablePages();
     QObject *currentPage();
     QObject *editor();
@@ -87,6 +89,7 @@ private:
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources();
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources();
 
+    QObject *m_availableSources;
     QObject *m_availablePages;
     QObject *m_currentPage;
     QObject *m_editor;
