@@ -3,6 +3,7 @@ set(presentation_SRCS
     artifacteditormodel.cpp
     artifactfilterproxymodel.cpp
     availablepagesmodel.cpp
+    availablesourcesmodel.cpp
     datasourcelistmodel.cpp
     inboxpagemodel.cpp
     metatypes.cpp
