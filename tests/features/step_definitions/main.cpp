@@ -204,6 +204,19 @@ do {\
 } while (0)
 
 
+GIVEN("^I display the available data sources$") {
+    ScenarioScope<ZanshinContext> context;
+    auto availableSources = context->app->property("availableSources").value<QObject*>();
+    VERIFY(availableSources);
+
+    auto sourceListModel = availableSources->property("sourceListModel").value<QAbstractItemModel*>();
+    VERIFY(sourceListModel);
+
+    context->presentation = availableSources;
+    context->setModel(sourceListModel);
+    QTest::qWait(500);
+}
+
 GIVEN("^I display the available (\\S+) data sources$") {
     REGEX_PARAM(QString, sourceType);
 
