@@ -56,6 +56,8 @@ public:
 
     DataSourceResult::Ptr findTasks() const;
     DataSourceResult::Ptr findNotes() const;
+    DataSourceResult::Ptr findTopLevel() const;
+    DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const;
 
 private slots:
     void onCollectionAdded(const Akonadi::Collection &collection);

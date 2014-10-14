@@ -132,6 +132,19 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
     return m_findNotes->result();
 }
 
+DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
+{
+    qFatal("Not implemented yet");
+    return DataSourceResult::Ptr();
+}
+
+DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain::DataSource::Ptr source) const
+{
+    qFatal("Not implemented yet");
+    Q_UNUSED(source);
+    return DataSourceResult::Ptr();
+}
+
 void DataSourceQueries::onCollectionAdded(const Collection &collection)
 {
     foreach (const DataSourceQuery::Ptr &query, m_dataSourceQueries)
