@@ -56,27 +56,29 @@ QString Serializer::objectUid(SerializerInterface::QObjectPtr object)
     return object->property("todoUid").toString();
 }
 
-Domain::DataSource::Ptr Serializer::createDataSourceFromCollection(Collection collection)
+Domain::DataSource::Ptr Serializer::createDataSourceFromCollection(Collection collection, DataSourceNameScheme naming)
 {
     if (!collection.isValid())
         return Domain::DataSource::Ptr();
 
     auto dataSource = Domain::DataSource::Ptr::create();
-    updateDataSourceFromCollection(dataSource, collection);
+    updateDataSourceFromCollection(dataSource, collection, naming);
     return dataSource;
 }
 
-void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Collection collection)
+void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Collection collection, DataSourceNameScheme naming)
 {
     if (!collection.isValid())
         return;
 
     QString name = collection.displayName();
 
-    auto parent = collection.parentCollection();
-    while (parent.isValid() && parent != Akonadi::Collection::root()) {
-        name = parent.displayName() + "/" + name;
-        parent = parent.parentCollection();
+    if (naming == FullPath) {
+        auto parent = collection.parentCollection();
+        while (parent.isValid() && parent != Akonadi::Collection::root()) {
+            name = parent.displayName() + "/" + name;
+            parent = parent.parentCollection();
+        }
     }
 
     dataSource->setName(name);

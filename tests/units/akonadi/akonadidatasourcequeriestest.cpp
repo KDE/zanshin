@@ -111,9 +111,9 @@ private slots:
             serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col3).thenReturn(true);
         }
 
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(dataSource1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(dataSource2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(dataSource3);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource3);
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
@@ -130,9 +130,9 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                contentType)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).exactly(1));
 
         QCOMPARE(result->data().size(), 3);
         QCOMPARE(result->data().at(0), dataSource1);
@@ -175,7 +175,7 @@ private slots:
         } else {
             serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col).thenReturn(true);
         }
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).thenReturn(dataSource);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource);
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
@@ -196,7 +196,7 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                contentType)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::FullPath).exactly(1));
 
         QCOMPARE(result1->data().size(), 1);
         QCOMPARE(result2->data().size(), 1);
@@ -248,9 +248,9 @@ private slots:
             serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col3).thenReturn(true);
         }
 
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(dataSource1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(dataSource2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(dataSource3);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource3);
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
@@ -265,9 +265,9 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                contentType)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(0));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).exactly(0));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).exactly(1));
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0), dataSource1);
@@ -313,8 +313,8 @@ private slots:
         Domain::DataSource::Ptr dataSource1(new Domain::DataSource);
         Akonadi::Collection col2(43);
         Domain::DataSource::Ptr dataSource2;
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(dataSource1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(dataSource2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource2);
         serializerMock(&Akonadi::SerializerInterface::isTaskCollection).when(col1).thenReturn(contentType == Akonadi::StorageInterface::Tasks);
         serializerMock(&Akonadi::SerializerInterface::isTaskCollection).when(col2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col1).thenReturn(contentType == Akonadi::StorageInterface::Notes);
@@ -327,8 +327,8 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                contentType)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).atMost(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).atMost(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTaskCollection).when(col1).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTaskCollection).when(col2).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col1).atMost(1));
@@ -381,9 +381,9 @@ private slots:
             serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col3).thenReturn(true);
         }
 
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(dataSource1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(dataSource2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(dataSource3);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource3);
 
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource1, col3).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource2, col3).thenReturn(false);
@@ -407,9 +407,9 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                contentType)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).exactly(1));
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0), dataSource1);
@@ -459,10 +459,10 @@ private slots:
             serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col3).thenReturn(true);
         }
 
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(dataSource1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(dataSource2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(dataSource3);
-        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(dataSource2, col2).thenReturn();
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource3);
+        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(dataSource2, col2, Akonadi::SerializerInterface::FullPath).thenReturn();
 
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource1, col2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource2, col2).thenReturn(true);
@@ -492,10 +492,10 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                contentType)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(dataSource2, col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(dataSource2, col2, Akonadi::SerializerInterface::FullPath).exactly(1));
 
         QCOMPARE(result->data().size(), 3);
         QCOMPARE(result->data().at(0), dataSource1);
@@ -534,9 +534,9 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(source3);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::BaseName).thenReturn(source3);
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
@@ -553,8 +553,8 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0), source1);
@@ -593,7 +593,7 @@ private slots:
         col.setParentCollection(Akonadi::Collection::root());
         auto source = Domain::DataSource::Ptr::create();
 
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).thenReturn(source);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::BaseName).thenReturn(source);
 
         monitor->addCollection(col);
 
@@ -602,7 +602,7 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().first(), source);
@@ -632,8 +632,8 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
@@ -655,8 +655,8 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().first(), source1);
@@ -686,9 +686,9 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).thenReturn();
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).thenReturn();
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
@@ -714,9 +714,9 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().first(), source1);
@@ -831,9 +831,9 @@ private slots:
         // Serializer mock
         mock_object<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(source3);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::BaseName).thenReturn(source3);
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
@@ -850,8 +850,8 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0), source1);
@@ -896,7 +896,7 @@ private slots:
         col.setParentCollection(parentCol);
         auto source = Domain::DataSource::Ptr::create();
 
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).thenReturn(source);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::BaseName).thenReturn(source);
 
         monitor->addCollection(col);
 
@@ -905,7 +905,7 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().first(), source);
@@ -941,8 +941,8 @@ private slots:
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
@@ -964,8 +964,8 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().first(), source1);
@@ -1001,9 +1001,9 @@ private slots:
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).thenReturn();
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).thenReturn();
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
@@ -1029,9 +1029,9 @@ private slots:
                                                                                Akonadi::StorageInterface::Recursive,
                                                                                Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).exactly(1));
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().first(), source1);

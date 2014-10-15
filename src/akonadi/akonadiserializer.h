@@ -42,8 +42,8 @@ public:
 
     QString objectUid(QObjectPtr object) Q_DECL_OVERRIDE;
 
-    Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
-    void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection) Q_DECL_OVERRIDE;
+    Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection, DataSourceNameScheme naming) Q_DECL_OVERRIDE;
+    void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection, DataSourceNameScheme naming) Q_DECL_OVERRIDE;
     virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource) Q_DECL_OVERRIDE;
     virtual bool isNoteCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
     virtual bool isTaskCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;

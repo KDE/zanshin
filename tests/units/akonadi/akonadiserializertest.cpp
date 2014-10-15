@@ -128,7 +128,7 @@ private slots:
 
         // WHEN
         Akonadi::Serializer serializer;
-        auto dataSource = serializer.createDataSourceFromCollection(collection);
+        auto dataSource = serializer.createDataSourceFromCollection(collection, Akonadi::SerializerInterface::BaseName);
 
         // THEN
         QCOMPARE(dataSource->name(), name);
@@ -143,7 +143,7 @@ private slots:
 
         // WHEN
         Akonadi::Serializer serializer;
-        auto dataSource = serializer.createDataSourceFromCollection(collection);
+        auto dataSource = serializer.createDataSourceFromCollection(collection, Akonadi::SerializerInterface::BaseName);
 
         // THEN
         QVERIFY(dataSource.isNull());
@@ -167,7 +167,7 @@ private slots:
 
         // ... deserialized as a data source
         Akonadi::Serializer serializer;
-        auto dataSource = serializer.createDataSourceFromCollection(originalCollection);
+        auto dataSource = serializer.createDataSourceFromCollection(originalCollection, Akonadi::SerializerInterface::BaseName);
 
         // WHEN
 
@@ -178,7 +178,7 @@ private slots:
         Akonadi::Collection updatedCollection(42);
         updatedCollection.setName(updatedName);
 
-        serializer.updateDataSourceFromCollection(dataSource, updatedCollection);
+        serializer.updateDataSourceFromCollection(dataSource, updatedCollection, Akonadi::SerializerInterface::BaseName);
 
         // THEN
         QCOMPARE(dataSource->name(), updatedName);
@@ -197,18 +197,18 @@ private slots:
 
         // ... deserialized as a data source
         Akonadi::Serializer serializer;
-        auto dataSource = serializer.createDataSourceFromCollection(originalCollection);
+        auto dataSource = serializer.createDataSourceFromCollection(originalCollection, Akonadi::SerializerInterface::BaseName);
 
         // WHEN
         Akonadi::Collection invalidCollection;
         invalidCollection.setName("foo");
-        serializer.updateDataSourceFromCollection(dataSource, invalidCollection);
+        serializer.updateDataSourceFromCollection(dataSource, invalidCollection, Akonadi::SerializerInterface::BaseName);
 
         // THEN
         QCOMPARE(dataSource->name(), name);
     }
 
-    void shouldNameDataSourceFromCollectionPath()
+    void shouldNameDataSourceFromCollectionPathIfRequested()
     {
         // GIVEN
 
@@ -228,16 +228,20 @@ private slots:
 
         // WHEN
         Akonadi::Serializer serializer;
-        auto dataSource1 = serializer.createDataSourceFromCollection(collection);
+        auto dataSource1 = serializer.createDataSourceFromCollection(collection, Akonadi::SerializerInterface::FullPath);
+        auto dataSource2 = serializer.createDataSourceFromCollection(collection, Akonadi::SerializerInterface::BaseName);
 
         // Give it another try with the root
         parentCollection.setParentCollection(Akonadi::Collection::root());
         collection.setParentCollection(parentCollection);
-        auto dataSource2 = serializer.createDataSourceFromCollection(collection);
+        auto dataSource3 = serializer.createDataSourceFromCollection(collection, Akonadi::SerializerInterface::FullPath);
+        auto dataSource4 = serializer.createDataSourceFromCollection(collection, Akonadi::SerializerInterface::BaseName);
 
         // THEN
         QCOMPARE(dataSource1->name(), QString(parentName + "/" + name));
-        QCOMPARE(dataSource2->name(), QString(parentName + "/" + name));
+        QCOMPARE(dataSource2->name(), name);
+        QCOMPARE(dataSource3->name(), QString(parentName + "/" + name));
+        QCOMPARE(dataSource4->name(), name);
     }
 
     void shouldCreateCollectionFromDataSource_data()
