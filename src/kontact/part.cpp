@@ -37,6 +37,7 @@
 #include "presentation/applicationmodel.h"
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
+#include "widgets/availablesourcesview.h"
 #include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
@@ -52,11 +53,15 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     setComponentData(PartFactory::componentData());
 
     auto splitter = new QSplitter(parentWidget);
+    auto sidebar = new QSplitter(Qt::Vertical, parentWidget);
 
     auto components = new Widgets::ApplicationComponents(parentWidget);
     components->setModel(new Presentation::ApplicationModel(components));
 
-    splitter->addWidget(components->availablePagesView());
+    sidebar->addWidget(components->availablePagesView());
+    sidebar->addWidget(components->availableSourcesView());
+
+    splitter->addWidget(sidebar);
     splitter->addWidget(components->pageView());
     splitter->addWidget(components->editorView());
     setWidget(splitter);

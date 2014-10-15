@@ -37,6 +37,7 @@
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
+#include "widgets/availablesourcesview.h"
 #include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
@@ -78,6 +79,10 @@ int main(int argc, char **argv)
 
     widget->setLayout(layout);
 
+    auto sourcesDock = new QDockWidget(QObject::tr("Sources"));
+    sourcesDock->setObjectName("sourcesDock");
+    sourcesDock->setWidget(components->availableSourcesView());
+
     auto pagesDock = new QDockWidget(QObject::tr("Pages"));
     pagesDock->setObjectName("pagesDock");
     pagesDock->setWidget(components->availablePagesView());
@@ -109,6 +114,7 @@ int main(int argc, char **argv)
 
     window->addDockWidget(Qt::RightDockWidgetArea, editorDock);
     window->addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
+    window->addDockWidget(Qt::LeftDockWidgetArea, sourcesDock);
 
     window->show();
 
