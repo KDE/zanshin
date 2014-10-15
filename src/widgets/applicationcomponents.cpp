@@ -31,6 +31,7 @@
 #include <QWidgetAction>
 
 #include "availablepagesview.h"
+#include "availablesourcesview.h"
 #include "datasourcecombobox.h"
 #include "editorview.h"
 #include "pageview.h"
@@ -43,6 +44,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
     : QObject(parent),
       m_model(0),
       m_parent(parent),
+      m_availableSourcesView(0),
       m_availablePagesView(0),
       m_pageView(0),
       m_editorView(0),
@@ -54,6 +56,21 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
 QObject *ApplicationComponents::model() const
 {
     return m_model;
+}
+
+AvailableSourcesView *ApplicationComponents::availableSourcesView() const
+{
+    if (!m_availableSourcesView) {
+        auto availableSourcesView = new AvailableSourcesView(m_parent);
+        if (m_model) {
+            availableSourcesView->setModel(m_model->property("availableSources").value<QObject*>());
+        }
+
+        ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
+        self->m_availableSourcesView = availableSourcesView;
+    }
+
+    return m_availableSourcesView;
 }
 
 AvailablePagesView *ApplicationComponents::availablePagesView() const
@@ -188,6 +205,10 @@ void ApplicationComponents::setModel(QObject *model)
         return;
 
     m_model = model;
+
+    if (m_availableSourcesView) {
+        m_availableSourcesView->setModel(m_model->property("availableSources").value<QObject*>());
+    }
 
     if (m_availablePagesView) {
         m_availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());

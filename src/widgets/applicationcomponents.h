@@ -37,6 +37,7 @@ class QWidget;
 namespace Widgets {
 
 class AvailablePagesView;
+class AvailableSourcesView;
 class DataSourceComboBox;
 class EditorView;
 class PageView;
@@ -49,6 +50,7 @@ public:
 
     QObject *model() const;
 
+    AvailableSourcesView *availableSourcesView() const;
     AvailablePagesView *availablePagesView() const;
     PageView *pageView() const;
     EditorView *editorView() const;
@@ -69,6 +71,7 @@ private:
     QObject *m_model;
 
     QWidget *m_parent;
+    AvailableSourcesView *m_availableSourcesView;
     AvailablePagesView *m_availablePagesView;
     PageView *m_pageView;
     EditorView *m_editorView;
