@@ -74,6 +74,8 @@ private:
 
     DataSourceQuery::Ptr m_findTasks;
     DataSourceQuery::Ptr m_findNotes;
+    DataSourceQuery::Ptr m_findTopLevel;
+    QHash<Akonadi::Entity::Id, DataSourceQuery::Ptr> m_findChildren;
     DataSourceQuery::List m_dataSourceQueries;
 };
 

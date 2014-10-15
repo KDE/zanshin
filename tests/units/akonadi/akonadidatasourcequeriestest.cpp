@@ -38,6 +38,7 @@ using namespace mockitopp;
 typedef std::function<Domain::QueryResult<Domain::DataSource::Ptr>::Ptr(Domain::DataSourceQueries*)> QueryFunction;
 Q_DECLARE_METATYPE(QueryFunction)
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchContentType)
+Q_DECLARE_METATYPE(MockCollectionFetchJob*)
 
 class AkonadiDataSourceQueriesTest : public QObject
 {
@@ -501,6 +502,618 @@ private slots:
         QCOMPARE(result->data().at(1), dataSource2);
         QCOMPARE(result->data().at(2), dataSource3);
         QVERIFY(replaceHandlerCalled);
+    }
+
+    void shouldLookInAllReportedForTopLevelSources()
+    {
+        // GIVEN
+
+        // Two top level collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(Akonadi::Collection::root());
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        // One collection child of col2
+        Akonadi::Collection col3(44);
+        col3.setParentCollection(col2);
+        auto source3 = Domain::DataSource::Ptr::create();
+
+        // Only col1 and col3 will match the mimetypes
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(source3);
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
+        result->data();
+        result = queries->findTopLevel(); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0), source1);
+        QCOMPARE(result->data().at(1), source2);
+    }
+
+    void shouldReactToCollectionAddsForTopLevelSources()
+    {
+        // GIVEN
+
+        // Empty collection fetch
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
+        QTest::qWait(150);
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+        auto source = Domain::DataSource::Ptr::create();
+
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).thenReturn(source);
+
+        monitor->addCollection(col);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first(), source);
+    }
+
+    void shouldReactToCollectionRemovesForTopLevelSources()
+    {
+        // GIVEN
+
+        // Two top level collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(Akonadi::Collection::root());
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        monitor->removeCollection(col2);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first(), source1);
+    }
+
+    void shouldReactToItemChangesForTopLevelTasks()
+    {
+        // GIVEN
+
+        // Two top level collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(Akonadi::Collection::root());
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).thenReturn();
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
+        bool replaceHandlerCalled = false;
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::DataSource::Ptr &, int) {
+                                          replaceHandlerCalled = true;
+                                      });
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        monitor->changeCollection(col2);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().first(), source1);
+        QCOMPARE(result->data().at(1), source2);
+        QVERIFY(replaceHandlerCalled);
+    }
+
+    void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty_data()
+    {
+        QTest::addColumn<MockCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<bool>("deleteQuery");
+
+        // Two top level collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        Akonadi::Collection col2(42);
+        col2.setParentCollection(Akonadi::Collection::root());
+
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        QTest::newRow("No error with empty collection list") << collectionFetchJob << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("Error with empty collection list") << collectionFetchJob << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        QTest::newRow("Error with collection list") << collectionFetchJob << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        QTest::newRow("No error with empty collection list (+ query delete)") << collectionFetchJob << true;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("Error with empty collection list (+ query delete)") << collectionFetchJob << true;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        QTest::newRow("Error with collection list (+ query delete)") << collectionFetchJob << true;
+    }
+
+    void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty()
+    {
+        // GIVEN
+        QFETCH(MockCollectionFetchJob*, collectionFetchJob);
+        QFETCH(bool, deleteQuery);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
+
+        if (deleteQuery)
+            delete queries.take();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QCOMPARE(result->data().size(), 0);
+    }
+
+    void shouldLookInAllReportedForChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(parentCol);
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(parentCol);
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        // One collection child of col2
+        Akonadi::Collection col3(44);
+        col3.setParentCollection(col2);
+        auto source3 = Domain::DataSource::Ptr::create();
+
+        // Only col1 and col3 will match the mimetypes
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3).thenReturn(source3);
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
+        result->data();
+        result = queries->findChildren(parent); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0), source1);
+        QCOMPARE(result->data().at(1), source2);
+    }
+
+    void shouldReactToCollectionAddsForChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Empty collection fetch
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
+        QTest::qWait(150);
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        Akonadi::Collection col(42);
+        col.setParentCollection(parentCol);
+        auto source = Domain::DataSource::Ptr::create();
+
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).thenReturn(source);
+
+        monitor->addCollection(col);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first(), source);
+    }
+
+    void shouldReactToCollectionRemovesForChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(parentCol);
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(parentCol);
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        monitor->removeCollection(col2);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first(), source1);
+    }
+
+    void shouldReactToCollectionChangesForChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(parentCol);
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(parentCol);
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).thenReturn();
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
+        bool replaceHandlerCalled = false;
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::DataSource::Ptr &, int) {
+                                          replaceHandlerCalled = true;
+                                      });
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        monitor->changeCollection(col2);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().first(), source1);
+        QCOMPARE(result->data().at(1), source2);
+        QVERIFY(replaceHandlerCalled);
+    }
+
+    void shouldNotCrashDuringFindChildrenWhenFetchJobFailedOrEmpty_data()
+    {
+        QTest::addColumn<MockCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<bool>("deleteQuery");
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        Akonadi::Collection col2(42);
+        col2.setParentCollection(Akonadi::Collection::root());
+
+        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        QTest::newRow("No error with empty collection list") << collectionFetchJob << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("Error with empty collection list") << collectionFetchJob << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        QTest::newRow("Error with collection list") << collectionFetchJob << false;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        QTest::newRow("No error with empty collection list (+ query delete)") << collectionFetchJob << true;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("Error with empty collection list (+ query delete)") << collectionFetchJob << true;
+
+        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setExpectedError(KJob::KilledJobError);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        QTest::newRow("Error with collection list (+ query delete)") << collectionFetchJob << true;
+    }
+
+    void shouldNotCrashDuringFindChildrenWhenFetchJobFailedOrEmpty()
+    {
+        // GIVEN
+        QFETCH(MockCollectionFetchJob*, collectionFetchJob);
+        QFETCH(bool, deleteQuery);
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
+
+        if (deleteQuery)
+            delete queries.take();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QCOMPARE(result->data().size(), 0);
     }
 };
 

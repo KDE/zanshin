@@ -134,15 +134,100 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
 {
-    qFatal("Not implemented yet");
-    return DataSourceResult::Ptr();
+    if (!m_findTopLevel) {
+        {
+            DataSourceQueries *self = const_cast<DataSourceQueries*>(this);
+            self->m_findTopLevel = self->createDataSourceQuery();
+        }
+
+        m_findTopLevel->setFetchFunction([this] (const DataSourceQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks | StorageInterface::Notes);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                if (job->kjob()->error())
+                    return;
+
+                QHash<Collection::Id, Collection> topLevels;
+                foreach (const auto &collection, job->collections()) {
+                    auto topLevel = collection;
+                    while (topLevel.parentCollection() != Collection::root())
+                        topLevel = topLevel.parentCollection();
+                    if (!topLevels.contains(topLevel.id()))
+                        topLevels[topLevel.id()] = topLevel;
+                }
+
+                foreach (const auto &topLevel, topLevels.values())
+                    add(topLevel);
+            });
+        });
+
+        m_findTopLevel->setConvertFunction([this] (const Akonadi::Collection &collection) {
+            return m_serializer->createDataSourceFromCollection(collection);
+        });
+        m_findTopLevel->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
+            m_serializer->updateDataSourceFromCollection(source, collection);
+        });
+        m_findTopLevel->setPredicateFunction([this] (const Akonadi::Collection &collection) {
+            return collection.isValid();
+        });
+        m_findTopLevel->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
+            return m_serializer->representsCollection(source, collection);
+        });
+    }
+
+    return m_findTopLevel->result();
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain::DataSource::Ptr source) const
 {
-    qFatal("Not implemented yet");
-    Q_UNUSED(source);
-    return DataSourceResult::Ptr();
+    Collection root = m_serializer->createCollectionFromDataSource(source);
+    if (!m_findChildren.contains(root.id())) {
+        DataSourceQuery::Ptr query;
+
+        {
+            DataSourceQueries *self = const_cast<DataSourceQueries*>(this);
+            query = self->createDataSourceQuery();
+            self->m_findChildren.insert(root.id(), query);
+        }
+
+        query->setFetchFunction([this, root] (const DataSourceQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(root,
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks | StorageInterface::Notes);
+            Utils::JobHandler::install(job->kjob(), [this, root, job, add] {
+                if (job->kjob()->error())
+                    return;
+
+                QHash<Collection::Id, Collection> children;
+                foreach (const auto &collection, job->collections()) {
+                    auto child = collection;
+                    while (child.parentCollection() != root)
+                        child = child.parentCollection();
+                    if (!children.contains(child.id()))
+                        children[child.id()] = child;
+                }
+
+                foreach (const auto &topLevel, children.values())
+                    add(topLevel);
+            });
+        });
+
+        query->setConvertFunction([this] (const Akonadi::Collection &collection) {
+            return m_serializer->createDataSourceFromCollection(collection);
+        });
+        query->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
+            m_serializer->updateDataSourceFromCollection(source, collection);
+        });
+        query->setPredicateFunction([this, root] (const Akonadi::Collection &collection) {
+            return collection.isValid() && collection.parentCollection() == root;
+        });
+        query->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
+            return m_serializer->representsCollection(source, collection);
+        });
+    }
+
+    return m_findChildren.value(root.id())->result();
 }
 
 void DataSourceQueries::onCollectionAdded(const Collection &collection)
