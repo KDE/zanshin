@@ -40,6 +40,7 @@ using namespace Presentation;
 
 ApplicationModel::ApplicationModel(QObject *parent)
     : QObject(parent),
+      m_availableSources(0),
       m_availablePages(0),
       m_currentPage(0),
       m_editor(0),
