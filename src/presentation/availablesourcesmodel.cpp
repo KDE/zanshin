@@ -77,7 +77,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
         if (role == Qt::DisplayRole || role == Qt::EditRole) {
             return source->name();
         } else if (role == Qt::DecorationRole || role == QueryTreeModelBase::IconNameRole) {
-            const QString iconName = source->iconName();
+            const QString iconName = source->iconName().isEmpty() ? "folder" : source->iconName();
 
             if (role == Qt::DecorationRole)
                 return QVariant::fromValue(QIcon::fromTheme(iconName));

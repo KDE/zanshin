@@ -20,7 +20,6 @@ Feature: Data sources listing
        | TestData/Emails/Notes                  | folder              |
        | TestData/Private Notes                 | folder              |
 
-  @wip
   Scenario: All task and note sources appear in the list
     Given I display the available data sources
     When I list the items

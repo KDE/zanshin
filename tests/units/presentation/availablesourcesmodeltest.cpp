@@ -46,6 +46,7 @@ private slots:
         // Two top level sources
         auto source1 = Domain::DataSource::Ptr::create();
         source1->setName("Source 1");
+        source1->setIconName("foo-icon");
         auto source2 = Domain::DataSource::Ptr::create();
         source2->setName("Source 2");
         auto topLevelProvider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
@@ -115,9 +116,9 @@ private slots:
         QCOMPARE(model->data(source4Index, Qt::EditRole).toString(), source4->name());
 
         QCOMPARE(model->data(source1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), source1->iconName());
-        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), source2->iconName());
-        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), source3->iconName());
-        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), source4->iconName());
+        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
+        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
+        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
     }
 };
 
