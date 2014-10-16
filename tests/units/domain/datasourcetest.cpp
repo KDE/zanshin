@@ -30,12 +30,20 @@ using namespace Domain;
 class DataSourceTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit DataSourceTest(QObject *parent = 0)
+        : QObject(parent)
+    {
+        qRegisterMetaType<DataSource::ContentTypes>();
+    }
+
 private slots:
     void shouldHaveEmptyPropertiesByDefault()
     {
         DataSource ds;
         QCOMPARE(ds.name(), QString());
         QCOMPARE(ds.iconName(), QString());
+        QCOMPARE(ds.contentTypes(), DataSource::NoContent);
     }
 
     void shouldNotifyNameChanges()
@@ -71,6 +79,25 @@ private slots:
         ds.setIconName("Foo");
         QSignalSpy spy(&ds, SIGNAL(iconNameChanged(QString)));
         ds.setIconName("Foo");
+        QCOMPARE(spy.count(), 0);
+    }
+
+    void shouldNotifyContentTypesChanges()
+    {
+        DataSource ds;
+        QSignalSpy spy(&ds, SIGNAL(contentTypesChanged(Domain::DataSource::ContentTypes)));
+        ds.setContentTypes(Domain::DataSource::Notes);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().value<Domain::DataSource::ContentTypes>(),
+                 Domain::DataSource::Notes);
+    }
+
+    void shouldNotNotifyIdenticalContentTypesChanges()
+    {
+        DataSource ds;
+        ds.setContentTypes(Domain::DataSource::Notes);
+        QSignalSpy spy(&ds, SIGNAL(contentTypesChanged(Domain::DataSource::ContentTypes)));
+        ds.setContentTypes(Domain::DataSource::Notes);
         QCOMPARE(spy.count(), 0);
     }
 };

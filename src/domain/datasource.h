@@ -34,32 +34,45 @@ namespace Domain {
 class DataSource : public QObject
 {
     Q_OBJECT
-
+    Q_ENUMS(ContentType)
 public:
     typedef QSharedPointer<DataSource> Ptr;
     typedef QList<DataSource::Ptr> List;
+
+    enum ContentType {
+        NoContent = 0,
+        Tasks,
+        Notes
+    };
+    Q_DECLARE_FLAGS(ContentTypes, ContentType)
 
     explicit DataSource(QObject *parent = 0);
     virtual ~DataSource();
 
     QString name() const;
     QString iconName() const;
+    ContentTypes contentTypes() const;
 
 public slots:
     void setName(const QString &name);
     void setIconName(const QString &iconName);
+    void setContentTypes(Domain::DataSource::ContentTypes types);
 
 signals:
     void nameChanged(const QString &name);
     void iconNameChanged(const QString &iconName);
+    void contentTypesChanged(Domain::DataSource::ContentTypes types);
 
 private:
     QString m_name;
     QString m_iconName;
+    ContentTypes m_contentTypes;
 };
 
 }
 
 Q_DECLARE_METATYPE(Domain::DataSource::Ptr)
+Q_DECLARE_METATYPE(Domain::DataSource::ContentTypes)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Domain::DataSource::ContentTypes)
 
 #endif // DOMAIN_DATASOURCE_H
