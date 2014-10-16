@@ -35,6 +35,9 @@ class DataSource : public QObject
 {
     Q_OBJECT
     Q_ENUMS(ContentType)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
+    Q_PROPERTY(Domain::DataSource::ContentTypes contentTypes READ contentTypes WRITE setContentTypes NOTIFY contentTypesChanged)
 public:
     typedef QSharedPointer<DataSource> Ptr;
     typedef QList<DataSource::Ptr> List;
