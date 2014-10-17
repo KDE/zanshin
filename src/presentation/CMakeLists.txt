@@ -11,6 +11,7 @@ set(presentation_SRCS
     projectpagemodel.cpp
     querytreemodelbase.cpp
     tasklistmodel.cpp
+    contextpagemodel.cpp
 )
 
 kde4_add_library(presentation STATIC ${presentation_SRCS})
