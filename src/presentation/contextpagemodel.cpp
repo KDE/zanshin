@@ -72,7 +72,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
 {
     auto query = [this] (const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
         if (!task)
-            return m_contextQueries->findTasks(m_context);
+            return m_contextQueries->findTopLevelTasks(m_context);
         else
             return taskQueries()->findChildren(task);
     };

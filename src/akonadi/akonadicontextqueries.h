@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Franck Arrecot <franck.arrecot@gmail.com>
+   Copyright 2014 Rémi Benoit <r3m1.benoit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -52,7 +53,7 @@ public:
 
 
     ContextResult::Ptr findAll() const;
-    TaskResult::Ptr findTasks(Domain::Context::Ptr context) const;
+    TaskResult::Ptr findTopLevelTasks(Domain::Context::Ptr context) const;
 
 private slots:
     void onTagAdded(const Akonadi::Tag &tag);

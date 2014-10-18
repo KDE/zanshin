@@ -67,7 +67,7 @@ private slots:
         childTaskProvider->append(childTask);
 
         mock_object<Domain::ContextQueries> contextQueriesMock;
-        contextQueriesMock(&Domain::ContextQueries::findTasks).when(context).thenReturn(taskResult);
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
         mock_object<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(parentTask).thenReturn(childTaskResult);

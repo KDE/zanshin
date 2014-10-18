@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Franck Arrecot <franck.arrecot@gmail.com>
+   Copyright 2014 Rémi Benoit <r3m1.benoit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -102,7 +103,7 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
     return m_findAll->result();
 }
 
-ContextQueries::TaskResult::Ptr ContextQueries::findTasks(Domain::Context::Ptr context) const
+ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Context::Ptr context) const
 {
     qFatal("Not implemented yet");
     Q_UNUSED(context);
