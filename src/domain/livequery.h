@@ -50,12 +50,7 @@ public:
 
     ~LiveQuery()
     {
-        typename Provider::Ptr provider(m_provider.toStrongRef());
-
-        if (provider) {
-            while (!provider->data().isEmpty())
-                provider->removeFirst();
-        }
+        clear();
     }
 
     typename Result::Ptr result()
@@ -68,15 +63,9 @@ public:
         provider = Provider::Ptr::create();
         m_provider = provider.toWeakRef();
 
-        auto result = Result::create(provider);
+        doFetch();
 
-        auto addFunction = [this, provider] (const InputType &input) {
-            if (m_predicate(input))
-                provider->append(m_convert(input));
-        };
-
-        m_fetch(addFunction);
-        return result;
+        return Result::create(provider);
     }
 
     void setFetchFunction(const FetchFunction &fetch)
@@ -102,6 +91,12 @@ public:
     void setRepresentsFunction(const RepresentsFunction &represents)
     {
         m_represents = represents;
+    }
+
+    void reset()
+    {
+        clear();
+        doFetch();
     }
 
     void onAdded(const InputType &input)
@@ -166,6 +161,32 @@ public:
     }
 
 private:
+    void doFetch()
+    {
+        typename Provider::Ptr provider(m_provider.toStrongRef());
+
+        if (!provider)
+            return;
+
+        auto addFunction = [this, provider] (const InputType &input) {
+            if (m_predicate(input))
+                provider->append(m_convert(input));
+        };
+
+        m_fetch(addFunction);
+    }
+
+    void clear()
+    {
+        typename Provider::Ptr provider(m_provider.toStrongRef());
+
+        if (!provider)
+            return;
+
+        while (!provider->data().isEmpty())
+            provider->removeFirst();
+    }
+
     FetchFunction m_fetch;
     PredicateFunction m_predicate;
     ConvertFunction m_convert;
@@ -174,6 +195,7 @@ private:
 
     typename Provider::WeakPtr m_provider;
 };
+
 
 }
 

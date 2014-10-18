@@ -382,6 +382,63 @@ private slots:
         QCOMPARE(result->data(), expected);
         QVERIFY(!replaceHandlerCalled);
     }
+
+    void shouldEmptyAndFetchAgainOnReset()
+    {
+        // GIVEN
+        bool afterReset = false;
+
+        Domain::LiveQuery<QObject*, QPair<int, QString>> query;
+        query.setFetchFunction([this, &afterReset] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
+            Utils::JobHandler::install(new FakeJob, [this, &afterReset, add] {
+                add(createObject(0, "0A"));
+                add(createObject(1, "1A"));
+                add(createObject(2, "2A"));
+                add(createObject(3, "0B"));
+                add(createObject(4, "1B"));
+                add(createObject(5, "2B"));
+
+                if (afterReset) {
+                    add(createObject(6, "0C"));
+                    add(createObject(7, "1C"));
+                    add(createObject(8, "2C"));
+                }
+            });
+        });
+        query.setConvertFunction([] (QObject *object) {
+            return QPair<int, QString>(object->property("objectId").toInt(), object->objectName());
+        });
+        query.setPredicateFunction([&afterReset] (QObject *object) {
+            if (afterReset)
+                return object->objectName().startsWith('1');
+            else
+                return object->objectName().startsWith('0');
+        });
+
+        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
+        int removeHandlerCallCount = 0;
+        result->addPostRemoveHandler([&removeHandlerCallCount](const QPair<int, QString> &, int) {
+                                         removeHandlerCallCount++;
+                                     });
+
+        QTest::qWait(150);
+        QVERIFY(!result->data().isEmpty());
+        QCOMPARE(removeHandlerCallCount, 0);
+
+        // WHEN
+        query.reset();
+        afterReset = true;
+        QTest::qWait(150);
+
+        // THEN
+        QList<QPair<int, QString>> expected;
+        expected << QPair<int, QString>(1, "1A")
+                 << QPair<int, QString>(4, "1B")
+                 << QPair<int, QString>(7, "1C");
+        QVERIFY(afterReset);
+        QCOMPARE(result->data(), expected);
+        QCOMPARE(removeHandlerCallCount, 2);
+    }
 };
 
 QTEST_MAIN(LiveQueryTest)
