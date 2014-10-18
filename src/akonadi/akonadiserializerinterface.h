@@ -90,8 +90,8 @@ public:
     virtual Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) = 0;
     virtual void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) = 0;
     virtual Akonadi::Tag createTagFromContext(Domain::Context::Ptr context) = 0;
-    virtual bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
     virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
+    virtual bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const = 0;
 
     virtual bool hasContextTags(Akonadi::Item item) const = 0;
     virtual bool hasPlainTags(Akonadi::Item item) const = 0;

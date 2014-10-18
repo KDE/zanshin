@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Rémi Benoit <r3m1.benoit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -478,10 +479,13 @@ bool Serializer::isContextTag(const Domain::Context::Ptr &context, const Akonadi
     return (context->property("tagId").value<Akonadi::Tag::Id>() == tag.id());
 }
 
-bool Serializer::isContextChild(const Domain::Context::Ptr &context, const Tag &tag) const
+bool Serializer::isContextChild(Domain::Context::Ptr context, Item item) const
 {
-    // NOTE : Hierarchy support will be done later, waiting for a proper support of tag Parent()
-    Q_UNUSED(context);
-    Q_UNUSED(tag);
-    return false;
+    if (!context->property("tagId").isValid())
+        return false;
+
+    auto tagId = context->property("tagId").value<Akonadi::Tag::Id>();
+    Akonadi::Tag tag(tagId);
+
+    return item.hasTag(tag);
 }

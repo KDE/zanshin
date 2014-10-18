@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Rémi Benoit <r3m1.benoit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -1697,6 +1698,46 @@ private slots:
         // THEN
         QCOMPARE(context->name(), originalTag.name());
         QCOMPARE(context->property("tagId").toLongLong(), originalTag.id());
+    }
+
+    void shouldVerifyIfAnItemIsAContextChild_data()
+    {
+        QTest::addColumn<Domain::Context::Ptr>("context");
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<bool>("isChild");
+
+        // Create a context
+        auto context = Domain::Context::Ptr::create();
+        context->setProperty("tagId", qint64(43));
+        Akonadi::Tag tag(Akonadi::Tag::Id(43));
+
+        Akonadi::Item unrelatedItem;
+        QTest::newRow("Unrelated item") << context << unrelatedItem << false;
+
+        Akonadi::Item relatedItem;
+        relatedItem.setTag(tag);
+        QTest::newRow("Related item") << context << relatedItem << true;
+
+        auto invalidContext = Domain::Context::Ptr::create();
+        QTest::newRow("Invalid context") << invalidContext << relatedItem << false;
+
+        Akonadi::Item invalidItem;
+        QTest::newRow("Invalid Item") << context << invalidItem << false;
+    }
+
+    void shouldVerifyIfAnItemIsAContextChild()
+    {
+        // GIVEN
+        QFETCH(Domain::Context::Ptr, context);
+        QFETCH(Akonadi::Item, item);
+        QFETCH(bool, isChild);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        bool value = serializer.isContextChild(context, item);
+
+        // THEN
+        QCOMPARE(value, isChild);
     }
 
     void shouldCheckIfAnItemHasContextsOrTags_data()

@@ -1,6 +1,7 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Rémi Benoit <r3m1.benoit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -74,8 +75,8 @@ public:
     Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
     void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) Q_DECL_OVERRIDE;
     Akonadi::Tag createTagFromContext(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
-    bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
     bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
+    bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const Q_DECL_OVERRIDE;
 
     bool hasContextTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
     bool hasPlainTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
