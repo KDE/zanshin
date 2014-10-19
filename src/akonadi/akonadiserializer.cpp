@@ -397,6 +397,19 @@ Domain::Context::Ptr Serializer::createContextFromTag(Akonadi::Tag tag)
     return context;
 }
 
+Akonadi::Tag Serializer::createTagFromContext(Domain::Context::Ptr context)
+{
+    auto tag = Akonadi::Tag();
+    tag.setName(context->name());
+    tag.setType(Akonadi::SerializerInterface::contextTagType());
+    tag.setGid(QByteArray(context->name().toLatin1()));
+
+    if (context->property("tagId").isValid())
+        tag.setId(context->property("tagId").value<Akonadi::Tag::Id>());
+
+    return tag;
+}
+
 void Serializer::updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag)
 {
     if (!isContext(tag))

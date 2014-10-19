@@ -37,6 +37,7 @@
 #include <Akonadi/ItemMoveJob>
 #include <Akonadi/Notes/NoteUtils>
 #include <Akonadi/TransactionSequence>
+#include <Akonadi/TagCreateJob>
 #include <Akonadi/TagFetchJob>
 #include <Akonadi/TagFetchScope>
 #include <Akonadi/TagAttribute>
@@ -172,6 +173,11 @@ KJob *Storage::moveItems(Item::List items, Collection collection, QObject *paren
 KJob *Storage::createTransaction()
 {
     return new TransactionSequence();
+}
+
+KJob *Storage::createTag(Tag tag)
+{
+    return new TagCreateJob(tag);
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)

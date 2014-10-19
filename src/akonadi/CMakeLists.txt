@@ -2,6 +2,7 @@ set(akonadi_SRCS
     akonadiartifactqueries.cpp
     akonadicollectionfetchjobinterface.cpp
     akonadicontextqueries.cpp
+    akonadicontextrepository.cpp
     akonadidatasourcequeries.cpp
     akonadiitemfetchjobinterface.cpp
     akonadimonitorimpl.cpp

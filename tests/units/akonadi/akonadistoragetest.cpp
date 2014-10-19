@@ -832,6 +832,39 @@ private slots:
         QCOMPARE(notifiedItem.id(), item2.id());
     }
 
+    void shouldCreateTag()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(tagAdded(Akonadi::Tag)));
+
+        // A tag
+        Akonadi::Tag tag;
+        QString name = "Tag42";
+        const QByteArray type = QByteArray("Zanshin-Context");
+        const QByteArray gid = QByteArray(name.toLatin1());
+        tag.setName(name);
+        tag.setType(QByteArray("Zanshin-Context"));
+        tag.setGid(gid);
+
+        // WHEN
+        auto job = storage.createTag(tag);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+        QCOMPARE(notifiedTag.name(), name);
+        QCOMPARE(notifiedTag.type(), type);
+        QCOMPARE(notifiedTag.gid(), gid);
+    }
+
 private:
     Akonadi::Item fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
     {

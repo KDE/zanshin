@@ -72,6 +72,7 @@ public:
 
     Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
     void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) Q_DECL_OVERRIDE;
+    Akonadi::Tag createTagFromContext(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
     bool isContextChild(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
     bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
 

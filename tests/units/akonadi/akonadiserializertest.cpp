@@ -1663,6 +1663,47 @@ private slots:
         QCOMPARE(hasContexts, contextsExpected);
         QCOMPARE(hasTags, tagsExpected);
     }
+
+    void shouldCreateTagFromContext_data()
+    {
+
+        QTest::addColumn<QString>("name");
+        QTest::addColumn<qint64>("tagId");
+        QTest::addColumn<QByteArray>("tagGid");
+
+        QString nameInternet = "Internet";
+
+        QTest::newRow("nominal case") << QString(nameInternet) << qint64(42) << nameInternet.toLatin1();
+        QTest::newRow("null name case") << QString() << qint64(42) << QByteArray();
+        QTest::newRow("null tagId case") << QString(nameInternet)<< qint64(-1) << nameInternet.toLatin1();
+        QTest::newRow("totally null context case") << QString() << qint64(-1) << QByteArray();
+    }
+
+    void shouldCreateTagFromContext()
+    {
+        // GIVEN
+        QFETCH(QString, name);
+        QFETCH(qint64, tagId);
+        QFETCH(QByteArray, tagGid);
+
+        // WHEN
+        auto context = Domain::Context::Ptr::create();
+        context->setProperty("tagId", tagId);
+        context->setName(name);
+
+        Akonadi::Serializer serializer;
+        Akonadi::Tag tag = serializer.createTagFromContext(context);
+
+        // THEN
+        QCOMPARE(tag.name(), name);
+        QCOMPARE(tag.isValid(), tagId > 0);
+
+        if (tagId > 0) {
+            QCOMPARE(tag.id(), tagId);
+            QCOMPARE(tag.gid(), tagGid);
+            QCOMPARE(tag.type(), Akonadi::SerializerInterface::contextTagType());
+        }
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)

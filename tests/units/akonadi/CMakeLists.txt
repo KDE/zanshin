@@ -3,6 +3,7 @@ include(MacroAkonadiAutoTests)
 zanshin_auto_tests(
   akonadiartifactqueriestest
   akonadicontextqueriestest
+  akonadicontextrepositorytest
   akonadidatasourcequeriestest
   akonadinotequeriestest
   akonadinoterepositorytest
