@@ -281,7 +281,7 @@ Zanshin::ItemType TodoMetadataModel::itemTypeFromItem(const Akonadi::Item &item)
 
     QStringList comments = todo->comments();
     const int childCount = m_childrenMap.contains(todo->uid()) ? m_childrenMap[todo->uid()].count() : 0;
-    if (comments.contains("X-Zanshin-Project")
+    if (comments.contains("X-Zanshin-Project") || !todo->customProperty("Zanshin", "Project").isEmpty()
      || childCount>0) {
         return Zanshin::ProjectTodo;
     } else {

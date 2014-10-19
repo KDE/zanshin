@@ -89,6 +89,7 @@ void TodoHelpers::addProject(const QString &summary, const Akonadi::Collection &
     KCalCore::Todo::Ptr todo(new KCalCore::Todo());
     todo->setSummary(summary);
     todo->addComment("X-Zanshin-Project");
+    todo->setCustomProperty("Zanshin", "Project", "1");
 
     Akonadi::Item item;
     item.setMimeType("application/x-vnd.akonadi.calendar.todo");
@@ -112,6 +113,7 @@ void TodoHelpers::addProject(const QString &summary, const QModelIndex &parentIt
     KCalCore::Todo::Ptr todo(new KCalCore::Todo());
     todo->setSummary(summary);
     todo->addComment("X-Zanshin-Project");
+    todo->setCustomProperty("Zanshin", "Project", "1");
 
     KCalCore::Todo::Ptr parentTodo = parentProject.payload<KCalCore::Todo::Ptr>();
     todo->setRelatedTo(parentTodo->uid());
@@ -347,6 +349,7 @@ bool TodoHelpers::promoteTodo(const QModelIndex &index)
     }
 
     todo->addComment("X-Zanshin-Project");
+    todo->setCustomProperty("Zanshin", "Project", "1");
     new Akonadi::ItemModifyJob(item);
     return true;
 }
