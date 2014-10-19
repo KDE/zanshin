@@ -31,11 +31,14 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
+    // Qt5 TODO use QCommandLineParser
+    const bool force = (argc > 1 && QByteArray(argv[1]) == "--force");
+
     Zanshin021Migrator migrator;
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
     KConfigGroup group = config->group("Migrations");
-    if (!group.readEntry("Migrated021Projects", false)) {
+    if (force || !group.readEntry("Migrated021Projects", false)) {
         if (!migrator.migrateProjects()) {
             return 1;
         }
