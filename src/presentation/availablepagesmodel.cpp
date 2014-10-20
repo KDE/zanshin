@@ -118,6 +118,14 @@ void AvailablePagesModel::addContext(const QString &name)
     m_contextRepository->create(context);
 }
 
+void AvailablePagesModel::removeItem(const QModelIndex &index)
+{
+    QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
+    if (auto project = object.objectCast<Domain::Project>()) {
+        m_projectRepository->remove(project);
+    }
+}
+
 QAbstractItemModel *AvailablePagesModel::createPageListModel()
 {
     m_inboxObject = QObjectPtr::create();

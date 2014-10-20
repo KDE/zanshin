@@ -430,6 +430,46 @@ private slots:
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                        .exactly(1));
     }
+
+    void shouldRemoveProject()
+    {
+        // GIVEN
+
+        // Two projects
+        auto project1 = Domain::Project::Ptr::create();
+        project1->setName("Project 1");
+        auto project2 = Domain::Project::Ptr::create();
+        project2->setName("Project 2");
+        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
+        projectProvider->append(project1);
+        projectProvider->append(project2);
+
+        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
+
+        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+
+        Presentation::AvailablePagesModel pages(0,
+                                                &projectQueriesMock.getInstance(),
+                                                &projectRepositoryMock.getInstance(),
+                                                0,
+                                                0,
+                                                0);
+
+        QAbstractItemModel *model = pages.pageListModel();
+
+        const QModelIndex projectsIndex = model->index(1, 0);
+        const QModelIndex project1Index = model->index(0, 0, projectsIndex);
+
+        projectRepositoryMock(&Domain::ProjectRepository::remove).when(project1).thenReturn(new FakeJob(this));
+
+        // WHEN
+        pages.removeItem(project1Index);
+
+        // THEN
+        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::remove).when(project1).exactly(1));
+    }
 };
 
 QTEST_MAIN(AvailablePagesModelTest)

@@ -361,7 +361,7 @@ WHEN("^I remove a project named \"(.*)\"$") {
     QModelIndex pageIndex = Zanshin::findIndex(pageListModel, "Projects / " + projectName);
     VERIFY(pageIndex.isValid());
 
-    VERIFY(QMetaObject::invokeMethod(availablePages, "removeProject",
+    VERIFY(QMetaObject::invokeMethod(availablePages, "removeItem",
                                      Q_ARG(QModelIndex, pageIndex)));
 }
 
