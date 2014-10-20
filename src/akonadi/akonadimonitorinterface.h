@@ -43,6 +43,7 @@ signals:
     void collectionAdded(const Akonadi::Collection &collection);
     void collectionRemoved(const Akonadi::Collection &collection);
     void collectionChanged(const Akonadi::Collection &collection);
+    void collectionSelectionChanged(const Akonadi::Collection &collection);
 
     void itemAdded(const Akonadi::Item &item);
     void itemRemoved(const Akonadi::Item &item);

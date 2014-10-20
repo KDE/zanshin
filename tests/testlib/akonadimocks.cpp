@@ -116,6 +116,11 @@ void MockMonitor::changeCollection(const Akonadi::Collection &collection)
     emit collectionChanged(collection);
 }
 
+void MockMonitor::changeCollectionSelection(const Akonadi::Collection &collection)
+{
+    emit collectionSelectionChanged(collection);
+}
+
 void MockMonitor::addItem(const Akonadi::Item &item)
 {
     emit itemAdded(item);

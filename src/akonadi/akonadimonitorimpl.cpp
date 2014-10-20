@@ -93,4 +93,7 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
     intersection.intersect(allowedParts);
     if (!intersection.isEmpty())
         emit collectionChanged(collection);
+
+    if (parts.contains("ZanshinSelected"))
+        emit collectionSelectionChanged(collection);
 }

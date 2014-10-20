@@ -878,7 +878,40 @@ private slots:
 
         // A spied monitor
         Akonadi::MonitorImpl monitor;
-        QSignalSpy spy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+        QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+        QSignalSpy selectionSpy(&monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+
+        // WHEN
+        auto attr = new Akonadi::EntityDisplayAttribute;
+        attr->setDisplayName("Foo");
+        collection.addAttribute(attr);
+        auto job = storage.updateCollection(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!changeSpy.isEmpty());
+
+        // THEN
+        QCOMPARE(changeSpy.size(), 1);
+        QCOMPARE(selectionSpy.size(), 0);
+        auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.id(), collection.id());
+        QVERIFY(notifiedCollection.hasAttribute<Akonadi::EntityDisplayAttribute>());
+        QCOMPARE(notifiedCollection.attribute<Akonadi::EntityDisplayAttribute>()->displayName(), attr->displayName());
+    }
+
+    void shouldNotifyCollectionSelectionChanges()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // An existing collection
+        Akonadi::Collection collection = calendar2();
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+        QSignalSpy selectionSpy(&monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
 
         // WHEN
         auto attr = new Akonadi::ApplicationSelectedAttribute;
@@ -886,11 +919,18 @@ private slots:
         collection.addAttribute(attr);
         auto job = storage.updateCollection(collection);
         AKVERIFYEXEC(job);
-        QTRY_VERIFY(!spy.isEmpty());
+        QTRY_VERIFY(!changeSpy.isEmpty());
 
         // THEN
-        QCOMPARE(spy.size(), 1);
-        auto notifiedCollection = spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(changeSpy.size(), 1);
+        QCOMPARE(selectionSpy.size(), 1);
+
+        auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.id(), collection.id());
+        QVERIFY(notifiedCollection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
+        QVERIFY(!notifiedCollection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected());
+
+        notifiedCollection = selectionSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
         QCOMPARE(notifiedCollection.id(), collection.id());
         QVERIFY(notifiedCollection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
         QVERIFY(!notifiedCollection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected());

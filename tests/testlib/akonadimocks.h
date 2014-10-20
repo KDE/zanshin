@@ -103,6 +103,7 @@ public:
     void addCollection(const Akonadi::Collection &collection);
     void removeCollection(const Akonadi::Collection &collection);
     void changeCollection(const Akonadi::Collection &collection);
+    void changeCollectionSelection(const Akonadi::Collection &collection);
 
     void addItem(const Akonadi::Item &item);
     void removeItem(const Akonadi::Item &item);
