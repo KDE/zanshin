@@ -28,7 +28,8 @@ using namespace Domain;
 
 DataSource::DataSource(QObject *parent)
     : QObject(parent),
-      m_contentTypes(NoContent)
+      m_contentTypes(NoContent),
+      m_selected(false)
 {
 }
 
@@ -49,6 +50,11 @@ QString DataSource::iconName() const
 DataSource::ContentTypes DataSource::contentTypes() const
 {
     return m_contentTypes;
+}
+
+bool DataSource::isSelected() const
+{
+    return m_selected;
 }
 
 void DataSource::setName(const QString &name)
@@ -76,4 +82,13 @@ void DataSource::setContentTypes(ContentTypes types)
 
     m_contentTypes = types;
     emit contentTypesChanged(types);
+}
+
+void DataSource::setSelected(bool selected)
+{
+    if (m_selected == selected)
+        return;
+
+    m_selected = selected;
+    emit selectedChanged(selected);
 }

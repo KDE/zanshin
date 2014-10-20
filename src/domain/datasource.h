@@ -38,6 +38,7 @@ class DataSource : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
     Q_PROPERTY(Domain::DataSource::ContentTypes contentTypes READ contentTypes WRITE setContentTypes NOTIFY contentTypesChanged)
+    Q_PROPERTY(bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
 public:
     typedef QSharedPointer<DataSource> Ptr;
     typedef QList<DataSource::Ptr> List;
@@ -55,21 +56,25 @@ public:
     QString name() const;
     QString iconName() const;
     ContentTypes contentTypes() const;
+    bool isSelected() const;
 
 public slots:
     void setName(const QString &name);
     void setIconName(const QString &iconName);
     void setContentTypes(Domain::DataSource::ContentTypes types);
+    void setSelected(bool selected);
 
 signals:
     void nameChanged(const QString &name);
     void iconNameChanged(const QString &iconName);
     void contentTypesChanged(Domain::DataSource::ContentTypes types);
+    void selectedChanged(bool selected);
 
 private:
     QString m_name;
     QString m_iconName;
     ContentTypes m_contentTypes;
+    bool m_selected;
 };
 
 }
