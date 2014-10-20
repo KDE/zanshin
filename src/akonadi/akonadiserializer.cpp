@@ -117,6 +117,14 @@ Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr da
     return collection;
 }
 
+bool Serializer::isSelectedCollection(Collection collection)
+{
+    if (!collection.hasAttribute<Akonadi::ApplicationSelectedAttribute>())
+        return true;
+
+    return collection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected();
+}
+
 bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)
 {
     return collection.contentMimeTypes().contains(NoteUtils::noteMimeType());

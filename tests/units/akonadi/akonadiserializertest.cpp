@@ -339,6 +339,24 @@ private slots:
         QCOMPARE(collection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected(), isSelected);
     }
 
+    void shouldVerifyIfCollectionIsSelected()
+    {
+        // GIVEN
+        Akonadi::Collection col1;
+        Akonadi::Collection col2;
+        col2.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing)->setSelected(true);
+        Akonadi::Collection col3;
+        col3.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing)->setSelected(false);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+
+        // THEN
+        QVERIFY(serializer.isSelectedCollection(col1));
+        QVERIFY(serializer.isSelectedCollection(col2));
+        QVERIFY(!serializer.isSelectedCollection(col3));
+    }
+
     void shouldVerifyCollectionContents_data()
     {
         QTest::addColumn<QString>("mimeType");
