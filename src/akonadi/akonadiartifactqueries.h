@@ -61,6 +61,7 @@ private slots:
     void onItemAdded(const Akonadi::Item &item);
     void onItemRemoved(const Akonadi::Item &item);
     void onItemChanged(const Akonadi::Item &item);
+    void onCollectionSelectionChanged();
 
 private:
     ArtifactQuery::Ptr createArtifactQuery();

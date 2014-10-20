@@ -30,6 +30,7 @@
 #include "domain/note.h"
 #include "domain/task.h"
 
+#include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadiartifactqueries.h"
 #include "akonadi/akonadiserializerinterface.h"
 #include "akonadi/akonadistorageinterface.h"
@@ -43,17 +44,19 @@ class AkonadiArtifactQueriesTest : public QObject
 {
     Q_OBJECT
 private slots:
-    void shouldLookInAllReportedCollectionsForInboxArtifacts()
+    void shouldLookInAllSelectedCollectionsForInboxArtifacts()
     {
         // GIVEN
 
-        // Two top level collections
+        // Three top level collections
         Akonadi::Collection col1(42);
         col1.setParentCollection(Akonadi::Collection::root());
         Akonadi::Collection col2(43);
         col2.setParentCollection(Akonadi::Collection::root());
+        Akonadi::Collection col3(44); // This one won't be selected
+        col3.setParentCollection(Akonadi::Collection::root());
         MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // One note in the first collection
         Akonadi::Item item1(42);
@@ -85,6 +88,10 @@ private slots:
 
         // Serializer mock returning the artifacts from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col3).thenReturn(false);
+
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(Domain::Task::Ptr());
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task1);
@@ -169,6 +176,8 @@ private slots:
 
         // Serializer mock returning the tasks from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
@@ -249,6 +258,8 @@ private slots:
 
         // Serializer mock returning the artifacts from the items
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(Domain::Task::Ptr());
@@ -350,6 +361,8 @@ private slots:
 
         // Serializer mock returning the artifact from the item
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Task>());
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Note>());
 
@@ -420,6 +433,7 @@ private slots:
 
         // Serializer mock
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
@@ -494,6 +508,8 @@ private slots:
 
         // Serializer mock
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(task);
@@ -579,6 +595,8 @@ private slots:
 
         // Serializer mock
         mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
+
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Task>().isNull());
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Note>().isNull());
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Task>());
@@ -624,6 +642,95 @@ private slots:
         } else {
             QVERIFY(result->data().isEmpty());
         }
+    }
+
+    void shouldReactToCollectionSelectionChangesForInbox()
+    {
+        // GIVEN
+
+        // Two top level collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(Akonadi::Collection::root());
+        MockCollectionFetchJob *collectionFetchJob1 = new MockCollectionFetchJob(this);
+        collectionFetchJob1->setCollections(Akonadi::Collection::List() << col1 << col2);
+        MockCollectionFetchJob *collectionFetchJob2 = new MockCollectionFetchJob(this);
+        collectionFetchJob2->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        // One item in each collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col1);
+        Domain::Task::Ptr task1(new Domain::Task);
+        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item1);
+
+        Akonadi::Item item2(43);
+        item1.setParentCollection(col2);
+        Domain::Task::Ptr task2(new Domain::Task);
+        MockItemFetchJob *itemFetchJob3 = new MockItemFetchJob(this);
+        itemFetchJob3->setItems(Akonadi::Item::List() << item2);
+
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob1)
+                                                                 .thenReturn(collectionFetchJob2);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
+                                                           .thenReturn(itemFetchJob1)
+                                                           .thenReturn(itemFetchJob2);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col2)
+                                                           .thenReturn(itemFetchJob3);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col2).thenReturn(true)
+                                                                                      .thenReturn(false);
+
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
+
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
+        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
+        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(&storageMock.getInstance(),
+                                                                                     &serializerMock.getInstance(),
+                                                                                     monitor));
+        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().first().dynamicCast<Domain::Task>(), task1);
+        QCOMPARE(result->data().last().dynamicCast<Domain::Task>(), task2);
+
+        // WHEN
+        monitor->changeCollectionSelection(col2);
+        QTest::qWait(150);
+
+        // THEN
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first().dynamicCast<Domain::Task>(), task1);
     }
 };
 

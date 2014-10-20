@@ -1,4 +1,3 @@
-@wip
 Feature: Data sources selection
   As an advanced user
   I can select or deselect sources
