@@ -31,6 +31,8 @@
 #include <KCalCore/Todo>
 #include <KMime/Message>
 
+#include "akonadi/akonadiapplicationselectedattribute.h"
+
 using namespace Akonadi;
 
 Serializer::Serializer()
@@ -83,9 +85,24 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
 
     dataSource->setName(name);
 
+    const auto mimeTypes = collection.contentMimeTypes();
+    auto types = Domain::DataSource::ContentTypes();
+    if (mimeTypes.contains(NoteUtils::noteMimeType()))
+        types |= Domain::DataSource::Notes;
+    if (mimeTypes.contains(KCalCore::Todo::todoMimeType()))
+        types |= Domain::DataSource::Tasks;
+    dataSource->setContentTypes(types);
+
     if (collection.hasAttribute<Akonadi::EntityDisplayAttribute>()) {
         auto iconName = collection.attribute<Akonadi::EntityDisplayAttribute>()->iconName();
         dataSource->setIconName(iconName);
+    }
+
+    if (!collection.hasAttribute<Akonadi::ApplicationSelectedAttribute>()) {
+        dataSource->setSelected(true);
+    } else {
+        auto isSelected = collection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected();
+        dataSource->setSelected(isSelected);
     }
 
     dataSource->setProperty("collectionId", collection.id());
@@ -94,7 +111,10 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
 Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr dataSource)
 {
     const auto id = dataSource->property("collectionId").value<Collection::Id>();
-    return Collection(id);
+    auto collection = Collection(id);
+    auto selectedAttribute = collection.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing);
+    selectedAttribute->setSelected(dataSource->isSelected());
+    return collection;
 }
 
 bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)

@@ -24,6 +24,7 @@
 #include <QtTest>
 
 #include "akonadi/akonadiserializer.h"
+#include "akonadi/akonadiapplicationselectedattribute.h"
 
 #include <Akonadi/Collection>
 #include <Akonadi/EntityDisplayAttribute>
@@ -105,9 +106,26 @@ private slots:
     {
         QTest::addColumn<QString>("name");
         QTest::addColumn<QString>("iconName");
+        QTest::addColumn<QStringList>("mimeTypes");
+        QTest::addColumn<bool>("hasSelectedAttribute");
+        QTest::addColumn<bool>("isSelected");
 
-        QTest::newRow("nominal case") << "name" << "icon";
-        QTest::newRow("empty case") << QString() << QString();
+        const auto noteMimeTypes = QStringList() << "text/x-vnd.akonadi.note";
+        const auto taskMimeTypes = QStringList() << "application/x-vnd.akonadi.calendar.todo";
+        const auto bogusMimeTypes = QStringList() << "foo/bar";
+        const auto allMimeTypes = noteMimeTypes + taskMimeTypes + bogusMimeTypes;
+
+        QTest::newRow("nominal case") << "name" << "icon" << allMimeTypes << true << false;
+
+        QTest::newRow("only notes") << "name" << "icon" << noteMimeTypes << true << false;
+        QTest::newRow("only tasks") << "name" << "icon" << taskMimeTypes << true << false;
+        QTest::newRow("only bogus") << "name" << "icon" << bogusMimeTypes << true << false;
+
+        QTest::newRow("no selected attribute") << "name" << "icon" << allMimeTypes << false << false;
+        QTest::newRow("selected attribute (false)") << "name" << "icon" << allMimeTypes << true << false;
+        QTest::newRow("selected attribute (true)") << "name" << "icon" << allMimeTypes << true << true;
+
+        QTest::newRow("empty case") << QString() << QString() << QStringList() << false << false;
     }
 
     void shouldCreateDataSourceFromCollection()
@@ -117,14 +135,30 @@ private slots:
         // Data...
         QFETCH(QString, name);
         QFETCH(QString, iconName);
+        QFETCH(QStringList, mimeTypes);
+        QFETCH(bool, hasSelectedAttribute);
+        QFETCH(bool, isSelected);
+
+        Domain::DataSource::ContentTypes expectedContentTypes;
+        if (mimeTypes.contains("text/x-vnd.akonadi.note")) {
+            expectedContentTypes |= Domain::DataSource::Notes;
+        }
+        if (mimeTypes.contains("application/x-vnd.akonadi.calendar.todo")) {
+            expectedContentTypes |= Domain::DataSource::Tasks;
+        }
 
         // ... stored in a collection
         Akonadi::Collection collection(42);
-        collection.setContentMimeTypes(QStringList() << "foo/bar");
+        collection.setContentMimeTypes(mimeTypes);
         collection.setName(name);
-        auto attribute = new Akonadi::EntityDisplayAttribute;
-        attribute->setIconName(iconName);
-        collection.addAttribute(attribute);
+        auto displayAttribute = new Akonadi::EntityDisplayAttribute;
+        displayAttribute->setIconName(iconName);
+        collection.addAttribute(displayAttribute);
+        if (hasSelectedAttribute) {
+            auto selectedAttribute = new Akonadi::ApplicationSelectedAttribute;
+            selectedAttribute->setSelected(isSelected);
+            collection.addAttribute(selectedAttribute);
+        }
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -133,6 +167,8 @@ private slots:
         // THEN
         QCOMPARE(dataSource->name(), name);
         QCOMPARE(dataSource->iconName(), iconName);
+        QCOMPARE(dataSource->contentTypes(), expectedContentTypes);
+        QCOMPARE(dataSource->isSelected(), !hasSelectedAttribute || isSelected);
         QCOMPARE(dataSource->property("collectionId").value<Akonadi::Collection::Id>(), collection.id());
     }
 
@@ -248,9 +284,24 @@ private slots:
     {
         QTest::addColumn<QString>("name");
         QTest::addColumn<QString>("iconName");
+        QTest::addColumn<Domain::DataSource::ContentTypes>("contentTypes");
+        QTest::addColumn<bool>("isSelected");
 
-        QTest::newRow("nominal case") << "name" << "icon-name";
-        QTest::newRow("empty case") << QString() << QString();
+        const auto noType = Domain::DataSource::ContentTypes(Domain::DataSource::NoContent);
+        const auto taskType = Domain::DataSource::ContentTypes(Domain::DataSource::Tasks);
+        const auto noteType = Domain::DataSource::ContentTypes(Domain::DataSource::Notes);
+        const auto allTypes = taskType | noteType;
+
+        QTest::newRow("nominal case") << "name" << "icon-name" << allTypes << true;
+
+        QTest::newRow("only notes") << "name" << "icon-name" << noteType << true;
+        QTest::newRow("only tasks") << "name" << "icon-name" << taskType << true;
+        QTest::newRow("only nothing ;)") << "name" << "icon-name" << noType << true;
+
+        QTest::newRow("not selected") << "name" << "icon-name" << allTypes << false;
+        QTest::newRow("selected") << "name" << "icon-name" << allTypes << true;
+
+        QTest::newRow("empty case") << QString() << QString() << noType << true;
     }
 
     void shouldCreateCollectionFromDataSource()
@@ -260,11 +311,22 @@ private slots:
         // Data...
         QFETCH(QString, name);
         QFETCH(QString, iconName);
+        QFETCH(Domain::DataSource::ContentTypes, contentTypes);
+        QFETCH(bool, isSelected);
+
+        QStringList mimeTypes;
+        if (contentTypes & Domain::DataSource::Tasks)
+            mimeTypes << "application/x-vnd.akonadi.calendar.todo";
+        if (contentTypes & Domain::DataSource::Notes)
+            mimeTypes << "text/x-vnd.akonadi.note";
+
 
         // ... stored in a data source
         auto source = Domain::DataSource::Ptr::create();
         source->setName(name);
         source->setIconName(iconName);
+        source->setContentTypes(contentTypes);
+        source->setSelected(isSelected);
         source->setProperty("collectionId", 42);
 
         // WHEN
@@ -273,6 +335,8 @@ private slots:
 
         // THEN
         QCOMPARE(collection.id(), source->property("collectionId").value<Akonadi::Collection::Id>());
+        QVERIFY(collection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
+        QCOMPARE(collection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected(), isSelected);
     }
 
     void shouldVerifyCollectionContents_data()
