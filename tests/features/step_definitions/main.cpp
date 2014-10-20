@@ -281,6 +281,24 @@ GIVEN("^there is an item named \"(.+)\" in the central list$") {
     VERIFY_OR_DUMP(context->index.isValid());
 }
 
+GIVEN("^there is an item named \"(.+)\" in the available data sources$") {
+    REGEX_PARAM(QString, itemName);
+
+    ScenarioScope<ZanshinContext> context;
+    QTest::qWait(500);
+
+    auto availableSources = context->app->property("availableSources").value<QObject*>();
+    VERIFY(availableSources);
+    QTest::qWait(500);
+    auto model = availableSources->property("sourceListModel").value<QAbstractItemModel*>();
+    VERIFY(model);
+    QTest::qWait(500);
+    context->setModel(model);
+
+    context->index = Zanshin::findIndex(context->model(), itemName);
+    VERIFY_OR_DUMP(context->index.isValid());
+}
+
 
 WHEN("^I look at the central list$") {
     ScenarioScope<ZanshinContext> context;
@@ -292,8 +310,14 @@ WHEN("^I look at the central list$") {
 
 WHEN("^I check the item$") {
     ScenarioScope<ZanshinContext> context;
-    context->model()->setData(context->index, Qt::Checked, Qt::CheckStateRole);
-    QTest::qWait(500);
+    VERIFY(context->model()->setData(context->index, Qt::Checked, Qt::CheckStateRole));
+    QTest::qWait(1500);
+}
+
+WHEN("^I uncheck the item$") {
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->model()->setData(context->index, Qt::Unchecked, Qt::CheckStateRole));
+    QTest::qWait(1500);
 }
 
 WHEN("^I remove the item$") {
