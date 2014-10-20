@@ -6,6 +6,7 @@ set(domain_SRCS
     contextrepository.cpp
     datasource.cpp
     datasourcequeries.cpp
+    datasourcerepository.cpp
     note.cpp
     notequeries.cpp
     noterepository.cpp
