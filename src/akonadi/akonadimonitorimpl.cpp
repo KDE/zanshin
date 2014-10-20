@@ -26,17 +26,22 @@
 
 #include <KCalCore/Todo>
 
+#include <Akonadi/AttributeFactory>
 #include <Akonadi/CollectionFetchScope>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Monitor>
 #include <Akonadi/Notes/NoteUtils>
 #include <Akonadi/TagFetchScope>
 
+#include "akonadi/akonadiapplicationselectedattribute.h"
+
 using namespace Akonadi;
 
 MonitorImpl::MonitorImpl()
     : m_monitor(new Akonadi::Monitor)
 {
+    AttributeFactory::registerAttribute<ApplicationSelectedAttribute>();
+
     m_monitor->fetchCollection(true);
     m_monitor->setCollectionMonitored(Akonadi::Collection::root());
 
@@ -81,7 +86,8 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
     static const QSet<QByteArray> allowedParts = QSet<QByteArray>() << "NAME"
                                                                     << "REMOTEID"
                                                                     << "AccessRights"
-                                                                    << "ENTITYDISPLAY";
+                                                                    << "ENTITYDISPLAY"
+                                                                    << "ZanshinSelected";
 
     QSet<QByteArray> intersection = parts;
     intersection.intersect(allowedParts);

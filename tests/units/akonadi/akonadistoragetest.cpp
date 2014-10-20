@@ -47,6 +47,7 @@
 #include <Akonadi/TagDeleteJob>
 #include <Akonadi/TagModifyJob>
 
+#include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadimonitorimpl.h"
@@ -863,6 +864,36 @@ private slots:
         QCOMPARE(notifiedTag.name(), name);
         QCOMPARE(notifiedTag.type(), type);
         QCOMPARE(notifiedTag.gid(), gid);
+    }
+
+    void shouldUpdateCollection()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // An existing collection
+        Akonadi::Collection collection = calendar2();
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+
+        // WHEN
+        auto attr = new Akonadi::ApplicationSelectedAttribute;
+        attr->setSelected(false);
+        collection.addAttribute(attr);
+        auto job = storage.updateCollection(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedCollection = spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.id(), collection.id());
+        QVERIFY(notifiedCollection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
+        QVERIFY(!notifiedCollection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected());
     }
 
 private:

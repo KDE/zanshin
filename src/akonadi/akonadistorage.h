@@ -46,6 +46,9 @@ public:
     KJob *removeItems(Item::List items, QObject *parent = 0) Q_DECL_OVERRIDE;
     KJob *moveItem(Item item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
     KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
+
+    KJob *updateCollection(Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
+
     KJob *createTransaction() Q_DECL_OVERRIDE;
 
     KJob *createTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;

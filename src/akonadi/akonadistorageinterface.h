@@ -67,6 +67,9 @@ public:
     virtual KJob *removeItems(Item::List items, QObject *parent = 0) = 0;
     virtual KJob *moveItem(Item item, Collection collection, QObject *parent = 0) = 0;
     virtual KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0) = 0;
+
+    virtual KJob *updateCollection(Collection collection, QObject *parent = 0) = 0;
+
     virtual KJob *createTransaction() = 0;
 
     virtual KJob *createTag(Akonadi::Tag tag) = 0;
