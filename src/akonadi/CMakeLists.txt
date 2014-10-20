@@ -1,4 +1,5 @@
 set(akonadi_SRCS
+    akonadiapplicationselectedattribute.cpp
     akonadiartifactqueries.cpp
     akonadicollectionfetchjobinterface.cpp
     akonadicontextqueries.cpp
