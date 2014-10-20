@@ -15,6 +15,7 @@
 #include "akonadi/akonadicontextqueries.h"
 #include "akonadi/akonadicontextrepository.h"
 #include "akonadi/akonadidatasourcequeries.h"
+#include "akonadi/akonadidatasourcerepository.h"
 #include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonadiprojectqueries.h"
 #include "akonadi/akonadiprojectrepository.h"
@@ -59,6 +60,7 @@ public:
                                              new Akonadi::ContextQueries(this),
                                              new Akonadi::ContextRepository(this),
                                              new Akonadi::DataSourceQueries(this),
+                                             new Akonadi::DataSourceRepository(this),
                                              new Akonadi::TaskQueries(this),
                                              new Akonadi::TaskRepository(this),
                                              new Akonadi::NoteRepository(this),

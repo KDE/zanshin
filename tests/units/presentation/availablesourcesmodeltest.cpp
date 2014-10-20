@@ -26,6 +26,7 @@
 #include <mockitopp/mockitopp.hpp>
 
 #include "domain/datasourcequeries.h"
+#include "domain/datasourcerepository.h"
 
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/querytreemodelbase.h"
@@ -47,8 +48,11 @@ private slots:
         auto source1 = Domain::DataSource::Ptr::create();
         source1->setName("Source 1");
         source1->setIconName("foo-icon");
+        source1->setSelected(true);
         auto source2 = Domain::DataSource::Ptr::create();
         source2->setName("Source 2");
+        source2->setSelected(false);
+        source2->setContentTypes(Domain::DataSource::Tasks);
         auto topLevelProvider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(topLevelProvider);
         topLevelProvider->append(source1);
@@ -57,8 +61,12 @@ private slots:
         // Two other sources under source1
         auto source3 = Domain::DataSource::Ptr::create();
         source3->setName("Source 3");
+        source3->setSelected(false);
+        source3->setContentTypes(Domain::DataSource::Notes);
         auto source4 = Domain::DataSource::Ptr::create();
+        source4->setSelected(true);
         source4->setName("Source 4");
+        source4->setContentTypes(Domain::DataSource::Notes | Domain::DataSource::Tasks);
         auto source1Provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
         auto source1Result = Domain::QueryResult<Domain::DataSource::Ptr>::create(source1Provider);
         source1Provider->append(source3);
@@ -80,7 +88,10 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source3).thenReturn(source3Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source4).thenReturn(source4Result);
 
+        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+
         Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
+                                                    &sourceRepositoryMock.getInstance(),
                                                     0);
 
         // WHEN
@@ -101,9 +112,9 @@ private slots:
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled;
         QCOMPARE(model->flags(source1Index), defaultFlags);
-        QCOMPARE(model->flags(source2Index), defaultFlags);
-        QCOMPARE(model->flags(source3Index), defaultFlags);
-        QCOMPARE(model->flags(source4Index), defaultFlags);
+        QCOMPARE(model->flags(source2Index), defaultFlags | Qt::ItemIsUserCheckable);
+        QCOMPARE(model->flags(source3Index), defaultFlags | Qt::ItemIsUserCheckable);
+        QCOMPARE(model->flags(source4Index), defaultFlags | Qt::ItemIsUserCheckable);
 
         QCOMPARE(model->data(source1Index).toString(), source1->name());
         QCOMPARE(model->data(source2Index).toString(), source2->name());
@@ -115,10 +126,30 @@ private slots:
         QCOMPARE(model->data(source3Index, Qt::EditRole).toString(), source3->name());
         QCOMPARE(model->data(source4Index, Qt::EditRole).toString(), source4->name());
 
+        QVERIFY(!model->data(source1Index, Qt::CheckStateRole).isValid());
+        QCOMPARE(model->data(source2Index, Qt::CheckStateRole).toBool(), source2->isSelected());
+        QCOMPARE(model->data(source3Index, Qt::CheckStateRole).toBool(), source3->isSelected());
+        QCOMPARE(model->data(source4Index, Qt::CheckStateRole).toBool(), source4->isSelected());
+
         QCOMPARE(model->data(source1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), source1->iconName());
         QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
         QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
         QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
+
+        // WHEN
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source2).thenReturn(new FakeJob(this));
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source4).thenReturn(new FakeJob(this));
+
+        QVERIFY(!model->setData(source1Index, Qt::Unchecked, Qt::CheckStateRole));
+        QVERIFY(model->setData(source2Index, Qt::Checked, Qt::CheckStateRole));
+        QVERIFY(model->setData(source4Index, Qt::Unchecked, Qt::CheckStateRole));
+
+        // THEN
+        QVERIFY(sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source2).exactly(1));
+        QVERIFY(sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source4).exactly(1));
+
+        QVERIFY(source2->isSelected());
+        QVERIFY(!source4->isSelected());
     }
 };
 

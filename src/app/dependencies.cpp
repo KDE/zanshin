@@ -27,6 +27,7 @@
 #include "akonadi/akonadicontextqueries.h"
 #include "akonadi/akonadicontextrepository.h"
 #include "akonadi/akonadidatasourcequeries.h"
+#include "akonadi/akonadidatasourcerepository.h"
 #include "akonadi/akonadinotequeries.h"
 #include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonadiprojectqueries.h"
@@ -43,6 +44,7 @@ void App::initializeDependencies()
     deps.add<Domain::ContextQueries, Akonadi::ContextQueries>();
     deps.add<Domain::ContextRepository, Akonadi::ContextRepository>();
     deps.add<Domain::DataSourceQueries, Akonadi::DataSourceQueries>();
+    deps.add<Domain::DataSourceRepository, Akonadi::DataSourceRepository>();
     deps.add<Domain::NoteQueries, Akonadi::NoteQueries>();
     deps.add<Domain::NoteRepository, Akonadi::NoteRepository>();
     deps.add<Domain::ProjectQueries, Akonadi::ProjectQueries>();

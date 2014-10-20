@@ -27,16 +27,19 @@
 #include <QIcon>
 
 #include "domain/datasourcequeries.h"
+#include "domain/datasourcerepository.h"
 
 #include "presentation/querytreemodel.h"
 
 using namespace Presentation;
 
 AvailableSourcesModel::AvailableSourcesModel(Domain::DataSourceQueries *dataSourceQueries,
+                                             Domain::DataSourceRepository *dataSourceRepository,
                                              QObject *parent)
     : QObject(parent),
       m_sourceListModel(0),
-      m_dataSourceQueries(dataSourceQueries)
+      m_dataSourceQueries(dataSourceQueries),
+      m_dataSourceRepository(dataSourceRepository)
 {
 }
 
@@ -61,15 +64,19 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
     };
 
     auto flags = [] (const Domain::DataSource::Ptr &source) {
-        Q_UNUSED(source)
-        return Qt::ItemIsSelectable
-             | Qt::ItemIsEnabled;
+        const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
+                                         | Qt::ItemIsEnabled;
+        if (source->contentTypes() != Domain::DataSource::NoContent)
+            return defaultFlags | Qt::ItemIsUserCheckable;
+        else
+            return defaultFlags;
     };
 
     auto data = [] (const Domain::DataSource::Ptr &source, int role) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole
          && role != Qt::DecorationRole
+         && role != Qt::CheckStateRole
          && role != QueryTreeModelBase::IconNameRole) {
             return QVariant();
         }
@@ -83,16 +90,25 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
                 return QVariant::fromValue(QIcon::fromTheme(iconName));
             else
                 return iconName;
+        } else if (role == Qt::CheckStateRole) {
+            if (source->contentTypes() != Domain::DataSource::NoContent)
+                return source->isSelected() ? Qt::Checked : Qt::Unchecked;
+            else
+                return QVariant();
         } else {
             return QVariant();
         }
     };
 
-    auto setData = [] (const Domain::DataSource::Ptr &source, const QVariant &value, int role) {
-        Q_UNUSED(source)
-        Q_UNUSED(value)
-        Q_UNUSED(role)
-        return false;
+    auto setData = [this] (const Domain::DataSource::Ptr &source, const QVariant &value, int role) {
+        if (role != Qt::CheckStateRole)
+            return false;
+        if (source->contentTypes() == Domain::DataSource::NoContent)
+            return false;
+
+        source->setSelected(value.toInt() == Qt::Checked);
+        m_dataSourceRepository->update(source);
+        return true;
     };
 
     auto drop = [] (const QMimeData *mimeData, Qt::DropAction, const Domain::DataSource::Ptr &source) {

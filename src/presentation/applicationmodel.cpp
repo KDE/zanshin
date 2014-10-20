@@ -50,6 +50,7 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_contextQueries(Utils::DependencyManager::globalInstance().create<Domain::ContextQueries>()),
       m_contextRepository(Utils::DependencyManager::globalInstance().create<Domain::ContextRepository>()),
       m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
+      m_sourceRepository(Utils::DependencyManager::globalInstance().create<Domain::DataSourceRepository>()),
       m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
       m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
       m_taskSourcesModel(0),
@@ -66,6 +67,7 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
                                    Domain::ContextQueries *contextQueries,
                                    Domain::ContextRepository *contextRepository,
                                    Domain::DataSourceQueries *sourceQueries,
+                                   Domain::DataSourceRepository *sourceRepository,
                                    Domain::TaskQueries *taskQueries,
                                    Domain::TaskRepository *taskRepository,
                                    Domain::NoteRepository *noteRepository,
@@ -81,6 +83,7 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
       m_contextQueries(contextQueries),
       m_contextRepository(contextRepository),
       m_sourceQueries(sourceQueries),
+      m_sourceRepository(sourceRepository),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
       m_taskSourcesModel(0),
@@ -178,6 +181,7 @@ QObject *ApplicationModel::availableSources()
 {
     if (!m_availableSources) {
         m_availableSources = new AvailableSourcesModel(m_sourceQueries,
+                                                       m_sourceRepository,
                                                        this);
     }
     return m_availableSources;

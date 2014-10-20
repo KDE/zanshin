@@ -33,6 +33,7 @@
 
 namespace Domain {
     class ArtifactQueries;
+    class DataSourceRepository;
     class NoteRepository;
     class ProjectQueries;
     class ProjectRepository;
@@ -64,6 +65,7 @@ public:
                               Domain::ContextQueries *contextQueries,
                               Domain::ContextRepository *contextRepository,
                               Domain::DataSourceQueries *sourceQueries,
+                              Domain::DataSourceRepository *sourceRepository,
                               Domain::TaskQueries *taskQueries,
                               Domain::TaskRepository *taskRepository,
                               Domain::NoteRepository *noteRepository,
@@ -107,9 +109,11 @@ private:
     Domain::ContextRepository *m_contextRepository;
 
     Domain::DataSourceQueries *m_sourceQueries;
-    Domain::TaskQueries *m_taskQueries;
+    Domain::DataSourceRepository *m_sourceRepository;
 
+    Domain::TaskQueries *m_taskQueries;
     Domain::TaskRepository *m_taskRepository;
+
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_taskSources;
     QAbstractItemModel *m_taskSourcesModel;
 
