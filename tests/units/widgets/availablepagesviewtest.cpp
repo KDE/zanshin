@@ -118,10 +118,16 @@ public slots:
         contextNames << name;
     }
 
+    void removeItem(const QModelIndex &index)
+    {
+        projectRemoved = index.data().toString();
+    }
+
 public:
     QStringList projectNames;
     QStringList contextNames;
     QList<Domain::DataSource::Ptr> sources;
+    QString projectRemoved;
 };
 
 class AvailablePagesViewTest : public QObject
@@ -242,6 +248,33 @@ private slots:
         QCOMPARE(dialogStub->pageType(), Widgets::NewPageDialogInterface::Context);
         QCOMPARE(model.contextNames.size(), 1);
         QCOMPARE(model.contextNames.first(), dialogStub->name());
+    }
+
+    void shouldRemoveAProject()
+    {
+        // GIVEN
+        QStringList list;
+        list << "A" << "B" << "C";
+        QStringListModel model(list);
+
+        AvailablePagesModelStub stubPagesModel;
+        stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailablePagesView available;
+        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        QVERIFY(pagesView);
+        QVERIFY(!pagesView->model());
+
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        auto removeAction = available.findChild<QAction*>("removeAction");
+
+        // WHEN
+        removeAction->trigger();
+
+        // THEN
+        QCOMPARE(stubPagesModel.projectRemoved, list.first());
     }
 };
 

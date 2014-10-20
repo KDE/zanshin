@@ -58,6 +58,13 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     connect(addAction, SIGNAL(triggered()), this, SLOT(onAddTriggered()));
     m_actionBar->addAction(addAction);
 
+    QAction *removeAction = new QAction(this);
+    removeAction->setObjectName("removeAction");
+    removeAction->setText(tr("Remove page"));
+    removeAction->setIcon(QIcon::fromTheme("list-remove"));
+    connect(removeAction, SIGNAL(triggered()), this, SLOT(onRemoveTriggered()));
+    m_actionBar->addAction(removeAction);
+
     QHBoxLayout *actionBarLayout = new QHBoxLayout;
     actionBarLayout->setAlignment(Qt::AlignRight);
     actionBarLayout->addWidget(m_actionBar);
@@ -159,6 +166,16 @@ void AvailablePagesView::onAddTriggered()
             break;
         }
     }
+}
+
+void AvailablePagesView::onRemoveTriggered()
+{
+    const auto &current = m_pagesView->currentIndex();
+    if (!current.isValid())
+        return;
+
+    QMetaObject::invokeMethod(m_model, "removeItem",
+                              Q_ARG(QModelIndex, current));
 }
 
 void AvailablePagesView::onInitTimeout()

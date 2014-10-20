@@ -3,7 +3,6 @@ Feature: Project destruction
   I can delete a project
   In order to clean my tasks and notes
 
-  @wip
   Scenario: Removing a simple project from the list
     Given I display the available pages
     When I remove a project named "Prepare talk about TDD"
