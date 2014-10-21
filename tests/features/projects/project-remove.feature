@@ -10,9 +10,9 @@ Feature: Project destruction
     Then the list is:
        | display                           | icon                |
        | Contexts                          | folder              |
-       | Projects / Errands                | view-pim-tasks      |
-       | Projects / Internet               | view-pim-tasks      |
-       | Projects / Online                 | view-pim-tasks      |
+       | Contexts / Errands                | view-pim-tasks      |
+       | Contexts / Internet               | view-pim-tasks      |
+       | Contexts / Online                 | view-pim-tasks      |
        | Inbox                             | mail-folder-inbox   |
        | Projects                          | folder              |
        | Projects / Read List              | view-pim-tasks      |
