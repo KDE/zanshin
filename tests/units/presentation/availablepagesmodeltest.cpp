@@ -455,6 +455,8 @@ private slots:
                                                 &projectRepositoryMock.getInstance(),
                                                 0,
                                                 0,
+                                                0,
+                                                0,
                                                 0);
 
         QAbstractItemModel *model = pages.pageListModel();
