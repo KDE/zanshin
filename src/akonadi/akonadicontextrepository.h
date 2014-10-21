@@ -41,6 +41,7 @@ public:
     virtual ~ContextRepository();
 
     KJob *create(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
+    KJob *update(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
     KJob *remove(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
 
     KJob *associate(Domain::Context::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;

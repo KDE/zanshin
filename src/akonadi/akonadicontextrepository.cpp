@@ -62,6 +62,13 @@ KJob *ContextRepository::create(Domain::Context::Ptr context)
     return m_storage->createTag(tag);
 }
 
+KJob *ContextRepository::update(Domain::Context::Ptr context)
+{
+    Q_UNUSED(context);
+    qFatal("not implemented yet");
+    return 0;
+}
+
 KJob *ContextRepository::remove(Domain::Context::Ptr context)
 {
     auto tag = m_serializer->createTagFromContext(context);

@@ -163,6 +163,8 @@ private slots:
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).thenReturn(new FakeJob(this));
         projectRepositoryMock(&Domain::ProjectRepository::update).when(project2).thenReturn(new FakeJob(this));
+        contextRepositoryMock(&Domain::ContextRepository::update).when(context1).thenReturn(new FakeJob(this));
+        contextRepositoryMock(&Domain::ContextRepository::update).when(context2).thenReturn(new FakeJob(this));
 
         QVERIFY(!model->setData(inboxIndex, "Foo"));
         QVERIFY(!model->setData(projectsIndex, "Foo"));
@@ -175,6 +177,8 @@ private slots:
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).exactly(1));
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::update).when(project2).exactly(1));
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::update).when(context1).exactly(1));
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::update).when(context2).exactly(1));
 
         QCOMPARE(project1->name(), QString("New Project 1"));
         QCOMPARE(project2->name(), QString("New Project 2"));

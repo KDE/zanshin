@@ -217,6 +217,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             m_projectRepository->update(project);
         } else if (auto context = object.objectCast<Domain::Context>()) {
             context->setName(value.toString());
+            m_contextRepository->update(context);
         } else {
             Q_ASSERT(false);
         }
