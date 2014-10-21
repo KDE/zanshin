@@ -936,6 +936,34 @@ private slots:
         QVERIFY(!notifiedCollection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected());
     }
 
+    void shouldNotNotifyCollectionSelectionChangesForIrrelevantCollections()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // An existing collection
+        Akonadi::Collection collection = emails();
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+        QSignalSpy selectionSpy(&monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+
+        // WHEN
+        auto attr = new Akonadi::ApplicationSelectedAttribute;
+        attr->setSelected(false);
+        collection.addAttribute(attr);
+        auto job = storage.updateCollection(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!changeSpy.isEmpty());
+
+        // THEN
+        QCOMPARE(changeSpy.size(), 1);
+        QVERIFY(selectionSpy.isEmpty());
+    }
+
 private:
     Akonadi::Item fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
     {
@@ -985,6 +1013,11 @@ private:
     Akonadi::Collection calendar2()
     {
         return fetchCollectionByRID("{e682b8b5-b67c-4538-8689-6166f64177f0}");
+    }
+
+    Akonadi::Collection emails()
+    {
+        return fetchCollectionByRID("{14096930-7bfe-46ca-8fba-7c04d3b62ec8}");
     }
 };
 

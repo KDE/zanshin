@@ -89,11 +89,20 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
                                                                     << "ENTITYDISPLAY"
                                                                     << "ZanshinSelected";
 
-    QSet<QByteArray> intersection = parts;
-    intersection.intersect(allowedParts);
-    if (!intersection.isEmpty())
+    QSet<QByteArray> partsIntersection = parts;
+    partsIntersection.intersect(allowedParts);
+    if (!partsIntersection.isEmpty())
         emit collectionChanged(collection);
 
-    if (parts.contains("ZanshinSelected"))
+    if (parts.contains("ZanshinSelected")
+     && hasSupportedMimeTypes(collection)) {
         emit collectionSelectionChanged(collection);
+    }
+}
+
+bool MonitorImpl::hasSupportedMimeTypes(const Collection &collection)
+{
+    QSet<QString> mimeIntersection = m_monitor->mimeTypesMonitored().toSet();
+    mimeIntersection.intersect(collection.contentMimeTypes().toSet());
+    return !mimeIntersection.isEmpty();
 }
