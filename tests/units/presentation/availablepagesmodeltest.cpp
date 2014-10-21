@@ -445,15 +445,22 @@ private slots:
         projectProvider->append(project1);
         projectProvider->append(project2);
 
+        // No contexts
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
+
         mock_object<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
+
+        mock_object<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
         mock_object<Domain::ProjectRepository> projectRepositoryMock;
 
         Presentation::AvailablePagesModel pages(0,
                                                 &projectQueriesMock.getInstance(),
                                                 &projectRepositoryMock.getInstance(),
-                                                0,
+                                                &contextQueriesMock.getInstance(),
                                                 0,
                                                 0,
                                                 0,
