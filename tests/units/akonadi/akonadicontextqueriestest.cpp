@@ -389,6 +389,313 @@ private slots:
         QCOMPARE(result->data().at(0), task1);
         QCOMPARE(result->data().at(1), task2);
     }
+
+    void shouldReactToItemAddsForTopLevelTask()
+    {
+        // GIVEN
+
+        // One collection
+        Akonadi::Collection col(43);
+        col.setParentCollection(Akonadi::Collection::root());
+
+        // One context
+        Akonadi::Tag tag(43);
+        auto context = Domain::Context::Ptr::create();
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List());
+
+        // Storage mock returning the fetch job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).thenReturn(itemFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+
+        // A mock monitor
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevelTasks(context);
+        QTest::qWait(150);
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        Akonadi::Item item1(44);
+        item1.setParentCollection(col);
+        auto task1 = Domain::Task::Ptr::create();
+
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(true);
+
+        monitor->addItem(item1);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0), task1);
+    }
+
+    void shoudlReactToItemChangesForTopLevelTask()
+    {
+        // GIVEN
+
+        // A context
+        Akonadi::Tag tag(43);
+        auto context = Domain::Context::Ptr::create();
+
+        // A task related to the context
+        Akonadi::Item item1(44);
+        auto task1 = Domain::Task::Ptr::create();
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item1);
+
+        // Storage mock returning the fetch job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).thenReturn(itemFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(true);
+
+        // A monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevelTasks(context);
+
+        bool replaceHandlerCalled = false;
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
+                                          replaceHandlerCalled = true;
+                                      });
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 1);
+
+        // WHEN
+        serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(task1, item1).thenReturn();
+        monitor->changeItem(item1);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0), task1);
+
+        QVERIFY(replaceHandlerCalled);
+    }
+
+    void shouldAddItemToCorrespondingResultWhenTagAddedToTopLevelTask()
+    {
+        // GIVEN
+
+        // A context
+        Akonadi::Tag tag(43);
+        auto context = Domain::Context::Ptr::create();
+
+        // A task related to the context
+        Akonadi::Item item1(44);
+        auto task1 = Domain::Task::Ptr::create();
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item1);
+
+        // Storage mock returning the fetch job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).thenReturn(itemFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
+
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(false)
+                                                                                          .thenReturn(true);
+        // A monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevelTasks(context);
+
+        QTest::qWait(150);
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        monitor->changeItem(item1);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0), task1);
+    }
+
+    void shouldRemoveItemFromCorrespondingResultWhenTagRemovedFromTopLevelTask()
+    {
+        // GIVEN
+
+        // A context
+        Akonadi::Tag tag(43);
+        auto context = Domain::Context::Ptr::create();
+
+        // A task related to the context
+        Akonadi::Item item1(44);
+        auto task1 = Domain::Task::Ptr::create();
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item1);
+
+        // Storage mock returning the fetch job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).thenReturn(itemFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
+
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(true)
+                                                                                          .thenReturn(false);
+
+        // A monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevelTasks(context);
+
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0), task1);
+
+        // WHEN
+        monitor->changeItem(item1);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).exactly(1));
+
+        QVERIFY(result->data().isEmpty());
+    }
+
+    void shouldMoveItemToCorrespondingResultWhenTagChangedOnTopLevelTask()
+    {
+        // GIVEN
+
+        // Two context
+        Akonadi::Tag tag1(43);
+        auto context1 = Domain::Context::Ptr::create();
+        Akonadi::Tag tag2(44);
+        auto context2 = Domain::Context::Ptr::create();
+
+        // A task related to the context
+        Akonadi::Item item1(45);
+        auto task1 = Domain::Task::Ptr::create();
+        auto itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        auto itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item1);
+
+        // Storage mock returning the fetch job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag1).thenReturn(itemFetchJob1);
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag2).thenReturn(itemFetchJob2);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context1).thenReturn(tag1);
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context2).thenReturn(tag2);
+
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
+
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context1, item1).thenReturn(true)
+                                                                                           .thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context2, item1).thenReturn(false)
+                                                                                           .thenReturn(true);
+
+        // A monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result1 = queries->findTopLevelTasks(context1);
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result2 = queries->findTopLevelTasks(context2);
+
+        QTest::qWait(150);
+        QCOMPARE(result1->data().size(), 1);
+        QCOMPARE(result1->data().at(0), task1);
+        QVERIFY(result2->data().isEmpty());
+
+        // WHEN
+        monitor->changeItem(item1); // Gets a different associated tag
+
+        // THEN
+        QVERIFY(result1->data().isEmpty());
+        QCOMPARE(result2->data().size(), 1);
+        QCOMPARE(result2->data().at(0), task1);
+    }
+
+    void shoudlReactToItemRemovesForTopLevelTask()
+    {
+        // GIVEN
+
+        // A context
+        Akonadi::Tag tag(43);
+        auto context = Domain::Context::Ptr::create();
+
+        // A task related to the context
+        Akonadi::Item item1(44);
+        auto task1 = Domain::Task::Ptr::create();
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item1);
+
+        // Storage mock returning the fetch job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).thenReturn(itemFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(true);
+
+        // A monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevelTasks(context);
+
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0), task1);
+
+        // WHEN
+        monitor->removeItem(item1);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).exactly(1));
+
+        QVERIFY(result->data().isEmpty());
+    }
 };
 
 QTEST_MAIN(AkonadiContextQueriesTest)

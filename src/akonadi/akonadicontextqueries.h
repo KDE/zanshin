@@ -61,6 +61,10 @@ private slots:
     void onTagRemoved(const Akonadi::Tag &tag);
     void onTagChanged(const Akonadi::Tag &tag);
 
+    void onItemAdded(const Akonadi::Item &item);
+    void onItemRemoved(const Akonadi::Item &item);
+    void onItemChanged(const Akonadi::Item &item);
+
 private:
     ContextQuery::Ptr createContextQuery();
     TaskQuery::Ptr createTaskQuery();

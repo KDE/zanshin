@@ -47,6 +47,10 @@ ContextQueries::ContextQueries(QObject *parent)
     connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
     connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
     connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
+
+    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
 }
 
 ContextQueries::ContextQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor)
@@ -58,6 +62,10 @@ ContextQueries::ContextQueries(StorageInterface *storage, SerializerInterface *s
     connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
     connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
     connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
+
+    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
 }
 
 ContextQueries::~ContextQueries()
@@ -159,6 +167,24 @@ void ContextQueries::onTagChanged(const Tag &tag)
 {
     foreach (const ContextQuery::Ptr &query, m_contextQueries)
         query->onChanged(tag);
+}
+
+void ContextQueries::onItemAdded(const Item &item)
+{
+    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+        query->onAdded(item);
+}
+
+void ContextQueries::onItemRemoved(const Item &item)
+{
+    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+        query->onRemoved(item);
+}
+
+void ContextQueries::onItemChanged(const Item &item)
+{
+    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+        query->onChanged(item);
 }
 
 ContextQueries::ContextQuery::Ptr ContextQueries::createContextQuery()
