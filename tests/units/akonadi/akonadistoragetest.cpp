@@ -921,6 +921,29 @@ private slots:
         QCOMPARE(notifiedTag.id(), tag.id());
     }
 
+    void shouldUpdateTag()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(tagChanged(Akonadi::Tag)));
+
+        // An existing tag
+        Akonadi::Tag tag = fetchTagByGID("change-me");
+
+        // WHEN
+        auto job = storage.updateTag(tag);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+        QCOMPARE(notifiedTag.id(), tag.id());
+    }
+
     void shouldUpdateCollection()
     {
         // GIVEN

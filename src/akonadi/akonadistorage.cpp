@@ -42,6 +42,7 @@
 #include <Akonadi/TagDeleteJob>
 #include <Akonadi/TagFetchJob>
 #include <Akonadi/TagFetchScope>
+#include <Akonadi/TagModifyJob>
 #include <Akonadi/TagAttribute>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadicollectionsearchjobinterface.h"
@@ -251,9 +252,7 @@ KJob *Storage::createTag(Tag tag)
 
 KJob *Storage::updateTag(Tag tag)
 {
-    Q_UNUSED(tag);
-    qFatal("update Tag not implemented yet !");
-    return 0;
+    return new TagModifyJob(tag);
 }
 
 KJob *Storage::removeTag(Tag tag)
