@@ -144,11 +144,20 @@ void AvailablePagesView::onAddTriggered()
     NewPageDialogInterface::Ptr dialog = m_dialogFactory(this);
     dialog->setDataSourcesModel(m_sources);
     dialog->setDefaultSource(m_defaultSource);
+
     if (dialog->exec() == QDialog::Accepted) {
         m_defaultSource = dialog->dataSource();
-        QMetaObject::invokeMethod(m_model, "addProject",
-                                  Q_ARG(QString, dialog->name()),
-                                  Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));
+        switch (dialog->pageType()) {
+        case NewPageDialogInterface::Project:
+            QMetaObject::invokeMethod(m_model, "addProject",
+                                      Q_ARG(QString, dialog->name()),
+                                      Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));
+            break;
+        case NewPageDialogInterface::Context:
+            QMetaObject::invokeMethod(m_model, "addContext",
+                                      Q_ARG(QString, dialog->name()));
+            break;
+        }
     }
 }
 

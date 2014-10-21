@@ -27,10 +27,13 @@
 #include <QIcon>
 #include <QMimeData>
 
+#include "domain/contextqueries.h"
+#include "domain/contextrepository.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/taskrepository.h"
 
+#include "presentation/contextpagemodel.h"
 #include "presentation/inboxpagemodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/projectpagemodel.h"
@@ -43,6 +46,8 @@ using namespace Presentation;
 AvailablePagesModel::AvailablePagesModel(Domain::ArtifactQueries *artifactQueries,
                                          Domain::ProjectQueries *projectQueries,
                                          Domain::ProjectRepository *projectRepository,
+                                         Domain::ContextQueries *contextQueries,
+                                         Domain::ContextRepository *contextRepository,
                                          Domain::TaskQueries *taskQueries,
                                          Domain::TaskRepository *taskRepository,
                                          Domain::NoteRepository *noteRepository,
@@ -52,6 +57,8 @@ AvailablePagesModel::AvailablePagesModel(Domain::ArtifactQueries *artifactQuerie
       m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
+      m_contextQueries(contextQueries),
+      m_contextRepository(contextRepository),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
       m_noteRepository(noteRepository)
@@ -95,6 +102,13 @@ void AvailablePagesModel::addProject(const QString &name, const Domain::DataSour
     auto project = Domain::Project::Ptr::create();
     project->setName(name);
     m_projectRepository->create(project, source);
+}
+
+void AvailablePagesModel::addContext(const QString &name)
+{
+    auto context = Domain::Context::Ptr::create();
+    context->setName(name);
+    m_contextRepository->save(context);
 }
 
 QAbstractItemModel *AvailablePagesModel::createPageListModel()

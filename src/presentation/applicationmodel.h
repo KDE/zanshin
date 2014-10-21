@@ -36,6 +36,8 @@ namespace Domain {
     class NoteRepository;
     class ProjectQueries;
     class ProjectRepository;
+    class ContextQueries;
+    class ContextRepository;
     class TaskQueries;
     class TaskRepository;
 }
@@ -59,6 +61,8 @@ public:
     explicit ApplicationModel(Domain::ArtifactQueries *artifactQueries,
                               Domain::ProjectQueries *projectQueries,
                               Domain::ProjectRepository *projectRepository,
+                              Domain::ContextQueries *contextQueries,
+                              Domain::ContextRepository *contextRepository,
                               Domain::DataSourceQueries *sourceQueries,
                               Domain::TaskQueries *taskQueries,
                               Domain::TaskRepository *taskRepository,
@@ -98,6 +102,9 @@ private:
 
     Domain::ProjectQueries *m_projectQueries;
     Domain::ProjectRepository *m_projectRepository;
+
+    Domain::ContextQueries *m_contextQueries;
+    Domain::ContextRepository *m_contextRepository;
 
     Domain::DataSourceQueries *m_sourceQueries;
     Domain::TaskQueries *m_taskQueries;

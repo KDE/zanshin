@@ -50,7 +50,7 @@ private slots:
     void shouldProvideAvailableSourcesModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *available = app.availableSources();
@@ -62,7 +62,7 @@ private slots:
     void shouldProvideAvailablePagesModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *available = app.availablePages();
@@ -74,7 +74,7 @@ private slots:
     void shouldProvideCurrentPage()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0);
         QVERIFY(!app.currentPage());
         QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
@@ -96,7 +96,7 @@ private slots:
     void shouldProvideArtifactEditorModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *page = app.editor();
@@ -112,7 +112,7 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        Presentation::ApplicationModel app(0, 0, 0, &sourceQueriesMock.getInstance(), 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, &sourceQueriesMock.getInstance(), 0, 0, 0);
 
         // WHEN
         auto tasks = app.taskSourcesModel();
@@ -144,9 +144,6 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
-        // Dummy note repository
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
-
         // Repository mock returning the data source as default
         mock_object<Domain::TaskRepository> taskRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
@@ -156,10 +153,12 @@ private slots:
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+                                           0);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -186,9 +185,6 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
-        // Dummy note repository
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
-
         // Repository mock returning the data source as default
         mock_object<Domain::TaskRepository> taskRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
@@ -198,10 +194,12 @@ private slots:
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+                                           0);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -223,19 +221,18 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
-        // Dummy note repository
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
-
         // Repository mock returning the data source as default
         mock_object<Domain::TaskRepository> taskRepositoryMock;
 
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+                                           0);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -260,9 +257,6 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
-        // Dummy note repository
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
-
         // Repository mock setting the default data source
         mock_object<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::setDefaultSource).when(source).thenReturn();
@@ -270,10 +264,13 @@ private slots:
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
                                            &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+                                           0);
+
 
         // WHEN
         app.setDefaultTaskDataSource(source);
@@ -303,9 +300,6 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        // Dummy task repository
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
-
         // Repository mock returning the data source as default
         mock_object<Domain::NoteRepository> noteRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
@@ -315,10 +309,13 @@ private slots:
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
-                                           &taskRepositoryMock.getInstance(),
+                                           0,
                                            &noteRepositoryMock.getInstance());
+
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -345,9 +342,6 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        // Dummy task repository
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
-
         // Repository mock returning the data source as default
         mock_object<Domain::NoteRepository> noteRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
@@ -357,9 +351,11 @@ private slots:
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
-                                           &taskRepositoryMock.getInstance(),
+                                           0,
                                            &noteRepositoryMock.getInstance());
 
         // WHEN
@@ -382,18 +378,17 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        // Dummy task repository
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
-
         // Repository mock returning the data source as default
         mock_object<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
-                                           &taskRepositoryMock.getInstance(),
+                                           0,
                                            &noteRepositoryMock.getInstance());
 
         // WHEN
@@ -419,9 +414,6 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        // Dummy task repository
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
-
         // Repository mock setting the default data source
         mock_object<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).thenReturn();
@@ -429,9 +421,11 @@ private slots:
         Presentation::ApplicationModel app(0,
                                            0,
                                            0,
+                                           0,
+                                           0,
                                            &sourceQueriesMock.getInstance(),
                                            0,
-                                           &taskRepositoryMock.getInstance(),
+                                           0,
                                            &noteRepositoryMock.getInstance());
 
         // WHEN

@@ -36,12 +36,16 @@
 
 using namespace Akonadi;
 
-ContextQueries::ContextQueries()
-    : m_storage(new Storage),
+ContextQueries::ContextQueries(QObject *parent)
+    : QObject(parent),
+      m_storage(new Storage),
       m_serializer(new Serializer),
       m_monitor(new MonitorImpl),
       m_ownInterfaces(true)
 {
+    connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
 }
 
 ContextQueries::ContextQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor)
@@ -57,6 +61,11 @@ ContextQueries::ContextQueries(StorageInterface *storage, SerializerInterface *s
 
 ContextQueries::~ContextQueries()
 {
+    if (m_ownInterfaces) {
+        delete m_storage;
+        delete m_serializer;
+        delete m_monitor;
+    }
 }
 
 ContextQueries::ContextResult::Ptr ContextQueries::findAll() const

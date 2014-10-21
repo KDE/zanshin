@@ -46,15 +46,25 @@ public:
 
     void accept();
 
-    void setDataSourcesModel(QAbstractItemModel *model);
-    void setDefaultSource(const Domain::DataSource::Ptr &source);
-    QString name() const;
-    Domain::DataSource::Ptr dataSource() const;
+    void setDataSourcesModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
+    void setDefaultSource(const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;
+    void setPageType(PageType type) Q_DECL_OVERRIDE;
+
+    QString name() const Q_DECL_OVERRIDE;
+    PageType pageType() const Q_DECL_OVERRIDE;
+    Domain::DataSource::Ptr dataSource() const Q_DECL_OVERRIDE;
+
+private slots:
+    void onNameTextChanged(const QString &text);
+    void onTypeIndexChanged(int index);
 
 private:
     Ui::NewPageDialog *ui;
     QString m_name;
+    PageType m_pageType;
     Domain::DataSource::Ptr m_source;
+
+    int indexOfType(NewPageDialogInterface::PageType type);
 };
 
 }

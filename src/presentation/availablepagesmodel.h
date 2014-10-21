@@ -39,6 +39,8 @@ namespace Domain {
     class NoteRepository;
     class ProjectQueries;
     class ProjectRepository;
+    class ContextQueries;
+    class ContextRepository;
     class TaskQueries;
     class TaskRepository;
 }
@@ -53,6 +55,8 @@ public:
     explicit AvailablePagesModel(Domain::ArtifactQueries *artifactQueries,
                                  Domain::ProjectQueries *projectQueries,
                                  Domain::ProjectRepository *projectRepository,
+                                 Domain::ContextQueries *contextQueries,
+                                 Domain::ContextRepository *contextRepository,
                                  Domain::TaskQueries *taskQueries,
                                  Domain::TaskRepository *taskRepository,
                                  Domain::NoteRepository *noteRepository,
@@ -65,6 +69,7 @@ public:
 
 public slots:
     void addProject(const QString &name, const Domain::DataSource::Ptr &source);
+    void addContext(const QString &name);
 
 private:
     QAbstractItemModel *createPageListModel();
@@ -75,6 +80,9 @@ private:
 
     Domain::ProjectQueries *m_projectQueries;
     Domain::ProjectRepository *m_projectRepository;
+
+    Domain::ContextQueries *m_contextQueries;
+    Domain::ContextRepository *m_contextRepository;
 
     Domain::TaskQueries *m_taskQueries;
     Domain::TaskRepository *m_taskRepository;

@@ -25,6 +25,7 @@
 
 #include "akonadi/akonadiartifactqueries.h"
 #include "akonadi/akonadicontextqueries.h"
+#include "akonadi/akonadicontextrepository.h"
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadinotequeries.h"
 #include "akonadi/akonadinoterepository.h"
@@ -40,6 +41,7 @@ void App::initializeDependencies()
     auto &deps = Utils::DependencyManager::globalInstance();
     deps.add<Domain::ArtifactQueries, Akonadi::ArtifactQueries>();
     deps.add<Domain::ContextQueries, Akonadi::ContextQueries>();
+    deps.add<Domain::ContextRepository, Akonadi::ContextRepository>();
     deps.add<Domain::DataSourceQueries, Akonadi::DataSourceQueries>();
     deps.add<Domain::NoteQueries, Akonadi::NoteQueries>();
     deps.add<Domain::NoteRepository, Akonadi::NoteRepository>();

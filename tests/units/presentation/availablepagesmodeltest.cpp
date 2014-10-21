@@ -25,6 +25,8 @@
 
 #include <mockitopp/mockitopp.hpp>
 
+#include "domain/contextqueries.h"
+#include "domain/contextrepository.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/note.h"
@@ -32,6 +34,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/availablepagesmodel.h"
+#include "presentation/contextpagemodel.h"
 #include "presentation/inboxpagemodel.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodelbase.h"
@@ -58,6 +61,9 @@ private slots:
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
         projectProvider->append(project2);
+        // No contexts
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
 
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
@@ -69,9 +75,14 @@ private slots:
         mock_object<Domain::ProjectRepository> projectRepositoryMock;
         mock_object<Domain::TaskRepository> taskRepositoryMock;
 
+        mock_object<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
+
         Presentation::AvailablePagesModel pages(0,
                                                 &projectQueriesMock.getInstance(),
                                                 &projectRepositoryMock.getInstance(),
+                                                &contextQueriesMock.getInstance(),
+                                                0,
                                                 0,
                                                 &taskRepositoryMock.getInstance(),
                                                 0);
@@ -196,15 +207,24 @@ private slots:
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
         projectProvider->append(project2);
+        // No contexts
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
 
         mock_object<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
         mock_object<Domain::ProjectRepository> projectRepositoryMock;
 
+
+        mock_object<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
+
         Presentation::AvailablePagesModel pages(0,
                                                 &projectQueriesMock.getInstance(),
                                                 &projectRepositoryMock.getInstance(),
+                                                &contextQueriesMock.getInstance(),
+                                                0,
                                                 0,
                                                 0,
                                                 0);
@@ -244,7 +264,7 @@ private slots:
 
         Presentation::AvailablePagesModel pages(0, 0,
                                                 &projectRepositoryMock.getInstance(),
-                                                0, 0, 0);
+                                                0, 0, 0, 0, 0);
 
         // WHEN
         pages.addProject("Foo", source);
@@ -253,6 +273,26 @@ private slots:
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
                                                                                any<Domain::DataSource::Ptr>())
                                                                          .exactly(1));
+    }
+
+    void shouldAddContexts()
+    {
+        // GIVEN
+
+        mock_object<Domain::ContextRepository> contextRepositoryMock;
+        contextRepositoryMock(&Domain::ContextRepository::save).when(any<Domain::Context::Ptr>())
+                                                                 .thenReturn(new FakeJob(this));
+
+        Presentation::AvailablePagesModel pages(0, 0, 0, 0,
+                                                &contextRepositoryMock.getInstance(),
+                                                0, 0, 0);
+
+        // WHEN
+        pages.addContext("Foo");
+
+        // THEN
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::save).when(any<Domain::Context::Ptr>())
+                                                                       .exactly(1));
     }
 };
 

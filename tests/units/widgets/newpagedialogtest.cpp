@@ -26,6 +26,7 @@
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QLineEdit>
+#include <QLabel>
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QTimer>
@@ -40,7 +41,7 @@ class UserInputSimulator : public QObject
     Q_OBJECT
 public:
     explicit UserInputSimulator(QObject *parent = 0)
-        : QObject(parent), dialog(0), reject(false), comboIndex(-1) {}
+        : QObject(parent), dialog(0), reject(false), sourceComboIndex(-1), typeComboIndex(-1) {}
 
     void exec()
     {
@@ -57,10 +58,15 @@ private slots:
             QTest::keyClicks(nameEdit, nameInput);
         }
 
-        if (comboIndex >= 0) {
+        if (sourceComboIndex >= 0) {
             auto sourceCombo = dialog->findChild<Widgets::DataSourceComboBox*>("sourceCombo");
             auto combo = sourceCombo->findChild<QComboBox*>();
-            combo->setCurrentIndex(comboIndex);
+            combo->setCurrentIndex(sourceComboIndex);
+        }
+
+        if (typeComboIndex >= 0) {
+            auto typeCombo = dialog->findChild<QComboBox*>("typeCombo");
+            typeCombo->setCurrentIndex(typeComboIndex);
         }
 
         auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
@@ -74,7 +80,8 @@ public:
     Widgets::NewPageDialog *dialog;
     bool reject;
     QString nameInput;
-    int comboIndex;
+    int sourceComboIndex;
+    int typeComboIndex;
 };
 
 class NewPageDialogTest : public QObject
@@ -97,11 +104,16 @@ private slots:
         Widgets::NewPageDialog dialog;
 
         QVERIFY(dialog.name().isEmpty());
+        QCOMPARE(dialog.pageType(), Widgets::NewPageDialogInterface::Project);
         QVERIFY(dialog.dataSource().isNull());
 
         auto nameEdit = dialog.findChild<QLineEdit*>("nameEdit");
         QVERIFY(nameEdit);
         QVERIFY(nameEdit->isVisibleTo(&dialog));
+
+        auto typeCombo = dialog.findChild<QComboBox*>("typeCombo");
+        QVERIFY(typeCombo);
+        QVERIFY(typeCombo->isVisibleTo(&dialog));
 
         auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
         QVERIFY(sourceCombo);
@@ -116,12 +128,14 @@ private slots:
         QVERIFY(buttonBox->button(QDialogButtonBox::Cancel));
     }
 
-    void shouldPositionDefaultProperty()
+    void shouldPositionDefaultProperties()
     {
         // GIVEN
         Widgets::NewPageDialog dialog;
         auto source = Domain::DataSource::Ptr::create();
         auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
+        auto pageTypeCombo = dialog.findChild<QComboBox*>("typeCombo");
+        auto pageType = Widgets::NewPageDialogInterface::Project;
 
         // WHEN
         dialog.setDefaultSource(source);
@@ -130,6 +144,9 @@ private slots:
         QCOMPARE(dialog.property("defaultSource").value<Domain::DataSource::Ptr>(), source);
         QCOMPARE(sourceCombo->defaultSourceObject(), &dialog);
         QCOMPARE(sourceCombo->defaultSourceProperty(), QByteArray("defaultSource"));
+
+        QVariant indexVariant = pageTypeCombo->itemData(pageTypeCombo->currentIndex());
+        QCOMPARE(indexVariant.value<Widgets::NewPageDialogInterface::PageType>(), pageType);
     }
 
     void shouldProvideUserInputWhenAccepted()
@@ -145,10 +162,10 @@ private slots:
 
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
-        userInput.comboIndex = 1;
+        userInput.sourceComboIndex = 1;
         userInput.nameInput = "name";
 
-        auto expectedSource = model.item(userInput.comboIndex)
+        auto expectedSource = model.item(userInput.sourceComboIndex)
                                    ->data(Presentation::QueryTreeModelBase::ObjectRole)
                                    .value<Domain::DataSource::Ptr>();
 
@@ -173,7 +190,7 @@ private slots:
 
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
-        userInput.comboIndex = 1;
+        userInput.sourceComboIndex = 1;
         userInput.nameInput = "name";
         userInput.reject = true;
 
@@ -183,6 +200,60 @@ private slots:
         // THEN
         QCOMPARE(dialog.name(), QString());
         QCOMPARE(dialog.dataSource(), Domain::DataSource::Ptr());
+    }
+
+    void shouldNotAllowEmptyName()
+    {
+        // GIVEN
+        Widgets::NewPageDialog dialog;
+
+        QStandardItemModel model;
+        model.appendRow(createSourceItem("source 1"));
+        dialog.setDataSourcesModel(&model);
+
+        UserInputSimulator userInput;
+        userInput.dialog = &dialog;
+        userInput.sourceComboIndex = 0;
+        userInput.typeComboIndex = 0;
+        userInput.nameInput = QString();
+        userInput.reject = true;
+
+        // WHEN
+        userInput.exec();
+
+        // THEN
+        auto buttonOk = dialog.findChild<QDialogButtonBox*>("buttonBox")->button(QDialogButtonBox::Ok);
+        QVERIFY(!buttonOk->isEnabled());
+        QCOMPARE(dialog.name(), QString());
+        QCOMPARE(dialog.dataSource(), Domain::DataSource::Ptr());
+    }
+
+    void shouldHideSourceComboWhenContextTypeIsSelected()
+    {
+        // GIVEN
+        Widgets::NewPageDialog dialog;
+
+        QStandardItemModel model;
+        model.appendRow(createSourceItem("source 1"));
+        dialog.setDataSourcesModel(&model);
+
+        UserInputSimulator userInput;
+        userInput.dialog = &dialog;
+        userInput.sourceComboIndex = 0;
+        userInput.typeComboIndex = 1;
+        userInput.nameInput = "name";
+        userInput.reject = false;
+
+        // WHEN
+        userInput.exec();
+
+        // THEN
+        auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
+        auto sourceLabel = dialog.findChild<QLabel*>("sourceLabel");
+
+        QVERIFY(sourceCombo->isHidden());
+        QVERIFY(sourceLabel->isHidden());
+        QCOMPARE(dialog.name(), userInput.nameInput);
     }
 };
 

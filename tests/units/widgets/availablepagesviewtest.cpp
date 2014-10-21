@@ -64,6 +64,21 @@ public:
         defaultSource = source;
     }
 
+    void setDefaultPageType(PageType type)
+    {
+        defaultPageType = type;
+    }
+
+    void setPageType(PageType type)
+    {
+        lastPageAdded = type;
+    }
+
+    PageType pageType() const
+    {
+        return lastPageAdded;
+    }
+
     QString name() const
     {
         return "name";
@@ -79,6 +94,8 @@ public:
     QAbstractItemModel *sourceModel;
     Domain::DataSource::Ptr defaultSource;
     Domain::DataSource::Ptr source;
+    PageType defaultPageType;
+    PageType lastPageAdded;
 };
 
 class AvailablePagesModelStub : public QObject
@@ -96,8 +113,14 @@ public slots:
         sources << source;
     }
 
+    void addContext(const QString &name)
+    {
+        contextNames << name;
+    }
+
 public:
     QStringList projectNames;
+    QStringList contextNames;
     QList<Domain::DataSource::Ptr> sources;
 };
 
@@ -167,6 +190,7 @@ private slots:
         available.setDefaultProjectSource(source);
         available.setDialogFactory([dialogStub] (QWidget *parent) {
             dialogStub->parent = parent;
+            dialogStub->setPageType(Widgets::NewPageDialogInterface::Project);
             return dialogStub;
         });
 
@@ -185,6 +209,39 @@ private slots:
         QCOMPARE(model.sources.size(), 1);
         QCOMPARE(model.sources.first(), dialogStub->dataSource());
         QCOMPARE(available.defaultProjectSource(), dialogStub->dataSource());
+    }
+
+    void shouldAddNewContexts()
+    {
+        // GIVEN
+        AvailablePagesModelStub model;
+        QStringListModel sourceModel;
+        auto dialogStub = NewPageDialogStub::Ptr::create();
+
+        auto source = Domain::DataSource::Ptr::create();
+
+        Widgets::AvailablePagesView available;
+        available.setModel(&model);
+        available.setProjectSourcesModel(&sourceModel);
+        available.setDefaultProjectSource(source);
+        available.setDialogFactory([dialogStub] (QWidget *parent) {
+            dialogStub->parent = parent;
+            dialogStub->setPageType(Widgets::NewPageDialogInterface::Context);
+            return dialogStub;
+        });
+
+        auto addAction = available.findChild<QAction*>("addAction");
+
+        // WHEN
+        addAction->trigger();
+
+        // THEN
+        QCOMPARE(dialogStub->execCount, 1);
+        QCOMPARE(dialogStub->parent, &available);
+        QCOMPARE(dialogStub->sourceModel, &sourceModel);
+        QCOMPARE(dialogStub->pageType(), Widgets::NewPageDialogInterface::Context);
+        QCOMPARE(model.contextNames.size(), 1);
+        QCOMPARE(model.contextNames.first(), dialogStub->name());
     }
 };
 
