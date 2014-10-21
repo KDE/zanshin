@@ -6,7 +6,7 @@ Feature: Context removal
 @wip
   Scenario: Removed context disappear from the list
     Given I display the available pages
-    When I remove a context named "Online"
+    When I remove a "context" named "Online"
     And I list the items
     Then the list is:
        | display                           | icon                |

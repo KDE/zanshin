@@ -347,8 +347,11 @@ WHEN("^I rename a project named \"(.*)\" to \"(.*)\"$") {
     pageListModel->setData(pageIndex, newName);
 }
 
-WHEN("^I remove a project named \"(.*)\"$") {
-    REGEX_PARAM(QString, projectName);
+WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
+    REGEX_PARAM(QString, objectTpye);
+    REGEX_PARAM(QString, objectName);
+
+    const QString pageNodeName = (objectTpye== "project") ? "Projects / " : "Contexts /";
 
     ScenarioScope<ZanshinContext> context;
     auto availablePages = context->app->property("availablePages").value<QObject*>();
@@ -358,7 +361,7 @@ WHEN("^I remove a project named \"(.*)\"$") {
     VERIFY(pageListModel);
     QTest::qWait(500);
 
-    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, "Projects / " + projectName);
+    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageNodeName + objectName);
     VERIFY(pageIndex.isValid());
 
     VERIFY(QMetaObject::invokeMethod(availablePages, "removeItem",
