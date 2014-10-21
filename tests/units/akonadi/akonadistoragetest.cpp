@@ -49,6 +49,7 @@
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
+#include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadistorage.h"
@@ -962,6 +963,44 @@ private slots:
         // THEN
         QCOMPARE(changeSpy.size(), 1);
         QVERIFY(selectionSpy.isEmpty());
+    }
+
+    void shouldFindCollectionsByName_data()
+    {
+        QTest::addColumn<QString>("name");
+        QTest::addColumn<QStringList>("expectedResults");
+
+        QStringList expectedResults;
+        expectedResults << "Calendar1";
+        QTest::newRow("get a collection") << "Calendar1" << expectedResults;
+
+        expectedResults.clear();
+        QTest::newRow("try with unknow name") << "toto" << expectedResults;
+
+        expectedResults << "Calendar3" << "Calendar2" << "Calendar1";
+        QTest::newRow("try with a part of a name") << "Calendar" << expectedResults;
+    }
+
+    void shouldFindCollectionsByName()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+
+        QFETCH(QString, name);
+        QFETCH(QStringList, expectedResults);
+
+        // WHEN
+        auto job = storage.searchCollections(name);
+        AKVERIFYEXEC(job->kjob());
+
+        // THEN
+        auto collections = job->collections();
+        QCOMPARE(collections.size(), expectedResults.size());
+        int i = 0;
+        for (const auto &collection : collections) {
+            QCOMPARE(collection.name(), expectedResults[i]);
+            ++i;
+        }
     }
 
 private:

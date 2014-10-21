@@ -54,6 +54,7 @@ public:
     KJob *createTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
 
     CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) Q_DECL_OVERRIDE;
+    CollectionSearchJobInterface *searchCollections(QString collectionName) Q_DECL_OVERRIDE;
     ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) Q_DECL_OVERRIDE;
     ItemFetchJobInterface *fetchItem(Akonadi::Item item) Q_DECL_OVERRIDE;
     TagFetchJobInterface *fetchTags() Q_DECL_OVERRIDE;

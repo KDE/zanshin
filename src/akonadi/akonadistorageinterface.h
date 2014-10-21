@@ -36,6 +36,7 @@ namespace Akonadi {
 
 class Collection;
 class CollectionFetchJobInterface;
+class CollectionSearchJobInterface;
 class ItemFetchJobInterface;
 class TagFetchJobInterface;
 
@@ -75,6 +76,7 @@ public:
     virtual KJob *createTag(Akonadi::Tag tag) = 0;
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) = 0;
+    virtual CollectionSearchJobInterface *searchCollections(QString collectionName) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) = 0;
     virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item) = 0;
     virtual TagFetchJobInterface *fetchTags() = 0;
