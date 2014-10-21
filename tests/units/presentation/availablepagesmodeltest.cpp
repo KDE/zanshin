@@ -479,6 +479,54 @@ private slots:
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::remove).when(project1).exactly(1));
     }
+
+    void shouldRemoveContext()
+    {
+        // GIVEN
+
+        // Two contexts
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName("context 1");
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
+        contextProvider->append(context1);
+        // empty projects
+        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
+
+        // contexts mocking
+        mock_object<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
+
+        mock_object<Domain::ContextRepository> contextRepositoryMock;
+
+        // projects mocking
+        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
+
+
+        Presentation::AvailablePagesModel pages(0,
+                                                &projectQueriesMock.getInstance(),
+                                                0,
+                                                &contextQueriesMock.getInstance(),
+                                                &contextRepositoryMock.getInstance(),
+                                                0,
+                                                0,
+                                                0);
+
+        QAbstractItemModel *model = pages.pageListModel();
+
+        const QModelIndex contextsIndex = model->index(2, 0);
+        const QModelIndex context1Index = model->index(0, 0, contextsIndex);
+
+        contextRepositoryMock(&Domain::ContextRepository::remove).when(context1).thenReturn(new FakeJob(this));
+
+        // WHEN
+        pages.removeItem(context1Index);
+
+        // THEN
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::remove).when(context1).exactly(1));
+    }
 };
 
 QTEST_MAIN(AvailablePagesModelTest)

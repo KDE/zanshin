@@ -123,6 +123,8 @@ void AvailablePagesModel::removeItem(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     if (auto project = object.objectCast<Domain::Project>()) {
         m_projectRepository->remove(project);
+    } else if (auto context = object.objectCast<Domain::Context>()) {
+        m_contextRepository->remove(context);
     }
 }
 
