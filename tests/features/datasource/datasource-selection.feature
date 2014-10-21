@@ -39,7 +39,7 @@ Feature: Data sources selection
     Then the list is:
        | display                           |
        | Contexts                          |
-       | Contexts / Errands                |
+       | Contexts / Chores                 |
        | Contexts / Internet               |
        | Contexts / Online                 |
        | Inbox                             |
@@ -54,7 +54,7 @@ Feature: Data sources selection
     Then the list is:
        | display                           |
        | Contexts                          |
-       | Contexts / Errands                |
+       | Contexts / Chores                 |
        | Contexts / Internet               |
        | Contexts / Online                 |
        | Inbox                             |

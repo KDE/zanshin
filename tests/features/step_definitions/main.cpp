@@ -376,9 +376,17 @@ WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
     QTest::qWait(500);
 }
 
-WHEN("^I rename a project named \"(.*)\" to \"(.*)\"$") {
-    REGEX_PARAM(QString, projectName);
+WHEN("^I rename a \"(.*)\" named \"(.*)\" to \"(.*)\"$") {
+    qDebug() << "Renaming is happening ! ";
+    REGEX_PARAM(QString, objectType);
+    REGEX_PARAM(QString, oldName);
     REGEX_PARAM(QString, newName);
+
+    const QString pageNodeName = (objectType == "project") ? "Projects / "
+                               : (objectType == "context") ? "Contexts / "
+                               : QString();
+
+    VERIFY(!pageNodeName.isEmpty());
 
     ScenarioScope<ZanshinContext> context;
     auto availablePages = context->app->property("availablePages").value<QObject*>();
@@ -388,7 +396,7 @@ WHEN("^I rename a project named \"(.*)\" to \"(.*)\"$") {
     VERIFY(pageListModel);
     QTest::qWait(500);
 
-    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, "Projects / " + projectName);
+    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageNodeName + oldName);
     VERIFY(pageIndex.isValid());
 
     pageListModel->setData(pageIndex, newName);

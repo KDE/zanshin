@@ -11,7 +11,7 @@ Feature: Context removal
     Then the list is:
        | display                           | icon                |
        | Contexts                          | folder              |
-       | Contexts / Errands                | view-pim-tasks      |
+       | Contexts / Chores                 | view-pim-tasks      |
        | Contexts / Internet               | view-pim-tasks      |
        | Inbox                             | mail-folder-inbox   |
        | Projects                          | folder              |

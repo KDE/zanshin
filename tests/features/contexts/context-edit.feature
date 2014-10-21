@@ -1,21 +1,20 @@
-Feature: Project rename
-  As someone collecting tasks and notes
-  I can rename a project
-  In order to refine my tasks and notes organization
+Feature: Context rename
+  As someone collecting tasks
+  I can rename a context
+  In order to refine my tasks organization
 
-  Scenario: Renamed projects appear in the list
+  Scenario: Renamed context appear in the list
     Given I display the available pages
-    When I rename a "project" named "Birthday" to "Party"
+    When I rename a "context" named "Errands" to "Chores"
     And I list the items
     Then the list is:
        | display                           | icon              |
        | Contexts                          | folder            |
-       | Contexts / Chores                 | view-pim-tasks     |
+       | Contexts / Chores                 | view-pim-tasks    |
        | Contexts / Internet               | view-pim-tasks    |
        | Contexts / Online                 | view-pim-tasks    |
        | Inbox                             | mail-folder-inbox |
        | Projects                          | folder            |
        | Projects / Read List              | view-pim-tasks    |
        | Projects / Backlog                | view-pim-tasks    |
-       | Projects / Party                  | view-pim-tasks    |
        | Projects / Prepare talk about TDD | view-pim-tasks    |
