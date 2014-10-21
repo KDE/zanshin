@@ -44,6 +44,7 @@ ProjectQueries::ProjectQueries(QObject *parent)
     connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(onCollectionSelectionChanged()));
 }
 
 ProjectQueries::ProjectQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor)
@@ -55,6 +56,7 @@ ProjectQueries::ProjectQueries(StorageInterface *storage, SerializerInterface *s
     connect(monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
     connect(monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
     connect(monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(onCollectionSelectionChanged()));
 }
 
 ProjectQueries::~ProjectQueries()
@@ -83,6 +85,9 @@ ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
                     return;
 
                 for (auto collection : job->collections()) {
+                    if (!m_serializer->isSelectedCollection(collection))
+                        continue;
+
                     ItemFetchJobInterface *job = m_storage->fetchItems(collection);
                     Utils::JobHandler::install(job->kjob(), [this, job, add] {
                         if (job->kjob()->error() != KJob::NoError)
@@ -201,6 +206,12 @@ void ProjectQueries::onItemChanged(const Item &item)
 
     foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
         query->onChanged(item);
+}
+
+void ProjectQueries::onCollectionSelectionChanged()
+{
+    foreach (const ProjectQuery::Ptr &query, m_projectQueries)
+        query->reset();
 }
 
 ProjectQueries::ProjectQuery::Ptr ProjectQueries::createProjectQuery()

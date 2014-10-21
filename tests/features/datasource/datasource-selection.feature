@@ -31,7 +31,6 @@ Feature: Data sources selection
        | Buy pears                                     |
        | 21/04/2014 14:49                              |
 
-  @wip
   Scenario: Unchecking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources
     When I uncheck the item
@@ -47,7 +46,6 @@ Feature: Data sources selection
        | Projects                          |
        | Projects / Backlog                |
 
-  @wip
   Scenario: Checking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources
     When I check the item
