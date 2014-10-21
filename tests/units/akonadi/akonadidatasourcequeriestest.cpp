@@ -674,8 +674,12 @@ private slots:
         col2.setParentCollection(Akonadi::Collection::root());
         auto source2 = Domain::DataSource::Ptr::create();
 
+        // One child collection
+        Akonadi::Collection col3(44);
+        col3.setParentCollection(col2);
+
         MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // Storage mock returning the fetch jobs
         mock_object<Akonadi::StorageInterface> storageMock;
@@ -691,6 +695,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).thenReturn();
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col3).thenReturn(false);
 
         // Monitor mock
         MockMonitor *monitor = new MockMonitor(this);
@@ -708,6 +714,7 @@ private slots:
 
         // WHEN
         monitor->changeCollection(col2);
+        monitor->changeCollection(col3);
 
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),

@@ -169,7 +169,8 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
             m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::BaseName);
         });
         m_findTopLevel->setPredicateFunction([this] (const Akonadi::Collection &collection) {
-            return collection.isValid();
+            return collection.isValid()
+                && collection.parentCollection() == Akonadi::Collection::root();
         });
         m_findTopLevel->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
             return m_serializer->representsCollection(source, collection);
