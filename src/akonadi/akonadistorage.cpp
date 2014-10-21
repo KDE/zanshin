@@ -248,6 +248,13 @@ KJob *Storage::createTag(Tag tag)
     return new TagCreateJob(tag);
 }
 
+KJob *Storage::removeTag(Tag tag)
+{
+    Q_UNUSED(tag);
+    qFatal("not implemented yet!");
+    return 0;
+}
+
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
 {
     QStringList contentMimeTypes;

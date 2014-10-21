@@ -52,6 +52,7 @@ public:
     KJob *createTransaction() Q_DECL_OVERRIDE;
 
     KJob *createTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
+    KJob *removeTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
 
     CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) Q_DECL_OVERRIDE;
     CollectionSearchJobInterface *searchCollections(QString collectionName) Q_DECL_OVERRIDE;

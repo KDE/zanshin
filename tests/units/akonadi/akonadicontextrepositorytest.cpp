@@ -66,6 +66,35 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createTag).when(tag).exactly(1));
     }
 
+    void shouldRemoveContext()
+    {
+        // GIVEN
+        Akonadi::Tag tag;
+        tag.setName("tag42");
+        tag.setId(42); // this id should have been set from Akonadi
+        auto context = Domain::Context::Ptr::create();
+
+        // A mock creating job
+        auto tagDeleteJob= new MockAkonadiJob(this);
+
+        // Storage mock returning the tagCreatejob
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::removeTag).when(tag)
+                                                          .thenReturn(tagDeleteJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+
+        // WHEN
+        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(&storageMock.getInstance(),
+                                                                                             &serializerMock.getInstance()));
+        repository->remove(context)->exec();
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::removeTag).when(tag).exactly(1));
+    }
 };
 
 QTEST_MAIN(AkonadiContextRepositoryTest)

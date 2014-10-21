@@ -64,9 +64,9 @@ KJob *ContextRepository::create(Domain::Context::Ptr context)
 
 KJob *ContextRepository::remove(Domain::Context::Ptr context)
 {
-    Q_UNUSED(context);
-    qFatal("not implemented yet");
-    return 0;
+    auto tag = m_serializer->createTagFromContext(context);
+    Q_ASSERT(tag.isValid());
+    return m_storage->removeTag(tag);
 }
 
 KJob *ContextRepository::associate(Domain::Context::Ptr parent, Domain::Task::Ptr child)
