@@ -348,10 +348,14 @@ WHEN("^I rename a project named \"(.*)\" to \"(.*)\"$") {
 }
 
 WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
-    REGEX_PARAM(QString, objectTpye);
+    REGEX_PARAM(QString, objectType);
     REGEX_PARAM(QString, objectName);
 
-    const QString pageNodeName = (objectTpye== "project") ? "Projects / " : "Contexts /";
+    const QString pageNodeName = (objectType == "project") ? "Projects / "
+                               : (objectType == "context") ? "Contexts / "
+                               : QString();
+
+    VERIFY(!pageNodeName.isEmpty());
 
     ScenarioScope<ZanshinContext> context;
     auto availablePages = context->app->property("availablePages").value<QObject*>();
@@ -366,6 +370,7 @@ WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
 
     VERIFY(QMetaObject::invokeMethod(availablePages, "removeItem",
                                      Q_ARG(QModelIndex, pageIndex)));
+    QTest::qWait(500);
 }
 
 WHEN("^I add a context named \"(.+)\"$") {

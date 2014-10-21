@@ -5,7 +5,7 @@ Feature: Project destruction
 
   Scenario: Removing a simple project from the list
     Given I display the available pages
-    When I remove a project named "Prepare talk about TDD"
+    When I remove a "project" named "Prepare talk about TDD"
     And I list the items
     Then the list is:
        | display                           | icon                |
