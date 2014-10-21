@@ -363,6 +363,14 @@ WHEN("^I remove a project named \"(.*)\"$") {
 
     VERIFY(QMetaObject::invokeMethod(availablePages, "removeProject",
                                      Q_ARG(QModelIndex, pageIndex)));
+}
+
+WHEN("^I add a context named \"(.+)\"$") {
+    REGEX_PARAM(QString, contextName);
+    ScenarioScope<ZanshinContext> context;
+    QTest::qWait(500);
+    VERIFY(QMetaObject::invokeMethod(context->presentation, "addContext",
+                                     Q_ARG(QString, contextName)));
     QTest::qWait(500);
 }
 

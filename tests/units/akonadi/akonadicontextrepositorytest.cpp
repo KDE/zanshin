@@ -60,7 +60,7 @@ private slots:
         // WHEN
         QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(&storageMock.getInstance(),
                                                                                              &serializerMock.getInstance()));
-        repository->save(context)->exec();
+        repository->create(context)->exec();
 
         //THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::createTag).when(tag).exactly(1));

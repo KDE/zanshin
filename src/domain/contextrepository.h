@@ -37,7 +37,7 @@ public:
     ContextRepository();
     virtual ~ContextRepository();
 
-    virtual KJob *save(Context::Ptr context) = 0;
+    virtual KJob *create(Context::Ptr context) = 0;
     virtual KJob *remove(Context::Ptr context) = 0;
 
     virtual KJob *associate(Context::Ptr parent, Task::Ptr child) = 0;

@@ -92,6 +92,7 @@ private:
     Domain::QueryResultProvider<QObjectPtr>::Ptr m_rootsProvider;
     QObjectPtr m_inboxObject;
     QObjectPtr m_projectsObject;
+    QObjectPtr m_contextsObject;
 };
 
 }

@@ -92,6 +92,13 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
                                     m_taskQueries, m_taskRepository,
                                     m_noteRepository,
                                     this);
+    } else if (auto context = object.objectCast<Domain::Context>()) {
+        return new ContextPageModel(context,
+                                    m_contextQueries,
+                                    m_taskQueries,
+                                    m_taskRepository,
+                                    m_noteRepository,
+                                    this);
     }
 
     return 0;
@@ -108,7 +115,7 @@ void AvailablePagesModel::addContext(const QString &name)
 {
     auto context = Domain::Context::Ptr::create();
     context->setName(name);
-    m_contextRepository->save(context);
+    m_contextRepository->create(context);
 }
 
 QAbstractItemModel *AvailablePagesModel::createPageListModel()
@@ -117,16 +124,21 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
     m_inboxObject->setProperty("name", tr("Inbox"));
     m_projectsObject = QObjectPtr::create();
     m_projectsObject->setProperty("name", tr("Projects"));
+    m_contextsObject = QObjectPtr::create();
+    m_contextsObject->setProperty("name", tr("Contexts"));
 
     m_rootsProvider = Domain::QueryResultProvider<QObjectPtr>::Ptr::create();
     m_rootsProvider->append(m_inboxObject);
     m_rootsProvider->append(m_projectsObject);
+    m_rootsProvider->append(m_contextsObject);
 
     auto query = [this](const QObjectPtr &object) -> Domain::QueryResultInterface<QObjectPtr>::Ptr {
         if (!object)
             return Domain::QueryResult<QObjectPtr>::create(m_rootsProvider);
         else if (object == m_projectsObject)
             return Domain::QueryResult<Domain::Project::Ptr, QObjectPtr>::copy(m_projectQueries->findAll());
+        else if (object == m_contextsObject)
+            return Domain::QueryResult<Domain::Context::Ptr, QObjectPtr>::copy(m_contextQueries->findAll());
         else
             return Domain::QueryResult<QObjectPtr>::Ptr();
     };
@@ -142,6 +154,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         const Qt::ItemFlags structureNodeFlags = Qt::NoItemFlags;
 
         return object.objectCast<Domain::Project>() ? defaultFlags
+             : object.objectCast<Domain::Context>() ? defaultFlags
              : object == m_inboxObject ? immutableNodeFlags
              : structureNodeFlags;
     };
@@ -155,7 +168,9 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         }
 
         if (role == Qt::EditRole
-         && (object == m_inboxObject || object == m_projectsObject)) {
+         && (object == m_inboxObject
+          || object == m_projectsObject
+          || object == m_contextsObject)) {
             return QVariant();
         }
 
@@ -163,7 +178,8 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             return object->property("name").toString();
         } else if (role == Qt::DecorationRole || role == QueryTreeModelBase::IconNameRole) {
             const QString iconName = object == m_inboxObject ? "mail-folder-inbox"
-                                   : object == m_projectsObject ? "folder"
+                                   : (object == m_projectsObject) ? "folder"
+                                   : (object == m_contextsObject) ? "folder"
                                    : "view-pim-tasks";
 
             if (role == Qt::DecorationRole)
@@ -180,14 +196,21 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             return false;
         }
 
-        if (object == m_inboxObject || object == m_projectsObject) {
+        if (object == m_inboxObject
+         || object == m_projectsObject
+         || object == m_contextsObject) {
             return false;
         }
 
-        auto project = object.objectCast<Domain::Project>();
-        Q_ASSERT(project);
-        project->setName(value.toString());
-        m_projectRepository->update(project);
+        if (auto project = object.objectCast<Domain::Project>()) {
+            project->setName(value.toString());
+            m_projectRepository->update(project);
+        } else if (auto context = object.objectCast<Domain::Context>()) {
+            context->setName(value.toString());
+        } else {
+            Q_ASSERT(false);
+        }
+
         return true;
     };
 

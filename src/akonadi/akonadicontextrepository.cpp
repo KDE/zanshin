@@ -55,7 +55,7 @@ ContextRepository::~ContextRepository()
     }
 }
 
-KJob *ContextRepository::save(Domain::Context::Ptr context)
+KJob *ContextRepository::create(Domain::Context::Ptr context)
 {
     auto tag = m_serializer->createTagFromContext(context);
     Q_ASSERT(!tag.isValid());
