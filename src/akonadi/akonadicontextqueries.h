@@ -40,6 +40,7 @@ class ContextQueries : public QObject, public Domain::ContextQueries
 {
     Q_OBJECT
 public:
+    typedef Domain::LiveQuery<Akonadi::Item, Domain::Task::Ptr> TaskQuery;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
 
@@ -62,6 +63,7 @@ private slots:
 
 private:
     ContextQuery::Ptr createContextQuery();
+    TaskQuery::Ptr createTaskQuery();
 
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
@@ -70,6 +72,9 @@ private:
 
     ContextQuery::Ptr m_findAll;
     ContextQuery::List m_contextQueries;
+
+    QHash<Akonadi::Tag::Id, TaskQuery::Ptr> m_findToplevel;
+    TaskQuery::List m_taskQueries;
 };
 
 } // akonadi namespace

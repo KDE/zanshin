@@ -332,6 +332,63 @@ private slots:
         QCOMPARE(result->data().at(1), context2);
         QCOMPARE(result->data().at(1)->name(), context2->name());
     }
+
+    void shouldLookForAllContextTopLevelTasks()
+    {
+        // GIVEN
+
+        // A context
+        Akonadi::Tag tag(43);
+        auto context = Domain::Context::Ptr::create();
+
+        // Two tasks related to context
+        Akonadi::Item item1(44);
+        auto task1 = Domain::Task::Ptr::create();
+        Akonadi::Item item2(47);
+        auto task2 = Domain::Task::Ptr::create();
+
+        //A fetch job returning the items tagged with the context
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2);
+
+        //Mock object returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).thenReturn(itemFetchJob);
+
+        // Serializer mock returning the objects from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item2).thenReturn(true);
+
+        // WHEN
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   new MockMonitor(this)));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevelTasks(context);
+        result->data();
+        result = queries->findTopLevelTasks(context); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0), task1);
+        QCOMPARE(result->data().at(1), task2);
+
+        // Should not change anything
+
+        result = queries->findTopLevelTasks(context);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTagItems).when(tag).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0), task1);
+        QCOMPARE(result->data().at(1), task2);
+    }
 };
 
 QTEST_MAIN(AkonadiContextQueriesTest)

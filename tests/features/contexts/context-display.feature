@@ -3,7 +3,6 @@ Feature: Context content
   I can display a context
   In order to see the tasks associated to it
 
-  @wip
   Scenario: Context tasks appear in the corresponding page
     Given I display the "Contexts / Errands" page
     And I look at the central list

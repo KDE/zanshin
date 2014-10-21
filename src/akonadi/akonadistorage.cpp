@@ -305,6 +305,15 @@ ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item)
     return job;
 }
 
+ItemFetchJobInterface *Storage::fetchTagItems(Tag tag)
+{
+    auto job = new ItemJob(tag);
+
+    configureItemFetchJob(job);
+
+    return job;
+}
+
 TagFetchJobInterface *Storage::fetchTags()
 {
     return new TagJob;

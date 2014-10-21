@@ -57,6 +57,7 @@ public:
     CollectionSearchJobInterface *searchCollections(QString collectionName) Q_DECL_OVERRIDE;
     ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) Q_DECL_OVERRIDE;
     ItemFetchJobInterface *fetchItem(Akonadi::Item item) Q_DECL_OVERRIDE;
+    ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) Q_DECL_OVERRIDE;
     TagFetchJobInterface *fetchTags() Q_DECL_OVERRIDE;
 
 private:

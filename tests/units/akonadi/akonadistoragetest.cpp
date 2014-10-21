@@ -46,6 +46,7 @@
 #include <Akonadi/TagCreateJob>
 #include <Akonadi/TagDeleteJob>
 #include <Akonadi/TagModifyJob>
+#include <Akonadi/TagFetchJob>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
@@ -230,6 +231,35 @@ private slots:
         tagGids.sort();
 
         QCOMPARE(tagGids, expectedGids);
+    }
+
+    void shouldListItemsAssociatedWithTag()
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+        Akonadi::Tag tag = fetchTagByGID("errands-context");
+        const QStringList expectedRemoteIds = { "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
+                                                "{7824df00-2fd6-47a4-8319-52659dc82005}"
+                                              };
+
+        // WHEN
+        auto job = storage.fetchTagItems(tag);
+        AKVERIFYEXEC(job->kjob());
+
+        // THEN
+        auto items = job->items();
+        QStringList itemRemoteIds;
+        for (const auto &item : items) {
+            itemRemoteIds << item.remoteId();
+
+            QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
+            QVERIFY(!item.attributes().isEmpty());
+            QVERIFY(item.modificationTime().isValid());
+            QVERIFY(!item.flags().isEmpty());
+        }
+        itemRemoteIds.sort();
+
+        QCOMPARE(itemRemoteIds, expectedRemoteIds);
     }
 
     void shouldNotifyCollectionAdded()
@@ -1042,6 +1072,23 @@ private:
         }
 
         return job->collections().first();
+    }
+
+    Akonadi::Tag fetchTagByGID(const QString &gid)
+    {
+        auto job = new Akonadi::TagFetchJob();
+        if (!job->exec()) {
+            qWarning() << job->errorString();
+            return Akonadi::Tag();
+        }
+
+        auto tags = job->tags();
+        for (const Akonadi::Tag &tag : tags) {
+            if (tag.gid() == gid)
+                return tag;
+        }
+
+        return Akonadi::Tag();
     }
 
     Akonadi::Collection calendar1()

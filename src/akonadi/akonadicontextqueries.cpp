@@ -105,9 +105,42 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
 
 ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Context::Ptr context) const
 {
-    qFatal("Not implemented yet");
-    Q_UNUSED(context);
-    return TaskResult::Ptr();
+    Akonadi::Tag tag = m_serializer->createTagFromContext(context);
+    if (!m_findToplevel.contains(tag.id())) {
+        TaskQuery::Ptr query;
+
+        {
+            ContextQueries *self = const_cast<ContextQueries*>(this);
+            query = self->createTaskQuery();
+            self->m_findToplevel.insert(tag.id(), query);
+        }
+
+        query->setFetchFunction([this, tag] (const TaskQuery::AddFunction &add) {
+            ItemFetchJobInterface *job = m_storage->fetchTagItems(tag);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                if (job->kjob()->error() != KJob::NoError)
+                    return;
+
+                for (auto item : job->items())
+                    add(item);
+            });
+
+        });
+        query->setConvertFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->createTaskFromItem(item);
+        });
+        query->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
+            m_serializer->updateTaskFromItem(task, item);
+        });
+        query->setPredicateFunction([this, context] (const Akonadi::Item &item) {
+            return m_serializer->isContextChild(context, item);
+        });
+        query->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
+            return m_serializer->representsItem(task, item);
+        });
+    }
+
+    return m_findToplevel.value(tag.id())->result();
 }
 
 void ContextQueries::onTagAdded(const Tag &tag)
@@ -132,5 +165,12 @@ ContextQueries::ContextQuery::Ptr ContextQueries::createContextQuery()
 {
     auto query = ContextQuery::Ptr::create();
     m_contextQueries << query;
+    return query;
+}
+
+ContextQueries::TaskQuery::Ptr ContextQueries::createTaskQuery()
+{
+    auto query = TaskQuery::Ptr::create();
+    m_taskQueries << query;
     return query;
 }
