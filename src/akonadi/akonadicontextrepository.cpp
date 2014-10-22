@@ -2,6 +2,7 @@
 
    Copyright 2014 Kevin Ottens <ervin@kde.org>
    Copyright 2014 Franck Arrecot <franck.arrecot@gmail.com>
+   Copyright 2014 Rémi Benoit <r3m1.benoit@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -24,6 +25,7 @@
 
 #include "akonadicontextrepository.h"
 
+#include "akonadiitemfetchjobinterface.h"
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
 
@@ -78,10 +80,28 @@ KJob *ContextRepository::remove(Domain::Context::Ptr context)
 
 KJob *ContextRepository::associate(Domain::Context::Ptr parent, Domain::Task::Ptr child)
 {
-    Q_UNUSED(parent);
-    Q_UNUSED(child);
-    qFatal("not implemented yet");
-    return 0;
+    Item childItem;
+
+    childItem = m_serializer->createItemFromTask(child);
+    Q_ASSERT(childItem.isValid());
+
+    auto job = new Utils::CompositeJob();
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, parent, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+        auto tag = m_serializer->createTagFromContext(parent);
+        Q_ASSERT(tag.isValid());
+        childItem.setTag(tag);
+
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+    return job;
 }
 
 
