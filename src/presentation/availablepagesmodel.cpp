@@ -40,6 +40,7 @@
 #include "presentation/metatypes.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
+#include "presentation/tagpagemodel.h"
 
 #include "utils/jobhandler.h"
 
@@ -105,6 +106,13 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
                                     m_taskRepository,
                                     m_noteRepository,
                                     this);
+    } else if (auto tag = object.objectCast<Domain::Tag>()) {
+        return new TagPageModel(tag,
+                                m_tagQueries,
+                                m_taskQueries,
+                                m_taskRepository,
+                                m_noteRepository,
+                                this);
     }
 
     return 0;

@@ -9,6 +9,7 @@ zanshin_auto_tests(
   pagemodeltest
   projectpagemodeltest
   querytreemodeltest
+  tagpagemodeltest
   tasklistmodeltest
   contextpagemodeltest
 )
