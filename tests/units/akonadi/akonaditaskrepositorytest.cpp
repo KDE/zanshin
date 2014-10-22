@@ -250,6 +250,54 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, col).exactly(1));
     }
 
+    void shouldCreateNewItemsInContext()
+    {
+        // GIVEN
+        // a tag
+        Akonadi::Tag tag;
+        tag.setName("tag42");
+        tag.setId(42);
+
+        // the context related to the tag
+        auto context = Domain::Context::Ptr::create();
+
+        // a default collection
+        Akonadi::Collection defaultCollection(42);
+
+        // A task and its corresponding item not existing in storage yet
+        Akonadi::Item taskItem;
+        auto task = Domain::Task::Ptr::create();
+
+        // A mock create job
+        auto itemCreateJob = new MockAkonadiJob(this);
+
+        // serializer mock returning the item for the task
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).thenReturn(taskItem);
+
+        // Storage mock returning the create job
+        mock_object<Akonadi::StorageInterface> storageMock;
+
+        storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().thenReturn(defaultCollection);
+        storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, defaultCollection).thenReturn(itemCreateJob);
+
+        // WHEN
+        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
+                                                                                       &serializerMock.getInstance()));
+
+        repository->createInContext(task, context)->exec();
+
+        // THEN
+
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
+
+        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, defaultCollection).exactly(1));
+    }
+
     void shouldUpdateExistingItems()
     {
         // GIVEN
