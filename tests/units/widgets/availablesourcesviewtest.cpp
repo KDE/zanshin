@@ -25,6 +25,7 @@
 
 #include <QAbstractItemModel>
 #include <QHeaderView>
+#include <QSortFilterProxyModel>
 #include <QStringListModel>
 #include <QTreeView>
 
@@ -46,6 +47,12 @@ private slots:
         QVERIFY(sourcesView);
         QVERIFY(sourcesView->isVisibleTo(&available));
         QVERIFY(!sourcesView->header()->isVisibleTo(&available));
+
+        auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
+        QVERIFY(proxy);
+        QVERIFY(proxy->dynamicSortFilter());
+        QCOMPARE(proxy->sortColumn(), 0);
+        QCOMPARE(proxy->sortOrder(), Qt::AscendingOrder);
     }
 
     void shouldDisplayListFromPageModel()
@@ -59,14 +66,16 @@ private slots:
         Widgets::AvailableSourcesView available;
         auto sourcesView = available.findChild<QTreeView*>("sourcesView");
         QVERIFY(sourcesView);
-        QVERIFY(!sourcesView->model());
+        auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
+        QVERIFY(proxy);
+        QVERIFY(!proxy->sourceModel());
 
         // WHEN
         available.setModel(&stubPagesModel);
         QTest::qWait(10);
 
         // THEN
-        QCOMPARE(sourcesView->model(), &model);
+        QCOMPARE(proxy->sourceModel(), &model);
     }
 };
 

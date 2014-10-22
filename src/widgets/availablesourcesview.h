@@ -27,7 +27,7 @@
 
 #include <QWidget>
 
-class QTreeView;
+class QSortFilterProxyModel;
 
 namespace Widgets {
 
@@ -44,7 +44,7 @@ public slots:
 
 private:
     QObject *m_model;
-    QTreeView *m_sourcesView;
+    QSortFilterProxyModel *m_sortProxy;
 };
 
 }

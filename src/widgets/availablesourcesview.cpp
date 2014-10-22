@@ -25,6 +25,7 @@
 #include "availablesourcesview.h"
 
 #include <QHeaderView>
+#include <QSortFilterProxyModel>
 #include <QTreeView>
 #include <QVBoxLayout>
 
@@ -35,13 +36,18 @@ using namespace Widgets;
 AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     : QWidget(parent),
       m_model(0),
-      m_sourcesView(new QTreeView(this))
+      m_sortProxy(new QSortFilterProxyModel(this))
 {
-    m_sourcesView->setObjectName("sourcesView");
-    m_sourcesView->header()->hide();
+    m_sortProxy->setDynamicSortFilter(true);
+    m_sortProxy->sort(0);
+
+    auto sourcesView = new QTreeView(this);
+    sourcesView->setObjectName("sourcesView");
+    sourcesView->header()->hide();
+    sourcesView->setModel(m_sortProxy);
 
     auto layout = new QVBoxLayout;
-    layout->addWidget(m_sourcesView);
+    layout->addWidget(sourcesView);
     setLayout(layout);
 }
 
@@ -55,11 +61,11 @@ void AvailableSourcesView::setModel(QObject *model)
     if (model == m_model)
         return;
 
-    m_sourcesView->setModel(0);
+    m_sortProxy->setSourceModel(0);
 
     m_model = model;
 
     QVariant modelProperty = m_model->property("sourceListModel");
     if (modelProperty.canConvert<QAbstractItemModel*>())
-        m_sourcesView->setModel(modelProperty.value<QAbstractItemModel*>());
+        m_sortProxy->setSourceModel(modelProperty.value<QAbstractItemModel*>());
 }
