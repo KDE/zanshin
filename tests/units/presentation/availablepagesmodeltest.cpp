@@ -30,6 +30,8 @@
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/note.h"
+#include "domain/tag.h"
+#include "domain/tagrepository.h"
 #include "domain/task.h"
 #include "domain/taskrepository.h"
 
@@ -94,6 +96,8 @@ private slots:
                                                 &contextRepositoryMock.getInstance(),
                                                 0,
                                                 &taskRepositoryMock.getInstance(),
+                                                0,
+                                                0,
                                                 0);
 
         // WHEN
@@ -265,6 +269,8 @@ private slots:
                                                 &contextRepositoryMock.getInstance(),
                                                 0,
                                                 0,
+                                                0,
+                                                0,
                                                 0);
 
         // WHEN
@@ -309,6 +315,8 @@ private slots:
                                                 &projectQueriesMock.getInstance(),
                                                 &projectRepositoryMock.getInstance(),
                                                 &contextQueriesMock.getInstance(),
+                                                0,
+                                                0,
                                                 0,
                                                 0,
                                                 0,
@@ -370,6 +378,8 @@ private slots:
                                                 &contextRepositoryMock.getInstance(),
                                                 0,
                                                 0,
+                                                0,
+                                                0,
                                                 0);
 
         // WHEN
@@ -404,7 +414,7 @@ private slots:
 
         Presentation::AvailablePagesModel pages(0, 0,
                                                 &projectRepositoryMock.getInstance(),
-                                                0, 0, 0, 0, 0);
+                                                0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         pages.addProject("Foo", source);
@@ -425,13 +435,31 @@ private slots:
 
         Presentation::AvailablePagesModel pages(0, 0, 0, 0,
                                                 &contextRepositoryMock.getInstance(),
-                                                0, 0, 0);
+                                                0, 0, 0, 0, 0);
 
         // WHEN
         pages.addContext("Foo");
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
+                                                                       .exactly(1));
+    }
+
+    void shouldAddTags()
+    {
+        // GIVEN
+
+        mock_object<Domain::TagRepository> tagRepositoryMock;
+        tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
+                                                                 .thenReturn(new FakeJob(this));
+
+        Presentation::AvailablePagesModel pages(0, 0, 0, 0, 0, 0, 0, 0, 0, &tagRepositoryMock.getInstance());
+
+        // WHEN
+        pages.addTag("Foo");
+
+        // THEN
+        QVERIFY(tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
                                                                        .exactly(1));
     }
 
@@ -465,6 +493,8 @@ private slots:
                                                 &projectQueriesMock.getInstance(),
                                                 &projectRepositoryMock.getInstance(),
                                                 &contextQueriesMock.getInstance(),
+                                                0,
+                                                0,
                                                 0,
                                                 0,
                                                 0,
@@ -514,6 +544,8 @@ private slots:
                                                 0,
                                                 &contextQueriesMock.getInstance(),
                                                 &contextRepositoryMock.getInstance(),
+                                                0,
+                                                0,
                                                 0,
                                                 0,
                                                 0);

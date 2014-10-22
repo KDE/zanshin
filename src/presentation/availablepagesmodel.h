@@ -43,6 +43,8 @@ namespace Domain {
     class ContextRepository;
     class TaskQueries;
     class TaskRepository;
+    class TagQueries;
+    class TagRepository;
 }
 
 namespace Presentation {
@@ -60,6 +62,8 @@ public:
                                  Domain::TaskQueries *taskQueries,
                                  Domain::TaskRepository *taskRepository,
                                  Domain::NoteRepository *noteRepository,
+                                 Domain::TagQueries *tagQueries,
+                                 Domain::TagRepository *tagRepository,
                                  QObject *parent = 0);
     ~AvailablePagesModel();
 
@@ -90,6 +94,9 @@ private:
     Domain::TaskRepository *m_taskRepository;
 
     Domain::NoteRepository *m_noteRepository;
+
+    Domain::TagQueries *m_tagQueries;
+    Domain::TagRepository *m_tagRepository;
 
     Domain::QueryResultProvider<QObjectPtr>::Ptr m_rootsProvider;
     QObjectPtr m_inboxObject;

@@ -198,6 +198,8 @@ QObject *ApplicationModel::availablePages()
                                                    m_taskQueries,
                                                    m_taskRepository,
                                                    m_noteRepository,
+                                                   0,
+                                                   0,
                                                    this);
     }
     return m_availablePages;
