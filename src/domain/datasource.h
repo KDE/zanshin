@@ -34,10 +34,11 @@ namespace Domain {
 class DataSource : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(ContentType)
+    Q_ENUMS(ContentType ListStatus)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
     Q_PROPERTY(Domain::DataSource::ContentTypes contentTypes READ contentTypes WRITE setContentTypes NOTIFY contentTypesChanged)
+    Q_PROPERTY(Domain::DataSource::ListStatus listStatus READ listStatus WRITE setListStatus NOTIFY listStatusChanged)
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
 public:
     typedef QSharedPointer<DataSource> Ptr;
@@ -50,30 +51,40 @@ public:
     };
     Q_DECLARE_FLAGS(ContentTypes, ContentType)
 
+    enum ListStatus {
+        Unlisted = 0,
+        Listed = 1,
+        Bookmarked = 3
+    };
+
     explicit DataSource(QObject *parent = 0);
     virtual ~DataSource();
 
     QString name() const;
     QString iconName() const;
     ContentTypes contentTypes() const;
+    ListStatus listStatus() const;
     bool isSelected() const;
 
 public slots:
     void setName(const QString &name);
     void setIconName(const QString &iconName);
     void setContentTypes(Domain::DataSource::ContentTypes types);
+    void setListStatus(Domain::DataSource::ListStatus status);
     void setSelected(bool selected);
 
 signals:
     void nameChanged(const QString &name);
     void iconNameChanged(const QString &iconName);
     void contentTypesChanged(Domain::DataSource::ContentTypes types);
+    void listStatusChanged(Domain::DataSource::ListStatus status);
     void selectedChanged(bool selected);
 
 private:
     QString m_name;
     QString m_iconName;
     ContentTypes m_contentTypes;
+    ListStatus m_listStatus;
     bool m_selected;
 };
 
@@ -82,5 +93,6 @@ private:
 Q_DECLARE_METATYPE(Domain::DataSource::Ptr)
 Q_DECLARE_METATYPE(Domain::DataSource::ContentTypes)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Domain::DataSource::ContentTypes)
+Q_DECLARE_METATYPE(Domain::DataSource::ListStatus)
 
 #endif // DOMAIN_DATASOURCE_H
