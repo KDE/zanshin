@@ -110,23 +110,30 @@ private slots:
         QTest::addColumn<QStringList>("mimeTypes");
         QTest::addColumn<bool>("hasSelectedAttribute");
         QTest::addColumn<bool>("isSelected");
+        QTest::addColumn<bool>("isReferenced");
+        QTest::addColumn<bool>("isEnabled");
 
         const auto noteMimeTypes = QStringList() << "text/x-vnd.akonadi.note";
         const auto taskMimeTypes = QStringList() << "application/x-vnd.akonadi.calendar.todo";
         const auto bogusMimeTypes = QStringList() << "foo/bar";
         const auto allMimeTypes = noteMimeTypes + taskMimeTypes + bogusMimeTypes;
 
-        QTest::newRow("nominal case") << "name" << "icon" << allMimeTypes << true << false;
+        QTest::newRow("nominal case") << "name" << "icon" << allMimeTypes << true << false << false << true;
 
-        QTest::newRow("only notes") << "name" << "icon" << noteMimeTypes << true << false;
-        QTest::newRow("only tasks") << "name" << "icon" << taskMimeTypes << true << false;
-        QTest::newRow("only bogus") << "name" << "icon" << bogusMimeTypes << true << false;
+        QTest::newRow("only notes") << "name" << "icon" << noteMimeTypes << true << false << false << true;
+        QTest::newRow("only tasks") << "name" << "icon" << taskMimeTypes << true << false << false << true;
+        QTest::newRow("only bogus") << "name" << "icon" << bogusMimeTypes << true << false << false << true;
 
-        QTest::newRow("no selected attribute") << "name" << "icon" << allMimeTypes << false << false;
-        QTest::newRow("selected attribute (false)") << "name" << "icon" << allMimeTypes << true << false;
-        QTest::newRow("selected attribute (true)") << "name" << "icon" << allMimeTypes << true << true;
+        QTest::newRow("no selected attribute") << "name" << "icon" << allMimeTypes << false << false << false << true;
+        QTest::newRow("selected attribute (false)") << "name" << "icon" << allMimeTypes << true << false << false << true;
+        QTest::newRow("selected attribute (true)") << "name" << "icon" << allMimeTypes << true << true << false << true;
 
-        QTest::newRow("empty case") << QString() << QString() << QStringList() << false << false;
+        QTest::newRow("enabled and referenced") << "name" << "icon" << allMimeTypes << true << false << true << true;
+        QTest::newRow("enabled and !referenced") << "name" << "icon" << allMimeTypes << true << false << true << false;
+        QTest::newRow("!enabled and referenced") << "name" << "icon" << allMimeTypes << true << false << false << true;
+        QTest::newRow("!enabled and !referenced") << "name" << "icon" << allMimeTypes << true << false << false << false;
+
+        QTest::newRow("empty case") << QString() << QString() << QStringList() << false << false << false << true;
     }
 
     void shouldCreateDataSourceFromCollection()
@@ -139,6 +146,8 @@ private slots:
         QFETCH(QStringList, mimeTypes);
         QFETCH(bool, hasSelectedAttribute);
         QFETCH(bool, isSelected);
+        QFETCH(bool, isReferenced);
+        QFETCH(bool, isEnabled);
 
         Domain::DataSource::ContentTypes expectedContentTypes;
         if (mimeTypes.contains("text/x-vnd.akonadi.note")) {
@@ -152,6 +161,8 @@ private slots:
         Akonadi::Collection collection(42);
         collection.setContentMimeTypes(mimeTypes);
         collection.setName(name);
+        collection.setReferenced(isReferenced);
+        collection.setEnabled(isEnabled);
         auto displayAttribute = new Akonadi::EntityDisplayAttribute;
         displayAttribute->setIconName(iconName);
         collection.addAttribute(displayAttribute);
@@ -171,6 +182,8 @@ private slots:
         QCOMPARE(dataSource->contentTypes(), expectedContentTypes);
         QCOMPARE(dataSource->isSelected(), !hasSelectedAttribute || isSelected);
         QCOMPARE(dataSource->property("collectionId").value<Akonadi::Collection::Id>(), collection.id());
+        QCOMPARE((dataSource->listStatus() & Domain::DataSource::Listed) != 0, isReferenced || isEnabled);
+        QCOMPARE((dataSource->listStatus() == Domain::DataSource::Bookmarked), isEnabled);
     }
 
     void shouldCreateNullDataSourceFromInvalidCollection()
@@ -287,22 +300,31 @@ private slots:
         QTest::addColumn<QString>("iconName");
         QTest::addColumn<Domain::DataSource::ContentTypes>("contentTypes");
         QTest::addColumn<bool>("isSelected");
+        QTest::addColumn<Domain::DataSource::ListStatus>("listStatus");
 
         const auto noType = Domain::DataSource::ContentTypes(Domain::DataSource::NoContent);
         const auto taskType = Domain::DataSource::ContentTypes(Domain::DataSource::Tasks);
         const auto noteType = Domain::DataSource::ContentTypes(Domain::DataSource::Notes);
         const auto allTypes = taskType | noteType;
 
-        QTest::newRow("nominal case") << "name" << "icon-name" << allTypes << true;
+        const auto unlisted = Domain::DataSource::Unlisted;
+        const auto listed = Domain::DataSource::Listed;
+        const auto bookmarked = Domain::DataSource::Bookmarked;
 
-        QTest::newRow("only notes") << "name" << "icon-name" << noteType << true;
-        QTest::newRow("only tasks") << "name" << "icon-name" << taskType << true;
-        QTest::newRow("only nothing ;)") << "name" << "icon-name" << noType << true;
+        QTest::newRow("nominal case") << "name" << "icon-name" << allTypes << true << unlisted;
 
-        QTest::newRow("not selected") << "name" << "icon-name" << allTypes << false;
-        QTest::newRow("selected") << "name" << "icon-name" << allTypes << true;
+        QTest::newRow("only notes") << "name" << "icon-name" << noteType << true << unlisted;
+        QTest::newRow("only tasks") << "name" << "icon-name" << taskType << true << unlisted;
+        QTest::newRow("only nothing ;)") << "name" << "icon-name" << noType << true << unlisted;
 
-        QTest::newRow("empty case") << QString() << QString() << noType << true;
+        QTest::newRow("not selected") << "name" << "icon-name" << allTypes << false << unlisted;
+        QTest::newRow("selected") << "name" << "icon-name" << allTypes << true << unlisted;
+
+        QTest::newRow("unlisted") << "name" << "icon-name" << allTypes << true << unlisted;
+        QTest::newRow("listed") << "name" << "icon-name" << allTypes << true << listed;
+        QTest::newRow("bookmarked") << "name" << "icon-name" << allTypes << true << bookmarked;
+
+        QTest::newRow("empty case") << QString() << QString() << noType << true << unlisted;
     }
 
     void shouldCreateCollectionFromDataSource()
@@ -314,6 +336,7 @@ private slots:
         QFETCH(QString, iconName);
         QFETCH(Domain::DataSource::ContentTypes, contentTypes);
         QFETCH(bool, isSelected);
+        QFETCH(Domain::DataSource::ListStatus, listStatus);
 
         QStringList mimeTypes;
         if (contentTypes & Domain::DataSource::Tasks)
@@ -327,6 +350,7 @@ private slots:
         source->setName(name);
         source->setIconName(iconName);
         source->setContentTypes(contentTypes);
+        source->setListStatus(listStatus);
         source->setSelected(isSelected);
         source->setProperty("collectionId", 42);
 
@@ -338,6 +362,23 @@ private slots:
         QCOMPARE(collection.id(), source->property("collectionId").value<Akonadi::Collection::Id>());
         QVERIFY(collection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
         QCOMPARE(collection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected(), isSelected);
+
+        switch (listStatus) {
+        case Domain::DataSource::Unlisted:
+            QVERIFY(!collection.referenced());
+            QVERIFY(!collection.enabled());
+            break;
+        case Domain::DataSource::Listed:
+            QVERIFY(collection.referenced());
+            QVERIFY(!collection.enabled());
+            break;
+        case Domain::DataSource::Bookmarked:
+            QVERIFY(collection.enabled());
+            break;
+        default:
+            qFatal("Shouldn't happen");
+            break;
+        }
     }
 
     void shouldVerifyIfCollectionIsSelected()

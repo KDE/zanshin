@@ -114,6 +114,13 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
         dataSource->setSelected(isSelected);
     }
 
+    if (collection.enabled())
+        dataSource->setListStatus(Domain::DataSource::Bookmarked);
+    else if (collection.referenced())
+        dataSource->setListStatus(Domain::DataSource::Listed);
+    else
+        dataSource->setListStatus(Domain::DataSource::Unlisted);
+
     dataSource->setProperty("collectionId", collection.id());
 }
 
@@ -121,8 +128,28 @@ Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr da
 {
     const auto id = dataSource->property("collectionId").value<Collection::Id>();
     auto collection = Collection(id);
+
     auto selectedAttribute = collection.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing);
     selectedAttribute->setSelected(dataSource->isSelected());
+
+    switch (dataSource->listStatus()) {
+    case Domain::DataSource::Unlisted:
+        collection.setReferenced(false);
+        collection.setEnabled(false);
+        break;
+    case Domain::DataSource::Listed:
+        collection.setReferenced(true);
+        collection.setEnabled(false);
+        break;
+    case Domain::DataSource::Bookmarked:
+        collection.setReferenced(false);
+        collection.setEnabled(true);
+        break;
+    default:
+        qFatal("Shouldn't happen");
+        break;
+    }
+
     return collection;
 }
 
