@@ -73,11 +73,8 @@ void TaskRepository::setDefaultSource(Domain::DataSource::Ptr source)
     StorageSettings::instance().setDefaultTaskCollection(collection);
 }
 
-KJob *TaskRepository::create(Domain::Task::Ptr task)
+KJob *TaskRepository::createItem(const Item &item)
 {
-    auto item = m_serializer->createItemFromTask(task);
-    Q_ASSERT(!item.isValid());
-
     const Akonadi::Collection defaultCollection = m_storage->defaultTaskCollection();
     if (defaultCollection.isValid()) {
         return m_storage->createItem(item, defaultCollection);
@@ -103,6 +100,13 @@ KJob *TaskRepository::create(Domain::Task::Ptr task)
         });
         return job;
     }
+}
+
+KJob *TaskRepository::create(Domain::Task::Ptr task)
+{
+    auto item = m_serializer->createItemFromTask(task);
+    Q_ASSERT(!item.isValid());
+    return createItem(item);
 }
 
 KJob *TaskRepository::createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project)

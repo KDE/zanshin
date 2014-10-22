@@ -27,6 +27,7 @@
 #include "domain/taskrepository.h"
 
 #include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 namespace Akonadi {
 
@@ -58,6 +59,8 @@ private:
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
     bool m_ownInterfaces;
+
+    KJob *createItem(const Akonadi::Item &item);
 };
 
 }
