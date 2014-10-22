@@ -59,6 +59,10 @@ public:
     DataSourceResult::Ptr findTopLevel() const;
     DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const;
 
+    void setSearchTerm(QString);
+    DataSourceResult::Ptr findSearchTopLevel() const;
+    DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const;
+
 private slots:
     void onCollectionAdded(const Akonadi::Collection &collection);
     void onCollectionRemoved(const Akonadi::Collection &collection);

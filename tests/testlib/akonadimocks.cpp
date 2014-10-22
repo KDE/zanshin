@@ -72,6 +72,15 @@ Akonadi::Collection::List MockCollectionFetchJob::collections() const
     return isDone() ? m_collections : Akonadi::Collection::List();
 }
 
+void MockCollectionSearchJob::setCollections(const Akonadi::Collection::List &collections)
+{
+    m_collections = collections;
+}
+
+Akonadi::Collection::List MockCollectionSearchJob::collections() const
+{
+    return isDone() ? m_collections : Akonadi::Collection::List();
+}
 
 void MockItemFetchJob::setItems(const Akonadi::Item::List &items)
 {

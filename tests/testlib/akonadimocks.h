@@ -28,6 +28,7 @@
 
 #include "akonadi/akonadimonitorinterface.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
+#include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 
@@ -56,6 +57,19 @@ private:
 };
 
 class MockCollectionFetchJob : public MockAkonadiJob, public Akonadi::CollectionFetchJobInterface
+{
+    Q_OBJECT
+public:
+    using MockAkonadiJob::MockAkonadiJob;
+
+    void setCollections(const Akonadi::Collection::List &collections);
+    Akonadi::Collection::List collections() const;
+
+private:
+    Akonadi::Collection::List m_collections;
+};
+
+class MockCollectionSearchJob : public MockAkonadiJob, public Akonadi::CollectionSearchJobInterface
 {
     Q_OBJECT
 public:

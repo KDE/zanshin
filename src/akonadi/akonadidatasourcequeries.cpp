@@ -25,6 +25,7 @@
 #include "akonadidatasourcequeries.h"
 
 #include "akonadicollectionfetchjobinterface.h"
+#include "akonadicollectionsearchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
 #include "akonadimonitorimpl.h"
 #include "akonadiserializer.h"
@@ -229,6 +230,21 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
     }
 
     return m_findChildren.value(root.id())->result();
+}
+
+void DataSourceQueries::setSearchTerm(QString)
+{
+}
+
+DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel() const
+{
+    return DataSourceQueries::DataSourceResult::Ptr();
+}
+
+DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(Domain::DataSource::Ptr source) const
+{
+    Q_UNUSED(source);
+    return DataSourceQueries::DataSourceResult::Ptr();
 }
 
 void DataSourceQueries::onCollectionAdded(const Collection &collection)
