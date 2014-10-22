@@ -5,7 +5,7 @@ Feature: Task creation from a context
 @wip
   Scenario: Task added from a context appear in its list
     Given I display the "Context / Online" page
-    When I add a task named "Checking mail"
+    When I add a "task" named "Checking mail"
     And I look at the central list
     When I list the items
     Then the list is:

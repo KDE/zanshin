@@ -6,7 +6,7 @@ Feature: Adding tasks
   Scenario Outline: Adding a task in a page
     Given I display the "<page>" page
     And I look at the central list
-    When I add a task named "<title>"
+    When I add a "task" named "<title>"
     And I list the items
     Then the list contains "<title>"
 

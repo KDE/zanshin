@@ -347,14 +347,6 @@ WHEN("^I remove the item$") {
     QTest::qWait(500);
 }
 
-WHEN("^I add a task named \"(.+)\"$") {
-    REGEX_PARAM(QString, itemName);
-
-    ScenarioScope<ZanshinContext> context;
-    VERIFY(QMetaObject::invokeMethod(context->presentation, "addTask", Q_ARG(QString, itemName)));
-    QTest::qWait(500);
-}
-
 WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
     REGEX_PARAM(QString, projectName);
     REGEX_PARAM(QString, sourceName);
@@ -428,12 +420,23 @@ WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
     QTest::qWait(500);
 }
 
-WHEN("^I add a context named \"(.+)\"$") {
-    REGEX_PARAM(QString, contextName);
+WHEN("^I add a \"(.*)\" named \"(.+)\"$") {
+    REGEX_PARAM(QString, objectType);
+    REGEX_PARAM(QString, objectName);
+
+    QByteArray actionName = (objectType == "context") ? "addContext"
+                          : (objectType == "task")    ? "addTask"
+                          : (objectType == "tag")     ? "addTag"
+                          : QByteArray();
+
+    VERIFY(!actionName.isEmpty());
+
     ScenarioScope<ZanshinContext> context;
     QTest::qWait(500);
-    VERIFY(QMetaObject::invokeMethod(context->presentation, "addContext",
-                                     Q_ARG(QString, contextName)));
+
+    VERIFY(QMetaObject::invokeMethod(context->presentation,
+                                     actionName.data(),
+                                     Q_ARG(QString, objectName)));
     QTest::qWait(500);
 }
 

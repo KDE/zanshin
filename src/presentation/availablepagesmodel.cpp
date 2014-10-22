@@ -118,6 +118,11 @@ void AvailablePagesModel::addContext(const QString &name)
     m_contextRepository->create(context);
 }
 
+void AvailablePagesModel::addTag(const QString &name)
+{
+    qFatal("Not Implemented yet");
+}
+
 void AvailablePagesModel::removeItem(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
