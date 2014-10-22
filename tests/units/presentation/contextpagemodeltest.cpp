@@ -31,6 +31,7 @@
 #include "domain/contextqueries.h"
 #include "domain/taskqueries.h"
 
+#include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
 #include "domain/taskrepository.h"
 #include "domain/noterepository.h"
@@ -40,6 +41,7 @@
 #include "testlib/fakejob.h"
 
 using namespace mockitopp;
+using namespace mockitopp::matcher;
 
 class ContextPageModelTest : public QObject
 {
@@ -150,6 +152,41 @@ private slots:
 
         QCOMPARE(parentTask->title(), QString("newParentTask"));
         QCOMPARE(childTask->title(), QString("newChildTask"));
+    }
+
+    void shouldAddTasks()
+    {
+        // GIVEN
+
+        // One Context
+        auto context = Domain::Context::Ptr::create();
+
+        // ... in fact we won't list any model
+        mock_object<Domain::ContextQueries> contextQueriesMock;
+        mock_object<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+
+        // We'll gladly create a task though
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
+                                                                          any<Domain::Context::Ptr>())
+                                                                    .thenReturn(new FakeJob(this));
+
+        Presentation::ContextPageModel page(context,
+                                            &contextQueriesMock.getInstance(),
+                                            &taskQueriesMock.getInstance(),
+                                            &taskRepositoryMock.getInstance(),
+                                            &noteRepositoryMock.getInstance());
+
+        // WHEN
+        page.addTask("New task");
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
+                                                                                  any<Domain::Context::Ptr>())
+                                                                            .exactly(1));
     }
 };
 

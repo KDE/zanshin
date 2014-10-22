@@ -58,8 +58,9 @@ Domain::Context::Ptr ContextPageModel::context() const
 
 void ContextPageModel::addTask(const QString &title)
 {
-    Q_UNUSED(title);
-    qFatal("Not implemented yet");
+    auto task = Domain::Task::Ptr::create();
+    task->setTitle(title);
+    taskRepository()->createInContext(task, m_context);
 }
 
 void ContextPageModel::removeItem(const QModelIndex &index)

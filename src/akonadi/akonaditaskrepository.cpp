@@ -119,6 +119,14 @@ KJob *TaskRepository::createInProject(Domain::Task::Ptr task, Domain::Project::P
     return m_storage->createItem(taskItem, projectItem.parentCollection());
 }
 
+KJob *TaskRepository::createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context)
+{
+    Q_UNUSED(task);
+    Q_UNUSED(context);
+    qFatal("not impl yet");
+    return 0;
+}
+
 KJob *TaskRepository::update(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
