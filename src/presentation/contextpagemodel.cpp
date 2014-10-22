@@ -118,16 +118,28 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
     };
 
     auto drop = [this] (const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &parentTask) {
-        Q_UNUSED(mimeData);
-        Q_UNUSED(parentTask);
-        qFatal("Drop Not implemented yet");
+        if (!mimeData->hasFormat("application/x-zanshin-object"))
+            return false;
+
+        auto droppedTasks = mimeData->property("objects").value<Domain::Task::List>();
+        if (droppedTasks.isEmpty())
+            return false;
+
+        foreach(const Domain::Task::Ptr &childTask, droppedTasks) {
+            taskRepository()->associate(parentTask, childTask);
+        }
+
         return true;
     };
 
     auto drag = [] (const Domain::Task::List &tasks) -> QMimeData* {
-        Q_UNUSED(tasks);
-        qFatal("Drag Not implemented yet");
-        return new QMimeData;
+        if (tasks.isEmpty())
+            return 0;
+
+        QMimeData *data = new QMimeData();
+        data->setData("application/x-zanshin-object", "objects");
+        data->setProperty("objects", QVariant::fromValue(tasks));
+        return data;
     };
 
     return new QueryTreeModel<Domain::Task::Ptr>(query, flags, data, setData, drop, drag, this);

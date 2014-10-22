@@ -152,6 +152,39 @@ private slots:
 
         QCOMPARE(parentTask->title(), QString("newParentTask"));
         QCOMPARE(childTask->title(), QString("newChildTask"));
+
+        // WHEN a task is dragged
+        QMimeData *data = model->mimeData(QModelIndexList() << childTaskIndex);
+
+        // THEN
+        QVERIFY(data->hasFormat("application/x-zanshin-object"));
+        QCOMPARE(data->property("objects").value<Domain::Task::List>(),
+                 Domain::Task::List() << childTask);
+
+        // WHEN a task is dropped
+        auto childTask2 = Domain::Task::Ptr::create();
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask2).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Task::List() << childTask2));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, parentTaskIndex);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask2).exactly(1));
+
+        // WHEN two tasks are dropped
+        auto childTask3 = Domain::Task::Ptr::create();
+        auto childTask4 = Domain::Task::Ptr::create();
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask3).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask4).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Task::List() << childTask3 << childTask4));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, parentTaskIndex);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask3).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask4).exactly(1));
     }
 
     void shouldAddTasks()

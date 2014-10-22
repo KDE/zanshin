@@ -67,5 +67,6 @@ private:
 }
 
 Q_DECLARE_METATYPE(Domain::Task::Ptr)
+Q_DECLARE_METATYPE(Domain::Task::List)
 
 #endif // DOMAIN_TASK_H
