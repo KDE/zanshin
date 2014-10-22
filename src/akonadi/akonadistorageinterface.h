@@ -74,6 +74,7 @@ public:
     virtual KJob *createTransaction() = 0;
 
     virtual KJob *createTag(Akonadi::Tag tag) = 0;
+    virtual KJob *updateTag(Akonadi::Tag tag) = 0;
     virtual KJob *removeTag(Akonadi::Tag tag) = 0;
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) = 0;

@@ -66,12 +66,43 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createTag).when(tag).exactly(1));
     }
 
+    void shouldUpdateContext()
+    {
+        // GIVEN
+        Akonadi::Tag tag;
+        tag.setName("tag42");
+        tag.setId(42);
+        auto context = Domain::Context::Ptr::create();
+
+        // A mock creating job
+        auto tagModifyJob = new MockAkonadiJob(this);
+
+        // Storage mock returning the tagCreatejob
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::updateTag).when(tag)
+                                                          .thenReturn(tagModifyJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
+
+        // WHEN
+        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(&storageMock.getInstance(),
+                                                                                             &serializerMock.getInstance()));
+
+        repository->update(context)->exec();
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateTag).when(tag).exactly(1));
+    }
+
     void shouldRemoveContext()
     {
         // GIVEN
         Akonadi::Tag tag;
         tag.setName("tag42");
-        tag.setId(42); // this id should have been set from Akonadi
+        tag.setId(42);
         auto context = Domain::Context::Ptr::create();
 
         // A mock creating job

@@ -249,6 +249,13 @@ KJob *Storage::createTag(Tag tag)
     return new TagCreateJob(tag);
 }
 
+KJob *Storage::updateTag(Tag tag)
+{
+    Q_UNUSED(tag);
+    qFatal("update Tag not implemented yet !");
+    return 0;
+}
+
 KJob *Storage::removeTag(Tag tag)
 {
     return new Akonadi::TagDeleteJob(tag);
