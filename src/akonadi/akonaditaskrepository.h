@@ -48,6 +48,7 @@ public:
     virtual KJob *create(Domain::Task::Ptr task);
     virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project);
     virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context);
+    virtual KJob *createInTag(Domain::Task::Ptr task, Domain::Tag::Ptr tag);
 
     virtual KJob *update(Domain::Task::Ptr task);
     virtual KJob *remove(Domain::Task::Ptr task);

@@ -27,6 +27,7 @@
 #include "context.h"
 #include "datasource.h"
 #include "project.h"
+#include "tag.h"
 #include "task.h"
 
 class KJob;
@@ -45,6 +46,7 @@ public:
     virtual KJob *create(Task::Ptr task) = 0;
     virtual KJob *createInProject(Task::Ptr task, Project::Ptr project) = 0;
     virtual KJob *createInContext(Task::Ptr task, Context::Ptr context) = 0;
+    virtual KJob *createInTag(Task::Ptr task, Tag::Ptr tag) = 0;
 
     virtual KJob *update(Task::Ptr task) = 0;
     virtual KJob *remove(Task::Ptr task) = 0;
