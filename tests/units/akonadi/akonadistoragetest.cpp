@@ -45,6 +45,7 @@
 #include <Akonadi/Tag>
 #include <Akonadi/TagCreateJob>
 #include <Akonadi/TagDeleteJob>
+#include <Akonadi/TagFetchJob>
 #include <Akonadi/TagModifyJob>
 #include <Akonadi/TagFetchJob>
 
@@ -874,7 +875,6 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagAdded(Akonadi::Tag)));
-
         // A tag
         Akonadi::Tag tag;
         QString name = "Tag42";
@@ -895,6 +895,30 @@ private slots:
         QCOMPARE(notifiedTag.name(), name);
         QCOMPARE(notifiedTag.type(), type);
         QCOMPARE(notifiedTag.gid(), gid);
+    }
+
+    void shouldRemoveTag()
+    {
+
+        // GIVEN
+        Akonadi::Storage storage;
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(tagRemoved(Akonadi::Tag)));
+
+        // An existing tag
+        Akonadi::Tag tag = fetchTagByGID("errands-context");
+
+        // WHEN
+        auto job = storage.removeTag(tag);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!spy.isEmpty());
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+        QCOMPARE(notifiedTag.id(), tag.id());
     }
 
     void shouldUpdateCollection()

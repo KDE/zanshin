@@ -39,6 +39,7 @@
 #include <Akonadi/Notes/NoteUtils>
 #include <Akonadi/TransactionSequence>
 #include <Akonadi/TagCreateJob>
+#include <Akonadi/TagDeleteJob>
 #include <Akonadi/TagFetchJob>
 #include <Akonadi/TagFetchScope>
 #include <Akonadi/TagAttribute>
@@ -250,9 +251,7 @@ KJob *Storage::createTag(Tag tag)
 
 KJob *Storage::removeTag(Tag tag)
 {
-    Q_UNUSED(tag);
-    qFatal("not implemented yet!");
-    return 0;
+    return new Akonadi::TagDeleteJob(tag);
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
