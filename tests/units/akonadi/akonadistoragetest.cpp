@@ -87,41 +87,85 @@ private slots:
         QTest::addColumn<QStringList>("expectedNames");
         QTest::addColumn<Akonadi::StorageInterface::FetchDepth>("depth");
         QTest::addColumn<int>("contentTypes");
+        QTest::addColumn<bool>("referenceCalendar1");
+        QTest::addColumn<bool>("enableCalendar1");
 
         QTest::newRow("all") << Akonadi::Collection::root()
                              << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
                              << Akonadi::Storage::Recursive
-                             << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks);
+                             << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                             << false << true;
+
+        QTest::newRow("include referenced") << Akonadi::Collection::root()
+                                            << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
+                                            << Akonadi::Storage::Recursive
+                                            << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                            << true << false;
+
+        QTest::newRow("include referenced + enabled") << Akonadi::Collection::root()
+                                                      << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
+                                                      << Akonadi::Storage::Recursive
+                                                      << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                      << true << true;
+
+        QTest::newRow("exclude !referenced + !enabled") << Akonadi::Collection::root()
+                                                        << QStringList({ "Change me!", "Destroy me!", "Notes" })
+                                                        << Akonadi::Storage::Recursive
+                                                        << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
+                                                        << false << false;
+
         QTest::newRow("notes") << Akonadi::Collection::root()
                                << QStringList({ "Notes" })
                                << Akonadi::Storage::Recursive
-                               << int(Akonadi::StorageInterface::Notes);
+                               << int(Akonadi::StorageInterface::Notes)
+                               << false << true;
+
         QTest::newRow("tasks") << Akonadi::Collection::root()
                                << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!" })
                                << Akonadi::Storage::Recursive
-                               << int(Akonadi::StorageInterface::Tasks);
+                               << int(Akonadi::StorageInterface::Tasks)
+                               << false << true;
+
         QTest::newRow("base type") << calendar2()
                                    << QStringList({"Calendar2"})
                                    << Akonadi::Storage::Base
-                                   << int(Akonadi::StorageInterface::Tasks);
+                                   << int(Akonadi::StorageInterface::Tasks)
+                                   << false << true;
+
         QTest::newRow("firstLevel type") << calendar1()
                                    << QStringList({"Calendar2"})
                                    << Akonadi::Storage::FirstLevel
-                                   << int(Akonadi::StorageInterface::Tasks);
+                                   << int(Akonadi::StorageInterface::Tasks)
+                                   << false << true;
+
         QTest::newRow("recursive type") << calendar1()
                                         << QStringList({"Calendar2", "Calendar3"})
                                         << Akonadi::Storage::Recursive
-                                        << int(Akonadi::StorageInterface::Tasks);
+                                        << int(Akonadi::StorageInterface::Tasks)
+                                        << false << true;
     }
 
     void shouldListCollections()
     {
         // GIVEN
-        Akonadi::Storage storage;
         QFETCH(Akonadi::Collection, collection);
         QFETCH(QStringList, expectedNames);
         QFETCH(Akonadi::StorageInterface::FetchDepth, depth);
         QFETCH(int, contentTypes);
+        QFETCH(bool, referenceCalendar1);
+        QFETCH(bool, enableCalendar1);
+
+        // Default is not referenced and enabled
+        // no need to feedle with the collection in that case
+        if (referenceCalendar1 || !enableCalendar1) {
+            Akonadi::Collection cal1 = calendar1();
+            cal1.setReferenced(referenceCalendar1);
+            cal1.setEnabled(enableCalendar1);
+            auto update = new Akonadi::CollectionModifyJob(cal1);
+            AKVERIFYEXEC(update);
+        }
+
+        Akonadi::Storage storage;
 
         // WHEN
         auto job = storage.fetchCollections(collection, depth,
@@ -135,6 +179,15 @@ private slots:
             collectionNames << collection.name();
         }
         collectionNames.sort();
+
+        // Restore proper DB state
+        if (referenceCalendar1 || !enableCalendar1) {
+            Akonadi::Collection cal1 = calendar1();
+            cal1.setReferenced(false);
+            cal1.setEnabled(true);
+            auto update = new Akonadi::CollectionModifyJob(cal1);
+            AKVERIFYEXEC(update);
+        }
 
         QCOMPARE(collectionNames, expectedNames);
     }
@@ -1046,16 +1099,24 @@ private slots:
     {
         QTest::addColumn<QString>("name");
         QTest::addColumn<QStringList>("expectedResults");
+        QTest::addColumn<bool>("referenceCalendar1");
+        QTest::addColumn<bool>("enableCalendar1");
 
         QStringList expectedResults;
         expectedResults << "Calendar1";
-        QTest::newRow("get a collection") << "Calendar1" << expectedResults;
+        QTest::newRow("get a collection") << "Calendar1" << expectedResults << false << true;
 
         expectedResults.clear();
-        QTest::newRow("try with unknow name") << "toto" << expectedResults;
+        QTest::newRow("try with unknown name") << "toto" << expectedResults << false << true;
 
         expectedResults << "Calendar3" << "Calendar2" << "Calendar1";
-        QTest::newRow("try with a part of a name") << "Calendar" << expectedResults;
+        QTest::newRow("try with a part of a name") << "Calendar" << expectedResults << false << true;
+
+        expectedResults.clear();
+        expectedResults << "Calendar1";
+        QTest::newRow("include referenced") << "Calendar1" << expectedResults << true << false;
+        QTest::newRow("include referenced + enabled") << "Calendar1" << expectedResults << true << true;
+        QTest::newRow("include !referenced + !enabled") << "Calendar1" << expectedResults << false << false;
     }
 
     void shouldFindCollectionsByName()
@@ -1065,6 +1126,18 @@ private slots:
 
         QFETCH(QString, name);
         QFETCH(QStringList, expectedResults);
+        QFETCH(bool, referenceCalendar1);
+        QFETCH(bool, enableCalendar1);
+
+        // Default is not referenced and enabled
+        // no need to feedle with the collection in that case
+        if (referenceCalendar1 || !enableCalendar1) {
+            Akonadi::Collection cal1 = calendar1();
+            cal1.setReferenced(referenceCalendar1);
+            cal1.setEnabled(enableCalendar1);
+            auto update = new Akonadi::CollectionModifyJob(cal1);
+            AKVERIFYEXEC(update);
+        }
 
         // WHEN
         auto job = storage.searchCollections(name);
@@ -1072,6 +1145,16 @@ private slots:
 
         // THEN
         auto collections = job->collections();
+
+        // Restore proper DB state
+        if (referenceCalendar1 || !enableCalendar1) {
+            Akonadi::Collection cal1 = calendar1();
+            cal1.setReferenced(false);
+            cal1.setEnabled(true);
+            auto update = new Akonadi::CollectionModifyJob(cal1);
+            AKVERIFYEXEC(update);
+        }
+
         QCOMPARE(collections.size(), expectedResults.size());
         int i = 0;
         for (const auto &collection : collections) {

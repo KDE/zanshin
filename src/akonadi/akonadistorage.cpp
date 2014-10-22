@@ -277,6 +277,7 @@ CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, St
     scope.setContentMimeTypes(contentMimeTypes);
     scope.setIncludeStatistics(true);
     scope.setAncestorRetrieval(CollectionFetchScope::All);
+    scope.setListFilter(Akonadi::CollectionFetchScope::Display);
     job->setFetchScope(scope);
 
     return job;
@@ -293,6 +294,7 @@ CollectionSearchJobInterface *Storage::searchCollections(QString collectionName)
     scope.setContentMimeTypes(contentMimeTypes);
     scope.setIncludeStatistics(true);
     scope.setAncestorRetrieval(CollectionFetchScope::All);
+    scope.setListFilter(Akonadi::CollectionFetchScope::NoFilter);
     job->setFetchScope(scope);
 
     return job;
