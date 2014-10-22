@@ -31,6 +31,8 @@
 #include "domain/contextrepository.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
+#include "domain/tag.h"
+#include "domain/tagrepository.h"
 #include "domain/taskrepository.h"
 
 #include "presentation/contextpagemodel.h"
@@ -51,6 +53,8 @@ AvailablePagesModel::AvailablePagesModel(Domain::ArtifactQueries *artifactQuerie
                                          Domain::TaskQueries *taskQueries,
                                          Domain::TaskRepository *taskRepository,
                                          Domain::NoteRepository *noteRepository,
+                                         Domain::TagQueries *tagQueries,
+                                         Domain::TagRepository *tagRepository,
                                          QObject *parent)
     : QObject(parent),
       m_pageListModel(0),
@@ -61,7 +65,9 @@ AvailablePagesModel::AvailablePagesModel(Domain::ArtifactQueries *artifactQuerie
       m_contextRepository(contextRepository),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository)
+      m_noteRepository(noteRepository),
+      m_tagQueries(tagQueries),
+      m_tagRepository(tagRepository)
 {
 }
 
@@ -120,7 +126,9 @@ void AvailablePagesModel::addContext(const QString &name)
 
 void AvailablePagesModel::addTag(const QString &name)
 {
-    qFatal("Not Implemented yet");
+    auto tag = Domain::Tag::Ptr::create();
+    tag->setName(name);
+    m_tagRepository->create(tag);
 }
 
 void AvailablePagesModel::removeItem(const QModelIndex &index)
