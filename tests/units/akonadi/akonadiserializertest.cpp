@@ -381,22 +381,81 @@ private slots:
         }
     }
 
+    void shouldVerifyIfCollectionIsSelected_data()
+    {
+        QTest::addColumn<QStringList>("mimeTypes");
+        QTest::addColumn<bool>("hasSelectedAttribute");
+        QTest::addColumn<bool>("isSelected");
+        QTest::addColumn<bool>("isReferenced");
+        QTest::addColumn<bool>("isEnabled");
+        QTest::addColumn<bool>("expectedSelected");
+
+        const auto noteMimeTypes = QStringList() << "text/x-vnd.akonadi.note";
+        const auto taskMimeTypes = QStringList() << "application/x-vnd.akonadi.calendar.todo";
+        const auto bogusMimeTypes = QStringList() << "foo/bar";
+        const auto allMimeTypes = noteMimeTypes + taskMimeTypes + bogusMimeTypes;
+
+        QTest::newRow("nominal case") << allMimeTypes << true << false << false << true << false;
+
+        QTest::newRow("only notes") << noteMimeTypes << true << false << false << true << false;
+        QTest::newRow("only tasks") << taskMimeTypes << true << false << false << true << false;
+        QTest::newRow("only bogus") << bogusMimeTypes << true << false << false << true << false;
+
+        QTest::newRow("selected, only notes") << noteMimeTypes << true << true << false << true << true;
+        QTest::newRow("selected, only tasks") << taskMimeTypes << true << true << false << true << true;
+        QTest::newRow("selected, only bogus") << bogusMimeTypes << true << true << false << true << false;
+
+        QTest::newRow("no selected attribute") << allMimeTypes << false << false << false << true << true;
+        QTest::newRow("selected attribute (false)") << allMimeTypes << true << false << false << true << false;
+        QTest::newRow("selected attribute (true)") << allMimeTypes << true << true << false << true << true;
+
+        QTest::newRow("enabled and referenced") << allMimeTypes << true << false << true << true << false;
+        QTest::newRow("enabled and !referenced") << allMimeTypes << true << false << true << false << false;
+        QTest::newRow("!enabled and referenced") << allMimeTypes << true << false << false << true << false;
+        QTest::newRow("!enabled and !referenced") << allMimeTypes << true << false << false << false << false;
+
+        QTest::newRow("selected, enabled and referenced") << allMimeTypes << true << true << true << true << true;
+        QTest::newRow("selected, enabled and !referenced") << allMimeTypes << true << true << true << false << true;
+        QTest::newRow("selected, !enabled and referenced") << allMimeTypes << true << true << false << true << true;
+        QTest::newRow("selected, !enabled and !referenced") << allMimeTypes << true << true << false << false << false;
+
+        QTest::newRow("empty case") << QStringList() << false << false << false << true << false;
+    }
+
     void shouldVerifyIfCollectionIsSelected()
     {
         // GIVEN
-        Akonadi::Collection col1;
-        Akonadi::Collection col2;
-        col2.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing)->setSelected(true);
-        Akonadi::Collection col3;
-        col3.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing)->setSelected(false);
+        QFETCH(QStringList, mimeTypes);
+        QFETCH(bool, hasSelectedAttribute);
+        QFETCH(bool, isSelected);
+        QFETCH(bool, isReferenced);
+        QFETCH(bool, isEnabled);
+
+        Domain::DataSource::ContentTypes expectedContentTypes;
+        if (mimeTypes.contains("text/x-vnd.akonadi.note")) {
+            expectedContentTypes |= Domain::DataSource::Notes;
+        }
+        if (mimeTypes.contains("application/x-vnd.akonadi.calendar.todo")) {
+            expectedContentTypes |= Domain::DataSource::Tasks;
+        }
+
+        // ... stored in a collection
+        Akonadi::Collection collection(42);
+        collection.setContentMimeTypes(mimeTypes);
+        collection.setReferenced(isReferenced);
+        collection.setEnabled(isEnabled);
+        if (hasSelectedAttribute) {
+            auto selectedAttribute = new Akonadi::ApplicationSelectedAttribute;
+            selectedAttribute->setSelected(isSelected);
+            collection.addAttribute(selectedAttribute);
+        }
 
         // WHEN
         Akonadi::Serializer serializer;
 
         // THEN
-        QVERIFY(serializer.isSelectedCollection(col1));
-        QVERIFY(serializer.isSelectedCollection(col2));
-        QVERIFY(!serializer.isSelectedCollection(col3));
+        QFETCH(bool, expectedSelected);
+        QCOMPARE(serializer.isSelectedCollection(collection), expectedSelected);
     }
 
     void shouldVerifyCollectionContents_data()

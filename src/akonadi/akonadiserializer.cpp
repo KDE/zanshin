@@ -155,6 +155,12 @@ Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr da
 
 bool Serializer::isSelectedCollection(Collection collection)
 {
+    if (!collection.referenced() && !collection.enabled())
+        return false;
+
+    if (!isNoteCollection(collection) && !isTaskCollection(collection))
+        return false;
+
     if (!collection.hasAttribute<Akonadi::ApplicationSelectedAttribute>())
         return true;
 
