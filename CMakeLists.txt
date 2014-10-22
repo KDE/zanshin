@@ -3,6 +3,7 @@ project(zanshin)
 find_package(KDE4 REQUIRED)
 find_package(KdepimLibs REQUIRED)
 find_package(Boost REQUIRED)
+find_package(Baloo REQUIRED)
 macro_log_feature(KDEPIMLIBS_FOUND "kdepimlibs" "KDE PIM libraries" "The KDE PIM libs are required to build Zanshin" "http://www.kde.org")
 
 include(KDE4Defaults)
@@ -55,6 +56,26 @@ include_directories (
     ${KDE4_INCLUDES}
     ${KDEPIMLIBS_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIR}
+    3rdparty/kdepim/
+    3rdparty/kdepim/libkdepim/
+)
+
+set(KDEPIM_STATIC_LIBS
+  zanshinkdepimstatic
+  ${KDEPIMLIBS_KRESOURCES_LIBS}
+  ${KDEPIMLIBS_KABC_LIBS}
+  ${KDEPIMLIBS_KPIMUTILS_LIBS}
+  ${KDEPIMLIBS_KLDAP_LIBS}
+  ${KDEPIMLIBS_KPIMIDENTITIES_LIBS}
+  ${KDE4_KCMUTILS_LIBS}
+  ${KDE4_SOLID_LIBS}
+  ${KDEPIMLIBS_KMIME_LIBS}
+  ${KDEPIMLIBS_KPIMTEXTEDIT_LIBS}
+  ${KDEPIMLIBS_KMIME_LIBS}
+  ${KDEPIMLIBS_AKONADI_LIBS}
+  ${KDEPIMLIBS_AKONADI_CONTACT_LIBS}
+  ${KDEPIMLIBS_AKONADI_CALENDAR_LIBS}
+  ${BALOO_LIBRARIES}
 )
 
 add_subdirectory(3rdparty)

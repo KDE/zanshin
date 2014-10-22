@@ -1,0 +1,2 @@
+// DOXYGEN_REFERENCES = kdecore kdeui kio sonnet kresources kabc kcal
+// DOXYGEN_EXCLUDE = komposer

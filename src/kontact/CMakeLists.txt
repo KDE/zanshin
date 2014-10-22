@@ -14,6 +14,7 @@ target_link_libraries(zanshin-next_part
     presentation
     utils
     widgets
+    ${KDEPIM_STATIC_LIBS}
 )
 
 install(TARGETS zanshin-next_part DESTINATION ${PLUGIN_INSTALL_DIR})

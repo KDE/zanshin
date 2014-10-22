@@ -9,6 +9,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
                                        akonadi
                                        domain
                                        utils
+                                       ${KDEPIM_STATIC_LIBS}
     )
 
     get_target_property(_location ${_testname} LOCATION)
