@@ -37,7 +37,7 @@ public:
     TagRepository();
     virtual ~TagRepository();
 
-    virtual KJob *save(Tag::Ptr tag) = 0;
+    virtual KJob *create(Tag::Ptr tag) = 0;
     virtual KJob *remove(Tag::Ptr tag) = 0;
 
     virtual KJob *associate(Tag::Ptr parent, Artifact::Ptr child) = 0;
