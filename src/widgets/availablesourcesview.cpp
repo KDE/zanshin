@@ -31,6 +31,8 @@
 
 #include "presentation/metatypes.h"
 
+#include "widgets/datasourcedelegate.h"
+
 using namespace Widgets;
 
 AvailableSourcesView::AvailableSourcesView(QWidget *parent)
@@ -45,6 +47,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     sourcesView->setObjectName("sourcesView");
     sourcesView->header()->hide();
     sourcesView->setModel(m_sortProxy);
+    sourcesView->setItemDelegate(new DataSourceDelegate(sourcesView));
 
     auto layout = new QVBoxLayout;
     layout->addWidget(sourcesView);

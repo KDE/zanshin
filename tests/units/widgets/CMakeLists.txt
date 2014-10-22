@@ -3,6 +3,7 @@ zanshin_auto_tests(
   availablepagesviewtest
   availablesourcesviewtest
   datasourcecomboboxtest
+  datasourcedelegatetest
   editorviewtest
   filterwidgettest
   newpagedialogtest

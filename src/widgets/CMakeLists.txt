@@ -3,6 +3,7 @@ set(widgets_SRCS
     availablepagesview.cpp
     availablesourcesview.cpp
     datasourcecombobox.cpp
+    datasourcedelegate.cpp
     editorview.cpp
     filterwidget.cpp
     itemdelegate.cpp

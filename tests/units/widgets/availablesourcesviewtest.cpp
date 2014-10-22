@@ -32,6 +32,7 @@
 #include "presentation/metatypes.h"
 
 #include "widgets/availablesourcesview.h"
+#include "widgets/datasourcedelegate.h"
 
 class AvailableSourcesViewTest : public QObject
 {
@@ -47,6 +48,7 @@ private slots:
         QVERIFY(sourcesView);
         QVERIFY(sourcesView->isVisibleTo(&available));
         QVERIFY(!sourcesView->header()->isVisibleTo(&available));
+        QVERIFY(qobject_cast<Widgets::DataSourceDelegate*>(sourcesView->itemDelegate()));
 
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
