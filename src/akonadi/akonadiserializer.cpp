@@ -156,9 +156,14 @@ Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr da
     return collection;
 }
 
+bool Serializer::isListedCollection(Collection collection)
+{
+    return collection.enabled() || collection.referenced();
+}
+
 bool Serializer::isSelectedCollection(Collection collection)
 {
-    if (!collection.referenced() && !collection.enabled())
+    if (!isListedCollection(collection))
         return false;
 
     if (!isNoteCollection(collection) && !isTaskCollection(collection))

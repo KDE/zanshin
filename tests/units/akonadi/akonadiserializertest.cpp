@@ -385,6 +385,37 @@ private slots:
         }
     }
 
+    void shouldVerifyIfCollectionIsListed_data()
+    {
+        QTest::addColumn<bool>("isEnabled");
+        QTest::addColumn<bool>("isReferenced");
+        QTest::addColumn<bool>("expectedListed");
+
+        QTest::newRow("enabled and referenced") << true << true << true;
+        QTest::newRow("enabled and !referenced") << true << false << true;
+        QTest::newRow("!enabled and referenced") << false << true << true;
+        QTest::newRow("!enabled and !referenced") << false << false << false;
+    }
+
+    void shouldVerifyIfCollectionIsListed()
+    {
+        // GIVEN
+        QFETCH(bool, isEnabled);
+        QFETCH(bool, isReferenced);
+
+        // ... stored in a collection
+        Akonadi::Collection collection(42);
+        collection.setReferenced(isReferenced);
+        collection.setEnabled(isEnabled);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+
+        // THEN
+        QFETCH(bool, expectedListed);
+        QCOMPARE(serializer.isListedCollection(collection), expectedListed);
+    }
+
     void shouldVerifyIfCollectionIsSelected_data()
     {
         QTest::addColumn<QStringList>("mimeTypes");
