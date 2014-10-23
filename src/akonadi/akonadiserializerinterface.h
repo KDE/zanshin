@@ -98,6 +98,7 @@ public:
 
     virtual Domain::Tag::Ptr createTagFromAkonadiTag(Akonadi::Tag tag) = 0;
     virtual void updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) = 0;
+    virtual Akonadi::Tag createAkonadiTagFromTag(Domain::Tag::Ptr tag) = 0;
 
     virtual bool hasContextTags(Akonadi::Item item) const = 0;
     virtual bool hasAkonadiTags(Akonadi::Item item) const = 0;

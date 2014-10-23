@@ -557,3 +557,17 @@ void Serializer::updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akon
     tag->setProperty("tagId", akonadiTag.id());
     tag->setName(akonadiTag.name());
 }
+
+Akonadi::Tag Serializer::createAkonadiTagFromTag(Domain::Tag::Ptr tag)
+{
+    auto akonadiTag = Akonadi::Tag();
+    akonadiTag.setName(tag->name());
+    akonadiTag.setType(Akonadi::Tag::PLAIN);
+    akonadiTag.setGid(QByteArray(tag->name().toLatin1()));
+
+    const auto tagProperty = tag->property("tagId");
+    if (tagProperty.isValid())
+        akonadiTag.setId(tagProperty.value<Akonadi::Tag::Id>());
+
+    return akonadiTag;
+}

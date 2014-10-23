@@ -1925,7 +1925,6 @@ private slots:
 
     void shouldCreateTagFromContext_data()
     {
-
         QTest::addColumn<QString>("name");
         QTest::addColumn<qint64>("tagId");
         QTest::addColumn<QByteArray>("tagGid");
@@ -2027,6 +2026,47 @@ private slots:
         // THEN
         QCOMPARE(tag->name(), akonadiTag.name());
         QCOMPARE(tag->property("tagId").toLongLong(), akonadiTag.id());
+    }
+
+    void shouldCreateAkonadiTagFromTag_data()
+    {
+        // GIVEN
+        QTest::addColumn<QString>("name");
+        QTest::addColumn<qint64>("tagId");
+        QTest::addColumn<QByteArray>("tagGid");
+
+        const QByteArray namePhilo = "Philosophy";
+
+        QTest::newRow("nominal case") << QString(namePhilo) << qint64(42) << namePhilo;
+        QTest::newRow("null name case") << QString() << qint64(42) << QByteArray();
+        QTest::newRow("null tagId case") << QString(namePhilo) << qint64(-1) << namePhilo;
+        QTest::newRow("totally null tag case") << QString() << qint64(-1) << QByteArray();
+    }
+
+    void shouldCreateAkonadiTagFromTag()
+    {
+        // GIVEN
+        QFETCH(QString, name);
+        QFETCH(qint64, tagId);
+        QFETCH(QByteArray, tagGid);
+
+        // WHEN
+        auto tag = Domain::Tag::Ptr::create();
+        tag->setProperty("tagId", tagId);
+        tag->setName(name);
+
+        Akonadi::Serializer serializer;
+        Akonadi::Tag akonadiTag = serializer.createAkonadiTagFromTag(tag);
+
+        // THEN
+        QCOMPARE(akonadiTag.name(), name);
+        QCOMPARE(akonadiTag.isValid(), tagId > 0);
+
+        if (tagId > 0) {
+            QCOMPARE(akonadiTag.id(), tagId);
+            QCOMPARE(akonadiTag.gid(), tagGid);
+            QCOMPARE(akonadiTag.type(), QByteArray(Akonadi::Tag::PLAIN));
+        }
     }
 };
 

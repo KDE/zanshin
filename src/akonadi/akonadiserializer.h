@@ -82,6 +82,7 @@ public:
 
     Domain::Tag::Ptr createTagFromAkonadiTag(Akonadi::Tag akonadiTag) Q_DECL_OVERRIDE;
     void updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) Q_DECL_OVERRIDE;
+    Akonadi::Tag createAkonadiTagFromTag(Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
 
     bool hasContextTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
     bool hasAkonadiTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
