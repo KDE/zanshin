@@ -34,6 +34,7 @@
 #include <Akonadi/TagFetchScope>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
+#include "akonadi/akonaditimestampattribute.h"
 
 using namespace Akonadi;
 
@@ -41,6 +42,7 @@ MonitorImpl::MonitorImpl()
     : m_monitor(new Akonadi::Monitor)
 {
     AttributeFactory::registerAttribute<ApplicationSelectedAttribute>();
+    AttributeFactory::registerAttribute<TimestampAttribute>();
 
     m_monitor->fetchCollection(true);
     m_monitor->setCollectionMonitored(Akonadi::Collection::root());

@@ -16,6 +16,7 @@ zanshin_auto_tests(
   akonaditagqueriestest
   akonaditaskqueriestest
   akonaditaskrepositorytest
+  akonaditimestampattributetest
 )
 
 zanshin_akonadi_auto_tests(

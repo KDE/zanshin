@@ -23,6 +23,7 @@ set(akonadi_SRCS
     akonaditagqueries.cpp
     akonaditaskqueries.cpp
     akonaditaskrepository.cpp
+    akonaditimestampattribute.cpp
 )
 
 kde4_add_library(akonadi STATIC ${akonadi_SRCS})
