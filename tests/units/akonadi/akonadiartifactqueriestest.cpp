@@ -105,9 +105,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item3).thenReturn(false);
 
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item3).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
@@ -188,8 +188,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
 
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(false);
@@ -273,9 +273,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item3).thenReturn(false);
 
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item3).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
@@ -368,7 +368,7 @@ private slots:
 
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContexts);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(hasTags);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(hasTags);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Task>().isNull());
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Note>().isNull());
@@ -461,14 +461,14 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Note>());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(relatedUid);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContexts);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(hasTags);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(hasTags);
 
         monitor->addItem(item);
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).atMost(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).atMost(1));
 
@@ -515,7 +515,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(task);
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(task, item).thenReturn(true);
 
         // Monitor mock
@@ -607,7 +607,7 @@ private slots:
                                                                                     .thenReturn(relatedUidAfter);
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContextsBefore)
                                                                                 .thenReturn(hasContextsAfter);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).thenReturn(hasTagsBefore)
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(hasTagsBefore)
                                                                               .thenReturn(hasTagsAfter);
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(artifact, item).thenReturn(true);
 
@@ -635,7 +635,7 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateNoteFromItem).when(artifact.dynamicCast<Domain::Note>(), item).atMost(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).atMost(2));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).atMost(2));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item).atMost(2));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).atMost(2));
 
         if (inListAfterChange) {
             QCOMPARE(result->data().size(), 1);
@@ -698,14 +698,14 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasPlainTags).when(item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
 
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);

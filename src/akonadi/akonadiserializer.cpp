@@ -456,12 +456,12 @@ bool Serializer::hasContextTags(Item item) const
                        std::bind(std::mem_fn(&Serializer::isContext), this, _1));
 }
 
-bool Serializer::hasPlainTags(Item item) const
+bool Serializer::hasAkonadiTags(Item item) const
 {
     using namespace std::placeholders;
     Tag::List tags = item.tags();
     return std::any_of(tags.constBegin(), tags.constEnd(),
-                       std::bind(std::mem_fn(&Serializer::isPlainTag), this, _1));
+                       std::bind(std::mem_fn(&Serializer::isAkonadiTag), this, _1));
 }
 
 bool Serializer::isContext(const Akonadi::Tag &tag) const
@@ -469,7 +469,7 @@ bool Serializer::isContext(const Akonadi::Tag &tag) const
     return (tag.type() == Akonadi::SerializerInterface::contextTagType());
 }
 
-bool Serializer::isPlainTag(const Tag &tag) const
+bool Serializer::isAkonadiTag(const Tag &tag) const
 {
     return tag.type() == Akonadi::Tag::PLAIN;
 }

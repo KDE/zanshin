@@ -1750,8 +1750,8 @@ private slots:
         unrelatedTag.setType("unrelated");
         Akonadi::Tag contextTag("Bar");
         contextTag.setType(Akonadi::Serializer::contextTagType());
-        Akonadi::Tag plainTag("Baz");
-        plainTag.setType(Akonadi::Tag::PLAIN);
+        Akonadi::Tag akonadiTag("Baz");
+        akonadiTag.setType(Akonadi::Tag::PLAIN);
 
         Akonadi::Item item;
         QTest::newRow("no tags") << item << false << false;
@@ -1762,10 +1762,10 @@ private slots:
         item.setTags({ unrelatedTag, contextTag });
         QTest::newRow("has contexts") << item << true << false;
 
-        item.setTags({ unrelatedTag, plainTag });
+        item.setTags({ unrelatedTag, akonadiTag });
         QTest::newRow("has tags") << item << false << true;
 
-        item.setTags({ unrelatedTag, contextTag, plainTag });
+        item.setTags({ unrelatedTag, contextTag, akonadiTag });
         QTest::newRow("has both") << item << true << true;
     }
 
@@ -1780,7 +1780,7 @@ private slots:
 
         // WHEN
         const bool hasContexts = serializer.hasContextTags(item);
-        const bool hasTags = serializer.hasPlainTags(item);
+        const bool hasTags = serializer.hasAkonadiTags(item);
 
         // THEN
         QCOMPARE(hasContexts, contextsExpected);

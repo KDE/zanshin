@@ -127,7 +127,7 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
             const bool excluded = !m_serializer->relatedUidFromItem(item).isEmpty()
                                || (!m_serializer->isTaskItem(item) && !m_serializer->isNoteItem(item))
                                || (m_serializer->isTaskItem(item) && m_serializer->hasContextTags(item))
-                               || m_serializer->hasPlainTags(item);
+                               || m_serializer->hasAkonadiTags(item);
 
             return !excluded;
         });
