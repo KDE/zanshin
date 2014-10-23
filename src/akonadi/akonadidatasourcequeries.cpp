@@ -327,7 +327,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(D
                 QHash<Collection::Id, Collection> children;
                 foreach (const auto &collection, job->collections()) {
                     auto child = collection;
-                    while (child.parentCollection() != root)
+                    while (child.parentCollection() != root && child.parentCollection().isValid())
                         child = child.parentCollection();
                     if (!children.contains(child.id()))
                         children[child.id()] = child;

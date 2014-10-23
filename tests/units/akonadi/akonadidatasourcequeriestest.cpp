@@ -1642,11 +1642,17 @@ private slots:
         col3.setParentCollection(col2);
         auto source3 = Domain::DataSource::Ptr::create();
 
+        // One collection which matches not child of parentCol
+        Akonadi::Collection col4(45);
+        col4.setName("col4");
+        col4.setParentCollection(Akonadi::Collection::root());
+        auto source4 = Domain::DataSource::Ptr::create();
+
         QString searchTerm("col");
 
         // Only col1 and col3 will match the mimetypes
         MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
-        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
+        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col3 << col4);
 
         // Storage mock returning the fetch jobs
         mock_object<Akonadi::StorageInterface> storageMock;
@@ -1659,6 +1665,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
         serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
         serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::BaseName).thenReturn(source3);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col4, Akonadi::SerializerInterface::BaseName).thenReturn(source4);
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
