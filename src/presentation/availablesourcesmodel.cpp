@@ -62,6 +62,32 @@ QAbstractItemModel *AvailableSourcesModel::searchListModel()
     return m_searchListModel;
 }
 
+void AvailableSourcesModel::listSource(const Domain::DataSource::Ptr &source)
+{
+    Q_ASSERT(source);
+    source->setSelected(true);
+    source->setListStatus(Domain::DataSource::Listed);
+    m_dataSourceRepository->update(source);
+}
+
+void AvailableSourcesModel::unlistSource(const Domain::DataSource::Ptr &source)
+{
+    Q_ASSERT(source);
+    source->setSelected(false);
+    source->setListStatus(Domain::DataSource::Unlisted);
+    m_dataSourceRepository->update(source);
+}
+
+void AvailableSourcesModel::bookmarkSource(const Domain::DataSource::Ptr &source)
+{
+    Q_ASSERT(source);
+    if (source->listStatus() == Domain::DataSource::Bookmarked)
+        source->setListStatus(Domain::DataSource::Listed);
+    else
+        source->setListStatus(Domain::DataSource::Bookmarked);
+    m_dataSourceRepository->update(source);
+}
+
 QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
 {
     auto query = [this] (const Domain::DataSource::Ptr &source) {

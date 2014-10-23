@@ -27,6 +27,8 @@
 
 #include <QObject>
 
+#include "domain/datasource.h"
+
 #include "presentation/metatypes.h"
 
 class QModelIndex;
@@ -58,6 +60,11 @@ public:
 
 signals:
     void searchTermChanged(const QString &term);
+
+public slots:
+    void listSource(const Domain::DataSource::Ptr &source);
+    void unlistSource(const Domain::DataSource::Ptr &source);
+    void bookmarkSource(const Domain::DataSource::Ptr &source);
 
 private:
     QAbstractItemModel *createSourceListModel();

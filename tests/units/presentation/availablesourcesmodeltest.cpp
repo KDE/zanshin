@@ -251,6 +251,111 @@ private slots:
         QVERIFY(!model->setData(source2Index, Qt::Checked, Qt::CheckStateRole));
         QVERIFY(!model->setData(source4Index, Qt::Unchecked, Qt::CheckStateRole));
     }
+
+    void shouldChangeSourceToListed()
+    {
+        // GIVEN
+
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName("Source");
+        source->setIconName("folder");
+        source->setContentTypes(Domain::DataSource::Tasks);
+        source->setSelected(false);
+        source->setListStatus(Domain::DataSource::Unlisted);
+
+
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+
+        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(new FakeJob(this));
+
+        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
+                                                    &sourceRepositoryMock.getInstance());
+
+        // WHEN
+        sources.listSource(source);
+
+        // THEN
+        QVERIFY(sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).exactly(1));
+        QVERIFY(source->isSelected());
+        QCOMPARE(source->listStatus(), Domain::DataSource::Listed);
+    }
+
+    void shouldChangeSourceToUnlisted()
+    {
+        // GIVEN
+
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName("Source");
+        source->setIconName("folder");
+        source->setContentTypes(Domain::DataSource::Tasks);
+        source->setSelected(true);
+        source->setListStatus(Domain::DataSource::Bookmarked);
+
+
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+
+        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(new FakeJob(this));
+
+        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
+                                                    &sourceRepositoryMock.getInstance());
+
+        // WHEN
+        sources.unlistSource(source);
+
+        // THEN
+        QVERIFY(sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).exactly(1));
+        QVERIFY(!source->isSelected());
+        QCOMPARE(source->listStatus(), Domain::DataSource::Unlisted);
+    }
+
+    void shouldToggleSourceToBookmarkStatus_data()
+    {
+        QTest::addColumn<bool>("wasSelected");
+        QTest::addColumn<bool>("wasBookmarked");
+        QTest::newRow("unselected, not bookmarked") << false << false;
+        QTest::newRow("selected, not bookmarked") << true << false;
+        QTest::newRow("unselected, bookmarked") << false << true;
+        QTest::newRow("selected, bookmarked") << true << true;
+    }
+
+    void shouldToggleSourceToBookmarkStatus()
+    {
+        // GIVEN
+        QFETCH(bool, wasSelected);
+        QFETCH(bool, wasBookmarked);
+
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName("Source");
+        source->setIconName("folder");
+        source->setContentTypes(Domain::DataSource::Tasks);
+        source->setSelected(wasSelected);
+        if (wasBookmarked)
+            source->setListStatus(Domain::DataSource::Bookmarked);
+        else
+            source->setListStatus(Domain::DataSource::Listed);
+
+
+        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+
+        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(new FakeJob(this));
+
+        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
+                                                    &sourceRepositoryMock.getInstance());
+
+        // WHEN
+        sources.bookmarkSource(source);
+
+        // THEN
+        QVERIFY(sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).exactly(1));
+        QCOMPARE(source->isSelected(), wasSelected);
+        if (wasBookmarked)
+            QCOMPARE(source->listStatus(), Domain::DataSource::Listed);
+        else
+            QCOMPARE(source->listStatus(), Domain::DataSource::Bookmarked);
+    }
 };
 
 QTEST_MAIN(AvailableSourcesModelTest)
