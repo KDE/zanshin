@@ -130,3 +130,27 @@ KJob *ContextRepository::dissociate(Domain::Context::Ptr parent, Domain::Task::P
 
     return job;
 }
+
+KJob *ContextRepository::dissociateAll(Domain::Task::Ptr child)
+{
+    Item childItem;
+
+    childItem = m_serializer->createItemFromTask(child);
+    Q_ASSERT(childItem.isValid());
+    auto job = new Utils::CompositeJob();
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+        childItem.clearTags();
+
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+
+    return job;
+}

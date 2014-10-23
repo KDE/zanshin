@@ -268,6 +268,63 @@ private slots:
             QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0).exactly(1));
         }
     }
+
+    void shouldDissociateTaskFromAllContext_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<Domain::Task::Ptr>("task");
+        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<bool>("execJob");
+
+        Akonadi::Item item(42);
+        Domain::Task::Ptr task(new Domain::Task);
+
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item);
+        QTest::newRow("nominal case") << item << task << itemFetchJob << true;
+
+        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("task job error, cannot find task") << item << task << itemFetchJob << false;
+    }
+
+    void shouldDissociateTaskFromAllContext()
+    {
+        QFETCH(Akonadi::Item,item);
+        QFETCH(Domain::Task::Ptr,task);
+        QFETCH(MockItemFetchJob*,itemFetchJob);
+        QFETCH(bool,execJob);
+
+        // A mock update job
+        auto itemModifyJob = new MockAkonadiJob(this);
+
+        // Storage mock returning the create job
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
+                                                          .thenReturn(itemFetchJob);
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0)
+                                                           .thenReturn(itemModifyJob);
+
+        // Serializer mock returning the item for the task
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task)
+                                                                         .thenReturn(item);
+
+        // WHEN
+        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(&storageMock.getInstance(),
+                                                                                             &serializerMock.getInstance()));
+
+        auto dissociateJob = repository->dissociateAll(task);
+
+        if (execJob)
+            dissociateJob->exec();
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
+        if (execJob) {
+            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0).exactly(1));
+        }
+    }
 };
 
 QTEST_MAIN(AkonadiContextRepositoryTest)

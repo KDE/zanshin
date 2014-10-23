@@ -43,6 +43,7 @@ public:
 
     virtual KJob *associate(Context::Ptr parent, Task::Ptr child) = 0;
     virtual KJob *dissociate(Context::Ptr parent, Task::Ptr child) = 0;
+    virtual KJob *dissociateAll(Task::Ptr child) = 0;
 };
 
 }
