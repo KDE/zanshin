@@ -43,7 +43,31 @@ class AkonadiTagRepositoryTest : public QObject
 private slots:
     void shouldCreateTag()
     {
+        // GIVEN
 
+        // A Tag and its corresponding Akonadi Tag
+        Akonadi::Tag akonadiTag; // not existing yet
+        auto tag = Domain::Tag::Ptr::create();
+
+        // A mock creating job
+        auto tagCreateJob = new MockAkonadiJob(this);
+
+        // Storage mock returning the tagCreatejob
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::createTag).when(akonadiTag)
+                                                          .thenReturn(tagCreateJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
+
+
+        // WHEN
+        QScopedPointer<Akonadi::TagRepository> repository(new Akonadi::TagRepository(&storageMock.getInstance(), &serializerMock.getInstance()));
+        repository->create(tag)->exec();
+
+        //THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createTag).when(akonadiTag).exactly(1));
     }
 };
 
