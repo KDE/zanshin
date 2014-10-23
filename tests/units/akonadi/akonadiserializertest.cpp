@@ -32,6 +32,7 @@
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Item>
 #include <Akonadi/Notes/NoteUtils>
+#include <Akonadi/Tag>
 #include <KCalCore/Todo>
 #include <KMime/Message>
 
@@ -1961,6 +1962,71 @@ private slots:
             QCOMPARE(tag.gid(), tagGid);
             QCOMPARE(tag.type(), Akonadi::SerializerInterface::contextTagType());
         }
+    }
+
+    void shouldCreateTagFromAkonadiTag_data()
+    {
+        QTest::addColumn<QString>("name");
+        QTest::addColumn<qint64>("tagId");
+        QTest::addColumn<QByteArray>("type");
+
+        QString tagName = "Optional";
+        QByteArray plainType = Akonadi::Tag::PLAIN;
+
+        QTest::newRow("nominal case") << tagName << qint64(42) << plainType;
+        QTest::newRow("null name case") << QString() << qint64(42) << plainType;
+        QTest::newRow("null tagId case") << tagName << qint64(-1) << plainType;
+        QTest::newRow("totally null tag case") << QString() << qint64(-1) << plainType;
+    }
+
+    void shouldCreateTagFromAkonadiTag()
+    {
+        // GIVEN
+        QFETCH(QString, name);
+        QFETCH(qint64, tagId);
+        QFETCH(QByteArray, type);
+
+        auto akonadiTag = Akonadi::Tag();
+        akonadiTag.setName(name);
+        akonadiTag.setId(tagId);
+        akonadiTag.setType(type);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        Domain::Tag::Ptr resultTag = serializer.createTagFromAkonadiTag(akonadiTag);
+
+        // THEN
+        QCOMPARE(resultTag->name(), akonadiTag.name());
+        QCOMPARE(resultTag->property("tagId").toLongLong(), akonadiTag.id());
+    }
+
+    void shouldUpdateTagFromAkonadiTag_data()
+    {
+        shouldCreateTagFromAkonadiTag_data();
+    }
+
+    void shouldUpdateTagFromAkonadiTag()
+    {
+        // GIVEN
+        QFETCH(QString, name);
+        QFETCH(qint64, tagId);
+        QFETCH(QByteArray, type);
+
+        // ... stored as an Akonadi Tag
+        Akonadi::Tag akonadiTag(name);
+        akonadiTag.setId(tagId);
+        akonadiTag.setType(type);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        auto tag = Domain::Tag::Ptr::create();
+        tag->setName("tag42");
+
+        serializer.updateTagFromAkonadiTag(tag, akonadiTag);
+
+        // THEN
+        QCOMPARE(tag->name(), akonadiTag.name());
+        QCOMPARE(tag->property("tagId").toLongLong(), akonadiTag.id());
     }
 };
 

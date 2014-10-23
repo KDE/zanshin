@@ -539,16 +539,21 @@ bool Serializer::isContextChild(Domain::Context::Ptr context, Item item) const
     return item.hasTag(tag);
 }
 
-Domain::Tag::Ptr Serializer::createTagFromAkonadiTag(Akonadi::Tag tag)
+Domain::Tag::Ptr Serializer::createTagFromAkonadiTag(Akonadi::Tag akonadiTag)
 {
-    Q_UNUSED(tag);
-    qFatal("Not impl yet");
-    return Domain::Tag::Ptr();
+    if (!isAkonadiTag(akonadiTag))
+        return Domain::Tag::Ptr();
+
+    auto tag = Domain::Tag::Ptr::create();
+    updateTagFromAkonadiTag(tag, akonadiTag);
+    return tag;
 }
 
-void Serializer::updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Tag akonadiTag)
+void Serializer::updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag)
 {
-    Q_UNUSED(tag);
-    Q_UNUSED(akonadiTag);
-    qFatal("Not impl yet");
+    if (!isAkonadiTag(akonadiTag))
+        return;
+
+    tag->setProperty("tagId", akonadiTag.id());
+    tag->setName(akonadiTag.name());
 }
