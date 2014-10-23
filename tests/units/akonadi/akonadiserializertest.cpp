@@ -26,6 +26,7 @@
 
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadiapplicationselectedattribute.h"
+#include "akonadi/akonaditimestampattribute.h"
 
 #include <Akonadi/Collection>
 #include <Akonadi/EntityDisplayAttribute>
@@ -330,6 +331,7 @@ private slots:
     void shouldCreateCollectionFromDataSource()
     {
         // GIVEN
+        const auto timestamp = QDateTime::currentMSecsSinceEpoch();
 
         // Data...
         QFETCH(QString, name);
@@ -362,6 +364,8 @@ private slots:
         QCOMPARE(collection.id(), source->property("collectionId").value<Akonadi::Collection::Id>());
         QVERIFY(collection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
         QCOMPARE(collection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected(), isSelected);
+        QVERIFY(collection.hasAttribute<Akonadi::TimestampAttribute>());
+        QVERIFY(collection.attribute<Akonadi::TimestampAttribute>()->timestamp() >= timestamp);
 
         switch (listStatus) {
         case Domain::DataSource::Unlisted:

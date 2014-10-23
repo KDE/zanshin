@@ -33,6 +33,7 @@
 #include <KMime/Message>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
+#include "akonadi/akonaditimestampattribute.h"
 
 using namespace Akonadi;
 
@@ -128,6 +129,8 @@ Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr da
 {
     const auto id = dataSource->property("collectionId").value<Collection::Id>();
     auto collection = Collection(id);
+
+    collection.attribute<Akonadi::TimestampAttribute>(Akonadi::Collection::AddIfMissing);
 
     auto selectedAttribute = collection.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing);
     selectedAttribute->setSelected(dataSource->isSelected());
