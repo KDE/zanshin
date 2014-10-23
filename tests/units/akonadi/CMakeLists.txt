@@ -13,6 +13,7 @@ zanshin_auto_tests(
   akonadiprojectrepositorytest
   akonadiserializertest
   akonadistoragesettingstest
+  akonaditagqueriestest
   akonaditaskqueriestest
   akonaditaskrepositorytest
 )
