@@ -42,6 +42,8 @@ class AvailableSourcesModel : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* sourceListModel READ sourceListModel)
+    Q_PROPERTY(QAbstractItemModel* searchListModel READ searchListModel)
+    Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm NOTIFY searchTermChanged)
 public:
     explicit AvailableSourcesModel(Domain::DataSourceQueries *dataSourceQueries,
                                    Domain::DataSourceRepository *dataSourceRepository,
@@ -49,11 +51,20 @@ public:
     ~AvailableSourcesModel();
 
     QAbstractItemModel *sourceListModel();
+    QAbstractItemModel *searchListModel();
+
+    QString searchTerm() const;
+    void setSearchTerm(const QString &term);
+
+signals:
+    void searchTermChanged(const QString &term);
 
 private:
     QAbstractItemModel *createSourceListModel();
+    QAbstractItemModel *createSearchListModel();
 
     QAbstractItemModel *m_sourceListModel;
+    QAbstractItemModel *m_searchListModel;
 
     Domain::DataSourceQueries *m_dataSourceQueries;
     Domain::DataSourceRepository *m_dataSourceRepository;

@@ -232,12 +232,17 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
     return m_findChildren.value(root.id())->result();
 }
 
-void DataSourceQueries::setSearchTerm(QString searchTerm)
+QString DataSourceQueries::searchTerm() const
 {
-    if (m_searchTerm == searchTerm)
+    return m_searchTerm;
+}
+
+void DataSourceQueries::setSearchTerm(QString term)
+{
+    if (m_searchTerm == term)
         return;
 
-    m_searchTerm = searchTerm;
+    m_searchTerm = term;
     if (m_findSearchTopLevel) {
         m_findSearchTopLevel->reset();
     }

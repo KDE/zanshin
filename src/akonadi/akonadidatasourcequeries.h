@@ -59,7 +59,8 @@ public:
     DataSourceResult::Ptr findTopLevel() const;
     DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const;
 
-    void setSearchTerm(QString);
+    QString searchTerm() const;
+    void setSearchTerm(QString term);
     DataSourceResult::Ptr findSearchTopLevel() const;
     DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const;
 
