@@ -171,7 +171,8 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
         });
         m_findTopLevel->setPredicateFunction([this] (const Akonadi::Collection &collection) {
             return collection.isValid()
-                && collection.parentCollection() == Akonadi::Collection::root();
+                && collection.parentCollection() == Akonadi::Collection::root()
+                && m_serializer->isListedCollection(collection);
         });
         m_findTopLevel->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
             return m_serializer->representsCollection(source, collection);
@@ -222,7 +223,9 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
             m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::BaseName);
         });
         query->setPredicateFunction([this, root] (const Akonadi::Collection &collection) {
-            return collection.isValid() && collection.parentCollection() == root;
+            return collection.isValid()
+                && collection.parentCollection() == root
+                && m_serializer->isListedCollection(collection);
         });
         query->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
             return m_serializer->representsCollection(source, collection);
