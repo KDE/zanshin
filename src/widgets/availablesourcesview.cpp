@@ -29,6 +29,8 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
+#include <KLineEdit>
+
 #include "presentation/metatypes.h"
 
 #include "widgets/datasourcedelegate.h"
@@ -43,6 +45,13 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sortProxy->setDynamicSortFilter(true);
     m_sortProxy->sort(0);
 
+    auto searchEdit = new KLineEdit(this);
+    searchEdit->setObjectName("searchEdit");
+    searchEdit->setClearButtonShown(true);
+    searchEdit->setClickMessage(tr("Search..."));
+    connect(searchEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(onSearchTextChanged(QString)));
+
     auto sourcesView = new QTreeView(this);
     sourcesView->setObjectName("sourcesView");
     sourcesView->header()->hide();
@@ -54,6 +63,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     sourcesView->setItemDelegate(delegate);
 
     auto layout = new QVBoxLayout;
+    layout->addWidget(searchEdit);
     layout->addWidget(sourcesView);
     setLayout(layout);
 }
@@ -72,9 +82,7 @@ void AvailableSourcesView::setModel(QObject *model)
 
     m_model = model;
 
-    QVariant modelProperty = m_model->property("sourceListModel");
-    if (modelProperty.canConvert<QAbstractItemModel*>())
-        m_sortProxy->setSourceModel(modelProperty.value<QAbstractItemModel*>());
+    setSourceModel("sourceListModel");
 }
 
 void AvailableSourcesView::onActionTriggered(const Domain::DataSource::Ptr &source, int action)
@@ -95,5 +103,23 @@ void AvailableSourcesView::onActionTriggered(const Domain::DataSource::Ptr &sour
     default:
         qFatal("Shouldn't happen");
         break;
+    }
+}
+
+void AvailableSourcesView::setSourceModel(const QByteArray &propertyName)
+{
+    QVariant modelProperty = m_model->property(propertyName);
+    if (modelProperty.canConvert<QAbstractItemModel*>())
+        m_sortProxy->setSourceModel(modelProperty.value<QAbstractItemModel*>());
+}
+
+void AvailableSourcesView::onSearchTextChanged(const QString &text)
+{
+    if (text.size() <= 2) {
+        m_model->setProperty("searchTerm", QString());
+        setSourceModel("sourceListModel");
+    } else {
+        m_model->setProperty("searchTerm", text);
+        setSourceModel("searchListModel");
     }
 }

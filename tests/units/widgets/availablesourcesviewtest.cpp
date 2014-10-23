@@ -29,6 +29,8 @@
 #include <QStringListModel>
 #include <QTreeView>
 
+#include <KLineEdit>
+
 #include "presentation/metatypes.h"
 
 #include "widgets/availablesourcesview.h"
@@ -37,12 +39,24 @@
 class AvailableSourcesModelStub : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm)
 public:
     explicit AvailableSourcesModelStub(QObject *parent = 0)
         : QObject(parent)
     {
     }
+
+    QString searchTerm() const
+    {
+        return m_searchTerm;
+    }
+
 public slots:
+    void setSearchTerm(const QString &term)
+    {
+        m_searchTerm = term;
+    }
+
     void listSource(const Domain::DataSource::Ptr &source)
     {
         listedSources << source;
@@ -62,6 +76,9 @@ public:
     QList<Domain::DataSource::Ptr> listedSources;
     QList<Domain::DataSource::Ptr> unlistedSources;
     QList<Domain::DataSource::Ptr> bookmarkedSources;
+
+private:
+    QString m_searchTerm;
 };
 
 
@@ -80,6 +97,12 @@ private slots:
         QVERIFY(sourcesView->isVisibleTo(&available));
         QVERIFY(!sourcesView->header()->isVisibleTo(&available));
         QVERIFY(qobject_cast<Widgets::DataSourceDelegate*>(sourcesView->itemDelegate()));
+
+        auto searchEdit = available.findChild<KLineEdit*>("searchEdit");
+        QVERIFY(searchEdit);
+        QVERIFY(searchEdit->isVisibleTo(&available));
+        QVERIFY(searchEdit->isClearButtonShown());
+        QCOMPARE(searchEdit->clickMessage(), tr("Search..."));
 
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
@@ -184,6 +207,63 @@ private slots:
         // THEN
         QCOMPARE(stubPagesModel.bookmarkedSources.size(), 1);
         QCOMPARE(stubPagesModel.bookmarkedSources.first(), source);
+    }
+
+    void shouldSwitchToSearchListWhenASearchTermIsGiven()
+    {
+        // GIVEN
+        QStringListModel sourceModel(QStringList() << "A" << "B" << "C" );
+        QStringListModel searchModel(QStringList() << "D" << "E" << "F" );
+
+        AvailableSourcesModelStub stubPagesModel;
+        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&sourceModel)));
+        stubPagesModel.setProperty("searchListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&searchModel)));
+
+        Widgets::AvailableSourcesView available;
+        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        QVERIFY(sourcesView);
+        auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
+        QVERIFY(proxy);
+        available.setModel(&stubPagesModel);
+        QCOMPARE(proxy->sourceModel(), &sourceModel);
+
+        auto searchEdit = available.findChild<QLineEdit*>("searchEdit");
+        QVERIFY(searchEdit);
+
+        // WHEN
+        QTest::keyClick(searchEdit, 'm');
+
+        // THEN
+        QCOMPARE(proxy->sourceModel(), &sourceModel);
+        QVERIFY(stubPagesModel.searchTerm().isEmpty());
+
+        // WHEN
+        QTest::keyClick(searchEdit, 'y');
+
+        // THEN
+        QCOMPARE(proxy->sourceModel(), &sourceModel);
+        QVERIFY(stubPagesModel.searchTerm().isEmpty());
+
+        // WHEN
+        QTest::keyClick(searchEdit, ' ');
+
+        // THEN
+        QCOMPARE(proxy->sourceModel(), &searchModel);
+        QCOMPARE(stubPagesModel.searchTerm(), QString("my "));
+
+        // WHEN
+        QTest::keyClicks(searchEdit, "term");
+
+        // THEN
+        QCOMPARE(proxy->sourceModel(), &searchModel);
+        QCOMPARE(stubPagesModel.searchTerm(), QString("my term"));
+
+        // WHEN
+        searchEdit->clear();
+
+        // THEN
+        QCOMPARE(proxy->sourceModel(), &sourceModel);
+        QVERIFY(stubPagesModel.searchTerm().isEmpty());
     }
 };
 

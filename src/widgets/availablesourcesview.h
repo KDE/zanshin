@@ -41,11 +41,13 @@ public:
 
     QObject *model() const;
 
+    void setSourceModel(const QByteArray &propertyName);
 public slots:
     void setModel(QObject *model);
 
 private slots:
     void onActionTriggered(const Domain::DataSource::Ptr &source, int action);
+    void onSearchTextChanged(const QString &text);
 
 private:
     QObject *m_model;
