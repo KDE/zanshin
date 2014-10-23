@@ -40,6 +40,10 @@ TagQueries::TagQueries(QObject *parent)
       m_monitor(new MonitorImpl),
       m_ownInterfaces(true)
 {
+    connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
+
     connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
@@ -51,6 +55,10 @@ TagQueries::TagQueries(StorageInterface *storage, SerializerInterface *serialize
       m_monitor(monitor),
       m_ownInterfaces(false)
 {
+    connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
+    connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
+
     connect(monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
     connect(monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
     connect(monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
@@ -108,17 +116,20 @@ TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::P
 
 void TagQueries::onTagAdded(const Tag &tag)
 {
-    Q_UNUSED(tag);
+    foreach (const TagQuery::Ptr &query, m_tagQueries)
+        query->onAdded(tag);
 }
 
 void TagQueries::onTagRemoved(const Tag &tag)
 {
-    Q_UNUSED(tag);
+    foreach (const TagQuery::Ptr &query, m_tagQueries)
+        query->onRemoved(tag);
 }
 
 void TagQueries::onTagChanged(const Tag &tag)
 {
-    Q_UNUSED(tag);
+    foreach (const TagQuery::Ptr &query, m_tagQueries)
+        query->onChanged(tag);
 }
 
 void TagQueries::onItemAdded(const Item &item)
