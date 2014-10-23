@@ -23,6 +23,8 @@
 
 #include "akonaditagqueries.h"
 
+#include "akonaditagfetchjobinterface.h"
+
 #include "akonadimonitorimpl.h"
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
@@ -65,8 +67,36 @@ TagQueries::~TagQueries()
 
 TagQueries::TagResult::Ptr TagQueries::findAll() const
 {
-    qFatal("TagQueries find All not supported yet !");
-    return TagResult::Ptr();
+    if (!m_findAll) {
+        {
+            TagQueries *self = const_cast<TagQueries*>(this);
+            self->m_findAll = self->createTagQuery();
+        }
+
+        m_findAll->setFetchFunction([this] (const TagQuery::AddFunction &add) {
+            TagFetchJobInterface *job = m_storage->fetchTags();
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                for (Akonadi::Tag tag : job->tags())
+                    add(tag);
+            });
+        });
+
+        m_findAll->setConvertFunction([this] (const Akonadi::Tag &tag) {
+            return m_serializer->createTagFromAkonadiTag(tag);
+        });
+
+        m_findAll->setUpdateFunction([this] (const Akonadi::Tag &akonadiTag, Domain::Tag::Ptr &tag) {
+            m_serializer->updateTagFromAkonadiTag(tag, akonadiTag);
+        });
+        m_findAll->setPredicateFunction([this] (const Akonadi::Tag &akonadiTag) {
+            return akonadiTag.type() == Akonadi::Tag::PLAIN;
+        });
+        m_findAll->setRepresentsFunction([this] (const Akonadi::Tag &akonadiTag, const Domain::Tag::Ptr &tag) {
+            return m_serializer->representsAkonadiTag(tag, akonadiTag);
+        });
+    }
+
+    return m_findAll->result();
 }
 
 TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::Ptr tag) const

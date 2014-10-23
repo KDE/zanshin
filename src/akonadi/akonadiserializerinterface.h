@@ -25,6 +25,7 @@
 #define AKONADI_SERIALIZERINTERFACE_H
 
 #include "domain/datasource.h"
+#include "domain/tag.h"
 #include "domain/task.h"
 #include "domain/note.h"
 #include "domain/project.h"
@@ -53,6 +54,7 @@ public:
 
     virtual bool representsCollection(QObjectPtr object, Akonadi::Collection collection) = 0;
     virtual bool representsItem(QObjectPtr object, Akonadi::Item item) = 0;
+    virtual bool representsAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) const = 0;
 
     virtual QString objectUid(QObjectPtr object) = 0;
 
@@ -92,6 +94,9 @@ public:
     virtual Akonadi::Tag createTagFromContext(Domain::Context::Ptr context) = 0;
     virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
     virtual bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const = 0;
+
+    virtual Domain::Tag::Ptr createTagFromAkonadiTag(Akonadi::Tag tag) = 0;
+    virtual void updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) = 0;
 
     virtual bool hasContextTags(Akonadi::Item item) const = 0;
     virtual bool hasAkonadiTags(Akonadi::Item item) const = 0;

@@ -54,6 +54,14 @@ bool Serializer::representsItem(QObjectPtr object, Item item)
     return object->property("itemId").toLongLong() == item.id();
 }
 
+bool Serializer::representsAkonadiTag(Domain::Tag::Ptr tag, Tag akonadiTag) const
+{
+    Q_UNUSED(tag);
+    Q_UNUSED(akonadiTag);
+    qFatal("Not impl yet");
+    return false;
+}
+
 QString Serializer::objectUid(SerializerInterface::QObjectPtr object)
 {
     return object->property("todoUid").toString();
@@ -488,4 +496,18 @@ bool Serializer::isContextChild(Domain::Context::Ptr context, Item item) const
     Akonadi::Tag tag(tagId);
 
     return item.hasTag(tag);
+}
+
+Domain::Tag::Ptr Serializer::createTagFromAkonadiTag(Akonadi::Tag tag)
+{
+    Q_UNUSED(tag);
+    qFatal("Not impl yet");
+    return Domain::Tag::Ptr();
+}
+
+void Serializer::updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Tag akonadiTag)
+{
+    Q_UNUSED(tag);
+    Q_UNUSED(akonadiTag);
+    qFatal("Not impl yet");
 }

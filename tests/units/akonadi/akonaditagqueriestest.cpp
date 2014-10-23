@@ -42,6 +42,53 @@ class AkonadiTagQueriesTest : public QObject
 private slots:
     void shouldLookInAllReportedForAllTag()
     {
+        // GIVEN
+
+        // Two tag with their corresponding akonadi plain tag !
+        Akonadi::Tag akonadiTag1("tag42");
+        akonadiTag1.setId(Akonadi::Tag::Id(42));
+        // domain tag
+        Domain::Tag::Ptr tag1(new Domain::Tag);
+        tag1->setName("tag42");
+
+        Akonadi::Tag akonadiTag2("tag43");
+        akonadiTag2.setId(Akonadi::Tag::Id(43));
+        // domain tag
+        Domain::Tag::Ptr tag2(new Domain::Tag);
+        tag2->setName("tag43");
+
+        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        tagFetchJob->setTags(Akonadi::Tag::List() << akonadiTag1 << akonadiTag2);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
+
+        // Serializer mock returning tags from tags
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag1).thenReturn(tag1);
+        serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag2).thenReturn(tag2);
+
+        // WHEN
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   new MockMonitor(this)));
+
+        Domain::QueryResult<Domain::Tag::Ptr>::Ptr result = queries->findAll();
+        result->data();
+        result = queries->findAll(); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchTags).when().exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag2).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0), tag1);
+        QCOMPARE(result->data().at(1), tag2);
 
     }
 };
