@@ -192,6 +192,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
         return object.objectCast<Domain::Project>() ? defaultFlags
              : object.objectCast<Domain::Context>() ? defaultFlags
+             : object.objectCast<Domain::Tag>() ? defaultFlags
              : object == m_inboxObject ? immutableNodeFlags
              : structureNodeFlags;
     };
@@ -207,7 +208,8 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         if (role == Qt::EditRole
          && (object == m_inboxObject
           || object == m_projectsObject
-          || object == m_contextsObject)) {
+          || object == m_contextsObject
+          || object == m_tagsObject)) {
             return QVariant();
         }
 
@@ -217,6 +219,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             const QString iconName = object == m_inboxObject ? "mail-folder-inbox"
                                    : (object == m_projectsObject) ? "folder"
                                    : (object == m_contextsObject) ? "folder"
+                                   : (object == m_tagsObject)     ? "folder"
                                    : "view-pim-tasks";
 
             if (role == Qt::DecorationRole)
@@ -235,7 +238,8 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
         if (object == m_inboxObject
          || object == m_projectsObject
-         || object == m_contextsObject) {
+         || object == m_contextsObject
+         || object == m_tagsObject) {
             return false;
         }
 
@@ -245,6 +249,8 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         } else if (auto context = object.objectCast<Domain::Context>()) {
             context->setName(value.toString());
             m_contextRepository->update(context);
+        } else if (object.objectCast<Domain::Tag>()) {
+            return false; // Tag renaming is NOT allowed
         } else {
             Q_ASSERT(false);
         }
