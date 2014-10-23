@@ -57,6 +57,7 @@
 #include "akonadi/akonadistorage.h"
 #include "akonadi/akonadistoragesettings.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
+#include "akonadi/akonaditimestampattribute.h"
 
 #include <Akonadi/CollectionFetchScope>
 
@@ -1027,6 +1028,34 @@ private slots:
         QCOMPARE(notifiedCollection.id(), collection.id());
         QVERIFY(notifiedCollection.hasAttribute<Akonadi::EntityDisplayAttribute>());
         QCOMPARE(notifiedCollection.attribute<Akonadi::EntityDisplayAttribute>()->displayName(), attr->displayName());
+    }
+
+    void shouldNotifyCollectionTimestampChanges()
+    {
+        // GIVEN
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // An existing collection
+        Akonadi::Collection collection = calendar2();
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+
+        // WHEN
+        collection.attribute<Akonadi::TimestampAttribute>(Akonadi::Collection::AddIfMissing)->refreshTimestamp();
+        auto job = storage.updateCollection(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!changeSpy.isEmpty());
+
+        // THEN
+        QCOMPARE(changeSpy.size(), 1);
+
+        auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.id(), collection.id());
+        QVERIFY(notifiedCollection.hasAttribute<Akonadi::TimestampAttribute>());
     }
 
     void shouldNotifyCollectionSelectionChanges()

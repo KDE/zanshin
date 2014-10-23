@@ -89,7 +89,8 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
                                                                     << "REMOTEID"
                                                                     << "AccessRights"
                                                                     << "ENTITYDISPLAY"
-                                                                    << "ZanshinSelected";
+                                                                    << "ZanshinSelected"
+                                                                    << "ZanshinTimestamp";
 
     QSet<QByteArray> partsIntersection = parts;
     partsIntersection.intersect(allowedParts);
