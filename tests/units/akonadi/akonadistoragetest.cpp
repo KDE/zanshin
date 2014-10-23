@@ -1124,6 +1124,54 @@ private slots:
         QVERIFY(selectionSpy.isEmpty());
     }
 
+    void shouldNotifyCollectionSubscriptionChanges_data()
+    {
+        QTest::addColumn<bool>("isEnabled");
+        QTest::addColumn<bool>("isReferenced");
+
+        QTest::newRow("enabled and !referenced") << true << false;
+        QTest::newRow("!enabled and referenced") << false << true;
+        QTest::newRow("!enabled and !referenced") << false << false;
+        QTest::newRow("!enabled and referenced (again)") << false << true;
+        QTest::newRow("enabled and !referenced (again)") << true << false;
+    }
+
+    void shouldNotifyCollectionSubscriptionChanges()
+    {
+        // GIVEN
+        QFETCH(bool, isEnabled);
+        QFETCH(bool, isReferenced);
+
+        // A storage implementation
+        Akonadi::Storage storage;
+
+        // An existing collection
+        Akonadi::Collection collection(calendar2().id());
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+
+        // WHEN
+        static int run = 1;
+        collection.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Collection::AddIfMissing)
+                  ->setIconName(QString("folder-%1").arg(run++));
+        collection.setEnabled(isEnabled);
+        collection.setReferenced(isReferenced);
+        auto job = storage.updateCollection(collection);
+        AKVERIFYEXEC(job);
+        QTRY_VERIFY(!changeSpy.isEmpty());
+
+        // THEN
+        QCOMPARE(changeSpy.size(), 1);
+
+        auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+        QCOMPARE(notifiedCollection.id(), collection.id());
+        QEXPECT_FAIL("!enabled and referenced", "upstream bug", Continue);
+        QCOMPARE(notifiedCollection.enabled(), isEnabled);
+        QCOMPARE(notifiedCollection.referenced(), isReferenced);
+    }
+
     void shouldFindCollectionsByName_data()
     {
         QTest::addColumn<QString>("name");
