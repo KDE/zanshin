@@ -47,7 +47,11 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     sourcesView->setObjectName("sourcesView");
     sourcesView->header()->hide();
     sourcesView->setModel(m_sortProxy);
-    sourcesView->setItemDelegate(new DataSourceDelegate(sourcesView));
+
+    auto delegate = new DataSourceDelegate(sourcesView);
+    connect(delegate, SIGNAL(actionTriggered(Domain::DataSource::Ptr,int)),
+            this, SLOT(onActionTriggered(Domain::DataSource::Ptr,int)));
+    sourcesView->setItemDelegate(delegate);
 
     auto layout = new QVBoxLayout;
     layout->addWidget(sourcesView);
@@ -71,4 +75,25 @@ void AvailableSourcesView::setModel(QObject *model)
     QVariant modelProperty = m_model->property("sourceListModel");
     if (modelProperty.canConvert<QAbstractItemModel*>())
         m_sortProxy->setSourceModel(modelProperty.value<QAbstractItemModel*>());
+}
+
+void AvailableSourcesView::onActionTriggered(const Domain::DataSource::Ptr &source, int action)
+{
+    switch (action) {
+    case DataSourceDelegate::AddToList:
+        QMetaObject::invokeMethod(m_model, "listSource",
+                                  Q_ARG(Domain::DataSource::Ptr, source));
+        break;
+    case DataSourceDelegate::RemoveFromList:
+        QMetaObject::invokeMethod(m_model, "unlistSource",
+                                  Q_ARG(Domain::DataSource::Ptr, source));
+        break;
+    case DataSourceDelegate::Bookmark:
+        QMetaObject::invokeMethod(m_model, "bookmarkSource",
+                                  Q_ARG(Domain::DataSource::Ptr, source));
+        break;
+    default:
+        qFatal("Shouldn't happen");
+        break;
+    }
 }

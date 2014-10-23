@@ -34,6 +34,37 @@
 #include "widgets/availablesourcesview.h"
 #include "widgets/datasourcedelegate.h"
 
+class AvailableSourcesModelStub : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AvailableSourcesModelStub(QObject *parent = 0)
+        : QObject(parent)
+    {
+    }
+public slots:
+    void listSource(const Domain::DataSource::Ptr &source)
+    {
+        listedSources << source;
+    }
+
+    void unlistSource(const Domain::DataSource::Ptr &source)
+    {
+        unlistedSources << source;
+    }
+
+    void bookmarkSource(const Domain::DataSource::Ptr &source)
+    {
+        bookmarkedSources << source;
+    }
+
+public:
+    QList<Domain::DataSource::Ptr> listedSources;
+    QList<Domain::DataSource::Ptr> unlistedSources;
+    QList<Domain::DataSource::Ptr> bookmarkedSources;
+};
+
+
 class AvailableSourcesViewTest : public QObject
 {
     Q_OBJECT
@@ -78,6 +109,81 @@ private slots:
 
         // THEN
         QCOMPARE(proxy->sourceModel(), &model);
+    }
+
+    void shouldListASourceWhenTheDelegateButtonIsClicked()
+    {
+        // GIVEN
+        auto source = Domain::DataSource::Ptr::create();
+
+        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        AvailableSourcesModelStub stubPagesModel;
+        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailableSourcesView available;
+        auto sourcesDelegate = available.findChild<Widgets::DataSourceDelegate*>();
+        QVERIFY(sourcesDelegate);
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        // WHEN
+        QVERIFY(QMetaObject::invokeMethod(sourcesDelegate, "actionTriggered",
+                                          Q_ARG(Domain::DataSource::Ptr, source),
+                                          Q_ARG(int, Widgets::DataSourceDelegate::AddToList)));
+
+        // THEN
+        QCOMPARE(stubPagesModel.listedSources.size(), 1);
+        QCOMPARE(stubPagesModel.listedSources.first(), source);
+    }
+
+    void shouldUnlistASourceWhenTheDelegateButtonIsClicked()
+    {
+        // GIVEN
+        auto source = Domain::DataSource::Ptr::create();
+
+        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        AvailableSourcesModelStub stubPagesModel;
+        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailableSourcesView available;
+        auto sourcesDelegate = available.findChild<Widgets::DataSourceDelegate*>();
+        QVERIFY(sourcesDelegate);
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        // WHEN
+        QVERIFY(QMetaObject::invokeMethod(sourcesDelegate, "actionTriggered",
+                                          Q_ARG(Domain::DataSource::Ptr, source),
+                                          Q_ARG(int, Widgets::DataSourceDelegate::RemoveFromList)));
+
+        // THEN
+        QCOMPARE(stubPagesModel.unlistedSources.size(), 1);
+        QCOMPARE(stubPagesModel.unlistedSources.first(), source);
+    }
+
+    void shouldBookmarkASourceWhenTheDelegateButtonIsClicked()
+    {
+        // GIVEN
+        auto source = Domain::DataSource::Ptr::create();
+
+        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        AvailableSourcesModelStub stubPagesModel;
+        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailableSourcesView available;
+        auto sourcesDelegate = available.findChild<Widgets::DataSourceDelegate*>();
+        QVERIFY(sourcesDelegate);
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        // WHEN
+        QVERIFY(QMetaObject::invokeMethod(sourcesDelegate, "actionTriggered",
+                                          Q_ARG(Domain::DataSource::Ptr, source),
+                                          Q_ARG(int, Widgets::DataSourceDelegate::Bookmark)));
+
+        // THEN
+        QCOMPARE(stubPagesModel.bookmarkedSources.size(), 1);
+        QCOMPARE(stubPagesModel.bookmarkedSources.first(), source);
     }
 };
 

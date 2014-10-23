@@ -27,6 +27,8 @@
 
 #include <QWidget>
 
+#include "domain/datasource.h"
+
 class QSortFilterProxyModel;
 
 namespace Widgets {
@@ -41,6 +43,9 @@ public:
 
 public slots:
     void setModel(QObject *model);
+
+private slots:
+    void onActionTriggered(const Domain::DataSource::Ptr &source, int action);
 
 private:
     QObject *m_model;
