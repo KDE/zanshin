@@ -1478,6 +1478,383 @@ private slots:
 
         QVERIFY(result->data().isEmpty());
     }
+
+    void shouldLookInAllReportedForSearchChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setName("col1");
+        col1.setParentCollection(parentCol);
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setName("toto");
+        col2.setParentCollection(parentCol);
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        // One collection child of col2
+        Akonadi::Collection col3(44);
+        col3.setName("col3");
+        col3.setParentCollection(col2);
+        auto source3 = Domain::DataSource::Ptr::create();
+
+        QString searchTerm("col");
+
+        // Only col1 and col3 will match the mimetypes
+        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                  .thenReturn(collectionSearchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::BaseName).thenReturn(source3);
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        queries->setSearchTerm(searchTerm);
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
+        result->data();
+        result = queries->findSearchChildren(parent); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                          .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0), source1);
+        QCOMPARE(result->data().at(1), source2);
+
+        // WHEN
+        QString searchTerm2("toto");
+
+        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setCollections(Akonadi::Collection::List() << col2);
+
+        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
+                                                                  .thenReturn(collectionSearchJob);
+
+
+        queries->setSearchTerm(searchTerm2);
+
+        // THEN
+        QTest::qWait(150);
+
+        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
+                                                                          .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(2));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0), source2);
+    }
+
+    void shouldReactToCollectionAddsForSearchChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Empty collection fetch
+        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+
+        QString searchTerm("col");
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                  .thenReturn(collectionSearchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        queries->setSearchTerm(searchTerm);
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
+        QTest::qWait(150);
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        Akonadi::Collection col(42);
+        col.setName("col1");
+        col.setParentCollection(parentCol);
+        auto source = Domain::DataSource::Ptr::create();
+
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::BaseName).thenReturn(source);
+
+        monitor->addCollection(col);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                          .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col, Akonadi::SerializerInterface::BaseName).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first(), source);
+    }
+
+    void shouldReactToCollectionRemovesForSearchChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setName("col1");
+        col1.setParentCollection(parentCol);
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setName("col2");
+        col2.setParentCollection(parentCol);
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        QString searchTerm("col");
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                  .thenReturn(collectionSearchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        queries->setSearchTerm(searchTerm);
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        monitor->removeCollection(col2);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                          .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first(), source1);
+    }
+
+    void shouldReactToCollectionChangesForSearchChildSources()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(parentCol);
+        auto source1 = Domain::DataSource::Ptr::create();
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(parentCol);
+        auto source2 = Domain::DataSource::Ptr::create();
+
+        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        QString searchTerm("col");
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                  .thenReturn(collectionSearchJob);
+
+        // Serializer mock returning the tasks from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
+        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
+        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).thenReturn();
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
+
+        // Monitor mock
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         monitor));
+        queries->setSearchTerm(searchTerm);
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
+        bool replaceHandlerCalled = false;
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::DataSource::Ptr &, int) {
+                                          replaceHandlerCalled = true;
+                                      });
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        monitor->changeCollection(col2);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                         .exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().first(), source1);
+        QCOMPARE(result->data().at(1), source2);
+        QVERIFY(replaceHandlerCalled);
+    }
+
+    void shouldNotCrashDuringFindSearchChildrenWhenFetchJobFailedOrEmpty_data()
+    {
+        QTest::addColumn<MockCollectionSearchJob*>("collectionSearchJob");
+        QTest::addColumn<bool>("deleteQuery");
+
+        // Two child collections
+        Akonadi::Collection col1(42);
+        col1.setName("col1");
+        col1.setParentCollection(Akonadi::Collection::root());
+        Akonadi::Collection col2(42);
+        col2.setName("col2");
+        col2.setParentCollection(Akonadi::Collection::root());
+
+        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        QTest::newRow("No error with empty collection list") << collectionSearchJob << false;
+
+        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("Error with empty collection list") << collectionSearchJob << false;
+
+        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setExpectedError(KJob::KilledJobError);
+        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        QTest::newRow("Error with collection list") << collectionSearchJob << false;
+
+        collectionSearchJob = new MockCollectionSearchJob(this);
+        QTest::newRow("No error with empty collection list (+ query delete)") << collectionSearchJob << true;
+
+        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("Error with empty collection list (+ query delete)") << collectionSearchJob << true;
+
+        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob->setExpectedError(KJob::KilledJobError);
+        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        QTest::newRow("Error with collection list (+ query delete)") << collectionSearchJob << true;
+    }
+
+    void shouldNotCrashDuringFindSearchChildrenWhenFetchJobFailedOrEmpty()
+    {
+        // GIVEN
+        QFETCH(MockCollectionSearchJob*, collectionSearchJob);
+        QFETCH(bool, deleteQuery);
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        QString searchTerm("col");
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                  .thenReturn(collectionSearchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        queries->setSearchTerm(searchTerm);
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
+
+        if (deleteQuery)
+            delete queries.take();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
+                                                                         .exactly(1));
+        QCOMPARE(result->data().size(), 0);
+    }
+
+    void shouldNotStartJobDuringFindSearchChildrenWhenSearchTermIsEmpty()
+    {
+        // GIVEN
+
+        // One parent collection
+        Akonadi::Collection parentCol(41);
+        parentCol.setParentCollection(Akonadi::Collection::root());
+        auto parent = Domain::DataSource::Ptr::create();
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+
+        // WHEN
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(&storageMock.getInstance(),
+                                                                                         &serializerMock.getInstance(),
+                                                                                         new MockMonitor(this)));
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
+        result->data();
+        result = queries->findSearchChildren(parent); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+
+        QVERIFY(result->data().isEmpty());
+    }
 };
 
 QTEST_MAIN(AkonadiDataSourceQueriesTest)
