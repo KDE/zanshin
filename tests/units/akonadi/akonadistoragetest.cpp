@@ -1190,6 +1190,10 @@ private slots:
         QTest::newRow("try with a part of a name") << "Calendar" << expectedResults << false << true;
 
         expectedResults.clear();
+        expectedResults << "Calendar2";
+        QTest::newRow("make sure it is case insensitive") << "calendar2" << expectedResults << false << true;
+
+        expectedResults.clear();
         expectedResults << "Calendar1";
         QTest::newRow("include referenced") << "Calendar1" << expectedResults << true << false;
         QTest::newRow("include referenced + enabled") << "Calendar1" << expectedResults << true << true;

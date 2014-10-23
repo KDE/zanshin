@@ -140,7 +140,7 @@ public:
                                          [allowedMimeTypes, this] (const Collection &collection) {
                                             auto mimeTypes = collection.contentMimeTypes().toSet();
                                             return mimeTypes.intersect(allowedMimeTypes).isEmpty()
-                                                || !collection.name().contains(m_collectionName);
+                                                || !collection.displayName().contains(m_collectionName, Qt::CaseInsensitive);
                                          }),
                           collections.end());
 
