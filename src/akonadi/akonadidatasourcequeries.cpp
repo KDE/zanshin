@@ -232,13 +232,65 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
     return m_findChildren.value(root.id())->result();
 }
 
-void DataSourceQueries::setSearchTerm(QString)
+void DataSourceQueries::setSearchTerm(QString searchTerm)
 {
+    if (m_searchTerm == searchTerm)
+        return;
+
+    m_searchTerm = searchTerm;
+    if (m_findSearchTopLevel) {
+        m_findSearchTopLevel->reset();
+    }
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel() const
 {
-    return DataSourceQueries::DataSourceResult::Ptr();
+    if (!m_findSearchTopLevel) {
+        {
+            DataSourceQueries *self = const_cast<DataSourceQueries*>(this);
+            self->m_findSearchTopLevel = self->createDataSourceQuery();
+        }
+
+        m_findSearchTopLevel->setFetchFunction([this] (const DataSourceQuery::AddFunction &add) {
+            if (m_searchTerm.isEmpty())
+                return;
+
+            CollectionSearchJobInterface *job = m_storage->searchCollections(m_searchTerm);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                if (job->kjob()->error())
+                    return;
+
+                QHash<Collection::Id, Collection> topLevels;
+                foreach (const auto &collection, job->collections()) {
+                    auto topLevel = collection;
+                    while (topLevel.parentCollection() != Collection::root())
+                        topLevel = topLevel.parentCollection();
+                    if (!topLevels.contains(topLevel.id()))
+                        topLevels[topLevel.id()] = topLevel;
+                }
+
+                foreach (const auto &topLevel, topLevels.values())
+                    add(topLevel);
+
+            });
+        });
+
+        m_findSearchTopLevel->setConvertFunction([this] (const Akonadi::Collection &collection) {
+            return m_serializer->createDataSourceFromCollection(collection, SerializerInterface::BaseName);
+        });
+        m_findSearchTopLevel->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
+            m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::BaseName);
+        });
+        m_findSearchTopLevel->setPredicateFunction([this] (const Akonadi::Collection &collection) {
+            return collection.isValid()
+                && collection.parentCollection() == Akonadi::Collection::root();
+        });
+        m_findSearchTopLevel->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
+            return m_serializer->representsCollection(source, collection);
+        });
+    }
+
+    return m_findSearchTopLevel->result();
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(Domain::DataSource::Ptr source) const

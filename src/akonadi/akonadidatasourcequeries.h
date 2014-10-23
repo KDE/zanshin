@@ -81,6 +81,8 @@ private:
     DataSourceQuery::Ptr m_findTopLevel;
     QHash<Akonadi::Entity::Id, DataSourceQuery::Ptr> m_findChildren;
     DataSourceQuery::List m_dataSourceQueries;
+    QString m_searchTerm;
+    DataSourceQuery::Ptr m_findSearchTopLevel;
 };
 
 }
