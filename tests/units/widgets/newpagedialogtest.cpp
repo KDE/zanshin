@@ -99,6 +99,18 @@ private:
     }
 
 private slots:
+    int indexOfType(Widgets::NewPageDialog *dialog, const Widgets::NewPageDialogInterface::PageType type)
+    {
+        auto typeCombo = dialog->findChild<QComboBox*>("typeCombo");
+        const int count = typeCombo->count();
+        for (int index = 0 ; index < count ; index++ ) {
+            auto pt = typeCombo->itemData(index).value<Widgets::NewPageDialogInterface::PageType>();
+            if (pt == type)
+                return index;
+        }
+        return -1;
+    }
+
     void shouldHaveDefaultState()
     {
         Widgets::NewPageDialog dialog;
@@ -228,10 +240,22 @@ private slots:
         QCOMPARE(dialog.dataSource(), Domain::DataSource::Ptr());
     }
 
-    void shouldHideSourceComboWhenContextTypeIsSelected()
+    void shouldHideSourceComboForNonProjectType_data()
+    {
+        QTest::addColumn<Widgets::NewPageDialogInterface::PageType>("pageType");
+
+        QTest::newRow("typeComboWithContext") <<  Widgets::NewPageDialogInterface::Context;
+        QTest::newRow("typeComboWithTag") <<  Widgets::NewPageDialogInterface::Tag;
+    }
+
+    void shouldHideSourceComboForNonProjectType()
     {
         // GIVEN
+        QFETCH(Widgets::NewPageDialogInterface::PageType, pageType);
         Widgets::NewPageDialog dialog;
+
+        int nonProjectIndex = indexOfType(&dialog, pageType);
+        Q_ASSERT(nonProjectIndex != -1);
 
         QStandardItemModel model;
         model.appendRow(createSourceItem("source 1"));
@@ -240,7 +264,7 @@ private slots:
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
         userInput.sourceComboIndex = 0;
-        userInput.typeComboIndex = 1;
+        userInput.typeComboIndex = nonProjectIndex;
         userInput.nameInput = "name";
         userInput.reject = false;
 

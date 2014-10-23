@@ -38,7 +38,8 @@ class NewPageDialogInterface
 public:
     enum PageType {
         Project = 0,
-        Context
+        Context,
+        Tag
     };
 
     typedef QSharedPointer<NewPageDialogInterface> Ptr;
