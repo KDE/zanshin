@@ -29,9 +29,9 @@
 #include "domain/note.h"
 #include "domain/task.h"
 
-#include "pimlibs/kdateedit.h"
 #include "widgets/editorview.h"
 
+#include "kdateedit.h"
 #include <kglobal.h>
 #include <klocale.h>
 

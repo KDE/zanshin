@@ -24,7 +24,7 @@
 
 #include "editablewidget.h"
 
-#include "pimlibs/kdateedit.h"
+#include "kdateedit.h"
 #include "utils/datestringbuilder.h"
 #include <QHBoxLayout>
 #include <QLabel>

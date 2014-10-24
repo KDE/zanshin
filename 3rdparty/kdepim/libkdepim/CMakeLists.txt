@@ -31,6 +31,8 @@ set(kdepim_LIB_SRCS
    ldap/ldapsearchdialog.cpp
    ldap/ldapclientsearch.cpp
    ldap/ldapclientsearchconfig.cpp
+   kdateedit.cpp
+   kdatepickerpopup.cpp
 )
 
 if (KDEPIM_INPROCESS_LDAP)

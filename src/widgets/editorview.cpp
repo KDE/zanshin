@@ -29,10 +29,10 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include "kdateedit.h"
 
 #include "domain/artifact.h"
 
-#include "pimlibs/kdateedit.h"
 
 using namespace Widgets;
 
