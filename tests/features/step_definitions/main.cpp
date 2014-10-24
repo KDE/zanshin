@@ -19,6 +19,7 @@
 #include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonadiprojectqueries.h"
 #include "akonadi/akonadiprojectrepository.h"
+#include "akonadi/akonaditagqueries.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "presentation/applicationmodel.h"
@@ -64,6 +65,8 @@ public:
                                              new Akonadi::TaskQueries(this),
                                              new Akonadi::TaskRepository(this),
                                              new Akonadi::NoteRepository(this),
+                                             new Akonadi::TagQueries(this),
+                                             0,
                                              this);
         // Since it is lazy loaded force ourselves in a known state
         appModel->defaultNoteDataSource();

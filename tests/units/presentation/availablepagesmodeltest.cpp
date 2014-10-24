@@ -112,7 +112,7 @@ private slots:
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
         const QModelIndex context2Index = model->index(1, 0, contextsIndex);
 
-        QCOMPARE(model->rowCount(), 3);
+        QCOMPARE(model->rowCount(), 4);
         QCOMPARE(model->rowCount(inboxIndex), 0);
         QCOMPARE(model->rowCount(projectsIndex), 2);
         QCOMPARE(model->rowCount(project1Index), 0);

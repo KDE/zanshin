@@ -32,6 +32,7 @@
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/tag.h"
+#include "domain/tagqueries.h"
 #include "domain/tagrepository.h"
 #include "domain/taskrepository.h"
 
@@ -157,11 +158,14 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
     m_projectsObject->setProperty("name", tr("Projects"));
     m_contextsObject = QObjectPtr::create();
     m_contextsObject->setProperty("name", tr("Contexts"));
+    m_tagsObject = QObjectPtr::create();
+    m_tagsObject->setProperty("name", tr("Tags"));
 
     m_rootsProvider = Domain::QueryResultProvider<QObjectPtr>::Ptr::create();
     m_rootsProvider->append(m_inboxObject);
     m_rootsProvider->append(m_projectsObject);
     m_rootsProvider->append(m_contextsObject);
+    m_rootsProvider->append(m_tagsObject);
 
     auto query = [this](const QObjectPtr &object) -> Domain::QueryResultInterface<QObjectPtr>::Ptr {
         if (!object)
@@ -170,6 +174,8 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             return Domain::QueryResult<Domain::Project::Ptr, QObjectPtr>::copy(m_projectQueries->findAll());
         else if (object == m_contextsObject)
             return Domain::QueryResult<Domain::Context::Ptr, QObjectPtr>::copy(m_contextQueries->findAll());
+        else if (object == m_tagsObject)
+            return Domain::QueryResult<Domain::Tag::Ptr, QObjectPtr>::copy(m_tagQueries->findAll());
         else
             return Domain::QueryResult<QObjectPtr>::Ptr();
     };

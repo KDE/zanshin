@@ -50,7 +50,7 @@ private slots:
     void shouldProvideAvailableSourcesModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *available = app.availableSources();
@@ -62,8 +62,7 @@ private slots:
     void shouldProvideAvailablePagesModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
+    Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         // WHEN
         QObject *available = app.availablePages();
 
@@ -74,7 +73,7 @@ private slots:
     void shouldProvideCurrentPage()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         QVERIFY(!app.currentPage());
         QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
@@ -96,7 +95,7 @@ private slots:
     void shouldProvideArtifactEditorModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         // WHEN
         QObject *page = app.editor();
@@ -112,7 +111,7 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, &sourceQueriesMock.getInstance(), 0, 0, 0, 0);
+        Presentation::ApplicationModel app(0, 0, 0, 0, 0, &sourceQueriesMock.getInstance(), 0, 0, 0, 0, 0, 0);
 
         // WHEN
         auto tasks = app.taskSourcesModel();
@@ -159,6 +158,8 @@ private slots:
                                            0,
                                            0,
                                            &taskRepositoryMock.getInstance(),
+                                           0,
+                                           0,
                                            0);
 
         // WHEN
@@ -201,6 +202,8 @@ private slots:
                                            0,
                                            0,
                                            &taskRepositoryMock.getInstance(),
+                                           0,
+                                           0,
                                            0);
 
         // WHEN
@@ -235,6 +238,8 @@ private slots:
                                            0,
                                            0,
                                            &taskRepositoryMock.getInstance(),
+                                           0,
+                                           0,
                                            0);
 
         // WHEN
@@ -273,6 +278,8 @@ private slots:
                                            0,
                                            0,
                                            &taskRepositoryMock.getInstance(),
+                                           0,
+                                           0,
                                            0);
 
 
@@ -319,7 +326,9 @@ private slots:
                                            0,
                                            0,
                                            0,
-                                           &noteRepositoryMock.getInstance());
+                                           &noteRepositoryMock.getInstance(),
+                                           0,
+                                           0);
 
 
         // WHEN
@@ -362,7 +371,9 @@ private slots:
                                            0,
                                            0,
                                            0,
-                                           &noteRepositoryMock.getInstance());
+                                           &noteRepositoryMock.getInstance(),
+                                           0,
+                                           0);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -396,7 +407,9 @@ private slots:
                                            0,
                                            0,
                                            0,
-                                           &noteRepositoryMock.getInstance());
+                                           &noteRepositoryMock.getInstance(),
+                                           0,
+                                           0);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -434,7 +447,9 @@ private slots:
                                            0,
                                            0,
                                            0,
-                                           &noteRepositoryMock.getInstance());
+                                           &noteRepositoryMock.getInstance(),
+                                           0,
+                                           0);
 
         // WHEN
         app.setDefaultNoteDataSource(source);

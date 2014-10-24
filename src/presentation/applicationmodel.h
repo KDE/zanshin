@@ -39,6 +39,8 @@ namespace Domain {
     class ProjectRepository;
     class ContextQueries;
     class ContextRepository;
+    class TagQueries;
+    class TagRepository;
     class TaskQueries;
     class TaskRepository;
 }
@@ -69,6 +71,8 @@ public:
                               Domain::TaskQueries *taskQueries,
                               Domain::TaskRepository *taskRepository,
                               Domain::NoteRepository *noteRepository,
+                              Domain::TagQueries *tagQueries,
+                              Domain::TagRepository *tagRepository,
                               QObject *parent = 0);
     ~ApplicationModel();
 
@@ -120,6 +124,9 @@ private:
     Domain::NoteRepository *m_noteRepository;
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_noteSources;
     QAbstractItemModel *m_noteSourcesModel;
+
+    Domain::TagQueries *m_tagQueries;
+    Domain::TagRepository *m_tagRepository;
 
     bool m_ownInterface;
 };

@@ -102,6 +102,7 @@ private:
     QObjectPtr m_inboxObject;
     QObjectPtr m_projectsObject;
     QObjectPtr m_contextsObject;
+    QObjectPtr m_tagsObject;
 };
 
 }

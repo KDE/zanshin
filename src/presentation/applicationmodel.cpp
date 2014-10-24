@@ -26,6 +26,8 @@
 
 #include "domain/artifactqueries.h"
 #include "domain/noterepository.h"
+#include "domain/tagqueries.h"
+#include "domain/tagrepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
@@ -56,6 +58,8 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_taskSourcesModel(0),
       m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
       m_noteSourcesModel(0),
+      m_tagQueries(Utils::DependencyManager::globalInstance().create<Domain::TagQueries>()),
+      m_tagRepository(0),
       m_ownInterface(true)
 {
     MetaTypes::registerAll();
@@ -71,6 +75,8 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
                                    Domain::TaskQueries *taskQueries,
                                    Domain::TaskRepository *taskRepository,
                                    Domain::NoteRepository *noteRepository,
+                                   Domain::TagQueries *tagQueries,
+                                   Domain::TagRepository *tagRepository,
                                    QObject *parent)
     : QObject(parent),
       m_availableSources(0),
@@ -89,6 +95,8 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
       m_taskSourcesModel(0),
       m_noteRepository(noteRepository),
       m_noteSourcesModel(0),
+      m_tagQueries(tagQueries),
+      m_tagRepository(tagRepository),
       m_ownInterface(false)
 {
     MetaTypes::registerAll();
@@ -101,6 +109,8 @@ ApplicationModel::~ApplicationModel()
         delete m_sourceQueries;
         delete m_taskQueries;
         delete m_taskRepository;
+        delete m_tagQueries;
+        delete m_tagRepository;
         delete m_noteRepository;
     }
 }
@@ -198,8 +208,8 @@ QObject *ApplicationModel::availablePages()
                                                    m_taskQueries,
                                                    m_taskRepository,
                                                    m_noteRepository,
-                                                   0,
-                                                   0,
+                                                   m_tagQueries,
+                                                   m_tagRepository,
                                                    this);
     }
     return m_availablePages;
