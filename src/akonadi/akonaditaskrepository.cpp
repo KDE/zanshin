@@ -28,6 +28,7 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
+#include "akonadimessaginginterface.h"
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
 #include "akonadistoragesettings.h"
@@ -41,13 +42,15 @@ TaskRepository::TaskRepository(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
       m_serializer(new Serializer),
+      m_messaging(0),
       m_ownInterfaces(true)
 {
 }
 
-TaskRepository::TaskRepository(StorageInterface *storage, SerializerInterface *serializer)
+TaskRepository::TaskRepository(StorageInterface *storage, SerializerInterface *serializer, MessagingInterface *messaging)
     : m_storage(storage),
       m_serializer(serializer),
+      m_messaging(messaging),
       m_ownInterfaces(false)
 {
 }
@@ -57,6 +60,7 @@ TaskRepository::~TaskRepository()
     if (m_ownInterfaces) {
         delete m_storage;
         delete m_serializer;
+        delete m_messaging;
     }
 }
 

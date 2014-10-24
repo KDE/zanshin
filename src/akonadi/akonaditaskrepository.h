@@ -31,6 +31,7 @@
 
 namespace Akonadi {
 
+class MessagingInterface;
 class SerializerInterface;
 class StorageInterface;
 
@@ -39,7 +40,7 @@ class TaskRepository : public QObject, public Domain::TaskRepository
     Q_OBJECT
 public:
     explicit TaskRepository(QObject *parent = 0);
-    TaskRepository(StorageInterface *storage, SerializerInterface *serializer);
+    TaskRepository(StorageInterface *storage, SerializerInterface *serializer, MessagingInterface *messaging);
     virtual ~TaskRepository();
 
     virtual bool isDefaultSource(Domain::DataSource::Ptr source) const;
@@ -61,6 +62,7 @@ public:
 private:
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
+    MessagingInterface *m_messaging;
     bool m_ownInterfaces;
 
     KJob *createItem(const Akonadi::Item &item);

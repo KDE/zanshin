@@ -62,7 +62,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
 
         // THEN
         QVERIFY(repository->isDefaultSource(source));
@@ -92,7 +93,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
 
         // THEN
         QVERIFY(!repository->isDefaultSource(source));
@@ -122,7 +124,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         repository->setDefaultSource(source);
 
         // THEN
@@ -157,7 +160,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         repository->create(task)->exec();
 
         // THEN
@@ -201,7 +205,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         repository->create(task)->exec();
 
         // THEN
@@ -240,7 +245,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         repository->createInProject(task, project)->exec();
 
         // THEN
@@ -285,7 +291,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
 
         repository->createInContext(task, context)->exec();
 
@@ -323,7 +330,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         repository->update(task)->exec();
 
         // THEN
@@ -411,7 +419,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         repository->remove(task)->exec();
 
         // THEN
@@ -553,7 +562,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         auto associateJob = repository->associate(parent, child);
         if (execJob)
             associateJob->exec();
@@ -629,7 +639,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+                                                                                       &serializerMock.getInstance(),
+                                                                                       0));
         repository->dissociate(child)->exec();
 
         // THEN
