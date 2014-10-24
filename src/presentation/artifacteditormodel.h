@@ -76,6 +76,7 @@ public slots:
     void setDone(bool done);
     void setStartDate(const QDateTime &start);
     void setDueDate(const QDateTime &due);
+    void delegate(const QString &name, const QString &email);
 
 signals:
     void artifactChanged(const Domain::Artifact::Ptr &artifact);

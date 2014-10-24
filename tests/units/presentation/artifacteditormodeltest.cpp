@@ -404,6 +404,26 @@ private slots:
             QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
         }
     }
+
+    void shouldLaunchDelegation()
+    {
+        // GIVEN
+        auto task = Domain::Task::Ptr::create();
+        auto expectedDelegate = Domain::Task::Delegate("John Doe", "john@doe.com");
+
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::delegate).when(task, expectedDelegate).thenReturn(new FakeJob(this));
+
+        Presentation::ArtifactEditorModel model(&taskRepositoryMock.getInstance(), 0);
+        model.setArtifact(task);
+
+        // WHEN
+        model.delegate("John Doe", "john@doe.com");
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::delegate).when(task, expectedDelegate).exactly(1));
+        QVERIFY(!task->delegate().isValid());
+    }
 };
 
 QTEST_MAIN(ArtifactEditorModelTest)

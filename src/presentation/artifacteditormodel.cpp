@@ -191,6 +191,14 @@ void ArtifactEditorModel::setDueDate(const QDateTime &due)
     setSaveNeeded(true);
 }
 
+void ArtifactEditorModel::delegate(const QString &name, const QString &email)
+{
+    auto task = m_artifact.objectCast<Domain::Task>();
+    Q_ASSERT(task);
+    auto delegate = Domain::Task::Delegate(name, email);
+    m_taskRepository->delegate(task, delegate);
+}
+
 void ArtifactEditorModel::onTextChanged(const QString &text)
 {
     m_text = text;
