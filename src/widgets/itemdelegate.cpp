@@ -24,6 +24,7 @@
 
 #include "itemdelegate.h"
 
+#include <QApplication>
 #include <QStyleOptionViewItemV4>
 
 #include "domain/note.h"
@@ -52,6 +53,7 @@ void ItemDelegate::paint(QPainter *painter,
                          const QModelIndex &index) const
 {
     QStyleOptionViewItemV4 opt = option;
+    initStyleOption(&opt, index);
 
     Domain::Task::Ptr task;
     Domain::Note::Ptr note;
@@ -88,6 +90,11 @@ void ItemDelegate::paint(QPainter *painter,
                 }
             }
         }
+
+        if (task->delegate().isValid()) {
+            opt.text = QString("(%1) %2").arg(task->delegate().display(), opt.text);
+            opt.font.setItalic(true);
+        }
     }
 
     if (note) {
@@ -95,5 +102,7 @@ void ItemDelegate::paint(QPainter *painter,
         opt.icon = QIcon::fromTheme("text-plain");
     }
 
-    QStyledItemDelegate::paint(painter, opt, index);
+    const QWidget *widget = opt.widget;
+    QStyle *style = widget ? widget->style() : QApplication::style();
+    style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
 }
