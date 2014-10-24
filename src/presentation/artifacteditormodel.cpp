@@ -69,6 +69,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     m_done = false;
     m_start = QDateTime();
     m_due = QDateTime();
+    m_delegateText = QString();
 
     m_artifact = artifact;
 
@@ -88,6 +89,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
         m_done = task->isDone();
         m_start = task->startDate();
         m_due = task->dueDate();
+        m_delegateText = task->delegate().display();
 
         connect(m_artifact.data(), SIGNAL(doneChanged(bool)),
                 this, SLOT(onDoneChanged(bool)));
@@ -95,6 +97,8 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
                 this, SLOT(onStartDateChanged(QDateTime)));
         connect(m_artifact.data(), SIGNAL(dueDateChanged(QDateTime)),
                 this, SLOT(onDueDateChanged(QDateTime)));
+        connect(m_artifact.data(), SIGNAL(delegateChanged(Domain::Task::Delegate)),
+                this, SLOT(onDelegateChanged(Domain::Task::Delegate)));
     }
 
     emit textChanged(m_text);
@@ -102,6 +106,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     emit doneChanged(m_done);
     emit startDateChanged(m_start);
     emit dueDateChanged(m_due);
+    emit delegateTextChanged(m_delegateText);
     emit hasTaskPropertiesChanged(hasTaskProperties());
     emit artifactChanged(m_artifact);
 }
@@ -134,6 +139,11 @@ QDateTime ArtifactEditorModel::startDate() const
 QDateTime ArtifactEditorModel::dueDate() const
 {
     return m_due;
+}
+
+QString ArtifactEditorModel::delegateText() const
+{
+    return m_delegateText;
 }
 
 int ArtifactEditorModel::autoSaveDelay()
@@ -209,6 +219,12 @@ void ArtifactEditorModel::onDueDateChanged(const QDateTime &due)
 {
     m_due = due;
     emit dueDateChanged(m_due);
+}
+
+void ArtifactEditorModel::onDelegateChanged(const Domain::Task::Delegate &delegate)
+{
+    m_delegateText = delegate.display();
+    emit delegateTextChanged(m_delegateText);
 }
 
 void ArtifactEditorModel::save()

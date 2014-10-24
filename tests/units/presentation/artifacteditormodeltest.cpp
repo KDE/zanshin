@@ -58,6 +58,7 @@ private slots:
         QVERIFY(!model.isDone());
         QVERIFY(model.startDate().isNull());
         QVERIFY(model.dueDate().isNull());
+        QVERIFY(model.delegateText().isNull());
     }
 
     void shouldHaveTaskProperties()
@@ -69,6 +70,7 @@ private slots:
         QSignalSpy doneSpy(&model, SIGNAL(doneChanged(bool)));
         QSignalSpy startSpy(&model, SIGNAL(startDateChanged(QDateTime)));
         QSignalSpy dueSpy(&model, SIGNAL(dueDateChanged(QDateTime)));
+        QSignalSpy delegateSpy(&model, SIGNAL(delegateTextChanged(QString)));
 
         auto task = Domain::Task::Ptr::create();
         task->setText("description");
@@ -76,6 +78,7 @@ private slots:
         task->setDone(true);
         task->setStartDate(QDateTime::currentDateTime());
         task->setDueDate(QDateTime::currentDateTime().addDays(2));
+        task->setDelegate(Domain::Task::Delegate("John Doe", "john@doe.com"));
 
         // WHEN
         model.setArtifact(task);
@@ -108,6 +111,10 @@ private slots:
         QCOMPARE(dueSpy.size(), 1);
         QCOMPARE(dueSpy.takeFirst().takeFirst().toDateTime(), task->dueDate());
         QCOMPARE(model.property("dueDate").toDateTime(), task->dueDate());
+
+        QCOMPARE(delegateSpy.size(), 1);
+        QCOMPARE(delegateSpy.takeFirst().takeFirst().toString(), task->delegate().display());
+        QCOMPARE(model.property("delegateText").toString(), task->delegate().display());
     }
 
     void shouldHaveNoteProperties()
@@ -119,6 +126,7 @@ private slots:
         QSignalSpy doneSpy(&model, SIGNAL(doneChanged(bool)));
         QSignalSpy startSpy(&model, SIGNAL(startDateChanged(QDateTime)));
         QSignalSpy dueSpy(&model, SIGNAL(dueDateChanged(QDateTime)));
+        QSignalSpy delegateSpy(&model, SIGNAL(delegateTextChanged(QString)));
 
         auto note = Domain::Note::Ptr::create();
         note->setText("description");
@@ -152,6 +160,10 @@ private slots:
         QCOMPARE(dueSpy.size(), 1);
         QVERIFY(dueSpy.takeFirst().takeFirst().toDateTime().isNull());
         QVERIFY(model.property("dueDate").toDateTime().isNull());
+
+        QCOMPARE(delegateSpy.size(), 1);
+        QVERIFY(delegateSpy.takeFirst().takeFirst().toString().isEmpty());
+        QVERIFY(model.property("delegateText").toString().isEmpty());
     }
 
     void shouldReactToArtifactPropertyChanges_data()
@@ -216,6 +228,23 @@ private slots:
         QCOMPARE(spy.size(), 1);
         QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
+    }
+
+    void shouldReactToTaskDelegateChanges()
+    {
+        // GIVEN
+        auto task = Domain::Task::Ptr::create();
+        Presentation::ArtifactEditorModel model(0, 0);
+        model.setArtifact(task);
+        QSignalSpy spy(&model, SIGNAL(delegateTextChanged(QString)));
+
+        // WHEN
+        task->setDelegate(Domain::Task::Delegate("John Doe", "john@doe.com"));
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().toString(), task->delegate().display());
+        QCOMPARE(model.property("delegateText").toString(), task->delegate().display());
     }
 
     void shouldApplyChangesBackToArtifactAfterADelay_data()

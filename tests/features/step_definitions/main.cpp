@@ -696,12 +696,14 @@ THEN("^the editor shows \"(.*)\" as (.*)$") {
 
     const QVariant value = (field == "text") ? string
                          : (field == "title") ? string
+                         : (field == "delegate") ? string
                          : (field == "start date") ? QDateTime::fromString(string, Qt::ISODate)
                          : (field == "due date") ? QDateTime::fromString(string, Qt::ISODate)
                          : QVariant();
 
     const QByteArray property = (field == "text") ? field.toUtf8()
                               : (field == "title") ? field.toUtf8()
+                              : (field == "delegate") ? "delegateText"
                               : (field == "start date") ? "startDate"
                               : (field == "due date") ? "dueDate"
                               : QByteArray();

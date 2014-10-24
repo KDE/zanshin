@@ -28,7 +28,7 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "domain/artifact.h"
+#include "domain/task.h"
 
 class QTimer;
 
@@ -48,6 +48,7 @@ class ArtifactEditorModel : public QObject
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
+    Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
     Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
 public:
     explicit ArtifactEditorModel(Domain::TaskRepository *taskRepository,
@@ -65,6 +66,7 @@ public:
     bool isDone() const;
     QDateTime startDate() const;
     QDateTime dueDate() const;
+    QString delegateText() const;
 
     static int autoSaveDelay();
 
@@ -83,6 +85,7 @@ signals:
     void doneChanged(bool done);
     void startDateChanged(const QDateTime &date);
     void dueDateChanged(const QDateTime &due);
+    void delegateTextChanged(const QString &delegateText);
 
 private slots:
     void onTextChanged(const QString &text);
@@ -90,6 +93,7 @@ private slots:
     void onDoneChanged(bool done);
     void onStartDateChanged(const QDateTime &start);
     void onDueDateChanged(const QDateTime &due);
+    void onDelegateChanged(const Domain::Task::Delegate &delegate);
 
     void save();
 
@@ -107,6 +111,7 @@ private:
     bool m_done;
     QDateTime m_start;
     QDateTime m_due;
+    QString m_delegateText;
 
     QTimer *m_saveTimer;
     bool m_saveNeeded;
