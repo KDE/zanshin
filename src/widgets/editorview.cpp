@@ -39,6 +39,7 @@ using namespace Widgets;
 EditorView::EditorView(QWidget *parent)
     : QWidget(parent),
       m_model(0),
+      m_delegateLabel(new QLabel(this)),
       m_textEdit(new QPlainTextEdit(this)),
       m_taskGroup(new QWidget(this)),
       m_startDateEdit(new KPIM::KDateEdit(m_taskGroup)),
@@ -46,6 +47,7 @@ EditorView::EditorView(QWidget *parent)
       m_startTodayButton(new QPushButton(tr("Start today"), m_taskGroup)),
       m_doneButton(new QCheckBox(tr("Done"), m_taskGroup))
 {
+    m_delegateLabel->setObjectName("delegateLabel");
     m_textEdit->setObjectName("textEdit");
     m_startDateEdit->setObjectName("startDateEdit");
     m_dueDateEdit->setObjectName("dueDateEdit");
@@ -56,6 +58,7 @@ EditorView::EditorView(QWidget *parent)
     m_dueDateEdit->setMinimumContentsLength(10);
 
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(m_delegateLabel);
     layout->addWidget(m_textEdit);
     layout->addWidget(m_taskGroup);
     setLayout(layout);
@@ -79,6 +82,7 @@ EditorView::EditorView(QWidget *parent)
     layout->activate();
     setMinimumWidth(minimumSizeHint().width());
 
+    m_delegateLabel->setVisible(false);
     m_taskGroup->setVisible(false);
 
     connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(onTextEditChanged()));
@@ -113,6 +117,7 @@ void EditorView::setModel(QObject *model)
     onStartDateChanged();
     onDueDateChanged();
     onDoneChanged();
+    onDelegateTextChanged();
 
     connect(m_model, SIGNAL(artifactChanged(Domain::Artifact::Ptr)),
             this, SLOT(onArtifactChanged()));
@@ -123,6 +128,7 @@ void EditorView::setModel(QObject *model)
     connect(m_model, SIGNAL(startDateChanged(QDateTime)), this, SLOT(onStartDateChanged()));
     connect(m_model, SIGNAL(dueDateChanged(QDateTime)), this, SLOT(onDueDateChanged()));
     connect(m_model, SIGNAL(doneChanged(bool)), this, SLOT(onDoneChanged()));
+    connect(m_model, SIGNAL(delegateTextChanged(QString)), this, SLOT(onDelegateTextChanged()));
 
     connect(this, SIGNAL(titleChanged(QString)), m_model, SLOT(setTitle(QString)));
     connect(this, SIGNAL(textChanged(QString)), m_model, SLOT(setText(QString)));
@@ -165,6 +171,16 @@ void EditorView::onDueDateChanged()
 void EditorView::onDoneChanged()
 {
     m_doneButton->setChecked(m_model->property("done").toBool());
+}
+
+void EditorView::onDelegateTextChanged()
+{
+    const auto delegateText = m_model->property("delegateText").toString();
+    const auto labelText = delegateText.isEmpty() ? QString()
+                         : tr("Delegated to: <b>%1</b>").arg(delegateText);
+
+    m_delegateLabel->setVisible(!labelText.isEmpty());
+    m_delegateLabel->setText(labelText);
 }
 
 void EditorView::onTextEditChanged()

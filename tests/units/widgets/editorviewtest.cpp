@@ -24,6 +24,7 @@
 #include <QtTestGui>
 
 #include <QAbstractButton>
+#include <QLabel>
 #include <QPlainTextEdit>
 
 #include "domain/note.h"
@@ -57,6 +58,8 @@ public:
             emit startDateChanged(value.toDateTime());
         else if (name == "dueDate")
             emit dueDateChanged(value.toDateTime());
+        else if (name == "delegateText")
+            emit delegateTextChanged(value.toString());
         else if (name == "hasTaskProperties")
             emit hasTaskPropertiesChanged(value.toBool());
         else
@@ -70,6 +73,7 @@ public slots:
     void setDone(bool done) { setPropertyAndSignal("done", done); }
     void setStartDate(const QDateTime &start) { setPropertyAndSignal("startDate", start); }
     void setDueDate(const QDateTime &due) { setPropertyAndSignal("dueDate", due); }
+    void setDelegateText(const QString &text) { setPropertyAndSignal("delegateText", text); }
     void makeTaskAvailable() { setArtifact(Domain::Artifact::Ptr(new Domain::Task)); }
 
 signals:
@@ -80,6 +84,7 @@ signals:
     void doneChanged(bool done);
     void startDateChanged(const QDateTime &date);
     void dueDateChanged(const QDateTime &due);
+    void delegateTextChanged(const QString &delegateText);
 };
 
 class EditorViewTest : public QObject
@@ -107,6 +112,10 @@ private slots:
         auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
         QVERIFY(doneButton);
         QVERIFY(!doneButton->isVisibleTo(&editor));
+
+        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        QVERIFY(delegateLabel);
+        QVERIFY(!delegateLabel->isVisibleTo(&editor));
     }
 
     void shouldShowTaskPropertiesEditorsOnlyForTasks()
@@ -125,6 +134,9 @@ private slots:
         auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
         QVERIFY(!doneButton->isVisibleTo(&editor));
 
+        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        QVERIFY(!delegateLabel->isVisibleTo(&editor));
+
         // WHEN
         editor.setModel(&model);
 
@@ -132,6 +144,27 @@ private slots:
         QVERIFY(startDateEdit->isVisibleTo(&editor));
         QVERIFY(dueDateEdit->isVisibleTo(&editor));
         QVERIFY(doneButton->isVisibleTo(&editor));
+        QVERIFY(!delegateLabel->isVisibleTo(&editor));
+    }
+
+    void shouldDisplayDelegateLabelOnlyWhenNeeded()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        model.setDelegateText("John Doe");
+
+        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        QVERIFY(!delegateLabel->isVisibleTo(&editor));
+
+        // WHEN
+        editor.setModel(&model);
+
+        // THEN
+        auto expectedText = tr("Delegated to: <b>%1</b>").arg(model.property("delegateText").toString());
+        QVERIFY(delegateLabel->isVisibleTo(&editor));
+        QCOMPARE(delegateLabel->text(), expectedText);
     }
 
     void shouldBeEnabledOnlyWhenAnArtifactIsAvailable()
@@ -439,6 +472,24 @@ private slots:
         QCOMPARE(model.property("startDate").toDateTime().date(), today);
     }
 
+    void shouldReactToDelegateTextChanges()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        model.setDelegateText("John Doe");
+        editor.setModel(&model);
+
+        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+
+        // WHEN
+        model.setDelegateText("John Smith");
+
+        // THEN
+        auto expectedText = tr("Delegated to: <b>%1</b>").arg(model.property("delegateText").toString());
+        QCOMPARE(delegateLabel->text(), expectedText);
+    }
 };
 
 QTEST_MAIN(EditorViewTest)
