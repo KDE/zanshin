@@ -532,10 +532,12 @@ private slots:
         QTest::addColumn<bool>("isDone");
         QTest::addColumn<QDateTime>("startDate");
         QTest::addColumn<QDateTime>("dueDate");
+        QTest::addColumn<QString>("delegateName");
+        QTest::addColumn<QString>("delegateEmail");
 
-        QTest::newRow("nominal case") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01));
-        QTest::newRow("done case") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01));
-        QTest::newRow("empty case") << QString() << QString() << false << QDateTime() << QDateTime();
+        QTest::newRow("nominal case") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "John Doe" << "j@d.com";
+        QTest::newRow("done case") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "John Doe" << "j@d.com";
+        QTest::newRow("empty case") << QString() << QString() << false << QDateTime() << QDateTime() << QString() << QString();
     }
 
     void shouldCreateTaskFromItem()
@@ -548,6 +550,8 @@ private slots:
         QFETCH(bool, isDone);
         QFETCH(QDateTime, startDate);
         QFETCH(QDateTime, dueDate);
+        QFETCH(QString, delegateName);
+        QFETCH(QString, delegateEmail);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -557,6 +561,14 @@ private slots:
         todo->setDtStart(KDateTime(startDate));
         todo->setDtDue(KDateTime(dueDate));
         todo->setRelatedTo("my-uid");
+        if (!delegateName.isEmpty() || !delegateEmail.isEmpty()) {
+            KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(delegateName,
+                                                                    delegateEmail,
+                                                                    true,
+                                                                    KCalCore::Attendee::Delegated));
+            todo->addAttendee(attendee);
+        }
+
 
         // ... as payload of an item
         Akonadi::Item item;
@@ -576,6 +588,8 @@ private slots:
         QCOMPARE(task->property("todoUid").toString(), todo->uid());
         QCOMPARE(task->property("relatedUid").toString(), todo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), item.id());
+        QCOMPARE(task->delegate().name(), delegateName);
+        QCOMPARE(task->delegate().email(), delegateEmail);
     }
 
     void shouldCreateNullTaskFromInvalidItem()
@@ -621,9 +635,11 @@ private slots:
         QTest::addColumn<QDateTime>("updatedStartDate");
         QTest::addColumn<QDateTime>("updatedDueDate");
         QTest::addColumn<QString>("updatedRelated");
+        QTest::addColumn<QString>("updatedDelegateName");
+        QTest::addColumn<QString>("updatedDelegateEmail");
 
-        QTest::newRow("no change") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid";
-        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid";
+        QTest::newRow("no change") << "summary" << "content" << false << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << "John Doe" << "j@d.com";
+        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << "John Smith" << "j@s.com";
     }
 
     void shouldUpdateTaskFromItem()
@@ -638,6 +654,11 @@ private slots:
         originalTodo->setDtStart(KDateTime(QDate(2013, 11, 24)));
         originalTodo->setDtDue(KDateTime(QDate(2014, 03, 01)));
         originalTodo->setRelatedTo("my-uid");
+        KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee("John Doe",
+                                                                        "j@d.com",
+                                                                        true,
+                                                                        KCalCore::Attendee::Delegated));
+        originalTodo->addAttendee(originalAttendee);
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -657,6 +678,8 @@ private slots:
         QFETCH(QDateTime, updatedStartDate);
         QFETCH(QDateTime, updatedDueDate);
         QFETCH(QString, updatedRelated);
+        QFETCH(QString, updatedDelegateName);
+        QFETCH(QString, updatedDelegateEmail);
 
         // ... in a new todo...
         KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
@@ -666,6 +689,13 @@ private slots:
         updatedTodo->setDtStart(KDateTime(updatedStartDate));
         updatedTodo->setDtDue(KDateTime(updatedDueDate));
         updatedTodo->setRelatedTo(updatedRelated);
+        if (!updatedDelegateName.isEmpty() || !updatedDelegateEmail.isEmpty()) {
+            KCalCore::Attendee::Ptr updatedAttendee(new KCalCore::Attendee(updatedDelegateName,
+                                                                           updatedDelegateEmail,
+                                                                           true,
+                                                                           KCalCore::Attendee::Delegated));
+            updatedTodo->addAttendee(updatedAttendee);
+        }
 
         // ... as payload of a new item
         Akonadi::Item updatedItem;
@@ -683,6 +713,8 @@ private slots:
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(task->delegate().name(), updatedDelegateName);
+        QCOMPARE(task->delegate().email(), updatedDelegateEmail);
     }
 
     void shouldNotUpdateTaskFromInvalidItem()
@@ -784,26 +816,33 @@ private slots:
         QTest::addColumn<QDateTime>("dueDate");
         QTest::addColumn<qint64>("itemId");
         QTest::addColumn<QString>("todoUid");
+        QTest::addColumn<Domain::Task::Delegate>("delegate");
 
         QTest::newRow("nominal case (no id)") << "summary" << "content" << false
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                              << qint64(-1) << QString();
+                                              << qint64(-1) << QString()
+                                              << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("done case (no id)") << "summary" << "content" << true
                                            << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                           << qint64(-1) << QString();
+                                           << qint64(-1) << QString()
+                                           << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("empty case (no id)") << QString() << QString() << false
                                             << QDateTime() << QDateTime()
-                                            << qint64(-1) << QString();
+                                            << qint64(-1) << QString()
+                                            << Domain::Task::Delegate();
 
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                                << qint64(42) << "my-uid";
+                                                << qint64(42) << "my-uid"
+                                                << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("done case (with id)") << "summary" << "content" << true
                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                             << qint64(42) << "my-uid";
+                                             << qint64(42) << "my-uid"
+                                             << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("empty case (with id)") << QString() << QString() << false
                                               << QDateTime() << QDateTime()
-                                              << qint64(42) << "my-uid";
+                                              << qint64(42) << "my-uid"
+                                              << Domain::Task::Delegate();
     }
 
     void shouldCreateItemFromTask()
@@ -818,6 +857,7 @@ private slots:
         QFETCH(QDateTime, dueDate);
         QFETCH(qint64, itemId);
         QFETCH(QString, todoUid);
+        QFETCH(Domain::Task::Delegate, delegate);
 
         // ... stored in a task
         auto task = Domain::Task::Ptr::create();
@@ -826,6 +866,7 @@ private slots:
         task->setDone(isDone);
         task->setStartDate(startDate);
         task->setDueDate(dueDate);
+        task->setDelegate(delegate);
 
         if (itemId > 0)
             task->setProperty("itemId", itemId);
@@ -853,6 +894,13 @@ private slots:
         QCOMPARE(todo->isCompleted(), isDone);
         QCOMPARE(todo->dtStart().dateTime(), startDate);
         QCOMPARE(todo->dtDue().dateTime(), dueDate);
+
+        if (delegate.isValid()) {
+            auto attendee = todo->attendeeByMail(delegate.email());
+            QVERIFY(attendee);
+            QCOMPARE(attendee->name(), delegate.name());
+            QCOMPARE(attendee->email(), delegate.email());
+        }
 
         if (!todoUid.isEmpty()) {
             QCOMPARE(todo->uid(), todoUid);
