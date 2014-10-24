@@ -28,7 +28,7 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadimessaginginterface.h"
+#include "akonadimessaging.h"
 #include "akonadiserializer.h"
 #include "akonadistorage.h"
 #include "akonadistoragesettings.h"
@@ -42,7 +42,7 @@ TaskRepository::TaskRepository(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
       m_serializer(new Serializer),
-      m_messaging(0),
+      m_messaging(new Messaging),
       m_ownInterfaces(true)
 {
 }

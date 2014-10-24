@@ -8,6 +8,7 @@ set(akonadi_SRCS
     akonadidatasourcequeries.cpp
     akonadidatasourcerepository.cpp
     akonadiitemfetchjobinterface.cpp
+    akonadimessaging.cpp
     akonadimessaginginterface.cpp
     akonadimonitorimpl.cpp
     akonadimonitorinterface.cpp
@@ -30,6 +31,7 @@ set(akonadi_SRCS
 
 kde4_add_library(akonadi STATIC ${akonadi_SRCS})
 target_link_libraries(akonadi
+    ${KDEPIMLIBS_AKONADI_CALENDAR_LIBS}
     ${KDEPIMLIBS_AKONADI_LIBS}
     ${KDEPIMLIBS_AKONADI_NOTES_LIBS}
     ${KDEPIMLIBS_KCALCORE_LIBS}
