@@ -30,6 +30,13 @@ using namespace Domain;
 class TaskTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit TaskTest(QObject *parent = 0)
+        : QObject(parent)
+    {
+        qRegisterMetaType<Task::Delegate>();
+    }
+
 private slots:
     void shouldHaveEmptyPropertiesByDefault()
     {
@@ -39,6 +46,34 @@ private slots:
         QCOMPARE(t.isDone(), false);
         QCOMPARE(t.startDate(), QDateTime());
         QCOMPARE(t.dueDate(), QDateTime());
+        QVERIFY(!t.delegate().isValid());
+    }
+
+    void shouldHaveValueBasedDelegate()
+    {
+        Task::Delegate d;
+        QVERIFY(!d.isValid());
+        QCOMPARE(d.name(), QString());
+        QCOMPARE(d.email(), QString());
+        QCOMPARE(d.display(), QString());
+
+        d.setName("John Doe");
+        QVERIFY(!d.isValid());
+        QCOMPARE(d.name(), QString("John Doe"));
+        QCOMPARE(d.email(), QString());
+        QCOMPARE(d.display(), QString());
+
+        d.setEmail("doe@somewhere.com");
+        QVERIFY(d.isValid());
+        QCOMPARE(d.name(), QString("John Doe"));
+        QCOMPARE(d.email(), QString("doe@somewhere.com"));
+        QCOMPARE(d.display(), QString("John Doe"));
+
+        d.setName(QString());
+        QVERIFY(d.isValid());
+        QCOMPARE(d.name(), QString());
+        QCOMPARE(d.email(), QString("doe@somewhere.com"));
+        QCOMPARE(d.display(), QString("doe@somewhere.com"));
     }
 
     void shouldNotifyStatusChanges()
@@ -92,6 +127,25 @@ private slots:
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
         QSignalSpy spy(&t, SIGNAL(dueDateChanged(QDateTime)));
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.count(), 0);
+    }
+
+    void shouldNotifyDelegateChanges()
+    {
+        Task t;
+        QSignalSpy spy(&t, SIGNAL(delegateChanged(Domain::Task::Delegate)));
+        t.setDelegate(Task::Delegate("John Doe", "doe@somewhere.com"));
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().value<Task::Delegate>(),
+                 Task::Delegate("John Doe", "doe@somewhere.com"));
+    }
+
+    void shouldNotNotifyIdenticalDelegateChanges()
+    {
+        Task t;
+        t.setDelegate(Task::Delegate("John Doe", "doe@somewhere.com"));
+        QSignalSpy spy(&t, SIGNAL(delegateChanged(Domain::Task::Delegate)));
+        t.setDelegate(Task::Delegate("John Doe", "doe@somewhere.com"));
         QCOMPARE(spy.count(), 0);
     }
 };

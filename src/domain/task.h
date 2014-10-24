@@ -36,10 +36,34 @@ class Task : public Artifact
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
-
+    Q_PROPERTY(Domain::Task::Delegate delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
 public:
     typedef QSharedPointer<Task> Ptr;
     typedef QList<Task::Ptr> List;
+
+    class Delegate
+    {
+    public:
+        Delegate();
+        Delegate(const QString &name, const QString &email);
+        Delegate(const Delegate &other);
+
+        Delegate &operator=(const Delegate &other);
+        bool operator==(const Delegate &other) const;
+
+        bool isValid() const;
+        QString display() const;
+
+        QString name() const;
+        void setName(const QString &name);
+
+        QString email() const;
+        void setEmail(const QString &email);
+
+    private:
+        QString m_name;
+        QString m_email;
+    };
 
     explicit Task(QObject *parent = 0);
     virtual ~Task();
@@ -47,26 +71,31 @@ public:
     bool isDone() const;
     QDateTime startDate() const;
     QDateTime dueDate() const;
+    Delegate delegate() const;
 
 public slots:
     void setDone(bool done);
     void setStartDate(const QDateTime &startDate);
     void setDueDate(const QDateTime &dueDate);
+    void setDelegate(const Domain::Task::Delegate &delegate);
 
 signals:
     void doneChanged(bool isDone);
     void startDateChanged(const QDateTime &startDate);
     void dueDateChanged(const QDateTime &dueDate);
+    void delegateChanged(const Domain::Task::Delegate &delegate);
 
 private:
     bool m_done;
     QDateTime m_startDate;
     QDateTime m_dueDate;
+    Delegate m_delegate;
 };
 
 }
 
 Q_DECLARE_METATYPE(Domain::Task::Ptr)
 Q_DECLARE_METATYPE(Domain::Task::List)
+Q_DECLARE_METATYPE(Domain::Task::Delegate)
 
 #endif // DOMAIN_TASK_H

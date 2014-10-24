@@ -26,6 +26,7 @@
 
 #include "domain/artifact.h"
 #include "domain/datasource.h"
+#include "domain/task.h"
 
 using namespace Presentation;
 
@@ -36,4 +37,5 @@ void MetaTypes::registerAll()
     qRegisterMetaType<QObjectPtrList>();
     qRegisterMetaType<Domain::Artifact::Ptr>();
     qRegisterMetaType<Domain::DataSource::Ptr>();
+    qRegisterMetaType<Domain::Task::Delegate>();
 }
