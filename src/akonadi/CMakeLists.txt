@@ -8,6 +8,7 @@ set(akonadi_SRCS
     akonadidatasourcequeries.cpp
     akonadidatasourcerepository.cpp
     akonadiitemfetchjobinterface.cpp
+    akonadimessaginginterface.cpp
     akonadimonitorimpl.cpp
     akonadimonitorinterface.cpp
     akonadinotequeries.cpp
