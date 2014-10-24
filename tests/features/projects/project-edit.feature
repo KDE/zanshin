@@ -10,7 +10,7 @@ Feature: Project rename
     Then the list is:
        | display                           | icon              |
        | Contexts                          | folder            |
-       | Contexts / Chores                 | view-pim-tasks     |
+       | Contexts / Chores                 | view-pim-tasks    |
        | Contexts / Internet               | view-pim-tasks    |
        | Contexts / Online                 | view-pim-tasks    |
        | Inbox                             | mail-folder-inbox |
@@ -19,3 +19,6 @@ Feature: Project rename
        | Projects / Backlog                | view-pim-tasks    |
        | Projects / Party                  | view-pim-tasks    |
        | Projects / Prepare talk about TDD | view-pim-tasks    |
+       | Tags                              | folder            |
+       | Tags / Philosophy                 | view-pim-tasks    |
+       | Tags / Physics                    | view-pim-tasks    |

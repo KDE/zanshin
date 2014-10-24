@@ -45,6 +45,9 @@ Feature: Data sources selection
        | Inbox                             |
        | Projects                          |
        | Projects / Backlog                |
+       | Tags                              |
+       | Tags / Philosophy                 |
+       | Tags / Physics                    |
 
   Scenario: Checking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources
@@ -62,3 +65,6 @@ Feature: Data sources selection
        | Projects / Read List              |
        | Projects / Backlog                |
        | Projects / Prepare talk about TDD |
+       | Tags                              |
+       | Tags / Philosophy                 |
+       | Tags / Physics                    |

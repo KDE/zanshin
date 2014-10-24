@@ -18,3 +18,6 @@ Feature: Project destruction
        | Projects / Read List              | view-pim-tasks      |
        | Projects / Backlog                | view-pim-tasks      |
        | Projects / Party                  | view-pim-tasks      |
+       | Tags                              | folder              |
+       | Tags / Philosophy                 | view-pim-tasks      |
+       | Tags / Physics                    | view-pim-tasks      |

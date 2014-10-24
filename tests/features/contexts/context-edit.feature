@@ -18,3 +18,6 @@ Feature: Context rename
        | Projects / Read List              | view-pim-tasks    |
        | Projects / Backlog                | view-pim-tasks    |
        | Projects / Prepare talk about TDD | view-pim-tasks    |
+       | Tags                              | folder            |
+       | Tags / Philosophy                 | view-pim-tasks    |
+       | Tags / Physics                    | view-pim-tasks    |
