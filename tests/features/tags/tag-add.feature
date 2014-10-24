@@ -3,8 +3,8 @@ Feature: Tag creation
   I can create a tag
   In order to give them some semantic
 
-@wip
-  Scenario: New contexts appear in the list
+
+  Scenario: New tags appear in the list
     Given I display the available pages
     When I add a "tag" named "Optional"
     And I list the items
@@ -17,10 +17,9 @@ Feature: Tag creation
        | Inbox                             | mail-folder-inbox   |
        | Projects                          | folder              |
        | Projects / Backlog                | view-pim-tasks      |
+       | Projects / Party                  | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
        | Tags                              | folder              |
        | Tags / Optional                   | view-pim-tasks      |
        | Tags / Philosophy                 | view-pim-tasks      |
        | Tags / Physics                    | view-pim-tasks      |
-
-
