@@ -53,6 +53,8 @@ public:
 
     virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
     virtual KJob *dissociate(Task::Ptr child) = 0;
+
+    virtual KJob *delegate(Task::Ptr task, Task::Delegate delegate) = 0;
 };
 
 }

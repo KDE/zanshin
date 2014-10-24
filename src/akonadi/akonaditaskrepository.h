@@ -56,6 +56,8 @@ public:
     virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child);
     virtual KJob *dissociate(Domain::Task::Ptr child);
 
+    virtual KJob *delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate);
+
 private:
     StorageInterface *m_storage;
     SerializerInterface *m_serializer;
