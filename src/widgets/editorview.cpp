@@ -30,6 +30,7 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include "kdateedit.h"
+#include "addressline/addresseelineedit.h"
 
 #include "domain/artifact.h"
 
@@ -45,9 +46,11 @@ EditorView::EditorView(QWidget *parent)
       m_startDateEdit(new KPIM::KDateEdit(m_taskGroup)),
       m_dueDateEdit(new KPIM::KDateEdit(m_taskGroup)),
       m_startTodayButton(new QPushButton(tr("Start today"), m_taskGroup)),
-      m_doneButton(new QCheckBox(tr("Done"), m_taskGroup))
+      m_doneButton(new QCheckBox(tr("Done"), m_taskGroup)),
+      m_delegateEdit(new KPIM::AddresseeLineEdit(this))
 {
     m_delegateLabel->setObjectName("delegateLabel");
+    m_delegateEdit->setObjectName("delegateEdit");
     m_textEdit->setObjectName("textEdit");
     m_startDateEdit->setObjectName("startDateEdit");
     m_dueDateEdit->setObjectName("dueDateEdit");
@@ -64,6 +67,10 @@ EditorView::EditorView(QWidget *parent)
     setLayout(layout);
 
     QVBoxLayout *vbox = new QVBoxLayout;
+    auto delegateHBox = new QHBoxLayout;
+    delegateHBox->addWidget(new QLabel(tr("Delegate to"), m_taskGroup));
+    delegateHBox->addWidget(m_delegateEdit);
+    vbox->addLayout(delegateHBox);
     QHBoxLayout *datesHBox = new QHBoxLayout;
     datesHBox->addWidget(new QLabel(tr("Start date"), m_taskGroup));
     datesHBox->addWidget(m_startDateEdit, 1);
@@ -90,6 +97,7 @@ EditorView::EditorView(QWidget *parent)
     connect(m_dueDateEdit, SIGNAL(dateEntered(QDate)), this, SLOT(onDueEditEntered(QDate)));
     connect(m_doneButton, SIGNAL(toggled(bool)), this, SLOT(onDoneButtonChanged(bool)));
     connect(m_startTodayButton, SIGNAL(clicked()), this, SLOT(onStartTodayClicked()));
+    connect(m_delegateEdit, SIGNAL(returnPressed()), this, SLOT(onDelegateEntered()));
 
     setEnabled(false);
 }
@@ -213,4 +221,30 @@ void EditorView::onStartTodayClicked()
     QDate today(QDate::currentDate());
     m_startDateEdit->setDate(today);
     emit startDateChanged(QDateTime(today));
+}
+
+void EditorView::onDelegateEntered()
+{
+    const auto input = m_delegateEdit->text();
+    auto name = QString();
+    auto email = QString();
+    auto gotMatch = false;
+
+    QRegExp fullRx("\\s*(.*) <([\\w\\.]+@[\\w\\.]+)>\\s*");
+    QRegExp emailOnlyRx("\\s*<?([\\w\\.]+@[\\w\\.]+)>?\\s*");
+
+    if (input.contains(fullRx)) {
+        name = fullRx.cap(1);
+        email = fullRx.cap(2);
+        gotMatch = true;
+    } else if (input.contains(emailOnlyRx)) {
+        email = emailOnlyRx.cap(1);
+        gotMatch = true;
+    }
+
+    if (gotMatch) {
+        QMetaObject::invokeMethod(m_model, "delegate",
+                                  Q_ARG(QString, name),
+                                  Q_ARG(QString, email));
+    }
 }

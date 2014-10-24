@@ -35,6 +35,7 @@ class QPlainTextEdit;
 
 namespace KPIM {
     class KDateEdit;
+    class AddresseeLineEdit;
 }
 
 namespace Widgets {
@@ -71,6 +72,7 @@ private slots:
     void onDueEditEntered(const QDate &due);
     void onDoneButtonChanged(bool checked);
     void onStartTodayClicked();
+    void onDelegateEntered();
 
 private:
     QObject *m_model;
@@ -82,6 +84,7 @@ private:
     KPIM::KDateEdit *m_dueDateEdit;
     QAbstractButton *m_startTodayButton;
     QAbstractButton *m_doneButton;
+    KPIM::AddresseeLineEdit *m_delegateEdit;
 };
 
 }

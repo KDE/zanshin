@@ -32,6 +32,7 @@
 
 #include "widgets/editorview.h"
 
+#include "addressline/addresseelineedit.h"
 #include "kdateedit.h"
 #include <kglobal.h>
 #include <klocale.h>
@@ -76,6 +77,12 @@ public slots:
     void setDelegateText(const QString &text) { setPropertyAndSignal("delegateText", text); }
     void makeTaskAvailable() { setArtifact(Domain::Artifact::Ptr(new Domain::Task)); }
 
+    void delegate(const QString &name, const QString &email)
+    {
+        delegateNames << name;
+        delegateEmails << email;
+    }
+
 signals:
     void artifactChanged(const Domain::Artifact::Ptr &artifact);
     void hasTaskPropertiesChanged(bool hasTaskProperties);
@@ -85,6 +92,10 @@ signals:
     void startDateChanged(const QDateTime &date);
     void dueDateChanged(const QDateTime &due);
     void delegateTextChanged(const QString &delegateText);
+
+public:
+    QStringList delegateNames;
+    QStringList delegateEmails;
 };
 
 class EditorViewTest : public QObject
@@ -116,6 +127,10 @@ private slots:
         auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
         QVERIFY(delegateLabel);
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
+
+        auto delegateEdit = editor.findChild<KPIM::AddresseeLineEdit*>("delegateEdit");
+        QVERIFY(delegateEdit);
+        QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
 
     void shouldShowTaskPropertiesEditorsOnlyForTasks()
@@ -137,6 +152,9 @@ private slots:
         auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
+        auto delegateEdit = editor.findChild<KPIM::AddresseeLineEdit*>("delegateEdit");
+        QVERIFY(!delegateEdit->isVisibleTo(&editor));
+
         // WHEN
         editor.setModel(&model);
 
@@ -145,6 +163,7 @@ private slots:
         QVERIFY(dueDateEdit->isVisibleTo(&editor));
         QVERIFY(doneButton->isVisibleTo(&editor));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
+        QVERIFY(delegateEdit->isVisibleTo(&editor));
     }
 
     void shouldDisplayDelegateLabelOnlyWhenNeeded()
@@ -489,6 +508,53 @@ private slots:
         // THEN
         auto expectedText = tr("Delegated to: <b>%1</b>").arg(model.property("delegateText").toString());
         QCOMPARE(delegateLabel->text(), expectedText);
+    }
+
+    void shouldRequestDelegationOnInput_data()
+    {
+        QTest::addColumn<QString>("userInput");
+        QTest::addColumn<QString>("expectedName");
+        QTest::addColumn<QString>("expectedEmail");
+        QTest::addColumn<bool>("expectedCall");
+
+        QTest::newRow("nominal case") << "John Doe <john@doe.com>" << "John Doe" << "john@doe.com" << true;
+        QTest::newRow("nominal case") << "John Doe <j.doe@some.server.com>" << "John Doe" << "j.doe@some.server.com" << true;
+        QTest::newRow("only name") << "John Doe" << QString() << QString() << false;
+        QTest::newRow("only email") << "john@doe.com" << QString() << "john@doe.com" << true;
+        QTest::newRow("only email again") << "<john@doe.com>" << QString() << "john@doe.com" << true;
+        QTest::newRow("nonsense case") << "bleh" << QString() << QString() << false;
+    }
+
+    void shouldRequestDelegationOnInput()
+    {
+        // GIVEN
+        QFETCH(QString, userInput);
+        QFETCH(QString, expectedName);
+        QFETCH(QString, expectedEmail);
+        QFETCH(bool, expectedCall);
+
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        editor.setModel(&model);
+
+        auto delegateEdit = editor.findChild<KPIM::AddresseeLineEdit*>("delegateEdit");
+
+        // WHEN
+        QVERIFY(delegateEdit->isEnabled());
+        delegateEdit->setText(userInput);
+        QTest::keyClick(delegateEdit, Qt::Key_Enter);
+
+        // THEN
+        if (expectedCall) {
+            QCOMPARE(model.delegateNames.size(), 1);
+            QCOMPARE(model.delegateNames.first(), expectedName);
+            QCOMPARE(model.delegateEmails.size(), 1);
+            QCOMPARE(model.delegateEmails.first(), expectedEmail);
+        } else {
+            QCOMPARE(model.delegateNames.size(), 0);
+            QCOMPARE(model.delegateEmails.size(), 0);
+        }
     }
 };
 
