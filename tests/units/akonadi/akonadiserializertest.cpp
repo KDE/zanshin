@@ -2116,6 +2116,48 @@ private slots:
             QCOMPARE(akonadiTag.type(), QByteArray(Akonadi::Tag::PLAIN));
         }
     }
+
+    void shouldVerifyIfAnItemIsATagChild_data()
+    {
+        QTest::addColumn<Domain::Tag::Ptr>("tag");
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<bool>("isChild");
+
+        // Create a Tag
+        auto tag = Domain::Tag::Ptr::create();
+        tag->setProperty("tagId", qint64(43));
+        Akonadi::Tag akonadiTag(Akonadi::Tag::Id(43));
+
+        Akonadi::Item unrelatedItem;
+        QTest::newRow("Unrelated item") << tag << unrelatedItem << false;
+
+        Akonadi::Item relatedItem;
+        relatedItem.setTag(akonadiTag);
+        QTest::newRow("Related item") << tag << relatedItem << true;
+
+        auto invalidTag = Domain::Tag::Ptr::create();
+        QTest::newRow("Invalid Tag") << invalidTag << relatedItem << false;
+
+        Akonadi::Item invalidItem;
+        QTest::newRow("Invalid Item") << tag << invalidItem << false;
+
+        QTest::newRow("both invalid") << invalidTag << invalidItem << false;
+    }
+
+    void shouldVerifyIfAnItemIsATagChild()
+    {
+        // GIVEN
+        QFETCH(Domain::Tag::Ptr, tag);
+        QFETCH(Akonadi::Item, item);
+        QFETCH(bool, isChild);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        bool value = serializer.isTagChild(tag, item);
+
+        // THEN
+        QCOMPARE(value, isChild);
+    }
 };
 
 QTEST_MAIN(AkonadiSerializerTest)

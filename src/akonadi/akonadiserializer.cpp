@@ -590,3 +590,14 @@ Akonadi::Tag Serializer::createAkonadiTagFromTag(Domain::Tag::Ptr tag)
 
     return akonadiTag;
 }
+
+bool Serializer::isTagChild(Domain::Tag::Ptr tag, Akonadi::Item item)
+{
+    if (!tag->property("tagId").isValid())
+        return false;
+
+    auto tagId = tag->property("tagId").value<Akonadi::Tag::Id>();
+    Akonadi::Tag akonadiTag(tagId);
+
+    return item.hasTag(akonadiTag);
+}
