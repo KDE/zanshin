@@ -25,6 +25,10 @@
 #include "applicationmodel.h"
 
 #include "domain/artifactqueries.h"
+#include "domain/contextqueries.h"
+#include "domain/contextrepository.h"
+#include "domain/projectqueries.h"
+#include "domain/projectrepository.h"
 #include "domain/noterepository.h"
 #include "domain/tagqueries.h"
 #include "domain/tagrepository.h"
@@ -106,6 +110,10 @@ ApplicationModel::~ApplicationModel()
 {
     if (m_ownInterface) {
         delete m_artifactQueries;
+        delete m_contextQueries;
+        delete m_contextQueries;
+        delete m_projectQueries;
+        delete m_projectRepository;
         delete m_sourceQueries;
         delete m_taskQueries;
         delete m_taskRepository;
