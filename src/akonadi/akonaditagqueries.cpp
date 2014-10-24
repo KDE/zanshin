@@ -108,27 +108,32 @@ TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::P
 
 void TagQueries::onTagAdded(const Tag &tag)
 {
+    Q_UNUSED(tag);
 }
 
 void TagQueries::onTagRemoved(const Tag &tag)
 {
+    Q_UNUSED(tag);
 }
 
 void TagQueries::onTagChanged(const Tag &tag)
 {
+    Q_UNUSED(tag);
 }
 
 void TagQueries::onItemAdded(const Item &item)
 {
+    Q_UNUSED(item);
 }
 
 void TagQueries::onItemRemoved(const Item &item)
 {
+    Q_UNUSED(item);
 }
 
 void TagQueries::onItemChanged(const Item &item)
 {
-
+    Q_UNUSED(item);
 }
 
 TagQueries::TagQuery::Ptr TagQueries::createTagQuery()

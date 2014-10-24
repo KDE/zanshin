@@ -58,24 +58,30 @@ TagRepository::~TagRepository()
 
 KJob *TagRepository::create(Domain::Tag::Ptr tag)
 {
+    Q_UNUSED(tag);
     qFatal("not impl yet");
     return 0;
 }
 
 KJob *TagRepository::remove(Domain::Tag::Ptr tag)
 {
+    Q_UNUSED(tag);
     qFatal("not impl yet");
     return 0;
 }
 
 KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
 {
+    Q_UNUSED(parent);
+    Q_UNUSED(child);
     qFatal("not impl yet");
     return 0;
 }
 
 KJob *TagRepository::dissociate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
 {
+    Q_UNUSED(parent);
+    Q_UNUSED(child);
     qFatal("not impl yet");
     return 0;
 }
