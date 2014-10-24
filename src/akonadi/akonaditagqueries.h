@@ -76,7 +76,7 @@ private:
     TagQuery::Ptr m_findAll;
     TagQuery::List m_tagQueries;
 
-    QHash<Akonadi::Tag::Id, ArtifactQuery::Ptr> m_findToplevel;
+    QHash<Akonadi::Tag::Id, ArtifactQuery::Ptr> m_findTopLevel;
     ArtifactQuery::List m_artifactQueries;
 };
 

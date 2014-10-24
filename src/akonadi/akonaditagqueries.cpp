@@ -23,6 +23,9 @@
 
 #include "akonaditagqueries.h"
 
+
+#include "akonadicollectionfetchjobinterface.h"
+#include "akonadiitemfetchjobinterface.h"
 #include "akonaditagfetchjobinterface.h"
 
 #include "akonadimonitorimpl.h"
@@ -109,9 +112,64 @@ TagQueries::TagResult::Ptr TagQueries::findAll() const
 
 TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::Ptr tag) const
 {
-    Q_UNUSED(tag);
-    qFatal("TagQueries find TopLevelArtifacts not supported yet !");
-    return ArtifactResult::Ptr();
+    Akonadi::Tag akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
+    if (!m_findTopLevel.contains(akonadiTag.id())) {
+        ArtifactQuery::Ptr query;
+        {
+            TagQueries *self = const_cast<TagQueries*>(this);
+            query = self->createArtifactQuery();
+            self->m_findTopLevel.insert(akonadiTag.id(), query);
+        }
+
+        query->setFetchFunction([this, akonadiTag] (const ArtifactQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks | StorageInterface::Notes);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                if (job->kjob()->error() != KJob::NoError)
+                    return;
+
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
+
+                        for (auto item : job->items())
+                            add(item);
+                    });
+                }
+            });
+        });
+        query->setConvertFunction([this] (const Akonadi::Item &item) {
+            if (m_serializer->isTaskItem(item)) {
+                auto task = m_serializer->createTaskFromItem(item);
+                return Domain::Artifact::Ptr(task);
+
+            } else if (m_serializer->isNoteItem(item)) {
+                auto note = m_serializer->createNoteFromItem(item);
+                return Domain::Artifact::Ptr(note);
+
+            } else {
+                return Domain::Artifact::Ptr();
+            }
+        });
+        query->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Artifact::Ptr &artifact) {
+            if (auto task = artifact.dynamicCast<Domain::Task>()) {
+                m_serializer->updateTaskFromItem(task, item);
+            } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
+                m_serializer->updateNoteFromItem(note, item);
+            }
+        });
+        query->setPredicateFunction([this, tag] (const Akonadi::Item &item) {
+            return m_serializer->isTagChild(tag, item);
+        });
+        query->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Artifact::Ptr &artifact) {
+            return m_serializer->representsItem(artifact, item);
+        });
+    }
+
+    return m_findTopLevel.value(akonadiTag.id())->result();
 }
 
 void TagQueries::onTagAdded(const Tag &tag)

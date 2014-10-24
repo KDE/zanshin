@@ -260,6 +260,105 @@ private slots:
         QCOMPARE(result->data().at(1)->name(), tag2->name());
     }
 
+    void shouldLookInAllCollectionsForTagTopLevelArtifacts()
+    {
+        // GIVEN
+
+        // Two top level collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(Akonadi::Collection::root());
+        auto collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        // One domain Tag and it's corresponding akonadiTag
+        auto tag = Domain::Tag::Ptr::create();
+        Akonadi::Tag akonadiTag(42);
+
+        //two tasks in the first collection
+        Akonadi::Item item1(43);
+        item1.setParentCollection(col1);
+        auto task1 = Domain::Task::Ptr::create();
+        Akonadi::Item item2(44);
+        item2.setParentCollection(col1);
+        auto task2 = Domain::Task::Ptr::create();
+        auto itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2);
+
+        // Two notes in the second collection
+        Akonadi::Item item3(45);
+        item3.setParentCollection(col2);
+        auto note3 = Domain::Note::Ptr::create();
+        Akonadi::Item item4(46);
+        item4.setParentCollection(col2);
+        auto note4 = Domain::Note::Ptr::create();
+        auto itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item3 << item4);
+
+        // Storage mock returning the fetch jobs
+        mock_object<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
+                                                           .thenReturn(itemFetchJob1);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col2)
+                                                           .thenReturn(itemFetchJob2);
+
+        // Serializer mock returning the objects from the items
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item3).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item4).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item4).thenReturn(true);
+
+        serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(Domain::Task::Ptr());
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item4).thenReturn(Domain::Task::Ptr());
+        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
+        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item4).thenReturn(note4);
+
+        // Serializer mock returning if tag is hold by the items
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, item2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, item3).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, item4).thenReturn(false);
+
+        // WHEN
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
+                                                                           &serializerMock.getInstance(),
+                                                                           new MockMonitor(this)));
+
+        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(tag);
+        result->data();
+        result = queries->findTopLevelArtifacts(tag); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1);
+        QCOMPARE(result->data().at(1).objectCast<Domain::Note>(), note3);
+
+        // Should not change nothing
+        result = queries->findTopLevelArtifacts(tag);
+
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1);
+        QCOMPARE(result->data().at(1).objectCast<Domain::Note>(), note3);
+    }
 };
 
 QTEST_MAIN(AkonadiTagQueriesTest)

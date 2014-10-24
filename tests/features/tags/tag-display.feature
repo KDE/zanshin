@@ -3,7 +3,6 @@ Feature: Tag content
   I can display a tag
   In order to see the tasks and notes associated to it
 
-@wip
   Scenario: Tag tasks and notes appear in the corresponding page
     Given I display the "Tags / Philosophy" page
     And I look at the central list
