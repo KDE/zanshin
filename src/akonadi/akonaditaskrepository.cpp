@@ -262,8 +262,16 @@ KJob *TaskRepository::dissociate(Domain::Task::Ptr child)
 
 KJob *TaskRepository::delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate)
 {
-    Q_UNUSED(task);
-    Q_UNUSED(delegate);
-    qFatal("Not implemented yet");
+    auto originalDelegate = task->delegate();
+
+    task->blockSignals(true);
+    task->setDelegate(delegate);
+
+    auto item = m_serializer->createItemFromTask(task);
+
+    task->setDelegate(originalDelegate);
+    task->blockSignals(false);
+
+    m_messaging->sendDelegationMessage(item);
     return 0;
 }

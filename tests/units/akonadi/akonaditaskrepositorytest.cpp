@@ -29,6 +29,7 @@
 #include <mockitopp/mockitopp.hpp>
 #include "testlib/akonadimocks.h"
 
+#include "akonadi/akonadimessaginginterface.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "akonadi/akonadiserializerinterface.h"
 #include "akonadi/akonadistorageinterface.h"
@@ -41,6 +42,13 @@ Q_DECLARE_METATYPE(MockItemFetchJob*)
 class AkonadiTaskRepositoryTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit AkonadiTaskRepositoryTest(QObject *parent = 0)
+        : QObject(parent)
+    {
+        qRegisterMetaType<Domain::Task::Delegate>();
+    }
+
 private slots:
     void shouldCheckIfASourceIsDefaultFromSettings()
     {
@@ -650,6 +658,39 @@ private slots:
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::removeItemParent).when(childItem).exactly(1));;
             QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, 0).exactly(1));
         }
+    }
+
+    void shouldSendDelegationMessage()
+    {
+        // GIVEN
+        auto oldDelegate = Domain::Task::Delegate("John Smith", "john@smith.com");
+        auto newDelegate = Domain::Task::Delegate("John Doe", "john@doe.com");
+
+        auto task = Domain::Task::Ptr::create();
+        task->setDelegate(oldDelegate);
+
+        QSignalSpy spy(task.data(), SIGNAL(delegateChanged(Domain::Task::Delegate)));
+
+        auto item = Akonadi::Item(42);
+
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).thenReturn(item);
+
+        mock_object<Akonadi::MessagingInterface> messagingMock;
+        messagingMock(&Akonadi::MessagingInterface::sendDelegationMessage).when(item).thenReturn();
+
+        // WHEN
+        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(0,
+                                                                                       &serializerMock.getInstance(),
+                                                                                       &messagingMock.getInstance()));
+        repository->delegate(task, newDelegate);
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
+        QVERIFY(messagingMock(&Akonadi::MessagingInterface::sendDelegationMessage).when(item).exactly(1));
+
+        QCOMPARE(task->delegate(), oldDelegate);
+        QVERIFY(spy.isEmpty());
     }
 };
 
