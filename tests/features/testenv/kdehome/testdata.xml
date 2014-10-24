@@ -149,7 +149,7 @@ END:VTODO&#xd;
 
 END:VCALENDAR</payload>
       </item>
-      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{6c7bf5b9-4136-4203-9f45-54e32ea0eacb}">
+      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{162f2f49-0a69-4a35-b80a-7a218432e9bf}">
         <payload>BEGIN:VCALENDAR
 PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
 VERSION:2.0
@@ -157,7 +157,25 @@ X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
 BEGIN:VTODO&#xd;
 DTSTAMP:20120322T164413Z&#xd;
 CREATED:20120322T164413Z&#xd;
-UID:6c7bf5b9-4136-4203-9f45-54e32ea0eacb&#xd;
+UID:162f2f49-0a69-4a35-b80a-7a218432e9bf&#xd;
+LAST-MODIFIED:20120322T164413Z&#xd;
+SUMMARY:"Capital in the Twenty-First Century" by Thomas Piketty&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+        <tag>philosophy-tag</tag>
+      </item>
+
+      <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{153b3f04-490a-443c-b5e7-e781aad2c860}">
+        <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20120322T164413Z&#xd;
+CREATED:20120322T164413Z&#xd;
+UID:153b3f04-490a-443c-b5e7-e781aad2c860&#xd;
 LAST-MODIFIED:20120322T164413Z&#xd;
 SUMMARY: Create Sozi SVG&#xd;
 RELATED-TO:f1a30fc7-d941-4c81-a083-7c1e9657ae24&#xd;
