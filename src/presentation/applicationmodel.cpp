@@ -63,7 +63,7 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
       m_noteSourcesModel(0),
       m_tagQueries(Utils::DependencyManager::globalInstance().create<Domain::TagQueries>()),
-      m_tagRepository(0),
+      m_tagRepository(Utils::DependencyManager::globalInstance().create<Domain::TagRepository>()),
       m_ownInterface(true)
 {
     MetaTypes::registerAll();

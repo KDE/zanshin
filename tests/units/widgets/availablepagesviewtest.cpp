@@ -118,6 +118,11 @@ public slots:
         contextNames << name;
     }
 
+    void addTag(const QString &name)
+    {
+        tagNames << name;
+    }
+
     void removeItem(const QModelIndex &index)
     {
         projectRemoved = index.data().toString();
@@ -126,6 +131,7 @@ public slots:
 public:
     QStringList projectNames;
     QStringList contextNames;
+    QStringList tagNames;
     QList<Domain::DataSource::Ptr> sources;
     QString projectRemoved;
 };
@@ -248,6 +254,39 @@ private slots:
         QCOMPARE(dialogStub->pageType(), Widgets::NewPageDialogInterface::Context);
         QCOMPARE(model.contextNames.size(), 1);
         QCOMPARE(model.contextNames.first(), dialogStub->name());
+    }
+
+    void shouldAddNewTags()
+    {
+        // GIVEN
+        AvailablePagesModelStub model;
+        QStringListModel sourceModel;
+        auto dialogStub = NewPageDialogStub::Ptr::create();
+
+        auto source = Domain::DataSource::Ptr::create();
+
+        Widgets::AvailablePagesView available;
+        available.setModel(&model);
+        available.setProjectSourcesModel(&sourceModel);
+        available.setDefaultProjectSource(source);
+        available.setDialogFactory([dialogStub] (QWidget *parent) {
+            dialogStub->parent = parent;
+            dialogStub->setPageType(Widgets::NewPageDialogInterface::Tag);
+            return dialogStub;
+        });
+
+        auto addAction = available.findChild<QAction*>("addAction");
+
+        // WHEN
+        addAction->trigger();
+
+        // THEN
+        QCOMPARE(dialogStub->execCount, 1);
+        QCOMPARE(dialogStub->parent, &available);
+        QCOMPARE(dialogStub->sourceModel, &sourceModel);
+        QCOMPARE(dialogStub->pageType(), Widgets::NewPageDialogInterface::Tag);
+        QCOMPARE(model.tagNames.size(), 1);
+        QCOMPARE(model.tagNames.first(), dialogStub->name());
     }
 
     void shouldRemoveAProject()

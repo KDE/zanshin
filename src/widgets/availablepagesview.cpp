@@ -165,9 +165,8 @@ void AvailablePagesView::onAddTriggered()
                                       Q_ARG(QString, dialog->name()));
             break;
         case NewPageDialogInterface::Tag:
-//            QMetaObject::invokeMethod(m_model, "addTag",
-//                                      Q_ARG(QString, dialog->name()));
-            // TODO : connect when implementation is done
+            QMetaObject::invokeMethod(m_model, "addTag",
+                                      Q_ARG(QString, dialog->name()));
             break;
         }
     }
