@@ -47,8 +47,15 @@ EditorView::EditorView(QWidget *parent)
       m_dueDateEdit(new KPIM::KDateEdit(m_taskGroup)),
       m_startTodayButton(new QPushButton(tr("Start today"), m_taskGroup)),
       m_doneButton(new QCheckBox(tr("Done"), m_taskGroup)),
-      m_delegateEdit(new KPIM::AddresseeLineEdit(this))
+      m_delegateEdit(0)
 {
+    // To avoid having unit tests talking to akonadi
+    // while we don't need the completion for them
+    if (qgetenv("ZANSHIN_UNIT_TEST_RUN").isEmpty())
+        m_delegateEdit = new KPIM::AddresseeLineEdit(this);
+    else
+        m_delegateEdit = new KLineEdit(this);
+
     m_delegateLabel->setObjectName("delegateLabel");
     m_delegateEdit->setObjectName("delegateEdit");
     m_textEdit->setObjectName("textEdit");

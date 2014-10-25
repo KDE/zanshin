@@ -197,6 +197,7 @@ public:
     explicit ApplicationComponentsTest(QObject *parent = 0)
         : QObject(parent)
     {
+        qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
         qRegisterMetaType<ComboGetterFunction>();
     }
 

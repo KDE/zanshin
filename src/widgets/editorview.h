@@ -33,9 +33,10 @@ class QAbstractButton;
 class QLabel;
 class QPlainTextEdit;
 
+class KLineEdit;
+
 namespace KPIM {
     class KDateEdit;
-    class AddresseeLineEdit;
 }
 
 namespace Widgets {
@@ -84,7 +85,7 @@ private:
     KPIM::KDateEdit *m_dueDateEdit;
     QAbstractButton *m_startTodayButton;
     QAbstractButton *m_doneButton;
-    KPIM::AddresseeLineEdit *m_delegateEdit;
+    KLineEdit *m_delegateEdit;
 };
 
 }

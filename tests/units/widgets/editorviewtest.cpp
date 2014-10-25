@@ -101,6 +101,13 @@ public:
 class EditorViewTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit EditorViewTest(QObject *parent = 0)
+        : QObject(parent)
+    {
+        qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
+    }
+
 private slots:
     void shouldHaveDefaultState()
     {
@@ -128,7 +135,7 @@ private slots:
         QVERIFY(delegateLabel);
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
-        auto delegateEdit = editor.findChild<KPIM::AddresseeLineEdit*>("delegateEdit");
+        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
         QVERIFY(delegateEdit);
         QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
@@ -152,7 +159,7 @@ private slots:
         auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
-        auto delegateEdit = editor.findChild<KPIM::AddresseeLineEdit*>("delegateEdit");
+        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
         QVERIFY(!delegateEdit->isVisibleTo(&editor));
 
         // WHEN
@@ -538,7 +545,7 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto delegateEdit = editor.findChild<KPIM::AddresseeLineEdit*>("delegateEdit");
+        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
 
         // WHEN
         QVERIFY(delegateEdit->isEnabled());
