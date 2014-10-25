@@ -198,6 +198,41 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).exactly(1));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
     }
+
+    void shouldAddTasks()
+    {
+        // GIVEN
+
+        // One Tag
+        auto tag = Domain::Tag::Ptr::create();
+
+        // ... in fact we won't list any model
+        mock_object<Domain::TagQueries> tagQueriesMock;
+        mock_object<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        mock_object<Domain::NoteRepository> noteRepositoryMock;
+
+        // We'll gladly create a task though
+        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::createInTag).when(any<Domain::Task::Ptr>(),
+                                                                          any<Domain::Tag::Ptr>())
+                                                                    .thenReturn(new FakeJob(this));
+
+        Presentation::TagPageModel page(tag,
+                                        &tagQueriesMock.getInstance(),
+                                        &taskQueriesMock.getInstance(),
+                                        &taskRepositoryMock.getInstance(),
+                                        &noteRepositoryMock.getInstance());
+
+        // WHEN
+        page.addTask("New task");
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInTag).when(any<Domain::Task::Ptr>(),
+                                                                                  any<Domain::Tag::Ptr>())
+                                                                            .exactly(1));
+    }
 };
 
 QTEST_MAIN(TagPageModelTest)

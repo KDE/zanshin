@@ -59,8 +59,9 @@ Domain::Tag::Ptr TagPageModel::tag() const
 
 void TagPageModel::addTask(const QString &title)
 {
-    Q_UNUSED(title);
-    qFatal("Not implemented yet");
+    auto task = Domain::Task::Ptr::create();
+    task->setTitle(title);
+    taskRepository()->createInTag(task, m_tag);
 }
 
 void TagPageModel::removeItem(const QModelIndex &index)
