@@ -1356,7 +1356,7 @@ QMenu *AddresseeLineEdit::createStandardContextMenu()
         menu->addAction( i18n( "Configure Completion Order..." ),
                          this, SLOT(slotEditCompletionOrder()) );
 
-        QAction *showOU = new QAction(i18n( "Show Organication Unit for LDAP results" ),menu);
+        QAction *showOU = new QAction(i18n( "Show Organization Unit for LDAP results" ),menu);
         showOU->setCheckable(true);
 
         showOU->setChecked( d->m_showOU );
