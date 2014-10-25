@@ -141,10 +141,14 @@ KJob *TaskRepository::createInContext(Domain::Task::Ptr task, Domain::Context::P
 
 KJob *TaskRepository::createInTag(Domain::Task::Ptr task, Domain::Tag::Ptr tag)
 {
-    Q_UNUSED(task);
-    Q_UNUSED(tag);
-    qFatal("not implemented yet");
-    return 0;
+    Item item = m_serializer->createItemFromTask(task);
+    Q_ASSERT(!item.isValid());
+
+    Tag akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
+    Q_ASSERT(akonadiTag .isValid());
+    item.setTag(akonadiTag);
+
+    return createItem(item);
 }
 
 KJob *TaskRepository::update(Domain::Task::Ptr task)
