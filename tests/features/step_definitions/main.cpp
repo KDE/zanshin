@@ -373,7 +373,6 @@ WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
 }
 
 WHEN("^I rename a \"(.*)\" named \"(.*)\" to \"(.*)\"$") {
-    qDebug() << "Renaming is happening ! ";
     REGEX_PARAM(QString, objectType);
     REGEX_PARAM(QString, oldName);
     REGEX_PARAM(QString, newName);
