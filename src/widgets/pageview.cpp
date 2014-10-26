@@ -42,6 +42,7 @@ using namespace Widgets;
 
 PageView::PageView(QWidget *parent)
     : QWidget(parent),
+      m_model(0),
       m_filterWidget(new FilterWidget(this)),
       m_centralView(new QTreeView(this)),
       m_quickAddEdit(new QLineEdit(this))
