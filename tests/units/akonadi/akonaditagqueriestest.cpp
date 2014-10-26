@@ -359,6 +359,65 @@ private slots:
         QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1);
         QCOMPARE(result->data().at(1).objectCast<Domain::Note>(), note3);
     }
+
+    void shouldReactToItemAddedForTag()
+    {
+        // GIVEN
+        // One top level
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        auto collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1);
+
+        // One domain Tag
+        Akonadi::Tag akonadiTag(43);
+        auto tag = Domain::Tag::Ptr::create();
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List());
+
+        // Storage mock returning the fetch job
+        mock_object<Akonadi::StorageInterface> storageMock;
+
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
+                                                           .thenReturn(itemFetchJob);
+
+        // Serializer mock
+        mock_object<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
+
+
+        // A mock monitor
+        MockMonitor *monitor = new MockMonitor(this);
+
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
+                                                                                   &serializerMock.getInstance(),
+                                                                                   monitor));
+        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(tag);
+        QTest::qWait(150);
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        Akonadi::Item item1(44);
+        auto task1 = Domain::Task::Ptr::create();
+
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(false);
+
+        monitor->addItem(item1);
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1);
+    }
 };
 
 QTEST_MAIN(AkonadiTagQueriesTest)

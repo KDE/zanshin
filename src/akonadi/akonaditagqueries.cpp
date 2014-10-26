@@ -192,7 +192,8 @@ void TagQueries::onTagChanged(const Tag &tag)
 
 void TagQueries::onItemAdded(const Item &item)
 {
-    Q_UNUSED(item);
+    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+        query->onAdded(item);
 }
 
 void TagQueries::onItemRemoved(const Item &item)
