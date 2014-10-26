@@ -237,7 +237,7 @@ private slots:
         Widgets::PageView page;
         page.setModel(&stubPageModel);
         bool called = false;
-        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes;});
+        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes; });
 
         QTreeView *centralView = page.findChild<QTreeView*>("centralView");
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
@@ -269,7 +269,7 @@ private slots:
         Widgets::PageView page;
         page.setModel(&stubPageModel);
         bool called = false;
-        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes;});
+        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes; });
 
         QTreeView *centralView = page.findChild<QTreeView*>("centralView");
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
