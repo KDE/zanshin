@@ -63,17 +63,13 @@ private slots:
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
         taskProvider->append(parentTask);
-
-        auto childTaskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto childTaskResult = Domain::QueryResult<Domain::Task::Ptr>::create(childTaskProvider);
-        childTaskProvider->append(childTask);
+        taskProvider->append(childTask);
+        //FIXME : for now findTopLevelTasks(context) returns all tasks associated not just top level ones
 
         mock_object<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
         mock_object<Domain::TaskQueries> taskQueriesMock;
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(parentTask).thenReturn(childTaskResult);
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
         mock_object<Domain::ContextRepository> contextRepositoryMock;
         mock_object<Domain::TaskRepository> taskRepositoryMock;
@@ -90,12 +86,12 @@ private slots:
 
         // THEN
         const QModelIndex parentTaskIndex = model->index(0, 0);
-        const QModelIndex childTaskIndex = model->index(0, 0, parentTaskIndex);
+        const QModelIndex childTaskIndex = model->index(1, 0);
 
         QCOMPARE(page.context(), context);
 
-        QCOMPARE(model->rowCount(), 1);
-        QCOMPARE(model->rowCount(parentTaskIndex), 1);
+        QCOMPARE(model->rowCount(), 2);
+        QCOMPARE(model->rowCount(parentTaskIndex), 0);
         QCOMPARE(model->rowCount(childTaskIndex), 0);
 
         const Qt::ItemFlags taskFlags = Qt::ItemIsSelectable

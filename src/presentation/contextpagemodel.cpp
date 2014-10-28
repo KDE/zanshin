@@ -73,9 +73,9 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
 {
     auto query = [this] (const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
         if (!task)
-            return m_contextQueries->findTopLevelTasks(m_context);
+            return m_contextQueries->findTopLevelTasks(m_context); //FIXME : for now returns all tasks associated, not only top level ones
         else
-            return taskQueries()->findChildren(task);
+            return Domain::QueryResult<Domain::Task::Ptr>::Ptr();
     };
 
     auto flags = [] (const Domain::Task::Ptr &task) {
