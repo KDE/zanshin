@@ -276,6 +276,19 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
                 m_projectRepository->associate(project, droppedArtifact);
             }
             return true;
+        } else if (auto context = object.objectCast<Domain::Context>()) {
+            if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
+                            [](const Domain::Artifact::Ptr &droppedArtifact) {
+                                return !droppedArtifact.objectCast<Domain::Task>();
+                            })) {
+                return false;
+            }
+
+            foreach (const auto &droppedArtifact, droppedArtifacts) {
+                auto task = droppedArtifact.staticCast<Domain::Task>();
+                m_contextRepository->associate(context, task);
+            }
+            return true;
         } else if (object == m_inboxObject) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto job = m_projectRepository->dissociate(droppedArtifact);

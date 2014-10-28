@@ -275,6 +275,25 @@ END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
         </item>
+        <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{c8fa91d8-6592-4ef5-81fc-0673e663f15f}">
+        <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20141028T080435Z&#xd;
+CREATED:20141028T080435Z&#xd;
+UID:c8fa91d8-6592-4ef5-81fc-0673e663f15f&#xd;
+LAST-MODIFIED:20141028T080435Z&#xd;
+SUMMARY:Buy rutabagas&#xd;
+DUE;VALUE=DATE:20140324&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+        <attribute type="ForTestingPurpose">bar</attribute>
+        <flag>\SEEN</flag>
+        </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{04944d0e-43a5-4cc1-9ca0-bc3200981879}">
           <payload>BEGIN:VCALENDAR
 PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN

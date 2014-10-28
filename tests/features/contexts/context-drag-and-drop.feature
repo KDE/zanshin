@@ -3,10 +3,9 @@ Feature: Context task association
   I can associate tasks to a context
   In order to describe the tasks resources
 
-  @wip
   Scenario: Dropping a task on a context
     Given I display the "Inbox" page
-    And there is an item named "Buy cheese" in the central list
+    And there is an item named "Buy rutabagas" in the central list
     When I drop the item on "Contexts / Errands" in the page list
     And I display the "Contexts / Errands" page
     And I look at the central list
@@ -14,4 +13,4 @@ Feature: Context task association
     Then the list is:
        | display                                       |
        | Buy kiwis                                     |
-       | Buy cheese                                    |
+       | Buy rutabagas                                 |
