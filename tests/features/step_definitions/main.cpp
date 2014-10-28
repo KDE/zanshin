@@ -403,6 +403,7 @@ WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
 
     const QString pageNodeName = (objectType == "project") ? "Projects / "
                                : (objectType == "context") ? "Contexts / "
+                               : (objectType == "tag")     ? "Tags / "
                                : QString();
 
     VERIFY(!pageNodeName.isEmpty());
