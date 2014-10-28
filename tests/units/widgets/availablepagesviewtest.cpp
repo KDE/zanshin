@@ -25,15 +25,24 @@
 
 #include <QAbstractItemModel>
 #include <QAction>
+#include <QDebug>
 #include <QHeaderView>
+#include <QStandardItemModel>
 #include <QStringListModel>
 #include <QToolBar>
 #include <QTreeView>
 
+#include "domain/project.h"
+#include "domain/context.h"
+#include "domain/tag.h"
+
 #include "presentation/metatypes.h"
+#include "presentation/querytreemodelbase.h"
 
 #include "widgets/availablepagesview.h"
 #include "widgets/newpagedialog.h"
+
+#include "messageboxstub.h"
 
 class NewPageDialogStub : public Widgets::NewPageDialogInterface
 {
@@ -292,12 +301,34 @@ private slots:
         QCOMPARE(model.tagNames.first(), dialogStub->name());
     }
 
-    void shouldRemoveAProject()
+    void shouldRemoveAPage_data()
     {
+        QTest::addColumn<QObjectPtr>("object");
+
+        auto project1 = Domain::Project::Ptr::create();
+        project1->setName("Project 1");
+        QTest::newRow("project") << QObjectPtr(project1);
+
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName("Context 1");
+        QTest::newRow("context") << QObjectPtr(context1);
+
+        auto tag1 = Domain::Tag::Ptr::create();
+        tag1->setName("Tag 1");
+        QTest::newRow("tag") << QObjectPtr(tag1);
+    }
+
+    void shouldRemoveAPage()
+    {
+        QFETCH(QObjectPtr, object);
+
         // GIVEN
         QStringList list;
         list << "A" << "B" << "C";
-        QStringListModel model(list);
+        QStandardItemModel model;
+        for (int row = 0; row < list.count(); ++row) {
+            model.setItem(row, new QStandardItem(list.at(row)));
+        }
 
         AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
@@ -311,6 +342,11 @@ private slots:
         QTest::qWait(10);
 
         auto removeAction = available.findChild<QAction*>("removeAction");
+
+        QVERIFY(model.setData(model.index(0, 0), QVariant::fromValue(object), Presentation::QueryTreeModelBase::ObjectRole));
+
+        auto msgbox = MessageBoxStub::Ptr::create();
+        available.setMessageBoxInterface(msgbox);
 
         // WHEN
         removeAction->trigger();
