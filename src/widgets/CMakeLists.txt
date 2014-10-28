@@ -7,6 +7,8 @@ set(widgets_SRCS
     editorview.cpp
     filterwidget.cpp
     itemdelegate.cpp
+    messagebox.cpp
+    messageboxinterface.cpp
     newpagedialog.cpp
     newpagedialoginterface.cpp
     pageview.cpp

@@ -1,6 +1,6 @@
 /* This file is part of Zanshin
 
-   Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 David Faure <faure@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,56 +22,23 @@
 */
 
 
-#ifndef WIDGETS_PAGEVIEW_H
-#define WIDGETS_PAGEVIEW_H
+#ifndef WIDGETS_MESSAGEBOX_H
+#define WIDGETS_MESSAGEBOX_H
 
-#include <QWidget>
-
-#include <QSharedPointer>
-
-#include <functional>
-
-#include "domain/artifact.h"
 #include "messageboxinterface.h"
-
-class QLineEdit;
-class QModelIndex;
-class QTreeView;
-class QMessageBox;
 
 namespace Widgets {
 
-class FilterWidget;
-
-class PageView : public QWidget
+class MessageBox : public MessageBoxInterface
 {
-    Q_OBJECT
 public:
-    explicit PageView(QWidget *parent = 0);
+    typedef QSharedPointer<MessageBox> Ptr;
 
-    QObject *model() const;
-    MessageBoxInterface::Ptr messageBoxInterface() const;
+    virtual ~MessageBox();
 
-public slots:
-    void setModel(QObject *model);
-    void setMessageBoxInterface(const MessageBoxInterface::Ptr &interface);
-
-signals:
-    void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
-
-private slots:
-    void onEditingFinished();
-    void onRemoveItemRequested();
-    void onCurrentChanged(const QModelIndex &current);
-
-private:
-    QObject *m_model;
-    FilterWidget *m_filterWidget;
-    QTreeView *m_centralView;
-    QLineEdit *m_quickAddEdit;
-    MessageBoxInterface::Ptr m_messageBoxInterface;
+    QMessageBox::Button askConfirmation(QWidget *parent, const QString &title, const QString &text) Q_DECL_OVERRIDE;
 };
 
 }
 
-#endif // WIDGETS_PAGEVIEW_H
+#endif

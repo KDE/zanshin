@@ -39,6 +39,8 @@
 #include "widgets/itemdelegate.h"
 #include "widgets/pageview.h"
 
+#include "messageboxstub.h"
+
 class PageModelStub : public QObject
 {
     Q_OBJECT
@@ -236,8 +238,8 @@ private slots:
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
-        bool called = false;
-        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes; });
+        auto msgbox = MessageBoxStub::Ptr::create();
+        page.setMessageBoxInterface(msgbox);
 
         QTreeView *centralView = page.findChild<QTreeView*>("centralView");
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
@@ -252,7 +254,7 @@ private slots:
         QTest::keyPress(centralView, Qt::Key_Delete);
 
         // THEN
-        QVERIFY(called);
+        QVERIFY(msgbox->called());
         QCOMPARE(stubPageModel.removedIndices.size(), 1);
         QCOMPARE(stubPageModel.removedIndices.first(), index);
     }
@@ -268,8 +270,8 @@ private slots:
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
-        bool called = false;
-        page.setAskConfirmationFunction([&called](const QString&, QWidget*) { called = true; return QMessageBox::Yes; });
+        auto msgbox = MessageBoxStub::Ptr::create();
+        page.setMessageBoxInterface(msgbox);
 
         QTreeView *centralView = page.findChild<QTreeView*>("centralView");
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
@@ -285,7 +287,7 @@ private slots:
         QTest::keyPress(centralView, Qt::Key_Delete);
 
         // THEN
-        QVERIFY(called);
+        QVERIFY(msgbox->called());
         QCOMPARE(stubPageModel.removedIndices.size(), 2);
         QCOMPARE(stubPageModel.removedIndices.first(), index);
         QCOMPARE(stubPageModel.removedIndices.at(1), index2);

@@ -33,6 +33,7 @@
 
 #include "filterwidget.h"
 #include "itemdelegate.h"
+#include "messagebox.h"
 
 #include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
@@ -72,10 +73,7 @@ PageView::PageView(QWidget *parent)
     connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
     addAction(removeItemAction);
 
-    m_askConfirmationFunction = [] (const QString &text, QWidget *parent) -> int {
-        QString title = tr("Delete Tasks");
-        return QMessageBox::question(parent, title, text, QMessageBox::Yes | QMessageBox::No);
-    };
+    m_messageBoxInterface = MessageBox::Ptr::create();
 }
 
 QObject *PageView::model() const
@@ -107,14 +105,14 @@ void PageView::setModel(QObject *model)
             this, SLOT(onCurrentChanged(QModelIndex)));
 }
 
-PageView::AskConfirmationFunction PageView::askConfirmationFunction() const
+MessageBoxInterface::Ptr PageView::messageBoxInterface() const
 {
-    return m_askConfirmationFunction;
+    return m_messageBoxInterface;
 }
 
-void PageView::setAskConfirmationFunction(const PageView::AskConfirmationFunction &askConfirmationFunction)
+void PageView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)
 {
-    m_askConfirmationFunction = askConfirmationFunction;
+    m_messageBoxInterface = interface;
 }
 
 void PageView::onEditingFinished()
@@ -160,7 +158,7 @@ void PageView::onRemoveItemRequested()
     }
 
     if (!text.isEmpty()) {
-        int button = m_askConfirmationFunction(text, this);
+        QMessageBox::Button button = m_messageBoxInterface->askConfirmation(this, tr("Delete Tasks"), text);
         bool canRemove = (button == QMessageBox::Yes);
 
         if (!canRemove)
