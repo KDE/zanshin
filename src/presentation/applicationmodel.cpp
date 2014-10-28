@@ -34,6 +34,7 @@
 #include "domain/tagrepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
+#include "domain/datasourcerepository.h"
 
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodel.h"
@@ -110,16 +111,17 @@ ApplicationModel::~ApplicationModel()
 {
     if (m_ownInterface) {
         delete m_artifactQueries;
-        delete m_contextQueries;
-        delete m_contextQueries;
         delete m_projectQueries;
         delete m_projectRepository;
+        delete m_contextQueries;
+        delete m_contextRepository;
         delete m_sourceQueries;
+        delete m_sourceRepository;
         delete m_taskQueries;
         delete m_taskRepository;
+        delete m_noteRepository;
         delete m_tagQueries;
         delete m_tagRepository;
-        delete m_noteRepository;
     }
 }
 
