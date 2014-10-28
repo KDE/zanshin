@@ -26,3 +26,14 @@ Feature: Project task association
     Then the list is:
        | display          |
        | 21/04/2014 14:49 |
+
+  Scenario: Dropping a task on a project from context central list
+    Given I display the "Contexts / Chores" page
+    And there is an item named "Buy kiwis" in the central list
+    When I drop the item on "Projects / Birthday" in the page list
+    And I display the "Projects / Birthday" page
+    And I look at the central list
+    And I list the items
+    Then the list is:
+       | display                                       |
+       | Buy kiwis                                     |

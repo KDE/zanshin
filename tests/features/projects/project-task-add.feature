@@ -11,3 +11,4 @@ In order to organize my tasks
     Then the list is:
        | display              |
        | Buy a cake           |
+       | Buy kiwis            |

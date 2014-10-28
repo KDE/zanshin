@@ -121,11 +121,19 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         if (!mimeData->hasFormat("application/x-zanshin-object"))
             return false;
 
-        auto droppedTasks = mimeData->property("objects").value<Domain::Task::List>();
-        if (droppedTasks.isEmpty())
+        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
+        if (droppedArtifacts.isEmpty())
             return false;
 
-        foreach(const Domain::Task::Ptr &childTask, droppedTasks) {
+        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
+                        [](const Domain::Artifact::Ptr &droppedArtifact) {
+                            return !droppedArtifact.objectCast<Domain::Task>();
+                        })) {
+            return false;
+        }
+
+        foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
+            auto childTask = droppedArtifact.objectCast<Domain::Task>();
             taskRepository()->associate(parentTask, childTask);
         }
 
@@ -136,9 +144,14 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         if (tasks.isEmpty())
             return 0;
 
+        auto draggedArtifacts = Domain::Artifact::List();
+        foreach (const Domain::Task::Ptr &task, tasks) {
+            draggedArtifacts.append(task.objectCast<Domain::Artifact>());
+        }
+
         QMimeData *data = new QMimeData();
-        data->setData("application/x-zanshin-object", "objects");
-        data->setProperty("objects", QVariant::fromValue(tasks));
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
         return data;
     };
 
