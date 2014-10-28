@@ -31,9 +31,8 @@
 
 #include <KConfigGroup>
 #include <KSharedConfig>
-
-#include <KDE/KConfigGroup>
-#include <KDE/KMainWindow>
+#include <KComponentData>
+#include <KMainWindow>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -53,6 +52,8 @@ int main(int argc, char **argv)
     App::initializeDependencies();
 
     QApplication app(argc, argv);
+
+    KComponentData mainComponentData("zanshin");
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
     KConfigGroup group = config->group("Migrations");
