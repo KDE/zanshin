@@ -147,6 +147,10 @@ void AvailablePagesModel::removeItem(const QModelIndex &index)
         m_projectRepository->remove(project);
     } else if (auto context = object.objectCast<Domain::Context>()) {
         m_contextRepository->remove(context);
+    } else if (auto tag = object.objectCast<Domain::Tag>()) {
+        m_tagRepository->remove(tag);
+    } else {
+        Q_ASSERT(false);
     }
 }
 

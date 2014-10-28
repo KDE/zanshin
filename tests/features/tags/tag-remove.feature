@@ -3,7 +3,6 @@ Feature: Tag removal
   I can remove a tag
   In order to maintain their semantic
 
-@wip
   Scenario: Removed tag disappear from the list
     Given I display the available pages
     When I remove a "tag" named "Optional"
@@ -22,4 +21,3 @@ Feature: Tag removal
        | Tags                              | folder              |
        | Tags / Philosophy                 | view-pim-tasks      |
        | Tags / Physics                    | view-pim-tasks      |
-

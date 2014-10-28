@@ -65,9 +65,9 @@ KJob *TagRepository::create(Domain::Tag::Ptr tag)
 
 KJob *TagRepository::remove(Domain::Tag::Ptr tag)
 {
-    Q_UNUSED(tag);
-    qFatal("not impl yet");
-    return 0;
+   auto akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
+   Q_ASSERT(!akonadiTag.isValid());
+   return m_storage->removeTag(akonadiTag);
 }
 
 KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
