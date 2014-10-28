@@ -128,6 +128,9 @@ public slots:
         projectRemoved = index.data().toString();
     }
 
+public Q_SLOTS:
+    QObject *createPageForIndex(const QModelIndex &) { return 0; }
+
 public:
     QStringList projectNames;
     QStringList contextNames;
@@ -170,7 +173,7 @@ private slots:
         // GIVEN
         QStringListModel model(QStringList() << "A" << "B" << "C" );
 
-        QObject stubPagesModel;
+        AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::AvailablePagesView available;
