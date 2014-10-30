@@ -92,6 +92,31 @@ private slots:
         QVERIFY(!serializer.representsItem(object, item));
     }
 
+    void shouldKnowWhenAnAkonadiTagRepresentsATag()
+    {
+        // GIVEN
+        Akonadi::Serializer serializer;
+        Akonadi::Tag akondiTag(42);
+        auto tag = Domain::Tag::Ptr::create();
+
+        // WHEN
+        // Nothing yet
+        // THEN
+        QVERIFY(!serializer.representsAkonadiTag(tag, akondiTag));
+
+        // WHEN
+        tag->setProperty("tagId", 42);
+
+        // THEN
+        QVERIFY(serializer.representsAkonadiTag(tag, akondiTag));
+
+        // WHEN
+        tag->setProperty("tagId", 43);
+
+        // THEN
+        QVERIFY(!serializer.representsAkonadiTag(tag, akondiTag));
+    }
+
     void shouldKnowObjectUid()
     {
         // GIVEN

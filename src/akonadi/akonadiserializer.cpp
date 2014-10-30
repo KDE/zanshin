@@ -57,10 +57,7 @@ bool Serializer::representsItem(QObjectPtr object, Item item)
 
 bool Serializer::representsAkonadiTag(Domain::Tag::Ptr tag, Tag akonadiTag) const
 {
-    Q_UNUSED(tag);
-    Q_UNUSED(akonadiTag);
-    qFatal("Not impl yet");
-    return false;
+    return tag->property("tagId").toLongLong() == akonadiTag.id();
 }
 
 QString Serializer::objectUid(SerializerInterface::QObjectPtr object)
