@@ -66,7 +66,7 @@ KJob *TagRepository::create(Domain::Tag::Ptr tag)
 KJob *TagRepository::remove(Domain::Tag::Ptr tag)
 {
    auto akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
-   Q_ASSERT(!akonadiTag.isValid());
+   Q_ASSERT(akonadiTag.isValid());
    return m_storage->removeTag(akonadiTag);
 }
 
