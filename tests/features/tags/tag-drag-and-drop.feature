@@ -3,7 +3,6 @@ Feature: Tag task association
   I can associate tasks to a tag
   In order to describe the tasks category
 
-@wip
   Scenario: Dropping a task on a tag
     Given I display the "Projects / Party" page
     And there is an item named "Buy a cake" in the central list

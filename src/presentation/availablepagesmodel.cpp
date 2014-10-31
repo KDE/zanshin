@@ -282,10 +282,13 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
                             })) {
                 return false;
             }
-
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto task = droppedArtifact.staticCast<Domain::Task>();
                 m_contextRepository->associate(context, task);
+            }
+        } else if (auto tag = object.objectCast<Domain::Tag>()) {
+            foreach (const auto &droppedArtifact, droppedArtifacts) {
+                m_tagRepository->associate(tag, droppedArtifact);
             }
             return true;
         } else if (object == m_inboxObject) {
