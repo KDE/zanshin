@@ -75,6 +75,8 @@ private slots:
         // GIVEN
         Akonadi::Tag akonadiTag;
         auto tag = Domain::Tag::Ptr::create();
+        tag->setProperty("tagId", qint64(42)); // must be set
+        tag->setName("42");
 
         // A mock of removal job
         auto tagRemoveJob = new MockAkonadiJob(this);
