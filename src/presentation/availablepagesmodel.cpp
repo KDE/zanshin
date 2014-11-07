@@ -270,8 +270,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         if (droppedArtifacts.isEmpty())
             return false;
 
-        auto project = object.objectCast<Domain::Project>();
-        if (project) {
+        if (auto project = object.objectCast<Domain::Project>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 m_projectRepository->associate(project, droppedArtifact);
             }
