@@ -72,10 +72,32 @@ KJob *TagRepository::remove(Domain::Tag::Ptr tag)
 
 KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
 {
-    Q_UNUSED(parent);
-    Q_UNUSED(child);
-    qFatal("not impl yet");
-    return 0;
+    auto akonadiTag = m_serializer->createAkonadiTagFromTag(parent);
+    Q_ASSERT(akonadiTag.isValid());
+
+    Item childItem;
+    if (auto task = child.objectCast<Domain::Task>())
+        childItem = m_serializer->createItemFromTask(task);
+    else if (auto note = child.objectCast<Domain::Note>())
+        childItem = m_serializer->createItemFromNote(note);
+
+    Q_ASSERT(childItem.isValid());
+
+    auto job = new Utils::CompositeJob();
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [akonadiTag, fetchItemJob, parent, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+        childItem.setTag(akonadiTag);
+
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+    return job;
 }
 
 KJob *TagRepository::dissociate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
