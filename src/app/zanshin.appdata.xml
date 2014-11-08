@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<component type="desktop">
+  <id>zanshin-next.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>Zanshin</name>
+  <summary>TODO Management Application</summary>
+  <description>
+    <p>
+      Zanshin is a powerful yet simple application for managing your day to day actions and notes.
+      It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life.
+      You'll never forget anything anymore, getting your mind like water.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Collects tasks and notes from everywhere</li>
+      <li>Organize tasks and notes in projects, contexts and topics</li>
+      <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
+    </ul>
+  </description>
+  <url type="homepage">http://zanshin.kde.org</url>
+  <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=zanshin</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>http://kde.org/images/screenshots/zanshin.png</image>
+    </screenshot>
+  </screenshots>
+  <project_group>KDE</project_group>
+</component>
