@@ -1,21 +1,52 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <component type="desktop">
   <id>zanshin-next.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Zanshin</name>
+  <name xml:lang="de">Zanshin</name>
+  <name xml:lang="nl">Zanshin</name>
+  <name xml:lang="pl">Zanshin</name>
+  <name xml:lang="uk">Zanshin</name>
+  <name xml:lang="x-test">xxZanshinxx</name>
   <summary>TODO Management Application</summary>
+  <summary xml:lang="de">Verwaltungsprogramm für Aufgaben</summary>
+  <summary xml:lang="nl">Beheertoepassing voor taken</summary>
+  <summary xml:lang="pl">Program do zarządzania zadaniami</summary>
+  <summary xml:lang="uk">Програма для керування записами завдань</summary>
+  <summary xml:lang="x-test">xxTODO Management Applicationxx</summary>
   <description>
     <p>
       Zanshin is a powerful yet simple application for managing your day to day actions and notes.
       It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life.
       You'll never forget anything anymore, getting your mind like water.
     </p>
+    <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties en notities. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer wat vergeten, uw geheugen is geen zeef meer.</p>
+    <p xml:lang="pl">Zanshin jest zaawansowanym, a zarazem prostym programem do zarządzania codziennymi zadaniami i notatkami. Pomaga zorganizować i zmniejszyć natłok czynności, które użytkownik musi wykonać w swojej pracy lub życiu osobistym. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
+    <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань та нотатками. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
+    <p xml:lang="x-test">xxZanshin is a powerful yet simple application for managing your day to day actions and notes. It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything anymore, getting your mind like water.xx</p>
     <p>Features:</p>
+    <p xml:lang="de">Funktionen:</p>
+    <p xml:lang="nl">Mogelijkheden:</p>
+    <p xml:lang="pl">Możliwości:</p>
+    <p xml:lang="uk">Можливості:</p>
+    <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
       <li>Collects tasks and notes from everywhere</li>
+      <li xml:lang="nl">Verzamelt taken en notities overal vandaan</li>
+      <li xml:lang="pl">Zbieranie zadań i notatek z dowolnego miejsca</li>
+      <li xml:lang="uk">Збирання різноманітних записів завдань і нотаток.</li>
+      <li xml:lang="x-test">xxCollects tasks and notes from everywherexx</li>
       <li>Organize tasks and notes in projects, contexts and topics</li>
+      <li xml:lang="nl">Organiseert taken en notities in projecten, contexten en onderwerpen</li>
+      <li xml:lang="pl">Porządkowanie zadań i notatek w projekty, konteksty i tematy</li>
+      <li xml:lang="uk">Упорядковування завдань і нотаток за проектами, контекстами та темами.</li>
+      <li xml:lang="x-test">xxOrganize tasks and notes in projects, contexts and topicsxx</li>
       <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
+      <li xml:lang="nl">In Akonadi opgenomen toepassing waarmee de gegevens werkelijk overal vandaan kunt halen (lokaal, imap, webservice...)</li>
+      <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>
+      <li xml:lang="uk">Інтеграція з Akonadi, що надає програмі змогу отримувати дані практично з будь-яких джерел (локальна мережа, imap, інтернет-служба...)</li>
+      <li xml:lang="x-test">xxAkonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)xx</li>
     </ul>
   </description>
   <url type="homepage">http://zanshin.kde.org</url>
