@@ -32,6 +32,8 @@ namespace Domain {
 class DataSourceQueries
 {
 public:
+    typedef QSharedPointer<DataSourceQueries> Ptr;
+
     DataSourceQueries();
     virtual ~DataSourceQueries();
 

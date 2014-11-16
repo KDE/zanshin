@@ -34,6 +34,8 @@ namespace Domain {
 class NoteRepository
 {
 public:
+    typedef QSharedPointer<NoteRepository> Ptr;
+
     NoteRepository();
     virtual ~NoteRepository();
 

@@ -33,6 +33,8 @@ namespace Domain {
 class ArtifactQueries
 {
 public:
+    typedef QSharedPointer<ArtifactQueries> Ptr;
+
     ArtifactQueries();
     virtual ~ArtifactQueries();
 

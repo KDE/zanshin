@@ -31,6 +31,8 @@ namespace Akonadi {
 class MessagingInterface
 {
 public:
+    typedef QSharedPointer<MessagingInterface> Ptr;
+
     MessagingInterface();
     virtual ~MessagingInterface();
 

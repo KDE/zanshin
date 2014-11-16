@@ -33,6 +33,8 @@ namespace Domain {
 class NoteQueries
 {
 public:
+    typedef QSharedPointer<NoteQueries> Ptr;
+
     NoteQueries();
     virtual ~NoteQueries();
 

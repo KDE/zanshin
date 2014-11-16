@@ -37,6 +37,8 @@ namespace Domain {
 class TaskRepository
 {
 public:
+    typedef QSharedPointer<TaskRepository> Ptr;
+
     TaskRepository();
     virtual ~TaskRepository();
 

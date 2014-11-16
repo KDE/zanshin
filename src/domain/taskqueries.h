@@ -33,6 +33,8 @@ namespace Domain {
 class TaskQueries
 {
 public:
+    typedef QSharedPointer<TaskQueries> Ptr;
+
     TaskQueries();
     virtual ~TaskQueries();
 

@@ -33,6 +33,8 @@ namespace Domain {
 class ProjectQueries
 {
 public:
+    typedef QSharedPointer<ProjectQueries> Ptr;
+
     ProjectQueries();
     virtual ~ProjectQueries();
 

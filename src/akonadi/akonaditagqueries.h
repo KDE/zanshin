@@ -40,6 +40,8 @@ class TagQueries : public QObject, public Domain::TagQueries
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<TagQueries> Ptr;
+
     typedef Domain::LiveQuery<Akonadi::Tag, Domain::Tag::Ptr> TagQuery;
     typedef Domain::QueryResult<Domain::Tag::Ptr> TagResult;
     typedef Domain::QueryResultProvider<Domain::Tag::Ptr> TagProvider;

@@ -35,6 +35,8 @@ class DataSourceRepository : public QObject, public Domain::DataSourceRepository
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<DataSourceRepository> Ptr;
+
     explicit DataSourceRepository(QObject *parent = 0);
     DataSourceRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~DataSourceRepository();

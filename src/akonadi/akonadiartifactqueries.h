@@ -43,6 +43,8 @@ class ArtifactQueries : public QObject, public Domain::ArtifactQueries
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<ArtifactQueries> Ptr;
+
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Artifact::Ptr> ArtifactQuery;
     typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;

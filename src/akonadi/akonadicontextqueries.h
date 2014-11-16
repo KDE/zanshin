@@ -40,6 +40,8 @@ class ContextQueries : public QObject, public Domain::ContextQueries
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<ContextQueries> Ptr;
+
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Task::Ptr> TaskQuery;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;

@@ -33,6 +33,8 @@ namespace Domain {
 class DataSourceRepository
 {
 public:
+    typedef QSharedPointer<DataSourceRepository> Ptr;
+
     DataSourceRepository();
     virtual ~DataSourceRepository();
 

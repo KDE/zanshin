@@ -36,6 +36,8 @@ class TagRepository : public QObject, public Domain::TagRepository
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<TagRepository> Ptr;
+
     explicit TagRepository(QObject* parent = 0);
     TagRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~TagRepository();

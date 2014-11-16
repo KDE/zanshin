@@ -41,6 +41,8 @@ class NoteQueries : public QObject, public Domain::NoteQueries
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<NoteQueries> Ptr;
+
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Note::Ptr> NoteQuery;
     typedef Domain::QueryResultProvider<Domain::Note::Ptr> NoteProvider;
     typedef Domain::QueryResult<Domain::Note::Ptr> NoteResult;

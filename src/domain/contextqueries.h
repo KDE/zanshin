@@ -34,6 +34,8 @@ namespace Domain {
 class ContextQueries
 {
 public:
+    typedef QSharedPointer<ContextQueries> Ptr;
+
     ContextQueries();
     virtual ~ContextQueries();
 

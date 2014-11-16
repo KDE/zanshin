@@ -42,6 +42,7 @@ class Tag;
 class SerializerInterface
 {
 public:
+    typedef QSharedPointer<SerializerInterface> Ptr;
     typedef QSharedPointer<QObject> QObjectPtr;
 
     enum DataSourceNameScheme {

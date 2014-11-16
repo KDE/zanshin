@@ -34,6 +34,8 @@ namespace Domain {
 class ContextRepository
 {
 public:
+    typedef QSharedPointer<ContextRepository> Ptr;
+
     ContextRepository();
     virtual ~ContextRepository();
 

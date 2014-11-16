@@ -112,6 +112,8 @@ class MockMonitor : public Akonadi::MonitorInterface
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<MockMonitor> Ptr;
+
     explicit MockMonitor(QObject *parent = 0);
 
     void addCollection(const Akonadi::Collection &collection);

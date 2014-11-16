@@ -46,6 +46,8 @@ class DataSourceQueries : public QObject, public Domain::DataSourceQueries
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<DataSourceQueries> Ptr;
+
     typedef Domain::LiveQuery<Akonadi::Collection, Domain::DataSource::Ptr> DataSourceQuery;
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;

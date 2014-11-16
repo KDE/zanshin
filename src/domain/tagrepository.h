@@ -34,6 +34,8 @@ namespace Domain {
 class TagRepository
 {
 public:
+    typedef QSharedPointer<TagRepository> Ptr;
+
     TagRepository();
     virtual ~TagRepository();
 

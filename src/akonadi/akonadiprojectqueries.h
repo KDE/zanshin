@@ -39,6 +39,8 @@ class ProjectQueries : public QObject, public Domain::ProjectQueries
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<ProjectQueries> Ptr;
+
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Project::Ptr> ProjectQuery;
     typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;

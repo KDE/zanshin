@@ -33,6 +33,8 @@ namespace Domain {
 class TagQueries
 {
 public:
+    typedef QSharedPointer<TagQueries> Ptr;
+
     TagQueries();
     virtual ~TagQueries();
 

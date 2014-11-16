@@ -44,6 +44,8 @@ class TagFetchJobInterface;
 class StorageInterface
 {
 public:
+    typedef QSharedPointer<StorageInterface> Ptr;
+
     enum FetchDepth {
         Base,
         FirstLevel,

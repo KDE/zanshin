@@ -35,6 +35,8 @@ namespace Domain {
 class ProjectRepository
 {
 public:
+    typedef QSharedPointer<ProjectRepository> Ptr;
+
     ProjectRepository();
     virtual ~ProjectRepository();
 

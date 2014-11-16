@@ -36,6 +36,8 @@ class ContextRepository : public QObject, public Domain::ContextRepository
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<ContextRepository> Ptr;
+
     explicit ContextRepository(QObject *parent = 0);
     ContextRepository(StorageInterface *storage, SerializerInterface *serializer);
     virtual ~ContextRepository();

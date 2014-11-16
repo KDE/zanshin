@@ -45,6 +45,8 @@ class TaskQueries : public QObject, public Domain::TaskQueries
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<TaskQueries> Ptr;
+
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Task::Ptr> TaskQuery;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;

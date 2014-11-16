@@ -25,6 +25,7 @@
 #define AKONADI_MONITORINTERFACE_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 namespace Akonadi {
 
@@ -36,6 +37,8 @@ class MonitorInterface : public QObject
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<MonitorInterface> Ptr;
+
     explicit MonitorInterface(QObject *parent = 0);
     virtual ~MonitorInterface();
 
