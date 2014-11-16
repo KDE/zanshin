@@ -73,7 +73,7 @@ private slots:
     void shouldRemoveTag()
     {
         // GIVEN
-        Akonadi::Tag akonadiTag;
+        Akonadi::Tag akonadiTag(42);
         auto tag = Domain::Tag::Ptr::create();
         tag->setProperty("tagId", qint64(42)); // must be set
         tag->setName("42");
