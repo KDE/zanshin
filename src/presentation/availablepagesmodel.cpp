@@ -286,6 +286,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
                 auto task = droppedArtifact.staticCast<Domain::Task>();
                 m_contextRepository->associate(context, task);
             }
+            return true;
         } else if (auto tag = object.objectCast<Domain::Tag>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 m_tagRepository->associate(tag, droppedArtifact);
