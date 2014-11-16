@@ -28,6 +28,7 @@
 
 #include "domain/noterepository.h"
 #include "domain/tagqueries.h"
+#include "domain/tagrepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
@@ -70,6 +71,8 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
 
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -79,6 +82,7 @@ private slots:
 
         Presentation::TagPageModel page(tag,
                                         tagQueriesMock.getInstance(),
+                                        tagRepositoryMock.getInstance(),
                                         taskQueriesMock.getInstance(),
                                         taskRepositoryMock.getInstance(),
                                         noteRepositoryMock.getInstance());
@@ -212,6 +216,7 @@ private slots:
 
         // Nor create notes...
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
 
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -221,6 +226,7 @@ private slots:
 
         Presentation::TagPageModel page(tag,
                                         tagQueriesMock.getInstance(),
+                                        tagRepositoryMock.getInstance(),
                                         taskQueriesMock.getInstance(),
                                         taskRepositoryMock.getInstance(),
                                         noteRepositoryMock.getInstance());
@@ -232,6 +238,60 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInTag).when(any<Domain::Task::Ptr>(),
                                                                                   any<Domain::Tag::Ptr>())
                                                                             .exactly(1));
+    }
+
+    void shouldRemoveItem()
+    {
+        // GIVEN
+
+        // One domain tag
+        auto tag = Domain::Tag::Ptr::create();
+
+        // Two tasks
+        Domain::Artifact::Ptr task1(new Domain::Task);
+        Domain::Artifact::Ptr task2(new Domain::Task);
+        Domain::Artifact::Ptr note(new Domain::Note);
+
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(task1);
+        artifactProvider->append(task2);
+        artifactProvider->append(note);
+
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+        tagRepositoryMock(&Domain::TagRepository::dissociate).when(tag, task2).thenReturn(new FakeJob(this));
+        tagRepositoryMock(&Domain::TagRepository::dissociate).when(tag, note).thenReturn(new FakeJob(this));
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1.dynamicCast<Domain::Task>()).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2.dynamicCast<Domain::Task>()).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::TagPageModel page(tag,
+                                        tagQueriesMock.getInstance(),
+                                        tagRepositoryMock.getInstance(),
+                                        taskQueriesMock.getInstance(),
+                                        taskRepositoryMock.getInstance(),
+                                        noteRepositoryMock.getInstance());
+
+        // WHEN
+        const QModelIndex indexTask2 = page.centralListModel()->index(1, 0);
+        page.removeItem(indexTask2);
+
+        // THEN
+        QVERIFY(tagRepositoryMock(&Domain::TagRepository::dissociate).when(tag, task2).exactly(1));
+
+        // WHEN
+        const QModelIndex indexNote = page.centralListModel()->index(2, 0);
+        page.removeItem(indexNote);
+
+        // THEN
+        QVERIFY(tagRepositoryMock(&Domain::TagRepository::dissociate).when(tag, note).exactly(1));
     }
 };
 

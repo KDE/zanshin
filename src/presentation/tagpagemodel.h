@@ -29,6 +29,8 @@
 #include "presentation/pagemodel.h"
 
 #include "domain/tagqueries.h"
+#include "domain/tagrepository.h"
+#include "domain/tag.h"
 
 namespace Presentation {
 
@@ -38,6 +40,7 @@ class TagPageModel : public PageModel
 public:
     explicit TagPageModel(const Domain::Tag::Ptr &tag,
                           const Domain::TagQueries::Ptr &tagQueries,
+                          const Domain::TagRepository::Ptr &tagRepository,
                           const Domain::TaskQueries::Ptr &taskQueries,
                           const Domain::TaskRepository::Ptr &taskRepository,
                           const Domain::NoteRepository::Ptr &noteRepository,
@@ -53,6 +56,7 @@ private:
 
     Domain::Tag::Ptr m_tag;
     Domain::TagQueries::Ptr m_tagQueries;
+    Domain::TagRepository::Ptr m_tagRepository;
 };
 
 }

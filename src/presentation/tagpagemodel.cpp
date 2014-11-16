@@ -29,6 +29,7 @@
 #include "domain/noterepository.h"
 #include "domain/task.h"
 #include "domain/tagqueries.h"
+#include "domain/tagrepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
@@ -38,6 +39,7 @@ using namespace Presentation;
 
 TagPageModel::TagPageModel(const Domain::Tag::Ptr &tag,
                            const Domain::TagQueries::Ptr &tagQueries,
+                           const Domain::TagRepository::Ptr &tagRepository,
                            const Domain::TaskQueries::Ptr &taskQueries,
                            const Domain::TaskRepository::Ptr &taskRepository,
                            const Domain::NoteRepository::Ptr &noteRepository,
@@ -47,7 +49,8 @@ TagPageModel::TagPageModel(const Domain::Tag::Ptr &tag,
                 noteRepository,
                 parent),
       m_tag(tag),
-      m_tagQueries(tagQueries)
+      m_tagQueries(tagQueries),
+      m_tagRepository(tagRepository)
 {
 
 }
@@ -66,8 +69,9 @@ void TagPageModel::addTask(const QString &title)
 
 void TagPageModel::removeItem(const QModelIndex &index)
 {
-    Q_UNUSED(index);
-    qFatal("Not implemented yet");
+    QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    m_tagRepository->dissociate(m_tag, artifact);
 }
 
 QAbstractItemModel *TagPageModel::createCentralListModel()

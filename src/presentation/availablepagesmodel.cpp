@@ -106,6 +106,7 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     } else if (auto tag = object.objectCast<Domain::Tag>()) {
         return new TagPageModel(tag,
                                 m_tagQueries,
+                                m_tagRepository,
                                 m_taskQueries,
                                 m_taskRepository,
                                 m_noteRepository,
