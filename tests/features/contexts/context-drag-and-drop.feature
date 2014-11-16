@@ -3,7 +3,7 @@ Feature: Context task association
   I can associate tasks to a context
   In order to describe the tasks resources
 
-  Scenario: Dropping a task on a context
+  Scenario: Dropping a task on a context from the inbox
     Given I display the "Inbox" page
     And there is an item named "Buy rutabagas" in the central list
     When I drop the item on "Contexts / Errands" in the page list
@@ -14,3 +14,14 @@ Feature: Context task association
        | display                                       |
        | Buy kiwis                                     |
        | Buy rutabagas                                 |
+
+  Scenario: Dropping a task on a context from the project central list
+    Given I display the "Projects / Prepare talk about TDD" page
+    And there is an item named "Create examples and exercices" in the central list
+    When I drop the item on "Contexts / Internet" in the page list
+    And I display the "Contexts / Internet" page
+    And I look at the central list
+    And I list the items
+    Then the list is:
+       | display                                       |
+       | Create examples and exercices                 |
