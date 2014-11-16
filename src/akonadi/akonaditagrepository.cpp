@@ -84,8 +84,31 @@ KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr ch
 
 KJob *TagRepository::dissociate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
 {
-    Q_UNUSED(parent);
-    Q_UNUSED(child);
-    qFatal("not impl yet");
-    return 0;
+    Item childItem;
+
+    if (Domain::Task::Ptr task = child.dynamicCast<Domain::Task>())
+        childItem = m_serializer->createItemFromTask(task);
+    else if (Domain::Note::Ptr note= child.dynamicCast<Domain::Note>())
+        childItem = m_serializer->createItemFromNote(note);
+
+    Q_ASSERT(childItem.isValid());
+
+    auto job = new Utils::CompositeJob();
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, parent, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+        auto tag = m_serializer->createAkonadiTagFromTag(parent);
+        Q_ASSERT(tag.isValid());
+        childItem.clearTag(tag);
+
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+
+    return job;
 }
