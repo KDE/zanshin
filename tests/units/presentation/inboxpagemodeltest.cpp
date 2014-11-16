@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/artifactqueries.h"
 #include "domain/noterepository.h"
@@ -62,20 +62,20 @@ private slots:
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
         taskProvider->append(childTask);
 
-        mock_object<Domain::ArtifactQueries> artifactQueriesMock;
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
         artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
 
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::InboxPageModel inbox(&artifactQueriesMock.getInstance(),
-                                           &taskQueriesMock.getInstance(),
-                                           &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = inbox.centralListModel();
@@ -196,20 +196,20 @@ private slots:
         // GIVEN
 
         // ... in fact we won't list any model
-        mock_object<Domain::ArtifactQueries> artifactQueriesMock;
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // Nor create notes...
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         // We'll gladly create a task though
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(new FakeJob(this));
 
-        Presentation::InboxPageModel inbox(&artifactQueriesMock.getInstance(),
-                                           &taskQueriesMock.getInstance(),
-                                           &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
 
         // WHEN
         inbox.addTask("New task");
@@ -230,22 +230,22 @@ private slots:
         artifactProvider->append(task1);
         artifactProvider->append(task2);
 
-        mock_object<Domain::ArtifactQueries> artifactQueriesMock;
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
         artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
 
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(new FakeJob(this));
 
-        Presentation::InboxPageModel inbox(&artifactQueriesMock.getInstance(),
-                                           &taskQueriesMock.getInstance(),
-                                           &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
 
         // WHEN
         const QModelIndex index = inbox.centralListModel()->index(1, 0);
@@ -268,20 +268,20 @@ private slots:
         artifactProvider->append(task1);
         artifactProvider->append(note2);
 
-        mock_object<Domain::ArtifactQueries> artifactQueriesMock;
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
         artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
 
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).thenReturn(new FakeJob(this));
 
-        Presentation::InboxPageModel inbox(&artifactQueriesMock.getInstance(),
-                                           &taskQueriesMock.getInstance(),
-                                           &taskRepositoryMock.getInstance(),
-                                           &noteRepositoryMock.getInstance());
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
 
         // WHEN
         const QModelIndex index = inbox.centralListModel()->index(1, 0);

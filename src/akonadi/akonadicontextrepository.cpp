@@ -36,25 +36,16 @@ using namespace Akonadi;
 ContextRepository::ContextRepository(QObject *parent) :
     QObject(parent),
     m_storage(new Storage),
-    m_serializer(new Serializer),
-    m_ownInterfaces(true)
+    m_serializer(new Serializer)
 {
 }
 
-ContextRepository::ContextRepository(StorageInterface *storage, SerializerInterface *serializer):
+ContextRepository::ContextRepository(const StorageInterface::Ptr &storage,
+                                     const SerializerInterface::Ptr &serializer):
     m_storage(storage),
-    m_serializer(serializer),
-    m_ownInterfaces(false)
+    m_serializer(serializer)
 {
 
-}
-
-ContextRepository::~ContextRepository()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-    }
 }
 
 KJob *ContextRepository::create(Domain::Context::Ptr context)

@@ -24,13 +24,18 @@
 #ifndef AKONADI_DATASOURCEQUERIES_H
 #define AKONADI_DATASOURCEQUERIES_H
 
+#include "domain/datasourcequeries.h"
+
 #include <functional>
 
 #include <QHash>
 
 #include <Akonadi/Collection>
 
-#include "domain/datasourcequeries.h"
+#include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
 #include "domain/livequery.h"
 
 class KJob;
@@ -38,9 +43,6 @@ class KJob;
 namespace Akonadi {
 
 class Item;
-class MonitorInterface;
-class SerializerInterface;
-class StorageInterface;
 
 class DataSourceQueries : public QObject, public Domain::DataSourceQueries
 {
@@ -53,8 +55,9 @@ public:
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
     explicit DataSourceQueries(QObject *parent = 0);
-    DataSourceQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
-    virtual ~DataSourceQueries();
+    DataSourceQueries(const StorageInterface::Ptr &storage,
+                      const SerializerInterface::Ptr &serializer,
+                      const MonitorInterface::Ptr &monitor);
 
     DataSourceResult::Ptr findTasks() const;
     DataSourceResult::Ptr findNotes() const;
@@ -74,10 +77,9 @@ private slots:
 private:
     DataSourceQuery::Ptr createDataSourceQuery();
 
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MonitorInterface *m_monitor;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
 
     DataSourceQuery::Ptr m_findTasks;
     DataSourceQuery::Ptr m_findNotes;

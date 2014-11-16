@@ -28,12 +28,7 @@
 #include <QAbstractListModel>
 
 #include "domain/queryresult.h"
-#include "domain/task.h"
-
-namespace Domain
-{
-    class TaskRepository;
-}
+#include "domain/taskrepository.h"
 
 namespace Presentation {
 
@@ -44,7 +39,7 @@ public:
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskList;
 
     explicit TaskListModel(const TaskList::Ptr &taskList,
-                           Domain::TaskRepository *repository,
+                           const Domain::TaskRepository::Ptr &repository,
                            QObject *parent = 0);
     ~TaskListModel();
 
@@ -59,7 +54,7 @@ private:
     bool isModelIndexValid(const QModelIndex &index) const;
 
     TaskList::Ptr m_taskList;
-    Domain::TaskRepository *m_repository;
+    Domain::TaskRepository::Ptr m_repository;
 };
 
 }

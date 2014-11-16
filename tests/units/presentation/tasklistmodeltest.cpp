@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/taskrepository.h"
 #include "presentation/tasklistmodel.h"
@@ -73,7 +73,8 @@ private slots:
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         // WHEN
-        Presentation::TaskListModel model(list, 0);
+        Presentation::TaskListModel model(list,
+                                          Domain::TaskRepository::Ptr());
         new ModelTest(&model);
 
         // THEN
@@ -99,7 +100,8 @@ private slots:
         provider->append(tasks.at(1));
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
-        Presentation::TaskListModel model(list, 0);
+        Presentation::TaskListModel model(list,
+                                          Domain::TaskRepository::Ptr());
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -127,7 +129,8 @@ private slots:
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
-        Presentation::TaskListModel model(list, 0);
+        Presentation::TaskListModel model(list,
+                                          Domain::TaskRepository::Ptr());
         new ModelTest(&model);
         QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
         QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
@@ -155,7 +158,8 @@ private slots:
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
-        Presentation::TaskListModel model(list, 0);
+        Presentation::TaskListModel model(list,
+                                          Domain::TaskRepository::Ptr());
         new ModelTest(&model);
         QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
@@ -178,7 +182,8 @@ private slots:
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
-        Presentation::TaskListModel model(list, 0);
+        Presentation::TaskListModel model(list,
+                                          Domain::TaskRepository::Ptr());
         new ModelTest(&model);
 
         // WHEN
@@ -203,10 +208,10 @@ private slots:
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
-        mock_object<Domain::TaskRepository> repositoryMock;
+        Utils::MockObject<Domain::TaskRepository> repositoryMock;
         repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(0);
 
-        Presentation::TaskListModel model(list, &repositoryMock.getInstance());
+        Presentation::TaskListModel model(list, repositoryMock.getInstance());
         new ModelTest(&model);
         QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
         QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));

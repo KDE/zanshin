@@ -38,34 +38,23 @@ ProjectQueries::ProjectQueries(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
       m_serializer(new Serializer),
-      m_monitor(new MonitorImpl),
-      m_ownInterfaces(true)
+      m_monitor(new MonitorImpl)
 {
-    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(onCollectionSelectionChanged()));
+    connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
+    connect(m_monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(onCollectionSelectionChanged()));
 }
 
-ProjectQueries::ProjectQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor)
+ProjectQueries::ProjectQueries(const StorageInterface::Ptr &storage, const SerializerInterface::Ptr &serializer, const MonitorInterface::Ptr &monitor)
     : m_storage(storage),
       m_serializer(serializer),
-      m_monitor(monitor),
-      m_ownInterfaces(false)
+      m_monitor(monitor)
 {
-    connect(monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
-    connect(monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
-    connect(monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(onCollectionSelectionChanged()));
-}
-
-ProjectQueries::~ProjectQueries()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-        delete m_monitor;
-    }
+    connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
+    connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
+    connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
+    connect(m_monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(onCollectionSelectionChanged()));
 }
 
 ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const

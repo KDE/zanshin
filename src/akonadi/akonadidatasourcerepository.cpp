@@ -32,24 +32,15 @@ using namespace Akonadi;
 DataSourceRepository::DataSourceRepository(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_ownInterfaces(true)
+      m_serializer(new Serializer)
 {
 }
 
-DataSourceRepository::DataSourceRepository(StorageInterface *storage, SerializerInterface *serializer)
+DataSourceRepository::DataSourceRepository(const StorageInterface::Ptr &storage,
+                                           const SerializerInterface::Ptr &serializer)
     : m_storage(storage),
-      m_serializer(serializer),
-      m_ownInterfaces(false)
+      m_serializer(serializer)
 {
-}
-
-DataSourceRepository::~DataSourceRepository()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-    }
 }
 
 KJob *DataSourceRepository::update(Domain::DataSource::Ptr source)

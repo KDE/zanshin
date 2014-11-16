@@ -26,6 +26,9 @@
 
 #include "domain/datasourcerepository.h"
 
+#include "akonadi/akonadiserializer.h"
+#include "akonadi/akonadistorageinterface.h"
+
 namespace Akonadi {
 
 class SerializerInterface;
@@ -38,15 +41,14 @@ public:
     typedef QSharedPointer<DataSourceRepository> Ptr;
 
     explicit DataSourceRepository(QObject *parent = 0);
-    DataSourceRepository(StorageInterface *storage, SerializerInterface *serializer);
-    virtual ~DataSourceRepository();
+    DataSourceRepository(const StorageInterface::Ptr &storage,
+                         const SerializerInterface::Ptr &serializer);
 
     KJob *update(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
 
 private:
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
 };
 
 }

@@ -64,24 +64,23 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
       m_noteSourcesModel(0),
       m_tagQueries(Utils::DependencyManager::globalInstance().create<Domain::TagQueries>()),
-      m_tagRepository(Utils::DependencyManager::globalInstance().create<Domain::TagRepository>()),
-      m_ownInterface(true)
+      m_tagRepository(Utils::DependencyManager::globalInstance().create<Domain::TagRepository>())
 {
     MetaTypes::registerAll();
 }
 
-ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
-                                   Domain::ProjectQueries *projectQueries,
-                                   Domain::ProjectRepository *projectRepository,
-                                   Domain::ContextQueries *contextQueries,
-                                   Domain::ContextRepository *contextRepository,
-                                   Domain::DataSourceQueries *sourceQueries,
-                                   Domain::DataSourceRepository *sourceRepository,
-                                   Domain::TaskQueries *taskQueries,
-                                   Domain::TaskRepository *taskRepository,
-                                   Domain::NoteRepository *noteRepository,
-                                   Domain::TagQueries *tagQueries,
-                                   Domain::TagRepository *tagRepository,
+ApplicationModel::ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                                   const Domain::ProjectQueries::Ptr &projectQueries,
+                                   const Domain::ProjectRepository::Ptr &projectRepository,
+                                   const Domain::ContextQueries::Ptr &contextQueries,
+                                   const Domain::ContextRepository::Ptr &contextRepository,
+                                   const Domain::DataSourceQueries::Ptr &sourceQueries,
+                                   const Domain::DataSourceRepository::Ptr &sourceRepository,
+                                   const Domain::TaskQueries::Ptr &taskQueries,
+                                   const Domain::TaskRepository::Ptr &taskRepository,
+                                   const Domain::NoteRepository::Ptr &noteRepository,
+                                   const Domain::TagQueries::Ptr &tagQueries,
+                                   const Domain::TagRepository::Ptr &tagRepository,
                                    QObject *parent)
     : QObject(parent),
       m_availableSources(0),
@@ -101,28 +100,9 @@ ApplicationModel::ApplicationModel(Domain::ArtifactQueries *artifactQueries,
       m_noteRepository(noteRepository),
       m_noteSourcesModel(0),
       m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository),
-      m_ownInterface(false)
+      m_tagRepository(tagRepository)
 {
     MetaTypes::registerAll();
-}
-
-ApplicationModel::~ApplicationModel()
-{
-    if (m_ownInterface) {
-        delete m_artifactQueries;
-        delete m_projectQueries;
-        delete m_projectRepository;
-        delete m_contextQueries;
-        delete m_contextRepository;
-        delete m_sourceQueries;
-        delete m_sourceRepository;
-        delete m_taskQueries;
-        delete m_taskRepository;
-        delete m_noteRepository;
-        delete m_tagQueries;
-        delete m_tagRepository;
-    }
 }
 
 QAbstractItemModel *ApplicationModel::noteSourcesModel()

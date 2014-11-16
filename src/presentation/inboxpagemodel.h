@@ -27,9 +27,7 @@
 
 #include "presentation/pagemodel.h"
 
-namespace Domain {
-    class ArtifactQueries;
-}
+#include "domain/artifactqueries.h"
 
 namespace Presentation {
 
@@ -37,10 +35,10 @@ class InboxPageModel : public PageModel
 {
     Q_OBJECT
 public:
-    explicit InboxPageModel(Domain::ArtifactQueries *artifactQueries,
-                            Domain::TaskQueries *taskQueries,
-                            Domain::TaskRepository *taskRepository,
-                            Domain::NoteRepository *noteRepository,
+    explicit InboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                            const Domain::TaskQueries::Ptr &taskQueries,
+                            const Domain::TaskRepository::Ptr &taskRepository,
+                            const Domain::NoteRepository::Ptr &noteRepository,
                             QObject *parent = 0);
 
     void addTask(const QString &title);
@@ -49,7 +47,7 @@ public:
 private:
     QAbstractItemModel *createCentralListModel();
 
-    Domain::ArtifactQueries *m_artifactQueries;
+    Domain::ArtifactQueries::Ptr m_artifactQueries;
 };
 
 }

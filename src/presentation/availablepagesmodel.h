@@ -27,25 +27,21 @@
 
 #include <QObject>
 
+#include "domain/artifactqueries.h"
+#include "domain/contextqueries.h"
+#include "domain/contextrepository.h"
 #include "domain/datasource.h"
-#include "domain/queryresult.h"
+#include "domain/noterepository.h"
+#include "domain/projectqueries.h"
+#include "domain/projectrepository.h"
+#include "domain/tagqueries.h"
+#include "domain/tagrepository.h"
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
 
 class QModelIndex;
-
-namespace Domain {
-    class ArtifactQueries;
-    class NoteRepository;
-    class ProjectQueries;
-    class ProjectRepository;
-    class ContextQueries;
-    class ContextRepository;
-    class TaskQueries;
-    class TaskRepository;
-    class TagQueries;
-    class TagRepository;
-}
 
 namespace Presentation {
 
@@ -54,18 +50,17 @@ class AvailablePagesModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
-    explicit AvailablePagesModel(Domain::ArtifactQueries *artifactQueries,
-                                 Domain::ProjectQueries *projectQueries,
-                                 Domain::ProjectRepository *projectRepository,
-                                 Domain::ContextQueries *contextQueries,
-                                 Domain::ContextRepository *contextRepository,
-                                 Domain::TaskQueries *taskQueries,
-                                 Domain::TaskRepository *taskRepository,
-                                 Domain::NoteRepository *noteRepository,
-                                 Domain::TagQueries *tagQueries,
-                                 Domain::TagRepository *tagRepository,
+    explicit AvailablePagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                                 const Domain::ProjectQueries::Ptr &projectQueries,
+                                 const Domain::ProjectRepository::Ptr &projectRepository,
+                                 const Domain::ContextQueries::Ptr &contextQueries,
+                                 const Domain::ContextRepository::Ptr &contextRepository,
+                                 const Domain::TaskQueries::Ptr &taskQueries,
+                                 const Domain::TaskRepository::Ptr &taskRepository,
+                                 const Domain::NoteRepository::Ptr &noteRepository,
+                                 const Domain::TagQueries::Ptr &tagQueries,
+                                 const Domain::TagRepository::Ptr &tagRepository,
                                  QObject *parent = 0);
-    ~AvailablePagesModel();
 
     QAbstractItemModel *pageListModel();
 
@@ -82,21 +77,21 @@ private:
 
     QAbstractItemModel *m_pageListModel;
 
-    Domain::ArtifactQueries *m_artifactQueries;
+    Domain::ArtifactQueries::Ptr m_artifactQueries;
 
-    Domain::ProjectQueries *m_projectQueries;
-    Domain::ProjectRepository *m_projectRepository;
+    Domain::ProjectQueries::Ptr m_projectQueries;
+    Domain::ProjectRepository::Ptr m_projectRepository;
 
-    Domain::ContextQueries *m_contextQueries;
-    Domain::ContextRepository *m_contextRepository;
+    Domain::ContextQueries::Ptr m_contextQueries;
+    Domain::ContextRepository::Ptr m_contextRepository;
 
-    Domain::TaskQueries *m_taskQueries;
-    Domain::TaskRepository *m_taskRepository;
+    Domain::TaskQueries::Ptr m_taskQueries;
+    Domain::TaskRepository::Ptr m_taskRepository;
 
-    Domain::NoteRepository *m_noteRepository;
+    Domain::NoteRepository::Ptr m_noteRepository;
 
-    Domain::TagQueries *m_tagQueries;
-    Domain::TagRepository *m_tagRepository;
+    Domain::TagQueries::Ptr m_tagQueries;
+    Domain::TagRepository::Ptr m_tagRepository;
 
     Domain::QueryResultProvider<QObjectPtr>::Ptr m_rootsProvider;
     QObjectPtr m_inboxObject;

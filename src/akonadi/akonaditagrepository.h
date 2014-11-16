@@ -27,6 +27,9 @@
 
 #include "domain/tagrepository.h"
 
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
 namespace Akonadi {
 
 class SerializerInterface;
@@ -39,8 +42,8 @@ public:
     typedef QSharedPointer<TagRepository> Ptr;
 
     explicit TagRepository(QObject* parent = 0);
-    TagRepository(StorageInterface *storage, SerializerInterface *serializer);
-    virtual ~TagRepository();
+    TagRepository(const StorageInterface::Ptr &storage,
+                  const SerializerInterface::Ptr &serializer);
 
     KJob *create(Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
     KJob *remove(Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
@@ -49,9 +52,8 @@ public:
     KJob *dissociate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child) Q_DECL_OVERRIDE;
 
 private:
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
 };
 }
 #endif // AKONADITAGREPOSITORY_H

@@ -26,12 +26,12 @@
 
 #include "domain/noterepository.h"
 
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
 #include <Akonadi/Collection>
 
 namespace Akonadi {
-
-class SerializerInterface;
-class StorageInterface;
 
 class NoteRepository : public QObject, public Domain::NoteRepository
 {
@@ -40,8 +40,8 @@ public:
     typedef QSharedPointer<NoteRepository> Ptr;
 
     explicit NoteRepository(QObject *parent = 0);
-    NoteRepository(StorageInterface *storage, SerializerInterface *serializer);
-    virtual ~NoteRepository();
+    NoteRepository(const StorageInterface::Ptr &storage,
+                   const SerializerInterface::Ptr &serializer);
 
     bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
     void setDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
@@ -50,9 +50,8 @@ public:
     KJob *remove(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
 
 private:
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
 };
 
 }

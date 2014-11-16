@@ -35,10 +35,10 @@
 
 using namespace Presentation;
 
-InboxPageModel::InboxPageModel(Domain::ArtifactQueries *artifactQueries,
-                               Domain::TaskQueries *taskQueries,
-                               Domain::TaskRepository *taskRepository,
-                               Domain::NoteRepository *noteRepository,
+InboxPageModel::InboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                               const Domain::TaskQueries::Ptr &taskQueries,
+                               const Domain::TaskRepository::Ptr &taskRepository,
+                               const Domain::NoteRepository::Ptr &noteRepository,
                                QObject *parent)
     : PageModel(taskQueries,
                 taskRepository,

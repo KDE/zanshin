@@ -24,16 +24,17 @@
 #ifndef AKONADI_PROJECTQUERIES_H
 #define AKONADI_PROJECTQUERIES_H
 
-#include <KDE/Akonadi/Item>
-
-#include "domain/livequery.h"
 #include "domain/projectqueries.h"
 
-namespace Akonadi {
+#include <KDE/Akonadi/Item>
 
-class MonitorInterface;
-class SerializerInterface;
-class StorageInterface;
+#include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
+#include "domain/livequery.h"
+
+namespace Akonadi {
 
 class ProjectQueries : public QObject, public Domain::ProjectQueries
 {
@@ -50,8 +51,9 @@ public:
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
     explicit ProjectQueries(QObject *parent = 0);
-    ProjectQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
-    virtual ~ProjectQueries();
+    ProjectQueries(const StorageInterface::Ptr &storage,
+                   const SerializerInterface::Ptr &serializer,
+                   const MonitorInterface::Ptr &monitor);
 
     ProjectResult::Ptr findAll() const;
     ArtifactResult::Ptr findTopLevelArtifacts(Domain::Project::Ptr project) const;
@@ -66,10 +68,9 @@ private:
     ProjectQuery::Ptr createProjectQuery();
     ArtifactQuery::Ptr createArtifactQuery();
 
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MonitorInterface *m_monitor;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
 
     ProjectQuery::Ptr m_findAll;
     ProjectQuery::List m_projectQueries;

@@ -36,10 +36,10 @@
 using namespace Presentation;
 
 ProjectPageModel::ProjectPageModel(const Domain::Project::Ptr &project,
-                                   Domain::ProjectQueries *projectQueries,
-                                   Domain::TaskQueries *taskQueries,
-                                   Domain::TaskRepository *taskRepository,
-                                   Domain::NoteRepository *noteRepository,
+                                   const Domain::ProjectQueries::Ptr &projectQueries,
+                                   const Domain::TaskQueries::Ptr &taskQueries,
+                                   const Domain::TaskRepository::Ptr &taskRepository,
+                                   const Domain::NoteRepository::Ptr &noteRepository,
                                    QObject *parent)
     : PageModel(taskQueries,
                 taskRepository,

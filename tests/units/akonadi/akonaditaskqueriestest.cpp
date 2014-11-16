@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "testlib/akonadimocks.h"
 
@@ -70,7 +70,7 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -81,7 +81,7 @@ private slots:
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item3).thenReturn(true);
@@ -91,9 +91,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
         result->data();
         result = queries->findAll(); // Should not cause any problem or wrong data
@@ -139,7 +139,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -148,7 +148,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(false);
 
@@ -159,9 +159,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
 
         // THEN
@@ -187,20 +187,20 @@ private slots:
         MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
         QTest::qWait(150);
@@ -256,7 +256,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -265,7 +265,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item3).thenReturn(true);
@@ -279,10 +279,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
         QTest::qWait(150);
@@ -330,7 +330,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -339,7 +339,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item3).thenReturn(true);
@@ -359,10 +359,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn(QString());
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
         // Even though the pointer didn't change it's convenient to user if we call
@@ -419,14 +419,14 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                            .thenReturn(itemFetchJob1);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
@@ -437,9 +437,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
         result->data();
         result = queries->findChildren(task1); // Should not cause any problem or wrong data
@@ -493,7 +493,7 @@ private slots:
         itemFetchJob22->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                           .thenReturn(itemFetchJob11)
                                                           .thenReturn(itemFetchJob12);
@@ -502,13 +502,13 @@ private slots:
                                                            .thenReturn(itemFetchJob22);
 
         // Serializer mock
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
 
         // The bug we're trying to hit here is the following:
         //  - when findChildren is called the first time a provider is created internally
@@ -547,22 +547,22 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                           .thenReturn(itemFetchJob1);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning if task1 is parent of items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item1).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
         QTest::qWait(150);
@@ -619,14 +619,14 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                            .thenReturn(itemFetchJob1);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
@@ -641,10 +641,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
 
@@ -696,14 +696,14 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                            .thenReturn(itemFetchJob1);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
@@ -720,10 +720,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
         QTest::qWait(150);
@@ -766,14 +766,14 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                            .thenReturn(itemFetchJob1);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
@@ -789,10 +789,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
 
@@ -856,7 +856,7 @@ private slots:
         itemFetchJob4->setItems(Akonadi::Item::List() << item2);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -871,7 +871,7 @@ private slots:
                                                           .thenReturn(itemFetchJob4);
 
         // Serializer mock returning the objects from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task2).thenReturn(item2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
@@ -891,10 +891,10 @@ private slots:
                                                                                      .thenReturn(true);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result1 = queries->findChildren(task1);
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result2 = queries->findChildren(task2);
@@ -937,14 +937,14 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                            .thenReturn(itemFetchJob1);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task3);
@@ -959,10 +959,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
         QTest::qWait(150);
@@ -1012,7 +1012,7 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1023,7 +1023,7 @@ private slots:
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
@@ -1033,9 +1033,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         result->data();
         result = queries->findTopLevel(); // Should not cause any problem or wrong data
@@ -1065,20 +1065,20 @@ private slots:
         MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         QTest::qWait(150);
@@ -1134,7 +1134,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1143,7 +1143,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
@@ -1157,10 +1157,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         QTest::qWait(150);
@@ -1205,7 +1205,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1214,7 +1214,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
         serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(task2, item2).thenReturn();
@@ -1229,10 +1229,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         // Even though the pointer didn't change it's convenient to user if we call
@@ -1287,7 +1287,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1296,7 +1296,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
@@ -1310,10 +1310,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         QTest::qWait(150);
@@ -1359,7 +1359,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1368,7 +1368,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
 
@@ -1382,10 +1382,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         QTest::qWait(150);
@@ -1436,7 +1436,7 @@ private slots:
         itemFetchJob3->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1448,7 +1448,7 @@ private slots:
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the tasks from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task2).thenReturn(item2);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
@@ -1469,10 +1469,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item3).thenReturn(true);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         QTest::qWait(150);
@@ -1521,18 +1521,18 @@ private slots:
         itemFetchJob1->setExpectedError(KJob::KilledJobError);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                            .thenReturn(itemFetchJob1);
 
         // Serializer mock
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
 
         // THEN
@@ -1598,20 +1598,20 @@ private slots:
         QFETCH(bool, deleteQuery);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item1)
                                                            .thenReturn(itemFetchJob1);
         storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
 
         if (deleteQuery)
@@ -1699,7 +1699,7 @@ private slots:
         QFETCH(bool, fechItemsIsCalled);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1708,12 +1708,12 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
 
         if (deleteQuery)
@@ -1805,7 +1805,7 @@ private slots:
         QFETCH(bool, fechItemsIsCalled);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
@@ -1814,12 +1814,12 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
 
         if (deleteQuery)

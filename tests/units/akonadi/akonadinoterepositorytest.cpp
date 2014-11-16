@@ -26,7 +26,7 @@
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 #include "testlib/akonadimocks.h"
 
 #include "akonadi/akonadinoterepository.h"
@@ -54,15 +54,15 @@ private slots:
         auto source = Domain::DataSource::Ptr::create();
 
         // Storage mock sitting here doing nothing
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
 
         // Serializer mock returning the collection for the source
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(col);
 
         // WHEN
-        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
 
         // THEN
         QVERIFY(repository->isDefaultSource(source));
@@ -84,15 +84,15 @@ private slots:
         auto source = Domain::DataSource::Ptr::create();
 
         // Storage mock sitting here doing nothing
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
 
         // Serializer mock returning the collection for the source
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(col);
 
         // WHEN
-        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
 
         // THEN
         QVERIFY(!repository->isDefaultSource(source));
@@ -114,15 +114,15 @@ private slots:
         Akonadi::Collection col(42);
 
         // Storage mock sitting here doing nothing
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
 
         // Serializer mock returning the collection for the source
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(col);
 
         // WHEN
-        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
         repository->setDefaultSource(source);
 
         // THEN
@@ -146,18 +146,18 @@ private slots:
         auto itemCreateJob = new MockAkonadiJob(this);
 
         // Storage mock returning the create job
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::defaultNoteCollection).when().thenReturn(col);
         storageMock(&Akonadi::StorageInterface::createItem).when(item, col)
                                                            .thenReturn(itemCreateJob);
 
         // Serializer mock returning the item for the note
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).thenReturn(item);
 
         // WHEN
-        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
         repository->save(note)->exec();
 
         // THEN
@@ -181,17 +181,17 @@ private slots:
         auto itemModifyJob = new MockAkonadiJob(this);
 
         // Storage mock returning the create job
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the note
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).thenReturn(item);
 
         // WHEN
-        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
         repository->save(note)->exec();
 
         // THEN
@@ -209,17 +209,17 @@ private slots:
         auto itemDeleteJob = new MockAkonadiJob(this);
 
         // Storage mock returning the delete job
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::removeItem).when(item)
                                                            .thenReturn(itemDeleteJob);
 
         // Serializer mock returning the item for the note
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).thenReturn(item);
 
         // WHEN
-        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(&storageMock.getInstance(),
-                                                                                       &serializerMock.getInstance()));
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
         repository->remove(note)->exec();
 
         // THEN

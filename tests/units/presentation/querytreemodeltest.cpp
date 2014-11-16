@@ -26,7 +26,7 @@
 
 #include <QColor>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
@@ -129,7 +129,7 @@ private slots:
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
-        mock_object<Domain::TaskQueries> queryMock;
+        Utils::MockObject<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
@@ -142,7 +142,7 @@ private slots:
             if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
-                return queryMock.getInstance().findChildren(task);
+                return queryMock.getInstance()->findChildren(task);
         };
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::ItemIsSelectable
@@ -238,7 +238,7 @@ private slots:
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
-        mock_object<Domain::TaskQueries> queryMock;
+        Utils::MockObject<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
 
@@ -246,7 +246,7 @@ private slots:
             if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
-                return queryMock.getInstance().findChildren(task);
+                return queryMock.getInstance()->findChildren(task);
         };
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::ItemIsSelectable
@@ -307,7 +307,7 @@ private slots:
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
-        mock_object<Domain::TaskQueries> queryMock;
+        Utils::MockObject<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
@@ -318,7 +318,7 @@ private slots:
             if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
-                return queryMock.getInstance().findChildren(task);
+                return queryMock.getInstance()->findChildren(task);
         };
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::ItemIsSelectable
@@ -376,7 +376,7 @@ private slots:
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
-        mock_object<Domain::TaskQueries> queryMock;
+        Utils::MockObject<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
@@ -388,7 +388,7 @@ private slots:
             if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
-                return queryMock.getInstance().findChildren(task);
+                return queryMock.getInstance()->findChildren(task);
         };
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::ItemIsSelectable
@@ -479,7 +479,7 @@ private slots:
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
-        mock_object<Domain::TaskQueries> queryMock;
+        Utils::MockObject<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
@@ -492,7 +492,7 @@ private slots:
             if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
-                return queryMock.getInstance().findChildren(task);
+                return queryMock.getInstance()->findChildren(task);
         };
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::ItemIsSelectable
@@ -548,7 +548,7 @@ private slots:
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
 
-        mock_object<Domain::TaskQueries> queryMock;
+        Utils::MockObject<Domain::TaskQueries> queryMock;
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
@@ -561,7 +561,7 @@ private slots:
             if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
-                return queryMock.getInstance().findChildren(task);
+                return queryMock.getInstance()->findChildren(task);
         };
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::ItemIsSelectable
@@ -618,7 +618,7 @@ private slots:
         auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto emptyList = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
             
-        mock_object<Domain::TaskQueries> queryMock; 
+        Utils::MockObject<Domain::TaskQueries> queryMock; 
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(2)).thenReturn(emptyList);
@@ -626,14 +626,14 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(1)).thenReturn(emptyList);
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
 
-        mock_object<Domain::TaskRepository> repositoryMock;
+        Utils::MockObject<Domain::TaskRepository> repositoryMock;
         repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(0);
 
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
-                return queryMock.getInstance().findChildren(task);
+                return queryMock.getInstance()->findChildren(task);
         };
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::ItemIsSelectable
@@ -662,7 +662,7 @@ private slots:
                 task->setDone(value.toInt() == Qt::Checked);
             }
 
-            repositoryMock.getInstance().update(task);
+            repositoryMock.getInstance()->update(task);
             return true;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);

@@ -26,10 +26,10 @@
 
 #include "domain/projectrepository.h"
 
-namespace Akonadi {
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
 
-class SerializerInterface;
-class StorageInterface;
+namespace Akonadi {
 
 class ProjectRepository : public QObject, public Domain::ProjectRepository
 {
@@ -38,8 +38,8 @@ public:
     typedef QSharedPointer<ProjectRepository> Ptr;
 
     explicit ProjectRepository(QObject *parent = 0);
-    ProjectRepository(StorageInterface *storage, SerializerInterface *serializer);
-    virtual ~ProjectRepository();
+    ProjectRepository(const StorageInterface::Ptr &storage,
+                      const SerializerInterface::Ptr &serializer);
 
     KJob *create(Domain::Project::Ptr project, Domain::DataSource::Ptr source);
     KJob *update(Domain::Project::Ptr project);
@@ -49,9 +49,8 @@ public:
     KJob *dissociate(Domain::Artifact::Ptr child);
 
 private:
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
 };
 
 }

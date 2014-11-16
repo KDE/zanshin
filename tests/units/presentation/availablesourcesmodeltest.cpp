@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/datasourcequeries.h"
 #include "domain/datasourcerepository.h"
@@ -81,17 +81,17 @@ private slots:
         auto source4Result = Domain::QueryResult<Domain::DataSource::Ptr>::create(source4Provider);
 
 
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findTopLevel).when().thenReturn(topLevelResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source1).thenReturn(source1Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source2).thenReturn(source2Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source3).thenReturn(source3Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source4).thenReturn(source4Result);
 
-        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
 
-        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
-                                                    &sourceRepositoryMock.getInstance(),
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance(),
                                                     0);
 
         // WHEN
@@ -192,17 +192,17 @@ private slots:
         auto source4Provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
         auto source4Result = Domain::QueryResult<Domain::DataSource::Ptr>::create(source4Provider);
 
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findSearchTopLevel).when().thenReturn(topLevelResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findSearchChildren).when(source1).thenReturn(source1Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findSearchChildren).when(source2).thenReturn(source2Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findSearchChildren).when(source3).thenReturn(source3Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findSearchChildren).when(source4).thenReturn(source4Result);
 
-        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
 
-        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
-                                                    &sourceRepositoryMock.getInstance(),
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance(),
                                                     0);
 
         // WHEN
@@ -264,13 +264,13 @@ private slots:
         source->setListStatus(Domain::DataSource::Unlisted);
 
 
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
 
-        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(new FakeJob(this));
 
-        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
-                                                    &sourceRepositoryMock.getInstance());
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance());
 
         // WHEN
         sources.listSource(source);
@@ -293,13 +293,13 @@ private slots:
         source->setListStatus(Domain::DataSource::Bookmarked);
 
 
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
 
-        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(new FakeJob(this));
 
-        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
-                                                    &sourceRepositoryMock.getInstance());
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance());
 
         // WHEN
         sources.unlistSource(source);
@@ -337,13 +337,13 @@ private slots:
             source->setListStatus(Domain::DataSource::Listed);
 
 
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
 
-        mock_object<Domain::DataSourceRepository> sourceRepositoryMock;
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(new FakeJob(this));
 
-        Presentation::AvailableSourcesModel sources(&sourceQueriesMock.getInstance(),
-                                                    &sourceRepositoryMock.getInstance());
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance());
 
         // WHEN
         sources.bookmarkSource(source);

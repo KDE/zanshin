@@ -47,16 +47,16 @@
 
 using namespace Presentation;
 
-AvailablePagesModel::AvailablePagesModel(Domain::ArtifactQueries *artifactQueries,
-                                         Domain::ProjectQueries *projectQueries,
-                                         Domain::ProjectRepository *projectRepository,
-                                         Domain::ContextQueries *contextQueries,
-                                         Domain::ContextRepository *contextRepository,
-                                         Domain::TaskQueries *taskQueries,
-                                         Domain::TaskRepository *taskRepository,
-                                         Domain::NoteRepository *noteRepository,
-                                         Domain::TagQueries *tagQueries,
-                                         Domain::TagRepository *tagRepository,
+AvailablePagesModel::AvailablePagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                                         const Domain::ProjectQueries::Ptr &projectQueries,
+                                         const Domain::ProjectRepository::Ptr &projectRepository,
+                                         const Domain::ContextQueries::Ptr &contextQueries,
+                                         const Domain::ContextRepository::Ptr &contextRepository,
+                                         const Domain::TaskQueries::Ptr &taskQueries,
+                                         const Domain::TaskRepository::Ptr &taskRepository,
+                                         const Domain::NoteRepository::Ptr &noteRepository,
+                                         const Domain::TagQueries::Ptr &tagQueries,
+                                         const Domain::TagRepository::Ptr &tagRepository,
                                          QObject *parent)
     : QObject(parent),
       m_pageListModel(0),
@@ -70,10 +70,6 @@ AvailablePagesModel::AvailablePagesModel(Domain::ArtifactQueries *artifactQuerie
       m_noteRepository(noteRepository),
       m_tagQueries(tagQueries),
       m_tagRepository(tagRepository)
-{
-}
-
-AvailablePagesModel::~AvailablePagesModel()
 {
 }
 

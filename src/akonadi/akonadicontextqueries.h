@@ -25,16 +25,17 @@
 #ifndef AKONADI_CONTEXTQUERIES_H
 #define AKONADI_CONTEXTQUERIES_H
 
+#include "domain/contextqueries.h"
+
 #include <Akonadi/Item>
 
-#include "domain/contextqueries.h"
+#include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
 #include "domain/livequery.h"
 
 namespace Akonadi {
-
-class MonitorInterface;
-class SerializerInterface;
-class StorageInterface;
 
 class ContextQueries : public QObject, public Domain::ContextQueries
 {
@@ -51,8 +52,9 @@ public:
     typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
 
     explicit ContextQueries(QObject *parent = 0);
-    ContextQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
-    virtual ~ContextQueries();
+    ContextQueries(const StorageInterface::Ptr &storage,
+                   const SerializerInterface::Ptr &serializer,
+                   const MonitorInterface::Ptr &monitor);
 
 
     ContextResult::Ptr findAll() const;
@@ -71,10 +73,9 @@ private:
     ContextQuery::Ptr createContextQuery();
     TaskQuery::Ptr createTaskQuery();
 
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MonitorInterface *m_monitor;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
 
     ContextQuery::Ptr m_findAll;
     ContextQuery::List m_contextQueries;

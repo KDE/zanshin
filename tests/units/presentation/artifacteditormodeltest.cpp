@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include <QSignalSpy>
 
@@ -45,7 +45,10 @@ private slots:
     void shouldHaveEmptyDefaultState()
     {
         // GIVEN
-        Presentation::ArtifactEditorModel model(0, 0);
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        Presentation::ArtifactEditorModel model(taskRepository,
+                                                noteRepository);
 
         // WHEN
         // Nothing
@@ -64,7 +67,10 @@ private slots:
     void shouldHaveTaskProperties()
     {
         // GIVEN
-        Presentation::ArtifactEditorModel model(0, 0);
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        Presentation::ArtifactEditorModel model(taskRepository,
+                                                noteRepository);
         QSignalSpy textSpy(&model, SIGNAL(textChanged(QString)));
         QSignalSpy titleSpy(&model, SIGNAL(titleChanged(QString)));
         QSignalSpy doneSpy(&model, SIGNAL(doneChanged(bool)));
@@ -120,7 +126,10 @@ private slots:
     void shouldHaveNoteProperties()
     {
         // GIVEN
-        Presentation::ArtifactEditorModel model(0, 0);
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        Presentation::ArtifactEditorModel model(taskRepository,
+                                                noteRepository);
         QSignalSpy textSpy(&model, SIGNAL(textChanged(QString)));
         QSignalSpy titleSpy(&model, SIGNAL(titleChanged(QString)));
         QSignalSpy doneSpy(&model, SIGNAL(doneChanged(bool)));
@@ -217,7 +226,10 @@ private slots:
         QFETCH(QVariant, propertyValue);
         QFETCH(QByteArray, signal);
 
-        Presentation::ArtifactEditorModel model(0, 0);
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        Presentation::ArtifactEditorModel model(taskRepository,
+                                                noteRepository);
         model.setArtifact(artifact);
         QSignalSpy spy(&model, signal.constData());
 
@@ -234,7 +246,10 @@ private slots:
     {
         // GIVEN
         auto task = Domain::Task::Ptr::create();
-        Presentation::ArtifactEditorModel model(0, 0);
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        Presentation::ArtifactEditorModel model(taskRepository,
+                                                noteRepository);
         model.setArtifact(task);
         QSignalSpy spy(&model, SIGNAL(delegateTextChanged(QString)));
 
@@ -263,13 +278,13 @@ private slots:
         auto task = artifact.objectCast<Domain::Task>();
         auto note = artifact.objectCast<Domain::Note>();
 
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
 
-        Presentation::ArtifactEditorModel model(&taskRepositoryMock.getInstance(),
-                                                &noteRepositoryMock.getInstance());
+        Presentation::ArtifactEditorModel model(taskRepositoryMock.getInstance(),
+                                                noteRepositoryMock.getInstance());
         model.setArtifact(artifact);
         QSignalSpy spy(&model, signal.constData());
 
@@ -312,13 +327,13 @@ private slots:
         auto task = artifact.objectCast<Domain::Task>();
         auto note = artifact.objectCast<Domain::Note>();
 
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
 
-        Presentation::ArtifactEditorModel model(&taskRepositoryMock.getInstance(),
-                                                &noteRepositoryMock.getInstance());
+        Presentation::ArtifactEditorModel model(taskRepositoryMock.getInstance(),
+                                                noteRepositoryMock.getInstance());
         model.setArtifact(artifact);
         QSignalSpy spy(&model, signal.constData());
 
@@ -372,13 +387,13 @@ private slots:
         auto task = artifact.objectCast<Domain::Task>();
         auto note = artifact.objectCast<Domain::Note>();
 
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
 
-        auto model = new Presentation::ArtifactEditorModel(&taskRepositoryMock.getInstance(),
-                                                           &noteRepositoryMock.getInstance());
+        auto model = new Presentation::ArtifactEditorModel(taskRepositoryMock.getInstance(),
+                                                           noteRepositoryMock.getInstance());
         model->setArtifact(artifact);
         QSignalSpy spy(model, signal.constData());
 
@@ -411,10 +426,11 @@ private slots:
         auto task = Domain::Task::Ptr::create();
         auto expectedDelegate = Domain::Task::Delegate("John Doe", "john@doe.com");
 
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::delegate).when(task, expectedDelegate).thenReturn(new FakeJob(this));
 
-        Presentation::ArtifactEditorModel model(&taskRepositoryMock.getInstance(), 0);
+        Presentation::ArtifactEditorModel model(taskRepositoryMock.getInstance(),
+                                                Domain::NoteRepository::Ptr());
         model.setArtifact(task);
 
         // WHEN

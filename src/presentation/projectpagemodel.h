@@ -27,12 +27,7 @@
 
 #include "presentation/pagemodel.h"
 
-#include "domain/project.h"
-
-namespace Domain
-{
-    class ProjectQueries;
-}
+#include "domain/projectqueries.h"
 
 namespace Presentation {
 
@@ -41,10 +36,10 @@ class ProjectPageModel : public PageModel
     Q_OBJECT
 public:
     explicit ProjectPageModel(const Domain::Project::Ptr &project,
-                              Domain::ProjectQueries *projectQueries,
-                              Domain::TaskQueries *taskQueries,
-                              Domain::TaskRepository *taskRepository,
-                              Domain::NoteRepository *noteRepository,
+                              const Domain::ProjectQueries::Ptr &projectQueries,
+                              const Domain::TaskQueries::Ptr &taskQueries,
+                              const Domain::TaskRepository::Ptr &taskRepository,
+                              const Domain::NoteRepository::Ptr &noteRepository,
                               QObject *parent = 0);
 
     Domain::Project::Ptr project() const;
@@ -55,7 +50,7 @@ public:
 private:
     QAbstractItemModel *createCentralListModel();
 
-    Domain::ProjectQueries *m_projectQueries;
+    Domain::ProjectQueries::Ptr m_projectQueries;
     Domain::Project::Ptr m_project;
 };
 

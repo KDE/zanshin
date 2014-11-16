@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
@@ -83,30 +83,30 @@ private slots:
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
         Domain::Artifact::Ptr noteToDrop(new Domain::Note);
 
-        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
-        mock_object<Domain::ProjectRepository> projectRepositoryMock;
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        mock_object<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        mock_object<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        mock_object<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(0,
-                                                &projectQueriesMock.getInstance(),
-                                                &projectRepositoryMock.getInstance(),
-                                                &contextQueriesMock.getInstance(),
-                                                &contextRepositoryMock.getInstance(),
-                                                0,
-                                                &taskRepositoryMock.getInstance(),
-                                                0,
-                                                &tagQueriesMock.getInstance(),
-                                                0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                taskRepositoryMock.getInstance(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -302,30 +302,30 @@ private slots:
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
 
         // context mocking
-        mock_object<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        mock_object<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
         // projects mocking
-        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
-        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        mock_object<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(0,
-                                                &projectQueriesMock.getInstance(),
-                                                &projectRepositoryMock.getInstance(),
-                                                &contextQueriesMock.getInstance(),
-                                                &contextRepositoryMock.getInstance(),
-                                                0,
-                                                0,
-                                                0,
-                                                &tagQueriesMock.getInstance(),
-                                                0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -360,29 +360,29 @@ private slots:
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
 
         // projects mocking
-        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
-        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
         // contexts mocking
-        mock_object<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
         // tags mocking
-        mock_object<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(0,
-                                                &projectQueriesMock.getInstance(),
-                                                &projectRepositoryMock.getInstance(),
-                                                &contextQueriesMock.getInstance(),
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                &tagQueriesMock.getInstance(),
-                                                0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                Domain::ContextRepository::Ptr(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -426,32 +426,32 @@ private slots:
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
 
         // contexts mocking
-        mock_object<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        mock_object<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
         // projects mocking
-        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
-        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
         // tags mocking
-        mock_object<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
 
-        Presentation::AvailablePagesModel pages(0,
-                                                &projectQueriesMock.getInstance(),
-                                                &projectRepositoryMock.getInstance(),
-                                                &contextQueriesMock.getInstance(),
-                                                &contextRepositoryMock.getInstance(),
-                                                0,
-                                                0,
-                                                0,
-                                                &tagQueriesMock.getInstance(),
-                                                0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -478,14 +478,21 @@ private slots:
 
         auto source = Domain::DataSource::Ptr::create();
 
-        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
         projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailablePagesModel pages(0, 0,
-                                                &projectRepositoryMock.getInstance(),
-                                                0, 0, 0, 0, 0, 0, 0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                Domain::ProjectQueries::Ptr(),
+                                                projectRepositoryMock.getInstance(),
+                                                Domain::ContextQueries::Ptr(),
+                                                Domain::ContextRepository::Ptr(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                Domain::TagQueries::Ptr(),
+                                                Domain::TagRepository::Ptr());
 
         // WHEN
         pages.addProject("Foo", source);
@@ -500,13 +507,20 @@ private slots:
     {
         // GIVEN
 
-        mock_object<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailablePagesModel pages(0, 0, 0, 0,
-                                                &contextRepositoryMock.getInstance(),
-                                                0, 0, 0, 0, 0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                Domain::ProjectQueries::Ptr(),
+                                                Domain::ProjectRepository::Ptr(),
+                                                Domain::ContextQueries::Ptr(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                Domain::TagQueries::Ptr(),
+                                                Domain::TagRepository::Ptr());
 
         // WHEN
         pages.addContext("Foo");
@@ -520,11 +534,20 @@ private slots:
     {
         // GIVEN
 
-        mock_object<Domain::TagRepository> tagRepositoryMock;
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
         tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailablePagesModel pages(0, 0, 0, 0, 0, 0, 0, 0, 0, &tagRepositoryMock.getInstance());
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                Domain::ProjectQueries::Ptr(),
+                                                Domain::ProjectRepository::Ptr(),
+                                                Domain::ContextQueries::Ptr(),
+                                                Domain::ContextRepository::Ptr(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                Domain::TagQueries::Ptr(),
+                                                tagRepositoryMock.getInstance());
 
         // WHEN
         pages.addTag("Foo");
@@ -556,27 +579,27 @@ private slots:
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
 
-        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
-        mock_object<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        mock_object<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        mock_object<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(0,
-                                                &projectQueriesMock.getInstance(),
-                                                &projectRepositoryMock.getInstance(),
-                                                &contextQueriesMock.getInstance(),
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                &tagQueriesMock.getInstance(),
-                                                0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                Domain::ContextRepository::Ptr(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 
@@ -607,33 +630,33 @@ private slots:
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
 
         // contexts mocking
-        mock_object<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
         // Empty tag provider
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
 
-        mock_object<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
         // projects mocking
-        mock_object<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
-        mock_object<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
 
-        Presentation::AvailablePagesModel pages(0,
-                                                &projectQueriesMock.getInstance(),
-                                                0,
-                                                &contextQueriesMock.getInstance(),
-                                                &contextRepositoryMock.getInstance(),
-                                                0,
-                                                0,
-                                                0,
-                                                &tagQueriesMock.getInstance(),
-                                                0);
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                Domain::ProjectRepository::Ptr(),
+                                                contextQueriesMock.getInstance(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 

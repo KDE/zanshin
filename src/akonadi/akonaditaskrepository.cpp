@@ -42,26 +42,17 @@ TaskRepository::TaskRepository(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
       m_serializer(new Serializer),
-      m_messaging(new Messaging),
-      m_ownInterfaces(true)
+      m_messaging(new Messaging)
 {
 }
 
-TaskRepository::TaskRepository(StorageInterface *storage, SerializerInterface *serializer, MessagingInterface *messaging)
+TaskRepository::TaskRepository(const StorageInterface::Ptr &storage,
+                               const SerializerInterface::Ptr &serializer,
+                               const MessagingInterface::Ptr &messaging)
     : m_storage(storage),
       m_serializer(serializer),
-      m_messaging(messaging),
-      m_ownInterfaces(false)
+      m_messaging(messaging)
 {
-}
-
-TaskRepository::~TaskRepository()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-        delete m_messaging;
-    }
 }
 
 bool TaskRepository::isDefaultSource(Domain::DataSource::Ptr source) const

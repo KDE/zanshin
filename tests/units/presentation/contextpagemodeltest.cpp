@@ -24,7 +24,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/context.h"
 #include "domain/task.h"
@@ -66,20 +66,20 @@ private slots:
         taskProvider->append(childTask);
         //FIXME : for now findTopLevelTasks(context) returns all tasks associated not just top level ones
 
-        mock_object<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
-        mock_object<Domain::ContextRepository> contextRepositoryMock;
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ContextPageModel page(context,
-                                            &contextQueriesMock.getInstance(),
-                                            &taskQueriesMock.getInstance(),
-                                            &taskRepositoryMock.getInstance(),
-                                            &noteRepositoryMock.getInstance());
+                                            contextQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = page.centralListModel();
@@ -202,23 +202,23 @@ private slots:
         auto context = Domain::Context::Ptr::create();
 
         // ... in fact we won't list any model
-        mock_object<Domain::ContextQueries> contextQueriesMock;
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // Nor create notes...
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         // We'll gladly create a task though
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
                                                                           any<Domain::Context::Ptr>())
                                                                     .thenReturn(new FakeJob(this));
 
         Presentation::ContextPageModel page(context,
-                                            &contextQueriesMock.getInstance(),
-                                            &taskQueriesMock.getInstance(),
-                                            &taskRepositoryMock.getInstance(),
-                                            &noteRepositoryMock.getInstance());
+                                            contextQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
 
         // WHEN
         page.addTask("New task");

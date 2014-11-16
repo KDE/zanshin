@@ -27,16 +27,12 @@
 
 #include <QObject>
 
-#include "domain/datasource.h"
+#include "domain/datasourcequeries.h"
+#include "domain/datasourcerepository.h"
 
 #include "presentation/metatypes.h"
 
 class QModelIndex;
-
-namespace Domain {
-    class DataSourceQueries;
-    class DataSourceRepository;
-}
 
 namespace Presentation {
 
@@ -47,10 +43,9 @@ class AvailableSourcesModel : public QObject
     Q_PROPERTY(QAbstractItemModel* searchListModel READ searchListModel)
     Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm NOTIFY searchTermChanged)
 public:
-    explicit AvailableSourcesModel(Domain::DataSourceQueries *dataSourceQueries,
-                                   Domain::DataSourceRepository *dataSourceRepository,
+    explicit AvailableSourcesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
+                                   const Domain::DataSourceRepository::Ptr &dataSourceRepository,
                                    QObject *parent = 0);
-    ~AvailableSourcesModel();
 
     QAbstractItemModel *sourceListModel();
     QAbstractItemModel *searchListModel();
@@ -73,8 +68,8 @@ private:
     QAbstractItemModel *m_sourceListModel;
     QAbstractItemModel *m_searchListModel;
 
-    Domain::DataSourceQueries *m_dataSourceQueries;
-    Domain::DataSourceRepository *m_dataSourceRepository;
+    Domain::DataSourceQueries::Ptr m_dataSourceQueries;
+    Domain::DataSourceRepository::Ptr m_dataSourceRepository;
 };
 
 }

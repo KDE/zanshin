@@ -27,15 +27,13 @@
 
 #include <QObject>
 
+#include "domain/noterepository.h"
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
+
 #include "presentation/metatypes.h"
 
 class QModelIndex;
-
-namespace Domain {
-    class NoteRepository;
-    class TaskQueries;
-    class TaskRepository;
-}
 
 namespace Presentation {
 
@@ -44,9 +42,9 @@ class PageModel : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
-    explicit PageModel(Domain::TaskQueries *taskQueries,
-                       Domain::TaskRepository *taskRepository,
-                       Domain::NoteRepository *noteRepository,
+    explicit PageModel(const Domain::TaskQueries::Ptr &taskQueries,
+                       const Domain::TaskRepository::Ptr &taskRepository,
+                       const Domain::NoteRepository::Ptr &noteRepository,
                        QObject *parent = 0);
 
     QAbstractItemModel *centralListModel();
@@ -56,20 +54,20 @@ public slots:
     virtual void removeItem(const QModelIndex &index) = 0;
 
 protected:
-    Domain::TaskQueries *taskQueries() const;
+    Domain::TaskQueries::Ptr taskQueries() const;
 
-    Domain::TaskRepository *taskRepository() const;
-    Domain::NoteRepository *noteRepository() const;
+    Domain::TaskRepository::Ptr taskRepository() const;
+    Domain::NoteRepository::Ptr noteRepository() const;
 
 private:
     virtual QAbstractItemModel *createCentralListModel() = 0;
 
     QAbstractItemModel *m_centralListModel;
 
-    Domain::TaskQueries *m_taskQueries;
+    Domain::TaskQueries::Ptr m_taskQueries;
 
-    Domain::TaskRepository *m_taskRepository;
-    Domain::NoteRepository *m_noteRepository;
+    Domain::TaskRepository::Ptr m_taskRepository;
+    Domain::NoteRepository::Ptr m_noteRepository;
 };
 
 }

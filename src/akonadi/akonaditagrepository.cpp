@@ -36,24 +36,15 @@ using namespace Akonadi;
 TagRepository::TagRepository(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_ownInterfaces(true)
+      m_serializer(new Serializer)
 {
 }
 
-TagRepository::TagRepository(StorageInterface *storage, SerializerInterface *serializer)
+TagRepository::TagRepository(const StorageInterface::Ptr &storage,
+                             const SerializerInterface::Ptr &serializer)
     : m_storage(storage),
-      m_serializer(serializer),
-      m_ownInterfaces(false)
+      m_serializer(serializer)
 {
-}
-
-TagRepository::~TagRepository()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-    }
 }
 
 KJob *TagRepository::create(Domain::Tag::Ptr tag)

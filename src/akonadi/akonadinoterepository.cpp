@@ -36,24 +36,15 @@ using namespace Akonadi;
 NoteRepository::NoteRepository(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_ownInterfaces(true)
+      m_serializer(new Serializer)
 {
 }
 
-NoteRepository::NoteRepository(StorageInterface *storage, SerializerInterface *serializer)
+NoteRepository::NoteRepository(const StorageInterface::Ptr &storage,
+                               const SerializerInterface::Ptr &serializer)
     : m_storage(storage),
-      m_serializer(serializer),
-      m_ownInterfaces(false)
+      m_serializer(serializer)
 {
-}
-
-NoteRepository::~NoteRepository()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-    }
 }
 
 bool NoteRepository::isDefaultSource(Domain::DataSource::Ptr source) const

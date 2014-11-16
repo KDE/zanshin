@@ -26,9 +26,9 @@
 
 using namespace Presentation;
 
-PageModel::PageModel(Domain::TaskQueries *taskQueries,
-                     Domain::TaskRepository *taskRepository,
-                     Domain::NoteRepository *noteRepository,
+PageModel::PageModel(const Domain::TaskQueries::Ptr &taskQueries,
+                     const Domain::TaskRepository::Ptr &taskRepository,
+                     const Domain::NoteRepository::Ptr &noteRepository,
                      QObject *parent)
     : QObject(parent),
       m_centralListModel(0),
@@ -45,17 +45,17 @@ QAbstractItemModel *PageModel::centralListModel()
     return m_centralListModel;
 }
 
-Domain::TaskQueries *PageModel::taskQueries() const
+Domain::TaskQueries::Ptr PageModel::taskQueries() const
 {
     return m_taskQueries;
 }
 
-Domain::TaskRepository *PageModel::taskRepository() const
+Domain::TaskRepository::Ptr PageModel::taskRepository() const
 {
     return m_taskRepository;
 }
 
-Domain::NoteRepository *PageModel::noteRepository() const
+Domain::NoteRepository::Ptr PageModel::noteRepository() const
 {
     return m_noteRepository;
 }

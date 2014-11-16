@@ -33,8 +33,8 @@
 
 using namespace Presentation;
 
-ArtifactEditorModel::ArtifactEditorModel(Domain::TaskRepository *taskRepository,
-                                         Domain::NoteRepository *noteRepository,
+ArtifactEditorModel::ArtifactEditorModel(const Domain::TaskRepository::Ptr &taskRepository,
+                                         const Domain::NoteRepository::Ptr &noteRepository,
                                          QObject *parent)
     : QObject(parent),
       m_taskRepository(taskRepository),

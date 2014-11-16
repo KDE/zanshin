@@ -35,24 +35,15 @@ using namespace Akonadi;
 ProjectRepository::ProjectRepository(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_ownInterfaces(true)
+      m_serializer(new Serializer)
 {
 }
 
-ProjectRepository::ProjectRepository(StorageInterface *storage, SerializerInterface *serializer)
+ProjectRepository::ProjectRepository(const StorageInterface::Ptr &storage,
+                                     const SerializerInterface::Ptr &serializer)
     : m_storage(storage),
-      m_serializer(serializer),
-      m_ownInterfaces(false)
+      m_serializer(serializer)
 {
-}
-
-ProjectRepository::~ProjectRepository()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-    }
 }
 
 KJob *ProjectRepository::create(Domain::Project::Ptr project, Domain::DataSource::Ptr source)

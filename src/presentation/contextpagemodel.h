@@ -27,11 +27,7 @@
 
 #include "presentation/pagemodel.h"
 
-#include "domain/context.h"
-
-namespace Domain {
-    class ContextQueries;
-}
+#include "domain/contextqueries.h"
 
 namespace Presentation {
 
@@ -40,10 +36,10 @@ class ContextPageModel : public PageModel
     Q_OBJECT
 public:
     explicit ContextPageModel(const Domain::Context::Ptr &context,
-                              Domain::ContextQueries *contextQueries,
-                              Domain::TaskQueries *taskQueries,
-                              Domain::TaskRepository *taskRepository,
-                              Domain::NoteRepository *noteRepository,
+                              const Domain::ContextQueries::Ptr &contextQueries,
+                              const Domain::TaskQueries::Ptr &taskQueries,
+                              const Domain::TaskRepository::Ptr &taskRepository,
+                              const Domain::NoteRepository::Ptr &noteRepository,
                               QObject *parent = 0);
 
     Domain::Context::Ptr context() const;
@@ -55,7 +51,7 @@ private:
     QAbstractItemModel *createCentralListModel();
 
     Domain::Context::Ptr m_context;
-    Domain::ContextQueries *m_contextQueries;
+    Domain::ContextQueries::Ptr m_contextQueries;
 };
 
 }

@@ -24,7 +24,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/noterepository.h"
 #include "domain/tagqueries.h"
@@ -67,21 +67,21 @@ private slots:
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
         taskProvider->append(childTask);
 
-        mock_object<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
 
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::TagPageModel page(tag,
-                                        &tagQueriesMock.getInstance(),
-                                        &taskQueriesMock.getInstance(),
-                                        &taskRepositoryMock.getInstance(),
-                                        &noteRepositoryMock.getInstance());
+                                        tagQueriesMock.getInstance(),
+                                        taskQueriesMock.getInstance(),
+                                        taskRepositoryMock.getInstance(),
+                                        noteRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = page.centralListModel();
@@ -207,23 +207,23 @@ private slots:
         auto tag = Domain::Tag::Ptr::create();
 
         // ... in fact we won't list any model
-        mock_object<Domain::TagQueries> tagQueriesMock;
-        mock_object<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // Nor create notes...
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         // We'll gladly create a task though
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::createInTag).when(any<Domain::Task::Ptr>(),
                                                                           any<Domain::Tag::Ptr>())
                                                                     .thenReturn(new FakeJob(this));
 
         Presentation::TagPageModel page(tag,
-                                        &tagQueriesMock.getInstance(),
-                                        &taskQueriesMock.getInstance(),
-                                        &taskRepositoryMock.getInstance(),
-                                        &noteRepositoryMock.getInstance());
+                                        tagQueriesMock.getInstance(),
+                                        taskQueriesMock.getInstance(),
+                                        taskRepositoryMock.getInstance(),
+                                        noteRepositoryMock.getInstance());
 
         // WHEN
         page.addTask("New task");

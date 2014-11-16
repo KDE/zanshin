@@ -27,10 +27,10 @@
 
 #include "domain/contextrepository.h"
 
-namespace Akonadi {
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
 
-class SerializerInterface;
-class StorageInterface;
+namespace Akonadi {
 
 class ContextRepository : public QObject, public Domain::ContextRepository
 {
@@ -39,8 +39,8 @@ public:
     typedef QSharedPointer<ContextRepository> Ptr;
 
     explicit ContextRepository(QObject *parent = 0);
-    ContextRepository(StorageInterface *storage, SerializerInterface *serializer);
-    virtual ~ContextRepository();
+    ContextRepository(const StorageInterface::Ptr &storage,
+                      const SerializerInterface::Ptr &serializer);
 
     KJob *create(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
     KJob *update(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
@@ -51,10 +51,8 @@ public:
     KJob *dissociateAll(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
 
 private:
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    bool m_ownInterfaces;
-
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
 };
 
 }

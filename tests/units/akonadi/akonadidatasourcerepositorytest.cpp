@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 #include "testlib/akonadimocks.h"
 
 #include "akonadi/akonadidatasourcerepository.h"
@@ -50,17 +50,17 @@ private slots:
         auto collectionModifyJob = new MockAkonadiJob(this);
 
         // Storage mock returning the create job
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, 0)
                                                                  .thenReturn(collectionModifyJob);
 
         // Serializer mock returning the item for the project
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(collection);
 
         // WHEN
-        QScopedPointer<Akonadi::DataSourceRepository> repository(new Akonadi::DataSourceRepository(&storageMock.getInstance(),
-                                                                                                   &serializerMock.getInstance()));
+        QScopedPointer<Akonadi::DataSourceRepository> repository(new Akonadi::DataSourceRepository(storageMock.getInstance(),
+                                                                                                   serializerMock.getInstance()));
         repository->update(source)->exec();
 
         // THEN

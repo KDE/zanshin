@@ -27,15 +27,17 @@
 
 #include <QObject>
 
-#include "domain/livequery.h"
 #include "domain/notequeries.h"
+
+#include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
+#include "domain/livequery.h"
 
 namespace Akonadi {
 
 class Item;
-class MonitorInterface;
-class SerializerInterface;
-class StorageInterface;
 
 class NoteQueries : public QObject, public Domain::NoteQueries
 {
@@ -48,8 +50,9 @@ public:
     typedef Domain::QueryResult<Domain::Note::Ptr> NoteResult;
 
     NoteQueries();
-    NoteQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
-    virtual ~NoteQueries();
+    NoteQueries(const StorageInterface::Ptr &storage,
+                const SerializerInterface::Ptr &serializer,
+                const MonitorInterface::Ptr &monitor);
 
     NoteResult::Ptr findAll() const;
 
@@ -61,10 +64,9 @@ private slots:
 private:
     NoteQuery::Ptr createNoteQuery();
 
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MonitorInterface *m_monitor;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
 
     NoteQuery::Ptr m_findAll;
     NoteQuery::List m_noteQueries;

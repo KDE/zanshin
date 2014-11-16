@@ -32,7 +32,10 @@ class FakePageModel : public Presentation::PageModel
     Q_OBJECT
 public:
     explicit FakePageModel(QObject *parent = 0)
-        : Presentation::PageModel(0, 0, 0, parent),
+        : Presentation::PageModel(Domain::TaskQueries::Ptr(),
+                                  Domain::TaskRepository::Ptr(),
+                                  Domain::NoteRepository::Ptr(),
+                                  parent),
           createCount(0),
           itemModel(0)
     {

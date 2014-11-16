@@ -28,14 +28,10 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "domain/task.h"
+#include "domain/noterepository.h"
+#include "domain/taskrepository.h"
 
 class QTimer;
-
-namespace Domain {
-    class NoteRepository;
-    class TaskRepository;
-}
 
 namespace Presentation {
 
@@ -51,8 +47,8 @@ class ArtifactEditorModel : public QObject
     Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
     Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
 public:
-    explicit ArtifactEditorModel(Domain::TaskRepository *taskRepository,
-                                 Domain::NoteRepository *noteRepository,
+    explicit ArtifactEditorModel(const Domain::TaskRepository::Ptr &taskRepository,
+                                 const Domain::NoteRepository::Ptr &noteRepository,
                                  QObject *parent = 0);
     ~ArtifactEditorModel();
 
@@ -102,8 +98,8 @@ private:
     void setSaveNeeded(bool needed);
     bool isSaveNeeded() const;
 
-    Domain::TaskRepository *m_taskRepository;
-    Domain::NoteRepository *m_noteRepository;
+    Domain::TaskRepository::Ptr m_taskRepository;
+    Domain::NoteRepository::Ptr m_noteRepository;
 
     Domain::Artifact::Ptr m_artifact;
 

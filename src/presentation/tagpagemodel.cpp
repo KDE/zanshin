@@ -37,10 +37,10 @@
 using namespace Presentation;
 
 TagPageModel::TagPageModel(const Domain::Tag::Ptr &tag,
-                           Domain::TagQueries *tagQueries,
-                           Domain::TaskQueries *taskQueries,
-                           Domain::TaskRepository *taskRepository,
-                           Domain::NoteRepository *noteRepository,
+                           const Domain::TagQueries::Ptr &tagQueries,
+                           const Domain::TaskQueries::Ptr &taskQueries,
+                           const Domain::TaskRepository::Ptr &taskRepository,
+                           const Domain::NoteRepository::Ptr &noteRepository,
                            QObject *parent)
     : PageModel(taskQueries,
                 taskRepository,

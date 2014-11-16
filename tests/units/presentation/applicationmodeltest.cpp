@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "domain/artifactqueries.h"
 #include "domain/datasourcequeries.h"
@@ -50,7 +50,30 @@ private slots:
     void shouldProvideAvailableSourcesModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceQueries = Domain::DataSourceQueries::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         QObject *available = app.availableSources();
@@ -62,7 +85,31 @@ private slots:
     void shouldProvideAvailablePagesModel()
     {
         // GIVEN
-    Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceQueries = Domain::DataSourceQueries::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
+
         // WHEN
         QObject *available = app.availablePages();
 
@@ -73,7 +120,30 @@ private slots:
     void shouldProvideCurrentPage()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceQueries = Domain::DataSourceQueries::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
         QVERIFY(!app.currentPage());
         QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
@@ -95,7 +165,30 @@ private slots:
     void shouldProvideArtifactEditorModel()
     {
         // GIVEN
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceQueries = Domain::DataSourceQueries::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         QObject *page = app.editor();
@@ -107,11 +200,33 @@ private slots:
     void shouldProvideDataSourceModels()
     {
         // GIVEN
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        Presentation::ApplicationModel app(0, 0, 0, 0, 0, &sourceQueriesMock.getInstance(), 0, 0, 0, 0, 0, 0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         auto tasks = app.taskSourcesModel();
@@ -139,28 +254,38 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
         // Repository mock returning the data source as default
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
             taskRepositoryMock(&Domain::TaskRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
         }
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           &taskRepositoryMock.getInstance(),
-                                           0,
-                                           0,
-                                           0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -183,28 +308,38 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
         // Repository mock returning the data source as default
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
             taskRepositoryMock(&Domain::TaskRepository::isDefaultSource).when(source).thenReturn(false);
         }
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           &taskRepositoryMock.getInstance(),
-                                           0,
-                                           0,
-                                           0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -222,25 +357,35 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
         // Repository mock returning the data source as default
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           &taskRepositoryMock.getInstance(),
-                                           0,
-                                           0,
-                                           0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -261,26 +406,36 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(sourceResult);
 
         // Repository mock setting the default data source
-        mock_object<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::setDefaultSource).when(source).thenReturn();
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           &taskRepositoryMock.getInstance(),
-                                           0,
-                                           0,
-                                           0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
 
         // WHEN
@@ -307,29 +462,38 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
         // Repository mock returning the data source as default
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
             noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
         }
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           0,
-                                           &noteRepositoryMock.getInstance(),
-                                           0,
-                                           0);
-
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepositoryMock.getInstance(),
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -352,28 +516,38 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
         // Repository mock returning the data source as default
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
             noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(false);
         }
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           0,
-                                           &noteRepositoryMock.getInstance(),
-                                           0,
-                                           0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepositoryMock.getInstance(),
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -391,25 +565,35 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
         // Repository mock returning the data source as default
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           0,
-                                           &noteRepositoryMock.getInstance(),
-                                           0,
-                                           0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepositoryMock.getInstance(),
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -430,26 +614,36 @@ private slots:
         auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
 
         // Queries mock returning the list of data sources
-        mock_object<Domain::DataSourceQueries> sourceQueriesMock;
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
         // Repository mock setting the default data source
-        mock_object<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).thenReturn();
 
-        Presentation::ApplicationModel app(0,
-                                           0,
-                                           0,
-                                           0,
-                                           0,
-                                           &sourceQueriesMock.getInstance(),
-                                           0,
-                                           0,
-                                           0,
-                                           &noteRepositoryMock.getInstance(),
-                                           0,
-                                           0);
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueriesMock.getInstance(),
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepositoryMock.getInstance(),
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         app.setDefaultNoteDataSource(source);

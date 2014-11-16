@@ -39,32 +39,23 @@ DataSourceQueries::DataSourceQueries(QObject *parent)
     : QObject(parent),
       m_storage(new Storage),
       m_serializer(new Serializer),
-      m_monitor(new MonitorImpl),
-      m_ownInterfaces(true)
+      m_monitor(new MonitorImpl)
 {
-    connect(m_monitor, SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(onCollectionAdded(Akonadi::Collection)));
-    connect(m_monitor, SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(onCollectionRemoved(Akonadi::Collection)));
-    connect(m_monitor, SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(onCollectionChanged(Akonadi::Collection)));
+    connect(m_monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(onCollectionAdded(Akonadi::Collection)));
+    connect(m_monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(onCollectionRemoved(Akonadi::Collection)));
+    connect(m_monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(onCollectionChanged(Akonadi::Collection)));
 }
 
-DataSourceQueries::DataSourceQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor)
+DataSourceQueries::DataSourceQueries(const StorageInterface::Ptr &storage,
+                                     const SerializerInterface::Ptr &serializer,
+                                     const MonitorInterface::Ptr &monitor)
     : m_storage(storage),
       m_serializer(serializer),
-      m_monitor(monitor),
-      m_ownInterfaces(false)
+      m_monitor(monitor)
 {
-    connect(monitor, SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(onCollectionAdded(Akonadi::Collection)));
-    connect(monitor, SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(onCollectionRemoved(Akonadi::Collection)));
-    connect(monitor, SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(onCollectionChanged(Akonadi::Collection)));
-}
-
-DataSourceQueries::~DataSourceQueries()
-{
-    if (m_ownInterfaces) {
-        delete m_storage;
-        delete m_serializer;
-        delete m_monitor;
-    }
+    connect(m_monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(onCollectionAdded(Akonadi::Collection)));
+    connect(m_monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(onCollectionRemoved(Akonadi::Collection)));
+    connect(m_monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(onCollectionChanged(Akonadi::Collection)));
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const

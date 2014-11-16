@@ -23,7 +23,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "testlib/akonadimocks.h"
 
@@ -61,18 +61,18 @@ private slots:
         tagFetchJob->setTags(Akonadi::Tag::List() << akonadiTag1 << akonadiTag2);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
         // Serializer mock returning tags from tags
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag1).thenReturn(tag1);
         serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag2).thenReturn(tag2);
 
         // WHEN
-        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
-                                                                                   &serializerMock.getInstance(),
-                                                                                   new MockMonitor(this)));
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                                   serializerMock.getInstance(),
+                                                                                   MockMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Tag::Ptr>::Ptr result = queries->findAll();
         result->data();
@@ -100,18 +100,18 @@ private slots:
         tagFetchJob->setTags(Akonadi::Tag::List()); // empty tag list
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
         // Serializer mock returning tags from tags
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Mocked Monitor
-        MockMonitor* monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
-                                                                                   &serializerMock.getInstance(),
-                                                                                   monitor));
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                           serializerMock.getInstance(),
+                                                                           monitor));
 
         Domain::QueryResult<Domain::Tag::Ptr>::Ptr result = queries->findAll();
         QTest::qWait(150);
@@ -167,20 +167,20 @@ private slots:
         tagFetchJob->setTags(Akonadi::Tag::List() << akonadiTag1 << akonadiTag2);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
-        MockMonitor* monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
         // Serializer mock returning tags from akonadi tags
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag1).thenReturn(tag1);
         serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag2).thenReturn(tag2);
         serializerMock(&Akonadi::SerializerInterface::representsAkonadiTag).when(tag1, akonadiTag2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsAkonadiTag).when(tag2, akonadiTag2).thenReturn(true);
 
-        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
-                                                                                   &serializerMock.getInstance(),
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                                   serializerMock.getInstance(),
                                                                                    monitor));
 
         Domain::QueryResult<Domain::Tag::Ptr>::Ptr result = queries->findAll();
@@ -221,22 +221,22 @@ private slots:
         tagFetchJob->setTags(Akonadi::Tag::List() << akonadiTag1 << akonadiTag2);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
-        MockMonitor* monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
         // Serializer mock returning domain tags from akonadi tags
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag1).thenReturn(tag1);
         serializerMock(&Akonadi::SerializerInterface::createTagFromAkonadiTag).when(akonadiTag2).thenReturn(tag2);
         serializerMock(&Akonadi::SerializerInterface::representsAkonadiTag).when(tag1, akonadiTag2).thenReturn(false);
         serializerMock(&Akonadi::SerializerInterface::representsAkonadiTag).when(tag2, akonadiTag2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::updateTagFromAkonadiTag).when(tag2, akonadiTag2).thenReturn();
 
-        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
-                                                                                   &serializerMock.getInstance(),
-                                                                                   monitor));
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                           serializerMock.getInstance(),
+                                                                           monitor));
 
         Domain::QueryResult<Domain::Tag::Ptr>::Ptr result = queries->findAll();
 
@@ -297,7 +297,7 @@ private slots:
         itemFetchJob2->setItems(Akonadi::Item::List() << item3 << item4);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
@@ -308,7 +308,7 @@ private slots:
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the objects from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item3).thenReturn(false);
@@ -331,9 +331,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, item4).thenReturn(false);
 
         // WHEN
-        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
-                                                                           &serializerMock.getInstance(),
-                                                                           new MockMonitor(this)));
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                           serializerMock.getInstance(),
+                                                                           MockMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(tag);
         result->data();
@@ -376,7 +376,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List());
 
         // Storage mock returning the fetch job
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
 
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
@@ -386,15 +386,15 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
 
 
         // A mock monitor
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
-                                                                                   &serializerMock.getInstance(),
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                                   serializerMock.getInstance(),
                                                                                    monitor));
         Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(tag);
         QTest::qWait(150);
@@ -441,7 +441,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch job
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
@@ -451,7 +451,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
 
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1.objectCast<Domain::Task>());
@@ -461,10 +461,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
 
         // A monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(&storageMock.getInstance(),
-                                                                           &serializerMock.getInstance(),
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                           serializerMock.getInstance(),
                                                                            monitor));
 
         Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(tag);

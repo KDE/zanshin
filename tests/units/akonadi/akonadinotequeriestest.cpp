@@ -24,7 +24,7 @@
 
 #include <QtTest>
 
-#include <mockitopp/mockitopp.hpp>
+#include "utils/mockobject.h"
 
 #include "testlib/akonadimocks.h"
 
@@ -69,7 +69,7 @@ private slots:
 
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Notes)
@@ -80,7 +80,7 @@ private slots:
                                                            .thenReturn(itemFetchJob2);
 
         // Serializer mock returning the notes from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
@@ -90,9 +90,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
 
         // WHEN
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
         result->data();
         result = queries->findAll();  // Should not cause any problem or wrong data
@@ -140,7 +140,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Notes)
@@ -149,7 +149,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the notes from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
 
@@ -157,9 +157,9 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
 
         // WHEN
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
-                                                                             new MockMonitor(this)));
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             MockMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
 
         // THEN
@@ -185,20 +185,20 @@ private slots:
         MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Notes)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the notes from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
         QTest::qWait(150);
@@ -252,7 +252,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Notes)
@@ -261,7 +261,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the notes from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
@@ -275,10 +275,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(note3, item2).thenReturn(false);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
         QTest::qWait(150);
@@ -326,7 +326,7 @@ private slots:
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
-        mock_object<Akonadi::StorageInterface> storageMock;
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Notes)
@@ -335,7 +335,7 @@ private slots:
                                                            .thenReturn(itemFetchJob);
 
         // Serializer mock returning the notes from the items
-        mock_object<Akonadi::SerializerInterface> serializerMock;
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
@@ -350,10 +350,10 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(note3, item2).thenReturn(false);
 
         // Monitor mock
-        MockMonitor *monitor = new MockMonitor(this);
+        auto monitor = MockMonitor::Ptr::create();
 
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(&storageMock.getInstance(),
-                                                                             &serializerMock.getInstance(),
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
                                                                              monitor));
         Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
         // Even though the pointer didn't change it's convenient to user if we call

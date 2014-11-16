@@ -25,9 +25,14 @@
 #ifndef AKONADI_TAGQUERIES_H
 #define AKONADI_TAGQUERIES_H
 
+#include "domain/tagqueries.h"
+
 #include <Akonadi/Item>
 
-#include "domain/tagqueries.h"
+#include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
 #include "domain/livequery.h"
 
 namespace Akonadi {
@@ -51,8 +56,9 @@ public:
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
     explicit TagQueries(QObject *parent = 0);
-    TagQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
-    virtual ~TagQueries();
+    TagQueries(const StorageInterface::Ptr &storage,
+               const SerializerInterface::Ptr &serializer,
+               const MonitorInterface::Ptr &monitor);
 
     TagResult::Ptr findAll() const;
     ArtifactResult::Ptr findTopLevelArtifacts(Domain::Tag::Ptr tag) const;
@@ -70,10 +76,9 @@ private:
     TagQuery::Ptr createTagQuery();
     ArtifactQuery::Ptr createArtifactQuery();
 
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MonitorInterface *m_monitor;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
 
     TagQuery::Ptr m_findAll;
     TagQuery::List m_tagQueries;

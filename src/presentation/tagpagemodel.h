@@ -28,12 +28,7 @@
 
 #include "presentation/pagemodel.h"
 
-#include "domain/tag.h"
-
-namespace Domain
-{
-    class TagQueries;
-}
+#include "domain/tagqueries.h"
 
 namespace Presentation {
 
@@ -42,10 +37,10 @@ class TagPageModel : public PageModel
     Q_OBJECT
 public:
     explicit TagPageModel(const Domain::Tag::Ptr &tag,
-                          Domain::TagQueries *tagQueries,
-                          Domain::TaskQueries *taskQueries,
-                          Domain::TaskRepository *taskRepository,
-                          Domain::NoteRepository *noteRepository,
+                          const Domain::TagQueries::Ptr &tagQueries,
+                          const Domain::TaskQueries::Ptr &taskQueries,
+                          const Domain::TaskRepository::Ptr &taskRepository,
+                          const Domain::NoteRepository::Ptr &noteRepository,
                           QObject *parent = 0);
 
     Domain::Tag::Ptr tag() const;
@@ -57,7 +52,7 @@ private:
     QAbstractItemModel *createCentralListModel();
 
     Domain::Tag::Ptr m_tag;
-    Domain::TagQueries *m_tagQueries;
+    Domain::TagQueries::Ptr m_tagQueries;
 };
 
 }

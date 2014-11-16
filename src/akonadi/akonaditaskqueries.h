@@ -24,22 +24,24 @@
 #ifndef AKONADI_TASKQUERIES_H
 #define AKONADI_TASKQUERIES_H
 
+#include "domain/taskqueries.h"
+
 #include <functional>
 
 #include <QHash>
 #include <Akonadi/Item>
 
+#include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
 #include "domain/livequery.h"
-#include "domain/taskqueries.h"
 
 class KJob;
 
 namespace Akonadi {
 
 class Item;
-class MonitorInterface;
-class SerializerInterface;
-class StorageInterface;
 
 class TaskQueries : public QObject, public Domain::TaskQueries
 {
@@ -55,8 +57,9 @@ public:
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
 
     explicit TaskQueries(QObject *parent = 0);
-    TaskQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
-    virtual ~TaskQueries();
+    TaskQueries(const StorageInterface::Ptr &storage,
+                const SerializerInterface::Ptr &serializer,
+                const MonitorInterface::Ptr &monitor);
 
     TaskResult::Ptr findAll() const;
     TaskResult::Ptr findChildren(Domain::Task::Ptr task) const;
@@ -71,10 +74,9 @@ private slots:
 private:
     TaskQuery::Ptr createTaskQuery();
 
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MonitorInterface *m_monitor;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
 
     TaskQuery::Ptr m_findAll;
     QHash<Akonadi::Entity::Id, TaskQuery::Ptr> m_findChildren;

@@ -29,11 +29,11 @@
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
 
-namespace Akonadi {
+#include "akonadi/akonadimessaginginterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
 
-class MessagingInterface;
-class SerializerInterface;
-class StorageInterface;
+namespace Akonadi {
 
 class TaskRepository : public QObject, public Domain::TaskRepository
 {
@@ -42,8 +42,9 @@ public:
     typedef QSharedPointer<TaskRepository> Ptr;
 
     explicit TaskRepository(QObject *parent = 0);
-    TaskRepository(StorageInterface *storage, SerializerInterface *serializer, MessagingInterface *messaging);
-    virtual ~TaskRepository();
+    TaskRepository(const StorageInterface::Ptr &storage,
+                   const SerializerInterface::Ptr &serializer,
+                   const MessagingInterface::Ptr &messaging);
 
     virtual bool isDefaultSource(Domain::DataSource::Ptr source) const;
     virtual void setDefaultSource(Domain::DataSource::Ptr source);
@@ -62,10 +63,9 @@ public:
     virtual KJob *delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate);
 
 private:
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MessagingInterface *m_messaging;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MessagingInterface::Ptr m_messaging;
 
     KJob *createItem(const Akonadi::Item &item);
 };

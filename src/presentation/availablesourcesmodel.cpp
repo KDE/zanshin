@@ -33,18 +33,14 @@
 
 using namespace Presentation;
 
-AvailableSourcesModel::AvailableSourcesModel(Domain::DataSourceQueries *dataSourceQueries,
-                                             Domain::DataSourceRepository *dataSourceRepository,
+AvailableSourcesModel::AvailableSourcesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
+                                             const Domain::DataSourceRepository::Ptr &dataSourceRepository,
                                              QObject *parent)
     : QObject(parent),
       m_sourceListModel(0),
       m_searchListModel(0),
       m_dataSourceQueries(dataSourceQueries),
       m_dataSourceRepository(dataSourceRepository)
-{
-}
-
-AvailableSourcesModel::~AvailableSourcesModel()
 {
 }
 

@@ -56,18 +56,18 @@ public:
         using namespace Presentation;
         proxyModel->setDynamicSortFilter(true);
 
-        auto appModel = new ApplicationModel(new Akonadi::ArtifactQueries(this),
-                                             new Akonadi::ProjectQueries(this),
-                                             new Akonadi::ProjectRepository(this),
-                                             new Akonadi::ContextQueries(this),
-                                             new Akonadi::ContextRepository(this),
-                                             new Akonadi::DataSourceQueries(this),
-                                             new Akonadi::DataSourceRepository(this),
-                                             new Akonadi::TaskQueries(this),
-                                             new Akonadi::TaskRepository(this),
-                                             new Akonadi::NoteRepository(this),
-                                             new Akonadi::TagQueries(this),
-                                             new Akonadi::TagRepository(this),
+        auto appModel = new ApplicationModel(Akonadi::ArtifactQueries::Ptr::create(),
+                                             Akonadi::ProjectQueries::Ptr::create(),
+                                             Akonadi::ProjectRepository::Ptr::create(),
+                                             Akonadi::ContextQueries::Ptr::create(),
+                                             Akonadi::ContextRepository::Ptr::create(),
+                                             Akonadi::DataSourceQueries::Ptr::create(),
+                                             Akonadi::DataSourceRepository::Ptr::create(),
+                                             Akonadi::TaskQueries::Ptr::create(),
+                                             Akonadi::TaskRepository::Ptr::create(),
+                                             Akonadi::NoteRepository::Ptr::create(),
+                                             Akonadi::TagQueries::Ptr::create(),
+                                             Akonadi::TagRepository::Ptr::create(),
                                              this);
         // Since it is lazy loaded force ourselves in a known state
         appModel->defaultNoteDataSource();

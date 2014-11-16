@@ -28,7 +28,7 @@
 
 using namespace Presentation;
 
-TaskListModel::TaskListModel(const TaskList::Ptr &taskList, Domain::TaskRepository *repository, QObject *parent)
+TaskListModel::TaskListModel(const TaskList::Ptr &taskList, const Domain::TaskRepository::Ptr &repository, QObject *parent)
     : QAbstractListModel(parent),
       m_taskList(taskList),
       m_repository(repository)

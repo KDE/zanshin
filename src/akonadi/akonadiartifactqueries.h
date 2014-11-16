@@ -27,6 +27,10 @@
 #include <QHash>
 #include <Akonadi/Item>
 
+#include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadistorageinterface.h"
+
 #include "domain/artifactqueries.h"
 #include "domain/livequery.h"
 
@@ -35,9 +39,6 @@ class KJob;
 namespace Akonadi {
 
 class Item;
-class MonitorInterface;
-class SerializerInterface;
-class StorageInterface;
 
 class ArtifactQueries : public QObject, public Domain::ArtifactQueries
 {
@@ -53,8 +54,9 @@ public:
     typedef Domain::QueryResult<Domain::Tag::Ptr> TagResult;
 
     explicit ArtifactQueries(QObject *parent = 0);
-    ArtifactQueries(StorageInterface *storage, SerializerInterface *serializer, MonitorInterface *monitor);
-    virtual ~ArtifactQueries();
+    ArtifactQueries(const StorageInterface::Ptr &storage,
+                    const SerializerInterface::Ptr &serializer,
+                    const MonitorInterface::Ptr &monitor);
 
     ArtifactResult::Ptr findInboxTopLevel() const;
     TagResult::Ptr findTags(Domain::Artifact::Ptr artifact) const;
@@ -68,10 +70,9 @@ private slots:
 private:
     ArtifactQuery::Ptr createArtifactQuery();
 
-    StorageInterface *m_storage;
-    SerializerInterface *m_serializer;
-    MonitorInterface *m_monitor;
-    bool m_ownInterfaces;
+    StorageInterface::Ptr m_storage;
+    SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
 
     ArtifactQuery::Ptr m_findInbox;
     ArtifactQuery::List m_artifactQueries;
