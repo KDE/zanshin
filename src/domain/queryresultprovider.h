@@ -26,6 +26,7 @@
 #define DOMAIN_QUERYRESULTPROVIDER_H
 
 #include <algorithm>
+#include <functional>
 
 #include <QList>
 #include <QSharedPointer>
