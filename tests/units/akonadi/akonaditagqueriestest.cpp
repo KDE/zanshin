@@ -71,8 +71,8 @@ private slots:
 
         // WHEN
         QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
-                                                                                   serializerMock.getInstance(),
-                                                                                   MockMonitor::Ptr::create()));
+                                                                           serializerMock.getInstance(),
+                                                                           MockMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Tag::Ptr>::Ptr result = queries->findAll();
         result->data();
@@ -492,6 +492,123 @@ private slots:
         QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1.objectCast<Domain::Task>());
 
         QVERIFY(insertHandlerCalled);
+    }
+
+    void shouldReactWhenAnItemTaggedIsRemoved()
+    {
+        // GIVEN
+
+        // A tag
+        Akonadi::Tag akonadiTag(43);
+        Domain::Tag::Ptr tag = Domain::Tag::Ptr::create();
+
+        // One top level collection with the task
+        Akonadi::Collection col(42);
+        col.setParentCollection(Akonadi::Collection::root());
+        auto collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+
+        // Two tasks related to the tag
+        Akonadi::Item itemTask1(44);
+        itemTask1.setParentCollection(col);
+        Domain::Artifact::Ptr task1 = Domain::Task::Ptr::create();
+
+        Akonadi::Item itemTask2(45);
+        itemTask2.setParentCollection(col);
+        Domain::Artifact::Ptr task2 = Domain::Task::Ptr::create();
+
+        // A Note relate to the tag
+        Akonadi::Item itemNote(46);
+        itemTask1.setParentCollection(col);
+        Domain::Artifact::Ptr note(new Domain::Note);
+
+        auto itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << itemTask1 << itemTask2 << itemNote);
+
+        // Storage mock returning the fetch job
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
+                                                           .thenReturn(itemFetchJob);
+
+        // Serializer mock
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
+
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(itemTask1).thenReturn(task1.objectCast<Domain::Task>());
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(itemTask2).thenReturn(task2.objectCast<Domain::Task>());
+        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(itemNote).thenReturn(note.objectCast<Domain::Note>());
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, itemTask1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, itemTask2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, itemNote).thenReturn(false);
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, itemTask1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, itemTask2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, itemNote).thenReturn(false);
+
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note, itemTask1).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note, itemTask2).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note, itemNote).thenReturn(true);
+
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, itemTask1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, itemTask2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, itemNote).thenReturn(true);
+
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(itemTask1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(itemTask2).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(itemNote).thenReturn(false);
+        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(itemNote).thenReturn(true);
+
+        // A monitor mock
+        auto monitor = MockMonitor::Ptr::create();
+
+        QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
+                                                                           serializerMock.getInstance(),
+                                                                           monitor));
+
+        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(tag);
+
+        bool removeHandlerCalled = false;
+        result->addPostRemoveHandler([&removeHandlerCalled](const Domain::Artifact::Ptr &, int) {
+                                          removeHandlerCalled = true;
+                                      });
+
+        QTest::qWait(150);
+        QCOMPARE(result->data().size(), 3);
+        QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1.objectCast<Domain::Task>());
+        QCOMPARE(result->data().at(1).objectCast<Domain::Task>(), task2.objectCast<Domain::Task>());
+        QCOMPARE(result->data().at(2).objectCast<Domain::Note>(), note.objectCast<Domain::Note>());
+
+        // WHEN
+        monitor->removeItem(itemTask2);
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, itemTask1).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, itemTask2).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::isTagChild).when(tag, itemNote).exactly(1));
+
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                                                         .exactly(1));
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1.objectCast<Domain::Task>());
+        QCOMPARE(result->data().at(1).objectCast<Domain::Note>(), note.objectCast<Domain::Note>());
+        QVERIFY(removeHandlerCalled);
+
+        // WHEN
+        monitor->removeItem(itemNote);
+
+        // THEN
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0).objectCast<Domain::Task>(), task1.objectCast<Domain::Task>());
+        QVERIFY(removeHandlerCalled);
     }
 };
 

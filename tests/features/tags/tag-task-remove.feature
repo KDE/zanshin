@@ -3,7 +3,6 @@ Feature: Tag task dissociation
   I can delete a task related to a tag
   In order to keep my tag meaningful
 
-@wip
   Scenario: Removing a task linked to a tag from the central list
     Given I display the "Inbox" page
     And I look at the central list
