@@ -49,6 +49,8 @@ class ApplicationModelStub : public QObject
     Q_OBJECT
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
 public:
+    typedef QSharedPointer<ApplicationModelStub> Ptr;
+
     explicit ApplicationModelStub(QObject *parent = 0)
         : QObject(parent), m_currentPage(0) {}
 
@@ -206,25 +208,25 @@ private slots:
     {
         // GIVEN
         Widgets::ApplicationComponents components;
-        QObject model;
+        auto model = QObjectPtr::create();
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
-        QCOMPARE(components.model(), &model);
+        QCOMPARE(components.model(), model);
     }
 
     void shouldApplyAvailableSourcesModelToAvailableSourcesView()
     {
         // GIVEN
         Widgets::ApplicationComponents components;
-        QObject model;
+        auto model = QObjectPtr::create();
         QObject availableSources;
-        model.setProperty("availableSources", QVariant::fromValue(&availableSources));
+        model->setProperty("availableSources", QVariant::fromValue(&availableSources));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.availableSourcesView()->model(), &availableSources);
@@ -237,12 +239,12 @@ private slots:
         // Force creation
         components.availableSourcesView();
 
-        QObject model;
+        auto model = QObjectPtr::create();
         QObject availableSources;
-        model.setProperty("availableSources", QVariant::fromValue(&availableSources));
+        model->setProperty("availableSources", QVariant::fromValue(&availableSources));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.availableSourcesView()->model(), &availableSources);
@@ -252,14 +254,14 @@ private slots:
     {
         // GIVEN
         Widgets::ApplicationComponents components;
-        QObject model;
+        auto model = QObjectPtr::create();
         QObject availablePages;
-        QAbstractItemModel *sourcesModel = new QStandardItemModel(&model);
-        model.setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
-        model.setProperty("availablePages", QVariant::fromValue(&availablePages));
+        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
+        model->setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
+        model->setProperty("availablePages", QVariant::fromValue(&availablePages));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.availablePagesView()->model(), &availablePages);
@@ -273,14 +275,14 @@ private slots:
         // Force creation
         components.availablePagesView();
 
-        QObject model;
+        auto model = QObjectPtr::create();
         QObject availablePages;
-        QAbstractItemModel *sourcesModel = new QStandardItemModel(&model);
-        model.setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
-        model.setProperty("availablePages", QVariant::fromValue(&availablePages));
+        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
+        model->setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
+        model->setProperty("availablePages", QVariant::fromValue(&availablePages));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.availablePagesView()->model(), &availablePages);
@@ -291,12 +293,12 @@ private slots:
     {
         // GIVEN
         Widgets::ApplicationComponents components;
-        QObject model;
+        auto model = QObjectPtr::create();
         QObject currentPage;
-        model.setProperty("currentPage", QVariant::fromValue(&currentPage));
+        model->setProperty("currentPage", QVariant::fromValue(&currentPage));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.pageView()->model(), &currentPage);
@@ -309,12 +311,12 @@ private slots:
         // Force creation
         components.pageView();
 
-        QObject model;
+        auto model = QObjectPtr::create();
         QObject currentPage;
-        model.setProperty("currentPage", QVariant::fromValue(&currentPage));
+        model->setProperty("currentPage", QVariant::fromValue(&currentPage));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.pageView()->model(), &currentPage);
@@ -324,12 +326,12 @@ private slots:
     {
         // GIVEN
         Widgets::ApplicationComponents components;
-        QObject model;
-        QObject *editorModel = new EditorModelStub(&model);
-        model.setProperty("editor", QVariant::fromValue(editorModel));
+        auto model = QObjectPtr::create();
+        QObject *editorModel = new EditorModelStub(model.data());
+        model->setProperty("editor", QVariant::fromValue(editorModel));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.editorView()->model(), editorModel);
@@ -342,12 +344,12 @@ private slots:
         // Force creation
         components.editorView();
 
-        QObject model;
-        QObject *editorModel = new EditorModelStub(&model);
-        model.setProperty("editor", QVariant::fromValue(editorModel));
+        auto model = QObjectPtr::create();
+        QObject *editorModel = new EditorModelStub(model.data());
+        model->setProperty("editor", QVariant::fromValue(editorModel));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         QCOMPARE(components.editorView()->model(), editorModel);
@@ -356,19 +358,19 @@ private slots:
     void shouldApplyAvailablePagesSelectionToApplicationModel()
     {
         // GIVEN
-        ApplicationModelStub model;
+        auto model = ApplicationModelStub::Ptr::create();
 
         AvailablePagesModelStub availablePagesModel;
-        model.setProperty("availablePages", QVariant::fromValue<QObject*>(&availablePagesModel));
-        model.setProperty("currentPage", QVariant::fromValue<QObject*>(0));
+        model->setProperty("availablePages", QVariant::fromValue<QObject*>(&availablePagesModel));
+        model->setProperty("currentPage", QVariant::fromValue<QObject*>(0));
 
         QObject editorModel;
         editorModel.setProperty("artifact",
                                 QVariant::fromValue<Domain::Artifact::Ptr>(Domain::Task::Ptr::create()));
-        model.setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
+        model->setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
 
         Widgets::ApplicationComponents components;
-        components.setModel(&model);
+        components.setModel(model);
 
         Widgets::AvailablePagesView *availablePagesView = components.availablePagesView();
         auto pagesView = availablePagesView->findChild<QTreeView*>("pagesView");
@@ -385,7 +387,7 @@ private slots:
 
         // THEN
         QCOMPARE(availablePagesModel.createdPages.size(), 1);
-        QCOMPARE(model.property("currentPage").value<QObject*>(),
+        QCOMPARE(model->property("currentPage").value<QObject*>(),
                  availablePagesModel.createdPages.first());
         QCOMPARE(pageView->model(),
                  availablePagesModel.createdPages.first());
@@ -395,20 +397,20 @@ private slots:
     void shouldApplyPageViewSelectionToEditorModel()
     {
         // GIVEN
-        QObject model;
+        auto model = QObjectPtr::create();
 
         PageModelStub pageModel;
         pageModel.addItem<Domain::Task>("0. First task");
         pageModel.addItem<Domain::Note>("1. A note");
         pageModel.addItem<Domain::Task>("2. Second task");
         pageModel.addItem<Domain::Note>("3. Another note");
-        model.setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
+        model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
 
         EditorModelStub editorModel;
-        model.setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
+        model->setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
 
         Widgets::ApplicationComponents components;
-        components.setModel(&model);
+        components.setModel(model);
 
         Widgets::PageView *pageView = components.pageView();
         auto centralView = pageView->findChild<QTreeView*>("centralView");
@@ -441,19 +443,19 @@ private slots:
         QFETCH(ComboGetterFunction, comboGetter);
 
         Widgets::ApplicationComponents components;
-        QObject model;
-        QAbstractItemModel *sourcesModel = new QStandardItemModel(&model);
-        model.setProperty(modelProperty, QVariant::fromValue(sourcesModel));
+        auto model = QObjectPtr::create();
+        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
+        model->setProperty(modelProperty, QVariant::fromValue(sourcesModel));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         Widgets::DataSourceComboBox *combo = comboGetter(&components);
         QCOMPARE(combo->model(), sourcesModel);
 
         QFETCH(QByteArray, defaultProperty);
-        QCOMPARE(combo->defaultSourceObject(), &model);
+        QCOMPARE(combo->defaultSourceObject(), model.data());
         QCOMPARE(combo->defaultSourceProperty(), defaultProperty);
     }
 
@@ -472,19 +474,19 @@ private slots:
         // Force creation
         comboGetter(&components);
 
-        QObject model;
-        QAbstractItemModel *sourcesModel = new QStandardItemModel(&model);
-        model.setProperty(modelProperty, QVariant::fromValue(sourcesModel));
+        auto model = QObjectPtr::create();
+        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
+        model->setProperty(modelProperty, QVariant::fromValue(sourcesModel));
 
         // WHEN
-        components.setModel(&model);
+        components.setModel(model);
 
         // THEN
         Widgets::DataSourceComboBox *combo = comboGetter(&components);
         QCOMPARE(combo->model(), sourcesModel);
 
         QFETCH(QByteArray, defaultProperty);
-        QCOMPARE(combo->defaultSourceObject(), &model);
+        QCOMPARE(combo->defaultSourceObject(), model.data());
         QCOMPARE(combo->defaultSourceProperty(), defaultProperty);
     }
 

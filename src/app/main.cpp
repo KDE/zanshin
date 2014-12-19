@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
     auto widget = new QWidget;
     auto components = new Widgets::ApplicationComponents(widget);
-    components->setModel(new Presentation::ApplicationModel(components));
+    components->setModel(QObjectPtr(new Presentation::ApplicationModel));
 
     QVBoxLayout *layout = new QVBoxLayout;
 

@@ -42,7 +42,6 @@ using namespace Widgets;
 
 ApplicationComponents::ApplicationComponents(QWidget *parent)
     : QObject(parent),
-      m_model(0),
       m_parent(parent),
       m_availableSourcesView(0),
       m_availablePagesView(0),
@@ -53,7 +52,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
 {
 }
 
-QObject *ApplicationComponents::model() const
+QObjectPtr ApplicationComponents::model() const
 {
     return m_model;
 }
@@ -98,7 +97,7 @@ PageView *ApplicationComponents::pageView() const
         auto pageView = new PageView(m_parent);
         if (m_model) {
             pageView->setModel(m_model->property("currentPage").value<QObject*>());
-            connect(m_model, SIGNAL(currentPageChanged(QObject*)),
+            connect(m_model.data(), SIGNAL(currentPageChanged(QObject*)),
                     pageView, SLOT(setModel(QObject*)));
         }
 
@@ -165,11 +164,11 @@ DataSourceComboBox *ApplicationComponents::defaultNoteSourceCombo() const
         auto combo = new DataSourceComboBox(m_parent);
         combo->setObjectName("noteSourceCombo");
         combo->setFixedWidth(300);
-        if (m_model) {
+        if (m_model.data()) {
             combo->setModel(m_model->property("noteSourcesModel").value<QAbstractItemModel*>());
-            combo->setDefaultSourceProperty(m_model, "defaultNoteDataSource");
+            combo->setDefaultSourceProperty(m_model.data(), "defaultNoteDataSource");
             connect(combo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                    m_model, SLOT(setDefaultNoteDataSource(Domain::DataSource::Ptr)));
+                    m_model.data(), SLOT(setDefaultNoteDataSource(Domain::DataSource::Ptr)));
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
@@ -187,9 +186,9 @@ DataSourceComboBox *ApplicationComponents::defaultTaskSourceCombo() const
         combo->setFixedWidth(300);
         if (m_model) {
             combo->setModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
-            combo->setDefaultSourceProperty(m_model, "defaultTaskDataSource");
+            combo->setDefaultSourceProperty(m_model.data(), "defaultTaskDataSource");
             connect(combo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                    m_model, SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
+                    m_model.data(), SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
@@ -199,7 +198,7 @@ DataSourceComboBox *ApplicationComponents::defaultTaskSourceCombo() const
     return m_taskCombo;
 }
 
-void ApplicationComponents::setModel(QObject *model)
+void ApplicationComponents::setModel(const QObjectPtr &model)
 {
     if (m_model == model)
         return;
@@ -217,7 +216,7 @@ void ApplicationComponents::setModel(QObject *model)
 
     if (m_pageView) {
         m_pageView->setModel(m_model->property("currentPage").value<QObject*>());
-        connect(m_model, SIGNAL(currentPageChanged(QObject*)),
+        connect(m_model.data(), SIGNAL(currentPageChanged(QObject*)),
                 m_pageView, SLOT(setModel(QObject*)));
     }
 
@@ -226,16 +225,16 @@ void ApplicationComponents::setModel(QObject *model)
 
     if (m_noteCombo) {
         m_noteCombo->setModel(m_model->property("noteSourcesModel").value<QAbstractItemModel*>());
-        m_noteCombo->setDefaultSourceProperty(m_model, "defaultNoteDataSource");
+        m_noteCombo->setDefaultSourceProperty(m_model.data(), "defaultNoteDataSource");
         connect(m_noteCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                m_model, SLOT(setDefaultNoteDataSource(Domain::DataSource::Ptr)));
+                m_model.data(), SLOT(setDefaultNoteDataSource(Domain::DataSource::Ptr)));
     }
 
     if (m_taskCombo) {
         m_taskCombo->setModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
-        m_taskCombo->setDefaultSourceProperty(m_model, "defaultTaskDataSource");
+        m_taskCombo->setDefaultSourceProperty(m_model.data(), "defaultTaskDataSource");
         connect(m_noteCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                m_model, SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
+                m_model.data(), SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
     }
 }
 

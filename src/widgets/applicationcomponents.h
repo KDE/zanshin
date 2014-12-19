@@ -48,7 +48,7 @@ class ApplicationComponents : public QObject
 public:
     explicit ApplicationComponents(QWidget *parent = 0);
 
-    QObject *model() const;
+    QObjectPtr model() const;
 
     AvailableSourcesView *availableSourcesView() const;
     AvailablePagesView *availablePagesView() const;
@@ -61,14 +61,14 @@ public:
     DataSourceComboBox *defaultTaskSourceCombo() const;
 
 public slots:
-    void setModel(QObject *model);
+    void setModel(const QObjectPtr &model);
 
 private slots:
     void onCurrentPageChanged(QObject *page);
     void onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact);
 
 private:
-    QObject *m_model;
+    QObjectPtr m_model;
 
     QWidget *m_parent;
     AvailableSourcesView *m_availableSourcesView;
