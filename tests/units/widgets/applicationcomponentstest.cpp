@@ -47,7 +47,7 @@ Q_DECLARE_METATYPE(ComboGetterFunction)
 class ApplicationModelStub : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
+    Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage)
 public:
     typedef QSharedPointer<ApplicationModelStub> Ptr;
 
