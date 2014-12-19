@@ -26,14 +26,25 @@
 
 #include "domain/task.h"
 #include "akonadi/akonaditaskrepository.h"
+#include "akonadi/akonadiserializer.h"
+#include "akonadi/akonadistorage.h"
 
 #include <KDE/KDebug>
 #include <KDE/KIcon>
 #include <KDE/KLocale>
 
+Domain::TaskRepository::Ptr createTaskRepository()
+{
+    using namespace Akonadi;
+    auto repository = new TaskRepository(StorageInterface::Ptr(new Storage),
+                                         SerializerInterface::Ptr(new Serializer),
+                                         MessagingInterface::Ptr());
+    return Domain::TaskRepository::Ptr(repository);
+}
+
 ZanshinRunner::ZanshinRunner(QObject *parent, const QVariantList &args)
     : Plasma::AbstractRunner(parent, args),
-      m_taskRepository(new Akonadi::TaskRepository(parent))
+      m_taskRepository(createTaskRepository())
 {
     setObjectName(QLatin1String("Zanshin"));
     setIgnoredTypes(Plasma::RunnerContext::Directory | Plasma::RunnerContext::File |

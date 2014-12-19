@@ -27,9 +27,7 @@
 
 #include <Plasma/AbstractRunner>
 
-namespace Domain {
-    class TaskRepository;
-}
+#include "domain/taskrepository.h"
 
 class ZanshinRunner : public Plasma::AbstractRunner
 {
@@ -42,7 +40,7 @@ public:
     void match(Plasma::RunnerContext &context);
     void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &action);
 private:
-    Domain::TaskRepository *m_taskRepository;
+    Domain::TaskRepository::Ptr m_taskRepository;
 };
 
 K_EXPORT_PLASMA_RUNNER(zanshin, ZanshinRunner)
