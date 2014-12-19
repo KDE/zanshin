@@ -27,6 +27,7 @@
 
 #include <QList>
 #include <QMap>
+#include <QSharedPointer>
 
 #include <utility>
 
@@ -90,9 +91,9 @@ namespace Internal {
             s_providers.insert(manager, provider);
         }
 
-        static Iface *create(DependencyManager *manager)
+        static QSharedPointer<Iface> create(DependencyManager *manager)
         {
-            return s_providers.value(manager)(manager);
+            return QSharedPointer<Iface>(s_providers.value(manager)(manager));
         }
 
         static int providersCount()
@@ -138,7 +139,7 @@ public:
     }
 
     template<class Iface>
-    Iface *create()
+    QSharedPointer<Iface> create()
     {
         return Internal::Supplier<Iface>::create(this);
     }

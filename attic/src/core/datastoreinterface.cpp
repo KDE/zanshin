@@ -26,7 +26,7 @@
 #include "utils/dependencymanager.h"
 
 
-DataStoreInterface *DataStoreInterface::s_implementation = 0;
+QSharedPointer<DataStoreInterface> DataStoreInterface::s_implementation = QSharedPointer<DataStoreInterface>();
 
 DataStoreInterface &DataStoreInterface::instance()
 {

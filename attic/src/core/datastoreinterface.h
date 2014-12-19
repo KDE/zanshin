@@ -28,6 +28,8 @@
 #include "pimitem.h"
 #include "pimitemservices.h"
 
+#include <QSharedPointer>
+
 class QAbstractItemModel;
 
 class DataStoreInterface
@@ -46,7 +48,7 @@ public:
     virtual bool moveTodoToProject(const PimItem::Ptr &item, const PimItem::Ptr &parent) = 0;
 
 private:
-    static DataStoreInterface *s_implementation;
+    static QSharedPointer<DataStoreInterface> s_implementation;
 };
 
 #endif // DATASTOREINTERFACE_H
