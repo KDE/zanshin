@@ -4,7 +4,10 @@ include_directories(${CMAKE_SOURCE_DIR}/3rdparty/cucumber-cpp/include)
 # Because cucumber-cpp exhibits plenty of warnings
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
-set(steps_SRCS main.cpp)
+set(steps_SRCS
+    main.cpp
+    ${CMAKE_SOURCE_DIR}/src/app/dependencies.cpp
+)
 
 kde4_add_executable(zanshin-cuke-steps ${steps_SRCS})
 target_link_libraries(zanshin-cuke-steps

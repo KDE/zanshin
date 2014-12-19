@@ -11,22 +11,12 @@
 #include <KConfigGroup>
 #include <KGlobal>
 
-#include "akonadi/akonadiartifactqueries.h"
-#include "akonadi/akonadicontextqueries.h"
-#include "akonadi/akonadicontextrepository.h"
-#include "akonadi/akonadidatasourcequeries.h"
-#include "akonadi/akonadidatasourcerepository.h"
-#include "akonadi/akonadinoterepository.h"
-#include "akonadi/akonadiprojectqueries.h"
-#include "akonadi/akonadiprojectrepository.h"
-#include "akonadi/akonaditagqueries.h"
-#include "akonadi/akonaditagrepository.h"
-#include "akonadi/akonaditaskqueries.h"
-#include "akonadi/akonaditaskrepository.h"
+#include "app/dependencies.h"
+
 #include "presentation/applicationmodel.h"
-#include "presentation/inboxpagemodel.h"
 #include "presentation/querytreemodelbase.h"
-#include "presentation/datasourcelistmodel.h"
+
+#include "utils/dependencymanager.h"
 
 static int argc = 0;
 static QApplication app(argc, 0);
@@ -53,22 +43,13 @@ public:
           editor(0),
           proxyModel(new QSortFilterProxyModel(this))
     {
+        App::initializeDependencies();
+
         using namespace Presentation;
         proxyModel->setDynamicSortFilter(true);
 
-        auto appModel = new ApplicationModel(Akonadi::ArtifactQueries::Ptr::create(),
-                                             Akonadi::ProjectQueries::Ptr::create(),
-                                             Akonadi::ProjectRepository::Ptr::create(),
-                                             Akonadi::ContextQueries::Ptr::create(),
-                                             Akonadi::ContextRepository::Ptr::create(),
-                                             Akonadi::DataSourceQueries::Ptr::create(),
-                                             Akonadi::DataSourceRepository::Ptr::create(),
-                                             Akonadi::TaskQueries::Ptr::create(),
-                                             Akonadi::TaskRepository::Ptr::create(),
-                                             Akonadi::NoteRepository::Ptr::create(),
-                                             Akonadi::TagQueries::Ptr::create(),
-                                             Akonadi::TagRepository::Ptr::create(),
-                                             this);
+        auto appModel = Utils::DependencyManager::globalInstance().create<ApplicationModel>();
+
         // Since it is lazy loaded force ourselves in a known state
         appModel->defaultNoteDataSource();
         appModel->defaultTaskDataSource();
@@ -92,7 +73,7 @@ public:
         return proxyModel;
     }
 
-    QObject *app;
+    QObjectPtr app;
 
     QList<QPersistentModelIndex> indices;
     QPersistentModelIndex index;
