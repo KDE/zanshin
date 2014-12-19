@@ -37,6 +37,8 @@
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 
+#include "presentation/applicationmodel.h"
+
 #include "utils/dependencymanager.h"
 
 void App::initializeDependencies()
@@ -55,4 +57,18 @@ void App::initializeDependencies()
     deps.add<Domain::TagRepository, Akonadi::TagRepository>();
     deps.add<Domain::TaskQueries, Akonadi::TaskQueries>();
     deps.add<Domain::TaskRepository, Akonadi::TaskRepository>();
+
+    deps.add<Presentation::ApplicationModel,
+             Presentation::ApplicationModel(Domain::ArtifactQueries*,
+                                            Domain::ProjectQueries*,
+                                            Domain::ProjectRepository*,
+                                            Domain::ContextQueries*,
+                                            Domain::ContextRepository*,
+                                            Domain::DataSourceQueries*,
+                                            Domain::DataSourceRepository*,
+                                            Domain::TaskQueries*,
+                                            Domain::TaskRepository*,
+                                            Domain::NoteRepository*,
+                                            Domain::TagQueries*,
+                                            Domain::TagRepository*)>();
 }

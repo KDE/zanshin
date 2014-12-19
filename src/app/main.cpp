@@ -43,6 +43,8 @@
 
 #include "presentation/applicationmodel.h"
 
+#include "utils/dependencymanager.h"
+
 #include "dependencies.h"
 
 #include <iostream>
@@ -67,7 +69,7 @@ int main(int argc, char **argv)
 
     auto widget = new QWidget;
     auto components = new Widgets::ApplicationComponents(widget);
-    components->setModel(QObjectPtr(new Presentation::ApplicationModel));
+    components->setModel(Utils::DependencyManager::globalInstance().create<Presentation::ApplicationModel>());
 
     QVBoxLayout *layout = new QVBoxLayout;
 

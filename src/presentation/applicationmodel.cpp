@@ -41,33 +41,7 @@
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 
-#include "utils/dependencymanager.h"
-
 using namespace Presentation;
-
-ApplicationModel::ApplicationModel(QObject *parent)
-    : QObject(parent),
-      m_availableSources(0),
-      m_availablePages(0),
-      m_currentPage(0),
-      m_editor(0),
-      m_artifactQueries(Utils::DependencyManager::globalInstance().create<Domain::ArtifactQueries>()),
-      m_projectQueries(Utils::DependencyManager::globalInstance().create<Domain::ProjectQueries>()),
-      m_projectRepository(Utils::DependencyManager::globalInstance().create<Domain::ProjectRepository>()),
-      m_contextQueries(Utils::DependencyManager::globalInstance().create<Domain::ContextQueries>()),
-      m_contextRepository(Utils::DependencyManager::globalInstance().create<Domain::ContextRepository>()),
-      m_sourceQueries(Utils::DependencyManager::globalInstance().create<Domain::DataSourceQueries>()),
-      m_sourceRepository(Utils::DependencyManager::globalInstance().create<Domain::DataSourceRepository>()),
-      m_taskQueries(Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>()),
-      m_taskRepository(Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>()),
-      m_taskSourcesModel(0),
-      m_noteRepository(Utils::DependencyManager::globalInstance().create<Domain::NoteRepository>()),
-      m_noteSourcesModel(0),
-      m_tagQueries(Utils::DependencyManager::globalInstance().create<Domain::TagQueries>()),
-      m_tagRepository(Utils::DependencyManager::globalInstance().create<Domain::TagRepository>())
-{
-    MetaTypes::registerAll();
-}
 
 ApplicationModel::ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
                                    const Domain::ProjectQueries::Ptr &projectQueries,

@@ -56,8 +56,6 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
 public:
-    explicit ApplicationModel(QObject *parent = 0);
-
     explicit ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
                               const Domain::ProjectQueries::Ptr &projectQueries,
                               const Domain::ProjectRepository::Ptr &projectRepository,

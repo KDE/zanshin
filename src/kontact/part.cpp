@@ -35,12 +35,15 @@
 #include "../app/dependencies.h"
 
 #include "presentation/applicationmodel.h"
+
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
 #include "widgets/availablesourcesview.h"
 #include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
+
+#include "utils/dependencymanager.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
 K_EXPORT_PLUGIN(PartFactory(App::getAboutData()))
@@ -56,7 +59,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     auto sidebar = new QSplitter(Qt::Vertical, parentWidget);
 
     auto components = new Widgets::ApplicationComponents(parentWidget);
-    components->setModel(QObjectPtr(new Presentation::ApplicationModel));
+    components->setModel(Utils::DependencyManager::globalInstance().create<Presentation::ApplicationModel>());
 
     sidebar->addWidget(components->availablePagesView());
     sidebar->addWidget(components->availableSourcesView());
