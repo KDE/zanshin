@@ -131,10 +131,10 @@ public:
         m_cleanupFunctions << Internal::Supplier<Iface>::removeProvider;
     }
 
-    template<class Iface, class Impl>
+    template<class Iface, class Signature>
     void add()
     {
-        add<Iface>(DependencyManager::standardFactory<Iface, Impl>);
+        add<Iface>(DependencyManager::FactoryHelper<Signature>::create);
     }
 
     template<class Iface>
@@ -146,11 +146,187 @@ public:
 private:
     QList<void (*)(DependencyManager*)> m_cleanupFunctions;
 
-    template<class Iface, class Impl>
-    static Iface *standardFactory(DependencyManager *)
+    template<class Impl>
+    class FactoryHelper
     {
-        return new Impl;
-    }
+    public:
+        static Impl *create(DependencyManager*)
+        {
+            return new Impl;
+        }
+    };
+
+#ifdef Q_COMPILER_VARIADIC_TEMPLATES
+    template<class Impl, class... Args>
+    class FactoryHelper<Impl(Args*...)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl((manager->create<Args>())...);
+        }
+    };
+#else
+    template<class Impl, class Arg0>
+    class FactoryHelper<Impl(Arg0*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1>
+    class FactoryHelper<Impl(Arg0*, Arg1*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2, class Arg3>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*, Arg3*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2, class Arg3,
+             class Arg4>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*, Arg3*,
+                             Arg4*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2, class Arg3,
+             class Arg4, class Arg5>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*, Arg3*,
+                             Arg4*, Arg5*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2, class Arg3,
+             class Arg4, class Arg5, class Arg6>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*, Arg3*,
+                             Arg4*, Arg5*, Arg6*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2, class Arg3,
+             class Arg4, class Arg5, class Arg6, class Arg7>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*, Arg3*,
+                             Arg4*, Arg5*, Arg6*, Arg7*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2, class Arg3,
+             class Arg4, class Arg5, class Arg6, class Arg7, class Arg8>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*, Arg3*,
+                             Arg4*, Arg5*, Arg6*, Arg7*,
+                             Arg8*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>(),
+                            manager->create<Arg8>());
+        }
+    };
+
+    template<class Impl, class Arg0, class Arg1, class Arg2, class Arg3,
+             class Arg4, class Arg5, class Arg6, class Arg7, class Arg8,
+             class Arg9>
+    class FactoryHelper<Impl(Arg0*, Arg1*, Arg2*, Arg3*,
+                             Arg4*, Arg5*, Arg6*, Arg7*,
+                             Arg8*, Arg9*)>
+    {
+    public:
+        static Impl *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>(),
+                            manager->create<Arg8>(),
+                            manager->create<Arg9>());
+        }
+    };
+#endif
 };
 
 }
