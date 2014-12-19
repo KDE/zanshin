@@ -21,22 +21,33 @@
    USA.
 */
 
+#ifndef ZANSHIN_TESTLIB_FAKEJOB_H
+#define ZANSHIN_TESTLIB_FAKEJOB_H
+
 #include <KJob>
 
 class FakeJob : public KJob
 {
     Q_OBJECT
 public:
-    static const int DURATION = 100;
-
+    static const int DURATION = 50;
     explicit FakeJob(QObject *parent = 0);
+
+    void setExpectedError(int errorCode);
 
     void start();
 
 private slots:
     void onTimeout();
 
+protected:
+    bool isDone() const;
+    int expectedError() const;
+
 private:
+    bool m_done;
     bool m_launched;
+    int m_errorCode;
 };
 
+#endif

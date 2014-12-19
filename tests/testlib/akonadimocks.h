@@ -26,41 +26,18 @@
 
 #include <KJob>
 
+#include "fakejob.h"
 #include "akonadi/akonadimonitorinterface.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 
-class MockAkonadiJob : public KJob
+class MockCollectionFetchJob : public FakeJob, public Akonadi::CollectionFetchJobInterface
 {
     Q_OBJECT
 public:
-    explicit MockAkonadiJob(QObject *parent = 0);
-
-    void setExpectedError(int errorCode);
-
-private:
-    void start();
-
-private slots:
-    void onTimeout();
-
-protected:
-    bool isDone() const;
-    int expectedError() const;
-
-private:
-    bool m_done;
-    bool m_launched;
-    int m_errorCode;
-};
-
-class MockCollectionFetchJob : public MockAkonadiJob, public Akonadi::CollectionFetchJobInterface
-{
-    Q_OBJECT
-public:
-    using MockAkonadiJob::MockAkonadiJob;
+    using FakeJob::FakeJob;
 
     void setCollections(const Akonadi::Collection::List &collections);
     Akonadi::Collection::List collections() const;
@@ -69,11 +46,11 @@ private:
     Akonadi::Collection::List m_collections;
 };
 
-class MockCollectionSearchJob : public MockAkonadiJob, public Akonadi::CollectionSearchJobInterface
+class MockCollectionSearchJob : public FakeJob, public Akonadi::CollectionSearchJobInterface
 {
     Q_OBJECT
 public:
-    using MockAkonadiJob::MockAkonadiJob;
+    using FakeJob::FakeJob;
 
     void setCollections(const Akonadi::Collection::List &collections);
     Akonadi::Collection::List collections() const;
@@ -82,11 +59,11 @@ private:
     Akonadi::Collection::List m_collections;
 };
 
-class MockItemFetchJob : public MockAkonadiJob, public Akonadi::ItemFetchJobInterface
+class MockItemFetchJob : public FakeJob, public Akonadi::ItemFetchJobInterface
 {
     Q_OBJECT
 public:
-    using MockAkonadiJob::MockAkonadiJob;
+    using FakeJob::FakeJob;
 
     void setItems(const Akonadi::Item::List &items);
     Akonadi::Item::List items() const;
@@ -95,11 +72,11 @@ private:
     Akonadi::Item::List m_items;
 };
 
-class MockTagFetchJob : public MockAkonadiJob, public Akonadi::TagFetchJobInterface
+class MockTagFetchJob : public FakeJob, public Akonadi::TagFetchJobInterface
 {
     Q_OBJECT
 public:
-    using MockAkonadiJob::MockAkonadiJob;
+    using FakeJob::FakeJob;
 
     void setTags(const Akonadi::Tag::List &tags);
     Akonadi::Tag::List tags() const;

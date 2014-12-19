@@ -143,7 +143,7 @@ private slots:
         Domain::Note::Ptr note(new Domain::Note);
 
         // A mock create job
-        auto itemCreateJob = new MockAkonadiJob(this);
+        auto itemCreateJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -178,7 +178,7 @@ private slots:
         Domain::Note::Ptr note(new Domain::Note);
 
         // A mock create job
-        auto itemModifyJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -206,7 +206,7 @@ private slots:
         Domain::Note::Ptr note(new Domain::Note);
 
         // A mock delete job
-        auto itemDeleteJob = new MockAkonadiJob(this);
+        auto itemDeleteJob = new FakeJob(this);
 
         // Storage mock returning the delete job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;

@@ -25,43 +25,6 @@
 
 #include <QTimer>
 
-MockAkonadiJob::MockAkonadiJob(QObject *parent)
-    : KJob(parent), m_done(false), m_launched(false), m_errorCode(KJob::NoError)
-{
-}
-
-void MockAkonadiJob::setExpectedError(int errorCode)
-{
-    m_errorCode = errorCode;
-}
-
-void MockAkonadiJob::start()
-{
-    if (!m_launched) {
-        m_launched = true;
-        QTimer::singleShot(50, this, SLOT(onTimeout()));
-    }
-}
-
-void MockAkonadiJob::onTimeout()
-{
-    if (m_errorCode == KJob::NoError) 
-        m_done = true;
-
-    setError(m_errorCode);
-    emitResult();
-}
-
-bool MockAkonadiJob::isDone() const
-{
-    return m_done;
-}
-
-int MockAkonadiJob::expectedError() const
-{
-    return m_errorCode;
-}
-
 void MockCollectionFetchJob::setCollections(const Akonadi::Collection::List &collections)
 {
     m_collections = collections;

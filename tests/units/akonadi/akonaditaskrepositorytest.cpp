@@ -154,7 +154,7 @@ private slots:
         Domain::Task::Ptr task(new Domain::Task);
 
         // A mock create job
-        auto itemCreateJob = new MockAkonadiJob(this);
+        auto itemCreateJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -195,7 +195,7 @@ private slots:
         Domain::Task::Ptr task(new Domain::Task);
 
         // A mock create job
-        auto itemCreateJob = new MockAkonadiJob(this);
+        auto itemCreateJob = new FakeJob(this);
 
         // Storage mock returning the create job and with no default collection
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -238,7 +238,7 @@ private slots:
         auto task = Domain::Task::Ptr::create();
 
         // A mock create job
-        auto itemCreateJob = new MockAkonadiJob(this);
+        auto itemCreateJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -283,7 +283,7 @@ private slots:
         auto task = Domain::Task::Ptr::create();
 
         // A mock create job
-        auto itemCreateJob = new MockAkonadiJob(this);
+        auto itemCreateJob = new FakeJob(this);
 
         // serializer mock returning the item for the task
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
@@ -332,7 +332,7 @@ private slots:
         auto task = Domain::Task::Ptr::create();
 
         // A mock create job
-        auto itemCreateJob = new MockAkonadiJob(this);
+        auto itemCreateJob = new FakeJob(this);
 
         // serializer mock returning the item for the task
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
@@ -374,7 +374,7 @@ private slots:
         Domain::Task::Ptr task(new Domain::Task);
 
         // A mock create job
-        auto itemModifyJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -458,7 +458,7 @@ private slots:
         removedList << list << item;
 
         // A mock delete job
-        auto itemDeleteJob = new MockAkonadiJob(this);
+        auto itemDeleteJob = new FakeJob(this);
 
         // Storage mock returning the delete job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -583,9 +583,9 @@ private slots:
         QFETCH(Akonadi::Item::List, list);
 
         // A mock create job
-        auto itemModifyJob = new MockAkonadiJob(this);
-        auto transactionJob = new MockAkonadiJob(this);
-        auto itemsMoveJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
+        auto transactionJob = new FakeJob(this);
+        auto itemsMoveJob = new FakeJob(this);
 
         Akonadi::Item::List movedList;
         movedList << childItem << list;
@@ -680,7 +680,7 @@ private slots:
         QFETCH(MockItemFetchJob*, itemFetchJob);
         QFETCH(bool, childJobFailed);
 
-        auto itemModifyJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
 
         // Storage mock returning the delete job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;

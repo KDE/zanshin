@@ -51,7 +51,7 @@ private slots:
         auto source = Domain::DataSource::Ptr::create();
 
         // A mock create job
-        auto itemCreateJob = new MockAkonadiJob(this);
+        auto itemCreateJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -81,7 +81,7 @@ private slots:
         Domain::Project::Ptr project(new Domain::Project);
 
         // A mock modify job
-        auto itemModifyJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -111,7 +111,7 @@ private slots:
         auto project = Domain::Project::Ptr::create();
 
         // A mock remove job
-        auto itemRemoveJob = new MockAkonadiJob(this);
+        auto itemRemoveJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -249,9 +249,9 @@ private slots:
         QFETCH(Akonadi::Item::List, list);
 
         // A mock create job
-        auto itemModifyJob = new MockAkonadiJob(this);
-        auto transactionJob = new MockAkonadiJob(this);
-        auto itemsMoveJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
+        auto transactionJob = new FakeJob(this);
+        auto itemsMoveJob = new FakeJob(this);
 
         Akonadi::Item::List movedList;
         movedList << childItem << list;
@@ -358,7 +358,7 @@ private slots:
         QFETCH(MockItemFetchJob*, itemFetchJob);
         QFETCH(bool, fetchJobFailed);
 
-        auto itemModifyJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
 
         // Storage mock returning the delete job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;

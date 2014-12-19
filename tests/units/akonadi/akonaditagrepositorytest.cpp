@@ -50,7 +50,7 @@ private slots:
         auto tag = Domain::Tag::Ptr::create();
 
         // A mock creating job
-        auto tagCreateJob = new MockAkonadiJob(this);
+        auto tagCreateJob = new FakeJob(this);
 
         // Storage mock returning the tagCreatejob
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -80,7 +80,7 @@ private slots:
         tag->setName("42");
 
         // A mock of removal job
-        auto tagRemoveJob = new MockAkonadiJob(this);
+        auto tagRemoveJob = new FakeJob(this);
 
         // Storage mock returning the tagCreatejob
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -109,7 +109,7 @@ private slots:
         Akonadi::Item taskItem(42);
 
         // A mock of update job
-        auto itemModifyJob = new MockAkonadiJob(this);
+        auto itemModifyJob = new FakeJob(this);
 
         auto itemFetchJob = new MockItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << taskItem);

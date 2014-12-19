@@ -26,10 +26,13 @@
 #include <QTimer>
 
 FakeJob::FakeJob(QObject *parent)
-    : KJob(parent)
-    , m_launched(false)
+    : KJob(parent), m_done(false), m_launched(false), m_errorCode(KJob::NoError)
 {
-    setAutoDelete(true);
+}
+
+void FakeJob::setExpectedError(int errorCode)
+{
+    m_errorCode = errorCode;
 }
 
 void FakeJob::start()
@@ -42,5 +45,19 @@ void FakeJob::start()
 
 void FakeJob::onTimeout()
 {
+    if (m_errorCode == KJob::NoError)
+        m_done = true;
+
+    setError(m_errorCode);
     emitResult();
+}
+
+bool FakeJob::isDone() const
+{
+    return m_done;
+}
+
+int FakeJob::expectedError() const
+{
+    return m_errorCode;
 }

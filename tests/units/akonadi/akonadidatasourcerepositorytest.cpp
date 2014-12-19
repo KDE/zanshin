@@ -47,7 +47,7 @@ private slots:
         auto source = Domain::DataSource::Ptr::create();
 
         // A mock modify job
-        auto collectionModifyJob = new MockAkonadiJob(this);
+        auto collectionModifyJob = new FakeJob(this);
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
