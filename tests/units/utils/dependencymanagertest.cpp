@@ -52,10 +52,12 @@ class DependencyManagerTest : public QObject
     Q_OBJECT
 private:
     static bool s_firstImplFactoryCalled;
+    static DependencyManager *s_manager;
 
-    static Interface *firstImplFactory()
+    static Interface *firstImplFactory(DependencyManager *manager)
     {
         s_firstImplFactoryCalled = true;
+        s_manager = manager;
         return new FirstImplementation;
     }
 
@@ -71,25 +73,31 @@ private slots:
     void shouldAllowOurOwnFactory()
     {
         s_firstImplFactoryCalled = false;
+        s_manager = nullptr;
         DependencyManager deps;
         deps.add<Interface>(&DependencyManagerTest::firstImplFactory);
         Interface *object = deps.create<Interface>();
         QVERIFY(dynamic_cast<FirstImplementation*>(object) != 0);
         QVERIFY(s_firstImplFactoryCalled);
+        QVERIFY(s_manager == &deps);
     }
 
     void shouldAllowOurOwnFactoryAsLambda()
     {
 #ifdef Q_COMPILER_LAMBDA
         bool ownFactoryCalled = false;
+        DependencyManager *managerCalled = nullptr;
+
         DependencyManager deps;
-        deps.add<Interface>([&]() -> Interface* {
+        deps.add<Interface>([&](DependencyManager *manager) -> Interface* {
             ownFactoryCalled = true;
+            managerCalled = manager;
             return new FirstImplementation;
         });
         Interface *object = deps.create<Interface>();
         QVERIFY(dynamic_cast<FirstImplementation*>(object) != 0);
         QVERIFY(ownFactoryCalled);
+        QVERIFY(managerCalled == &deps);
 #endif
     }
 
@@ -130,6 +138,7 @@ private slots:
 };
 
 bool DependencyManagerTest::s_firstImplFactoryCalled = false;
+DependencyManager *DependencyManagerTest::s_manager = nullptr;
 
 QTEST_MAIN(DependencyManagerTest)
 

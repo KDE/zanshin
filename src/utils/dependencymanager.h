@@ -39,20 +39,14 @@ namespace Utils {
 class DependencyManager;
 
 namespace Internal {
-    template<class Iface, class Impl>
-    Iface *standardFactory()
-    {
-        return new Impl;
-    }
-
     template<class Iface>
     class Provider
     {
     public:
 #ifdef Q_COMPILER_LAMBDA
-        typedef std::function<Iface*()> FactoryType;
+        typedef std::function<Iface*(DependencyManager*)> FactoryType;
 #else
-        typedef Iface *(*FactoryType)();
+        typedef Iface *(*FactoryType)(DependencyManager*);
 #endif
 
         Provider()
@@ -77,10 +71,10 @@ namespace Internal {
             return *this;
         }
 
-        Iface *operator()() const
+        Iface *operator()(DependencyManager *deps) const
         {
             Q_ASSERT(m_factory != 0);
-            return m_factory();
+            return m_factory(deps);
         }
 
     private:
@@ -98,7 +92,7 @@ namespace Internal {
 
         static Iface *create(DependencyManager *manager)
         {
-            return s_providers.value(manager)();
+            return s_providers.value(manager)(manager);
         }
 
         static int providersCount()
@@ -140,7 +134,7 @@ public:
     template<class Iface, class Impl>
     void add()
     {
-        add<Iface>(Internal::standardFactory<Iface, Impl>);
+        add<Iface>(DependencyManager::standardFactory<Iface, Impl>);
     }
 
     template<class Iface>
@@ -151,6 +145,12 @@ public:
 
 private:
     QList<void (*)(DependencyManager*)> m_cleanupFunctions;
+
+    template<class Iface, class Impl>
+    static Iface *standardFactory(DependencyManager *)
+    {
+        return new Impl;
+    }
 };
 
 }
