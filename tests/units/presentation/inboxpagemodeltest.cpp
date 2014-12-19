@@ -36,6 +36,17 @@
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &message)
+    {
+        m_message = message;
+    }
+
+    QString m_message;
+};
+
 class InboxPageModelTest : public QObject
 {
     Q_OBJECT
@@ -216,6 +227,39 @@ private slots:
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).exactly(1));
+    }
+
+    void shouldGetAnErrorMessageWhenAddTaskFailed()
+    {
+        // GIVEN
+
+        // ... in fact we won't list any model
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        // We'll gladly create a task though
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError);
+        taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(job);
+
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
+
+        FakeErrorHandler errorHandler;
+        inbox.setErrorHandler(&errorHandler);
+
+        // WHEN
+        inbox.addTask("New task");
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Add task New task in Inbox failed"));
     }
 
     void shouldDeleteItems()

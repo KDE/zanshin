@@ -34,7 +34,8 @@ PageModel::PageModel(const Domain::TaskQueries::Ptr &taskQueries,
       m_centralListModel(0),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository)
+      m_noteRepository(noteRepository),
+      m_errorHandler(0)
 {
 }
 
@@ -58,4 +59,14 @@ Domain::TaskRepository::Ptr PageModel::taskRepository() const
 Domain::NoteRepository::Ptr PageModel::noteRepository() const
 {
     return m_noteRepository;
+}
+
+ErrorHandler *PageModel::errorHandler() const
+{
+    return m_errorHandler;
+}
+
+void PageModel::setErrorHandler(ErrorHandler *errorHandler)
+{
+    m_errorHandler = errorHandler;
 }

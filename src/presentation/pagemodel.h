@@ -32,6 +32,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
+#include "presentation/errorhandler.h"
 
 class QModelIndex;
 
@@ -49,9 +50,12 @@ public:
 
     QAbstractItemModel *centralListModel();
 
+    ErrorHandler *errorHandler() const;
+
 public slots:
     virtual void addTask(const QString &title) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
+    void setErrorHandler(ErrorHandler *errorHandler);
 
 protected:
     Domain::TaskQueries::Ptr taskQueries() const;
@@ -68,6 +72,8 @@ private:
 
     Domain::TaskRepository::Ptr m_taskRepository;
     Domain::NoteRepository::Ptr m_noteRepository;
+
+    ErrorHandler *m_errorHandler;
 };
 
 }

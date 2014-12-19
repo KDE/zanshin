@@ -52,7 +52,11 @@ void InboxPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    taskRepository()->create(task);
+    auto job = taskRepository()->create(task);
+    if (!errorHandler())
+        return;
+
+    errorHandler()->installHandler(job, tr("Add task %1 in Inbox failed").arg(title));
 }
 
 void InboxPageModel::removeItem(const QModelIndex &index)

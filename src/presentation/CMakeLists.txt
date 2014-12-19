@@ -6,6 +6,7 @@ set(presentation_SRCS
     availablesourcesmodel.cpp
     contextpagemodel.cpp
     datasourcelistmodel.cpp
+    errorhandler.cpp
     inboxpagemodel.cpp
     metatypes.cpp
     pagemodel.cpp
