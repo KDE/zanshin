@@ -224,7 +224,8 @@ private slots:
         const QStringList expectedRemoteIds = { "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
                                                 "{1d33862f-f274-4c67-ab6c-362d56521ff5}",
                                                 "{1d33862f-f274-4c67-ab6c-362d56521ff6}",
-                                                "{7824df00-2fd6-47a4-8319-52659dc82005}" };
+                                                "{7824df00-2fd6-47a4-8319-52659dc82005}",
+                                                "{7824df00-2fd6-47a4-8319-52659dc82006}" };
 
         // WHEN
         auto job = storage.fetchItems(calendar2());
@@ -552,6 +553,40 @@ private slots:
         }
     }
 
+    void shouldNotifyItemTagRemoved() // aka dissociate
+    {
+        // GIVEN
+        Akonadi::Storage storage;
+        Akonadi::Tag tag = fetchTagByGID("philosophy-tag");
+        const QString expectedRemoteIds = {"{7824df00-2fd6-47a4-8319-52659dc82006}"};
+        auto job = storage.fetchTagItems(tag);
+        AKVERIFYEXEC(job->kjob());
+
+        auto item = job->items().first();
+        QCOMPARE(item.remoteId(), expectedRemoteIds);
+
+        QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
+        QVERIFY(!item.attributes().isEmpty());
+        QVERIFY(item.modificationTime().isValid());
+        QVERIFY(!item.flags().isEmpty());
+        QVERIFY(!item.tags().isEmpty());
+
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+
+        // WHEN
+        item.clearTag(tag);
+        auto jobUpdate = storage.updateItem(item);
+        AKVERIFYEXEC(jobUpdate);
+        QTRY_VERIFY(!spy.isEmpty());
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), item.id());
+        QVERIFY(!notifiedItem.tags().contains(tag));
+    }
 
     void shouldNotifyTagAdded()
     {
