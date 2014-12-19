@@ -27,19 +27,25 @@
 
 #include <QListView>
 
-#include "akonadi/akonaditaskqueries.h"
-#include "akonadi/akonaditaskrepository.h"
+#include "app/dependencies.h"
+
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
+
 #include "presentation/tasklistmodel.h"
+
+#include "utils/dependencymanager.h"
 
 int main(int argc, char **argv)
 {
+    App::initializeDependencies();
     KAboutData about("tasklister", "tasklister",
                      ki18n("Lists all the tasks"), "1.0");
     KCmdLineArgs::init(argc, argv, &about);
     KApplication app;
 
-    auto repository = Akonadi::TaskRepository::Ptr::create();
-    auto queries = Akonadi::TaskQueries::Ptr::create();
+    auto repository = Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>();
+    auto queries = Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>();
     auto taskList = queries->findAll();
 
     QListView view;

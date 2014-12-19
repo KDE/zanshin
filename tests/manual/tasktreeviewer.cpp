@@ -28,25 +28,31 @@
 
 #include <QTreeView>
 
-#include "akonadi/akonaditaskqueries.h"
-#include "akonadi/akonaditaskrepository.h"
+#include "app/dependencies.h"
+
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
+
 #include "presentation/querytreemodel.h"
+
+#include "utils/dependencymanager.h"
 
 int main(int argc, char **argv)
 {
+    App::initializeDependencies();
     KAboutData about("tasktreeviewer", "tasktreeviewer",
                      ki18n("Show all the tasks in tree"), "1.0");
     KCmdLineArgs::init(argc, argv, &about);
     KApplication app;
 
-    Akonadi::TaskRepository repository;
-    Akonadi::TaskQueries queries;
+    auto repository = Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>();
+    auto queries = Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>();
 
     auto treeQuery = [&](const Domain::Task::Ptr &task) {
         if (!task)
-            return queries.findTopLevel();
+            return queries->findTopLevel();
         else
-            return queries.findChildren(task);
+            return queries->findChildren(task);
     };
 
     auto treeFlags = [](const Domain::Task::Ptr &) {
@@ -78,7 +84,7 @@ int main(int argc, char **argv)
             task->setDone(value.toInt() == Qt::Checked);
         }
 
-        repository.update(task);
+        repository->update(task);
         return true;
     };
 
