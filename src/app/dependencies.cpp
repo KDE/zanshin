@@ -37,6 +37,11 @@
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 
+#include "akonadi/akonadimessaging.h"
+#include "akonadi/akonadimonitorimpl.h"
+#include "akonadi/akonadiserializer.h"
+#include "akonadi/akonadistorage.h"
+
 #include "presentation/applicationmodel.h"
 
 #include "utils/dependencymanager.h"
@@ -44,19 +49,73 @@
 void App::initializeDependencies()
 {
     auto &deps = Utils::DependencyManager::globalInstance();
-    deps.add<Domain::ArtifactQueries, Akonadi::ArtifactQueries>();
-    deps.add<Domain::ContextQueries, Akonadi::ContextQueries>();
-    deps.add<Domain::ContextRepository, Akonadi::ContextRepository>();
-    deps.add<Domain::DataSourceQueries, Akonadi::DataSourceQueries>();
-    deps.add<Domain::DataSourceRepository, Akonadi::DataSourceRepository>();
-    deps.add<Domain::NoteQueries, Akonadi::NoteQueries>();
-    deps.add<Domain::NoteRepository, Akonadi::NoteRepository>();
-    deps.add<Domain::ProjectQueries, Akonadi::ProjectQueries>();
-    deps.add<Domain::ProjectRepository, Akonadi::ProjectRepository>();
-    deps.add<Domain::TagQueries, Akonadi::TagQueries>();
-    deps.add<Domain::TagRepository, Akonadi::TagRepository>();
-    deps.add<Domain::TaskQueries, Akonadi::TaskQueries>();
-    deps.add<Domain::TaskRepository, Akonadi::TaskRepository>();
+
+    deps.add<Akonadi::MessagingInterface, Akonadi::Messaging>();
+    deps.add<Akonadi::MonitorInterface, Akonadi::MonitorImpl>();
+    deps.add<Akonadi::SerializerInterface, Akonadi::Serializer>();
+    deps.add<Akonadi::StorageInterface, Akonadi::Storage>();
+
+
+    deps.add<Domain::ArtifactQueries,
+             Akonadi::ArtifactQueries(Akonadi::StorageInterface*,
+                                      Akonadi::SerializerInterface*,
+                                      Akonadi::MonitorInterface*)>();
+
+    deps.add<Domain::ContextQueries,
+             Akonadi::ContextQueries(Akonadi::StorageInterface*,
+                                     Akonadi::SerializerInterface*,
+                                     Akonadi::MonitorInterface*)>();
+
+    deps.add<Domain::ContextRepository,
+             Akonadi::ContextRepository(Akonadi::StorageInterface*,
+                                        Akonadi::SerializerInterface*)>();
+
+    deps.add<Domain::DataSourceQueries,
+             Akonadi::DataSourceQueries(Akonadi::StorageInterface*,
+                                        Akonadi::SerializerInterface*,
+                                        Akonadi::MonitorInterface*)>();
+
+    deps.add<Domain::DataSourceRepository,
+             Akonadi::DataSourceRepository(Akonadi::StorageInterface*,
+                                           Akonadi::SerializerInterface*)>();
+
+    deps.add<Domain::NoteQueries,
+             Akonadi::NoteQueries(Akonadi::StorageInterface*,
+                                  Akonadi::SerializerInterface*,
+                                  Akonadi::MonitorInterface*)>();
+
+    deps.add<Domain::NoteRepository,
+             Akonadi::NoteRepository(Akonadi::StorageInterface*,
+                                     Akonadi::SerializerInterface*)>();
+
+    deps.add<Domain::ProjectQueries,
+             Akonadi::ProjectQueries(Akonadi::StorageInterface*,
+                                     Akonadi::SerializerInterface*,
+                                     Akonadi::MonitorInterface*)>();
+
+    deps.add<Domain::ProjectRepository,
+             Akonadi::ProjectRepository(Akonadi::StorageInterface*,
+                                        Akonadi::SerializerInterface*)>();
+
+    deps.add<Domain::TagQueries,
+             Akonadi::TagQueries(Akonadi::StorageInterface*,
+                                 Akonadi::SerializerInterface*,
+                                 Akonadi::MonitorInterface*)>();
+
+    deps.add<Domain::TagRepository,
+             Akonadi::TagRepository(Akonadi::StorageInterface*,
+                                    Akonadi::SerializerInterface*)>();
+
+    deps.add<Domain::TaskQueries,
+             Akonadi::TaskQueries(Akonadi::StorageInterface*,
+                                  Akonadi::SerializerInterface*,
+                                  Akonadi::MonitorInterface*)>();
+
+    deps.add<Domain::TaskRepository,
+             Akonadi::TaskRepository(Akonadi::StorageInterface*,
+                                     Akonadi::SerializerInterface*,
+                                     Akonadi::MessagingInterface*)>();
+
 
     deps.add<Presentation::ApplicationModel,
              Presentation::ApplicationModel(Domain::ArtifactQueries*,
