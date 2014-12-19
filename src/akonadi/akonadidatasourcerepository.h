@@ -26,7 +26,7 @@
 
 #include "domain/datasourcerepository.h"
 
-#include "akonadi/akonadiserializer.h"
+#include "akonadi/akonadiserializerinterface.h"
 #include "akonadi/akonadistorageinterface.h"
 
 namespace Akonadi {
@@ -40,7 +40,6 @@ class DataSourceRepository : public QObject, public Domain::DataSourceRepository
 public:
     typedef QSharedPointer<DataSourceRepository> Ptr;
 
-    explicit DataSourceRepository(QObject *parent = 0);
     DataSourceRepository(const StorageInterface::Ptr &storage,
                          const SerializerInterface::Ptr &serializer);
 

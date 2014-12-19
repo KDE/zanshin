@@ -50,7 +50,6 @@ public:
     typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
-    explicit ProjectQueries(QObject *parent = 0);
     ProjectQueries(const StorageInterface::Ptr &storage,
                    const SerializerInterface::Ptr &serializer,
                    const MonitorInterface::Ptr &monitor);

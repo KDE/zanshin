@@ -27,24 +27,10 @@
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadicollectionsearchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadimonitorimpl.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
 
 #include "utils/jobhandler.h"
 
 using namespace Akonadi;
-
-DataSourceQueries::DataSourceQueries(QObject *parent)
-    : QObject(parent),
-      m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_monitor(new MonitorImpl)
-{
-    connect(m_monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(onCollectionAdded(Akonadi::Collection)));
-    connect(m_monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(onCollectionRemoved(Akonadi::Collection)));
-    connect(m_monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(onCollectionChanged(Akonadi::Collection)));
-}
 
 DataSourceQueries::DataSourceQueries(const StorageInterface::Ptr &storage,
                                      const SerializerInterface::Ptr &serializer,

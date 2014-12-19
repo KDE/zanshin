@@ -56,7 +56,6 @@ public:
     typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
 
-    explicit TaskQueries(QObject *parent = 0);
     TaskQueries(const StorageInterface::Ptr &storage,
                 const SerializerInterface::Ptr &serializer,
                 const MonitorInterface::Ptr &monitor);

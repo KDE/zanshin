@@ -27,30 +27,12 @@
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
 #include "akonaditagfetchjobinterface.h"
-#include "akonadimonitorimpl.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
 
 #include "utils/jobhandler.h"
 #include <QByteArray>
 #include <QDebug>
 
 using namespace Akonadi;
-
-ContextQueries::ContextQueries(QObject *parent)
-    : QObject(parent),
-      m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_monitor(new MonitorImpl)
-{
-    connect(m_monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
-    connect(m_monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
-    connect(m_monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
-
-    connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
-}
 
 ContextQueries::ContextQueries(const StorageInterface::Ptr &storage,
                                const SerializerInterface::Ptr &serializer,
@@ -92,7 +74,7 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
             m_serializer->updateContextFromTag(context, tag);
         });
         m_findAll->setPredicateFunction([this] (const Akonadi::Tag &tag) {
-            return tag.type() == Akonadi::Serializer::contextTagType();
+            return tag.type() == Akonadi::SerializerInterface::contextTagType();
         });
         m_findAll->setRepresentsFunction([this] (const Akonadi::Tag &tag, const Domain::Context::Ptr &context) {
             return m_serializer->isContextTag(context, tag);

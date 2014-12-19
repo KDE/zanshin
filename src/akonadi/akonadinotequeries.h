@@ -49,7 +49,6 @@ public:
     typedef Domain::QueryResultProvider<Domain::Note::Ptr> NoteProvider;
     typedef Domain::QueryResult<Domain::Note::Ptr> NoteResult;
 
-    NoteQueries();
     NoteQueries(const StorageInterface::Ptr &storage,
                 const SerializerInterface::Ptr &serializer,
                 const MonitorInterface::Ptr &monitor);

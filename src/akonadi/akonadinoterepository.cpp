@@ -27,18 +27,9 @@
 #include <Akonadi/Item>
 
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
 #include "akonadistoragesettings.h"
 
 using namespace Akonadi;
-
-NoteRepository::NoteRepository(QObject *parent)
-    : QObject(parent),
-      m_storage(new Storage),
-      m_serializer(new Serializer)
-{
-}
 
 NoteRepository::NoteRepository(const StorageInterface::Ptr &storage,
                                const SerializerInterface::Ptr &serializer)

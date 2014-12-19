@@ -39,7 +39,6 @@ class NoteRepository : public QObject, public Domain::NoteRepository
 public:
     typedef QSharedPointer<NoteRepository> Ptr;
 
-    explicit NoteRepository(QObject *parent = 0);
     NoteRepository(const StorageInterface::Ptr &storage,
                    const SerializerInterface::Ptr &serializer);
 

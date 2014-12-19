@@ -26,23 +26,10 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadimonitorimpl.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
 
 #include "utils/jobhandler.h"
 
 using namespace Akonadi;
-
-NoteQueries::NoteQueries()
-    : m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_monitor(new MonitorImpl)
-{
-    connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
-}
 
 NoteQueries::NoteQueries(const StorageInterface::Ptr &storage,
                          const SerializerInterface::Ptr &serializer,

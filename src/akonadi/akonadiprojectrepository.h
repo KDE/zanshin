@@ -37,7 +37,6 @@ class ProjectRepository : public QObject, public Domain::ProjectRepository
 public:
     typedef QSharedPointer<ProjectRepository> Ptr;
 
-    explicit ProjectRepository(QObject *parent = 0);
     ProjectRepository(const StorageInterface::Ptr &storage,
                       const SerializerInterface::Ptr &serializer);
 

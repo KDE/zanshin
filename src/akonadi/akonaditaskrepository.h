@@ -41,7 +41,6 @@ class TaskRepository : public QObject, public Domain::TaskRepository
 public:
     typedef QSharedPointer<TaskRepository> Ptr;
 
-    explicit TaskRepository(QObject *parent = 0);
     TaskRepository(const StorageInterface::Ptr &storage,
                    const SerializerInterface::Ptr &serializer,
                    const MessagingInterface::Ptr &messaging);

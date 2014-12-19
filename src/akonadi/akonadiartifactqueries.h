@@ -53,7 +53,6 @@ public:
     typedef Domain::QueryResultProvider<Domain::Tag::Ptr> TagProvider;
     typedef Domain::QueryResult<Domain::Tag::Ptr> TagResult;
 
-    explicit ArtifactQueries(QObject *parent = 0);
     ArtifactQueries(const StorageInterface::Ptr &storage,
                     const SerializerInterface::Ptr &serializer,
                     const MonitorInterface::Ptr &monitor);

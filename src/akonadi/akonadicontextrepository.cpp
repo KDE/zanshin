@@ -26,19 +26,10 @@
 #include "akonadicontextrepository.h"
 
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
 
 #include "utils/compositejob.h"
 
 using namespace Akonadi;
-
-ContextRepository::ContextRepository(QObject *parent) :
-    QObject(parent),
-    m_storage(new Storage),
-    m_serializer(new Serializer)
-{
-}
 
 ContextRepository::ContextRepository(const StorageInterface::Ptr &storage,
                                      const SerializerInterface::Ptr &serializer):

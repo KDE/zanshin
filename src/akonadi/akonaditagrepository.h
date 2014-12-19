@@ -41,7 +41,6 @@ class TagRepository : public QObject, public Domain::TagRepository
 public:
     typedef QSharedPointer<TagRepository> Ptr;
 
-    explicit TagRepository(QObject* parent = 0);
     TagRepository(const StorageInterface::Ptr &storage,
                   const SerializerInterface::Ptr &serializer);
 

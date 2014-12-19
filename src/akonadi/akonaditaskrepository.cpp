@@ -28,23 +28,12 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadimessaging.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
 #include "akonadistoragesettings.h"
 
 #include "utils/compositejob.h"
 
 using namespace Akonadi;
 using namespace Utils;
-
-TaskRepository::TaskRepository(QObject *parent)
-    : QObject(parent),
-      m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_messaging(new Messaging)
-{
-}
 
 TaskRepository::TaskRepository(const StorageInterface::Ptr &storage,
                                const SerializerInterface::Ptr &serializer,

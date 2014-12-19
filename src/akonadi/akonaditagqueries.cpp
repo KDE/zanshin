@@ -28,28 +28,9 @@
 #include "akonadiitemfetchjobinterface.h"
 #include "akonaditagfetchjobinterface.h"
 
-#include "akonadimonitorimpl.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
-
 #include "utils/jobhandler.h"
 
 using namespace Akonadi;
-
-TagQueries::TagQueries(QObject *parent)
-    : QObject(parent),
-      m_storage(new Storage),
-      m_serializer(new Serializer),
-      m_monitor(new MonitorImpl)
-{
-    connect(m_monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
-    connect(m_monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
-    connect(m_monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
-
-    connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
-}
 
 TagQueries::TagQueries(const StorageInterface::Ptr &storage, const SerializerInterface::Ptr &serializer, const MonitorInterface::Ptr &monitor)
     : m_storage(storage),

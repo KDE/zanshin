@@ -25,20 +25,11 @@
 #include "akonaditagrepository.h"
 
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
 
 #include "utils/compositejob.h"
 
 using namespace Akonadi;
 
-
-TagRepository::TagRepository(QObject *parent)
-    : QObject(parent),
-      m_storage(new Storage),
-      m_serializer(new Serializer)
-{
-}
 
 TagRepository::TagRepository(const StorageInterface::Ptr &storage,
                              const SerializerInterface::Ptr &serializer)

@@ -54,7 +54,6 @@ public:
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
-    explicit DataSourceQueries(QObject *parent = 0);
     DataSourceQueries(const StorageInterface::Ptr &storage,
                       const SerializerInterface::Ptr &serializer,
                       const MonitorInterface::Ptr &monitor);

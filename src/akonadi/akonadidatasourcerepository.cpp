@@ -24,17 +24,7 @@
 
 #include "akonadidatasourcerepository.h"
 
-#include "akonadiserializer.h"
-#include "akonadistorage.h"
-
 using namespace Akonadi;
-
-DataSourceRepository::DataSourceRepository(QObject *parent)
-    : QObject(parent),
-      m_storage(new Storage),
-      m_serializer(new Serializer)
-{
-}
 
 DataSourceRepository::DataSourceRepository(const StorageInterface::Ptr &storage,
                                            const SerializerInterface::Ptr &serializer)
