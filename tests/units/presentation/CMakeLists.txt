@@ -4,6 +4,7 @@ zanshin_auto_tests(
   artifactfilterproxymodeltest
   availablepagesmodeltest
   availablesourcesmodeltest
+  errorhandlertest
   inboxpagemodeltest
   metatypestest
   pagemodeltest
