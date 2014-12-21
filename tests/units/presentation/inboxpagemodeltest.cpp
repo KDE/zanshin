@@ -377,6 +377,49 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).exactly(0));
     }
+
+    void shouldGetAnErrorMessageWhenUpdateTaskFailed()
+    {
+        // GIVEN
+
+        // One note and one task
+        auto rootTask = Domain::Task::Ptr::create();
+        rootTask->setTitle("rootTask");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(rootTask);
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
+        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
+
+        QAbstractItemModel *model = inbox.centralListModel();
+        const QModelIndex rootTaskIndex = model->index(0, 0);
+        FakeErrorHandler errorHandler;
+        inbox.setErrorHandler(&errorHandler);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError);
+        taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(job);
+
+        QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Update task rootTask in Inbox failed"));
+    }
 };
 
 QTEST_MAIN(InboxPageModelTest)

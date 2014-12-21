@@ -115,12 +115,17 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
         }
 
         if (auto task = artifact.dynamicCast<Domain::Task>()) {
+            auto currentTitle = task->title();
             if (role == Qt::EditRole)
                 task->setTitle(value.toString());
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            taskRepository()->update(task);
+            auto job = taskRepository()->update(task);
+            if (!errorHandler())
+                return true;
+
+            errorHandler()->installHandler(job, tr("Update task %1 in Inbox failed").arg(currentTitle));
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
