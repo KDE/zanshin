@@ -64,8 +64,13 @@ void InboxPageModel::removeItem(const QModelIndex &index)
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
-    if (task)
-        taskRepository()->remove(task);
+    if (task) {
+        auto job = taskRepository()->remove(task);
+        if (!errorHandler())
+            return;
+
+        errorHandler()->installHandler(job, tr("Remove task %1 from Inbox failed").arg(task->title()));
+    }
 }
 
 QAbstractItemModel *InboxPageModel::createCentralListModel()

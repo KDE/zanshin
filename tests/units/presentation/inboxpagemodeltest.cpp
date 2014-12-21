@@ -299,6 +299,49 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).exactly(1));
     }
 
+    void shouldGetAnErrorMessageWhenDeleteItemsFailed()
+    {
+        // GIVEN
+
+        // Two tasks
+        auto task1 = Domain::Task::Ptr::create();
+        auto task2 = Domain::Task::Ptr::create();
+        task2->setTitle("task2");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(task1);
+        artifactProvider->append(task2);
+
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
+        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError);
+        taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(job);
+
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        inbox.setErrorHandler(&errorHandler);
+
+        // WHEN
+        const QModelIndex index = inbox.centralListModel()->index(1, 0);
+        inbox.removeItem(index);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Remove task task2 from Inbox failed"));
+    }
+
     // Clearly this one will go away when we'll get more support of notes
     void shouldNotTryToDeleteNotes()
     {
