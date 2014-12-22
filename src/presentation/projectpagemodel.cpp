@@ -59,7 +59,11 @@ void ProjectPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    taskRepository()->createInProject(task, m_project);
+    auto job = taskRepository()->createInProject(task, m_project);
+    if (!errorHandler())
+        return;
+
+    errorHandler()->installHandler(job, tr("Add task %1 in project %2 failed").arg(title).arg(m_project->name()));
 }
 
 void ProjectPageModel::removeItem(const QModelIndex &index)
