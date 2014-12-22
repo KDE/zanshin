@@ -132,8 +132,13 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             if (role != Qt::EditRole)
                 return false;
 
+            auto currentTitle = note->title();
             note->setTitle(value.toString());
-            noteRepository()->save(note);
+            auto job = noteRepository()->save(note);
+            if (!errorHandler())
+                return true;
+
+            errorHandler()->installHandler(job, tr("Update note %1 in Inbox failed").arg(currentTitle));
             return true;
 
         }

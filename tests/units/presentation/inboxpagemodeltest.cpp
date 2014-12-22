@@ -420,6 +420,46 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Update task rootTask in Inbox failed"));
     }
+
+    void shouldGetAnErrorMessageWhenUpdateNoteFailed()
+    {   
+        // GIVEN
+        
+        // One note and one task
+        auto rootNote = Domain::Note::Ptr::create();
+        rootNote->setTitle("rootNote");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(rootNote);
+        
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
+        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
+        
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+        
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
+        
+        QAbstractItemModel *model = inbox.centralListModel();
+        const QModelIndex rootNoteIndex = model->index(0, 0);
+        FakeErrorHandler errorHandler;
+        inbox.setErrorHandler(&errorHandler);
+        
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError);
+        noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).thenReturn(job);
+        
+        QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
+        
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Update note rootNote in Inbox failed"));
+    }
 };
 
 QTEST_MAIN(InboxPageModelTest)
