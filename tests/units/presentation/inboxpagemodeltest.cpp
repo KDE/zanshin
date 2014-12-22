@@ -460,6 +460,56 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Update note rootNote in Inbox failed"));
     }
+
+    void shouldGetAnErrorMessageWhenAssociateTaskFailed()
+    {
+        // GIVEN
+
+        // One note and one task
+        auto rootTask = Domain::Task::Ptr::create();
+        rootTask->setTitle("rootTask");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(rootTask);
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
+        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
+
+        QAbstractItemModel *model = inbox.centralListModel();
+        const QModelIndex rootTaskIndex = model->index(0, 0);
+        FakeErrorHandler errorHandler;
+        inbox.setErrorHandler(&errorHandler);
+
+        // WHEN
+        auto childTask3 = Domain::Task::Ptr::create();
+        childTask3->setTitle("childTask3");
+        auto childTask4 = Domain::Task::Ptr::create();
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError);
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).thenReturn(job);
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).thenReturn(new FakeJob(this));
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask3 << childTask4));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, rootTaskIndex);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Drop task childTask3 on rootTask failed"));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
+    }
 };
 
 QTEST_MAIN(InboxPageModelTest)

@@ -167,7 +167,11 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
 
         foreach(const auto &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            taskRepository()->associate(parentTask, childTask);
+            auto job = taskRepository()->associate(parentTask, childTask);
+            if (!errorHandler())
+                continue;
+
+            errorHandler()->installHandler(job, tr("Drop task %1 on %2 failed").arg(childTask->title()).arg(parentTask->title()));
         }
 
         return true;
