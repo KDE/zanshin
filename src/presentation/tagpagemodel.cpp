@@ -124,12 +124,17 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
         }
 
         if (auto task = artifact.dynamicCast<Domain::Task>()) {
+            const auto currentTitle = task->title();
             if (role == Qt::EditRole)
                 task->setTitle(value.toString());
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            taskRepository()->update(task);
+            const auto job = taskRepository()->update(task);
+            if (!errorHandler())
+                return true;
+
+            errorHandler()->installHandler(job, tr("Cannot modify task %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {

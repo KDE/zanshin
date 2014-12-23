@@ -345,6 +345,55 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in tag Tag1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenUpdateTaskFailed()
+    {
+        // GIVEN
+
+        // One Tag
+        auto tag = Domain::Tag::Ptr::create();
+        tag->setName("Tag1");
+
+        // One note and one task
+        auto rootTask = Domain::Task::Ptr::create();
+        rootTask->setTitle("rootTask");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(rootTask);
+
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+
+        Presentation::TagPageModel page(tag,
+                                        tagQueriesMock.getInstance(),
+                                        tagRepositoryMock.getInstance(),
+                                        taskQueriesMock.getInstance(),
+                                        taskRepositoryMock.getInstance(),
+                                        noteRepositoryMock.getInstance());
+
+        QAbstractItemModel *model = page.centralListModel();
+        const QModelIndex rootTaskIndex = model->index(0, 0);
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(job);
+
+        QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify task rootTask in tag Tag1: Foo"));
+    }
 };
 
 QTEST_MAIN(TagPageModelTest)
