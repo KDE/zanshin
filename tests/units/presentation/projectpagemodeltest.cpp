@@ -504,6 +504,60 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify note rootNote in project Project1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenAssociateTaskFailed()
+    {
+        // GIVEN
+
+        // One project
+        auto project = Domain::Project::Ptr::create();
+        project->setName("Project1");
+
+        // One note and one task
+        auto rootTask = Domain::Task::Ptr::create();
+        rootTask->setTitle("rootTask");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(rootTask);
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::ProjectPageModel page(project,
+                                            projectQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
+
+        QAbstractItemModel *model = page.centralListModel();
+        const QModelIndex rootTaskIndex = model->index(0, 0);
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        auto childTask3 = Domain::Task::Ptr::create();
+        childTask3->setTitle("childTask3");
+        auto childTask4 = Domain::Task::Ptr::create();
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).thenReturn(job);
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).thenReturn(new FakeJob(this));
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask3 << childTask4));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, rootTaskIndex);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask3 as a sub-task of rootTask: Foo"));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
+    }
 };
 
 QTEST_MAIN(ProjectPageModelTest)

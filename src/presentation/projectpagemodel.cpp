@@ -174,7 +174,11 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
 
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            taskRepository()->associate(parentTask, childTask);
+            const auto job = taskRepository()->associate(parentTask, childTask);
+            if (!errorHandler())
+                continue;
+
+            errorHandler()->installHandler(job, tr("Cannot move task %1 as a sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 
         return true;
