@@ -142,7 +142,11 @@ void AvailablePagesModel::addContext(const QString &name)
 {
     auto context = Domain::Context::Ptr::create();
     context->setName(name);
-    m_contextRepository->create(context);
+    const auto job = m_contextRepository->create(context);
+    if (!errorHandler())
+        return;
+
+    errorHandler()->installHandler(job, tr("Cannot add context %1").arg(name));
 }
 
 void AvailablePagesModel::addTag(const QString &name)

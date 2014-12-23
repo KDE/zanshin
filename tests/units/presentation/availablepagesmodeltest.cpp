@@ -576,6 +576,37 @@ private slots:
                                                                        .exactly(1));
     }
 
+    void shouldGetAnErrorMessageWhenAddContextFailed()
+    {
+        // GIVEN
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
+                                                                 .thenReturn(job);
+
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                Domain::ProjectQueries::Ptr(),
+                                                Domain::ProjectRepository::Ptr(),
+                                                Domain::ContextQueries::Ptr(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                Domain::TagQueries::Ptr(),
+                                                Domain::TagRepository::Ptr());
+        FakeErrorHandler errorHandler;
+        pages.setErrorHandler(&errorHandler);
+
+        // WHEN
+        pages.addContext("Foo");
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot add context Foo: Foo"));
+    }
+
     void shouldAddTags()
     {
         // GIVEN
