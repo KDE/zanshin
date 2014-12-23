@@ -139,8 +139,13 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
             if (role != Qt::EditRole)
                 return false;
 
+            const auto currentTitle = note->title();
             note->setTitle(value.toString());
-            noteRepository()->save(note);
+            const auto job = noteRepository()->save(note);
+            if (!errorHandler())
+                return true;
+
+            errorHandler()->installHandler(job, tr("Cannot modify note %1 in project %2").arg(currentTitle).arg(m_project->name()));
             return true;
 
         }
