@@ -47,6 +47,17 @@
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &message)
+    {
+        m_message = message;
+    }
+
+    QString m_message;
+};
+
 class AvailablePagesModelTest : public QObject
 {
     Q_OBJECT
@@ -501,6 +512,41 @@ private slots:
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
                                                                                any<Domain::DataSource::Ptr>())
                                                                          .exactly(1));
+    }
+
+    void shouldGetAnErrorMessageWhenAddProjectFailed()
+    {
+        // GIVEN
+
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName("Source1");
+
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
+                                                                       any<Domain::DataSource::Ptr>())
+                                                                 .thenReturn(job);
+
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                Domain::ProjectQueries::Ptr(),
+                                                projectRepositoryMock.getInstance(),
+                                                Domain::ContextQueries::Ptr(),
+                                                Domain::ContextRepository::Ptr(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                Domain::TagQueries::Ptr(),
+                                                Domain::TagRepository::Ptr());
+        FakeErrorHandler errorHandler;
+        pages.setErrorHandler(&errorHandler);
+
+        // WHEN
+        pages.addProject("Foo", source);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot add project Foo in dataSource Source1: Foo"));
     }
 
     void shouldAddContexts()

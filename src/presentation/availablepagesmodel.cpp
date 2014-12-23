@@ -131,7 +131,11 @@ void AvailablePagesModel::addProject(const QString &name, const Domain::DataSour
 {
     auto project = Domain::Project::Ptr::create();
     project->setName(name);
-    m_projectRepository->create(project, source);
+    const auto job = m_projectRepository->create(project, source);
+    if (!errorHandler())
+        return;
+
+    errorHandler()->installHandler(job, tr("Cannot add project %1 in dataSource %2").arg(name).arg(source->name()));
 }
 
 void AvailablePagesModel::addContext(const QString &name)
