@@ -394,6 +394,53 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify task rootTask in tag Tag1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenUpdateNoteFailed()
+    {
+        // GIVEN
+
+        // One Tag
+        auto tag = Domain::Tag::Ptr::create();
+        tag->setName("Tag1");
+
+        // One note and one task
+        auto rootNote = Domain::Note::Ptr::create();
+        rootNote->setTitle("rootNote");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(rootNote);
+
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+
+        Presentation::TagPageModel page(tag,
+                                        tagQueriesMock.getInstance(),
+                                        tagRepositoryMock.getInstance(),
+                                        taskQueriesMock.getInstance(),
+                                        taskRepositoryMock.getInstance(),
+                                        noteRepositoryMock.getInstance());
+
+        QAbstractItemModel *model = page.centralListModel();
+        const QModelIndex rootNoteIndex = model->index(0, 0);
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).thenReturn(job);
+
+        QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify note rootNote in tag Tag1: Foo"));
+    }
 };
 
 QTEST_MAIN(TagPageModelTest)
