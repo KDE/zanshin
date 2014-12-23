@@ -324,6 +324,54 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).exactly(1));
     }
 
+    void shouldGetAnErrorMessageWhenDeleteItemsFailed()
+    {
+        // GIVEN
+
+        // One project
+        auto project = Domain::Project::Ptr::create();
+        project->setName("Project1");
+
+        // Two tasks
+        auto task1 = Domain::Task::Ptr::create();
+        auto task2 = Domain::Task::Ptr::create();
+        task2->setTitle("Task2");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(task1);
+        artifactProvider->append(task2);
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError);
+        taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(job);
+
+        Presentation::ProjectPageModel page(project,
+                                            projectQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        const QModelIndex index = page.centralListModel()->index(1, 0);
+        page.removeItem(index);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Remove task Task2 from project Project1 failed"));
+    }
+
     // Clearly this one will go away when we'll get more support of notes
     void shouldNotTryToDeleteNotes()
     {
