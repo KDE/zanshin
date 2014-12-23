@@ -39,6 +39,17 @@
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &message)
+    {
+        m_message = message;
+    }
+
+    QString m_message;
+};
+
 class TagPageModelTest : public QObject
 {
     Q_OBJECT
@@ -292,6 +303,47 @@ private slots:
 
         // THEN
         QVERIFY(tagRepositoryMock(&Domain::TagRepository::dissociate).when(tag, note).exactly(1));
+    }
+
+    void shouldGetAnErrorMessageWhenAddTaskFailed()
+    {
+        // GIVEN
+
+        // One Tag
+        auto tag = Domain::Tag::Ptr::create();
+        tag->setName("Tag1");
+
+        // ... in fact we won't list any model
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+
+        // We'll gladly create a task though
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::createInTag).when(any<Domain::Task::Ptr>(),
+                                                                          any<Domain::Tag::Ptr>())
+                                                                    .thenReturn(job);
+
+        Presentation::TagPageModel page(tag,
+                                        tagQueriesMock.getInstance(),
+                                        tagRepositoryMock.getInstance(),
+                                        taskQueriesMock.getInstance(),
+                                        taskRepositoryMock.getInstance(),
+                                        noteRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        page.addTask("New task");
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in tag Tag1: Foo"));
     }
 };
 
