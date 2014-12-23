@@ -153,7 +153,11 @@ void AvailablePagesModel::addTag(const QString &name)
 {
     auto tag = Domain::Tag::Ptr::create();
     tag->setName(name);
-    m_tagRepository->create(tag);
+    const auto job = m_tagRepository->create(tag);
+    if (!errorHandler())
+        return;
+
+    errorHandler()->installHandler(job, tr("Cannot add tag %1").arg(name));
 }
 
 void AvailablePagesModel::removeItem(const QModelIndex &index)

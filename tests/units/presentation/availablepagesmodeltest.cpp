@@ -634,6 +634,37 @@ private slots:
                                                                        .exactly(1));
     }
 
+    void shouldGetAnErrorMessageWhenAddTagFailed()
+    {
+        // GIVEN
+
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
+                                                                 .thenReturn(job);
+
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                Domain::ProjectQueries::Ptr(),
+                                                Domain::ProjectRepository::Ptr(),
+                                                Domain::ContextQueries::Ptr(),
+                                                Domain::ContextRepository::Ptr(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                Domain::TagQueries::Ptr(),
+                                                tagRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        pages.setErrorHandler(&errorHandler);
+
+        // WHEN
+        pages.addTag("Foo");
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot add tag Foo: Foo"));
+    }
+
     void shouldRemoveProject()
     {
         // GIVEN
