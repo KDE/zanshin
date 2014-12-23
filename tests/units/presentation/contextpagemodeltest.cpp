@@ -43,6 +43,17 @@
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &message)
+    {
+        m_message = message;
+    }
+
+    QString m_message;
+};
+
 class ContextPageModelTest : public QObject
 {
     Q_OBJECT
@@ -227,6 +238,45 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
                                                                                   any<Domain::Context::Ptr>())
                                                                             .exactly(1));
+    }
+
+    void shouldGetAnErrorMessageWhenAddTaskFailed()
+    {
+        // GIVEN
+
+        // One Context
+        auto context = Domain::Context::Ptr::create();
+        context->setName("Context1");
+
+        // ... in fact we won't list any model
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        // We'll gladly create a task though
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
+                                                                          any<Domain::Context::Ptr>())
+                                                                    .thenReturn(job);
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        page.addTask("New task");
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in context Context1: Foo"));
     }
 };
 

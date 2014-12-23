@@ -60,7 +60,11 @@ void ContextPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    taskRepository()->createInContext(task, m_context);
+    const auto job = taskRepository()->createInContext(task, m_context);
+    if (!errorHandler())
+        return;
+
+    errorHandler()->installHandler(job, tr("Cannot add task %1 in context %2").arg(title).arg(m_context->name()));
 }
 
 void ContextPageModel::removeItem(const QModelIndex &index)
