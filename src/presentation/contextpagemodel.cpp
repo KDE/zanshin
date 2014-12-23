@@ -112,12 +112,17 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         if (role != Qt::EditRole && role != Qt::CheckStateRole)
             return false;
 
+        const auto currentTitle = task->title();
         if (role == Qt::EditRole)
             task->setTitle(value.toString());
         else
             task->setDone(value.toInt() == Qt::Checked);
 
-        taskRepository()->update(task);
+        const auto job = taskRepository()->update(task);
+        if (!errorHandler())
+            return true;
+
+        errorHandler()->installHandler(job, tr("Cannot modify task %1 in context %2").arg(currentTitle).arg(m_context->name()));
         return true;
     };
 

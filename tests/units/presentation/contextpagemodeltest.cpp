@@ -278,6 +278,54 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in context Context1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenUpdateTaskFailed()
+    {
+        // GIVEN
+
+        // A context
+        auto context = Domain::Context::Ptr::create();
+        context->setName("Context1");
+
+        // A task
+        auto task = Domain::Task::Ptr::create();
+        task->setTitle("A task");
+
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(task);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
+
+        QAbstractItemModel *model = page.centralListModel();
+        const QModelIndex taskIndex = model->index(0, 0);
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(job);
+
+        QVERIFY(model->setData(taskIndex, "newTask"));
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify task A task in context Context1: Foo"));
+    }
 };
 
 QTEST_MAIN(ContextPageModelTest)
