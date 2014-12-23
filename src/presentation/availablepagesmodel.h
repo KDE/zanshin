@@ -45,6 +45,8 @@ class QModelIndex;
 
 namespace Presentation {
 
+class ErrorHandler;
+
 class AvailablePagesModel : public QObject
 {
     Q_OBJECT
@@ -66,11 +68,14 @@ public:
 
     Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index);
 
+    ErrorHandler *errorHandler() const;
+
 public slots:
     void addProject(const QString &name, const Domain::DataSource::Ptr &source);
     void addContext(const QString &name);
     void addTag(const QString &name);
     void removeItem(const QModelIndex &index);
+    void setErrorHandler(ErrorHandler *errorHandler);
 
 private:
     QAbstractItemModel *createPageListModel();
@@ -98,6 +103,8 @@ private:
     QObjectPtr m_projectsObject;
     QObjectPtr m_contextsObject;
     QObjectPtr m_tagsObject;
+
+    ErrorHandler *m_errorHandler;
 };
 
 }

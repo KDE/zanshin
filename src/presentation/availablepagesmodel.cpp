@@ -69,7 +69,8 @@ AvailablePagesModel::AvailablePagesModel(const Domain::ArtifactQueries::Ptr &art
       m_taskRepository(taskRepository),
       m_noteRepository(noteRepository),
       m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository)
+      m_tagRepository(tagRepository),
+      m_errorHandler(0)
 {
 }
 
@@ -114,6 +115,16 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     }
 
     return 0;
+}
+
+ErrorHandler *AvailablePagesModel::errorHandler() const
+{
+    return m_errorHandler;
+}
+
+void AvailablePagesModel::setErrorHandler(ErrorHandler *errorHandler)
+{
+    m_errorHandler = errorHandler;
 }
 
 void AvailablePagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
