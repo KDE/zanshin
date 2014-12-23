@@ -326,6 +326,63 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify task A task in context Context1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenAssociateTaskFailed()
+    {
+        // GIVEN
+
+        // A context
+        auto context = Domain::Context::Ptr::create();
+        context->setName("Context1");
+
+        // A parent task and a child task
+        auto parentTask = Domain::Task::Ptr::create();
+        parentTask->setTitle("A parent task");
+        auto childTask = Domain::Task::Ptr::create();
+        childTask->setTitle("A child task");
+
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(parentTask);
+        taskProvider->append(childTask);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
+
+        // WHEN
+        QAbstractItemModel *model = page.centralListModel();
+        const QModelIndex parentTaskIndex = model->index(0, 0);
+        const QModelIndex childTaskIndex = model->index(1, 0);
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN a task is dropped
+        auto childTask2 = Domain::Task::Ptr::create();
+        childTask2->setTitle("childTask2");
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask2).thenReturn(job);
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask2));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, parentTaskIndex);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask2 as sub-task of A parent task: Foo"));
+    }
 };
 
 QTEST_MAIN(ContextPageModelTest)
