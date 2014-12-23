@@ -52,7 +52,7 @@ void InboxPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    auto job = taskRepository()->create(task);
+    const auto job = taskRepository()->create(task);
     if (!errorHandler())
         return;
 
@@ -65,7 +65,7 @@ void InboxPageModel::removeItem(const QModelIndex &index)
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     if (task) {
-        auto job = taskRepository()->remove(task);
+        const auto job = taskRepository()->remove(task);
         if (!errorHandler())
             return;
 
@@ -115,13 +115,13 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
         }
 
         if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            auto currentTitle = task->title();
+            const auto currentTitle = task->title();
             if (role == Qt::EditRole)
                 task->setTitle(value.toString());
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            auto job = taskRepository()->update(task);
+            const auto job = taskRepository()->update(task);
             if (!errorHandler())
                 return true;
 
@@ -132,9 +132,9 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             if (role != Qt::EditRole)
                 return false;
 
-            auto currentTitle = note->title();
+            const auto currentTitle = note->title();
             note->setTitle(value.toString());
-            auto job = noteRepository()->save(note);
+            const auto job = noteRepository()->save(note);
             if (!errorHandler())
                 return true;
 
@@ -167,7 +167,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
 
         foreach(const auto &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            auto job = taskRepository()->associate(parentTask, childTask);
+            const auto job = taskRepository()->associate(parentTask, childTask);
             if (!errorHandler())
                 continue;
 

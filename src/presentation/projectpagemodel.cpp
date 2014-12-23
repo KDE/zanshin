@@ -59,7 +59,7 @@ void ProjectPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    auto job = taskRepository()->createInProject(task, m_project);
+    const auto job = taskRepository()->createInProject(task, m_project);
     if (!errorHandler())
         return;
 
