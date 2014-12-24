@@ -176,7 +176,11 @@ void AvailablePagesModel::removeItem(const QModelIndex &index)
 
         errorHandler()->installHandler(job, tr("Cannot remove context %1").arg(context->name()));
     } else if (auto tag = object.objectCast<Domain::Tag>()) {
-        m_tagRepository->remove(tag);
+        const auto job = m_tagRepository->remove(tag);
+        if (!errorHandler())
+            return;
+
+        errorHandler()->installHandler(job, tr("Cannot remove tag %1").arg(tag->name()));
     } else {
         Q_ASSERT(false);
     }
