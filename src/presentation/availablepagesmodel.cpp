@@ -288,8 +288,13 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
             errorHandler()->installHandler(job, tr("Cannot modify project %1").arg(currentName));
         } else if (auto context = object.objectCast<Domain::Context>()) {
+            const auto currentName = context->name();
             context->setName(value.toString());
-            m_contextRepository->update(context);
+            const auto job = m_contextRepository->update(context);
+            if (!errorHandler())
+                return true;
+
+            errorHandler()->installHandler(job, tr("Cannot modify context %1").arg(currentName));
         } else if (object.objectCast<Domain::Tag>()) {
             return false; // Tag renaming is NOT allowed
         } else {
