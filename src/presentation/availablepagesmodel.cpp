@@ -339,7 +339,11 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             return true;
         } else if (auto tag = object.objectCast<Domain::Tag>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
-                m_tagRepository->associate(tag, droppedArtifact);
+                const auto job = m_tagRepository->associate(tag, droppedArtifact);
+                if (!errorHandler())
+                    continue;
+
+                errorHandler()->installHandler(job, tr("Cannot tag %1 with %2").arg(droppedArtifact->title()).arg(tag->name()));
             }
             return true;
         } else if (object == m_inboxObject) {

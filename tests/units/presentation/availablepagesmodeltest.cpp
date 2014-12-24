@@ -1336,6 +1336,76 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot add taskDropped to context context 1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenAssociateTagFailed()
+    {
+        // GIVEN
+
+        // No project
+        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
+
+        // No context
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
+
+        // one tag
+        auto tag1 = Domain::Tag::Ptr::create();
+        tag1->setName("Tag 1");
+        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
+        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
+        tagProvider->append(tag1);
+
+        // Two artifacts (used for dropping later on)
+        Domain::Artifact::Ptr taskToDrop(new Domain::Task);
+        taskToDrop->setTitle("taskDropped");
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
+
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
+
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                taskRepositoryMock.getInstance(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                tagRepositoryMock.getInstance());
+
+        FakeErrorHandler errorHandler;
+        pages.setErrorHandler(&errorHandler);
+        QAbstractItemModel *model = pages.pageListModel();
+        const QModelIndex tagsIndex = model->index(3, 0);
+        const QModelIndex tag1Index = model->index(0, 0, tagsIndex);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, taskToDrop).thenReturn(job);
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot tag taskDropped with Tag 1: Foo"));
+    }
 };
 
 QTEST_MAIN(AvailablePagesModelTest)
