@@ -86,9 +86,12 @@ private slots:
         contextProvider->append(context1);
         contextProvider->append(context2);
 
-        // No Tags
+        // One Tag
+        auto tag1 = Domain::Tag::Ptr::create();
+        tag1->setName("Tag 1");
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
+        tagProvider->append(tag1);
 
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
@@ -108,6 +111,8 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
+        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
+
         Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                 projectQueriesMock.getInstance(),
                                                 projectRepositoryMock.getInstance(),
@@ -117,7 +122,7 @@ private slots:
                                                 taskRepositoryMock.getInstance(),
                                                 Domain::NoteRepository::Ptr(),
                                                 tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+                                                tagRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -131,6 +136,7 @@ private slots:
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
         const QModelIndex context2Index = model->index(1, 0, contextsIndex);
         const QModelIndex tagsIndex = model->index(3, 0);
+        const QModelIndex tag1Index = model->index(0, 0, tagsIndex);
 
         QCOMPARE(model->rowCount(), 4);
         QCOMPARE(model->rowCount(inboxIndex), 0);
@@ -140,7 +146,8 @@ private slots:
         QCOMPARE(model->rowCount(contextsIndex), 2);
         QCOMPARE(model->rowCount(context1Index), 0);
         QCOMPARE(model->rowCount(context2Index), 0);
-        QCOMPARE(model->rowCount(tagsIndex), 0);
+        QCOMPARE(model->rowCount(tagsIndex), 1);
+        QCOMPARE(model->rowCount(tag1Index), 0);
 
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
@@ -153,6 +160,7 @@ private slots:
         QCOMPARE(model->flags(context1Index), defaultFlags | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(context2Index), defaultFlags | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(tagsIndex), Qt::NoItemFlags);
+        QCOMPARE(model->flags(tag1Index), defaultFlags | Qt::ItemIsDropEnabled);
 
         QCOMPARE(model->data(inboxIndex).toString(), tr("Inbox"));
         QCOMPARE(model->data(projectsIndex).toString(), tr("Projects"));
@@ -162,6 +170,7 @@ private slots:
         QCOMPARE(model->data(context1Index).toString(), context1->name());
         QCOMPARE(model->data(context2Index).toString(), context2->name());
         QCOMPARE(model->data(tagsIndex).toString(), tr("Tags"));
+        QCOMPARE(model->data(tag1Index).toString(), tag1->name());
 
         QVERIFY(!model->data(inboxIndex, Qt::EditRole).isValid());
         QVERIFY(!model->data(projectsIndex, Qt::EditRole).isValid());
@@ -171,6 +180,7 @@ private slots:
         QCOMPARE(model->data(context1Index, Qt::EditRole).toString(), context1->name());
         QCOMPARE(model->data(context2Index, Qt::EditRole).toString(), context2->name());
         QVERIFY(!model->data(tagsIndex, Qt::EditRole).isValid());
+        QCOMPARE(model->data(tag1Index, Qt::EditRole).toString(), tag1->name());
 
         QCOMPARE(model->data(inboxIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("mail-folder-inbox"));
         QCOMPARE(model->data(projectsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
@@ -180,6 +190,7 @@ private slots:
         QCOMPARE(model->data(context1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
         QCOMPARE(model->data(context2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
         QCOMPARE(model->data(tagsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
+        QCOMPARE(model->data(tag1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
 
         QVERIFY(!model->data(inboxIndex, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(projectsIndex, Qt::CheckStateRole).isValid());
@@ -189,6 +200,7 @@ private slots:
         QVERIFY(!model->data(context1Index, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(context2Index, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(tagsIndex, Qt::CheckStateRole).isValid());
+        QVERIFY(!model->data(tag1Index, Qt::CheckStateRole).isValid());
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).thenReturn(new FakeJob(this));
@@ -203,6 +215,8 @@ private slots:
         QVERIFY(!model->setData(contextsIndex, "Foo"));
         QVERIFY(model->setData(context1Index, "New Context 1"));
         QVERIFY(model->setData(context2Index, "New Context 2"));
+        QVERIFY(!model->setData(tagsIndex, "Foo"));
+        QVERIFY(!model->setData(tag1Index, "New Tag 1"));
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).exactly(1));
@@ -234,6 +248,16 @@ private slots:
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop.objectCast<Domain::Task>()).exactly(1));
+
+        // WHEN a task is dropped on a context
+        tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, taskToDrop).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
+
+        // THEN
+        QVERIFY(tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, taskToDrop).exactly(1));
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
