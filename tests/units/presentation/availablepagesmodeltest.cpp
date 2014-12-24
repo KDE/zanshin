@@ -723,6 +723,69 @@ private slots:
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::remove).when(project1).exactly(1));
     }
 
+    void shouldGetAnErrorMessageWhenRemoveProjectFailed()
+    {
+        // GIVEN
+
+        // Two projects
+        auto project1 = Domain::Project::Ptr::create();
+        project1->setName("Project 1");
+        auto project2 = Domain::Project::Ptr::create();
+        project2->setName("Project 2");
+        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
+        projectProvider->append(project1);
+        projectProvider->append(project2);
+
+        // No contexts
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
+
+        // Empty tag provider
+        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
+        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
+
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
+
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                Domain::ContextRepository::Ptr(),
+                                                Domain::TaskQueries::Ptr(),
+                                                Domain::TaskRepository::Ptr(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
+        FakeErrorHandler errorHandler;
+        pages.setErrorHandler(&errorHandler);
+
+        QAbstractItemModel *model = pages.pageListModel();
+
+        const QModelIndex projectsIndex = model->index(1, 0);
+        const QModelIndex project1Index = model->index(0, 0, projectsIndex);
+
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        projectRepositoryMock(&Domain::ProjectRepository::remove).when(project1).thenReturn(job);
+
+        // WHEN
+        pages.removeItem(project1Index);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot remove project Project 1: Foo"));
+    }
+
     void shouldRemoveContext()
     {
         // GIVEN

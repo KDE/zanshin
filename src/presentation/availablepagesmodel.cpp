@@ -164,7 +164,11 @@ void AvailablePagesModel::removeItem(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     if (auto project = object.objectCast<Domain::Project>()) {
-        m_projectRepository->remove(project);
+        const auto job = m_projectRepository->remove(project);
+        if (!errorHandler())
+            return;
+
+        errorHandler()->installHandler(job, tr("Cannot remove project %1").arg(project->name()));
     } else if (auto context = object.objectCast<Domain::Context>()) {
         m_contextRepository->remove(context);
     } else if (auto tag = object.objectCast<Domain::Tag>()) {
