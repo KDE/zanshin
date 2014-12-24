@@ -348,10 +348,15 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             return true;
         } else if (object == m_inboxObject) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
-                auto job = m_projectRepository->dissociate(droppedArtifact);
+                const auto job = m_projectRepository->dissociate(droppedArtifact);
+                if (errorHandler())
+                    errorHandler()->installHandler(job, tr("Cannot move %1 to Inbox").arg(droppedArtifact->title()));
+
                 if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
                     Utils::JobHandler::install(job, [this, task] {
-                        m_taskRepository->dissociate(task);
+                        const auto dissociateJob = m_taskRepository->dissociate(task);
+                        if (errorHandler())
+                            errorHandler()->installHandler(dissociateJob, tr("Cannot move task %1 to Inbox").arg(task->title()));
                     });
                 }
             }
