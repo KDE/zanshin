@@ -314,7 +314,11 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
         if (auto project = object.objectCast<Domain::Project>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
-                m_projectRepository->associate(project, droppedArtifact);
+                const auto job = m_projectRepository->associate(project, droppedArtifact);
+                if (!errorHandler())
+                    continue;
+
+                errorHandler()->installHandler(job, tr("Cannot add %1 to project %2").arg(droppedArtifact->title()).arg(project->name()));
             }
             return true;
         } else if (auto context = object.objectCast<Domain::Context>()) {
