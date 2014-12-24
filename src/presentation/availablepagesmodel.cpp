@@ -330,7 +330,11 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             }
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto task = droppedArtifact.staticCast<Domain::Task>();
-                m_contextRepository->associate(context, task);
+                const auto job = m_contextRepository->associate(context, task);
+                if (!errorHandler())
+                    continue;
+
+                errorHandler()->installHandler(job, tr("Cannot add %1 to context %2").arg(task->title()).arg(context->name()));
             }
             return true;
         } else if (auto tag = object.objectCast<Domain::Tag>()) {
