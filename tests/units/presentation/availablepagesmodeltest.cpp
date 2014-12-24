@@ -1030,6 +1030,81 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot remove tag tag 1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenUpdateProjectFailed()
+    {
+        // GIVEN
+
+        // Two projects
+        auto project1 = Domain::Project::Ptr::create();
+        project1->setName("Project 1");
+        auto project2 = Domain::Project::Ptr::create();
+        project2->setName("Project 2");
+        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
+        projectProvider->append(project1);
+        projectProvider->append(project2);
+
+        // Two contexts
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName("context 1");
+        auto context2 = Domain::Context::Ptr::create();
+        context2->setName("context 2");
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
+        contextProvider->append(context1);
+        contextProvider->append(context2);
+
+        // No Tags
+        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
+        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
+
+        // Two artifacts (used for dropping later on)
+        Domain::Artifact::Ptr taskToDrop(new Domain::Task);
+        Domain::Artifact::Ptr noteToDrop(new Domain::Note);
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
+
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
+        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
+
+        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                projectQueriesMock.getInstance(),
+                                                projectRepositoryMock.getInstance(),
+                                                contextQueriesMock.getInstance(),
+                                                contextRepositoryMock.getInstance(),
+                                                Domain::TaskQueries::Ptr(),
+                                                taskRepositoryMock.getInstance(),
+                                                Domain::NoteRepository::Ptr(),
+                                                tagQueriesMock.getInstance(),
+                                                Domain::TagRepository::Ptr());
+
+        FakeErrorHandler errorHandler;
+        pages.setErrorHandler(&errorHandler);
+        QAbstractItemModel *model = pages.pageListModel();
+        const QModelIndex projectsIndex = model->index(1, 0);
+        const QModelIndex project1Index = model->index(0, 0, projectsIndex);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).thenReturn(job);
+
+        QVERIFY(model->setData(project1Index, "New Project 1"));
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify project Project 1: Foo"));
+    }
 };
 
 QTEST_MAIN(AvailablePagesModelTest)

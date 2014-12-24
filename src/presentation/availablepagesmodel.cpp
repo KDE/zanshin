@@ -280,8 +280,13 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         }
 
         if (auto project = object.objectCast<Domain::Project>()) {
+            const auto currentName = project->name();
             project->setName(value.toString());
-            m_projectRepository->update(project);
+            const auto job = m_projectRepository->update(project);
+            if (!errorHandler())
+                return true;
+
+            errorHandler()->installHandler(job, tr("Cannot modify project %1").arg(currentName));
         } else if (auto context = object.objectCast<Domain::Context>()) {
             context->setName(value.toString());
             m_contextRepository->update(context);
