@@ -170,7 +170,11 @@ void AvailablePagesModel::removeItem(const QModelIndex &index)
 
         errorHandler()->installHandler(job, tr("Cannot remove project %1").arg(project->name()));
     } else if (auto context = object.objectCast<Domain::Context>()) {
-        m_contextRepository->remove(context);
+        const auto job = m_contextRepository->remove(context);
+        if (!errorHandler())
+            return;
+
+        errorHandler()->installHandler(job, tr("Cannot remove context %1").arg(context->name()));
     } else if (auto tag = object.objectCast<Domain::Tag>()) {
         m_tagRepository->remove(tag);
     } else {
