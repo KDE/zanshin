@@ -467,6 +467,54 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenSetDataSourceFailed()
+    {
+        // GIVEN
+
+        // Two top level sources
+        auto source1 = Domain::DataSource::Ptr::create();
+        source1->setName("Source 1");
+        source1->setIconName("foo-icon");
+        source1->setSelected(false);
+        source1->setContentTypes(Domain::DataSource::Tasks);
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(source1);
+
+        // Nothing under source1
+        auto source1Provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+        auto source1Result = Domain::QueryResult<Domain::DataSource::Ptr>::create(source1Provider);
+
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
+        sourceQueriesMock(&Domain::DataSourceQueries::findTopLevel).when().thenReturn(topLevelResult);
+        sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source1).thenReturn(source1Result);
+
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
+
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance(),
+                                                    0);
+        FakeErrorHandler errorHandler;
+        sources.setErrorHandler(&errorHandler);
+
+        // WHEN
+        QAbstractItemModel *model = sources.sourceListModel();
+
+        // THEN
+        const QModelIndex source1Index = model->index(0, 0);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source1).thenReturn(job);
+
+        QVERIFY(model->setData(source1Index, Qt::Unchecked, Qt::CheckStateRole));
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source 1: Foo"));
+    }
 };
 
 QTEST_MAIN(AvailableSourcesModelTest)

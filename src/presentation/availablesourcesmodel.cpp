@@ -145,7 +145,9 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
             return false;
 
         source->setSelected(value.toInt() == Qt::Checked);
-        m_dataSourceRepository->update(source);
+        const auto job = m_dataSourceRepository->update(source);
+        if (m_errorHandler)
+            m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
         return true;
     };
 
