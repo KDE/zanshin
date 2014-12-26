@@ -30,6 +30,7 @@
 #include "domain/datasourcerepository.h"
 
 #include "presentation/querytreemodel.h"
+#include "presentation/errorhandler.h"
 
 using namespace Presentation;
 
@@ -40,7 +41,8 @@ AvailableSourcesModel::AvailableSourcesModel(const Domain::DataSourceQueries::Pt
       m_sourceListModel(0),
       m_searchListModel(0),
       m_dataSourceQueries(dataSourceQueries),
-      m_dataSourceRepository(dataSourceRepository)
+      m_dataSourceRepository(dataSourceRepository),
+      m_errorHandler(0)
 {
 }
 
@@ -63,7 +65,9 @@ void AvailableSourcesModel::listSource(const Domain::DataSource::Ptr &source)
     Q_ASSERT(source);
     source->setSelected(true);
     source->setListStatus(Domain::DataSource::Listed);
-    m_dataSourceRepository->update(source);
+    const auto job = m_dataSourceRepository->update(source);
+    if (m_errorHandler)
+        m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
 void AvailableSourcesModel::unlistSource(const Domain::DataSource::Ptr &source)
@@ -222,4 +226,14 @@ void AvailableSourcesModel::setSearchTerm(const QString &term)
 
     m_dataSourceQueries->setSearchTerm(term);
     emit searchTermChanged(term);
+}
+
+ErrorHandler *AvailableSourcesModel::errorHandler() const
+{
+    return m_errorHandler;
+}
+
+void AvailableSourcesModel::setErrorHandler(ErrorHandler *errorHandler)
+{
+    m_errorHandler = errorHandler;
 }

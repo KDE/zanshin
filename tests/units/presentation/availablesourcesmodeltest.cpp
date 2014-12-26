@@ -30,11 +30,23 @@
 
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/querytreemodelbase.h"
+#include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
 
 using namespace mockitopp;
 using namespace mockitopp::matcher;
+
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &message)
+    {
+        m_message = message;
+    }
+
+    QString m_message;
+};
 
 class AvailableSourcesModelTest : public QObject
 {
@@ -355,6 +367,39 @@ private slots:
             QCOMPARE(source->listStatus(), Domain::DataSource::Listed);
         else
             QCOMPARE(source->listStatus(), Domain::DataSource::Bookmarked);
+    }
+
+    void shouldGetAnErrorMessageWhenListSourceFailed()
+    {
+        // GIVEN
+
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName("Source");
+        source->setIconName("folder");
+        source->setContentTypes(Domain::DataSource::Tasks);
+        source->setSelected(false);
+        source->setListStatus(Domain::DataSource::Unlisted);
+
+
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
+
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
+
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(job);
+
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        sources.setErrorHandler(&errorHandler);
+
+        // WHEN
+        sources.listSource(source);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source: Foo"));
     }
 };
 
