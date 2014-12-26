@@ -401,6 +401,39 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenUnlistSourceFailed()
+    {
+        // GIVEN
+
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName("Source");
+        source->setIconName("folder");
+        source->setContentTypes(Domain::DataSource::Tasks);
+        source->setSelected(false);
+        source->setListStatus(Domain::DataSource::Unlisted);
+
+
+        Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
+
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
+
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(job);
+
+        Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
+                                                    sourceRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        sources.setErrorHandler(&errorHandler);
+
+        // WHEN
+        sources.unlistSource(source);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source: Foo"));
+    }
 };
 
 QTEST_MAIN(AvailableSourcesModelTest)

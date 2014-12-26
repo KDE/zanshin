@@ -75,7 +75,9 @@ void AvailableSourcesModel::unlistSource(const Domain::DataSource::Ptr &source)
     Q_ASSERT(source);
     source->setSelected(false);
     source->setListStatus(Domain::DataSource::Unlisted);
-    m_dataSourceRepository->update(source);
+    const auto job = m_dataSourceRepository->update(source);
+    if (m_errorHandler)
+        m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
 void AvailableSourcesModel::bookmarkSource(const Domain::DataSource::Ptr &source)
