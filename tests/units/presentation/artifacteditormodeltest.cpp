@@ -35,8 +35,20 @@
 #include "domain/noterepository.h"
 
 #include "presentation/artifacteditormodel.h"
+#include "presentation/errorhandler.h"
 
 using namespace mockitopp;
+
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &message)
+    {
+        m_message = message;
+    }
+
+    QString m_message;
+};
 
 class ArtifactEditorModelTest : public QObject
 {
@@ -439,6 +451,32 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::delegate).when(task, expectedDelegate).exactly(1));
         QVERIFY(!task->delegate().isValid());
+    }
+
+    void shouldGetAnErrorMessageWhenUpdateTaskFailed()
+    {
+        // GIVEN
+        auto task = Domain::Task::Ptr::create();
+        task->setTitle("Task 1");
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(job);
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        auto model = new Presentation::ArtifactEditorModel(taskRepositoryMock.getInstance(),
+                                                           noteRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        model->setErrorHandler(&errorHandler);
+        model->setArtifact(task);
+
+        // WHEN
+        model->setProperty("title", "Foo");
+        delete model;
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify task Task 1: Foo"));
     }
 };
 
