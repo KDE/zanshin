@@ -87,7 +87,9 @@ void AvailableSourcesModel::bookmarkSource(const Domain::DataSource::Ptr &source
         source->setListStatus(Domain::DataSource::Listed);
     else
         source->setListStatus(Domain::DataSource::Bookmarked);
-    m_dataSourceRepository->update(source);
+    const auto job = m_dataSourceRepository->update(source);
+    if (m_errorHandler)
+        m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
 QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
