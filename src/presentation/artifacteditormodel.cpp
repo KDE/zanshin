@@ -268,7 +268,9 @@ void ArtifactEditorModel::save()
     } else {
         auto note = m_artifact.objectCast<Domain::Note>();
         Q_ASSERT(note);
-        m_noteRepository->save(note);
+        const auto job = m_noteRepository->save(note);
+        if (m_errorHandler)
+            m_errorHandler->installHandler(job, tr("Cannot modify note %1").arg(currentTitle));
     }
 
     setSaveNeeded(false);

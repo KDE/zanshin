@@ -478,6 +478,32 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify task Task 1: Foo"));
     }
+
+    void shouldGetAnErrorMessageWhenUpdateNoteFailed()
+    {
+        // GIVEN
+        auto note = Domain::Note::Ptr::create();
+        note->setTitle("Note 1");
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+        noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(job);
+
+        auto model = new Presentation::ArtifactEditorModel(taskRepositoryMock.getInstance(),
+                                                           noteRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        model->setErrorHandler(&errorHandler);
+        model->setArtifact(note);
+
+        // WHEN
+        model->setProperty("title", "Foo");
+        delete model;
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify note Note 1: Foo"));
+    }
 };
 
 QTEST_MAIN(ArtifactEditorModelTest)
