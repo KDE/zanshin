@@ -75,7 +75,15 @@ void TagPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
-    m_tagRepository->dissociate(m_tag, artifact);
+    const auto job = m_tagRepository->dissociate(m_tag, artifact);
+    if (!errorHandler())
+        return;
+
+    if (artifact.objectCast<Domain::Task>()) {
+        errorHandler()->installHandler(job, tr("Cannot remove task %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
+    } else if (artifact.objectCast<Domain::Note>()) {
+        errorHandler()->installHandler(job, tr("Cannot remove note %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
+    }
 }
 
 QAbstractItemModel *TagPageModel::createCentralListModel()
