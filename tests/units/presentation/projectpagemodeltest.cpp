@@ -262,7 +262,7 @@ private slots:
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::createInProject).when(any<Domain::Task::Ptr>(),
                                                                           any<Domain::Project::Ptr>())
                                                                     .thenReturn(job);
@@ -280,7 +280,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Add task New task in project Project1 failed"));
+        QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in project Project1: Foo"));
     }
 
     void shouldDeleteItems()
@@ -352,7 +352,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(job);
 
         Presentation::ProjectPageModel page(project,
@@ -369,7 +369,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Remove task Task2 from project Project1 failed"));
+        QCOMPARE(errorHandler.m_message, QString("Cannot remove task Task2 from project Project1: Foo"));
     }
 
     // Clearly this one will go away when we'll get more support of notes

@@ -63,7 +63,7 @@ void ProjectPageModel::addTask(const QString &title)
     if (!errorHandler())
         return;
 
-    errorHandler()->installHandler(job, tr("Add task %1 in project %2 failed").arg(title).arg(m_project->name()));
+    errorHandler()->installHandler(job, tr("Cannot add task %1 in project %2").arg(title).arg(m_project->name()));
 }
 
 void ProjectPageModel::removeItem(const QModelIndex &index)
@@ -76,7 +76,7 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
         if (!errorHandler())
             return;
 
-        errorHandler()->installHandler(job, tr("Remove task %1 from project %2 failed").arg(task->title()).arg(m_project->name()));
+        errorHandler()->installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
     }
 }
 

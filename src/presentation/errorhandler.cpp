@@ -42,6 +42,7 @@ void ErrorHandler::installHandler(KJob *job, const QString &message)
 
 void ErrorHandler::displayMessage(KJob *job, const QString &message)
 {
-    if (job->error() != KJob::NoError)
-        doDisplayMessage(message);
+    if (job->error() != KJob::NoError) {
+        doDisplayMessage(QString("%1: %2").arg(message).arg(job->errorString()));
+    }
 }

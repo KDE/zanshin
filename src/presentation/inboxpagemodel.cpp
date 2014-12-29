@@ -56,7 +56,7 @@ void InboxPageModel::addTask(const QString &title)
     if (!errorHandler())
         return;
 
-    errorHandler()->installHandler(job, tr("Add task %1 in Inbox failed").arg(title));
+    errorHandler()->installHandler(job, tr("Cannot add task %1 in Inbox").arg(title));
 }
 
 void InboxPageModel::removeItem(const QModelIndex &index)
@@ -69,7 +69,7 @@ void InboxPageModel::removeItem(const QModelIndex &index)
         if (!errorHandler())
             return;
 
-        errorHandler()->installHandler(job, tr("Remove task %1 from Inbox failed").arg(task->title()));
+        errorHandler()->installHandler(job, tr("Cannot remove task %1 from Inbox").arg(task->title()));
     }
 }
 
@@ -125,7 +125,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             if (!errorHandler())
                 return true;
 
-            errorHandler()->installHandler(job, tr("Update task %1 in Inbox failed").arg(currentTitle));
+            errorHandler()->installHandler(job, tr("Cannot modify task %1 in Inbox").arg(currentTitle));
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
@@ -138,7 +138,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             if (!errorHandler())
                 return true;
 
-            errorHandler()->installHandler(job, tr("Update note %1 in Inbox failed").arg(currentTitle));
+            errorHandler()->installHandler(job, tr("Cannot modify note %1 in Inbox").arg(currentTitle));
             return true;
 
         }
@@ -171,7 +171,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             if (!errorHandler())
                 continue;
 
-            errorHandler()->installHandler(job, tr("Drop task %1 on %2 failed").arg(childTask->title()).arg(parentTask->title()));
+            errorHandler()->installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 
         return true;

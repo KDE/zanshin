@@ -243,7 +243,7 @@ private slots:
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(job);
 
         Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
@@ -259,7 +259,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Add task New task in Inbox failed"));
+        QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in Inbox: Foo"));
     }
 
     void shouldDeleteItems()
@@ -323,7 +323,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(job);
 
         Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
@@ -339,7 +339,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Remove task task2 from Inbox failed"));
+        QCOMPARE(errorHandler.m_message, QString("Cannot remove task task2 from Inbox: Foo"));
     }
 
     // Clearly this one will go away when we'll get more support of notes
@@ -411,14 +411,14 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(job);
 
         QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Update task rootTask in Inbox failed"));
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify task rootTask in Inbox: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUpdateNoteFailed()
@@ -451,14 +451,14 @@ private slots:
         
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
         noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).thenReturn(job);
         
         QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
         
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Update note rootNote in Inbox failed"));
+        QCOMPARE(errorHandler.m_message, QString("Cannot modify note rootNote in Inbox: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenAssociateTaskFailed()
@@ -497,7 +497,7 @@ private slots:
         childTask3->setTitle("childTask3");
         auto childTask4 = Domain::Task::Ptr::create();
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).thenReturn(job);
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).thenReturn(new FakeJob(this));
         auto data = new QMimeData;
@@ -507,7 +507,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Drop task childTask3 on rootTask failed"));
+        QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask3 as sub-task of rootTask: Foo"));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
     }
 };

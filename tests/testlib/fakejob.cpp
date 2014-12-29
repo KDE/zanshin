@@ -30,9 +30,10 @@ FakeJob::FakeJob(QObject *parent)
 {
 }
 
-void FakeJob::setExpectedError(int errorCode)
+void FakeJob::setExpectedError(int errorCode, const QString &errorText)
 {
     m_errorCode = errorCode;
+    m_errorText = errorText;
 }
 
 void FakeJob::start()
@@ -49,6 +50,7 @@ void FakeJob::onTimeout()
         m_done = true;
 
     setError(m_errorCode);
+    setErrorText(m_errorText);
     emitResult();
 }
 

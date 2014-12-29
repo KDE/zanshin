@@ -33,7 +33,7 @@ public:
     static const int DURATION = 50;
     explicit FakeJob(QObject *parent = 0);
 
-    void setExpectedError(int errorCode);
+    void setExpectedError(int errorCode, const QString &errorText = QString());
 
     void start();
 
@@ -48,6 +48,7 @@ private:
     bool m_done;
     bool m_launched;
     int m_errorCode;
+    QString m_errorText;
 };
 
 #endif

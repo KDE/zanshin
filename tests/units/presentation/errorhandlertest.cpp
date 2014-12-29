@@ -48,7 +48,7 @@ private slots:
 
         // create job
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
 
         // create ErrorHandler
         FakeErrorHandler errorHandler;
@@ -60,7 +60,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, message);
+        QCOMPARE(errorHandler.m_message, QString("I Failed !!!!!!!!!!: Foo"));
     }
 
     void shouldDisplayNothing()
