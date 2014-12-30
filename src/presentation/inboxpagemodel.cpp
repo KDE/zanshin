@@ -53,10 +53,7 @@ void InboxPageModel::addTask(const QString &title)
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     const auto job = taskRepository()->create(task);
-    if (!errorHandler())
-        return;
-
-    errorHandler()->installHandler(job, tr("Cannot add task %1 in Inbox").arg(title));
+    installHandler(job, tr("Cannot add task %1 in Inbox").arg(title));
 }
 
 void InboxPageModel::removeItem(const QModelIndex &index)
@@ -66,10 +63,7 @@ void InboxPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     if (task) {
         const auto job = taskRepository()->remove(task);
-        if (!errorHandler())
-            return;
-
-        errorHandler()->installHandler(job, tr("Cannot remove task %1 from Inbox").arg(task->title()));
+        installHandler(job, tr("Cannot remove task %1 from Inbox").arg(task->title()));
     }
 }
 
@@ -122,10 +116,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
                 task->setDone(value.toInt() == Qt::Checked);
 
             const auto job = taskRepository()->update(task);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify task %1 in Inbox").arg(currentTitle));
+            installHandler(job, tr("Cannot modify task %1 in Inbox").arg(currentTitle));
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
@@ -135,10 +126,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
             const auto job = noteRepository()->save(note);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify note %1 in Inbox").arg(currentTitle));
+            installHandler(job, tr("Cannot modify note %1 in Inbox").arg(currentTitle));
             return true;
 
         }
@@ -168,10 +156,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
         foreach(const auto &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
             const auto job = taskRepository()->associate(parentTask, childTask);
-            if (!errorHandler())
-                continue;
-
-            errorHandler()->installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 
         return true;

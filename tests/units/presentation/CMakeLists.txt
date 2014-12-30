@@ -5,6 +5,7 @@ zanshin_auto_tests(
   availablepagesmodeltest
   availablesourcesmodeltest
   errorhandlertest
+  errorhandlingmodelbasetest
   inboxpagemodeltest
   metatypestest
   pagemodeltest

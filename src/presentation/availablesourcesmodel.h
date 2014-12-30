@@ -31,14 +31,13 @@
 #include "domain/datasourcerepository.h"
 
 #include "presentation/metatypes.h"
+#include "presentation/errorhandlingmodelbase.h"
 
 class QModelIndex;
 
 namespace Presentation {
 
-class ErrorHandler;
-
-class AvailableSourcesModel : public QObject
+class AvailableSourcesModel : public QObject, public ErrorHandlingModelBase
 {
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* sourceListModel READ sourceListModel)
@@ -55,8 +54,6 @@ public:
     QString searchTerm() const;
     void setSearchTerm(const QString &term);
 
-    ErrorHandler *errorHandler() const;
-
 signals:
     void searchTermChanged(const QString &term);
 
@@ -64,7 +61,6 @@ public slots:
     void listSource(const Domain::DataSource::Ptr &source);
     void unlistSource(const Domain::DataSource::Ptr &source);
     void bookmarkSource(const Domain::DataSource::Ptr &source);
-    void setErrorHandler(ErrorHandler *errorHandler);
 
 private:
     QAbstractItemModel *createSourceListModel();
@@ -75,8 +71,6 @@ private:
 
     Domain::DataSourceQueries::Ptr m_dataSourceQueries;
     Domain::DataSourceRepository::Ptr m_dataSourceRepository;
-
-    ErrorHandler *m_errorHandler;
 };
 
 }

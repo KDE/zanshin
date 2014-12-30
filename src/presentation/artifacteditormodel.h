@@ -31,13 +31,13 @@
 #include "domain/noterepository.h"
 #include "domain/taskrepository.h"
 
+#include "presentation/errorhandlingmodelbase.h"
+
 class QTimer;
 
 namespace Presentation {
 
-class ErrorHandler;
-
-class ArtifactEditorModel : public QObject
+class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
 {
     Q_OBJECT
     Q_PROPERTY(Domain::Artifact::Ptr artifact READ artifact WRITE setArtifact NOTIFY artifactChanged)
@@ -68,8 +68,6 @@ public:
 
     static int autoSaveDelay();
 
-    ErrorHandler *errorHandler() const;
-
 public slots:
     void setText(const QString &text);
     void setTitle(const QString &title);
@@ -77,7 +75,6 @@ public slots:
     void setStartDate(const QDateTime &start);
     void setDueDate(const QDateTime &due);
     void delegate(const QString &name, const QString &email);
-    void setErrorHandler(ErrorHandler *errorHandler);
 
 signals:
     void artifactChanged(const Domain::Artifact::Ptr &artifact);
@@ -117,8 +114,6 @@ private:
 
     QTimer *m_saveTimer;
     bool m_saveNeeded;
-
-    ErrorHandler *m_errorHandler;
 };
 
 }

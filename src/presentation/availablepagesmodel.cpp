@@ -69,8 +69,7 @@ AvailablePagesModel::AvailablePagesModel(const Domain::ArtifactQueries::Ptr &art
       m_taskRepository(taskRepository),
       m_noteRepository(noteRepository),
       m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository),
-      m_errorHandler(0)
+      m_tagRepository(tagRepository)
 {
 }
 
@@ -117,25 +116,12 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     return 0;
 }
 
-ErrorHandler *AvailablePagesModel::errorHandler() const
-{
-    return m_errorHandler;
-}
-
-void AvailablePagesModel::setErrorHandler(ErrorHandler *errorHandler)
-{
-    m_errorHandler = errorHandler;
-}
-
 void AvailablePagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
 {
     auto project = Domain::Project::Ptr::create();
     project->setName(name);
     const auto job = m_projectRepository->create(project, source);
-    if (!errorHandler())
-        return;
-
-    errorHandler()->installHandler(job, tr("Cannot add project %1 in dataSource %2").arg(name).arg(source->name()));
+    installHandler(job, tr("Cannot add project %1 in dataSource %2").arg(name).arg(source->name()));
 }
 
 void AvailablePagesModel::addContext(const QString &name)
@@ -143,10 +129,7 @@ void AvailablePagesModel::addContext(const QString &name)
     auto context = Domain::Context::Ptr::create();
     context->setName(name);
     const auto job = m_contextRepository->create(context);
-    if (!errorHandler())
-        return;
-
-    errorHandler()->installHandler(job, tr("Cannot add context %1").arg(name));
+    installHandler(job, tr("Cannot add context %1").arg(name));
 }
 
 void AvailablePagesModel::addTag(const QString &name)
@@ -154,10 +137,7 @@ void AvailablePagesModel::addTag(const QString &name)
     auto tag = Domain::Tag::Ptr::create();
     tag->setName(name);
     const auto job = m_tagRepository->create(tag);
-    if (!errorHandler())
-        return;
-
-    errorHandler()->installHandler(job, tr("Cannot add tag %1").arg(name));
+    installHandler(job, tr("Cannot add tag %1").arg(name));
 }
 
 void AvailablePagesModel::removeItem(const QModelIndex &index)
@@ -165,22 +145,13 @@ void AvailablePagesModel::removeItem(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     if (auto project = object.objectCast<Domain::Project>()) {
         const auto job = m_projectRepository->remove(project);
-        if (!errorHandler())
-            return;
-
-        errorHandler()->installHandler(job, tr("Cannot remove project %1").arg(project->name()));
+        installHandler(job, tr("Cannot remove project %1").arg(project->name()));
     } else if (auto context = object.objectCast<Domain::Context>()) {
         const auto job = m_contextRepository->remove(context);
-        if (!errorHandler())
-            return;
-
-        errorHandler()->installHandler(job, tr("Cannot remove context %1").arg(context->name()));
+        installHandler(job, tr("Cannot remove context %1").arg(context->name()));
     } else if (auto tag = object.objectCast<Domain::Tag>()) {
         const auto job = m_tagRepository->remove(tag);
-        if (!errorHandler())
-            return;
-
-        errorHandler()->installHandler(job, tr("Cannot remove tag %1").arg(tag->name()));
+        installHandler(job, tr("Cannot remove tag %1").arg(tag->name()));
     } else {
         Q_ASSERT(false);
     }
@@ -283,18 +254,12 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             const auto currentName = project->name();
             project->setName(value.toString());
             const auto job = m_projectRepository->update(project);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify project %1").arg(currentName));
+            installHandler(job, tr("Cannot modify project %1").arg(currentName));
         } else if (auto context = object.objectCast<Domain::Context>()) {
             const auto currentName = context->name();
             context->setName(value.toString());
             const auto job = m_contextRepository->update(context);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify context %1").arg(currentName));
+            installHandler(job, tr("Cannot modify context %1").arg(currentName));
         } else if (object.objectCast<Domain::Tag>()) {
             return false; // Tag renaming is NOT allowed
         } else {
@@ -315,10 +280,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         if (auto project = object.objectCast<Domain::Project>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 const auto job = m_projectRepository->associate(project, droppedArtifact);
-                if (!errorHandler())
-                    continue;
-
-                errorHandler()->installHandler(job, tr("Cannot add %1 to project %2").arg(droppedArtifact->title()).arg(project->name()));
+                installHandler(job, tr("Cannot add %1 to project %2").arg(droppedArtifact->title()).arg(project->name()));
             }
             return true;
         } else if (auto context = object.objectCast<Domain::Context>()) {
@@ -331,32 +293,24 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto task = droppedArtifact.staticCast<Domain::Task>();
                 const auto job = m_contextRepository->associate(context, task);
-                if (!errorHandler())
-                    continue;
-
-                errorHandler()->installHandler(job, tr("Cannot add %1 to context %2").arg(task->title()).arg(context->name()));
+                installHandler(job, tr("Cannot add %1 to context %2").arg(task->title()).arg(context->name()));
             }
             return true;
         } else if (auto tag = object.objectCast<Domain::Tag>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 const auto job = m_tagRepository->associate(tag, droppedArtifact);
-                if (!errorHandler())
-                    continue;
-
-                errorHandler()->installHandler(job, tr("Cannot tag %1 with %2").arg(droppedArtifact->title()).arg(tag->name()));
+                installHandler(job, tr("Cannot tag %1 with %2").arg(droppedArtifact->title()).arg(tag->name()));
             }
             return true;
         } else if (object == m_inboxObject) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 const auto job = m_projectRepository->dissociate(droppedArtifact);
-                if (errorHandler())
-                    errorHandler()->installHandler(job, tr("Cannot move %1 to Inbox").arg(droppedArtifact->title()));
+                installHandler(job, tr("Cannot move %1 to Inbox").arg(droppedArtifact->title()));
 
                 if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
                     Utils::JobHandler::install(job, [this, task] {
                         const auto dissociateJob = m_taskRepository->dissociate(task);
-                        if (errorHandler())
-                            errorHandler()->installHandler(dissociateJob, tr("Cannot move task %1 to Inbox").arg(task->title()));
+                        installHandler(dissociateJob, tr("Cannot move task %1 to Inbox").arg(task->title()));
                     });
                 }
             }

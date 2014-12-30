@@ -38,6 +38,7 @@
 
 #include "presentation/availablepagesmodel.h"
 #include "presentation/contextpagemodel.h"
+#include "presentation/errorhandler.h"
 #include "presentation/inboxpagemodel.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodelbase.h"

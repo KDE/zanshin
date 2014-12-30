@@ -61,10 +61,7 @@ void ContextPageModel::addTask(const QString &title)
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     const auto job = taskRepository()->createInContext(task, m_context);
-    if (!errorHandler())
-        return;
-
-    errorHandler()->installHandler(job, tr("Cannot add task %1 in context %2").arg(title).arg(m_context->name()));
+    installHandler(job, tr("Cannot add task %1 in context %2").arg(title).arg(m_context->name()));
 }
 
 void ContextPageModel::removeItem(const QModelIndex &index)
@@ -119,10 +116,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
             task->setDone(value.toInt() == Qt::Checked);
 
         const auto job = taskRepository()->update(task);
-        if (!errorHandler())
-            return true;
-
-        errorHandler()->installHandler(job, tr("Cannot modify task %1 in context %2").arg(currentTitle).arg(m_context->name()));
+        installHandler(job, tr("Cannot modify task %1 in context %2").arg(currentTitle).arg(m_context->name()));
         return true;
     };
 
@@ -144,10 +138,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
             const auto job = taskRepository()->associate(parentTask, childTask);
-            if (!errorHandler())
-                continue;
-
-            errorHandler()->installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 
         return true;

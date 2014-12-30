@@ -30,7 +30,6 @@
 #include "domain/datasourcerepository.h"
 
 #include "presentation/querytreemodel.h"
-#include "presentation/errorhandler.h"
 
 using namespace Presentation;
 
@@ -41,8 +40,7 @@ AvailableSourcesModel::AvailableSourcesModel(const Domain::DataSourceQueries::Pt
       m_sourceListModel(0),
       m_searchListModel(0),
       m_dataSourceQueries(dataSourceQueries),
-      m_dataSourceRepository(dataSourceRepository),
-      m_errorHandler(0)
+      m_dataSourceRepository(dataSourceRepository)
 {
 }
 
@@ -66,8 +64,7 @@ void AvailableSourcesModel::listSource(const Domain::DataSource::Ptr &source)
     source->setSelected(true);
     source->setListStatus(Domain::DataSource::Listed);
     const auto job = m_dataSourceRepository->update(source);
-    if (m_errorHandler)
-        m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
+    installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
 void AvailableSourcesModel::unlistSource(const Domain::DataSource::Ptr &source)
@@ -76,8 +73,7 @@ void AvailableSourcesModel::unlistSource(const Domain::DataSource::Ptr &source)
     source->setSelected(false);
     source->setListStatus(Domain::DataSource::Unlisted);
     const auto job = m_dataSourceRepository->update(source);
-    if (m_errorHandler)
-        m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
+    installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
 void AvailableSourcesModel::bookmarkSource(const Domain::DataSource::Ptr &source)
@@ -88,8 +84,7 @@ void AvailableSourcesModel::bookmarkSource(const Domain::DataSource::Ptr &source
     else
         source->setListStatus(Domain::DataSource::Bookmarked);
     const auto job = m_dataSourceRepository->update(source);
-    if (m_errorHandler)
-        m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
+    installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
 QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
@@ -146,8 +141,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
 
         source->setSelected(value.toInt() == Qt::Checked);
         const auto job = m_dataSourceRepository->update(source);
-        if (m_errorHandler)
-            m_errorHandler->installHandler(job, tr("Cannot modify source %1").arg(source->name()));
+        installHandler(job, tr("Cannot modify source %1").arg(source->name()));
         return true;
     };
 
@@ -232,14 +226,4 @@ void AvailableSourcesModel::setSearchTerm(const QString &term)
 
     m_dataSourceQueries->setSearchTerm(term);
     emit searchTermChanged(term);
-}
-
-ErrorHandler *AvailableSourcesModel::errorHandler() const
-{
-    return m_errorHandler;
-}
-
-void AvailableSourcesModel::setErrorHandler(ErrorHandler *errorHandler)
-{
-    m_errorHandler = errorHandler;
 }

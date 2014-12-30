@@ -31,6 +31,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/projectpagemodel.h"
+#include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
 

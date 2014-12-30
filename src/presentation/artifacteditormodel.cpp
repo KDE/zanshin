@@ -42,8 +42,7 @@ ArtifactEditorModel::ArtifactEditorModel(const Domain::TaskRepository::Ptr &task
       m_noteRepository(noteRepository),
       m_done(false),
       m_saveTimer(new QTimer(this)),
-      m_saveNeeded(false),
-      m_errorHandler(0)
+      m_saveNeeded(false)
 {
     m_saveTimer->setSingleShot(true);
     m_saveTimer->setInterval(autoSaveDelay());
@@ -153,11 +152,6 @@ int ArtifactEditorModel::autoSaveDelay()
     return 500;
 }
 
-ErrorHandler *ArtifactEditorModel::errorHandler() const
-{
-    return m_errorHandler;
-}
-
 void ArtifactEditorModel::setText(const QString &text)
 {
     if (m_text == text)
@@ -204,11 +198,6 @@ void ArtifactEditorModel::delegate(const QString &name, const QString &email)
     Q_ASSERT(task);
     auto delegate = Domain::Task::Delegate(name, email);
     m_taskRepository->delegate(task, delegate);
-}
-
-void ArtifactEditorModel::setErrorHandler(ErrorHandler *errorHandler)
-{
-    m_errorHandler = errorHandler;
 }
 
 void ArtifactEditorModel::onTextChanged(const QString &text)
@@ -263,14 +252,12 @@ void ArtifactEditorModel::save()
         task->setStartDate(m_start);
         task->setDueDate(m_due);
         const auto job = m_taskRepository->update(task);
-        if (m_errorHandler)
-            m_errorHandler->installHandler(job, tr("Cannot modify task %1").arg(currentTitle));
+        installHandler(job, tr("Cannot modify task %1").arg(currentTitle));
     } else {
         auto note = m_artifact.objectCast<Domain::Note>();
         Q_ASSERT(note);
         const auto job = m_noteRepository->save(note);
-        if (m_errorHandler)
-            m_errorHandler->installHandler(job, tr("Cannot modify note %1").arg(currentTitle));
+        installHandler(job, tr("Cannot modify note %1").arg(currentTitle));
     }
 
     setSaveNeeded(false);

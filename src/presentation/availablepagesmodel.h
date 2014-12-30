@@ -40,14 +40,13 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
+#include "presentation/errorhandlingmodelbase.h"
 
 class QModelIndex;
 
 namespace Presentation {
 
-class ErrorHandler;
-
-class AvailablePagesModel : public QObject
+class AvailablePagesModel : public QObject, public ErrorHandlingModelBase
 {
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
@@ -68,14 +67,11 @@ public:
 
     Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index);
 
-    ErrorHandler *errorHandler() const;
-
 public slots:
     void addProject(const QString &name, const Domain::DataSource::Ptr &source);
     void addContext(const QString &name);
     void addTag(const QString &name);
     void removeItem(const QModelIndex &index);
-    void setErrorHandler(ErrorHandler *errorHandler);
 
 private:
     QAbstractItemModel *createPageListModel();
@@ -103,8 +99,6 @@ private:
     QObjectPtr m_projectsObject;
     QObjectPtr m_contextsObject;
     QObjectPtr m_tagsObject;
-
-    ErrorHandler *m_errorHandler;
 };
 
 }

@@ -33,6 +33,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/tagpagemodel.h"
+#include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
 

@@ -37,6 +37,7 @@
 #include "domain/noterepository.h"
 
 #include "presentation/contextpagemodel.h"
+#include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
 

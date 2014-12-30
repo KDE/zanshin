@@ -65,10 +65,7 @@ void TagPageModel::addTask(const QString &title)
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     const auto job = taskRepository()->createInTag(task, m_tag);
-    if (!errorHandler())
-        return;
-
-    errorHandler()->installHandler(job, tr("Cannot add task %1 in tag %2").arg(title).arg(m_tag->name()));
+    installHandler(job, tr("Cannot add task %1 in tag %2").arg(title).arg(m_tag->name()));
 }
 
 void TagPageModel::removeItem(const QModelIndex &index)
@@ -76,13 +73,10 @@ void TagPageModel::removeItem(const QModelIndex &index)
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     const auto job = m_tagRepository->dissociate(m_tag, artifact);
-    if (!errorHandler())
-        return;
-
     if (artifact.objectCast<Domain::Task>()) {
-        errorHandler()->installHandler(job, tr("Cannot remove task %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
+        installHandler(job, tr("Cannot remove task %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
     } else if (artifact.objectCast<Domain::Note>()) {
-        errorHandler()->installHandler(job, tr("Cannot remove note %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
+        installHandler(job, tr("Cannot remove note %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
     }
 }
 
@@ -139,10 +133,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
                 task->setDone(value.toInt() == Qt::Checked);
 
             const auto job = taskRepository()->update(task);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify task %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
+            installHandler(job, tr("Cannot modify task %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
@@ -152,10 +143,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
             const auto job = noteRepository()->save(note);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify note %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
+            installHandler(job, tr("Cannot modify note %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
             return true;
 
         }
@@ -185,10 +173,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
             const auto job = taskRepository()->associate(parentTask, childTask);
-            if (!errorHandler())
-                continue;
-
-            errorHandler()->installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 
         return true;

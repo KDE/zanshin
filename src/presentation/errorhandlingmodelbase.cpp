@@ -1,6 +1,6 @@
 /* This file is part of Zanshin
 
-   Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,42 +21,31 @@
    USA.
 */
 
+#include "errorhandlingmodelbase.h"
 
-#include "pagemodel.h"
+#include "presentation/errorhandler.h"
 
 using namespace Presentation;
 
-PageModel::PageModel(const Domain::TaskQueries::Ptr &taskQueries,
-                     const Domain::TaskRepository::Ptr &taskRepository,
-                     const Domain::NoteRepository::Ptr &noteRepository,
-                     QObject *parent)
-    : QObject(parent),
-      m_centralListModel(0),
-      m_taskQueries(taskQueries),
-      m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository)
+ErrorHandlingModelBase::ErrorHandlingModelBase()
+    : m_errorHandler(0)
 {
 }
 
-QAbstractItemModel *PageModel::centralListModel()
+ErrorHandler *ErrorHandlingModelBase::errorHandler() const
 {
-    if (!m_centralListModel)
-        m_centralListModel = createCentralListModel();
-    return m_centralListModel;
+    return m_errorHandler;
 }
 
-Domain::TaskQueries::Ptr PageModel::taskQueries() const
+void ErrorHandlingModelBase::setErrorHandler(ErrorHandler *errorHandler)
 {
-    return m_taskQueries;
+    m_errorHandler = errorHandler;
 }
 
-Domain::TaskRepository::Ptr PageModel::taskRepository() const
+void ErrorHandlingModelBase::installHandler(KJob *job, const QString &message)
 {
-    return m_taskRepository;
-}
+    if (!m_errorHandler)
+        return;
 
-Domain::NoteRepository::Ptr PageModel::noteRepository() const
-{
-    return m_noteRepository;
+    m_errorHandler->installHandler(job, message);
 }
-

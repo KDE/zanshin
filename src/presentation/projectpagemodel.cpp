@@ -60,10 +60,7 @@ void ProjectPageModel::addTask(const QString &title)
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     const auto job = taskRepository()->createInProject(task, m_project);
-    if (!errorHandler())
-        return;
-
-    errorHandler()->installHandler(job, tr("Cannot add task %1 in project %2").arg(title).arg(m_project->name()));
+    installHandler(job, tr("Cannot add task %1 in project %2").arg(title).arg(m_project->name()));
 }
 
 void ProjectPageModel::removeItem(const QModelIndex &index)
@@ -73,10 +70,7 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     if (task) {
         const auto job = taskRepository()->remove(task);
-        if (!errorHandler())
-            return;
-
-        errorHandler()->installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
+        installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
     }
 }
 
@@ -129,10 +123,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
                 task->setDone(value.toInt() == Qt::Checked);
 
             const auto job = taskRepository()->update(task);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify task %1 in project %2").arg(currentTitle).arg(m_project->name()));
+            installHandler(job, tr("Cannot modify task %1 in project %2").arg(currentTitle).arg(m_project->name()));
             return true;
 
         } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
@@ -142,10 +133,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
             const auto job = noteRepository()->save(note);
-            if (!errorHandler())
-                return true;
-
-            errorHandler()->installHandler(job, tr("Cannot modify note %1 in project %2").arg(currentTitle).arg(m_project->name()));
+            installHandler(job, tr("Cannot modify note %1 in project %2").arg(currentTitle).arg(m_project->name()));
             return true;
 
         }
@@ -175,10 +163,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
             const auto job = taskRepository()->associate(parentTask, childTask);
-            if (!errorHandler())
-                continue;
-
-            errorHandler()->installHandler(job, tr("Cannot move task %1 as a sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+            installHandler(job, tr("Cannot move task %1 as a sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 
         return true;

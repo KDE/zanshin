@@ -30,6 +30,7 @@
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 #include "presentation/inboxpagemodel.h"
+#include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
 

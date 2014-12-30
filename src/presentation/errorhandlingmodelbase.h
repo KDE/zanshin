@@ -1,6 +1,6 @@
 /* This file is part of Zanshin
 
-   Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2014 Mario Bensi <mbensi@ipsquad.net>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,42 +21,32 @@
    USA.
 */
 
+#ifndef PRESENTATION_ERRORHANDLINGMODELBASE_H
+#define PRESENTATION_ERRORHANDLINGMODELBASE_H
 
-#include "pagemodel.h"
+#include <QString>
 
-using namespace Presentation;
+class KJob;
 
-PageModel::PageModel(const Domain::TaskQueries::Ptr &taskQueries,
-                     const Domain::TaskRepository::Ptr &taskRepository,
-                     const Domain::NoteRepository::Ptr &noteRepository,
-                     QObject *parent)
-    : QObject(parent),
-      m_centralListModel(0),
-      m_taskQueries(taskQueries),
-      m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository)
+namespace Presentation {
+
+class ErrorHandler;
+
+class ErrorHandlingModelBase
 {
+public:
+    ErrorHandlingModelBase();
+
+    ErrorHandler *errorHandler() const;
+    void setErrorHandler(ErrorHandler *errorHandler);
+
+protected:
+    void installHandler(KJob *job, const QString &message);
+
+private:
+    ErrorHandler *m_errorHandler;
+};
+
 }
 
-QAbstractItemModel *PageModel::centralListModel()
-{
-    if (!m_centralListModel)
-        m_centralListModel = createCentralListModel();
-    return m_centralListModel;
-}
-
-Domain::TaskQueries::Ptr PageModel::taskQueries() const
-{
-    return m_taskQueries;
-}
-
-Domain::TaskRepository::Ptr PageModel::taskRepository() const
-{
-    return m_taskRepository;
-}
-
-Domain::NoteRepository::Ptr PageModel::noteRepository() const
-{
-    return m_noteRepository;
-}
-
+#endif // PRESENTATION_ERRORHANDLINGMODELBASE_H
