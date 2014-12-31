@@ -50,10 +50,10 @@ void App::initializeDependencies()
 {
     auto &deps = Utils::DependencyManager::globalInstance();
 
-    deps.add<Akonadi::MessagingInterface, Akonadi::Messaging>();
-    deps.add<Akonadi::MonitorInterface, Akonadi::MonitorImpl>();
-    deps.add<Akonadi::SerializerInterface, Akonadi::Serializer>();
-    deps.add<Akonadi::StorageInterface, Akonadi::Storage>();
+    deps.add<Akonadi::MessagingInterface, Akonadi::Messaging, Utils::DependencyManager::UniqueInstance>();
+    deps.add<Akonadi::MonitorInterface, Akonadi::MonitorImpl, Utils::DependencyManager::UniqueInstance>();
+    deps.add<Akonadi::SerializerInterface, Akonadi::Serializer, Utils::DependencyManager::UniqueInstance>();
+    deps.add<Akonadi::StorageInterface, Akonadi::Storage, Utils::DependencyManager::UniqueInstance>();
 
 
     deps.add<Domain::ArtifactQueries,
