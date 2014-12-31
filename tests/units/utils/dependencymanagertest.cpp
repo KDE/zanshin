@@ -169,8 +169,11 @@ private slots:
     {
         DependencyManager deps;
         deps.add<Interface0, FirstImplementation0>();
-        auto object = deps.create<Interface0>();
-        QVERIFY(object.dynamicCast<FirstImplementation0>());
+        auto object1 = deps.create<Interface0>();
+        QVERIFY(object1.dynamicCast<FirstImplementation0>());
+        auto object2 = deps.create<Interface0>();
+        QVERIFY(object2.dynamicCast<FirstImplementation0>());
+        QVERIFY(object1 != object2);
     }
 
     void shouldAllowOurOwnFactory()
@@ -183,6 +186,32 @@ private slots:
         QVERIFY(object.dynamicCast<FirstImplementation0>());
         QVERIFY(s_firstImplFactoryCalled);
         QVERIFY(s_manager == &deps);
+    }
+
+    void shouldAllowUniqueInstances()
+    {
+        DependencyManager deps;
+        deps.add<Interface0, FirstImplementation0, DependencyManager::UniqueInstance>();
+        auto object1 = deps.create<Interface0>();
+        QVERIFY(object1.dynamicCast<FirstImplementation0>());
+        auto object2 = deps.create<Interface0>();
+        QVERIFY(object2.dynamicCast<FirstImplementation0>());
+        QVERIFY(object1 == object2);
+    }
+
+    void shouldAllowUniqueInstancesWithOurOwnFactory()
+    {
+        s_firstImplFactoryCalled = false;
+        s_manager = nullptr;
+        DependencyManager deps;
+        deps.add<Interface0, DependencyManager::UniqueInstance>(&DependencyManagerTest::firstImplFactory);
+        auto object1 = deps.create<Interface0>();
+        QVERIFY(object1.dynamicCast<FirstImplementation0>());
+        auto object2 = deps.create<Interface0>();
+        QVERIFY(object2.dynamicCast<FirstImplementation0>());
+        QVERIFY(s_firstImplFactoryCalled);
+        QVERIFY(s_manager == &deps);
+        QVERIFY(object1 == object2);
     }
 
     void shouldAllowOurOwnFactoryAsLambda()

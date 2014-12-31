@@ -46,22 +46,27 @@ namespace Internal {
     public:
 #ifdef Q_COMPILER_LAMBDA
         typedef std::function<Iface*(DependencyManager*)> FactoryType;
+        typedef std::function<QSharedPointer<Iface>(FactoryType, DependencyManager*)> PolicyType;
 #else
         typedef Iface *(*FactoryType)(DependencyManager*);
+        typedef QSharedPointer<Iface> (*PolicyType)(FactoryType, DependencyManager*);
 #endif
 
         Provider()
-            : m_factory(0)
+            : m_factory(0),
+              m_policy(0)
         {
         }
 
-        Provider(FactoryType factory)
-            : m_factory(factory)
+        Provider(FactoryType factory, PolicyType policy)
+            : m_factory(factory),
+              m_policy(policy)
         {
         }
 
         Provider(const Provider &other)
-            : m_factory(other.m_factory)
+            : m_factory(other.m_factory),
+              m_policy(other.m_policy)
         {
         }
 
@@ -69,17 +74,19 @@ namespace Internal {
         {
             Provider tmp(other);
             std::swap(m_factory, tmp.m_factory);
+            std::swap(m_policy, tmp.m_policy);
             return *this;
         }
 
-        Iface *operator()(DependencyManager *deps) const
+        QSharedPointer<Iface> operator()(DependencyManager *deps) const
         {
             Q_ASSERT(m_factory != 0);
-            return m_factory(deps);
+            return m_policy(m_factory, deps);
         }
 
     private:
         FactoryType m_factory;
+        PolicyType m_policy;
     };
 
     template<class Iface>
@@ -93,7 +100,7 @@ namespace Internal {
 
         static QSharedPointer<Iface> create(DependencyManager *manager)
         {
-            return QSharedPointer<Iface>(s_providers.value(manager)(manager));
+            return s_providers.value(manager)(manager);
         }
 
         static int providersCount()
@@ -114,28 +121,83 @@ namespace Internal {
 
     template<class Iface>
     QMap< DependencyManager*, Provider<Iface> > Supplier<Iface>::s_providers;
+
+    struct MultipleInstancesPolicy
+    {
+        template<class Iface>
+        static typename Provider<Iface>::PolicyType function(Iface *)
+        {
+            return create<Iface>;
+        }
+
+        template<class Iface>
+        static QSharedPointer<Iface> create(typename Provider<Iface>::FactoryType factory,
+                                            DependencyManager *deps)
+        {
+            return QSharedPointer<Iface>(factory(deps));
+        }
+    };
+
+    struct UniqueInstancePolicy
+    {
+        template<class Iface>
+        static typename Provider<Iface>::PolicyType function(Iface *)
+        {
+            return create<Iface>;
+        }
+
+        template<class Iface>
+        static QSharedPointer<Iface> create(typename Provider<Iface>::FactoryType factory,
+                                            DependencyManager *deps)
+        {
+            static QWeakPointer<Iface> weakRef;
+
+            QSharedPointer<Iface> instance = weakRef.toStrongRef();
+            if (!instance) {
+                instance = QSharedPointer<Iface>(factory(deps));
+                weakRef = instance;
+            }
+            return instance;
+        }
+    };
 }
 
 class DependencyManager
 {
 public:
+    typedef Internal::MultipleInstancesPolicy MultipleInstances;
+    typedef Internal::UniqueInstancePolicy UniqueInstance;
+
     static DependencyManager &globalInstance();
 
     DependencyManager();
     ~DependencyManager();
 
+    template<class Iface, class InstancePolicy>
+    void add(const typename Internal::Provider<Iface>::FactoryType &factory)
+    {
+        Iface * const val = 0;
+        Internal::Provider<Iface> provider(factory, InstancePolicy::function(val));
+        Internal::Supplier<Iface>::setProvider(this, provider);
+        m_cleanupFunctions << Internal::Supplier<Iface>::removeProvider;
+    }
+
     template<class Iface>
     void add(const typename Internal::Provider<Iface>::FactoryType &factory)
     {
-        Internal::Provider<Iface> provider(factory);
-        Internal::Supplier<Iface>::setProvider(this, provider);
-        m_cleanupFunctions << Internal::Supplier<Iface>::removeProvider;
+        add<Iface, MultipleInstances>(factory);
+    }
+
+    template<class Iface, class Signature, class InstancePolicy>
+    void add()
+    {
+        add<Iface, InstancePolicy>(DependencyManager::FactoryHelper<Signature>::create);
     }
 
     template<class Iface, class Signature>
     void add()
     {
-        add<Iface>(DependencyManager::FactoryHelper<Signature>::create);
+        add<Iface, Signature, MultipleInstances>();
     }
 
     template<class Iface>
