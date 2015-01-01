@@ -75,6 +75,11 @@ DECLARE_IMPLEMENTED_INTERFACE(6)
 DECLARE_IMPLEMENTED_INTERFACE(7)
 DECLARE_IMPLEMENTED_INTERFACE(8)
 DECLARE_IMPLEMENTED_INTERFACE(9)
+DECLARE_IMPLEMENTED_INTERFACE(10)
+DECLARE_IMPLEMENTED_INTERFACE(11)
+DECLARE_IMPLEMENTED_INTERFACE(12)
+DECLARE_IMPLEMENTED_INTERFACE(13)
+DECLARE_IMPLEMENTED_INTERFACE(14)
 
 class AnotherInterface
 {
@@ -110,7 +115,12 @@ public:
                                 Interface6::Ptr iface6,
                                 Interface7::Ptr iface7,
                                 Interface8::Ptr iface8,
-                                Interface9::Ptr iface9)
+                                Interface9::Ptr iface9,
+                                Interface10::Ptr iface10,
+                                Interface11::Ptr iface11,
+                                Interface12::Ptr iface12,
+                                Interface13::Ptr iface13,
+                                Interface14::Ptr iface14)
         : m_iface0(iface0),
           m_iface1(iface1),
           m_iface2(iface2),
@@ -120,7 +130,12 @@ public:
           m_iface6(iface6),
           m_iface7(iface7),
           m_iface8(iface8),
-          m_iface9(iface9)
+          m_iface9(iface9),
+          m_iface10(iface10),
+          m_iface11(iface11),
+          m_iface12(iface12),
+          m_iface13(iface13),
+          m_iface14(iface14)
     {
     }
 
@@ -136,6 +151,11 @@ public:
     Interface7::Ptr iface7() const { return m_iface7; }
     Interface8::Ptr iface8() const { return m_iface8; }
     Interface9::Ptr iface9() const { return m_iface9; }
+    Interface10::Ptr iface10() const { return m_iface10; }
+    Interface11::Ptr iface11() const { return m_iface11; }
+    Interface12::Ptr iface12() const { return m_iface12; }
+    Interface13::Ptr iface13() const { return m_iface13; }
+    Interface14::Ptr iface14() const { return m_iface14; }
 
 private:
     Interface0::Ptr m_iface0;
@@ -148,6 +168,11 @@ private:
     Interface7::Ptr m_iface7;
     Interface8::Ptr m_iface8;
     Interface9::Ptr m_iface9;
+    Interface10::Ptr m_iface10;
+    Interface11::Ptr m_iface11;
+    Interface12::Ptr m_iface12;
+    Interface13::Ptr m_iface13;
+    Interface14::Ptr m_iface14;
 };
 
 class DependencyManagerTest : public QObject
@@ -293,6 +318,11 @@ private slots:
         deps.add<Interface7, Implementation7>();
         deps.add<Interface8, Implementation8>();
         deps.add<Interface9, Implementation9>();
+        deps.add<Interface10, Implementation10>();
+        deps.add<Interface11, Implementation11>();
+        deps.add<Interface12, Implementation12>();
+        deps.add<Interface13, Implementation13>();
+        deps.add<Interface14, Implementation14>();
         deps.add<AnotherInterface, AnotherSecondImplementation(Interface0*,
                                                                Interface1*,
                                                                Interface2*,
@@ -302,7 +332,12 @@ private slots:
                                                                Interface6*,
                                                                Interface7*,
                                                                Interface8*,
-                                                               Interface9*)>();
+                                                               Interface9*,
+                                                               Interface10*,
+                                                               Interface11*,
+                                                               Interface12*,
+                                                               Interface13*,
+                                                               Interface14*)>();
         auto object = deps.create<AnotherInterface>();
         auto impl = object.dynamicCast<AnotherSecondImplementation>();
         QVERIFY(impl != 0);
@@ -316,6 +351,11 @@ private slots:
         QVERIFY(impl->iface7().dynamicCast<Implementation7>());
         QVERIFY(impl->iface8().dynamicCast<Implementation8>());
         QVERIFY(impl->iface9().dynamicCast<Implementation9>());
+        QVERIFY(impl->iface10().dynamicCast<Implementation10>());
+        QVERIFY(impl->iface11().dynamicCast<Implementation11>());
+        QVERIFY(impl->iface12().dynamicCast<Implementation12>());
+        QVERIFY(impl->iface13().dynamicCast<Implementation13>());
+        QVERIFY(impl->iface14().dynamicCast<Implementation14>());
     }
 };
 

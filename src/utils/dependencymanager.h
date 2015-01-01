@@ -398,6 +398,152 @@ private:
                             manager->create<Arg9>());
         }
     };
+
+    template<class Iface, class Impl, class Arg0, class Arg1, class Arg2,
+                                      class Arg3, class Arg4, class Arg5,
+                                      class Arg6, class Arg7, class Arg8,
+                                      class Arg9, class Arg10>
+    class FactoryHelper<Iface, Impl(Arg0*, Arg1*, Arg2*,
+                                    Arg3*, Arg4*, Arg5*,
+                                    Arg6*, Arg7*, Arg8*,
+                                    Arg9*, Arg10*)>
+    {
+    public:
+        static Iface *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>(),
+                            manager->create<Arg8>(),
+                            manager->create<Arg9>(),
+                            manager->create<Arg10>());
+        }
+    };
+
+    template<class Iface, class Impl, class Arg0, class Arg1, class Arg2,
+                                      class Arg3, class Arg4, class Arg5,
+                                      class Arg6, class Arg7, class Arg8,
+                                      class Arg9, class Arg10, class Arg11>
+    class FactoryHelper<Iface, Impl(Arg0*, Arg1*, Arg2*,
+                                    Arg3*, Arg4*, Arg5*,
+                                    Arg6*, Arg7*, Arg8*,
+                                    Arg9*, Arg10*, Arg11*)>
+    {
+    public:
+        static Iface *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>(),
+                            manager->create<Arg8>(),
+                            manager->create<Arg9>(),
+                            manager->create<Arg10>(),
+                            manager->create<Arg11>());
+        }
+    };
+
+    template<class Iface, class Impl, class Arg0, class Arg1, class Arg2,
+                                      class Arg3, class Arg4, class Arg5,
+                                      class Arg6, class Arg7, class Arg8,
+                                      class Arg9, class Arg10, class Arg11,
+                                      class Arg12>
+    class FactoryHelper<Iface, Impl(Arg0*, Arg1*, Arg2*,
+                                    Arg3*, Arg4*, Arg5*,
+                                    Arg6*, Arg7*, Arg8*,
+                                    Arg9*, Arg10*, Arg11*,
+                                    Arg12*)>
+    {
+    public:
+        static Iface *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>(),
+                            manager->create<Arg8>(),
+                            manager->create<Arg9>(),
+                            manager->create<Arg10>(),
+                            manager->create<Arg11>(),
+                            manager->create<Arg12>());
+        }
+    };
+
+    template<class Iface, class Impl, class Arg0, class Arg1, class Arg2,
+                                      class Arg3, class Arg4, class Arg5,
+                                      class Arg6, class Arg7, class Arg8,
+                                      class Arg9, class Arg10, class Arg11,
+                                      class Arg12, class Arg13>
+    class FactoryHelper<Iface, Impl(Arg0*, Arg1*, Arg2*,
+                                    Arg3*, Arg4*, Arg5*,
+                                    Arg6*, Arg7*, Arg8*,
+                                    Arg9*, Arg10*, Arg11*,
+                                    Arg12*, Arg13*)>
+    {
+    public:
+        static Iface *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>(),
+                            manager->create<Arg8>(),
+                            manager->create<Arg9>(),
+                            manager->create<Arg10>(),
+                            manager->create<Arg11>(),
+                            manager->create<Arg12>(),
+                            manager->create<Arg13>());
+        }
+    };
+
+    template<class Iface, class Impl, class Arg0, class Arg1, class Arg2,
+                                      class Arg3, class Arg4, class Arg5,
+                                      class Arg6, class Arg7, class Arg8,
+                                      class Arg9, class Arg10, class Arg11,
+                                      class Arg12, class Arg13, class Arg14>
+    class FactoryHelper<Iface, Impl(Arg0*, Arg1*, Arg2*,
+                                    Arg3*, Arg4*, Arg5*,
+                                    Arg6*, Arg7*, Arg8*,
+                                    Arg9*, Arg10*, Arg11*,
+                                    Arg12*, Arg13*, Arg14*)>
+    {
+    public:
+        static Iface *create(DependencyManager *manager)
+        {
+            return new Impl(manager->create<Arg0>(),
+                            manager->create<Arg1>(),
+                            manager->create<Arg2>(),
+                            manager->create<Arg3>(),
+                            manager->create<Arg4>(),
+                            manager->create<Arg5>(),
+                            manager->create<Arg6>(),
+                            manager->create<Arg7>(),
+                            manager->create<Arg8>(),
+                            manager->create<Arg9>(),
+                            manager->create<Arg10>(),
+                            manager->create<Arg11>(),
+                            manager->create<Arg12>(),
+                            manager->create<Arg13>(),
+                            manager->create<Arg14>());
+        }
+    };
 #endif
 };
 
