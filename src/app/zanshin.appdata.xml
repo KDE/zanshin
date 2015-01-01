@@ -13,6 +13,7 @@
   <name xml:lang="pt">Zanshin</name>
   <name xml:lang="pt-BR">Zanshin</name>
   <name xml:lang="sk">Zanshin</name>
+  <name xml:lang="sv">Zanshin</name>
   <name xml:lang="uk">Zanshin</name>
   <name xml:lang="x-test">xxZanshinxx</name>
   <summary>TODO Management Application</summary>
@@ -23,6 +24,7 @@
   <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
   <summary xml:lang="pt-BR">Aplicativo de gerenciamento de tarefas</summary>
   <summary xml:lang="sk">Aplikácia na správu úloh</summary>
+  <summary xml:lang="sv">ATT GÖRA: Hanteringsprogram</summary>
   <summary xml:lang="uk">Програма для керування записами завдань</summary>
   <summary xml:lang="x-test">xxTODO Management Applicationxx</summary>
   <description>
@@ -37,6 +39,7 @@
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
     <p xml:lang="pt-BR">Zanshin é um aplicativo simples e poderoso, para gerenciar suas ações e notas do dia a dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem que fazer na sua vida pessoal e profissional. Você nunca mais esquecerá de nada, mantendo sua mente limpa.</p>
     <p xml:lang="sk">Zanshin je silná, ale jednoduchá aplikácia na správu vašich denných akcií a poznámok. Pomôže vám zorganizovať a znížiť kognitívny tlak, čo treba urobiť v práci a osobnom živote. Nikdy už nič nezabudnete, a vaša myseľ bude voľná.</p>
+    <p xml:lang="sv">Zanshin är ett kraftfullt men ändå enkelt program för att hantera åtgärder och anteckningar från dag till dag. Det hjälper till att organisera och minska det kognitiva trycket av det som måste göras i arbetet och i det personliga livet. Du kommer inte att glömma något längre, och ditt sinne blir som flödande vatten.</p>
     <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань та нотатками. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
     <p xml:lang="x-test">xxZanshin is a powerful yet simple application for managing your day to day actions and notes. It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything anymore, getting your mind like water.xx</p>
     <p>Features:</p>
@@ -49,6 +52,7 @@
     <p xml:lang="pt">Características:</p>
     <p xml:lang="pt-BR">Funcionalidades:</p>
     <p xml:lang="sk">Funkcie:</p>
+    <p xml:lang="sv">Funktioner:</p>
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
@@ -60,6 +64,7 @@
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
       <li xml:lang="pt-BR">Coleta tarefas e notas de qualquer lugar</li>
       <li xml:lang="sk">Zbiera úlohy a poznámky odvšadiaľ</li>
+      <li xml:lang="sv">Samla in uppgifter och anteckningar från alla möjliga ställen</li>
       <li xml:lang="uk">Збирання різноманітних записів завдань і нотаток.</li>
       <li xml:lang="x-test">xxCollects tasks and notes from everywherexx</li>
       <li>Organize tasks and notes in projects, contexts and topics</li>
@@ -70,6 +75,7 @@
       <li xml:lang="pt">Organiza as tarefas e notas em projectos, contextos e tópicos</li>
       <li xml:lang="pt-BR">Organiza as tarefas e notas em projetos, contextos e tópicos</li>
       <li xml:lang="sk">Organizuje úlohu a poznámky v projektoch, kontextoch a témach</li>
+      <li xml:lang="sv">Organisera uppgifter och anteckningar i projekt, sammanhang och ämnen</li>
       <li xml:lang="uk">Упорядковування завдань і нотаток за проектами, контекстами та темами.</li>
       <li xml:lang="x-test">xxOrganize tasks and notes in projects, contexts and topicsxx</li>
       <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
@@ -80,6 +86,7 @@
       <li xml:lang="pt">Aplicação com suporte para o Akonadi, permitindo-lhe recolher os dados de praticamente todo o lado (local, IMAP, serviço Web...)</li>
       <li xml:lang="pt-BR">Aplicativo com suporte para o Akonadi, permitindo-lhe coletar os dados de praticamente tudo (local, IMAP, serviço Web...)</li>
       <li xml:lang="sk">Aplikácia používajúca Akonadi umožňujúca získanie údajov zdanlivo odvšadiaľ (miestne, imap, webové služby...)</li>
+      <li xml:lang="sv">Program med Akonadi-stöd som gör det möjligt att hämta data från i stort sett var som helst (lokalt, IMAP, webbtjänster ...)</li>
       <li xml:lang="uk">Інтеграція з Akonadi, що надає програмі змогу отримувати дані практично з будь-яких джерел (локальна мережа, imap, інтернет-служба...)</li>
       <li xml:lang="x-test">xxAkonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)xx</li>
     </ul>
