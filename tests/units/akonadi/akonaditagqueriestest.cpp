@@ -25,7 +25,8 @@
 
 #include "utils/mockobject.h"
 
-#include "testlib/akonadimocks.h"
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonaditagqueries.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -33,8 +34,8 @@
 
 using namespace mockitopp;
 
-Q_DECLARE_METATYPE(MockItemFetchJob*)
-Q_DECLARE_METATYPE(MockCollectionFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeCollectionFetchJob*)
 
 class AkonadiTagQueriesTest : public QObject
 {
@@ -57,7 +58,7 @@ private slots:
         Domain::Tag::Ptr tag2(new Domain::Tag);
         tag2->setName("tag43");
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List() << akonadiTag1 << akonadiTag2);
 
         // Storage mock returning the fetch jobs
@@ -72,7 +73,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
                                                                            serializerMock.getInstance(),
-                                                                           MockMonitor::Ptr::create()));
+                                                                           Testlib::AkonadiFakeMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Tag::Ptr>::Ptr result = queries->findAll();
         result->data();
@@ -96,7 +97,7 @@ private slots:
     {
         // GIVEN
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List()); // empty tag list
 
         // Storage mock returning the fetch jobs
@@ -107,7 +108,7 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Mocked Monitor
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
                                                                            serializerMock.getInstance(),
@@ -163,14 +164,14 @@ private slots:
         Domain::Tag::Ptr tag2(new Domain::Tag);
         tag2->setName("tag43");
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List() << akonadiTag1 << akonadiTag2);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         // Serializer mock returning tags from akonadi tags
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
@@ -217,14 +218,14 @@ private slots:
         Domain::Tag::Ptr tag2(new Domain::Tag);
         tag2->setName("tag43");
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List() << akonadiTag1 << akonadiTag2);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         // Serializer mock returning domain tags from akonadi tags
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
@@ -269,7 +270,7 @@ private slots:
         col1.setParentCollection(Akonadi::Collection::root());
         Akonadi::Collection col2(43);
         col2.setParentCollection(Akonadi::Collection::root());
-        auto collectionFetchJob = new MockCollectionFetchJob(this);
+        auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // One domain Tag and it's corresponding akonadiTag
@@ -283,7 +284,7 @@ private slots:
         Akonadi::Item item2(44);
         item2.setParentCollection(col1);
         auto task2 = Domain::Task::Ptr::create();
-        auto itemFetchJob1 = new MockItemFetchJob(this);
+        auto itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2);
 
         // Two notes in the second collection
@@ -293,7 +294,7 @@ private slots:
         Akonadi::Item item4(46);
         item4.setParentCollection(col2);
         auto note4 = Domain::Note::Ptr::create();
-        auto itemFetchJob2 = new MockItemFetchJob(this);
+        auto itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item3 << item4);
 
         // Storage mock returning the fetch jobs
@@ -333,7 +334,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
                                                                            serializerMock.getInstance(),
-                                                                           MockMonitor::Ptr::create()));
+                                                                           Testlib::AkonadiFakeMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findTopLevelArtifacts(tag);
         result->data();
@@ -366,13 +367,13 @@ private slots:
         // One top level
         Akonadi::Collection col1(42);
         col1.setParentCollection(Akonadi::Collection::root());
-        auto collectionFetchJob = new MockCollectionFetchJob(this);
+        auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1);
 
         // One domain Tag
         Akonadi::Tag akonadiTag(43);
         auto tag = Domain::Tag::Ptr::create();
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List());
 
         // Storage mock returning the fetch job
@@ -391,7 +392,7 @@ private slots:
 
 
         // A mock monitor
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
@@ -430,14 +431,14 @@ private slots:
         // One top level collection with the task
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        auto collectionFetchJob = new MockCollectionFetchJob(this);
+        auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // A task related to the tag
         Akonadi::Item item1(44);
         item1.setParentCollection(col);
         Domain::Artifact::Ptr task1 = Domain::Task::Ptr::create();
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch job
@@ -461,7 +462,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
 
         // A monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
                                                                            serializerMock.getInstance(),
@@ -505,7 +506,7 @@ private slots:
         // One top level collection with the task
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        auto collectionFetchJob = new MockCollectionFetchJob(this);
+        auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Two tasks related to the tag
@@ -522,7 +523,7 @@ private slots:
         itemTask1.setParentCollection(col);
         Domain::Artifact::Ptr note(new Domain::Note);
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << itemTask1 << itemTask2 << itemNote);
 
         // Storage mock returning the fetch job
@@ -565,7 +566,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(itemNote).thenReturn(true);
 
         // A monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TagQueries> queries(new Akonadi::TagQueries(storageMock.getInstance(),
                                                                            serializerMock.getInstance(),

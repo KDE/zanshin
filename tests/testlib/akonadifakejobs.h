@@ -21,19 +21,18 @@
    USA.
 */
 
-#ifndef ZANSHIN_TESTLIB_AKONADIMOCKS_H
-#define ZANSHIN_TESTLIB_AKONADIMOCKS_H
-
-#include <KJob>
+#ifndef TESTLIB_AKONADIFAKEJOBS_H
+#define TESTLIB_AKONADIFAKEJOBS_H
 
 #include "fakejob.h"
-#include "akonadi/akonadimonitorinterface.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 
-class MockCollectionFetchJob : public FakeJob, public Akonadi::CollectionFetchJobInterface
+namespace Testlib {
+
+class AkonadiFakeCollectionFetchJob : public FakeJob, public Akonadi::CollectionFetchJobInterface
 {
     Q_OBJECT
 public:
@@ -46,7 +45,7 @@ private:
     Akonadi::Collection::List m_collections;
 };
 
-class MockCollectionSearchJob : public FakeJob, public Akonadi::CollectionSearchJobInterface
+class AkonadiFakeCollectionSearchJob : public FakeJob, public Akonadi::CollectionSearchJobInterface
 {
     Q_OBJECT
 public:
@@ -59,7 +58,7 @@ private:
     Akonadi::Collection::List m_collections;
 };
 
-class MockItemFetchJob : public FakeJob, public Akonadi::ItemFetchJobInterface
+class AkonadiFakeItemFetchJob : public FakeJob, public Akonadi::ItemFetchJobInterface
 {
     Q_OBJECT
 public:
@@ -72,7 +71,7 @@ private:
     Akonadi::Item::List m_items;
 };
 
-class MockTagFetchJob : public FakeJob, public Akonadi::TagFetchJobInterface
+class AkonadiFakeTagFetchJob : public FakeJob, public Akonadi::TagFetchJobInterface
 {
     Q_OBJECT
 public:
@@ -85,26 +84,6 @@ private:
     Akonadi::Tag::List m_tags;
 };
 
-class MockMonitor : public Akonadi::MonitorInterface
-{
-    Q_OBJECT
-public:
-    typedef QSharedPointer<MockMonitor> Ptr;
+}
 
-    explicit MockMonitor(QObject *parent = 0);
-
-    void addCollection(const Akonadi::Collection &collection);
-    void removeCollection(const Akonadi::Collection &collection);
-    void changeCollection(const Akonadi::Collection &collection);
-    void changeCollectionSelection(const Akonadi::Collection &collection);
-
-    void addItem(const Akonadi::Item &item);
-    void removeItem(const Akonadi::Item &item);
-    void changeItem(const Akonadi::Item &item);
-
-    void addTag(const Akonadi::Tag &tag);
-    void removeTag(const Akonadi::Tag &tag);
-    void changeTag(const Akonadi::Tag &tag);
-};
-
-#endif // ZANSHIN_TESTLIB_AKONADIMOCKS_H
+#endif // TESTLIB_AKONADIFAKEJOBS_H

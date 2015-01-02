@@ -24,7 +24,9 @@
 #include <QtTest>
 
 #include "utils/mockobject.h"
-#include "testlib/akonadimocks.h"
+
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonadidatasourcerepository.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -32,7 +34,7 @@
 
 using namespace mockitopp;
 
-Q_DECLARE_METATYPE(MockItemFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
 
 class AkonadiDataSourceRepositoryTest : public QObject
 {

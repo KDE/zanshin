@@ -25,7 +25,9 @@
 #include <QtTest>
 
 #include "utils/mockobject.h"
-#include "testlib/akonadimocks.h"
+
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonadicontextrepository.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -34,8 +36,8 @@
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 
-Q_DECLARE_METATYPE(MockItemFetchJob*)
-Q_DECLARE_METATYPE(MockTagFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeTagFetchJob*)
 
 class AkonadiContextRepositoryTest : public QObject
 {
@@ -138,7 +140,7 @@ private slots:
         QTest::addColumn<Akonadi::Item>("item");
         QTest::addColumn<Domain::Context::Ptr>("context");
         QTest::addColumn<Domain::Task::Ptr>("task");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob");
         QTest::addColumn<bool>("execJob");
 
         Akonadi::Collection col(40);
@@ -150,11 +152,11 @@ private slots:
         Akonadi::Tag associatedTag(qint64(43));
         auto associatedContext = Domain::Context::Ptr::create();
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item);
         QTest::newRow("nominal case") << associatedTag << item << associatedContext << task << itemFetchJob << true;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("task job error, cannot find task") << associatedTag << item << associatedContext << task << itemFetchJob << false;
     }
@@ -166,7 +168,7 @@ private slots:
         QFETCH(Akonadi::Item,item);
         QFETCH(Domain::Context::Ptr,context);
         QFETCH(Domain::Task::Ptr,task);
-        QFETCH(MockItemFetchJob*,itemFetchJob);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*,itemFetchJob);
         QFETCH(bool,execJob);
 
         // A mock update job
@@ -208,7 +210,7 @@ private slots:
         QTest::addColumn<Akonadi::Item>("item");
         QTest::addColumn<Domain::Context::Ptr>("context");
         QTest::addColumn<Domain::Task::Ptr>("task");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob");
         QTest::addColumn<bool>("execJob");
 
         Akonadi::Item item(42);
@@ -217,11 +219,11 @@ private slots:
         Akonadi::Tag associatedTag(qint64(43));
         auto associatedContext = Domain::Context::Ptr::create();
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item);
         QTest::newRow("nominal case") << associatedTag << item << associatedContext << task << itemFetchJob << true;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("task job error, cannot find task") << associatedTag << item << associatedContext << task << itemFetchJob << false;
     }
@@ -232,7 +234,7 @@ private slots:
         QFETCH(Akonadi::Item,item);
         QFETCH(Domain::Context::Ptr,context);
         QFETCH(Domain::Task::Ptr,task);
-        QFETCH(MockItemFetchJob*,itemFetchJob);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*,itemFetchJob);
         QFETCH(bool,execJob);
 
         // A mock update job
@@ -273,17 +275,17 @@ private slots:
     {
         QTest::addColumn<Akonadi::Item>("item");
         QTest::addColumn<Domain::Task::Ptr>("task");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob");
         QTest::addColumn<bool>("execJob");
 
         Akonadi::Item item(42);
         Domain::Task::Ptr task(new Domain::Task);
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item);
         QTest::newRow("nominal case") << item << task << itemFetchJob << true;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("task job error, cannot find task") << item << task << itemFetchJob << false;
     }
@@ -292,7 +294,7 @@ private slots:
     {
         QFETCH(Akonadi::Item,item);
         QFETCH(Domain::Task::Ptr,task);
-        QFETCH(MockItemFetchJob*,itemFetchJob);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*,itemFetchJob);
         QFETCH(bool,execJob);
 
         // A mock update job

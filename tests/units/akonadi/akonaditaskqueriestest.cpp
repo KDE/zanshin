@@ -25,7 +25,8 @@
 
 #include "utils/mockobject.h"
 
-#include "testlib/akonadimocks.h"
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -33,8 +34,8 @@
 
 using namespace mockitopp;
 
-Q_DECLARE_METATYPE(MockItemFetchJob*)
-Q_DECLARE_METATYPE(MockCollectionFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeCollectionFetchJob*)
 
 class AkonadiTaskQueriesTest : public QObject
 {
@@ -49,14 +50,14 @@ private slots:
         col1.setParentCollection(Akonadi::Collection::root());
         Akonadi::Collection col2(43);
         col2.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // One task in the first collection
         Akonadi::Item item1(42);
         item1.setParentCollection(col1);
         Domain::Task::Ptr task1(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
 
         // Two tasks in the second collection
@@ -66,7 +67,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col2);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -93,7 +94,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
         result->data();
         result = queries->findAll(); // Should not cause any problem or wrong data
@@ -124,7 +125,7 @@ private slots:
         // Two top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Two tasks in the collection
@@ -135,7 +136,7 @@ private slots:
         Akonadi::Item item2(43);
         item2.setParentCollection(col);
         Domain::Task::Ptr task2;
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2);
 
         // Storage mock returning the fetch jobs
@@ -161,7 +162,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
 
         // THEN
@@ -184,7 +185,7 @@ private slots:
         // GIVEN
 
         // Empty collection fetch
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -197,7 +198,7 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -239,7 +240,7 @@ private slots:
         // One top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Three task in the collection
@@ -252,7 +253,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -279,7 +280,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsItem).when(task3, item2).thenReturn(false);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -313,7 +314,7 @@ private slots:
         // One top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Three task in the collection
@@ -326,7 +327,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -359,7 +360,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn(QString());
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -413,9 +414,9 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -439,7 +440,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
         result->data();
         result = queries->findChildren(task1); // Should not cause any problem or wrong data
@@ -483,13 +484,13 @@ private slots:
         Domain::Task::Ptr task1(new Domain::Task);
 
         // We'll make the same queries twice
-        MockItemFetchJob *itemFetchJob11 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob11 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob11->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob21 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob21 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob21->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob12 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob12 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob12->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob22 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob22 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob22->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch jobs
@@ -508,7 +509,7 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
 
         // The bug we're trying to hit here is the following:
         //  - when findChildren is called the first time a provider is created internally
@@ -541,9 +542,9 @@ private slots:
         item1.setParentCollection(col);
         Domain::Task::Ptr task1(new Domain::Task);
 
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch jobs
@@ -559,7 +560,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task1).thenReturn(item1);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -613,9 +614,9 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -641,7 +642,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -690,9 +691,9 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -720,7 +721,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -760,9 +761,9 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -789,7 +790,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -840,19 +841,19 @@ private slots:
         auto task3 = Domain::Task::Ptr::create();
 
         // Jobs
-        auto collectionFetchJob1 = new MockCollectionFetchJob(this);
+        auto collectionFetchJob1 = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob1->setCollections(Akonadi::Collection::List() << col);
-        auto itemFetchJob1 = new MockItemFetchJob(this);
+        auto itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
-        auto collectionFetchJob2 = new MockCollectionFetchJob(this);
+        auto collectionFetchJob2 = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob2->setCollections(Akonadi::Collection::List() << col);
-        auto itemFetchJob2 = new MockItemFetchJob(this);
+        auto itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
-        auto itemFetchJob3 = new MockItemFetchJob(this);
+        auto itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob3->setItems(Akonadi::Item::List() << item1);
-        auto itemFetchJob4 = new MockItemFetchJob(this);
+        auto itemFetchJob4 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob4->setItems(Akonadi::Item::List() << item2);
 
         // Storage mock returning the fetch jobs
@@ -891,7 +892,7 @@ private slots:
                                                                                      .thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -931,9 +932,9 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -959,7 +960,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task1, item3).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -991,14 +992,14 @@ private slots:
         col1.setParentCollection(Akonadi::Collection::root());
         Akonadi::Collection col2(43);
         col2.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // One task in the first collection
         Akonadi::Item item1(42);
         item1.setParentCollection(col1);
         Domain::Task::Ptr task1(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
 
         // Two tasks in the second collection
@@ -1008,7 +1009,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col2);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -1035,7 +1036,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
         result->data();
         result = queries->findTopLevel(); // Should not cause any problem or wrong data
@@ -1062,7 +1063,7 @@ private slots:
         // GIVEN
 
         // Empty collection fetch
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -1075,7 +1076,7 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -1117,7 +1118,7 @@ private slots:
         // One top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Three task in the collection
@@ -1130,7 +1131,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -1157,7 +1158,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -1188,7 +1189,7 @@ private slots:
         // One top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Three task in the collection
@@ -1201,7 +1202,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -1229,7 +1230,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -1270,7 +1271,7 @@ private slots:
         // One top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Three task in the collection
@@ -1283,7 +1284,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -1310,7 +1311,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -1342,7 +1343,7 @@ private slots:
         // One top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Three task in the collection
@@ -1355,7 +1356,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -1382,7 +1383,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("2");
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -1415,7 +1416,7 @@ private slots:
         // One top level collections
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
 
         // Three task in the collection
@@ -1428,11 +1429,11 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1 << item2 << item3);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item2);
-        MockItemFetchJob *itemFetchJob3 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob3->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
         // Storage mock returning the fetch jobs
@@ -1469,7 +1470,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isTaskChild).when(task2, item3).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
@@ -1516,7 +1517,7 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
         itemFetchJob1->setExpectedError(KJob::KilledJobError);
 
@@ -1532,7 +1533,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
 
         // THEN
@@ -1547,9 +1548,9 @@ private slots:
     void shouldNotCrashDuringFindChildrenWhenItemsJobReceiveResult_data()
     {
         QTest::addColumn<Akonadi::Item>("item1");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob1");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob1");
         QTest::addColumn<Akonadi::Collection>("col");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob2");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob2");
         QTest::addColumn<Domain::Task::Ptr>("task1");
         QTest::addColumn<bool>("deleteQuery");
 
@@ -1567,21 +1568,21 @@ private slots:
         Akonadi::Item item3(44);
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
-        MockItemFetchJob *itemFetchJob1 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        MockItemFetchJob *itemFetchJob2 = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("No error with empty list") << item1 << itemFetchJob1 << col << itemFetchJob2 << task1 << false;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty list") << item1 << itemFetchJob1 << col << itemFetchJob2 << task1 << true;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setExpectedError(KJob::KilledJobError);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1 << item2 << item3);
         QTest::newRow("Error with list") <<  item1 << itemFetchJob1 << col << itemFetchJob2 << task1 << true;
@@ -1591,9 +1592,9 @@ private slots:
     {
         // GIVEN
         QFETCH(Akonadi::Item, item1);
-        QFETCH(MockItemFetchJob*, itemFetchJob1);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob1);
         QFETCH(Akonadi::Collection, col);
-        QFETCH(MockItemFetchJob*, itemFetchJob2);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob2);
         QFETCH(Domain::Task::Ptr, task1);
         QFETCH(bool, deleteQuery);
 
@@ -1611,7 +1612,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findChildren(task1);
 
         if (deleteQuery)
@@ -1629,8 +1630,8 @@ private slots:
     void shouldNotCrashDuringFindAllWhenFetchJobFailedOrEmpty_data()
     {
         QTest::addColumn<Akonadi::Collection>("col");
-        QTest::addColumn<MockCollectionFetchJob*>("collectionFetchJob");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob");
         QTest::addColumn<bool>("deleteQuery");
         QTest::addColumn<bool>("fechItemsIsCalled");
 
@@ -1649,40 +1650,40 @@ private slots:
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("No error with empty collection list") << col << collectionFetchJob << itemFetchJob << false << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("Error with empty collection list") << col << collectionFetchJob << itemFetchJob << true << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("Error with collection list") <<  col << collectionFetchJob << itemFetchJob  << true << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("No error with empty item list") << col << collectionFetchJob << itemFetchJob << false << true;
         
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
 
         QTest::newRow("Error with empty item list") << col << collectionFetchJob << itemFetchJob << true << true;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
@@ -1693,8 +1694,8 @@ private slots:
     {
         // GIVEN
         QFETCH(Akonadi::Collection, col);
-        QFETCH(MockCollectionFetchJob*, collectionFetchJob);
-        QFETCH(MockItemFetchJob*, itemFetchJob);
+        QFETCH(Testlib::AkonadiFakeCollectionFetchJob*, collectionFetchJob);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob);
         QFETCH(bool, deleteQuery);
         QFETCH(bool, fechItemsIsCalled);
 
@@ -1713,7 +1714,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findAll();
 
         if (deleteQuery)
@@ -1735,8 +1736,8 @@ private slots:
     void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty_data()
     {
         QTest::addColumn<Akonadi::Collection>("col");
-        QTest::addColumn<MockCollectionFetchJob*>("collectionFetchJob");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob");
         QTest::addColumn<bool>("deleteQuery");
         QTest::addColumn<bool>("fechItemsIsCalled");
 
@@ -1755,40 +1756,40 @@ private slots:
         item3.setParentCollection(col);
         Domain::Task::Ptr task3(new Domain::Task);
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
-        MockItemFetchJob *itemFetchJob = new MockItemFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("No error with empty collection list") << col << collectionFetchJob << itemFetchJob << false << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("Error with empty collection list") << col << collectionFetchJob << itemFetchJob << true << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("Error with collection list") <<  col << collectionFetchJob << itemFetchJob  << true << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
 
         QTest::newRow("No error with empty item list") << col << collectionFetchJob << itemFetchJob << false << true;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
 
         QTest::newRow("Error with empty item list") << col << collectionFetchJob << itemFetchJob << true << true;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
 
@@ -1799,8 +1800,8 @@ private slots:
     {
         // GIVEN
         QFETCH(Akonadi::Collection, col);
-        QFETCH(MockCollectionFetchJob*, collectionFetchJob);
-        QFETCH(MockItemFetchJob*, itemFetchJob);
+        QFETCH(Testlib::AkonadiFakeCollectionFetchJob*, collectionFetchJob);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob);
         QFETCH(bool, deleteQuery);
         QFETCH(bool, fechItemsIsCalled);
 
@@ -1819,7 +1820,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
                                                                              serializerMock.getInstance(),
-                                                                             MockMonitor::Ptr::create()));
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevel();
 
         if (deleteQuery)

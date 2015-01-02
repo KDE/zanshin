@@ -1,8 +1,9 @@
 set(testlib_SRCS
-   akonadimocks.cpp
-   modeltest.cpp
-   fakejob.cpp
    akonadidebug.cpp
+   akonadifakejobs.cpp
+   akonadifakemonitor.cpp
+   fakejob.cpp
+   modeltest.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/tests ${CMAKE_SOURCE_DIR}/src)

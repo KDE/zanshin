@@ -25,7 +25,9 @@
 #include <QtTest>
 
 #include "utils/mockobject.h"
-#include "testlib/akonadimocks.h"
+
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonaditagrepository.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -34,8 +36,8 @@
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 
-Q_DECLARE_METATYPE(MockItemFetchJob*)
-Q_DECLARE_METATYPE(MockTagFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeTagFetchJob*)
 
 class AkonadiTagRepositoryTest : public QObject
 {
@@ -111,7 +113,7 @@ private slots:
         // A mock of update job
         auto itemModifyJob = new FakeJob(this);
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << taskItem);
 
         // Storage mock returning the tagCreatejob
@@ -147,10 +149,10 @@ private slots:
         Akonadi::Tag akonadiTag(qint64(42));
         auto tag = Domain::Tag::Ptr::create();
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
 
-        auto itemFetchJobFilled = new MockItemFetchJob(this);
+        auto itemFetchJobFilled = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJobFilled->setItems(Akonadi::Item::List() << item);
 
         // A mock update job
@@ -198,10 +200,10 @@ private slots:
         Akonadi::Tag akonadiTag(qint64(42));
         auto tag = Domain::Tag::Ptr::create();
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
 
-        auto itemFetchJobFilled = new MockItemFetchJob(this);
+        auto itemFetchJobFilled = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJobFilled->setItems(Akonadi::Item::List() << item);
 
         // A mock update job

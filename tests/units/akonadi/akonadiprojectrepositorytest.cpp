@@ -24,7 +24,9 @@
 #include <QtTest>
 
 #include "utils/mockobject.h"
-#include "testlib/akonadimocks.h"
+
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonadiprojectrepository.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -32,7 +34,7 @@
 
 using namespace mockitopp;
 
-Q_DECLARE_METATYPE(MockItemFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
 
 class AkonadiProjectRepositoryTest : public QObject
 {
@@ -137,9 +139,9 @@ private slots:
         QTest::addColumn<Akonadi::Item>("parentItem");
         QTest::addColumn<Domain::Artifact::Ptr>("child");
         QTest::addColumn<Domain::Project::Ptr>("parent");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob1");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob2");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob3");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob1");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob2");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob3");
         QTest::addColumn<bool>("execJob");
         QTest::addColumn<bool>("execParentJob");
         QTest::addColumn<Akonadi::Item::List>("list");
@@ -155,78 +157,78 @@ private slots:
         parentItem.setParentCollection(col);
         auto parent = Domain::Project::Ptr::create();
 
-        auto itemFetchJob1 = new MockItemFetchJob(this);
+        auto itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        auto itemFetchJob2 = new MockItemFetchJob(this);
+        auto itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
-        auto itemFetchJob3 = new MockItemFetchJob(this);
+        auto itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
 
         Akonadi::Item::List list;
 
         QTest::newRow("nominal case (task)") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
-        itemFetchJob3 = new MockItemFetchJob(this);
+        itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
         QTest::newRow("nominal case (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setExpectedError(KJob::KilledJobError);
         QTest::newRow("child job error with empty list") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setExpectedError(KJob::KilledJobError);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("child job error with item (task)") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setExpectedError(KJob::KilledJobError);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("child job error with item (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setExpectedError(KJob::KilledJobError);
         QTest::newRow("parent job error with empty list (task)") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setExpectedError(KJob::KilledJobError);
         QTest::newRow("parent job error with empty list (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setExpectedError(KJob::KilledJobError);
         itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
         QTest::newRow("parent job error with item (task)") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setExpectedError(KJob::KilledJobError);
         itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
         QTest::newRow("parent job error with item (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         Akonadi::Collection col2(39);
         Akonadi::Item parentItem2(41);
         parentItem2.setParentCollection(col2);
         itemFetchJob2->setItems(Akonadi::Item::List() << parentItem2);
-        itemFetchJob3 = new MockItemFetchJob(this);
+        itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
         QTest::newRow("update and move item (task)") << childItem << parentItem2 << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list;
 
-        itemFetchJob1 = new MockItemFetchJob(this);
+        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new MockItemFetchJob(this);
+        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << parentItem2);
-        itemFetchJob3 = new MockItemFetchJob(this);
+        itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
         Akonadi::Item childItem2(43);
         Akonadi::Item::List list2;
         list2 << childItem2;
@@ -241,9 +243,9 @@ private slots:
         QFETCH(Akonadi::Item, parentItem);
         QFETCH(Domain::Artifact::Ptr, child);
         QFETCH(Domain::Project::Ptr, parent);
-        QFETCH(MockItemFetchJob*, itemFetchJob1);
-        QFETCH(MockItemFetchJob*, itemFetchJob2);
-        QFETCH(MockItemFetchJob*, itemFetchJob3);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob1);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob2);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob3);
         QFETCH(bool, execJob);
         QFETCH(bool, execParentJob);
         QFETCH(Akonadi::Item::List, list);
@@ -316,35 +318,35 @@ private slots:
     {
         QTest::addColumn<Domain::Artifact::Ptr>("child");
         QTest::addColumn<Akonadi::Item>("childItem");
-        QTest::addColumn<MockItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob");
         QTest::addColumn<bool>("fetchJobFailed");
 
         Domain::Artifact::Ptr taskChild(new Domain::Task);
         Domain::Artifact::Ptr noteChild(new Domain::Note);
         Akonadi::Item childItem(42);
 
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("task nominal case") << taskChild << childItem << itemFetchJob << false;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("task job error with empty list") << taskChild << childItem << itemFetchJob << true;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         itemFetchJob->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("task job error with item") << taskChild << childItem << itemFetchJob << true;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("note nominal case") << noteChild << childItem << itemFetchJob << false;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("note job error with empty list") << noteChild << childItem << itemFetchJob << true;
 
-        itemFetchJob = new MockItemFetchJob(this);
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         itemFetchJob->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("note job error with item") << noteChild << childItem << itemFetchJob << true;
@@ -355,7 +357,7 @@ private slots:
         // GIVEN
         QFETCH(Domain::Artifact::Ptr, child);
         QFETCH(Akonadi::Item, childItem);
-        QFETCH(MockItemFetchJob*, itemFetchJob);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*, itemFetchJob);
         QFETCH(bool, fetchJobFailed);
 
         auto itemModifyJob = new FakeJob(this);

@@ -27,7 +27,8 @@
 
 #include "utils/mockobject.h"
 
-#include "testlib/akonadimocks.h"
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -38,8 +39,8 @@ using namespace mockitopp;
 typedef std::function<Domain::QueryResult<Domain::DataSource::Ptr>::Ptr(Domain::DataSourceQueries*)> QueryFunction;
 Q_DECLARE_METATYPE(QueryFunction)
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchContentType)
-Q_DECLARE_METATYPE(MockCollectionFetchJob*)
-Q_DECLARE_METATYPE(MockCollectionSearchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeCollectionFetchJob*)
+Q_DECLARE_METATYPE(Testlib::AkonadiFakeCollectionSearchJob*)
 
 class AkonadiDataSourceQueriesTest : public QObject
 {
@@ -90,7 +91,7 @@ private slots:
         Akonadi::Collection col3(44);
         col3.setParentCollection(col2);
         Domain::DataSource::Ptr dataSource3(new Domain::DataSource);
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // Storage mock returning the fetch jobs
@@ -119,7 +120,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queryFunction(queries.data());
         result->data();
         result = queryFunction(queries.data()); // Should not cause any problem or wrong data
@@ -156,9 +157,9 @@ private slots:
         Akonadi::Collection col(42);
         col.setParentCollection(Akonadi::Collection::root());
         Domain::DataSource::Ptr dataSource(new Domain::DataSource);
-        MockCollectionFetchJob *collectionFetchJob1 = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob1 = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob1->setCollections(Akonadi::Collection::List() << col);
-        MockCollectionFetchJob *collectionFetchJob2 = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob2 = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob2->setCollections(Akonadi::Collection::List() << col);
 
         // Storage mock returning the fetch jobs
@@ -181,7 +182,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result1 = queryFunction(queries.data());
         QVERIFY(result1->data().isEmpty());
         QTest::qWait(150);
@@ -227,7 +228,7 @@ private slots:
         Akonadi::Collection col3(44);
         col3.setParentCollection(col2);
         Domain::DataSource::Ptr dataSource3(new Domain::DataSource);
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // Storage mock returning the fetch jobs
@@ -256,7 +257,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queryFunction(queries.data());
 
         // THEN
@@ -287,7 +288,7 @@ private slots:
         QFETCH(QueryFunction, queryFunction);
 
         // Empty collection fetch
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -300,7 +301,7 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -360,7 +361,7 @@ private slots:
         Akonadi::Collection col3(44);
         col3.setParentCollection(col2);
         Domain::DataSource::Ptr dataSource3(new Domain::DataSource);
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // Storage mock returning the fetch jobs
@@ -391,7 +392,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource3, col3).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -438,7 +439,7 @@ private slots:
         Akonadi::Collection col3(44);
         col3.setParentCollection(col2);
         Domain::DataSource::Ptr dataSource3(new Domain::DataSource);
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // Storage mock returning the fetch jobs
@@ -470,7 +471,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(dataSource3, col2).thenReturn(false);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -523,7 +524,7 @@ private slots:
         auto source3 = Domain::DataSource::Ptr::create();
 
         // Only col1 and col3 will match the mimetypes
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
 
         // Storage mock returning the fetch jobs
@@ -545,7 +546,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
         result->data();
         result = queries->findTopLevel(); // Should not cause any problem or wrong data
@@ -570,7 +571,7 @@ private slots:
         // GIVEN
 
         // Empty collection fetch
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -583,7 +584,7 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -625,7 +626,7 @@ private slots:
         col2.setParentCollection(Akonadi::Collection::root());
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // Storage mock returning the fetch jobs
@@ -645,7 +646,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -685,7 +686,7 @@ private slots:
         Akonadi::Collection col3(44);
         col3.setParentCollection(col2);
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
         // Storage mock returning the fetch jobs
@@ -709,7 +710,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col3).thenReturn(false);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -753,7 +754,7 @@ private slots:
         col2.setParentCollection(Akonadi::Collection::root());
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // Storage mock returning the fetch jobs
@@ -774,7 +775,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -800,7 +801,7 @@ private slots:
 
     void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty_data()
     {
-        QTest::addColumn<MockCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeCollectionFetchJob*>("collectionFetchJob");
         QTest::addColumn<bool>("deleteQuery");
 
         // Two top level collections
@@ -809,26 +810,26 @@ private slots:
         Akonadi::Collection col2(42);
         col2.setParentCollection(Akonadi::Collection::root());
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         QTest::newRow("No error with empty collection list") << collectionFetchJob << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list") << collectionFetchJob << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list") << collectionFetchJob << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         QTest::newRow("No error with empty collection list (+ query delete)") << collectionFetchJob << true;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list (+ query delete)") << collectionFetchJob << true;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list (+ query delete)") << collectionFetchJob << true;
@@ -837,7 +838,7 @@ private slots:
     void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty()
     {
         // GIVEN
-        QFETCH(MockCollectionFetchJob*, collectionFetchJob);
+        QFETCH(Testlib::AkonadiFakeCollectionFetchJob*, collectionFetchJob);
         QFETCH(bool, deleteQuery);
 
         // Storage mock returning the fetch jobs
@@ -853,7 +854,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
 
         if (deleteQuery)
@@ -892,7 +893,7 @@ private slots:
         auto source3 = Domain::DataSource::Ptr::create();
 
         // Only col1 and col3 will match the mimetypes
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
 
         // Storage mock returning the fetch jobs
@@ -915,7 +916,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
         result->data();
         result = queries->findChildren(parent); // Should not cause any problem or wrong data
@@ -945,7 +946,7 @@ private slots:
         auto parent = Domain::DataSource::Ptr::create();
 
         // Empty collection fetch
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -960,7 +961,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1007,7 +1008,7 @@ private slots:
         col2.setParentCollection(parentCol);
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // Storage mock returning the fetch jobs
@@ -1028,7 +1029,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1069,7 +1070,7 @@ private slots:
         col2.setParentCollection(parentCol);
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // Storage mock returning the fetch jobs
@@ -1091,7 +1092,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1139,7 +1140,7 @@ private slots:
         col2.setParentCollection(parentCol);
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         // Storage mock returning the fetch jobs
@@ -1161,7 +1162,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1187,7 +1188,7 @@ private slots:
 
     void shouldNotCrashDuringFindChildrenWhenFetchJobFailedOrEmpty_data()
     {
-        QTest::addColumn<MockCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<Testlib::AkonadiFakeCollectionFetchJob*>("collectionFetchJob");
         QTest::addColumn<bool>("deleteQuery");
 
         // Two child collections
@@ -1196,26 +1197,26 @@ private slots:
         Akonadi::Collection col2(42);
         col2.setParentCollection(Akonadi::Collection::root());
 
-        MockCollectionFetchJob *collectionFetchJob = new MockCollectionFetchJob(this);
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         QTest::newRow("No error with empty collection list") << collectionFetchJob << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list") << collectionFetchJob << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list") << collectionFetchJob << false;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         QTest::newRow("No error with empty collection list (+ query delete)") << collectionFetchJob << true;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list (+ query delete)") << collectionFetchJob << true;
 
-        collectionFetchJob = new MockCollectionFetchJob(this);
+        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
         collectionFetchJob->setExpectedError(KJob::KilledJobError);
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list (+ query delete)") << collectionFetchJob << true;
@@ -1224,7 +1225,7 @@ private slots:
     void shouldNotCrashDuringFindChildrenWhenFetchJobFailedOrEmpty()
     {
         // GIVEN
-        QFETCH(MockCollectionFetchJob*, collectionFetchJob);
+        QFETCH(Testlib::AkonadiFakeCollectionFetchJob*, collectionFetchJob);
         QFETCH(bool, deleteQuery);
 
         // One parent collection
@@ -1246,7 +1247,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
 
         if (deleteQuery)
@@ -1289,7 +1290,7 @@ private slots:
         QString searchTerm("col");
 
         // Only col1 and col3 will match the search term
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
 
         // Storage mock returning the fetch jobs
@@ -1306,7 +1307,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
         result->data();
@@ -1327,7 +1328,7 @@ private slots:
         QString searchTerm2("titi");
 
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col4);
 
         storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
@@ -1353,7 +1354,7 @@ private slots:
         // GIVEN
 
         // Empty collection fetch
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
 
         QString searchTerm("col");
 
@@ -1366,7 +1367,7 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1409,7 +1410,7 @@ private slots:
         col2.setParentCollection(Akonadi::Collection::root());
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         QString searchTerm("col");
@@ -1427,7 +1428,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1468,7 +1469,7 @@ private slots:
         Akonadi::Collection col3(44);
         col3.setParentCollection(col2);
 
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         QString searchTerm("col");
@@ -1489,7 +1490,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col3).thenReturn(false);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1522,7 +1523,7 @@ private slots:
 
     void shouldNotCrashDuringFindSearchTopLevelWhenFetchJobFailedOrEmpty_data()
     {
-        QTest::addColumn<MockCollectionSearchJob*>("collectionSearchJob");
+        QTest::addColumn<Testlib::AkonadiFakeCollectionSearchJob*>("collectionSearchJob");
         QTest::addColumn<bool>("deleteQuery");
 
         // Two top level collections
@@ -1533,26 +1534,26 @@ private slots:
         col1.setName("col2");
         col2.setParentCollection(Akonadi::Collection::root());
 
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         QTest::newRow("No error with empty collection list") << collectionSearchJob << false;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list") << collectionSearchJob << false;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list") << collectionSearchJob << false;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         QTest::newRow("No error with empty collection list (+ query delete)") << collectionSearchJob << true;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list (+ query delete)") << collectionSearchJob << true;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list (+ query delete)") << collectionSearchJob << true;
@@ -1561,7 +1562,7 @@ private slots:
     void shouldNotCrashDuringFindSearchTopLevelWhenFetchJobFailedOrEmpty()
     {
         // GIVEN
-        QFETCH(MockCollectionSearchJob*, collectionSearchJob);
+        QFETCH(Testlib::AkonadiFakeCollectionSearchJob*, collectionSearchJob);
         QFETCH(bool, deleteQuery);
 
         QString searchTerm("col");
@@ -1577,7 +1578,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
 
@@ -1605,7 +1606,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
         result->data();
         result = queries->findSearchTopLevel(); // Should not cause any problem or wrong data
@@ -1651,7 +1652,7 @@ private slots:
         QString searchTerm("col");
 
         // Only col1 and col3 will match the mimetypes
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col3 << col4);
 
         // Storage mock returning the fetch jobs
@@ -1670,7 +1671,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
         result->data();
@@ -1691,7 +1692,7 @@ private slots:
         // WHEN
         QString searchTerm2("toto");
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col2);
 
         storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
@@ -1721,7 +1722,7 @@ private slots:
         auto parent = Domain::DataSource::Ptr::create();
 
         // Empty collection fetch
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
 
         QString searchTerm("col");
 
@@ -1735,7 +1736,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1783,7 +1784,7 @@ private slots:
         col2.setParentCollection(parentCol);
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         QString searchTerm("col");
@@ -1802,7 +1803,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1842,7 +1843,7 @@ private slots:
         col2.setParentCollection(parentCol);
         auto source2 = Domain::DataSource::Ptr::create();
 
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
 
         QString searchTerm("col");
@@ -1862,7 +1863,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
 
         // Monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
@@ -1894,7 +1895,7 @@ private slots:
 
     void shouldNotCrashDuringFindSearchChildrenWhenFetchJobFailedOrEmpty_data()
     {
-        QTest::addColumn<MockCollectionSearchJob*>("collectionSearchJob");
+        QTest::addColumn<Testlib::AkonadiFakeCollectionSearchJob*>("collectionSearchJob");
         QTest::addColumn<bool>("deleteQuery");
 
         // Two child collections
@@ -1905,26 +1906,26 @@ private slots:
         col2.setName("col2");
         col2.setParentCollection(Akonadi::Collection::root());
 
-        MockCollectionSearchJob *collectionSearchJob = new MockCollectionSearchJob(this);
+        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         QTest::newRow("No error with empty collection list") << collectionSearchJob << false;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list") << collectionSearchJob << false;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list") << collectionSearchJob << false;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         QTest::newRow("No error with empty collection list (+ query delete)") << collectionSearchJob << true;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         QTest::newRow("Error with empty collection list (+ query delete)") << collectionSearchJob << true;
 
-        collectionSearchJob = new MockCollectionSearchJob(this);
+        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
         collectionSearchJob->setExpectedError(KJob::KilledJobError);
         collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
         QTest::newRow("Error with collection list (+ query delete)") << collectionSearchJob << true;
@@ -1933,7 +1934,7 @@ private slots:
     void shouldNotCrashDuringFindSearchChildrenWhenFetchJobFailedOrEmpty()
     {
         // GIVEN
-        QFETCH(MockCollectionSearchJob*, collectionSearchJob);
+        QFETCH(Testlib::AkonadiFakeCollectionSearchJob*, collectionSearchJob);
         QFETCH(bool, deleteQuery);
 
         // One parent collection
@@ -1955,7 +1956,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
 
@@ -1989,7 +1990,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
                                                                                          serializerMock.getInstance(),
-                                                                                         MockMonitor::Ptr::create()));
+                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
         result->data();
         result = queries->findSearchChildren(parent); // Should not cause any problem or wrong data

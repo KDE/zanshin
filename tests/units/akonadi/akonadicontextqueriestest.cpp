@@ -25,7 +25,8 @@
 
 #include "utils/mockobject.h"
 
-#include "testlib/akonadimocks.h"
+#include "testlib/akonadifakejobs.h"
+#include "testlib/akonadifakemonitor.h"
 
 #include "akonadi/akonadicontextqueries.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -43,7 +44,7 @@ private slots:
         // GIVEN
 
         // Empty TagFetch mock
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List());
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -55,7 +56,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
-                                                                                   MockMonitor::Ptr::create()));
+                                                                                   Testlib::AkonadiFakeMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Context::Ptr>::Ptr result = queries->findAll();
 
@@ -83,7 +84,7 @@ private slots:
         Domain::Context::Ptr context2(new Domain::Context);
         context2->setName("context43");
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List() << tag1 << tag2);
 
         // Storage mock returning the fetch jobs
@@ -98,7 +99,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
-                                                                                   MockMonitor::Ptr::create()));
+                                                                                   Testlib::AkonadiFakeMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Context::Ptr>::Ptr result = queries->findAll();
         result->data();
@@ -134,7 +135,7 @@ private slots:
         tag2.setType(QByteArray("wrongType")); // wrong type
         Domain::Context::Ptr context2; // null context
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List() << tag1 << tag2);
 
         // Storage mock returning the fetch jobs
@@ -149,7 +150,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
-                                                                                   MockMonitor::Ptr::create()));
+                                                                                   Testlib::AkonadiFakeMonitor::Ptr::create()));
 
         Domain::QueryResult<Domain::Context::Ptr>::Ptr result = queries->findAll();
 
@@ -169,7 +170,7 @@ private slots:
     {
         // GIVEN
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List()); // empty tag list
 
         // Storage mock returning the fetch jobs
@@ -180,7 +181,7 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
         // Mocked Monitor
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
@@ -236,14 +237,14 @@ private slots:
         Domain::Context::Ptr context2(new Domain::Context);
         context2->setName("context43");
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List() << tag1 << tag2);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         // Serializer mock returning contexts from tags
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
@@ -290,14 +291,14 @@ private slots:
         Domain::Context::Ptr context2(new Domain::Context);
         context2->setName("context43");
 
-        MockTagFetchJob *tagFetchJob = new MockTagFetchJob(this);
+        Testlib::AkonadiFakeTagFetchJob *tagFetchJob = new Testlib::AkonadiFakeTagFetchJob(this);
         tagFetchJob->setTags(Akonadi::Tag::List() << tag1 << tag2);
 
         // Storage mock returning the fetch jobs
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchTags).when().thenReturn(tagFetchJob);
 
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         // Serializer mock returning contexts from tags
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
@@ -348,7 +349,7 @@ private slots:
         auto task2 = Domain::Task::Ptr::create();
 
         //A fetch job returning the items tagged with the context
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2);
 
         //Mock object returning the fetch jobs
@@ -366,7 +367,7 @@ private slots:
         // WHEN
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
-                                                                                   MockMonitor::Ptr::create()));
+                                                                                   Testlib::AkonadiFakeMonitor::Ptr::create()));
         Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findTopLevelTasks(context);
         result->data();
         result = queries->findTopLevelTasks(context); // Should not cause any problem or wrong data
@@ -401,7 +402,7 @@ private slots:
         // One context
         Akonadi::Tag tag(43);
         auto context = Domain::Context::Ptr::create();
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List());
 
         // Storage mock returning the fetch job
@@ -413,7 +414,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
 
         // A mock monitor
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
@@ -451,7 +452,7 @@ private slots:
         // A task related to the context
         Akonadi::Item item1(44);
         auto task1 = Domain::Task::Ptr::create();
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch job
@@ -467,7 +468,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(true);
 
         // A monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
@@ -505,7 +506,7 @@ private slots:
         // A task related to the context
         Akonadi::Item item1(44);
         auto task1 = Domain::Task::Ptr::create();
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch job
@@ -522,7 +523,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(false)
                                                                                           .thenReturn(true);
         // A monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
@@ -553,7 +554,7 @@ private slots:
         // A task related to the context
         Akonadi::Item item1(44);
         auto task1 = Domain::Task::Ptr::create();
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch job
@@ -571,7 +572,7 @@ private slots:
                                                                                           .thenReturn(false);
 
         // A monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
@@ -604,9 +605,9 @@ private slots:
         // A task related to the context
         Akonadi::Item item1(45);
         auto task1 = Domain::Task::Ptr::create();
-        auto itemFetchJob1 = new MockItemFetchJob(this);
+        auto itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        auto itemFetchJob2 = new MockItemFetchJob(this);
+        auto itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch job
@@ -628,7 +629,7 @@ private slots:
                                                                                            .thenReturn(true);
 
         // A monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
@@ -661,7 +662,7 @@ private slots:
         // A task related to the context
         Akonadi::Item item1(44);
         auto task1 = Domain::Task::Ptr::create();
-        auto itemFetchJob = new MockItemFetchJob(this);
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item1);
 
         // Storage mock returning the fetch job
@@ -677,7 +678,7 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::isContextChild).when(context, item1).thenReturn(true);
 
         // A monitor mock
-        auto monitor = MockMonitor::Ptr::create();
+        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(storageMock.getInstance(),
                                                                                    serializerMock.getInstance(),
