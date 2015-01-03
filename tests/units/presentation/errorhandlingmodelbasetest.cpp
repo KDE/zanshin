@@ -68,7 +68,7 @@ private slots:
         const QString message = "I Failed !!!!!!!!!!";
 
         // WHEN
-        errorHandling.installHandler(job, message);
+        errorHandling.install(job, message);
 
         // THEN
         QTest::qWait(150);
@@ -91,7 +91,7 @@ private slots:
         const QString message = "I Failed !!!!!!!!!!";
 
         // WHEN
-        errorHandling.installHandler(job, message);
+        errorHandling.install(job, message);
 
         // THEN
         QTest::qWait(150);
