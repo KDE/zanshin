@@ -75,4 +75,10 @@ void JobHandler::install(KJob *job, const ResultHandlerWithJob &handler)
     job->start();
 }
 
+int JobHandler::jobCount()
+{
+    auto self = jobHandlerInstance();
+    return self->m_handlers.size() + self->m_handlersWithJob.size();
+}
+
 #include "jobhandler.moc"

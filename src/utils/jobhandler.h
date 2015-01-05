@@ -38,6 +38,8 @@ namespace JobHandler
 
     void install(KJob *job, const ResultHandler &handler);
     void install(KJob *job, const ResultHandlerWithJob &handler);
+
+    int jobCount();
 }
 
 }
