@@ -85,32 +85,39 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
 
     if (object == m_inboxObject) {
-        return new InboxPageModel(m_artifactQueries,
-                                  m_taskQueries, m_taskRepository,
-                                  m_noteRepository,
-                                  this);
-
+        auto inboxPageModel = new InboxPageModel(m_artifactQueries,
+                                                 m_taskQueries, m_taskRepository,
+                                                 m_noteRepository,
+                                                 this);
+        inboxPageModel->setErrorHandler(errorHandler());
+        return inboxPageModel;
     } else if (auto project = object.objectCast<Domain::Project>()) {
-        return new ProjectPageModel(project,
-                                    m_projectQueries,
-                                    m_taskQueries, m_taskRepository,
-                                    m_noteRepository,
-                                    this);
+        auto projectPageModel = new ProjectPageModel(project,
+                                                     m_projectQueries,
+                                                     m_taskQueries, m_taskRepository,
+                                                     m_noteRepository,
+                                                     this);
+        projectPageModel->setErrorHandler(errorHandler());
+        return projectPageModel;
     } else if (auto context = object.objectCast<Domain::Context>()) {
-        return new ContextPageModel(context,
-                                    m_contextQueries,
-                                    m_taskQueries,
-                                    m_taskRepository,
-                                    m_noteRepository,
-                                    this);
+        auto contextPageModel = new ContextPageModel(context,
+                                                     m_contextQueries,
+                                                     m_taskQueries,
+                                                     m_taskRepository,
+                                                     m_noteRepository,
+                                                     this);
+        contextPageModel->setErrorHandler(errorHandler());
+        return contextPageModel;
     } else if (auto tag = object.objectCast<Domain::Tag>()) {
-        return new TagPageModel(tag,
-                                m_tagQueries,
-                                m_tagRepository,
-                                m_taskQueries,
-                                m_taskRepository,
-                                m_noteRepository,
-                                this);
+        auto tagPageModel = new TagPageModel(tag,
+                                             m_tagQueries,
+                                             m_tagRepository,
+                                             m_taskQueries,
+                                             m_taskRepository,
+                                             m_noteRepository,
+                                             this);
+        tagPageModel->setErrorHandler(errorHandler());
+        return tagPageModel;
     }
 
     return 0;

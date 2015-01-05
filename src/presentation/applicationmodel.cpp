@@ -27,6 +27,7 @@
 #include "domain/artifactqueries.h"
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
+#include "domain/datasourcequeries.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/noterepository.h"
@@ -40,6 +41,7 @@
 #include "presentation/availablepagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
+#include "presentation/errorhandler.h"
 
 using namespace Presentation;
 
@@ -74,7 +76,8 @@ ApplicationModel::ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQ
       m_noteRepository(noteRepository),
       m_noteSourcesModel(0),
       m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository)
+      m_tagRepository(tagRepository),
+      m_errorHandler(0)
 {
     MetaTypes::registerAll();
 }
@@ -154,9 +157,11 @@ Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource()
 QObject *ApplicationModel::availableSources()
 {
     if (!m_availableSources) {
-        m_availableSources = new AvailableSourcesModel(m_sourceQueries,
-                                                       m_sourceRepository,
-                                                       this);
+        auto model = new AvailableSourcesModel(m_sourceQueries,
+                                               m_sourceRepository,
+                                               this);
+        model->setErrorHandler(errorHandler());
+        m_availableSources = model;
     }
     return m_availableSources;
 }
@@ -164,17 +169,19 @@ QObject *ApplicationModel::availableSources()
 QObject *ApplicationModel::availablePages()
 {
     if (!m_availablePages) {
-        m_availablePages = new AvailablePagesModel(m_artifactQueries,
-                                                   m_projectQueries,
-                                                   m_projectRepository,
-                                                   m_contextQueries,
-                                                   m_contextRepository,
-                                                   m_taskQueries,
-                                                   m_taskRepository,
-                                                   m_noteRepository,
-                                                   m_tagQueries,
-                                                   m_tagRepository,
-                                                   this);
+        auto model = new AvailablePagesModel(m_artifactQueries,
+                                             m_projectQueries,
+                                             m_projectRepository,
+                                             m_contextQueries,
+                                             m_contextRepository,
+                                             m_taskQueries,
+                                             m_taskRepository,
+                                             m_noteRepository,
+                                             m_tagQueries,
+                                             m_tagRepository,
+                                             this);
+        model->setErrorHandler(errorHandler());
+        m_availablePages = model;
     }
     return m_availablePages;
 }
@@ -187,10 +194,17 @@ QObject *ApplicationModel::currentPage()
 QObject *ApplicationModel::editor()
 {
     if (!m_editor) {
-        m_editor = new ArtifactEditorModel(m_taskRepository, m_noteRepository, this);
+        auto model = new ArtifactEditorModel(m_taskRepository, m_noteRepository, this);
+        model->setErrorHandler(errorHandler());
+        m_editor = model;
     }
 
     return m_editor;
+}
+
+ErrorHandler *ApplicationModel::errorHandler() const
+{
+    return m_errorHandler;
 }
 
 void ApplicationModel::setCurrentPage(QObject *page)
@@ -210,4 +224,15 @@ void ApplicationModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
 void ApplicationModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)
 {
     m_taskRepository->setDefaultSource(source);
+}
+
+void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
+{
+    m_errorHandler = errorHandler;
+    if (m_availableSources)
+        static_cast<AvailableSourcesModel*>(m_availableSources)->setErrorHandler(errorHandler);
+    if (m_availablePages)
+        static_cast<AvailablePagesModel*>(m_availablePages)->setErrorHandler(errorHandler);
+    if (m_editor)
+        static_cast<ArtifactEditorModel*>(m_editor)->setErrorHandler(errorHandler);
 }

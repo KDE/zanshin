@@ -44,6 +44,8 @@
 
 namespace Presentation {
 
+class ErrorHandler;
+
 class ApplicationModel : public QObject
 {
     Q_OBJECT
@@ -81,10 +83,13 @@ public:
     QObject *currentPage();
     QObject *editor();
 
+    ErrorHandler *errorHandler() const;
+
 public slots:
     void setCurrentPage(QObject *page);
     void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
     void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
+    void setErrorHandler(ErrorHandler *errorHandler);
 
 signals:
     void currentPageChanged(QObject *page);
@@ -121,6 +126,8 @@ private:
 
     Domain::TagQueries::Ptr m_tagQueries;
     Domain::TagRepository::Ptr m_tagRepository;
+
+    ErrorHandler *m_errorHandler;
 };
 
 }

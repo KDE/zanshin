@@ -37,11 +37,23 @@
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/inboxpagemodel.h"
+#include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
 
 using namespace mockitopp;
 using namespace mockitopp::matcher;
+
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &message)
+    {
+        m_message = message;
+    }
+
+    QString m_message;
+};
 
 class ApplicationModelTest : public QObject
 {
@@ -650,6 +662,60 @@ private slots:
 
         // THEN
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).exactly(1));
+    }
+
+    void shouldSetErrorHandlerToAllModels()
+    {
+        // GIVEN
+
+        // An ErrorHandler
+        FakeErrorHandler errorHandler;
+
+        auto artifactQueries = Domain::ArtifactQueries::Ptr();
+        auto projectQueries = Domain::ProjectQueries::Ptr();
+        auto projectRepository = Domain::ProjectRepository::Ptr();
+        auto contextQueries = Domain::ContextQueries::Ptr();
+        auto contextRepository = Domain::ContextRepository::Ptr();
+        auto noteRepository = Domain::NoteRepository::Ptr();
+        auto sourceQueries = Domain::DataSourceQueries::Ptr();
+        auto sourceRepository = Domain::DataSourceRepository::Ptr();
+        auto taskQueries = Domain::TaskQueries::Ptr();
+        auto taskRepository = Domain::TaskRepository::Ptr();
+        auto tagQueries = Domain::TagQueries::Ptr();
+        auto tagRepository = Domain::TagRepository::Ptr();
+        Presentation::ApplicationModel app(artifactQueries,
+                                           projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
+
+        // WHEN
+        app.setErrorHandler(&errorHandler);
+
+        // THEN
+        auto availableSource = static_cast<Presentation::AvailableSourcesModel*>(app.availableSources());
+        auto availablePages = static_cast<Presentation::AvailablePagesModel*>(app.availablePages());
+        auto editor = static_cast<Presentation::ArtifactEditorModel*>(app.editor());
+        QCOMPARE(availableSource->errorHandler(), &errorHandler);
+        QCOMPARE(availablePages->errorHandler(), &errorHandler);
+        QCOMPARE(editor->errorHandler(), &errorHandler);
+
+        // WHEN
+        FakeErrorHandler errorHandler2;
+
+        app.setErrorHandler(&errorHandler2);
+
+        // THEN
+        QCOMPARE(availableSource->errorHandler(), &errorHandler2);
+        QCOMPARE(availablePages->errorHandler(), &errorHandler2);
+        QCOMPARE(editor->errorHandler(), &errorHandler2);
     }
 };
 
