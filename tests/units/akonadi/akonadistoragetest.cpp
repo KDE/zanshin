@@ -26,6 +26,7 @@
 
 #include <testlib/testsafety.h>
 #include <testlib/akonadidebug.h>
+#include <testlib/monitorspy.h>
 
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
@@ -325,6 +326,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(collectionAdded(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // A collection
         Akonadi::Collection collection;
@@ -335,6 +337,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::CollectionCreateJob(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -356,6 +359,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(collectionRemoved(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing item (if we trust the test data)
         Akonadi::Collection collection = fetchCollectionByRID("{1f78b360-a01b-4785-9187-75450190342c}");
@@ -364,6 +368,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::CollectionDeleteJob(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -379,6 +384,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // A colection with an existing id (if we trust the test data)
         Akonadi::Collection collection = fetchCollectionByRID("{28ef9f03-4ebc-4e33-970f-f379775894f9}");
@@ -388,6 +394,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::CollectionModifyJob(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -411,6 +418,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemAdded(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // A todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -429,6 +437,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::ItemCreateJob(item, calendar2());
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -451,6 +460,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         const Akonadi::Collection notesCol = fetchCollectionByRID("{f5e3f1be-b998-4c56-aa3d-e3a6e7e5493a}");
         Akonadi::Item item = fetchItemByRID("{d0159c99-0d23-41fa-bb5f-436570140f8b}", notesCol);
@@ -459,6 +469,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::ItemDeleteJob(item);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -474,6 +485,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // A todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -493,6 +505,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::ItemModifyJob(item);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -516,6 +529,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing item (if we trust the test data)...
         Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff5}", calendar2());
@@ -529,6 +543,7 @@ private slots:
         item.setTag(tag);
         auto job = new Akonadi::ItemModifyJob(item);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -574,11 +589,13 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // WHEN
         item.clearTag(tag);
         auto jobUpdate = storage.updateItem(item);
         AKVERIFYEXEC(jobUpdate);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -595,6 +612,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagAdded(Akonadi::Tag)));
+        MonitorSpy monitorSpy(&monitor);
 
         // A tag
         Akonadi::Tag tag;
@@ -605,6 +623,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::TagCreateJob(tag);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -622,6 +641,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagRemoved(Akonadi::Tag)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing tag (if we trust the test data)
         Akonadi::Tag tag(5);
@@ -629,6 +649,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::TagDeleteJob(tag);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -644,6 +665,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagChanged(Akonadi::Tag)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing tag (if we trust the test data)
         Akonadi::Tag tag(6);
@@ -652,6 +674,7 @@ private slots:
         // WHEN
         auto job = new Akonadi::TagModifyJob(tag);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -703,6 +726,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // A todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -717,6 +741,7 @@ private slots:
         // WHEN
         auto job = storage.updateItem(item);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -745,6 +770,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spyUpdated(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         auto job = storage.fetchItem(item1);
         AKVERIFYEXEC(job->kjob());
@@ -767,11 +793,7 @@ private slots:
         storage.updateItem(item3, transaction); // this job should fail
         storage.updateItem(item2, transaction);
         QVERIFY(!transaction->exec());
-
-        for (int i = 0; i < 10; i++) {
-            if (spyUpdated.size() == 3) break;
-            QTest::qWait(50);
-        }
+        monitorSpy.waitForStableState();
 
         // Then
         QCOMPARE(spyUpdated.size(), 0);
@@ -799,6 +821,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemAdded(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // A todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -816,6 +839,7 @@ private slots:
         // WHEN
         auto job = storage.createItem(item, calendar2());
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -866,9 +890,11 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spyMoved(&monitor, SIGNAL(itemMoved(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         auto job = storage.moveItem(item, calendar1());
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spyMoved.isEmpty());
 
         QCOMPARE(spyMoved.size(), 1);
@@ -889,9 +915,11 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spyMoved(&monitor, SIGNAL(itemMoved(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         auto job = storage.moveItems(list, calendar1());
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spyMoved.isEmpty());
 
         QCOMPARE(spyMoved.size(), 1);
@@ -907,6 +935,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing item (if we trust the test data)
         Akonadi::Item item = fetchItemByRID("{0aa4dc30-a2c2-4e08-8241-033b3344debc}", calendar1());
@@ -915,6 +944,7 @@ private slots:
         //When
         auto job = storage.removeItem(item);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -931,6 +961,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing item (if we trust the test data)
         Akonadi::Item item = fetchItemByRID("{6c7bf5b9-4136-4203-9f45-54e32ea0eacb}", calendar1());
@@ -944,6 +975,7 @@ private slots:
         //When
         auto job = storage.removeItems(list);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -964,6 +996,8 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagAdded(Akonadi::Tag)));
+        MonitorSpy monitorSpy(&monitor);
+
         // A tag
         Akonadi::Tag tag;
         QString name = "Tag42";
@@ -976,6 +1010,7 @@ private slots:
         // WHEN
         auto job = storage.createTag(tag);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -995,6 +1030,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagRemoved(Akonadi::Tag)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing tag
         Akonadi::Tag tag = fetchTagByGID("errands-context");
@@ -1002,6 +1038,7 @@ private slots:
         // WHEN
         auto job = storage.removeTag(tag);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -1018,6 +1055,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagChanged(Akonadi::Tag)));
+        MonitorSpy monitorSpy(&monitor);
 
         // An existing tag
         Akonadi::Tag tag = fetchTagByGID("change-me");
@@ -1025,6 +1063,7 @@ private slots:
         // WHEN
         auto job = storage.updateTag(tag);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
 
         // THEN
@@ -1047,6 +1086,7 @@ private slots:
         Akonadi::MonitorImpl monitor;
         QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
         QSignalSpy selectionSpy(&monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // WHEN
         auto attr = new Akonadi::EntityDisplayAttribute;
@@ -1054,6 +1094,7 @@ private slots:
         collection.addAttribute(attr);
         auto job = storage.updateCollection(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!changeSpy.isEmpty());
 
         // THEN
@@ -1078,11 +1119,13 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // WHEN
         collection.attribute<Akonadi::TimestampAttribute>(Akonadi::Collection::AddIfMissing)->refreshTimestamp();
         auto job = storage.updateCollection(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!changeSpy.isEmpty());
 
         // THEN
@@ -1107,6 +1150,7 @@ private slots:
         Akonadi::MonitorImpl monitor;
         QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
         QSignalSpy selectionSpy(&monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // WHEN
         auto attr = new Akonadi::ApplicationSelectedAttribute;
@@ -1114,6 +1158,7 @@ private slots:
         collection.addAttribute(attr);
         auto job = storage.updateCollection(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!changeSpy.isEmpty());
 
         // THEN
@@ -1145,6 +1190,7 @@ private slots:
         Akonadi::MonitorImpl monitor;
         QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
         QSignalSpy selectionSpy(&monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // WHEN
         auto attr = new Akonadi::ApplicationSelectedAttribute;
@@ -1152,6 +1198,7 @@ private slots:
         collection.addAttribute(attr);
         auto job = storage.updateCollection(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!changeSpy.isEmpty());
 
         // THEN
@@ -1187,6 +1234,7 @@ private slots:
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy changeSpy(&monitor, SIGNAL(collectionChanged(Akonadi::Collection)));
+        MonitorSpy monitorSpy(&monitor);
 
         // WHEN
         static int run = 1;
@@ -1196,6 +1244,7 @@ private slots:
         collection.setReferenced(isReferenced);
         auto job = storage.updateCollection(collection);
         AKVERIFYEXEC(job);
+        monitorSpy.waitForStableState();
         QTRY_VERIFY(!changeSpy.isEmpty());
 
         // THEN
@@ -1245,6 +1294,10 @@ private slots:
         QFETCH(bool, referenceCalendar1);
         QFETCH(bool, enableCalendar1);
 
+        // A spied monitor
+        Akonadi::MonitorImpl monitor;
+        MonitorSpy monitorSpy(&monitor);
+
         // Default is not referenced and enabled
         // no need to feedle with the collection in that case
         if (referenceCalendar1 || !enableCalendar1) {
@@ -1253,11 +1306,13 @@ private slots:
             cal1.setEnabled(enableCalendar1);
             auto update = new Akonadi::CollectionModifyJob(cal1);
             AKVERIFYEXEC(update);
+            monitorSpy.waitForStableState();
         }
 
         // WHEN
         auto job = storage.searchCollections(name);
         AKVERIFYEXEC(job->kjob());
+        monitorSpy.waitForStableState();
 
         // THEN
         auto collections = job->collections();
@@ -1269,6 +1324,7 @@ private slots:
             cal1.setEnabled(true);
             auto update = new Akonadi::CollectionModifyJob(cal1);
             AKVERIFYEXEC(update);
+            monitorSpy.waitForStableState();
         }
 
         QCOMPARE(collections.size(), expectedResults.size());
