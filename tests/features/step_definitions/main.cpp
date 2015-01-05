@@ -14,9 +14,15 @@
 #include "app/dependencies.h"
 
 #include "presentation/applicationmodel.h"
+#include "presentation/errorhandler.h"
 #include "presentation/querytreemodelbase.h"
 
+#include "akonadi/akonadimonitorimpl.h"
+
 #include "utils/dependencymanager.h"
+#include "utils/jobhandler.h"
+
+#include "testlib/monitorspy.h"
 
 static int argc = 0;
 static QApplication app(argc, 0);
@@ -32,6 +38,14 @@ namespace cucumber {
 
 using namespace cucumber;
 
+class FakeErrorHandler : public Presentation::ErrorHandler
+{
+public:
+    void doDisplayMessage(const QString &)
+    {
+    }
+};
+
 class ZanshinContext : public QObject
 {
     Q_OBJECT
@@ -41,7 +55,8 @@ public:
           app(0),
           presentation(0),
           editor(0),
-          proxyModel(new QSortFilterProxyModel(this))
+          proxyModel(new QSortFilterProxyModel(this)),
+          monitorSpy(0)
     {
         App::initializeDependencies();
 
@@ -53,8 +68,12 @@ public:
         // Since it is lazy loaded force ourselves in a known state
         appModel->defaultNoteDataSource();
         appModel->defaultTaskDataSource();
+        appModel->setErrorHandler(&m_errorHandler);
 
         app = appModel;
+
+        auto monitor = Utils::DependencyManager::globalInstance().create<Akonadi::MonitorInterface>();
+        monitorSpy = new MonitorSpy(monitor.data(), this);
     }
 
     ~ZanshinContext()
@@ -73,6 +92,19 @@ public:
         return proxyModel;
     }
 
+    void waitForEmptyJobQueue()
+    {
+        while (Utils::JobHandler::jobCount() != 0) {
+            QTest::qWait(20);
+        }
+    }
+
+    void waitForStableState()
+    {
+        waitForEmptyJobQueue();
+        monitorSpy->waitForStableState();
+    }
+
     QObjectPtr app;
 
     QList<QPersistentModelIndex> indices;
@@ -83,6 +115,8 @@ public:
 
 private:
     QSortFilterProxyModel *proxyModel;
+    MonitorSpy *monitorSpy;
+    FakeErrorHandler m_errorHandler;
 };
 
 namespace Zanshin {
@@ -206,7 +240,6 @@ GIVEN("^I display the available data sources$") {
 
     context->presentation = availableSources;
     context->setModel(sourceListModel);
-    QTest::qWait(500);
 }
 
 GIVEN("^I display the available (\\S+) data sources$") {
@@ -218,14 +251,13 @@ GIVEN("^I display the available (\\S+) data sources$") {
                       : 0;
 
     context->setModel(context->app->property(propertyName).value<QAbstractItemModel*>());
-    QTest::qWait(500);
+    context->waitForEmptyJobQueue();
 }
 
 GIVEN("^I display the available pages$") {
     ScenarioScope<ZanshinContext> context;
     context->presentation = context->app->property("availablePages").value<QObject*>();
     context->setModel(context->presentation->property("pageListModel").value<QAbstractItemModel*>());
-    QTest::qWait(500);
 }
 
 GIVEN("^I display the \"(.*)\" page$") {
@@ -237,7 +269,7 @@ GIVEN("^I display the \"(.*)\" page$") {
 
     auto pageListModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
     VERIFY(pageListModel);
-    QTest::qWait(500);
+    context->waitForEmptyJobQueue();
 
     QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageName);
     VERIFY(pageIndex.isValid());
@@ -250,18 +282,16 @@ GIVEN("^I display the \"(.*)\" page$") {
 
     VERIFY(context->app->setProperty("currentPage", QVariant::fromValue(page)));
     context->presentation = context->app->property("currentPage").value<QObject*>();
-    QTest::qWait(500);
 }
 
 GIVEN("^there is an item named \"(.+)\" in the central list$") {
     REGEX_PARAM(QString, itemName);
 
     ScenarioScope<ZanshinContext> context;
-    QTest::qWait(500);
 
     auto model = context->presentation->property("centralListModel").value<QAbstractItemModel*>();
-    QTest::qWait(500);
     context->setModel(model);
+    context->waitForEmptyJobQueue();
 
     context->index = Zanshin::findIndex(context->model(), itemName);
     VERIFY_OR_DUMP(context->index.isValid());
@@ -271,14 +301,12 @@ GIVEN("^there is an item named \"(.+)\" in the available data sources$") {
     REGEX_PARAM(QString, itemName);
 
     ScenarioScope<ZanshinContext> context;
-    QTest::qWait(500);
 
     auto availableSources = context->app->property("availableSources").value<QObject*>();
     VERIFY(availableSources);
-    QTest::qWait(500);
     auto model = availableSources->property("sourceListModel").value<QAbstractItemModel*>();
     VERIFY(model);
-    QTest::qWait(500);
+    context->waitForEmptyJobQueue();
     context->setModel(model);
 
     context->index = Zanshin::findIndex(context->model(), itemName);
@@ -290,10 +318,9 @@ GIVEN("^the central list contains items named:") {
 
     ScenarioScope<ZanshinContext> context;
     context->dragIndices.clear();
-    QTest::qWait(500);
 
     auto model = context->presentation->property("centralListModel").value<QAbstractItemModel*>();
-    QTest::qWait(500);
+    context->waitForEmptyJobQueue();
     context->setModel(model);
 
     for (const auto row : tableParam.hashes()) {
@@ -310,26 +337,26 @@ WHEN("^I look at the central list$") {
     ScenarioScope<ZanshinContext> context;
 
     auto model = context->presentation->property("centralListModel").value<QAbstractItemModel*>();
-    QTest::qWait(500);
     context->setModel(model);
+    context->waitForStableState();
 }
 
 WHEN("^I check the item$") {
     ScenarioScope<ZanshinContext> context;
     VERIFY(context->model()->setData(context->index, Qt::Checked, Qt::CheckStateRole));
-    QTest::qWait(1500);
+    context->waitForStableState();
 }
 
 WHEN("^I uncheck the item$") {
     ScenarioScope<ZanshinContext> context;
     VERIFY(context->model()->setData(context->index, Qt::Unchecked, Qt::CheckStateRole));
-    QTest::qWait(1500);
+    context->waitForStableState();
 }
 
 WHEN("^I remove the item$") {
     ScenarioScope<ZanshinContext> context;
     VERIFY(QMetaObject::invokeMethod(context->presentation, "removeItem", Q_ARG(QModelIndex, context->index)));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
@@ -340,7 +367,7 @@ WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
 
     auto sourceList = context->app->property("taskSourcesModel").value<QAbstractItemModel*>();
     VERIFY(sourceList);
-    QTest::qWait(500);
+    context->waitForStableState();
     QModelIndex index = Zanshin::findIndex(sourceList, sourceName);
     VERIFY(index.isValid());
     auto source = index.data(Presentation::QueryTreeModelBase::ObjectRole)
@@ -350,7 +377,7 @@ WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
     VERIFY(QMetaObject::invokeMethod(context->presentation, "addProject",
                                      Q_ARG(QString, projectName),
                                      Q_ARG(Domain::DataSource::Ptr, source)));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I rename a \"(.*)\" named \"(.*)\" to \"(.*)\"$") {
@@ -370,12 +397,13 @@ WHEN("^I rename a \"(.*)\" named \"(.*)\" to \"(.*)\"$") {
 
     auto pageListModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
     VERIFY(pageListModel);
-    QTest::qWait(500);
+    context->waitForStableState();
 
     QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageNodeName + oldName);
     VERIFY(pageIndex.isValid());
 
     pageListModel->setData(pageIndex, newName);
+    context->waitForStableState();
 }
 
 WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
@@ -395,14 +423,14 @@ WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
 
     auto pageListModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
     VERIFY(pageListModel);
-    QTest::qWait(500);
+    context->waitForStableState();
 
     QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageNodeName + objectName);
     VERIFY(pageIndex.isValid());
 
     VERIFY(QMetaObject::invokeMethod(availablePages, "removeItem",
                                      Q_ARG(QModelIndex, pageIndex)));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I add a \"(.*)\" named \"(.+)\"$") {
@@ -417,18 +445,20 @@ WHEN("^I add a \"(.*)\" named \"(.+)\"$") {
     VERIFY(!actionName.isEmpty());
 
     ScenarioScope<ZanshinContext> context;
-    QTest::qWait(500);
+    context->waitForStableState();
 
     VERIFY(QMetaObject::invokeMethod(context->presentation,
                                      actionName.data(),
                                      Q_ARG(QString, objectName)));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I list the items$") {
     ScenarioScope<ZanshinContext> context;
+    context->waitForStableState();
     context->indices.clear();
     Zanshin::collectIndices(context.get());
+    context->waitForStableState();
 }
 
 WHEN("^I open the item in the editor$") {
@@ -476,7 +506,7 @@ WHEN("^I open the item in the editor again$") {
     VERIFY(artifact);
     VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(Domain::Artifact::Ptr())));
     VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(artifact)));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I drop the item on \"(.*)\" in the central list") {
@@ -490,7 +520,7 @@ WHEN("^I drop the item on \"(.*)\" in the central list") {
     QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
     VERIFY(dropIndex.isValid());
     VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I drop items on \"(.*)\" in the central list") {
@@ -512,7 +542,7 @@ WHEN("^I drop items on \"(.*)\" in the central list") {
     QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
     VERIFY(dropIndex.isValid());
     VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I drop the item on \"(.*)\" in the page list") {
@@ -527,12 +557,12 @@ WHEN("^I drop the item on \"(.*)\" in the page list") {
 
     auto destModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
     VERIFY(destModel);
-    QTest::qWait(500);
+    context->waitForStableState();
 
     QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
     VERIFY(dropIndex.isValid());
     VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^I drop items on \"(.*)\" in the page list") {
@@ -555,18 +585,19 @@ WHEN("^I drop items on \"(.*)\" in the page list") {
 
     auto destModel = availablePages->property("pageListModel").value<QAbstractItemModel*>();
     VERIFY(destModel);
-    QTest::qWait(500);
+    context->waitForStableState();
 
     QModelIndex dropIndex = Zanshin::findIndex(destModel, itemName);
     VERIFY(dropIndex.isValid());
     VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
-    QTest::qWait(500);
+    context->waitForStableState();
 }
 
 WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     REGEX_PARAM(QString, keyName);
     REGEX_PARAM(qint64, id);
 
+    ScenarioScope<ZanshinContext> context;
     KConfigGroup config(KGlobal::config(), "General");
     config.writeEntry(keyName, id);
 }
@@ -579,7 +610,7 @@ WHEN("^the user changes the default (\\S+) data source to (.*)$") {
     auto sourcesModel = sourceType == "task" ? context->app->property("taskSourcesModel").value<QAbstractItemModel*>()
                       : sourceType == "note" ? context->app->property("noteSourcesModel").value<QAbstractItemModel*>()
                       : 0;
-    QTest::qWait(500);
+    context->waitForStableState();
     // I wish models had iterators...
     QList<Domain::DataSource::Ptr> sources;
     for (int i = 0; i < sourcesModel->rowCount(); i++)
