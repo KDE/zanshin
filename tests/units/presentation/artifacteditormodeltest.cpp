@@ -312,7 +312,7 @@ private slots:
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(0));
 
         // WHEN (apply after delay)
-        QTest::qWait(model.autoSaveDelay() + 10);
+        QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
         QCOMPARE(artifact->property(propertyName), propertyValue);
@@ -372,7 +372,7 @@ private slots:
         }
 
         // WHEN (nothing else happens after a delay)
-        QTest::qWait(model.autoSaveDelay() + 10);
+        QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
         QCOMPARE(artifact->property(propertyName), propertyValue);
