@@ -72,7 +72,7 @@ private slots:
         monitorSpy.waitForStableState();
 
         // THEN
-        QVERIFY(now.msecsTo(QDateTime::currentDateTime()) < 1020ll);
+        QVERIFY(now.msecsTo(QDateTime::currentDateTime()) >= 1000ll);
     }
 
     void shouldWaitOneSecondAfterLastSignal()
@@ -87,7 +87,7 @@ private slots:
         monitorSpy.waitForStableState();
 
         // THEN
-        QVERIFY(now.msecsTo(QDateTime::currentDateTime()) > 1500ll);
+        QVERIFY(now.msecsTo(QDateTime::currentDateTime()) >= 1500ll);
     }
 };
 
