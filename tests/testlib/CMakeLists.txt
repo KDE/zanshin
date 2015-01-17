@@ -1,5 +1,6 @@
 set(testlib_SRCS
    akonadidebug.cpp
+   akonadifakedata.cpp
    akonadifakejobs.cpp
    akonadifakemonitor.cpp
    fakejob.cpp
