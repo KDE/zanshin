@@ -23,11 +23,29 @@
 
 #include "akonadifakedata.h"
 
+#include <algorithm>
+
 using namespace Testlib;
 
 Akonadi::Collection::List AkonadiFakeData::collections() const
 {
     return m_collections.values();
+}
+
+Akonadi::Collection::List AkonadiFakeData::childCollections(Akonadi::Collection::Id parentId) const
+{
+    if (!m_childCollections.contains(parentId))
+        return {};
+
+    const auto ids = m_childCollections.value(parentId);
+    auto result = Akonadi::Collection::List();
+    std::transform(std::begin(ids), std::end(ids),
+                   std::back_inserter(result),
+                   [this] (Akonadi::Collection::Id id) {
+                       Q_ASSERT(m_collections.contains(id));
+                       return m_collections.value(id);
+                   });
+    return result;
 }
 
 Akonadi::Collection AkonadiFakeData::collection(Akonadi::Collection::Id id) const
@@ -42,4 +60,10 @@ void AkonadiFakeData::createCollection(const Akonadi::Collection &collection)
 {
     Q_ASSERT(!m_collections.contains(collection.id()));
     m_collections[collection.id()] = collection;
+
+    const auto parent = collection.parentCollection();
+    const auto parentId = parent.isValid() ? parent.id()
+                                           : Akonadi::Collection::root().id();
+
+    m_childCollections[parentId] << collection.id();
 }

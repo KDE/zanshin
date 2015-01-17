@@ -70,6 +70,26 @@ private slots:
         QCOMPARE(data.collection(c1.id()), c1);
         QCOMPARE(data.collection(c2.id()), c2);
     }
+
+    void shouldListChildCollections()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        auto c1 = Akonadi::Collection(42);
+        c1.setName("42");
+        auto c2 = Akonadi::Collection(43);
+        c2.setName("43");
+        c2.setParentCollection(Akonadi::Collection(42));
+        const auto colSet = QSet<Akonadi::Collection>() << c2;
+
+        // WHEN
+        data.createCollection(c1);
+        data.createCollection(c2);
+
+        // THEN
+        QVERIFY(data.childCollections(c2.id()).isEmpty());
+        QCOMPARE(data.childCollections(c1.id()).toSet(), colSet);
+    }
 };
 
 QTEST_MAIN(AkonadiFakeDataTest)
