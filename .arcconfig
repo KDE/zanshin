@@ -1,0 +1,5 @@
+{
+  "project.name" : "zanshin",
+  "phabricator.uri" : "https://phabricator.kde.org/",
+  "history.immutable" : true
+}
