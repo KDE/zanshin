@@ -67,3 +67,23 @@ void AkonadiFakeData::createCollection(const Akonadi::Collection &collection)
 
     m_childCollections[parentId] << collection.id();
 }
+
+void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
+{
+    Q_ASSERT(m_collections.contains(collection.id()));
+
+    const auto oldParent = m_collections[collection.id()].parentCollection();
+    const auto oldParentId = oldParent.isValid() ? oldParent.id()
+                                                 : Akonadi::Collection::root().id();
+
+    m_collections[collection.id()] = collection;
+
+    const auto parent = collection.parentCollection();
+    const auto parentId = parent.isValid() ? parent.id()
+                                           : Akonadi::Collection::root().id();
+
+    if (oldParentId != parentId) {
+        m_childCollections[oldParentId].removeAll(collection.id());
+        m_childCollections[parentId] << collection.id();
+    }
+}

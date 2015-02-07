@@ -37,6 +37,7 @@ public:
     Akonadi::Collection::List childCollections(Akonadi::Collection::Id parentId) const;
     Akonadi::Collection collection(Akonadi::Collection::Id id) const;
     void createCollection(const Akonadi::Collection &collection);
+    void modifyCollection(const Akonadi::Collection &collection);
 
 private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;

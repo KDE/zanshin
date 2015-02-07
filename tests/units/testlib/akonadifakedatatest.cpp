@@ -71,6 +71,25 @@ private slots:
         QCOMPARE(data.collection(c2.id()), c2);
     }
 
+    void shouldModifyCollections()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        auto c1 = Akonadi::Collection(42);
+        c1.setName("42");
+        data.createCollection(c1);
+
+        auto c2 = Akonadi::Collection(c1.id());
+        c2.setName("42-bis");
+
+        // WHEN
+        data.modifyCollection(c2);
+
+        // THEN
+        QCOMPARE(data.collections().size(), 1);
+        QCOMPARE(data.collection(c1.id()), c2);
+    }
+
     void shouldListChildCollections()
     {
         // GIVEN
@@ -89,6 +108,33 @@ private slots:
         // THEN
         QVERIFY(data.childCollections(c2.id()).isEmpty());
         QCOMPARE(data.childCollections(c1.id()).toSet(), colSet);
+    }
+
+    void shouldReparentCollectionsOnModify()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+
+        auto c1 = Akonadi::Collection(42);
+        c1.setName("42");
+        data.createCollection(c1);
+
+        auto c2 = Akonadi::Collection(43);
+        c2.setName("43");
+        data.createCollection(c2);
+
+        auto c3 = Akonadi::Collection(44);
+        c3.setParentCollection(Akonadi::Collection(42));
+        data.createCollection(c3);
+
+        // WHEN
+        c3.setParentCollection(Akonadi::Collection(43));
+        data.modifyCollection(c3);
+
+        // THEN
+        QVERIFY(data.childCollections(c1.id()).isEmpty());
+        QCOMPARE(data.childCollections(c2.id()).size(), 1);
+        QCOMPARE(data.childCollections(c2.id()).first(), c3);
     }
 };
 
