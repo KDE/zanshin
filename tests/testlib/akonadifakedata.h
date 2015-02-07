@@ -41,6 +41,7 @@ public:
     void modifyCollection(const Akonadi::Collection &collection);
 
     Akonadi::Item::List items() const;
+    Akonadi::Item::List childItems(Akonadi::Collection::Id parentId) const;
     Akonadi::Item item(Akonadi::Item::Id id) const;
     void createItem(const Akonadi::Item &item);
 
@@ -49,6 +50,7 @@ private:
     QHash<Akonadi::Collection::Id, QList<Akonadi::Collection::Id>> m_childCollections;
 
     QHash<Akonadi::Item::Id, Akonadi::Item> m_items;
+    QHash<Akonadi::Collection::Id, QList<Akonadi::Item::Id>> m_childItems;
 };
 
 }

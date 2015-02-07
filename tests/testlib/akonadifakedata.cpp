@@ -93,6 +93,22 @@ Akonadi::Item::List AkonadiFakeData::items() const
     return m_items.values();
 }
 
+Akonadi::Item::List AkonadiFakeData::childItems(Akonadi::Collection::Id parentId) const
+{
+    if (!m_childItems.contains(parentId))
+        return {};
+
+    const auto ids = m_childItems.value(parentId);
+    auto result = Akonadi::Item::List();
+    std::transform(std::begin(ids), std::end(ids),
+                   std::back_inserter(result),
+                   [this] (Akonadi::Item::Id id) {
+                       Q_ASSERT(m_items.contains(id));
+                       return m_items.value(id);
+                   });
+    return result;
+}
+
 Akonadi::Item AkonadiFakeData::item(Akonadi::Item::Id id) const
 {
     if (!m_items.contains(id))
@@ -105,4 +121,10 @@ void AkonadiFakeData::createItem(const Akonadi::Item &item)
 {
     Q_ASSERT(!m_items.contains(item.id()));
     m_items[item.id()] = item;
+
+    const auto parent = item.parentCollection();
+    const auto parentId = parent.isValid() ? parent.id()
+                                           : Akonadi::Collection::root().id();
+
+    m_childItems[parentId] << item.id();
 }
