@@ -27,6 +27,7 @@
 #include <QObject>
 
 #include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 namespace Testlib {
 
@@ -39,9 +40,15 @@ public:
     void createCollection(const Akonadi::Collection &collection);
     void modifyCollection(const Akonadi::Collection &collection);
 
+    Akonadi::Item::List items() const;
+    Akonadi::Item item(Akonadi::Item::Id id) const;
+    void createItem(const Akonadi::Item &item);
+
 private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;
     QHash<Akonadi::Collection::Id, QList<Akonadi::Collection::Id>> m_childCollections;
+
+    QHash<Akonadi::Item::Id, Akonadi::Item> m_items;
 };
 
 }

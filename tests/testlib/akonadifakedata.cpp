@@ -87,3 +87,22 @@ void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
         m_childCollections[parentId] << collection.id();
     }
 }
+
+Akonadi::Item::List AkonadiFakeData::items() const
+{
+    return m_items.values();
+}
+
+Akonadi::Item AkonadiFakeData::item(Akonadi::Item::Id id) const
+{
+    if (!m_items.contains(id))
+        return {};
+
+    return m_items.value(id);
+}
+
+void AkonadiFakeData::createItem(const Akonadi::Item &item)
+{
+    Q_ASSERT(!m_items.contains(item.id()));
+    m_items[item.id()] = item;
+}

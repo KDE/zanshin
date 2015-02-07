@@ -35,6 +35,13 @@ bool operator==(const Akonadi::Collection &left, const Akonadi::Collection &righ
         && left.displayName() == right.displayName();
 }
 
+// More aggressive equal to make sure we just don't get items with ids out
+bool operator==(const Akonadi::Item &left, const Akonadi::Item &right)
+{
+    return left.operator==(right)
+        && left.payloadData() == right.payloadData();
+}
+
 #include <QtTest>
 
 
@@ -49,6 +56,7 @@ private slots:
 
         // THEN
         QVERIFY(data.collections().isEmpty());
+        QVERIFY(data.items().isEmpty());
     }
 
     void shouldCreateCollections()
@@ -135,6 +143,26 @@ private slots:
         QVERIFY(data.childCollections(c1.id()).isEmpty());
         QCOMPARE(data.childCollections(c2.id()).size(), 1);
         QCOMPARE(data.childCollections(c2.id()).first(), c3);
+    }
+
+    void shouldCreateItems()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        auto i1 = Akonadi::Item(42);
+        i1.setPayloadFromData("42");
+        auto i2 = Akonadi::Item(43);
+        i2.setPayloadFromData("43");
+        const auto itemSet = QSet<Akonadi::Item>() << i1 << i2;
+
+        // WHEN
+        data.createItem(i1);
+        data.createItem(i2);
+
+        // THEN
+        QCOMPARE(data.items().toSet(), itemSet);
+        QCOMPARE(data.item(i1.id()), i1);
+        QCOMPARE(data.item(i2.id()), i2);
     }
 };
 
