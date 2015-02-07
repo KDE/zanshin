@@ -27,6 +27,14 @@
 
 using namespace Testlib;
 
+template<class Entity>
+static Akonadi::Collection::Id findParentId(const Entity &entity)
+{
+    const auto parent = entity.parentCollection();
+    return parent.isValid() ? parent.id()
+                            : Akonadi::Collection::root().id();
+}
+
 Akonadi::Collection::List AkonadiFakeData::collections() const
 {
     return m_collections.values();
@@ -61,10 +69,7 @@ void AkonadiFakeData::createCollection(const Akonadi::Collection &collection)
     Q_ASSERT(!m_collections.contains(collection.id()));
     m_collections[collection.id()] = collection;
 
-    const auto parent = collection.parentCollection();
-    const auto parentId = parent.isValid() ? parent.id()
-                                           : Akonadi::Collection::root().id();
-
+    const auto parentId = findParentId(collection);
     m_childCollections[parentId] << collection.id();
 }
 
@@ -72,15 +77,9 @@ void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
 {
     Q_ASSERT(m_collections.contains(collection.id()));
 
-    const auto oldParent = m_collections[collection.id()].parentCollection();
-    const auto oldParentId = oldParent.isValid() ? oldParent.id()
-                                                 : Akonadi::Collection::root().id();
-
+    const auto oldParentId = findParentId(m_collections[collection.id()]);
     m_collections[collection.id()] = collection;
-
-    const auto parent = collection.parentCollection();
-    const auto parentId = parent.isValid() ? parent.id()
-                                           : Akonadi::Collection::root().id();
+    const auto parentId = findParentId(collection);
 
     if (oldParentId != parentId) {
         m_childCollections[oldParentId].removeAll(collection.id());
@@ -122,10 +121,7 @@ void AkonadiFakeData::createItem(const Akonadi::Item &item)
     Q_ASSERT(!m_items.contains(item.id()));
     m_items[item.id()] = item;
 
-    const auto parent = item.parentCollection();
-    const auto parentId = parent.isValid() ? parent.id()
-                                           : Akonadi::Collection::root().id();
-
+    const auto parentId = findParentId(item);
     m_childItems[parentId] << item.id();
 }
 
@@ -133,15 +129,9 @@ void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
 {
     Q_ASSERT(m_items.contains(item.id()));
 
-    const auto oldParent = m_items[item.id()].parentCollection();
-    const auto oldParentId = oldParent.isValid() ? oldParent.id()
-                                                 : Akonadi::Collection::root().id();
-
+    const auto oldParentId = findParentId(m_items[item.id()]);
     m_items[item.id()] = item;
-
-    const auto parent = item.parentCollection();
-    const auto parentId = parent.isValid() ? parent.id()
-                                           : Akonadi::Collection::root().id();
+    const auto parentId = findParentId(item);
 
     if (oldParentId != parentId) {
         m_childItems[oldParentId].removeAll(item.id());
