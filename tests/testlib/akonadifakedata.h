@@ -44,6 +44,7 @@ public:
     Akonadi::Item::List childItems(Akonadi::Collection::Id parentId) const;
     Akonadi::Item item(Akonadi::Item::Id id) const;
     void createItem(const Akonadi::Item &item);
+    void modifyItem(const Akonadi::Item &item);
 
 private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;

@@ -128,3 +128,23 @@ void AkonadiFakeData::createItem(const Akonadi::Item &item)
 
     m_childItems[parentId] << item.id();
 }
+
+void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
+{
+    Q_ASSERT(m_items.contains(item.id()));
+
+    const auto oldParent = m_items[item.id()].parentCollection();
+    const auto oldParentId = oldParent.isValid() ? oldParent.id()
+                                                 : Akonadi::Collection::root().id();
+
+    m_items[item.id()] = item;
+
+    const auto parent = item.parentCollection();
+    const auto parentId = parent.isValid() ? parent.id()
+                                           : Akonadi::Collection::root().id();
+
+    if (oldParentId != parentId) {
+        m_childItems[oldParentId].removeAll(item.id());
+        m_childItems[parentId] << item.id();
+    }
+}
