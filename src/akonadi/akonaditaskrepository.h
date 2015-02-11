@@ -45,21 +45,21 @@ public:
                    const SerializerInterface::Ptr &serializer,
                    const MessagingInterface::Ptr &messaging);
 
-    virtual bool isDefaultSource(Domain::DataSource::Ptr source) const;
-    virtual void setDefaultSource(Domain::DataSource::Ptr source);
+    virtual bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
+    virtual void setDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
 
-    virtual KJob *create(Domain::Task::Ptr task);
-    virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project);
-    virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context);
-    virtual KJob *createInTag(Domain::Task::Ptr task, Domain::Tag::Ptr tag);
+    virtual KJob *create(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
+    virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project) Q_DECL_OVERRIDE;
+    virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context) Q_DECL_OVERRIDE;
+    virtual KJob *createInTag(Domain::Task::Ptr task, Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
 
-    virtual KJob *update(Domain::Task::Ptr task);
-    virtual KJob *remove(Domain::Task::Ptr task);
+    virtual KJob *update(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
+    virtual KJob *remove(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
 
-    virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child);
-    virtual KJob *dissociate(Domain::Task::Ptr child);
+    virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
+    virtual KJob *dissociate(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
 
-    virtual KJob *delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate);
+    virtual KJob *delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate) Q_DECL_OVERRIDE;
 
 private:
     StorageInterface::Ptr m_storage;

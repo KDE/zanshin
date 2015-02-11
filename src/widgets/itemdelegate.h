@@ -36,10 +36,10 @@ public:
     explicit ItemDelegate(QObject *parent = Q_NULLPTR);
 
     QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const;
+                   const QModelIndex &index) const Q_DECL_OVERRIDE;
     void paint(QPainter *painter,
                const QStyleOptionViewItem &option,
-               const QModelIndex &index) const;
+               const QModelIndex &index) const Q_DECL_OVERRIDE;
 };
 
 }

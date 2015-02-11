@@ -54,8 +54,8 @@ public:
                    const SerializerInterface::Ptr &serializer,
                    const MonitorInterface::Ptr &monitor);
 
-    ProjectResult::Ptr findAll() const;
-    ArtifactResult::Ptr findTopLevelArtifacts(Domain::Project::Ptr project) const;
+    ProjectResult::Ptr findAll() const Q_DECL_OVERRIDE;
+    ArtifactResult::Ptr findTopLevelArtifacts(Domain::Project::Ptr project) const Q_DECL_OVERRIDE;
 
 private slots:
     void onItemAdded(const Akonadi::Item &item);

@@ -59,8 +59,8 @@ public:
                const SerializerInterface::Ptr &serializer,
                const MonitorInterface::Ptr &monitor);
 
-    TagResult::Ptr findAll() const;
-    ArtifactResult::Ptr findTopLevelArtifacts(Domain::Tag::Ptr tag) const;
+    TagResult::Ptr findAll() const Q_DECL_OVERRIDE;
+    ArtifactResult::Ptr findTopLevelArtifacts(Domain::Tag::Ptr tag) const Q_DECL_OVERRIDE;
 
 private slots:
     void onTagAdded(const Akonadi::Tag &tag);

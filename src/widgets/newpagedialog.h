@@ -42,9 +42,9 @@ public:
     explicit NewPageDialog(QWidget *parent = Q_NULLPTR);
     ~NewPageDialog();
 
-    int exec();
+    int exec() Q_DECL_OVERRIDE;
 
-    void accept();
+    void accept() Q_DECL_OVERRIDE;
 
     void setDataSourcesModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
     void setDefaultSource(const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;

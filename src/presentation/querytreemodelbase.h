@@ -78,17 +78,17 @@ public:
 
     ~QueryTreeModelBase();
 
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index) const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
-    QStringList mimeTypes() const;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) Q_DECL_OVERRIDE;
+    QMimeData *mimeData(const QModelIndexList &indexes) const Q_DECL_OVERRIDE;
+    QStringList mimeTypes() const Q_DECL_OVERRIDE;
 
 protected:
     explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,

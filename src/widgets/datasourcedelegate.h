@@ -46,15 +46,15 @@ public:
 
     explicit DataSourceDelegate(QObject *parent = Q_NULLPTR);
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 signals:
     void actionTriggered(const Domain::DataSource::Ptr &source, int action);
 
 protected:
     bool editorEvent(QEvent *event, QAbstractItemModel *model,
-                     const QStyleOptionViewItem &option, const QModelIndex &index);
+                     const QStyleOptionViewItem &option, const QModelIndex &index) Q_DECL_OVERRIDE;
 
 private:
     QHash<Action, QPixmap> m_pixmaps;

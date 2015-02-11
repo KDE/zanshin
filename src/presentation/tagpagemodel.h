@@ -48,11 +48,11 @@ public:
 
     Domain::Tag::Ptr tag() const;
 
-    void addTask(const QString &title);
-    void removeItem(const QModelIndex &index);
+    void addTask(const QString &title) Q_DECL_OVERRIDE;
+    void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
 
 private:
-    QAbstractItemModel *createCentralListModel();
+    QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
 
     Domain::Tag::Ptr m_tag;
     Domain::TagQueries::Ptr m_tagQueries;

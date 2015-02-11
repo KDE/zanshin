@@ -35,7 +35,7 @@ public:
     ~Part();
 
 protected:
-    virtual bool openFile();
+    virtual bool openFile() Q_DECL_OVERRIDE;
 };
 
 #endif

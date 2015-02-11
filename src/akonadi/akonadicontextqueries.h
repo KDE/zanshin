@@ -56,8 +56,8 @@ public:
                    const MonitorInterface::Ptr &monitor);
 
 
-    ContextResult::Ptr findAll() const;
-    TaskResult::Ptr findTopLevelTasks(Domain::Context::Ptr context) const;
+    ContextResult::Ptr findAll() const Q_DECL_OVERRIDE;
+    TaskResult::Ptr findTopLevelTasks(Domain::Context::Ptr context) const Q_DECL_OVERRIDE;
 
 private slots:
     void onTagAdded(const Akonadi::Tag &tag);

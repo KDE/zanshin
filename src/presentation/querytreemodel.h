@@ -73,7 +73,7 @@ public:
     }
 
 protected:
-    QMimeData *createMimeData(const QModelIndexList &indexes) const
+    QMimeData *createMimeData(const QModelIndexList &indexes) const Q_DECL_OVERRIDE
     {
         if (m_dragFunction) {
             QList<ItemType> items;

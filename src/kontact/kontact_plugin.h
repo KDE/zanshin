@@ -33,10 +33,10 @@ class Plugin : public KontactInterface::Plugin
 public:
     Plugin(KontactInterface::Core *core, const QVariantList &);
 
-    int weight() const { return 449; }
+    int weight() const Q_DECL_OVERRIDE { return 449; }
 
 protected:
-    KParts::ReadOnlyPart *createPart();
+    KParts::ReadOnlyPart *createPart() Q_DECL_OVERRIDE;
 };
 
 #endif

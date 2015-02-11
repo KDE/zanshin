@@ -79,9 +79,9 @@ public:
 
     ItemType item() const { return m_item; }
 
-    Qt::ItemFlags flags() const { return m_flagsFunction(m_item); }
+    Qt::ItemFlags flags() const Q_DECL_OVERRIDE { return m_flagsFunction(m_item); }
 
-    QVariant data(int role) const
+    QVariant data(int role) const Q_DECL_OVERRIDE
     {
         if (role == QueryTreeModelBase::ObjectRole)
             return QVariant::fromValue(m_item);
@@ -89,9 +89,9 @@ public:
         return m_dataFunction(m_item, role);
     }
 
-    bool setData(const QVariant &value, int role) { return m_setDataFunction(m_item, value, role); }
+    bool setData(const QVariant &value, int role) Q_DECL_OVERRIDE { return m_setDataFunction(m_item, value, role); }
 
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action)
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action) Q_DECL_OVERRIDE
     {
         if (m_dropFunction)
             return m_dropFunction(data, action, m_item);

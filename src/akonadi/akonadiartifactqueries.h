@@ -57,8 +57,8 @@ public:
                     const SerializerInterface::Ptr &serializer,
                     const MonitorInterface::Ptr &monitor);
 
-    ArtifactResult::Ptr findInboxTopLevel() const;
-    TagResult::Ptr findTags(Domain::Artifact::Ptr artifact) const;
+    ArtifactResult::Ptr findInboxTopLevel() const Q_DECL_OVERRIDE;
+    TagResult::Ptr findTags(Domain::Artifact::Ptr artifact) const Q_DECL_OVERRIDE;
 
 private slots:
     void onItemAdded(const Akonadi::Item &item);

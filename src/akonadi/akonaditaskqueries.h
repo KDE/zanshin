@@ -60,10 +60,10 @@ public:
                 const SerializerInterface::Ptr &serializer,
                 const MonitorInterface::Ptr &monitor);
 
-    TaskResult::Ptr findAll() const;
-    TaskResult::Ptr findChildren(Domain::Task::Ptr task) const;
-    TaskResult::Ptr findTopLevel() const;
-    ContextResult::Ptr findContexts(Domain::Task::Ptr task) const;
+    TaskResult::Ptr findAll() const Q_DECL_OVERRIDE;
+    TaskResult::Ptr findChildren(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
+    TaskResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
+    ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
 
 private slots:
     void onItemAdded(const Akonadi::Item &item);

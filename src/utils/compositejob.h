@@ -37,12 +37,12 @@ public:
 
     using KCompositeJob::addSubjob;
 
-    virtual void start();
+    virtual void start() Q_DECL_OVERRIDE;
     virtual bool install(KJob *job, const JobHandler::ResultHandlerWithJob &handler);
     virtual bool install(KJob *job, const JobHandler::ResultHandler &handler);
 
 private slots:
-    virtual void slotResult(KJob *job);
+    virtual void slotResult(KJob *job) Q_DECL_OVERRIDE;
 };
 
 }

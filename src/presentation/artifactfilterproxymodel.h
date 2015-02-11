@@ -47,8 +47,8 @@ public:
     void setSortOrder(Qt::SortOrder order);
 
 protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const Q_DECL_OVERRIDE;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 
 private:
     SortType m_sortType;

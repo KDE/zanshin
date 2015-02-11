@@ -58,15 +58,15 @@ public:
                       const SerializerInterface::Ptr &serializer,
                       const MonitorInterface::Ptr &monitor);
 
-    DataSourceResult::Ptr findTasks() const;
-    DataSourceResult::Ptr findNotes() const;
-    DataSourceResult::Ptr findTopLevel() const;
-    DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const;
+    DataSourceResult::Ptr findTasks() const Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findNotes() const Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
-    QString searchTerm() const;
-    void setSearchTerm(QString term);
-    DataSourceResult::Ptr findSearchTopLevel() const;
-    DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const;
+    QString searchTerm() const Q_DECL_OVERRIDE;
+    void setSearchTerm(QString term) Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findSearchTopLevel() const Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
 private slots:
     void onCollectionAdded(const Akonadi::Collection &collection);

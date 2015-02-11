@@ -44,11 +44,11 @@ public:
 
     Domain::Project::Ptr project() const;
 
-    void addTask(const QString &title);
-    void removeItem(const QModelIndex &index);
+    void addTask(const QString &title) Q_DECL_OVERRIDE;
+    void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
 
 private:
-    QAbstractItemModel *createCentralListModel();
+    QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
 
     Domain::ProjectQueries::Ptr m_projectQueries;
     Domain::Project::Ptr m_project;

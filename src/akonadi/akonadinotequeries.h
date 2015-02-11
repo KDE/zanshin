@@ -53,7 +53,7 @@ public:
                 const SerializerInterface::Ptr &serializer,
                 const MonitorInterface::Ptr &monitor);
 
-    NoteResult::Ptr findAll() const;
+    NoteResult::Ptr findAll() const Q_DECL_OVERRIDE;
 
 private slots:
     void onItemAdded(const Akonadi::Item &item);
