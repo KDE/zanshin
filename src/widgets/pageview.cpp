@@ -68,7 +68,7 @@ PageView::PageView(QWidget *parent)
     layout->addWidget(m_quickAddEdit);
     setLayout(layout);
 
-    QAction *removeItemAction = new QAction(this);
+    auto removeItemAction = new QAction(this);
     removeItemAction->setShortcut(Qt::Key_Delete);
     connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
     addAction(removeItemAction);

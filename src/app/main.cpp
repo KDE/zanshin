@@ -71,9 +71,9 @@ int main(int argc, char **argv)
     auto components = new Widgets::ApplicationComponents(widget);
     components->setModel(Utils::DependencyManager::globalInstance().create<Presentation::ApplicationModel>());
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
 
-    QHBoxLayout *hbox = new QHBoxLayout;
+    auto hbox = new QHBoxLayout;
     hbox->addWidget(components->defaultTaskSourceCombo());
     hbox->addWidget(components->defaultNoteSourceCombo());
 

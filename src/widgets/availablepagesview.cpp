@@ -59,21 +59,21 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     m_actionBar->setObjectName("actionBar");
     m_actionBar->setIconSize(QSize(16, 16));
 
-    QAction *addAction = new QAction(this);
+    auto addAction = new QAction(this);
     addAction->setObjectName("addAction");
     addAction->setText(tr("New page"));
     addAction->setIcon(QIcon::fromTheme("list-add"));
     connect(addAction, SIGNAL(triggered()), this, SLOT(onAddTriggered()));
     m_actionBar->addAction(addAction);
 
-    QAction *removeAction = new QAction(this);
+    auto removeAction = new QAction(this);
     removeAction->setObjectName("removeAction");
     removeAction->setText(tr("Remove page"));
     removeAction->setIcon(QIcon::fromTheme("list-remove"));
     connect(removeAction, SIGNAL(triggered()), this, SLOT(onRemoveTriggered()));
     m_actionBar->addAction(removeAction);
 
-    QHBoxLayout *actionBarLayout = new QHBoxLayout;
+    auto actionBarLayout = new QHBoxLayout;
     actionBarLayout->setAlignment(Qt::AlignRight);
     actionBarLayout->addWidget(m_actionBar);
 

@@ -107,7 +107,7 @@ void Zanshin021Migrator::migrateProjectWithChildren(Zanshin021Migrator::SeenItem
 bool Zanshin021Migrator::migrateProjects()
 {
     SeenItemHash items = fetchAllItems();
-    Akonadi::TransactionSequence *sequence = new Akonadi::TransactionSequence;
+    auto sequence = new Akonadi::TransactionSequence;
     migrateProjectComments(items, sequence);
     migrateProjectWithChildren(items, sequence);
     return sequence->exec();

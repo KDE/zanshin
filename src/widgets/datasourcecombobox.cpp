@@ -38,7 +38,7 @@ DataSourceComboBox::DataSourceComboBox(QWidget *parent)
 {
     setFocusProxy(m_combo);
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_combo);
     setLayout(layout);

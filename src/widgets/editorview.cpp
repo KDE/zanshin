@@ -67,24 +67,24 @@ EditorView::EditorView(QWidget *parent)
     m_startDateEdit->setMinimumContentsLength(10);
     m_dueDateEdit->setMinimumContentsLength(10);
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
     layout->addWidget(m_delegateLabel);
     layout->addWidget(m_textEdit);
     layout->addWidget(m_taskGroup);
     setLayout(layout);
 
-    QVBoxLayout *vbox = new QVBoxLayout;
+    auto vbox = new QVBoxLayout;
     auto delegateHBox = new QHBoxLayout;
     delegateHBox->addWidget(new QLabel(tr("Delegate to"), m_taskGroup));
     delegateHBox->addWidget(m_delegateEdit);
     vbox->addLayout(delegateHBox);
-    QHBoxLayout *datesHBox = new QHBoxLayout;
+    auto datesHBox = new QHBoxLayout;
     datesHBox->addWidget(new QLabel(tr("Start date"), m_taskGroup));
     datesHBox->addWidget(m_startDateEdit, 1);
     datesHBox->addWidget(new QLabel(tr("Due date"), m_taskGroup));
     datesHBox->addWidget(m_dueDateEdit, 1);
     vbox->addLayout(datesHBox);
-    QHBoxLayout *bottomHBox = new QHBoxLayout;
+    auto bottomHBox = new QHBoxLayout;
     bottomHBox->addWidget(m_startTodayButton);
     bottomHBox->addWidget(m_doneButton);
     bottomHBox->addStretch();

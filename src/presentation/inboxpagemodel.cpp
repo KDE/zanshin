@@ -166,7 +166,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
         if (artifacts.isEmpty())
             return Q_NULLPTR;
 
-        QMimeData *data = new QMimeData;
+        auto data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(artifacts));
         return data;

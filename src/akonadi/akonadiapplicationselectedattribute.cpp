@@ -47,7 +47,7 @@ bool ApplicationSelectedAttribute::isSelected() const
 
 ApplicationSelectedAttribute *ApplicationSelectedAttribute::clone() const
 {
-    ApplicationSelectedAttribute *attr = new ApplicationSelectedAttribute();
+    auto attr = new ApplicationSelectedAttribute();
     attr->m_selected = m_selected;
     return attr;
 }

@@ -153,7 +153,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
             draggedArtifacts.append(task.objectCast<Domain::Artifact>());
         }
 
-        QMimeData *data = new QMimeData();
+        auto data = new QMimeData();
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
         return data;

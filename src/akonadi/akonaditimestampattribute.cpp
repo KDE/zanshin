@@ -50,7 +50,7 @@ void TimestampAttribute::refreshTimestamp()
 
 TimestampAttribute *TimestampAttribute::clone() const
 {
-    TimestampAttribute *attr = new TimestampAttribute();
+    auto attr = new TimestampAttribute();
     attr->m_timestamp = m_timestamp;
     return attr;
 }
