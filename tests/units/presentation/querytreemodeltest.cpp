@@ -42,7 +42,7 @@ class QueryTreeModelTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit QueryTreeModelTest(QObject *parent = 0)
+    explicit QueryTreeModelTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<QModelIndex>();
@@ -163,7 +163,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
 
         // THEN
@@ -214,7 +214,7 @@ private slots:
         };
 
         // WHEN
-        Presentation::QueryTreeModel<QString> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<QString> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
 
         // THEN
@@ -267,7 +267,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -339,7 +339,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
         QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
         QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
@@ -409,7 +409,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
         QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
         QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
@@ -513,7 +513,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
         QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
 
@@ -582,7 +582,7 @@ private slots:
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
 
         // WHEN
@@ -627,7 +627,7 @@ private slots:
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
 
         Utils::MockObject<Domain::TaskRepository> repositoryMock;
-        repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(0);
+        repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(Q_NULLPTR);
 
         auto queryGenerator = [&](const Domain::Task::Ptr &task) {
             if (!task)
@@ -665,7 +665,7 @@ private slots:
             repositoryMock.getInstance()->update(task);
             return true;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, 0);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
         QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
         QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));
@@ -787,7 +787,7 @@ private slots:
         QFETCH(int, parentRow);
         QFETCH(bool, callExpected);
         bool dropCalled = false;
-        const QMimeData *droppedData = 0;
+        const QMimeData *droppedData = Q_NULLPTR;
         QColor colorSeen;
 
         auto provider = Domain::QueryResultProvider<QColor>::Ptr::create();
@@ -817,7 +817,7 @@ private slots:
             return false;
         };
         auto dragFunction = [] (const QList<QColor> &) -> QMimeData* {
-            return 0;
+            return Q_NULLPTR;
         };
 
         Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,

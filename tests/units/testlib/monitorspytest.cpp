@@ -54,7 +54,7 @@ class MonitorSpyTest : public QObject
 {
     Q_OBJECT
 public:
-    MonitorSpyTest(QObject *parent = 0)
+    MonitorSpyTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
     }

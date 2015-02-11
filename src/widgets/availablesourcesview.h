@@ -37,7 +37,7 @@ class AvailableSourcesView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AvailableSourcesView(QWidget *parent = 0);
+    explicit AvailableSourcesView(QWidget *parent = Q_NULLPTR);
 
     QObject *model() const;
 

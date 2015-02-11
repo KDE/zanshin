@@ -46,7 +46,7 @@ void Messaging::sendDelegationMessage(Item item)
     auto todo = item.payload<KCalCore::Todo::Ptr>();
     Q_ASSERT(todo);
 
-    QWidget *window = 0;
+    QWidget *window = Q_NULLPTR;
     if (!QApplication::topLevelWidgets().isEmpty()) {
         window = QApplication::topLevelWidgets().first();
     }

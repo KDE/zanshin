@@ -43,7 +43,7 @@ using namespace Widgets;
 
 PageView::PageView(QWidget *parent)
     : QWidget(parent),
-      m_model(0),
+      m_model(Q_NULLPTR),
       m_filterWidget(new FilterWidget(this)),
       m_centralView(new QTreeView(this)),
       m_quickAddEdit(new QLineEdit(this))
@@ -87,10 +87,10 @@ void PageView::setModel(QObject *model)
         return;
 
     if (m_centralView->selectionModel()) {
-        disconnect(m_centralView->selectionModel(), 0, this, 0);
+        disconnect(m_centralView->selectionModel(), Q_NULLPTR, this, Q_NULLPTR);
     }
 
-    m_filterWidget->proxyModel()->setSourceModel(0);
+    m_filterWidget->proxyModel()->setSourceModel(Q_NULLPTR);
 
     m_model = model;
 

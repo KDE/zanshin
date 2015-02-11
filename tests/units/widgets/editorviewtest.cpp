@@ -102,7 +102,7 @@ class EditorViewTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit EditorViewTest(QObject *parent = 0)
+    explicit EditorViewTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qputenv("ZANSHIN_UNIT_TEST_RUN", "1");

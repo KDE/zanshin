@@ -40,8 +40,8 @@ class UserInputSimulator : public QObject
 {
     Q_OBJECT
 public:
-    explicit UserInputSimulator(QObject *parent = 0)
-        : QObject(parent), dialog(0), reject(false), sourceComboIndex(-1), typeComboIndex(-1) {}
+    explicit UserInputSimulator(QObject *parent = Q_NULLPTR)
+        : QObject(parent), dialog(Q_NULLPTR), reject(false), sourceComboIndex(-1), typeComboIndex(-1) {}
 
     void exec()
     {

@@ -39,7 +39,7 @@ public:
         DateSort
     };
 
-    explicit ArtifactFilterProxyModel(QObject *parent = 0);
+    explicit ArtifactFilterProxyModel(QObject *parent = Q_NULLPTR);
 
     SortType sortType() const;
     void setSortType(SortType type);

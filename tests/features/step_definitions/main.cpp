@@ -25,7 +25,7 @@
 #include "testlib/monitorspy.h"
 
 static int argc = 0;
-static QApplication app(argc, 0);
+static QApplication app(argc, Q_NULLPTR);
 
 namespace cucumber {
     namespace internal {
@@ -50,13 +50,13 @@ class ZanshinContext : public QObject
 {
     Q_OBJECT
 public:
-    explicit ZanshinContext(QObject *parent = 0)
+    explicit ZanshinContext(QObject *parent = Q_NULLPTR)
         : QObject(parent),
-          app(0),
-          presentation(0),
-          editor(0),
+          app(Q_NULLPTR),
+          presentation(Q_NULLPTR),
+          editor(Q_NULLPTR),
           proxyModel(new QSortFilterProxyModel(this)),
-          monitorSpy(0)
+          monitorSpy(Q_NULLPTR)
     {
         App::initializeDependencies();
 
@@ -248,7 +248,7 @@ GIVEN("^I display the available (\\S+) data sources$") {
     ScenarioScope<ZanshinContext> context;
     auto propertyName = sourceType == "task" ? "taskSourcesModel"
                       : sourceType == "note" ? "noteSourcesModel"
-                      : 0;
+                      : Q_NULLPTR;
 
     context->setModel(context->app->property(propertyName).value<QAbstractItemModel*>());
     context->waitForEmptyJobQueue();
@@ -274,7 +274,7 @@ GIVEN("^I display the \"(.*)\" page$") {
     QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageName);
     VERIFY(pageIndex.isValid());
 
-    QObject *page = 0;
+    QObject *page = Q_NULLPTR;
     QMetaObject::invokeMethod(availablePages, "createPageForIndex",
                               Q_RETURN_ARG(QObject*, page),
                               Q_ARG(QModelIndex, pageIndex));
@@ -609,7 +609,7 @@ WHEN("^the user changes the default (\\S+) data source to (.*)$") {
     ScenarioScope<ZanshinContext> context;
     auto sourcesModel = sourceType == "task" ? context->app->property("taskSourcesModel").value<QAbstractItemModel*>()
                       : sourceType == "note" ? context->app->property("noteSourcesModel").value<QAbstractItemModel*>()
-                      : 0;
+                      : Q_NULLPTR;
     context->waitForStableState();
     // I wish models had iterators...
     QList<Domain::DataSource::Ptr> sources;
@@ -624,7 +624,7 @@ WHEN("^the user changes the default (\\S+) data source to (.*)$") {
 
     auto propertyName = sourceType == "task" ? "defaultTaskDataSource"
                       : sourceType == "note" ? "defaultNoteDataSource"
-                      : 0;
+                      : Q_NULLPTR;
     context->app->setProperty(propertyName, QVariant::fromValue(source));
 }
 
@@ -733,7 +733,7 @@ THEN("^the default (\\S+) data source is (.*)$") {
 
     auto propertyName = sourceType == "task" ? "defaultTaskDataSource"
                       : sourceType == "note" ? "defaultNoteDataSource"
-                      : 0;
+                      : Q_NULLPTR;
 
     ScenarioScope<ZanshinContext> context;
     auto source = context->app->property(propertyName).value<Domain::DataSource::Ptr>();

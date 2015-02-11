@@ -33,7 +33,7 @@ class CompositeJob : public KCompositeJob
 {
     Q_OBJECT
 public:
-    CompositeJob(QObject* parent = 0);
+    CompositeJob(QObject *parent = Q_NULLPTR);
 
     using KCompositeJob::addSubjob;
 

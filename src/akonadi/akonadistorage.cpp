@@ -55,7 +55,7 @@ using namespace Akonadi;
 class CollectionJob : public CollectionFetchJob, public CollectionFetchJobInterface
 {
 public:
-    CollectionJob (const Collection &collection, Type type=FirstLevel, QObject *parent=0)
+    CollectionJob(const Collection &collection, Type type = FirstLevel, QObject *parent = Q_NULLPTR)
         : CollectionFetchJob(collection, type, parent),
           m_collection(collection)
     {
@@ -113,7 +113,7 @@ private:
 class CollectionSearchJob : public CollectionFetchJob, public CollectionSearchJobInterface
 {
 public:
-    CollectionSearchJob(const QString &collectionName, QObject *parent=0)
+    CollectionSearchJob(const QString &collectionName, QObject *parent = Q_NULLPTR)
         : CollectionFetchJob(Akonadi::Collection::root(),
                              CollectionJob::Recursive,
                              parent),

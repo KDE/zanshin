@@ -92,7 +92,7 @@ public:
 
 protected:
     explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,
-                                QObject *parent = 0);
+                                QObject *parent = Q_NULLPTR);
     virtual QMimeData *createMimeData(const QModelIndexList &indexes) const = 0;
     QueryTreeNodeBase *nodeFromIndex(const QModelIndex &index) const;
 

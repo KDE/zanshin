@@ -61,7 +61,7 @@ public:
                                  const Domain::NoteRepository::Ptr &noteRepository,
                                  const Domain::TagQueries::Ptr &tagQueries,
                                  const Domain::TagRepository::Ptr &tagRepository,
-                                 QObject *parent = 0);
+                                 QObject *parent = Q_NULLPTR);
 
     QAbstractItemModel *pageListModel();
 

@@ -39,7 +39,7 @@ class MonitorInterface : public QObject
 public:
     typedef QSharedPointer<MonitorInterface> Ptr;
 
-    explicit MonitorInterface(QObject *parent = 0);
+    explicit MonitorInterface(QObject *parent = Q_NULLPTR);
     virtual ~MonitorInterface();
 
 signals:

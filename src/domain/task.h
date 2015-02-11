@@ -65,7 +65,7 @@ public:
         QString m_email;
     };
 
-    explicit Task(QObject *parent = 0);
+    explicit Task(QObject *parent = Q_NULLPTR);
     virtual ~Task();
 
     bool isDone() const;

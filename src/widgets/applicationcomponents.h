@@ -46,7 +46,7 @@ class ApplicationComponents : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApplicationComponents(QWidget *parent = 0);
+    explicit ApplicationComponents(QWidget *parent = Q_NULLPTR);
 
     QObjectPtr model() const;
 

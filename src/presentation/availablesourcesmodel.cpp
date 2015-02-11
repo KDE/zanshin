@@ -37,8 +37,8 @@ AvailableSourcesModel::AvailableSourcesModel(const Domain::DataSourceQueries::Pt
                                              const Domain::DataSourceRepository::Ptr &dataSourceRepository,
                                              QObject *parent)
     : QObject(parent),
-      m_sourceListModel(0),
-      m_searchListModel(0),
+      m_sourceListModel(Q_NULLPTR),
+      m_searchListModel(Q_NULLPTR),
       m_dataSourceQueries(dataSourceQueries),
       m_dataSourceRepository(dataSourceRepository)
 {
@@ -152,7 +152,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
     };
 
     auto drag = [](const Domain::DataSource::List &) -> QMimeData* {
-        return 0;
+        return Q_NULLPTR;
     };
 
     return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, this);
@@ -208,7 +208,7 @@ QAbstractItemModel *AvailableSourcesModel::createSearchListModel()
     };
 
     auto drag = [](const Domain::DataSource::List &) -> QMimeData* {
-        return 0;
+        return Q_NULLPTR;
     };
 
     return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, this);

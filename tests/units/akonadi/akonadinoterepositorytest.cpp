@@ -184,7 +184,7 @@ private slots:
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the note
@@ -198,7 +198,7 @@ private slots:
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, 0).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
     }
 
     void shouldRemoveANote()

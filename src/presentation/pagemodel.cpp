@@ -31,7 +31,7 @@ PageModel::PageModel(const Domain::TaskQueries::Ptr &taskQueries,
                      const Domain::NoteRepository::Ptr &noteRepository,
                      QObject *parent)
     : QObject(parent),
-      m_centralListModel(0),
+      m_centralListModel(Q_NULLPTR),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
       m_noteRepository(noteRepository)

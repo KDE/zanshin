@@ -68,7 +68,7 @@ class AkonadiStorageTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit AkonadiStorageTest(QObject *parent = 0)
+    explicit AkonadiStorageTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<Akonadi::Collection>();

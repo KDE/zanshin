@@ -181,7 +181,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
 
     auto drag = [] (const Domain::Artifact::List &artifacts) -> QMimeData* {
         if (artifacts.isEmpty())
-            return 0;
+            return Q_NULLPTR;
 
         QMimeData *data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");

@@ -31,7 +31,7 @@ class TaskTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit TaskTest(QObject *parent = 0)
+    explicit TaskTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<Task::Delegate>();

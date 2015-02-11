@@ -38,7 +38,7 @@ class DataSourceComboBox : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DataSourceComboBox(QWidget *parent = 0);
+    explicit DataSourceComboBox(QWidget *parent = Q_NULLPTR);
 
     int count() const;
     int currentIndex() const;

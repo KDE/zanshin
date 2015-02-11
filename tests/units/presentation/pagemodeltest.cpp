@@ -31,13 +31,13 @@ class FakePageModel : public Presentation::PageModel
 {
     Q_OBJECT
 public:
-    explicit FakePageModel(QObject *parent = 0)
+    explicit FakePageModel(QObject *parent = Q_NULLPTR)
         : Presentation::PageModel(Domain::TaskQueries::Ptr(),
                                   Domain::TaskRepository::Ptr(),
                                   Domain::NoteRepository::Ptr(),
                                   parent),
           createCount(0),
-          itemModel(0)
+          itemModel(Q_NULLPTR)
     {
     }
 

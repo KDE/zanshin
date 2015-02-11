@@ -40,7 +40,7 @@ class DataSourceDelegateTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit DataSourceDelegateTest(QObject *parent = 0)
+    explicit DataSourceDelegateTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<Domain::DataSource::Ptr>();

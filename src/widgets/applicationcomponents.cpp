@@ -43,12 +43,12 @@ using namespace Widgets;
 ApplicationComponents::ApplicationComponents(QWidget *parent)
     : QObject(parent),
       m_parent(parent),
-      m_availableSourcesView(0),
-      m_availablePagesView(0),
-      m_pageView(0),
-      m_editorView(0),
-      m_noteCombo(0),
-      m_taskCombo(0)
+      m_availableSourcesView(Q_NULLPTR),
+      m_availablePagesView(Q_NULLPTR),
+      m_pageView(Q_NULLPTR),
+      m_editorView(Q_NULLPTR),
+      m_noteCombo(Q_NULLPTR),
+      m_taskCombo(Q_NULLPTR)
 {
 }
 

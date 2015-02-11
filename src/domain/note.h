@@ -37,7 +37,7 @@ public:
     typedef QSharedPointer<Note> Ptr;
     typedef QList<Note::Ptr> List;
 
-    explicit Note(QObject *parent = 0);
+    explicit Note(QObject *parent = Q_NULLPTR);
     virtual ~Note();
 };
 

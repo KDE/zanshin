@@ -46,7 +46,7 @@ public:
     explicit PageModel(const Domain::TaskQueries::Ptr &taskQueries,
                        const Domain::TaskRepository::Ptr &taskRepository,
                        const Domain::NoteRepository::Ptr &noteRepository,
-                       QObject *parent = 0);
+                       QObject *parent = Q_NULLPTR);
 
     QAbstractItemModel *centralListModel();
 

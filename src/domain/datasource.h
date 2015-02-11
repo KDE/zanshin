@@ -57,7 +57,7 @@ public:
         Bookmarked = 3
     };
 
-    explicit DataSource(QObject *parent = 0);
+    explicit DataSource(QObject *parent = Q_NULLPTR);
     virtual ~DataSource();
 
     QString name() const;

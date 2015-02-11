@@ -51,8 +51,8 @@ class ApplicationModelStub : public QObject
 public:
     typedef QSharedPointer<ApplicationModelStub> Ptr;
 
-    explicit ApplicationModelStub(QObject *parent = 0)
-        : QObject(parent), m_currentPage(0) {}
+    explicit ApplicationModelStub(QObject *parent = Q_NULLPTR)
+        : QObject(parent), m_currentPage(Q_NULLPTR) {}
 
     QObject *currentPage()
     {
@@ -80,7 +80,7 @@ class AvailablePagesModelStub : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
-    explicit AvailablePagesModelStub(QObject *parent = 0)
+    explicit AvailablePagesModelStub(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         m_itemModel.setStringList(QStringList() << "Inbox" << "Project");
@@ -149,7 +149,7 @@ class EditorModelStub : public QObject
 {
     Q_OBJECT
 public:
-    explicit EditorModelStub(QObject *parent = 0)
+    explicit EditorModelStub(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
     }
@@ -196,7 +196,7 @@ class ApplicationComponentsTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApplicationComponentsTest(QObject *parent = 0)
+    explicit ApplicationComponentsTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
@@ -362,7 +362,7 @@ private slots:
 
         AvailablePagesModelStub availablePagesModel;
         model->setProperty("availablePages", QVariant::fromValue<QObject*>(&availablePagesModel));
-        model->setProperty("currentPage", QVariant::fromValue<QObject*>(0));
+        model->setProperty("currentPage", QVariant::fromValue<QObject*>(Q_NULLPTR));
 
         QObject editorModel;
         editorModel.setProperty("artifact",

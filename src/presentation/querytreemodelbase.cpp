@@ -57,7 +57,7 @@ QueryTreeNodeBase *QueryTreeNodeBase::child(int row) const
     if (row >= 0 && row < m_childNode.size())
         return m_childNode.value(row);
     else
-        return 0;
+        return Q_NULLPTR;
 }
 
 void QueryTreeNodeBase::insertChild(int row, QueryTreeNodeBase *node)
@@ -202,7 +202,7 @@ bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction acti
 QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
 {
     if (indexes.isEmpty())
-        return 0;
+        return Q_NULLPTR;
 
     return createMimeData(indexes);
 }

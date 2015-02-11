@@ -40,7 +40,7 @@ public:
     typedef QSharedPointer<Tag> Ptr;
     typedef QList<Tag::Ptr> List;
 
-    explicit Tag(QObject *parent = 0);
+    explicit Tag(QObject *parent = Q_NULLPTR);
     virtual ~Tag();
 
     QString name() const;

@@ -44,7 +44,7 @@ public:
         Bookmark
     };
 
-    explicit DataSourceDelegate(QObject *parent = 0);
+    explicit DataSourceDelegate(QObject *parent = Q_NULLPTR);
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;

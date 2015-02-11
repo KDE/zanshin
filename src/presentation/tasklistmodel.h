@@ -40,7 +40,7 @@ public:
 
     explicit TaskListModel(const TaskList::Ptr &taskList,
                            const Domain::TaskRepository::Ptr &repository,
-                           QObject *parent = 0);
+                           QObject *parent = Q_NULLPTR);
     ~TaskListModel();
 
     Qt::ItemFlags flags(const QModelIndex &index) const;

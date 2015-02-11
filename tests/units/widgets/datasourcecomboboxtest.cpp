@@ -178,7 +178,7 @@ private slots:
         // WHEN
         QComboBox *proxy = qobject_cast<QComboBox*>(combo.focusProxy());
         QVERIFY(proxy);
-        QTest::mouseClick(proxy, Qt::LeftButton, 0, QPoint());
+        QTest::mouseClick(proxy, Qt::LeftButton, Q_NULLPTR, QPoint());
 
         // Make sure the popup is on screen
         QTest::qWaitForWindowShown(proxy->view());
@@ -189,7 +189,7 @@ private slots:
         for (int y = 0; y < proxy->view()->rect().height(); y += 4) {
             const QPoint point(x, y);
             if (proxy->view()->indexAt(point).row() == 1) {
-                QTest::mouseClick(proxy->view()->viewport(), Qt::LeftButton, 0, point);
+                QTest::mouseClick(proxy->view()->viewport(), Qt::LeftButton, Q_NULLPTR, point);
                 break;
             }
         }

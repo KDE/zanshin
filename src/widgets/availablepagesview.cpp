@@ -47,8 +47,8 @@ using namespace Presentation;
 
 AvailablePagesView::AvailablePagesView(QWidget *parent)
     : QWidget(parent),
-      m_model(0),
-      m_sources(0),
+      m_model(Q_NULLPTR),
+      m_sources(Q_NULLPTR),
       m_pagesView(new QTreeView(this)),
       m_actionBar(new QToolBar(this))
 {
@@ -114,10 +114,10 @@ void AvailablePagesView::setModel(QObject *model)
         return;
 
     if (m_pagesView->selectionModel()) {
-        disconnect(m_pagesView->selectionModel(), 0, this, 0);
+        disconnect(m_pagesView->selectionModel(), Q_NULLPTR, this, Q_NULLPTR);
     }
 
-    m_pagesView->setModel(0);
+    m_pagesView->setModel(Q_NULLPTR);
 
     m_model = model;
 
@@ -153,7 +153,7 @@ void AvailablePagesView::setMessageBoxInterface(const MessageBoxInterface::Ptr &
 
 void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 {
-    QObject *page = 0;
+    QObject *page = Q_NULLPTR;
     QMetaObject::invokeMethod(m_model, "createPageForIndex",
                               Q_RETURN_ARG(QObject*, page),
                               Q_ARG(QModelIndex, current));

@@ -51,7 +51,7 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
 public:
     explicit ArtifactEditorModel(const Domain::TaskRepository::Ptr &taskRepository,
                                  const Domain::NoteRepository::Ptr &noteRepository,
-                                 QObject *parent = 0);
+                                 QObject *parent = Q_NULLPTR);
     ~ArtifactEditorModel();
 
     Domain::Artifact::Ptr artifact() const;

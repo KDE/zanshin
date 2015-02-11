@@ -34,7 +34,7 @@ using namespace Widgets;
 DataSourceComboBox::DataSourceComboBox(QWidget *parent)
     : QWidget(parent),
       m_combo(new QComboBox(this)),
-      m_object(0)
+      m_object(Q_NULLPTR)
 {
     setFocusProxy(m_combo);
 
@@ -80,7 +80,7 @@ void DataSourceComboBox::setModel(QAbstractItemModel *model)
     if (model == m_combo->model())
         return;
 
-    disconnect(m_combo->model(), 0, this, 0);
+    disconnect(m_combo->model(), Q_NULLPTR, this, Q_NULLPTR);
 
     m_combo->setModel(model);
 

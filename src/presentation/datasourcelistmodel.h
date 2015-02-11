@@ -36,7 +36,7 @@ class DataSourceListModel : public QueryTreeModel<Domain::DataSource::Ptr>
 public:
     typedef std::function<Domain::QueryResultInterface<Domain::DataSource::Ptr>::Ptr()> Query;
 
-    explicit DataSourceListModel(const Query &query, QObject *parent = 0);
+    explicit DataSourceListModel(const Query &query, QObject *parent = Q_NULLPTR);
 };
 
 }

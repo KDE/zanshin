@@ -41,7 +41,7 @@ class AvailableSourcesModelStub : public QObject
     Q_OBJECT
     Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm)
 public:
-    explicit AvailableSourcesModelStub(QObject *parent = 0)
+    explicit AvailableSourcesModelStub(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
     }

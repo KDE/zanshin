@@ -50,7 +50,7 @@ public:
     typedef QSharedPointer<NewPageDialogInterface> DialogPtr;
     typedef std::function<DialogPtr(QWidget*)> DialogFactory;
 
-    explicit AvailablePagesView(QWidget *parent = 0);
+    explicit AvailablePagesView(QWidget *parent = Q_NULLPTR);
 
     QObject *model() const;
     QAbstractItemModel *projectSourcesModel() const;

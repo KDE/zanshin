@@ -39,7 +39,7 @@ using namespace Widgets;
 
 AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     : QWidget(parent),
-      m_model(0),
+      m_model(Q_NULLPTR),
       m_sortProxy(new QSortFilterProxyModel(this))
 {
     m_sortProxy->setDynamicSortFilter(true);
@@ -78,7 +78,7 @@ void AvailableSourcesView::setModel(QObject *model)
     if (model == m_model)
         return;
 
-    m_sortProxy->setSourceModel(0);
+    m_sortProxy->setSourceModel(Q_NULLPTR);
 
     m_model = model;
 

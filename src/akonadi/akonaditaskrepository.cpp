@@ -257,5 +257,5 @@ KJob *TaskRepository::delegate(Domain::Task::Ptr task, Domain::Task::Delegate de
     task->blockSignals(false);
 
     m_messaging->sendDelegationMessage(item);
-    return 0;
+    return Q_NULLPTR;
 }

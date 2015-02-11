@@ -50,9 +50,9 @@ public:
     typedef QSharedPointer<NewPageDialogStub> Ptr;
 
     explicit NewPageDialogStub()
-        : parent(0),
+        : parent(Q_NULLPTR),
           execCount(0),
-          sourceModel(0),
+          sourceModel(Q_NULLPTR),
           source(Domain::DataSource::Ptr::create())
     {
     }
@@ -111,7 +111,7 @@ class AvailablePagesModelStub : public QObject
 {
     Q_OBJECT
 public:
-    explicit AvailablePagesModelStub(QObject *parent = 0)
+    explicit AvailablePagesModelStub(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
     }
@@ -138,7 +138,7 @@ public slots:
     }
 
 public Q_SLOTS:
-    QObject *createPageForIndex(const QModelIndex &) { return 0; }
+    QObject *createPageForIndex(const QModelIndex &) { return Q_NULLPTR; }
 
 public:
     QStringList projectNames;

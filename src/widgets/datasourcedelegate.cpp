@@ -52,7 +52,7 @@ static QRect createButtonRect(const QRect &itemRect, int position)
 
 static QStyle *currentStyle(const QStyleOptionViewItem &option)
 {
-    QWidget const *widget = 0;
+    QWidget const *widget = Q_NULLPTR;
     if (const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3 *>(&option)) {
         widget = v3->widget;
     }
@@ -119,7 +119,7 @@ void DataSourceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
          && source->listStatus() != Domain::DataSource::Bookmarked) {
             buttonOption.state &= ~QStyle::State_Enabled;
         }
-        s->drawControl(QStyle::CE_PushButton, &buttonOption, painter, 0);
+        s->drawControl(QStyle::CE_PushButton, &buttonOption, painter, Q_NULLPTR);
         position++;
     }
 }

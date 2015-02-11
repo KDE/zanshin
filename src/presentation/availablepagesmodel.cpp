@@ -59,7 +59,7 @@ AvailablePagesModel::AvailablePagesModel(const Domain::ArtifactQueries::Ptr &art
                                          const Domain::TagRepository::Ptr &tagRepository,
                                          QObject *parent)
     : QObject(parent),
-      m_pageListModel(0),
+      m_pageListModel(Q_NULLPTR),
       m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
@@ -120,7 +120,7 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
         return tagPageModel;
     }
 
-    return 0;
+    return Q_NULLPTR;
 }
 
 void AvailablePagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
@@ -328,7 +328,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
     };
 
     auto drag = [](const QObjectPtrList &) -> QMimeData* {
-        return 0;
+        return Q_NULLPTR;
     };
 
     return new QueryTreeModel<QObjectPtr>(query, flags, data, setData, drop, drag, this);

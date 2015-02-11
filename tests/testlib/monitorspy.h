@@ -33,7 +33,7 @@ class MonitorSpy : public QObject
 {
     Q_OBJECT
 public:
-    explicit MonitorSpy(Akonadi::MonitorInterface *monitor, QObject *parent = 0);
+    explicit MonitorSpy(Akonadi::MonitorInterface *monitor, QObject *parent = Q_NULLPTR);
 
     void waitForStableState();
 

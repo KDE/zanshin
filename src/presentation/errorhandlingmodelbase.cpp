@@ -28,7 +28,7 @@
 using namespace Presentation;
 
 ErrorHandlingModelBase::ErrorHandlingModelBase()
-    : m_errorHandler(0)
+    : m_errorHandler(Q_NULLPTR)
 {
 }
 

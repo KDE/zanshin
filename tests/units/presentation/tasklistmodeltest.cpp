@@ -37,7 +37,7 @@ class TaskListModelTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit TaskListModelTest(QObject *parent = 0)
+    explicit TaskListModelTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<QModelIndex>();
@@ -209,7 +209,7 @@ private slots:
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
         Utils::MockObject<Domain::TaskRepository> repositoryMock;
-        repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(0);
+        repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(Q_NULLPTR);
 
         Presentation::TaskListModel model(list, repositoryMock.getInstance());
         new ModelTest(&model);

@@ -146,7 +146,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
 
     auto drag = [] (const Domain::Task::List &tasks) -> QMimeData* {
         if (tasks.isEmpty())
-            return 0;
+            return Q_NULLPTR;
 
         auto draggedArtifacts = Domain::Artifact::List();
         foreach (const Domain::Task::Ptr &task, tasks) {

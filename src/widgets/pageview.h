@@ -47,7 +47,7 @@ class PageView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PageView(QWidget *parent = 0);
+    explicit PageView(QWidget *parent = Q_NULLPTR);
 
     QObject *model() const;
     MessageBoxInterface::Ptr messageBoxInterface() const;

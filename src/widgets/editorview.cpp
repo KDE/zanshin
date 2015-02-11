@@ -39,7 +39,7 @@ using namespace Widgets;
 
 EditorView::EditorView(QWidget *parent)
     : QWidget(parent),
-      m_model(0),
+      m_model(Q_NULLPTR),
       m_delegateLabel(new QLabel(this)),
       m_textEdit(new QPlainTextEdit(this)),
       m_taskGroup(new QWidget(this)),
@@ -47,7 +47,7 @@ EditorView::EditorView(QWidget *parent)
       m_dueDateEdit(new KPIM::KDateEdit(m_taskGroup)),
       m_startTodayButton(new QPushButton(tr("Start today"), m_taskGroup)),
       m_doneButton(new QCheckBox(tr("Done"), m_taskGroup)),
-      m_delegateEdit(0)
+      m_delegateEdit(Q_NULLPTR)
 {
     // To avoid having unit tests talking to akonadi
     // while we don't need the completion for them
@@ -120,8 +120,8 @@ void EditorView::setModel(QObject *model)
         return;
 
     if (m_model) {
-        disconnect(m_model, 0, this, 0);
-        disconnect(this, 0, m_model, 0);
+        disconnect(m_model, Q_NULLPTR, this, Q_NULLPTR);
+        disconnect(this, Q_NULLPTR, m_model, Q_NULLPTR);
     }
 
     m_model = model;

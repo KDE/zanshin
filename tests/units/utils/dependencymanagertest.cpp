@@ -301,7 +301,7 @@ private slots:
 
         auto object = deps.create<AnotherInterface>();
         auto impl = object.dynamicCast<AnotherFirstImplementation>();
-        QVERIFY(impl != 0);
+        QVERIFY(impl != Q_NULLPTR);
         QVERIFY(impl->iface().dynamicCast<FirstImplementation0>());
     }
 
@@ -340,7 +340,7 @@ private slots:
                                                                Interface14*)>();
         auto object = deps.create<AnotherInterface>();
         auto impl = object.dynamicCast<AnotherSecondImplementation>();
-        QVERIFY(impl != 0);
+        QVERIFY(impl != Q_NULLPTR);
         QVERIFY(impl->iface0().dynamicCast<FirstImplementation0>());
         QVERIFY(impl->iface1().dynamicCast<Implementation1>());
         QVERIFY(impl->iface2().dynamicCast<Implementation2>());

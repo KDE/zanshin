@@ -53,8 +53,8 @@ namespace Internal {
 #endif
 
         Provider()
-            : m_factory(0),
-              m_policy(0)
+            : m_factory(Q_NULLPTR),
+              m_policy(Q_NULLPTR)
         {
         }
 
@@ -80,7 +80,7 @@ namespace Internal {
 
         QSharedPointer<Iface> operator()(DependencyManager *deps) const
         {
-            Q_ASSERT(m_factory != 0);
+            Q_ASSERT(m_factory != Q_NULLPTR);
             return m_policy(m_factory, deps);
         }
 
@@ -176,7 +176,7 @@ public:
     template<class Iface, class InstancePolicy>
     void add(const typename Internal::Provider<Iface>::FactoryType &factory)
     {
-        Iface * const val = 0;
+        Iface * const val = Q_NULLPTR;
         Internal::Provider<Iface> provider(factory, InstancePolicy::function(val));
         Internal::Supplier<Iface>::setProvider(this, provider);
         m_cleanupFunctions << Internal::Supplier<Iface>::removeProvider;

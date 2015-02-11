@@ -59,10 +59,10 @@ ApplicationModel::ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQ
                                    const Domain::TagRepository::Ptr &tagRepository,
                                    QObject *parent)
     : QObject(parent),
-      m_availableSources(0),
-      m_availablePages(0),
-      m_currentPage(0),
-      m_editor(0),
+      m_availableSources(Q_NULLPTR),
+      m_availablePages(Q_NULLPTR),
+      m_currentPage(Q_NULLPTR),
+      m_editor(Q_NULLPTR),
       m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
@@ -72,12 +72,12 @@ ApplicationModel::ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQ
       m_sourceRepository(sourceRepository),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_taskSourcesModel(0),
+      m_taskSourcesModel(Q_NULLPTR),
       m_noteRepository(noteRepository),
-      m_noteSourcesModel(0),
+      m_noteSourcesModel(Q_NULLPTR),
       m_tagQueries(tagQueries),
       m_tagRepository(tagRepository),
-      m_errorHandler(0)
+      m_errorHandler(Q_NULLPTR)
 {
     MetaTypes::registerAll();
 }

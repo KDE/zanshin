@@ -104,7 +104,7 @@ private slots:
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
                                                     sourceRepositoryMock.getInstance(),
-                                                    0);
+                                                    Q_NULLPTR);
 
         // WHEN
         QAbstractItemModel *model = sources.sourceListModel();
@@ -215,7 +215,7 @@ private slots:
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
                                                     sourceRepositoryMock.getInstance(),
-                                                    0);
+                                                    Q_NULLPTR);
 
         // WHEN
         QAbstractItemModel *model = sources.searchListModel();
@@ -494,7 +494,7 @@ private slots:
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
                                                     sourceRepositoryMock.getInstance(),
-                                                    0);
+                                                    Q_NULLPTR);
         FakeErrorHandler errorHandler;
         sources.setErrorHandler(&errorHandler);
 

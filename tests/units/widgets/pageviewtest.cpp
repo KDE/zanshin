@@ -51,7 +51,7 @@ public:
         return &itemModel;
     }
 
-    void addItem(const QString &title, QStandardItem *parentItem = 0)
+    void addItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
     {
         QStandardItem *item = new QStandardItem;
         item->setData(title, Qt::DisplayRole);
@@ -145,7 +145,7 @@ private slots:
         page.setModel(&stubPageModel);
 
         // WHEN
-        page.setModel(0);
+        page.setModel(Q_NULLPTR);
 
         // THEN
         QVERIFY(!page.model());

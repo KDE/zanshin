@@ -75,7 +75,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     m_artifact = artifact;
 
     if (m_artifact) {
-        disconnect(m_artifact.data(), 0, this, 0);
+        disconnect(m_artifact.data(), Q_NULLPTR, this, Q_NULLPTR);
 
         m_text = artifact->text();
         m_title = artifact->title();

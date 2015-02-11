@@ -34,7 +34,7 @@ class AkonadiFakeMonitor : public Akonadi::MonitorInterface
 public:
     typedef QSharedPointer<AkonadiFakeMonitor> Ptr;
 
-    explicit AkonadiFakeMonitor(QObject *parent = 0);
+    explicit AkonadiFakeMonitor(QObject *parent = Q_NULLPTR);
 
     void addCollection(const Akonadi::Collection &collection);
     void removeCollection(const Akonadi::Collection &collection);

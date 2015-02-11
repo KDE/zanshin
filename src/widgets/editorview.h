@@ -45,7 +45,7 @@ class EditorView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit EditorView(QWidget *parent = 0);
+    explicit EditorView(QWidget *parent = Q_NULLPTR);
 
     QObject *model() const;
 

@@ -48,7 +48,7 @@ class Zanshin021MigrationTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit Zanshin021MigrationTest(QObject *parent = 0)
+    explicit Zanshin021MigrationTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<Akonadi::Collection>();

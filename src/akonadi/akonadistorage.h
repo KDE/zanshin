@@ -41,13 +41,13 @@ public:
     Akonadi::Collection defaultNoteCollection() Q_DECL_OVERRIDE;
 
     KJob *createItem(Item item, Collection collection) Q_DECL_OVERRIDE;
-    KJob *updateItem(Item item, QObject *parent = 0) Q_DECL_OVERRIDE;
+    KJob *updateItem(Item item, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
     KJob *removeItem(Akonadi::Item item) Q_DECL_OVERRIDE;
-    KJob *removeItems(Item::List items, QObject *parent = 0) Q_DECL_OVERRIDE;
-    KJob *moveItem(Item item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
-    KJob *moveItems(Item::List item, Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
+    KJob *removeItems(Item::List items, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
+    KJob *moveItem(Item item, Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
+    KJob *moveItems(Item::List item, Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
 
-    KJob *updateCollection(Collection collection, QObject *parent = 0) Q_DECL_OVERRIDE;
+    KJob *updateCollection(Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
 
     KJob *createTransaction() Q_DECL_OVERRIDE;
 

@@ -39,7 +39,7 @@ class NewPageDialog : public QDialog, public NewPageDialogInterface
 {
     Q_OBJECT
 public:
-    explicit NewPageDialog(QWidget *parent = 0);
+    explicit NewPageDialog(QWidget *parent = Q_NULLPTR);
     ~NewPageDialog();
 
     int exec();

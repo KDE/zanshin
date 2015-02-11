@@ -40,7 +40,7 @@ public:
                               const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
                               const Domain::NoteRepository::Ptr &noteRepository,
-                              QObject *parent = 0);
+                              QObject *parent = Q_NULLPTR);
 
     Domain::Context::Ptr context() const;
 public slots:
