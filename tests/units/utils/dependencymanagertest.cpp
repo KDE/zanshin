@@ -204,7 +204,7 @@ private slots:
     void shouldAllowOurOwnFactory()
     {
         s_firstImplFactoryCalled = false;
-        s_manager = nullptr;
+        s_manager = Q_NULLPTR;
         DependencyManager deps;
         deps.add<Interface0>(&DependencyManagerTest::firstImplFactory);
         auto object = deps.create<Interface0>();
@@ -227,7 +227,7 @@ private slots:
     void shouldAllowUniqueInstancesWithOurOwnFactory()
     {
         s_firstImplFactoryCalled = false;
-        s_manager = nullptr;
+        s_manager = Q_NULLPTR;
         DependencyManager deps;
         deps.add<Interface0, DependencyManager::UniqueInstance>(&DependencyManagerTest::firstImplFactory);
         auto object1 = deps.create<Interface0>();
@@ -243,7 +243,7 @@ private slots:
     {
 #ifdef Q_COMPILER_LAMBDA
         bool ownFactoryCalled = false;
-        DependencyManager *managerCalled = nullptr;
+        DependencyManager *managerCalled = Q_NULLPTR;
 
         DependencyManager deps;
         deps.add<Interface0>([&](DependencyManager *manager) -> Interface0* {
@@ -360,7 +360,7 @@ private slots:
 };
 
 bool DependencyManagerTest::s_firstImplFactoryCalled = false;
-DependencyManager *DependencyManagerTest::s_manager = nullptr;
+DependencyManager *DependencyManagerTest::s_manager = Q_NULLPTR;
 
 QTEST_MAIN(DependencyManagerTest)
 
