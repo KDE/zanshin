@@ -8,6 +8,7 @@
   <name xml:lang="cs">Zanshin</name>
   <name xml:lang="de">Zanshin</name>
   <name xml:lang="es">Zanshin</name>
+  <name xml:lang="it">Zanshin</name>
   <name xml:lang="nl">Zanshin</name>
   <name xml:lang="pl">Zanshin</name>
   <name xml:lang="pt">Zanshin</name>
@@ -19,6 +20,7 @@
   <summary>TODO Management Application</summary>
   <summary xml:lang="ca">Aplicació per a la gestió de les pendents</summary>
   <summary xml:lang="de">Verwaltungsprogramm für Aufgaben</summary>
+  <summary xml:lang="it">Applicazione di gestione delle COSE DA FARE</summary>
   <summary xml:lang="nl">Beheertoepassing voor taken</summary>
   <summary xml:lang="pl">Program do zarządzania zadaniami</summary>
   <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
@@ -34,6 +36,7 @@
       You'll never forget anything anymore, getting your mind like water.
     </p>
     <p xml:lang="ca">Zanshin és una aplicació potent i senzilla per a la gestió de les accions i notícies del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
+    <p xml:lang="it">Zanshin è un'applicazione semplice ma potente per la gestione delle tue attività giornaliere e delle note. Ti aiuta a organizzarti e riduce lo stress mentale che ciascuno di noi sperimenta durante la propria vita privata e lavorativa. Non ti scorderai più di nulla, e la tua mente sarà fresca e leggera come l'acqua.</p>
     <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties en notities. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer wat vergeten, uw geheugen is geen zeef meer.</p>
     <p xml:lang="pl">Zanshin jest zaawansowanym, a zarazem prostym programem do zarządzania codziennymi zadaniami i notatkami. Pomaga zorganizować i zmniejszyć natłok czynności, które użytkownik musi wykonać w swojej pracy lub życiu osobistym. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
@@ -47,6 +50,7 @@
     <p xml:lang="cs">Vlastnosti:</p>
     <p xml:lang="de">Funktionen:</p>
     <p xml:lang="es">Funciones:</p>
+    <p xml:lang="it">Caratteristiche:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pl">Możliwości:</p>
     <p xml:lang="pt">Características:</p>
@@ -59,6 +63,7 @@
       <li>Collects tasks and notes from everywhere</li>
       <li xml:lang="ca">Recull les tasques i les notes de tot arreu</li>
       <li xml:lang="es">Colecciona tareas y notas de cualquier lugar</li>
+      <li xml:lang="it">Raccoglie le attività e le note da qualsiasi posizione</li>
       <li xml:lang="nl">Verzamelt taken en notities overal vandaan</li>
       <li xml:lang="pl">Zbieranie zadań i notatek z dowolnego miejsca</li>
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
@@ -70,6 +75,7 @@
       <li>Organize tasks and notes in projects, contexts and topics</li>
       <li xml:lang="ca">Organitza les tasques i les notes en projectes, contextos i temes</li>
       <li xml:lang="es">Organizar tareas y notas de proyectos, contextos y temas</li>
+      <li xml:lang="it">Organizza le attività e le note in progetti, contesti e argomenti</li>
       <li xml:lang="nl">Organiseert taken en notities in projecten, contexten en onderwerpen</li>
       <li xml:lang="pl">Porządkowanie zadań i notatek w projekty, konteksty i tematy</li>
       <li xml:lang="pt">Organiza as tarefas e notas em projectos, contextos e tópicos</li>
@@ -81,6 +87,7 @@
       <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
       <li xml:lang="ca">Habilitant les capacitats de l'Akonadi es permet obtenir les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
       <li xml:lang="es">Aplicación que usa Akonadi para obtener datos de prácticamente cualquier lugar (locales, IMAP, servicios web...)</li>
+      <li xml:lang="it">Applicazione abilitata da Akonadi, che permette di recuperare i dati virtualmente da qualsiasi posizione (locale, imap, servizi web...)</li>
       <li xml:lang="nl">In Akonadi opgenomen toepassing waarmee de gegevens werkelijk overal vandaan kunt halen (lokaal, imap, webservice...)</li>
       <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>
       <li xml:lang="pt">Aplicação com suporte para o Akonadi, permitindo-lhe recolher os dados de praticamente todo o lado (local, IMAP, serviço Web...)</li>
