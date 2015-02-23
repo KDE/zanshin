@@ -226,7 +226,7 @@ private slots:
         QVERIFY(stubPageModel.removedIndices.isEmpty());
     }
 
-    void shouldDiplayNotificationWhenHittingTheDeleteKeyOnAnItemWithChildren()
+    void shouldDisplayNotificationWhenHittingTheDeleteKeyOnAnItemWithChildren()
     {
         // GIVEN
         PageModelStub stubPageModel;
