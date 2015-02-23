@@ -37,10 +37,12 @@ DataSourceListModel::DataSourceListModel(const Query &query, QObject *parent)
                   return query();
           },
 
+          // flags
           [] (const Domain::DataSource::Ptr &) {
               return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
           },
 
+          // data
           [] (const Domain::DataSource::Ptr &source, int role) -> QVariant {
               switch (role) {
               case Qt::DisplayRole:
@@ -54,6 +56,7 @@ DataSourceListModel::DataSourceListModel(const Query &query, QObject *parent)
               }
           },
 
+          // setData
           [] (const Domain::DataSource::Ptr &, const QVariant &, int) {
               return false;
           },
