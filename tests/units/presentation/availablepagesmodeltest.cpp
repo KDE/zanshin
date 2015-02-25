@@ -74,8 +74,8 @@ private slots:
         project2->setName("Project 2");
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
-        projectProvider->append(project1);
         projectProvider->append(project2);
+        projectProvider->append(project1); // note: reversed order, to test sorting
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();

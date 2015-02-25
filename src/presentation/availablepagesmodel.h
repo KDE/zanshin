@@ -45,6 +45,7 @@
 class QModelIndex;
 
 namespace Presentation {
+class AvailablePagesSortFilterProxyModel;
 
 class AvailablePagesModel : public QObject, public ErrorHandlingModelBase
 {
@@ -77,6 +78,7 @@ private:
     QAbstractItemModel *createPageListModel();
 
     QAbstractItemModel *m_pageListModel;
+    Presentation::AvailablePagesSortFilterProxyModel *m_sortProxyModel;
 
     Domain::ArtifactQueries::Ptr m_artifactQueries;
 

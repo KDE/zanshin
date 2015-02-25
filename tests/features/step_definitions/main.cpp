@@ -56,6 +56,8 @@ public:
           presentation(Q_NULLPTR),
           editor(Q_NULLPTR),
           proxyModel(new QSortFilterProxyModel(this)),
+          m_model(Q_NULLPTR),
+          m_sourceModel(Q_NULLPTR),
           monitorSpy(Q_NULLPTR)
     {
         App::initializeDependencies();
@@ -82,14 +84,26 @@ public:
 
     void setModel(QAbstractItemModel *model)
     {
-        proxyModel->setSourceModel(model);
-        proxyModel->setSortRole(Qt::DisplayRole);
-        proxyModel->sort(0);
+        m_sourceModel = model;
+        if (!qobject_cast<QSortFilterProxyModel *>(model)) {
+            proxyModel->setObjectName("m_proxyModel_in_ZanshinContext");
+            proxyModel->setSourceModel(model);
+            proxyModel->setSortRole(Qt::DisplayRole);
+            proxyModel->sort(0);
+            m_model = proxyModel;
+        } else {
+            m_model = model;
+        }
+    }
+
+    QAbstractItemModel *sourceModel()
+    {
+        return m_sourceModel;
     }
 
     QAbstractItemModel *model()
     {
-        return proxyModel;
+        return m_model;
     }
 
     void waitForEmptyJobQueue()
@@ -115,6 +129,8 @@ public:
 
 private:
     QSortFilterProxyModel *proxyModel;
+    QAbstractItemModel *m_model;
+    QAbstractItemModel *m_sourceModel;
     MonitorSpy *monitorSpy;
     FakeErrorHandler m_errorHandler;
 };
@@ -636,7 +652,7 @@ THEN("^the list is") {
     auto roleNames = context->model()->roleNames();
     QSet<int> usedRoles;
 
-    QStandardItemModel referenceModel;
+    QStandardItemModel inputModel;
     for (const auto row : tableParam.hashes()) {
         QStandardItem *item = new QStandardItem;
         for (const auto it : row) {
@@ -647,16 +663,24 @@ THEN("^the list is") {
             item->setData(value, role);
             usedRoles.insert(role);
         }
-        referenceModel.appendRow(item);
+        inputModel.appendRow(item);
     }
 
     QSortFilterProxyModel proxy;
-    proxy.setSourceModel(&referenceModel);
-    proxy.setSortRole(Qt::DisplayRole);
-    proxy.sort(0);
+
+    QAbstractItemModel *referenceModel;
+    if (!qobject_cast<QSortFilterProxyModel *>(context->sourceModel())) {
+        referenceModel = &proxy;
+        proxy.setSourceModel(&inputModel);
+        proxy.setSortRole(Qt::DisplayRole);
+        proxy.sort(0);
+        proxy.setObjectName("the_list_is_proxy");
+    } else {
+        referenceModel = &inputModel;
+    }
 
     for (int row = 0; row < context->indices.size(); row++) {
-        QModelIndex expectedIndex = proxy.index(row, 0);
+        QModelIndex expectedIndex = referenceModel->index(row, 0);
         QModelIndex resultIndex = context->indices.at(row);
 
         for (auto role : usedRoles) {
@@ -664,7 +688,7 @@ THEN("^the list is") {
                             Zanshin::indexString(expectedIndex, role));
         }
     }
-    COMPARE_OR_DUMP(context->indices.size(), proxy.rowCount());
+    COMPARE_OR_DUMP(context->indices.size(), referenceModel->rowCount());
 }
 
 THEN("^the list contains \"(.+)\"$") {

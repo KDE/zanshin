@@ -36,6 +36,7 @@
 #include "domain/tagrepository.h"
 #include "domain/taskrepository.h"
 
+#include "presentation/availablepagessortfilterproxymodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/inboxpagemodel.h"
 #include "presentation/metatypes.h"
@@ -60,6 +61,7 @@ AvailablePagesModel::AvailablePagesModel(const Domain::ArtifactQueries::Ptr &art
                                          QObject *parent)
     : QObject(parent),
       m_pageListModel(Q_NULLPTR),
+      m_sortProxyModel(Q_NULLPTR),
       m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
@@ -77,7 +79,12 @@ QAbstractItemModel *AvailablePagesModel::pageListModel()
 {
     if (!m_pageListModel)
         m_pageListModel = createPageListModel();
-    return m_pageListModel;
+
+    if (!m_sortProxyModel)
+        m_sortProxyModel = new AvailablePagesSortFilterProxyModel(this);
+    m_sortProxyModel->setSourceModel(m_pageListModel);
+
+    return m_sortProxyModel;
 }
 
 QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)

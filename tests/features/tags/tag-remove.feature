@@ -9,15 +9,15 @@ Feature: Tag removal
     And I list the items
     Then the list is:
        | display                           | icon                |
-       | Contexts                          | folder              |
-       | Contexts / Chores                 | view-pim-tasks      |
-       | Contexts / Internet               | view-pim-tasks      |
-       | Contexts / Online                 | view-pim-tasks      |
        | Inbox                             | mail-folder-inbox   |
        | Projects                          | folder              |
        | Projects / Backlog                | view-pim-tasks      |
        | Projects / Party                  | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
+       | Contexts                          | folder              |
+       | Contexts / Chores                 | view-pim-tasks      |
+       | Contexts / Internet               | view-pim-tasks      |
+       | Contexts / Online                 | view-pim-tasks      |
        | Tags                              | folder              |
        | Tags / Philosophy                 | view-pim-tasks      |
        | Tags / Physics                    | view-pim-tasks      |

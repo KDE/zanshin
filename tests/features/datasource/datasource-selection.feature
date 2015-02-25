@@ -11,10 +11,10 @@ Feature: Data sources selection
     And I list the items
     Then the list is:
        | display                                       |
-       | Errands                                       |
+       | 21/04/2014 14:49                              |
        | Buy apples                                    |
        | Buy pears                                     |
-       | 21/04/2014 14:49                              |
+       | Errands                                       |
 
   Scenario: Checking impacts the inbox
     Given I display the "Inbox" page
@@ -24,12 +24,12 @@ Feature: Data sources selection
     And I list the items
     Then the list is:
        | display                                       |
-       | Errands                                       |
        | "The Pragmatic Programmer" by Hunt and Thomas |
+       | 21/04/2014 14:49                              |
        | Buy cheese                                    |
        | Buy apples                                    |
        | Buy pears                                     |
-       | 21/04/2014 14:49                              |
+       | Errands                                       |
 
   Scenario: Unchecking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources
@@ -38,13 +38,13 @@ Feature: Data sources selection
     And I list the items
     Then the list is:
        | display                           |
+       | Inbox                             |
+       | Projects                          |
+       | Projects / Backlog                |
        | Contexts                          |
        | Contexts / Chores                 |
        | Contexts / Internet               |
        | Contexts / Online                 |
-       | Inbox                             |
-       | Projects                          |
-       | Projects / Backlog                |
        | Tags                              |
        | Tags / Philosophy                 |
        | Tags / Physics                    |
@@ -56,15 +56,15 @@ Feature: Data sources selection
     And I list the items
     Then the list is:
        | display                           |
+       | Inbox                             |
+       | Projects                          |
+       | Projects / Backlog                |
+       | Projects / Prepare talk about TDD |
+       | Projects / Read List              |
        | Contexts                          |
        | Contexts / Chores                 |
        | Contexts / Internet               |
        | Contexts / Online                 |
-       | Inbox                             |
-       | Projects                          |
-       | Projects / Read List              |
-       | Projects / Backlog                |
-       | Projects / Prepare talk about TDD |
        | Tags                              |
        | Tags / Philosophy                 |
        | Tags / Physics                    |

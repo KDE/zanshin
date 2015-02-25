@@ -10,15 +10,15 @@ Feature: Context creation
     And I list the items
     Then the list is:
        | display                           | icon                |
-       | Contexts                          | folder              |
-       | Contexts / Errands                | view-pim-tasks      |
-       | Contexts / Internet               | view-pim-tasks      |
-       | Contexts / Online                 | view-pim-tasks      |
        | Inbox                             | mail-folder-inbox   |
        | Projects                          | folder              |
        | Projects / Backlog                | view-pim-tasks      |
        | Projects / Prepare talk about TDD | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
+       | Contexts                          | folder              |
+       | Contexts / Errands                | view-pim-tasks      |
+       | Contexts / Internet               | view-pim-tasks      |
+       | Contexts / Online                 | view-pim-tasks      |
        | Tags                              | folder              |
        | Tags / Philosophy                 | view-pim-tasks      |
        | Tags / Physics                    | view-pim-tasks      |
