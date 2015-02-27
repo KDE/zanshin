@@ -37,6 +37,7 @@
       It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life.
       You'll never forget anything anymore, getting your mind like water.
     </p>
+    <p xml:lang="bs">Zanshin je moćna, ali jednostavna aplikacija za upravljanje svakodnevnim akcijama i bilješkama. On vam pomaže da organizirate i smanjiti pritisak onoga što se mora učiniti u svom poslu i privatni život. Nikad nećete više ništa zaboraviti, uzimajući svoj um kao vodu.</p>
     <p xml:lang="ca">Zanshin és una aplicació potent i senzilla per a la gestió de les accions i notícies del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
     <p xml:lang="it">Zanshin è un'applicazione semplice ma potente per la gestione delle tue attività giornaliere e delle note. Ti aiuta a organizzarti e riduce lo stress mentale che ciascuno di noi sperimenta durante la propria vita privata e lavorativa. Non ti scorderai più di nulla, e la tua mente sarà fresca e leggera come l'acqua.</p>
     <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties en notities. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer wat vergeten, uw geheugen is geen zeef meer.</p>
@@ -64,6 +65,7 @@
     <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
       <li>Collects tasks and notes from everywhere</li>
+      <li xml:lang="bs">Sakuplja zadatke i bilješke od svuda</li>
       <li xml:lang="ca">Recull les tasques i les notes de tot arreu</li>
       <li xml:lang="es">Colecciona tareas y notas de cualquier lugar</li>
       <li xml:lang="it">Raccoglie le attività e le note da qualsiasi posizione</li>
@@ -76,6 +78,7 @@
       <li xml:lang="uk">Збирання різноманітних записів завдань і нотаток.</li>
       <li xml:lang="x-test">xxCollects tasks and notes from everywherexx</li>
       <li>Organize tasks and notes in projects, contexts and topics</li>
+      <li xml:lang="bs">Organizira zadatke i bilješke u projekte, kontekste i teme</li>
       <li xml:lang="ca">Organitza les tasques i les notes en projectes, contextos i temes</li>
       <li xml:lang="es">Organizar tareas y notas de proyectos, contextos y temas</li>
       <li xml:lang="it">Organizza le attività e le note in progetti, contesti e argomenti</li>
@@ -88,6 +91,7 @@
       <li xml:lang="uk">Упорядковування завдань і нотаток за проектами, контекстами та темами.</li>
       <li xml:lang="x-test">xxOrganize tasks and notes in projects, contexts and topicsxx</li>
       <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
+      <li xml:lang="bs">Akonadi omogućena aplikacija koja vam dopušta da dobavite podatke od u suštini bilo gdje (lokalno, imap, web servis...)</li>
       <li xml:lang="ca">Habilitant les capacitats de l'Akonadi es permet obtenir les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
       <li xml:lang="es">Aplicación que usa Akonadi para obtener datos de prácticamente cualquier lugar (locales, IMAP, servicios web...)</li>
       <li xml:lang="it">Applicazione abilitata da Akonadi, che permette di recuperare i dati virtualmente da qualsiasi posizione (locale, imap, servizi web...)</li>
