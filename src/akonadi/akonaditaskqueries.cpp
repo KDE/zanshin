@@ -175,7 +175,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
             m_serializer->updateTaskFromItem(task, item);
         });
         m_findTopLevel->setPredicateFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->relatedUidFromItem(item).isEmpty();
+            return m_serializer->relatedUidFromItem(item).isEmpty() && m_serializer->isTaskItem(item);
         });
         m_findTopLevel->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
             return m_serializer->representsItem(task, item);
