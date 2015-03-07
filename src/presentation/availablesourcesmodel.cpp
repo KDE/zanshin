@@ -96,7 +96,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
             return m_dataSourceQueries->findChildren(source);
     };
 
-    auto flags = [] (const Domain::DataSource::Ptr &source) {
+    auto flags = [] (const Domain::DataSource::Ptr &source) -> Qt::ItemFlags {
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled;
         if (source->contentTypes() != Domain::DataSource::NoContent)
