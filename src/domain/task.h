@@ -71,6 +71,7 @@ public:
     bool isDone() const;
     QDateTime startDate() const;
     QDateTime dueDate() const;
+    QDateTime doneDate() const;
     Delegate delegate() const;
 
 public slots:
@@ -81,6 +82,7 @@ public slots:
 
 signals:
     void doneChanged(bool isDone);
+    void doneDateChanged(const QDateTime &doneDate);
     void startDateChanged(const QDateTime &startDate);
     void dueDateChanged(const QDateTime &dueDate);
     void delegateChanged(const Domain::Task::Delegate &delegate);
@@ -89,6 +91,7 @@ private:
     bool m_done;
     QDateTime m_startDate;
     QDateTime m_dueDate;
+    QDateTime m_doneDate;
     Delegate m_delegate;
 };
 

@@ -46,6 +46,7 @@ private slots:
         QCOMPARE(t.isDone(), false);
         QCOMPARE(t.startDate(), QDateTime());
         QCOMPARE(t.dueDate(), QDateTime());
+        QCOMPARE(t.doneDate(), QDateTime());
         QVERIFY(!t.delegate().isValid());
     }
 
@@ -147,6 +148,26 @@ private slots:
         QSignalSpy spy(&t, SIGNAL(delegateChanged(Domain::Task::Delegate)));
         t.setDelegate(Task::Delegate("John Doe", "doe@somewhere.com"));
         QCOMPARE(spy.count(), 0);
+    }
+
+    void shouldNotifyDoneDateSet()
+    {
+        Task t;
+        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        t.setDone(true);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.takeFirst().at(0).toDateTime().date(), QDateTime::currentDateTime().date());
+    }
+
+    void shouldNotifyDoneDateUnset()
+    {
+        Task t;
+
+        t.setDone(true);
+        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        t.setDone(false);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.takeFirst().at(0).toDateTime(), QDateTime());
     }
 };
 

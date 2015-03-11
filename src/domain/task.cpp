@@ -46,8 +46,13 @@ void Task::setDone(bool done)
     if (m_done == done)
         return;
 
+    const QDateTime doneDate = done ? QDateTime::currentDateTime() : QDateTime();
+
     m_done = done;
+    m_doneDate = doneDate;
+
     emit doneChanged(done);
+    emit doneDateChanged(doneDate);
 }
 
 QDateTime Task::startDate() const
@@ -67,6 +72,11 @@ void Task::setStartDate(const QDateTime &startDate)
 QDateTime Task::dueDate() const
 {
     return m_dueDate;
+}
+
+QDateTime Task::doneDate() const
+{
+    return m_doneDate;
 }
 
 Task::Delegate Task::delegate() const
