@@ -10,6 +10,7 @@ Feature: Project destruction
     Then the list is:
        | display                           | icon                |
        | Inbox                             | mail-folder-inbox   |
+       | Workday                           | go-jump-today       |
        | Projects                          | folder              |
        | Projects / Backlog                | view-pim-tasks      |
        | Projects / Party                  | view-pim-tasks      |

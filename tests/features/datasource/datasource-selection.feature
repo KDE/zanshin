@@ -39,6 +39,7 @@ Feature: Data sources selection
     Then the list is:
        | display                           |
        | Inbox                             |
+       | Workday                           |
        | Projects                          |
        | Projects / Backlog                |
        | Contexts                          |
@@ -57,6 +58,7 @@ Feature: Data sources selection
     Then the list is:
        | display                           |
        | Inbox                             |
+       | Workday                           |
        | Projects                          |
        | Projects / Backlog                |
        | Projects / Prepare talk about TDD |

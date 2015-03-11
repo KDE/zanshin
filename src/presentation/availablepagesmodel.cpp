@@ -43,6 +43,7 @@
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
 #include "presentation/tagpagemodel.h"
+#include "presentation/workdaypagemodel.h"
 
 #include "utils/jobhandler.h"
 
@@ -98,6 +99,13 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
                                                  this);
         inboxPageModel->setErrorHandler(errorHandler());
         return inboxPageModel;
+    } else if (object == m_workdayObject) {
+        auto workdayPageModel = new WorkdayPageModel(m_taskQueries,
+                                                     m_taskRepository,
+                                                     m_noteRepository,
+                                                     this);
+        workdayPageModel->setErrorHandler(errorHandler());
+        return workdayPageModel;
     } else if (auto project = object.objectCast<Domain::Project>()) {
         auto projectPageModel = new ProjectPageModel(project,
                                                      m_projectQueries,
@@ -175,6 +183,8 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 {
     m_inboxObject = QObjectPtr::create();
     m_inboxObject->setProperty("name", tr("Inbox"));
+    m_workdayObject = QObjectPtr::create();
+    m_workdayObject->setProperty("name", tr("Workday"));
     m_projectsObject = QObjectPtr::create();
     m_projectsObject->setProperty("name", tr("Projects"));
     m_contextsObject = QObjectPtr::create();
@@ -184,6 +194,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
     m_rootsProvider = Domain::QueryResultProvider<QObjectPtr>::Ptr::create();
     m_rootsProvider->append(m_inboxObject);
+    m_rootsProvider->append(m_workdayObject);
     m_rootsProvider->append(m_projectsObject);
     m_rootsProvider->append(m_contextsObject);
     m_rootsProvider->append(m_tagsObject);
@@ -215,6 +226,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
              : object.objectCast<Domain::Context>() ? defaultFlags
              : object.objectCast<Domain::Tag>() ? defaultFlags
              : object == m_inboxObject ? immutableNodeFlags
+             : object == m_workdayObject ? immutableNodeFlags
              : structureNodeFlags;
     };
 
@@ -228,6 +240,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
         if (role == Qt::EditRole
          && (object == m_inboxObject
+          || object == m_workdayObject
           || object == m_projectsObject
           || object == m_contextsObject
           || object == m_tagsObject)) {
@@ -238,6 +251,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
             return object->property("name").toString();
         } else if (role == Qt::DecorationRole || role == QueryTreeModelBase::IconNameRole) {
             const QString iconName = object == m_inboxObject ? "mail-folder-inbox"
+                                   : (object == m_workdayObject)  ? "go-jump-today"
                                    : (object == m_projectsObject) ? "folder"
                                    : (object == m_contextsObject) ? "folder"
                                    : (object == m_tagsObject)     ? "folder"
@@ -258,6 +272,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         }
 
         if (object == m_inboxObject
+         || object == m_workdayObject
          || object == m_projectsObject
          || object == m_contextsObject
          || object == m_tagsObject) {
