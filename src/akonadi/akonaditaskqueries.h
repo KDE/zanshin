@@ -63,6 +63,7 @@ public:
     TaskResult::Ptr findAll() const Q_DECL_OVERRIDE;
     TaskResult::Ptr findChildren(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
     TaskResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
+    TaskResult::Ptr findWorkdayTopLevel() const Q_DECL_OVERRIDE;
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
 
 private slots:

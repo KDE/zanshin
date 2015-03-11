@@ -44,6 +44,8 @@ public:
 
     virtual QueryResult<Task::Ptr>::Ptr findTopLevel() const = 0;
 
+    virtual QueryResult<Task::Ptr>::Ptr findWorkdayTopLevel() const = 0;
+
     virtual QueryResult<Context::Ptr>::Ptr findContexts(Task::Ptr task) const = 0;
 };
 

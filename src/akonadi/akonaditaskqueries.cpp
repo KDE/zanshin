@@ -185,6 +185,12 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
     return m_findTopLevel->result();
 }
 
+TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
+{
+    qFatal("Not implemented yet");
+    return TaskResult::Ptr();
+}
+
 TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const
 {
     qFatal("Not implemented yet");
