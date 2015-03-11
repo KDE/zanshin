@@ -81,6 +81,7 @@ private:
     TaskQuery::Ptr m_findAll;
     QHash<Akonadi::Entity::Id, TaskQuery::Ptr> m_findChildren;
     TaskQuery::Ptr m_findTopLevel;
+    TaskQuery::Ptr m_findWorkdayTopLevel;
     TaskQuery::List m_taskQueries;
 };
 

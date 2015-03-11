@@ -187,8 +187,60 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 
 TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
 {
-    qFatal("Not implemented yet");
-    return TaskResult::Ptr();
+    if (!m_findWorkdayTopLevel) {
+        {
+            TaskQueries *self = const_cast<TaskQueries*>(this);
+            self->m_findWorkdayTopLevel = self->createTaskQuery();
+        }
+
+        m_findWorkdayTopLevel->setFetchFunction([this] (const TaskQuery::AddFunction &add) {
+            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                           StorageInterface::Recursive,
+                                                                           StorageInterface::Tasks);
+            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                if (job->kjob()->error() != KJob::NoError)
+                    return;
+
+                for (auto collection : job->collections()) {
+                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                        if (job->kjob()->error() != KJob::NoError)
+                            return;
+
+                        for (auto item : job->items()) {
+                            add(item);
+                        }
+                    });
+                }
+            });
+        });
+
+        m_findWorkdayTopLevel->setConvertFunction([this] (const Akonadi::Item &item) {
+            return m_serializer->createTaskFromItem(item);
+        });
+        m_findWorkdayTopLevel->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
+            m_serializer->updateTaskFromItem(task, item);
+        });
+        m_findWorkdayTopLevel->setPredicateFunction([this] (const Akonadi::Item &item) {
+            if (!m_serializer->isTaskItem(item))
+                return false;
+
+            const Domain::Task::Ptr task = m_serializer->createTaskFromItem(item);
+            const QDateTime startDate = task->startDate();
+            const QDateTime dueDate = task->dueDate();
+            const QDateTime today = QDateTime::currentDateTime();
+
+            const bool pastStartDate = startDate.isValid() && startDate <= today;
+            const bool pastDueDate = dueDate.isValid() && dueDate <= today;
+
+            return ((pastStartDate || pastDueDate) && !task->isDone());
+        });
+        m_findWorkdayTopLevel->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
+            return m_serializer->representsItem(task, item);
+        });
+    }
+
+    return m_findWorkdayTopLevel->result();
 }
 
 TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const

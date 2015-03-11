@@ -1956,6 +1956,124 @@ private slots:
         QCOMPARE(result->data().at(1), task2);
     }
 
+    void shouldLookInAllWorkdayReportedForAllTasks_data()
+    {
+        QTest::addColumn<Domain::Task::Ptr>("task2");
+        QTest::addColumn<bool>("isExpectedInWorkday");
+
+        const auto today = QDateTime::currentDateTime();
+
+        Domain::Task::Ptr todayTask(new Domain::Task);
+        todayTask->setStartDate(today);
+        todayTask->setDueDate(today);
+        QTest::newRow("todayTask") << todayTask << true;
+
+        Domain::Task::Ptr pastTask(new Domain::Task);
+        pastTask->setStartDate(today.addDays(-42));
+        pastTask->setDueDate(today.addDays(-41));
+        QTest::newRow("pastTask") << pastTask << true;
+
+        Domain::Task::Ptr startTodayTask(new Domain::Task);
+        startTodayTask->setStartDate(today);
+        QTest::newRow("startTodayTask") << startTodayTask << true;
+
+        Domain::Task::Ptr endTodayTask(new Domain::Task);
+        endTodayTask->setDueDate(today);
+        QTest::newRow("endTodayTask") << endTodayTask << true;
+
+        Domain::Task::Ptr futureTask(new Domain::Task);
+        futureTask->setStartDate(today.addDays(41));
+        futureTask->setDueDate(today.addDays(42));
+        QTest::newRow("futureTask") << futureTask << false;
+
+        Domain::Task::Ptr pastDoneTask(new Domain::Task);
+        pastDoneTask->setStartDate(today.addDays(-42));
+        pastDoneTask->setDueDate(today.addDays(-41));
+        pastDoneTask->setDone(true);
+        QTest::newRow("pastDoneTask") << pastDoneTask << false;
+    }
+
+    void shouldLookInAllWorkdayReportedForAllTasks()
+    {
+        // GIVEN
+
+        const auto today = QDateTime::currentDateTime();
+
+        // Two top level collections
+        Akonadi::Collection col1(42);
+        col1.setParentCollection(Akonadi::Collection::root());
+        Akonadi::Collection col2(43);
+        col2.setParentCollection(Akonadi::Collection::root());
+        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+
+        // One task in the first collection
+        Akonadi::Item item1(42);
+        item1.setParentCollection(col1);
+        Domain::Task::Ptr task1(new Domain::Task);
+        task1->setStartDate(today);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
+        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+
+        // One task in the second collection (from data driven set)
+        Akonadi::Item item2(43);
+        item2.setParentCollection(col2);
+        QFETCH(Domain::Task::Ptr, task2);
+        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
+        itemFetchJob2->setItems(Akonadi::Item::List() << item2);
+
+        // Storage mock returning the fetch jobs
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Tasks)
+                                                                 .thenReturn(collectionFetchJob);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
+                                                           .thenReturn(itemFetchJob1);
+        storageMock(&Akonadi::StorageInterface::fetchItems).when(col2)
+                                                           .thenReturn(itemFetchJob2);
+
+        // Serializer mock returning the tasks from the items
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
+        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
+
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
+        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storageMock.getInstance(),
+                                                                             serializerMock.getInstance(),
+                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
+        Domain::QueryResult<Domain::Task::Ptr>::Ptr result = queries->findWorkdayTopLevel();
+        result->data();
+        result = queries->findWorkdayTopLevel(); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                               Akonadi::StorageInterface::Recursive,
+                                                                               Akonadi::StorageInterface::Tasks)
+                                                                         .exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
+
+        QFETCH(bool, isExpectedInWorkday);
+
+        const int sizeExpected = (isExpectedInWorkday) ? 2 : 1;
+        const int createTaskFromItemExpected = (isExpectedInWorkday) ? 2 : 1;
+
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(2));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(createTaskFromItemExpected));
+
+        QCOMPARE(result->data().size(), sizeExpected);
+        QCOMPARE(result->data().at(0), task1);
+
+        if (isExpectedInWorkday)
+            QCOMPARE(result->data().at(1), task2);
+    }
+
 };
 
 QTEST_MAIN(AkonadiTaskQueriesTest)
