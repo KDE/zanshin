@@ -16,7 +16,7 @@ set(presentation_SRCS
     querytreemodelbase.cpp
     tagpagemodel.cpp
     tasklistmodel.cpp
-
+    workdaypagemodel.cpp
 )
 
 kde4_add_library(presentation STATIC ${presentation_SRCS})

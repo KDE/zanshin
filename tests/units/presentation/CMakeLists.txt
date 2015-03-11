@@ -15,4 +15,5 @@ zanshin_auto_tests(
   tagpagemodeltest
   tasklistmodeltest
   contextpagemodeltest
+  workdaypagemodeltest
 )
