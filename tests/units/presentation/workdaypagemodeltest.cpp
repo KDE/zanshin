@@ -23,6 +23,8 @@
 
 #include <QtTest>
 
+#include <testlib/fakejob.h>
+
 #include "utils/mockobject.h"
 
 #include "domain/noterepository.h"
@@ -112,6 +114,36 @@ private slots:
         QVERIFY(childTask12Index.isValid());
         QCOMPARE(model->rowCount(childTask11Index), 0);
         QCOMPARE(model->rowCount(childTask12Index), 0);
+    }
+
+    void shouldAddTasks()
+    {
+        // GIVEN
+
+        // ... in fact we won't list any model
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+
+        // Nor create notes...
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        // We'll gladly create a task though
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(new FakeJob(this));
+
+        Presentation::WorkdayPageModel workday(taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
+
+        // WHEN
+        auto title = QString("New task");
+        auto today = (QDateTime::currentDateTime());
+        auto task = workday.addTask(title);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).exactly(1));
+
+        QCOMPARE(task->title(), title);
+        QCOMPARE(task->startDate(), today);
     }
 };
 

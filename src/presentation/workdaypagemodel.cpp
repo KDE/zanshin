@@ -47,10 +47,13 @@ WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
 
 Domain::Task::Ptr WorkdayPageModel::addTask(const QString &title)
 {
-    Q_UNUSED(title);
-    qFatal("Not implemented yet");
+    auto task = Domain::Task::Ptr::create();
+    task->setTitle(title);
+    task->setStartDate(QDateTime::currentDateTime());
+    const auto job = taskRepository()->create(task);
+    installHandler(job, tr("Cannot add task %1 in Workday").arg(title));
 
-    return Domain::Task::Ptr::create();
+    return task;
 }
 
 void WorkdayPageModel::removeItem(const QModelIndex &index)
