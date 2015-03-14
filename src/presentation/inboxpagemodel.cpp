@@ -48,12 +48,14 @@ InboxPageModel::InboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueri
 {
 }
 
-void InboxPageModel::addTask(const QString &title)
+Domain::Task::Ptr InboxPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     const auto job = taskRepository()->create(task);
     installHandler(job, tr("Cannot add task %1 in Inbox").arg(title));
+
+    return task;
 }
 
 void InboxPageModel::removeItem(const QModelIndex &index)

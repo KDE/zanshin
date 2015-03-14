@@ -244,12 +244,14 @@ private slots:
                                         noteRepositoryMock.getInstance());
 
         // WHEN
-        page.addTask("New task");
+        auto title = QString("New task");
+        auto task = page.addTask(title);
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInTag).when(any<Domain::Task::Ptr>(),
                                                                                   any<Domain::Tag::Ptr>())
                                                                             .exactly(1));
+        QCOMPARE(task->title(), title);
     }
 
     void shouldRemoveItem()

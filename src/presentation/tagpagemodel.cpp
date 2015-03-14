@@ -60,12 +60,14 @@ Domain::Tag::Ptr TagPageModel::tag() const
     return m_tag;
 }
 
-void TagPageModel::addTask(const QString &title)
+Domain::Task::Ptr TagPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     const auto job = taskRepository()->createInTag(task, m_tag);
     installHandler(job, tr("Cannot add task %1 in tag %2").arg(title).arg(m_tag->name()));
+
+    return task;
 }
 
 void TagPageModel::removeItem(const QModelIndex &index)

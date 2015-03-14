@@ -55,12 +55,14 @@ Domain::Project::Ptr ProjectPageModel::project() const
     return m_project;
 }
 
-void ProjectPageModel::addTask(const QString &title)
+Domain::Task::Ptr ProjectPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     const auto job = taskRepository()->createInProject(task, m_project);
     installHandler(job, tr("Cannot add task %1 in project %2").arg(title).arg(m_project->name()));
+
+    return task;
 }
 
 void ProjectPageModel::removeItem(const QModelIndex &index)

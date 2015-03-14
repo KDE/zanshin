@@ -233,12 +233,14 @@ private slots:
                                             noteRepositoryMock.getInstance());
 
         // WHEN
-        page.addTask("New task");
+         auto title = QString("New task");
+         auto task = page.addTask(title);
 
-        // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
-                                                                                  any<Domain::Context::Ptr>())
-                                                                            .exactly(1));
+         // THEN
+         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
+                                                                                        any<Domain::Context::Ptr>())
+                                                                                    .exactly(1));
+         QCOMPARE(task->title(), title);
     }
 
     void shouldGetAnErrorMessageWhenAddTaskFailed()

@@ -51,7 +51,7 @@ public:
     QAbstractItemModel *centralListModel();
 
 public slots:
-    virtual void addTask(const QString &title) = 0;
+    virtual Domain::Task::Ptr addTask(const QString &title) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
 
 protected:

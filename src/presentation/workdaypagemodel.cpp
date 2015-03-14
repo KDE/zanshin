@@ -45,10 +45,12 @@ WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
 {
 }
 
-void WorkdayPageModel::addTask(const QString &title)
+Domain::Task::Ptr WorkdayPageModel::addTask(const QString &title)
 {
     Q_UNUSED(title);
     qFatal("Not implemented yet");
+
+    return Domain::Task::Ptr::create();
 }
 
 void WorkdayPageModel::removeItem(const QModelIndex &index)

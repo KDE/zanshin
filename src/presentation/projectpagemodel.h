@@ -44,7 +44,7 @@ public:
 
     Domain::Project::Ptr project() const;
 
-    void addTask(const QString &title) Q_DECL_OVERRIDE;
+    Domain::Task::Ptr addTask(const QString &title) Q_DECL_OVERRIDE;
     void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
 
 private:
