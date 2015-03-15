@@ -76,6 +76,8 @@ public:
 
         auto monitor = Utils::DependencyManager::globalInstance().create<Akonadi::MonitorInterface>();
         monitorSpy = new MonitorSpy(monitor.data(), this);
+
+        qputenv("ZANSHIN_OVERRIDE_DATETIME", "true");
     }
 
     ~ZanshinContext()
