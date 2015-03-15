@@ -60,6 +60,8 @@ public:
           m_sourceModel(Q_NULLPTR),
           monitorSpy(Q_NULLPTR)
     {
+        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10");
+
         App::initializeDependencies();
 
         using namespace Presentation;
