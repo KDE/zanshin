@@ -1,5 +1,6 @@
 set(utils_SRCS
     compositejob.cpp
+    datetime.cpp
     dependencymanager.cpp
     jobhandler.cpp
 )
