@@ -227,9 +227,9 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
                 return false;
 
             const Domain::Task::Ptr task = m_serializer->createTaskFromItem(item);
-            const QDateTime startDate = task->startDate();
-            const QDateTime dueDate = task->dueDate();
-            const QDateTime today = Utils::DateTime::currentDateTime();
+            const QDate startDate = task->startDate().date();
+            const QDate dueDate = task->dueDate().date();
+            const QDate today = Utils::DateTime::currentDateTime().date();
 
             const bool pastStartDate = startDate.isValid() && startDate <= today;
             const bool pastDueDate = dueDate.isValid() && dueDate <= today;
