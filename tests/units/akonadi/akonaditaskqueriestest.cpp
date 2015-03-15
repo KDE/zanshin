@@ -23,6 +23,7 @@
 
 #include <QtTest>
 
+#include "utils/datetime.h"
 #include "utils/mockobject.h"
 
 #include "testlib/akonadifakejobs.h"
@@ -1961,7 +1962,7 @@ private slots:
         QTest::addColumn<Domain::Task::Ptr>("task2");
         QTest::addColumn<bool>("isExpectedInWorkday");
 
-        const auto today = QDateTime::currentDateTime();
+        const auto today = Utils::DateTime::currentDateTime();
 
         Domain::Task::Ptr todayTask(new Domain::Task);
         todayTask->setStartDate(today);
@@ -1997,7 +1998,7 @@ private slots:
     {
         // GIVEN
 
-        const auto today = QDateTime::currentDateTime();
+        const auto today = Utils::DateTime::currentDateTime();
 
         // Two top level collections
         Akonadi::Collection col1(42);

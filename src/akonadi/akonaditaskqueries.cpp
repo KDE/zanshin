@@ -27,6 +27,7 @@
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
 
+#include "utils/datetime.h"
 #include "utils/jobhandler.h"
 
 using namespace Akonadi;
@@ -228,7 +229,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
             const Domain::Task::Ptr task = m_serializer->createTaskFromItem(item);
             const QDateTime startDate = task->startDate();
             const QDateTime dueDate = task->dueDate();
-            const QDateTime today = QDateTime::currentDateTime();
+            const QDateTime today = Utils::DateTime::currentDateTime();
 
             const bool pastStartDate = startDate.isValid() && startDate <= today;
             const bool pastDueDate = dueDate.isValid() && dueDate <= today;

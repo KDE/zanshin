@@ -25,6 +25,7 @@
 
 #include <testlib/fakejob.h>
 
+#include "utils/datetime.h"
 #include "utils/mockobject.h"
 
 #include "domain/noterepository.h"
@@ -43,7 +44,7 @@ private slots:
     {
         // GIVEN
 
-        const auto today = QDateTime::currentDateTime();
+        const auto today = Utils::DateTime::currentDateTime();
 
         // Three tasks
         auto task1 = Domain::Task::Ptr::create();
