@@ -2,7 +2,6 @@ set(utils_SRCS
     compositejob.cpp
     dependencymanager.cpp
     jobhandler.cpp
-    datetime.cpp
 )
 
 kde4_add_library(utils STATIC ${utils_SRCS})

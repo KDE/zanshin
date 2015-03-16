@@ -23,7 +23,6 @@
 
 #include <QtTest>
 
-#include "utils/datetime.h"
 #include "utils/mockobject.h"
 
 #include "testlib/akonadifakejobs.h"
@@ -1998,7 +1997,7 @@ private slots:
     {
         // GIVEN
 
-        const auto today = Utils::DateTime::currentDateTime();
+        const auto today = QDateTime::currentDateTime();
 
         // Two top level collections
         Akonadi::Collection col1(42);
