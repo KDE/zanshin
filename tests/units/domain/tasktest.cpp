@@ -152,6 +152,24 @@ private slots:
         QCOMPARE(spy.count(), 0);
     }
 
+    void shouldNotifyDoneDateChanges()
+    {
+        Task t;
+        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
+    }
+
+    void shouldNotNotifyIdenticalDoneDateChanges()
+    {
+        Task t;
+        t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
+        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.count(), 0);
+    }
+
     void shouldNotifyDoneDateSet()
     {
         Task t;

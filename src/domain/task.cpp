@@ -57,6 +57,15 @@ void Task::setDone(bool done)
     emit doneDateChanged(doneDate);
 }
 
+void Task::setDoneDate(const QDateTime &doneDate)
+{
+    if (m_doneDate == doneDate)
+        return;
+
+    m_doneDate = doneDate;
+    emit doneDateChanged(doneDate);
+}
+
 QDateTime Task::startDate() const
 {
     return m_startDate;

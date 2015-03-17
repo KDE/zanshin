@@ -76,6 +76,7 @@ public:
 
 public slots:
     void setDone(bool done);
+    void setDoneDate(const QDateTime &doneDate);
     void setStartDate(const QDateTime &startDate);
     void setDueDate(const QDateTime &dueDate);
     void setDelegate(const Domain::Task::Delegate &delegate);
