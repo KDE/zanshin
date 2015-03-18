@@ -1991,7 +1991,24 @@ private slots:
         pastDoneTask->setStartDate(today.addDays(-42));
         pastDoneTask->setDueDate(today.addDays(-41));
         pastDoneTask->setDone(true);
+        pastDoneTask->setDoneDate(today.addDays(-30));
         QTest::newRow("pastDoneTask") << pastDoneTask << false;
+
+        Domain::Task::Ptr todayDoneTask(new Domain::Task);
+        todayDoneTask->setStartDate(today);
+        todayDoneTask->setDueDate(today);
+        todayDoneTask->setDone(true);
+        QTest::newRow("todayDoneTask") << todayDoneTask << true;
+
+        Domain::Task::Ptr startTodayDoneTask(new Domain::Task);
+        startTodayDoneTask->setStartDate(today);
+        startTodayDoneTask->setDone(true);
+        QTest::newRow("startTodayDoneTask") << startTodayDoneTask << true;
+
+        Domain::Task::Ptr endTodayDoneTask(new Domain::Task);
+        endTodayDoneTask->setDueDate(today);
+        endTodayDoneTask->setDone(true);
+        QTest::newRow("endTodayDoneTask") << endTodayDoneTask << true;
     }
 
     void shouldLookInAllWorkdayReportedForAllTasks()

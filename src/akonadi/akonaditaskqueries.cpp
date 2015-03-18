@@ -227,14 +227,21 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
                 return false;
 
             const Domain::Task::Ptr task = m_serializer->createTaskFromItem(item);
+
+            const QDate doneDate = task->doneDate().date();
             const QDate startDate = task->startDate().date();
             const QDate dueDate = task->dueDate().date();
             const QDate today = Utils::DateTime::currentDateTime().date();
 
             const bool pastStartDate = startDate.isValid() && startDate <= today;
             const bool pastDueDate = dueDate.isValid() && dueDate <= today;
+            const bool todayDoneDate = doneDate == today;
 
-            return ((pastStartDate || pastDueDate) && !task->isDone());
+            if (task->isDone())
+                return todayDoneDate;
+            else
+                return pastStartDate || pastDueDate;
+
         });
         m_findWorkdayTopLevel->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
             return m_serializer->representsItem(task, item);
