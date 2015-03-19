@@ -58,8 +58,13 @@ Domain::Task::Ptr WorkdayPageModel::addTask(const QString &title)
 
 void WorkdayPageModel::removeItem(const QModelIndex &index)
 {
-    Q_UNUSED(index);
-    qFatal("Not implemented yet");
+    QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto task = artifact.objectCast<Domain::Task>();
+    if (task) {
+        const auto job = taskRepository()->remove(task);
+        installHandler(job, tr("Cannot remove task %1 from Workday").arg(task->title()));
+    }
 }
 
 QAbstractItemModel *WorkdayPageModel::createCentralListModel()
