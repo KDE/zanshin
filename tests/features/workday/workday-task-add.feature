@@ -3,7 +3,6 @@ Feature: Adding a task from the workday view
   I can input a task for today in the quick entry
   In order to have a new task that starts today
 
-  @wip
   Scenario: Tasks added from the workday view start today
     Given I display the "Workday" page
     When I look at the central list
