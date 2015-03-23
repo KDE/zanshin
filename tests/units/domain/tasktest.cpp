@@ -25,6 +25,8 @@
 
 #include "domain/task.h"
 
+#include "utils/datetime.h"
+
 using namespace Domain;
 
 class TaskTest : public QObject
@@ -156,7 +158,7 @@ private slots:
         QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
         t.setDone(true);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.takeFirst().at(0).toDateTime().date(), QDateTime::currentDateTime().date());
+        QCOMPARE(spy.takeFirst().at(0).toDateTime().date(), Utils::DateTime::currentDateTime().date());
     }
 
     void shouldNotifyDoneDateUnset()

@@ -137,7 +137,7 @@ private slots:
 
         // WHEN
         auto title = QString("New task");
-        auto today = (QDateTime::currentDateTime());
+        auto today = Utils::DateTime::currentDateTime();
         auto task = workday.addTask(title);
 
         // THEN

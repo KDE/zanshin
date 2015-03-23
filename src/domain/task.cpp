@@ -24,6 +24,8 @@
 
 #include "task.h"
 
+#include "utils/datetime.h"
+
 using namespace Domain;
 
 Task::Task(QObject *parent)
@@ -46,7 +48,7 @@ void Task::setDone(bool done)
     if (m_done == done)
         return;
 
-    const QDateTime doneDate = done ? QDateTime::currentDateTime() : QDateTime();
+    const QDateTime doneDate = done ? Utils::DateTime::currentDateTime() : QDateTime();
 
     m_done = done;
     m_doneDate = doneDate;

@@ -32,6 +32,8 @@
 
 #include "presentation/querytreemodel.h"
 
+#include "utils/datetime.h"
+
 using namespace Presentation;
 
 WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
@@ -49,7 +51,7 @@ Domain::Task::Ptr WorkdayPageModel::addTask(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    task->setStartDate(QDateTime::currentDateTime());
+    task->setStartDate(Utils::DateTime::currentDateTime());
     const auto job = taskRepository()->create(task);
     installHandler(job, tr("Cannot add task %1 in Workday").arg(title));
 
