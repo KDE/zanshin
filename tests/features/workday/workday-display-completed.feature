@@ -3,7 +3,6 @@ Feature: Display completed tasks in Workday list
   I can display the Workday list
   In order to know which tasks I’ve completed today (e.g. if done date is today)
 
-@wip
   Scenario: The tasks that have been done today appear in the Workday list
     Given I display the "Inbox" page
     And there is an item named ""Capital in the Twenty-First Century" by Thomas Piketty" in the central list
