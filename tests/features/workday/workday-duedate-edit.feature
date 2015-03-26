@@ -3,7 +3,6 @@ As someone adding a task
 I can set the due date by editing the field "due date"
 In order to have a task that ends at the entered date
 
-  @wip
   Scenario: Setting a date's due date to today makes it appear in the Workday page
     Given I display the "Inbox" page
     And I add a "task" named "Make more test tasks"
@@ -15,7 +14,6 @@ In order to have a task that ends at the entered date
     And I list the items
     Then the list contains "Make more test tasks"
 
-  @wip
   Scenario: Setting a date's due date to a date in the past makes it appear in the Workday page
     Given I display the "Inbox" page
     And I add a "task" named "Buy potatoes"
