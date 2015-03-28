@@ -106,10 +106,22 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
     };
 
     auto setData = [this](const Domain::Artifact::Ptr &artifact, const QVariant &value, int role) {
-        Q_UNUSED(artifact);
-        Q_UNUSED(value);
-        Q_UNUSED(role);
-        qFatal("Not implemented yet");
+        if (role != Qt::EditRole && role != Qt::CheckStateRole) {
+            return false;
+        }
+
+        if (auto task = artifact.dynamicCast<Domain::Task>()) {
+            const auto currentTitle = task->title();
+            if (role == Qt::EditRole)
+                task->setTitle(value.toString());
+            else
+                task->setDone(value.toInt() == Qt::Checked);
+
+            const auto job = taskRepository()->update(task);
+            installHandler(job, tr("Cannot modify task %1 in Workday").arg(currentTitle));
+            return true;
+        }
+
         return false;
     };
 

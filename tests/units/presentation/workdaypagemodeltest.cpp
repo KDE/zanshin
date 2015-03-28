@@ -100,7 +100,7 @@ private slots:
         const QModelIndex task1Index = model->index(0, 0);
         const QModelIndex task2Index = model->index(1, 0);
         const QModelIndex task3Index = model->index(2, 0);
-        const QModelIndex taskChildTask11Index = model->index(3, 0);
+        const QModelIndex taskChildTask12Index = model->index(3, 0);
 
         const QModelIndex childTask11Index = model->index(0, 0, task1Index);
         const QModelIndex childTask12Index = model->index(1, 0, task1Index);
@@ -109,12 +109,89 @@ private slots:
         QCOMPARE(model->rowCount(task1Index), 2);
         QCOMPARE(model->rowCount(task2Index), 0);
         QCOMPARE(model->rowCount(task3Index), 0);
-        QCOMPARE(model->rowCount(taskChildTask11Index), 0);
+        QCOMPARE(model->rowCount(taskChildTask12Index), 0);
 
         QVERIFY(childTask11Index.isValid());
         QVERIFY(childTask12Index.isValid());
         QCOMPARE(model->rowCount(childTask11Index), 0);
         QCOMPARE(model->rowCount(childTask12Index), 0);
+
+        const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
+                                         | Qt::ItemIsEnabled
+                                         | Qt::ItemIsEditable
+                                         | Qt::ItemIsDragEnabled;
+        QCOMPARE(model->flags(task1Index), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
+        QCOMPARE(model->flags(childTask11Index), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
+        QCOMPARE(model->flags(childTask12Index), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
+        QCOMPARE(model->flags(task2Index), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
+        QCOMPARE(model->flags(task3Index), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
+        QCOMPARE(model->flags(taskChildTask12Index), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
+
+        QCOMPARE(model->data(task1Index).toString(), task1->title());
+        QCOMPARE(model->data(childTask11Index).toString(), childTask11->title());
+        QCOMPARE(model->data(childTask12Index).toString(), childTask12->title());
+        QCOMPARE(model->data(task2Index).toString(), task2->title());
+        QCOMPARE(model->data(task3Index).toString(), task3->title());
+        QCOMPARE(model->data(taskChildTask12Index).toString(), childTask12->title());
+
+        QCOMPARE(model->data(task1Index, Qt::EditRole).toString(), task1->title());
+        QCOMPARE(model->data(childTask11Index, Qt::EditRole).toString(), childTask11->title());
+        QCOMPARE(model->data(childTask12Index, Qt::EditRole).toString(), childTask12->title());
+        QCOMPARE(model->data(task2Index, Qt::EditRole).toString(), task2->title());
+        QCOMPARE(model->data(task3Index, Qt::EditRole).toString(), task3->title());
+        QCOMPARE(model->data(taskChildTask12Index, Qt::EditRole).toString(), childTask12->title());
+
+        QVERIFY(model->data(task1Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(childTask11Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(childTask12Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(task2Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(task3Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(taskChildTask12Index, Qt::CheckStateRole).isValid());
+
+        QCOMPARE(model->data(task1Index, Qt::CheckStateRole).toBool(), task1->isDone());
+        QCOMPARE(model->data(childTask11Index, Qt::CheckStateRole).toBool(), childTask11->isDone());
+        QCOMPARE(model->data(childTask12Index, Qt::CheckStateRole).toBool(), childTask12->isDone());
+        QCOMPARE(model->data(task2Index, Qt::CheckStateRole).toBool(), task2->isDone());
+        QCOMPARE(model->data(task3Index, Qt::CheckStateRole).toBool(), task3->isDone());
+        QCOMPARE(model->data(taskChildTask12Index, Qt::CheckStateRole).toBool(), childTask12->isDone());
+
+        // WHEN
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task1).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask11).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask12).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task2).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task3).thenReturn(new FakeJob(this));
+
+        QVERIFY(model->setData(task1Index, "newTask1"));
+        QVERIFY(model->setData(childTask11Index, "newChildTask11"));
+        QVERIFY(model->setData(task2Index, "newTask2"));
+        QVERIFY(model->setData(task3Index, "newTask3"));
+        QVERIFY(model->setData(taskChildTask12Index, "newChildTask12"));
+
+        QVERIFY(model->setData(task1Index, Qt::Unchecked, Qt::CheckStateRole));
+        QVERIFY(model->setData(childTask11Index, Qt::Unchecked, Qt::CheckStateRole));
+        QVERIFY(model->setData(task2Index, Qt::Checked, Qt::CheckStateRole));
+        QVERIFY(model->setData(task3Index, Qt::Unchecked, Qt::CheckStateRole));
+        QVERIFY(model->setData(taskChildTask12Index, Qt::Checked, Qt::CheckStateRole));
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task1).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask11).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask12).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task2).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task3).exactly(2));
+
+        QCOMPARE(task1->title(), QString("newTask1"));
+        QCOMPARE(childTask11->title(), QString("newChildTask11"));
+        QCOMPARE(childTask12->title(), QString("newChildTask12"));
+        QCOMPARE(task2->title(), QString("newTask2"));
+        QCOMPARE(task3->title(), QString("newTask3"));
+
+        QCOMPARE(task1->isDone(), false);
+        QCOMPARE(childTask11->isDone(), false);
+        QCOMPARE(childTask12->isDone(), true);
+        QCOMPARE(task2->isDone(), true);
+        QCOMPARE(task3->isDone(), false);
     }
 
     void shouldAddTasks()
