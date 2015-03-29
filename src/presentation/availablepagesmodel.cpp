@@ -46,6 +46,7 @@
 #include "presentation/workdaypagemodel.h"
 
 #include "utils/jobhandler.h"
+#include "utils/datetime.h"
 
 using namespace Presentation;
 
@@ -341,6 +342,18 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
                         const auto dissociateJob = m_taskRepository->dissociate(task);
                         installHandler(dissociateJob, tr("Cannot move task %1 to Inbox").arg(task->title()));
                     });
+                }
+            }
+            return true;
+        } else if (object == m_workdayObject) {
+            foreach (const auto &droppedArtifact, droppedArtifacts) {
+
+                if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
+
+                    task->setStartDate(Utils::DateTime::currentDateTime());
+                    const auto job = m_taskRepository->update(task);
+
+                    installHandler(job, tr("Cannot update task %1 to Workday").arg(task->title()));
                 }
             }
             return true;

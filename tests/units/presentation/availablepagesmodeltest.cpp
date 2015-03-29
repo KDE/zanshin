@@ -24,6 +24,7 @@
 #include <QtTest>
 
 #include "utils/mockobject.h"
+#include "utils/datetime.h"
 
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
@@ -327,6 +328,31 @@ private slots:
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop3).exactly(1));
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop4).exactly(1));
+
+        // WHEN a task is drop on the workday
+        Domain::Task::Ptr taskToDrop5(new Domain::Task);
+        taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop5).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop5));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, workdayIndex);
+
+        // THEN
+        QCOMPARE(taskToDrop5->startDate().date(), Utils::DateTime::currentDateTime().date());
+
+        // WHEN two task are drop on the workday
+        Domain::Task::Ptr taskToDrop6(new Domain::Task);
+        Domain::Task::Ptr taskToDrop7(new Domain::Task);
+        taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop6).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop7).thenReturn(new FakeJob(this));
+        data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop6 << taskToDrop7));
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, workdayIndex);
+
+        // THEN
+        QCOMPARE(taskToDrop6->startDate().date(), Utils::DateTime::currentDateTime().date());
+        QCOMPARE(taskToDrop7->startDate().date(), Utils::DateTime::currentDateTime().date());
     }
 
 
