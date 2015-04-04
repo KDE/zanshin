@@ -616,7 +616,7 @@ private slots:
         QCOMPARE(task->title(), summary);
         QCOMPARE(task->text(), content);
         QCOMPARE(task->isDone(), isDone);
-        QCOMPARE(task->doneDate().date(), doneDate.date());
+        QCOMPARE(task->doneDate(), doneDate);
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
         QCOMPARE(task->property("todoUid").toString(), todo->uid());
@@ -749,7 +749,7 @@ private slots:
         QCOMPARE(task->title(), updatedSummary);
         QCOMPARE(task->text(), updatedContent);
         QCOMPARE(task->isDone(), updatedDone);
-        QCOMPARE(task->doneDate().date(), updatedDoneDate.date());
+        QCOMPARE(task->doneDate(), updatedDoneDate);
         QCOMPARE(task->startDate(), updatedStartDate);
         QCOMPARE(task->dueDate(), updatedDueDate);
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
@@ -801,7 +801,7 @@ private slots:
         QCOMPARE(task->title(), summary);
         QCOMPARE(task->text(), content);
         QCOMPARE(task->isDone(), isDone);
-        QCOMPARE(task->doneDate().date(), doneDate.date());
+        QCOMPARE(task->doneDate(), doneDate);
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
         QCOMPARE(task->property("itemId").toLongLong(), originalItem.id());
@@ -857,7 +857,7 @@ private slots:
         QCOMPARE(task->title(), summary);
         QCOMPARE(task->text(), content);
         QCOMPARE(task->isDone(), isDone);
-        QCOMPARE(task->doneDate().date(), doneDate.date());
+        QCOMPARE(task->doneDate(), doneDate);
         QCOMPARE(task->startDate(), startDate);
         QCOMPARE(task->dueDate(), dueDate);
         QCOMPARE(task->property("itemId").toLongLong(), originalItem.id());
@@ -951,7 +951,7 @@ private slots:
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->description(), content);
         QCOMPARE(todo->isCompleted(), isDone);
-        QCOMPARE(todo->completed().dateTime().date(), doneDate.date());
+        QCOMPARE(todo->completed().dateTime(), doneDate);
         QCOMPARE(todo->dtStart().dateTime(), startDate);
         QCOMPARE(todo->dtDue().dateTime(), dueDate);
 
