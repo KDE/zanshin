@@ -45,6 +45,7 @@ public slots:
     void addItem(const Akonadi::Item &item);
     void removeItem(const Akonadi::Item &item);
     void changeItem(const Akonadi::Item &item);
+    void moveItem(const Akonadi::Item &item);
 
     void addTag(const Akonadi::Tag &tag);
     void removeTag(const Akonadi::Tag &tag);
