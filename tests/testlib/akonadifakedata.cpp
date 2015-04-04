@@ -22,6 +22,7 @@
 */
 
 #include "akonadifakedata.h"
+#include "akonadifakemonitor.h"
 
 #include <algorithm>
 
@@ -33,6 +34,25 @@ static Akonadi::Collection::Id findParentId(const Entity &entity)
     const auto parent = entity.parentCollection();
     return parent.isValid() ? parent.id()
                             : Akonadi::Collection::root().id();
+}
+
+AkonadiFakeData::AkonadiFakeData()
+    : m_monitor(new AkonadiFakeMonitor)
+{
+}
+
+AkonadiFakeData::AkonadiFakeData(const AkonadiFakeData &other)
+    : m_collections(other.m_collections),
+      m_childCollections(other.m_childCollections),
+      m_items(other.m_items),
+      m_childItems(other.m_childItems),
+      m_monitor(new AkonadiFakeMonitor)
+{
+
+}
+
+AkonadiFakeData::~AkonadiFakeData()
+{
 }
 
 Akonadi::Collection::List AkonadiFakeData::collections() const
@@ -71,6 +91,7 @@ void AkonadiFakeData::createCollection(const Akonadi::Collection &collection)
 
     const auto parentId = findParentId(collection);
     m_childCollections[parentId] << collection.id();
+    m_monitor->addCollection(collection);
 }
 
 void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
@@ -85,6 +106,8 @@ void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
         m_childCollections[oldParentId].removeAll(collection.id());
         m_childCollections[parentId] << collection.id();
     }
+
+    m_monitor->changeCollection(collection);
 }
 
 Akonadi::Item::List AkonadiFakeData::items() const
@@ -123,6 +146,7 @@ void AkonadiFakeData::createItem(const Akonadi::Item &item)
 
     const auto parentId = findParentId(item);
     m_childItems[parentId] << item.id();
+    m_monitor->addItem(item);
 }
 
 void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
@@ -136,5 +160,24 @@ void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
     if (oldParentId != parentId) {
         m_childItems[oldParentId].removeAll(item.id());
         m_childItems[parentId] << item.id();
+        m_monitor->moveItem(item);
     }
+
+    m_monitor->changeItem(item);
+}
+
+Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
+{
+    auto monitor = new AkonadiFakeMonitor;
+    QObject::connect(m_monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)),
+                     monitor, SLOT(addCollection(Akonadi::Collection)));
+    QObject::connect(m_monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)),
+                     monitor, SLOT(changeCollection(Akonadi::Collection)));
+    QObject::connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)),
+                     monitor, SLOT(addItem(Akonadi::Item)));
+    QObject::connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)),
+                     monitor, SLOT(changeItem(Akonadi::Item)));
+    QObject::connect(m_monitor.data(), SIGNAL(itemMoved(Akonadi::Item)),
+                     monitor, SLOT(moveItem(Akonadi::Item)));
+    return monitor;
 }

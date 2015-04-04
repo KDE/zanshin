@@ -29,11 +29,21 @@
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
 
+namespace Akonadi {
+class MonitorInterface;
+}
+
 namespace Testlib {
+
+class AkonadiFakeMonitor;
 
 class AkonadiFakeData
 {
 public:
+    AkonadiFakeData();
+    AkonadiFakeData(const AkonadiFakeData &other);
+    ~AkonadiFakeData();
+
     Akonadi::Collection::List collections() const;
     Akonadi::Collection::List childCollections(Akonadi::Collection::Id parentId) const;
     Akonadi::Collection collection(Akonadi::Collection::Id id) const;
@@ -46,12 +56,16 @@ public:
     void createItem(const Akonadi::Item &item);
     void modifyItem(const Akonadi::Item &item);
 
+    Akonadi::MonitorInterface *createMonitor();
+
 private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;
     QHash<Akonadi::Collection::Id, QList<Akonadi::Collection::Id>> m_childCollections;
 
     QHash<Akonadi::Item::Id, Akonadi::Item> m_items;
     QHash<Akonadi::Collection::Id, QList<Akonadi::Item::Id>> m_childItems;
+
+    QScopedPointer<AkonadiFakeMonitor> m_monitor;
 };
 
 }

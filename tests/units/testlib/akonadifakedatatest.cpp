@@ -22,6 +22,7 @@
 */
 
 #include "testlib/akonadifakedata.h"
+#include "akonadi/akonadimonitorinterface.h"
 
 uint qHash(const Akonadi::Collection &col)
 {
@@ -48,6 +49,14 @@ bool operator==(const Akonadi::Item &left, const Akonadi::Item &right)
 class AkonadiFakeDataTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit AkonadiFakeDataTest(QObject *parent = Q_NULLPTR)
+        : QObject(parent)
+    {
+        qRegisterMetaType<Akonadi::Collection>();
+        qRegisterMetaType<Akonadi::Item>();
+    }
+
 private slots:
     void shouldBeInitiallyEmpty()
     {
@@ -63,6 +72,9 @@ private slots:
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)));
+
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
         auto c2 = Akonadi::Collection(43);
@@ -77,12 +89,19 @@ private slots:
         QCOMPARE(data.collections().toSet(), colSet);
         QCOMPARE(data.collection(c1.id()), c1);
         QCOMPARE(data.collection(c2.id()), c2);
+
+        QCOMPARE(spy.size(), 2);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
     }
 
     void shouldModifyCollections()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
+
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
         data.createCollection(c1);
@@ -96,6 +115,9 @@ private slots:
         // THEN
         QCOMPARE(data.collections().size(), 1);
         QCOMPARE(data.collection(c1.id()), c2);
+
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
     }
 
     void shouldListChildCollections()
@@ -149,6 +171,9 @@ private slots:
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(itemAdded(Akonadi::Item)));
+
         auto i1 = Akonadi::Item(42);
         i1.setPayloadFromData("42");
         auto i2 = Akonadi::Item(43);
@@ -163,12 +188,20 @@ private slots:
         QCOMPARE(data.items().toSet(), itemSet);
         QCOMPARE(data.item(i1.id()), i1);
         QCOMPARE(data.item(i2.id()), i2);
+
+        QCOMPARE(spy.size(), 2);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i2);
     }
 
     void shouldModifyItems()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+        QSignalSpy moveSpy(monitor.data(), SIGNAL(itemMoved(Akonadi::Item)));
+
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
         data.createCollection(c1);
@@ -188,6 +221,11 @@ private slots:
         // THEN
         QCOMPARE(data.items().size(), 1);
         QCOMPARE(data.item(i1.id()), i2);
+
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i2);
+
+        QCOMPARE(moveSpy.size(), 0);
     }
 
     void shouldListChildItems()
@@ -214,6 +252,8 @@ private slots:
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(itemMoved(Akonadi::Item)));
 
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
@@ -237,6 +277,9 @@ private slots:
         QVERIFY(data.childItems(c1.id()).isEmpty());
         QCOMPARE(data.childItems(c2.id()).size(), 1);
         QCOMPARE(data.childItems(c2.id()).first(), i1);
+
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
     }
 };
 
