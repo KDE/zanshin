@@ -36,6 +36,7 @@ public:
 
     explicit AkonadiFakeMonitor(QObject *parent = Q_NULLPTR);
 
+public slots:
     void addCollection(const Akonadi::Collection &collection);
     void removeCollection(const Akonadi::Collection &collection);
     void changeCollection(const Akonadi::Collection &collection);
