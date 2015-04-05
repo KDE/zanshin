@@ -49,12 +49,14 @@ public:
     Akonadi::Collection collection(Akonadi::Collection::Id id) const;
     void createCollection(const Akonadi::Collection &collection);
     void modifyCollection(const Akonadi::Collection &collection);
+    void removeCollection(const Akonadi::Collection &collection);
 
     Akonadi::Item::List items() const;
     Akonadi::Item::List childItems(Akonadi::Collection::Id parentId) const;
     Akonadi::Item item(Akonadi::Item::Id id) const;
     void createItem(const Akonadi::Item &item);
     void modifyItem(const Akonadi::Item &item);
+    void removeItem(const Akonadi::Item &item);
 
     Akonadi::MonitorInterface *createMonitor();
 

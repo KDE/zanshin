@@ -167,6 +167,64 @@ private slots:
         QCOMPARE(data.childCollections(c2.id()).first(), c3);
     }
 
+    void shouldRemoveCollections()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)));
+
+        auto c1 = Akonadi::Collection(42);
+        c1.setName("42");
+        data.createCollection(c1);
+
+        auto c2 = Akonadi::Collection(43);
+        c2.setName("43");
+        c2.setParentCollection(Akonadi::Collection(42));
+        data.createCollection(c2);
+
+        auto c3 = Akonadi::Collection(44);
+        c3.setName("44");
+        c3.setParentCollection(Akonadi::Collection(43));
+        data.createCollection(c3);
+
+        auto i1 = Akonadi::Item(42);
+        i1.setPayloadFromData("42");
+        i1.setParentCollection(Akonadi::Collection(43));
+        data.createItem(i1);
+
+        auto i2 = Akonadi::Item(43);
+        i2.setPayloadFromData("43");
+        i2.setParentCollection(Akonadi::Collection(44));
+        data.createItem(i2);
+
+        // WHEN
+        data.removeCollection(c2);
+
+        // THEN
+        QCOMPARE(data.collections().size(), 1);
+        QCOMPARE(data.collections().first(), c1);
+
+        QVERIFY(!data.collection(c2.id()).isValid());
+        QVERIFY(!data.collection(c3.id()).isValid());
+
+        QVERIFY(data.childCollections(c1.id()).isEmpty());
+        QVERIFY(data.childCollections(c2.id()).isEmpty());
+        QVERIFY(data.childCollections(c3.id()).isEmpty());
+
+        QVERIFY(data.items().isEmpty());
+
+        QVERIFY(!data.item(i1.id()).isValid());
+        QVERIFY(!data.item(i2.id()).isValid());
+
+        QVERIFY(data.childItems(c2.id()).isEmpty());
+        QVERIFY(data.childItems(c3.id()).isEmpty());
+
+        QCOMPARE(spy.size(), 2);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c3);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
+    }
+
     void shouldCreateItems()
     {
         // GIVEN
@@ -277,6 +335,34 @@ private slots:
         QVERIFY(data.childItems(c1.id()).isEmpty());
         QCOMPARE(data.childItems(c2.id()).size(), 1);
         QCOMPARE(data.childItems(c2.id()).first(), i1);
+
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
+    }
+
+    void shouldRemoveItems()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)));
+
+        auto c1 = Akonadi::Collection(42);
+        c1.setName("42");
+        data.createCollection(c1);
+
+        auto i1 = Akonadi::Item(42);
+        i1.setPayloadFromData("42");
+        i1.setParentCollection(Akonadi::Collection(42));
+        data.createItem(i1);
+
+        // WHEN
+        data.removeItem(i1);
+
+        // THEN
+        QVERIFY(data.items().isEmpty());
+        QVERIFY(!data.item(i1.id()).isValid());
+        QVERIFY(data.childItems(c1.id()).isEmpty());
 
         QCOMPARE(spy.size(), 1);
         QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
