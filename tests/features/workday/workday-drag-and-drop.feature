@@ -3,7 +3,6 @@ Feature: Drag and drop a task on workday view
   I can drag a task from the current view and drop it in the workday view
   In order to have the task start today
 
-@wip
   Scenario: Dropping a task on Workday page
     Given I display the "Inbox" page
     And I add a "task" named "Buy Pineapples"
@@ -14,7 +13,6 @@ Feature: Drag and drop a task on workday view
     And I list the items
     Then the list contains "Buy Pineapples"
 
-@wip
   Scenario: Dropping two tasks on Workday page
     Given I display the "Inbox" page
     And I add a "task" named "Don't eat the cake"
