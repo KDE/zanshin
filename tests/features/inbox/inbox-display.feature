@@ -14,4 +14,5 @@ Feature: Inbox content
        | Buy cheese                                    |
        | Buy apples                                    |
        | Buy pears                                     |
+       | Buy rutabagas                                 |
        | 21/04/2014 14:49                              |

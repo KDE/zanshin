@@ -118,6 +118,7 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     } else if (auto context = object.objectCast<Domain::Context>()) {
         auto contextPageModel = new ContextPageModel(context,
                                                      m_contextQueries,
+                                                     m_contextRepository,
                                                      m_taskQueries,
                                                      m_taskRepository,
                                                      m_noteRepository,

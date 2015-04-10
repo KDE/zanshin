@@ -15,6 +15,7 @@ Feature: Inbox task association
        | "The Pragmatic Programmer" by Hunt and Thomas |
        | Buy cheese                                    |
        | Buy pears                                     |
+       | Buy rutabagas                                 |
        | 21/04/2014 14:49                              |
 
   Scenario: Dropping a child task on the inbox makes it top-level
@@ -29,14 +30,16 @@ Feature: Inbox task association
        | "The Pragmatic Programmer" by Hunt and Thomas |
        | Buy cheese                                    |
        | Buy pears                                     |
+       | Buy rutabagas                                 |
        | 21/04/2014 14:49                              |
 
   Scenario: Dropping two tasks on another one makes them children
     Given I display the "Inbox" page
     And the central list contains items named:
-        | display    |
-        | Buy apples |
-        | Buy pears  |
+        | display       |
+        | Buy apples    |
+        | Buy pears     |
+        | Buy rutabagas |
     When I drop items on "Errands" in the central list
     And I list the items
     Then the list is:

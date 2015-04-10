@@ -89,6 +89,7 @@ private slots:
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance(),
                                             noteRepositoryMock.getInstance());
@@ -215,6 +216,7 @@ private slots:
 
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // Nor create notes...
@@ -228,6 +230,7 @@ private slots:
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance(),
                                             noteRepositoryMock.getInstance());
@@ -243,6 +246,45 @@ private slots:
          QCOMPARE(task->title(), title);
     }
 
+    void shouldRemoveItem()
+    {
+        // GIVEN
+
+        // One context
+        auto context = Domain::Context::Ptr::create();
+
+        // A task
+        auto task = Domain::Task::Ptr::create();
+
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(task);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+        contextRepositoryMock(&Domain::ContextRepository::dissociate).when(context, task).thenReturn(new FakeJob(this));
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance(),
+                                            noteRepositoryMock.getInstance());
+
+        // WHEN
+        const QModelIndex indexTask = page.centralListModel()->index(0, 0);
+        page.removeItem(indexTask);
+
+        // THEN
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::dissociate).when(context, task).exactly(1));
+    }
+
     void shouldGetAnErrorMessageWhenAddTaskFailed()
     {
         // GIVEN
@@ -253,6 +295,7 @@ private slots:
 
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // Nor create notes...
@@ -268,6 +311,7 @@ private slots:
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance(),
                                             noteRepositoryMock.getInstance());
@@ -309,6 +353,7 @@ private slots:
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance(),
                                             noteRepositoryMock.getInstance());
@@ -360,6 +405,7 @@ private slots:
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance(),
                                             noteRepositoryMock.getInstance());

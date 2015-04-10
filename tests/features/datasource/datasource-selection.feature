@@ -30,6 +30,7 @@ Feature: Data sources selection
        | Buy apples                                    |
        | Buy pears                                     |
        | Errands                                       |
+       | Buy rutabagas                                 |
 
   Scenario: Unchecking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources

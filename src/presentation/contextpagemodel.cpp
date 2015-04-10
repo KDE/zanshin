@@ -28,6 +28,7 @@
 
 #include "domain/task.h"
 #include "domain/contextqueries.h"
+#include "domain/contextrepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
@@ -37,6 +38,7 @@ using namespace Presentation;
 
 ContextPageModel::ContextPageModel(const Domain::Context::Ptr &context,
                                    const Domain::ContextQueries::Ptr &contextQueries,
+                                   const Domain::ContextRepository::Ptr &contextRepository,
                                    const Domain::TaskQueries::Ptr &taskQueries,
                                    const Domain::TaskRepository::Ptr &taskRepository,
                                    const Domain::NoteRepository::Ptr &noteRepository,
@@ -46,7 +48,8 @@ ContextPageModel::ContextPageModel(const Domain::Context::Ptr &context,
                noteRepository,
                parent),
       m_context(context),
-      m_contextQueries(contextQueries)
+      m_contextQueries(contextQueries),
+      m_contextRepository(contextRepository)
 {
 
 }
@@ -68,8 +71,10 @@ Domain::Task::Ptr ContextPageModel::addTask(const QString &title)
 
 void ContextPageModel::removeItem(const QModelIndex &index)
 {
-    Q_UNUSED(index);
-    qFatal("Not implemented yet");
+    QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    auto task = data.value<Domain::Task::Ptr>();
+    const auto job = m_contextRepository->dissociate(m_context, task);
+    installHandler(job, tr("Cannot remove task %1 from context %2").arg(task->title()).arg(m_context->name()));
 }
 
 QAbstractItemModel *ContextPageModel::createCentralListModel()
