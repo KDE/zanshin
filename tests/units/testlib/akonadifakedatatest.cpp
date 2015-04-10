@@ -24,27 +24,45 @@
 #include "testlib/akonadifakedata.h"
 #include "akonadi/akonadimonitorinterface.h"
 
-uint qHash(const Akonadi::Collection &col)
-{
-    return qHash(col.id());
-}
-
-// More aggressive equal to make sure we just don't get collections with ids out
-bool operator==(const Akonadi::Collection &left, const Akonadi::Collection &right)
-{
-    return left.operator==(right)
-        && left.displayName() == right.displayName();
-}
-
-// More aggressive equal to make sure we just don't get items with ids out
-bool operator==(const Akonadi::Item &left, const Akonadi::Item &right)
-{
-    return left.operator==(right)
-        && left.payloadData() == right.payloadData();
-}
-
 #include <QtTest>
 
+namespace QTest {
+
+template<typename T>
+inline bool zCompareHelper(bool isOk,
+                           const T &left, const T &right,
+                           const char *actual, const char *expected,
+                           const char *file, int line)
+{
+    return isOk
+         ? compare_helper(true, "COMPARE()", file, line)
+         : compare_helper(false, "Compared values are not the same",
+                          toString<T>(left), toString<T>(right),
+                          actual, expected,
+                          file, line);
+}
+
+// More aggressive compare to make sure we just don't get collections with ids out
+template <>
+inline bool qCompare(const Akonadi::Collection &left, const Akonadi::Collection &right,
+                     const char *actual, const char *expected,
+                     const char *file, int line)
+{
+    return zCompareHelper((left == right) && (left.displayName() == right.displayName()),
+                          left, right, actual, expected, file, line);
+}
+
+// More aggressive compare to make sure we just don't get items with ids out
+template <>
+inline bool qCompare(const Akonadi::Item &left, const Akonadi::Item &right,
+                     const char *actual, const char *expected,
+                     const char *file, int line)
+{
+    return zCompareHelper((left == right) && (left.payloadData() == right.payloadData()),
+                          left, right, actual, expected, file, line);
+}
+
+}
 
 class AkonadiFakeDataTest : public QObject
 {
