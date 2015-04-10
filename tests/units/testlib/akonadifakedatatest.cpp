@@ -52,6 +52,16 @@ inline bool qCompare(const Akonadi::Collection &left, const Akonadi::Collection 
                           left, right, actual, expected, file, line);
 }
 
+// More aggressive compare to make sure we just don't get tags with ids out
+template <>
+inline bool qCompare(const Akonadi::Tag &left, const Akonadi::Tag &right,
+                     const char *actual, const char *expected,
+                     const char *file, int line)
+{
+    return zCompareHelper((left == right) && (left.name() == right.name()),
+                          left, right, actual, expected, file, line);
+}
+
 // More aggressive compare to make sure we just don't get items with ids out
 template <>
 inline bool qCompare(const Akonadi::Item &left, const Akonadi::Item &right,
@@ -72,6 +82,7 @@ public:
         : QObject(parent)
     {
         qRegisterMetaType<Akonadi::Collection>();
+        qRegisterMetaType<Akonadi::Tag>();
         qRegisterMetaType<Akonadi::Item>();
     }
 
@@ -83,6 +94,7 @@ private slots:
 
         // THEN
         QVERIFY(data.collections().isEmpty());
+        QVERIFY(data.tags().isEmpty());
         QVERIFY(data.items().isEmpty());
     }
 
@@ -243,6 +255,118 @@ private slots:
         QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
     }
 
+    void shouldCreateTags()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)));
+
+        auto t1 = Akonadi::Tag(42);
+        t1.setName("42");
+        auto t2 = Akonadi::Tag(43);
+        t2.setName("43");
+        const auto tagSet = QSet<Akonadi::Tag>();// << t1 << t2;
+
+        // WHEN
+        data.createTag(t1);
+        data.createTag(t2);
+
+        // THEN
+        //QCOMPARE(data.tags().toSet(), tagSet);
+        QCOMPARE(data.tag(t1.id()), t1);
+        QCOMPARE(data.tag(t2.id()), t2);
+
+        QCOMPARE(spy.size(), 2);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Tag>(), t1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Tag>(), t2);
+    }
+
+    void shouldModifyTags()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)));
+
+        auto t1 = Akonadi::Tag(42);
+        t1.setName("42");
+        data.createTag(t1);
+
+        auto t2 = Akonadi::Tag(t1.id());
+        t2.setName("42-bis");
+
+        // WHEN
+        data.modifyTag(t2);
+
+        // THEN
+        QCOMPARE(data.tags().size(), 1);
+        QCOMPARE(data.tag(t1.id()), t2);
+
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Tag>(), t2);
+    }
+
+    void shouldRemoveTags()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy tagSpy(monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)));
+        QSignalSpy itemSpy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+
+        auto c1 = Akonadi::Collection(42);
+        data.createCollection(c1);
+
+        auto t1 = Akonadi::Tag(42);
+        t1.setName("42");
+        data.createTag(t1);
+
+        auto t2 = Akonadi::Tag(43);
+        t2.setName("43");
+        data.createTag(t2);
+
+        auto i1 = Akonadi::Item(42);
+        i1.setPayloadFromData("42");
+        i1.setParentCollection(c1);
+        i1.setTag(Akonadi::Tag(t1.id()));
+        data.createItem(i1);
+
+        auto i2 = Akonadi::Item(43);
+        i2.setPayloadFromData("43");
+        i2.setParentCollection(c1);
+        i2.setTag(Akonadi::Tag(t2.id()));
+        data.createItem(i2);
+
+        const auto itemSet = QSet<Akonadi::Item>() << i1 << i2;
+
+        // WHEN
+        data.removeTag(t2);
+
+        // THEN
+        QCOMPARE(data.tags().size(), 1);
+        QCOMPARE(data.tags().first(), t1);
+
+        QVERIFY(!data.tag(t2.id()).isValid());
+
+        QCOMPARE(data.tagItems(t1.id()).size(), 1);
+        QCOMPARE(data.tagItems(t1.id()).first(), i1);
+        QVERIFY(data.tagItems(t2.id()).isEmpty());
+
+        QCOMPARE(data.items().toSet(), itemSet);
+
+        QVERIFY(data.item(i1.id()).isValid());
+        QVERIFY(data.item(i2.id()).isValid());
+        QVERIFY(!data.item(i2.id()).tags().contains(t2));
+
+        QCOMPARE(tagSpy.size(), 1);
+        QCOMPARE(tagSpy.takeFirst().takeFirst().value<Akonadi::Tag>(), t2);
+
+        QCOMPARE(itemSpy.size(), 1);
+        QCOMPARE(itemSpy.first().first().value<Akonadi::Item>(), i2);
+        QVERIFY(!itemSpy.first().first().value<Akonadi::Item>().tags().contains(t2));
+    }
+
     void shouldCreateItems()
     {
         // GIVEN
@@ -353,6 +477,61 @@ private slots:
         QVERIFY(data.childItems(c1.id()).isEmpty());
         QCOMPARE(data.childItems(c2.id()).size(), 1);
         QCOMPARE(data.childItems(c2.id()).first(), i1);
+
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
+    }
+
+    void shouldListTagItems()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        auto t1 = Akonadi::Tag(42);
+        t1.setName("42");
+        data.createTag(t1);
+
+        auto i1 = Akonadi::Item(42);
+        i1.setPayloadFromData("42");
+        i1.setTag(Akonadi::Tag(42));
+
+        // WHEN
+        data.createItem(i1);
+
+        // THEN
+        QCOMPARE(data.tagItems(t1.id()).size(), 1);
+        QCOMPARE(data.tagItems(t1.id()).first(), i1);
+    }
+
+    void shouldRetagItemsOnModify()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+        QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
+        QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+
+        auto t1 = Akonadi::Tag(42);
+        t1.setName("42");
+        data.createTag(t1);
+
+        auto t2 = Akonadi::Tag(43);
+        t2.setName("43");
+        data.createTag(t2);
+
+        auto i1 = Akonadi::Item(42);
+        i1.setPayloadFromData("42");
+        i1.setTag(Akonadi::Tag(42));
+        data.createItem(i1);
+
+        // WHEN
+        i1.setPayloadFromData("42-bis");
+        i1.clearTag(Akonadi::Tag(42));
+        i1.setTag(Akonadi::Tag(43));
+        data.modifyItem(i1);
+
+        // THEN
+        QVERIFY(data.tagItems(t1.id()).isEmpty());
+        QCOMPARE(data.tagItems(t2.id()).size(), 1);
+        QCOMPARE(data.tagItems(t2.id()).first(), i1);
 
         QCOMPARE(spy.size(), 1);
         QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);

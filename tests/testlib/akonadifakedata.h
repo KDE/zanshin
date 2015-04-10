@@ -28,6 +28,7 @@
 
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
+#include <Akonadi/Tag>
 
 namespace Akonadi {
 class MonitorInterface;
@@ -51,8 +52,15 @@ public:
     void modifyCollection(const Akonadi::Collection &collection);
     void removeCollection(const Akonadi::Collection &collection);
 
+    Akonadi::Tag::List tags() const;
+    Akonadi::Tag tag(Akonadi::Tag::Id id) const;
+    void createTag(const Akonadi::Tag &tag);
+    void modifyTag(const Akonadi::Tag &tag);
+    void removeTag(const Akonadi::Tag &tag);
+
     Akonadi::Item::List items() const;
     Akonadi::Item::List childItems(Akonadi::Collection::Id parentId) const;
+    Akonadi::Item::List tagItems(Akonadi::Tag::Id tagId) const;
     Akonadi::Item item(Akonadi::Item::Id id) const;
     void createItem(const Akonadi::Item &item);
     void modifyItem(const Akonadi::Item &item);
@@ -64,8 +72,11 @@ private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;
     QHash<Akonadi::Collection::Id, QList<Akonadi::Collection::Id>> m_childCollections;
 
+    QHash<Akonadi::Tag::Id, Akonadi::Tag> m_tags;
+
     QHash<Akonadi::Item::Id, Akonadi::Item> m_items;
     QHash<Akonadi::Collection::Id, QList<Akonadi::Item::Id>> m_childItems;
+    QHash<Akonadi::Tag::Id, QList<Akonadi::Item::Id>> m_tagItems;
 
     QScopedPointer<AkonadiFakeMonitor> m_monitor;
 };

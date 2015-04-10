@@ -133,6 +133,51 @@ void AkonadiFakeData::removeCollection(const Akonadi::Collection &collection)
     m_monitor->removeCollection(col);
 }
 
+Akonadi::Tag::List AkonadiFakeData::tags() const
+{
+    return m_tags.values();
+}
+
+Akonadi::Tag AkonadiFakeData::tag(Akonadi::Tag::Id id) const
+{
+    if (!m_tags.contains(id))
+        return Akonadi::Tag();
+
+    return m_tags.value(id);
+}
+
+void AkonadiFakeData::createTag(const Akonadi::Tag &tag)
+{
+    Q_ASSERT(!m_tags.contains(tag.id()));
+    m_tags[tag.id()] = tag;
+    m_monitor->addTag(tag);
+}
+
+void AkonadiFakeData::modifyTag(const Akonadi::Tag &tag)
+{
+    Q_ASSERT(m_tags.contains(tag.id()));
+    m_tags[tag.id()] = tag;
+    m_monitor->changeTag(tag);
+}
+
+void AkonadiFakeData::removeTag(const Akonadi::Tag &tag)
+{
+    Q_ASSERT(m_tags.contains(tag.id()));
+
+    const auto ids = m_tagItems[tag.id()];
+    foreach (const auto &id, ids) {
+        Q_ASSERT(m_items.contains(id));
+        auto item = m_items.value(id);
+        item.clearTag(tag);
+        m_items[id] = item;
+        m_monitor->changeItem(item);
+    }
+    m_tagItems.remove(tag.id());
+
+    m_tags.remove(tag.id());
+    m_monitor->removeTag(tag);
+}
+
 Akonadi::Item::List AkonadiFakeData::items() const
 {
     return m_items.values();
@@ -144,6 +189,22 @@ Akonadi::Item::List AkonadiFakeData::childItems(Akonadi::Collection::Id parentId
         return {};
 
     const auto ids = m_childItems.value(parentId);
+    auto result = Akonadi::Item::List();
+    std::transform(std::begin(ids), std::end(ids),
+                   std::back_inserter(result),
+                   [this] (Akonadi::Item::Id id) {
+                       Q_ASSERT(m_items.contains(id));
+                       return m_items.value(id);
+                   });
+    return result;
+}
+
+Akonadi::Item::List AkonadiFakeData::tagItems(Akonadi::Tag::Id tagId) const
+{
+    if (!m_tagItems.contains(tagId))
+        return {};
+
+    const auto ids = m_tagItems.value(tagId);
     auto result = Akonadi::Item::List();
     std::transform(std::begin(ids), std::end(ids),
                    std::back_inserter(result),
@@ -169,6 +230,12 @@ void AkonadiFakeData::createItem(const Akonadi::Item &item)
 
     const auto parentId = findParentId(item);
     m_childItems[parentId] << item.id();
+
+    foreach (const auto &tag, item.tags()) {
+        Q_ASSERT(m_tags.contains(tag.id()));
+        m_tagItems[tag.id()] << item.id();
+    }
+
     m_monitor->addItem(item);
 }
 
@@ -176,6 +243,7 @@ void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
 {
     Q_ASSERT(m_items.contains(item.id()));
 
+    const auto oldTags = m_items[item.id()].tags();
     const auto oldParentId = findParentId(m_items[item.id()]);
     m_items[item.id()] = item;
     const auto parentId = findParentId(item);
@@ -184,6 +252,15 @@ void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
         m_childItems[oldParentId].removeAll(item.id());
         m_childItems[parentId] << item.id();
         m_monitor->moveItem(item);
+    }
+
+    foreach (const auto &tag, oldTags) {
+        m_tagItems[tag.id()].removeAll(item.id());
+    }
+
+    foreach (const auto &tag, item.tags()) {
+        Q_ASSERT(m_tags.contains(tag.id()));
+        m_tagItems[tag.id()] << item.id();
     }
 
     m_monitor->changeItem(item);
@@ -207,6 +284,12 @@ Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
                      monitor, SLOT(changeCollection(Akonadi::Collection)));
     QObject::connect(m_monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)),
                      monitor, SLOT(removeCollection(Akonadi::Collection)));
+    QObject::connect(m_monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)),
+                     monitor, SLOT(addTag(Akonadi::Tag)));
+    QObject::connect(m_monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)),
+                     monitor, SLOT(changeTag(Akonadi::Tag)));
+    QObject::connect(m_monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)),
+                     monitor, SLOT(removeTag(Akonadi::Tag)));
     QObject::connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)),
                      monitor, SLOT(addItem(Akonadi::Item)));
     QObject::connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)),
