@@ -266,14 +266,15 @@ private slots:
         t1.setName("42");
         auto t2 = Akonadi::Tag(43);
         t2.setName("43");
-        const auto tagSet = QSet<Akonadi::Tag>();// << t1 << t2;
 
         // WHEN
         data.createTag(t1);
         data.createTag(t2);
 
         // THEN
-        //QCOMPARE(data.tags().toSet(), tagSet);
+        QCOMPARE(data.tags().size(), 2);
+        QVERIFY(data.tags().contains(t1));
+        QVERIFY(data.tags().contains(t2));
         QCOMPARE(data.tag(t1.id()), t1);
         QCOMPARE(data.tag(t2.id()), t2);
 
