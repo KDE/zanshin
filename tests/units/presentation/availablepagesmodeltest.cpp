@@ -271,7 +271,7 @@ private slots:
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
         data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
@@ -280,7 +280,7 @@ private slots:
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).exactly(1));
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(taskToDrop.objectCast<Domain::Task>()).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).exactly(1));
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project2, noteToDrop).thenReturn(new FakeJob(this));
@@ -1575,7 +1575,7 @@ private slots:
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, "Foo");
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(job);
-        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
         auto data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
@@ -1645,7 +1645,7 @@ private slots:
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, "Foo");
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(job);
+        taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(job);
         auto data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));

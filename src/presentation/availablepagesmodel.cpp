@@ -339,7 +339,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
                 if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
                     Utils::JobHandler::install(job, [this, task] {
-                        const auto dissociateJob = m_taskRepository->dissociate(task);
+                        const auto dissociateJob = m_taskRepository->dissociateAll(task);
                         installHandler(dissociateJob, tr("Cannot move task %1 to Inbox").arg(task->title()));
                     });
                 }

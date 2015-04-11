@@ -246,9 +246,25 @@ KJob *TaskRepository::dissociate(Domain::Task::Ptr child)
 
 KJob *TaskRepository::dissociateAll(Domain::Task::Ptr child)
 {
-    Q_UNUSED(child);
-    qFatal("Not Implemented yet");
-    return 0;
+    auto job = new CompositeJob();
+    auto childItem = m_serializer->createItemFromTask(child);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+
+        m_serializer->removeItemParent(childItem);
+        m_serializer->clearItem(&childItem);
+
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+
+    return job;
 }
 
 KJob *TaskRepository::delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate)
