@@ -4,6 +4,7 @@ set(testlib_SRCS
    akonadifakejobs.cpp
    akonadifakemonitor.cpp
    fakejob.cpp
+   gencollection.cpp
    modeltest.cpp
    monitorspy.cpp
 )
