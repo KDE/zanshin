@@ -36,6 +36,8 @@
 #include <KCalCore/Todo>
 #include <KMime/Message>
 
+Q_DECLARE_METATYPE(Akonadi::Item*)
+
 class AkonadiSerializerTest : public QObject
 {
     Q_OBJECT
@@ -1852,6 +1854,45 @@ private slots:
         // THEN
         if (item.hasPayload<KCalCore::Todo::Ptr>())
             QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QString());
+    }
+
+    void shouldClearItem_data()
+    {
+        QTest::addColumn<Akonadi::Item*>("item");
+
+        Akonadi::Item *itemWithContent = new Akonadi::Item(15);
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+
+        // context
+        Akonadi::Tag context("42");
+        context.setType( Akonadi::SerializerInterface::contextTagType() );
+
+        // tag
+        Akonadi::Tag tag("43");
+        tag.setType( Akonadi::Tag::PLAIN );
+
+        Akonadi::Tag::List tagsList = Akonadi::Tag::List() << tag << context;
+        itemWithContent->setTags(tagsList);
+        itemWithContent->setPayload<KCalCore::Todo::Ptr>(todo);
+
+        QTest::newRow("nominal case") << itemWithContent;
+
+        Akonadi::Item *item2 = new Akonadi::Item(16);
+        QTest::newRow("parent invalid") << item2;
+    }
+
+    void shouldClearItem()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item*, item);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        serializer.clearItem(item);
+
+        // THEN
+        QCOMPARE(item->tags().size(), 0);
+        delete item;
     }
 
     void shouldCreateContextFromTag_data()

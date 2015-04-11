@@ -61,6 +61,7 @@ public:
     void updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent) Q_DECL_OVERRIDE;
     void updateItemProject(Akonadi::Item item, Domain::Project::Ptr project) Q_DECL_OVERRIDE;
     void removeItemParent(Akonadi::Item item) Q_DECL_OVERRIDE;
+    void clearItem(Akonadi::Item *item) Q_DECL_OVERRIDE;
     Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) Q_DECL_OVERRIDE;
 
     bool isNoteItem(Akonadi::Item item) Q_DECL_OVERRIDE;

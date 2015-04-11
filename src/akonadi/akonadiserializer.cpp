@@ -335,6 +335,19 @@ void Serializer::removeItemParent(Akonadi::Item item)
     todo->setRelatedTo(QString());
 }
 
+void Serializer::clearItem(Akonadi::Item *item)
+{
+    Q_ASSERT(item);
+    if (!isTaskItem(*item))
+        return;
+
+//    NOTE : Currently not working, when akonadistorage test will make it pass, we will use it
+//    item->clearTags();
+
+    foreach (const Tag& tag, item->tags())
+        item->clearTag(tag);
+}
+
 Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem)
 {
     if (potentialChildren.isEmpty())
