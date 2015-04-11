@@ -244,6 +244,13 @@ KJob *TaskRepository::dissociate(Domain::Task::Ptr child)
     return job;
 }
 
+KJob *TaskRepository::dissociateAll(Domain::Task::Ptr child)
+{
+    Q_UNUSED(child);
+    qFatal("Not Implemented yet");
+    return 0;
+}
+
 KJob *TaskRepository::delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate)
 {
     auto originalDelegate = task->delegate();

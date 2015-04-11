@@ -58,6 +58,7 @@ public:
 
     virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
     virtual KJob *dissociate(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
+    virtual KJob *dissociateAll(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
 
     virtual KJob *delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate) Q_DECL_OVERRIDE;
 
