@@ -7,6 +7,7 @@ set(testlib_SRCS
    gencollection.cpp
    gennote.cpp
    gentag.cpp
+   gentodo.cpp
    modeltest.cpp
    monitorspy.cpp
 )

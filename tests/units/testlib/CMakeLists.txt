@@ -3,5 +3,6 @@ zanshin_auto_tests(
   gencollectiontest
   gennotetest
   gentagtest
+  gentodotest
   monitorspytest
 )
