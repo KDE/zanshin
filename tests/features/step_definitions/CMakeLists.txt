@@ -16,10 +16,12 @@ target_link_libraries(zanshin-cuke-steps
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     ${QT_QTTEST_LIBRARY}
+    ${QT_QTSCRIPT_LIBRARY}
 
     testlib
     akonadi
     domain
     presentation
+    scripting
     utils
 )

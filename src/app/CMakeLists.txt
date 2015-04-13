@@ -11,6 +11,7 @@ target_link_libraries(zanshin-next
     akonadi
     domain
     presentation
+    scripting
     utils
     widgets
     ${KDEPIM_STATIC_LIBS}

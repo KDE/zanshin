@@ -44,6 +44,8 @@
 
 #include "presentation/applicationmodel.h"
 
+#include "scripting/scripthandler.h"
+
 #include "utils/dependencymanager.h"
 
 void App::initializeDependencies()
@@ -130,4 +132,7 @@ void App::initializeDependencies()
                                             Domain::NoteRepository*,
                                             Domain::TagQueries*,
                                             Domain::TagRepository*)>();
+
+    deps.add<Scripting::ScriptHandler,
+            Scripting::ScriptHandler(Domain::TaskRepository*)>();
 }

@@ -14,6 +14,7 @@ MACRO(ZANSHIN_MANUAL_TESTS)
       akonadi
       domain
       presentation
+      scripting
       utils
       widgets
       ${KDEPIM_STATIC_LIBS}
@@ -32,6 +33,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
       akonadi
       domain
       presentation
+      scripting
       utils
       widgets
       ${KDEPIM_STATIC_LIBS}
