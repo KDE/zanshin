@@ -12,6 +12,7 @@ set(widgets_SRCS
     newpagedialog.cpp
     newpagedialoginterface.cpp
     pageview.cpp
+    scripteditor.cpp
 )
 
 qt4_wrap_ui(widgets_SRCS

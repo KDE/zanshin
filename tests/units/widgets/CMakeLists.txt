@@ -8,4 +8,5 @@ zanshin_auto_tests(
   filterwidgettest
   newpagedialogtest
   pageviewtest
+  scripteditortest
 )
