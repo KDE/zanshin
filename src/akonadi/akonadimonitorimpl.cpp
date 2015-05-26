@@ -72,6 +72,7 @@ MonitorImpl::MonitorImpl()
     connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(itemRemoved(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SIGNAL(itemChanged(Akonadi::Item)));
     connect(m_monitor, SIGNAL(itemMoved(Akonadi::Item,Akonadi::Collection,Akonadi::Collection)), this, SIGNAL(itemMoved(Akonadi::Item)));
+    connect(m_monitor, SIGNAL(itemsTagsChanged(Akonadi::Item::List, QSet<Akonadi::Tag>, QSet<Akonadi::Tag>)), this, SLOT(onItemsTagsChanged(Akonadi::Item::List,QSet<Akonadi::Tag>,QSet<Akonadi::Tag>)));
 
     connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SIGNAL(tagAdded(Akonadi::Tag)));
     connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SIGNAL(tagRemoved(Akonadi::Tag)));
@@ -100,6 +101,17 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
     if (parts.contains("ZanshinSelected")
      && hasSupportedMimeTypes(collection)) {
         emit collectionSelectionChanged(collection);
+    }
+}
+
+void MonitorImpl::onItemsTagsChanged(const Akonadi::Item::List &items, const QSet<Akonadi::Tag> &addedTags, const QSet<Akonadi::Tag> &removedTags)
+{
+    // Because itemChanged is not emitted on tag removal, we need to listen to itemsTagsChanged and
+    // emit the itemChanged only in this case (avoid double emits in case of tag dissociation / association)
+    // So if both list are empty it means we are just seeing a tag being removed so we update its related items
+    if (addedTags.isEmpty() && removedTags.isEmpty()) {
+        foreach (const Item &item, items)
+            emit itemChanged(item);
     }
 }
 

@@ -25,6 +25,7 @@
 #define AKONADI_MONITORIMPL_H
 
 #include "akonadimonitorinterface.h"
+#include <Akonadi/Item>
 
 namespace Akonadi {
 
@@ -39,6 +40,7 @@ public:
 
 private slots:
     void onCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &parts);
+    void onItemsTagsChanged(const Akonadi::Item::List &items, const QSet<Akonadi::Tag> &addedTags, const QSet<Akonadi::Tag> &removedTags);
 
 private:
     bool hasSupportedMimeTypes(const Collection &collection);

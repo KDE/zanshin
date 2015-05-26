@@ -638,24 +638,39 @@ private slots:
     {
         // GIVEN
 
+        // An existing tag (if we trust the test data) connected to an existing item tagged to it
+        Akonadi::Storage storage;
+        Akonadi::Tag tag = fetchTagByGID("delete-me");
+        // NOTE : this item was linked to the delete-me tag during test time
+        const QString expectedRemoteIds = {"{1d33862f-f274-4c67-ab6c-362d56521ff5}"};
+        auto job = storage.fetchTagItems(tag);
+        AKVERIFYEXEC(job->kjob());
+
+        QCOMPARE(job->items().size(), 1);
+        auto itemTagged = job->items().first();
+        QCOMPARE(itemTagged.remoteId(), expectedRemoteIds);
+
         // A spied monitor
         Akonadi::MonitorImpl monitor;
         QSignalSpy spy(&monitor, SIGNAL(tagRemoved(Akonadi::Tag)));
+        QSignalSpy spyItemChanged(&monitor, SIGNAL(itemChanged(Akonadi::Item)));
         MonitorSpy monitorSpy(&monitor);
 
-        // An existing tag (if we trust the test data)
-        Akonadi::Tag tag(5);
-
         // WHEN
-        auto job = new Akonadi::TagDeleteJob(tag);
-        AKVERIFYEXEC(job);
+        auto jobDelete = new Akonadi::TagDeleteJob(tag);
+        AKVERIFYEXEC(jobDelete);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
+        QTRY_VERIFY(!spyItemChanged.isEmpty());
 
         // THEN
         QCOMPARE(spy.size(), 1);
         auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
         QCOMPARE(notifiedTag.id(), tag.id());
+
+        QCOMPARE(spyItemChanged.size(), 1);
+        auto notifiedItem = spyItemChanged.takeFirst().takeFirst().value<Akonadi::Item>();
+        QCOMPARE(notifiedItem.id(), itemTagged.id());
     }
 
     void shouldNotifyTagChanged()
