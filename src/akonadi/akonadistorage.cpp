@@ -108,6 +108,17 @@ public:
         return collections;
     }
 
+    void setResource(const QString &resource) Q_DECL_OVERRIDE
+    {
+        fetchScope().setResource(resource);
+    }
+
+    void setFiltered(bool filter) Q_DECL_OVERRIDE
+    {
+        fetchScope().setListFilter(filter ? Akonadi::CollectionFetchScope::Display
+                                          : Akonadi::CollectionFetchScope::NoFilter);
+    }
+
 private:
     const Collection m_collection;
 };

@@ -39,6 +39,8 @@ public:
     KJob *kjob();
 
     virtual Collection::List collections() const = 0;
+    virtual void setResource(const QString &resource) = 0;
+    virtual void setFiltered(bool filter) = 0;
 };
 
 }

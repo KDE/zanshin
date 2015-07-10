@@ -41,8 +41,16 @@ public:
     void setCollections(const Akonadi::Collection::List &collections);
     Akonadi::Collection::List collections() const;
 
+    QString resource() const;
+    void setResource(const QString &resource) Q_DECL_OVERRIDE;
+
+    bool filtered() const;
+    void setFiltered(bool filter);
+
 private:
     Akonadi::Collection::List m_collections;
+    QString m_resource;
+    bool m_filter;
 };
 
 class AkonadiFakeCollectionSearchJob : public FakeJob, public Akonadi::CollectionSearchJobInterface
