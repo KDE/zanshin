@@ -59,7 +59,8 @@ class CollectionJob : public CollectionFetchJob, public CollectionFetchJobInterf
 public:
     CollectionJob(const Collection &collection, Type type = FirstLevel, QObject *parent = Q_NULLPTR)
         : CollectionFetchJob(collection, type, parent),
-          m_collection(collection)
+          m_collection(collection),
+          m_type(type)
     {
     }
 
@@ -87,25 +88,27 @@ public:
                               collections.end());
         }
 
-        // Replace the dummy parents in the ancestor chain with proper ones
-        // full of juicy data
-        std::function<Collection(const Collection&)> reconstructAncestors =
-        [collectionsMap, &reconstructAncestors, this] (const Collection &collection) -> Collection {
-            Q_ASSERT(collection.isValid());
+        if (m_type != Base) {
+            // Replace the dummy parents in the ancestor chain with proper ones
+            // full of juicy data
+            std::function<Collection(const Collection&)> reconstructAncestors =
+            [collectionsMap, &reconstructAncestors, this] (const Collection &collection) -> Collection {
+                Q_ASSERT(collection.isValid());
 
-            if (collection == m_collection)
-                return collection;
+                if (collection == m_collection)
+                    return collection;
 
-            auto parent = collection.parentCollection();
-            auto reconstructedParent = reconstructAncestors(collectionsMap[parent.id()]);
+                auto parent = collection.parentCollection();
+                auto reconstructedParent = reconstructAncestors(collectionsMap[parent.id()]);
 
-            auto result = collection;
-            result.setParentCollection(reconstructedParent);
-            return result;
-        };
+                auto result = collection;
+                result.setParentCollection(reconstructedParent);
+                return result;
+            };
 
-        std::transform(collections.begin(), collections.end(),
-                       collections.begin(), reconstructAncestors);
+            std::transform(collections.begin(), collections.end(),
+                           collections.begin(), reconstructAncestors);
+        }
 
         return collections;
     }
@@ -123,6 +126,7 @@ public:
 
 private:
     const Collection m_collection;
+    const Type m_type;
 };
 
 class CollectionSearchJob : public CollectionFetchJob, public CollectionSearchJobInterface
