@@ -53,6 +53,7 @@ public:
     };
 
     enum FetchContentType {
+        AllContent = 0x0,
         Tasks = 0x1,
         Notes = 0x2
     };

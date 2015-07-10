@@ -78,12 +78,14 @@ public:
         auto self = const_cast<CollectionJob*>(this);
         const auto allowedMimeTypes = self->fetchScope().contentMimeTypes().toSet();
 
-        collections.erase(std::remove_if(collections.begin(), collections.end(),
-                                         [allowedMimeTypes] (const Collection &collection) {
-                                            auto mimeTypes = collection.contentMimeTypes().toSet();
-                                            return mimeTypes.intersect(allowedMimeTypes).isEmpty();
-                                         }),
-                          collections.end());
+        if (!allowedMimeTypes.isEmpty()) {
+            collections.erase(std::remove_if(collections.begin(), collections.end(),
+                                             [allowedMimeTypes] (const Collection &collection) {
+                                                auto mimeTypes = collection.contentMimeTypes().toSet();
+                                                return mimeTypes.intersect(allowedMimeTypes).isEmpty();
+                                             }),
+                              collections.end());
+        }
 
         // Replace the dummy parents in the ancestor chain with proper ones
         // full of juicy data
@@ -295,9 +297,6 @@ CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, St
         contentMimeTypes << NoteUtils::noteMimeType();
     if (types & Tasks)
         contentMimeTypes << KCalCore::Todo::todoMimeType();
-
-
-    Q_ASSERT(!contentMimeTypes.isEmpty());
 
     auto job = new CollectionJob(collection, jobTypeFromDepth(depth));
 
