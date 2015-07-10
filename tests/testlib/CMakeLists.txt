@@ -4,6 +4,7 @@ set(testlib_SRCS
    akonadifakedataxmlloader.cpp
    akonadifakejobs.cpp
    akonadifakemonitor.cpp
+   akonadistoragetestbase.cpp
    fakejob.cpp
    gencollection.cpp
    gennote.cpp
