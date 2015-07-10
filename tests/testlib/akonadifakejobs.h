@@ -75,8 +75,12 @@ public:
     void setItems(const Akonadi::Item::List &items);
     Akonadi::Item::List items() const;
 
+    Akonadi::Collection collection() const;
+    void setCollection(const Akonadi::Collection &collection) Q_DECL_OVERRIDE;
+
 private:
     Akonadi::Item::List m_items;
+    Akonadi::Collection m_collection;
 };
 
 class AkonadiFakeTagFetchJob : public FakeJob, public Akonadi::TagFetchJobInterface

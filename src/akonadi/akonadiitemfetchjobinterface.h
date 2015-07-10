@@ -24,6 +24,7 @@
 #ifndef AKONADI_ITEMFETCHJOBINTERFACE_H
 #define AKONADI_ITEMFETCHJOBINTERFACE_H
 
+#include <Akonadi/Collection>
 #include <Akonadi/Item>
 
 class KJob;
@@ -39,6 +40,7 @@ public:
     KJob *kjob();
 
     virtual Item::List items() const = 0;
+    virtual void setCollection(const Akonadi::Collection &collection) = 0;
 };
 
 }

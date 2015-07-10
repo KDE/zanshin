@@ -190,6 +190,11 @@ public:
     using ItemFetchJob::ItemFetchJob;
 
     Item::List items() const Q_DECL_OVERRIDE { return ItemFetchJob::items(); }
+
+    void setCollection(const Collection &collection) Q_DECL_OVERRIDE
+    {
+        ItemFetchJob::setCollection(collection);
+    }
 };
 
 class TagJob : public TagFetchJob, public TagFetchJobInterface

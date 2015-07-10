@@ -80,6 +80,16 @@ Akonadi::Item::List AkonadiFakeItemFetchJob::items() const
     return isDone() ? m_items : Akonadi::Item::List();
 }
 
+Akonadi::Collection AkonadiFakeItemFetchJob::collection() const
+{
+    return m_collection;
+}
+
+void AkonadiFakeItemFetchJob::setCollection(const Akonadi::Collection &collection)
+{
+    m_collection = collection;
+}
+
 void AkonadiFakeTagFetchJob::setTags(const Akonadi::Tag::List &tags)
 {
     m_tags = tags;
