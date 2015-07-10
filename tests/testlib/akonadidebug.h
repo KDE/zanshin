@@ -21,8 +21,10 @@
    USA.
 */
 
+#include "akonadi/akonadistorageinterface.h"
+
 namespace TestLib {
     namespace AkonadiDebug {
-        void dumpTree();
+        void dumpTree(const Akonadi::StorageInterface::Ptr &storage);
     }
 }

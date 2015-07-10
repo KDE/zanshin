@@ -63,7 +63,7 @@ private slots:
     void initTestCase()
     {
         QVERIFY(TestLib::TestSafety::checkTestIsIsolated());
-        TestLib::AkonadiDebug::dumpTree();
+        TestLib::AkonadiDebug::dumpTree(createStorage());
     }
 
     void shouldListCollections_data()

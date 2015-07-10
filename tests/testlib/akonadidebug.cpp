@@ -25,23 +25,20 @@
 
 #include <KCalCore/Todo>
 
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/TagFetchJob>
-#include <Akonadi/TagFetchScope>
+#include "akonadi/akonadicollectionfetchjobinterface.h"
+#include "akonadi/akonadiitemfetchjobinterface.h"
+#include "akonadi/akonaditagfetchjobinterface.h"
 
-
-void TestLib::AkonadiDebug::dumpTree()
+void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &storage)
 {
-    auto colJob = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
-                                                  Akonadi::CollectionFetchJob::Recursive);
-    colJob->exec();
+    auto colJob = storage->fetchCollections(Akonadi::Collection::root(),
+                                            Akonadi::StorageInterface::Recursive,
+                                            Akonadi::StorageInterface::AllContent);
+    colJob->kjob()->exec();
     for (const auto &col : colJob->collections()) {
         qDebug() << "COL:" << col.id() << col.name() << col.remoteId();
-        auto itemJob = new Akonadi::ItemFetchJob(col);
-        itemJob->fetchScope().fetchFullPayload();
-        itemJob->exec();
+        auto itemJob = storage->fetchItems(col);
+        itemJob->kjob()->exec();
         for (const auto &item : itemJob->items()) {
             QString summary;
             if (item.hasPayload<KCalCore::Todo::Ptr>())
@@ -50,8 +47,8 @@ void TestLib::AkonadiDebug::dumpTree()
         }
     }
 
-    auto tagJob = new Akonadi::TagFetchJob;
-    tagJob->exec();
+    auto tagJob = storage->fetchTags();
+    tagJob->kjob()->exec();
     for (const auto &tag : tagJob->tags()) {
         qDebug() << "TAG:" << tag.id() << tag.name();
     }

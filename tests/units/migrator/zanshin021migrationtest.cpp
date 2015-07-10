@@ -60,7 +60,8 @@ private slots:
     void initTestCase()
     {
         QVERIFY(TestLib::TestSafety::checkTestIsIsolated());
-        TestLib::AkonadiDebug::dumpTree();
+        auto storage = Akonadi::StorageInterface::Ptr(new Akonadi::Storage);
+        TestLib::AkonadiDebug::dumpTree(storage);
         //QProcess proc;
         //proc.execute("akonadiconsole");
         //qApp->exec();
