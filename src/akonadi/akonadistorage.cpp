@@ -28,6 +28,8 @@
 
 #include <KCalCore/Todo>
 
+#include <Akonadi/CollectionCreateJob>
+#include <Akonadi/CollectionDeleteJob>
 #include <Akonadi/CollectionFetchScope>
 #include <Akonadi/CollectionModifyJob>
 #include <Akonadi/ItemCreateJob>
@@ -235,9 +237,19 @@ KJob *Storage::moveItems(Item::List items, Collection collection, QObject *paren
     return new ItemMoveJob(items, collection, parent);
 }
 
+KJob *Storage::createCollection(Collection collection, QObject *parent)
+{
+    return new CollectionCreateJob(collection, parent);
+}
+
 KJob *Storage::updateCollection(Collection collection, QObject *parent)
 {
     return new CollectionModifyJob(collection, parent);
+}
+
+KJob *Storage::removeCollection(Collection collection, QObject *parent)
+{
+    return new CollectionDeleteJob(collection, parent);
 }
 
 KJob *Storage::createTransaction()

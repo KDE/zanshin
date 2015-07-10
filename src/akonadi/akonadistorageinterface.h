@@ -71,7 +71,9 @@ public:
     virtual KJob *moveItem(Item item, Collection collection, QObject *parent = Q_NULLPTR) = 0;
     virtual KJob *moveItems(Item::List item, Collection collection, QObject *parent = Q_NULLPTR) = 0;
 
+    virtual KJob *createCollection(Collection collection, QObject *parent = Q_NULLPTR) = 0;
     virtual KJob *updateCollection(Collection collection, QObject *parent = Q_NULLPTR) = 0;
+    virtual KJob *removeCollection(Collection collection, QObject *parent = Q_NULLPTR) = 0;
 
     virtual KJob *createTransaction() = 0;
 

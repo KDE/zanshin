@@ -47,7 +47,9 @@ public:
     KJob *moveItem(Item item, Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
     KJob *moveItems(Item::List item, Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
 
+    KJob *createCollection(Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
     KJob *updateCollection(Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
+    KJob *removeCollection(Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
 
     KJob *createTransaction() Q_DECL_OVERRIDE;
 
