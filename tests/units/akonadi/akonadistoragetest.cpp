@@ -33,22 +33,7 @@
 
 #include "akonadi/qtest_akonadi.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/CollectionCreateJob>
-#include <Akonadi/CollectionDeleteJob>
-#include <Akonadi/CollectionModifyJob>
-#include <Akonadi/CollectionStatistics>
 #include <Akonadi/EntityDisplayAttribute>
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemDeleteJob>
-#include <Akonadi/ItemModifyJob>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/Tag>
-#include <Akonadi/TagCreateJob>
-#include <Akonadi/TagDeleteJob>
-#include <Akonadi/TagFetchJob>
-#include <Akonadi/TagModifyJob>
-#include <Akonadi/TagFetchJob>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
@@ -59,8 +44,6 @@
 #include "akonadi/akonadistoragesettings.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonaditimestampattribute.h"
-
-#include <Akonadi/CollectionFetchScope>
 
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth)
 
@@ -157,17 +140,18 @@ private slots:
         QFETCH(bool, referenceCalendar1);
         QFETCH(bool, enableCalendar1);
 
+        Akonadi::Storage storage;
+
         // Default is not referenced and enabled
         // no need to feedle with the collection in that case
         if (referenceCalendar1 || !enableCalendar1) {
             Akonadi::Collection cal1 = calendar1();
             cal1.setReferenced(referenceCalendar1);
             cal1.setEnabled(enableCalendar1);
-            auto update = new Akonadi::CollectionModifyJob(cal1);
+            auto update = storage.updateCollection(cal1);
             AKVERIFYEXEC(update);
         }
 
-        Akonadi::Storage storage;
 
         // WHEN
         auto job = storage.fetchCollections(collection, depth,
@@ -187,7 +171,7 @@ private slots:
             Akonadi::Collection cal1 = calendar1();
             cal1.setReferenced(false);
             cal1.setEnabled(true);
-            auto update = new Akonadi::CollectionModifyJob(cal1);
+            auto update = storage.updateCollection(cal1);
             AKVERIFYEXEC(update);
         }
 
@@ -335,7 +319,8 @@ private slots:
         collection.setContentMimeTypes(QStringList() << "application/x-vnd.akonadi.calendar.todo");
 
         // WHEN
-        auto job = new Akonadi::CollectionCreateJob(collection);
+        Akonadi::Storage storage;
+        auto job = storage.createCollection(collection);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -366,7 +351,8 @@ private slots:
         QVERIFY(collection.isValid());
 
         // WHEN
-        auto job = new Akonadi::CollectionDeleteJob(collection);
+        Akonadi::Storage storage;
+        auto job = storage.removeCollection(collection);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -392,7 +378,8 @@ private slots:
         collection.setName("Bar!");
 
         // WHEN
-        auto job = new Akonadi::CollectionModifyJob(collection);
+        Akonadi::Storage storage;
+        auto job = storage.updateCollection(collection);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -435,7 +422,8 @@ private slots:
         item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
         // WHEN
-        auto job = new Akonadi::ItemCreateJob(item, calendar2());
+        Akonadi::Storage storage;
+        auto job = storage.createItem(item, calendar2());
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -467,7 +455,8 @@ private slots:
         QVERIFY(item.isValid());
 
         // WHEN
-        auto job = new Akonadi::ItemDeleteJob(item);
+        Akonadi::Storage storage;
+        auto job = storage.removeItem(item);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -503,7 +492,8 @@ private slots:
         item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
         // WHEN
-        auto job = new Akonadi::ItemModifyJob(item);
+        Akonadi::Storage storage;
+        auto job = storage.updateItem(item);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -541,7 +531,8 @@ private slots:
 
         // WHEN
         item.setTag(tag);
-        auto job = new Akonadi::ItemModifyJob(item);
+        Akonadi::Storage storage;
+        auto job = storage.updateItem(item);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -621,7 +612,8 @@ private slots:
         tag.setType("type");
 
         // WHEN
-        auto job = new Akonadi::TagCreateJob(tag);
+        Akonadi::Storage storage;
+        auto job = storage.createTag(tag);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -657,7 +649,7 @@ private slots:
         MonitorSpy monitorSpy(&monitor);
 
         // WHEN
-        auto jobDelete = new Akonadi::TagDeleteJob(tag);
+        auto jobDelete = storage.removeTag(tag);
         AKVERIFYEXEC(jobDelete);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -687,7 +679,8 @@ private slots:
         tag.setName("Oh it changed!");
 
         // WHEN
-        auto job = new Akonadi::TagModifyJob(tag);
+        Akonadi::Storage storage;
+        auto job = storage.updateTag(tag);
         AKVERIFYEXEC(job);
         monitorSpy.waitForStableState();
         QTRY_VERIFY(!spy.isEmpty());
@@ -1319,7 +1312,7 @@ private slots:
             Akonadi::Collection cal1 = calendar1();
             cal1.setReferenced(referenceCalendar1);
             cal1.setEnabled(enableCalendar1);
-            auto update = new Akonadi::CollectionModifyJob(cal1);
+            auto update = storage.updateCollection(cal1);
             AKVERIFYEXEC(update);
             monitorSpy.waitForStableState();
         }
@@ -1337,7 +1330,7 @@ private slots:
             Akonadi::Collection cal1 = calendar1();
             cal1.setReferenced(false);
             cal1.setEnabled(true);
-            auto update = new Akonadi::CollectionModifyJob(cal1);
+            auto update = storage.updateCollection(cal1);
             AKVERIFYEXEC(update);
             monitorSpy.waitForStableState();
         }
@@ -1356,15 +1349,16 @@ private:
         Akonadi::Item item;
         item.setRemoteId(remoteId);
 
-        auto job = new Akonadi::ItemFetchJob(item);
+        Akonadi::Storage storage;
+        auto job = storage.fetchItem(item);
         job->setCollection(collection);
-        if (!job->exec()) {
-            qWarning() << job->errorString();
+        if (!job->kjob()->exec()) {
+            qWarning() << job->kjob()->errorString();
             return Akonadi::Item();
         }
 
-        if (job->count() != 1) {
-            qWarning() << "Received unexpected amount of items: " << job->count();
+        if (job->items().count() != 1) {
+            qWarning() << "Received unexpected amount of items: " << job->items().count();
             return Akonadi::Item();
         }
 
@@ -1376,10 +1370,12 @@ private:
         Akonadi::Collection collection;
         collection.setRemoteId(remoteId);
 
-        auto job = new Akonadi::CollectionFetchJob(collection, Akonadi::CollectionFetchJob::Base);
-        job->fetchScope().setResource("akonadi_knut_resource_0");
-        if (!job->exec()) {
-            qWarning() << job->errorString();
+        Akonadi::Storage storage;
+        auto job = storage.fetchCollections(collection, Akonadi::StorageInterface::Base, Akonadi::StorageInterface::AllContent);
+        job->setResource("akonadi_knut_resource_0");
+        job->setFiltered(false);
+        if (!job->kjob()->exec()) {
+            qWarning() << job->kjob()->errorString() << remoteId;
             return Akonadi::Collection();
         }
 
@@ -1393,9 +1389,10 @@ private:
 
     Akonadi::Tag fetchTagByGID(const QString &gid)
     {
-        auto job = new Akonadi::TagFetchJob();
-        if (!job->exec()) {
-            qWarning() << job->errorString();
+        Akonadi::Storage storage;
+        auto job = storage.fetchTags();
+        if (!job->kjob()->exec()) {
+            qWarning() << job->kjob()->errorString();
             return Akonadi::Tag();
         }
 
