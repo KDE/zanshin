@@ -290,6 +290,13 @@ void AkonadiStorageTestBase::shouldListItemsAssociatedWithTag()
         QVERIFY(!item.attributes().isEmpty());
         QVERIFY(item.modificationTime().isValid());
         QVERIFY(!item.flags().isEmpty());
+
+        auto parent = item.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            parent = parent.parentCollection();
+        }
+
     }
     itemRemoteIds.sort();
 
