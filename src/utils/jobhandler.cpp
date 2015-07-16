@@ -59,20 +59,22 @@ public:
 
 Q_GLOBAL_STATIC(JobHandlerInstance, jobHandlerInstance)
 
-void JobHandler::install(KJob *job, const ResultHandler &handler)
+void JobHandler::install(KJob *job, const ResultHandler &handler, StartMode startMode)
 {
     auto self = jobHandlerInstance();
     QObject::connect(job, SIGNAL(result(KJob*)), self, SLOT(handleJobResult(KJob*)), Qt::UniqueConnection);
     self->m_handlers[job] << handler;
-    job->start();
+    if (startMode == AutoStart)
+        job->start();
 }
 
-void JobHandler::install(KJob *job, const ResultHandlerWithJob &handler)
+void JobHandler::install(KJob *job, const ResultHandlerWithJob &handler, StartMode startMode)
 {
     auto self = jobHandlerInstance();
     QObject::connect(job, SIGNAL(result(KJob*)), self, SLOT(handleJobResult(KJob*)), Qt::UniqueConnection);
     self->m_handlersWithJob[job] << handler;
-    job->start();
+    if (startMode == AutoStart)
+        job->start();
 }
 
 int JobHandler::jobCount()

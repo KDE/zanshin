@@ -33,11 +33,16 @@ namespace Utils {
 
 namespace JobHandler
 {
+    enum StartMode {
+        AutoStart,
+        ManualStart
+    };
+
     typedef std::function<void(KJob*)> ResultHandlerWithJob;
     typedef std::function<void()> ResultHandler;
 
-    void install(KJob *job, const ResultHandler &handler);
-    void install(KJob *job, const ResultHandlerWithJob &handler);
+    void install(KJob *job, const ResultHandler &handler, StartMode startMode = AutoStart);
+    void install(KJob *job, const ResultHandlerWithJob &handler, StartMode startMode = AutoStart);
 
     int jobCount();
 }
