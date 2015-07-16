@@ -40,9 +40,10 @@ public:
 private slots:
     void onTimeout();
 
-protected:
+public:
     bool isDone() const;
     int expectedError() const;
+    QString expectedErrorText() const;
 
 private:
     bool m_done;

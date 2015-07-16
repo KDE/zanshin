@@ -63,3 +63,8 @@ int FakeJob::expectedError() const
 {
     return m_errorCode;
 }
+
+QString FakeJob::expectedErrorText() const
+{
+    return m_errorText;
+}
