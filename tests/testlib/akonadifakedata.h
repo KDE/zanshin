@@ -32,6 +32,7 @@
 
 namespace Akonadi {
 class MonitorInterface;
+class StorageInterface;
 }
 
 namespace Testlib {
@@ -67,6 +68,17 @@ public:
     void removeItem(const Akonadi::Item &item);
 
     Akonadi::MonitorInterface *createMonitor();
+    Akonadi::StorageInterface *createStorage();
+
+    Akonadi::Collection::Id maxCollectionId() const;
+    Akonadi::Item::Id maxItemId() const;
+    Akonadi::Tag::Id maxTagId() const;
+
+    Akonadi::Collection reconstructAncestors(const Akonadi::Collection &collection,
+                                             const Akonadi::Collection &root = Akonadi::Collection::root()) const;
+    Akonadi::Item reconstructItemDependencies(const Akonadi::Item &item,
+                                              const Akonadi::Collection &root = Akonadi::Collection::root()) const;
+
 
 private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;

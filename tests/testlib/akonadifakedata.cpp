@@ -23,6 +23,12 @@
 
 #include "akonadifakedata.h"
 #include "akonadifakemonitor.h"
+#include "akonadifakestorage.h"
+
+#include <Akonadi/Notes/NoteUtils>
+#include <KCalCore/Todo>
+
+#include "akonadi/akonadiapplicationselectedattribute.h"
 
 #include <algorithm>
 
@@ -91,7 +97,7 @@ void AkonadiFakeData::createCollection(const Akonadi::Collection &collection)
 
     const auto parentId = findParentId(collection);
     m_childCollections[parentId] << collection.id();
-    m_monitor->addCollection(collection);
+    m_monitor->addCollection(reconstructAncestors(collection));
 }
 
 void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
@@ -99,15 +105,37 @@ void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
     Q_ASSERT(m_collections.contains(collection.id()));
 
     const auto oldParentId = findParentId(m_collections[collection.id()]);
-    m_collections[collection.id()] = collection;
-    const auto parentId = findParentId(collection);
+    const auto oldCollection = m_collections.take(collection.id());
+    auto newCollection = collection;
+    newCollection.setRemoteId(oldCollection.remoteId());
+    if (newCollection.name().isEmpty())
+        newCollection.setName(oldCollection.name());
+    if (newCollection.contentMimeTypes().isEmpty())
+        newCollection.setContentMimeTypes(oldCollection.contentMimeTypes());
+
+    m_collections[newCollection.id()] = newCollection;
+    const auto parentId = findParentId(newCollection);
 
     if (oldParentId != parentId) {
-        m_childCollections[oldParentId].removeAll(collection.id());
-        m_childCollections[parentId] << collection.id();
+        m_childCollections[oldParentId].removeAll(newCollection.id());
+        m_childCollections[parentId] << newCollection.id();
     }
 
-    m_monitor->changeCollection(collection);
+    auto notifiedCollection = reconstructAncestors(newCollection);
+    m_monitor->changeCollection(notifiedCollection);
+
+    const auto mimeTypes = collection.contentMimeTypes();
+    if (mimeTypes.contains(KCalCore::Todo::todoMimeType())
+     || mimeTypes.contains(Akonadi::NoteUtils::noteMimeType())) {
+        const auto oldAttribute = oldCollection.attribute<Akonadi::ApplicationSelectedAttribute>();
+        const auto oldSelected = oldAttribute ? oldAttribute->isSelected() : true;
+        const auto newAttribute = newCollection.attribute<Akonadi::ApplicationSelectedAttribute>();
+        const auto newSelected = newAttribute ? newAttribute->isSelected() : true;
+
+        if (oldSelected != newSelected) {
+            m_monitor->changeCollectionSelection(notifiedCollection);
+        }
+    }
 }
 
 void AkonadiFakeData::removeCollection(const Akonadi::Collection &collection)
@@ -156,8 +184,12 @@ void AkonadiFakeData::createTag(const Akonadi::Tag &tag)
 void AkonadiFakeData::modifyTag(const Akonadi::Tag &tag)
 {
     Q_ASSERT(m_tags.contains(tag.id()));
-    m_tags[tag.id()] = tag;
-    m_monitor->changeTag(tag);
+    const auto oldTag = m_tags.take(tag.id());
+    auto newTag = tag;
+    newTag.setGid(oldTag.gid());
+    newTag.setRemoteId(oldTag.remoteId());
+    m_tags[tag.id()] = newTag;
+    m_monitor->changeTag(newTag);
 }
 
 void AkonadiFakeData::removeTag(const Akonadi::Tag &tag)
@@ -236,7 +268,7 @@ void AkonadiFakeData::createItem(const Akonadi::Item &item)
         m_tagItems[tag.id()] << item.id();
     }
 
-    m_monitor->addItem(item);
+    m_monitor->addItem(reconstructItemDependencies(item));
 }
 
 void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
@@ -263,7 +295,7 @@ void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
         m_tagItems[tag.id()] << item.id();
     }
 
-    m_monitor->changeItem(item);
+    m_monitor->changeItem(reconstructItemDependencies(item));
 }
 
 void AkonadiFakeData::removeItem(const Akonadi::Item &item)
@@ -272,7 +304,12 @@ void AkonadiFakeData::removeItem(const Akonadi::Item &item)
     const auto parentId = findParentId(m_items[item.id()]);
     const auto i = m_items.take(item.id());
     m_childItems[parentId].removeAll(item.id());
-    m_monitor->removeItem(i);
+
+    foreach (const Akonadi::Tag &tag, item.tags()) {
+        m_tagItems[tag.id()].removeAll(item.id());
+    }
+
+    m_monitor->removeItem(reconstructItemDependencies(i));
 }
 
 Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
@@ -301,4 +338,78 @@ Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
     QObject::connect(m_monitor.data(), SIGNAL(itemMoved(Akonadi::Item)),
                      monitor, SLOT(moveItem(Akonadi::Item)));
     return monitor;
+}
+
+Akonadi::StorageInterface *AkonadiFakeData::createStorage()
+{
+    return new AkonadiFakeStorage(this);
+}
+
+template<typename T>
+bool idLessThan(const T &left, const T &right)
+{
+    return left.id() < right.id();
+}
+
+Akonadi::Entity::Id AkonadiFakeData::maxCollectionId() const
+{
+    if (m_collections.isEmpty())
+        return 0;
+
+    auto it = std::max_element(m_collections.constBegin(), m_collections.constEnd(),
+                               idLessThan<Akonadi::Collection>);
+    return it.key();
+}
+
+Akonadi::Entity::Id AkonadiFakeData::maxItemId() const
+{
+    if (m_items.isEmpty())
+        return 0;
+
+    auto it = std::max_element(m_items.constBegin(), m_items.constEnd(),
+                               idLessThan<Akonadi::Item>);
+    return it.key();
+}
+
+Akonadi::Tag::Id AkonadiFakeData::maxTagId() const
+{
+    if (m_tags.isEmpty())
+        return 0;
+
+    auto it = std::max_element(m_tags.constBegin(), m_tags.constEnd(),
+                               idLessThan<Akonadi::Tag>);
+    return it.key();
+}
+
+Akonadi::Collection AkonadiFakeData::reconstructAncestors(const Akonadi::Collection &collection,
+                                                          const Akonadi::Collection &root) const
+{
+    if (!collection.isValid())
+        return Akonadi::Collection::root();
+
+    if (collection == root)
+        return collection;
+
+    auto parent = collection.parentCollection();
+    auto reconstructedParent = reconstructAncestors(m_collections.value(parent.id()), root);
+
+    auto result = collection;
+    result.setParentCollection(reconstructedParent);
+    return result;
+}
+
+Akonadi::Item AkonadiFakeData::reconstructItemDependencies(const Akonadi::Item &item, const Akonadi::Collection &root) const
+{
+    auto result = item;
+    result.setParentCollection(reconstructAncestors(item.parentCollection(), root));
+
+    auto tags = item.tags();
+    std::transform(tags.constBegin(), tags.constEnd(),
+                   tags.begin(),
+                   [=] (const Akonadi::Tag &t) {
+                       return tag(t.id());
+                   });
+    result.setTags(tags);
+
+    return result;
 }
