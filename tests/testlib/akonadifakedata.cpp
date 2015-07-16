@@ -282,6 +282,8 @@ Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
                      monitor, SLOT(addCollection(Akonadi::Collection)));
     QObject::connect(m_monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)),
                      monitor, SLOT(changeCollection(Akonadi::Collection)));
+    QObject::connect(m_monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)),
+                     monitor, SLOT(changeCollectionSelection(Akonadi::Collection)));
     QObject::connect(m_monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)),
                      monitor, SLOT(removeCollection(Akonadi::Collection)));
     QObject::connect(m_monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)),
