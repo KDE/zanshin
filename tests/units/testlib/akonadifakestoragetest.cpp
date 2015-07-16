@@ -29,6 +29,7 @@
 #include "testlib/akonadifakedataxmlloader.h"
 #include "testlib/akonadifakemonitor.h"
 #include "testlib/akonadifakestorage.h"
+#include "testlib/monitorspy.h"
 
 
 class AkonadiFakeStorageTest : public Testlib::AkonadiStorageTestBase
@@ -38,6 +39,7 @@ public:
     explicit AkonadiFakeStorageTest(QObject *parent = Q_NULLPTR)
         : Testlib::AkonadiStorageTestBase(parent)
     {
+        MonitorSpy::setExpirationDelay(100);
         auto loader = Testlib::AkonadiFakeDataXmlLoader(&m_data);
         loader.load(SOURCE_DIR "/akonadifakedataxmlloadertest.xml");
     }
