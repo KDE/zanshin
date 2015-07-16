@@ -464,6 +464,12 @@ void AkonadiStorageTestBase::shouldNotifyItemRemoved()
     QCOMPARE(spy.size(), 1);
     auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
+
+    auto parent = notifiedItem.parentCollection();
+    while (parent != Akonadi::Collection::root()) {
+        QVERIFY(parent.isValid());
+        parent = parent.parentCollection();
+    }
 }
 
 void AkonadiStorageTestBase::shouldNotifyItemChanged()
