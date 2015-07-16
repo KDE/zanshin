@@ -778,16 +778,7 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     QSignalSpy spyUpdated(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
     MonitorSpy monitorSpy(monitor.data());
 
-    auto job = storage->fetchItem(item1);
-    AKVERIFYEXEC(job->kjob());
-    QCOMPARE(job->items().size(), 1);
-    item1 = job->items()[0];
-
-    job = storage->fetchItem(item2);
-    AKVERIFYEXEC(job->kjob());
-    QCOMPARE(job->items().size(), 1);
-    item2 = job->items()[0];
-
+    // WHEN
     auto todo = item1.payload<KCalCore::Todo::Ptr>();
     todo->setSummary("Buy tomatoes");
 
@@ -801,9 +792,9 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     QVERIFY(!transaction->exec());
     monitorSpy.waitForStableState();
 
-    // Then
+    // THEN
     QCOMPARE(spyUpdated.size(), 0);
-    job = storage->fetchItem(item1);
+    auto job = storage->fetchItem(item1);
     AKVERIFYEXEC(job->kjob());
     QCOMPARE(job->items().size(), 1);
     item1 = job->items()[0];
