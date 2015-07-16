@@ -1333,12 +1333,11 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName()
         monitorSpy.waitForStableState();
     }
 
-    QCOMPARE(collections.size(), expectedResults.size());
-    int i = 0;
-    for (const auto &collection : collections) {
-        QCOMPARE(collection.name(), expectedResults[i]);
-        ++i;
-    }
+    auto collectionNames = QStringList();
+    std::transform(collections.constBegin(), collections.constEnd(),
+                   std::back_inserter(collectionNames),
+                   std::mem_fn(&Akonadi::Collection::name));
+    QCOMPARE(collectionNames.toSet(), expectedResults.toSet());
 }
 
 Akonadi::Item AkonadiStorageTestBase::fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
