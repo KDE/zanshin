@@ -24,6 +24,18 @@
 #include "monitorspy.h"
 #include <QTest>
 
+static int s_expirationDelay = 1000;
+
+int MonitorSpy::expirationDelay()
+{
+    return s_expirationDelay;
+}
+
+void MonitorSpy::setExpirationDelay(int value)
+{
+    s_expirationDelay = value;
+}
+
 MonitorSpy::MonitorSpy(Akonadi::MonitorInterface* monitor, QObject *parent)
     : QObject(parent),
       m_monitor(monitor),
@@ -50,14 +62,14 @@ MonitorSpy::MonitorSpy(Akonadi::MonitorInterface* monitor, QObject *parent)
 void MonitorSpy::waitForStableState()
 {
     m_isFinished = false;
-    m_timer->start(1000);
+    m_timer->start(s_expirationDelay);
     while (!m_isFinished)
         QTest::qWait(20);
 }
 
 void MonitorSpy::restartTimer()
 {
-    m_timer->start(1000);
+    m_timer->start(s_expirationDelay);
 }
 
 void MonitorSpy::onDelayExpired()
