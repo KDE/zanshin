@@ -50,6 +50,15 @@ using namespace Testlib;
 class AkonadiTaskQueriesTest : public QObject
 {
     Q_OBJECT
+
+private:
+    void waitForEmptyJobQueue()
+    {
+        while (Utils::JobHandler::jobCount() != 0) {
+            QTest::qWait(20);
+        }
+    }
+
 private slots:
     void shouldLookInAllReportedForAllTasks()
     {
@@ -77,9 +86,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        while (Utils::JobHandler::jobCount() != 0) {
-            QTest::qWait(20);
-        }
+        waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 3);
         QCOMPARE(result->data().at(0)->title(), QString("42"));
