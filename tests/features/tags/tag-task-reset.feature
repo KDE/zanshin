@@ -19,6 +19,7 @@ Feature: Tag reset
         | Buy a cake                                               |
         | Buy cheese                                               |
         | Buy pears                                                |
+        | Buy rutabagas                                            |
         | Create Sozi SVG                                          |
         | Errands                                                  |
 

@@ -39,7 +39,6 @@ Feature: Inbox task association
         | display       |
         | Buy apples    |
         | Buy pears     |
-        | Buy rutabagas |
     When I drop items on "Errands" in the central list
     And I list the items
     Then the list is:
@@ -49,6 +48,7 @@ Feature: Inbox task association
        | Errands / Buy pears                           |
        | "The Pragmatic Programmer" by Hunt and Thomas |
        | Buy cheese                                    |
+       | Buy rutabagas                                 |
        | 21/04/2014 14:49                              |
 
   Scenario: Dropping two child tasks on the inbox makes them top-level
@@ -66,6 +66,7 @@ Feature: Inbox task association
        | "The Pragmatic Programmer" by Hunt and Thomas |
        | Buy cheese                                    |
        | Buy pears                                     |
+       | Buy rutabagas                                 |
        | 21/04/2014 14:49                              |
 
   Scenario: Dropping a task on the inbox removes it from it's associated project
@@ -82,6 +83,7 @@ Feature: Inbox task association
        | "The Pragmatic Programmer" by Hunt and Thomas |
        | Buy cheese                                    |
        | Buy pears                                     |
+       | Buy rutabagas                                 |
        | 21/04/2014 14:49                              |
        | Create Sozi SVG                               |
 
