@@ -10,6 +10,6 @@ target_link_libraries(oldutils
     ${KDE4_KDECORE_LIBS}
     ${KDEPIMLIBS_AKONADI_LIBS}
     ${QT_QTXML_LIBRARY}
-    akonadi-notes
+    ${KDEPIMLIBS_AKONADI_NOTES_LIBS}
 #   kmime
 )
