@@ -12,7 +12,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
                                        ${KDEPIM_STATIC_LIBS}
     )
 
-    get_target_property(_location ${_testname} LOCATION)
+    set(_location ${CMAKE_CURRENT_BINARY_DIR}/${_testname})
     if (WIN32)
       set(_executable ${_location}.bat)
     else (WIN32)
