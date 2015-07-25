@@ -117,6 +117,7 @@ void QueryTreeNodeBase::emitDataChanged(const QModelIndex &topLeft, const QModel
 
 QueryTreeModelBase::QueryTreeModelBase(QueryTreeNodeBase *rootNode, QObject *parent)
     : QAbstractItemModel(parent),
+      m_rootIndexFlag(Qt::ItemIsDropEnabled),
       m_rootNode(rootNode)
 {
     auto roles = roleNames();
@@ -132,9 +133,8 @@ QueryTreeModelBase::~QueryTreeModelBase()
 
 Qt::ItemFlags QueryTreeModelBase::flags(const QModelIndex &index) const
 {
-    if (!isModelIndexValid(index)) {
-        return Qt::NoItemFlags;
-    }
+    if (!isModelIndexValid(index))
+        return m_rootIndexFlag;
 
     return nodeFromIndex(index)->flags();
 }
@@ -215,6 +215,11 @@ QStringList QueryTreeModelBase::mimeTypes() const
 QueryTreeNodeBase *QueryTreeModelBase::nodeFromIndex(const QModelIndex &index) const
 {
     return index.isValid() ? static_cast<QueryTreeNodeBase*>(index.internalPointer()) : m_rootNode;
+}
+
+void QueryTreeModelBase::setRootIndexFlag(const Qt::ItemFlags &flags)
+{
+    m_rootIndexFlag = flags;
 }
 
 bool QueryTreeModelBase::isModelIndexValid(const QModelIndex &index) const
