@@ -87,6 +87,26 @@ Feature: Inbox task association
        | 21/04/2014 14:49                              |
        | Create Sozi SVG                               |
 
+  Scenario: Deparenting a task by dropping on the central list's blank area
+    Given I display the "Inbox" page
+    And I look at the central list
+    And there is an item named "Buy apples" in the central list
+    And I drop the item on "Errands" in the central list
+    And I look at the central list
+    And there is an item named "Errands / Buy apples" in the central list
+    When I drop the item on the blank area of the central list
+    And I list the items
+    Then the list is:
+        | display                                       |
+        | Errands                                       |
+        | Buy apples                                    |
+        | "The Pragmatic Programmer" by Hunt and Thomas |
+        | Buy cheese                                    |
+        | Buy pears                                     |
+        | Buy rutabagas                                 |
+        | 21/04/2014 14:49                              |
+        | Create Sozi SVG                               |
+
   @wip
   Scenario: Dropping a task on the inbox removes it from all it's contexts
     Given I display the "Contexts / Chores" page
@@ -102,6 +122,7 @@ Feature: Inbox task association
        | "The Pragmatic Programmer" by Hunt and Thomas |
        | Buy cheese                                    |
        | Buy pears                                     |
+       | Buy rutabagas                                 |
        | 21/04/2014 14:49                              |
        | Create Sozi SVG                               |
        | Buy kiwis                                     |

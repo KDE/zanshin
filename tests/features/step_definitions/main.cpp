@@ -541,6 +541,17 @@ WHEN("^I drop the item on \"(.*)\" in the central list") {
     context->waitForStableState();
 }
 
+WHEN("^I drop the item on the blank area of the central list") {
+
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->index.isValid());
+    const QMimeData *data = context->model()->mimeData(QModelIndexList() << context->index);
+
+    QAbstractItemModel *destModel = context->model();
+    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, QModelIndex()));
+    context->waitForStableState();
+}
+
 WHEN("^I drop items on \"(.*)\" in the central list") {
     REGEX_PARAM(QString, itemName);
 
