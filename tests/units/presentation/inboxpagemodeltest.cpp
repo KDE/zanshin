@@ -513,6 +513,72 @@ private slots:
         QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask3 as sub-task of rootTask: Foo"));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
     }
+
+    void shouldDeparentWhenNoErrorHappens()
+    {
+        // GIVEN
+
+        // One note and one task, both top level
+        auto topLevelTask = Domain::Task::Ptr::create();
+        topLevelTask->setTitle("topLevelTask");
+        auto topLevelNote = Domain::Note::Ptr::create();
+        topLevelNote->setTitle("topLevelNote");
+        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
+        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
+        artifactProvider->append(topLevelTask);
+        artifactProvider->append(topLevelNote);
+
+        // Two tasks under the top level task
+        auto childTask = Domain::Task::Ptr::create();
+        childTask->setTitle("childTask");
+        childTask->setDone(true);
+        auto childTask2 = Domain::Task::Ptr::create();
+        childTask2->setTitle("childTask2");
+        childTask2->setDone(false);
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(childTask);
+        taskProvider->append(childTask2);
+
+        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
+        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(topLevelTask).thenReturn(taskResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
+
+        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                           taskQueriesMock.getInstance(),
+                                           taskRepositoryMock.getInstance(),
+                                           noteRepositoryMock.getInstance());
+
+        QAbstractItemModel *model = inbox.centralListModel();
+        const QModelIndex emptyPartModel = QModelIndex(); // model root, drop on the empty part is equivalent
+        FakeErrorHandler errorHandler;
+        inbox.setErrorHandler(&errorHandler);
+
+        // WHEN
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+
+        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask).thenReturn(job);
+        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask2).thenReturn(new FakeJob(this));
+
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask << childTask2)); // both will be DnD on the empty part
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, emptyPartModel);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot deparent task childTask from its parent: Foo"));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask2).exactly(1));
+    }
 };
 
 QTEST_MAIN(InboxPageModelTest)

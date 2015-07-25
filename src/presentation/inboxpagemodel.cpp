@@ -138,8 +138,6 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
 
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Artifact::Ptr &artifact) {
         auto parentTask = artifact.objectCast<Domain::Task>();
-        if (!parentTask)
-            return false;
 
         if (!mimeData->hasFormat("application/x-zanshin-object"))
             return false;
@@ -157,8 +155,14 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
 
         foreach(const auto &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            const auto job = taskRepository()->associate(parentTask, childTask);
-            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+
+            if (parentTask) {
+                const auto job = taskRepository()->associate(parentTask, childTask);
+                installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+            } else {
+                const auto job = taskRepository()->dissociate(childTask);
+                installHandler(job, tr("Cannot deparent task %1 from its parent").arg(childTask->title()));
+            }
         }
 
         return true;
