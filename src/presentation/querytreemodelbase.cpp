@@ -26,6 +26,7 @@
 #include "querytreemodelbase.h"
 
 #include <QStringList>
+#include <QMimeData>
 
 #include <algorithm>
 
@@ -190,13 +191,22 @@ bool QueryTreeModelBase::setData(const QModelIndex &index, const QVariant &value
 
     return nodeFromIndex(index)->setData(value, role);
 }
-
+#include <QDebug>
 bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
     if (row != -1 || column != -1)
         return false;
 
-    return nodeFromIndex(parent)->dropMimeData(data, action);
+    QModelIndexList indexes = data->property("objects").value<QModelIndexList>();
+
+    if(std::count_if(indexes.begin(), indexes.end(),
+                    [&parent](const QModelIndex &index) { return index == parent; } ) > 0)
+    {
+        qDebug() << "you want to drop an item on itself, I can not let you do thaht ! ";
+        return false;
+    } else {
+        return nodeFromIndex(parent)->dropMimeData(createMimeData(indexes), action); // Forbid the reflexive link
+    }
 }
 
 QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
@@ -204,7 +214,11 @@ QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
     if (indexes.isEmpty())
         return Q_NULLPTR;
 
-    return createMimeData(indexes);
+    auto data = new QMimeData;
+    data->setData("application/x-zanshin-object", "object");
+    data->setProperty("objects", QVariant::fromValue(indexes));
+    return data;
+//    return createMimeData(indexes); // TODO: we pass indexes
 }
 
 QStringList QueryTreeModelBase::mimeTypes() const

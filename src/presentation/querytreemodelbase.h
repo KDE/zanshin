@@ -28,6 +28,8 @@
 
 #include <QAbstractItemModel>
 
+Q_DECLARE_METATYPE(QModelIndexList)
+
 namespace Presentation {
 
 class QueryTreeModelBase;
