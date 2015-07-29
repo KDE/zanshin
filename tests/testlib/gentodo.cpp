@@ -110,15 +110,33 @@ GenTodo &GenTodo::withDoneDate(const QString &date)
     return *this;
 }
 
+GenTodo &GenTodo::withDoneDate(const QDateTime &date)
+{
+    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(KDateTime(date));
+    return *this;
+}
+
 GenTodo &GenTodo::withStartDate(const QString &date)
 {
     m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(KDateTime(QDate::fromString(date, Qt::ISODate)));
     return *this;
 }
 
+GenTodo &GenTodo::withStartDate(const QDateTime &date)
+{
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(KDateTime(date));
+    return *this;
+}
+
 GenTodo &GenTodo::withDueDate(const QString &date)
 {
     m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(KDateTime(QDate::fromString(date, Qt::ISODate)));
+    return *this;
+}
+
+GenTodo &GenTodo::withDueDate(const QDateTime &date)
+{
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(KDateTime(date));
     return *this;
 }
 
