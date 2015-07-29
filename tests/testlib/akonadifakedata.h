@@ -30,6 +30,8 @@
 #include <Akonadi/Item>
 #include <Akonadi/Tag>
 
+#include "testlib/akonadifakestoragebehavior.h"
+
 namespace Akonadi {
 class MonitorInterface;
 class StorageInterface;
@@ -79,6 +81,8 @@ public:
     Akonadi::Item reconstructItemDependencies(const Akonadi::Item &item,
                                               const Akonadi::Collection &root = Akonadi::Collection::root()) const;
 
+    const AkonadiFakeStorageBehavior &storageBehavior() const;
+    AkonadiFakeStorageBehavior &storageBehavior();
 
 private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;
@@ -91,6 +95,8 @@ private:
     QHash<Akonadi::Tag::Id, QList<Akonadi::Item::Id>> m_tagItems;
 
     QScopedPointer<AkonadiFakeMonitor> m_monitor;
+
+    AkonadiFakeStorageBehavior m_storageBehavior;
 };
 
 }

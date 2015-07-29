@@ -413,3 +413,13 @@ Akonadi::Item AkonadiFakeData::reconstructItemDependencies(const Akonadi::Item &
 
     return result;
 }
+
+const AkonadiFakeStorageBehavior &AkonadiFakeData::storageBehavior() const
+{
+    return m_storageBehavior;
+}
+
+AkonadiFakeStorageBehavior &AkonadiFakeData::storageBehavior()
+{
+    return m_storageBehavior;
+}

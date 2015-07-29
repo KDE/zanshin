@@ -381,7 +381,10 @@ Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akona
                        collections.begin(), completeCollection);
     }
 
-    job->setCollections(collections);
+    const auto behavior = m_data->storageBehavior().fetchCollectionsBehavior(collection.id());
+    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
+        job->setCollections(collections);
+    job->setExpectedError(m_data->storageBehavior().fetchCollectionsErrorCode(collection.id()));
     Utils::JobHandler::install(job, noop);
     return job;
 }
@@ -401,7 +404,10 @@ Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QSt
                      return supportedType && col.displayName().contains(collectionName, Qt::CaseInsensitive);
                  });
 
-    job->setCollections(foundCollections);
+    const auto behavior = m_data->storageBehavior().searchCollectionsBehavior(collectionName);
+    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
+        job->setCollections(foundCollections);
+    job->setExpectedError(m_data->storageBehavior().searchCollectionsErrorCode(collectionName));
     Utils::JobHandler::install(job, noop);
     return job;
 }
@@ -421,7 +427,10 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collecti
                    });
 
     auto job = new AkonadiFakeItemFetchJob;
-    job->setItems(items);
+    const auto behavior = m_data->storageBehavior().fetchItemsBehavior(collection.id());
+    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
+        job->setItems(items);
+    job->setExpectedError(m_data->storageBehavior().fetchItemsErrorCode(collection.id()));
     return job;
 }
 
@@ -433,7 +442,10 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItem(Akonadi::Item item
     fullItem.setPayloadFromData(fullItem.payloadData());
 
     auto job = new AkonadiFakeItemFetchJob;
-    job->setItems(Akonadi::Item::List() << fullItem);
+    const auto behavior = m_data->storageBehavior().fetchItemBehavior(item.id());
+    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
+        job->setItems(Akonadi::Item::List() << fullItem);
+    job->setExpectedError(m_data->storageBehavior().fetchItemErrorCode(item.id()));
     return job;
 }
 
@@ -452,14 +464,20 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchTagItems(Akonadi::Tag t
                    });
 
     auto job = new AkonadiFakeItemFetchJob;
-    job->setItems(items);
+    const auto behavior = m_data->storageBehavior().fetchTagItemsBehavior(tag.id());
+    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
+        job->setItems(items);
+    job->setExpectedError(m_data->storageBehavior().fetchTagItemsErrorCode(tag.id()));
     return job;
 }
 
 Akonadi::TagFetchJobInterface *AkonadiFakeStorage::fetchTags()
 {
     auto job = new AkonadiFakeTagFetchJob;
-    job->setTags(m_data->tags());
+    const auto behavior = m_data->storageBehavior().fetchTagsBehavior();
+    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
+        job->setTags(m_data->tags());
+    job->setExpectedError(m_data->storageBehavior().fetchTagsErrorCode());
     return job;
 }
 

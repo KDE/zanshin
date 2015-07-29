@@ -5,6 +5,7 @@ set(testlib_SRCS
    akonadifakejobs.cpp
    akonadifakemonitor.cpp
    akonadifakestorage.cpp
+   akonadifakestoragebehavior.cpp
    akonadistoragetestbase.cpp
    fakejob.cpp
    gencollection.cpp
