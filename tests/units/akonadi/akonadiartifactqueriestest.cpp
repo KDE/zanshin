@@ -23,6 +23,18 @@
 
 #include <QtTest>
 
+#include "akonadi/akonadiartifactqueries.h"
+#include "akonadi/akonadiserializer.h"
+
+#include "testlib/akonadifakedata.h"
+#include "testlib/gencollection.h"
+#include "testlib/gennote.h"
+#include "testlib/gentag.h"
+#include "testlib/gentodo.h"
+#include "testlib/testhelpers.h"
+
+using namespace Testlib;
+
 #include "utils/mockobject.h"
 
 #include "testlib/akonadifakejobs.h"
@@ -48,175 +60,69 @@ private slots:
     void shouldLookInAllSelectedCollectionsForInboxArtifacts()
     {
         // GIVEN
+        AkonadiFakeData data;
 
         // Three top level collections
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(Akonadi::Collection::root());
-        Akonadi::Collection col2(43);
-        col2.setParentCollection(Akonadi::Collection::root());
-        Akonadi::Collection col3(44); // This one won't be selected
-        col3.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withTaskContent().enabled(false));
 
         // One note in the first collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col1);
-        Domain::Note::Ptr note(new Domain::Note);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
 
         // Two tasks in the second collection
-        Akonadi::Item item2(43);
-        item2.setParentCollection(col2);
-        Domain::Task::Ptr task1(new Domain::Task);
-        Akonadi::Item item3(44);
-        item3.setParentCollection(col2);
-        Domain::Task::Ptr task2(new Domain::Task);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob2->setItems(Akonadi::Item::List() << item2 << item3);
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43"));
+        data.createItem(GenTodo().withId(44).withParent(43).withTitle("44"));
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
-                                                           .thenReturn(itemFetchJob1);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col2)
-                                                           .thenReturn(itemFetchJob2);
-
-        // Serializer mock returning the artifacts from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col3).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(Domain::Task::Ptr());
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task1);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(task2);
-
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn(QString());
-
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item3).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item3).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item3).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(false);
+        // One task in the third collection
+        data.createItem(GenTodo().withId(45).withParent(44).withTitle("45"));
 
         // WHEN
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
         result->data();
         result = queries->findInboxTopLevel(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0).dynamicCast<Domain::Note>(), note);
-        QCOMPARE(result->data().at(1).dynamicCast<Domain::Task>(), task1);
-        QCOMPARE(result->data().at(2).dynamicCast<Domain::Task>(), task2);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(1)->title(), QString("43"));
+        QCOMPARE(result->data().at(2)->title(), QString("44"));
     }
 
     void shouldIgnoreItemsWhichAreNotTasksOrNotesInInbox()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // Two top level collections
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // Two items in the collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col);
-        Domain::Task::Ptr task1(new Domain::Task);
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
         // One of them is not a task or a note
-        Akonadi::Item item2(43);
-        item2.setParentCollection(col);
-        Domain::Task::Ptr task2;
-        Domain::Note::Ptr note2;
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
-
-        // Serializer mock returning the tasks from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
-
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
-
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
-
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
+        auto item = Akonadi::Item(43);
+        item.setPayloadFromData("FooBar");
+        item.setParentCollection(Akonadi::Collection(42));
+        data.createItem(item);
 
         // WHEN
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(0));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(0));
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0).dynamicCast<Domain::Task>(), task1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
     }
 
     void shouldNotHaveArtifactsWithParentsInInbox()
@@ -227,166 +133,88 @@ private slots:
         // collection. We will need a cache to be able to implement that properly though.
 
         // GIVEN
+        AkonadiFakeData data;
 
         // One top level collection
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent().withNoteContent());
 
         // Three items in the collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col);
-        Domain::Task::Ptr task1(new Domain::Task);
-        // Two of them will have a parent
-        Akonadi::Item item2(43);
-        item2.setParentCollection(col);
-        Domain::Task::Ptr task2(new Domain::Task);
-        Akonadi::Item item3(44);
-        item3.setParentCollection(col);
-        Domain::Note::Ptr note3(new Domain::Note);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
-
-        // Serializer mock returning the artifacts from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
-
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item3).thenReturn(Domain::Task::Ptr());
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
-
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn("foo");
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).thenReturn("bar");
-
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item3).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item3).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item3).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withUid("uid-42"));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43").withUid("uid-43").withParentUid("uid-42"));
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle("44").withUid("uid-44").withParentUid("foo"));
 
         // WHEN
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).exactly(0));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).exactly(0));
-
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item3).exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0).dynamicCast<Domain::Task>(), task1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
     }
 
     void shouldNotHaveArtifactsWithContextsOrTagsInInbox_data()
     {
-        QTest::addColumn<Domain::Artifact::Ptr>("artifact");
+        QTest::addColumn<bool>("isTodo");
         QTest::addColumn<bool>("hasContexts");
         QTest::addColumn<bool>("hasTags");
         QTest::addColumn<bool>("isExpectedInInbox");
 
-        Domain::Artifact::Ptr task(new Domain::Task);
-        QTest::newRow("task with no tags") << task << false << false << true;
-        QTest::newRow("task with tags") << task << false << true << false;
-        QTest::newRow("task with contexts") << task << true << false << false;
-        QTest::newRow("task with both") << task << true << true << false;
+        QTest::newRow("task with no tags") << true << false << false << true;
+        QTest::newRow("task with tags") << true << false << true << false;
+        QTest::newRow("task with contexts") << true << true << false << false;
+        QTest::newRow("task with both") << true << true << true << false;
 
-        Domain::Artifact::Ptr note(new Domain::Note);
-        QTest::newRow("note with no tags") << note << false << false << true;
-        QTest::newRow("note with tags") << note << false << true << false;
-        QTest::newRow("note with contexts") << note << true << false << true;
-        QTest::newRow("note with both") << note << true << true << false;
+        QTest::newRow("note with no tags") << false << false << false << true;
+        QTest::newRow("note with tags") << false << false << true << false;
+        QTest::newRow("note with contexts") << false << true << false << true;
+        QTest::newRow("note with both") << false << true << true << false;
     }
 
     void shouldNotHaveArtifactsWithContextsOrTagsInInbox()
     {
         // GIVEN
+        AkonadiFakeData data;
 
         // One top level collection
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent().withNoteContent());
+
+        // One plain tag and one context tag
+        data.createTag(GenTag().withId(42).withName("tag-42").asPlain());
+        data.createTag(GenTag().withId(43).withName("tag-43").asContext());
 
         // One item in the collection
-        Akonadi::Item item(42);
-        item.setParentCollection(col);
-        QFETCH(Domain::Artifact::Ptr, artifact);
-        QFETCH(bool, hasContexts);
         QFETCH(bool, hasTags);
-        QFETCH(bool, isExpectedInInbox);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item);
+        QFETCH(bool, hasContexts);
+        auto tagIds = QList<Akonadi::Tag::Id>();
+        if (hasTags) tagIds << 42;
+        if (hasContexts) tagIds << 43;
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
-
-        // Serializer mock returning the artifact from the item
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
-
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Task>());
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Note>());
-
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContexts);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(hasTags);
-
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Task>().isNull());
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Note>().isNull());
+        QFETCH(bool, isTodo);
+        if (isTodo) {
+            data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withTags(tagIds));
+        } else {
+            data.createItem(GenNote().withId(42).withParent(42).withTitle("42").withTags(tagIds));
+        }
 
         // WHEN
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
+        TestHelpers::waitForEmptyJobQueue();
 
+        QFETCH(bool, isExpectedInInbox);
         if (isExpectedInInbox) {
             QCOMPARE(result->data().size(), 1);
-            QCOMPARE(result->data().at(0), artifact);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
         } else {
             QVERIFY(result->data().isEmpty());
         }
@@ -395,143 +223,88 @@ private slots:
     void shouldReactToItemAddsForInbox_data()
     {
         QTest::addColumn<bool>("reactionExpected");
-        QTest::addColumn<Domain::Artifact::Ptr>("artifact");
+        QTest::addColumn<bool>("isTodo");
         QTest::addColumn<QString>("relatedUid");
         QTest::addColumn<bool>("hasContexts");
         QTest::addColumn<bool>("hasTags");
 
-        Domain::Artifact::Ptr task(new Domain::Task);
-        QTest::newRow("task which should be in inbox") << true << task << QString() << false << false;
-        QTest::newRow("task with related uid") << false << task << "foo" << false << false;
-        QTest::newRow("task with context") << false << task << QString() << true << false;
-        QTest::newRow("task with tag") << false << task << QString() << false << true;
+        QTest::newRow("task which should be in inbox") << true << true << QString() << false << false;
+        QTest::newRow("task with related uid") << false << true << "foo" << false << false;
+        QTest::newRow("task with context") << false << true << QString() << true << false;
+        QTest::newRow("task with tag") << false << true << QString() << false << true;
 
-        Domain::Artifact::Ptr note(new Domain::Note);
-        QTest::newRow("note which should be in inbox") << true << note << QString() << false << false;
-        QTest::newRow("note with related uid") << false << note << "foo" << false << false;
-        QTest::newRow("note with tag") << false << note << QString() << false << true;
-        QTest::newRow("note with context") << true << note << QString() << true << false;
+        QTest::newRow("note which should be in inbox") << true << false << QString() << false << false;
+        QTest::newRow("note with related uid") << false << false << "foo" << false << false;
+        QTest::newRow("note with tag") << false << false << QString() << false << true;
+        QTest::newRow("note with context") << true << false << QString() << true << false;
     }
 
     void shouldReactToItemAddsForInbox()
     {
         // GIVEN
+        AkonadiFakeData data;
 
         // One top level collection
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent().withNoteContent());
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(new Testlib::AkonadiFakeItemFetchJob(this));
+        // One plain tag and one context tag
+        data.createTag(GenTag().withId(42).withName("tag-42").asPlain());
+        data.createTag(GenTag().withId(43).withName("tag-43").asContext());
 
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
-
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     monitor));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
-        QTest::qWait(150);
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        QFETCH(bool, reactionExpected);
-        QFETCH(Domain::Artifact::Ptr, artifact);
         QFETCH(QString, relatedUid);
-        QFETCH(bool, hasContexts);
         QFETCH(bool, hasTags);
+        QFETCH(bool, hasContexts);
+        auto tagIds = QList<Akonadi::Tag::Id>();
+        if (hasTags) tagIds << 42;
+        if (hasContexts) tagIds << 43;
 
-        Akonadi::Item item;
-
-        // Serializer mock returning the artifact from the item
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Task>().isNull());
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Note>().isNull());
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Task>());
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Note>());
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(relatedUid);
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContexts);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(hasTags);
-
-        monitor->addItem(item);
+        QFETCH(bool, isTodo);
+        if (isTodo) {
+            data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withTags(tagIds).withParentUid(relatedUid));
+        } else {
+            data.createItem(GenNote().withId(42).withParent(42).withTitle("42").withTags(tagIds).withParentUid(relatedUid));
+        }
 
         // THEN
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).atMost(1));
-
+        QFETCH(bool, reactionExpected);
         if (reactionExpected) {
             QCOMPARE(result->data().size(), 1);
-            QCOMPARE(result->data().at(0), artifact);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
         } else {
-            QCOMPARE(result->data().size(), 0);
+            QVERIFY(result->data().isEmpty());
         }
     }
 
     void shouldReactToItemRemovesForInbox()
     {
         // GIVEN
+        AkonadiFakeData data;
 
         // One top level collection
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
         // One item in the collection
-        Akonadi::Item item(42);
-        item.setParentCollection(col);
-        Domain::Task::Ptr task(new Domain::Task);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
-
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
-
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(task);
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task, item).thenReturn(true);
-
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     monitor));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
-        QTest::qWait(150);
-        QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first().dynamicCast<Domain::Task>(), task);
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
 
         // WHEN
-        monitor->removeItem(item);
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first()->title(), QString("42"));
+
+        // WHEN
+        data.removeItem(Akonadi::Item(42));
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -540,7 +313,7 @@ private slots:
     void shouldReactToItemChangesForInbox_data()
     {
         QTest::addColumn<bool>("inListAfterChange");
-        QTest::addColumn<Domain::Artifact::Ptr>("artifact");
+        QTest::addColumn<bool>("isTodo");
         QTest::addColumn<QString>("relatedUidBefore");
         QTest::addColumn<QString>("relatedUidAfter");
         QTest::addColumn<bool>("hasContextsBefore");
@@ -548,98 +321,79 @@ private slots:
         QTest::addColumn<bool>("hasTagsBefore");
         QTest::addColumn<bool>("hasTagsAfter");
 
-        Domain::Artifact::Ptr task(new Domain::Task);
-        QTest::newRow("task appears in inbox (related uid)") << true << task << "foo" << QString() << false << false << false << false;
-        QTest::newRow("task disappears from inbox (related uid)") << false << task << QString() << "foo" << false << false << false << false;
-        QTest::newRow("task appears in inbox (context)") << true << task << QString() << QString() << true << false << false << false;
-        QTest::newRow("task disappears from inbox (context)") << false << task << QString() << QString() << false << true << false << false;
+        QTest::newRow("task appears in inbox (related uid)") << true << true << "foo" << QString() << false << false << false << false;
+        QTest::newRow("task disappears from inbox (related uid)") << false << true << QString() << "foo" << false << false << false << false;
+        QTest::newRow("task appears in inbox (context)") << true << true << QString() << QString() << true << false << false << false;
+        QTest::newRow("task disappears from inbox (context)") << false << true << QString() << QString() << false << true << false << false;
 
-        Domain::Artifact::Ptr note(new Domain::Note);
-        QTest::newRow("note appears in inbox (related uid)") << true << note << "foo" << QString() << false << false << false << false;
-        QTest::newRow("note disappears from inbox (related uid)") << false << note << QString() << "foo" << false << false << false << false;
-        QTest::newRow("note appears in inbox (tag)") << true << note << QString() << QString() << false << false << true << false;
-        QTest::newRow("note disappears from inbox (tag)") << false << note << QString() << QString() << false << false << false << true;
+        QTest::newRow("note appears in inbox (related uid)") << true << false << "foo" << QString() << false << false << false << false;
+        QTest::newRow("note disappears from inbox (related uid)") << false << false << QString() << "foo" << false << false << false << false;
+        QTest::newRow("note appears in inbox (tag)") << true << false << QString() << QString() << false << false << true << false;
+        QTest::newRow("note disappears from inbox (tag)") << false << false << QString() << QString() << false << false << false << true;
     }
 
     void shouldReactToItemChangesForInbox()
     {
         // GIVEN
+        AkonadiFakeData data;
 
         // One top level collection
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent().withNoteContent());
+
+        // One plain tag and one context tag
+        data.createTag(GenTag().withId(42).withName("tag-42").asPlain());
+        data.createTag(GenTag().withId(43).withName("tag-43").asContext());
 
         // Artifact data
-        QFETCH(bool, inListAfterChange);
-        QFETCH(Domain::Artifact::Ptr, artifact);
         QFETCH(QString, relatedUidBefore);
-        QFETCH(QString, relatedUidAfter);
         QFETCH(bool, hasContextsBefore);
-        QFETCH(bool, hasContextsAfter);
         QFETCH(bool, hasTagsBefore);
-        QFETCH(bool, hasTagsAfter);
 
-        Akonadi::Item item;
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item);
+        auto tagIds = QList<Akonadi::Tag::Id>();
+        if (hasTagsBefore) tagIds << 42;
+        if (hasContextsBefore) tagIds << 43;
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
+        QFETCH(bool, isTodo);
+        if (isTodo) {
+            data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withTags(tagIds).withParentUid(relatedUidBefore));
+        } else {
+            data.createItem(GenNote().withId(42).withParent(42).withTitle("42").withTags(tagIds).withParentUid(relatedUidBefore));
+        }
 
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col).thenReturn(true);
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
 
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Task>().isNull());
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item).thenReturn(!artifact.dynamicCast<Domain::Note>().isNull());
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Task>());
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).thenReturn(artifact.dynamicCast<Domain::Note>());
-        serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(artifact.dynamicCast<Domain::Task>(), item).thenReturn();
-        serializerMock(&Akonadi::SerializerInterface::updateNoteFromItem).when(artifact.dynamicCast<Domain::Note>(), item).thenReturn();
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).thenReturn(relatedUidBefore)
-                                                                                    .thenReturn(relatedUidAfter);
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).thenReturn(hasContextsBefore)
-                                                                                .thenReturn(hasContextsAfter);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).thenReturn(hasTagsBefore)
-                                                                              .thenReturn(hasTagsAfter);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(artifact, item).thenReturn(true);
+        QFETCH(bool, inListAfterChange);
 
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     monitor));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
-        QTest::qWait(150);
         if (inListAfterChange) {
             QVERIFY(result->data().isEmpty());
         } else {
             QCOMPARE(result->data().size(), 1);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
         }
 
         // WHEN
-        monitor->changeItem(item);
+        QFETCH(QString, relatedUidAfter);
+        QFETCH(bool, hasContextsAfter);
+        QFETCH(bool, hasTagsAfter);
+
+        tagIds.clear();
+        if (hasTagsAfter) tagIds << 42;
+        if (hasContextsAfter) tagIds << 43;
+
+        if (isTodo) {
+            data.modifyItem(GenTodo(data.item(42)).withTags(tagIds).withParentUid(relatedUidAfter));
+        } else {
+            data.modifyItem(GenNote(data.item(42)).withTags(tagIds).withParentUid(relatedUidAfter));
+        }
 
         // THEN
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateTaskFromItem).when(artifact.dynamicCast<Domain::Task>(), item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateNoteFromItem).when(artifact.dynamicCast<Domain::Note>(), item).atMost(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item).atMost(2));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item).atMost(2));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item).atMost(2));
-
         if (inListAfterChange) {
             QCOMPARE(result->data().size(), 1);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
         } else {
             QVERIFY(result->data().isEmpty());
         }
@@ -648,90 +402,32 @@ private slots:
     void shouldReactToCollectionSelectionChangesForInbox()
     {
         // GIVEN
+        AkonadiFakeData data;
 
         // Two top level collections
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(Akonadi::Collection::root());
-        Akonadi::Collection col2(43);
-        col2.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob1 = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob1->setCollections(Akonadi::Collection::List() << col1 << col2);
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob2 = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob2->setCollections(Akonadi::Collection::List() << col1 << col2);
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
 
-        // One item in each collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col1);
-        Domain::Task::Ptr task1(new Domain::Task);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob2->setItems(Akonadi::Item::List() << item1);
+        // One task in each collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43"));
 
-        Akonadi::Item item2(43);
-        item1.setParentCollection(col2);
-        Domain::Task::Ptr task2(new Domain::Task);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob3->setItems(Akonadi::Item::List() << item2);
-
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks|Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob1)
-                                                                 .thenReturn(collectionFetchJob2);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
-                                                           .thenReturn(itemFetchJob1)
-                                                           .thenReturn(itemFetchJob2);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col2)
-                                                           .thenReturn(itemFetchJob3);
-
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isSelectedCollection).when(col2).thenReturn(true)
-                                                                                      .thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item1).thenReturn(task1);
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item1).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item1).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::isTaskItem).when(item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(item2).thenReturn(task2);
-        serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(item2).thenReturn(QString());
-        serializerMock(&Akonadi::SerializerInterface::hasContextTags).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::hasAkonadiTags).when(item2).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item1).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(task2, item2).thenReturn(true);
-
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance(),
-                                                                                     monitor));
-        Domain::QueryResult<Domain::Artifact::Ptr>::Ptr result = queries->findInboxTopLevel();
-        QTest::qWait(150);
+        QScopedPointer<Domain::ArtifactQueries> queries(new Akonadi::ArtifactQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                     Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                     Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().first().dynamicCast<Domain::Task>(), task1);
-        QCOMPARE(result->data().last().dynamicCast<Domain::Task>(), task2);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(1)->title(), QString("43"));
 
         // WHEN
-        monitor->changeCollectionSelection(col2);
-        QTest::qWait(150);
+        data.modifyCollection(GenCollection(data.collection(43)).selected(false));
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first().dynamicCast<Domain::Task>(), task1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
     }
 };
 
