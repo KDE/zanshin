@@ -24,16 +24,15 @@
 
 #include <QtTest>
 
-#include "utils/mockobject.h"
-
-#include "testlib/akonadifakejobs.h"
-#include "testlib/akonadifakemonitor.h"
-
 #include "akonadi/akonadinotequeries.h"
-#include "akonadi/akonadiserializerinterface.h"
-#include "akonadi/akonadistorageinterface.h"
+#include "akonadi/akonadiserializer.h"
 
-using namespace mockitopp;
+#include "testlib/akonadifakedata.h"
+#include "testlib/gencollection.h"
+#include "testlib/gennote.h"
+#include "testlib/testhelpers.h"
+
+using namespace Testlib;
 
 class AkonadiNoteQueriesTest : public QObject
 {
@@ -42,320 +41,138 @@ private slots:
     void shouldLookInAllReportedForAllNotes()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // one top level collections
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(Akonadi::Collection::root());
-        Akonadi::Collection col2(43);
-        col2.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
+        // Two top level collections
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
 
         // One note in the first collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col1);
-        Domain::Note::Ptr note1(new Domain::Note);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob1->setItems(Akonadi::Item::List() << item1);
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
 
-        // Two note in the second collection
-        Akonadi::Item item2(43);
-        item2.setParentCollection(col2);
-        Akonadi::Item item3(44);
-        item3.setParentCollection(col2);
-        Domain::Note::Ptr note2(new Domain::Note);
-        Domain::Note::Ptr note3(new Domain::Note);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob2->setItems(Akonadi::Item::List() << item2 << item3);
-
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col1)
-                                                           .thenReturn(itemFetchJob1);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col2)
-                                                           .thenReturn(itemFetchJob2);
-
-        // Serializer mock returning the notes from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
-
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
+        // Two notes in the second collection
+        data.createItem(GenNote().withId(43).withParent(43).withTitle("43"));
+        data.createItem(GenNote().withId(44).withParent(43).withTitle("44"));
 
         // WHEN
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
-                                                                             serializerMock.getInstance(),
-                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findAll();
         result->data();
-        result = queries->findAll();  // Should not cause any problem or wrong data
+        result = queries->findAll(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).exactly(1));
-
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0), note1);
-        QCOMPARE(result->data().at(1), note2);
-        QCOMPARE(result->data().at(2), note3);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(1)->title(), QString("43"));
+        QCOMPARE(result->data().at(2)->title(), QString("44"));
     }
 
     void shouldIgnoreItemsWhichAreNotNotes()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // Two top level collections
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // Two notes in the collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col);
-        Domain::Note::Ptr note1(new Domain::Note);
-        // One of them is not a note
-        Akonadi::Item item2(43);
-        item2.setParentCollection(col);
-        Domain::Note::Ptr note2;
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
-
-        // Serializer mock returning the notes from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
-
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        auto item = Akonadi::Item(43);
+        item.setPayloadFromData("FooBar");
+        item.setParentCollection(Akonadi::Collection(42));
+        data.createItem(item);
 
         // WHEN
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
-                                                                             serializerMock.getInstance(),
-                                                                             Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findAll();
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(0));
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0), note1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
     }
 
     void shouldReactToItemAddsForNotesOnly()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // Empty collection fetch
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
+        // One empty collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-
-        // Serializer mock returning the notes from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
-                                                                             serializerMock.getInstance(),
-                                                                             monitor));
-        Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
-        QTest::qWait(150);
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findAll();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        Akonadi::Item item1(42);
-        Domain::Note::Ptr note1(new Domain::Note);
-        Akonadi::Item item2(43);
-        Domain::Note::Ptr note2;
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
-        monitor->addItem(item1);
-        monitor->addItem(item2);
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        auto item = Akonadi::Item(43);
+        item.setPayloadFromData("FooBar");
+        item.setParentCollection(Akonadi::Collection(42));
+        data.createItem(item);
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(0));
-
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first(), note1);
+        QCOMPARE(result->data().first()->title(), QString("42"));
     }
 
     void shouldReactToItemRemovesForAllNotes()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // One top level collections
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
-        // Three note in the collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col);
-        Domain::Note::Ptr note1(new Domain::Note);
-        Akonadi::Item item2(43);
-        item2.setParentCollection(col);
-        Domain::Note::Ptr note2(new Domain::Note);
-        Akonadi::Item item3(44);
-        item3.setParentCollection(col);
-        Domain::Note::Ptr note3(new Domain::Note);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+        // Three notes in the collection
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(43).withParent(42).withTitle("43"));
+        data.createItem(GenNote().withId(44).withParent(42).withTitle("44"));
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
-
-        // Serializer mock returning the notes from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
-
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
-
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note3, item2).thenReturn(false);
-
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
-                                                                             serializerMock.getInstance(),
-                                                                             monitor));
-        Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
-        QTest::qWait(150);
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findAll();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 3);
 
         // WHEN
-        monitor->removeItem(item2);
+        data.removeItem(Akonadi::Item(43));
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).exactly(1));
-
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0), note1);
-        QCOMPARE(result->data().at(1), note3);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(1)->title(), QString("44"));
     }
 
     void shouldReactToItemChangesForAllNotes()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // One top level collections
-        Akonadi::Collection col(42);
-        col.setParentCollection(Akonadi::Collection::root());
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col);
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
-        // Three note in the collection
-        Akonadi::Item item1(42);
-        item1.setParentCollection(col);
-        Domain::Note::Ptr note1(new Domain::Note);
-        Akonadi::Item item2(43);
-        item2.setParentCollection(col);
-        Domain::Note::Ptr note2(new Domain::Note);
-        Akonadi::Item item3(44);
-        item3.setParentCollection(col);
-        Domain::Note::Ptr note3(new Domain::Note);
-        Testlib::AkonadiFakeItemFetchJob *itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << item1 << item2 << item3);
+        // Three Note in the collection
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(43).withParent(42).withTitle("43"));
+        data.createItem(GenNote().withId(44).withParent(42).withTitle("44"));
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::fetchItems).when(col)
-                                                           .thenReturn(itemFetchJob);
-
-        // Serializer mock returning the notes from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isNoteItem).when(item3).thenReturn(true);
-
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).thenReturn(note1);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).thenReturn(note2);
-        serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).thenReturn(note3);
-        serializerMock(&Akonadi::SerializerInterface::updateNoteFromItem).when(note2, item2).thenReturn();
-
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note1, item2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note2, item2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::representsItem).when(note3, item2).thenReturn(false);
-
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(storageMock.getInstance(),
-                                                                             serializerMock.getInstance(),
-                                                                             monitor));
+        QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         Domain::QueryResult<Domain::Note::Ptr>::Ptr result = queries->findAll();
         // Even though the pointer didn't change it's convenient to user if we call
         // the replace handlers
@@ -363,27 +180,17 @@ private slots:
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Note::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
-        QTest::qWait(150);
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 3);
 
         // WHEN
-        monitor->changeItem(item2);
+        data.modifyItem(GenNote(data.item(43)).withTitle("43bis"));
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(col).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item1).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item2).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createNoteFromItem).when(item3).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateNoteFromItem).when(note2, item2).exactly(1));
-
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0), note1);
-        QCOMPARE(result->data().at(1), note2);
-        QCOMPARE(result->data().at(2), note3);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(1)->title(), QString("43bis"));
+        QCOMPARE(result->data().at(2)->title(), QString("44"));
         QVERIFY(replaceHandlerCalled);
     }
 };
