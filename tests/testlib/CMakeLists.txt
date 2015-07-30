@@ -14,6 +14,7 @@ set(testlib_SRCS
    gentodo.cpp
    modeltest.cpp
    monitorspy.cpp
+   testhelpers.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/tests ${CMAKE_SOURCE_DIR}/src)

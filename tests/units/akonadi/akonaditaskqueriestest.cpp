@@ -29,23 +29,15 @@
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
 #include "testlib/gentodo.h"
+#include "testlib/testhelpers.h"
 
 #include "utils/datetime.h"
-#include "utils/jobhandler.h"
 
 using namespace Testlib;
 
 class AkonadiTaskQueriesTest : public QObject
 {
     Q_OBJECT
-
-private:
-    void waitForEmptyJobQueue()
-    {
-        while (Utils::JobHandler::jobCount() != 0) {
-            QTest::qWait(20);
-        }
-    }
 
 private slots:
     void shouldLookInAllReportedForAllTasks()
@@ -74,7 +66,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 3);
         QCOMPARE(result->data().at(0)->title(), QString("42"));
@@ -106,7 +98,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->title(), QString("42"));
@@ -124,7 +116,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto result = queries->findAll();
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
         // WHEN
@@ -156,7 +148,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto result = queries->findAll();
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 3);
 
         // WHEN
@@ -191,7 +183,7 @@ private slots:
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 3);
 
         // WHEN
@@ -235,7 +227,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0)->title(), QString("43"));
@@ -280,7 +272,7 @@ private slots:
 
             // THEN * 2
             QVERIFY(result->data().isEmpty());
-            waitForEmptyJobQueue();
+            TestHelpers::waitForEmptyJobQueue();
             QVERIFY(result->data().isEmpty());
         }
     }
@@ -303,7 +295,7 @@ private slots:
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
         // WHEN
@@ -349,7 +341,7 @@ private slots:
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
@@ -387,7 +379,7 @@ private slots:
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
@@ -426,7 +418,7 @@ private slots:
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
 
         // WHEN
@@ -466,7 +458,7 @@ private slots:
         auto result1 = queries->findChildren(task1);
         auto result2 = queries->findChildren(task2);
 
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result1->data().size(), 1);
         QCOMPARE(result1->data().at(0)->title(), QString("44"));
         QCOMPARE(result2->data().size(), 0);
@@ -504,7 +496,7 @@ private slots:
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
@@ -541,7 +533,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0)->title(), QString("42"));
@@ -560,7 +552,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto result = queries->findTopLevel();
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
         // WHEN
@@ -593,7 +585,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto result = queries->findTopLevel();
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
@@ -631,7 +623,7 @@ private slots:
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
@@ -665,7 +657,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto result = queries->findTopLevel();
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
@@ -698,7 +690,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto result = queries->findTopLevel();
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
 
         // WHEN
@@ -731,11 +723,11 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto result = queries->findTopLevel();
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         auto resultChild = queries->findChildren(result->data().at(1));
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(resultChild->data().size(), 1);
 
         // WHEN
@@ -776,7 +768,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
     }
 
@@ -832,7 +824,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
     }
 
@@ -914,7 +906,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
     }
 
@@ -997,7 +989,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
     }
 
@@ -1033,7 +1025,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0)->title(), QString("42"));
@@ -1127,7 +1119,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
 
         QFETCH(bool, isExpectedInWorkday);
 
@@ -1171,7 +1163,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        waitForEmptyJobQueue();
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0)->title(), QString("42"));
