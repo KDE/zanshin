@@ -128,13 +128,13 @@ private slots:
         Akonadi::Collection col = GenCollection().selected();
 
         // THEN
-        QCOMPARE(col.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected(), true);
+        QVERIFY(!col.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
 
         // WHEN
         col = GenCollection(col).selected(false);
 
         // THEN
-        QVERIFY(!col.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
+        QCOMPARE(col.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected(), false);
     }
 
     void shouldAllowToSetTaskContent()

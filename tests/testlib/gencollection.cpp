@@ -87,9 +87,9 @@ GenCollection &GenCollection::enabled(bool value)
 
 GenCollection &GenCollection::selected(bool value)
 {
-    if (value) {
+    if (!value) {
         auto attr = m_collection.attribute<Akonadi::ApplicationSelectedAttribute>(Akonadi::Collection::AddIfMissing);
-        attr->setSelected(true);
+        attr->setSelected(false);
     } else {
         m_collection.removeAttribute<Akonadi::ApplicationSelectedAttribute>();
     }
