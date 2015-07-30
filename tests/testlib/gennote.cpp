@@ -67,6 +67,21 @@ GenNote &GenNote::withTags(QList<Akonadi::Tag::Id> ids)
     return *this;
 }
 
+GenNote &GenNote::withParentUid(const QString &uid)
+{
+    auto message = m_item.payload<KMime::Message::Ptr>();
+    if (!uid.isEmpty()) {
+        auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
+        relatedHeader->from7BitString(uid.toUtf8());
+        message->appendHeader(relatedHeader);
+    } else {
+        message->removeHeader("X-Zanshin-RelatedProjectUid");
+    }
+    message->assemble();
+    m_item.setPayload(message);
+    return *this;
+}
+
 GenNote &GenNote::withTitle(const QString &title)
 {
     auto message = m_item.payload<KMime::Message::Ptr>();

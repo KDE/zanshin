@@ -79,6 +79,15 @@ private slots:
         QCOMPARE(item.tags().at(2).id(), 44LL);
     }
 
+    void shouldAllowToSetParentUid()
+    {
+        // GIVEN
+        Akonadi::Item item = GenNote().withParentUid("42");
+
+        // THEN
+        QCOMPARE(item.payload<KMime::Message::Ptr>()->headerByType("X-Zanshin-RelatedProjectUid")->asUnicodeString(), QString("42"));
+    }
+
     void shouldAllowToSetTitle()
     {
         // GIVEN
