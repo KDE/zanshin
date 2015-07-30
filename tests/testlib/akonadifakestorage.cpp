@@ -418,9 +418,7 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collecti
     std::transform(items.begin(), items.end(),
                    items.begin(),
                    [this] (const Akonadi::Item &item) {
-                       auto collection = m_data->reconstructAncestors(item.parentCollection());
-                       auto result = item;
-                       result.setParentCollection(collection);
+                       auto result = m_data->reconstructItemDependencies(item);
                        // Force payload detach
                        result.setPayloadFromData(result.payloadData());
                        return result;
