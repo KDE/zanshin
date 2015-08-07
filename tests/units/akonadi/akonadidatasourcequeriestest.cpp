@@ -173,66 +173,42 @@ private slots:
     void shouldIgnoreCollectionsWhichAreNotDataSources()
     {
         // GIVEN
+        AkonadiFakeData data;
         QFETCH(Akonadi::StorageInterface::FetchContentType, contentType);
         QFETCH(QueryFunction, queryFunction);
 
-        // Two top level collections and one child collection
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(Akonadi::Collection::root());
-        Domain::DataSource::Ptr dataSource1(new Domain::DataSource);
-        // One of the collections not being a data source
-        Akonadi::Collection col2(43);
-        col2.setParentCollection(Akonadi::Collection::root());
-        Domain::DataSource::Ptr dataSource2;
-        Akonadi::Collection col3(44);
-        col3.setParentCollection(col2);
-        Domain::DataSource::Ptr dataSource3(new Domain::DataSource);
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
+            // Two top level collections with tasks, one not being a data source
+            data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
+            data.createCollection(GenCollection().withId(-1).withName("43Task").withTaskContent()); // invalid data source
+            // One child collection
+            data.createCollection(GenCollection().withId(44).withName("44Task").withParent(42).withTaskContent());
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       contentType)
-                                                                 .thenReturn(collectionFetchJob);
-
-        // Serializer mock returning the data sources from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        if (contentType == Akonadi::StorageInterface::Tasks) {
-            serializerMock(&Akonadi::SerializerInterface::isTaskCollection).when(col1).thenReturn(true);
-            serializerMock(&Akonadi::SerializerInterface::isTaskCollection).when(col2).thenReturn(false);
-            serializerMock(&Akonadi::SerializerInterface::isTaskCollection).when(col3).thenReturn(true);
-        } else {
-            serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col1).thenReturn(true);
-            serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col2).thenReturn(false);
-            serializerMock(&Akonadi::SerializerInterface::isNoteCollection).when(col3).thenReturn(true);
-        }
-
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).thenReturn(dataSource3);
+            // Two top level collections with notes, one not being a data source
+            data.createCollection(GenCollection().withId(45).withName("45Note").withRootAsParent().withNoteContent());
+            data.createCollection(GenCollection().withId(-2).withName("46Note").withNoteContent()); // invalid data source
+            // One child collection
+            data.createCollection(GenCollection().withId(47).withName("47Note").withParent(45).withNoteContent());
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queryFunction(queries.data());
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               contentType)
-                                                                         .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::FullPath).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::FullPath).exactly(0));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::FullPath).exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0), dataSource1);
-        QCOMPARE(result->data().at(1), dataSource3);
+        if (contentType == Akonadi::StorageInterface::Tasks) {
+            QCOMPARE(result->data().size(), 2);
+            QCOMPARE(result->data().at(0)->name(), QString("42Task"));
+            QCOMPARE(result->data().at(1)->name(), QString("42Task/44Task")); // name is: parentName/childName
+        } else {
+            QCOMPARE(result->data().size(), 2);
+            QCOMPARE(result->data().at(0)->name(), QString("45Note"));
+            QCOMPARE(result->data().at(1)->name(), QString("45Note/47Note")); // name is: parentName/childName
+        }
     }
 
     void shouldReactToCollectionAddsForCompatibleDataSourcesOnly_data()
