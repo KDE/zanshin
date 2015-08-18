@@ -20,4 +20,4 @@ echo "Automated Tests"
 makeobj test || exit 1
 
 echo "CppCheck"
-cppcheck --quiet --enable=style --enable=performance --enable=portability --enable=information --enable=missingInclude --inline-suppr -i 3rdparty .
+./scripts/cppcheck.sh
