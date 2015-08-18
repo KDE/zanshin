@@ -23,6 +23,7 @@
 #include "utils/jobhandler.h"
 
 #include "testlib/monitorspy.h"
+#include "testlib/testsafety.h"
 
 static int argc = 0;
 static QApplication app(argc, Q_NULLPTR);
@@ -63,6 +64,11 @@ public:
         qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10");
 
         App::initializeDependencies();
+
+        if (!TestLib::TestSafety::checkTestIsIsolated()) {
+            qDebug() << "FATAL ERROR! SEE ABOVE\n\n";
+            exit(1);
+        }
 
         using namespace Presentation;
         proxyModel->setDynamicSortFilter(true);
