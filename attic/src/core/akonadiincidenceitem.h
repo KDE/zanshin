@@ -34,11 +34,11 @@ public:
     /**
      * Create a new item
      */
-    AkonadiIncidenceItem(ItemType type);
+    explicit AkonadiIncidenceItem(ItemType type);
     /**
      * Access an existing item
      */
-    AkonadiIncidenceItem(const Akonadi::Item&);
+    explicit AkonadiIncidenceItem(const Akonadi::Item&);
 
     virtual QString mimeType() const;
 

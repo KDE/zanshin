@@ -32,6 +32,8 @@
 
 namespace Testlib {
 
+// cppcheck seems to get confused by the "using" in this class
+// cppcheck-suppress noConstructor
 class AkonadiFakeCollectionFetchJob : public FakeJob, public Akonadi::CollectionFetchJobInterface
 {
     Q_OBJECT

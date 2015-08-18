@@ -43,7 +43,7 @@ public:
 
     ModelStructure();
     ~ModelStructure();
-    ModelStructure(const ModelNode &node);
+    explicit ModelStructure(const ModelNode &node);
 
     ModelStructure(const ModelStructure &other);
     ModelStructure &operator=(const ModelStructure &other);

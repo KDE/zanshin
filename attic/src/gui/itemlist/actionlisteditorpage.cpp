@@ -58,7 +58,7 @@ static const char *_z_defaultColumnStateCache = "AAAA/wAAAAAAAAABAAAAAAAAAAABAAA
 class GroupLabellingProxyModel : public QSortFilterProxyModel
 {
 public:
-    GroupLabellingProxyModel(QObject *parent = 0)
+    explicit GroupLabellingProxyModel(QObject *parent = 0)
         : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
@@ -98,7 +98,7 @@ public:
 class GroupSortingProxyModel : public QSortFilterProxyModel
 {
 public:
-    GroupSortingProxyModel(QObject *parent = 0)
+    explicit GroupSortingProxyModel(QObject *parent = 0)
         : QSortFilterProxyModel(parent),
           m_currentOrder(Qt::AscendingOrder)
     {
@@ -146,7 +146,7 @@ private:
 class TypeFilterProxyModel : public QSortFilterProxyModel
 {
 public:
-    TypeFilterProxyModel(QObject *parent = 0)
+    explicit TypeFilterProxyModel(QObject *parent = 0)
         : QSortFilterProxyModel(parent)
     {
         setDynamicSortFilter(true);
@@ -179,7 +179,7 @@ public:
 class ActionListEditorView : public TodoTreeView
 {
 public:
-    ActionListEditorView(QWidget *parent = 0)
+    explicit ActionListEditorView(QWidget *parent = 0)
         : TodoTreeView(parent) { }
 
 protected:
@@ -224,7 +224,7 @@ protected:
 class ActionListEditorModel : public KDescendantsProxyModel
 {
 public:
-    ActionListEditorModel(QObject *parent = 0)
+    explicit ActionListEditorModel(QObject *parent = 0)
         : KDescendantsProxyModel(parent)
     {
     }
@@ -249,7 +249,7 @@ public:
 class CollectionsFilterProxyModel : public QSortFilterProxyModel
 {
 public:
-    CollectionsFilterProxyModel(const QString &mimetype, QObject *parent = 0)
+    explicit CollectionsFilterProxyModel(const QString &mimetype, QObject *parent = 0)
         : QSortFilterProxyModel(parent),
         m_mimetype(mimetype)
     {

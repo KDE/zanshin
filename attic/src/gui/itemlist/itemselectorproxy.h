@@ -46,7 +46,7 @@ class ItemSelectorProxy : public QObject
 {
     Q_OBJECT
 public:
-    ItemSelectorProxy(QObject* parent = 0);
+    explicit ItemSelectorProxy(QObject* parent = 0);
 
     void setView(Akonadi::EntityTreeView *view);
 

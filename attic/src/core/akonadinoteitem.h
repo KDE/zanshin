@@ -46,7 +46,7 @@ public:
     /**
      * For acessing existing notes
      */
-    AkonadiNoteItem(const Akonadi::Item&);
+    explicit AkonadiNoteItem(const Akonadi::Item&);
 
     QString mimeType() const;
     PimItem::ItemType itemType() const;

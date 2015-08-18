@@ -33,7 +33,7 @@ class AkonadiFakeData;
 class AkonadiFakeDataXmlLoader
 {
 public:
-    AkonadiFakeDataXmlLoader(AkonadiFakeData *data);
+    explicit AkonadiFakeDataXmlLoader(AkonadiFakeData *data);
 
     void load(const QString &fileName) const;
 

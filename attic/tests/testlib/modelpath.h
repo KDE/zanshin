@@ -48,10 +48,20 @@ public:
 
     bool isEmpty();
 
+    // This is intended as implicit
+    // cppcheck-suppress noExplicitConstructor
     ModelPath(const C &collection);
+    // This is intended as implicit
+    // cppcheck-suppress noExplicitConstructor
     ModelPath(const T &todo);
+    // This is intended as implicit
+    // cppcheck-suppress noExplicitConstructor
     ModelPath(const Cat &context);
+    // This is intended as implicit
+    // cppcheck-suppress noExplicitConstructor
     ModelPath(const V &virt);
+    // This is intended as implicit
+    // cppcheck-suppress noExplicitConstructor
     ModelPath(const G &virt);
     ModelPath(const C &collection1, const C &collection2);
     ModelPath(const C &collection, const T &todo);

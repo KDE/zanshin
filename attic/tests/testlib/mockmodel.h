@@ -41,7 +41,7 @@ namespace Test
 class MockModel : public QStandardItemModel
 {
 public:
-    MockModel(QObject* parent = 0);
+    explicit MockModel(QObject* parent = 0);
 
     void clearData();
 private:

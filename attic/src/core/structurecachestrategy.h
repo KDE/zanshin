@@ -29,7 +29,7 @@ class StructureCacheStrategy : public QObject, public ReparentingStrategy
 {
     Q_OBJECT
 public:
-    StructureCacheStrategy(PimItemRelation::Type type);
+    explicit StructureCacheStrategy(PimItemRelation::Type type);
     virtual void init();
     virtual Id getId(const QModelIndex& );
     virtual IdList getParents(const QModelIndex&, const IdList &ignore = IdList());

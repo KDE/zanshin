@@ -33,7 +33,7 @@ class SelectionProxyModel : public KRecursiveFilterProxyModel
     Q_OBJECT
 
 public:
-    SelectionProxyModel(QObject *parent = 0);
+    explicit SelectionProxyModel(QObject *parent = 0);
     virtual ~SelectionProxyModel();
 
     void setSelectionModel(QItemSelectionModel *selectionModel);

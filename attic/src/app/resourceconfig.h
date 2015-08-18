@@ -35,7 +35,7 @@ class ResourceConfig : public QWidget
     Q_OBJECT
 
 public:
-    ResourceConfig(QWidget *parent = 0);
+    explicit ResourceConfig(QWidget *parent = 0);
 
 private slots:
     void addResource();

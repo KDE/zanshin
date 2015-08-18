@@ -34,7 +34,7 @@ class SideBarModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    SideBarModel(QObject *parent = 0);
+    explicit SideBarModel(QObject *parent = 0);
     virtual ~SideBarModel();
 
     virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const;

@@ -32,7 +32,7 @@ class ComboModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    ComboModel(QObject *parent = 0);
+    explicit ComboModel(QObject *parent = 0);
     virtual ~ComboModel();
 
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;

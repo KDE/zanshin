@@ -37,7 +37,7 @@ class TaskAction : public QObject, public Presentation::ErrorHandlingModelBase
 {
     Q_OBJECT
 public:
-    TaskAction(const Domain::TaskRepository::Ptr &taskRepository);
+    explicit TaskAction(const Domain::TaskRepository::Ptr &taskRepository);
 
 public slots:
 

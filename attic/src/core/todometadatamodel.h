@@ -38,7 +38,7 @@ class TodoMetadataModel : public KIdentityProxyModel
     Q_OBJECT
 
 public:
-    TodoMetadataModel(QObject *parent = 0);
+    explicit TodoMetadataModel(QObject *parent = 0);
     virtual ~TodoMetadataModel();
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const;

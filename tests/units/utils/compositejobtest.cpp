@@ -33,7 +33,7 @@ class CompositeJobTest : public QObject
 {
     Q_OBJECT
 public:
-    CompositeJobTest(QObject *parent = Q_NULLPTR)
+    explicit CompositeJobTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
         , m_callCount(0)
     {

@@ -34,7 +34,7 @@ public:
     typedef QSharedPointer<AkonadiBaseItem> Ptr;
 
     AkonadiBaseItem();
-    AkonadiBaseItem(const Akonadi::Item &item);
+    explicit AkonadiBaseItem(const Akonadi::Item &item);
 
     //based on item mimetype of item
     static ItemType typeFromItem(const Akonadi::Item &item);

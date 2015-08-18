@@ -46,7 +46,7 @@ class AkonadiDataSourceQueriesTest : public QObject
 {
     Q_OBJECT
 public:
-    AkonadiDataSourceQueriesTest(QObject *parent = Q_NULLPTR)
+    explicit AkonadiDataSourceQueriesTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<QueryFunction>();

@@ -32,7 +32,7 @@ class QDropEvent;
 class TodoTreeView : public Akonadi::EntityTreeView
 {
     public:
-        TodoTreeView(QWidget *parent = 0);
+        explicit TodoTreeView(QWidget *parent = 0);
     protected:
         virtual void dragMoveEvent(QDragMoveEvent *event);
         virtual void dropEvent(QDropEvent *event);

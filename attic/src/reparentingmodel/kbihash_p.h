@@ -54,7 +54,9 @@ class KBiAssociativeContainer
     template<typename Container, typename T, typename U>
     struct _iterator_impl_ctor : public Container::iterator
     {
-        _iterator_impl_ctor(typename Container::iterator it);
+        // This is intended as implicit
+        // cppcheck-suppress noExplicitConstructor
+        /* implicit */ _iterator_impl_ctor(typename Container::iterator it);
     };
 
     template<typename T, typename U>
@@ -99,6 +101,8 @@ public:
     public:
         explicit inline _iterator(void *data) : Container::iterator(data) {}
 
+        // This is intended as implicit
+        // cppcheck-suppress noExplicitConstructor
         /* implicit */ _iterator(const typename Container::iterator it)
           : _iterator_impl_ctor<Container, typename Container::key_type, typename Container::mapped_type>(it)
         {
@@ -129,7 +133,7 @@ public:
     typedef typename RightContainer::const_iterator       right_const_iterator;
 
     inline KBiAssociativeContainer() {}
-    inline KBiAssociativeContainer(const KBiAssociativeContainer<LeftContainer, RightContainer> &other) {
+    inline explicit KBiAssociativeContainer(const KBiAssociativeContainer<LeftContainer, RightContainer> &other) {
         *this = other;
     }
 
@@ -526,7 +530,7 @@ struct KBiHash : public KBiAssociativeContainer<QHash<T, U>, QHash<U, T> >
 
   }
 
-  KBiHash(const KBiAssociativeContainer<QHash<T, U>, QHash<U, T> > &container)
+  explicit KBiHash(const KBiAssociativeContainer<QHash<T, U>, QHash<U, T> > &container)
     : KBiAssociativeContainer<QHash<T, U>, QHash<U, T> > (container)
   {
 
@@ -556,7 +560,7 @@ struct KHash2Map : public KBiAssociativeContainer<QHash<T, U>, QMap<U, T> >
 
   }
 
-  KHash2Map(const KBiAssociativeContainer<QHash<T, U>, QMap<U, T> > &container)
+  explicit KHash2Map(const KBiAssociativeContainer<QHash<T, U>, QMap<U, T> > &container)
     : KBiAssociativeContainer<QHash<T, U>, QMap<U, T> > (container)
   {
 

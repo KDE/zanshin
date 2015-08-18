@@ -35,7 +35,7 @@ class CollectionFilter: public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    CollectionFilter(QObject *parent = 0);
+    explicit CollectionFilter(QObject *parent = 0);
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
 
 public slots:

@@ -31,6 +31,8 @@
 
 namespace Domain {
 
+// cppcheck somehow doesn't see the ctor in here
+// cppcheck-suppress noConstructor
 class DataSource : public QObject
 {
     Q_OBJECT

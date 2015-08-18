@@ -31,7 +31,7 @@ namespace Akonadi {
 class SeenItem
 {
 public:
-    SeenItem(const Akonadi::Item &theItem)
+    explicit SeenItem(const Akonadi::Item &theItem)
         : m_item(theItem), m_dirty(false)
     {
     }

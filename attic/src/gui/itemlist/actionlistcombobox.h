@@ -30,7 +30,7 @@ class ActionListComboBox : public QComboBox
 {
     Q_OBJECT
 public:
-    ActionListComboBox(QWidget *parent = 0);
+    explicit ActionListComboBox(QWidget *parent = 0);
 
     void setAutoHidePopupEnabled(bool autoHidePopupEnabled);
 

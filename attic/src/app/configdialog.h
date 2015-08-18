@@ -35,7 +35,7 @@ class ConfigDialog : public KPageDialog
     Q_OBJECT
 
 public:
-    ConfigDialog(QWidget *parent = 0);
+    explicit ConfigDialog(QWidget *parent = 0);
     virtual void accept();
 private:
     ResourceConfig *mResourceConfig;

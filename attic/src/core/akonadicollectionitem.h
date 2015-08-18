@@ -34,7 +34,7 @@ public:
     typedef QSharedPointer<AkonadiCollectionItem> Ptr;
 
     AkonadiCollectionItem();
-    AkonadiCollectionItem(const Akonadi::Collection &collection);
+    explicit AkonadiCollectionItem(const Akonadi::Collection &collection);
 
     Akonadi::Collection collection() const;
 

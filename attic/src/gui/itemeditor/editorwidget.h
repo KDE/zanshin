@@ -39,7 +39,7 @@ class EditorWidget: public QWidget
 {
     Q_OBJECT
 public:
-    EditorWidget(QWidget *parent = 0);
+    explicit EditorWidget(QWidget *parent = 0);
 
     KRichTextWidget *editor();
     void setXmlGuiClient(KXMLGUIClient *);

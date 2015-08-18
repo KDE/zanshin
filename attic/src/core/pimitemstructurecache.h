@@ -23,7 +23,7 @@
 
 class PimItemStructureCache: public VirtualRelationCache {
 public:
-    PimItemStructureCache(PimItemRelation::Type);
+    explicit PimItemStructureCache(PimItemRelation::Type);
     void addNode(const QString &name, const IdList &parents);
     virtual void updateRelationTree(Akonadi::Item& item);
 protected:

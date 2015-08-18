@@ -92,7 +92,7 @@ public:
 class AnotherFirstImplementation : public AnotherInterface
 {
 public:
-    AnotherFirstImplementation(const Interface0::Ptr &iface)
+    explicit AnotherFirstImplementation(const Interface0::Ptr &iface)
         : m_iface(iface) {}
 
     void doSomethingDelegated() Q_DECL_OVERRIDE { m_iface->doSomething(); }
