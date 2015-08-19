@@ -279,25 +279,31 @@ void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
 
     const auto oldTags = m_items[item.id()].tags();
     const auto oldParentId = findParentId(m_items[item.id()]);
-    m_items[item.id()] = item;
-    const auto parentId = findParentId(item);
+    const auto oldItem = m_items.take(item.id());
+    auto newItem = item;
+    newItem.setRemoteId(oldItem.remoteId());
+    if (!newItem.parentCollection().isValid())
+        newItem.setParentCollection(oldItem.parentCollection());
+
+    m_items[newItem.id()] = newItem;
+    const auto parentId = findParentId(newItem);
 
     if (oldParentId != parentId) {
-        m_childItems[oldParentId].removeAll(item.id());
-        m_childItems[parentId] << item.id();
-        m_monitor->moveItem(item);
+        m_childItems[oldParentId].removeAll(newItem.id());
+        m_childItems[parentId] << newItem.id();
+        m_monitor->moveItem(reconstructItemDependencies(newItem));
     }
 
     foreach (const auto &tag, oldTags) {
-        m_tagItems[tag.id()].removeAll(item.id());
+        m_tagItems[tag.id()].removeAll(newItem.id());
     }
 
-    foreach (const auto &tag, item.tags()) {
+    foreach (const auto &tag, newItem.tags()) {
         Q_ASSERT(m_tags.contains(tag.id()));
-        m_tagItems[tag.id()] << item.id();
+        m_tagItems[tag.id()] << newItem.id();
     }
 
-    m_monitor->changeItem(reconstructItemDependencies(item));
+    m_monitor->changeItem(reconstructItemDependencies(newItem));
 }
 
 void AkonadiFakeData::removeItem(const Akonadi::Item &item)

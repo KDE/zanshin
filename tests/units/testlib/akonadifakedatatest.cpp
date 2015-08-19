@@ -455,6 +455,32 @@ private slots:
         QCOMPARE(moveSpy.size(), 0);
     }
 
+    void shouldNotLooseParentCollectionOnModifyItem()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+
+        auto c1 = Akonadi::Collection(42);
+        c1.setName("42");
+        data.createCollection(c1);
+
+        auto i1 = Akonadi::Item(42);
+        i1.setPayloadFromData("42");
+        i1.setParentCollection(Akonadi::Collection(42));
+        data.createItem(i1);
+
+        auto i2 = Akonadi::Item(i1.id());
+        i2.setPayloadFromData("42-bis");
+
+        // WHEN
+        data.modifyItem(i2);
+
+        // THEN
+        QCOMPARE(data.items().size(), 1);
+        QCOMPARE(data.item(i1.id()), i2);
+        QCOMPARE(data.item(i1.id()).parentCollection().id(), c1.id());
+    }
+
     void shouldListChildItems()
     {
         // GIVEN
