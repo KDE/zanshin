@@ -22,6 +22,8 @@
 #include "utils/dependencymanager.h"
 #include "utils/jobhandler.h"
 
+#include "testlib/akonadifakedata.h"
+#include "testlib/akonadifakedataxmlloader.h"
 #include "testlib/monitorspy.h"
 #include "testlib/testsafety.h"
 
@@ -63,11 +65,42 @@ public:
     {
         qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10");
 
-        App::initializeDependencies();
+        static bool initializedDependencies = false;
 
-        if (!TestLib::TestSafety::checkTestIsIsolated()) {
-            qDebug() << "FATAL ERROR! SEE ABOVE\n\n";
-            exit(1);
+        if (!initializedDependencies) {
+            App::initializeDependencies();
+
+            QString xmlFile = QString::fromLocal8Bit(qgetenv("ZANSHIN_USER_XMLDATA"));
+            if (!xmlFile.isEmpty()) {
+                auto searchCollection = Akonadi::Collection(1);
+                searchCollection.setParentCollection(Akonadi::Collection::root());
+                searchCollection.setName("Search");
+                m_data.createCollection(searchCollection);
+
+                MonitorSpy::setExpirationDelay(200);
+                auto loader = Testlib::AkonadiFakeDataXmlLoader(&m_data);
+                loader.load(xmlFile);
+
+                // Swap regular dependencies for the fake data ones
+                auto &deps = Utils::DependencyManager::globalInstance();
+                deps.add<Akonadi::MonitorInterface,
+                         Utils::DependencyManager::UniqueInstance>(
+                         [this] (Utils::DependencyManager *) {
+                             return m_data.createMonitor();
+                         }
+                );
+                deps.add<Akonadi::StorageInterface,
+                         Utils::DependencyManager::UniqueInstance>(
+                         [this] (Utils::DependencyManager *) {
+                             return m_data.createStorage();
+                         }
+                );
+            } else if (!TestLib::TestSafety::checkTestIsIsolated()) {
+                qDebug() << "FATAL ERROR! SEE ABOVE\n\n";
+                exit(1);
+            }
+
+            initializedDependencies = true;
         }
 
         using namespace Presentation;
@@ -136,12 +169,16 @@ public:
     QList<QPersistentModelIndex> dragIndices;
 
 private:
+    static Testlib::AkonadiFakeData m_data;
+
     QSortFilterProxyModel *proxyModel;
     QAbstractItemModel *m_model;
     QAbstractItemModel *m_sourceModel;
     MonitorSpy *monitorSpy;
     FakeErrorHandler m_errorHandler;
 };
+
+Testlib::AkonadiFakeData ZanshinContext::m_data = {};
 
 namespace Zanshin {
 

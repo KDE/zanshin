@@ -1,0 +1,26 @@
+#! /bin/sh
+
+_pwd=$PWD
+
+restorepwd() {
+	cd $_pwd
+}
+
+trap "restorepwd" EXIT
+
+echo
+echo "======================"
+echo
+
+# Make sure the resource is fully synchronized
+# It wasn't necessary until the big code style change in akonadiserver
+# Not so innocuous heh ;-)
+KNUT_RESOURCE="org.freedesktop.Akonadi.Resource.akonadi_knut_resource_0.$AKONADI_INSTANCE"
+qdbus $KNUT_RESOURCE / org.freedesktop.Akonadi.Resource.synchronize
+
+cd @CUCUMBER_CWD@
+@zanshin-cuke-steps@ &
+usleep 500000
+
+cucumber $*
+exit $?
