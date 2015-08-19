@@ -150,6 +150,32 @@ private slots:
         QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
     }
 
+    void shouldNotLooseParentCollectionOnModifyCollection()
+    {
+        // GIVEN
+        auto data = Testlib::AkonadiFakeData();
+
+        auto root = Akonadi::Collection(42);
+        root.setName("root");
+        data.createCollection(root);
+
+        auto c1 = Akonadi::Collection(43);
+        c1.setName("43");
+        c1.setParentCollection(Akonadi::Collection(root.id()));
+        data.createCollection(c1);
+
+        auto c2 = Akonadi::Collection(c1.id());
+        c2.setName("43-bis");
+
+        // WHEN
+        data.modifyCollection(c2);
+
+        // THEN
+        QCOMPARE(data.collections().size(), 2);
+        QCOMPARE(data.collection(c1.id()), c2);
+        QCOMPARE(data.collection(c1.id()).parentCollection().id(), root.id());
+    }
+
     void shouldListChildCollections()
     {
         // GIVEN

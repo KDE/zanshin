@@ -108,6 +108,8 @@ void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
     const auto oldCollection = m_collections.take(collection.id());
     auto newCollection = collection;
     newCollection.setRemoteId(oldCollection.remoteId());
+    if (!newCollection.parentCollection().isValid())
+        newCollection.setParentCollection(oldCollection.parentCollection());
     if (newCollection.name().isEmpty())
         newCollection.setName(oldCollection.name());
     if (newCollection.contentMimeTypes().isEmpty())
