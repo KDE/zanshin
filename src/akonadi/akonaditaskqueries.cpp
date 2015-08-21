@@ -30,6 +30,10 @@
 #include "utils/datetime.h"
 #include "utils/jobhandler.h"
 
+#include <functional>
+
+using namespace std::placeholders;
+
 using namespace Akonadi;
 
 TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
@@ -73,18 +77,8 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
                 }
             });
         });
-
-        m_findAll->setConvertFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->createTaskFromItem(item);
-        });
-        m_findAll->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
-            m_serializer->updateTaskFromItem(task, item);
-        });
         m_findAll->setPredicateFunction([this] (const Akonadi::Item &item) {
             return m_serializer->isTaskItem(item);
-        });
-        m_findAll->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
-            return m_serializer->representsItem(task, item);
         });
     }
 
@@ -122,17 +116,8 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
                 });
             });
         });
-        query->setConvertFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->createTaskFromItem(item);
-        });
-        query->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
-            m_serializer->updateTaskFromItem(task, item);
-        });
         query->setPredicateFunction([this, task] (const Akonadi::Item &item) {
             return m_serializer->isTaskChild(task, item);
-        });
-        query->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
-            return m_serializer->representsItem(task, item);
         });
     }
 
@@ -168,18 +153,8 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
                 }
             });
         });
-
-        m_findTopLevel->setConvertFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->createTaskFromItem(item);
-        });
-        m_findTopLevel->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
-            m_serializer->updateTaskFromItem(task, item);
-        });
         m_findTopLevel->setPredicateFunction([this] (const Akonadi::Item &item) {
             return m_serializer->relatedUidFromItem(item).isEmpty() && m_serializer->isTaskItem(item);
-        });
-        m_findTopLevel->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
-            return m_serializer->representsItem(task, item);
         });
     }
 
@@ -215,13 +190,6 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
                 }
             });
         });
-
-        m_findWorkdayTopLevel->setConvertFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->createTaskFromItem(item);
-        });
-        m_findWorkdayTopLevel->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
-            m_serializer->updateTaskFromItem(task, item);
-        });
         m_findWorkdayTopLevel->setPredicateFunction([this] (const Akonadi::Item &item) {
             if (!m_serializer->isTaskItem(item))
                 return false;
@@ -242,9 +210,6 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
             else
                 return pastStartDate || pastDueDate;
 
-        });
-        m_findWorkdayTopLevel->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
-            return m_serializer->representsItem(task, item);
         });
     }
 
@@ -284,6 +249,11 @@ void TaskQueries::onItemChanged(const Item &item)
 TaskQueries::TaskQuery::Ptr TaskQueries::createTaskQuery()
 {
     auto query = TaskQueries::TaskQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createTaskFromItem, m_serializer, _1));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateTaskFromItem, m_serializer, _2, _1));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
+
     m_taskQueries << query;
     return query;
 }

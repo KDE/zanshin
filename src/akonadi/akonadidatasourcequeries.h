@@ -74,7 +74,7 @@ private slots:
     void onCollectionChanged(const Akonadi::Collection &collection);
 
 private:
-    DataSourceQuery::Ptr createDataSourceQuery();
+    DataSourceQuery::Ptr createDataSourceQuery(Akonadi::SerializerInterface::DataSourceNameScheme nameScheme = Akonadi::SerializerInterface::BaseName);
 
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;

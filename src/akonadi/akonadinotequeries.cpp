@@ -29,6 +29,10 @@
 
 #include "utils/jobhandler.h"
 
+#include <functional>
+
+using namespace std::placeholders;
+
 using namespace Akonadi;
 
 NoteQueries::NoteQueries(const StorageInterface::Ptr &storage,
@@ -72,18 +76,8 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
                 }
             });
         });
-
-        m_findAll->setConvertFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->createNoteFromItem(item);
-        });
-        m_findAll->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Note::Ptr &note) {
-            m_serializer->updateNoteFromItem(note, item);
-        });
         m_findAll->setPredicateFunction([this] (const Akonadi::Item &item) {
             return m_serializer->isNoteItem(item);
-        });
-        m_findAll->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Note::Ptr &note) {
-            return m_serializer->representsItem(note, item);
         });
     }
 
@@ -111,6 +105,11 @@ void NoteQueries::onItemChanged(const Item &item)
 NoteQueries::NoteQuery::Ptr NoteQueries::createNoteQuery()
 {
     auto query = NoteQueries::NoteQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createNoteFromItem, m_serializer, _1));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateNoteFromItem, m_serializer, _2, _1));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
+
     m_noteQueries << query;
     return query;
 }

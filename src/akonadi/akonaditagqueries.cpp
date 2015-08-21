@@ -30,6 +30,10 @@
 
 #include "utils/jobhandler.h"
 
+#include <functional>
+
+using namespace std::placeholders;
+
 using namespace Akonadi;
 
 TagQueries::TagQueries(const StorageInterface::Ptr &storage, const SerializerInterface::Ptr &serializer, const MonitorInterface::Ptr &monitor)
@@ -61,19 +65,8 @@ TagQueries::TagResult::Ptr TagQueries::findAll() const
                     add(tag);
             });
         });
-
-        m_findAll->setConvertFunction([this] (const Akonadi::Tag &tag) {
-            return m_serializer->createTagFromAkonadiTag(tag);
-        });
-
-        m_findAll->setUpdateFunction([this] (const Akonadi::Tag &akonadiTag, Domain::Tag::Ptr &tag) {
-            m_serializer->updateTagFromAkonadiTag(tag, akonadiTag);
-        });
         m_findAll->setPredicateFunction([this] (const Akonadi::Tag &akonadiTag) {
             return akonadiTag.type() == Akonadi::Tag::PLAIN;
-        });
-        m_findAll->setRepresentsFunction([this] (const Akonadi::Tag &akonadiTag, const Domain::Tag::Ptr &tag) {
-            return m_serializer->representsAkonadiTag(tag, akonadiTag);
         });
     }
 
@@ -111,31 +104,8 @@ TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::P
                 }
             });
         });
-        query->setConvertFunction([this] (const Akonadi::Item &item) {
-            if (m_serializer->isTaskItem(item)) {
-                auto task = m_serializer->createTaskFromItem(item);
-                return Domain::Artifact::Ptr(task);
-
-            } else if (m_serializer->isNoteItem(item)) {
-                auto note = m_serializer->createNoteFromItem(item);
-                return Domain::Artifact::Ptr(note);
-
-            } else {
-                return Domain::Artifact::Ptr();
-            }
-        });
-        query->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Artifact::Ptr &artifact) {
-            if (auto task = artifact.dynamicCast<Domain::Task>()) {
-                m_serializer->updateTaskFromItem(task, item);
-            } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
-                m_serializer->updateNoteFromItem(note, item);
-            }
-        });
         query->setPredicateFunction([this, tag] (const Akonadi::Item &item) {
             return m_serializer->isTagChild(tag, item);
-        });
-        query->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Artifact::Ptr &artifact) {
-            return m_serializer->representsItem(artifact, item);
         });
     }
 
@@ -181,6 +151,11 @@ void TagQueries::onItemChanged(const Item &item)
 TagQueries::TagQuery::Ptr TagQueries::createTagQuery()
 {
     auto query = TagQueries::TagQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createTagFromAkonadiTag, m_serializer, _1));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateTagFromAkonadiTag, m_serializer, _2, _1));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::representsAkonadiTag, m_serializer, _2, _1));
+
     m_tagQueries << query;
     return query;
 }
@@ -188,6 +163,11 @@ TagQueries::TagQuery::Ptr TagQueries::createTagQuery()
 TagQueries::ArtifactQuery::Ptr TagQueries::createArtifactQuery()
 {
     auto query = TagQueries::ArtifactQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createArtifactFromItem, m_serializer, _1));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateArtifactFromItem, m_serializer, _2, _1));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
+
     m_artifactQueries << query;
     return query;
 }

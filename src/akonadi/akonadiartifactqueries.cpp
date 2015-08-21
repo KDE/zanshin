@@ -29,6 +29,10 @@
 
 #include "utils/jobhandler.h"
 
+#include <functional>
+
+using namespace std::placeholders;
+
 using namespace Akonadi;
 
 ArtifactQueries::ArtifactQueries(const StorageInterface::Ptr &storage,
@@ -76,29 +80,6 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
                 }
             });
         });
-
-        m_findInbox->setConvertFunction([this] (const Akonadi::Item &item) {
-            if (m_serializer->isTaskItem(item)) {
-                auto task = m_serializer->createTaskFromItem(item);
-                return Domain::Artifact::Ptr(task);
-
-            } else if (m_serializer->isNoteItem(item)) {
-                auto note = m_serializer->createNoteFromItem(item);
-                return Domain::Artifact::Ptr(note);
-
-            } else {
-                return Domain::Artifact::Ptr();
-            }
-        });
-
-        m_findInbox->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Artifact::Ptr &artifact) {
-            if (auto task = artifact.dynamicCast<Domain::Task>()) {
-                m_serializer->updateTaskFromItem(task, item);
-            } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
-                m_serializer->updateNoteFromItem(note, item);
-            }
-        });
-
         m_findInbox->setPredicateFunction([this] (const Akonadi::Item &item) {
             const bool excluded = !m_serializer->relatedUidFromItem(item).isEmpty()
                                || (!m_serializer->isTaskItem(item) && !m_serializer->isNoteItem(item))
@@ -106,10 +87,6 @@ ArtifactQueries::ArtifactResult::Ptr ArtifactQueries::findInboxTopLevel() const
                                || m_serializer->hasAkonadiTags(item);
 
             return !excluded;
-        });
-
-        m_findInbox->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Artifact::Ptr &artifact) {
-            return m_serializer->representsItem(artifact, item);
         });
     }
 
@@ -150,6 +127,11 @@ void ArtifactQueries::onCollectionSelectionChanged()
 ArtifactQueries::ArtifactQuery::Ptr ArtifactQueries::createArtifactQuery()
 {
     auto query = ArtifactQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createArtifactFromItem, m_serializer, _1));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateArtifactFromItem, m_serializer, _2, _1));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
+
     m_artifactQueries << query;
     return query;
 }

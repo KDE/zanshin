@@ -30,6 +30,10 @@
 
 #include "utils/jobhandler.h"
 
+#include <functional>
+
+using namespace std::placeholders;
+
 using namespace Akonadi;
 
 DataSourceQueries::DataSourceQueries(const StorageInterface::Ptr &storage,
@@ -49,7 +53,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
     if (!m_findTasks) {
         {
             DataSourceQueries *self = const_cast<DataSourceQueries*>(this);
-            self->m_findTasks = self->createDataSourceQuery();
+            self->m_findTasks = self->createDataSourceQuery(SerializerInterface::FullPath);
         }
 
         m_findTasks->setFetchFunction([this] (const DataSourceQuery::AddFunction &add) {
@@ -59,18 +63,8 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
                     add(collection);
             });
         });
-
-        m_findTasks->setConvertFunction([this] (const Akonadi::Collection &collection) {
-            return m_serializer->createDataSourceFromCollection(collection, SerializerInterface::FullPath);
-        });
-        m_findTasks->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
-            m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::FullPath);
-        });
         m_findTasks->setPredicateFunction([this] (const Akonadi::Collection &collection) {
             return m_serializer->isTaskCollection(collection);
-        });
-        m_findTasks->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
-            return m_serializer->representsCollection(source, collection);
         });
     }
 
@@ -82,7 +76,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
     if (!m_findNotes) {
         {
             DataSourceQueries *self = const_cast<DataSourceQueries*>(this);
-            self->m_findNotes = self->createDataSourceQuery();
+            self->m_findNotes = self->createDataSourceQuery(SerializerInterface::FullPath);
         }
 
         m_findNotes->setFetchFunction([this] (const DataSourceQuery::AddFunction &add) {
@@ -92,18 +86,8 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
                     add(collection);
             });
         });
-
-        m_findNotes->setConvertFunction([this] (const Akonadi::Collection &collection) {
-            return m_serializer->createDataSourceFromCollection(collection, SerializerInterface::FullPath);
-        });
-        m_findNotes->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
-            m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::FullPath);
-        });
         m_findNotes->setPredicateFunction([this] (const Akonadi::Collection &collection) {
             return m_serializer->isNoteCollection(collection);
-        });
-        m_findNotes->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
-            return m_serializer->representsCollection(source, collection);
         });
     }
 
@@ -139,20 +123,10 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
                     add(topLevel);
             });
         });
-
-        m_findTopLevel->setConvertFunction([this] (const Akonadi::Collection &collection) {
-            return m_serializer->createDataSourceFromCollection(collection, SerializerInterface::BaseName);
-        });
-        m_findTopLevel->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
-            m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::BaseName);
-        });
         m_findTopLevel->setPredicateFunction([this] (const Akonadi::Collection &collection) {
             return collection.isValid()
                 && collection.parentCollection() == Akonadi::Collection::root()
                 && m_serializer->isListedCollection(collection);
-        });
-        m_findTopLevel->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
-            return m_serializer->representsCollection(source, collection);
         });
     }
 
@@ -192,20 +166,10 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
                     add(topLevel);
             });
         });
-
-        query->setConvertFunction([this] (const Akonadi::Collection &collection) {
-            return m_serializer->createDataSourceFromCollection(collection, SerializerInterface::BaseName);
-        });
-        query->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
-            m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::BaseName);
-        });
         query->setPredicateFunction([this, root] (const Akonadi::Collection &collection) {
             return collection.isValid()
                 && collection.parentCollection() == root
                 && m_serializer->isListedCollection(collection);
-        });
-        query->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
-            return m_serializer->representsCollection(source, collection);
         });
     }
 
@@ -261,19 +225,9 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel()
 
             });
         });
-
-        m_findSearchTopLevel->setConvertFunction([this] (const Akonadi::Collection &collection) {
-            return m_serializer->createDataSourceFromCollection(collection, SerializerInterface::BaseName);
-        });
-        m_findSearchTopLevel->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
-            m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::BaseName);
-        });
         m_findSearchTopLevel->setPredicateFunction([this] (const Akonadi::Collection &collection) {
             return collection.isValid()
                 && collection.parentCollection() == Akonadi::Collection::root();
-        });
-        m_findSearchTopLevel->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
-            return m_serializer->representsCollection(source, collection);
         });
     }
 
@@ -314,18 +268,8 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(D
                     add(topLevel);
             });
         });
-
-        query->setConvertFunction([this] (const Akonadi::Collection &collection) {
-            return m_serializer->createDataSourceFromCollection(collection, SerializerInterface::BaseName);
-        });
-        query->setUpdateFunction([this] (const Akonadi::Collection &collection, Domain::DataSource::Ptr &source) {
-            m_serializer->updateDataSourceFromCollection(source, collection, SerializerInterface::BaseName);
-        });
         query->setPredicateFunction([this, root] (const Akonadi::Collection &collection) {
             return collection.isValid() && collection.parentCollection() == root;
-        });
-        query->setRepresentsFunction([this] (const Akonadi::Collection &collection, const Domain::DataSource::Ptr &source) {
-            return m_serializer->representsCollection(source, collection);
         });
     }
 
@@ -350,9 +294,14 @@ void DataSourceQueries::onCollectionChanged(const Collection &collection)
         query->onChanged(collection);
 }
 
-DataSourceQueries::DataSourceQuery::Ptr DataSourceQueries::createDataSourceQuery()
+DataSourceQueries::DataSourceQuery::Ptr DataSourceQueries::createDataSourceQuery(SerializerInterface::DataSourceNameScheme nameScheme)
 {
     auto query = DataSourceQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createDataSourceFromCollection, m_serializer, _1, nameScheme));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateDataSourceFromCollection, m_serializer, _2, _1, nameScheme));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::representsCollection, m_serializer, _2, _1));
+
     m_dataSourceQueries << query;
     return query;
 }

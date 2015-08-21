@@ -32,6 +32,10 @@
 #include <QByteArray>
 #include <QDebug>
 
+#include <functional>
+
+using namespace std::placeholders;
+
 using namespace Akonadi;
 
 ContextQueries::ContextQueries(const StorageInterface::Ptr &storage,
@@ -65,19 +69,8 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
                     add(tag);
             });
         });
-
-        m_findAll->setConvertFunction([this] (const Akonadi::Tag &tag) {
-            return m_serializer->createContextFromTag(tag);
-        });
-
-        m_findAll->setUpdateFunction([this] (const Akonadi::Tag &tag, Domain::Context::Ptr &context) {
-            m_serializer->updateContextFromTag(context, tag);
-        });
         m_findAll->setPredicateFunction([this] (const Akonadi::Tag &tag) {
             return tag.type() == Akonadi::SerializerInterface::contextTagType();
-        });
-        m_findAll->setRepresentsFunction([this] (const Akonadi::Tag &tag, const Domain::Context::Ptr &context) {
-            return m_serializer->isContextTag(context, tag);
         });
     }
 
@@ -107,17 +100,8 @@ ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Contex
             });
 
         });
-        query->setConvertFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->createTaskFromItem(item);
-        });
-        query->setUpdateFunction([this] (const Akonadi::Item &item, Domain::Task::Ptr &task) {
-            m_serializer->updateTaskFromItem(task, item);
-        });
         query->setPredicateFunction([this, context] (const Akonadi::Item &item) {
             return m_serializer->isContextChild(context, item);
-        });
-        query->setRepresentsFunction([this] (const Akonadi::Item &item, const Domain::Task::Ptr &task) {
-            return m_serializer->representsItem(task, item);
         });
     }
 
@@ -163,6 +147,11 @@ void ContextQueries::onItemChanged(const Item &item)
 ContextQueries::ContextQuery::Ptr ContextQueries::createContextQuery()
 {
     auto query = ContextQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createContextFromTag, m_serializer, _1));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateContextFromTag, m_serializer, _2, _1));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::isContextTag, m_serializer, _2, _1));
+
     m_contextQueries << query;
     return query;
 }
@@ -170,6 +159,11 @@ ContextQueries::ContextQuery::Ptr ContextQueries::createContextQuery()
 ContextQueries::TaskQuery::Ptr ContextQueries::createTaskQuery()
 {
     auto query = TaskQuery::Ptr::create();
+
+    query->setConvertFunction(std::bind(&SerializerInterface::createTaskFromItem, m_serializer, _1));
+    query->setUpdateFunction(std::bind(&SerializerInterface::updateTaskFromItem, m_serializer, _2, _1));
+    query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
+
     m_taskQueries << query;
     return query;
 }
