@@ -613,6 +613,7 @@ private slots:
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Task::Ptr task = serializer.createTaskFromItem(item);
+        auto artifact = serializer.createArtifactFromItem(item).dynamicCast<Domain::Task>();
 
         // THEN
         QCOMPARE(task->title(), summary);
@@ -626,6 +627,19 @@ private slots:
         QCOMPARE(task->property("itemId").toLongLong(), item.id());
         QCOMPARE(task->delegate().name(), delegateName);
         QCOMPARE(task->delegate().email(), delegateEmail);
+
+        QVERIFY(!artifact.isNull());
+        QCOMPARE(artifact->title(), summary);
+        QCOMPARE(artifact->text(), content);
+        QCOMPARE(artifact->isDone(), isDone);
+        QCOMPARE(artifact->doneDate(), doneDate);
+        QCOMPARE(artifact->startDate(), startDate);
+        QCOMPARE(artifact->dueDate(), dueDate);
+        QCOMPARE(artifact->property("todoUid").toString(), todo->uid());
+        QCOMPARE(artifact->property("relatedUid").toString(), todo->relatedTo());
+        QCOMPARE(artifact->property("itemId").toLongLong(), item.id());
+        QCOMPARE(artifact->delegate().name(), delegateName);
+        QCOMPARE(artifact->delegate().email(), delegateEmail);
     }
 
     void shouldCreateNullTaskFromInvalidItem()
@@ -636,9 +650,11 @@ private slots:
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Task::Ptr task = serializer.createTaskFromItem(item);
+        auto artifact = serializer.createArtifactFromItem(item);
 
         // THEN
         QVERIFY(task.isNull());
+        QVERIFY(artifact.isNull());
     }
 
     void shouldCreateNullTaskFromProjectItem()
@@ -658,9 +674,11 @@ private slots:
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Task::Ptr task = serializer.createTaskFromItem(item);
+        auto artifact = serializer.createArtifactFromItem(item);
 
         // THEN
         QVERIFY(task.isNull());
+        QVERIFY(artifact.isNull());
     }
 
     void shouldUpdateTaskFromItem_data()
@@ -705,6 +723,7 @@ private slots:
         // ... deserialized as a task
         Akonadi::Serializer serializer;
         auto task = serializer.createTaskFromItem(originalItem);
+        auto artifact = serializer.createArtifactFromItem(originalItem);
 
         // WHEN
 
@@ -746,8 +765,22 @@ private slots:
         updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
 
         serializer.updateTaskFromItem(task, updatedItem);
+        serializer.updateArtifactFromItem(artifact, updatedItem);
 
         // THEN
+        QCOMPARE(task->title(), updatedSummary);
+        QCOMPARE(task->text(), updatedContent);
+        QCOMPARE(task->isDone(), updatedDone);
+        QCOMPARE(task->doneDate(), updatedDoneDate);
+        QCOMPARE(task->startDate(), updatedStartDate);
+        QCOMPARE(task->dueDate(), updatedDueDate);
+        QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
+        QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
+        QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(task->delegate().name(), updatedDelegateName);
+        QCOMPARE(task->delegate().email(), updatedDelegateEmail);
+
+        task = artifact.dynamicCast<Domain::Task>();
         QCOMPARE(task->title(), updatedSummary);
         QCOMPARE(task->text(), updatedContent);
         QCOMPARE(task->isDone(), updatedDone);
@@ -794,12 +827,23 @@ private slots:
         // ... deserialized as a task
         Akonadi::Serializer serializer;
         auto task = serializer.createTaskFromItem(originalItem);
+        auto artifact = serializer.createArtifactFromItem(originalItem);
 
         // WHEN
         Akonadi::Item invalidItem;
         serializer.updateTaskFromItem(task, invalidItem);
+        serializer.updateArtifactFromItem(artifact, invalidItem);
 
         // THEN
+        QCOMPARE(task->title(), summary);
+        QCOMPARE(task->text(), content);
+        QCOMPARE(task->isDone(), isDone);
+        QCOMPARE(task->doneDate(), doneDate);
+        QCOMPARE(task->startDate(), startDate);
+        QCOMPARE(task->dueDate(), dueDate);
+        QCOMPARE(task->property("itemId").toLongLong(), originalItem.id());
+
+        task = artifact.dynamicCast<Domain::Task>();
         QCOMPARE(task->title(), summary);
         QCOMPARE(task->text(), content);
         QCOMPARE(task->isDone(), isDone);
@@ -842,6 +886,7 @@ private slots:
         // ... deserialized as a task
         Akonadi::Serializer serializer;
         auto task = serializer.createTaskFromItem(originalItem);
+        auto artifact = serializer.createArtifactFromItem(originalItem);
 
         // WHEN
         // A todo with the project flag
@@ -854,8 +899,18 @@ private slots:
         projectItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
         projectItem.setPayload<KCalCore::Todo::Ptr>(projectTodo);
         serializer.updateTaskFromItem(task, projectItem);
+        serializer.updateArtifactFromItem(artifact, projectItem);
 
         // THEN
+        QCOMPARE(task->title(), summary);
+        QCOMPARE(task->text(), content);
+        QCOMPARE(task->isDone(), isDone);
+        QCOMPARE(task->doneDate(), doneDate);
+        QCOMPARE(task->startDate(), startDate);
+        QCOMPARE(task->dueDate(), dueDate);
+        QCOMPARE(task->property("itemId").toLongLong(), originalItem.id());
+
+        task = artifact.dynamicCast<Domain::Task>();
         QCOMPARE(task->title(), summary);
         QCOMPARE(task->text(), content);
         QCOMPARE(task->isDone(), isDone);
@@ -1157,12 +1212,19 @@ private slots:
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Note::Ptr note = serializer.createNoteFromItem(item);
+        auto artifact = serializer.createArtifactFromItem(item).dynamicCast<Domain::Note>();
 
         // THEN
         QCOMPARE(note->title(), title);
         QCOMPARE(note->text(), text);
         QCOMPARE(note->property("itemId").toLongLong(), item.id());
         QCOMPARE(note->property("relatedUid").toString(), relatedUid);
+
+        QVERIFY(!artifact.isNull());
+        QCOMPARE(artifact->title(), title);
+        QCOMPARE(artifact->text(), text);
+        QCOMPARE(artifact->property("itemId").toLongLong(), item.id());
+        QCOMPARE(artifact->property("relatedUid").toString(), relatedUid);
     }
 
     void shouldCreateNullNoteFromInvalidItem()
@@ -1173,9 +1235,11 @@ private slots:
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Note::Ptr note = serializer.createNoteFromItem(item);
+        auto artifact = serializer.createArtifactFromItem(item);
 
         // THEN
         QVERIFY(note.isNull());
+        QVERIFY(artifact.isNull());
     }
 
     void shouldUpdateNoteFromItem_data()
@@ -1209,6 +1273,7 @@ private slots:
         //... deserialized as a note
         Akonadi::Serializer serializer;
         auto note = serializer.createNoteFromItem(item);
+        auto artifact = serializer.createNoteFromItem(item);
 
         // WHEN
 
@@ -1234,8 +1299,15 @@ private slots:
         updatedItem.setPayload<KMime::Message::Ptr>(updatedMessage);
 
         serializer.updateNoteFromItem(note, updatedItem);
+        serializer.updateArtifactFromItem(artifact, updatedItem);
 
         // THEN
+        QCOMPARE(note->title(), updatedTitle);
+        QCOMPARE(note->text(), updatedText);
+        QCOMPARE(note->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(note->property("relatedUid").toString(), updatedRelatedUid);
+
+        note = artifact.dynamicCast<Domain::Note>();
         QCOMPARE(note->title(), updatedTitle);
         QCOMPARE(note->text(), updatedText);
         QCOMPARE(note->property("itemId").toLongLong(), updatedItem.id());
@@ -1263,13 +1335,20 @@ private slots:
         //... deserialized as a note
         Akonadi::Serializer serializer;
         auto note = serializer.createNoteFromItem(item);
+        auto artifact = serializer.createArtifactFromItem(item);
 
         // WHEN
         Akonadi::Item invalidItem;
 
         serializer.updateNoteFromItem(note, invalidItem);
+        serializer.updateArtifactFromItem(artifact, invalidItem);
 
         //THEN
+        QCOMPARE(note->title(), title);
+        QCOMPARE(note->text(), text);
+        QCOMPARE(note->property("itemId").toLongLong(), item.id());
+
+        note = artifact.dynamicCast<Domain::Note>();
         QCOMPARE(note->title(), title);
         QCOMPARE(note->text(), text);
         QCOMPARE(note->property("itemId").toLongLong(), item.id());
