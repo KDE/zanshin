@@ -439,72 +439,35 @@ private slots:
     void shouldReactToItemChangesForTopLevelTasks()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // Two top level collections
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(Akonadi::Collection::root());
-        auto source1 = Domain::DataSource::Ptr::create();
-        Akonadi::Collection col2(43);
-        col2.setParentCollection(Akonadi::Collection::root());
-        auto source2 = Domain::DataSource::Ptr::create();
+        // Two top level collections and one child collection
+        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName("44NoteChild").withParent(43).withNoteContent());
 
-        // One child collection
-        Akonadi::Collection col3(44);
-        col3.setParentCollection(col2);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-
-        // Serializer mock returning the tasks from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isListedCollection).when(col1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isListedCollection).when(col2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isListedCollection).when(col3).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).thenReturn();
-        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col2).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source1, col3).thenReturn(false);
-        serializerMock(&Akonadi::SerializerInterface::representsCollection).when(source2, col3).thenReturn(false);
-
-        // Monitor mock
-        auto monitor = Testlib::AkonadiFakeMonitor::Ptr::create();
-
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         monitor));
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
+
         bool replaceHandlerCalled = false;
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::DataSource::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
-        QTest::qWait(150);
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        monitor->changeCollection(col2);
-        monitor->changeCollection(col3);
+        data.modifyCollection(GenCollection(data.collection(42)).withName("42TaskBis"));
+        data.modifyCollection(GenCollection(data.collection(43)).withName("43NoteBis"));
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateDataSourceFromCollection).when(source2, col2, Akonadi::SerializerInterface::BaseName).exactly(1));
-
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().first(), source1);
-        QCOMPARE(result->data().at(1), source2);
+        QCOMPARE(result->data().at(0)->name(), QString("42TaskBis"));
+        QCOMPARE(result->data().at(1)->name(), QString("43NoteBis"));
         QVERIFY(replaceHandlerCalled);
     }
 
