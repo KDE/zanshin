@@ -46,6 +46,7 @@ public:
     typedef QSharedPointer<NoteQueries> Ptr;
 
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Note::Ptr> NoteQuery;
+    typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
     typedef Domain::QueryResultProvider<Domain::Note::Ptr> NoteProvider;
     typedef Domain::QueryResult<Domain::Note::Ptr> NoteResult;
 
@@ -68,7 +69,7 @@ private:
     MonitorInterface::Ptr m_monitor;
 
     NoteQuery::Ptr m_findAll;
-    NoteQuery::List m_noteQueries;
+    ItemInputQuery::List m_itemInputQueries;
 };
 
 }

@@ -225,24 +225,24 @@ TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task
 
 void TaskQueries::onItemAdded(const Item &item)
 {
-    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onAdded(item);
 }
 
 void TaskQueries::onItemRemoved(const Item &item)
 {
-    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onRemoved(item);
 
     if (m_findChildren.contains(item.id())) {
         auto query = m_findChildren.take(item.id());
-        m_taskQueries.removeAll(query);
+        m_itemInputQueries.removeAll(query);
     }
 }
 
 void TaskQueries::onItemChanged(const Item &item)
 {
-    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onChanged(item);
 }
 
@@ -254,6 +254,6 @@ TaskQueries::TaskQuery::Ptr TaskQueries::createTaskQuery()
     query->setUpdateFunction(std::bind(&SerializerInterface::updateTaskFromItem, m_serializer, _2, _1));
     query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
 
-    m_taskQueries << query;
+    m_itemInputQueries << query;
     return query;
 }

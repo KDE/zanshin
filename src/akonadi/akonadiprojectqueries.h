@@ -43,6 +43,7 @@ public:
     typedef QSharedPointer<ProjectQueries> Ptr;
 
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Project::Ptr> ProjectQuery;
+    typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
     typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
 
@@ -72,10 +73,9 @@ private:
     MonitorInterface::Ptr m_monitor;
 
     ProjectQuery::Ptr m_findAll;
-    ProjectQuery::List m_projectQueries;
+    ItemInputQuery::List m_itemInputQueries;
 
     QHash<Akonadi::Entity::Id, ArtifactQuery::Ptr> m_findTopLevel;
-    ArtifactQuery::List m_artifactQueries;
 };
 
 }

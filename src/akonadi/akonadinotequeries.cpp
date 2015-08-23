@@ -86,19 +86,19 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
 
 void NoteQueries::onItemAdded(const Item &item)
 {
-    foreach (const NoteQuery::Ptr &query, m_noteQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onAdded(item);
 }
 
 void NoteQueries::onItemRemoved(const Item &item)
 {
-    foreach (const NoteQuery::Ptr &query, m_noteQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onRemoved(item);
 }
 
 void NoteQueries::onItemChanged(const Item &item)
 {
-    foreach (const NoteQuery::Ptr &query, m_noteQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onChanged(item);
 }
 
@@ -110,6 +110,6 @@ NoteQueries::NoteQuery::Ptr NoteQueries::createNoteQuery()
     query->setUpdateFunction(std::bind(&SerializerInterface::updateNoteFromItem, m_serializer, _2, _1));
     query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
 
-    m_noteQueries << query;
+    m_itemInputQueries << query;
     return query;
 }

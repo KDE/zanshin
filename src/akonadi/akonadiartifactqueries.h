@@ -47,6 +47,7 @@ public:
     typedef QSharedPointer<ArtifactQueries> Ptr;
 
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Artifact::Ptr> ArtifactQuery;
+    typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
     typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
@@ -74,7 +75,7 @@ private:
     MonitorInterface::Ptr m_monitor;
 
     ArtifactQuery::Ptr m_findInbox;
-    ArtifactQuery::List m_artifactQueries;
+    ItemInputQuery::List m_itemInputQueries;
 };
 
 }

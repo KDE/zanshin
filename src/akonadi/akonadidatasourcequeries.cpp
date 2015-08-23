@@ -278,19 +278,19 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(D
 
 void DataSourceQueries::onCollectionAdded(const Collection &collection)
 {
-    foreach (const DataSourceQuery::Ptr &query, m_dataSourceQueries)
+    foreach (const auto &query, m_collectionInputQueries)
         query->onAdded(collection);
 }
 
 void DataSourceQueries::onCollectionRemoved(const Collection &collection)
 {
-    foreach (const DataSourceQuery::Ptr &query, m_dataSourceQueries)
+    foreach (const auto &query, m_collectionInputQueries)
         query->onRemoved(collection);
 }
 
 void DataSourceQueries::onCollectionChanged(const Collection &collection)
 {
-    foreach (const DataSourceQuery::Ptr &query, m_dataSourceQueries)
+    foreach (const auto &query, m_collectionInputQueries)
         query->onChanged(collection);
 }
 
@@ -302,6 +302,6 @@ DataSourceQueries::DataSourceQuery::Ptr DataSourceQueries::createDataSourceQuery
     query->setUpdateFunction(std::bind(&SerializerInterface::updateDataSourceFromCollection, m_serializer, _2, _1, nameScheme));
     query->setRepresentsFunction(std::bind(&SerializerInterface::representsCollection, m_serializer, _2, _1));
 
-    m_dataSourceQueries << query;
+    m_collectionInputQueries << query;
     return query;
 }

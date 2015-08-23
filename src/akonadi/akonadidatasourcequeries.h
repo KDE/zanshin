@@ -51,6 +51,7 @@ public:
     typedef QSharedPointer<DataSourceQueries> Ptr;
 
     typedef Domain::LiveQuery<Akonadi::Collection, Domain::DataSource::Ptr> DataSourceQuery;
+    typedef Domain::LiveQueryInput<Akonadi::Collection> CollectionInputQuery;
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
@@ -84,7 +85,7 @@ private:
     DataSourceQuery::Ptr m_findNotes;
     DataSourceQuery::Ptr m_findTopLevel;
     QHash<Akonadi::Entity::Id, DataSourceQuery::Ptr> m_findChildren;
-    DataSourceQuery::List m_dataSourceQueries;
+    CollectionInputQuery::List m_collectionInputQueries;
     QString m_searchTerm;
     DataSourceQuery::Ptr m_findSearchTopLevel;
     QHash<Akonadi::Entity::Id, DataSourceQuery::Ptr> m_findSearchChildren;

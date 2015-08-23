@@ -110,37 +110,37 @@ ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Contex
 
 void ContextQueries::onTagAdded(const Tag &tag)
 {
-    foreach (const ContextQuery::Ptr &query, m_contextQueries)
+    foreach (const auto &query, m_tagInputQueries)
         query->onAdded(tag);
 }
 
 void ContextQueries::onTagRemoved(const Tag &tag)
 {
-    foreach (const ContextQuery::Ptr &query, m_contextQueries)
+    foreach (const auto &query, m_tagInputQueries)
         query->onRemoved(tag);
 }
 
 void ContextQueries::onTagChanged(const Tag &tag)
 {
-    foreach (const ContextQuery::Ptr &query, m_contextQueries)
+    foreach (const auto &query, m_tagInputQueries)
         query->onChanged(tag);
 }
 
 void ContextQueries::onItemAdded(const Item &item)
 {
-    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onAdded(item);
 }
 
 void ContextQueries::onItemRemoved(const Item &item)
 {
-    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onRemoved(item);
 }
 
 void ContextQueries::onItemChanged(const Item &item)
 {
-    foreach (const TaskQuery::Ptr &query, m_taskQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onChanged(item);
 }
 
@@ -152,7 +152,7 @@ ContextQueries::ContextQuery::Ptr ContextQueries::createContextQuery()
     query->setUpdateFunction(std::bind(&SerializerInterface::updateContextFromTag, m_serializer, _2, _1));
     query->setRepresentsFunction(std::bind(&SerializerInterface::isContextTag, m_serializer, _2, _1));
 
-    m_contextQueries << query;
+    m_tagInputQueries << query;
     return query;
 }
 
@@ -164,6 +164,6 @@ ContextQueries::TaskQuery::Ptr ContextQueries::createTaskQuery()
     query->setUpdateFunction(std::bind(&SerializerInterface::updateTaskFromItem, m_serializer, _2, _1));
     query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
 
-    m_taskQueries << query;
+    m_itemInputQueries << query;
     return query;
 }

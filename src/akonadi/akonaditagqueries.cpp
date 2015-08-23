@@ -114,37 +114,37 @@ TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::P
 
 void TagQueries::onTagAdded(const Tag &tag)
 {
-    foreach (const TagQuery::Ptr &query, m_tagQueries)
+    foreach (const auto &query, m_tagInputQueries)
         query->onAdded(tag);
 }
 
 void TagQueries::onTagRemoved(const Tag &tag)
 {
-    foreach (const TagQuery::Ptr &query, m_tagQueries)
+    foreach (const auto &query, m_tagInputQueries)
         query->onRemoved(tag);
 }
 
 void TagQueries::onTagChanged(const Tag &tag)
 {
-    foreach (const TagQuery::Ptr &query, m_tagQueries)
+    foreach (const auto &query, m_tagInputQueries)
         query->onChanged(tag);
 }
 
 void TagQueries::onItemAdded(const Item &item)
 {
-    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onAdded(item);
 }
 
 void TagQueries::onItemRemoved(const Item &item)
 {
-    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onRemoved(item);
 }
 
 void TagQueries::onItemChanged(const Item &item)
 {
-    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onChanged(item);
 }
 
@@ -156,7 +156,7 @@ TagQueries::TagQuery::Ptr TagQueries::createTagQuery()
     query->setUpdateFunction(std::bind(&SerializerInterface::updateTagFromAkonadiTag, m_serializer, _2, _1));
     query->setRepresentsFunction(std::bind(&SerializerInterface::representsAkonadiTag, m_serializer, _2, _1));
 
-    m_tagQueries << query;
+    m_tagInputQueries << query;
     return query;
 }
 
@@ -168,6 +168,6 @@ TagQueries::ArtifactQuery::Ptr TagQueries::createArtifactQuery()
     query->setUpdateFunction(std::bind(&SerializerInterface::updateArtifactFromItem, m_serializer, _2, _1));
     query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
 
-    m_artifactQueries << query;
+    m_itemInputQueries << query;
     return query;
 }

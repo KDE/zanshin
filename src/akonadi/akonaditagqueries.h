@@ -48,10 +48,12 @@ public:
     typedef QSharedPointer<TagQueries> Ptr;
 
     typedef Domain::LiveQuery<Akonadi::Tag, Domain::Tag::Ptr> TagQuery;
+    typedef Domain::LiveQueryInput<Akonadi::Tag> TagInputQuery;
     typedef Domain::QueryResult<Domain::Tag::Ptr> TagResult;
     typedef Domain::QueryResultProvider<Domain::Tag::Ptr> TagProvider;
 
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Artifact::Ptr> ArtifactQuery;
+    typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
     typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
@@ -80,10 +82,10 @@ private:
     MonitorInterface::Ptr m_monitor;
 
     TagQuery::Ptr m_findAll;
-    TagQuery::List m_tagQueries;
+    TagQuery::List m_tagInputQueries;
 
     QHash<Akonadi::Tag::Id, ArtifactQuery::Ptr> m_findTopLevel;
-    ArtifactQuery::List m_artifactQueries;
+    ArtifactQuery::List m_itemInputQueries;
 };
 
 } // akonadi namespace

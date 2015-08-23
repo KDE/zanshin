@@ -50,6 +50,7 @@ public:
     typedef QSharedPointer<TaskQueries> Ptr;
 
     typedef Domain::LiveQuery<Akonadi::Item, Domain::Task::Ptr> TaskQuery;
+    typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
 
@@ -82,7 +83,7 @@ private:
     QHash<Akonadi::Entity::Id, TaskQuery::Ptr> m_findChildren;
     TaskQuery::Ptr m_findTopLevel;
     TaskQuery::Ptr m_findWorkdayTopLevel;
-    TaskQuery::List m_taskQueries;
+    ItemInputQuery::List m_itemInputQueries;
 };
 
 }

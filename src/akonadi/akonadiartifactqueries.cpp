@@ -102,25 +102,25 @@ ArtifactQueries::TagResult::Ptr ArtifactQueries::findTags(Domain::Artifact::Ptr 
 
 void ArtifactQueries::onItemAdded(const Item &item)
 {
-    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onAdded(item);
 }
 
 void ArtifactQueries::onItemRemoved(const Item &item)
 {
-    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onRemoved(item);
 }
 
 void ArtifactQueries::onItemChanged(const Item &item)
 {
-    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->onChanged(item);
 }
 
 void ArtifactQueries::onCollectionSelectionChanged()
 {
-    foreach (const ArtifactQuery::Ptr &query, m_artifactQueries)
+    foreach (const auto &query, m_itemInputQueries)
         query->reset();
 }
 
@@ -132,6 +132,6 @@ ArtifactQueries::ArtifactQuery::Ptr ArtifactQueries::createArtifactQuery()
     query->setUpdateFunction(std::bind(&SerializerInterface::updateArtifactFromItem, m_serializer, _2, _1));
     query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
 
-    m_artifactQueries << query;
+    m_itemInputQueries << query;
     return query;
 }
