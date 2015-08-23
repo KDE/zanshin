@@ -29,9 +29,42 @@
 
 namespace Domain {
 
+template <typename InputType>
+class LiveQueryInput
+{
+public:
+    typedef QSharedPointer<LiveQueryInput<InputType>> Ptr;
+    typedef QWeakPointer<LiveQueryInput<InputType>> WeakPtr;
+    typedef QList<Ptr> List;
+    typedef QList<WeakPtr> WeakList;
+
+    typedef std::function<void(const InputType &)> AddFunction;
+    typedef std::function<void(const AddFunction &)> FetchFunction;
+    typedef std::function<bool(const InputType &)> PredicateFunction;
+
+    virtual ~LiveQueryInput() {}
+
+    virtual void reset() = 0;
+    virtual void onAdded(const InputType &input) = 0;
+    virtual void onChanged(const InputType &input) = 0;
+    virtual void onRemoved(const InputType &input) = 0;
+};
+
+template <typename OutputType>
+class LiveQueryOutput
+{
+public:
+    typedef QSharedPointer<LiveQueryOutput<OutputType>> Ptr;
+    typedef QList<Ptr> List;
+    typedef QueryResult<OutputType> Result;
+
+    virtual ~LiveQueryOutput() {}
+    virtual typename Result::Ptr result() = 0;
+    virtual void reset() = 0;
+};
 
 template<typename InputType, typename OutputType>
-class LiveQuery
+class LiveQuery : public LiveQueryInput<InputType>, public LiveQueryOutput<OutputType>
 {
 public:
     typedef QSharedPointer<LiveQuery<InputType, OutputType>> Ptr;
@@ -40,10 +73,10 @@ public:
     typedef QueryResultProvider<OutputType> Provider;
     typedef QueryResult<OutputType> Result;
 
-    typedef std::function<void(const InputType &)> AddFunction;
+    typedef typename LiveQueryInput<InputType>::AddFunction AddFunction;
+    typedef typename LiveQueryInput<InputType>::FetchFunction FetchFunction;
+    typedef typename LiveQueryInput<InputType>::PredicateFunction PredicateFunction;
 
-    typedef std::function<void(const AddFunction &)> FetchFunction;
-    typedef std::function<bool(const InputType &)> PredicateFunction;
     typedef std::function<OutputType(const InputType &)> ConvertFunction;
     typedef std::function<void(const InputType &, OutputType &)> UpdateFunction;
     typedef std::function<bool(const InputType &, const OutputType &)> RepresentsFunction;
@@ -53,7 +86,7 @@ public:
         clear();
     }
 
-    typename Result::Ptr result()
+    typename Result::Ptr result() Q_DECL_OVERRIDE
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -93,13 +126,13 @@ public:
         m_represents = represents;
     }
 
-    void reset()
+    void reset() Q_DECL_OVERRIDE
     {
         clear();
         doFetch();
     }
 
-    void onAdded(const InputType &input)
+    void onAdded(const InputType &input) Q_DECL_OVERRIDE
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -110,7 +143,7 @@ public:
             addToProvider(provider, input);
     }
 
-    void onChanged(const InputType &input)
+    void onChanged(const InputType &input) Q_DECL_OVERRIDE
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -143,7 +176,7 @@ public:
         }
     }
 
-    void onRemoved(const InputType &input)
+    void onRemoved(const InputType &input) Q_DECL_OVERRIDE
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
