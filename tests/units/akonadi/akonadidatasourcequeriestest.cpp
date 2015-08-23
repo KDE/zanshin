@@ -557,67 +557,34 @@ private slots:
     void shouldLookInAllReportedForChildSources()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // One parent collection
-        Akonadi::Collection parentCol(41);
-        parentCol.setParentCollection(Akonadi::Collection::root());
-        auto parent = Domain::DataSource::Ptr::create();
+        // One top level collection with two children (one of them also having a child)
+        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName("43TaskFirstChild").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName("44TaskFirstChildChild").withParent(43).withTaskContent());
+        data.createCollection(GenCollection().withId(45).withName("45NoteSecondChild").withParent(42).withNoteContent());
 
-        // Two child collections
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(parentCol);
-        auto source1 = Domain::DataSource::Ptr::create();
-        Akonadi::Collection col2(43);
-        col2.setParentCollection(parentCol);
-        auto source2 = Domain::DataSource::Ptr::create();
-
-        // One collection child of col2
-        Akonadi::Collection col3(44);
-        col3.setParentCollection(col2);
-        auto source3 = Domain::DataSource::Ptr::create();
-
-        // Only col1 and col3 will match the mimetypes
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::isListedCollection).when(col1).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isListedCollection).when(col2).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::isListedCollection).when(col3).thenReturn(true);
-        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::BaseName).thenReturn(source3);
+        // Serializer
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        Domain::DataSource::Ptr topLevelDataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(topLevelDataSource);
         result->data();
-        result = queries->findChildren(parent); // Should not cause any problem or wrong data
+        result = queries->findChildren(topLevelDataSource); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0), source1);
-        QCOMPARE(result->data().at(1), source2);
+        QCOMPARE(result->data().at(0)->name(), QString("43TaskFirstChild"));
+        QCOMPARE(result->data().at(1)->name(), QString("45NoteSecondChild"));
     }
 
     void shouldReactToCollectionAddsForChildSources()
