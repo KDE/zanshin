@@ -14,11 +14,6 @@ MACRO(ZANSHIN_MANUAL_TESTS)
                                        ${KDEPIMLIBS_KCALCORE_LIBS} ${QT_QTTEST_LIBRARY}
                                        zanshin_static
                                        zanshin_testlib
-                                       akonadi
-                                       domain
-                                       presentation
-                                       testlib
-                                       utils
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_MANUAL_TESTS)
@@ -31,11 +26,6 @@ MACRO(ZANSHIN_AUTO_TESTS)
                                        ${KDEPIMLIBS_KCALCORE_LIBS} ${QT_QTTEST_LIBRARY}
                                        zanshin_static
                                        zanshin_testlib
-                                       akonadi
-                                       domain
-                                       presentation
-                                       testlib
-                                       utils
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AUTO_TESTS)
