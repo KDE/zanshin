@@ -1333,6 +1333,29 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName()
     QCOMPARE(collectionNames.toSet(), expectedResults.toSet());
 }
 
+void AkonadiStorageTestBase::shouldFindCollectionsByNameIncludingTheirAncestors()
+{
+    // GIVEN
+    auto storage = createStorage();
+
+    // WHEN
+    auto job = storage->searchCollections("Calendar3");
+    AKVERIFYEXEC(job->kjob());
+
+    // THEN
+    auto collections = job->collections();
+    for (const auto &collection : collections) {
+        auto parent = collection.parentCollection();
+        while (parent != Akonadi::Collection::root()) {
+            QVERIFY(parent.isValid());
+            QVERIFY(!parent.displayName().isEmpty());
+            parent = parent.parentCollection();
+        }
+    }
+}
+
+
+
 Akonadi::Item AkonadiStorageTestBase::fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
 {
     Akonadi::Item item;

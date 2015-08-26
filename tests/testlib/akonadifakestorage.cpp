@@ -404,6 +404,14 @@ Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QSt
                      return supportedType && col.displayName().contains(collectionName, Qt::CaseInsensitive);
                  });
 
+    // Replace the dummy parents in the ancestor chain with proper ones
+    // full of juicy data
+    using namespace std::placeholders;
+    auto reconstructCollection = std::bind(&AkonadiFakeData::reconstructAncestors,
+                                           m_data, _1, Akonadi::Collection::root());
+    std::transform(foundCollections.begin(), foundCollections.end(),
+                   foundCollections.begin(), reconstructCollection);
+
     const auto behavior = m_data->storageBehavior().searchCollectionsBehavior(collectionName);
     if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
         job->setCollections(foundCollections);

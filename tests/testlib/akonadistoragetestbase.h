@@ -90,6 +90,7 @@ private slots:
     void shouldNotifyCollectionSubscriptionChanges();
     void shouldFindCollectionsByName_data();
     void shouldFindCollectionsByName();
+    void shouldFindCollectionsByNameIncludingTheirAncestors();
 
 private:
     Akonadi::Item fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection);
