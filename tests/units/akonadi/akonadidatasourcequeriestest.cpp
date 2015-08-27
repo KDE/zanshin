@@ -1010,95 +1010,49 @@ private slots:
     void shouldLookInAllReportedForSearchChildSources()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // One parent collection
-        Akonadi::Collection parentCol(41);
-        parentCol.setParentCollection(Akonadi::Collection::root());
-        auto parent = Domain::DataSource::Ptr::create();
+        // Two top level collections
+        data.createCollection(GenCollection().withId(42).withName("parent").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(46).withName("Col46").withRootAsParent().withNoteContent());
 
-        // Two child collections
-        Akonadi::Collection col1(42);
-        col1.setName("col1");
-        col1.setParentCollection(parentCol);
-        auto source1 = Domain::DataSource::Ptr::create();
-        Akonadi::Collection col2(43);
-        col2.setName("toto");
-        col2.setParentCollection(parentCol);
-        auto source2 = Domain::DataSource::Ptr::create();
+        // two child of parent
+        data.createCollection(GenCollection().withId(43).withName("NoteCol1").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName("TaskToto").withParent(42).withTaskContent());
 
-        // One collection child of col2
-        Akonadi::Collection col3(44);
-        col3.setName("col3");
-        col3.setParentCollection(col2);
-        auto source3 = Domain::DataSource::Ptr::create();
+        // One child of the first child
+        data.createCollection(GenCollection().withId(45).withName("TaskCol43Child").withParent(43).withTaskContent());
 
-        // One collection which matches not child of parentCol
-        Akonadi::Collection col4(45);
-        col4.setName("col4");
-        col4.setParentCollection(Akonadi::Collection::root());
-        auto source4 = Domain::DataSource::Ptr::create();
+        QString searchTerm("Col");
 
-        QString searchTerm("col");
-
-        // Only col1 and col3 will match the mimetypes
-        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col3 << col4);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
-                                                                  .thenReturn(collectionSearchJob);
-
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::BaseName).thenReturn(source3);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col4, Akonadi::SerializerInterface::BaseName).thenReturn(source4);
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
         queries->setSearchTerm(searchTerm);
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parentSource);
         result->data();
-        result = queries->findSearchChildren(parent); // Should not cause any problem or wrong data
+        result = queries->findSearchChildren(parentSource); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
-                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0), source1);
-        QCOMPARE(result->data().at(1), source2);
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QString("NoteCol1"));
 
         // WHEN
         QString searchTerm2("toto");
-
-        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setCollections(Akonadi::Collection::List() << col2);
-
-        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
-                                                                  .thenReturn(collectionSearchJob);
-
-
         queries->setSearchTerm(searchTerm2);
 
         // THEN
-        QTest::qWait(150);
-
-        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
-                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).exactly(2));
-
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0), source2);
+        QCOMPARE(result->data().at(0)->name(), QString("TaskToto"));
     }
 
     void shouldReactToCollectionAddsForSearchChildSources()
