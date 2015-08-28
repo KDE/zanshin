@@ -107,7 +107,7 @@ public:
             return;
 
         if (m_predicate(input))
-            provider->append(m_convert(input));
+            addToProvider(provider, input);
     }
 
     void onChanged(const InputType &input)
@@ -138,9 +138,8 @@ public:
                 }
             }
 
-            if (!found) {
-                provider->append(m_convert(input));
-            }
+            if (!found)
+                addToProvider(provider, input);
         }
     }
 
@@ -161,6 +160,31 @@ public:
     }
 
 private:
+    template<typename T>
+    bool isValidOutput(const T &/*ouput*/)
+    {
+        return true;
+    }
+
+    template<typename T>
+    bool isValidOutput(const QSharedPointer<T> &output)
+    {
+        return !output.isNull();
+    }
+
+    template<typename T>
+    bool isValidOutput(T *output)
+    {
+        return output != Q_NULLPTR;
+    }
+
+    void addToProvider(const typename Provider::Ptr &provider, const InputType &input)
+    {
+        auto output = m_convert(input);
+        if (isValidOutput(output))
+            provider->append(output);
+    }
+
     void doFetch()
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
@@ -170,7 +194,7 @@ private:
 
         auto addFunction = [this, provider] (const InputType &input) {
             if (m_predicate(input))
-                provider->append(m_convert(input));
+                addToProvider(provider, input);
         };
 
         m_fetch(addFunction);

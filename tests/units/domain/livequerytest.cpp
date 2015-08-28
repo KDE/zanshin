@@ -31,6 +31,8 @@
 
 using namespace Domain;
 
+typedef QSharedPointer<QObject> QObjectPtr;
+
 class LiveQueryTest : public QObject
 {
     Q_OBJECT
@@ -48,7 +50,7 @@ private slots:
     {
         // GIVEN
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
-        query.setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
+        query.setFetchFunction([this] (const Domain::LiveQueryInput<QObject*>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
                 add(createObject(0, "0A"));
                 add(createObject(1, "1A"));
@@ -81,6 +83,90 @@ private slots:
                  << QPair<int, QString>(3, "0B")
                  << QPair<int, QString>(6, "0C");
         QCOMPARE(result->data(), expected);
+    }
+
+    void shouldFilterOutNullRawPointers()
+    {
+        // GIVEN
+        auto query = Domain::LiveQuery<QString, QObject*>();
+        query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
+            Utils::JobHandler::install(new FakeJob, [this, add] {
+                add("0");
+                add("1");
+                add(QString());
+                add("a");
+                add("2");
+            });
+        });
+        query.setConvertFunction([this] (const QString &s) -> QObject* {
+            bool ok = false;
+            const int id = s.toInt(&ok);
+            if (ok) {
+                auto object = new QObject(this);
+                object->setProperty("id", id);
+                return object;
+            } else {
+                return Q_NULLPTR;
+            }
+        });
+        query.setPredicateFunction([] (const QString &s) {
+            return !s.isEmpty();
+        });
+
+        // WHEN
+        auto result = query.result();
+        result->data();
+        result = query.result(); // Should not cause any problem or wrong data
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+
+        // THEN
+        QCOMPARE(result->data().size(), 3);
+        QCOMPARE(result->data().at(0)->property("id").toInt(), 0);
+        QCOMPARE(result->data().at(1)->property("id").toInt(), 1);
+        QCOMPARE(result->data().at(2)->property("id").toInt(), 2);
+    }
+
+    void shouldFilterOutNullSharedPointers()
+    {
+        // GIVEN
+        auto query = Domain::LiveQuery<QString, QObjectPtr>();
+        query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
+            Utils::JobHandler::install(new FakeJob, [this, add] {
+                add("0");
+                add("1");
+                add(QString());
+                add("a");
+                add("2");
+            });
+        });
+        query.setConvertFunction([this] (const QString &s) {
+            bool ok = false;
+            const int id = s.toInt(&ok);
+            if (ok) {
+                auto object = QObjectPtr::create();
+                object->setProperty("id", id);
+                return object;
+            } else {
+                return QObjectPtr();
+            }
+        });
+        query.setPredicateFunction([] (const QString &s) {
+            return !s.isEmpty();
+        });
+
+        // WHEN
+        auto result = query.result();
+        result->data();
+        result = query.result(); // Should not cause any problem or wrong data
+        QVERIFY(result->data().isEmpty());
+        QTest::qWait(150);
+
+        // THEN
+        QCOMPARE(result->data().size(), 3);
+        QCOMPARE(result->data().at(0)->property("id").toInt(), 0);
+        QCOMPARE(result->data().at(1)->property("id").toInt(), 1);
+        QCOMPARE(result->data().at(2)->property("id").toInt(), 2);
     }
 
     void shouldDealWithSeveralFetchesProperly()
