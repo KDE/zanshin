@@ -26,28 +26,22 @@
 
 #include "domain/projectqueries.h"
 
-#include <KDE/Akonadi/Item>
-
-#include "akonadi/akonadimonitorinterface.h"
-#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadilivequeryintegrator.h"
 #include "akonadi/akonadistorageinterface.h"
-
-#include "domain/livequery.h"
 
 namespace Akonadi {
 
-class ProjectQueries : public QObject, public Domain::ProjectQueries
+class ProjectQueries : public Domain::ProjectQueries
 {
-    Q_OBJECT
 public:
     typedef QSharedPointer<ProjectQueries> Ptr;
 
-    typedef Domain::LiveQuery<Akonadi::Item, Domain::Project::Ptr> ProjectQuery;
     typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
+    typedef Domain::LiveQueryOutput<Domain::Project::Ptr> ProjectQueryOutput;
     typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
 
-    typedef Domain::LiveQuery<Akonadi::Item, Domain::Artifact::Ptr> ArtifactQuery;
+    typedef Domain::LiveQueryOutput<Domain::Artifact::Ptr> ArtifactQueryOutput;
     typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
     typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
 
@@ -58,24 +52,13 @@ public:
     ProjectResult::Ptr findAll() const Q_DECL_OVERRIDE;
     ArtifactResult::Ptr findTopLevelArtifacts(Domain::Project::Ptr project) const Q_DECL_OVERRIDE;
 
-private slots:
-    void onItemAdded(const Akonadi::Item &item);
-    void onItemRemoved(const Akonadi::Item &item);
-    void onItemChanged(const Akonadi::Item &item);
-    void onCollectionSelectionChanged();
-
 private:
-    ProjectQuery::Ptr createProjectQuery();
-    ArtifactQuery::Ptr createArtifactQuery();
-
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
-    MonitorInterface::Ptr m_monitor;
+    LiveQueryIntegrator::Ptr m_integrator;
 
-    ProjectQuery::Ptr m_findAll;
-    ItemInputQuery::List m_itemInputQueries;
-
-    QHash<Akonadi::Entity::Id, ArtifactQuery::Ptr> m_findTopLevel;
+    mutable ProjectQueryOutput::Ptr m_findAll;
+    mutable QHash<Akonadi::Entity::Id, ArtifactQueryOutput::Ptr> m_findTopLevel;
 };
 
 }

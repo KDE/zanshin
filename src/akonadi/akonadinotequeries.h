@@ -25,28 +25,20 @@
 #ifndef AKONADI_NOTEQUERIES_H
 #define AKONADI_NOTEQUERIES_H
 
-#include <QObject>
-
 #include "domain/notequeries.h"
 
-#include "akonadi/akonadimonitorinterface.h"
-#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadilivequeryintegrator.h"
 #include "akonadi/akonadistorageinterface.h"
-
-#include "domain/livequery.h"
 
 namespace Akonadi {
 
-class Item;
-
-class NoteQueries : public QObject, public Domain::NoteQueries
+class NoteQueries : public Domain::NoteQueries
 {
-    Q_OBJECT
 public:
     typedef QSharedPointer<NoteQueries> Ptr;
 
-    typedef Domain::LiveQuery<Akonadi::Item, Domain::Note::Ptr> NoteQuery;
     typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
+    typedef Domain::LiveQueryOutput<Domain::Note::Ptr> NoteQueryOutput;
     typedef Domain::QueryResultProvider<Domain::Note::Ptr> NoteProvider;
     typedef Domain::QueryResult<Domain::Note::Ptr> NoteResult;
 
@@ -56,20 +48,12 @@ public:
 
     NoteResult::Ptr findAll() const Q_DECL_OVERRIDE;
 
-private slots:
-    void onItemAdded(const Akonadi::Item &item);
-    void onItemRemoved(const Akonadi::Item &item);
-    void onItemChanged(const Akonadi::Item &item);
-
 private:
-    NoteQuery::Ptr createNoteQuery();
-
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
-    MonitorInterface::Ptr m_monitor;
+    LiveQueryIntegrator::Ptr m_integrator;
 
-    NoteQuery::Ptr m_findAll;
-    ItemInputQuery::List m_itemInputQueries;
+    mutable NoteQueryOutput::Ptr m_findAll;
 };
 
 }

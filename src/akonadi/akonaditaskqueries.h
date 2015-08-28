@@ -26,31 +26,18 @@
 
 #include "domain/taskqueries.h"
 
-#include <functional>
-
-#include <QHash>
-#include <Akonadi/Item>
-
-#include "akonadi/akonadimonitorinterface.h"
-#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadilivequeryintegrator.h"
 #include "akonadi/akonadistorageinterface.h"
-
-#include "domain/livequery.h"
-
-class KJob;
 
 namespace Akonadi {
 
-class Item;
-
-class TaskQueries : public QObject, public Domain::TaskQueries
+class TaskQueries : public Domain::TaskQueries
 {
-    Q_OBJECT
 public:
     typedef QSharedPointer<TaskQueries> Ptr;
 
-    typedef Domain::LiveQuery<Akonadi::Item, Domain::Task::Ptr> TaskQuery;
     typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
+    typedef Domain::LiveQueryOutput<Domain::Task::Ptr> TaskQueryOutput;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
 
@@ -67,23 +54,15 @@ public:
     TaskResult::Ptr findWorkdayTopLevel() const Q_DECL_OVERRIDE;
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
 
-private slots:
-    void onItemAdded(const Akonadi::Item &item);
-    void onItemRemoved(const Akonadi::Item &item);
-    void onItemChanged(const Akonadi::Item &item);
-
 private:
-    TaskQuery::Ptr createTaskQuery();
-
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
-    MonitorInterface::Ptr m_monitor;
+    LiveQueryIntegrator::Ptr m_integrator;
 
-    TaskQuery::Ptr m_findAll;
-    QHash<Akonadi::Entity::Id, TaskQuery::Ptr> m_findChildren;
-    TaskQuery::Ptr m_findTopLevel;
-    TaskQuery::Ptr m_findWorkdayTopLevel;
-    ItemInputQuery::List m_itemInputQueries;
+    mutable TaskQueryOutput::Ptr m_findAll;
+    mutable QHash<Akonadi::Entity::Id, TaskQueryOutput::Ptr> m_findChildren;
+    mutable TaskQueryOutput::Ptr m_findTopLevel;
+    mutable TaskQueryOutput::Ptr m_findWorkdayTopLevel;
 };
 
 }

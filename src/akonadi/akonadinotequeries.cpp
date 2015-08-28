@@ -29,10 +29,6 @@
 
 #include "utils/jobhandler.h"
 
-#include <functional>
-
-using namespace std::placeholders;
-
 using namespace Akonadi;
 
 NoteQueries::NoteQueries(const StorageInterface::Ptr &storage,
@@ -40,76 +36,37 @@ NoteQueries::NoteQueries(const StorageInterface::Ptr &storage,
                          const MonitorInterface::Ptr &monitor)
     : m_storage(storage),
       m_serializer(serializer),
-      m_monitor(monitor)
+      m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
-    connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
 }
 
 NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
 {
-    if (!m_findAll) {
-        {
-            NoteQueries *self = const_cast<NoteQueries*>(this);
-            self->m_findAll = self->createNoteQuery();
-        }
+    m_integrator->bind(m_findAll,
+                  [this] (const ItemInputQuery::AddFunction &add) {
+                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                                     StorageInterface::Recursive,
+                                                                                     StorageInterface::Notes);
+                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                          if (job->kjob()->error() != KJob::NoError)
+                              return;
 
-        m_findAll->setFetchFunction([this] (const NoteQuery::AddFunction &add) {
-            CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                           StorageInterface::Recursive,
-                                                                           StorageInterface::Notes);
-            Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                if (job->kjob()->error() != KJob::NoError)
-                    return;
+                          for (auto collection : job->collections()) {
+                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
+                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                                  if (job->kjob()->error() != KJob::NoError)
+                                      return;
 
-                for (auto collection : job->collections()) {
-                    ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                    Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                        if (job->kjob()->error() != KJob::NoError)
-                            return;
-
-                        for (auto item : job->items()) {
-                            add(item);
-                        }
-                    });
-                }
-            });
-        });
-        m_findAll->setPredicateFunction([this] (const Akonadi::Item &item) {
-            return m_serializer->isNoteItem(item);
-        });
-    }
+                                  for (auto item : job->items()) {
+                                      add(item);
+                                  }
+                              });
+                          }
+                      });
+                  },
+                  [this] (const Akonadi::Item &item) {
+                      return m_serializer->isNoteItem(item);
+                  });
 
     return m_findAll->result();
-}
-
-void NoteQueries::onItemAdded(const Item &item)
-{
-    foreach (const auto &query, m_itemInputQueries)
-        query->onAdded(item);
-}
-
-void NoteQueries::onItemRemoved(const Item &item)
-{
-    foreach (const auto &query, m_itemInputQueries)
-        query->onRemoved(item);
-}
-
-void NoteQueries::onItemChanged(const Item &item)
-{
-    foreach (const auto &query, m_itemInputQueries)
-        query->onChanged(item);
-}
-
-NoteQueries::NoteQuery::Ptr NoteQueries::createNoteQuery()
-{
-    auto query = NoteQueries::NoteQuery::Ptr::create();
-
-    query->setConvertFunction(std::bind(&SerializerInterface::createNoteFromItem, m_serializer, _1));
-    query->setUpdateFunction(std::bind(&SerializerInterface::updateNoteFromItem, m_serializer, _2, _1));
-    query->setRepresentsFunction(std::bind(&SerializerInterface::representsItem, m_serializer, _2, _1));
-
-    m_itemInputQueries << query;
-    return query;
 }

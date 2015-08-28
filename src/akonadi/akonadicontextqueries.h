@@ -27,29 +27,23 @@
 
 #include "domain/contextqueries.h"
 
-#include <Akonadi/Item>
-
-#include "akonadi/akonadimonitorinterface.h"
-#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadilivequeryintegrator.h"
 #include "akonadi/akonadistorageinterface.h"
-
-#include "domain/livequery.h"
 
 namespace Akonadi {
 
-class ContextQueries : public QObject, public Domain::ContextQueries
+class ContextQueries : public Domain::ContextQueries
 {
-    Q_OBJECT
 public:
     typedef QSharedPointer<ContextQueries> Ptr;
 
-    typedef Domain::LiveQuery<Akonadi::Item, Domain::Task::Ptr> TaskQuery;
     typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
+    typedef Domain::LiveQueryOutput<Domain::Task::Ptr> TaskQueryOutput;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
 
-    typedef Domain::LiveQuery<Akonadi::Tag, Domain::Context::Ptr> ContextQuery;
     typedef Domain::LiveQueryInput<Akonadi::Tag> TagInputQuery;
+    typedef Domain::LiveQueryOutput<Domain::Context::Ptr> ContextQueryOutput;
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
     typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
 
@@ -61,28 +55,13 @@ public:
     ContextResult::Ptr findAll() const Q_DECL_OVERRIDE;
     TaskResult::Ptr findTopLevelTasks(Domain::Context::Ptr context) const Q_DECL_OVERRIDE;
 
-private slots:
-    void onTagAdded(const Akonadi::Tag &tag);
-    void onTagRemoved(const Akonadi::Tag &tag);
-    void onTagChanged(const Akonadi::Tag &tag);
-
-    void onItemAdded(const Akonadi::Item &item);
-    void onItemRemoved(const Akonadi::Item &item);
-    void onItemChanged(const Akonadi::Item &item);
-
 private:
-    ContextQuery::Ptr createContextQuery();
-    TaskQuery::Ptr createTaskQuery();
-
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
-    MonitorInterface::Ptr m_monitor;
+    LiveQueryIntegrator::Ptr m_integrator;
 
-    ContextQuery::Ptr m_findAll;
-    TagInputQuery::List m_tagInputQueries;
-
-    QHash<Akonadi::Tag::Id, TaskQuery::Ptr> m_findToplevel;
-    ItemInputQuery::List m_itemInputQueries;
+    mutable ContextQueryOutput::Ptr m_findAll;
+    mutable QHash<Akonadi::Tag::Id, TaskQueryOutput::Ptr> m_findToplevel;
 };
 
 } // akonadi namespace

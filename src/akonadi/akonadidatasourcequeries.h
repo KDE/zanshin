@@ -26,32 +26,18 @@
 
 #include "domain/datasourcequeries.h"
 
-#include <functional>
-
-#include <QHash>
-
-#include <Akonadi/Collection>
-
-#include "akonadi/akonadimonitorinterface.h"
-#include "akonadi/akonadiserializerinterface.h"
+#include "akonadi/akonadilivequeryintegrator.h"
 #include "akonadi/akonadistorageinterface.h"
-
-#include "domain/livequery.h"
-
-class KJob;
 
 namespace Akonadi {
 
-class Item;
-
-class DataSourceQueries : public QObject, public Domain::DataSourceQueries
+class DataSourceQueries : public Domain::DataSourceQueries
 {
-    Q_OBJECT
 public:
     typedef QSharedPointer<DataSourceQueries> Ptr;
 
-    typedef Domain::LiveQuery<Akonadi::Collection, Domain::DataSource::Ptr> DataSourceQuery;
     typedef Domain::LiveQueryInput<Akonadi::Collection> CollectionInputQuery;
+    typedef Domain::LiveQueryOutput<Domain::DataSource::Ptr> DataSourceQueryOutput;
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
@@ -69,26 +55,18 @@ public:
     DataSourceResult::Ptr findSearchTopLevel() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
-private slots:
-    void onCollectionAdded(const Akonadi::Collection &collection);
-    void onCollectionRemoved(const Akonadi::Collection &collection);
-    void onCollectionChanged(const Akonadi::Collection &collection);
-
 private:
-    DataSourceQuery::Ptr createDataSourceQuery(Akonadi::SerializerInterface::DataSourceNameScheme nameScheme = Akonadi::SerializerInterface::BaseName);
-
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
-    MonitorInterface::Ptr m_monitor;
+    LiveQueryIntegrator::Ptr m_integrator;
 
-    DataSourceQuery::Ptr m_findTasks;
-    DataSourceQuery::Ptr m_findNotes;
-    DataSourceQuery::Ptr m_findTopLevel;
-    QHash<Akonadi::Entity::Id, DataSourceQuery::Ptr> m_findChildren;
-    CollectionInputQuery::List m_collectionInputQueries;
+    mutable DataSourceQueryOutput::Ptr m_findTasks;
+    mutable DataSourceQueryOutput::Ptr m_findNotes;
+    mutable DataSourceQueryOutput::Ptr m_findTopLevel;
+    mutable QHash<Akonadi::Collection::Id, DataSourceQueryOutput::Ptr> m_findChildren;
     QString m_searchTerm;
-    DataSourceQuery::Ptr m_findSearchTopLevel;
-    QHash<Akonadi::Entity::Id, DataSourceQuery::Ptr> m_findSearchChildren;
+    mutable DataSourceQueryOutput::Ptr m_findSearchTopLevel;
+    mutable QHash<Akonadi::Collection::Id, DataSourceQueryOutput::Ptr> m_findSearchChildren;
 };
 
 }
