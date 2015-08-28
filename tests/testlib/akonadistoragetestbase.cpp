@@ -32,6 +32,8 @@
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
 
+#include "utils/mem_fn.h"
+
 #include "akonadi/qtest_akonadi.h"
 
 #include <Akonadi/EntityDisplayAttribute>
@@ -1327,7 +1329,7 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName()
     auto collectionNames = QStringList();
     std::transform(collections.constBegin(), collections.constEnd(),
                    std::back_inserter(collectionNames),
-                   std::mem_fn(&Akonadi::Collection::name));
+                   Utils::mem_fn(&Akonadi::Collection::name));
     QCOMPARE(collectionNames.toSet(), expectedResults.toSet());
 }
 

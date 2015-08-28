@@ -26,6 +26,7 @@
 #include <KJob>
 
 #include "utils/jobhandler.h"
+#include "utils/mem_fn.h"
 
 using namespace Presentation;
 
@@ -35,7 +36,7 @@ ErrorHandler::~ErrorHandler()
 
 void ErrorHandler::installHandler(KJob *job, const QString &message)
 {
-    auto resultHandler = std::function<void()>(std::bind(std::mem_fn(&ErrorHandler::displayMessage),
+    auto resultHandler = std::function<void()>(std::bind(Utils::mem_fn(&ErrorHandler::displayMessage),
                                                this, job, message));
     Utils::JobHandler::install(job, resultHandler);
 }

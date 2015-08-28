@@ -15,5 +15,5 @@ set(testldapclient_SRCS testldapclient.cpp)
 
 kde4_add_executable(testldapclient TEST ${testldapclient_SRCS})
 
-target_link_libraries(testldapclient ${KDE4_KDEUI_LIBS} zanshinkdepimstatic)
+target_link_libraries(testldapclient ${KDEPIMLIBS_KLDAP_LIBS} ${KDE4_KDEUI_LIBS} zanshinkdepimstatic)
 

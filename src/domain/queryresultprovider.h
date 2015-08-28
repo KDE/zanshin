@@ -31,6 +31,8 @@
 #include <QList>
 #include <QSharedPointer>
 
+#include "utils/mem_fn.h"
+
 namespace Domain {
 
 template<typename ItemType>
@@ -142,30 +144,30 @@ public:
     {
         cleanupResults();
         callChangeHandlers(item, m_list.size(),
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::preInsertHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::preInsertHandlers));
         m_list.append(item);
         callChangeHandlers(item, m_list.size()-1,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::postInsertHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::postInsertHandlers));
     }
 
     void prepend(const ItemType &item)
     {
         cleanupResults();
         callChangeHandlers(item, 0,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::preInsertHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::preInsertHandlers));
         m_list.prepend(item);
         callChangeHandlers(item, 0,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::postInsertHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::postInsertHandlers));
     }
 
     void insert(int index, const ItemType &item)
     {
         cleanupResults();
         callChangeHandlers(item, index,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::preInsertHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::preInsertHandlers));
         m_list.insert(index, item);
         callChangeHandlers(item, index,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::postInsertHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::postInsertHandlers));
     }
 
     ItemType takeFirst()
@@ -173,10 +175,10 @@ public:
         cleanupResults();
         const ItemType item = m_list.first();
         callChangeHandlers(item, 0,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::preRemoveHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::preRemoveHandlers));
         m_list.removeFirst();
         callChangeHandlers(item, 0,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::postRemoveHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::postRemoveHandlers));
         return item;
     }
 
@@ -190,10 +192,10 @@ public:
         cleanupResults();
         const ItemType item = m_list.last();
         callChangeHandlers(item, m_list.size()-1,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::preRemoveHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::preRemoveHandlers));
         m_list.removeLast();
         callChangeHandlers(item, m_list.size(),
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::postRemoveHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::postRemoveHandlers));
         return item;
     }
 
@@ -207,10 +209,10 @@ public:
         cleanupResults();
         const ItemType item = m_list.at(index);
         callChangeHandlers(item, index,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::preRemoveHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::preRemoveHandlers));
         m_list.removeAt(index);
         callChangeHandlers(item, index,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::postRemoveHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::postRemoveHandlers));
         return item;
     }
 
@@ -223,10 +225,10 @@ public:
     {
         cleanupResults();
         callChangeHandlers(m_list.at(index), index,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::preReplaceHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::preReplaceHandlers));
         m_list.replace(index, item);
         callChangeHandlers(item, index,
-                           std::mem_fn(&QueryResultInputImpl<ItemType>::postReplaceHandlers));
+                           Utils::mem_fn(&QueryResultInputImpl<ItemType>::postReplaceHandlers));
     }
 
     QueryResultProvider &operator<< (const ItemType &item)
@@ -240,7 +242,7 @@ private:
     {
         m_results.erase(std::remove_if(m_results.begin(),
                                        m_results.end(),
-                                       std::mem_fn(&QueryResultInputImpl<ItemType>::WeakPtr::isNull)),
+                                       Utils::mem_fn(&QueryResultInputImpl<ItemType>::WeakPtr::isNull)),
                         m_results.end());
     }
 

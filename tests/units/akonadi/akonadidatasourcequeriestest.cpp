@@ -25,6 +25,7 @@
 
 #include <functional>
 
+#include "utils/mem_fn.h"
 #include "utils/mockobject.h"
 
 #include "testlib/akonadifakejobs.h"
@@ -59,12 +60,12 @@ private:
         QTest::addColumn<QueryFunction>("queryFunction");
 
         {
-            QueryFunction query = std::mem_fn(&Domain::DataSourceQueries::findNotes);
+            QueryFunction query = Utils::mem_fn(&Domain::DataSourceQueries::findNotes);
             QTest::newRow("notes") << Akonadi::StorageInterface::Notes << query;
         }
 
         {
-            QueryFunction query = std::mem_fn(&Domain::DataSourceQueries::findTasks);
+            QueryFunction query = Utils::mem_fn(&Domain::DataSourceQueries::findTasks);
             QTest::newRow("tasks") << Akonadi::StorageInterface::Tasks << query;
         }
     }

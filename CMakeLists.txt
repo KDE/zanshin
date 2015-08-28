@@ -41,6 +41,16 @@ else()
     add_definitions(-DQ_NULLPTR=0)
 endif()
 
+if(APPLE)
+    if((NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "6.0.0.0") AND
+	    "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "6.0.0.6000058")
+        # Apple Clang 6.0.0.6000057 is known to fail on some of our code using std::mem_fn
+        # but have no issues with boost::mem_fn
+	   message("problematic Apple Clang version ${CMAKE_CXX_COMPILER_VERSION}, using boost::mem_fn")
+        add_definitions(-DZANSHIN_USE_BOOST_MEM_FN)
+    endif()
+endif()
+
 if(UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()

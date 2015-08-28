@@ -32,6 +32,10 @@
 #include <KCalCore/Todo>
 #include <KMime/Message>
 
+#include <numeric>
+
+#include "utils/mem_fn.h"
+
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonaditimestampattribute.h"
 
@@ -537,7 +541,7 @@ bool Serializer::hasContextTags(Item item) const
     using namespace std::placeholders;
     Tag::List tags = item.tags();
     return std::any_of(tags.constBegin(), tags.constEnd(),
-                       std::bind(std::mem_fn(&Serializer::isContext), this, _1));
+                       std::bind(Utils::mem_fn(&Serializer::isContext), this, _1));
 }
 
 bool Serializer::hasAkonadiTags(Item item) const
@@ -545,7 +549,7 @@ bool Serializer::hasAkonadiTags(Item item) const
     using namespace std::placeholders;
     Tag::List tags = item.tags();
     return std::any_of(tags.constBegin(), tags.constEnd(),
-                       std::bind(std::mem_fn(&Serializer::isAkonadiTag), this, _1));
+                       std::bind(Utils::mem_fn(&Serializer::isAkonadiTag), this, _1));
 }
 
 bool Serializer::isContext(const Akonadi::Tag &tag) const

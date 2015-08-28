@@ -28,6 +28,8 @@
 #include <QTreeView>
 #include <QWidgetAction>
 
+#include "utils/mem_fn.h"
+
 #include "domain/note.h"
 #include "domain/task.h"
 
@@ -431,9 +433,9 @@ private slots:
         QTest::addColumn<ComboGetterFunction>("comboGetter");
 
         QTest::newRow("notes") << QByteArray("noteSourcesModel") << QByteArray("defaultNoteDataSource")
-                               << ComboGetterFunction(std::mem_fn(&Widgets::ApplicationComponents::defaultNoteSourceCombo));
+                               << ComboGetterFunction(Utils::mem_fn(&Widgets::ApplicationComponents::defaultNoteSourceCombo));
         QTest::newRow("tasks") << QByteArray("taskSourcesModel") << QByteArray("defaultTaskDataSource")
-                               << ComboGetterFunction(std::mem_fn(&Widgets::ApplicationComponents::defaultTaskSourceCombo));
+                               << ComboGetterFunction(Utils::mem_fn(&Widgets::ApplicationComponents::defaultTaskSourceCombo));
     }
 
     void shouldApplySourceModelAndPropertyToComboBox()
