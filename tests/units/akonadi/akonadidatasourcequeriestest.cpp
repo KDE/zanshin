@@ -1224,30 +1224,25 @@ private slots:
     void shouldNotStartJobDuringFindSearchChildrenWhenSearchTermIsEmpty()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // One parent collection
-        Akonadi::Collection parentCol(41);
-        parentCol.setParentCollection(Akonadi::Collection::root());
-        auto parent = Domain::DataSource::Ptr::create();
+        // One top level collection and its child
+        data.createCollection(GenCollection().withId(42).withName("parent").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName("child").withParent(42).withTaskContent());
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parent);
-        result->data();
-        result = queries->findSearchChildren(parent); // Should not cause any problem or wrong data
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchChildren(parentSource);
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
+        TestHelpers::waitForEmptyJobQueue();
 
         QVERIFY(result->data().isEmpty());
     }
