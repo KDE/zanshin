@@ -25,6 +25,7 @@
 
 #include <functional>
 
+#include "utils/jobhandler.h"
 #include "utils/mem_fn.h"
 #include "utils/mockobject.h"
 
@@ -985,26 +986,23 @@ private slots:
     void shouldNotStartJobDuringFindSearchTopLevelWhenSearchTermIsEmpty()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-
-        // Serializer mock returning the tasks from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        // one top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("parent"));
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
         result->data();
         result = queries->findSearchTopLevel(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-
-        QVERIFY(result->data().isEmpty());
+        QCOMPARE(Utils::JobHandler::jobCount(), 0);
     }
 
     void shouldLookInAllReportedForSearchChildSources()
