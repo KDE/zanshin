@@ -779,48 +779,24 @@ private slots:
     void shouldLookInAllReportedForSearchTopLevelSources()
     {
         // GIVEN
+        AkonadiFakeData data;
 
-        // Three top level collections
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(Akonadi::Collection::root());
-        col1.setName("col1");
-        auto source1 = Domain::DataSource::Ptr::create();
-        Akonadi::Collection col2(43);
-        col2.setName("toto");
-        col2.setParentCollection(Akonadi::Collection::root());
-        auto source2 = Domain::DataSource::Ptr::create();
-        Akonadi::Collection col4(45);
-        col4.setName("titi");
-        col4.setParentCollection(Akonadi::Collection::root());
-        auto source4 = Domain::DataSource::Ptr::create();
+        // Four top level collections, two with tasks, two with notes
+        data.createCollection(GenCollection().withId(42).withName("TaskToto").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName("NoteTiti").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName("TaskTiti").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(46).withName("NoteCol").withRootAsParent().withNoteContent());
 
-        // One collection child of col2
-        Akonadi::Collection col3(44);
-        col3.setParentCollection(col2);
-        col3.setName("col3");
-        auto source3 = Domain::DataSource::Ptr::create();
+        // One child collection with tasks
+        data.createCollection(GenCollection().withId(45).withName("TaskTotoCol").withParent(42).withTaskContent());
 
-        QString searchTerm("col");
-
-        // Only col1 and col3 will match the search term
-        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col3);
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
-                                                                  .thenReturn(collectionSearchJob);
-
-        // Serializer mock returning the tasks from the items
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).thenReturn(source1);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col2, Akonadi::SerializerInterface::BaseName).thenReturn(source2);
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col3, Akonadi::SerializerInterface::BaseName).thenReturn(source3);
+        QString searchTerm("Col");
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
         queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
         result->data();
@@ -828,38 +804,22 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
-                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col1, Akonadi::SerializerInterface::BaseName).exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0), source1);
-        QCOMPARE(result->data().at(1), source2);
+        QCOMPARE(result->data().at(0)->name(), QString("TaskToto"));
+        QCOMPARE(result->data().at(1)->name(), QString("NoteCol"));
 
         // WHEN
-        QString searchTerm2("titi");
-
-
-        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setCollections(Akonadi::Collection::List() << col4);
-
-        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
-                                                                  .thenReturn(collectionSearchJob);
-
-        serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col4, Akonadi::SerializerInterface::BaseName).thenReturn(source4);
-
+        QString searchTerm2("Titi");
         queries->setSearchTerm(searchTerm2);
 
         // THEN
-        QTest::qWait(150);
+        TestHelpers::waitForEmptyJobQueue();
 
-        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm2)
-                                                                          .exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createDataSourceFromCollection).when(col4, Akonadi::SerializerInterface::BaseName).exactly(1));
-
-        QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0), source4);
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QString("NoteTiti"));
+        QCOMPARE(result->data().at(1)->name(), QString("TaskTiti"));
     }
 
     void shouldReactToCollectionAddsForSearchTopLevelSources()
