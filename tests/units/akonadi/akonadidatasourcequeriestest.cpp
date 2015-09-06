@@ -913,63 +913,55 @@ private slots:
 
     void shouldNotCrashDuringFindSearchTopLevelWhenFetchJobFailedOrEmpty_data()
     {
-        QTest::addColumn<Testlib::AkonadiFakeCollectionSearchJob*>("collectionSearchJob");
+        QTest::addColumn<int>("colErrorCode");
+        QTest::addColumn<int>("colFetchBehavior");
         QTest::addColumn<bool>("deleteQuery");
 
-        // Two top level collections
-        Akonadi::Collection col1(42);
-        col1.setName("col1");
-        col1.setParentCollection(Akonadi::Collection::root());
-        Akonadi::Collection col2(42);
-        col1.setName("col2");
-        col2.setParentCollection(Akonadi::Collection::root());
+        QTest::newRow("No error with empty collection list") << int(KJob::NoError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                             << false;
 
-        Testlib::AkonadiFakeCollectionSearchJob *collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        QTest::newRow("No error with empty collection list") << collectionSearchJob << false;
+        QTest::newRow("No error with empty collection list (+ query delete)") << int(KJob::NoError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                             << true;
 
-        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("Error with empty collection list") << collectionSearchJob << false;
+        QTest::newRow("Error with empty collection list") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                          << false;
 
-        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setExpectedError(KJob::KilledJobError);
-        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
-        QTest::newRow("Error with collection list") << collectionSearchJob << false;
+        QTest::newRow("Error with empty collection list (+ query delete)") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                          << true;
 
-        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        QTest::newRow("No error with empty collection list (+ query delete)") << collectionSearchJob << true;
+        QTest::newRow("Error with collection list") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::NormalFetch)
+                                                    << false;
 
-        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("Error with empty collection list (+ query delete)") << collectionSearchJob << true;
-
-        collectionSearchJob = new Testlib::AkonadiFakeCollectionSearchJob(this);
-        collectionSearchJob->setExpectedError(KJob::KilledJobError);
-        collectionSearchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
-        QTest::newRow("Error with collection list (+ query delete)") << collectionSearchJob << true;
+        QTest::newRow("Error with collection list (+ query delete)") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::NormalFetch)
+                                                    << true;
     }
 
     void shouldNotCrashDuringFindSearchTopLevelWhenFetchJobFailedOrEmpty()
     {
         // GIVEN
-        QFETCH(Testlib::AkonadiFakeCollectionSearchJob*, collectionSearchJob);
+        AkonadiFakeData data;
+
+        // Two top level collections
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
+
+
+        auto storage = Akonadi::StorageInterface::Ptr(data.createStorage());
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storage,
+                                                                                         serializer,
+                                                                                         monitor));
+
         QFETCH(bool, deleteQuery);
-
-        QString searchTerm("col");
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
-                                                                  .thenReturn(collectionSearchJob);
-
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        QFETCH(int, colErrorCode);
+        QFETCH(int, colFetchBehavior);
+        data.storageBehavior().setFetchCollectionsErrorCode(Akonadi::Collection::root().id(), colErrorCode);
+        data.storageBehavior().setFetchCollectionsBehavior(Akonadi::Collection::root().id(),
+                                                           AkonadiFakeStorageBehavior::FetchBehavior(colFetchBehavior));
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
-        queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
 
         if (deleteQuery)
@@ -977,9 +969,7 @@ private slots:
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::searchCollections).when(searchTerm)
-                                                                          .exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 0);
     }
 
