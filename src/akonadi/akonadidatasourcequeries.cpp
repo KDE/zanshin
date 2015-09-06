@@ -24,18 +24,13 @@
 
 #include "akonadidatasourcequeries.h"
 
-#include "akonadicollectionfetchjobinterface.h"
-#include "akonadicollectionsearchjobinterface.h"
-
-#include "utils/jobhandler.h"
-
 using namespace Akonadi;
 
 DataSourceQueries::DataSourceQueries(const StorageInterface::Ptr &storage,
                                      const SerializerInterface::Ptr &serializer,
                                      const MonitorInterface::Ptr &monitor)
-    : m_storage(storage),
-      m_serializer(serializer),
+    : m_serializer(serializer),
+      m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
     m_integrator->addRemoveHandler([this] (const Collection &collection) {
@@ -46,70 +41,29 @@ DataSourceQueries::DataSourceQueries(const StorageInterface::Ptr &storage,
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
 {
-    m_integrator->bind(m_findTasks,
-                  [this] (const CollectionInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Tasks);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          for (auto collection : job->collections())
-                              add(collection);
-                      });
-                  },
-                  [this] (const Akonadi::Collection &collection) {
-                      return m_serializer->isTaskCollection(collection);
-                  },
-                  SerializerInterface::FullPath);
-
+    auto fetch = m_helpers->fetchAllCollections(StorageInterface::Tasks);
+    auto predicate = [this] (const Akonadi::Collection &collection) {
+        return m_serializer->isTaskCollection(collection);
+    };
+    m_integrator->bind(m_findTasks, fetch, predicate, SerializerInterface::FullPath);
     return m_findTasks->result();
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
 {
-    m_integrator->bind(m_findNotes,
-                  [this] (const CollectionInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(), StorageInterface::Recursive, StorageInterface::Notes);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          for (auto collection : job->collections())
-                              add(collection);
-                      });
-                  },
-                  [this] (const Akonadi::Collection &collection) {
-                      return m_serializer->isNoteCollection(collection);
-                  },
-                  SerializerInterface::FullPath);
-
+    auto fetch = m_helpers->fetchAllCollections(StorageInterface::Notes);
+    auto predicate = [this] (const Akonadi::Collection &collection) {
+        return m_serializer->isNoteCollection(collection);
+    };
+    m_integrator->bind(m_findNotes, fetch, predicate, SerializerInterface::FullPath);
     return m_findNotes->result();
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
 {
-    m_integrator->bind(m_findTopLevel,
-                  [this] (const CollectionInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks | StorageInterface::Notes);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error())
-                              return;
-
-                          QHash<Collection::Id, Collection> topLevels;
-                          foreach (const auto &collection, job->collections()) {
-                              auto topLevel = collection;
-                              while (topLevel.parentCollection() != Collection::root())
-                                  topLevel = topLevel.parentCollection();
-                              if (!topLevels.contains(topLevel.id()))
-                                  topLevels[topLevel.id()] = topLevel;
-                          }
-
-                          foreach (const auto &topLevel, topLevels.values())
-                              add(topLevel);
-                      });
-                  },
-                  [this] (const Akonadi::Collection &collection) {
-                      return collection.isValid()
-                          && collection.parentCollection() == Akonadi::Collection::root()
-                          && m_serializer->isListedCollection(collection);
-                  });
-
+    auto fetch = m_helpers->fetchCollections(Collection::root(), StorageInterface::Tasks | StorageInterface::Notes);
+    auto predicate = createFetchPredicate(Collection::root());
+    m_integrator->bind(m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
 }
 
@@ -117,34 +71,9 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findChildren[root.id()];
-    m_integrator->bind(query,
-                  [this, root] (const CollectionInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(root,
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks | StorageInterface::Notes);
-                      Utils::JobHandler::install(job->kjob(), [this, root, job, add] {
-                          if (job->kjob()->error())
-                              return;
-
-                          QHash<Collection::Id, Collection> children;
-                          foreach (const auto &collection, job->collections()) {
-                              auto child = collection;
-                              while (child.parentCollection() != root)
-                                  child = child.parentCollection();
-                              if (!children.contains(child.id()))
-                                  children[child.id()] = child;
-                          }
-
-                          foreach (const auto &topLevel, children.values())
-                              add(topLevel);
-                      });
-                  },
-                  [this, root] (const Akonadi::Collection &collection) {
-                      return collection.isValid()
-                          && collection.parentCollection() == root
-                          && m_serializer->isListedCollection(collection);
-                  });
-
+    auto fetch = m_helpers->fetchCollections(root, StorageInterface::Tasks | StorageInterface::Notes);
+    auto predicate = createFetchPredicate(root);
+    m_integrator->bind(query, fetch, predicate);
     return query->result();
 }
 
@@ -168,35 +97,9 @@ void DataSourceQueries::setSearchTerm(QString term)
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel() const
 {
-    m_integrator->bind(m_findSearchTopLevel,
-                  [this] (const CollectionInputQuery::AddFunction &add) {
-                      if (m_searchTerm.isEmpty())
-                          return;
-
-                      CollectionSearchJobInterface *job = m_storage->searchCollections(m_searchTerm);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error())
-                              return;
-
-                          QHash<Collection::Id, Collection> topLevels;
-                          foreach (const auto &collection, job->collections()) {
-                              auto topLevel = collection;
-                              while (topLevel.parentCollection() != Collection::root())
-                                  topLevel = topLevel.parentCollection();
-                              if (!topLevels.contains(topLevel.id()))
-                                  topLevels[topLevel.id()] = topLevel;
-                          }
-
-                          foreach (const auto &topLevel, topLevels.values())
-                              add(topLevel);
-
-                      });
-                  },
-                  [this] (const Akonadi::Collection &collection) {
-                      return collection.isValid()
-                          && collection.parentCollection() == Akonadi::Collection::root();
-                  });
-
+    auto fetch = m_helpers->searchCollections(Collection::root(), &m_searchTerm);
+    auto predicate = createSearchPredicate(Collection::root());
+    m_integrator->bind(m_findSearchTopLevel, fetch, predicate);
     return m_findSearchTopLevel->result();
 }
 
@@ -204,32 +107,25 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(D
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findSearchChildren[root.id()];
-    m_integrator->bind(query,
-                  [this, root] (const CollectionInputQuery::AddFunction &add) {
-                      if (m_searchTerm.isEmpty())
-                          return;
+    auto fetch = m_helpers->searchCollections(root, &m_searchTerm);
+    auto predicate = createSearchPredicate(root);
+    m_integrator->bind(query, fetch, predicate);
+    return query->result();
+}
 
-                      CollectionSearchJobInterface *job = m_storage->searchCollections(m_searchTerm);
-                      Utils::JobHandler::install(job->kjob(), [this, root, job, add] {
-                          if (job->kjob()->error())
-                              return;
+DataSourceQueries::CollectionInputQuery::PredicateFunction DataSourceQueries::createFetchPredicate(const Collection &root) const
+{
+    return [this, root] (const Collection &collection) {
+        return collection.isValid()
+            && collection.parentCollection() == root
+            && m_serializer->isListedCollection(collection);
+    };
+}
 
-                          QHash<Collection::Id, Collection> children;
-                          foreach (const auto &collection, job->collections()) {
-                              auto child = collection;
-                              while (child.parentCollection() != root && child.parentCollection().isValid())
-                                  child = child.parentCollection();
-                              if (!children.contains(child.id()))
-                                  children[child.id()] = child;
-                          }
-
-                          foreach (const auto &topLevel, children.values())
-                              add(topLevel);
-                      });
-                  },
-                  [this, root] (const Akonadi::Collection &collection) {
-                      return collection.isValid() && collection.parentCollection() == root;
-                  });
-
-    return m_findSearchChildren.value(root.id())->result();
+DataSourceQueries::CollectionInputQuery::PredicateFunction DataSourceQueries::createSearchPredicate(const Collection &root) const
+{
+    return [root] (const Collection &collection) {
+        return collection.isValid()
+            && collection.parentCollection() == root;
+    };
 }

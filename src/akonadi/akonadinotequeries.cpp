@@ -24,49 +24,23 @@
 
 #include "akonadinotequeries.h"
 
-#include "akonadicollectionfetchjobinterface.h"
-#include "akonadiitemfetchjobinterface.h"
-
-#include "utils/jobhandler.h"
-
 using namespace Akonadi;
 
 NoteQueries::NoteQueries(const StorageInterface::Ptr &storage,
                          const SerializerInterface::Ptr &serializer,
                          const MonitorInterface::Ptr &monitor)
-    : m_storage(storage),
-      m_serializer(serializer),
+    : m_serializer(serializer),
+      m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
 }
 
 NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
 {
-    m_integrator->bind(m_findAll,
-                  [this] (const ItemInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Notes);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          for (auto collection : job->collections()) {
-                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                                  if (job->kjob()->error() != KJob::NoError)
-                                      return;
-
-                                  for (auto item : job->items()) {
-                                      add(item);
-                                  }
-                              });
-                          }
-                      });
-                  },
-                  [this] (const Akonadi::Item &item) {
-                      return m_serializer->isNoteItem(item);
-                  });
-
+    auto fetch = m_helpers->fetchItems(StorageInterface::Notes);
+    auto predicate = [this] (const Item &item) {
+        return m_serializer->isNoteItem(item);
+    };
+    m_integrator->bind(m_findAll, fetch, predicate);
     return m_findAll->result();
 }

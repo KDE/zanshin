@@ -24,19 +24,15 @@
 
 #include "akonaditaskqueries.h"
 
-#include "akonadicollectionfetchjobinterface.h"
-#include "akonadiitemfetchjobinterface.h"
-
 #include "utils/datetime.h"
-#include "utils/jobhandler.h"
 
 using namespace Akonadi;
 
 TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
                          const SerializerInterface::Ptr &serializer,
                          const MonitorInterface::Ptr &monitor)
-    : m_storage(storage),
-      m_serializer(serializer),
+    : m_serializer(serializer),
+      m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
     m_integrator->addRemoveHandler([this] (const Item &item) {
@@ -46,32 +42,11 @@ TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
 
 TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 {
-    m_integrator->bind(m_findAll,
-                  [this] (const ItemInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          for (auto collection : job->collections()) {
-                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                                  if (job->kjob()->error() != KJob::NoError)
-                                      return;
-
-                                  for (auto item : job->items()) {
-                                      add(item);
-                                  }
-                              });
-                          }
-                      });
-                   },
-                   [this] (const Akonadi::Item &item) {
-                       return m_serializer->isTaskItem(item);
-                   });
-
+    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto predicate = [this] (const Akonadi::Item &item) {
+        return m_serializer->isTaskItem(item);
+    };
+    m_integrator->bind(m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -79,109 +54,48 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
 {
     Akonadi::Item item = m_serializer->createItemFromTask(task);
     auto &query = m_findChildren[item.id()];
-    m_integrator->bind(query,
-                  [this, item] (const ItemInputQuery::AddFunction &add) {
-                      ItemFetchJobInterface *job = m_storage->fetchItem(item);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          Q_ASSERT(job->items().size() == 1);
-                          auto item = job->items()[0];
-                          Q_ASSERT(item.parentCollection().isValid());
-                          ItemFetchJobInterface *job = m_storage->fetchItems(item.parentCollection());
-                          Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                              if (job->kjob()->error() != KJob::NoError)
-                                  return;
-
-                              for (auto item : job->items())
-                                  add(item);
-                          });
-                      });
-                  },
-                  [this, task] (const Akonadi::Item &item) {
-                      return m_serializer->isTaskChild(task, item);
-                  });
-
+    auto fetch = m_helpers->fetchSiblings(item);
+    auto predicate = [this, task] (const Akonadi::Item &item) {
+        return m_serializer->isTaskChild(task, item);
+    };
+    m_integrator->bind(query, fetch, predicate);
     return query->result();
 }
 
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
-    m_integrator->bind(m_findTopLevel,
-                  [this] (const ItemInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          for (auto collection : job->collections()) {
-                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                                  if (job->kjob()->error() != KJob::NoError)
-                                      return;
-
-                                  for (auto item : job->items()) {
-                                      add(item);
-                                  }
-                              });
-                          }
-                      });
-                  },
-                  [this] (const Akonadi::Item &item) {
-                      return m_serializer->relatedUidFromItem(item).isEmpty() && m_serializer->isTaskItem(item);
-                  });
-
+    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto predicate = [this] (const Akonadi::Item &item) {
+        return m_serializer->relatedUidFromItem(item).isEmpty() && m_serializer->isTaskItem(item);
+    };
+    m_integrator->bind(m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
 }
 
 TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
 {
-    m_integrator->bind(m_findWorkdayTopLevel,
-                  [this] (const ItemInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
+    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto predicate = [this] (const Akonadi::Item &item) {
+        if (!m_serializer->isTaskItem(item))
+            return false;
 
-                          for (auto collection : job->collections()) {
-                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                                  if (job->kjob()->error() != KJob::NoError)
-                                      return;
+        const Domain::Task::Ptr task = m_serializer->createTaskFromItem(item);
 
-                                  for (auto item : job->items()) {
-                                      add(item);
-                                  }
-                              });
-                          }
-                      });
-                  },
-                  [this] (const Akonadi::Item &item) {
-                      if (!m_serializer->isTaskItem(item))
-                          return false;
+        const QDate doneDate = task->doneDate().date();
+        const QDate startDate = task->startDate().date();
+        const QDate dueDate = task->dueDate().date();
+        const QDate today = Utils::DateTime::currentDateTime().date();
 
-                      const Domain::Task::Ptr task = m_serializer->createTaskFromItem(item);
+        const bool pastStartDate = startDate.isValid() && startDate <= today;
+        const bool pastDueDate = dueDate.isValid() && dueDate <= today;
+        const bool todayDoneDate = doneDate == today;
 
-                      const QDate doneDate = task->doneDate().date();
-                      const QDate startDate = task->startDate().date();
-                      const QDate dueDate = task->dueDate().date();
-                      const QDate today = Utils::DateTime::currentDateTime().date();
-
-                      const bool pastStartDate = startDate.isValid() && startDate <= today;
-                      const bool pastDueDate = dueDate.isValid() && dueDate <= today;
-                      const bool todayDoneDate = doneDate == today;
-
-                      if (task->isDone())
-                          return todayDoneDate;
-                      else
-                          return pastStartDate || pastDueDate;
-                  });
-
+        if (task->isDone())
+            return todayDoneDate;
+        else
+            return pastStartDate || pastDueDate;
+    };
+    m_integrator->bind(m_findWorkdayTopLevel, fetch, predicate);
     return m_findWorkdayTopLevel->result();
 }
 

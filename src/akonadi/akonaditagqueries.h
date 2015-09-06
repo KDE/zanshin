@@ -27,8 +27,8 @@
 
 #include "domain/tagqueries.h"
 
+#include "akonadi/akonadilivequeryhelpers.h"
 #include "akonadi/akonadilivequeryintegrator.h"
-#include "akonadi/akonadistorageinterface.h"
 
 namespace Akonadi {
 
@@ -55,8 +55,8 @@ public:
     ArtifactResult::Ptr findTopLevelArtifacts(Domain::Tag::Ptr tag) const Q_DECL_OVERRIDE;
 
 private:
-    StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
+    LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
 
     mutable TagQueryOutput::Ptr m_findAll;

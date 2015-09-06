@@ -24,16 +24,11 @@
 
 #include "akonadiprojectqueries.h"
 
-#include "akonadicollectionfetchjobinterface.h"
-#include "akonadiitemfetchjobinterface.h"
-
-#include "utils/jobhandler.h"
-
 using namespace Akonadi;
 
 ProjectQueries::ProjectQueries(const StorageInterface::Ptr &storage, const SerializerInterface::Ptr &serializer, const MonitorInterface::Ptr &monitor)
-    : m_storage(storage),
-      m_serializer(serializer),
+    : m_serializer(serializer),
+      m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
     m_integrator->addRemoveHandler([this] (const Item &item) {
@@ -43,35 +38,11 @@ ProjectQueries::ProjectQueries(const StorageInterface::Ptr &storage, const Seria
 
 ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
 {
-    m_integrator->bind(m_findAll,
-                  [this] (const ItemInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          for (auto collection : job->collections()) {
-                              if (!m_serializer->isSelectedCollection(collection))
-                                  continue;
-
-                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                                  if (job->kjob()->error() != KJob::NoError)
-                                      return;
-
-                                  for (auto item : job->items()) {
-                                      add(item);
-                                  }
-                              });
-                          }
-                      });
-                  },
-                  [this] (const Akonadi::Item &item) {
-                      return m_serializer->isProjectItem(item);
-                  });
-
+    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto predicate = [this] (const Akonadi::Item &item) {
+        return m_serializer->isProjectItem(item);
+    };
+    m_integrator->bind(m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -79,30 +50,10 @@ ProjectQueries::ArtifactResult::Ptr ProjectQueries::findTopLevelArtifacts(Domain
 {
     Akonadi::Item item = m_serializer->createItemFromProject(project);
     auto &query = m_findTopLevel[item.id()];
-    m_integrator->bind(query,
-                  [this, item] (const ItemInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks | StorageInterface::Notes);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          for (auto collection : job->collections()) {
-                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                                  if (job->kjob()->error() != KJob::NoError)
-                                      return;
-
-                                  for (auto item : job->items())
-                                      add(item);
-                              });
-                          }
-                      });
-                  },
-                  [this, project] (const Akonadi::Item &item) {
-                      return m_serializer->isProjectChild(project, item);
-                  });
-
+    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks | StorageInterface::Notes);
+    auto predicate = [this, project] (const Akonadi::Item &item) {
+        return m_serializer->isProjectChild(project, item);
+    };
+    m_integrator->bind(query, fetch, predicate);
     return query->result();
 }

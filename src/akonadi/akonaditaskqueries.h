@@ -26,8 +26,8 @@
 
 #include "domain/taskqueries.h"
 
+#include "akonadi/akonadilivequeryhelpers.h"
 #include "akonadi/akonadilivequeryintegrator.h"
-#include "akonadi/akonadistorageinterface.h"
 
 namespace Akonadi {
 
@@ -55,8 +55,8 @@ public:
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
 
 private:
-    StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
+    LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
 
     mutable TaskQueryOutput::Ptr m_findAll;

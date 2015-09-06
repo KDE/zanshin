@@ -26,8 +26,8 @@
 
 #include "domain/datasourcequeries.h"
 
+#include "akonadi/akonadilivequeryhelpers.h"
 #include "akonadi/akonadilivequeryintegrator.h"
-#include "akonadi/akonadistorageinterface.h"
 
 namespace Akonadi {
 
@@ -56,8 +56,11 @@ public:
     DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
 private:
-    StorageInterface::Ptr m_storage;
+    CollectionInputQuery::PredicateFunction createFetchPredicate(const Collection &root) const;
+    CollectionInputQuery::PredicateFunction createSearchPredicate(const Collection &root) const;
+
     SerializerInterface::Ptr m_serializer;
+    LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
 
     mutable DataSourceQueryOutput::Ptr m_findTasks;

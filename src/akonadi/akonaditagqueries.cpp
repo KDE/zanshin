@@ -23,18 +23,11 @@
 
 #include "akonaditagqueries.h"
 
-
-#include "akonadicollectionfetchjobinterface.h"
-#include "akonadiitemfetchjobinterface.h"
-#include "akonaditagfetchjobinterface.h"
-
-#include "utils/jobhandler.h"
-
 using namespace Akonadi;
 
 TagQueries::TagQueries(const StorageInterface::Ptr &storage, const SerializerInterface::Ptr &serializer, const MonitorInterface::Ptr &monitor)
-    : m_storage(storage),
-      m_serializer(serializer),
+    : m_serializer(serializer),
+      m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
     m_integrator->addRemoveHandler([this] (const Tag &tag) {
@@ -44,18 +37,11 @@ TagQueries::TagQueries(const StorageInterface::Ptr &storage, const SerializerInt
 
 TagQueries::TagResult::Ptr TagQueries::findAll() const
 {
-    m_integrator->bind(m_findAll,
-                  [this] (const TagInputQuery::AddFunction &add) {
-                      TagFetchJobInterface *job = m_storage->fetchTags();
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          for (Akonadi::Tag tag : job->tags())
-                              add(tag);
-                      });
-                  },
-                  [this] (const Akonadi::Tag &akonadiTag) {
-                      return akonadiTag.type() == Akonadi::Tag::PLAIN;
-                  });
-
+    auto fetch = m_helpers->fetchTags();
+    auto predicate = [this] (const Akonadi::Tag &akonadiTag) {
+        return akonadiTag.type() == Akonadi::Tag::PLAIN;
+    };
+    m_integrator->bind(m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -63,30 +49,10 @@ TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::P
 {
     Akonadi::Tag akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
     auto &query = m_findTopLevel[akonadiTag.id()];
-    m_integrator->bind(query,
-                  [this, akonadiTag] (const ItemInputQuery::AddFunction &add) {
-                      CollectionFetchJobInterface *job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                     StorageInterface::Recursive,
-                                                                                     StorageInterface::Tasks | StorageInterface::Notes);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          for (auto collection : job->collections()) {
-                              ItemFetchJobInterface *job = m_storage->fetchItems(collection);
-                              Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                                  if (job->kjob()->error() != KJob::NoError)
-                                      return;
-
-                                  for (auto item : job->items())
-                                      add(item);
-                              });
-                          }
-                      });
-                  },
-                  [this, tag] (const Akonadi::Item &item) {
-                      return m_serializer->isTagChild(tag, item);
-                  });
-
+    auto fetch = m_helpers->fetchItems(akonadiTag);
+    auto predicate = [this, tag] (const Akonadi::Item &item) {
+        return m_serializer->isTagChild(tag, item);
+    };
+    m_integrator->bind(query, fetch, predicate);
     return query->result();
 }

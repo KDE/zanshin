@@ -24,19 +24,13 @@
 
 #include "akonadicontextqueries.h"
 
-#include "akonadicollectionfetchjobinterface.h"
-#include "akonadiitemfetchjobinterface.h"
-#include "akonaditagfetchjobinterface.h"
-
-#include "utils/jobhandler.h"
-
 using namespace Akonadi;
 
 ContextQueries::ContextQueries(const StorageInterface::Ptr &storage,
                                const SerializerInterface::Ptr &serializer,
                                const MonitorInterface::Ptr &monitor)
-    : m_storage(storage),
-      m_serializer(serializer),
+    : m_serializer(serializer),
+      m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
     m_integrator->addRemoveHandler([this] (const Tag &tag) {
@@ -46,39 +40,22 @@ ContextQueries::ContextQueries(const StorageInterface::Ptr &storage,
 
 ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
 {
-    m_integrator->bind(m_findAll,
-                  [this] (const TagInputQuery::AddFunction &add) {
-                      TagFetchJobInterface *job = m_storage->fetchTags();
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          for (Akonadi::Tag tag : job->tags())
-                              add(tag);
-                      });
-                  },
-                  [this] (const Akonadi::Tag &tag) {
-                      return tag.type() == Akonadi::SerializerInterface::contextTagType();
-                  });
-
+    auto fetch = m_helpers->fetchTags();
+    auto predicate = [this] (const Akonadi::Tag &tag) {
+        return tag.type() == Akonadi::SerializerInterface::contextTagType();
+    };
+    m_integrator->bind(m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
 ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Context::Ptr context) const
 {
     Akonadi::Tag tag = m_serializer->createTagFromContext(context);
+    auto fetch = m_helpers->fetchItems(tag);
+    auto predicate = [this, context] (const Akonadi::Item &item) {
+        return m_serializer->isContextChild(context, item);
+    };
     auto &query = m_findToplevel[tag.id()];
-    m_integrator->bind(query,
-                  [this, tag] (const ItemInputQuery::AddFunction &add) {
-                      ItemFetchJobInterface *job = m_storage->fetchTagItems(tag);
-                      Utils::JobHandler::install(job->kjob(), [this, job, add] {
-                          if (job->kjob()->error() != KJob::NoError)
-                              return;
-
-                          for (auto item : job->items())
-                              add(item);
-                      });
-                  },
-                  [this, context] (const Akonadi::Item &item) {
-                      return m_serializer->isContextChild(context, item);
-                  });
-
+    m_integrator->bind(query, fetch, predicate);
     return query->result();
 }
