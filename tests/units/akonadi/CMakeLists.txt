@@ -7,6 +7,7 @@ zanshin_auto_tests(
   akonadicontextrepositorytest
   akonadidatasourcequeriestest
   akonadidatasourcerepositorytest
+  akonadilivequeryhelperstest
   akonadilivequeryintegratortest
   akonadinotequeriestest
   akonadinoterepositorytest
