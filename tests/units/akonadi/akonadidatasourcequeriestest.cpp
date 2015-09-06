@@ -716,78 +716,63 @@ private slots:
 
     void shouldNotCrashDuringFindChildrenWhenFetchJobFailedOrEmpty_data()
     {
-        QTest::addColumn<Testlib::AkonadiFakeCollectionFetchJob*>("collectionFetchJob");
+        QTest::addColumn<int>("colErrorCode");
+        QTest::addColumn<int>("colFetchBehavior");
         QTest::addColumn<bool>("deleteQuery");
 
-        // Two child collections
-        Akonadi::Collection col1(42);
-        col1.setParentCollection(Akonadi::Collection::root());
-        Akonadi::Collection col2(42);
-        col2.setParentCollection(Akonadi::Collection::root());
+        QTest::newRow("No error with empty collection list") << int(KJob::NoError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                             << false;
 
-        Testlib::AkonadiFakeCollectionFetchJob *collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        QTest::newRow("No error with empty collection list") << collectionFetchJob << false;
+        QTest::newRow("No error with empty collection list (+ query delete)") << int(KJob::NoError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                             << true;
 
-        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("Error with empty collection list") << collectionFetchJob << false;
+        QTest::newRow("Error with empty collection list") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                          << false;
 
-        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setExpectedError(KJob::KilledJobError);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
-        QTest::newRow("Error with collection list") << collectionFetchJob << false;
+        QTest::newRow("Error with empty collection list (+ query delete)") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                          << true;
 
-        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        QTest::newRow("No error with empty collection list (+ query delete)") << collectionFetchJob << true;
+        QTest::newRow("Error with collection list") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::NormalFetch)
+                                                    << false;
 
-        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("Error with empty collection list (+ query delete)") << collectionFetchJob << true;
-
-        collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob(this);
-        collectionFetchJob->setExpectedError(KJob::KilledJobError);
-        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2);
-        QTest::newRow("Error with collection list (+ query delete)") << collectionFetchJob << true;
+        QTest::newRow("Error with collection list (+ query delete)") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::NormalFetch)
+                                                    << true;
     }
 
     void shouldNotCrashDuringFindChildrenWhenFetchJobFailedOrEmpty()
     {
         // GIVEN
-        QFETCH(Testlib::AkonadiFakeCollectionFetchJob*, collectionFetchJob);
+        AkonadiFakeData data;
+
+        // One top level collection with two children
+        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName("43TaskFirstChild").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName("44NoteSecondChild").withParent(42).withNoteContent());
+
+        // Serializer
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        Domain::DataSource::Ptr topLevelDataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
+
         QFETCH(bool, deleteQuery);
-
-        // One parent collection
-        Akonadi::Collection parentCol(41);
-        parentCol.setParentCollection(Akonadi::Collection::root());
-        auto parent = Domain::DataSource::Ptr::create();
-
-        // Storage mock returning the fetch jobs
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
-                                                                 .thenReturn(collectionFetchJob);
-
-        // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(parent).thenReturn(parentCol);
+        QFETCH(int, colErrorCode);
+        QFETCH(int, colFetchBehavior);
+        data.storageBehavior().setFetchCollectionsErrorCode(data.collection(42).id(), colErrorCode);
+        data.storageBehavior().setFetchCollectionsBehavior(data.collection(42).id(),
+                                                           AkonadiFakeStorageBehavior::FetchBehavior(colFetchBehavior));
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storageMock.getInstance(),
-                                                                                         serializerMock.getInstance(),
-                                                                                         Testlib::AkonadiFakeMonitor::Ptr::create()));
-        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(parent);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(topLevelDataSource);
 
         if (deleteQuery)
             delete queries.take();
 
         // THEN
         QVERIFY(result->data().isEmpty());
-        QTest::qWait(150);
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchCollections).when(parentCol,
-                                                                               Akonadi::StorageInterface::Recursive,
-                                                                               Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
-                                                                         .exactly(1));
+        TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 0);
     }
 
