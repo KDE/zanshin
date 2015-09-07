@@ -23,32 +23,21 @@
 
 #include <QtTest>
 
-#include <functional>
+#include "akonadi/akonadidatasourcequeries.h"
+#include "akonadi/akonadiserializer.h"
 
 #include "utils/jobhandler.h"
 #include "utils/mem_fn.h"
-#include "utils/mockobject.h"
-
-#include "testlib/akonadifakejobs.h"
-#include "testlib/akonadifakemonitor.h"
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
 #include "testlib/testhelpers.h"
 
-#include "akonadi/akonadidatasourcequeries.h"
-#include "akonadi/akonadiserializerinterface.h"
-#include "akonadi/akonadiserializer.h"
-#include "akonadi/akonadistorageinterface.h"
-
 using namespace Testlib;
-using namespace mockitopp;
 
 typedef std::function<Domain::QueryResult<Domain::DataSource::Ptr>::Ptr(Domain::DataSourceQueries*)> QueryFunction;
 Q_DECLARE_METATYPE(QueryFunction)
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchContentType)
-Q_DECLARE_METATYPE(Testlib::AkonadiFakeCollectionFetchJob*)
-Q_DECLARE_METATYPE(Testlib::AkonadiFakeCollectionSearchJob*)
 
 class AkonadiDataSourceQueriesTest : public QObject
 {
