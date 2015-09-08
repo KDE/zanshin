@@ -157,9 +157,6 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
 
             if (parentTask) {
-                if (parentTask == childTask)
-                    return false;
-
                 const auto job = taskRepository()->associate(parentTask, childTask);
                 installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
             } else {

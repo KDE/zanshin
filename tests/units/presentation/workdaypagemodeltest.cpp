@@ -24,42 +24,17 @@
 #include <QtTest>
 
 #include <testlib/fakejob.h>
-#include "testlib/akonadifakedata.h"
-#include "testlib/akonadifakejobs.h"
-#include "testlib/akonadifakemonitor.h"
-#include "testlib/akonadifakestorage.h"
-#include "testlib/gentodo.h"
-#include "testlib/gencollection.h"
-
-#include "akonadi/akonaditaskqueries.h"
-#include "akonadi/akonaditaskrepository.h"
-#include "akonadi/akonadiserializer.h"
 
 #include "utils/datetime.h"
 #include "utils/mockobject.h"
-#include "utils/jobhandler.h"
 
 #include "domain/noterepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
-
 #include "presentation/workdaypagemodel.h"
-#include "presentation/errorhandler.h"
 
 using namespace mockitopp;
 using namespace mockitopp::matcher;
-using namespace Testlib;
-
-class FakeErrorHandler : public Presentation::ErrorHandler
-{
-public:
-    void doDisplayMessage(const QString &message)
-    {
-        m_message = message;
-    }
-
-    QString m_message;
-};
 
 class WorkdayPageModelTest : public QObject
 {
@@ -281,48 +256,6 @@ private slots:
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).exactly(1));
-    }
-
-    void shouldDeparentAndSetsStartDateWhenNoErrorsHappens()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        // One collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
-
-        // Two tasks in the collection
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43").withUid("ParentTask").withStartDate(QDate::currentDate().toString(Qt::ISODate)));
-        Akonadi::Item childTaskItem = GenTodo().withId(44).withParent(42).withTitle("44").withUid("ChildTask").withParentUid("ParentTask");
-        data.createItem(childTaskItem);
-
-        Akonadi::Serializer::Ptr akonadiSerializer(new Akonadi::Serializer);
-        Domain::Task::Ptr childTask = akonadiSerializer->createTaskFromItem(childTaskItem);
-        QVERIFY(childTask->startDate().isNull());
-
-        const Domain::TaskQueries::Ptr taskQueries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                            akonadiSerializer,
-                                                                            Akonadi::MonitorInterface::Ptr(data.createMonitor())));
-
-        const Domain::TaskRepository::Ptr taskRepos(new Akonadi::TaskRepository(Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                akonadiSerializer,
-                                                                                Akonadi::MessagingInterface::Ptr()));
-
-        Presentation::WorkdayPageModel workday(taskQueries, taskRepos, Domain::NoteRepository::Ptr(nullptr));
-        QAbstractItemModel *model = workday.centralListModel();
-
-        FakeErrorHandler errorHandler;
-        workday.setErrorHandler(&errorHandler);
-
-        // WHEN
-        auto mimeData = new QMimeData;
-        mimeData->setData("application/x-zanshin-object", "object");
-        mimeData->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask)); // both will be DnD on the empty part
-        model->dropMimeData(mimeData, Qt::MoveAction, -1, -1, QModelIndex());
-
-        // THEN
-        QCOMPARE(childTask->property("itemId").toLongLong(), childTaskItem.id());
-        QCOMPARE(childTask->startDate().date(), QDate::currentDate());
     }
 };
 

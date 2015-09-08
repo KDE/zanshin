@@ -31,8 +31,6 @@
 #include "domain/queryresultinterface.h"
 
 #include "querytreemodelbase.h"
-#include <QMimeData>
-#include <QList>
 
 namespace Presentation {
 

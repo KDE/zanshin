@@ -126,52 +126,16 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
     };
 
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Artifact::Ptr &artifact) {
-        auto parentTask = artifact.objectCast<Domain::Task>();
-
-        if (!mimeData->hasFormat("application/x-zanshin-object"))
-            return false;
-
-        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
-        if (droppedArtifacts.isEmpty())
-            return false;
-
-        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
-                        [](const Domain::Artifact::Ptr &droppedArtifact) {
-                            return !droppedArtifact.objectCast<Domain::Task>();
-                        })) {
-            return false;
-        }
-
-        foreach(const auto &droppedArtifact, droppedArtifacts) {
-            auto childTask = droppedArtifact.objectCast<Domain::Task>();
-
-            if (!childTask)
-                return false;
-
-            childTask->setStartDate(Utils::DateTime::currentDateTime());
-            const auto job = taskRepository()->update(childTask);
-            installHandler(job, tr("Cannot update task %1 to Workday").arg(childTask->title()));
-
-            if (parentTask) {
-                const auto job = taskRepository()->associate(parentTask, childTask);
-                installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
-            } else {
-                const auto job = taskRepository()->dissociate(childTask);
-                installHandler(job, tr("Cannot deparent task %1 from its parent").arg(childTask->title()));
-            }
-        }
-
-        return true;
+        Q_UNUSED(mimeData);
+        Q_UNUSED(artifact);
+        qFatal("Not implemented yet");
+        return false;
     };
 
     auto drag = [](const Domain::Artifact::List &artifacts) -> QMimeData* {
-        if (artifacts.isEmpty())
-            return Q_NULLPTR;
-
-        auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
-        data->setProperty("objects", QVariant::fromValue(artifacts));
-        return data;
+        Q_UNUSED(artifacts);
+        qFatal("Not implemented yet");
+        return Q_NULLPTR;
     };
 
     return new QueryTreeModel<Domain::Artifact::Ptr>(query, flags, data, setData, drop, drag, this);
