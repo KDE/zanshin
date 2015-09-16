@@ -364,7 +364,7 @@ private slots:
 
         // WHEN
         auto job2 = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job2->setExpectedError(KJob::KilledJobError, "Foo");
         tagRepositoryMock(&Domain::TagRepository::dissociate).when(tag, note).thenReturn(job2);
         const QModelIndex indexNote = page.centralListModel()->index(2, 0);
         page.removeItem(indexNote);
