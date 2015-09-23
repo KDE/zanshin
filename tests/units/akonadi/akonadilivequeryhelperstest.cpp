@@ -150,6 +150,20 @@ private slots:
 
         expected.sort();
         QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        collections.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(collections.constBegin(), collections.constEnd(),
+                       std::back_inserter(result),
+                       std::bind(&Akonadi::Collection::displayName, _1));
+        result.sort();
+        QCOMPARE(result, expected);
     }
 
     void shouldFetchCollectionsForRootAndType_data()
@@ -261,6 +275,20 @@ private slots:
         }
 
         expected.sort();
+        QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        collections.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(collections.constBegin(), collections.constEnd(),
+                       std::back_inserter(result),
+                       std::bind(&Akonadi::Collection::displayName, _1));
+        result.sort();
         QCOMPARE(result, expected);
     }
 
@@ -392,6 +420,20 @@ private slots:
 
         expected.sort();
         QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        collections.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(collections.constBegin(), collections.constEnd(),
+                       std::back_inserter(result),
+                       std::bind(&Akonadi::Collection::displayName, _1));
+        result.sort();
+        QCOMPARE(result, expected);
     }
 
     void shouldFetchItemsByContentTypes_data()
@@ -462,6 +504,20 @@ private slots:
 
         expected.sort();
         QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        items.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(items.constBegin(), items.constEnd(),
+                       std::back_inserter(result),
+                       titleFromItem);
+        result.sort();
+        QCOMPARE(result, expected);
     }
 
     void shouldFetchItemsByTag_data()
@@ -530,6 +586,20 @@ private slots:
 
         expected.sort();
         QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        items.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(items.constBegin(), items.constEnd(),
+                       std::back_inserter(result),
+                       titleFromItem);
+        result.sort();
+        QCOMPARE(result, expected);
     }
 
     void shouldFetchSiblings_data()
@@ -593,6 +663,20 @@ private slots:
 
         expected.sort();
         QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        items.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(items.constBegin(), items.constEnd(),
+                       std::back_inserter(result),
+                       titleFromItem);
+        result.sort();
+        QCOMPARE(result, expected);
     }
 
     void shouldFetchTags()
@@ -625,6 +709,20 @@ private slots:
         // THEN
         auto expected = QStringList({"42", "43"});
         expected.sort();
+        QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        tags.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(tags.constBegin(), tags.constEnd(),
+                       std::back_inserter(result),
+                       std::bind(&Akonadi::Tag::name, _1));
+        result.sort();
         QCOMPARE(result, expected);
     }
 };

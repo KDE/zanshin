@@ -42,8 +42,9 @@ LiveQueryHelpers::LiveQueryHelpers(const SerializerInterface::Ptr &serializer,
 
 LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchAllCollections(StorageInterface::FetchContentTypes contentTypes) const
 {
-    return [this, contentTypes] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        auto job = m_storage->fetchCollections(Collection::root(), StorageInterface::Recursive, contentTypes);
+    auto storage = m_storage;
+    return [storage, contentTypes] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+        auto job = storage->fetchCollections(Collection::root(), StorageInterface::Recursive, contentTypes);
         Utils::JobHandler::install(job->kjob(), [job, add] {
             if (job->kjob()->error())
                 return;
@@ -56,8 +57,9 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchAllCollections(
 
 LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(const Collection &root, StorageInterface::FetchContentTypes contentTypes) const
 {
-    return [this, contentTypes, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        auto job = m_storage->fetchCollections(root, StorageInterface::Recursive, contentTypes);
+    auto storage = m_storage;
+    return [storage, contentTypes, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+        auto job = storage->fetchCollections(root, StorageInterface::Recursive, contentTypes);
         Utils::JobHandler::install(job->kjob(), [root, job, add] {
             if (job->kjob()->error())
                 return;
@@ -79,11 +81,12 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(con
 
 LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::searchCollections(const Collection &root, const QString *searchTerm) const
 {
-    return [this, searchTerm, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+    auto storage = m_storage;
+    return [storage, searchTerm, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
         if (searchTerm->isEmpty())
             return;
 
-        auto job = m_storage->searchCollections(*searchTerm);
+        auto job = storage->searchCollections(*searchTerm);
         Utils::JobHandler::install(job->kjob(), [root, job, add] {
             if (job->kjob()->error())
                 return;
@@ -107,20 +110,22 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::searchCollections(co
 
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(StorageInterface::FetchContentTypes contentTypes) const
 {
-    return [this, contentTypes] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                               StorageInterface::Recursive,
-                                               contentTypes);
-        Utils::JobHandler::install(job->kjob(), [this, job, add] {
+    auto serializer = m_serializer;
+    auto storage = m_storage;
+    return [serializer, storage, contentTypes] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
+        auto job = storage->fetchCollections(Akonadi::Collection::root(),
+                                             StorageInterface::Recursive,
+                                             contentTypes);
+        Utils::JobHandler::install(job->kjob(), [serializer, storage, job, add] {
             if (job->kjob()->error() != KJob::NoError)
                 return;
 
             foreach (const auto &collection, job->collections()) {
-                if (!m_serializer->isSelectedCollection(collection))
+                if (!serializer->isSelectedCollection(collection))
                     continue;
 
-                auto job = m_storage->fetchItems(collection);
-                Utils::JobHandler::install(job->kjob(), [this, job, add] {
+                auto job = storage->fetchItems(collection);
+                Utils::JobHandler::install(job->kjob(), [job, add] {
                     if (job->kjob()->error() != KJob::NoError)
                         return;
 
@@ -134,9 +139,10 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(StorageInterfac
 
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Tag &tag) const
 {
-    return [this, tag] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = m_storage->fetchTagItems(tag);
-        Utils::JobHandler::install(job->kjob(), [this, job, add] {
+    auto storage = m_storage;
+    return [storage, tag] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
+        auto job = storage->fetchTagItems(tag);
+        Utils::JobHandler::install(job->kjob(), [job, add] {
             if (job->kjob()->error() != KJob::NoError)
                 return;
 
@@ -148,17 +154,18 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Tag &tag)
 
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &item) const
 {
-    return [this, item] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = m_storage->fetchItem(item);
-        Utils::JobHandler::install(job->kjob(), [this, job, add] {
+    auto storage = m_storage;
+    return [storage, item] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
+        auto job = storage->fetchItem(item);
+        Utils::JobHandler::install(job->kjob(), [storage, job, add] {
             if (job->kjob()->error() != KJob::NoError)
                 return;
 
             Q_ASSERT(job->items().size() == 1);
             auto item = job->items()[0];
             Q_ASSERT(item.parentCollection().isValid());
-            auto job = m_storage->fetchItems(item.parentCollection());
-            Utils::JobHandler::install(job->kjob(), [this, job, add] {
+            auto job = storage->fetchItems(item.parentCollection());
+            Utils::JobHandler::install(job->kjob(), [job, add] {
                 if (job->kjob()->error() != KJob::NoError)
                     return;
 
@@ -171,9 +178,10 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &
 
 LiveQueryHelpers::TagFetchFunction LiveQueryHelpers::fetchTags() const
 {
-    return [this] (const Domain::LiveQueryInput<Tag>::AddFunction &add) {
-        auto job = m_storage->fetchTags();
-        Utils::JobHandler::install(job->kjob(), [this, job, add] {
+    auto storage = m_storage;
+    return [storage] (const Domain::LiveQueryInput<Tag>::AddFunction &add) {
+        auto job = storage->fetchTags();
+        Utils::JobHandler::install(job->kjob(), [job, add] {
             foreach (const auto &tag, job->tags())
                 add(tag);
         });
