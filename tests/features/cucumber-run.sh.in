@@ -12,7 +12,7 @@ export ZANSHIN_USER_XMLDATA=$1
 shift
 
 cd @CUCUMBER_CWD@
-@zanshin-cuke-steps@ &
+@cuke-steps@ &
 usleep 500000
 
 cucumber $*

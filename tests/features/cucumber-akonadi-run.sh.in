@@ -19,7 +19,7 @@ KNUT_RESOURCE="org.freedesktop.Akonadi.Resource.akonadi_knut_resource_0.$AKONADI
 qdbus $KNUT_RESOURCE / org.freedesktop.Akonadi.Resource.synchronize
 
 cd @CUCUMBER_CWD@
-@zanshin-cuke-steps@ &
+@cuke-steps@ &
 usleep 500000
 
 cucumber $*
