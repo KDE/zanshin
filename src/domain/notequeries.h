@@ -39,6 +39,7 @@ public:
     virtual ~NoteQueries();
 
     virtual QueryResult<Note::Ptr>::Ptr findAll() const = 0;
+    virtual QueryResult<Note::Ptr>::Ptr findInbox() const = 0;
 };
 
 }

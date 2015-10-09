@@ -44,3 +44,14 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
     m_integrator->bind(m_findAll, fetch, predicate);
     return m_findAll->result();
 }
+
+NoteQueries::NoteResult::Ptr NoteQueries::findInbox() const
+{
+    auto fetch = m_helpers->fetchItems(StorageInterface::Notes);
+    auto predicate = [this] (const Item &item) {
+        return m_serializer->isNoteItem(item)
+            && !m_serializer->hasAkonadiTags(item);
+    };
+    m_integrator->bind(m_findAll, fetch, predicate);
+    return m_findAll->result();
+}

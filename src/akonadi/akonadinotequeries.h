@@ -47,6 +47,7 @@ public:
                 const MonitorInterface::Ptr &monitor);
 
     NoteResult::Ptr findAll() const Q_DECL_OVERRIDE;
+    NoteResult::Ptr findInbox() const Q_DECL_OVERRIDE;
 
 private:
     SerializerInterface::Ptr m_serializer;
