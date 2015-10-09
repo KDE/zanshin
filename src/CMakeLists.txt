@@ -1,9 +1,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # frontends
-add_subdirectory(app)
-add_subdirectory(kontact)
-add_subdirectory(runner)
+add_subdirectory(zanshin)
 
 # modules
 add_subdirectory(akonadi)
@@ -13,5 +11,3 @@ add_subdirectory(scripting)
 add_subdirectory(utils)
 add_subdirectory(widgets)
 
-# migrator
-add_subdirectory(migrator)

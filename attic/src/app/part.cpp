@@ -29,7 +29,7 @@
 
 #include <QtGui/QSplitter>
 
-#include "../../src/app/aboutdata.h"
+#include "../../src/zanshin/app/aboutdata.h"
 #include "gui/itemlist/actionlisteditor.h"
 #include "maincomponent.h"
 #include "core/modelstack.h"

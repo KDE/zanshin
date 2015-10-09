@@ -1,6 +1,6 @@
 include(MacroAkonadiAutoTests)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../src/migrator)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../src/zanshin/migrator)
 
 zanshin_auto_tests(
 )

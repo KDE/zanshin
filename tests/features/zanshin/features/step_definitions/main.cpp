@@ -11,7 +11,7 @@
 #include <KConfigGroup>
 #include <KGlobal>
 
-#include "app/dependencies.h"
+#include "zanshin/app/dependencies.h"
 
 #include "presentation/applicationmodel.h"
 #include "presentation/errorhandler.h"

@@ -26,7 +26,7 @@
 #include <KDE/KCmdLineArgs>
 #include <KDE/KLocale>
 
-#include "../../src/app/aboutdata.h"
+#include "../../src/zanshin/app/aboutdata.h"
 #include "debugwindow.h"
 #include "mainwindow.h"
 #include "core/modelstack.h"

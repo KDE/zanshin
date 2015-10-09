@@ -1,5 +1,5 @@
 set(app_SRCS
-    ${CMAKE_SOURCE_DIR}/src/app/aboutdata.cpp
+    ${CMAKE_SOURCE_DIR}/src/zanshin/app/aboutdata.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/collectionconfig.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/configdialog.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/maincomponent.cpp

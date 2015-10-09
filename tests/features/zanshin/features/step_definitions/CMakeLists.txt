@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
 set(steps_SRCS
     main.cpp
-    ${CMAKE_SOURCE_DIR}/src/app/dependencies.cpp
+    ${CMAKE_SOURCE_DIR}/src/zanshin/app/dependencies.cpp
 )
 
 kde4_add_executable(zanshin-cuke-steps ${steps_SRCS})

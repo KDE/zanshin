@@ -28,7 +28,7 @@
 
 #include <QTreeView>
 
-#include "app/dependencies.h"
+#include "zanshin/app/dependencies.h"
 
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
