@@ -33,7 +33,7 @@
 
 #include "presentation/applicationmodel.h"
 #include "presentation/artifacteditormodel.h"
-#include "presentation/availabletaskpagesmodel.h"
+#include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/inboxpagemodel.h"
@@ -55,6 +55,63 @@ public:
     QString m_message;
 };
 
+class FakeAvailablePagesModel : public Presentation::AvailablePagesModelInterface
+{
+    Q_OBJECT
+public:
+    explicit FakeAvailablePagesModel(QObject *parent = Q_NULLPTR)
+        : Presentation::AvailablePagesModelInterface(parent) {}
+
+    QAbstractItemModel *pageListModel() Q_DECL_OVERRIDE { return Q_NULLPTR; }
+
+    QObject *createPageForIndex(const QModelIndex &) Q_DECL_OVERRIDE { return Q_NULLPTR; }
+
+    void addProject(const QString &, const Domain::DataSource::Ptr &) Q_DECL_OVERRIDE {}
+    void addContext(const QString &) Q_DECL_OVERRIDE {}
+    void addTag(const QString &) Q_DECL_OVERRIDE {}
+    void removeItem(const QModelIndex &) Q_DECL_OVERRIDE {}
+};
+
+class ApplicationModel : public Presentation::ApplicationModel
+{
+    Q_OBJECT
+public:
+    explicit ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                              const Domain::ProjectQueries::Ptr &projectQueries,
+                              const Domain::ProjectRepository::Ptr &projectRepository,
+                              const Domain::ContextQueries::Ptr &contextQueries,
+                              const Domain::ContextRepository::Ptr &contextRepository,
+                              const Domain::DataSourceQueries::Ptr &sourceQueries,
+                              const Domain::DataSourceRepository::Ptr &sourceRepository,
+                              const Domain::TaskQueries::Ptr &taskQueries,
+                              const Domain::TaskRepository::Ptr &taskRepository,
+                              const Domain::NoteRepository::Ptr &noteRepository,
+                              const Domain::TagQueries::Ptr &tagQueries,
+                              const Domain::TagRepository::Ptr &tagRepository,
+                              QObject *parent = Q_NULLPTR)
+        : Presentation::ApplicationModel(artifactQueries,
+                                         projectQueries,
+                                         projectRepository,
+                                         contextQueries,
+                                         contextRepository,
+                                         sourceQueries,
+                                         sourceRepository,
+                                         taskQueries,
+                                         taskRepository,
+                                         noteRepository,
+                                         tagQueries,
+                                         tagRepository,
+                                         parent)
+    {
+    }
+
+private:
+    Presentation::AvailablePagesModelInterface *createAvailablePagesModel() Q_DECL_OVERRIDE
+    {
+        return new FakeAvailablePagesModel(this);
+    }
+};
+
 class ApplicationModelTest : public QObject
 {
     Q_OBJECT
@@ -74,18 +131,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueries,
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueries,
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         QObject *available = app.availableSources();
@@ -94,7 +151,7 @@ private slots:
         QVERIFY(qobject_cast<Presentation::AvailableSourcesModel*>(available));
     }
 
-    void shouldProvideAvailableTaskPagesModel()
+    void shouldProvideAvailablePagesModel()
     {
         // GIVEN
         auto artifactQueries = Domain::ArtifactQueries::Ptr();
@@ -109,24 +166,24 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueries,
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueries,
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         QObject *available = app.availablePages();
 
         // THEN
-        QVERIFY(qobject_cast<Presentation::AvailableTaskPagesModel*>(available));
+        QVERIFY(qobject_cast<FakeAvailablePagesModel*>(available));
     }
 
     void shouldProvideCurrentPage()
@@ -144,18 +201,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueries,
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueries,
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
         QVERIFY(!app.currentPage());
         QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
@@ -189,18 +246,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueries,
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueries,
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         QObject *page = app.editor();
@@ -227,18 +284,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         auto tasks = app.taskSourcesModel();
@@ -286,18 +343,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepositoryMock.getInstance(),
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -340,18 +397,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepositoryMock.getInstance(),
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -386,18 +443,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepositoryMock.getInstance(),
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         auto source = app.defaultTaskDataSource();
@@ -436,18 +493,18 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepositoryMock.getInstance(),
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
 
         // WHEN
@@ -494,18 +551,18 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepositoryMock.getInstance(),
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepositoryMock.getInstance(),
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -548,18 +605,18 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepositoryMock.getInstance(),
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepositoryMock.getInstance(),
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -594,18 +651,18 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepositoryMock.getInstance(),
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepositoryMock.getInstance(),
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         auto source = app.defaultNoteDataSource();
@@ -644,18 +701,18 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueriesMock.getInstance(),
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepositoryMock.getInstance(),
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueriesMock.getInstance(),
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepositoryMock.getInstance(),
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         app.setDefaultNoteDataSource(source);
@@ -683,25 +740,25 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::ApplicationModel app(artifactQueries,
-                                           projectQueries,
-                                           projectRepository,
-                                           contextQueries,
-                                           contextRepository,
-                                           sourceQueries,
-                                           sourceRepository,
-                                           taskQueries,
-                                           taskRepository,
-                                           noteRepository,
-                                           tagQueries,
-                                           tagRepository);
+        ApplicationModel app(artifactQueries,
+                             projectQueries,
+                             projectRepository,
+                             contextQueries,
+                             contextRepository,
+                             sourceQueries,
+                             sourceRepository,
+                             taskQueries,
+                             taskRepository,
+                             noteRepository,
+                             tagQueries,
+                             tagRepository);
 
         // WHEN
         app.setErrorHandler(&errorHandler);
 
         // THEN
         auto availableSource = static_cast<Presentation::AvailableSourcesModel*>(app.availableSources());
-        auto availablePages = static_cast<Presentation::AvailableTaskPagesModel*>(app.availablePages());
+        auto availablePages = static_cast<FakeAvailablePagesModel*>(app.availablePages());
         auto editor = static_cast<Presentation::ArtifactEditorModel*>(app.editor());
         QCOMPARE(availableSource->errorHandler(), &errorHandler);
         QCOMPARE(availablePages->errorHandler(), &errorHandler);

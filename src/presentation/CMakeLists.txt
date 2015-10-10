@@ -16,6 +16,7 @@ set(presentation_SRCS
     projectpagemodel.cpp
     querytreemodelbase.cpp
     tagpagemodel.cpp
+    taskapplicationmodel.cpp
     tasklistmodel.cpp
     workdaypagemodel.cpp
 )

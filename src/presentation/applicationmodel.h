@@ -44,6 +44,7 @@
 
 namespace Presentation {
 
+class AvailablePagesModelInterface;
 class ErrorHandler;
 
 class ApplicationModel : public QObject
@@ -95,6 +96,8 @@ signals:
     void currentPageChanged(QObject *page);
 
 private:
+    virtual AvailablePagesModelInterface *createAvailablePagesModel() = 0;
+
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources();
     Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources();
 
@@ -103,6 +106,7 @@ private:
     QObject *m_currentPage;
     QObject *m_editor;
 
+protected:
     Domain::ArtifactQueries::Ptr m_artifactQueries;
 
     Domain::ProjectQueries::Ptr m_projectQueries;

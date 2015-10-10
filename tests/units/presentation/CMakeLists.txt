@@ -13,6 +13,7 @@ zanshin_auto_tests(
   projectpagemodeltest
   querytreemodeltest
   tagpagemodeltest
+  taskapplicationmodeltest
   tasklistmodeltest
   contextpagemodeltest
   workdaypagemodeltest

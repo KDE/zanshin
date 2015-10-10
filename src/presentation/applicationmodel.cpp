@@ -169,17 +169,7 @@ QObject *ApplicationModel::availableSources()
 QObject *ApplicationModel::availablePages()
 {
     if (!m_availablePages) {
-        auto model = new AvailableTaskPagesModel(m_artifactQueries,
-                                                 m_projectQueries,
-                                                 m_projectRepository,
-                                                 m_contextQueries,
-                                                 m_contextRepository,
-                                                 m_taskQueries,
-                                                 m_taskRepository,
-                                                 m_noteRepository,
-                                                 m_tagQueries,
-                                                 m_tagRepository,
-                                                 this);
+        auto model = createAvailablePagesModel();
         model->setErrorHandler(errorHandler());
         m_availablePages = model;
     }

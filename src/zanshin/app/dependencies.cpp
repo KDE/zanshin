@@ -42,7 +42,7 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
 
-#include "presentation/applicationmodel.h"
+#include "presentation/taskapplicationmodel.h"
 
 #include "scripting/scripthandler.h"
 
@@ -120,18 +120,18 @@ void App::initializeDependencies()
 
 
     deps.add<Presentation::ApplicationModel,
-             Presentation::ApplicationModel(Domain::ArtifactQueries*,
-                                            Domain::ProjectQueries*,
-                                            Domain::ProjectRepository*,
-                                            Domain::ContextQueries*,
-                                            Domain::ContextRepository*,
-                                            Domain::DataSourceQueries*,
-                                            Domain::DataSourceRepository*,
-                                            Domain::TaskQueries*,
-                                            Domain::TaskRepository*,
-                                            Domain::NoteRepository*,
-                                            Domain::TagQueries*,
-                                            Domain::TagRepository*)>();
+             Presentation::TaskApplicationModel(Domain::ArtifactQueries*,
+                                                Domain::ProjectQueries*,
+                                                Domain::ProjectRepository*,
+                                                Domain::ContextQueries*,
+                                                Domain::ContextRepository*,
+                                                Domain::DataSourceQueries*,
+                                                Domain::DataSourceRepository*,
+                                                Domain::TaskQueries*,
+                                                Domain::TaskRepository*,
+                                                Domain::NoteRepository*,
+                                                Domain::TagQueries*,
+                                                Domain::TagRepository*)>();
 
     deps.add<Scripting::ScriptHandler,
             Scripting::ScriptHandler(Domain::TaskRepository*)>();
