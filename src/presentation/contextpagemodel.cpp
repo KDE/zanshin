@@ -59,7 +59,7 @@ Domain::Context::Ptr ContextPageModel::context() const
     return m_context;
 }
 
-Domain::Task::Ptr ContextPageModel::addTask(const QString &title)
+Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);

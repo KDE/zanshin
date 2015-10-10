@@ -60,7 +60,7 @@ Domain::Tag::Ptr TagPageModel::tag() const
     return m_tag;
 }
 
-Domain::Task::Ptr TagPageModel::addTask(const QString &title)
+Domain::Artifact::Ptr TagPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);

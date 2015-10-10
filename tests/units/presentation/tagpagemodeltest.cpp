@@ -245,12 +245,13 @@ private slots:
 
         // WHEN
         auto title = QString("New task");
-        auto task = page.addTask(title);
+        auto task = page.addItem(title).objectCast<Domain::Task>();
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createInTag).when(any<Domain::Task::Ptr>(),
                                                                                   any<Domain::Tag::Ptr>())
                                                                             .exactly(1));
+        QVERIFY(task);
         QCOMPARE(task->title(), title);
     }
 
@@ -408,7 +409,7 @@ private slots:
         page.setErrorHandler(&errorHandler);
 
         // WHEN
-        page.addTask("New task");
+        page.addItem("New task");
 
         // THEN
         QTest::qWait(150);

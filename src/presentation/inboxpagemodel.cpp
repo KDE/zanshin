@@ -48,7 +48,7 @@ InboxPageModel::InboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueri
 {
 }
 
-Domain::Task::Ptr InboxPageModel::addTask(const QString &title)
+Domain::Artifact::Ptr InboxPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);

@@ -225,10 +225,11 @@ private slots:
 
         // WHEN
         auto title = QString("New task");
-        auto task = inbox.addTask(title);
+        auto task = inbox.addItem(title).objectCast<Domain::Task>();
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).exactly(1));
+        QVERIFY(task);
         QCOMPARE(task->title(), title);
     }
 
@@ -258,7 +259,7 @@ private slots:
         inbox.setErrorHandler(&errorHandler);
 
         // WHEN
-        inbox.addTask("New task");
+        inbox.addItem("New task");
 
         // THEN
         QTest::qWait(150);

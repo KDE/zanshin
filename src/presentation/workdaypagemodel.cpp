@@ -47,7 +47,7 @@ WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
 {
 }
 
-Domain::Task::Ptr WorkdayPageModel::addTask(const QString &title)
+Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);

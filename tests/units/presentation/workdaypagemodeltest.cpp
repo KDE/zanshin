@@ -215,11 +215,12 @@ private slots:
         // WHEN
         auto title = QString("New task");
         auto today = Utils::DateTime::currentDateTime();
-        auto task = workday.addTask(title);
+        auto task = workday.addItem(title).objectCast<Domain::Task>();
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).exactly(1));
 
+        QVERIFY(task);
         QCOMPARE(task->title(), title);
         QCOMPARE(task->startDate(), today);
     }

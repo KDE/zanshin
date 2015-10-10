@@ -120,7 +120,7 @@ void PageView::onEditingFinished()
     if (m_quickAddEdit->text().isEmpty())
         return;
 
-    QMetaObject::invokeMethod(m_model, "addTask", Q_ARG(QString, m_quickAddEdit->text()));
+    QMetaObject::invokeMethod(m_model, "addItem", Q_ARG(QString, m_quickAddEdit->text()));
     m_quickAddEdit->clear();
 }
 

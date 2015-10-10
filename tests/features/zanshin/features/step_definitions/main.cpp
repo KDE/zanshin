@@ -499,7 +499,7 @@ WHEN("^I add a \"(.*)\" named \"(.+)\"$") {
     REGEX_PARAM(QString, objectName);
 
     QByteArray actionName = (objectType == "context") ? "addContext"
-                          : (objectType == "task")    ? "addTask"
+                          : (objectType == "task")    ? "addItem"
                           : (objectType == "tag")     ? "addTag"
                           : QByteArray();
 

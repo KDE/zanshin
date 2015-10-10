@@ -41,7 +41,7 @@ public:
     {
     }
 
-    Domain::Task::Ptr addTask(const QString &) { return Domain::Task::Ptr::create(); }
+    Domain::Artifact::Ptr addItem(const QString &) { return Domain::Task::Ptr::create(); }
     void removeItem(const QModelIndex &) {}
 
 private:

@@ -51,7 +51,7 @@ public:
         return &itemModel;
     }
 
-    void addItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
+    void addStubItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
     {
         QStandardItem *item = new QStandardItem;
         item->setData(title, Qt::DisplayRole);
@@ -63,15 +63,15 @@ public:
         taskNames << title;
     }
 
-    void addItems(const QStringList &list)
+    void addStubItems(const QStringList &list)
     {
         foreach (const QString &title, list) {
-            addItem(title);
+            addStubItem(title);
         }
     }
 
 public slots:
-    void addTask(const QString &name)
+    void addItem(const QString &name)
     {
         taskNames << name;
     }
@@ -177,7 +177,7 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
@@ -205,7 +205,7 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
@@ -231,9 +231,9 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addItems(QStringList() << "A" << "B");
+        stubPageModel.addStubItems(QStringList() << "A" << "B");
         QStandardItem *parentIndex = stubPageModel.itemModel.item(1, 0);
-        stubPageModel.addItem("C", parentIndex);
+        stubPageModel.addStubItem("C", parentIndex);
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
@@ -264,7 +264,7 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
         QPersistentModelIndex index2 = stubPageModel.itemModel.index(2, 0);
 

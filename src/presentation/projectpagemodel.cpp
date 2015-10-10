@@ -55,7 +55,7 @@ Domain::Project::Ptr ProjectPageModel::project() const
     return m_project;
 }
 
-Domain::Task::Ptr ProjectPageModel::addTask(const QString &title)
+Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
