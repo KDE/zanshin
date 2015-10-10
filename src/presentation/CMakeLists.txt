@@ -3,7 +3,7 @@ set(presentation_SRCS
     artifacteditormodel.cpp
     artifactfilterproxymodel.cpp
     availablepagessortfilterproxymodel.cpp
-    availablepagesmodel.cpp
+    availabletaskpagesmodel.cpp
     availablesourcesmodel.cpp
     contextpagemodel.cpp
     datasourcelistmodel.cpp

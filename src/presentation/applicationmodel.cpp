@@ -38,7 +38,7 @@
 #include "domain/datasourcerepository.h"
 
 #include "presentation/artifacteditormodel.h"
-#include "presentation/availablepagesmodel.h"
+#include "presentation/availabletaskpagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/errorhandler.h"
@@ -169,17 +169,17 @@ QObject *ApplicationModel::availableSources()
 QObject *ApplicationModel::availablePages()
 {
     if (!m_availablePages) {
-        auto model = new AvailablePagesModel(m_artifactQueries,
-                                             m_projectQueries,
-                                             m_projectRepository,
-                                             m_contextQueries,
-                                             m_contextRepository,
-                                             m_taskQueries,
-                                             m_taskRepository,
-                                             m_noteRepository,
-                                             m_tagQueries,
-                                             m_tagRepository,
-                                             this);
+        auto model = new AvailableTaskPagesModel(m_artifactQueries,
+                                                 m_projectQueries,
+                                                 m_projectRepository,
+                                                 m_contextQueries,
+                                                 m_contextRepository,
+                                                 m_taskQueries,
+                                                 m_taskRepository,
+                                                 m_noteRepository,
+                                                 m_tagQueries,
+                                                 m_tagRepository,
+                                                 this);
         model->setErrorHandler(errorHandler());
         m_availablePages = model;
     }
@@ -232,7 +232,7 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
     if (m_availableSources)
         static_cast<AvailableSourcesModel*>(m_availableSources)->setErrorHandler(errorHandler);
     if (m_availablePages)
-        static_cast<AvailablePagesModel*>(m_availablePages)->setErrorHandler(errorHandler);
+        static_cast<AvailableTaskPagesModel*>(m_availablePages)->setErrorHandler(errorHandler);
     if (m_editor)
         static_cast<ArtifactEditorModel*>(m_editor)->setErrorHandler(errorHandler);
 }

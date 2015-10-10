@@ -22,7 +22,7 @@
 */
 
 
-#include "availablepagesmodel.h"
+#include "availabletaskpagesmodel.h"
 
 #include <QIcon>
 #include <QMimeData>
@@ -50,17 +50,17 @@
 
 using namespace Presentation;
 
-AvailablePagesModel::AvailablePagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                                         const Domain::ProjectQueries::Ptr &projectQueries,
-                                         const Domain::ProjectRepository::Ptr &projectRepository,
-                                         const Domain::ContextQueries::Ptr &contextQueries,
-                                         const Domain::ContextRepository::Ptr &contextRepository,
-                                         const Domain::TaskQueries::Ptr &taskQueries,
-                                         const Domain::TaskRepository::Ptr &taskRepository,
-                                         const Domain::NoteRepository::Ptr &noteRepository,
-                                         const Domain::TagQueries::Ptr &tagQueries,
-                                         const Domain::TagRepository::Ptr &tagRepository,
-                                         QObject *parent)
+AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                                                 const Domain::ProjectQueries::Ptr &projectQueries,
+                                                 const Domain::ProjectRepository::Ptr &projectRepository,
+                                                 const Domain::ContextQueries::Ptr &contextQueries,
+                                                 const Domain::ContextRepository::Ptr &contextRepository,
+                                                 const Domain::TaskQueries::Ptr &taskQueries,
+                                                 const Domain::TaskRepository::Ptr &taskRepository,
+                                                 const Domain::NoteRepository::Ptr &noteRepository,
+                                                 const Domain::TagQueries::Ptr &tagQueries,
+                                                 const Domain::TagRepository::Ptr &tagRepository,
+                                                 QObject *parent)
     : QObject(parent),
       m_pageListModel(Q_NULLPTR),
       m_sortProxyModel(Q_NULLPTR),
@@ -77,7 +77,7 @@ AvailablePagesModel::AvailablePagesModel(const Domain::ArtifactQueries::Ptr &art
 {
 }
 
-QAbstractItemModel *AvailablePagesModel::pageListModel()
+QAbstractItemModel *AvailableTaskPagesModel::pageListModel()
 {
     if (!m_pageListModel)
         m_pageListModel = createPageListModel();
@@ -89,7 +89,7 @@ QAbstractItemModel *AvailablePagesModel::pageListModel()
     return m_sortProxyModel;
 }
 
-QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
+QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
 
@@ -140,7 +140,7 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     return Q_NULLPTR;
 }
 
-void AvailablePagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
+void AvailableTaskPagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
 {
     auto project = Domain::Project::Ptr::create();
     project->setName(name);
@@ -148,7 +148,7 @@ void AvailablePagesModel::addProject(const QString &name, const Domain::DataSour
     installHandler(job, tr("Cannot add project %1 in dataSource %2").arg(name).arg(source->name()));
 }
 
-void AvailablePagesModel::addContext(const QString &name)
+void AvailableTaskPagesModel::addContext(const QString &name)
 {
     auto context = Domain::Context::Ptr::create();
     context->setName(name);
@@ -156,7 +156,7 @@ void AvailablePagesModel::addContext(const QString &name)
     installHandler(job, tr("Cannot add context %1").arg(name));
 }
 
-void AvailablePagesModel::addTag(const QString &name)
+void AvailableTaskPagesModel::addTag(const QString &name)
 {
     auto tag = Domain::Tag::Ptr::create();
     tag->setName(name);
@@ -164,7 +164,7 @@ void AvailablePagesModel::addTag(const QString &name)
     installHandler(job, tr("Cannot add tag %1").arg(name));
 }
 
-void AvailablePagesModel::removeItem(const QModelIndex &index)
+void AvailableTaskPagesModel::removeItem(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     if (auto project = object.objectCast<Domain::Project>()) {
@@ -181,7 +181,7 @@ void AvailablePagesModel::removeItem(const QModelIndex &index)
     }
 }
 
-QAbstractItemModel *AvailablePagesModel::createPageListModel()
+QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
 {
     m_inboxObject = QObjectPtr::create();
     m_inboxObject->setProperty("name", tr("Inbox"));

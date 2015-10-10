@@ -33,7 +33,7 @@
 
 #include "presentation/applicationmodel.h"
 #include "presentation/artifacteditormodel.h"
-#include "presentation/availablepagesmodel.h"
+#include "presentation/availabletaskpagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/inboxpagemodel.h"
@@ -94,7 +94,7 @@ private slots:
         QVERIFY(qobject_cast<Presentation::AvailableSourcesModel*>(available));
     }
 
-    void shouldProvideAvailablePagesModel()
+    void shouldProvideAvailableTaskPagesModel()
     {
         // GIVEN
         auto artifactQueries = Domain::ArtifactQueries::Ptr();
@@ -126,7 +126,7 @@ private slots:
         QObject *available = app.availablePages();
 
         // THEN
-        QVERIFY(qobject_cast<Presentation::AvailablePagesModel*>(available));
+        QVERIFY(qobject_cast<Presentation::AvailableTaskPagesModel*>(available));
     }
 
     void shouldProvideCurrentPage()
@@ -701,7 +701,7 @@ private slots:
 
         // THEN
         auto availableSource = static_cast<Presentation::AvailableSourcesModel*>(app.availableSources());
-        auto availablePages = static_cast<Presentation::AvailablePagesModel*>(app.availablePages());
+        auto availablePages = static_cast<Presentation::AvailableTaskPagesModel*>(app.availablePages());
         auto editor = static_cast<Presentation::ArtifactEditorModel*>(app.editor());
         QCOMPARE(availableSource->errorHandler(), &errorHandler);
         QCOMPARE(availablePages->errorHandler(), &errorHandler);

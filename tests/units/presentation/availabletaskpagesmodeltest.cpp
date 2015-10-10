@@ -37,7 +37,7 @@
 #include "domain/task.h"
 #include "domain/taskrepository.h"
 
-#include "presentation/availablepagesmodel.h"
+#include "presentation/availabletaskpagesmodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/errorhandler.h"
 #include "presentation/inboxpagemodel.h"
@@ -61,7 +61,7 @@ public:
     QString m_message;
 };
 
-class AvailablePagesModelTest : public QObject
+class AvailableTaskPagesModelTest : public QObject
 {
     Q_OBJECT
 private slots:
@@ -116,16 +116,16 @@ private slots:
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    tagRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -386,16 +386,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -436,16 +436,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -493,16 +493,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                Domain::ContextRepository::Ptr(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    Domain::ContextRepository::Ptr(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -562,16 +562,16 @@ private slots:
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -603,16 +603,16 @@ private slots:
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                Domain::ProjectQueries::Ptr(),
-                                                projectRepositoryMock.getInstance(),
-                                                Domain::ContextQueries::Ptr(),
-                                                Domain::ContextRepository::Ptr(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                Domain::TagQueries::Ptr(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    Domain::ProjectQueries::Ptr(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    Domain::ContextQueries::Ptr(),
+                                                    Domain::ContextRepository::Ptr(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    Domain::TagQueries::Ptr(),
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         pages.addProject("Foo", source);
@@ -637,16 +637,16 @@ private slots:
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(job);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                Domain::ProjectQueries::Ptr(),
-                                                projectRepositoryMock.getInstance(),
-                                                Domain::ContextQueries::Ptr(),
-                                                Domain::ContextRepository::Ptr(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                Domain::TagQueries::Ptr(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    Domain::ProjectQueries::Ptr(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    Domain::ContextQueries::Ptr(),
+                                                    Domain::ContextRepository::Ptr(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    Domain::TagQueries::Ptr(),
+                                                    Domain::TagRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -666,16 +666,16 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                Domain::ProjectQueries::Ptr(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                Domain::ContextQueries::Ptr(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                Domain::TagQueries::Ptr(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    Domain::ProjectQueries::Ptr(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    Domain::ContextQueries::Ptr(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    Domain::TagQueries::Ptr(),
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         pages.addContext("Foo");
@@ -695,16 +695,16 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(job);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                Domain::ProjectQueries::Ptr(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                Domain::ContextQueries::Ptr(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                Domain::TagQueries::Ptr(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    Domain::ProjectQueries::Ptr(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    Domain::ContextQueries::Ptr(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    Domain::TagQueries::Ptr(),
+                                                    Domain::TagRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -724,16 +724,16 @@ private slots:
         tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                Domain::ProjectQueries::Ptr(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                Domain::ContextQueries::Ptr(),
-                                                Domain::ContextRepository::Ptr(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                Domain::TagQueries::Ptr(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    Domain::ProjectQueries::Ptr(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    Domain::ContextQueries::Ptr(),
+                                                    Domain::ContextRepository::Ptr(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    Domain::TagQueries::Ptr(),
+                                                    tagRepositoryMock.getInstance());
 
         // WHEN
         pages.addTag("Foo");
@@ -753,16 +753,16 @@ private slots:
         tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
                                                                  .thenReturn(job);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                Domain::ProjectQueries::Ptr(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                Domain::ContextQueries::Ptr(),
-                                                Domain::ContextRepository::Ptr(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                Domain::TagQueries::Ptr(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    Domain::ProjectQueries::Ptr(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    Domain::ContextQueries::Ptr(),
+                                                    Domain::ContextRepository::Ptr(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    Domain::TagQueries::Ptr(),
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -807,16 +807,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                Domain::ContextRepository::Ptr(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    Domain::ContextRepository::Ptr(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 
@@ -865,16 +865,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                Domain::ContextRepository::Ptr(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    Domain::ContextRepository::Ptr(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -927,16 +927,16 @@ private slots:
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 
@@ -984,16 +984,16 @@ private slots:
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -1047,16 +1047,16 @@ private slots:
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -1110,16 +1110,16 @@ private slots:
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                Domain::ProjectRepository::Ptr(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                Domain::TaskRepository::Ptr(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    Domain::ProjectRepository::Ptr(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -1186,16 +1186,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1261,16 +1261,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1337,16 +1337,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1415,16 +1415,16 @@ private slots:
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
         tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                Domain::TagRepository::Ptr());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    Domain::TagRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1485,16 +1485,16 @@ private slots:
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    tagRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1555,16 +1555,16 @@ private slots:
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    tagRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1625,16 +1625,16 @@ private slots:
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
 
-        Presentation::AvailablePagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                projectQueriesMock.getInstance(),
-                                                projectRepositoryMock.getInstance(),
-                                                contextQueriesMock.getInstance(),
-                                                contextRepositoryMock.getInstance(),
-                                                Domain::TaskQueries::Ptr(),
-                                                taskRepositoryMock.getInstance(),
-                                                Domain::NoteRepository::Ptr(),
-                                                tagQueriesMock.getInstance(),
-                                                tagRepositoryMock.getInstance());
+        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
+                                                    projectQueriesMock.getInstance(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    taskRepositoryMock.getInstance(),
+                                                    Domain::NoteRepository::Ptr(),
+                                                    tagQueriesMock.getInstance(),
+                                                    tagRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1657,6 +1657,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AvailablePagesModelTest)
+QTEST_MAIN(AvailableTaskPagesModelTest)
 
-#include "availablepagesmodeltest.moc"
+#include "availabletaskpagesmodeltest.moc"

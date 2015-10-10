@@ -22,8 +22,8 @@
 */
 
 
-#ifndef PRESENTATION_AVAILABLEPAGESMODEL_H
-#define PRESENTATION_AVAILABLEPAGESMODEL_H
+#ifndef PRESENTATION_AVAILABLETASKPAGESMODEL_H
+#define PRESENTATION_AVAILABLETASKPAGESMODEL_H
 
 #include <QObject>
 
@@ -47,22 +47,22 @@ class QModelIndex;
 namespace Presentation {
 class AvailablePagesSortFilterProxyModel;
 
-class AvailablePagesModel : public QObject, public ErrorHandlingModelBase
+class AvailableTaskPagesModel : public QObject, public ErrorHandlingModelBase
 {
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
-    explicit AvailablePagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                                 const Domain::ProjectQueries::Ptr &projectQueries,
-                                 const Domain::ProjectRepository::Ptr &projectRepository,
-                                 const Domain::ContextQueries::Ptr &contextQueries,
-                                 const Domain::ContextRepository::Ptr &contextRepository,
-                                 const Domain::TaskQueries::Ptr &taskQueries,
-                                 const Domain::TaskRepository::Ptr &taskRepository,
-                                 const Domain::NoteRepository::Ptr &noteRepository,
-                                 const Domain::TagQueries::Ptr &tagQueries,
-                                 const Domain::TagRepository::Ptr &tagRepository,
-                                 QObject *parent = Q_NULLPTR);
+    explicit AvailableTaskPagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+                                     const Domain::ProjectQueries::Ptr &projectQueries,
+                                     const Domain::ProjectRepository::Ptr &projectRepository,
+                                     const Domain::ContextQueries::Ptr &contextQueries,
+                                     const Domain::ContextRepository::Ptr &contextRepository,
+                                     const Domain::TaskQueries::Ptr &taskQueries,
+                                     const Domain::TaskRepository::Ptr &taskRepository,
+                                     const Domain::NoteRepository::Ptr &noteRepository,
+                                     const Domain::TagQueries::Ptr &tagQueries,
+                                     const Domain::TagRepository::Ptr &tagRepository,
+                                     QObject *parent = Q_NULLPTR);
 
     QAbstractItemModel *pageListModel();
 
@@ -106,4 +106,4 @@ private:
 
 }
 
-#endif // PRESENTATION_AVAILABLEPAGESMODEL_H
+#endif // PRESENTATION_AVAILABLETASKPAGESMODEL_H

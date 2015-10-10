@@ -41,7 +41,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/availablepagessortfilterproxymodel.h"
-#include "presentation/availablepagesmodel.h"
+#include "presentation/availabletaskpagesmodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/inboxpagemodel.h"
 #include "presentation/projectpagemodel.h"
