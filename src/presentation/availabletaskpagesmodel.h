@@ -25,12 +25,11 @@
 #ifndef PRESENTATION_AVAILABLETASKPAGESMODEL_H
 #define PRESENTATION_AVAILABLETASKPAGESMODEL_H
 
-#include <QObject>
+#include "presentation/availablepagesmodelinterface.h"
 
 #include "domain/artifactqueries.h"
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
-#include "domain/datasource.h"
 #include "domain/noterepository.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
@@ -40,17 +39,15 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
-#include "presentation/errorhandlingmodelbase.h"
 
 class QModelIndex;
 
 namespace Presentation {
 class AvailablePagesSortFilterProxyModel;
 
-class AvailableTaskPagesModel : public QObject, public ErrorHandlingModelBase
+class AvailableTaskPagesModel : public AvailablePagesModelInterface
 {
     Q_OBJECT
-    Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
     explicit AvailableTaskPagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
                                      const Domain::ProjectQueries::Ptr &projectQueries,
@@ -64,15 +61,14 @@ public:
                                      const Domain::TagRepository::Ptr &tagRepository,
                                      QObject *parent = Q_NULLPTR);
 
-    QAbstractItemModel *pageListModel();
+    QAbstractItemModel *pageListModel() Q_DECL_OVERRIDE;
 
-    Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index);
+    QObject *createPageForIndex(const QModelIndex &index) Q_DECL_OVERRIDE;
 
-public slots:
-    void addProject(const QString &name, const Domain::DataSource::Ptr &source);
-    void addContext(const QString &name);
-    void addTag(const QString &name);
-    void removeItem(const QModelIndex &index);
+    void addProject(const QString &name, const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;
+    void addContext(const QString &name) Q_DECL_OVERRIDE;
+    void addTag(const QString &name) Q_DECL_OVERRIDE;
+    void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
 
 private:
     QAbstractItemModel *createPageListModel();

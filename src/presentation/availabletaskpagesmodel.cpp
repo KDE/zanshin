@@ -61,7 +61,7 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ArtifactQueries::
                                                  const Domain::TagQueries::Ptr &tagQueries,
                                                  const Domain::TagRepository::Ptr &tagRepository,
                                                  QObject *parent)
-    : QObject(parent),
+    : AvailablePagesModelInterface(parent),
       m_pageListModel(Q_NULLPTR),
       m_sortProxyModel(Q_NULLPTR),
       m_artifactQueries(artifactQueries),

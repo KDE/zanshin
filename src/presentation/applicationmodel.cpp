@@ -232,7 +232,7 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
     if (m_availableSources)
         static_cast<AvailableSourcesModel*>(m_availableSources)->setErrorHandler(errorHandler);
     if (m_availablePages)
-        static_cast<AvailableTaskPagesModel*>(m_availablePages)->setErrorHandler(errorHandler);
+        static_cast<AvailablePagesModelInterface*>(m_availablePages)->setErrorHandler(errorHandler);
     if (m_editor)
         static_cast<ArtifactEditorModel*>(m_editor)->setErrorHandler(errorHandler);
 }
