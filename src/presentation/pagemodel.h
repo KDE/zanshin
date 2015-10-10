@@ -27,9 +27,7 @@
 
 #include <QObject>
 
-#include "domain/noterepository.h"
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
+#include "domain/artifact.h"
 
 #include "presentation/metatypes.h"
 #include "presentation/errorhandlingmodelbase.h"
@@ -43,10 +41,7 @@ class PageModel : public QObject, public ErrorHandlingModelBase
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
-    explicit PageModel(const Domain::TaskQueries::Ptr &taskQueries,
-                       const Domain::TaskRepository::Ptr &taskRepository,
-                       const Domain::NoteRepository::Ptr &noteRepository,
-                       QObject *parent = Q_NULLPTR);
+    explicit PageModel(QObject *parent = Q_NULLPTR);
 
     QAbstractItemModel *centralListModel();
 
@@ -54,21 +49,10 @@ public slots:
     virtual Domain::Artifact::Ptr addItem(const QString &title) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
 
-protected:
-    Domain::TaskQueries::Ptr taskQueries() const;
-
-    Domain::TaskRepository::Ptr taskRepository() const;
-    Domain::NoteRepository::Ptr noteRepository() const;
-
 private:
     virtual QAbstractItemModel *createCentralListModel() = 0;
 
     QAbstractItemModel *m_centralListModel;
-
-    Domain::TaskQueries::Ptr m_taskQueries;
-
-    Domain::TaskRepository::Ptr m_taskRepository;
-    Domain::NoteRepository::Ptr m_noteRepository;
 };
 
 }

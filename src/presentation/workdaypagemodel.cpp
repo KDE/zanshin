@@ -38,12 +38,10 @@ using namespace Presentation;
 
 WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
                                    const Domain::TaskRepository::Ptr &taskRepository,
-                                   const Domain::NoteRepository::Ptr &noteRepository,
                                    QObject *parent)
-    : PageModel(taskQueries,
-                taskRepository,
-                noteRepository,
-                parent)
+    : PageModel(parent),
+      m_taskQueries(taskQueries),
+      m_taskRepository(taskRepository)
 {
 }
 
@@ -52,7 +50,7 @@ Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title)
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     task->setStartDate(Utils::DateTime::currentDateTime());
-    const auto job = taskRepository()->create(task);
+    const auto job = m_taskRepository->create(task);
     installHandler(job, tr("Cannot add task %1 in Workday").arg(title));
 
     return task;
@@ -64,7 +62,7 @@ void WorkdayPageModel::removeItem(const QModelIndex &index)
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     if (task) {
-        const auto job = taskRepository()->remove(task);
+        const auto job = m_taskRepository->remove(task);
         installHandler(job, tr("Cannot remove task %1 from Workday").arg(task->title()));
     }
 }
@@ -73,9 +71,9 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
         if (!artifact)
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(taskQueries()->findWorkdayTopLevel());
+            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findWorkdayTopLevel());
         else if (auto task = artifact.dynamicCast<Domain::Task>())
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(taskQueries()->findChildren(task));
+            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findChildren(task));
         else
             return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
     };
@@ -117,7 +115,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            const auto job = taskRepository()->update(task);
+            const auto job = m_taskRepository->update(task);
             installHandler(job, tr("Cannot modify task %1 in Workday").arg(currentTitle));
             return true;
         }

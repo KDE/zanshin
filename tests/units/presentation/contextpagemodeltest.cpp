@@ -81,18 +81,13 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = page.centralListModel();
@@ -217,10 +212,6 @@ private slots:
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-
-        // Nor create notes...
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -231,9 +222,7 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         // WHEN
          auto title = QString("New task");
@@ -267,16 +256,12 @@ private slots:
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         contextRepositoryMock(&Domain::ContextRepository::dissociate).when(context, task).thenReturn(new FakeJob(this));
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         // WHEN
         const QModelIndex indexTask = page.centralListModel()->index(0, 0);
@@ -297,10 +282,6 @@ private slots:
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-
-        // Nor create notes...
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -313,9 +294,7 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         page.setErrorHandler(&errorHandler);
 
@@ -346,18 +325,13 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         QAbstractItemModel *model = page.centralListModel();
         const QModelIndex taskIndex = model->index(0, 0);
@@ -398,18 +372,13 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = page.centralListModel();

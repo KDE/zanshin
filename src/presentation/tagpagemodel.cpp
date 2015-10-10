@@ -44,13 +44,13 @@ TagPageModel::TagPageModel(const Domain::Tag::Ptr &tag,
                            const Domain::TaskRepository::Ptr &taskRepository,
                            const Domain::NoteRepository::Ptr &noteRepository,
                            QObject *parent)
-    : PageModel(taskQueries,
-                taskRepository,
-                noteRepository,
-                parent),
+    : PageModel(parent),
       m_tag(tag),
       m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository)
+      m_tagRepository(tagRepository),
+      m_taskQueries(taskQueries),
+      m_taskRepository(taskRepository),
+      m_noteRepository(noteRepository)
 {
 
 }
@@ -64,7 +64,7 @@ Domain::Artifact::Ptr TagPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    const auto job = taskRepository()->createInTag(task, m_tag);
+    const auto job = m_taskRepository->createInTag(task, m_tag);
     installHandler(job, tr("Cannot add task %1 in tag %2").arg(title).arg(m_tag->name()));
 
     return task;
@@ -88,7 +88,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
         if (!artifact)
             return m_tagQueries->findTopLevelArtifacts(m_tag);
         else if (auto task = artifact.dynamicCast<Domain::Task>())
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(taskQueries()->findChildren(task));
+            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findChildren(task));
         else
             return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
     };
@@ -134,7 +134,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            const auto job = taskRepository()->update(task);
+            const auto job = m_taskRepository->update(task);
             installHandler(job, tr("Cannot modify task %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
             return true;
 
@@ -144,7 +144,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
 
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
-            const auto job = noteRepository()->save(note);
+            const auto job = m_noteRepository->save(note);
             installHandler(job, tr("Cannot modify note %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
             return true;
 
@@ -174,7 +174,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
 
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            const auto job = taskRepository()->associate(parentTask, childTask);
+            const auto job = m_taskRepository->associate(parentTask, childTask);
             installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 

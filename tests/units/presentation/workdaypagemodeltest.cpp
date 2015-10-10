@@ -87,11 +87,9 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask12).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::WorkdayPageModel workday(taskQueriesMock.getInstance(),
-                                               taskRepositoryMock.getInstance(),
-                                               noteRepositoryMock.getInstance());
+                                               taskRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = workday.centralListModel();
@@ -201,16 +199,12 @@ private slots:
         // ... in fact we won't list any model
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
-        // Nor create notes...
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(new FakeJob(this));
 
         Presentation::WorkdayPageModel workday(taskQueriesMock.getInstance(),
-                                               taskRepositoryMock.getInstance(),
-                                               noteRepositoryMock.getInstance());
+                                               taskRepositoryMock.getInstance());
 
         // WHEN
         auto title = QString("New task");
@@ -242,14 +236,11 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(new FakeJob(this));
 
         Presentation::WorkdayPageModel workday(taskQueriesMock.getInstance(),
-                                               taskRepositoryMock.getInstance(),
-                                               noteRepositoryMock.getInstance());
+                                               taskRepositoryMock.getInstance());
 
         // WHEN
         const QModelIndex index = workday.centralListModel()->index(1, 0);

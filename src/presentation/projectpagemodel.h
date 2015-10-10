@@ -28,6 +28,9 @@
 #include "presentation/pagemodel.h"
 
 #include "domain/projectqueries.h"
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
+#include "domain/noterepository.h"
 
 namespace Presentation {
 
@@ -52,6 +55,10 @@ private:
 
     Domain::ProjectQueries::Ptr m_projectQueries;
     Domain::Project::Ptr m_project;
+
+    Domain::TaskQueries::Ptr m_taskQueries;
+    Domain::TaskRepository::Ptr m_taskRepository;
+    Domain::NoteRepository::Ptr m_noteRepository;
 };
 
 }

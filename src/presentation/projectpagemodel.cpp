@@ -41,12 +41,12 @@ ProjectPageModel::ProjectPageModel(const Domain::Project::Ptr &project,
                                    const Domain::TaskRepository::Ptr &taskRepository,
                                    const Domain::NoteRepository::Ptr &noteRepository,
                                    QObject *parent)
-    : PageModel(taskQueries,
-                taskRepository,
-                noteRepository,
-                parent),
+    : PageModel(parent),
       m_projectQueries(projectQueries),
-      m_project(project)
+      m_project(project),
+      m_taskQueries(taskQueries),
+      m_taskRepository(taskRepository),
+      m_noteRepository(noteRepository)
 {
 }
 
@@ -59,7 +59,7 @@ Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    const auto job = taskRepository()->createInProject(task, m_project);
+    const auto job = m_taskRepository->createInProject(task, m_project);
     installHandler(job, tr("Cannot add task %1 in project %2").arg(title).arg(m_project->name()));
 
     return task;
@@ -71,7 +71,7 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     if (task) {
-        const auto job = taskRepository()->remove(task);
+        const auto job = m_taskRepository->remove(task);
         installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
     }
 }
@@ -82,7 +82,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         if (!artifact)
             return m_projectQueries->findTopLevelArtifacts(m_project);
         else if (auto task = artifact.dynamicCast<Domain::Task>())
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(taskQueries()->findChildren(task));
+            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findChildren(task));
         else
             return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
     };
@@ -124,7 +124,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
             else
                 task->setDone(value.toInt() == Qt::Checked);
 
-            const auto job = taskRepository()->update(task);
+            const auto job = m_taskRepository->update(task);
             installHandler(job, tr("Cannot modify task %1 in project %2").arg(currentTitle).arg(m_project->name()));
             return true;
 
@@ -134,7 +134,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
 
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
-            const auto job = noteRepository()->save(note);
+            const auto job = m_noteRepository->save(note);
             installHandler(job, tr("Cannot modify note %1 in project %2").arg(currentTitle).arg(m_project->name()));
             return true;
 
@@ -164,7 +164,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
 
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            const auto job = taskRepository()->associate(parentTask, childTask);
+            const auto job = m_taskRepository->associate(parentTask, childTask);
             installHandler(job, tr("Cannot move task %1 as a sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
         }
 

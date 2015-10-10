@@ -103,7 +103,6 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
     } else if (object == m_workdayObject) {
         auto workdayPageModel = new WorkdayPageModel(m_taskQueries,
                                                      m_taskRepository,
-                                                     m_noteRepository,
                                                      this);
         workdayPageModel->setErrorHandler(errorHandler());
         return workdayPageModel;
@@ -119,9 +118,7 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
         auto contextPageModel = new ContextPageModel(context,
                                                      m_contextQueries,
                                                      m_contextRepository,
-                                                     m_taskQueries,
                                                      m_taskRepository,
-                                                     m_noteRepository,
                                                      this);
         contextPageModel->setErrorHandler(errorHandler());
         return contextPageModel;

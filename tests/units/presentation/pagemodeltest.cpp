@@ -32,16 +32,13 @@ class FakePageModel : public Presentation::PageModel
     Q_OBJECT
 public:
     explicit FakePageModel(QObject *parent = Q_NULLPTR)
-        : Presentation::PageModel(Domain::TaskQueries::Ptr(),
-                                  Domain::TaskRepository::Ptr(),
-                                  Domain::NoteRepository::Ptr(),
-                                  parent),
+        : Presentation::PageModel(parent),
           createCount(0),
           itemModel(Q_NULLPTR)
     {
     }
 
-    Domain::Artifact::Ptr addItem(const QString &) { return Domain::Task::Ptr::create(); }
+    Domain::Artifact::Ptr addItem(const QString &) { return Domain::Artifact::Ptr::create(); }
     void removeItem(const QModelIndex &) {}
 
 private:

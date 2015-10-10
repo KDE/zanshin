@@ -28,6 +28,9 @@
 #include "presentation/pagemodel.h"
 
 #include "domain/artifactqueries.h"
+#include "domain/noterepository.h"
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
 
 namespace Presentation {
 
@@ -48,6 +51,9 @@ private:
     QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
 
     Domain::ArtifactQueries::Ptr m_artifactQueries;
+    Domain::NoteRepository::Ptr m_noteRepository;
+    Domain::TaskQueries::Ptr m_taskQueries;
+    Domain::TaskRepository::Ptr m_taskRepository;
 };
 
 }

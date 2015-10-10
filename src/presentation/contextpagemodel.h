@@ -29,6 +29,7 @@
 
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
+#include "domain/taskrepository.h"
 
 namespace Presentation {
 
@@ -39,9 +40,7 @@ public:
     explicit ContextPageModel(const Domain::Context::Ptr &context,
                               const Domain::ContextQueries::Ptr &contextQueries,
                               const Domain::ContextRepository::Ptr &contextRepository,
-                              const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
-                              const Domain::NoteRepository::Ptr &noteRepository,
                               QObject *parent = Q_NULLPTR);
 
     Domain::Context::Ptr context() const;
@@ -55,6 +54,7 @@ private:
     Domain::Context::Ptr m_context;
     Domain::ContextQueries::Ptr m_contextQueries;
     Domain::ContextRepository::Ptr m_contextRepository;
+    Domain::TaskRepository::Ptr m_taskRepository;
 };
 
 }

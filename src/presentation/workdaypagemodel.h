@@ -27,6 +27,9 @@
 
 #include "presentation/pagemodel.h"
 
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
+
 namespace Presentation {
 
 class WorkdayPageModel : public PageModel
@@ -35,7 +38,6 @@ class WorkdayPageModel : public PageModel
 public:
     explicit WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
-                              const Domain::NoteRepository::Ptr &noteRepository,
                               QObject *parent = Q_NULLPTR);
 
     Domain::Artifact::Ptr addItem(const QString &title) Q_DECL_OVERRIDE;
@@ -43,6 +45,9 @@ public:
 
 private:
     QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
+
+    Domain::TaskQueries::Ptr m_taskQueries;
+    Domain::TaskRepository::Ptr m_taskRepository;
 };
 
 }

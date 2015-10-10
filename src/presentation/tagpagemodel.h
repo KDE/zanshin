@@ -28,9 +28,12 @@
 
 #include "presentation/pagemodel.h"
 
+#include "domain/noterepository.h"
 #include "domain/tagqueries.h"
 #include "domain/tagrepository.h"
 #include "domain/tag.h"
+#include "domain/taskqueries.h"
+#include "domain/taskrepository.h"
 
 namespace Presentation {
 
@@ -57,6 +60,9 @@ private:
     Domain::Tag::Ptr m_tag;
     Domain::TagQueries::Ptr m_tagQueries;
     Domain::TagRepository::Ptr m_tagRepository;
+    Domain::TaskQueries::Ptr m_taskQueries;
+    Domain::TaskRepository::Ptr m_taskRepository;
+    Domain::NoteRepository::Ptr m_noteRepository;
 };
 
 }
