@@ -24,7 +24,7 @@
 #ifndef DOMAIN_TAGREPOSITORY_H
 #define DOMAIN_TAGREPOSITORY_H
 
-#include "artifact.h"
+#include "note.h"
 #include "tag.h"
 
 class KJob;
@@ -44,6 +44,7 @@ public:
 
     virtual KJob *associate(Tag::Ptr parent, Artifact::Ptr child) = 0;
     virtual KJob *dissociate(Tag::Ptr parent, Artifact::Ptr child) = 0;
+    virtual KJob *dissociateAll(Note::Ptr child) = 0;
 };
 
 }

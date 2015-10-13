@@ -241,6 +241,63 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
     }
+
+    void shouldDissociateNoteFromAllTags_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<Domain::Note::Ptr>("note");
+        QTest::addColumn<Testlib::AkonadiFakeItemFetchJob*>("itemFetchJob");
+        QTest::addColumn<bool>("execJob");
+
+        Akonadi::Item item(42);
+        auto note = Domain::Note::Ptr::create();
+
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item);
+        QTest::newRow("nominal case") << item << note << itemFetchJob << true;
+
+        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
+        itemFetchJob->setExpectedError(KJob::KilledJobError);
+        QTest::newRow("task job error, cannot find task") << item << note << itemFetchJob << false;
+    }
+
+    void shouldDissociateNoteFromAllTags()
+    {
+        QFETCH(Akonadi::Item,item);
+        QFETCH(Domain::Note::Ptr, note);
+        QFETCH(Testlib::AkonadiFakeItemFetchJob*,itemFetchJob);
+        QFETCH(bool,execJob);
+
+        // A mock update job
+        auto itemModifyJob = new FakeJob(this);
+
+        // Storage mock returning the create job
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
+                                                          .thenReturn(itemFetchJob);
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
+                                                           .thenReturn(itemModifyJob);
+
+        // Serializer mock returning the item for the task
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note)
+                                                                         .thenReturn(item);
+
+        // WHEN
+        QScopedPointer<Akonadi::TagRepository> repository(new Akonadi::TagRepository(storageMock.getInstance(),
+                                                                                     serializerMock.getInstance()));
+
+        auto dissociateJob = repository->dissociateAll(note);
+
+        if (execJob)
+            dissociateJob->exec();
+
+        // THEN
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
+        if (execJob) {
+            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+        }
+    }
 };
 
 QTEST_MAIN(AkonadiTagRepositoryTest)

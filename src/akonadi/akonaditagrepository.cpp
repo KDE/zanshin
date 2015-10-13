@@ -112,3 +112,28 @@ KJob *TagRepository::dissociate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr c
 
     return job;
 }
+
+KJob *TagRepository::dissociateAll(Domain::Note::Ptr child)
+{
+    Item childItem;
+
+    childItem = m_serializer->createItemFromNote(child);
+    Q_ASSERT(childItem.isValid());
+    auto job = new Utils::CompositeJob();
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
+        if (fetchItemJob->kjob()->error() != KJob::NoError)
+            return;
+
+        Q_ASSERT(fetchItemJob->items().size() == 1);
+        auto childItem = fetchItemJob->items().first();
+        foreach (const Tag &tag, childItem.tags())
+            childItem.clearTag(tag);
+
+        auto updateJob = m_storage->updateItem(childItem);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+
+    return job;
+}
