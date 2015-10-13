@@ -134,7 +134,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
 
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
-            const auto job = m_noteRepository->save(note);
+            const auto job = m_noteRepository->update(note);
             installHandler(job, tr("Cannot modify note %1 in project %2").arg(currentTitle).arg(m_project->name()));
             return true;
 

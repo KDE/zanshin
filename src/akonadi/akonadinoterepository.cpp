@@ -26,10 +26,14 @@
 
 #include <Akonadi/Item>
 
+#include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
 #include "akonadistoragesettings.h"
 
+#include "utils/compositejob.h"
+
 using namespace Akonadi;
+using namespace Utils;
 
 NoteRepository::NoteRepository(const StorageInterface::Ptr &storage,
                                const SerializerInterface::Ptr &serializer)
@@ -51,15 +55,43 @@ void NoteRepository::setDefaultSource(Domain::DataSource::Ptr source)
     StorageSettings::instance().setDefaultNoteCollection(collection);
 }
 
-KJob *NoteRepository::save(Domain::Note::Ptr note)
+KJob *NoteRepository::create(Domain::Note::Ptr note)
 {
     auto item = m_serializer->createItemFromNote(note);
+    Q_ASSERT(!item.isValid());
 
-    if (item.isValid()) {
-        return m_storage->updateItem(item);
+    const Akonadi::Collection defaultCollection = m_storage->defaultNoteCollection();
+    if (defaultCollection.isValid()) {
+        return m_storage->createItem(item, defaultCollection);
     } else {
-        return m_storage->createItem(item, m_storage->defaultNoteCollection());
+        auto job = new CompositeJob();
+        CollectionFetchJobInterface *fetchCollectionJob = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                                                      StorageInterface::Recursive,
+                                                                                      StorageInterface::Notes);
+        job->install(fetchCollectionJob->kjob(), [fetchCollectionJob, item, job, this] {
+            if (fetchCollectionJob->kjob()->error() != KJob::NoError)
+                return;
+
+            Q_ASSERT(fetchCollectionJob->collections().size() > 0);
+            const Akonadi::Collection::List collections = fetchCollectionJob->collections();
+            Akonadi::Collection col = *std::find_if(collections.constBegin(), collections.constEnd(),
+                                                    [] (const Akonadi::Collection &c) {
+                return c.rights() == Akonadi::Collection::AllRights;
+            });
+            Q_ASSERT(col.isValid());
+            auto createJob = m_storage->createItem(item, col);
+            job->addSubjob(createJob);
+            createJob->start();
+        });
+        return job;
     }
+}
+
+KJob *NoteRepository::update(Domain::Note::Ptr note)
+{
+    auto item = m_serializer->createItemFromNote(note);
+    Q_ASSERT(item.isValid());
+    return m_storage->updateItem(item);
 }
 
 KJob *NoteRepository::remove(Domain::Note::Ptr note)

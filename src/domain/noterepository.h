@@ -42,7 +42,8 @@ public:
     virtual bool isDefaultSource(DataSource::Ptr source) const = 0;
     virtual void setDefaultSource(DataSource::Ptr source) = 0;
 
-    virtual KJob *save(Note::Ptr note) = 0;
+    virtual KJob *create(Note::Ptr task) = 0;
+    virtual KJob *update(Note::Ptr note) = 0;
     virtual KJob *remove(Note::Ptr note) = 0;
 };
 

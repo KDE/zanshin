@@ -133,16 +133,16 @@ private slots:
     }
 
 
-    void shouldCreateNewItemsOnSave()
+    void shouldCreateNewItems()
     {
         // GIVEN
 
         // A default collection for saving
-        Akonadi::Collection col(42);
+        auto col = Akonadi::Collection(42);
 
         // A note and its corresponding item not existing in storage yet
-        Akonadi::Item item;
-        Domain::Note::Ptr note(new Domain::Note);
+        auto item = Akonadi::Item();
+        auto note = Domain::Note::Ptr::create();
 
         // A mock create job
         auto itemCreateJob = new FakeJob(this);
@@ -160,7 +160,7 @@ private slots:
         // WHEN
         QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
                                                                                        serializerMock.getInstance()));
-        repository->save(note)->exec();
+        repository->create(note)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).exactly(1));
@@ -168,16 +168,60 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col).exactly(1));
     }
 
-    void shouldUpdateExistingItemsOnSave()
+    void shouldCreateNewItemsInFirstWritableCollectionIfNothingInSettings()
+    {
+        // GIVEN
+
+        // A few collections
+        auto col1 = Akonadi::Collection(42);
+        col1.setRights(Akonadi::Collection::ReadOnly);
+        auto col2 = Akonadi::Collection(43);
+        auto col3 = Akonadi::Collection(44);
+        auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob;
+        collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
+
+        // A note and its corresponding item not existing in storage yet
+        auto item = Akonadi::Item();
+        auto note = Domain::Note::Ptr::create();
+
+        // A mock create job
+        auto itemCreateJob = new FakeJob(this);
+
+        // Storage mock returning the create job and with no default collection
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::defaultNoteCollection).when().thenReturn(Akonadi::Collection());
+        storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
+                                                                       Akonadi::StorageInterface::Recursive,
+                                                                       Akonadi::StorageInterface::Notes)
+                                                                 .thenReturn(collectionFetchJob);
+        storageMock(&Akonadi::StorageInterface::createItem).when(item, col2)
+                                                           .thenReturn(itemCreateJob);
+
+        // Serializer mock returning the item for the note
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).thenReturn(item);
+
+        // WHEN
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
+        repository->create(note)->exec();
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultNoteCollection).when().exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col2).exactly(1));
+    }
+
+    void shouldUpdateExistingItems()
     {
         // GIVEN
 
         // A default collection for saving
-        Akonadi::Collection col(42);
+        auto col = Akonadi::Collection(42);
 
         // A note and its corresponding item already existing in storage
-        Akonadi::Item item(42);
-        Domain::Note::Ptr note(new Domain::Note);
+        auto item = Akonadi::Item(42);
+        auto note = Domain::Note::Ptr::create();
 
         // A mock create job
         auto itemModifyJob = new FakeJob(this);
@@ -187,14 +231,14 @@ private slots:
         storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
                                                            .thenReturn(itemModifyJob);
 
-        // Serializer mock returning the item for the note
+        // Serializer mock returning the item for the task
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).thenReturn(item);
 
         // WHEN
         QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
                                                                                        serializerMock.getInstance()));
-        repository->save(note)->exec();
+        repository->update(note)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).exactly(1));

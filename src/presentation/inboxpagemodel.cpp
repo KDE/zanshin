@@ -127,7 +127,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
 
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
-            const auto job = m_noteRepository->save(note);
+            const auto job = m_noteRepository->update(note);
             installHandler(job, tr("Cannot modify note %1 in Inbox").arg(currentTitle));
             return true;
 

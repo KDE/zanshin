@@ -293,7 +293,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
+        noteRepositoryMock(&Domain::NoteRepository::update).when(note).thenReturn(new FakeJob(this));
 
         Presentation::ArtifactEditorModel model(taskRepositoryMock.getInstance(),
                                                 noteRepositoryMock.getInstance());
@@ -309,7 +309,7 @@ private slots:
         QCOMPARE(model.property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(0));
-        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(0));
+        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note).exactly(0));
 
         // WHEN (apply after delay)
         QTest::qWait(model.autoSaveDelay() + 50);
@@ -319,7 +319,7 @@ private slots:
         if (task) {
             QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
-            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
+            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note).exactly(1));
         }
     }
 
@@ -342,7 +342,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
+        noteRepositoryMock(&Domain::NoteRepository::update).when(note).thenReturn(new FakeJob(this));
 
         Presentation::ArtifactEditorModel model(taskRepositoryMock.getInstance(),
                                                 noteRepositoryMock.getInstance());
@@ -358,7 +358,7 @@ private slots:
         QCOMPARE(model.property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(0));
-        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(0));
+        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note).exactly(0));
 
         // WHEN (apply immediately)
         model.setArtifact(Domain::Task::Ptr::create());
@@ -368,7 +368,7 @@ private slots:
         if (task) {
             QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
-            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
+            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note).exactly(1));
         }
 
         // WHEN (nothing else happens after a delay)
@@ -379,7 +379,7 @@ private slots:
         if (task) {
             QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
-            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
+            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note).exactly(1));
         }
     }
 
@@ -402,7 +402,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(new FakeJob(this));
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(new FakeJob(this));
+        noteRepositoryMock(&Domain::NoteRepository::update).when(note).thenReturn(new FakeJob(this));
 
         auto model = new Presentation::ArtifactEditorModel(taskRepositoryMock.getInstance(),
                                                            noteRepositoryMock.getInstance());
@@ -418,7 +418,7 @@ private slots:
         QCOMPARE(model->property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(0));
-        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(0));
+        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note).exactly(0));
 
         // WHEN (apply immediately)
         delete model;
@@ -428,7 +428,7 @@ private slots:
         if (task) {
             QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task).exactly(1));
         } else {
-            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(note).exactly(1));
+            QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note).exactly(1));
         }
     }
 
@@ -488,7 +488,7 @@ private slots:
         job->setExpectedError(KJob::KilledJobError, "Foo");
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        noteRepositoryMock(&Domain::NoteRepository::save).when(note).thenReturn(job);
+        noteRepositoryMock(&Domain::NoteRepository::update).when(note).thenReturn(job);
 
         auto model = new Presentation::ArtifactEditorModel(taskRepositoryMock.getInstance(),
                                                            noteRepositoryMock.getInstance());

@@ -128,7 +128,7 @@ private slots:
         // WHEN
         taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).thenReturn(new FakeJob(this));
-        noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).thenReturn(new FakeJob(this));
+        noteRepositoryMock(&Domain::NoteRepository::update).when(rootNote).thenReturn(new FakeJob(this));
 
         QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
         QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
@@ -141,7 +141,7 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).exactly(2));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).exactly(2));
-        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).exactly(1));
+        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(rootNote).exactly(1));
 
         QCOMPARE(rootTask->title(), QString("newRootTask"));
         QCOMPARE(rootNote->title(), QString("newRootNote"));
@@ -456,7 +456,7 @@ private slots:
         // WHEN
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, "Foo");
-        noteRepositoryMock(&Domain::NoteRepository::save).when(rootNote).thenReturn(job);
+        noteRepositoryMock(&Domain::NoteRepository::update).when(rootNote).thenReturn(job);
         
         QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
         

@@ -45,7 +45,8 @@ public:
     bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
     void setDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
 
-    KJob *save(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
+    KJob *create(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
+    KJob *update(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
     KJob *remove(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
 
 private:
