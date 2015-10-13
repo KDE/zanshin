@@ -2,9 +2,10 @@ zanshin_auto_tests(
   applicationmodeltest
   artifacteditormodeltest
   artifactfilterproxymodeltest
-  availabletaskpagesmodeltest
+  availablenotepagesmodeltest
   availablepagessortfilterproxymodeltest
   availablesourcesmodeltest
+  availabletaskpagesmodeltest
   errorhandlertest
   errorhandlingmodelbasetest
   inboxpagemodeltest
