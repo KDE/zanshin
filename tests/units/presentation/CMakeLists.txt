@@ -10,6 +10,7 @@ zanshin_auto_tests(
   errorhandlingmodelbasetest
   inboxpagemodeltest
   metatypestest
+  noteapplicationmodeltest
   noteinboxpagemodeltest
   pagemodeltest
   projectpagemodeltest

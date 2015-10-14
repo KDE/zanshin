@@ -13,6 +13,7 @@ set(presentation_SRCS
     errorhandlingmodelbase.cpp
     inboxpagemodel.cpp
     metatypes.cpp
+    noteapplicationmodel.cpp
     noteinboxpagemodel.cpp
     pagemodel.cpp
     projectpagemodel.cpp
