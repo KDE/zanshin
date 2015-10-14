@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 
 set(steps_SRCS
     main.cpp
+    ../../../cuke-steps.cpp
     ${CMAKE_SOURCE_DIR}/src/zanshin/app/dependencies.cpp
 )
 
