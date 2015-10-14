@@ -2,6 +2,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # frontends
 add_subdirectory(zanshin)
+add_subdirectory(renku)
 
 # modules
 add_subdirectory(akonadi)

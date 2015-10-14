@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Categories=Qt;KDE;Utility;X-KDE-Utilities-PIM;
+Exec=renku
+Name=Renku
+Icon=knotes
+GenericName=Note Taking Application

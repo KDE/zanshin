@@ -2,8 +2,9 @@ find_package(Boost "1.40" COMPONENTS system regex unit_test_framework)
 if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
 
     add_subdirectory(zanshin)
+    add_subdirectory(renku)
 
     include(CucumberTests.cmake)
-    cucumber_tests(zanshin)
+    cucumber_tests(zanshin renku)
 
 endif()

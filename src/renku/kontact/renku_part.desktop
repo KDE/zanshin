@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Renku Part
+X-KDE-ServiceTypes=KParts/ReadOnlyPart
+X-KDE-Library=renku_part
+Type=Service
+Icon=knotes
+
