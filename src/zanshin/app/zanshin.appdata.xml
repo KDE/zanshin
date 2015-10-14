@@ -36,7 +36,7 @@
   <summary xml:lang="x-test">xxTODO Management Applicationxx</summary>
   <description>
     <p>
-      Zanshin is a powerful yet simple application for managing your day to day actions and notes.
+      Zanshin is a powerful yet simple application for managing your day to day actions.
       It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life.
       You'll never forget anything anymore, getting your mind like water.
     </p>
@@ -71,7 +71,7 @@
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
-      <li>Collects tasks and notes from everywhere</li>
+      <li>Collects tasks from everywhere</li>
       <li xml:lang="bs">Sakuplja zadatke i bilješke od svuda</li>
       <li xml:lang="ca">Recull les tasques i les notes de tot arreu</li>
       <li xml:lang="de">Sammelt Aufgaben und Notizen von überall</li>
@@ -86,7 +86,7 @@
       <li xml:lang="sv">Samla in uppgifter och anteckningar från alla möjliga ställen</li>
       <li xml:lang="uk">Збирання різноманітних записів завдань і нотаток.</li>
       <li xml:lang="x-test">xxCollects tasks and notes from everywherexx</li>
-      <li>Organize tasks and notes in projects, contexts and topics</li>
+      <li>Organize tasks in projects and contexts</li>
       <li xml:lang="bs">Organizira zadatke i bilješke u projekte, kontekste i teme</li>
       <li xml:lang="ca">Organitza les tasques i les notes en projectes, contextos i temes</li>
       <li xml:lang="de">Organisation von Aufgaben und Notizen in Projekten, Kontexten und Themen</li>
