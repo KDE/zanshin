@@ -40,6 +40,7 @@
       It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life.
       You'll never forget anything anymore, getting your mind like water.
     </p>
+    <p xml:lang="es">Zanshin es una potente y sencilla aplicación para gestionar sus acciones diarias. Le ayuda a organizar y reducir la presión cognitiva de lo que debe hacer en su trabajo y en su vida personal. Nunca más volverá a olvidarse de nada, teniendo una mente clara como el agua.</p>
     <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer iets vergeten, uw geheugen is geen zeef meer.</p>
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
     <p xml:lang="pt-BR">Zanshin é um aplicativo simples e poderoso, para gerenciar suas ações do dia a dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem que fazer na sua vida pessoal e profissional. Você nunca mais esquecerá de nada, mantendo sua mente limpa.</p>
@@ -65,6 +66,7 @@
     <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
       <li>Collects tasks from everywhere</li>
+      <li xml:lang="es">Colecciona tareas de cualquier lugar</li>
       <li xml:lang="nl">Verzamelt notities overal vandaan</li>
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
       <li xml:lang="pt-BR">Coleta tarefas de qualquer lugar</li>
@@ -72,6 +74,7 @@
       <li xml:lang="uk">Збирання різноманітних записів завдань.</li>
       <li xml:lang="x-test">xxCollects tasks from everywherexx</li>
       <li>Organize tasks in projects and contexts</li>
+      <li xml:lang="es">Organizar tareas en proyectos y contextos</li>
       <li xml:lang="nl">Organiseert taken in projecten en contexten</li>
       <li xml:lang="pt">Organiza as tarefas e notas em projectos e contextos</li>
       <li xml:lang="pt-BR">Organiza as tarefas em projetos e contextos</li>
