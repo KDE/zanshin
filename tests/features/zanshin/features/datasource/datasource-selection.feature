@@ -47,9 +47,6 @@ Feature: Data sources selection
        | Contexts / Chores                 |
        | Contexts / Internet               |
        | Contexts / Online                 |
-       | Tags                              |
-       | Tags / Philosophy                 |
-       | Tags / Physics                    |
 
   Scenario: Checking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources
@@ -68,6 +65,3 @@ Feature: Data sources selection
        | Contexts / Chores                 |
        | Contexts / Internet               |
        | Contexts / Online                 |
-       | Tags                              |
-       | Tags / Philosophy                 |
-       | Tags / Physics                    |

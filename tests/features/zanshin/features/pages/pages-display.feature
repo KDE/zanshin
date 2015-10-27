@@ -18,7 +18,4 @@ Feature: Available pages content
        | Contexts / Chores                 | view-pim-tasks      |
        | Contexts / Internet               | view-pim-tasks      |
        | Contexts / Online                 | view-pim-tasks      |
-       | Tags                              | folder              |
-       | Tags / Philosophy                 | view-pim-tasks      |
-       | Tags / Physics                    | view-pim-tasks      |
 

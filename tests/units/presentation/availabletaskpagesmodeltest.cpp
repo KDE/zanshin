@@ -31,9 +31,6 @@
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/note.h"
-#include "domain/tag.h"
-#include "domain/tagqueries.h"
-#include "domain/tagrepository.h"
 #include "domain/task.h"
 #include "domain/taskrepository.h"
 
@@ -89,13 +86,6 @@ private slots:
         contextProvider->append(context1);
         contextProvider->append(context2);
 
-        // One Tag
-        auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("Tag 1");
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-        tagProvider->append(tag1);
-
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
         Domain::Artifact::Ptr noteToDrop(new Domain::Note);
@@ -111,11 +101,6 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -123,9 +108,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance());
+                                                    Domain::NoteRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -139,10 +122,8 @@ private slots:
         const QModelIndex contextsIndex = model->index(3, 0);
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
         const QModelIndex context2Index = model->index(1, 0, contextsIndex);
-        const QModelIndex tagsIndex = model->index(4, 0);
-        const QModelIndex tag1Index = model->index(0, 0, tagsIndex);
 
-        QCOMPARE(model->rowCount(), 5);
+        QCOMPARE(model->rowCount(), 4);
         QCOMPARE(model->rowCount(inboxIndex), 0);
         QCOMPARE(model->rowCount(workdayIndex), 0);
         QCOMPARE(model->rowCount(projectsIndex), 2);
@@ -151,8 +132,6 @@ private slots:
         QCOMPARE(model->rowCount(contextsIndex), 2);
         QCOMPARE(model->rowCount(context1Index), 0);
         QCOMPARE(model->rowCount(context2Index), 0);
-        QCOMPARE(model->rowCount(tagsIndex), 1);
-        QCOMPARE(model->rowCount(tag1Index), 0);
 
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
@@ -165,8 +144,6 @@ private slots:
         QCOMPARE(model->flags(contextsIndex), Qt::NoItemFlags);
         QCOMPARE(model->flags(context1Index), defaultFlags | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(context2Index), defaultFlags | Qt::ItemIsDropEnabled);
-        QCOMPARE(model->flags(tagsIndex), Qt::NoItemFlags);
-        QCOMPARE(model->flags(tag1Index), defaultFlags | Qt::ItemIsDropEnabled);
 
         QCOMPARE(model->data(inboxIndex).toString(), tr("Inbox"));
         QCOMPARE(model->data(workdayIndex).toString(), tr("Workday"));
@@ -176,8 +153,6 @@ private slots:
         QCOMPARE(model->data(contextsIndex).toString(), tr("Contexts"));
         QCOMPARE(model->data(context1Index).toString(), context1->name());
         QCOMPARE(model->data(context2Index).toString(), context2->name());
-        QCOMPARE(model->data(tagsIndex).toString(), tr("Tags"));
-        QCOMPARE(model->data(tag1Index).toString(), tag1->name());
 
         QVERIFY(!model->data(inboxIndex, Qt::EditRole).isValid());
         QVERIFY(!model->data(workdayIndex, Qt::EditRole).isValid());
@@ -187,8 +162,6 @@ private slots:
         QVERIFY(!model->data(contextsIndex, Qt::EditRole).isValid());
         QCOMPARE(model->data(context1Index, Qt::EditRole).toString(), context1->name());
         QCOMPARE(model->data(context2Index, Qt::EditRole).toString(), context2->name());
-        QVERIFY(!model->data(tagsIndex, Qt::EditRole).isValid());
-        QCOMPARE(model->data(tag1Index, Qt::EditRole).toString(), tag1->name());
 
         QCOMPARE(model->data(inboxIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("mail-folder-inbox"));
         QCOMPARE(model->data(workdayIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("go-jump-today"));
@@ -198,8 +171,6 @@ private slots:
         QCOMPARE(model->data(contextsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
         QCOMPARE(model->data(context1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
         QCOMPARE(model->data(context2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
-        QCOMPARE(model->data(tagsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(tag1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
 
         QVERIFY(!model->data(inboxIndex, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(workdayIndex, Qt::CheckStateRole).isValid());
@@ -209,8 +180,6 @@ private slots:
         QVERIFY(!model->data(contextsIndex, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(context1Index, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(context2Index, Qt::CheckStateRole).isValid());
-        QVERIFY(!model->data(tagsIndex, Qt::CheckStateRole).isValid());
-        QVERIFY(!model->data(tag1Index, Qt::CheckStateRole).isValid());
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).thenReturn(new FakeJob(this));
@@ -225,8 +194,6 @@ private slots:
         QVERIFY(!model->setData(contextsIndex, "Foo"));
         QVERIFY(model->setData(context1Index, "New Context 1"));
         QVERIFY(model->setData(context2Index, "New Context 2"));
-        QVERIFY(!model->setData(tagsIndex, "Foo"));
-        QVERIFY(!model->setData(tag1Index, "New Tag 1"));
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).exactly(1));
@@ -258,16 +225,6 @@ private slots:
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop.objectCast<Domain::Task>()).exactly(1));
-
-        // WHEN a task is dropped on a context
-        tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, taskToDrop).thenReturn(new FakeJob(this));
-        data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
-
-        // THEN
-        QVERIFY(tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, taskToDrop).exactly(1));
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
@@ -367,9 +324,6 @@ private slots:
         // Empty context provider
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
 
         // context mocking
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
@@ -383,9 +337,6 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -393,9 +344,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -417,9 +366,6 @@ private slots:
         // Empty context provider
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
 
         // context mocking
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
@@ -433,9 +379,6 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -443,9 +386,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -475,10 +416,6 @@ private slots:
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
 
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         // projects mocking
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
@@ -489,10 +426,6 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        // tags mocking
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -500,9 +433,7 @@ private slots:
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -541,10 +472,6 @@ private slots:
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
 
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         // contexts mocking
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
@@ -557,10 +484,6 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        // tags mocking
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
 
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
@@ -569,9 +492,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -610,9 +531,7 @@ private slots:
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    Domain::TagQueries::Ptr(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         // WHEN
         pages.addProject("Foo", source);
@@ -644,9 +563,7 @@ private slots:
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    Domain::TagQueries::Ptr(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -673,9 +590,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    Domain::TagQueries::Ptr(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         // WHEN
         pages.addContext("Foo");
@@ -702,9 +617,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    Domain::TagQueries::Ptr(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -714,64 +627,6 @@ private slots:
         // THEN
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot add context Foo: Foo"));
-    }
-
-    void shouldAddTags()
-    {
-        // GIVEN
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-        tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
-                                                                 .thenReturn(new FakeJob(this));
-
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    Domain::ProjectQueries::Ptr(),
-                                                    Domain::ProjectRepository::Ptr(),
-                                                    Domain::ContextQueries::Ptr(),
-                                                    Domain::ContextRepository::Ptr(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    Domain::TagQueries::Ptr(),
-                                                    tagRepositoryMock.getInstance());
-
-        // WHEN
-        pages.addTag("Foo");
-
-        // THEN
-        QVERIFY(tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
-                                                                       .exactly(1));
-    }
-
-    void shouldGetAnErrorMessageWhenAddTagFailed()
-    {
-        // GIVEN
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-        auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
-        tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
-                                                                 .thenReturn(job);
-
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    Domain::ProjectQueries::Ptr(),
-                                                    Domain::ProjectRepository::Ptr(),
-                                                    Domain::ContextQueries::Ptr(),
-                                                    Domain::ContextRepository::Ptr(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    Domain::TagQueries::Ptr(),
-                                                    tagRepositoryMock.getInstance());
-        FakeErrorHandler errorHandler;
-        pages.setErrorHandler(&errorHandler);
-
-        // WHEN
-        pages.addTag("Foo");
-
-        // THEN
-        QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add tag Foo: Foo"));
     }
 
     void shouldRemoveProject()
@@ -792,10 +647,6 @@ private slots:
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
 
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
@@ -804,9 +655,6 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -814,9 +662,7 @@ private slots:
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 
@@ -850,10 +696,6 @@ private slots:
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
 
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
@@ -862,9 +704,6 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -872,9 +711,7 @@ private slots:
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -913,18 +750,11 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
         // projects mocking
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
-
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
 
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
@@ -934,9 +764,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 
@@ -970,18 +798,11 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        // Empty tag provider
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
         // projects mocking
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
-
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
 
 
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
@@ -991,9 +812,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -1012,132 +831,6 @@ private slots:
         // THEN
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot remove context context 1: Foo"));
-    }
-
-    void shouldRemoveTag()
-    {
-        // GIVEN
-
-        // context provider
-        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
-        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
-        // empty projects
-        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
-        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
-
-        // contexts mocking
-        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
-        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
-
-        // one tag
-        auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("tag 1");
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-        tagProvider->append(tag1);
-
-        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
-
-        // projects mocking
-        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
-
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
-                                                    Domain::ProjectRepository::Ptr(),
-                                                    contextQueriesMock.getInstance(),
-                                                    contextRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance());
-        FakeErrorHandler errorHandler;
-        pages.setErrorHandler(&errorHandler);
-
-        QAbstractItemModel *model = pages.pageListModel();
-
-        const QModelIndex tagsIndex = model->index(4, 0);
-        const QModelIndex tag1Index = model->index(0, 0, tagsIndex);
-
-        auto job = new FakeJob(this);
-        tagRepositoryMock(&Domain::TagRepository::remove).when(tag1).thenReturn(job);
-
-        // WHEN
-        pages.removeItem(tag1Index);
-
-        // THEN
-        QTest::qWait(150);
-        QVERIFY(errorHandler.m_message.isEmpty());
-        QVERIFY(tagRepositoryMock(&Domain::TagRepository::remove).when(tag1).exactly(1));
-    }
-
-    void shouldGetAnErrorMessageWhenRemoveTagFailed()
-    {
-        // GIVEN
-
-        // context provider
-        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
-        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
-        // empty projects
-        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
-        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
-
-        // contexts mocking
-        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
-        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
-
-        // one tag
-        auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("tag 1");
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-        tagProvider->append(tag1);
-
-        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
-
-        // projects mocking
-        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
-
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
-                                                    Domain::ProjectRepository::Ptr(),
-                                                    contextQueriesMock.getInstance(),
-                                                    contextRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance());
-        FakeErrorHandler errorHandler;
-        pages.setErrorHandler(&errorHandler);
-
-        QAbstractItemModel *model = pages.pageListModel();
-
-        const QModelIndex tagsIndex = model->index(4, 0);
-        const QModelIndex tag1Index = model->index(0, 0, tagsIndex);
-
-        auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
-        tagRepositoryMock(&Domain::TagRepository::remove).when(tag1).thenReturn(job);
-
-        // WHEN
-        pages.removeItem(tag1Index);
-
-        // THEN
-        QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot remove tag tag 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUpdateProjectFailed()
@@ -1164,10 +857,6 @@ private slots:
         contextProvider->append(context1);
         contextProvider->append(context2);
 
-        // No Tags
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
         Domain::Artifact::Ptr noteToDrop(new Domain::Note);
@@ -1183,9 +872,6 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -1193,9 +879,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1239,10 +923,6 @@ private slots:
         contextProvider->append(context1);
         contextProvider->append(context2);
 
-        // No Tags
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
         Domain::Artifact::Ptr noteToDrop(new Domain::Note);
@@ -1258,9 +938,6 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -1268,9 +945,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1314,10 +989,6 @@ private slots:
         contextProvider->append(context1);
         contextProvider->append(context2);
 
-        // No Tags
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
         taskToDrop->setTitle("taskDropped");
@@ -1334,9 +1005,6 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -1344,9 +1012,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1392,14 +1058,9 @@ private slots:
         contextProvider->append(context1);
         contextProvider->append(context2);
 
-        // No Tags
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
         taskToDrop->setTitle("taskDropped");
-        Domain::Artifact::Ptr noteToDrop(new Domain::Note);
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
@@ -1412,9 +1073,6 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -1422,9 +1080,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr());
+                                                    Domain::NoteRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1446,76 +1102,6 @@ private slots:
         QCOMPARE(errorHandler.m_message, QString("Cannot add taskDropped to context context 1: Foo"));
     }
 
-    void shouldGetAnErrorMessageWhenAssociateTagFailed()
-    {
-        // GIVEN
-
-        // No project
-        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
-        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
-
-        // No context
-        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
-        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
-
-        // one tag
-        auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("Tag 1");
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-        tagProvider->append(tag1);
-
-        // Two artifacts (used for dropping later on)
-        Domain::Artifact::Ptr taskToDrop(new Domain::Task);
-        taskToDrop->setTitle("taskDropped");
-
-        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
-
-        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-
-        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
-        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
-
-        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
-
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
-                                                    projectRepositoryMock.getInstance(),
-                                                    contextQueriesMock.getInstance(),
-                                                    contextRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance());
-
-        FakeErrorHandler errorHandler;
-        pages.setErrorHandler(&errorHandler);
-        QAbstractItemModel *model = pages.pageListModel();
-        const QModelIndex tagsIndex = model->index(4, 0);
-        const QModelIndex tag1Index = model->index(0, 0, tagsIndex);
-
-        // WHEN
-        auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
-        tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, taskToDrop).thenReturn(job);
-        auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
-
-        // THEN
-        QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot tag taskDropped with Tag 1: Foo"));
-    }
-
     void shouldGetAnErrorMessageWhenDissociateFailed()
     {
         // GIVEN
@@ -1528,13 +1114,6 @@ private slots:
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
 
-        // one tag
-        auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("Tag 1");
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-        tagProvider->append(tag1);
-
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
         taskToDrop->setTitle("taskDropped");
@@ -1550,11 +1129,6 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-
         Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
                                                     projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
@@ -1562,9 +1136,7 @@ private slots:
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
                                                     taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance());
+                                                    Domain::NoteRepository::Ptr());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1584,76 +1156,6 @@ private slots:
         // THEN
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot move taskDropped to Inbox: Foo"));
-    }
-
-    void shouldGetAnErrorMessageWhenDissociateTaskFailed()
-    {
-        // GIVEN
-
-        // No project
-        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
-        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
-
-        // No context
-        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
-        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
-
-        // one tag
-        auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("Tag 1");
-        auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
-        auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
-        tagProvider->append(tag1);
-
-        // Two artifacts (used for dropping later on)
-        Domain::Artifact::Ptr taskToDrop(new Domain::Task);
-        taskToDrop->setTitle("taskDropped");
-
-        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
-
-        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-
-        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
-        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
-
-        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
-
-        Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findAll).when().thenReturn(tagResult);
-
-        Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
-
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
-                                                    projectRepositoryMock.getInstance(),
-                                                    contextQueriesMock.getInstance(),
-                                                    contextRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr(),
-                                                    tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance());
-
-        FakeErrorHandler errorHandler;
-        pages.setErrorHandler(&errorHandler);
-        QAbstractItemModel *model = pages.pageListModel();
-        const QModelIndex inboxIndex = model->index(0, 0);
-
-        // WHEN
-        auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
-        projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(job);
-        auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
-
-        // THEN
-        QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot move task taskDropped to Inbox: Foo"));
     }
 };
 

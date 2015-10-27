@@ -31,9 +31,6 @@
 #include "domain/contextrepository.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
-#include "domain/tag.h"
-#include "domain/tagqueries.h"
-#include "domain/tagrepository.h"
 #include "domain/taskrepository.h"
 
 #include "presentation/availablepagessortfilterproxymodel.h"
@@ -42,7 +39,6 @@
 #include "presentation/metatypes.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
-#include "presentation/tagpagemodel.h"
 #include "presentation/workdaypagemodel.h"
 
 #include "utils/jobhandler.h"
@@ -58,8 +54,6 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ArtifactQueries::
                                                  const Domain::TaskQueries::Ptr &taskQueries,
                                                  const Domain::TaskRepository::Ptr &taskRepository,
                                                  const Domain::NoteRepository::Ptr &noteRepository,
-                                                 const Domain::TagQueries::Ptr &tagQueries,
-                                                 const Domain::TagRepository::Ptr &tagRepository,
                                                  QObject *parent)
     : AvailablePagesModelInterface(parent),
       m_pageListModel(Q_NULLPTR),
@@ -71,9 +65,7 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ArtifactQueries::
       m_contextRepository(contextRepository),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository),
-      m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository)
+      m_noteRepository(noteRepository)
 {
 }
 
@@ -122,16 +114,6 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
                                                      this);
         contextPageModel->setErrorHandler(errorHandler());
         return contextPageModel;
-    } else if (auto tag = object.objectCast<Domain::Tag>()) {
-        auto tagPageModel = new TagPageModel(tag,
-                                             m_tagQueries,
-                                             m_tagRepository,
-                                             m_taskQueries,
-                                             m_taskRepository,
-                                             m_noteRepository,
-                                             this);
-        tagPageModel->setErrorHandler(errorHandler());
-        return tagPageModel;
     }
 
     return Q_NULLPTR;
@@ -153,12 +135,9 @@ void AvailableTaskPagesModel::addContext(const QString &name)
     installHandler(job, tr("Cannot add context %1").arg(name));
 }
 
-void AvailableTaskPagesModel::addTag(const QString &name)
+void AvailableTaskPagesModel::addTag(const QString &)
 {
-    auto tag = Domain::Tag::Ptr::create();
-    tag->setName(name);
-    const auto job = m_tagRepository->create(tag);
-    installHandler(job, tr("Cannot add tag %1").arg(name));
+    qFatal("Not supported");
 }
 
 void AvailableTaskPagesModel::removeItem(const QModelIndex &index)
@@ -170,9 +149,6 @@ void AvailableTaskPagesModel::removeItem(const QModelIndex &index)
     } else if (auto context = object.objectCast<Domain::Context>()) {
         const auto job = m_contextRepository->remove(context);
         installHandler(job, tr("Cannot remove context %1").arg(context->name()));
-    } else if (auto tag = object.objectCast<Domain::Tag>()) {
-        const auto job = m_tagRepository->remove(tag);
-        installHandler(job, tr("Cannot remove tag %1").arg(tag->name()));
     } else {
         Q_ASSERT(false);
     }
@@ -188,15 +164,12 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
     m_projectsObject->setProperty("name", tr("Projects"));
     m_contextsObject = QObjectPtr::create();
     m_contextsObject->setProperty("name", tr("Contexts"));
-    m_tagsObject = QObjectPtr::create();
-    m_tagsObject->setProperty("name", tr("Tags"));
 
     m_rootsProvider = Domain::QueryResultProvider<QObjectPtr>::Ptr::create();
     m_rootsProvider->append(m_inboxObject);
     m_rootsProvider->append(m_workdayObject);
     m_rootsProvider->append(m_projectsObject);
     m_rootsProvider->append(m_contextsObject);
-    m_rootsProvider->append(m_tagsObject);
 
     auto query = [this](const QObjectPtr &object) -> Domain::QueryResultInterface<QObjectPtr>::Ptr {
         if (!object)
@@ -205,8 +178,6 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
             return Domain::QueryResult<Domain::Project::Ptr, QObjectPtr>::copy(m_projectQueries->findAll());
         else if (object == m_contextsObject)
             return Domain::QueryResult<Domain::Context::Ptr, QObjectPtr>::copy(m_contextQueries->findAll());
-        else if (object == m_tagsObject)
-            return Domain::QueryResult<Domain::Tag::Ptr, QObjectPtr>::copy(m_tagQueries->findAll());
         else
             return Domain::QueryResult<QObjectPtr>::Ptr();
     };
@@ -223,7 +194,6 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
 
         return object.objectCast<Domain::Project>() ? defaultFlags
              : object.objectCast<Domain::Context>() ? defaultFlags
-             : object.objectCast<Domain::Tag>() ? defaultFlags
              : object == m_inboxObject ? immutableNodeFlags
              : object == m_workdayObject ? immutableNodeFlags
              : structureNodeFlags;
@@ -241,8 +211,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
          && (object == m_inboxObject
           || object == m_workdayObject
           || object == m_projectsObject
-          || object == m_contextsObject
-          || object == m_tagsObject)) {
+          || object == m_contextsObject)) {
             return QVariant();
         }
 
@@ -253,7 +222,6 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
                                    : (object == m_workdayObject)  ? "go-jump-today"
                                    : (object == m_projectsObject) ? "folder"
                                    : (object == m_contextsObject) ? "folder"
-                                   : (object == m_tagsObject)     ? "folder"
                                    : "view-pim-tasks";
 
             if (role == Qt::DecorationRole)
@@ -273,8 +241,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
         if (object == m_inboxObject
          || object == m_workdayObject
          || object == m_projectsObject
-         || object == m_contextsObject
-         || object == m_tagsObject) {
+         || object == m_contextsObject) {
             return false;
         }
 
@@ -288,8 +255,6 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
             context->setName(value.toString());
             const auto job = m_contextRepository->update(context);
             installHandler(job, tr("Cannot modify context %1").arg(currentName));
-        } else if (object.objectCast<Domain::Tag>()) {
-            return false; // Tag renaming is NOT allowed
         } else {
             Q_ASSERT(false);
         }
@@ -322,12 +287,6 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
                 auto task = droppedArtifact.staticCast<Domain::Task>();
                 const auto job = m_contextRepository->associate(context, task);
                 installHandler(job, tr("Cannot add %1 to context %2").arg(task->title()).arg(context->name()));
-            }
-            return true;
-        } else if (auto tag = object.objectCast<Domain::Tag>()) {
-            foreach (const auto &droppedArtifact, droppedArtifacts) {
-                const auto job = m_tagRepository->associate(tag, droppedArtifact);
-                installHandler(job, tr("Cannot tag %1 with %2").arg(droppedArtifact->title()).arg(tag->name()));
             }
             return true;
         } else if (object == m_inboxObject) {

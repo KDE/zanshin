@@ -67,7 +67,5 @@ AvailablePagesModelInterface *TaskApplicationModel::createAvailablePagesModel()
                                        m_taskQueries,
                                        m_taskRepository,
                                        m_noteRepository,
-                                       m_tagQueries,
-                                       m_tagRepository,
                                        this);
 }

@@ -20,7 +20,4 @@ Feature: Context creation
        | Contexts / Errands                | view-pim-tasks      |
        | Contexts / Internet               | view-pim-tasks      |
        | Contexts / Online                 | view-pim-tasks      |
-       | Tags                              | folder              |
-       | Tags / Philosophy                 | view-pim-tasks      |
-       | Tags / Physics                    | view-pim-tasks      |
 

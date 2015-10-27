@@ -18,7 +18,4 @@ Feature: Context removal
        | Projects / Backlog                | view-pim-tasks      |
        | Projects / Prepare talk about TDD | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
-       | Tags                              | folder              |
-       | Tags / Philosophy                 | view-pim-tasks      |
-       | Tags / Physics                    | view-pim-tasks      |
 
