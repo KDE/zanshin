@@ -8,5 +8,5 @@ Feature: Inbox content
     And I look at the central list
     When I list the items
     Then the list is:
-       | display                                       |
-       | 21/04/2014 14:49                              |
+       | display                          |
+       | A note about nothing interesting |

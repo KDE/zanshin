@@ -15,4 +15,4 @@ Feature: Inbox content
        | Buy apples                                    |
        | Buy pears                                     |
        | Buy rutabagas                                 |
-       | 21/04/2014 14:49                              |
+       | A note about nothing interesting              |

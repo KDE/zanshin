@@ -11,7 +11,7 @@ Feature: Data sources selection
     And I list the items
     Then the list is:
        | display                                       |
-       | 21/04/2014 14:49                              |
+       | A note about nothing interesting              |
        | Buy apples                                    |
        | Buy pears                                     |
        | Errands                                       |
@@ -25,7 +25,7 @@ Feature: Data sources selection
     Then the list is:
        | display                                       |
        | "The Pragmatic Programmer" by Hunt and Thomas |
-       | 21/04/2014 14:49                              |
+       | A note about nothing interesting              |
        | Buy cheese                                    |
        | Buy apples                                    |
        | Buy pears                                     |

@@ -18,14 +18,14 @@ Feature: Project task association
 
   Scenario: Dropping a note on a project
     Given I display the "Inbox" page
-    And there is an item named "21/04/2014 14:49" in the central list
+    And there is an item named "A note about nothing interesting" in the central list
     When I drop the item on "Projects / Backlog" in the page list
     And I display the "Projects / Backlog" page
     And I look at the central list
     And I list the items
     Then the list is:
-       | display          |
-       | 21/04/2014 14:49 |
+       | display                          |
+       | A note about nothing interesting |
 
   Scenario: Dropping a task on a project from context central list
     Given I display the "Contexts / Chores" page

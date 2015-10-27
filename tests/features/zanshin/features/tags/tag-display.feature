@@ -8,5 +8,6 @@ Feature: Tag content
     And I look at the central list
     When I list the items
     Then the list is:
-       | display                                                   |
-       |"Capital in the Twenty-First Century" by Thomas Piketty    |
+       | display                                                 |
+       | "Capital in the Twenty-First Century" by Thomas Piketty |
+       | A note about philosophy                                 |

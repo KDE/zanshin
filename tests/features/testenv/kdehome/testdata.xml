@@ -350,7 +350,7 @@ This is an email with a body</payload>
       <collection content="inode/directory,text/x-vnd.akonadi.note" rid="{f5e3f1be-b998-4c56-aa3d-e3a6e7e5493a}" name="Notes">
         <attribute type="AccessRights">a</attribute>
         <item mimetype="text/x-vnd.akonadi.note" rid="{d0159c99-0d23-41fa-bb5f-436570140f8b}">
-          <payload>Subject: 21/03/2014 13:49
+          <payload>Subject: A note about physics
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Date: Fri, 21 Mar 2014 13:49:06 +0100
@@ -360,8 +360,19 @@ MIME-Version: 1.0
 This is a note</payload>
           <tag>physics-tag</tag>
         </item>
+        <item mimetype="text/x-vnd.akonadi.note" rid="{af37b18c-6d2f-4c9d-a268-dc8078951174}">
+          <payload>Subject: A note about philosophy
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 21 Mar 2014 12:49:06 +0100
+From: knotes@kde4
+MIME-Version: 1.0
+
+This is a smart note</payload>
+          <tag>philosophy-tag</tag>
+        </item>
         <item mimetype="text/x-vnd.akonadi.note" rid="{5d9d24a9-d836-438b-898f-04d9d415cba1}">
-          <payload>Subject: 21/04/2014 14:49
+          <payload>Subject: A note about nothing interesting
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Date: Mon, 21 Apr 2014 14:49:06 +0100

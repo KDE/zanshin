@@ -11,7 +11,7 @@ Feature: Tag task association
     And I look at the central list
     And I list the items
     Then the list is:
-       | display          |
-       | 21/03/2014 13:49 |
-       | Buy a cake       |
+       | display              |
+       | A note about physics |
+       | Buy a cake           |
 
