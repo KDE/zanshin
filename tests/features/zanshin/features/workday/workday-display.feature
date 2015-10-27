@@ -8,11 +8,11 @@ Feature: Workday content
     And I look at the central list
     When I list the items
     Then the list is :
-       | display                                                 |
-       | "Clean Code" by Robert C Martin                         |
-       | Buy kiwis                                               |
-       | Buy pears                                               |
-       | Errands                                                 |
-       | Buy apples                                              |
-       | Buy cheese                                              |
-       | "Capital in the Twenty-First Century" by Thomas Piketty |
+       | display                         |
+       | "Clean Code" by Robert C Martin |
+       | Buy kiwis                       |
+       | Buy pears                       |
+       | Errands                         |
+       | Buy apples                      |
+       | Buy cheese                      |
+       | Create Sozi SVG                 |

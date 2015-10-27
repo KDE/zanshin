@@ -1,9 +1,9 @@
 Feature: Tag content
-  As someone collecting tasks and notes
+  As someone collecting notes
   I can display a tag
-  In order to see the tasks and notes associated to it
+  In order to see the notes associated to it
 
-  Scenario: Tag tasks and notes appear in the corresponding page
+  Scenario: Tag notes appear in the corresponding page
     Given I display the "Tags / Philosophy" page
     And I look at the central list
     When I list the items

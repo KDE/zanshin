@@ -9,6 +9,7 @@ Feature: Note creation from a tag
     And I look at the central list
     When I list the items
     Then the list is:
-       | display                    |
-       | A note about physics       |
-       | Studies in fluid mechanics |
+       | display                          |
+       | A note about physics             |
+       | A note about nothing interesting |
+       | Studies in fluid mechanics       |

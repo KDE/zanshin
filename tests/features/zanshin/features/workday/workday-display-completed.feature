@@ -5,9 +5,9 @@ Feature: Display completed tasks in Workday list
 
   Scenario: The tasks that have been done today appear in the Workday list
     Given I display the "Inbox" page
-    And there is an item named ""Capital in the Twenty-First Century" by Thomas Piketty" in the central list
+    And there is an item named "Create Sozi SVG" in the central list
     When I check the item
     And I display the "Workday" page
     And I look at the central list
     And I list the items
-    Then the list contains ""Capital in the Twenty-First Century" by Thomas Piketty"
+    Then the list contains "Create Sozi SVG"
