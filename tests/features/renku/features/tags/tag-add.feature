@@ -1,5 +1,5 @@
 Feature: Tag creation
-  As someone using tasks and notes
+  As someone using notes
   I can create a tag
   In order to give them some semantic
 
@@ -11,15 +11,6 @@ Feature: Tag creation
     Then the list is:
        | display                           | icon                |
        | Inbox                             | mail-folder-inbox   |
-       | Workday                           | go-jump-today       |
-       | Projects                          | folder              |
-       | Projects / Backlog                | view-pim-tasks      |
-       | Projects / Party                  | view-pim-tasks      |
-       | Projects / Read List              | view-pim-tasks      |
-       | Contexts                          | folder              |
-       | Contexts / Chores                 | view-pim-tasks      |
-       | Contexts / Internet               | view-pim-tasks      |
-       | Contexts / Online                 | view-pim-tasks      |
        | Tags                              | folder              |
        | Tags / Optional                   | view-pim-tasks      |
        | Tags / Philosophy                 | view-pim-tasks      |
