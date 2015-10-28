@@ -68,75 +68,69 @@ Domain::Artifact::Ptr TagPageModel::addItem(const QString &title)
 void TagPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    const auto job = m_tagRepository->dissociate(m_tag, artifact);
-    if (artifact.objectCast<Domain::Task>()) {
-        installHandler(job, tr("Cannot remove task %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
-    } else if (artifact.objectCast<Domain::Note>()) {
-        installHandler(job, tr("Cannot remove note %1 from tag %2").arg(artifact->title()).arg(m_tag->name()));
-    }
+    auto note = data.value<Domain::Note::Ptr>();
+    const auto job = m_tagRepository->dissociate(m_tag, note);
+    installHandler(job, tr("Cannot remove note %1 from tag %2").arg(note->title()).arg(m_tag->name()));
 }
 
 QAbstractItemModel *TagPageModel::createCentralListModel()
 {
-    auto query = [this] (const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
-        if (!artifact)
-            return m_tagQueries->findTopLevelArtifacts(m_tag);
+    auto query = [this] (const Domain::Note::Ptr &note) -> Domain::QueryResultInterface<Domain::Note::Ptr>::Ptr {
+        if (!note)
+            return m_tagQueries->findNotes(m_tag);
         else
-            return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
+            return Domain::QueryResult<Domain::Note::Ptr>::Ptr();
     };
 
-    auto flags = [](const Domain::Artifact::Ptr &artifact) {
-        const auto defaultFlags = Qt::ItemIsSelectable
-                                | Qt::ItemIsEnabled
-                                | Qt::ItemIsEditable
-                                | Qt::ItemIsDragEnabled;
-
-        return artifact.dynamicCast<Domain::Note>() ? defaultFlags : Qt::NoItemFlags;
+    auto flags = [](const Domain::Note::Ptr &) {
+        return Qt::ItemIsSelectable
+             | Qt::ItemIsEnabled
+             | Qt::ItemIsEditable
+             | Qt::ItemIsDragEnabled;
     };
 
-    auto data = [](const Domain::Artifact::Ptr &artifact, int role) -> QVariant {
+    auto data = [](const Domain::Note::Ptr &note, int role) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole) {
             return QVariant();
         }
 
         if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            return artifact->title();
+            return note->title();
         } else {
             return QVariant();
         }
     };
 
-    auto setData = [this] (const Domain::Artifact::Ptr &artifact, const QVariant &value, int role) {
+    auto setData = [this] (const Domain::Note::Ptr &note, const QVariant &value, int role) {
         if (role != Qt::EditRole) {
             return false;
         }
 
-        if (auto note = artifact.dynamicCast<Domain::Note>()) {
-            const auto currentTitle = note->title();
-            note->setTitle(value.toString());
-            const auto job = m_noteRepository->update(note);
-            installHandler(job, tr("Cannot modify note %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
-            return true;
-        }
+        const auto currentTitle = note->title();
+        note->setTitle(value.toString());
+        const auto job = m_noteRepository->update(note);
+        installHandler(job, tr("Cannot modify note %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
+        return true;
+    };
 
+    auto drop = [this] (const QMimeData *, Qt::DropAction, const Domain::Note::Ptr &) {
         return false;
     };
 
-    auto drop = [this] (const QMimeData *, Qt::DropAction, const Domain::Artifact::Ptr &) {
-        return false;
-    };
-
-    auto drag = [] (const Domain::Artifact::List &artifacts) -> QMimeData* {
-        if (artifacts.isEmpty())
+    auto drag = [] (const Domain::Note::List &notes) -> QMimeData* {
+        if (notes.isEmpty())
             return Q_NULLPTR;
+
+        auto draggedArtifacts = Domain::Artifact::List();
+        std::copy(notes.constBegin(), notes.constEnd(),
+                  std::back_inserter(draggedArtifacts));
 
         auto data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
-        data->setProperty("objects", QVariant::fromValue(artifacts));
+        data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
         return data;
     };
 
-    return new QueryTreeModel<Domain::Artifact::Ptr>(query, flags, data, setData, drop, drag, this);
+    return new QueryTreeModel<Domain::Note::Ptr>(query, flags, data, setData, drop, drag, this);
 }

@@ -47,8 +47,8 @@ public:
     KJob *create(Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
     KJob *remove(Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
 
-    KJob *associate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child) Q_DECL_OVERRIDE;
-    KJob *dissociate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child) Q_DECL_OVERRIDE;
+    KJob *associate(Domain::Tag::Ptr parent, Domain::Note::Ptr child) Q_DECL_OVERRIDE;
+    KJob *dissociate(Domain::Tag::Ptr parent, Domain::Note::Ptr child) Q_DECL_OVERRIDE;
     KJob *dissociateAll(Domain::Note::Ptr child) Q_DECL_OVERRIDE;
 
 private:

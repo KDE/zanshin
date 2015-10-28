@@ -43,16 +43,16 @@ public:
     typedef Domain::QueryResultProvider<Domain::Tag::Ptr> TagProvider;
 
     typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
-    typedef Domain::LiveQueryOutput<Domain::Artifact::Ptr> ArtifactQueryOutput;
-    typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
-    typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
+    typedef Domain::LiveQueryOutput<Domain::Note::Ptr> NoteQueryOutput;
+    typedef Domain::QueryResultProvider<Domain::Note::Ptr> NoteProvider;
+    typedef Domain::QueryResult<Domain::Note::Ptr> NoteResult;
 
     TagQueries(const StorageInterface::Ptr &storage,
                const SerializerInterface::Ptr &serializer,
                const MonitorInterface::Ptr &monitor);
 
     TagResult::Ptr findAll() const Q_DECL_OVERRIDE;
-    ArtifactResult::Ptr findTopLevelArtifacts(Domain::Tag::Ptr tag) const Q_DECL_OVERRIDE;
+    NoteResult::Ptr findNotes(Domain::Tag::Ptr tag) const Q_DECL_OVERRIDE;
 
 private:
     SerializerInterface::Ptr m_serializer;
@@ -60,7 +60,7 @@ private:
     LiveQueryIntegrator::Ptr m_integrator;
 
     mutable TagQueryOutput::Ptr m_findAll;
-    mutable QHash<Akonadi::Tag::Id, ArtifactQueryOutput::Ptr> m_findTopLevel;
+    mutable QHash<Akonadi::Tag::Id, NoteQueryOutput::Ptr> m_findTopLevel;
 };
 
 } // akonadi namespace

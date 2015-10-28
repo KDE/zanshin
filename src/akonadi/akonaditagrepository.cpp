@@ -52,17 +52,12 @@ KJob *TagRepository::remove(Domain::Tag::Ptr tag)
    return m_storage->removeTag(akonadiTag);
 }
 
-KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
+KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Note::Ptr child)
 {
     auto akonadiTag = m_serializer->createAkonadiTagFromTag(parent);
     Q_ASSERT(akonadiTag.isValid());
 
-    Item childItem;
-    if (auto task = child.objectCast<Domain::Task>())
-        childItem = m_serializer->createItemFromTask(task);
-    else if (auto note = child.objectCast<Domain::Note>())
-        childItem = m_serializer->createItemFromNote(note);
-
+    Item childItem = m_serializer->createItemFromNote(child);
     Q_ASSERT(childItem.isValid());
 
     auto job = new Utils::CompositeJob();
@@ -82,15 +77,9 @@ KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr ch
     return job;
 }
 
-KJob *TagRepository::dissociate(Domain::Tag::Ptr parent, Domain::Artifact::Ptr child)
+KJob *TagRepository::dissociate(Domain::Tag::Ptr parent, Domain::Note::Ptr child)
 {
-    Item childItem;
-
-    if (Domain::Task::Ptr task = child.dynamicCast<Domain::Task>())
-        childItem = m_serializer->createItemFromTask(task);
-    else if (Domain::Note::Ptr note= child.dynamicCast<Domain::Note>())
-        childItem = m_serializer->createItemFromNote(note);
-
+    Item childItem = m_serializer->createItemFromNote(child);
     Q_ASSERT(childItem.isValid());
 
     auto job = new Utils::CompositeJob();

@@ -211,16 +211,25 @@ QAbstractItemModel *AvailableNotePagesModel::createPageListModel()
         if (droppedArtifacts.isEmpty())
             return false;
 
+        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
+                        [](const Domain::Artifact::Ptr &droppedArtifact) {
+                            return !droppedArtifact.objectCast<Domain::Note>();
+                        })) {
+            return false;
+        }
+
         if (auto tag = object.objectCast<Domain::Tag>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
-                const auto job = m_tagRepository->associate(tag, droppedArtifact);
-                installHandler(job, tr("Cannot tag %1 with %2").arg(droppedArtifact->title()).arg(tag->name()));
+                auto note = droppedArtifact.staticCast<Domain::Note>();
+                const auto job = m_tagRepository->associate(tag, note);
+                installHandler(job, tr("Cannot tag %1 with %2").arg(note->title()).arg(tag->name()));
             }
             return true;
         } else if (object == m_inboxObject) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
-                const auto job = m_tagRepository->dissociateAll(droppedArtifact.objectCast<Domain::Note>());
-                installHandler(job, tr("Cannot move %1 to Inbox").arg(droppedArtifact->title()));
+                auto note = droppedArtifact.staticCast<Domain::Note>();
+                const auto job = m_tagRepository->dissociateAll(note);
+                installHandler(job, tr("Cannot move %1 to Inbox").arg(note->title()));
             }
             return true;
         }

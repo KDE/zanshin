@@ -101,94 +101,43 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::removeTag).when(akonadiTag).exactly(1));
     }
 
-    void shouldAssociateTaskToTag()
+    void shouldAssociateNoteToTag()
     {
         // GIVEN
         auto tag = Domain::Tag::Ptr::create();
         Akonadi::Tag akonadiTag(42);
 
-        Domain::Artifact::Ptr task = Domain::Task::Ptr::create();
-        Akonadi::Item taskItem(42);
+        auto note = Domain::Note::Ptr::create();
+        Akonadi::Item noteItem(42);
 
         // A mock of update job
         auto itemModifyJob = new FakeJob(this);
 
         auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << taskItem);
+        itemFetchJob->setItems(Akonadi::Item::List() << noteItem);
 
         // Storage mock returning the tagCreatejob
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateItem).when(taskItem, Q_NULLPTR)
-                                                          .thenReturn(itemModifyJob);
+        storageMock(&Akonadi::StorageInterface::updateItem).when(noteItem, Q_NULLPTR)
+                                                           .thenReturn(itemModifyJob);
 
-        storageMock(&Akonadi::StorageInterface::fetchItem).when(taskItem)
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(noteItem)
                                                           .thenReturn(itemFetchJob);
         // Serializer mock
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
-        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task.objectCast<Domain::Task>()).thenReturn(taskItem);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).thenReturn(noteItem);
 
         // WHEN
         QScopedPointer<Akonadi::TagRepository> repository(new Akonadi::TagRepository(storageMock.getInstance(),
                                                                                      serializerMock.getInstance()));
-        repository->associate(tag, task)->exec();
+        repository->associate(tag, note)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task.objectCast<Domain::Task>()).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).exactly(1));
 
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(taskItem, Q_NULLPTR).exactly(1));
-    }
-
-    void shouldDissociateTaskFromTag()
-    {
-        // GIVEN
-        Akonadi::Item item(42);
-        Domain::Task::Ptr task(new Domain::Task);
-
-        Akonadi::Tag akonadiTag(qint64(42));
-        auto tag = Domain::Tag::Ptr::create();
-
-        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setExpectedError(KJob::KilledJobError);
-
-        auto itemFetchJobFilled = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJobFilled->setItems(Akonadi::Item::List() << item);
-
-        // A mock update job
-        auto itemModifyJob = new FakeJob(this);
-
-        // Storage mock returning the create job
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
-                                                          .thenReturn(itemFetchJob)
-                                                          .thenReturn(itemFetchJobFilled);
-        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
-                                                           .thenReturn(itemModifyJob);
-
-        // Serializer mock returning the item for the task
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task)
-                                                                         .thenReturn(item);
-        serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag)
-                                                                           .thenReturn(akonadiTag);
-        // WHEN
-        QScopedPointer<Akonadi::TagRepository> repository(new Akonadi::TagRepository(storageMock.getInstance(),
-                                                                                     serializerMock.getInstance()));
-        repository->dissociate(tag, task)->exec();
-
-        // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).exactly(0));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(0));
-
-        // WHEN
-        repository->dissociate(tag, task)->exec();
-
-        // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(2));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(noteItem, Q_NULLPTR).exactly(1));
     }
 
     void shouldDissociateNoteFromTag()

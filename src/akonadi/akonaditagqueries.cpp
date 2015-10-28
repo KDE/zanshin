@@ -45,7 +45,7 @@ TagQueries::TagResult::Ptr TagQueries::findAll() const
     return m_findAll->result();
 }
 
-TagQueries::ArtifactResult::Ptr TagQueries::findTopLevelArtifacts(Domain::Tag::Ptr tag) const
+TagQueries::NoteResult::Ptr TagQueries::findNotes(Domain::Tag::Ptr tag) const
 {
     Akonadi::Tag akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
     auto &query = m_findTopLevel[akonadiTag.id()];

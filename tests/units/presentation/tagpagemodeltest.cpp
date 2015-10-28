@@ -65,13 +65,13 @@ private slots:
         note1->setTitle("note1");
         auto note2 = Domain::Note::Ptr::create();
         note2->setTitle("note2");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(note1);
-        artifactProvider->append(note2);
+        auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
+        auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
+        noteProvider->append(note1);
+        noteProvider->append(note2);
 
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
+        tagQueriesMock(&Domain::TagQueries::findNotes).when(tag).thenReturn(noteResult);
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
@@ -178,16 +178,16 @@ private slots:
         auto tag = Domain::Tag::Ptr::create();
 
         // Two notes
-        Domain::Artifact::Ptr note1(new Domain::Note);
-        Domain::Artifact::Ptr note2(new Domain::Note);
+        auto note1 = Domain::Note::Ptr::create();
+        auto note2 = Domain::Note::Ptr::create();
 
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(note1);
-        artifactProvider->append(note2);
+        auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
+        auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
+        noteProvider->append(note1);
+        noteProvider->append(note2);
 
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
+        tagQueriesMock(&Domain::TagQueries::findNotes).when(tag).thenReturn(noteResult);
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
         tagRepositoryMock(&Domain::TagRepository::dissociate).when(tag, note2).thenReturn(new FakeJob(this));
@@ -216,18 +216,18 @@ private slots:
         tag->setName("Tag1");
 
         // Two notes
-        Domain::Artifact::Ptr note1(new Domain::Note);
+        auto note1 = Domain::Note::Ptr::create();
         note1->setTitle("Note 1");
-        Domain::Artifact::Ptr note2(new Domain::Note);
+        auto note2 = Domain::Note::Ptr::create();
         note2->setTitle("Note 2");
 
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(note1);
-        artifactProvider->append(note2);
+        auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
+        auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
+        noteProvider->append(note1);
+        noteProvider->append(note2);
 
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
+        tagQueriesMock(&Domain::TagQueries::findNotes).when(tag).thenReturn(noteResult);
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
         auto job = new FakeJob(this);
@@ -298,12 +298,12 @@ private slots:
         // One note and one task
         auto rootNote = Domain::Note::Ptr::create();
         rootNote->setTitle("rootNote");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(rootNote);
+        auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
+        auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
+        noteProvider->append(rootNote);
 
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
-        tagQueriesMock(&Domain::TagQueries::findTopLevelArtifacts).when(tag).thenReturn(artifactResult);
+        tagQueriesMock(&Domain::TagQueries::findNotes).when(tag).thenReturn(noteResult);
 
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;

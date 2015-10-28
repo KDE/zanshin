@@ -164,9 +164,9 @@ private slots:
                                                                            Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         auto tag = serializer->createTagFromAkonadiTag(data.tag(42));
-        auto result = queries->findTopLevelArtifacts(tag);
+        auto result = queries->findNotes(tag);
         result->data();
-        result = queries->findTopLevelArtifacts(tag); // Should not cause any problem or wrong data
+        result = queries->findNotes(tag); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -177,7 +177,7 @@ private slots:
         QCOMPARE(result->data().at(1)->title(), QString("44"));
 
         // Should not change nothing
-        result = queries->findTopLevelArtifacts(tag);
+        result = queries->findNotes(tag);
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
@@ -202,7 +202,7 @@ private slots:
                                                                            Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         auto tag = serializer->createTagFromAkonadiTag(data.tag(42));
-        auto result = queries->findTopLevelArtifacts(tag);
+        auto result = queries->findNotes(tag);
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
@@ -232,7 +232,7 @@ private slots:
                                                                            Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         auto tag = serializer->createTagFromAkonadiTag(data.tag(42));
-        auto result = queries->findTopLevelArtifacts(tag);
+        auto result = queries->findNotes(tag);
 
         bool insertHandlerCalled = false;
         result->addPostInsertHandler([&insertHandlerCalled](const Domain::Artifact::Ptr &, int) {
@@ -275,7 +275,7 @@ private slots:
                                                                            Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         auto tag = serializer->createTagFromAkonadiTag(data.tag(42));
-        auto result = queries->findTopLevelArtifacts(tag);
+        auto result = queries->findNotes(tag);
 
         bool removeHandlerCalled = false;
         result->addPostRemoveHandler([&removeHandlerCalled](const Domain::Artifact::Ptr &, int) {

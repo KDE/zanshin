@@ -42,8 +42,8 @@ public:
     virtual KJob *create(Tag::Ptr tag) = 0;
     virtual KJob *remove(Tag::Ptr tag) = 0;
 
-    virtual KJob *associate(Tag::Ptr parent, Artifact::Ptr child) = 0;
-    virtual KJob *dissociate(Tag::Ptr parent, Artifact::Ptr child) = 0;
+    virtual KJob *associate(Tag::Ptr parent, Note::Ptr child) = 0;
+    virtual KJob *dissociate(Tag::Ptr parent, Note::Ptr child) = 0;
     virtual KJob *dissociateAll(Note::Ptr child) = 0;
 };
 

@@ -24,7 +24,7 @@
 #ifndef DOMAIN_TAGQUERIES_H
 #define DOMAIN_TAGQUERIES_H
 
-#include "artifact.h"
+#include "note.h"
 #include "queryresult.h"
 #include "tag.h"
 
@@ -40,7 +40,7 @@ public:
 
     virtual QueryResult<Tag::Ptr>::Ptr findAll() const = 0;
 
-    virtual QueryResult<Artifact::Ptr>::Ptr findTopLevelArtifacts(Tag::Ptr tag) const = 0;
+    virtual QueryResult<Note::Ptr>::Ptr findNotes(Tag::Ptr tag) const = 0;
 };
 
 }
