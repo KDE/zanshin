@@ -76,9 +76,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    tagRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -163,9 +161,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -199,9 +195,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     tagQueriesMock.getInstance(),
-                                                    Domain::TagRepository::Ptr(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    Domain::TagRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -233,9 +227,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     Domain::TagQueries::Ptr(),
-                                                    tagRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    tagRepositoryMock.getInstance());
 
         // WHEN
         pages.addTag("Foo");
@@ -258,9 +250,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     Domain::TagQueries::Ptr(),
-                                                    tagRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -295,9 +285,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -341,9 +329,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -391,9 +377,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -442,9 +426,7 @@ private slots:
         Presentation::AvailableNotePagesModel pages(Domain::NoteQueries::Ptr(),
                                                     Domain::NoteRepository::Ptr(),
                                                     tagQueriesMock.getInstance(),
-                                                    tagRepositoryMock.getInstance(),
-                                                    Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr());
+                                                    tagRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 

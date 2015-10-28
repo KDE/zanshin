@@ -40,8 +40,6 @@ AvailableNotePagesModel::AvailableNotePagesModel(const Domain::NoteQueries::Ptr 
                                                  const Domain::NoteRepository::Ptr &noteRepository,
                                                  const Domain::TagQueries::Ptr &tagQueries,
                                                  const Domain::TagRepository::Ptr &tagRepository,
-                                                 const Domain::TaskQueries::Ptr &taskQueries,
-                                                 const Domain::TaskRepository::Ptr &taskRepository,
                                                  QObject *parent)
     : AvailablePagesModelInterface(parent),
       m_pageListModel(Q_NULLPTR),
@@ -49,9 +47,7 @@ AvailableNotePagesModel::AvailableNotePagesModel(const Domain::NoteQueries::Ptr 
       m_noteQueries(noteQueries),
       m_noteRepository(noteRepository),
       m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository),
-      m_taskQueries(taskQueries),
-      m_taskRepository(taskRepository)
+      m_tagRepository(tagRepository)
 {
 }
 

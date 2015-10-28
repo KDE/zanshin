@@ -31,8 +31,6 @@
 #include "domain/noterepository.h"
 #include "domain/tagqueries.h"
 #include "domain/tagrepository.h"
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
 
@@ -48,8 +46,6 @@ public:
                                      const Domain::NoteRepository::Ptr &noteRepository,
                                      const Domain::TagQueries::Ptr &tagQueries,
                                      const Domain::TagRepository::Ptr &tagRepository,
-                                     const Domain::TaskQueries::Ptr &taskQueries,
-                                     const Domain::TaskRepository::Ptr &taskRepository,
                                      QObject *parent = Q_NULLPTR);
 
     QAbstractItemModel *pageListModel() Q_DECL_OVERRIDE;
@@ -72,9 +68,6 @@ private:
 
     Domain::TagQueries::Ptr m_tagQueries;
     Domain::TagRepository::Ptr m_tagRepository;
-
-    Domain::TaskQueries::Ptr m_taskQueries;
-    Domain::TaskRepository::Ptr m_taskRepository;
 
     Domain::QueryResultProvider<QObjectPtr>::Ptr m_rootsProvider;
     QObjectPtr m_inboxObject;
