@@ -26,6 +26,7 @@
 
 #include "datasource.h"
 #include "note.h"
+#include "tag.h"
 
 class KJob;
 
@@ -43,6 +44,8 @@ public:
     virtual void setDefaultSource(DataSource::Ptr source) = 0;
 
     virtual KJob *create(Note::Ptr task) = 0;
+    virtual KJob *createInTag(Note::Ptr task, Tag::Ptr tag) = 0;
+
     virtual KJob *update(Note::Ptr note) = 0;
     virtual KJob *remove(Note::Ptr note) = 0;
 };

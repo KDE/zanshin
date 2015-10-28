@@ -212,6 +212,54 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col2).exactly(1));
     }
 
+    void shouldCreateNewItemsInTag()
+    {
+        // GIVEN
+        // a tag
+        Akonadi::Tag akonadiTag;
+        akonadiTag.setName("akonadiTag42");
+        akonadiTag.setId(42);
+
+        // the domain Tag related to the Akonadi Tag
+        auto tag = Domain::Tag::Ptr::create();
+
+        // a default collection
+        Akonadi::Collection defaultCollection(42);
+
+        // A note and its corresponding item not existing in storage yet
+        Akonadi::Item noteItem;
+        auto note = Domain::Note::Ptr::create();
+
+        // A mock create job
+        auto itemCreateJob = new FakeJob(this);
+
+        // serializer mock returning the item for the task
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+
+        serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).thenReturn(akonadiTag);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).thenReturn(noteItem);
+
+        // Storage mock returning the create job
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
+
+        storageMock(&Akonadi::StorageInterface::defaultNoteCollection).when().thenReturn(defaultCollection);
+        storageMock(&Akonadi::StorageInterface::createItem).when(noteItem, defaultCollection).thenReturn(itemCreateJob);
+
+        // WHEN
+        QScopedPointer<Akonadi::NoteRepository> repository(new Akonadi::NoteRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance()));
+
+        repository->createInTag(note, tag)->exec();
+
+        // THEN
+
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createAkonadiTagFromTag).when(tag).exactly(1));
+
+        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultNoteCollection).when().exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(noteItem, defaultCollection).exactly(1));
+    }
+
     void shouldUpdateExistingItems()
     {
         // GIVEN

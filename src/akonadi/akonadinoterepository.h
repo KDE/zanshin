@@ -46,12 +46,15 @@ public:
     void setDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
 
     KJob *create(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
+    KJob *createInTag(Domain::Note::Ptr note, Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
     KJob *update(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
     KJob *remove(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
 
 private:
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
+
+    KJob *createItem(const Akonadi::Item &item);
 };
 
 }

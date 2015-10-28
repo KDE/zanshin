@@ -59,7 +59,36 @@ KJob *NoteRepository::create(Domain::Note::Ptr note)
 {
     auto item = m_serializer->createItemFromNote(note);
     Q_ASSERT(!item.isValid());
+    return createItem(item);
+}
 
+KJob *NoteRepository::createInTag(Domain::Note::Ptr note, Domain::Tag::Ptr tag)
+{
+    Item item = m_serializer->createItemFromNote(note);
+    Q_ASSERT(!item.isValid());
+
+    Tag akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
+    Q_ASSERT(akonadiTag .isValid());
+    item.setTag(akonadiTag);
+
+    return createItem(item);
+}
+
+KJob *NoteRepository::update(Domain::Note::Ptr note)
+{
+    auto item = m_serializer->createItemFromNote(note);
+    Q_ASSERT(item.isValid());
+    return m_storage->updateItem(item);
+}
+
+KJob *NoteRepository::remove(Domain::Note::Ptr note)
+{
+    auto item = m_serializer->createItemFromNote(note);
+    return m_storage->removeItem(item);
+}
+
+KJob *NoteRepository::createItem(const Item &item)
+{
     const Akonadi::Collection defaultCollection = m_storage->defaultNoteCollection();
     if (defaultCollection.isValid()) {
         return m_storage->createItem(item, defaultCollection);
@@ -85,17 +114,4 @@ KJob *NoteRepository::create(Domain::Note::Ptr note)
         });
         return job;
     }
-}
-
-KJob *NoteRepository::update(Domain::Note::Ptr note)
-{
-    auto item = m_serializer->createItemFromNote(note);
-    Q_ASSERT(item.isValid());
-    return m_storage->updateItem(item);
-}
-
-KJob *NoteRepository::remove(Domain::Note::Ptr note)
-{
-    auto item = m_serializer->createItemFromNote(note);
-    return m_storage->removeItem(item);
 }
