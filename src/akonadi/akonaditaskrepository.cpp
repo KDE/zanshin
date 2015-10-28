@@ -119,18 +119,6 @@ KJob *TaskRepository::createInContext(Domain::Task::Ptr task, Domain::Context::P
     return createItem(item);
 }
 
-KJob *TaskRepository::createInTag(Domain::Task::Ptr task, Domain::Tag::Ptr tag)
-{
-    Item item = m_serializer->createItemFromTask(task);
-    Q_ASSERT(!item.isValid());
-
-    Tag akonadiTag = m_serializer->createAkonadiTagFromTag(tag);
-    Q_ASSERT(akonadiTag .isValid());
-    item.setTag(akonadiTag);
-
-    return createItem(item);
-}
-
 KJob *TaskRepository::update(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);

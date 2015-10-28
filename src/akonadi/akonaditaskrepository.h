@@ -51,7 +51,6 @@ public:
     virtual KJob *create(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
     virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project) Q_DECL_OVERRIDE;
     virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context) Q_DECL_OVERRIDE;
-    virtual KJob *createInTag(Domain::Task::Ptr task, Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
 
     virtual KJob *update(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
     virtual KJob *remove(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
