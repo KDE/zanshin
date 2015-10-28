@@ -32,8 +32,6 @@
 #include "domain/tagqueries.h"
 #include "domain/tagrepository.h"
 #include "domain/tag.h"
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
 
 namespace Presentation {
 
@@ -44,8 +42,6 @@ public:
     explicit TagPageModel(const Domain::Tag::Ptr &tag,
                           const Domain::TagQueries::Ptr &tagQueries,
                           const Domain::TagRepository::Ptr &tagRepository,
-                          const Domain::TaskQueries::Ptr &taskQueries,
-                          const Domain::TaskRepository::Ptr &taskRepository,
                           const Domain::NoteRepository::Ptr &noteRepository,
                           QObject *parent = Q_NULLPTR);
 
@@ -60,8 +56,6 @@ private:
     Domain::Tag::Ptr m_tag;
     Domain::TagQueries::Ptr m_tagQueries;
     Domain::TagRepository::Ptr m_tagRepository;
-    Domain::TaskQueries::Ptr m_taskQueries;
-    Domain::TaskRepository::Ptr m_taskRepository;
     Domain::NoteRepository::Ptr m_noteRepository;
 };
 

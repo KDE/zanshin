@@ -40,16 +40,12 @@ using namespace Presentation;
 TagPageModel::TagPageModel(const Domain::Tag::Ptr &tag,
                            const Domain::TagQueries::Ptr &tagQueries,
                            const Domain::TagRepository::Ptr &tagRepository,
-                           const Domain::TaskQueries::Ptr &taskQueries,
-                           const Domain::TaskRepository::Ptr &taskRepository,
                            const Domain::NoteRepository::Ptr &noteRepository,
                            QObject *parent)
     : PageModel(parent),
       m_tag(tag),
       m_tagQueries(tagQueries),
       m_tagRepository(tagRepository),
-      m_taskQueries(taskQueries),
-      m_taskRepository(taskRepository),
       m_noteRepository(noteRepository)
 {
 
@@ -62,12 +58,11 @@ Domain::Tag::Ptr TagPageModel::tag() const
 
 Domain::Artifact::Ptr TagPageModel::addItem(const QString &title)
 {
-    auto task = Domain::Task::Ptr::create();
-    task->setTitle(title);
-    const auto job = m_taskRepository->createInTag(task, m_tag);
-    installHandler(job, tr("Cannot add task %1 in tag %2").arg(title).arg(m_tag->name()));
-
-    return task;
+    auto note = Domain::Note::Ptr::create();
+    note->setTitle(title);
+    const auto job = m_noteRepository->createInTag(note, m_tag);
+    installHandler(job, tr("Cannot add note %1 in tag %2").arg(title).arg(m_tag->name()));
+    return note;
 }
 
 void TagPageModel::removeItem(const QModelIndex &index)
@@ -87,8 +82,6 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
     auto query = [this] (const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
         if (!artifact)
             return m_tagQueries->findTopLevelArtifacts(m_tag);
-        else if (auto task = artifact.dynamicCast<Domain::Task>())
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findChildren(task));
         else
             return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
     };
@@ -99,86 +92,40 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
                                 | Qt::ItemIsEditable
                                 | Qt::ItemIsDragEnabled;
 
-        const auto taskFlag = defaultFlags
-                            | Qt::ItemIsUserCheckable
-                            | Qt::ItemIsDropEnabled;
-
-        return artifact.dynamicCast<Domain::Task>() ? taskFlag : defaultFlags;
+        return artifact.dynamicCast<Domain::Note>() ? defaultFlags : Qt::NoItemFlags;
     };
 
     auto data = [](const Domain::Artifact::Ptr &artifact, int role) -> QVariant {
         if (role != Qt::DisplayRole
-         && role != Qt::EditRole
-         && role != Qt::CheckStateRole) {
+         && role != Qt::EditRole) {
             return QVariant();
         }
 
         if (role == Qt::DisplayRole || role == Qt::EditRole) {
             return artifact->title();
-        } else if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            return task->isDone() ? Qt::Checked : Qt::Unchecked;
         } else {
             return QVariant();
         }
     };
 
     auto setData = [this] (const Domain::Artifact::Ptr &artifact, const QVariant &value, int role) {
-        if (role != Qt::EditRole && role != Qt::CheckStateRole) {
+        if (role != Qt::EditRole) {
             return false;
         }
 
-        if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            const auto currentTitle = task->title();
-            if (role == Qt::EditRole)
-                task->setTitle(value.toString());
-            else
-                task->setDone(value.toInt() == Qt::Checked);
-
-            const auto job = m_taskRepository->update(task);
-            installHandler(job, tr("Cannot modify task %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
-            return true;
-
-        } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
-            if (role != Qt::EditRole)
-                return false;
-
+        if (auto note = artifact.dynamicCast<Domain::Note>()) {
             const auto currentTitle = note->title();
             note->setTitle(value.toString());
             const auto job = m_noteRepository->update(note);
             installHandler(job, tr("Cannot modify note %1 in tag %2").arg(currentTitle).arg(m_tag->name()));
             return true;
-
         }
 
         return false;
     };
 
-    auto drop = [this] (const QMimeData *mimeData, Qt::DropAction, const Domain::Artifact::Ptr &artifact) {
-        auto parentTask = artifact.objectCast<Domain::Task>();
-        if (!parentTask)
-            return false;
-
-        if (!mimeData->hasFormat("application/x-zanshin-object"))
-            return false;
-
-        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
-        if (droppedArtifacts.isEmpty())
-            return false;
-
-        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
-                        [](const Domain::Artifact::Ptr &droppedArtifact) {
-                            return !droppedArtifact.objectCast<Domain::Task>();
-                        })) {
-            return false;
-        }
-
-        foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
-            auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            const auto job = m_taskRepository->associate(parentTask, childTask);
-            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
-        }
-
-        return true;
+    auto drop = [this] (const QMimeData *, Qt::DropAction, const Domain::Artifact::Ptr &) {
+        return false;
     };
 
     auto drag = [] (const Domain::Artifact::List &artifacts) -> QMimeData* {

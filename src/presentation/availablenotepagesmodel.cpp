@@ -81,8 +81,6 @@ QObject *AvailableNotePagesModel::createPageForIndex(const QModelIndex &index)
         auto tagPageModel = new TagPageModel(tag,
                                              m_tagQueries,
                                              m_tagRepository,
-                                             m_taskQueries,
-                                             m_taskRepository,
                                              m_noteRepository,
                                              this);
         tagPageModel->setErrorHandler(errorHandler());
