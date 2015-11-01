@@ -1,7 +1,7 @@
 Feature: Project destruction
-  As someone collecting tasks and notes
+  As someone collecting tasks
   I can delete a project
-  In order to clean my tasks and notes
+  In order to clean my tasks
 
   Scenario: Removing a simple project from the list
     Given I display the available pages

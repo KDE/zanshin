@@ -1,7 +1,7 @@
 Feature: Available pages content
-  As someone collecting tasks and notes
+  As someone collecting tasks
   I can see all the pages available to me
-  In order to display them and add tasks or notes to them
+  In order to display them and add tasks to them
 
   Scenario: Inbox, projects, contexts and tags appear in the list
     Given I display the available pages

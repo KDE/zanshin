@@ -1,9 +1,9 @@
 Feature: Project content
-  As someone collecting tasks and notes
+  As someone collecting tasks
   I can display a project
   In order to see the artifacts associated to it
 
-  Scenario: Project tasks and notes appear in the corresponding page
+  Scenario: Project tasks appear in the corresponding page
     Given I display the "Projects / Read List" page
     And I look at the central list
     When I list the items

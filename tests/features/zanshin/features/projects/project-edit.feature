@@ -1,7 +1,7 @@
 Feature: Project rename
-  As someone collecting tasks and notes
+  As someone collecting tasks
   I can rename a project
-  In order to refine my tasks and notes organization
+  In order to refine my tasks organization
 
   Scenario: Renamed projects appear in the list
     Given I display the available pages

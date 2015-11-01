@@ -1,7 +1,7 @@
 Feature: Project creation
-  As someone collecting tasks and notes
+  As someone collecting tasks
   I can create a project
-  In order to organize my tasks and notes
+  In order to organize my tasks
 
   Scenario: New projects appear in the list
     Given I display the available pages
