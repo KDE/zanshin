@@ -30,7 +30,6 @@
 #include "domain/projectqueries.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
-#include "domain/noterepository.h"
 
 namespace Presentation {
 
@@ -42,7 +41,6 @@ public:
                               const Domain::ProjectQueries::Ptr &projectQueries,
                               const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
-                              const Domain::NoteRepository::Ptr &noteRepository,
                               QObject *parent = Q_NULLPTR);
 
     Domain::Project::Ptr project() const;
@@ -58,7 +56,6 @@ private:
 
     Domain::TaskQueries::Ptr m_taskQueries;
     Domain::TaskRepository::Ptr m_taskRepository;
-    Domain::NoteRepository::Ptr m_noteRepository;
 };
 
 }

@@ -26,11 +26,6 @@
 
 #include <QMimeData>
 
-#include "domain/noterepository.h"
-#include "domain/projectqueries.h"
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
-
 #include "presentation/querytreemodel.h"
 
 using namespace Presentation;
@@ -39,14 +34,12 @@ ProjectPageModel::ProjectPageModel(const Domain::Project::Ptr &project,
                                    const Domain::ProjectQueries::Ptr &projectQueries,
                                    const Domain::TaskQueries::Ptr &taskQueries,
                                    const Domain::TaskRepository::Ptr &taskRepository,
-                                   const Domain::NoteRepository::Ptr &noteRepository,
                                    QObject *parent)
     : PageModel(parent),
       m_projectQueries(projectQueries),
       m_project(project),
       m_taskQueries(taskQueries),
-      m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository)
+      m_taskRepository(taskRepository)
 {
 }
 

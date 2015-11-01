@@ -25,11 +25,6 @@
 
 #include "utils/mockobject.h"
 
-#include "domain/noterepository.h"
-#include "domain/projectqueries.h"
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
-
 #include "presentation/projectpagemodel.h"
 #include "presentation/errorhandler.h"
 
@@ -83,13 +78,11 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
                                             taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = page.centralListModel();
@@ -191,9 +184,6 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
-        // Nor create notes...
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::createInProject).when(any<Domain::Task::Ptr>(),
@@ -203,8 +193,7 @@ private slots:
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
                                             taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         // WHEN
         auto title = QString("New task");
@@ -230,9 +219,6 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
-        // Nor create notes...
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
@@ -244,8 +230,7 @@ private slots:
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
                                             taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         page.setErrorHandler(&errorHandler);
 
@@ -279,16 +264,13 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(new FakeJob(this));
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
                                             taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         // WHEN
         const QModelIndex index = page.centralListModel()->index(1, 0);
@@ -322,8 +304,6 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, "Foo");
@@ -332,8 +312,7 @@ private slots:
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
                                             taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         page.setErrorHandler(&errorHandler);
 
@@ -368,13 +347,11 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
                                             taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         QAbstractItemModel *model = page.centralListModel();
         const QModelIndex rootTaskIndex = model->index(0, 0);
@@ -415,13 +392,11 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
                                             taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
+                                            taskRepositoryMock.getInstance());
 
         QAbstractItemModel *model = page.centralListModel();
         const QModelIndex rootTaskIndex = model->index(0, 0);
