@@ -17,6 +17,7 @@ X-KDE-PluginInfo-EnabledByDefault=true
 X-KDE-PluginInfo-AllowEmptySettings=true
 
 Comment=Kontact Renku Plugin
+Comment[ca]=Connector del Renku pel Kontact
 Comment[es]=Complemento Renku para Kontact
 Comment[fi]=Kontactin Renku-osa
 Comment[nl]=Kontact-plugin voor Renku
@@ -26,6 +27,7 @@ Comment[sv]=Renku-insticksprogram för Kontact
 Comment[uk]=Додаток Renku до Kontact
 Comment[x-test]=xxKontact Renku Pluginxx
 Name=Notes
+Name[ca]=Notes
 Name[es]=Notas
 Name[fi]=Muistiinpanot
 Name[nl]=Notities
