@@ -86,9 +86,8 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
 
     if (object == m_inboxObject) {
-        auto inboxPageModel = new TaskInboxPageModel(m_artifactQueries,
-                                                     m_taskQueries, m_taskRepository,
-                                                     m_noteRepository,
+        auto inboxPageModel = new TaskInboxPageModel(m_taskQueries,
+                                                     m_taskRepository,
                                                      this);
         inboxPageModel->setErrorHandler(errorHandler());
         return inboxPageModel;

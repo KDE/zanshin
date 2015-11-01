@@ -27,8 +27,6 @@
 
 #include "presentation/pagemodel.h"
 
-#include "domain/artifactqueries.h"
-#include "domain/noterepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
@@ -38,11 +36,9 @@ class TaskInboxPageModel : public PageModel
 {
     Q_OBJECT
 public:
-    explicit TaskInboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                            const Domain::TaskQueries::Ptr &taskQueries,
-                            const Domain::TaskRepository::Ptr &taskRepository,
-                            const Domain::NoteRepository::Ptr &noteRepository,
-                            QObject *parent = Q_NULLPTR);
+    explicit TaskInboxPageModel(const Domain::TaskQueries::Ptr &taskQueries,
+                                const Domain::TaskRepository::Ptr &taskRepository,
+                                QObject *parent = Q_NULLPTR);
 
     Domain::Artifact::Ptr addItem(const QString &title) Q_DECL_OVERRIDE;
     void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
@@ -50,8 +46,6 @@ public:
 private:
     QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
 
-    Domain::ArtifactQueries::Ptr m_artifactQueries;
-    Domain::NoteRepository::Ptr m_noteRepository;
     Domain::TaskQueries::Ptr m_taskQueries;
     Domain::TaskRepository::Ptr m_taskRepository;
 };

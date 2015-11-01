@@ -11,7 +11,6 @@ Feature: Data sources selection
     And I list the items
     Then the list is:
        | display                                       |
-       | A note about nothing interesting              |
        | Buy apples                                    |
        | Buy pears                                     |
        | Errands                                       |
@@ -23,14 +22,14 @@ Feature: Data sources selection
     And I look at the central list
     And I list the items
     Then the list is:
-       | display                                       |
-       | "The Pragmatic Programmer" by Hunt and Thomas |
-       | A note about nothing interesting              |
-       | Buy cheese                                    |
-       | Buy apples                                    |
-       | Buy pears                                     |
-       | Errands                                       |
-       | Buy rutabagas                                 |
+       | display                                                 |
+       | "Capital in the Twenty-First Century" by Thomas Piketty |
+       | "The Pragmatic Programmer" by Hunt and Thomas           |
+       | Buy cheese                                              |
+       | Buy apples                                              |
+       | Buy pears                                               |
+       | Errands                                                 |
+       | Buy rutabagas                                           |
 
   Scenario: Unchecking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources

@@ -1,18 +1,18 @@
 Feature: Inbox content
-  As someone collecting tasks and notes
+  As someone collecting tasks
   I can display the Inbox
-  In order to see the artifacts which need to be organized (e.g. any task or note not associated to any project, context or tag)
+  In order to see the tasks which need to be organized (e.g. any task not associated to any project or context)
 
-  Scenario: Unorganized tasks and notes appear in the inbox
+  Scenario: Unorganized tasks appear in the inbox
     Given I display the "Inbox" page
     And I look at the central list
     When I list the items
     Then the list is:
-       | display                                       |
-       | Errands                                       |
-       | "The Pragmatic Programmer" by Hunt and Thomas |
-       | Buy cheese                                    |
-       | Buy apples                                    |
-       | Buy pears                                     |
-       | Buy rutabagas                                 |
-       | A note about nothing interesting              |
+       | display                                                 |
+       | Errands                                                 |
+       | "Capital in the Twenty-First Century" by Thomas Piketty |
+       | "The Pragmatic Programmer" by Hunt and Thomas           |
+       | Buy cheese                                              |
+       | Buy apples                                              |
+       | Buy pears                                               |
+       | Buy rutabagas                                           |

@@ -1,6 +1,6 @@
 Feature: Project task association
   As someone collecting tasks
-  I can associate a task or a note to a project
+  I can associate a task to a project
   In order to organize my work
 
   Scenario: Dropping a task on a project
@@ -15,17 +15,6 @@ Feature: Project task association
        | "Clean Code" by Robert C Martin               |
        | "Domain Driven Design" by Eric Evans          |
        | "The Pragmatic Programmer" by Hunt and Thomas |
-
-  Scenario: Dropping a note on a project
-    Given I display the "Inbox" page
-    And there is an item named "A note about nothing interesting" in the central list
-    When I drop the item on "Projects / Backlog" in the page list
-    And I display the "Projects / Backlog" page
-    And I look at the central list
-    And I list the items
-    Then the list is:
-       | display                          |
-       | A note about nothing interesting |
 
   Scenario: Dropping a task on a project from context central list
     Given I display the "Contexts / Chores" page
