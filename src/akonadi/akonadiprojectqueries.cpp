@@ -46,7 +46,7 @@ ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
     return m_findAll->result();
 }
 
-ProjectQueries::ArtifactResult::Ptr ProjectQueries::findTopLevelArtifacts(Domain::Project::Ptr project) const
+ProjectQueries::TaskResult::Ptr ProjectQueries::findTopLevel(Domain::Project::Ptr project) const
 {
     Akonadi::Item item = m_serializer->createItemFromProject(project);
     auto &query = m_findTopLevel[item.id()];

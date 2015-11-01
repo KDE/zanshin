@@ -24,9 +24,9 @@
 #ifndef DOMAIN_PROJECTQUERIES_H
 #define DOMAIN_PROJECTQUERIES_H
 
-#include "artifact.h"
 #include "project.h"
 #include "queryresult.h"
+#include "task.h"
 
 namespace Domain {
 
@@ -39,7 +39,7 @@ public:
     virtual ~ProjectQueries();
 
     virtual QueryResult<Project::Ptr>::Ptr findAll() const = 0;
-    virtual QueryResult<Artifact::Ptr>::Ptr findTopLevelArtifacts(Project::Ptr project) const = 0;
+    virtual QueryResult<Task::Ptr>::Ptr findTopLevel(Project::Ptr project) const = 0;
 };
 
 }

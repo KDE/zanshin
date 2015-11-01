@@ -70,33 +70,30 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
-    if (task) {
-        const auto job = m_taskRepository->remove(task);
-        installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
-    }
+    Q_ASSERT(task);
+    const auto job = m_taskRepository->remove(task);
+    installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
 }
 
 QAbstractItemModel *ProjectPageModel::createCentralListModel()
 {
-    auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
-        if (!artifact)
-            return m_projectQueries->findTopLevelArtifacts(m_project);
-        else if (auto task = artifact.dynamicCast<Domain::Task>())
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findChildren(task));
+    auto query = [this](const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
+        if (!task)
+            return m_projectQueries->findTopLevel(m_project);
         else
-            return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
+            return m_taskQueries->findChildren(task);
     };
 
-    auto flags = [](const Domain::Artifact::Ptr &artifact) {
-        const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
-                                         | Qt::ItemIsEnabled
-                                         | Qt::ItemIsEditable
-                                         | Qt::ItemIsDragEnabled;
-
-        return artifact.dynamicCast<Domain::Task>() ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
+    auto flags = [](const Domain::Task::Ptr &) {
+        return Qt::ItemIsSelectable
+             | Qt::ItemIsEnabled
+             | Qt::ItemIsEditable
+             | Qt::ItemIsDragEnabled
+             | Qt::ItemIsUserCheckable
+             | Qt::ItemIsDropEnabled;
     };
 
-    auto data = [](const Domain::Artifact::Ptr &artifact, int role) -> QVariant {
+    auto data = [](const Domain::Task::Ptr &task, int role) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole
          && role != Qt::CheckStateRole) {
@@ -104,47 +101,29 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         }
 
         if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            return artifact->title();
-        } else if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            return task->isDone() ? Qt::Checked : Qt::Unchecked;
+            return task->title();
         } else {
-            return QVariant();
+            return task->isDone() ? Qt::Checked : Qt::Unchecked;
         }
     };
 
-    auto setData = [this](const Domain::Artifact::Ptr &artifact, const QVariant &value, int role) {
+    auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {
         if (role != Qt::EditRole && role != Qt::CheckStateRole) {
             return false;
         }
 
-        if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            const auto currentTitle = task->title();
-            if (role == Qt::EditRole)
-                task->setTitle(value.toString());
-            else
-                task->setDone(value.toInt() == Qt::Checked);
+        const auto currentTitle = task->title();
+        if (role == Qt::EditRole)
+            task->setTitle(value.toString());
+        else
+            task->setDone(value.toInt() == Qt::Checked);
 
-            const auto job = m_taskRepository->update(task);
-            installHandler(job, tr("Cannot modify task %1 in project %2").arg(currentTitle).arg(m_project->name()));
-            return true;
-
-        } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
-            if (role != Qt::EditRole)
-                return false;
-
-            const auto currentTitle = note->title();
-            note->setTitle(value.toString());
-            const auto job = m_noteRepository->update(note);
-            installHandler(job, tr("Cannot modify note %1 in project %2").arg(currentTitle).arg(m_project->name()));
-            return true;
-
-        }
-
-        return false;
+        const auto job = m_taskRepository->update(task);
+        installHandler(job, tr("Cannot modify task %1 in project %2").arg(currentTitle).arg(m_project->name()));
+        return true;
     };
 
-    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Artifact::Ptr &artifact) {
-        auto parentTask = artifact.objectCast<Domain::Task>();
+    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &parentTask) {
         if (!parentTask)
             return false;
 
@@ -171,15 +150,20 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         return true;
     };
 
-    auto drag = [](const Domain::Artifact::List &artifacts) -> QMimeData* {
-        if (artifacts.isEmpty())
+    auto drag = [](const Domain::Task::List &tasks) -> QMimeData* {
+        if (tasks.isEmpty())
             return Q_NULLPTR;
+
+        auto draggedArtifacts = Domain::Artifact::List();
+        foreach (const Domain::Task::Ptr &task, tasks) {
+            draggedArtifacts.append(task.objectCast<Domain::Artifact>());
+        }
 
         auto data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
-        data->setProperty("objects", QVariant::fromValue(artifacts));
+        data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
         return data;
     };
 
-    return new QueryTreeModel<Domain::Artifact::Ptr>(query, flags, data, setData, drop, drag, this);
+    return new QueryTreeModel<Domain::Task::Ptr>(query, flags, data, setData, drop, drag, this);
 }

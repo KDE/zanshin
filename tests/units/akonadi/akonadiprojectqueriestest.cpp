@@ -217,7 +217,7 @@ private slots:
         QCOMPARE(result->data().at(0)->name(), QString("42"));
     }
 
-    void shouldLookOnlyInParentCollectionForProjectTopLevelArtifacts()
+    void shouldLookOnlyInParentCollectionForProjectTopLevel()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -246,9 +246,9 @@ private slots:
                                                                                    serializer,
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto project = serializer->createProjectFromItem(data.item(42));
-        auto result = queries->findTopLevelArtifacts(project);
+        auto result = queries->findTopLevel(project);
         result->data();
-        result = queries->findTopLevelArtifacts(project); // Should not cause any problem or wrong data
+        result = queries->findTopLevel(project); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -258,7 +258,7 @@ private slots:
         QCOMPARE(result->data().at(0)->title(), QString("43"));
 
         // Should not change nothing
-        result = queries->findTopLevelArtifacts(project);
+        result = queries->findTopLevel(project);
 
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->title(), QString("43"));
@@ -291,7 +291,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            auto result = queries->findTopLevelArtifacts(project);
+            auto result = queries->findTopLevel(project);
 
             // THEN * 2
             QVERIFY(result->data().isEmpty());
@@ -317,7 +317,7 @@ private slots:
                                                                                    serializer,
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto project = serializer->createProjectFromItem(data.item(42));
-        auto result = queries->findTopLevelArtifacts(project);
+        auto result = queries->findTopLevel(project);
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
@@ -358,7 +358,7 @@ private slots:
                                                                                    serializer,
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto project = serializer->createProjectFromItem(data.item(42));
-        auto result = queries->findTopLevelArtifacts(project);
+        auto result = queries->findTopLevel(project);
 
         bool replaceHandlerCalled = false;
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Artifact::Ptr &, int) {
@@ -401,7 +401,7 @@ private slots:
                                                                                    serializer,
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto project = serializer->createProjectFromItem(data.item(42));
-        auto result = queries->findTopLevelArtifacts(project);
+        auto result = queries->findTopLevel(project);
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
@@ -435,7 +435,7 @@ private slots:
                                                                                    serializer,
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto project = serializer->createProjectFromItem(data.item(42));
-        auto result = queries->findTopLevelArtifacts(project);
+        auto result = queries->findTopLevel(project);
 
         bool replaceHandlerCalled = false;
         result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Artifact::Ptr &, int) {
@@ -478,8 +478,8 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto project1 = serializer->createProjectFromItem(data.item(42));
         auto project2 = serializer->createProjectFromItem(data.item(43));
-        auto result1 = queries->findTopLevelArtifacts(project1);
-        auto result2 = queries->findTopLevelArtifacts(project2);
+        auto result1 = queries->findTopLevel(project1);
+        auto result2 = queries->findTopLevel(project2);
 
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result1->data().size(), 1);
@@ -518,7 +518,7 @@ private slots:
                                                                                    serializer,
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         auto project = serializer->createProjectFromItem(data.item(42));
-        auto result = queries->findTopLevelArtifacts(project);
+        auto result = queries->findTopLevel(project);
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 

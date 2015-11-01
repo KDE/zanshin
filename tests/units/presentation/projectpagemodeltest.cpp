@@ -63,12 +63,9 @@ private slots:
         // One note and one task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle("rootTask");
-        auto rootNote = Domain::Note::Ptr::create();
-        rootNote->setTitle("rootNote");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(rootTask);
-        artifactProvider->append(rootNote);
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(rootTask);
 
         // One task under the root task
         auto childTask = Domain::Task::Ptr::create();
@@ -79,7 +76,7 @@ private slots:
         taskProvider->append(childTask);
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
@@ -99,34 +96,30 @@ private slots:
 
         // THEN
         const QModelIndex rootTaskIndex = model->index(0, 0);
-        const QModelIndex rootNoteIndex = model->index(1, 0);
         const QModelIndex childTaskIndex = model->index(0, 0, rootTaskIndex);
 
         QCOMPARE(page.project(), project);
 
-        QCOMPARE(model->rowCount(), 2);
+        QCOMPARE(model->rowCount(), 1);
         QCOMPARE(model->rowCount(rootTaskIndex), 1);
-        QCOMPARE(model->rowCount(rootNoteIndex), 0);
         QCOMPARE(model->rowCount(childTaskIndex), 0);
 
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
                                          | Qt::ItemIsEditable
-                                         | Qt::ItemIsDragEnabled;
-        QCOMPARE(model->flags(rootTaskIndex), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
-        QCOMPARE(model->flags(rootNoteIndex), defaultFlags);
-        QCOMPARE(model->flags(childTaskIndex), defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled);
+                                         | Qt::ItemIsDragEnabled
+                                         | Qt::ItemIsUserCheckable
+                                         | Qt::ItemIsDropEnabled;
+        QCOMPARE(model->flags(rootTaskIndex), defaultFlags);
+        QCOMPARE(model->flags(childTaskIndex), defaultFlags);
 
         QCOMPARE(model->data(rootTaskIndex).toString(), rootTask->title());
-        QCOMPARE(model->data(rootNoteIndex).toString(), rootNote->title());
         QCOMPARE(model->data(childTaskIndex).toString(), childTask->title());
 
         QCOMPARE(model->data(rootTaskIndex, Qt::EditRole).toString(), rootTask->title());
-        QCOMPARE(model->data(rootNoteIndex, Qt::EditRole).toString(), rootNote->title());
         QCOMPARE(model->data(childTaskIndex, Qt::EditRole).toString(), childTask->title());
 
         QVERIFY(model->data(rootTaskIndex, Qt::CheckStateRole).isValid());
-        QVERIFY(!model->data(rootNoteIndex, Qt::CheckStateRole).isValid());
         QVERIFY(model->data(childTaskIndex, Qt::CheckStateRole).isValid());
 
         QCOMPARE(model->data(rootTaskIndex, Qt::CheckStateRole).toBool(), rootTask->isDone());
@@ -135,23 +128,18 @@ private slots:
         // WHEN
         taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).thenReturn(new FakeJob(this));
-        noteRepositoryMock(&Domain::NoteRepository::update).when(rootNote).thenReturn(new FakeJob(this));
 
         QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
-        QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
         QVERIFY(model->setData(childTaskIndex, "newChildTask"));
 
         QVERIFY(model->setData(rootTaskIndex, Qt::Checked, Qt::CheckStateRole));
-        QVERIFY(!model->setData(rootNoteIndex, Qt::Checked, Qt::CheckStateRole));
         QVERIFY(model->setData(childTaskIndex, Qt::Unchecked, Qt::CheckStateRole));
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).exactly(2));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).exactly(2));
-        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(rootNote).exactly(1));
 
         QCOMPARE(rootTask->title(), QString("newRootTask"));
-        QCOMPARE(rootNote->title(), QString("newRootNote"));
         QCOMPARE(childTask->title(), QString("newChildTask"));
 
         QCOMPARE(rootTask->isDone(), true);
@@ -166,15 +154,6 @@ private slots:
                  Domain::Artifact::List() << childTask);
 
         // WHEN
-        data = model->mimeData(QModelIndexList() << rootNoteIndex);
-
-        // THEN
-        QVERIFY(data->hasFormat("application/x-zanshin-object"));
-        QCOMPARE(data->property("objects").value<Domain::Artifact::List>(),
-                 Domain::Artifact::List() << rootNote);
-
-
-        // WHEN
         auto childTask2 = Domain::Task::Ptr::create();
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask2).thenReturn(new FakeJob(this));
         data = new QMimeData;
@@ -185,15 +164,6 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask2).exactly(1));
 
-
-        // WHEN
-        data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << rootNote));
-        bool result = model->dropMimeData(data, Qt::MoveAction, -1, -1, childTaskIndex);
-
-        // THEN
-        QVERIFY(!result);
 
         // WHEN
         auto childTask3 = Domain::Task::Ptr::create();
@@ -297,13 +267,13 @@ private slots:
         // Two tasks
         auto task1 = Domain::Task::Ptr::create();
         auto task2 = Domain::Task::Ptr::create();
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(task1);
-        artifactProvider->append(task2);
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(task1);
+        topLevelProvider->append(task2);
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -340,13 +310,13 @@ private slots:
         auto task1 = Domain::Task::Ptr::create();
         auto task2 = Domain::Task::Ptr::create();
         task2->setTitle("Task2");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(task1);
-        artifactProvider->append(task2);
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(task1);
+        topLevelProvider->append(task2);
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -376,46 +346,6 @@ private slots:
         QCOMPARE(errorHandler.m_message, QString("Cannot remove task Task2 from project Project1: Foo"));
     }
 
-    // Clearly this one will go away when we'll get more support of notes
-    void shouldNotTryToDeleteNotes()
-    {
-        // GIVEN
-
-        // One project
-        auto project = Domain::Project::Ptr::create();
-
-        // One task, one note
-        auto task1 = Domain::Task::Ptr::create();
-        auto note2 = Domain::Note::Ptr::create();
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(task1);
-        artifactProvider->append(note2);
-
-        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
-
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).thenReturn(new FakeJob(this));
-
-        Presentation::ProjectPageModel page(project,
-                                            projectQueriesMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
-
-        // WHEN
-        const QModelIndex index = page.centralListModel()->index(1, 0);
-        page.removeItem(index);
-
-        // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).exactly(0));
-    }
-
     void shouldGetAnErrorMessageWhenUpdateTaskFailed()
     {
         // GIVEN
@@ -427,12 +357,12 @@ private slots:
         // One note and one task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle("rootTask");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(rootTask);
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(rootTask);
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -463,52 +393,6 @@ private slots:
         QCOMPARE(errorHandler.m_message, QString("Cannot modify task rootTask in project Project1: Foo"));
     }
 
-    void shouldGetAnErrorMessageWhenUpdateNoteFailed()
-    {
-        // GIVEN
-
-        // One project
-        auto project = Domain::Project::Ptr::create();
-        project->setName("Project1");
-
-        // One note and one task
-        auto rootNote = Domain::Note::Ptr::create();
-        rootNote->setTitle("rootNote");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(rootNote);
-
-        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
-
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
-        Presentation::ProjectPageModel page(project,
-                                            projectQueriesMock.getInstance(),
-                                            taskQueriesMock.getInstance(),
-                                            taskRepositoryMock.getInstance(),
-                                            noteRepositoryMock.getInstance());
-
-        QAbstractItemModel *model = page.centralListModel();
-        const QModelIndex rootNoteIndex = model->index(0, 0);
-        FakeErrorHandler errorHandler;
-        page.setErrorHandler(&errorHandler);
-
-        // WHEN
-        auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
-        noteRepositoryMock(&Domain::NoteRepository::update).when(rootNote).thenReturn(job);
-
-        QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
-
-        // THEN
-        QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify note rootNote in project Project1: Foo"));
-    }
-
     void shouldGetAnErrorMessageWhenAssociateTaskFailed()
     {
         // GIVEN
@@ -520,12 +404,12 @@ private slots:
         // One note and one task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle("rootTask");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(rootTask);
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(rootTask);
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
-        projectQueriesMock(&Domain::ProjectQueries::findTopLevelArtifacts).when(project).thenReturn(artifactResult);
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());

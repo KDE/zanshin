@@ -41,16 +41,16 @@ public:
     typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
 
-    typedef Domain::LiveQueryOutput<Domain::Artifact::Ptr> ArtifactQueryOutput;
-    typedef Domain::QueryResultProvider<Domain::Artifact::Ptr> ArtifactProvider;
-    typedef Domain::QueryResult<Domain::Artifact::Ptr> ArtifactResult;
+    typedef Domain::LiveQueryOutput<Domain::Task::Ptr> TaskQueryOutput;
+    typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
+    typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
 
     ProjectQueries(const StorageInterface::Ptr &storage,
                    const SerializerInterface::Ptr &serializer,
                    const MonitorInterface::Ptr &monitor);
 
     ProjectResult::Ptr findAll() const Q_DECL_OVERRIDE;
-    ArtifactResult::Ptr findTopLevelArtifacts(Domain::Project::Ptr project) const Q_DECL_OVERRIDE;
+    TaskResult::Ptr findTopLevel(Domain::Project::Ptr project) const Q_DECL_OVERRIDE;
 
 private:
     SerializerInterface::Ptr m_serializer;
@@ -58,7 +58,7 @@ private:
     LiveQueryIntegrator::Ptr m_integrator;
 
     mutable ProjectQueryOutput::Ptr m_findAll;
-    mutable QHash<Akonadi::Entity::Id, ArtifactQueryOutput::Ptr> m_findTopLevel;
+    mutable QHash<Akonadi::Entity::Id, TaskQueryOutput::Ptr> m_findTopLevel;
 };
 
 }
