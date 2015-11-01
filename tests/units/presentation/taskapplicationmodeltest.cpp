@@ -33,7 +33,6 @@ private slots:
     void shouldProvideAvailableTaskPagesModel()
     {
         // GIVEN
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -45,8 +44,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        Presentation::TaskApplicationModel app(artifactQueries,
-                                               projectQueries,
+        Presentation::TaskApplicationModel app(projectQueries,
                                                projectRepository,
                                                contextQueries,
                                                contextRepository,

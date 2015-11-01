@@ -27,7 +27,6 @@
 
 #include <QObject>
 
-#include "domain/artifactqueries.h"
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
 #include "domain/datasourcerepository.h"
@@ -59,8 +58,7 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
 public:
-    explicit ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                              const Domain::ProjectQueries::Ptr &projectQueries,
+    explicit ApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
                               const Domain::ProjectRepository::Ptr &projectRepository,
                               const Domain::ContextQueries::Ptr &contextQueries,
                               const Domain::ContextRepository::Ptr &contextRepository,
@@ -107,8 +105,6 @@ private:
     QObject *m_editor;
 
 protected:
-    Domain::ArtifactQueries::Ptr m_artifactQueries;
-
     Domain::ProjectQueries::Ptr m_projectQueries;
     Domain::ProjectRepository::Ptr m_projectRepository;
 

@@ -25,7 +25,6 @@
 
 #include "utils/mockobject.h"
 
-#include "domain/artifactqueries.h"
 #include "domain/datasourcequeries.h"
 #include "domain/noterepository.h"
 #include "domain/taskqueries.h"
@@ -75,8 +74,7 @@ class ApplicationModel : public Presentation::ApplicationModel
 {
     Q_OBJECT
 public:
-    explicit ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                              const Domain::ProjectQueries::Ptr &projectQueries,
+    explicit ApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
                               const Domain::ProjectRepository::Ptr &projectRepository,
                               const Domain::ContextQueries::Ptr &contextQueries,
                               const Domain::ContextRepository::Ptr &contextRepository,
@@ -88,8 +86,7 @@ public:
                               const Domain::TagQueries::Ptr &tagQueries,
                               const Domain::TagRepository::Ptr &tagRepository,
                               QObject *parent = Q_NULLPTR)
-        : Presentation::ApplicationModel(artifactQueries,
-                                         projectQueries,
+        : Presentation::ApplicationModel(projectQueries,
                                          projectRepository,
                                          contextQueries,
                                          contextRepository,
@@ -118,7 +115,6 @@ private slots:
     void shouldProvideAvailableSourcesModel()
     {
         // GIVEN
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -130,8 +126,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -153,7 +148,6 @@ private slots:
     void shouldProvideAvailablePagesModel()
     {
         // GIVEN
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -165,8 +159,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -188,7 +181,6 @@ private slots:
     void shouldProvideCurrentPage()
     {
         // GIVEN
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -200,8 +192,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -233,7 +224,6 @@ private slots:
     void shouldProvideArtifactEditorModel()
     {
         // GIVEN
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -245,8 +235,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -272,7 +261,6 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -283,8 +271,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -332,7 +319,6 @@ private slots:
             taskRepositoryMock(&Domain::TaskRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
         }
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -342,8 +328,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -386,7 +371,6 @@ private slots:
             taskRepositoryMock(&Domain::TaskRepository::isDefaultSource).when(source).thenReturn(false);
         }
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -396,8 +380,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -432,7 +415,6 @@ private slots:
         // Repository mock returning the data source as default
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -442,8 +424,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -482,7 +463,6 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::setDefaultSource).when(source).thenReturn();
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -492,8 +472,7 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -540,7 +519,6 @@ private slots:
             noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
         }
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -550,8 +528,7 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -594,7 +571,6 @@ private slots:
             noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(false);
         }
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -604,8 +580,7 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -640,7 +615,6 @@ private slots:
         // Repository mock returning the data source as default
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -650,8 +624,7 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -690,7 +663,6 @@ private slots:
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).thenReturn();
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -700,8 +672,7 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,
@@ -727,7 +698,6 @@ private slots:
         // An ErrorHandler
         FakeErrorHandler errorHandler;
 
-        auto artifactQueries = Domain::ArtifactQueries::Ptr();
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
@@ -739,8 +709,7 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(artifactQueries,
-                             projectQueries,
+        ApplicationModel app(projectQueries,
                              projectRepository,
                              contextQueries,
                              contextRepository,

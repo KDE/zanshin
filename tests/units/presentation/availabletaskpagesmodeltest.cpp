@@ -101,8 +101,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -337,8 +336,7 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -379,8 +377,7 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -426,8 +423,7 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     Domain::ContextRepository::Ptr(),
@@ -485,8 +481,7 @@ private slots:
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -524,8 +519,7 @@ private slots:
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    Domain::ProjectQueries::Ptr(),
+        Presentation::AvailableTaskPagesModel pages(Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     Domain::ContextQueries::Ptr(),
                                                     Domain::ContextRepository::Ptr(),
@@ -556,8 +550,7 @@ private slots:
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(job);
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    Domain::ProjectQueries::Ptr(),
+        Presentation::AvailableTaskPagesModel pages(Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     Domain::ContextQueries::Ptr(),
                                                     Domain::ContextRepository::Ptr(),
@@ -583,8 +576,7 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    Domain::ProjectQueries::Ptr(),
+        Presentation::AvailableTaskPagesModel pages(Domain::ProjectQueries::Ptr(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     Domain::ContextQueries::Ptr(),
                                                     contextRepositoryMock.getInstance(),
@@ -610,8 +602,7 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(job);
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    Domain::ProjectQueries::Ptr(),
+        Presentation::AvailableTaskPagesModel pages(Domain::ProjectQueries::Ptr(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     Domain::ContextQueries::Ptr(),
                                                     contextRepositoryMock.getInstance(),
@@ -655,8 +646,7 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     Domain::ContextRepository::Ptr(),
@@ -704,8 +694,7 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     Domain::ContextRepository::Ptr(),
@@ -757,8 +746,7 @@ private slots:
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -805,8 +793,7 @@ private slots:
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
 
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -872,8 +859,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -938,8 +924,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -1005,8 +990,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -1073,8 +1057,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
@@ -1129,8 +1112,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(Domain::ArtifactQueries::Ptr(),
-                                                    projectQueriesMock.getInstance(),
+        Presentation::AvailableTaskPagesModel pages(projectQueriesMock.getInstance(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),

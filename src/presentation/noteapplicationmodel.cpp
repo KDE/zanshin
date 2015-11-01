@@ -28,8 +28,7 @@
 
 using namespace Presentation;
 
-NoteApplicationModel::NoteApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                                           const Domain::ProjectQueries::Ptr &projectQueries,
+NoteApplicationModel::NoteApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
                                            const Domain::ProjectRepository::Ptr &projectRepository,
                                            const Domain::ContextQueries::Ptr &contextQueries,
                                            const Domain::ContextRepository::Ptr &contextRepository,
@@ -42,8 +41,7 @@ NoteApplicationModel::NoteApplicationModel(const Domain::ArtifactQueries::Ptr &a
                                            const Domain::TagQueries::Ptr &tagQueries,
                                            const Domain::TagRepository::Ptr &tagRepository,
                                            QObject *parent)
-    : ApplicationModel(artifactQueries,
-                       projectQueries,
+    : ApplicationModel(projectQueries,
                        projectRepository,
                        contextQueries,
                        contextRepository,

@@ -46,8 +46,7 @@
 
 using namespace Presentation;
 
-AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                                                 const Domain::ProjectQueries::Ptr &projectQueries,
+AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ProjectQueries::Ptr &projectQueries,
                                                  const Domain::ProjectRepository::Ptr &projectRepository,
                                                  const Domain::ContextQueries::Ptr &contextQueries,
                                                  const Domain::ContextRepository::Ptr &contextRepository,
@@ -58,7 +57,6 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ArtifactQueries::
     : AvailablePagesModelInterface(parent),
       m_pageListModel(Q_NULLPTR),
       m_sortProxyModel(Q_NULLPTR),
-      m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
       m_contextQueries(contextQueries),

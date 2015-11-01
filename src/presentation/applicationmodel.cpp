@@ -24,7 +24,6 @@
 
 #include "applicationmodel.h"
 
-#include "domain/artifactqueries.h"
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
 #include "domain/datasourcequeries.h"
@@ -45,8 +44,7 @@
 
 using namespace Presentation;
 
-ApplicationModel::ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                                   const Domain::ProjectQueries::Ptr &projectQueries,
+ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
                                    const Domain::ProjectRepository::Ptr &projectRepository,
                                    const Domain::ContextQueries::Ptr &contextQueries,
                                    const Domain::ContextRepository::Ptr &contextRepository,
@@ -63,7 +61,6 @@ ApplicationModel::ApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQ
       m_availablePages(Q_NULLPTR),
       m_currentPage(Q_NULLPTR),
       m_editor(Q_NULLPTR),
-      m_artifactQueries(artifactQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
       m_contextQueries(contextQueries),

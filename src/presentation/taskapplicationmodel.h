@@ -33,8 +33,7 @@ class TaskApplicationModel : public ApplicationModel
 {
     Q_OBJECT
 public:
-    explicit TaskApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                                  const Domain::ProjectQueries::Ptr &projectQueries,
+    explicit TaskApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
                                   const Domain::ProjectRepository::Ptr &projectRepository,
                                   const Domain::ContextQueries::Ptr &contextQueries,
                                   const Domain::ContextRepository::Ptr &contextRepository,

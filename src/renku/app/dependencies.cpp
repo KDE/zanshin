@@ -23,7 +23,6 @@
 
 #include "dependencies.h"
 
-#include "akonadi/akonadiartifactqueries.h"
 #include "akonadi/akonadicontextqueries.h"
 #include "akonadi/akonadicontextrepository.h"
 #include "akonadi/akonadidatasourcequeries.h"
@@ -57,11 +56,6 @@ void App::initializeDependencies()
     deps.add<Akonadi::SerializerInterface, Akonadi::Serializer, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::StorageInterface, Akonadi::Storage, Utils::DependencyManager::UniqueInstance>();
 
-
-    deps.add<Domain::ArtifactQueries,
-             Akonadi::ArtifactQueries(Akonadi::StorageInterface*,
-                                      Akonadi::SerializerInterface*,
-                                      Akonadi::MonitorInterface*)>();
 
     deps.add<Domain::ContextQueries,
              Akonadi::ContextQueries(Akonadi::StorageInterface*,
@@ -120,8 +114,7 @@ void App::initializeDependencies()
 
 
     deps.add<Presentation::ApplicationModel,
-             Presentation::NoteApplicationModel(Domain::ArtifactQueries*,
-                                                Domain::ProjectQueries*,
+             Presentation::NoteApplicationModel(Domain::ProjectQueries*,
                                                 Domain::ProjectRepository*,
                                                 Domain::ContextQueries*,
                                                 Domain::ContextRepository*,

@@ -35,8 +35,7 @@ class NoteApplicationModel : public ApplicationModel
 {
     Q_OBJECT
 public:
-    explicit NoteApplicationModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
-                                  const Domain::ProjectQueries::Ptr &projectQueries,
+    explicit NoteApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
                                   const Domain::ProjectRepository::Ptr &projectRepository,
                                   const Domain::ContextQueries::Ptr &contextQueries,
                                   const Domain::ContextRepository::Ptr &contextRepository,
