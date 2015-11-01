@@ -13,7 +13,8 @@ Feature: Tag reset
     And I look at the central list
     And I list the items
     Then the list is:
-        | display                          |
-        | A note about nothing interesting |
-        | A note about philosophy          |
+       | display                          |
+       | A note about nothing interesting |
+       | A note about philosophy          |
+       | A random note on life            |
 
