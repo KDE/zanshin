@@ -41,7 +41,7 @@ ContextPageModel::ContextPageModel(const Domain::Context::Ptr &context,
                                    const Domain::ContextRepository::Ptr &contextRepository,
                                    const Domain::TaskRepository::Ptr &taskRepository,
                                    QObject *parent)
-    :PageModel(parent),
+    : PageModel(parent),
       m_context(context),
       m_contextQueries(contextQueries),
       m_contextRepository(contextRepository),
