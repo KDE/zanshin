@@ -28,11 +28,36 @@
 
 #include <functional>
 
+// Qt5 TODO, shouldn't be needed anymore, QVariant will do the right thing
+#include "domain/note.h"
+#include "domain/task.h"
+
 #include "domain/queryresultinterface.h"
 
 #include "querytreemodelbase.h"
 
 namespace Presentation {
+
+// Qt5 TODO, shouldn't be needed anymore, QVariant will do the right thing
+namespace Internal {
+    template<typename T>
+    QVariant variantFromValue(const T &object)
+    {
+        return QVariant::fromValue(object);
+    }
+
+    template<>
+    inline QVariant variantFromValue<Domain::Note::Ptr>(const Domain::Note::Ptr &task)
+    {
+        return QVariant::fromValue(task.staticCast<Domain::Artifact>());
+    }
+
+    template<>
+    inline QVariant variantFromValue<Domain::Task::Ptr>(const Domain::Task::Ptr &note)
+    {
+        return QVariant::fromValue(note.staticCast<Domain::Artifact>());
+    }
+}
 
 template<typename ItemType>
 class QueryTreeNode : public QueryTreeNodeBase
@@ -84,7 +109,7 @@ public:
     QVariant data(int role) const Q_DECL_OVERRIDE
     {
         if (role == QueryTreeModelBase::ObjectRole)
-            return QVariant::fromValue(m_item);
+            return Internal::variantFromValue(m_item);
 
         return m_dataFunction(m_item, role);
     }

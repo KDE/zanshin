@@ -719,6 +719,42 @@ private slots:
         QCOMPARE(data.value<QColor>(), provider->data().at(1));
     }
 
+    void shouldProvideUnderlyingTaskAsArtifact()
+    {
+        // GIVEN
+        auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        foreach (const auto &task, createTasks())
+            provider->append(task);
+
+        auto queryGenerator = [&](const Domain::Task::Ptr &artifact) {
+            if (!artifact)
+                return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
+            else
+                return Domain::QueryResult<Domain::Task::Ptr>::Ptr();
+        };
+        auto flagsFunction = [](const Domain::Task::Ptr &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [](const Domain::Task::Ptr &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
+            return false;
+        };
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction);
+        new ModelTest(&model);
+
+        // WHEN
+        const QModelIndex index = model.index(1, 0);
+        const QVariant data = index.data(Presentation::QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+
+        // THEN
+        QVERIFY(data.isValid());
+        // Note it says Artifact and *not* Task here, it should up-cast automatically
+        QVERIFY(!data.value<Domain::Artifact::Ptr>().isNull());
+        QCOMPARE(data.value<Domain::Artifact::Ptr>(), provider->data().at(1).staticCast<Domain::Artifact>());
+    }
+
     void shouldCreateMimeData()
     {
         // GIVEN

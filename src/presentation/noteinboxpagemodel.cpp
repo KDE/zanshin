@@ -52,7 +52,9 @@ Domain::Artifact::Ptr NoteInboxPageModel::addItem(const QString &title)
 void NoteInboxPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModel<Domain::Note::Ptr>::ObjectRole);
-    auto note = data.value<Domain::Note::Ptr>();
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto note = artifact.objectCast<Domain::Note>();
+    Q_ASSERT(note);
     const auto job = m_noteRepository->remove(note);
     installHandler(job, tr("Cannot remove note %1 from Inbox").arg(note->title()));
 }

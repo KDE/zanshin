@@ -68,7 +68,8 @@ Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title)
 void ContextPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
-    auto task = data.value<Domain::Task::Ptr>();
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto task = artifact.objectCast<Domain::Task>();
     const auto job = m_contextRepository->dissociate(m_context, task);
     installHandler(job, tr("Cannot remove task %1 from context %2").arg(task->title()).arg(m_context->name()));
 }

@@ -68,7 +68,9 @@ Domain::Artifact::Ptr TagPageModel::addItem(const QString &title)
 void TagPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
-    auto note = data.value<Domain::Note::Ptr>();
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto note = artifact.objectCast<Domain::Note>();
+    Q_ASSERT(note);
     const auto job = m_tagRepository->dissociate(m_tag, note);
     installHandler(job, tr("Cannot remove note %1 from tag %2").arg(note->title()).arg(m_tag->name()));
 }
