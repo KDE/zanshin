@@ -50,7 +50,7 @@ ProjectQueries::ArtifactResult::Ptr ProjectQueries::findTopLevelArtifacts(Domain
 {
     Akonadi::Item item = m_serializer->createItemFromProject(project);
     auto &query = m_findTopLevel[item.id()];
-    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks | StorageInterface::Notes);
+    auto fetch = m_helpers->fetchSiblings(item);
     auto predicate = [this, project] (const Akonadi::Item &item) {
         return m_serializer->isProjectChild(project, item);
     };

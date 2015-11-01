@@ -28,7 +28,6 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
-#include "testlib/gennote.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
 
@@ -218,14 +217,14 @@ private slots:
         QCOMPARE(result->data().at(0)->name(), QString("42"));
     }
 
-    void shouldLookInAllCollectionsForProjectTopLevelArtifacts()
+    void shouldLookOnlyInParentCollectionForProjectTopLevelArtifacts()
     {
         // GIVEN
         AkonadiFakeData data;
 
         // Two top level collections
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
 
         // One project and two tasks in the first collection (one task being child of the project)
         data.createItem(GenTodo().withId(42).withParent(42)
@@ -236,10 +235,10 @@ private slots:
         data.createItem(GenTodo().withId(44).withParent(42)
                                  .withTitle("44").withUid("uid-44"));
 
-        // Two notes in the second collection (one being child of the project)
-        data.createItem(GenNote().withId(45).withParent(43)
+        // Two tasks in the second collection (one having the project uid as parent)
+        data.createItem(GenTodo().withId(45).withParent(43)
                                  .withTitle("45").withParentUid("uid-42"));
-        data.createItem(GenNote().withId(46).withParent(43).withTitle("46"));
+        data.createItem(GenTodo().withId(46).withParent(43).withTitle("46"));
 
         // WHEN
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -255,16 +254,14 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->title(), QString("43"));
-        QCOMPARE(result->data().at(1)->title(), QString("45"));
 
         // Should not change nothing
         result = queries->findTopLevelArtifacts(project);
 
-        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->title(), QString("43"));
-        QCOMPARE(result->data().at(1)->title(), QString("45"));
     }
 
     void shouldNotCrashWhenWeAskAgainTheSameTopLevelArtifacts()
