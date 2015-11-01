@@ -43,7 +43,6 @@
 #include "presentation/availablepagessortfilterproxymodel.h"
 #include "presentation/availabletaskpagesmodel.h"
 #include "presentation/contextpagemodel.h"
-#include "presentation/inboxpagemodel.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodelbase.h"
 

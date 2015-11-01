@@ -35,10 +35,10 @@
 
 #include "presentation/availablepagessortfilterproxymodel.h"
 #include "presentation/contextpagemodel.h"
-#include "presentation/inboxpagemodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
+#include "presentation/taskinboxpagemodel.h"
 #include "presentation/workdaypagemodel.h"
 
 #include "utils/jobhandler.h"
@@ -86,10 +86,10 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
 
     if (object == m_inboxObject) {
-        auto inboxPageModel = new InboxPageModel(m_artifactQueries,
-                                                 m_taskQueries, m_taskRepository,
-                                                 m_noteRepository,
-                                                 this);
+        auto inboxPageModel = new TaskInboxPageModel(m_artifactQueries,
+                                                     m_taskQueries, m_taskRepository,
+                                                     m_noteRepository,
+                                                     this);
         inboxPageModel->setErrorHandler(errorHandler());
         return inboxPageModel;
     } else if (object == m_workdayObject) {

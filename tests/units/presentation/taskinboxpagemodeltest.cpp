@@ -29,7 +29,8 @@
 #include "domain/noterepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
-#include "presentation/inboxpagemodel.h"
+
+#include "presentation/taskinboxpagemodel.h"
 #include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
@@ -48,7 +49,7 @@ public:
     QString m_message;
 };
 
-class InboxPageModelTest : public QObject
+class TaskInboxPageModelTest : public QObject
 {
     Q_OBJECT
 private slots:
@@ -84,10 +85,10 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = inbox.centralListModel();
@@ -218,10 +219,10 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(new FakeJob(this));
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
 
         // WHEN
         auto title = QString("New task");
@@ -250,10 +251,10 @@ private slots:
         job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(job);
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         inbox.setErrorHandler(&errorHandler);
@@ -290,10 +291,10 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(new FakeJob(this));
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
 
         // WHEN
         const QModelIndex index = inbox.centralListModel()->index(1, 0);
@@ -330,10 +331,10 @@ private slots:
         job->setExpectedError(KJob::KilledJobError, "Foo");
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(job);
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         inbox.setErrorHandler(&errorHandler);
 
@@ -344,42 +345,6 @@ private slots:
         // THEN
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot remove task task2 from Inbox: Foo"));
-    }
-
-    // Clearly this one will go away when we'll get more support of notes
-    void shouldNotTryToDeleteNotes()
-    {
-        // GIVEN
-
-        // One task, one note
-        auto task1 = Domain::Task::Ptr::create();
-        auto note2 = Domain::Note::Ptr::create();
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(task1);
-        artifactProvider->append(note2);
-
-        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
-        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
-
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).thenReturn(new FakeJob(this));
-
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
-
-        // WHEN
-        const QModelIndex index = inbox.centralListModel()->index(1, 0);
-        inbox.removeItem(index);
-
-        // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(Domain::Task::Ptr()).exactly(0));
     }
 
     void shouldGetAnErrorMessageWhenUpdateTaskFailed()
@@ -403,10 +368,10 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
 
         QAbstractItemModel *model = inbox.centralListModel();
         const QModelIndex rootTaskIndex = model->index(0, 0);
@@ -423,46 +388,6 @@ private slots:
         // THEN
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify task rootTask in Inbox: Foo"));
-    }
-
-    void shouldGetAnErrorMessageWhenUpdateNoteFailed()
-    {   
-        // GIVEN
-        
-        // One note and one task
-        auto rootNote = Domain::Note::Ptr::create();
-        rootNote->setTitle("rootNote");
-        auto artifactProvider = Domain::QueryResultProvider<Domain::Artifact::Ptr>::Ptr::create();
-        auto artifactResult = Domain::QueryResult<Domain::Artifact::Ptr>::create(artifactProvider);
-        artifactProvider->append(rootNote);
-        
-        Utils::MockObject<Domain::ArtifactQueries> artifactQueriesMock;
-        artifactQueriesMock(&Domain::ArtifactQueries::findInboxTopLevel).when().thenReturn(artifactResult);
-        
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
-        
-        QAbstractItemModel *model = inbox.centralListModel();
-        const QModelIndex rootNoteIndex = model->index(0, 0);
-        FakeErrorHandler errorHandler;
-        inbox.setErrorHandler(&errorHandler);
-        
-        // WHEN
-        auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
-        noteRepositoryMock(&Domain::NoteRepository::update).when(rootNote).thenReturn(job);
-        
-        QVERIFY(model->setData(rootNoteIndex, "newRootNote"));
-        
-        // THEN
-        QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify note rootNote in Inbox: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenAssociateTaskFailed()
@@ -486,10 +411,10 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
 
         QAbstractItemModel *model = inbox.centralListModel();
         const QModelIndex rootTaskIndex = model->index(0, 0);
@@ -552,10 +477,10 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
 
-        Presentation::InboxPageModel inbox(artifactQueriesMock.getInstance(),
-                                           taskQueriesMock.getInstance(),
-                                           taskRepositoryMock.getInstance(),
-                                           noteRepositoryMock.getInstance());
+        Presentation::TaskInboxPageModel inbox(artifactQueriesMock.getInstance(),
+                                               taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance(),
+                                               noteRepositoryMock.getInstance());
 
         QAbstractItemModel *model = inbox.centralListModel();
         const QModelIndex emptyPartModel = QModelIndex(); // model root, drop on the empty part is equivalent
@@ -582,6 +507,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(InboxPageModelTest)
+QTEST_MAIN(TaskInboxPageModelTest)
 
-#include "inboxpagemodeltest.moc"
+#include "taskinboxpagemodeltest.moc"

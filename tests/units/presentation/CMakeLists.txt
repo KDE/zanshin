@@ -8,7 +8,6 @@ zanshin_auto_tests(
   availabletaskpagesmodeltest
   errorhandlertest
   errorhandlingmodelbasetest
-  inboxpagemodeltest
   metatypestest
   noteapplicationmodeltest
   noteinboxpagemodeltest
@@ -17,6 +16,7 @@ zanshin_auto_tests(
   querytreemodeltest
   tagpagemodeltest
   taskapplicationmodeltest
+  taskinboxpagemodeltest
   tasklistmodeltest
   contextpagemodeltest
   workdaypagemodeltest

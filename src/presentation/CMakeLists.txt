@@ -11,7 +11,6 @@ set(presentation_SRCS
     datasourcelistmodel.cpp
     errorhandler.cpp
     errorhandlingmodelbase.cpp
-    inboxpagemodel.cpp
     metatypes.cpp
     noteapplicationmodel.cpp
     noteinboxpagemodel.cpp
@@ -20,6 +19,7 @@ set(presentation_SRCS
     querytreemodelbase.cpp
     tagpagemodel.cpp
     taskapplicationmodel.cpp
+    taskinboxpagemodel.cpp
     tasklistmodel.cpp
     workdaypagemodel.cpp
 )

@@ -36,7 +36,6 @@
 #include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/datasourcelistmodel.h"
-#include "presentation/inboxpagemodel.h"
 #include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"

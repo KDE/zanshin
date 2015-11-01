@@ -22,8 +22,8 @@
 */
 
 
-#ifndef PRESENTATION_INBOXPAGEMODEL_H
-#define PRESENTATION_INBOXPAGEMODEL_H
+#ifndef PRESENTATION_TASKINBOXPAGEMODEL_H
+#define PRESENTATION_TASKINBOXPAGEMODEL_H
 
 #include "presentation/pagemodel.h"
 
@@ -34,11 +34,11 @@
 
 namespace Presentation {
 
-class InboxPageModel : public PageModel
+class TaskInboxPageModel : public PageModel
 {
     Q_OBJECT
 public:
-    explicit InboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+    explicit TaskInboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
                             const Domain::TaskQueries::Ptr &taskQueries,
                             const Domain::TaskRepository::Ptr &taskRepository,
                             const Domain::NoteRepository::Ptr &noteRepository,
@@ -58,4 +58,4 @@ private:
 
 }
 
-#endif // PRESENTATION_INBOXPAGEMODEL_H
+#endif // PRESENTATION_TASKINBOXPAGEMODEL_H

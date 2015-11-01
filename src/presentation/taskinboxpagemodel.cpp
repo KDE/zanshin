@@ -22,7 +22,7 @@
 */
 
 
-#include "inboxpagemodel.h"
+#include "taskinboxpagemodel.h"
 
 #include <QMimeData>
 
@@ -35,7 +35,7 @@
 
 using namespace Presentation;
 
-InboxPageModel::InboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
+TaskInboxPageModel::TaskInboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueries,
                                const Domain::TaskQueries::Ptr &taskQueries,
                                const Domain::TaskRepository::Ptr &taskRepository,
                                const Domain::NoteRepository::Ptr &noteRepository,
@@ -48,7 +48,7 @@ InboxPageModel::InboxPageModel(const Domain::ArtifactQueries::Ptr &artifactQueri
 {
 }
 
-Domain::Artifact::Ptr InboxPageModel::addItem(const QString &title)
+Domain::Artifact::Ptr TaskInboxPageModel::addItem(const QString &title)
 {
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
@@ -58,7 +58,7 @@ Domain::Artifact::Ptr InboxPageModel::addItem(const QString &title)
     return task;
 }
 
-void InboxPageModel::removeItem(const QModelIndex &index)
+void TaskInboxPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
@@ -69,7 +69,7 @@ void InboxPageModel::removeItem(const QModelIndex &index)
     }
 }
 
-QAbstractItemModel *InboxPageModel::createCentralListModel()
+QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
         if (!artifact)
