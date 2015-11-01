@@ -51,6 +51,7 @@ public:
     TaskResult::Ptr findAll() const Q_DECL_OVERRIDE;
     TaskResult::Ptr findChildren(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
     TaskResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
+    TaskResult::Ptr findInboxTopLevel() const Q_DECL_OVERRIDE;
     TaskResult::Ptr findWorkdayTopLevel() const Q_DECL_OVERRIDE;
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
 
@@ -62,6 +63,7 @@ private:
     mutable TaskQueryOutput::Ptr m_findAll;
     mutable QHash<Akonadi::Entity::Id, TaskQueryOutput::Ptr> m_findChildren;
     mutable TaskQueryOutput::Ptr m_findTopLevel;
+    mutable TaskQueryOutput::Ptr m_findInboxTopLevel;
     mutable TaskQueryOutput::Ptr m_findWorkdayTopLevel;
 };
 

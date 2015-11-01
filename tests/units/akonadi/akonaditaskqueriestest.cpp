@@ -28,6 +28,8 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
+#include "testlib/gennote.h"
+#include "testlib/gentag.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
 
@@ -1030,6 +1032,323 @@ private slots:
         QCOMPARE(result->data().size(), 2);
         QCOMPARE(result->data().at(0)->title(), QString("42"));
         QCOMPARE(result->data().at(1)->title(), QString("43"));
+    }
+
+    void shouldLookInAllSelectedCollectionsForInboxTopLevel()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // Three top level collections
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withTaskContent().enabled(false));
+
+        // One note in the first collection
+        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+
+        // Two tasks in the second collection
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43"));
+        data.createItem(GenTodo().withId(44).withParent(43).withTitle("44"));
+
+        // One task in the third collection
+        data.createItem(GenTodo().withId(45).withParent(44).withTitle("45"));
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        result->data();
+        result = queries->findInboxTopLevel(); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->title(), QString("43"));
+        QCOMPARE(result->data().at(1)->title(), QString("44"));
+    }
+
+    void shouldIgnoreItemsWhichAreNotTasksInInboxTopLevel()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Two items in the collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
+        // One of them is not a task
+        auto item = Akonadi::Item(43);
+        item.setPayloadFromData("FooBar");
+        item.setParentCollection(Akonadi::Collection(42));
+        data.createItem(item);
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+    }
+
+    void shouldNotHaveTasksWithParentsInInboxTopLevel()
+    {
+        // TODO: Note that this specification is kind of an over simplification which
+        // assumes that all the underlying data is correct. Ideally it should be checked
+        // that the uid refered to actually points to a todo which exists in a proper
+        // collection. We will need a cache to be able to implement that properly though.
+
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Three items in the collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withUid("uid-42"));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43").withUid("uid-43").withParentUid("uid-42"));
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle("44").withUid("uid-44").withParentUid("foo"));
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+    }
+
+    void shouldNotHaveTasksWithContextsInInboxTopLevel_data()
+    {
+        QTest::addColumn<bool>("hasContexts");
+        QTest::addColumn<bool>("isExpectedInInbox");
+
+        QTest::newRow("task with no context") << false << true;
+        QTest::newRow("task with contexts") << true << false;
+    }
+
+    void shouldNotHaveTasksWithContextsInInboxTopLevel()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One context tag
+        data.createTag(GenTag().withId(42).withName("tag-42").asContext());
+
+        // One item in the collection
+        QFETCH(bool, hasContexts);
+        auto tagIds = QList<Akonadi::Tag::Id>();
+        if (hasContexts) tagIds << 42;
+
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withTags(tagIds));
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QFETCH(bool, isExpectedInInbox);
+        if (isExpectedInInbox) {
+            QCOMPARE(result->data().size(), 1);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
+        } else {
+            QVERIFY(result->data().isEmpty());
+        }
+    }
+
+    void shouldReactToItemAddsForInboxTopLevel_data()
+    {
+        QTest::addColumn<bool>("reactionExpected");
+        QTest::addColumn<QString>("relatedUid");
+        QTest::addColumn<bool>("hasContexts");
+
+        QTest::newRow("task which should be in inbox") << true << QString() << false;
+        QTest::newRow("task with related uid") << false << "foo" << false;
+        QTest::newRow("task with context") << false << QString() << true;
+    }
+
+    void shouldReactToItemAddsForInboxTopLevel()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One context tag
+        data.createTag(GenTag().withId(42).withName("tag-42").asContext());
+
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        QFETCH(QString, relatedUid);
+        QFETCH(bool, hasContexts);
+        auto tagIds = QList<Akonadi::Tag::Id>();
+        if (hasContexts) tagIds << 42;
+
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withTags(tagIds).withParentUid(relatedUid));
+
+        // THEN
+        QFETCH(bool, reactionExpected);
+        if (reactionExpected) {
+            QCOMPARE(result->data().size(), 1);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
+        } else {
+            QVERIFY(result->data().isEmpty());
+        }
+    }
+
+    void shouldReactToItemRemovesForInboxTopLevel()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One item in the collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
+
+        // WHEN
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().first()->title(), QString("42"));
+
+        // WHEN
+        data.removeItem(Akonadi::Item(42));
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+    }
+
+    void shouldReactToItemChangesForInboxTopLevel_data()
+    {
+        QTest::addColumn<bool>("inListAfterChange");
+        QTest::addColumn<QString>("relatedUidBefore");
+        QTest::addColumn<QString>("relatedUidAfter");
+        QTest::addColumn<bool>("hasContextsBefore");
+        QTest::addColumn<bool>("hasContextsAfter");
+
+        QTest::newRow("task appears in inbox (related uid)") << true << "foo" << QString() << false << false;
+        QTest::newRow("task disappears from inbox (related uid)") << false << QString() << "foo" << false << false;
+        QTest::newRow("task appears in inbox (context)") << true << QString() << QString() << true << false;
+        QTest::newRow("task disappears from inbox (context)") << false << QString() << QString() << false << true;
+    }
+
+    void shouldReactToItemChangesForInboxTopLevel()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One context tag
+        data.createTag(GenTag().withId(42).withName("tag-42").asContext());
+
+        // Artifact data
+        QFETCH(QString, relatedUidBefore);
+        QFETCH(bool, hasContextsBefore);
+
+        auto tagIds = QList<Akonadi::Tag::Id>();
+        if (hasContextsBefore) tagIds << 42;
+
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withTags(tagIds).withParentUid(relatedUidBefore));
+
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
+
+        QFETCH(bool, inListAfterChange);
+
+        if (inListAfterChange) {
+            QVERIFY(result->data().isEmpty());
+        } else {
+            QCOMPARE(result->data().size(), 1);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
+        }
+
+        // WHEN
+        QFETCH(QString, relatedUidAfter);
+        QFETCH(bool, hasContextsAfter);
+
+        tagIds.clear();
+        if (hasContextsAfter) tagIds << 42;
+
+        data.modifyItem(GenTodo(data.item(42)).withTags(tagIds).withParentUid(relatedUidAfter));
+
+        // THEN
+        if (inListAfterChange) {
+            QCOMPARE(result->data().size(), 1);
+            QCOMPARE(result->data().at(0)->title(), QString("42"));
+        } else {
+            QVERIFY(result->data().isEmpty());
+        }
+    }
+
+    void shouldReactToCollectionSelectionChangesForInboxTopLevel()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // Two top level collections
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
+
+        // One task in each collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43"));
+
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                             Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        auto result = queries->findInboxTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(1)->title(), QString("43"));
+
+        // WHEN
+        data.modifyCollection(GenCollection(data.collection(43)).selected(false));
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
     }
 
     void shouldLookInAllWorkdayReportedForAllTasks_data()

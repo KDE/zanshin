@@ -72,6 +72,20 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
     return m_findTopLevel->result();
 }
 
+TaskQueries::TaskResult::Ptr TaskQueries::findInboxTopLevel() const
+{
+    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto predicate = [this] (const Akonadi::Item &item) {
+        const bool excluded = !m_serializer->isTaskItem(item)
+                           || !m_serializer->relatedUidFromItem(item).isEmpty()
+                           || m_serializer->hasContextTags(item);
+
+        return !excluded;
+    };
+    m_integrator->bind(m_findInboxTopLevel, fetch, predicate);
+    return m_findInboxTopLevel->result();
+}
+
 TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
 {
     auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
