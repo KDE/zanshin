@@ -135,8 +135,7 @@ public:
         auto appModel = Utils::DependencyManager::globalInstance().create<ApplicationModel>();
 
         // Since it is lazy loaded force ourselves in a known state
-        appModel->defaultNoteDataSource();
-        appModel->defaultTaskDataSource();
+        appModel->defaultDataSource();
         appModel->setErrorHandler(&m_errorHandler);
 
         app = appModel;
@@ -329,15 +328,9 @@ GIVEN("^I display the available data sources$") {
     context->setModel(sourceListModel);
 }
 
-GIVEN("^I display the available (\\S+) data sources$") {
-    REGEX_PARAM(QString, sourceType);
-
+GIVEN("^I display the flat data source list$") {
     ScenarioScope<ZanshinContext> context;
-    auto propertyName = sourceType == "task" ? "taskSourcesModel"
-                      : sourceType == "note" ? "noteSourcesModel"
-                      : Q_NULLPTR;
-
-    context->setModel(context->app->property(propertyName).value<QAbstractItemModel*>());
+    context->setModel(context->app->property("dataSourcesModel").value<QAbstractItemModel*>());
     context->waitForEmptyJobQueue();
 }
 
@@ -452,7 +445,7 @@ WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
 
     ScenarioScope<ZanshinContext> context;
 
-    auto sourceList = context->app->property("taskSourcesModel").value<QAbstractItemModel*>();
+    auto sourceList = context->app->property("dataSourcesModel").value<QAbstractItemModel*>();
     VERIFY(sourceList);
     context->waitForStableState();
     QModelIndex index = Zanshin::findIndex(sourceList, sourceName);
@@ -701,14 +694,11 @@ WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     config.writeEntry(keyName, id);
 }
 
-WHEN("^the user changes the default (\\S+) data source to (.*)$") {
-    REGEX_PARAM(QString, sourceType);
+WHEN("^the user changes the default data source to (.*)$") {
     REGEX_PARAM(QString, sourceName);
 
     ScenarioScope<ZanshinContext> context;
-    auto sourcesModel = sourceType == "task" ? context->app->property("taskSourcesModel").value<QAbstractItemModel*>()
-                      : sourceType == "note" ? context->app->property("noteSourcesModel").value<QAbstractItemModel*>()
-                      : Q_NULLPTR;
+    auto sourcesModel = context->app->property("dataSourcesModel").value<QAbstractItemModel*>();
     context->waitForStableState();
     // I wish models had iterators...
     QList<Domain::DataSource::Ptr> sources;
@@ -720,11 +710,7 @@ WHEN("^the user changes the default (\\S+) data source to (.*)$") {
                                     return source->name() == sourceName;
                                 });
 
-
-    auto propertyName = sourceType == "task" ? "defaultTaskDataSource"
-                      : sourceType == "note" ? "defaultNoteDataSource"
-                      : Q_NULLPTR;
-    context->app->setProperty(propertyName, QVariant::fromValue(source));
+    context->app->setProperty("defaultDataSource", QVariant::fromValue(source));
 }
 
 
@@ -834,16 +820,11 @@ THEN("^the editor shows \"(.*)\" as (.*)$") {
     COMPARE(context->editor->property(property), value);
 }
 
-THEN("^the default (\\S+) data source is (.*)$") {
-    REGEX_PARAM(QString, sourceType);
+THEN("^the default data source is (.*)$") {
     REGEX_PARAM(QString, expectedName);
 
-    auto propertyName = sourceType == "task" ? "defaultTaskDataSource"
-                      : sourceType == "note" ? "defaultNoteDataSource"
-                      : Q_NULLPTR;
-
     ScenarioScope<ZanshinContext> context;
-    auto source = context->app->property(propertyName).value<Domain::DataSource::Ptr>();
+    auto source = context->app->property("defaultDataSource").value<Domain::DataSource::Ptr>();
     VERIFY(!source.isNull());
     COMPARE(source->name(), expectedName);
 }

@@ -49,10 +49,8 @@ class ErrorHandler;
 class ApplicationModel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QAbstractItemModel* noteSourcesModel READ noteSourcesModel)
-    Q_PROPERTY(Domain::DataSource::Ptr defaultNoteDataSource READ defaultNoteDataSource WRITE setDefaultNoteDataSource)
-    Q_PROPERTY(QAbstractItemModel* taskSourcesModel READ taskSourcesModel)
-    Q_PROPERTY(Domain::DataSource::Ptr defaultTaskDataSource READ defaultTaskDataSource WRITE setDefaultTaskDataSource)
+    Q_PROPERTY(QAbstractItemModel* dataSourcesModel READ dataSourcesModel)
+    Q_PROPERTY(Domain::DataSource::Ptr defaultDataSource READ defaultDataSource WRITE setDefaultDataSource)
     Q_PROPERTY(QObject* availableSources READ availableSources)
     Q_PROPERTY(QObject* availablePages READ availablePages)
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
@@ -71,11 +69,8 @@ public:
                               const Domain::TagRepository::Ptr &tagRepository,
                               QObject *parent = Q_NULLPTR);
 
-    QAbstractItemModel *noteSourcesModel();
-    Domain::DataSource::Ptr defaultNoteDataSource();
-
-    QAbstractItemModel *taskSourcesModel();
-    Domain::DataSource::Ptr defaultTaskDataSource();
+    QAbstractItemModel *dataSourcesModel();
+    Domain::DataSource::Ptr defaultDataSource();
 
     QObject *availableSources();
     QObject *availablePages();
@@ -86,18 +81,18 @@ public:
 
 public slots:
     void setCurrentPage(QObject *page);
-    void setDefaultNoteDataSource(Domain::DataSource::Ptr source);
-    void setDefaultTaskDataSource(Domain::DataSource::Ptr source);
+    virtual void setDefaultDataSource(const Domain::DataSource::Ptr &source) = 0;
     void setErrorHandler(ErrorHandler *errorHandler);
 
 signals:
     void currentPageChanged(QObject *page);
 
 private:
+    virtual Domain::QueryResult<Domain::DataSource::Ptr>::Ptr createDataSourceQueryResult() = 0;
+    virtual bool isDefaultSource(const Domain::DataSource::Ptr &source) = 0;
     virtual AvailablePagesModelInterface *createAvailablePagesModel() = 0;
 
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr noteSources();
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr taskSources();
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr dataSources();
 
     QObject *m_availableSources;
     QObject *m_availablePages;
@@ -105,6 +100,9 @@ private:
     QObject *m_editor;
 
 protected:
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_dataSources;
+    QAbstractItemModel *m_dataSourcesModel;
+
     Domain::ProjectQueries::Ptr m_projectQueries;
     Domain::ProjectRepository::Ptr m_projectRepository;
 
@@ -117,12 +115,7 @@ protected:
     Domain::TaskQueries::Ptr m_taskQueries;
     Domain::TaskRepository::Ptr m_taskRepository;
 
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_taskSources;
-    QAbstractItemModel *m_taskSourcesModel;
-
     Domain::NoteRepository::Ptr m_noteRepository;
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr m_noteSources;
-    QAbstractItemModel *m_noteSourcesModel;
 
     Domain::TagQueries::Ptr m_tagQueries;
     Domain::TagRepository::Ptr m_tagRepository;

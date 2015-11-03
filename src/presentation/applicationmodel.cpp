@@ -61,6 +61,7 @@ ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQue
       m_availablePages(Q_NULLPTR),
       m_currentPage(Q_NULLPTR),
       m_editor(Q_NULLPTR),
+      m_dataSourcesModel(Q_NULLPTR),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
       m_contextQueries(contextQueries),
@@ -69,9 +70,7 @@ ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQue
       m_sourceRepository(sourceRepository),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
-      m_taskSourcesModel(Q_NULLPTR),
       m_noteRepository(noteRepository),
-      m_noteSourcesModel(Q_NULLPTR),
       m_tagQueries(tagQueries),
       m_tagRepository(tagRepository),
       m_errorHandler(Q_NULLPTR)
@@ -79,70 +78,34 @@ ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQue
     MetaTypes::registerAll();
 }
 
-QAbstractItemModel *ApplicationModel::noteSourcesModel()
+QAbstractItemModel *ApplicationModel::dataSourcesModel()
 {
-    if (!m_noteSourcesModel) {
-        m_noteSourcesModel = new DataSourceListModel([this] { return noteSources(); }, this);
+    if (!m_dataSourcesModel) {
+        m_dataSourcesModel = new DataSourceListModel([this] { return dataSources(); }, this);
     }
 
-    return m_noteSourcesModel;
+    return m_dataSourcesModel;
 }
 
-Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::noteSources()
+Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::dataSources()
 {
-    if (!m_noteSources) {
-        m_noteSources = m_sourceQueries->findNotes();
+    if (!m_dataSources) {
+        m_dataSources = createDataSourceQueryResult();
     }
 
-    return m_noteSources;
+    return m_dataSources;
 }
 
-Domain::DataSource::Ptr ApplicationModel::defaultNoteDataSource()
+Domain::DataSource::Ptr ApplicationModel::defaultDataSource()
 {
-    QList<Domain::DataSource::Ptr> sources = noteSources()->data();
+    QList<Domain::DataSource::Ptr> sources = dataSources()->data();
 
     if (sources.isEmpty())
         return Domain::DataSource::Ptr();
 
     auto source = std::find_if(sources.begin(), sources.end(),
                                [this] (const Domain::DataSource::Ptr &source) {
-                                   return m_noteRepository->isDefaultSource(source);
-                               });
-
-    if (source != sources.end())
-        return *source;
-    else
-        return sources.first();
-}
-
-QAbstractItemModel *ApplicationModel::taskSourcesModel()
-{
-    if (!m_taskSourcesModel) {
-        m_taskSourcesModel = new DataSourceListModel([this] { return taskSources(); }, this);
-    }
-
-    return m_taskSourcesModel;
-}
-
-Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::taskSources()
-{
-    if (!m_taskSources) {
-        m_taskSources = m_sourceQueries->findTasks();
-    }
-
-    return m_taskSources;
-}
-
-Domain::DataSource::Ptr ApplicationModel::defaultTaskDataSource()
-{
-    QList<Domain::DataSource::Ptr> sources = taskSources()->data();
-
-    if (sources.isEmpty())
-        return Domain::DataSource::Ptr();
-
-    auto source = std::find_if(sources.begin(), sources.end(),
-                               [this] (const Domain::DataSource::Ptr &source) {
-                                   return m_taskRepository->isDefaultSource(source);
+                                   return isDefaultSource(source);
                                });
 
     if (source != sources.end())
@@ -201,16 +164,6 @@ void ApplicationModel::setCurrentPage(QObject *page)
 
     m_currentPage = page;
     emit currentPageChanged(page);
-}
-
-void ApplicationModel::setDefaultNoteDataSource(Domain::DataSource::Ptr source)
-{
-    m_noteRepository->setDefaultSource(source);
-}
-
-void ApplicationModel::setDefaultTaskDataSource(Domain::DataSource::Ptr source)
-{
-    m_taskRepository->setDefaultSource(source);
 }
 
 void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)

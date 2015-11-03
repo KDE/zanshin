@@ -46,7 +46,12 @@ public:
                                   const Domain::TagRepository::Ptr &tagRepository,
                                   QObject *parent = Q_NULLPTR);
 
+public slots:
+    void setDefaultDataSource(const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;
+
 private:
+    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr createDataSourceQueryResult() Q_DECL_OVERRIDE;
+    bool isDefaultSource(const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;
     AvailablePagesModelInterface *createAvailablePagesModel() Q_DECL_OVERRIDE;
 };
 
