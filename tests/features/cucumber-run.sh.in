@@ -13,7 +13,7 @@ shift
 
 cd @CUCUMBER_CWD@
 @cuke-steps@ &
-usleep 500000
+sleep 0.5
 
 cucumber $*
 exit $?

@@ -20,7 +20,7 @@ qdbus $KNUT_RESOURCE / org.freedesktop.Akonadi.Resource.synchronize
 
 cd @CUCUMBER_CWD@
 @cuke-steps@ &
-usleep 500000
+sleep 0.5
 
 cucumber $*
 exit $?
