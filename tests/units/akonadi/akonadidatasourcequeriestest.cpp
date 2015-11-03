@@ -338,16 +338,10 @@ private slots:
         }
     }
 
-    void shouldLookInAllReportedForTopLevelSources_data()
-    {
-        generateDataTable();
-    }
-
     void shouldLookInAllReportedForTopLevelSources()
     {
         // GIVEN
         AkonadiFakeData data;
-        QFETCH(QueryFunction, queryFunction);
 
         // Two top level collections, one with tasks, one with notes
         data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
@@ -360,9 +354,9 @@ private slots:
         data.createCollection(GenCollection().withId(45).withName("45NoteChild").withParent(44).withNoteContent());
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
         result->data();
