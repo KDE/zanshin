@@ -56,7 +56,7 @@ public:
     KJob *removeTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
 
     Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) Q_DECL_OVERRIDE;
-    Akonadi::CollectionSearchJobInterface *searchCollections(QString collectionName) Q_DECL_OVERRIDE;
+    Akonadi::CollectionSearchJobInterface *searchCollections(QString collectionName, FetchContentTypes types) Q_DECL_OVERRIDE;
     Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) Q_DECL_OVERRIDE;
     Akonadi::ItemFetchJobInterface *fetchItem(Akonadi::Item item) Q_DECL_OVERRIDE;
     Akonadi::ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) Q_DECL_OVERRIDE;

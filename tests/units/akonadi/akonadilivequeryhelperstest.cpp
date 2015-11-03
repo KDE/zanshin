@@ -333,7 +333,7 @@ private slots:
         // WHEN (no search term)
         QFETCH(Akonadi::Collection, root);
         auto term = QString();
-        auto fetch = helpers->searchCollections(root, &term);
+        auto fetch = helpers->searchCollections(root, &term, Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -418,6 +418,96 @@ private slots:
             QVERIFY(!expected.isEmpty());
         }
 
+        expected.sort();
+        QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        collections.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(collections.constBegin(), collections.constEnd(),
+                       std::back_inserter(result),
+                       std::bind(&Akonadi::Collection::displayName, _1));
+        result.sort();
+        QCOMPARE(result, expected);
+    }
+
+    void shouldSearchCollectionsForContentTypes_data()
+    {
+        QTest::addColumn<int>("contentTypes");
+        QTest::addColumn<QStringList>("expected");
+
+        auto expected = QStringList();
+        expected << "42-foo-all" << "43-foo-task" << "44-foo-note";
+        QTest::newRow("all") << int(Akonadi::StorageInterface::AllContent) << expected;
+
+        expected.clear();
+        expected << "43-foo-task" << "44-foo-note";
+        QTest::newRow("task + note") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expected;
+
+        expected.clear();
+        expected << "43-foo-task";
+        QTest::newRow("task") << int(Akonadi::StorageInterface::Tasks) << expected;
+
+        expected.clear();
+        expected << "44-foo-note";
+        QTest::newRow("note") << int(Akonadi::StorageInterface::Notes) << expected;
+    }
+
+    void shouldSearchCollectionsForContentTypes()
+    {
+        // GIVEN
+        auto data = AkonadiFakeData();
+        auto helpers = createHelpers(data);
+
+        // Three top level collections (any content, tasks and notes)
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42-foo-all"));
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43-foo-task").withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withName("44-foo-note").withNoteContent());
+
+        // The list which will be filled by the fetch function
+        auto collections = Akonadi::Collection::List();
+        auto add = [&collections] (const Akonadi::Collection &collection) {
+            collections.append(collection);
+        };
+
+        // WHEN (no search term)
+        QFETCH(int, contentTypes);
+        auto term = QString();
+        auto fetch = helpers->searchCollections(Akonadi::Collection::root(), &term,
+                                                Akonadi::StorageInterface::FetchContentTypes(contentTypes));
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        auto result = QStringList();
+        std::transform(collections.constBegin(), collections.constEnd(),
+                       std::back_inserter(result),
+                       std::bind(&Akonadi::Collection::displayName, _1));
+        result.sort();
+
+        // THEN
+        QCOMPARE(result, QStringList());
+
+
+        // WHEN ("foo" search term)
+        collections.clear();
+        result.clear();
+
+        term = "foo";
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        std::transform(collections.constBegin(), collections.constEnd(),
+                       std::back_inserter(result),
+                       std::bind(&Akonadi::Collection::displayName, _1));
+        result.sort();
+
+        // THEN
+        QFETCH(QStringList, expected);
         expected.sort();
         QCOMPARE(result, expected);
 

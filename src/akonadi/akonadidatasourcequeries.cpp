@@ -97,7 +97,7 @@ void DataSourceQueries::setSearchTerm(QString term)
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel() const
 {
-    auto fetch = m_helpers->searchCollections(Collection::root(), &m_searchTerm);
+    auto fetch = m_helpers->searchCollections(Collection::root(), &m_searchTerm, Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
     auto predicate = createSearchPredicate(Collection::root());
     m_integrator->bind(m_findSearchTopLevel, fetch, predicate);
     return m_findSearchTopLevel->result();
@@ -107,7 +107,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(D
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findSearchChildren[root.id()];
-    auto fetch = m_helpers->searchCollections(root, &m_searchTerm);
+    auto fetch = m_helpers->searchCollections(root, &m_searchTerm, Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
     auto predicate = createSearchPredicate(root);
     m_integrator->bind(query, fetch, predicate);
     return query->result();

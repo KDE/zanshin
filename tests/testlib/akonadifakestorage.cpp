@@ -389,7 +389,7 @@ Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akona
     return job;
 }
 
-Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QString collectionName)
+Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QString collectionName, FetchContentTypes types)
 {
     auto job = new AkonadiFakeCollectionSearchJob;
     const auto allCollections = m_data->collections();
@@ -397,10 +397,16 @@ Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QSt
 
     std::copy_if(allCollections.constBegin(), allCollections.constEnd(),
                  std::back_inserter(foundCollections),
-                 [collectionName] (const Akonadi::Collection &col) {
+                 [collectionName, types] (const Akonadi::Collection &col) {
                      const auto mime = col.contentMimeTypes();
-                     const bool supportedType = mime.contains(KCalCore::Todo::todoMimeType())
-                                             || mime.contains(Akonadi::NoteUtils::noteMimeType());
+                     auto contentMimeTypes = QSet<QString>();
+                     if (types & Notes)
+                         contentMimeTypes << Akonadi::NoteUtils::noteMimeType();
+                     if (types & Tasks)
+                         contentMimeTypes << KCalCore::Todo::todoMimeType();
+
+                     const bool supportedType = contentMimeTypes.isEmpty()
+                                             || !mime.toSet().intersect(contentMimeTypes).isEmpty();
                      return supportedType && col.displayName().contains(collectionName, Qt::CaseInsensitive);
                  });
 

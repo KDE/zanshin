@@ -776,6 +776,7 @@ private slots:
         data.createCollection(GenCollection().withId(43).withName("NoteTiti").withRootAsParent().withNoteContent());
         data.createCollection(GenCollection().withId(44).withName("TaskTiti").withRootAsParent().withTaskContent());
         data.createCollection(GenCollection().withId(46).withName("NoteCol").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(47).withName("NoCol").withRootAsParent());
 
         // One child collection with tasks
         data.createCollection(GenCollection().withId(45).withName("TaskTotoCol").withParent(42).withTaskContent());
@@ -996,6 +997,7 @@ private slots:
         // two child of parent
         data.createCollection(GenCollection().withId(43).withName("NoteCol1").withParent(42).withNoteContent());
         data.createCollection(GenCollection().withId(44).withName("TaskToto").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(47).withName("NoCol").withParent(42));
 
         // One child of the first child
         data.createCollection(GenCollection().withId(45).withName("TaskCol43Child").withParent(43).withTaskContent());

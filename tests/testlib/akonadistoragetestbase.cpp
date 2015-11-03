@@ -1258,29 +1258,36 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSubscriptionChanges()
 void AkonadiStorageTestBase::shouldFindCollectionsByName_data()
 {
     QTest::addColumn<QString>("name");
+    QTest::addColumn<int>("contentType");
     QTest::addColumn<QStringList>("expectedResults");
     QTest::addColumn<bool>("referenceCalendar1");
     QTest::addColumn<bool>("enableCalendar1");
 
     QStringList expectedResults;
     expectedResults << "Calendar1";
-    QTest::newRow("get a collection") << "Calendar1" << expectedResults << false << true;
+    QTest::newRow("get a collection") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
     expectedResults.clear();
-    QTest::newRow("try with unknown name") << "toto" << expectedResults << false << true;
+    QTest::newRow("try with wrong type") << "Calendar1" << int(Akonadi::StorageInterface::Notes) << expectedResults << false << true;
+
+    expectedResults << "Notes";
+    QTest::newRow("get a note collection") << "Not" << int(Akonadi::StorageInterface::Notes) << expectedResults << false << true;
+
+    expectedResults.clear();
+    QTest::newRow("try with unknown name") << "toto" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
     expectedResults << "Calendar3" << "Calendar2" << "Calendar1";
-    QTest::newRow("try with a part of a name") << "Calendar" << expectedResults << false << true;
+    QTest::newRow("try with a part of a name") << "Calendar" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
     expectedResults.clear();
     expectedResults << "Calendar2";
-    QTest::newRow("make sure it is case insensitive") << "calendar2" << expectedResults << false << true;
+    QTest::newRow("make sure it is case insensitive") << "calendar2" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
     expectedResults.clear();
     expectedResults << "Calendar1";
-    QTest::newRow("include referenced") << "Calendar1" << expectedResults << true << false;
-    QTest::newRow("include referenced + enabled") << "Calendar1" << expectedResults << true << true;
-    QTest::newRow("include !referenced + !enabled") << "Calendar1" << expectedResults << false << false;
+    QTest::newRow("include referenced") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << true << false;
+    QTest::newRow("include referenced + enabled") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << true << true;
+    QTest::newRow("include !referenced + !enabled") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << false;
 }
 
 void AkonadiStorageTestBase::shouldFindCollectionsByName()
@@ -1289,6 +1296,7 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName()
     auto storage = createStorage();
 
     QFETCH(QString, name);
+    QFETCH(int, contentType);
     QFETCH(QStringList, expectedResults);
     QFETCH(bool, referenceCalendar1);
     QFETCH(bool, enableCalendar1);
@@ -1309,7 +1317,7 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName()
     }
 
     // WHEN
-    auto job = storage->searchCollections(name);
+    auto job = storage->searchCollections(name, Akonadi::StorageInterface::FetchContentType(contentType));
     AKVERIFYEXEC(job->kjob());
     monitorSpy.waitForStableState();
 
@@ -1333,13 +1341,24 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName()
     QCOMPARE(collectionNames.toSet(), expectedResults.toSet());
 }
 
+void AkonadiStorageTestBase::shouldFindCollectionsByNameIncludingTheirAncestors_data()
+{
+    QTest::addColumn<QString>("searchTerm");
+    QTest::addColumn<int>("contentType");
+
+    QTest::newRow("task search") << "Calendar3" << int(Akonadi::StorageInterface::Tasks);
+    QTest::newRow("note search") << "Notes" << int(Akonadi::StorageInterface::Notes);
+}
+
 void AkonadiStorageTestBase::shouldFindCollectionsByNameIncludingTheirAncestors()
 {
     // GIVEN
     auto storage = createStorage();
 
     // WHEN
-    auto job = storage->searchCollections("Calendar3");
+    QFETCH(QString, searchTerm);
+    QFETCH(int, contentType);
+    auto job = storage->searchCollections(searchTerm, Akonadi::StorageInterface::FetchContentType(contentType));
     AKVERIFYEXEC(job->kjob());
 
     // THEN

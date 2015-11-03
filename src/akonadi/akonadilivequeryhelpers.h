@@ -45,7 +45,8 @@ public:
 
     CollectionFetchFunction fetchAllCollections(StorageInterface::FetchContentTypes contentTypes) const;
     CollectionFetchFunction fetchCollections(const Collection &root, StorageInterface::FetchContentTypes contentTypes) const;
-    CollectionFetchFunction searchCollections(const Collection &root, const QString *searchTerm) const;
+    CollectionFetchFunction searchCollections(const Collection &root, const QString *searchTerm,
+                                              StorageInterface::FetchContentTypes contentTypes) const;
 
     ItemFetchFunction fetchItems(StorageInterface::FetchContentTypes contentTypes) const;
     ItemFetchFunction fetchItems(const Tag &tag) const;

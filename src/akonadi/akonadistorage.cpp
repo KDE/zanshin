@@ -314,10 +314,13 @@ CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, St
     return job;
 }
 
-CollectionSearchJobInterface *Storage::searchCollections(QString collectionName)
+CollectionSearchJobInterface *Storage::searchCollections(QString collectionName, FetchContentTypes types)
 {
     QStringList contentMimeTypes;
-    contentMimeTypes << NoteUtils::noteMimeType() << KCalCore::Todo::todoMimeType();
+    if (types & Notes)
+        contentMimeTypes << NoteUtils::noteMimeType();
+    if (types & Tasks)
+        contentMimeTypes << KCalCore::Todo::todoMimeType();
 
     auto job = new CollectionSearchJob(collectionName);
 

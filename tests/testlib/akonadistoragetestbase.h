@@ -90,6 +90,7 @@ private slots:
     void shouldNotifyCollectionSubscriptionChanges();
     void shouldFindCollectionsByName_data();
     void shouldFindCollectionsByName();
+    void shouldFindCollectionsByNameIncludingTheirAncestors_data();
     void shouldFindCollectionsByNameIncludingTheirAncestors();
 
 private:

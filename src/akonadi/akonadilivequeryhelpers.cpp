@@ -79,14 +79,15 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(con
     };
 }
 
-LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::searchCollections(const Collection &root, const QString *searchTerm) const
+LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::searchCollections(const Collection &root, const QString *searchTerm,
+                                                                              StorageInterface::FetchContentTypes contentTypes) const
 {
     auto storage = m_storage;
-    return [storage, searchTerm, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+    return [storage, contentTypes, searchTerm, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
         if (searchTerm->isEmpty())
             return;
 
-        auto job = storage->searchCollections(*searchTerm);
+        auto job = storage->searchCollections(*searchTerm, contentTypes);
         Utils::JobHandler::install(job->kjob(), [root, job, add] {
             if (job->kjob()->error())
                 return;
