@@ -57,8 +57,7 @@ public:
 
     QList<QAction *> configureActions() const;
 
-    DataSourceComboBox *defaultNoteSourceCombo() const;
-    DataSourceComboBox *defaultTaskSourceCombo() const;
+    DataSourceComboBox *defaultSourceCombo() const;
 
 public slots:
     void setModel(const QObjectPtr &model);
@@ -77,8 +76,7 @@ private:
     EditorView *m_editorView;
 
     QList<QAction*> m_configureActions;
-    DataSourceComboBox *m_noteCombo;
-    DataSourceComboBox *m_taskCombo;
+    DataSourceComboBox *m_defaultSourceCombo;
 };
 
 }

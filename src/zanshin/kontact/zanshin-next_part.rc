@@ -4,8 +4,7 @@
   <Menu name="settings">
    <Menu name="zanshin_settings" icon="configure">
     <text>Configure Zanshin</text>
-    <Action name="zanshin_settings_task_sources" />
-    <Action name="zanshin_settings_note_sources" />
+    <Action name="settings_default_source" />
    </Menu>
   </Menu>
  </MenuBar>

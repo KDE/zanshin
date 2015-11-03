@@ -259,7 +259,7 @@ private slots:
         auto model = QObjectPtr::create();
         QObject availablePages;
         QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
-        model->setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
+        model->setProperty("dataSourcesModel", QVariant::fromValue(sourcesModel));
         model->setProperty("availablePages", QVariant::fromValue(&availablePages));
 
         // WHEN
@@ -280,7 +280,7 @@ private slots:
         auto model = QObjectPtr::create();
         QObject availablePages;
         QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
-        model->setProperty("taskSourcesModel", QVariant::fromValue(sourcesModel));
+        model->setProperty("dataSourcesModel", QVariant::fromValue(sourcesModel));
         model->setProperty("availablePages", QVariant::fromValue(&availablePages));
 
         // WHEN
@@ -426,70 +426,45 @@ private slots:
                  pageModel.itemAtRow(index.row()));
     }
 
-    void shouldApplySourceModelAndPropertyToComboBox_data()
-    {
-        QTest::addColumn<QByteArray>("modelProperty");
-        QTest::addColumn<QByteArray>("defaultProperty");
-        QTest::addColumn<ComboGetterFunction>("comboGetter");
-
-        QTest::newRow("notes") << QByteArray("noteSourcesModel") << QByteArray("defaultNoteDataSource")
-                               << ComboGetterFunction(Utils::mem_fn(&Widgets::ApplicationComponents::defaultNoteSourceCombo));
-        QTest::newRow("tasks") << QByteArray("taskSourcesModel") << QByteArray("defaultTaskDataSource")
-                               << ComboGetterFunction(Utils::mem_fn(&Widgets::ApplicationComponents::defaultTaskSourceCombo));
-    }
-
     void shouldApplySourceModelAndPropertyToComboBox()
     {
         // GIVEN
-        QFETCH(QByteArray, modelProperty);
-        QFETCH(ComboGetterFunction, comboGetter);
-
         Widgets::ApplicationComponents components;
         auto model = QObjectPtr::create();
         QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
-        model->setProperty(modelProperty, QVariant::fromValue(sourcesModel));
+        model->setProperty("dataSourcesModel", QVariant::fromValue(sourcesModel));
 
         // WHEN
         components.setModel(model);
 
         // THEN
-        Widgets::DataSourceComboBox *combo = comboGetter(&components);
+        Widgets::DataSourceComboBox *combo = components.defaultSourceCombo();
         QCOMPARE(combo->model(), sourcesModel);
 
-        QFETCH(QByteArray, defaultProperty);
         QCOMPARE(combo->defaultSourceObject(), model.data());
-        QCOMPARE(combo->defaultSourceProperty(), defaultProperty);
-    }
-
-    void shouldApplySourceModelAndPropertyAlsoToCreatedComboBox_data()
-    {
-        shouldApplySourceModelAndPropertyToComboBox_data();
+        QCOMPARE(combo->defaultSourceProperty(), QByteArray("defaultDataSource"));
     }
 
     void shouldApplySourceModelAndPropertyAlsoToCreatedComboBox()
     {
         // GIVEN
-        QFETCH(QByteArray, modelProperty);
-        QFETCH(ComboGetterFunction, comboGetter);
-
         Widgets::ApplicationComponents components;
         // Force creation
-        comboGetter(&components);
+        components.defaultSourceCombo();
 
         auto model = QObjectPtr::create();
         QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
-        model->setProperty(modelProperty, QVariant::fromValue(sourcesModel));
+        model->setProperty("dataSourcesModel", QVariant::fromValue(sourcesModel));
 
         // WHEN
         components.setModel(model);
 
         // THEN
-        Widgets::DataSourceComboBox *combo = comboGetter(&components);
+        Widgets::DataSourceComboBox *combo = components.defaultSourceCombo();
         QCOMPARE(combo->model(), sourcesModel);
 
-        QFETCH(QByteArray, defaultProperty);
         QCOMPARE(combo->defaultSourceObject(), model.data());
-        QCOMPARE(combo->defaultSourceProperty(), defaultProperty);
+        QCOMPARE(combo->defaultSourceProperty(), QByteArray("defaultDataSource"));
     }
 
     void shouldProvideSettingsAction()
@@ -499,14 +474,11 @@ private slots:
 
         // WHEN
         QList<QAction*> actions = components.configureActions();
-        auto taskAction = qobject_cast<QWidgetAction*>(actions.at(0));
-        auto noteAction = qobject_cast<QWidgetAction*>(actions.at(1));
+        auto defaultAction = qobject_cast<QWidgetAction*>(actions.at(0));
 
         // THEN
-        QCOMPARE(taskAction->defaultWidget()->findChild<Widgets::DataSourceComboBox*>("taskSourceCombo"), components.defaultTaskSourceCombo());
-        QCOMPARE(taskAction->objectName(), QString("zanshin_settings_task_sources"));
-        QCOMPARE(noteAction->defaultWidget()->findChild<Widgets::DataSourceComboBox*>("noteSourceCombo"), components.defaultNoteSourceCombo());
-        QCOMPARE(noteAction->objectName(), QString("zanshin_settings_note_sources"));
+        QCOMPARE(defaultAction->defaultWidget()->findChild<Widgets::DataSourceComboBox*>("defaultSourceCombo"), components.defaultSourceCombo());
+        QCOMPARE(defaultAction->objectName(), QString("settings_default_source"));
     }
 };
 

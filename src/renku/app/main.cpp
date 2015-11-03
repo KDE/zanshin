@@ -64,8 +64,7 @@ int main(int argc, char **argv)
     auto layout = new QVBoxLayout;
 
     auto hbox = new QHBoxLayout;
-    hbox->addWidget(components->defaultTaskSourceCombo());
-    hbox->addWidget(components->defaultNoteSourceCombo());
+    hbox->addWidget(components->defaultSourceCombo());
 
     layout->addLayout(hbox);
     layout->addWidget(components->pageView());

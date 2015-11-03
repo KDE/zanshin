@@ -47,8 +47,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
       m_availablePagesView(Q_NULLPTR),
       m_pageView(Q_NULLPTR),
       m_editorView(Q_NULLPTR),
-      m_noteCombo(Q_NULLPTR),
-      m_taskCombo(Q_NULLPTR)
+      m_defaultSourceCombo(Q_NULLPTR)
 {
 }
 
@@ -78,7 +77,7 @@ AvailablePagesView *ApplicationComponents::availablePagesView() const
         auto availablePagesView = new AvailablePagesView(m_parent);
         if (m_model) {
             availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
-            availablePagesView->setProjectSourcesModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
+            availablePagesView->setProjectSourcesModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
@@ -133,21 +132,11 @@ QList<QAction *> ApplicationComponents::configureActions() const
 
         auto widget = new QWidget;
         widget->setLayout(new QHBoxLayout);
-        widget->layout()->addWidget(new QLabel(tr("Default task source")));
-        widget->layout()->addWidget(defaultTaskSourceCombo());
+        widget->layout()->addWidget(new QLabel(tr("Default source")));
+        widget->layout()->addWidget(defaultSourceCombo());
 
         auto comboAction = new QWidgetAction(m_parent);
-        comboAction->setObjectName("zanshin_settings_task_sources");
-        comboAction->setDefaultWidget(widget);
-        actions << comboAction;
-
-        widget = new QWidget;
-        widget->setLayout(new QHBoxLayout);
-        widget->layout()->addWidget(new QLabel(tr("Default note source")));
-        widget->layout()->addWidget(defaultNoteSourceCombo());
-
-        comboAction = new QWidgetAction(m_parent);
-        comboAction->setObjectName("zanshin_settings_note_sources");
+        comboAction->setObjectName("settings_default_source");
         comboAction->setDefaultWidget(widget);
         actions << comboAction;
 
@@ -158,44 +147,24 @@ QList<QAction *> ApplicationComponents::configureActions() const
     return m_configureActions;
 }
 
-DataSourceComboBox *ApplicationComponents::defaultNoteSourceCombo() const
+DataSourceComboBox *ApplicationComponents::defaultSourceCombo() const
 {
-    if (!m_noteCombo) {
+    if (!m_defaultSourceCombo) {
         auto combo = new DataSourceComboBox(m_parent);
-        combo->setObjectName("noteSourceCombo");
+        combo->setObjectName("defaultSourceCombo");
         combo->setFixedWidth(300);
         if (m_model.data()) {
-            combo->setModel(m_model->property("noteSourcesModel").value<QAbstractItemModel*>());
-            combo->setDefaultSourceProperty(m_model.data(), "defaultNoteDataSource");
+            combo->setModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
+            combo->setDefaultSourceProperty(m_model.data(), "defaultDataSource");
             connect(combo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
                     m_model.data(), SLOT(setDefaultNoteDataSource(Domain::DataSource::Ptr)));
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
-        self->m_noteCombo = combo;
+        self->m_defaultSourceCombo = combo;
     }
 
-    return m_noteCombo;
-}
-
-DataSourceComboBox *ApplicationComponents::defaultTaskSourceCombo() const
-{
-    if (!m_taskCombo) {
-        auto combo = new DataSourceComboBox(m_parent);
-        combo->setObjectName("taskSourceCombo");
-        combo->setFixedWidth(300);
-        if (m_model) {
-            combo->setModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
-            combo->setDefaultSourceProperty(m_model.data(), "defaultTaskDataSource");
-            connect(combo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                    m_model.data(), SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
-        }
-
-        ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
-        self->m_taskCombo = combo;
-    }
-
-    return m_taskCombo;
+    return m_defaultSourceCombo;
 }
 
 void ApplicationComponents::setModel(const QObjectPtr &model)
@@ -211,7 +180,7 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
 
     if (m_availablePagesView) {
         m_availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
-        m_availablePagesView->setProjectSourcesModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
+        m_availablePagesView->setProjectSourcesModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
     }
 
     if (m_pageView) {
@@ -223,18 +192,11 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
     if (m_editorView)
         m_editorView->setModel(m_model->property("editor").value<QObject*>());
 
-    if (m_noteCombo) {
-        m_noteCombo->setModel(m_model->property("noteSourcesModel").value<QAbstractItemModel*>());
-        m_noteCombo->setDefaultSourceProperty(m_model.data(), "defaultNoteDataSource");
-        connect(m_noteCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                m_model.data(), SLOT(setDefaultNoteDataSource(Domain::DataSource::Ptr)));
-    }
-
-    if (m_taskCombo) {
-        m_taskCombo->setModel(m_model->property("taskSourcesModel").value<QAbstractItemModel*>());
-        m_taskCombo->setDefaultSourceProperty(m_model.data(), "defaultTaskDataSource");
-        connect(m_noteCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                m_model.data(), SLOT(setDefaultTaskDataSource(Domain::DataSource::Ptr)));
+    if (m_defaultSourceCombo) {
+        m_defaultSourceCombo->setModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
+        m_defaultSourceCombo->setDefaultSourceProperty(m_model.data(), "defaultDataSource");
+        connect(m_defaultSourceCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
+                m_model.data(), SLOT(setDefaultDataSource(Domain::DataSource::Ptr)));
     }
 }
 
