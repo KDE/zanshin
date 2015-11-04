@@ -26,10 +26,12 @@
 
 using namespace Akonadi;
 
-DataSourceQueries::DataSourceQueries(const StorageInterface::Ptr &storage,
+DataSourceQueries::DataSourceQueries(const StorageInterface::FetchContentTypes &contentTypes,
+                                     const StorageInterface::Ptr &storage,
                                      const SerializerInterface::Ptr &serializer,
                                      const MonitorInterface::Ptr &monitor)
-    : m_serializer(serializer),
+    : m_contentTypes(contentTypes),
+      m_serializer(serializer),
       m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
@@ -61,7 +63,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
 {
-    auto fetch = m_helpers->fetchCollections(Collection::root(), StorageInterface::Tasks | StorageInterface::Notes);
+    auto fetch = m_helpers->fetchCollections(Collection::root(), m_contentTypes);
     auto predicate = createFetchPredicate(Collection::root());
     m_integrator->bind(m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
@@ -71,7 +73,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findChildren[root.id()];
-    auto fetch = m_helpers->fetchCollections(root, StorageInterface::Tasks | StorageInterface::Notes);
+    auto fetch = m_helpers->fetchCollections(root, m_contentTypes);
     auto predicate = createFetchPredicate(root);
     m_integrator->bind(query, fetch, predicate);
     return query->result();
@@ -97,7 +99,7 @@ void DataSourceQueries::setSearchTerm(QString term)
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel() const
 {
-    auto fetch = m_helpers->searchCollections(Collection::root(), &m_searchTerm, Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
+    auto fetch = m_helpers->searchCollections(Collection::root(), &m_searchTerm, m_contentTypes);
     auto predicate = createSearchPredicate(Collection::root());
     m_integrator->bind(m_findSearchTopLevel, fetch, predicate);
     return m_findSearchTopLevel->result();
@@ -107,7 +109,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(D
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findSearchChildren[root.id()];
-    auto fetch = m_helpers->searchCollections(root, &m_searchTerm, Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
+    auto fetch = m_helpers->searchCollections(root, &m_searchTerm, m_contentTypes);
     auto predicate = createSearchPredicate(root);
     m_integrator->bind(query, fetch, predicate);
     return query->result();

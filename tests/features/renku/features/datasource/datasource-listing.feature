@@ -17,9 +17,6 @@ Feature: Data sources listing
     Then the list is:
        | display                                      | icon                |
        | TestData                                     | folder              |
-       | TestData / Calendar1                         | view-calendar-tasks |
-       | TestData / Calendar1 / Calendar2             | view-calendar-tasks |
-       | TestData / Calendar1 / Calendar2 / Calendar3 | folder              |
        | TestData / Emails                            | folder              |
        | TestData / Emails / Notes                    | folder              |
        | TestData / Private Notes                     | folder              |

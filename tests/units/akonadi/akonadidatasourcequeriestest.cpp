@@ -88,9 +88,10 @@ private slots:
         data.createCollection(GenCollection().withId(47).withName("47Note").withRootAsParent().withNoteContent());
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queryFunction(queries.data());
         result->data();
@@ -130,7 +131,8 @@ private slots:
         data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -180,7 +182,8 @@ private slots:
             data.createCollection(GenCollection().withId(47).withName("47Note").withParent(45).withNoteContent());
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -213,7 +216,8 @@ private slots:
         QFETCH(Akonadi::StorageInterface::FetchContentType, contentType);
         QFETCH(QueryFunction, queryFunction);
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor()))) ;
 
@@ -255,9 +259,10 @@ private slots:
         // One child collection with notes
         data.createCollection(GenCollection().withId(47).withName("47Note").withParent(46).withNoteContent());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queryFunction(queries.data());
         TestHelpers::waitForEmptyJobQueue();
@@ -303,9 +308,10 @@ private slots:
         // One child collcetion with notes
         data.createCollection(GenCollection().withId(47).withName("47Note").withParent(46).withNoteContent());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queryFunction(queries.data());
         // Even though the pointer didn't change it's convenient to user if we call
@@ -338,6 +344,24 @@ private slots:
         }
     }
 
+    void shouldLookInAllReportedForTopLevelSources_data()
+    {
+        QTest::addColumn<int>("contentTypes");
+        QTest::addColumn<QStringList>("expectedNames");
+
+        auto expectedNames = QStringList();
+        expectedNames << "42Task" << "44Note";
+        QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expectedNames;
+
+        expectedNames.clear();
+        expectedNames << "42Task";
+        QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks) << expectedNames;
+
+        expectedNames.clear();
+        expectedNames << "44Note";
+        QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes) << expectedNames;
+    }
+
     void shouldLookInAllReportedForTopLevelSources()
     {
         // GIVEN
@@ -354,7 +378,9 @@ private slots:
         data.createCollection(GenCollection().withId(45).withName("45NoteChild").withParent(44).withNoteContent());
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QFETCH(int, contentTypes);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::FetchContentTypes(contentTypes),
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -366,8 +392,15 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().at(0)->name(), QString("42Task"));
-        QCOMPARE(result->data().at(1)->name(), QString("44Note"));
+        auto actualNames = QStringList();
+        std::transform(result->data().constBegin(), result->data().constEnd(),
+                       std::back_inserter(actualNames),
+                       [] (const Domain::DataSource::Ptr &source) { return source->name(); });
+        actualNames.sort();
+
+        QFETCH(QStringList, expectedNames);
+        expectedNames.sort();
+        QCOMPARE(actualNames, expectedNames);
     }
 
     void shouldReactToCollectionAddsForTopLevelSources()
@@ -375,7 +408,8 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -404,9 +438,10 @@ private slots:
         data.createCollection(GenCollection().withId(44).withName("43TaskChild").withParent(42).withTaskContent());
         data.createCollection(GenCollection().withId(45).withName("43NoteChild").withParent(43).withNoteContent());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
         TestHelpers::waitForEmptyJobQueue();
@@ -430,9 +465,10 @@ private slots:
         data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
         data.createCollection(GenCollection().withId(44).withName("44NoteChild").withParent(43).withNoteContent());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
 
@@ -465,7 +501,8 @@ private slots:
         data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
         data.createCollection(GenCollection().withId(44).withName("44NoteChild").withParent(43).withNoteContent());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -515,7 +552,8 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
         data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         QFETCH(int, colErrorCode);
@@ -538,6 +576,24 @@ private slots:
         QCOMPARE(result->data().size(), 0);
     }
 
+    void shouldLookInAllReportedForChildSources_data()
+    {
+        QTest::addColumn<int>("contentTypes");
+        QTest::addColumn<QStringList>("expectedNames");
+
+        auto expectedNames = QStringList();
+        expectedNames << "43TaskFirstChild" << "45NoteSecondChild";
+        QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expectedNames;
+
+        expectedNames.clear();
+        expectedNames << "43TaskFirstChild";
+        QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks) << expectedNames;
+
+        expectedNames.clear();
+        expectedNames << "45NoteSecondChild";
+        QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes) << expectedNames;
+    }
+
     void shouldLookInAllReportedForChildSources()
     {
         // GIVEN
@@ -554,7 +610,9 @@ private slots:
         Domain::DataSource::Ptr topLevelDataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QFETCH(int, contentTypes);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::FetchContentTypes(contentTypes),
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -566,9 +624,15 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("43TaskFirstChild"));
-        QCOMPARE(result->data().at(1)->name(), QString("45NoteSecondChild"));
+        auto actualNames = QStringList();
+        std::transform(result->data().constBegin(), result->data().constEnd(),
+                       std::back_inserter(actualNames),
+                       [] (const Domain::DataSource::Ptr &source) { return source->name(); });
+        actualNames.sort();
+
+        QFETCH(QStringList, expectedNames);
+        expectedNames.sort();
+        QCOMPARE(actualNames, expectedNames);
     }
 
     void shouldReactToCollectionAddsForChildSources()
@@ -583,7 +647,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr topLevelDataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -615,7 +680,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr topLevelDataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -645,7 +711,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr topLevelDataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -682,7 +749,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr topLevelDataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -745,7 +813,8 @@ private slots:
                                                            AkonadiFakeStorageBehavior::FetchBehavior(colFetchBehavior));
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -758,6 +827,34 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 0);
+    }
+
+    void shouldLookInAllReportedForSearchTopLevelSources_data()
+    {
+        QTest::addColumn<int>("contentTypes");
+        QTest::addColumn<QStringList>("expectedColNames");
+        QTest::addColumn<QStringList>("expectedTitiNames");
+
+        auto expectedColNames = QStringList();
+        auto expectedTitiNames = QStringList();
+        expectedColNames << "TaskToto" << "NoteCol";
+        expectedTitiNames << "NoteTiti" << "TaskTiti";
+        QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                         << expectedColNames << expectedTitiNames;
+
+        expectedColNames.clear();
+        expectedTitiNames.clear();
+        expectedColNames << "TaskToto";
+        expectedTitiNames << "TaskTiti";
+        QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks)
+                               << expectedColNames << expectedTitiNames;
+
+        expectedColNames.clear();
+        expectedTitiNames.clear();
+        expectedColNames << "NoteCol";
+        expectedTitiNames << "NoteTiti";
+        QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes)
+                               << expectedColNames << expectedTitiNames;
     }
 
     void shouldLookInAllReportedForSearchTopLevelSources()
@@ -778,9 +875,11 @@ private slots:
         QString searchTerm("Col");
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QFETCH(int, contentTypes);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::FetchContentTypes(contentTypes),
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
@@ -791,9 +890,15 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("TaskToto"));
-        QCOMPARE(result->data().at(1)->name(), QString("NoteCol"));
+        auto actualNames = QStringList();
+        std::transform(result->data().constBegin(), result->data().constEnd(),
+                       std::back_inserter(actualNames),
+                       [] (const Domain::DataSource::Ptr &source) { return source->name(); });
+        actualNames.sort();
+
+        QFETCH(QStringList, expectedColNames);
+        expectedColNames.sort();
+        QCOMPARE(actualNames, expectedColNames);
 
         // WHEN
         QString searchTerm2("Titi");
@@ -802,9 +907,15 @@ private slots:
         // THEN
         TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("NoteTiti"));
-        QCOMPARE(result->data().at(1)->name(), QString("TaskTiti"));
+        actualNames.clear();
+        std::transform(result->data().constBegin(), result->data().constEnd(),
+                       std::back_inserter(actualNames),
+                       [] (const Domain::DataSource::Ptr &source) { return source->name(); });
+        actualNames.sort();
+
+        QFETCH(QStringList, expectedTitiNames);
+        expectedTitiNames.sort();
+        QCOMPARE(actualNames, expectedTitiNames);
     }
 
     void shouldReactToCollectionAddsForSearchTopLevelSources()
@@ -814,7 +925,8 @@ private slots:
 
         QString searchTerm("col");
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         queries->setSearchTerm(searchTerm);
@@ -841,7 +953,8 @@ private slots:
 
         QString searchTerm("Toto");
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         queries->setSearchTerm(searchTerm);
@@ -872,9 +985,10 @@ private slots:
         QString searchTerm("Col");
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries( Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         queries->setSearchTerm(searchTerm);
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findSearchTopLevel();
         bool replaceHandlerCalled = false;
@@ -934,7 +1048,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(storage,
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         storage,
                                                                                          serializer,
                                                                                          monitor));
 
@@ -966,7 +1081,8 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withName("parent"));
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -977,6 +1093,33 @@ private slots:
         // THEN
         QVERIFY(result->data().isEmpty());
         QCOMPARE(Utils::JobHandler::jobCount(), 0);
+    }
+
+    void shouldLookInAllReportedForSearchChildSources_data()
+    {
+        QTest::addColumn<int>("contentTypes");
+        QTest::addColumn<QStringList>("expectedColNames");
+        QTest::addColumn<QStringList>("expectedTotoNames");
+
+        auto expectedColNames = QStringList();
+        auto expectedTotoNames = QStringList();
+        expectedColNames << "NoteCol1";
+        expectedTotoNames << "TaskToto";
+        QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
+                                         << expectedColNames << expectedTotoNames;
+
+        expectedColNames.clear();
+        expectedTotoNames.clear();
+        expectedColNames << "NoteCol1";
+        expectedTotoNames << "TaskToto";
+        QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks)
+                               << expectedColNames << expectedTotoNames;
+
+        expectedColNames.clear();
+        expectedTotoNames.clear();
+        expectedColNames << "NoteCol1";
+        QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes)
+                               << expectedColNames << expectedTotoNames;
     }
 
     void shouldLookInAllReportedForSearchChildSources()
@@ -1002,7 +1145,9 @@ private slots:
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QFETCH(int, contentTypes);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::FetchContentTypes(contentTypes),
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -1015,8 +1160,15 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
-        QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->name(), QString("NoteCol1"));
+        auto actualNames = QStringList();
+        std::transform(result->data().constBegin(), result->data().constEnd(),
+                       std::back_inserter(actualNames),
+                       [] (const Domain::DataSource::Ptr &source) { return source->name(); });
+        actualNames.sort();
+
+        QFETCH(QStringList, expectedColNames);
+        expectedColNames.sort();
+        QCOMPARE(actualNames, expectedColNames);
 
         // WHEN
         QString searchTerm2("toto");
@@ -1024,8 +1176,16 @@ private slots:
 
         // THEN
         TestHelpers::waitForEmptyJobQueue();
-        QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->name(), QString("TaskToto"));
+
+        actualNames.clear();
+        std::transform(result->data().constBegin(), result->data().constEnd(),
+                       std::back_inserter(actualNames),
+                       [] (const Domain::DataSource::Ptr &source) { return source->name(); });
+        actualNames.sort();
+
+        QFETCH(QStringList, expectedTotoNames);
+        expectedTotoNames.sort();
+        QCOMPARE(actualNames, expectedTotoNames);
     }
 
     void shouldReactToCollectionAddsForSearchChildSources()
@@ -1042,7 +1202,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -1076,7 +1237,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -1111,7 +1273,8 @@ private slots:
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         queries->setSearchTerm(searchTerm);
@@ -1179,7 +1342,8 @@ private slots:
         data.storageBehavior().setFetchCollectionsBehavior(data.collection(42).id(),
                                                            AkonadiFakeStorageBehavior::FetchBehavior(colFetchBehavior));
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
@@ -1207,7 +1371,8 @@ private slots:
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
