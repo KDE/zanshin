@@ -2,6 +2,7 @@
 Name=Zanshin Todo
 Name[bs]=Zanshin zadaci
 Name[ca]=Pendent del Zanshin
+Name[ca@valencia]=Pendent del Zanshin
 Name[da]=Zanshin gøremål
 Name[de]=Zanshin-Aufgaben
 Name[es]=Tareas pendientes de Zanshin
@@ -27,6 +28,7 @@ Name[x-test]=xxZanshin Todoxx
 Comment=Add tasks to your todo list
 Comment[bs]=Dodaj zadatke u listu za uraditi
 Comment[ca]=Afegeix tasques a la vostra llista de pendents
+Comment[ca@valencia]=Afig tasques a la vostra llista de pendents
 Comment[da]=Tilføjer opgaver til din gøremålsliste
 Comment[de]=Aufgaben zu Ihrer Aufgabenliste hinzufügen
 Comment[es]=Añadir tareas a su lista de pendientes
