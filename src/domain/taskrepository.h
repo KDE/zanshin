@@ -41,9 +41,6 @@ public:
     TaskRepository();
     virtual ~TaskRepository();
 
-    virtual bool isDefaultSource(DataSource::Ptr source) const = 0;
-    virtual void setDefaultSource(DataSource::Ptr source) = 0;
-
     virtual KJob *create(Task::Ptr task) = 0;
     virtual KJob *createInProject(Task::Ptr task, Project::Ptr project) = 0;
     virtual KJob *createInContext(Task::Ptr task, Context::Ptr context) = 0;

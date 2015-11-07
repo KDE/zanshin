@@ -42,9 +42,6 @@ public:
     NoteRepository(const StorageInterface::Ptr &storage,
                    const SerializerInterface::Ptr &serializer);
 
-    bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
-    void setDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
-
     KJob *create(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
     KJob *createInTag(Domain::Note::Ptr note, Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
     KJob *update(Domain::Note::Ptr note) Q_DECL_OVERRIDE;

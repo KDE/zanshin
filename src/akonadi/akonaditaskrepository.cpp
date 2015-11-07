@@ -28,7 +28,6 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadistoragesettings.h"
 
 #include "utils/compositejob.h"
 
@@ -42,19 +41,6 @@ TaskRepository::TaskRepository(const StorageInterface::Ptr &storage,
       m_serializer(serializer),
       m_messaging(messaging)
 {
-}
-
-bool TaskRepository::isDefaultSource(Domain::DataSource::Ptr source) const
-{
-    auto settingsCollection = StorageSettings::instance().defaultTaskCollection();
-    auto sourceCollection = m_serializer->createCollectionFromDataSource(source);
-    return settingsCollection == sourceCollection;
-}
-
-void TaskRepository::setDefaultSource(Domain::DataSource::Ptr source)
-{
-    auto collection = m_serializer->createCollectionFromDataSource(source);
-    StorageSettings::instance().setDefaultTaskCollection(collection);
 }
 
 KJob *TaskRepository::createItem(const Item &item)

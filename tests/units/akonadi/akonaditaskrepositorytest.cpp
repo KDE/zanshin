@@ -35,7 +35,6 @@
 #include "akonadi/akonaditaskrepository.h"
 #include "akonadi/akonadiserializerinterface.h"
 #include "akonadi/akonadistorageinterface.h"
-#include "akonadi/akonadistoragesettings.h"
 
 using namespace mockitopp;
 using namespace mockitopp::matcher;
@@ -53,98 +52,6 @@ public:
     }
 
 private slots:
-    void shouldCheckIfASourceIsDefaultFromSettings()
-    {
-        // GIVEN
-
-        // A default collection for saving
-        Akonadi::Collection col(42);
-        Akonadi::StorageSettings::instance().setDefaultTaskCollection(col);
-
-        // The data source corresponding to the default collection
-        auto source = Domain::DataSource::Ptr::create();
-
-        // Storage mock sitting here doing nothing
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-
-        // Serializer mock returning the collection for the source
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(col);
-
-        // WHEN
-        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
-
-        // THEN
-        QVERIFY(repository->isDefaultSource(source));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).exactly(1));
-    }
-
-    void shouldNoticeIfSourceIsNotDefault()
-    {
-        // GIVEN
-
-        // A default collection for saving
-        Akonadi::Collection defaultCol(42);
-        Akonadi::StorageSettings::instance().setDefaultTaskCollection(defaultCol);
-
-        // Another random collection
-        Akonadi::Collection col(43);
-
-        // The data source corresponding to the random collection
-        auto source = Domain::DataSource::Ptr::create();
-
-        // Storage mock sitting here doing nothing
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-
-        // Serializer mock returning the collection for the source
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(col);
-
-        // WHEN
-        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
-
-        // THEN
-        QVERIFY(!repository->isDefaultSource(source));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).exactly(1));
-    }
-
-    void shouldStoreDefaultSourceInTheSettings()
-    {
-        // GIVEN
-
-        // A value in the settings
-        auto &settings = Akonadi::StorageSettings::instance();
-        settings.setDefaultTaskCollection(Akonadi::Collection(21));
-
-        // The new default data source we want
-        auto source = Domain::DataSource::Ptr::create();
-
-        // A collection corresponding to the data source
-        Akonadi::Collection col(42);
-
-        // Storage mock sitting here doing nothing
-        Utils::MockObject<Akonadi::StorageInterface> storageMock;
-
-        // Serializer mock returning the collection for the source
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(col);
-
-        // WHEN
-        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
-        repository->setDefaultSource(source);
-
-        // THEN
-        QCOMPARE(settings.defaultTaskCollection(), col);
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).exactly(1));
-    }
-
-
     void shouldCreateNewItems()
     {
         // GIVEN

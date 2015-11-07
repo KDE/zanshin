@@ -45,9 +45,6 @@ public:
                    const SerializerInterface::Ptr &serializer,
                    const MessagingInterface::Ptr &messaging);
 
-    virtual bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
-    virtual void setDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
-
     virtual KJob *create(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
     virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project) Q_DECL_OVERRIDE;
     virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context) Q_DECL_OVERRIDE;

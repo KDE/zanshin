@@ -28,7 +28,6 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
-#include "akonadistoragesettings.h"
 
 #include "utils/compositejob.h"
 
@@ -40,19 +39,6 @@ NoteRepository::NoteRepository(const StorageInterface::Ptr &storage,
     : m_storage(storage),
       m_serializer(serializer)
 {
-}
-
-bool NoteRepository::isDefaultSource(Domain::DataSource::Ptr source) const
-{
-    auto settingsCollection = StorageSettings::instance().defaultNoteCollection();
-    auto sourceCollection = m_serializer->createCollectionFromDataSource(source);
-    return settingsCollection == sourceCollection;
-}
-
-void NoteRepository::setDefaultSource(Domain::DataSource::Ptr source)
-{
-    auto collection = m_serializer->createCollectionFromDataSource(source);
-    StorageSettings::instance().setDefaultNoteCollection(collection);
 }
 
 KJob *NoteRepository::create(Domain::Note::Ptr note)

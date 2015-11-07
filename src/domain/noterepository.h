@@ -40,9 +40,6 @@ public:
     NoteRepository();
     virtual ~NoteRepository();
 
-    virtual bool isDefaultSource(DataSource::Ptr source) const = 0;
-    virtual void setDefaultSource(DataSource::Ptr source) = 0;
-
     virtual KJob *create(Note::Ptr task) = 0;
     virtual KJob *createInTag(Note::Ptr task, Tag::Ptr tag) = 0;
 
