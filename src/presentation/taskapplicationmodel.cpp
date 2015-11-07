@@ -57,7 +57,7 @@ TaskApplicationModel::TaskApplicationModel(const Domain::ProjectQueries::Ptr &pr
 
 void TaskApplicationModel::setDefaultDataSource(const Domain::DataSource::Ptr &source)
 {
-    m_taskRepository->setDefaultSource(source);
+    m_sourceQueries->setDefaultSource(source);
 }
 
 Domain::QueryResult<Domain::DataSource::Ptr>::Ptr TaskApplicationModel::createDataSourceQueryResult()
@@ -67,7 +67,7 @@ Domain::QueryResult<Domain::DataSource::Ptr>::Ptr TaskApplicationModel::createDa
 
 bool TaskApplicationModel::isDefaultSource(const Domain::DataSource::Ptr &source)
 {
-    return m_taskRepository->isDefaultSource(source);
+    return m_sourceQueries->isDefaultSource(source);
 }
 
 AvailablePagesModelInterface *TaskApplicationModel::createAvailablePagesModel()

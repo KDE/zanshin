@@ -25,6 +25,8 @@
 
 #include "utils/mockobject.h"
 
+#define ZANSHIN_I_SWEAR_I_AM_IN_A_PRESENTATION_TEST
+
 #include "presentation/availablenotepagesmodel.h"
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/noteapplicationmodel.h"
@@ -78,7 +80,6 @@ private slots:
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
         auto contextRepository = Domain::ContextRepository::Ptr();
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
         auto sourceRepository = Domain::DataSourceRepository::Ptr();
         auto taskQueries = Domain::TaskQueries::Ptr();
         auto taskRepository = Domain::TaskRepository::Ptr();
@@ -106,7 +107,7 @@ private slots:
         QVERIFY(qobject_cast<Presentation::DataSourceListModel*>(notes));
     }
 
-    void shouldRetrieveDefaultNoteCollectionFromRepository()
+    void shouldRetrieveDefaultNoteCollectionFromQueries()
     {
         // GIVEN
 
@@ -126,18 +127,14 @@ private slots:
         Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
-
-        // Repository mock returning the data source as default
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
-            noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(source == expectedSource);
+            sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(source).thenReturn(source == expectedSource);
         }
 
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
         auto contextRepository = Domain::ContextRepository::Ptr();
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
         auto sourceRepository = Domain::DataSourceRepository::Ptr();
         auto taskQueries = Domain::TaskQueries::Ptr();
         auto taskRepository = Domain::TaskRepository::Ptr();
@@ -154,7 +151,7 @@ private slots:
                                                taskQueries,
                                                taskRepository,
                                                noteQueries,
-                                               noteRepositoryMock.getInstance(),
+                                               noteRepository,
                                                tagQueries,
                                                tagRepository);
 
@@ -163,7 +160,7 @@ private slots:
 
         // THEN
         QCOMPARE(source, expectedSource);
-        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(expectedSource).exactly(1));
+        QVERIFY(sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(expectedSource).exactly(1));
     }
 
     void shouldGiveFirstNoteCollectionAsDefaultIfNoneMatched()
@@ -182,18 +179,14 @@ private slots:
         Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
-
-        // Repository mock returning the data source as default
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         foreach (const Domain::DataSource::Ptr &source, provider->data()) {
-            noteRepositoryMock(&Domain::NoteRepository::isDefaultSource).when(source).thenReturn(false);
+            sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(source).thenReturn(false);
         }
 
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
         auto contextRepository = Domain::ContextRepository::Ptr();
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
         auto sourceRepository = Domain::DataSourceRepository::Ptr();
         auto taskQueries = Domain::TaskQueries::Ptr();
         auto taskRepository = Domain::TaskRepository::Ptr();
@@ -210,7 +203,7 @@ private slots:
                                                taskQueries,
                                                taskRepository,
                                                noteQueries,
-                                               noteRepositoryMock.getInstance(),
+                                               noteRepository,
                                                tagQueries,
                                                tagRepository);
 
@@ -234,14 +227,10 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
 
-        // Repository mock returning the data source as default
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
         auto contextRepository = Domain::ContextRepository::Ptr();
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
         auto sourceRepository = Domain::DataSourceRepository::Ptr();
         auto taskQueries = Domain::TaskQueries::Ptr();
         auto taskRepository = Domain::TaskRepository::Ptr();
@@ -258,7 +247,7 @@ private slots:
                                                taskQueries,
                                                taskRepository,
                                                noteQueries,
-                                               noteRepositoryMock.getInstance(),
+                                               noteRepository,
                                                tagQueries,
                                                tagRepository);
 
@@ -269,7 +258,7 @@ private slots:
         QVERIFY(source.isNull());
     }
 
-    void shouldForwardDefaultNoteCollectionToRepository()
+    void shouldForwardDefaultNoteCollectionToQueries()
     {
         // GIVEN
 
@@ -284,16 +273,13 @@ private slots:
         Utils::MockObject<Domain::DataSourceQueries> sourceQueriesMock;
         sourceQueriesMock(&Domain::DataSourceQueries::findNotes).when().thenReturn(sourceResult);
         sourceQueriesMock(&Domain::DataSourceQueries::findTasks).when().thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
-
-        // Repository mock setting the default data source
-        Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
-        noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).thenReturn();
+        sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(source).thenReturn(false);
+        sourceQueriesMock(&Domain::DataSourceQueries::changeDefaultSource).when(source).thenReturn();
 
         auto projectQueries = Domain::ProjectQueries::Ptr();
         auto projectRepository = Domain::ProjectRepository::Ptr();
         auto contextQueries = Domain::ContextQueries::Ptr();
         auto contextRepository = Domain::ContextRepository::Ptr();
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
         auto sourceRepository = Domain::DataSourceRepository::Ptr();
         auto taskQueries = Domain::TaskQueries::Ptr();
         auto taskRepository = Domain::TaskRepository::Ptr();
@@ -310,7 +296,7 @@ private slots:
                                                taskQueries,
                                                taskRepository,
                                                noteQueries,
-                                               noteRepositoryMock.getInstance(),
+                                               noteRepository,
                                                tagQueries,
                                                tagRepository);
 
@@ -318,7 +304,7 @@ private slots:
         app.setDefaultDataSource(source);
 
         // THEN
-        QVERIFY(noteRepositoryMock(&Domain::NoteRepository::setDefaultSource).when(source).exactly(1));
+        QVERIFY(sourceQueriesMock(&Domain::DataSourceQueries::changeDefaultSource).when(source).exactly(1));
     }
 };
 

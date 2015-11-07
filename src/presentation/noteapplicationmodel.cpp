@@ -59,7 +59,7 @@ NoteApplicationModel::NoteApplicationModel(const Domain::ProjectQueries::Ptr &pr
 
 void NoteApplicationModel::setDefaultDataSource(const Domain::DataSource::Ptr &source)
 {
-    m_noteRepository->setDefaultSource(source);
+    m_sourceQueries->setDefaultSource(source);
 }
 
 Domain::QueryResult<Domain::DataSource::Ptr>::Ptr NoteApplicationModel::createDataSourceQueryResult()
@@ -69,7 +69,7 @@ Domain::QueryResult<Domain::DataSource::Ptr>::Ptr NoteApplicationModel::createDa
 
 bool NoteApplicationModel::isDefaultSource(const Domain::DataSource::Ptr &source)
 {
-    return m_noteRepository->isDefaultSource(source);
+    return m_sourceQueries->isDefaultSource(source);
 }
 
 AvailablePagesModelInterface *NoteApplicationModel::createAvailablePagesModel()
