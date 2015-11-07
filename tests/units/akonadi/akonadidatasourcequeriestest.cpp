@@ -25,6 +25,7 @@
 
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadiserializer.h"
+#include "akonadi/akonadistoragesettings.h"
 
 #include "utils/jobhandler.h"
 #include "utils/mem_fn.h"
@@ -37,6 +38,10 @@ using namespace Testlib;
 
 typedef std::function<Domain::QueryResult<Domain::DataSource::Ptr>::Ptr(Domain::DataSourceQueries*)> QueryFunction;
 Q_DECLARE_METATYPE(QueryFunction)
+typedef std::function<void(Akonadi::StorageSettings *, const Akonadi::Collection &)> SetDefaultCollectionFunction;
+Q_DECLARE_METATYPE(SetDefaultCollectionFunction)
+typedef std::function<Akonadi::Collection(Akonadi::StorageSettings *)> GetDefaultCollectionFunction;
+Q_DECLARE_METATYPE(GetDefaultCollectionFunction)
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchContentType)
 
 class AkonadiDataSourceQueriesTest : public QObject
@@ -67,6 +72,108 @@ private:
     }
 
 private slots:
+    void shouldCheckIfASourceIsDefaultFromSettings_data()
+    {
+        QTest::addColumn<Akonadi::StorageInterface::FetchContentType>("contentType");
+        QTest::addColumn<SetDefaultCollectionFunction>("setDefaultCollection");
+        QTest::addColumn<GetDefaultCollectionFunction>("getDefaultCollection");
+
+        {
+            SetDefaultCollectionFunction setFunction = Utils::mem_fn(&Akonadi::StorageSettings::setDefaultNoteCollection);
+            GetDefaultCollectionFunction getFunction = Utils::mem_fn(&Akonadi::StorageSettings::defaultNoteCollection);
+            QTest::newRow("notes") << Akonadi::StorageInterface::Notes << setFunction << getFunction;
+        }
+
+        {
+            SetDefaultCollectionFunction setFunction = Utils::mem_fn(&Akonadi::StorageSettings::setDefaultTaskCollection);
+            GetDefaultCollectionFunction getFunction = Utils::mem_fn(&Akonadi::StorageSettings::defaultTaskCollection);
+            QTest::newRow("tasks") << Akonadi::StorageInterface::Tasks << setFunction << getFunction;
+        }
+    }
+
+    void shouldCheckIfASourceIsDefaultFromSettings()
+    {
+        // GIVEN
+        const auto minId = qint64(42);
+        const auto maxId = qint64(44);
+        const auto defaultId = qint64(43);
+
+        QFETCH(Akonadi::StorageInterface::FetchContentType, contentType);
+        QFETCH(SetDefaultCollectionFunction, setDefaultCollection);
+
+        // A default collection for saving
+        setDefaultCollection(&Akonadi::StorageSettings::instance(),
+                             Akonadi::Collection(defaultId));
+
+        // A few data sources
+        AkonadiFakeData data;
+        for (auto id = minId; id <= maxId; id++) {
+            auto col = GenCollection().withId(id).withName(QString::number(id)).withRootAsParent();
+            if (contentType == Akonadi::StorageInterface::Tasks)
+                data.createCollection(col.withTaskContent());
+            else
+                data.createCollection(col.withTaskContent());
+        }
+
+        // WHEN
+        auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(contentType,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        // THEN
+        for (auto id = minId; id <= maxId; id++) {
+            auto source = serializer->createDataSourceFromCollection(data.collection(id), Akonadi::SerializerInterface::BaseName);
+            QCOMPARE(queries->isDefaultSource(source), id == defaultId);
+        }
+    }
+
+    void shouldStoreDefaultSourceInTheSettingsAndNotify_data()
+    {
+        shouldCheckIfASourceIsDefaultFromSettings_data();
+    }
+
+    void shouldStoreDefaultSourceInTheSettingsAndNotify()
+    {
+        // GIVEN
+        const auto minId = qint64(42);
+        const auto maxId = qint64(44);
+        const auto defaultId = qint64(43);
+
+        QFETCH(Akonadi::StorageInterface::FetchContentType, contentType);
+        QFETCH(SetDefaultCollectionFunction, setDefaultCollection);
+
+        // A default collection for saving
+        setDefaultCollection(&Akonadi::StorageSettings::instance(),
+                             Akonadi::Collection(minId));
+
+        // A few data sources
+        AkonadiFakeData data;
+        for (auto id = minId; id <= maxId; id++) {
+            auto col = GenCollection().withId(id).withName(QString::number(id)).withRootAsParent();
+            if (contentType == Akonadi::StorageInterface::Tasks)
+                data.createCollection(col.withTaskContent());
+            else
+                data.createCollection(col.withTaskContent());
+        }
+
+        // WHEN
+        auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(contentType,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QSignalSpy spy(queries->notifier(), SIGNAL(defaultSourceChanged()));
+        auto defaultSource = serializer->createDataSourceFromCollection(data.collection(defaultId), Akonadi::SerializerInterface::BaseName);
+        queries->setDefaultSource(defaultSource);
+
+        // THEN
+        QFETCH(GetDefaultCollectionFunction, getDefaultCollection);
+        QCOMPARE(getDefaultCollection(&Akonadi::StorageSettings::instance()).id(), defaultId);
+        QCOMPARE(spy.count(), 1);
+    }
+
     void shouldListDataSources_data()
     {
         generateDataTable();

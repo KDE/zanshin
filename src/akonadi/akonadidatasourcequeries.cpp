@@ -24,6 +24,8 @@
 
 #include "akonadidatasourcequeries.h"
 
+#include "akonadistoragesettings.h"
+
 using namespace Akonadi;
 
 DataSourceQueries::DataSourceQueries(const StorageInterface::FetchContentTypes &contentTypes,
@@ -39,6 +41,27 @@ DataSourceQueries::DataSourceQueries(const StorageInterface::FetchContentTypes &
         m_findChildren.remove(collection.id());
         m_findSearchChildren.remove(collection.id());
     });
+}
+
+bool DataSourceQueries::isDefaultSource(Domain::DataSource::Ptr source) const
+{
+    auto sourceCollection = m_serializer->createCollectionFromDataSource(source);
+    if (m_contentTypes == StorageInterface::Tasks)
+        return sourceCollection == StorageSettings::instance().defaultTaskCollection();
+    else if (m_contentTypes == StorageInterface::Notes)
+        return sourceCollection == StorageSettings::instance().defaultNoteCollection();
+    else
+        return false;
+}
+
+void DataSourceQueries::changeDefaultSource(Domain::DataSource::Ptr source)
+{
+    auto sourceCollection = m_serializer->createCollectionFromDataSource(source);
+    if (m_contentTypes == StorageInterface::Tasks) {
+        StorageSettings::instance().setDefaultTaskCollection(sourceCollection);
+    } else if (m_contentTypes == StorageInterface::Notes) {
+        StorageSettings::instance().setDefaultNoteCollection(sourceCollection);
+    }
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const

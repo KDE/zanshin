@@ -34,3 +34,19 @@ DataSourceQueries::~DataSourceQueries()
 {
 }
 
+DataSourceQueriesNotifier *DataSourceQueries::notifier() const
+{
+    if (!m_notifier)
+        m_notifier.reset(new DataSourceQueriesNotifier);
+
+    return m_notifier.data();
+}
+
+void DataSourceQueries::setDefaultSource(DataSource::Ptr source)
+{
+    if (isDefaultSource(source))
+        return;
+
+    changeDefaultSource(source);
+    emit notifier()->defaultSourceChanged();
+}

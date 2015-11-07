@@ -24,10 +24,24 @@
 #ifndef DOMAIN_DATASOURCEQUERIES_H
 #define DOMAIN_DATASOURCEQUERIES_H
 
+#include <QObject>
+
 #include "datasource.h"
 #include "queryresult.h"
 
 namespace Domain {
+
+class DataSourceQueries;
+
+class DataSourceQueriesNotifier : public QObject
+{
+    Q_OBJECT
+signals:
+    void defaultSourceChanged();
+
+private:
+    friend class DataSourceQueries;
+};
 
 class DataSourceQueries
 {
@@ -37,6 +51,20 @@ public:
     DataSourceQueries();
     virtual ~DataSourceQueries();
 
+    DataSourceQueriesNotifier *notifier() const;
+
+    virtual bool isDefaultSource(DataSource::Ptr source) const = 0;
+    void setDefaultSource(DataSource::Ptr source);
+
+// HACK: Ugly right? Find me another way to mock changeDefaultSource then...
+#ifdef ZANSHIN_I_SWEAR_I_AM_IN_A_PRESENTATION_TEST
+public:
+#else
+private:
+#endif
+    virtual void changeDefaultSource(DataSource::Ptr source) = 0;
+
+public:
     virtual QueryResult<DataSource::Ptr>::Ptr findTasks() const = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findNotes() const = 0;
 
@@ -47,6 +75,9 @@ public:
     virtual void setSearchTerm(QString term) = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findSearchTopLevel() const = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findSearchChildren(DataSource::Ptr source) const = 0;
+
+private:
+    mutable QScopedPointer<DataSourceQueriesNotifier> m_notifier;
 };
 
 }

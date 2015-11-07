@@ -46,6 +46,11 @@ public:
                       const SerializerInterface::Ptr &serializer,
                       const MonitorInterface::Ptr &monitor);
 
+    bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
+private:
+    void changeDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
+
+public:
     DataSourceResult::Ptr findTasks() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findNotes() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
