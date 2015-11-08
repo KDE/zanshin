@@ -157,7 +157,7 @@ DataSourceComboBox *ApplicationComponents::defaultSourceCombo() const
             combo->setModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
             combo->setDefaultSourceProperty(m_model.data(), "defaultDataSource");
             connect(combo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                    m_model.data(), SLOT(setDefaultNoteDataSource(Domain::DataSource::Ptr)));
+                    m_model.data(), SLOT(setDefaultDataSource(Domain::DataSource::Ptr)));
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
