@@ -24,8 +24,10 @@
 
 #include "availablesourcesview.h"
 
+#include <QAction>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
+#include <QToolBar>
 #include <QTreeView>
 #include <QVBoxLayout>
 
@@ -40,7 +42,8 @@ using namespace Widgets;
 AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     : QWidget(parent),
       m_model(Q_NULLPTR),
-      m_sortProxy(new QSortFilterProxyModel(this))
+      m_sortProxy(new QSortFilterProxyModel(this)),
+      m_sourcesView(new QTreeView(this))
 {
     m_sortProxy->setDynamicSortFilter(true);
     m_sortProxy->sort(0);
@@ -52,19 +55,34 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     connect(searchEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onSearchTextChanged(QString)));
 
-    auto sourcesView = new QTreeView(this);
-    sourcesView->setObjectName("sourcesView");
-    sourcesView->header()->hide();
-    sourcesView->setModel(m_sortProxy);
+    m_sourcesView->setObjectName("sourcesView");
+    m_sourcesView->header()->hide();
+    m_sourcesView->setModel(m_sortProxy);
 
-    auto delegate = new DataSourceDelegate(sourcesView);
+    auto delegate = new DataSourceDelegate(m_sourcesView);
     connect(delegate, SIGNAL(actionTriggered(Domain::DataSource::Ptr,int)),
             this, SLOT(onActionTriggered(Domain::DataSource::Ptr,int)));
-    sourcesView->setItemDelegate(delegate);
+    m_sourcesView->setItemDelegate(delegate);
+
+    auto actionBar = new QToolBar(this);
+    actionBar->setObjectName("actionBar");
+    actionBar->setIconSize(QSize(16, 16));
+
+    auto addAction = new QAction(this);
+    addAction->setObjectName("defaultAction");
+    addAction->setText(tr("Use as default source"));
+    addAction->setIcon(QIcon::fromTheme("folder-favorites"));
+    connect(addAction, SIGNAL(triggered()), this, SLOT(onDefaultTriggered()));
+    actionBar->addAction(addAction);
 
     auto layout = new QVBoxLayout;
     layout->addWidget(searchEdit);
-    layout->addWidget(sourcesView);
+    layout->addWidget(m_sourcesView);
+
+    auto actionBarLayout = new QHBoxLayout;
+    actionBarLayout->setAlignment(Qt::AlignRight);
+    actionBarLayout->addWidget(actionBar);
+    layout->addLayout(actionBarLayout);
     setLayout(layout);
 }
 
@@ -83,6 +101,15 @@ void AvailableSourcesView::setModel(QObject *model)
     m_model = model;
 
     setSourceModel("sourceListModel");
+}
+
+void AvailableSourcesView::onDefaultTriggered()
+{
+    const auto currentIndex = m_sourcesView->currentIndex();
+    const auto index = m_sortProxy->mapToSource(currentIndex);
+    if (index.isValid())
+        QMetaObject::invokeMethod(m_model, "setDefaultItem",
+                                  Q_ARG(QModelIndex, index));
 }
 
 void AvailableSourcesView::onActionTriggered(const Domain::DataSource::Ptr &source, int action)

@@ -23,15 +23,18 @@
 
 #include <QtTestGui>
 
-#include <QAbstractItemModel>
+#include <QAction>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
+#include <QStandardItemModel>
 #include <QStringListModel>
+#include <QToolBar>
 #include <QTreeView>
 
 #include <KLineEdit>
 
 #include "presentation/metatypes.h"
+#include "presentation/querytreemodelbase.h"
 
 #include "widgets/availablesourcesview.h"
 #include "widgets/datasourcedelegate.h"
@@ -52,6 +55,11 @@ public:
     }
 
 public slots:
+    void setDefaultItem(const QModelIndex &index)
+    {
+        defaultIndex = index;
+    }
+
     void setSearchTerm(const QString &term)
     {
         m_searchTerm = term;
@@ -76,6 +84,7 @@ public:
     QList<Domain::DataSource::Ptr> listedSources;
     QList<Domain::DataSource::Ptr> unlistedSources;
     QList<Domain::DataSource::Ptr> bookmarkedSources;
+    QPersistentModelIndex defaultIndex;
 
 private:
     QString m_searchTerm;
@@ -109,6 +118,13 @@ private slots:
         QVERIFY(proxy->dynamicSortFilter());
         QCOMPARE(proxy->sortColumn(), 0);
         QCOMPARE(proxy->sortOrder(), Qt::AscendingOrder);
+
+        auto actionBar = available.findChild<QToolBar*>("actionBar");
+        QVERIFY(actionBar);
+        QVERIFY(actionBar->isVisibleTo(&available));
+
+        auto defaultAction = available.findChild<QAction*>("defaultAction");
+        QVERIFY(defaultAction);
     }
 
     void shouldDisplayListFromPageModel()
@@ -132,6 +148,34 @@ private slots:
 
         // THEN
         QCOMPARE(proxy->sourceModel(), &model);
+    }
+
+    void shouldSetSelectedAsDefault()
+    {
+        // GIVEN
+        QStringListModel model(QStringList() << "A" << "B" << "C" );
+
+        AvailableSourcesModelStub stubSourcesModel;
+        stubSourcesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailableSourcesView available;
+        available.setModel(&stubSourcesModel);
+
+        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        QVERIFY(sourcesView);
+        auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
+        QVERIFY(proxy);
+
+        auto defaultAction = available.findChild<QAction*>("defaultAction");
+        QVERIFY(defaultAction);
+
+        // WHEN
+        auto selectedIndex = QPersistentModelIndex(model.index(1));
+        sourcesView->setCurrentIndex(proxy->mapFromSource(selectedIndex));
+        defaultAction->trigger();
+
+        // THEN
+        QCOMPARE(stubSourcesModel.defaultIndex, selectedIndex);
     }
 
     void shouldListASourceWhenTheDelegateButtonIsClicked()

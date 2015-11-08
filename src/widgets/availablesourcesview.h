@@ -30,6 +30,7 @@
 #include "domain/datasource.h"
 
 class QSortFilterProxyModel;
+class QTreeView;
 
 namespace Widgets {
 
@@ -46,12 +47,14 @@ public slots:
     void setModel(QObject *model);
 
 private slots:
+    void onDefaultTriggered();
     void onActionTriggered(const Domain::DataSource::Ptr &source, int action);
     void onSearchTextChanged(const QString &text);
 
 private:
     QObject *m_model;
     QSortFilterProxyModel *m_sortProxy;
+    QTreeView *m_sourcesView;
 };
 
 }
