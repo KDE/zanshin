@@ -105,12 +105,13 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
             return defaultFlags;
     };
 
-    auto data = [] (const Domain::DataSource::Ptr &source, int role) -> QVariant {
+    auto data = [this] (const Domain::DataSource::Ptr &source, int role) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole
          && role != Qt::DecorationRole
          && role != Qt::CheckStateRole
-         && role != QueryTreeModelBase::IconNameRole) {
+         && role != QueryTreeModelBase::IconNameRole
+         && role != IsDefaultRole) {
             return QVariant();
         }
 
@@ -128,6 +129,8 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
                 return source->isSelected() ? Qt::Checked : Qt::Unchecked;
             else
                 return QVariant();
+        } else if (role == IsDefaultRole) {
+            return m_dataSourceQueries->isDefaultSource(source);
         } else {
             return QVariant();
         }
@@ -155,6 +158,8 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
         return Q_NULLPTR;
     };
 
+    connect(m_dataSourceQueries->notifier(), SIGNAL(defaultSourceChanged()),
+            this, SLOT(onDefaultSourceChanged()));
     return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, this);
 }
 
@@ -226,4 +231,22 @@ void AvailableSourcesModel::setSearchTerm(const QString &term)
 
     m_dataSourceQueries->setSearchTerm(term);
     emit searchTermChanged(term);
+}
+
+void AvailableSourcesModel::setDefaultItem(const QModelIndex &index)
+{
+    auto source = index.data(QueryTreeModelBase::ObjectRole).value<Domain::DataSource::Ptr>();
+    Q_ASSERT(source);
+    m_dataSourceQueries->setDefaultSource(source);
+}
+
+void AvailableSourcesModel::onDefaultSourceChanged(const QModelIndex &root)
+{
+    const auto rowCount = m_sourceListModel->rowCount(root);
+    for (int row = 0; row < rowCount; row++) {
+        const auto index = m_sourceListModel->index(row, 0, root);
+        // TODO Qt5: Remove static_cast
+        emit static_cast<QueryTreeModelBase*>(m_sourceListModel)->dataChanged(index, index);
+        onDefaultSourceChanged(index);
+    }
 }

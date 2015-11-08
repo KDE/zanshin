@@ -25,6 +25,8 @@
 
 #include "utils/mockobject.h"
 
+#define ZANSHIN_I_SWEAR_I_AM_IN_A_PRESENTATION_TEST
+
 #include "domain/datasourcequeries.h"
 #include "domain/datasourcerepository.h"
 
@@ -33,6 +35,8 @@
 #include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
+
+Q_DECLARE_METATYPE(QModelIndex);
 
 using namespace mockitopp;
 using namespace mockitopp::matcher;
@@ -51,6 +55,13 @@ public:
 class AvailableSourcesModelTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit AvailableSourcesModelTest(QObject *parent = Q_NULLPTR)
+        : QObject(parent)
+    {
+        qRegisterMetaType<QModelIndex>();
+    }
+
 private slots:
     void shouldListAvailableSources()
     {
@@ -99,6 +110,14 @@ private slots:
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source2).thenReturn(source2Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source3).thenReturn(source3Result);
         sourceQueriesMock(&Domain::DataSourceQueries::findChildren).when(source4).thenReturn(source4Result);
+        // We'll simulate a default source change later on
+        sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(source1).thenReturn(false);
+        sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(source2).thenReturn(true)
+                                                                                    .thenReturn(false);
+        sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(source3).thenReturn(false);
+        sourceQueriesMock(&Domain::DataSourceQueries::isDefaultSource).when(source4).thenReturn(false)
+                                                                                    .thenReturn(false)
+                                                                                    .thenReturn(true);
 
         Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
 
@@ -148,6 +167,11 @@ private slots:
         QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
         QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
 
+        QCOMPARE(model->data(source1Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source2Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), true);
+        QCOMPARE(model->data(source3Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source4Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
+
         // WHEN
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source2).thenReturn(new FakeJob(this));
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source4).thenReturn(new FakeJob(this));
@@ -162,6 +186,30 @@ private slots:
 
         QVERIFY(source2->isSelected());
         QVERIFY(!source4->isSelected());
+
+        // WHEN
+        QSignalSpy spy(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
+        sourceQueriesMock(&Domain::DataSourceQueries::changeDefaultSource).when(source4).thenReturn();
+        sources.setDefaultItem(source4Index);
+
+        // THEN
+        QCOMPARE(model->data(source1Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source2Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source3Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source4Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), true);
+
+        // Not overly efficient way of signaling the change, but doesn't happen often
+        QCOMPARE(spy.count(), 4);
+        QCOMPARE(spy.at(0).at(0).value<QModelIndex>(), source1Index);
+        QCOMPARE(spy.at(0).at(1).value<QModelIndex>(), source1Index);
+        QCOMPARE(spy.at(1).at(0).value<QModelIndex>(), source3Index);
+        QCOMPARE(spy.at(1).at(1).value<QModelIndex>(), source3Index);
+        QCOMPARE(spy.at(2).at(0).value<QModelIndex>(), source4Index);
+        QCOMPARE(spy.at(2).at(1).value<QModelIndex>(), source4Index);
+        QCOMPARE(spy.at(3).at(0).value<QModelIndex>(), source2Index);
+        QCOMPARE(spy.at(3).at(1).value<QModelIndex>(), source2Index);
+
+        QVERIFY(sourceQueriesMock(&Domain::DataSourceQueries::changeDefaultSource).when(source4).exactly(1));
     }
 
     void shouldListAvailableSearchSources()
