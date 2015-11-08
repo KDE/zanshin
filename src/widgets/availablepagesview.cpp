@@ -49,33 +49,33 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     : QWidget(parent),
       m_model(Q_NULLPTR),
       m_sources(Q_NULLPTR),
-      m_pagesView(new QTreeView(this)),
-      m_actionBar(new QToolBar(this))
+      m_pagesView(new QTreeView(this))
 {
     m_pagesView->setObjectName("pagesView");
     m_pagesView->header()->hide();
     m_pagesView->setDragDropMode(QTreeView::DropOnly);
 
-    m_actionBar->setObjectName("actionBar");
-    m_actionBar->setIconSize(QSize(16, 16));
+    auto actionBar = new QToolBar(this);
+    actionBar->setObjectName("actionBar");
+    actionBar->setIconSize(QSize(16, 16));
 
     auto addAction = new QAction(this);
     addAction->setObjectName("addAction");
     addAction->setText(tr("New page"));
     addAction->setIcon(QIcon::fromTheme("list-add"));
     connect(addAction, SIGNAL(triggered()), this, SLOT(onAddTriggered()));
-    m_actionBar->addAction(addAction);
+    actionBar->addAction(addAction);
 
     auto removeAction = new QAction(this);
     removeAction->setObjectName("removeAction");
     removeAction->setText(tr("Remove page"));
     removeAction->setIcon(QIcon::fromTheme("list-remove"));
     connect(removeAction, SIGNAL(triggered()), this, SLOT(onRemoveTriggered()));
-    m_actionBar->addAction(removeAction);
+    actionBar->addAction(removeAction);
 
     auto actionBarLayout = new QHBoxLayout;
     actionBarLayout->setAlignment(Qt::AlignRight);
-    actionBarLayout->addWidget(m_actionBar);
+    actionBarLayout->addWidget(actionBar);
 
     auto layout = new QVBoxLayout;
     layout->addWidget(m_pagesView);

@@ -36,7 +36,6 @@
 
 class QAbstractItemModel;
 class QModelIndex;
-class QToolBar;
 class QTreeView;
 
 namespace Widgets {
@@ -78,7 +77,6 @@ private:
     QAbstractItemModel *m_sources;
     Domain::DataSource::Ptr m_defaultSource;
     QTreeView *m_pagesView;
-    QToolBar *m_actionBar;
     DialogFactory m_dialogFactory;
     MessageBoxInterface::Ptr m_messageBoxInterface;
 };
