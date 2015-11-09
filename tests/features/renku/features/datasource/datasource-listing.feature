@@ -11,7 +11,7 @@ Feature: Data sources listing
        | TestData/Emails/Notes                  | folder              |
        | TestData/Private Notes                 | folder              |
 
-  Scenario: All task and note sources appear in the list
+  Scenario: All note sources appear in the list
     Given I display the available data sources
     When I list the items
     Then the list is:

@@ -12,7 +12,7 @@ Feature: Data sources listing
        | TestData/Calendar1/Calendar2           | view-calendar-tasks |
        | TestData/Calendar1/Calendar2/Calendar3 | folder              |
 
-  Scenario: All task and note sources appear in the list
+  Scenario: All task sources appear in the list
     Given I display the available data sources
     When I list the items
     Then the list is:
