@@ -12,6 +12,7 @@ set(widgets_SRCS
     newpagedialog.cpp
     newpagedialoginterface.cpp
     pageview.cpp
+    quickselectdialog.cpp
     scripteditor.cpp
 )
 
