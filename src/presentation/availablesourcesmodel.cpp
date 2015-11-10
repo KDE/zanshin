@@ -240,13 +240,18 @@ void AvailableSourcesModel::setDefaultItem(const QModelIndex &index)
     m_dataSourceQueries->setDefaultSource(source);
 }
 
-void AvailableSourcesModel::onDefaultSourceChanged(const QModelIndex &root)
+void AvailableSourcesModel::onDefaultSourceChanged()
+{
+    emitDefaultSourceChanged(QModelIndex());
+}
+
+void AvailableSourcesModel::emitDefaultSourceChanged(const QModelIndex &root)
 {
     const auto rowCount = m_sourceListModel->rowCount(root);
     for (int row = 0; row < rowCount; row++) {
         const auto index = m_sourceListModel->index(row, 0, root);
         // TODO Qt5: Remove static_cast
         emit static_cast<QueryTreeModelBase*>(m_sourceListModel)->dataChanged(index, index);
-        onDefaultSourceChanged(index);
+        emitDefaultSourceChanged(index);
     }
 }

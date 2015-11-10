@@ -71,9 +71,11 @@ public slots:
     void bookmarkSource(const Domain::DataSource::Ptr &source);
 
 private slots:
-    void onDefaultSourceChanged(const QModelIndex &root = QModelIndex());
+    void onDefaultSourceChanged();
 
 private:
+    void emitDefaultSourceChanged(const QModelIndex &root);
+
     QAbstractItemModel *createSourceListModel();
     QAbstractItemModel *createSearchListModel();
 
