@@ -55,21 +55,6 @@ TaskApplicationModel::TaskApplicationModel(const Domain::ProjectQueries::Ptr &pr
 {
 }
 
-void TaskApplicationModel::setDefaultDataSource(const Domain::DataSource::Ptr &source)
-{
-    m_sourceQueries->setDefaultSource(source);
-}
-
-Domain::QueryResult<Domain::DataSource::Ptr>::Ptr TaskApplicationModel::createDataSourceQueryResult()
-{
-    return m_sourceQueries->findTasks();
-}
-
-bool TaskApplicationModel::isDefaultSource(const Domain::DataSource::Ptr &source)
-{
-    return m_sourceQueries->isDefaultSource(source);
-}
-
 AvailablePagesModelInterface *TaskApplicationModel::createAvailablePagesModel()
 {
     return new AvailableTaskPagesModel(m_projectQueries,

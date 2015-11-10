@@ -101,23 +101,7 @@ public:
     {
     }
 
-public slots:
-    void setDefaultDataSource(const Domain::DataSource::Ptr &)
-    {
-    }
-
 private:
-    Domain::QueryResult<Domain::DataSource::Ptr>::Ptr createDataSourceQueryResult() Q_DECL_OVERRIDE
-    {
-        auto provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
-        return Domain::QueryResult<Domain::DataSource::Ptr>::create(provider);
-    }
-
-    bool isDefaultSource(const Domain::DataSource::Ptr &) Q_DECL_OVERRIDE
-    {
-        return false;
-    }
-
     Presentation::AvailablePagesModelInterface *createAvailablePagesModel() Q_DECL_OVERRIDE
     {
         return new FakeAvailablePagesModel(this);

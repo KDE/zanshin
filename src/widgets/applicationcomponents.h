@@ -38,7 +38,6 @@ namespace Widgets {
 
 class AvailablePagesView;
 class AvailableSourcesView;
-class DataSourceComboBox;
 class EditorView;
 class PageView;
 
@@ -55,10 +54,6 @@ public:
     PageView *pageView() const;
     EditorView *editorView() const;
 
-    QList<QAction *> configureActions() const;
-
-    DataSourceComboBox *defaultSourceCombo() const;
-
 public slots:
     void setModel(const QObjectPtr &model);
 
@@ -74,9 +69,6 @@ private:
     AvailablePagesView *m_availablePagesView;
     PageView *m_pageView;
     EditorView *m_editorView;
-
-    QList<QAction*> m_configureActions;
-    DataSourceComboBox *m_defaultSourceCombo;
 };
 
 }

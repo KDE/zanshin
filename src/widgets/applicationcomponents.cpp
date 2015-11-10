@@ -32,7 +32,6 @@
 
 #include "availablepagesview.h"
 #include "availablesourcesview.h"
-#include "datasourcecombobox.h"
 #include "editorview.h"
 #include "pageview.h"
 
@@ -46,8 +45,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
       m_availableSourcesView(Q_NULLPTR),
       m_availablePagesView(Q_NULLPTR),
       m_pageView(Q_NULLPTR),
-      m_editorView(Q_NULLPTR),
-      m_defaultSourceCombo(Q_NULLPTR)
+      m_editorView(Q_NULLPTR)
 {
 }
 
@@ -127,48 +125,6 @@ EditorView *ApplicationComponents::editorView() const
     return m_editorView;
 }
 
-QList<QAction *> ApplicationComponents::configureActions() const
-{
-    if (m_configureActions.isEmpty()) {
-        QList<QAction*> actions;
-
-        auto widget = new QWidget;
-        widget->setLayout(new QHBoxLayout);
-        widget->layout()->addWidget(new QLabel(tr("Default source")));
-        widget->layout()->addWidget(defaultSourceCombo());
-
-        auto comboAction = new QWidgetAction(m_parent);
-        comboAction->setObjectName("settings_default_source");
-        comboAction->setDefaultWidget(widget);
-        actions << comboAction;
-
-        ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
-        self->m_configureActions = actions;
-    }
-
-    return m_configureActions;
-}
-
-DataSourceComboBox *ApplicationComponents::defaultSourceCombo() const
-{
-    if (!m_defaultSourceCombo) {
-        auto combo = new DataSourceComboBox(m_parent);
-        combo->setObjectName("defaultSourceCombo");
-        combo->setFixedWidth(300);
-        if (m_model.data()) {
-            combo->setModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
-            combo->setDefaultSourceProperty(m_model.data(), "defaultDataSource");
-            connect(combo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                    m_model.data(), SLOT(setDefaultDataSource(Domain::DataSource::Ptr)));
-        }
-
-        ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
-        self->m_defaultSourceCombo = combo;
-    }
-
-    return m_defaultSourceCombo;
-}
-
 void ApplicationComponents::setModel(const QObjectPtr &model)
 {
     if (m_model == model)
@@ -193,13 +149,6 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
 
     if (m_editorView)
         m_editorView->setModel(m_model->property("editor").value<QObject*>());
-
-    if (m_defaultSourceCombo) {
-        m_defaultSourceCombo->setModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
-        m_defaultSourceCombo->setDefaultSourceProperty(m_model.data(), "defaultDataSource");
-        connect(m_defaultSourceCombo, SIGNAL(sourceActivated(Domain::DataSource::Ptr)),
-                m_model.data(), SLOT(setDefaultDataSource(Domain::DataSource::Ptr)));
-    }
 }
 
 void ApplicationComponents::onCurrentPageChanged(QObject *page)

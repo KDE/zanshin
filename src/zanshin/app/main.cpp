@@ -37,7 +37,6 @@
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
 #include "widgets/availablesourcesview.h"
-#include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
 
@@ -72,13 +71,7 @@ int main(int argc, char **argv)
     components->setModel(Utils::DependencyManager::globalInstance().create<Presentation::ApplicationModel>());
 
     auto layout = new QVBoxLayout;
-
-    auto hbox = new QHBoxLayout;
-    hbox->addWidget(components->defaultSourceCombo());
-
-    layout->addLayout(hbox);
     layout->addWidget(components->pageView());
-
     widget->setLayout(layout);
 
     auto sourcesDock = new QDockWidget(QObject::tr("Sources"));
@@ -93,26 +86,10 @@ int main(int argc, char **argv)
     editorDock->setObjectName("editorDock");
     editorDock->setWidget(components->editorView());
 
-    auto configureMenu = new QMenu(widget);
-    foreach (QAction *action, components->configureActions()) {
-        configureMenu->addAction(action);
-    }
-
-    auto configureButton = new QToolButton(widget);
-    configureButton->setIcon(QIcon::fromTheme("configure"));
-    configureButton->setText(QObject::tr("Settings"));
-    configureButton->setToolTip(configureButton ->text());
-    configureButton->setPopupMode(QToolButton::InstantPopup);
-    configureButton->setMenu(configureMenu);
-
     auto window = new KMainWindow;
     window->resize(1024, 600);
     window->setAutoSaveSettings("MainWindow");
     window->setCentralWidget(widget);
-
-    QToolBar *mainToolBar = window->addToolBar(QObject::tr("Main"));
-    mainToolBar->setObjectName("mainToolBar");
-    mainToolBar->addWidget(configureButton);
 
     window->addDockWidget(Qt::RightDockWidgetArea, editorDock);
     window->addDockWidget(Qt::LeftDockWidgetArea, pagesDock);

@@ -65,9 +65,6 @@ private:
     virtual void changeDefaultSource(DataSource::Ptr source) = 0;
 
 public:
-    virtual QueryResult<DataSource::Ptr>::Ptr findTasks() const = 0;
-    virtual QueryResult<DataSource::Ptr>::Ptr findNotes() const = 0;
-
     virtual QueryResult<DataSource::Ptr>::Ptr findTopLevel() const = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findChildren(DataSource::Ptr source) const = 0;
 

@@ -64,26 +64,6 @@ void DataSourceQueries::changeDefaultSource(Domain::DataSource::Ptr source)
     }
 }
 
-DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTasks() const
-{
-    auto fetch = m_helpers->fetchAllCollections(StorageInterface::Tasks);
-    auto predicate = [this] (const Akonadi::Collection &collection) {
-        return m_serializer->isTaskCollection(collection);
-    };
-    m_integrator->bind(m_findTasks, fetch, predicate, SerializerInterface::FullPath);
-    return m_findTasks->result();
-}
-
-DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findNotes() const
-{
-    auto fetch = m_helpers->fetchAllCollections(StorageInterface::Notes);
-    auto predicate = [this] (const Akonadi::Collection &collection) {
-        return m_serializer->isNoteCollection(collection);
-    };
-    m_integrator->bind(m_findNotes, fetch, predicate, SerializerInterface::FullPath);
-    return m_findNotes->result();
-}
-
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
 {
     auto fetch = m_helpers->fetchCollections(Collection::root(), m_contentTypes);

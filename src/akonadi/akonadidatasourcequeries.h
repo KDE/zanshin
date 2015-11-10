@@ -51,8 +51,6 @@ private:
     void changeDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
 
 public:
-    DataSourceResult::Ptr findTasks() const Q_DECL_OVERRIDE;
-    DataSourceResult::Ptr findNotes() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
@@ -70,8 +68,6 @@ private:
     LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
 
-    mutable DataSourceQueryOutput::Ptr m_findTasks;
-    mutable DataSourceQueryOutput::Ptr m_findNotes;
     mutable DataSourceQueryOutput::Ptr m_findTopLevel;
     mutable QHash<Akonadi::Collection::Id, DataSourceQueryOutput::Ptr> m_findChildren;
     QString m_searchTerm;

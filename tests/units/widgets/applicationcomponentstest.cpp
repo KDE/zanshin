@@ -39,12 +39,8 @@
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
 #include "widgets/availablesourcesview.h"
-#include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
-
-typedef std::function<Widgets::DataSourceComboBox*(Widgets::ApplicationComponents*)> ComboGetterFunction;
-Q_DECLARE_METATYPE(ComboGetterFunction)
 
 class ApplicationModelStub : public QObject
 {
@@ -202,7 +198,6 @@ public:
         : QObject(parent)
     {
         qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
-        qRegisterMetaType<ComboGetterFunction>();
     }
 
 private slots:
@@ -428,61 +423,6 @@ private slots:
         // THEN
         QCOMPARE(editorModel.property("artifact").value<Domain::Artifact::Ptr>(),
                  pageModel.itemAtRow(index.row()));
-    }
-
-    void shouldApplySourceModelAndPropertyToComboBox()
-    {
-        // GIVEN
-        Widgets::ApplicationComponents components;
-        auto model = QObjectPtr::create();
-        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
-        model->setProperty("dataSourcesModel", QVariant::fromValue(sourcesModel));
-
-        // WHEN
-        components.setModel(model);
-
-        // THEN
-        Widgets::DataSourceComboBox *combo = components.defaultSourceCombo();
-        QCOMPARE(combo->model(), sourcesModel);
-
-        QCOMPARE(combo->defaultSourceObject(), model.data());
-        QCOMPARE(combo->defaultSourceProperty(), QByteArray("defaultDataSource"));
-    }
-
-    void shouldApplySourceModelAndPropertyAlsoToCreatedComboBox()
-    {
-        // GIVEN
-        Widgets::ApplicationComponents components;
-        // Force creation
-        components.defaultSourceCombo();
-
-        auto model = QObjectPtr::create();
-        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
-        model->setProperty("dataSourcesModel", QVariant::fromValue(sourcesModel));
-
-        // WHEN
-        components.setModel(model);
-
-        // THEN
-        Widgets::DataSourceComboBox *combo = components.defaultSourceCombo();
-        QCOMPARE(combo->model(), sourcesModel);
-
-        QCOMPARE(combo->defaultSourceObject(), model.data());
-        QCOMPARE(combo->defaultSourceProperty(), QByteArray("defaultDataSource"));
-    }
-
-    void shouldProvideSettingsAction()
-    {
-        // GIVEN
-        Widgets::ApplicationComponents components;
-
-        // WHEN
-        QList<QAction*> actions = components.configureActions();
-        auto defaultAction = qobject_cast<QWidgetAction*>(actions.at(0));
-
-        // THEN
-        QCOMPARE(defaultAction->defaultWidget()->findChild<Widgets::DataSourceComboBox*>("defaultSourceCombo"), components.defaultSourceCombo());
-        QCOMPARE(defaultAction->objectName(), QString("settings_default_source"));
     }
 };
 

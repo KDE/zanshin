@@ -39,7 +39,6 @@
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
 #include "widgets/availablesourcesview.h"
-#include "widgets/datasourcecombobox.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
 
@@ -68,10 +67,6 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     splitter->addWidget(components->pageView());
     splitter->addWidget(components->editorView());
     setWidget(splitter);
-
-    foreach (QAction *action, components->configureActions()) {
-        actionCollection()->addAction(action->objectName(), action);
-    }
 
     setXMLFile(KStandardDirs::locate("data", "renku/renku_part.rc"));
 }

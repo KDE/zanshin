@@ -61,7 +61,6 @@ ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQue
       m_availablePages(Q_NULLPTR),
       m_currentPage(Q_NULLPTR),
       m_editor(Q_NULLPTR),
-      m_dataSourcesModel(Q_NULLPTR),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
       m_contextQueries(contextQueries),
@@ -76,42 +75,6 @@ ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQue
       m_errorHandler(Q_NULLPTR)
 {
     MetaTypes::registerAll();
-}
-
-QAbstractItemModel *ApplicationModel::dataSourcesModel()
-{
-    if (!m_dataSourcesModel) {
-        m_dataSourcesModel = new DataSourceListModel([this] { return dataSources(); }, this);
-    }
-
-    return m_dataSourcesModel;
-}
-
-Domain::QueryResult<Domain::DataSource::Ptr>::Ptr ApplicationModel::dataSources()
-{
-    if (!m_dataSources) {
-        m_dataSources = createDataSourceQueryResult();
-    }
-
-    return m_dataSources;
-}
-
-Domain::DataSource::Ptr ApplicationModel::defaultDataSource()
-{
-    QList<Domain::DataSource::Ptr> sources = dataSources()->data();
-
-    if (sources.isEmpty())
-        return Domain::DataSource::Ptr();
-
-    auto source = std::find_if(sources.begin(), sources.end(),
-                               [this] (const Domain::DataSource::Ptr &source) {
-                                   return isDefaultSource(source);
-                               });
-
-    if (source != sources.end())
-        return *source;
-    else
-        return sources.first();
 }
 
 QObject *ApplicationModel::availableSources()

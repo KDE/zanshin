@@ -57,21 +57,6 @@ NoteApplicationModel::NoteApplicationModel(const Domain::ProjectQueries::Ptr &pr
 {
 }
 
-void NoteApplicationModel::setDefaultDataSource(const Domain::DataSource::Ptr &source)
-{
-    m_sourceQueries->setDefaultSource(source);
-}
-
-Domain::QueryResult<Domain::DataSource::Ptr>::Ptr NoteApplicationModel::createDataSourceQueryResult()
-{
-    return m_sourceQueries->findNotes();
-}
-
-bool NoteApplicationModel::isDefaultSource(const Domain::DataSource::Ptr &source)
-{
-    return m_sourceQueries->isDefaultSource(source);
-}
-
 AvailablePagesModelInterface *NoteApplicationModel::createAvailablePagesModel()
 {
     return new AvailableNotePagesModel(m_noteQueries,

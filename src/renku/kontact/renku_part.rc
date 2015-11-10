@@ -1,11 +1,5 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
 <kpartgui name="renku" version="1">
  <MenuBar>
-  <Menu name="settings">
-   <Menu name="renku_settings" icon="configure">
-    <text>Configure Renku</text>
-    <Action name="settings_default_source" />
-   </Menu>
-  </Menu>
  </MenuBar>
 </kpartgui>
