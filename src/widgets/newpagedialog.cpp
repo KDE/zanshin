@@ -27,12 +27,36 @@
 #include "ui_newpagedialog.h"
 
 #include <QPushButton>
+#include <QSortFilterProxyModel>
+#include <KDescendantsProxyModel>
+
+#include "presentation/querytreemodelbase.h"
 
 using namespace Widgets;
+
+class TaskSourceProxy : public QSortFilterProxyModel
+{
+public:
+    explicit TaskSourceProxy(QObject *parent = Q_NULLPTR)
+        : QSortFilterProxyModel(parent)
+    {
+        setDynamicSortFilter(true);
+    }
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &) const Q_DECL_OVERRIDE
+    {
+        auto sourceIndex = sourceModel()->index(sourceRow, 0);
+        auto source = sourceIndex.data(Presentation::QueryTreeModelBase::ObjectRole)
+                                 .value<Domain::DataSource::Ptr>();
+        return source && (source->contentTypes() & Domain::DataSource::Tasks);
+    }
+};
 
 NewPageDialog::NewPageDialog(QWidget *parent)
     : QDialog(parent),
       ui(new Ui::NewPageDialog),
+      m_flattenProxy(new KDescendantsProxyModel(this)),
       m_pageType(Project)
 {
     ui->setupUi(this);
@@ -44,6 +68,12 @@ NewPageDialog::NewPageDialog(QWidget *parent)
     ui->typeCombo->addItem(tr("Project"), QVariant::fromValue<PageType>(Project));
     ui->typeCombo->addItem(tr("Context"), QVariant::fromValue<PageType>(Context));
     ui->typeCombo->addItem(tr("Tag"), QVariant::fromValue<PageType>(Tag));
+
+    auto taskSourceProxy = new TaskSourceProxy(this);
+    taskSourceProxy->setSourceModel(m_flattenProxy);
+    ui->sourceCombo->setModel(taskSourceProxy);
+
+    m_flattenProxy->setDisplayAncestorData(true);
 }
 
 NewPageDialog::~NewPageDialog()
@@ -59,20 +89,23 @@ int NewPageDialog::exec()
 void NewPageDialog::accept()
 {
     m_name = ui->nameEdit->text();
-    m_source = ui->sourceCombo->itemSource(ui->sourceCombo->currentIndex());
+    m_source = ui->sourceCombo->itemData(ui->sourceCombo->currentIndex(),
+                                         Presentation::QueryTreeModelBase::ObjectRole)
+                              .value<Domain::DataSource::Ptr>();
     m_pageType = ui->typeCombo->itemData(ui->typeCombo->currentIndex()).value<PageType>();
     QDialog::accept();
 }
 
 void NewPageDialog::setDataSourcesModel(QAbstractItemModel *model)
 {
-    ui->sourceCombo->setModel(model);
-}
-
-void NewPageDialog::setDefaultSource(const Domain::DataSource::Ptr &source)
-{
-    setProperty("defaultSource", QVariant::fromValue(source));
-    ui->sourceCombo->setDefaultSourceProperty(this, "defaultSource");
+    m_flattenProxy->setSourceModel(model);
+    auto proxy = ui->sourceCombo->model();
+    for (int row = 0; row < proxy->rowCount(); row++) {
+        auto index = proxy->index(row, 0);
+        if (index.data(Presentation::QueryTreeModelBase::IsDefaultRole).toBool()) {
+            ui->sourceCombo->setCurrentIndex(row);
+        }
+    }
 }
 
 void NewPageDialog::setPageType(PageType type)

@@ -49,7 +49,6 @@ public:
     virtual int exec() = 0;
 
     virtual void setDataSourcesModel(QAbstractItemModel *model) = 0;
-    virtual void setDefaultSource(const Domain::DataSource::Ptr &source) = 0;
     virtual void setPageType(PageType type) = 0;
     virtual QString name() const = 0;
     virtual PageType pageType() const = 0;

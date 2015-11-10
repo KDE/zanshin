@@ -34,7 +34,6 @@
 #include "presentation/querytreemodelbase.h"
 
 #include "widgets/newpagedialog.h"
-#include "widgets/datasourcecombobox.h"
 
 class UserInputSimulator : public QObject
 {
@@ -59,9 +58,8 @@ private slots:
         }
 
         if (sourceComboIndex >= 0) {
-            auto sourceCombo = dialog->findChild<Widgets::DataSourceComboBox*>("sourceCombo");
-            auto combo = sourceCombo->findChild<QComboBox*>();
-            combo->setCurrentIndex(sourceComboIndex);
+            auto sourceCombo = dialog->findChild<QComboBox*>("sourceCombo");
+            sourceCombo->setCurrentIndex(sourceComboIndex);
         }
 
         if (typeComboIndex >= 0) {
@@ -88,14 +86,49 @@ class NewPageDialogTest : public QObject
 {
     Q_OBJECT
 private:
-    QStandardItem *createSourceItem(const QString &name)
+    QStandardItem *createSourceItem(const QString &name, QStandardItem *parent = Q_NULLPTR)
     {
         auto source = Domain::DataSource::Ptr::create();
         source->setName(name);
 
         auto item = new QStandardItem(name);
         item->setData(QVariant::fromValue(source), Presentation::QueryTreeModelBase::ObjectRole);
+        if (parent)
+            parent->appendRow(item);
         return item;
+    }
+
+    QStandardItem *createTaskSourceItem(const QString &name, QStandardItem *parent = Q_NULLPTR)
+    {
+        auto item = createSourceItem(name, parent);
+        auto source = item->data(Presentation::QueryTreeModelBase::ObjectRole).value<Domain::DataSource::Ptr>();
+        source->setContentTypes(Domain::DataSource::Tasks);
+        return item;
+    }
+
+    QStandardItem *createDefaultSourceItem(const QString &name, QStandardItem *parent = Q_NULLPTR)
+    {
+        auto item = createTaskSourceItem(name, parent);
+        item->setData(true, Presentation::QueryTreeModelBase::IsDefaultRole);
+        return item;
+    }
+
+    QStandardItemModel *createSourceModel()
+    {
+        auto model = new QStandardItemModel(this);
+
+        auto root1 = createSourceItem("Root 1");
+        createSourceItem("Null", root1);
+        createTaskSourceItem("Task 1.1", root1);
+        createTaskSourceItem("Task 1.2", root1);
+        model->appendRow(root1);
+
+        auto root2 = createSourceItem("Root 2");
+        createDefaultSourceItem("Task 2.1", root2);
+        createTaskSourceItem("Task 2.2", root2);
+        model->appendRow(root2);
+
+        return model;
     }
 
 private slots:
@@ -127,11 +160,9 @@ private slots:
         QVERIFY(typeCombo);
         QVERIFY(typeCombo->isVisibleTo(&dialog));
 
-        auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
+        auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
         QVERIFY(sourceCombo);
         QVERIFY(sourceCombo->isVisibleTo(&dialog));
-        QVERIFY(!sourceCombo->defaultSourceObject());
-        QCOMPARE(sourceCombo->defaultSourceProperty(), QByteArray());
 
         auto buttonBox = dialog.findChild<QDialogButtonBox*>("buttonBox");
         QVERIFY(buttonBox);
@@ -144,18 +175,17 @@ private slots:
     {
         // GIVEN
         Widgets::NewPageDialog dialog;
-        auto source = Domain::DataSource::Ptr::create();
-        auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
+        auto sourceModel = createSourceModel();
+        auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
         auto pageTypeCombo = dialog.findChild<QComboBox*>("typeCombo");
         auto pageType = Widgets::NewPageDialogInterface::Project;
 
         // WHEN
-        dialog.setDefaultSource(source);
+        dialog.setDataSourcesModel(sourceModel);
 
         // THEN
-        QCOMPARE(dialog.property("defaultSource").value<Domain::DataSource::Ptr>(), source);
-        QCOMPARE(sourceCombo->defaultSourceObject(), &dialog);
-        QCOMPARE(sourceCombo->defaultSourceProperty(), QByteArray("defaultSource"));
+        QCOMPARE(sourceCombo->currentIndex(), 2);
+        QCOMPARE(sourceCombo->currentText(), QString("Root 2 / Task 2.1"));
 
         QVariant indexVariant = pageTypeCombo->itemData(pageTypeCombo->currentIndex());
         QCOMPARE(indexVariant.value<Widgets::NewPageDialogInterface::PageType>(), pageType);
@@ -166,26 +196,25 @@ private slots:
         // GIVEN
         Widgets::NewPageDialog dialog;
 
-        QStandardItemModel model;
-        model.appendRow(createSourceItem("source 1"));
-        model.appendRow(createSourceItem("source 2"));
-        model.appendRow(createSourceItem("source 3"));
-        dialog.setDataSourcesModel(&model);
+        auto sourceModel = createSourceModel();
+        dialog.setDataSourcesModel(sourceModel);
 
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
         userInput.sourceComboIndex = 1;
         userInput.nameInput = "name";
 
-        auto expectedSource = model.item(userInput.sourceComboIndex)
-                                   ->data(Presentation::QueryTreeModelBase::ObjectRole)
-                                   .value<Domain::DataSource::Ptr>();
+        auto expectedSource = sourceModel->item(0)
+                                         ->child(2)
+                                         ->data(Presentation::QueryTreeModelBase::ObjectRole)
+                                         .value<Domain::DataSource::Ptr>();
 
         // WHEN
         userInput.exec();
 
         // THEN
         QCOMPARE(dialog.name(), userInput.nameInput);
+        QVERIFY(dialog.dataSource());
         QCOMPARE(dialog.dataSource(), expectedSource);
     }
 
@@ -194,11 +223,8 @@ private slots:
         // GIVEN
         Widgets::NewPageDialog dialog;
 
-        QStandardItemModel model;
-        model.appendRow(createSourceItem("source 1"));
-        model.appendRow(createSourceItem("source 2"));
-        model.appendRow(createSourceItem("source 3"));
-        dialog.setDataSourcesModel(&model);
+        auto sourceModel = createSourceModel();
+        dialog.setDataSourcesModel(sourceModel);
 
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
@@ -219,9 +245,8 @@ private slots:
         // GIVEN
         Widgets::NewPageDialog dialog;
 
-        QStandardItemModel model;
-        model.appendRow(createSourceItem("source 1"));
-        dialog.setDataSourcesModel(&model);
+        auto sourceModel = createSourceModel();
+        dialog.setDataSourcesModel(sourceModel);
 
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
@@ -257,9 +282,8 @@ private slots:
         int nonProjectIndex = indexOfType(&dialog, pageType);
         Q_ASSERT(nonProjectIndex != -1);
 
-        QStandardItemModel model;
-        model.appendRow(createSourceItem("source 1"));
-        dialog.setDataSourcesModel(&model);
+        auto sourceModel = createSourceModel();
+        dialog.setDataSourcesModel(sourceModel);
 
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
@@ -272,7 +296,7 @@ private slots:
         userInput.exec();
 
         // THEN
-        auto sourceCombo = dialog.findChild<Widgets::DataSourceComboBox*>("sourceCombo");
+        auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
         auto sourceLabel = dialog.findChild<QLabel*>("sourceLabel");
 
         QVERIFY(sourceCombo->isHidden());

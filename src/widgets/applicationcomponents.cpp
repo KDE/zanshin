@@ -77,7 +77,9 @@ AvailablePagesView *ApplicationComponents::availablePagesView() const
         auto availablePagesView = new AvailablePagesView(m_parent);
         if (m_model) {
             availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
-            availablePagesView->setProjectSourcesModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
+            auto availableSources = m_model->property("availableSources").value<QObject*>();
+            if (availableSources)
+                availablePagesView->setProjectSourcesModel(availableSources->property("sourceListModel").value<QAbstractItemModel*>());
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);

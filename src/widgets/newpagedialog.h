@@ -29,6 +29,9 @@
 
 #include "widgets/newpagedialoginterface.h"
 
+class QModelIndex;
+class KDescendantsProxyModel;
+
 namespace Ui {
     class NewPageDialog;
 }
@@ -47,7 +50,6 @@ public:
     void accept() Q_DECL_OVERRIDE;
 
     void setDataSourcesModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
-    void setDefaultSource(const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;
     void setPageType(PageType type) Q_DECL_OVERRIDE;
 
     QString name() const Q_DECL_OVERRIDE;
@@ -59,12 +61,14 @@ private slots:
     void onTypeIndexChanged(int index);
 
 private:
+    int indexOfType(NewPageDialogInterface::PageType type);
+    void applyDefaultSource(const QModelIndex &root);
+
     Ui::NewPageDialog *ui;
+    KDescendantsProxyModel *m_flattenProxy;
     QString m_name;
     PageType m_pageType;
     Domain::DataSource::Ptr m_source;
-
-    int indexOfType(NewPageDialogInterface::PageType type);
 };
 
 }

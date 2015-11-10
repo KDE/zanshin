@@ -257,10 +257,14 @@ private slots:
         // GIVEN
         Widgets::ApplicationComponents components;
         auto model = QObjectPtr::create();
+
         QObject availablePages;
-        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
-        model->setProperty("dataSourcesModel", QVariant::fromValue(sourcesModel));
         model->setProperty("availablePages", QVariant::fromValue(&availablePages));
+
+        QObject availableSources;
+        QAbstractItemModel *sourcesModel = new QStandardItemModel(model.data());
+        availableSources.setProperty("sourceListModel", QVariant::fromValue(sourcesModel));
+        model->setProperty("availableSources", QVariant::fromValue(&availableSources));
 
         // WHEN
         components.setModel(model);

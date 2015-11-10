@@ -164,7 +164,6 @@ void AvailablePagesView::onAddTriggered()
 {
     NewPageDialogInterface::Ptr dialog = m_dialogFactory(this);
     dialog->setDataSourcesModel(m_sources);
-    dialog->setDefaultSource(m_defaultSource);
 
     if (dialog->exec() == QDialog::Accepted) {
         m_defaultSource = dialog->dataSource();

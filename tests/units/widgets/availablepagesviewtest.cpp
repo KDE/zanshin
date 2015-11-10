@@ -63,37 +63,27 @@ public:
         return QDialog::Accepted;
     }
 
-    void setDataSourcesModel(QAbstractItemModel *model)
+    void setDataSourcesModel(QAbstractItemModel *model) Q_DECL_OVERRIDE
     {
         sourceModel = model;
     }
 
-    void setDefaultSource(const Domain::DataSource::Ptr &source)
-    {
-        defaultSource = source;
-    }
-
-    void setDefaultPageType(PageType type)
-    {
-        defaultPageType = type;
-    }
-
-    void setPageType(PageType type)
+    void setPageType(PageType type) Q_DECL_OVERRIDE
     {
         lastPageAdded = type;
     }
 
-    PageType pageType() const
+    PageType pageType() const Q_DECL_OVERRIDE
     {
         return lastPageAdded;
     }
 
-    QString name() const
+    QString name() const Q_DECL_OVERRIDE
     {
         return "name";
     }
 
-    Domain::DataSource::Ptr dataSource() const
+    Domain::DataSource::Ptr dataSource() const Q_DECL_OVERRIDE
     {
         return source;
     }
@@ -101,9 +91,7 @@ public:
     QWidget *parent;
     int execCount;
     QAbstractItemModel *sourceModel;
-    Domain::DataSource::Ptr defaultSource;
     Domain::DataSource::Ptr source;
-    PageType defaultPageType;
     PageType lastPageAdded;
 };
 
@@ -227,7 +215,6 @@ private slots:
         QCOMPARE(dialogStub->execCount, 1);
         QCOMPARE(dialogStub->parent, &available);
         QCOMPARE(dialogStub->sourceModel, &sourceModel);
-        QCOMPARE(dialogStub->defaultSource, source);
         QCOMPARE(model.projectNames.size(), 1);
         QCOMPARE(model.projectNames.first(), dialogStub->name());
         QCOMPARE(model.sources.size(), 1);
