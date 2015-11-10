@@ -5,7 +5,7 @@ Feature: Project creation
 
   Scenario: New projects appear in the list
     Given I display the available pages
-    When I add a project named "Birthday" in the source named "TestData/Calendar1"
+    When I add a project named "Birthday" in the source named "TestData / Calendar1"
     And I list the items
     Then the list is:
        | display                           | icon                |

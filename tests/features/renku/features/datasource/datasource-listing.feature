@@ -3,14 +3,6 @@ Feature: Data sources listing
   I can list sources
   In order to list and store notes
 
-  Scenario: Flat data source list
-    Given I display the flat data source list
-    When I list the items
-    Then the list is:
-       | display                                | icon                |
-       | TestData/Emails/Notes                  | folder              |
-       | TestData/Private Notes                 | folder              |
-
   Scenario: All note sources appear in the list
     Given I display the available data sources
     When I list the items
