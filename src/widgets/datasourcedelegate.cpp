@@ -28,7 +28,6 @@
 #include <QApplication>
 #include <QMouseEvent>
 
-#include "presentation/availablesourcesmodel.h"
 #include "presentation/querytreemodel.h"
 
 using namespace Widgets;
@@ -106,7 +105,7 @@ void DataSourceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 
     const auto source = sourceForIndex(index);
     const auto isHovered = bool(opt.state & QStyle::State_MouseOver);
-    const auto isDefault = index.data(Presentation::AvailableSourcesModel::IsDefaultRole).toBool();
+    const auto isDefault = index.data(Presentation::QueryTreeModel<Domain::DataSource::Ptr>::IsDefaultRole).toBool();
 
     QStyleOptionViewItemV4 option = opt;
     initStyleOption(&option, index);

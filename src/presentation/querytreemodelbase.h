@@ -73,6 +73,7 @@ public:
     enum {
         ObjectRole = Qt::UserRole + 1,
         IconNameRole,
+        IsDefaultRole,
         UserRole
     };
 

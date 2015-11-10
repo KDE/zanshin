@@ -32,7 +32,6 @@
 
 #include "presentation/metatypes.h"
 #include "presentation/errorhandlingmodelbase.h"
-#include "presentation/querytreemodelbase.h"
 
 class QModelIndex;
 
@@ -45,11 +44,6 @@ class AvailableSourcesModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(QAbstractItemModel* searchListModel READ searchListModel)
     Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm NOTIFY searchTermChanged)
 public:
-    enum {
-        IsDefaultRole = QueryTreeModelBase::UserRole + 1,
-        UserRole
-    };
-
     explicit AvailableSourcesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
                                    const Domain::DataSourceRepository::Ptr &dataSourceRepository,
                                    QObject *parent = Q_NULLPTR);

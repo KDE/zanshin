@@ -167,10 +167,10 @@ private slots:
         QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
         QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
 
-        QCOMPARE(model->data(source1Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
-        QCOMPARE(model->data(source2Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), true);
-        QCOMPARE(model->data(source3Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
-        QCOMPARE(model->data(source4Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source1Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), true);
+        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), false);
 
         // WHEN
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source2).thenReturn(new FakeJob(this));
@@ -193,10 +193,10 @@ private slots:
         sources.setDefaultItem(source4Index);
 
         // THEN
-        QCOMPARE(model->data(source1Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
-        QCOMPARE(model->data(source2Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
-        QCOMPARE(model->data(source3Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), false);
-        QCOMPARE(model->data(source4Index, Presentation::AvailableSourcesModel::IsDefaultRole).toBool(), true);
+        QCOMPARE(model->data(source1Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), false);
+        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), true);
 
         // Not overly efficient way of signaling the change, but doesn't happen often
         QCOMPARE(spy.count(), 4);

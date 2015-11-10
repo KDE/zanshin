@@ -111,7 +111,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
          && role != Qt::DecorationRole
          && role != Qt::CheckStateRole
          && role != QueryTreeModelBase::IconNameRole
-         && role != IsDefaultRole) {
+         && role != QueryTreeModelBase::IsDefaultRole) {
             return QVariant();
         }
 
@@ -129,7 +129,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
                 return source->isSelected() ? Qt::Checked : Qt::Unchecked;
             else
                 return QVariant();
-        } else if (role == IsDefaultRole) {
+        } else if (role == QueryTreeModelBase::IsDefaultRole) {
             return m_dataSourceQueries->isDefaultSource(source);
         } else {
             return QVariant();
