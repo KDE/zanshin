@@ -123,6 +123,7 @@ QueryTreeModelBase::QueryTreeModelBase(QueryTreeNodeBase *rootNode, QObject *par
     auto roles = roleNames();
     roles.insert(ObjectRole, "object");
     roles.insert(IconNameRole, "icon");
+    roles.insert(IsDefaultRole, "default");
     setRoleNames(roles);
 }
 

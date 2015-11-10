@@ -110,6 +110,7 @@ private slots:
         QCOMPARE(roles.value(Qt::DisplayRole), QByteArray("display"));
         QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::ObjectRole), QByteArray("object"));
         QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::IconNameRole), QByteArray("icon"));
+        QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::IsDefaultRole), QByteArray("default"));
     }
 
     void shouldListTasks()
