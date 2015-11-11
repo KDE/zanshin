@@ -27,16 +27,9 @@
 
 #include <QObject>
 
-#include "domain/contextqueries.h"
-#include "domain/contextrepository.h"
 #include "domain/datasourcerepository.h"
 #include "domain/datasourcequeries.h"
 #include "domain/noterepository.h"
-#include "domain/projectqueries.h"
-#include "domain/projectrepository.h"
-#include "domain/tagqueries.h"
-#include "domain/tagrepository.h"
-#include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
@@ -54,17 +47,10 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
 public:
-    explicit ApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
-                              const Domain::ProjectRepository::Ptr &projectRepository,
-                              const Domain::ContextQueries::Ptr &contextQueries,
-                              const Domain::ContextRepository::Ptr &contextRepository,
-                              const Domain::DataSourceQueries::Ptr &sourceQueries,
+    explicit ApplicationModel(const Domain::DataSourceQueries::Ptr &sourceQueries,
                               const Domain::DataSourceRepository::Ptr &sourceRepository,
-                              const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
                               const Domain::NoteRepository::Ptr &noteRepository,
-                              const Domain::TagQueries::Ptr &tagQueries,
-                              const Domain::TagRepository::Ptr &tagRepository,
                               QObject *parent = Q_NULLPTR);
 
     QObject *availableSources();
@@ -87,22 +73,10 @@ private:
     QObject *m_currentPage;
     QObject *m_editor;
 
-    Domain::ProjectQueries::Ptr m_projectQueries;
-    Domain::ProjectRepository::Ptr m_projectRepository;
-
-    Domain::ContextQueries::Ptr m_contextQueries;
-    Domain::ContextRepository::Ptr m_contextRepository;
-
     Domain::DataSourceQueries::Ptr m_sourceQueries;
     Domain::DataSourceRepository::Ptr m_sourceRepository;
-
-    Domain::TaskQueries::Ptr m_taskQueries;
     Domain::TaskRepository::Ptr m_taskRepository;
-
     Domain::NoteRepository::Ptr m_noteRepository;
-
-    Domain::TagQueries::Ptr m_tagQueries;
-    Domain::TagRepository::Ptr m_tagRepository;
 
     ErrorHandler *m_errorHandler;
 };

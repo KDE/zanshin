@@ -24,18 +24,6 @@
 
 #include "applicationmodel.h"
 
-#include "domain/contextqueries.h"
-#include "domain/contextrepository.h"
-#include "domain/datasourcequeries.h"
-#include "domain/projectqueries.h"
-#include "domain/projectrepository.h"
-#include "domain/noterepository.h"
-#include "domain/tagqueries.h"
-#include "domain/tagrepository.h"
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
-#include "domain/datasourcerepository.h"
-
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availabletaskpagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
@@ -46,34 +34,20 @@
 
 using namespace Presentation;
 
-ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
-                                   const Domain::ProjectRepository::Ptr &projectRepository,
-                                   const Domain::ContextQueries::Ptr &contextQueries,
-                                   const Domain::ContextRepository::Ptr &contextRepository,
-                                   const Domain::DataSourceQueries::Ptr &sourceQueries,
+ApplicationModel::ApplicationModel(const Domain::DataSourceQueries::Ptr &sourceQueries,
                                    const Domain::DataSourceRepository::Ptr &sourceRepository,
-                                   const Domain::TaskQueries::Ptr &taskQueries,
                                    const Domain::TaskRepository::Ptr &taskRepository,
                                    const Domain::NoteRepository::Ptr &noteRepository,
-                                   const Domain::TagQueries::Ptr &tagQueries,
-                                   const Domain::TagRepository::Ptr &tagRepository,
                                    QObject *parent)
     : QObject(parent),
       m_availableSources(Q_NULLPTR),
       m_availablePages(Q_NULLPTR),
       m_currentPage(Q_NULLPTR),
       m_editor(Q_NULLPTR),
-      m_projectQueries(projectQueries),
-      m_projectRepository(projectRepository),
-      m_contextQueries(contextQueries),
-      m_contextRepository(contextRepository),
       m_sourceQueries(sourceQueries),
       m_sourceRepository(sourceRepository),
-      m_taskQueries(taskQueries),
       m_taskRepository(taskRepository),
       m_noteRepository(noteRepository),
-      m_tagQueries(tagQueries),
-      m_tagRepository(tagRepository),
       m_errorHandler(Q_NULLPTR)
 {
     MetaTypes::registerAll();

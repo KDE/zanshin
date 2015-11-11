@@ -123,17 +123,10 @@ void App::initializeDependencies()
                                                    Domain::TagRepository*)>();
 
     deps.add<Presentation::ApplicationModel,
-             Presentation::ApplicationModel(Domain::ProjectQueries*,
-                                            Domain::ProjectRepository*,
-                                            Domain::ContextQueries*,
-                                            Domain::ContextRepository*,
-                                            Domain::DataSourceQueries*,
+             Presentation::ApplicationModel(Domain::DataSourceQueries*,
                                             Domain::DataSourceRepository*,
-                                            Domain::TaskQueries*,
                                             Domain::TaskRepository*,
-                                            Domain::NoteRepository*,
-                                            Domain::TagQueries*,
-                                            Domain::TagRepository*)>();
+                                            Domain::NoteRepository*)>();
 
     deps.add<Scripting::ScriptHandler,
             Scripting::ScriptHandler(Domain::TaskRepository*)>();
