@@ -23,6 +23,7 @@
 
 #include <QtTest>
 
+#include "utils/dependencymanager.h"
 #include "utils/mockobject.h"
 
 #include "domain/datasourcequeries.h"
@@ -70,44 +71,6 @@ public:
     void removeItem(const QModelIndex &) Q_DECL_OVERRIDE {}
 };
 
-class ApplicationModel : public Presentation::ApplicationModel
-{
-    Q_OBJECT
-public:
-    explicit ApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
-                              const Domain::ProjectRepository::Ptr &projectRepository,
-                              const Domain::ContextQueries::Ptr &contextQueries,
-                              const Domain::ContextRepository::Ptr &contextRepository,
-                              const Domain::DataSourceQueries::Ptr &sourceQueries,
-                              const Domain::DataSourceRepository::Ptr &sourceRepository,
-                              const Domain::TaskQueries::Ptr &taskQueries,
-                              const Domain::TaskRepository::Ptr &taskRepository,
-                              const Domain::NoteRepository::Ptr &noteRepository,
-                              const Domain::TagQueries::Ptr &tagQueries,
-                              const Domain::TagRepository::Ptr &tagRepository,
-                              QObject *parent = Q_NULLPTR)
-        : Presentation::ApplicationModel(projectQueries,
-                                         projectRepository,
-                                         contextQueries,
-                                         contextRepository,
-                                         sourceQueries,
-                                         sourceRepository,
-                                         taskQueries,
-                                         taskRepository,
-                                         noteRepository,
-                                         tagQueries,
-                                         tagRepository,
-                                         parent)
-    {
-    }
-
-private:
-    Presentation::AvailablePagesModelInterface *createAvailablePagesModel() Q_DECL_OVERRIDE
-    {
-        return new FakeAvailablePagesModel(this);
-    }
-};
-
 class ApplicationModelTest : public QObject
 {
     Q_OBJECT
@@ -126,17 +89,17 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(projectQueries,
-                             projectRepository,
-                             contextQueries,
-                             contextRepository,
-                             sourceQueries,
-                             sourceRepository,
-                             taskQueries,
-                             taskRepository,
-                             noteRepository,
-                             tagQueries,
-                             tagRepository);
+        Presentation::ApplicationModel app(projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         QObject *available = app.availableSources();
@@ -145,7 +108,7 @@ private slots:
         QVERIFY(qobject_cast<Presentation::AvailableSourcesModel*>(available));
     }
 
-    void shouldProvideAvailablePagesModel()
+    void shouldProvideAvailablePagesModelThroughDependencyManager()
     {
         // GIVEN
         auto projectQueries = Domain::ProjectQueries::Ptr();
@@ -159,17 +122,20 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(projectQueries,
-                             projectRepository,
-                             contextQueries,
-                             contextRepository,
-                             sourceQueries,
-                             sourceRepository,
-                             taskQueries,
-                             taskRepository,
-                             noteRepository,
-                             tagQueries,
-                             tagRepository);
+        Presentation::ApplicationModel app(projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
+
+        Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModelInterface,
+                                                       FakeAvailablePagesModel>();
 
         // WHEN
         QObject *available = app.availablePages();
@@ -192,17 +158,17 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(projectQueries,
-                             projectRepository,
-                             contextQueries,
-                             contextRepository,
-                             sourceQueries,
-                             sourceRepository,
-                             taskQueries,
-                             taskRepository,
-                             noteRepository,
-                             tagQueries,
-                             tagRepository);
+        Presentation::ApplicationModel app(projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
         QVERIFY(!app.currentPage());
         QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
@@ -214,11 +180,6 @@ private slots:
         QCOMPARE(app.currentPage(), page);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.takeFirst().takeFirst().value<QObject*>(), page);
-    }
-
-    void shouldAllowChangingPage()
-    {
-        // GIVEN
     }
 
     void shouldProvideArtifactEditorModel()
@@ -235,17 +196,17 @@ private slots:
         auto noteRepository = Domain::NoteRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(projectQueries,
-                             projectRepository,
-                             contextQueries,
-                             contextRepository,
-                             sourceQueries,
-                             sourceRepository,
-                             taskQueries,
-                             taskRepository,
-                             noteRepository,
-                             tagQueries,
-                             tagRepository);
+        Presentation::ApplicationModel app(projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
 
         // WHEN
         QObject *page = app.editor();
@@ -272,17 +233,20 @@ private slots:
         auto taskRepository = Domain::TaskRepository::Ptr();
         auto tagQueries = Domain::TagQueries::Ptr();
         auto tagRepository = Domain::TagRepository::Ptr();
-        ApplicationModel app(projectQueries,
-                             projectRepository,
-                             contextQueries,
-                             contextRepository,
-                             sourceQueries,
-                             sourceRepository,
-                             taskQueries,
-                             taskRepository,
-                             noteRepository,
-                             tagQueries,
-                             tagRepository);
+        Presentation::ApplicationModel app(projectQueries,
+                                           projectRepository,
+                                           contextQueries,
+                                           contextRepository,
+                                           sourceQueries,
+                                           sourceRepository,
+                                           taskQueries,
+                                           taskRepository,
+                                           noteRepository,
+                                           tagQueries,
+                                           tagRepository);
+
+        Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModelInterface,
+                                                       FakeAvailablePagesModel>();
 
         // WHEN
         app.setErrorHandler(&errorHandler);

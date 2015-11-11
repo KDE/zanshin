@@ -41,7 +41,8 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
 
-#include "presentation/noteapplicationmodel.h"
+#include "presentation/applicationmodel.h"
+#include "presentation/availablenotepagesmodel.h"
 
 #include "scripting/scripthandler.h"
 
@@ -115,19 +116,24 @@ void App::initializeDependencies()
                                      Akonadi::MessagingInterface*)>();
 
 
+    deps.add<Presentation::AvailablePagesModelInterface,
+             Presentation::AvailableNotePagesModel(Domain::NoteQueries*,
+                                                   Domain::NoteRepository*,
+                                                   Domain::TagQueries*,
+                                                   Domain::TagRepository*)>();
+
     deps.add<Presentation::ApplicationModel,
-             Presentation::NoteApplicationModel(Domain::ProjectQueries*,
-                                                Domain::ProjectRepository*,
-                                                Domain::ContextQueries*,
-                                                Domain::ContextRepository*,
-                                                Domain::DataSourceQueries*,
-                                                Domain::DataSourceRepository*,
-                                                Domain::TaskQueries*,
-                                                Domain::TaskRepository*,
-                                                Domain::NoteQueries*,
-                                                Domain::NoteRepository*,
-                                                Domain::TagQueries*,
-                                                Domain::TagRepository*)>();
+             Presentation::ApplicationModel(Domain::ProjectQueries*,
+                                            Domain::ProjectRepository*,
+                                            Domain::ContextQueries*,
+                                            Domain::ContextRepository*,
+                                            Domain::DataSourceQueries*,
+                                            Domain::DataSourceRepository*,
+                                            Domain::TaskQueries*,
+                                            Domain::TaskRepository*,
+                                            Domain::NoteRepository*,
+                                            Domain::TagQueries*,
+                                            Domain::TagRepository*)>();
 
     deps.add<Scripting::ScriptHandler,
             Scripting::ScriptHandler(Domain::TaskRepository*)>();

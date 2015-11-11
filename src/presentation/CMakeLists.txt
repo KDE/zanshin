@@ -12,13 +12,11 @@ set(presentation_SRCS
     errorhandler.cpp
     errorhandlingmodelbase.cpp
     metatypes.cpp
-    noteapplicationmodel.cpp
     noteinboxpagemodel.cpp
     pagemodel.cpp
     projectpagemodel.cpp
     querytreemodelbase.cpp
     tagpagemodel.cpp
-    taskapplicationmodel.cpp
     taskinboxpagemodel.cpp
     tasklistmodel.cpp
     workdaypagemodel.cpp

@@ -42,6 +42,8 @@
 #include "presentation/datasourcelistmodel.h"
 #include "presentation/errorhandler.h"
 
+#include "utils/dependencymanager.h"
+
 using namespace Presentation;
 
 ApplicationModel::ApplicationModel(const Domain::ProjectQueries::Ptr &projectQueries,
@@ -92,11 +94,11 @@ QObject *ApplicationModel::availableSources()
 QObject *ApplicationModel::availablePages()
 {
     if (!m_availablePages) {
-        auto model = createAvailablePagesModel();
+        auto model = Utils::DependencyManager::globalInstance().create<AvailablePagesModelInterface>();
         model->setErrorHandler(errorHandler());
         m_availablePages = model;
     }
-    return m_availablePages;
+    return m_availablePages.data();
 }
 
 QObject *ApplicationModel::currentPage()
@@ -135,7 +137,7 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
     if (m_availableSources)
         static_cast<AvailableSourcesModel*>(m_availableSources)->setErrorHandler(errorHandler);
     if (m_availablePages)
-        static_cast<AvailablePagesModelInterface*>(m_availablePages)->setErrorHandler(errorHandler);
+        m_availablePages.staticCast<AvailablePagesModelInterface>()->setErrorHandler(errorHandler);
     if (m_editor)
         static_cast<ArtifactEditorModel*>(m_editor)->setErrorHandler(errorHandler);
 }

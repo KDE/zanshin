@@ -82,14 +82,11 @@ signals:
     void currentPageChanged(QObject *page);
 
 private:
-    virtual AvailablePagesModelInterface *createAvailablePagesModel() = 0;
-
     QObject *m_availableSources;
-    QObject *m_availablePages;
+    QObjectPtr m_availablePages;
     QObject *m_currentPage;
     QObject *m_editor;
 
-protected:
     Domain::ProjectQueries::Ptr m_projectQueries;
     Domain::ProjectRepository::Ptr m_projectRepository;
 

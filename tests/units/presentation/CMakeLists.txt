@@ -9,13 +9,11 @@ zanshin_auto_tests(
   errorhandlertest
   errorhandlingmodelbasetest
   metatypestest
-  noteapplicationmodeltest
   noteinboxpagemodeltest
   pagemodeltest
   projectpagemodeltest
   querytreemodeltest
   tagpagemodeltest
-  taskapplicationmodeltest
   taskinboxpagemodeltest
   tasklistmodeltest
   contextpagemodeltest

@@ -41,7 +41,8 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
 
-#include "presentation/taskapplicationmodel.h"
+#include "presentation/applicationmodel.h"
+#include "presentation/availabletaskpagesmodel.h"
 
 #include "scripting/scripthandler.h"
 
@@ -114,19 +115,27 @@ void App::initializeDependencies()
                                      Akonadi::SerializerInterface*,
                                      Akonadi::MessagingInterface*)>();
 
+    deps.add<Presentation::AvailablePagesModelInterface,
+             Presentation::AvailableTaskPagesModel(Domain::ProjectQueries*,
+                                                   Domain::ProjectRepository*,
+                                                   Domain::ContextQueries*,
+                                                   Domain::ContextRepository*,
+                                                   Domain::TaskQueries*,
+                                                   Domain::TaskRepository*,
+                                                   Domain::NoteRepository*)>();
 
     deps.add<Presentation::ApplicationModel,
-             Presentation::TaskApplicationModel(Domain::ProjectQueries*,
-                                                Domain::ProjectRepository*,
-                                                Domain::ContextQueries*,
-                                                Domain::ContextRepository*,
-                                                Domain::DataSourceQueries*,
-                                                Domain::DataSourceRepository*,
-                                                Domain::TaskQueries*,
-                                                Domain::TaskRepository*,
-                                                Domain::NoteRepository*,
-                                                Domain::TagQueries*,
-                                                Domain::TagRepository*)>();
+             Presentation::ApplicationModel(Domain::ProjectQueries*,
+                                            Domain::ProjectRepository*,
+                                            Domain::ContextQueries*,
+                                            Domain::ContextRepository*,
+                                            Domain::DataSourceQueries*,
+                                            Domain::DataSourceRepository*,
+                                            Domain::TaskQueries*,
+                                            Domain::TaskRepository*,
+                                            Domain::NoteRepository*,
+                                            Domain::TagQueries*,
+                                            Domain::TagRepository*)>();
 
     deps.add<Scripting::ScriptHandler,
             Scripting::ScriptHandler(Domain::TaskRepository*)>();
