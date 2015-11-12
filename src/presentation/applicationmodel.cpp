@@ -40,10 +40,7 @@ ApplicationModel::ApplicationModel(const Domain::DataSourceQueries::Ptr &sourceQ
                                    const Domain::NoteRepository::Ptr &noteRepository,
                                    QObject *parent)
     : QObject(parent),
-      m_availableSources(Q_NULLPTR),
-      m_availablePages(Q_NULLPTR),
       m_currentPage(Q_NULLPTR),
-      m_editor(Q_NULLPTR),
       m_sourceQueries(sourceQueries),
       m_sourceRepository(sourceRepository),
       m_taskRepository(taskRepository),
@@ -56,13 +53,11 @@ ApplicationModel::ApplicationModel(const Domain::DataSourceQueries::Ptr &sourceQ
 QObject *ApplicationModel::availableSources()
 {
     if (!m_availableSources) {
-        auto model = new AvailableSourcesModel(m_sourceQueries,
-                                               m_sourceRepository,
-                                               this);
+        auto model = Utils::DependencyManager::globalInstance().create<AvailableSourcesModel>();
         model->setErrorHandler(errorHandler());
         m_availableSources = model;
     }
-    return m_availableSources;
+    return m_availableSources.data();
 }
 
 QObject *ApplicationModel::availablePages()
@@ -83,12 +78,12 @@ QObject *ApplicationModel::currentPage()
 QObject *ApplicationModel::editor()
 {
     if (!m_editor) {
-        auto model = new ArtifactEditorModel(m_taskRepository, m_noteRepository, this);
+        auto model = Utils::DependencyManager::globalInstance().create<ArtifactEditorModel>();
         model->setErrorHandler(errorHandler());
         m_editor = model;
     }
 
-    return m_editor;
+    return m_editor.data();
 }
 
 ErrorHandler *ApplicationModel::errorHandler() const
@@ -109,9 +104,9 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
 {
     m_errorHandler = errorHandler;
     if (m_availableSources)
-        static_cast<AvailableSourcesModel*>(m_availableSources)->setErrorHandler(errorHandler);
+        m_availableSources.staticCast<AvailableSourcesModel>()->setErrorHandler(errorHandler);
     if (m_availablePages)
         m_availablePages.staticCast<AvailablePagesModelInterface>()->setErrorHandler(errorHandler);
     if (m_editor)
-        static_cast<ArtifactEditorModel*>(m_editor)->setErrorHandler(errorHandler);
+        m_editor.staticCast<ArtifactEditorModel>()->setErrorHandler(errorHandler);
 }

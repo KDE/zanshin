@@ -42,6 +42,8 @@
 #include "akonadi/akonadistorage.h"
 
 #include "presentation/applicationmodel.h"
+#include "presentation/artifacteditormodel.h"
+#include "presentation/availablesourcesmodel.h"
 #include "presentation/availabletaskpagesmodel.h"
 
 #include "scripting/scripthandler.h"
@@ -115,6 +117,10 @@ void App::initializeDependencies()
                                      Akonadi::SerializerInterface*,
                                      Akonadi::MessagingInterface*)>();
 
+    deps.add<Presentation::ArtifactEditorModel,
+             Presentation::ArtifactEditorModel(Domain::TaskRepository*,
+                                               Domain::NoteRepository*)>();
+
     deps.add<Presentation::AvailablePagesModelInterface,
              Presentation::AvailableTaskPagesModel(Domain::ProjectQueries*,
                                                    Domain::ProjectRepository*,
@@ -122,6 +128,10 @@ void App::initializeDependencies()
                                                    Domain::ContextRepository*,
                                                    Domain::TaskQueries*,
                                                    Domain::TaskRepository*)>();
+
+    deps.add<Presentation::AvailableSourcesModel,
+             Presentation::AvailableSourcesModel(Domain::DataSourceQueries*,
+                                                 Domain::DataSourceRepository*)>();
 
     deps.add<Presentation::ApplicationModel,
              Presentation::ApplicationModel(Domain::DataSourceQueries*,

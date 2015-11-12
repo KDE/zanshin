@@ -69,6 +69,24 @@ public:
 class ApplicationModelTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit ApplicationModelTest(QObject *parent = Q_NULLPTR)
+        : QObject(parent)
+    {
+        Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModelInterface,
+                                                       FakeAvailablePagesModel>();
+        Utils::DependencyManager::globalInstance().add<Presentation::ArtifactEditorModel>(
+            [] (Utils::DependencyManager *) {
+                return new Presentation::ArtifactEditorModel(Domain::TaskRepository::Ptr(),
+                                                             Domain::NoteRepository::Ptr());
+        });
+        Utils::DependencyManager::globalInstance().add<Presentation::AvailableSourcesModel>(
+            [] (Utils::DependencyManager *) {
+                return new Presentation::AvailableSourcesModel(Domain::DataSourceQueries::Ptr(),
+                                                               Domain::DataSourceRepository::Ptr());
+        });
+    }
+
 private slots:
     void shouldProvideAvailableSourcesModel()
     {
@@ -89,7 +107,7 @@ private slots:
         QVERIFY(qobject_cast<Presentation::AvailableSourcesModel*>(available));
     }
 
-    void shouldProvideAvailablePagesModelThroughDependencyManager()
+    void shouldProvideAvailablePagesModel()
     {
         // GIVEN
         auto sourceQueries = Domain::DataSourceQueries::Ptr();
@@ -100,9 +118,6 @@ private slots:
                                            sourceRepository,
                                            taskRepository,
                                            noteRepository);
-
-        Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModelInterface,
-                                                       FakeAvailablePagesModel>();
 
         // WHEN
         QObject *available = app.availablePages();
@@ -169,9 +184,6 @@ private slots:
                                            sourceRepository,
                                            taskRepository,
                                            noteRepository);
-
-        Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModelInterface,
-                                                       FakeAvailablePagesModel>();
 
         // WHEN
         app.setErrorHandler(&errorHandler);

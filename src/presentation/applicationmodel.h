@@ -68,10 +68,10 @@ signals:
     void currentPageChanged(QObject *page);
 
 private:
-    QObject *m_availableSources;
+    QObjectPtr m_availableSources;
     QObjectPtr m_availablePages;
     QObject *m_currentPage;
-    QObject *m_editor;
+    QObjectPtr m_editor;
 
     Domain::DataSourceQueries::Ptr m_sourceQueries;
     Domain::DataSourceRepository::Ptr m_sourceRepository;
