@@ -27,12 +27,8 @@
 #include "akonadi/akonadicontextrepository.h"
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadidatasourcerepository.h"
-#include "akonadi/akonadinotequeries.h"
-#include "akonadi/akonadinoterepository.h"
 #include "akonadi/akonadiprojectqueries.h"
 #include "akonadi/akonadiprojectrepository.h"
-#include "akonadi/akonaditagqueries.h"
-#include "akonadi/akonaditagrepository.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 
@@ -44,8 +40,6 @@
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/availabletaskpagesmodel.h"
-
-#include "scripting/scripthandler.h"
 
 #include "utils/dependencymanager.h"
 
@@ -79,15 +73,6 @@ void App::initializeDependencies()
              Akonadi::DataSourceRepository(Akonadi::StorageInterface*,
                                            Akonadi::SerializerInterface*)>();
 
-    deps.add<Domain::NoteQueries,
-             Akonadi::NoteQueries(Akonadi::StorageInterface*,
-                                  Akonadi::SerializerInterface*,
-                                  Akonadi::MonitorInterface*)>();
-
-    deps.add<Domain::NoteRepository,
-             Akonadi::NoteRepository(Akonadi::StorageInterface*,
-                                     Akonadi::SerializerInterface*)>();
-
     deps.add<Domain::ProjectQueries,
              Akonadi::ProjectQueries(Akonadi::StorageInterface*,
                                      Akonadi::SerializerInterface*,
@@ -96,15 +81,6 @@ void App::initializeDependencies()
     deps.add<Domain::ProjectRepository,
              Akonadi::ProjectRepository(Akonadi::StorageInterface*,
                                         Akonadi::SerializerInterface*)>();
-
-    deps.add<Domain::TagQueries,
-             Akonadi::TagQueries(Akonadi::StorageInterface*,
-                                 Akonadi::SerializerInterface*,
-                                 Akonadi::MonitorInterface*)>();
-
-    deps.add<Domain::TagRepository,
-             Akonadi::TagRepository(Akonadi::StorageInterface*,
-                                    Akonadi::SerializerInterface*)>();
 
     deps.add<Domain::TaskQueries,
              Akonadi::TaskQueries(Akonadi::StorageInterface*,
@@ -141,7 +117,4 @@ void App::initializeDependencies()
     deps.add<Presentation::AvailableSourcesModel,
              Presentation::AvailableSourcesModel(Domain::DataSourceQueries*,
                                                  Domain::DataSourceRepository*)>();
-
-    deps.add<Scripting::ScriptHandler,
-            Scripting::ScriptHandler(Domain::TaskRepository*)>();
 }

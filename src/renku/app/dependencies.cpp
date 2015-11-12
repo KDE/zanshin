@@ -23,20 +23,13 @@
 
 #include "dependencies.h"
 
-#include "akonadi/akonadicontextqueries.h"
-#include "akonadi/akonadicontextrepository.h"
 #include "akonadi/akonadidatasourcequeries.h"
 #include "akonadi/akonadidatasourcerepository.h"
 #include "akonadi/akonadinotequeries.h"
 #include "akonadi/akonadinoterepository.h"
-#include "akonadi/akonadiprojectqueries.h"
-#include "akonadi/akonadiprojectrepository.h"
 #include "akonadi/akonaditagqueries.h"
 #include "akonadi/akonaditagrepository.h"
-#include "akonadi/akonaditaskqueries.h"
-#include "akonadi/akonaditaskrepository.h"
 
-#include "akonadi/akonadimessaging.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
@@ -45,28 +38,16 @@
 #include "presentation/availablenotepagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
 
-#include "scripting/scripthandler.h"
-
 #include "utils/dependencymanager.h"
 
 void App::initializeDependencies()
 {
     auto &deps = Utils::DependencyManager::globalInstance();
 
-    deps.add<Akonadi::MessagingInterface, Akonadi::Messaging, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::MonitorInterface, Akonadi::MonitorImpl, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::SerializerInterface, Akonadi::Serializer, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::StorageInterface, Akonadi::Storage, Utils::DependencyManager::UniqueInstance>();
 
-
-    deps.add<Domain::ContextQueries,
-             Akonadi::ContextQueries(Akonadi::StorageInterface*,
-                                     Akonadi::SerializerInterface*,
-                                     Akonadi::MonitorInterface*)>();
-
-    deps.add<Domain::ContextRepository,
-             Akonadi::ContextRepository(Akonadi::StorageInterface*,
-                                        Akonadi::SerializerInterface*)>();
 
     deps.add<Domain::DataSourceQueries>([] (Utils::DependencyManager *deps) {
         return new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Notes,
@@ -88,15 +69,6 @@ void App::initializeDependencies()
              Akonadi::NoteRepository(Akonadi::StorageInterface*,
                                      Akonadi::SerializerInterface*)>();
 
-    deps.add<Domain::ProjectQueries,
-             Akonadi::ProjectQueries(Akonadi::StorageInterface*,
-                                     Akonadi::SerializerInterface*,
-                                     Akonadi::MonitorInterface*)>();
-
-    deps.add<Domain::ProjectRepository,
-             Akonadi::ProjectRepository(Akonadi::StorageInterface*,
-                                        Akonadi::SerializerInterface*)>();
-
     deps.add<Domain::TagQueries,
              Akonadi::TagQueries(Akonadi::StorageInterface*,
                                  Akonadi::SerializerInterface*,
@@ -105,17 +77,6 @@ void App::initializeDependencies()
     deps.add<Domain::TagRepository,
              Akonadi::TagRepository(Akonadi::StorageInterface*,
                                     Akonadi::SerializerInterface*)>();
-
-    deps.add<Domain::TaskQueries,
-             Akonadi::TaskQueries(Akonadi::StorageInterface*,
-                                  Akonadi::SerializerInterface*,
-                                  Akonadi::MonitorInterface*)>();
-
-    deps.add<Domain::TaskRepository,
-             Akonadi::TaskRepository(Akonadi::StorageInterface*,
-                                     Akonadi::SerializerInterface*,
-                                     Akonadi::MessagingInterface*)>();
-
 
     deps.add<Presentation::ArtifactEditorModel>([] (Utils::DependencyManager *deps) {
         auto model = new Presentation::ArtifactEditorModel;
@@ -137,7 +98,4 @@ void App::initializeDependencies()
     deps.add<Presentation::AvailableSourcesModel,
              Presentation::AvailableSourcesModel(Domain::DataSourceQueries*,
                                                  Domain::DataSourceRepository*)>();
-
-    deps.add<Scripting::ScriptHandler,
-            Scripting::ScriptHandler(Domain::TaskRepository*)>();
 }
