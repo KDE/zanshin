@@ -24,6 +24,7 @@
 #include <QtTestGui>
 
 #include <QAbstractItemModel>
+#include <QAction>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -113,6 +114,20 @@ private slots:
         QVERIFY(quickAddEdit->isVisibleTo(&page));
         QVERIFY(quickAddEdit->text().isEmpty());
         QCOMPARE(quickAddEdit->placeholderText(), tr("Type and press enter to add an action"));
+
+        auto addAction = page.findChild<QAction*>("addItemAction");
+        QVERIFY(addAction);
+        auto cancelAddAction = page.findChild<QAction*>("cancelAddItemAction");
+        QVERIFY(cancelAddAction);
+        auto removeAction = page.findChild<QAction*>("removeItemAction");
+        QVERIFY(removeAction);
+        auto filterAction = page.findChild<QAction*>("filterViewAction");
+        QVERIFY(filterAction);
+
+        auto actions = page.globalActions();
+        QCOMPARE(actions.value("page_view_add"), addAction);
+        QCOMPARE(actions.value("page_view_remove"), removeAction);
+        QCOMPARE(actions.value("page_view_filter"), filterAction);
     }
 
     void shouldDisplayListFromPageModel()
@@ -149,6 +164,60 @@ private slots:
 
         // THEN
         QVERIFY(!page.model());
+    }
+
+    void shouldManageFocusThroughActions()
+    {
+        // GIVEN
+        Widgets::PageView page;
+        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+        auto filter = page.findChild<Widgets::FilterWidget*>("filterWidget");
+        auto filterEdit = filter->findChild<QLineEdit*>();
+        QVERIFY(filterEdit);
+        page.show();
+        QTest::qWaitForWindowShown(&page);
+
+        centralView->setFocus();
+        QVERIFY(centralView->hasFocus());
+        QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(!filterEdit->hasFocus());
+
+        auto addAction = page.findChild<QAction*>("addItemAction");
+        auto cancelAddAction = page.findChild<QAction*>("cancelAddItemAction");
+        auto filterAction = page.findChild<QAction*>("filterViewAction");
+
+        // WHEN
+        addAction->trigger();
+
+        // THEN
+        QVERIFY(!centralView->hasFocus());
+        QVERIFY(quickAddEdit->hasFocus());
+        QVERIFY(!filterEdit->hasFocus());
+
+        // WHEN
+        cancelAddAction->trigger();
+
+        // THEN
+        QVERIFY(centralView->hasFocus());
+        QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(!filterEdit->hasFocus());
+
+        // WHEN
+        filterAction->trigger();
+
+        // THEN
+        QVERIFY(!centralView->hasFocus());
+        QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(filterEdit->hasFocus());
+
+        // WHEN
+        cancelAddAction->trigger();
+
+        // THEN
+        QVERIFY(centralView->hasFocus());
+        QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(!filterEdit->hasFocus());
     }
 
     void shouldCreateTasksWhenHittingReturn()

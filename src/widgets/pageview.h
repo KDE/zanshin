@@ -27,6 +27,7 @@
 
 #include <QWidget>
 
+#include <QHash>
 #include <QSharedPointer>
 
 #include <functional>
@@ -49,6 +50,8 @@ class PageView : public QWidget
 public:
     explicit PageView(QWidget *parent = Q_NULLPTR);
 
+    QHash<QString, QAction*> globalActions() const;
+
     QObject *model() const;
     MessageBoxInterface::Ptr messageBoxInterface() const;
 
@@ -65,6 +68,7 @@ private slots:
     void onCurrentChanged(const QModelIndex &current);
 
 private:
+    QHash<QString, QAction*> m_actions;
     QObject *m_model;
     FilterWidget *m_filterWidget;
     QTreeView *m_centralView;

@@ -44,6 +44,7 @@ FilterWidget::FilterWidget(QWidget *parent)
     ui->extension->hide();
     ui->sortTypeCombo->addItem(tr("Sort by title"), Presentation::ArtifactFilterProxyModel::TitleSort);
     ui->sortTypeCombo->addItem(tr("Sort by date"), Presentation::ArtifactFilterProxyModel::DateSort);
+    setFocusProxy(ui->filterEdit);
 
     connect(ui->filterEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onTextChanged(QString)));

@@ -68,12 +68,45 @@ PageView::PageView(QWidget *parent)
     layout->addWidget(m_quickAddEdit);
     setLayout(layout);
 
+    m_messageBoxInterface = MessageBox::Ptr::create();
+
+    auto addItemAction = new QAction(this);
+    addItemAction->setObjectName("addItemAction");
+    addItemAction->setText(tr("New item"));
+    addItemAction->setIcon(QIcon::fromTheme("list-add"));
+    addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
+    connect(addItemAction, SIGNAL(triggered(bool)), m_quickAddEdit, SLOT(selectAll()));
+    connect(addItemAction, SIGNAL(triggered(bool)), m_quickAddEdit, SLOT(setFocus()));
+
+    auto cancelAddItemAction = new QAction(this);
+    cancelAddItemAction->setObjectName("cancelAddItemAction");
+    cancelAddItemAction->setShortcut(Qt::Key_Escape);
+    addAction(cancelAddItemAction);
+    connect(cancelAddItemAction, SIGNAL(triggered(bool)), m_centralView, SLOT(setFocus()));
+
     auto removeItemAction = new QAction(this);
+    removeItemAction->setObjectName("removeItemAction");
+    removeItemAction->setText(tr("Remove item"));
+    removeItemAction->setIcon(QIcon::fromTheme("list-remove"));
     removeItemAction->setShortcut(Qt::Key_Delete);
     connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
     addAction(removeItemAction);
 
-    m_messageBoxInterface = MessageBox::Ptr::create();
+    auto filterViewAction = new QAction(this);
+    filterViewAction->setObjectName("filterViewAction");
+    filterViewAction->setText(tr("Filter..."));
+    filterViewAction->setIcon(QIcon::fromTheme("edit-find"));
+    filterViewAction->setShortcut(Qt::CTRL | Qt::Key_F);
+    connect(filterViewAction, SIGNAL(triggered(bool)), m_filterWidget, SLOT(setFocus()));
+
+    m_actions.insert("page_view_add", addItemAction);
+    m_actions.insert("page_view_remove", removeItemAction);
+    m_actions.insert("page_view_filter", filterViewAction);
+}
+
+QHash<QString, QAction *> PageView::globalActions() const
+{
+    return m_actions;
 }
 
 QObject *PageView::model() const
