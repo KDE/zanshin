@@ -25,11 +25,11 @@
 
 KAboutData App::getAboutData()
 {
-    KAboutData about("zanshin", "zanshin",
+    KAboutData about("zanshin-next", "zanshin-next",
                      ki18n("Zanshin Todo"), "0.2.50",
                      ki18n("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutData::License_GPL_V3,
-                     ki18n("Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"));
+                     ki18n("Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"));
 
     about.addAuthor(ki18n("Kevin Ottens"),
                     ki18n("Lead Developer"),
@@ -38,6 +38,10 @@ KAboutData App::getAboutData()
     about.addAuthor(ki18n("Mario Bensi"),
                     ki18n("Developer"),
                     "nef@ipsquad.net");
+
+    about.addAuthor(ki18n("Franck Arrecot"),
+                    ki18n("Developer"),
+                    "franck.arrecot@gmail.com");
 
     return about;
 }

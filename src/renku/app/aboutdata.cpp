@@ -39,6 +39,10 @@ KAboutData App::getAboutData()
                     ki18n("Developer"),
                     "nef@ipsquad.net");
 
+    about.addAuthor(ki18n("Franck Arrecot"),
+                    ki18n("Developer"),
+                    "franck.arrecot@gmail.com");
+
     return about;
 }
 
