@@ -160,9 +160,21 @@ private slots:
 
         auto addAction = available.findChild<QAction*>("addAction");
         QVERIFY(addAction);
+        auto removeAction = available.findChild<QAction*>("removeAction");
+        QVERIFY(removeAction);
+        auto goPreviousAction = available.findChild<QAction*>("goPreviousAction");
+        QVERIFY(goPreviousAction);
+        auto goNextAction = available.findChild<QAction*>("goNextAction");
+        QVERIFY(goNextAction);
 
         auto factory = available.dialogFactory();
         QVERIFY(factory(&available).dynamicCast<Widgets::NewPageDialog>());
+
+        auto actions = available.globalActions();
+        QCOMPARE(actions.value("pages_add"), addAction);
+        QCOMPARE(actions.value("pages_remove"), removeAction);
+        QCOMPARE(actions.value("pages_go_previous"), goPreviousAction);
+        QCOMPARE(actions.value("pages_go_next"), goNextAction);
     }
 
     void shouldDisplayListFromPageModel()
@@ -340,6 +352,100 @@ private slots:
 
         // THEN
         QCOMPARE(stubPagesModel.projectRemoved, list.first());
+    }
+
+    void shouldGoToPreviousSelectablePage()
+    {
+        // GIVEN
+        QStandardItemModel model;
+        model.appendRow(new QStandardItem("Inbox"));
+        auto projects = new QStandardItem("Projects");
+        projects->setFlags(Qt::NoItemFlags);
+        model.appendRow(projects);
+        projects->appendRow(new QStandardItem("Project 1"));
+        projects->appendRow(new QStandardItem("Project 2"));
+
+        AvailablePagesModelStub stubPagesModel;
+        stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailablePagesView available;
+        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        QVERIFY(pagesView);
+        QVERIFY(!pagesView->model());
+
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        auto goPreviousAction = available.findChild<QAction*>("goPreviousAction");
+        pagesView->setCurrentIndex(model.index(1, 0, model.indexFromItem(projects)));
+
+        // WHEN
+        goPreviousAction->trigger();
+
+        // THEN
+        QCOMPARE(pagesView->currentIndex(),
+                 model.index(0, 0, model.indexFromItem(projects)));
+
+        // WHEN
+        goPreviousAction->trigger();
+
+        // THEN
+        QCOMPARE(pagesView->currentIndex(),
+                 model.index(0, 0));
+
+        // WHEN
+        goPreviousAction->trigger();
+
+        // THEN
+        QCOMPARE(pagesView->currentIndex(),
+                 model.index(0, 0));
+    }
+
+    void shouldGoToNextSelectablePage()
+    {
+        // GIVEN
+        QStandardItemModel model;
+        model.appendRow(new QStandardItem("Inbox"));
+        auto projects = new QStandardItem("Projects");
+        projects->setFlags(Qt::NoItemFlags);
+        model.appendRow(projects);
+        projects->appendRow(new QStandardItem("Project 1"));
+        projects->appendRow(new QStandardItem("Project 2"));
+
+        AvailablePagesModelStub stubPagesModel;
+        stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailablePagesView available;
+        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        QVERIFY(pagesView);
+        QVERIFY(!pagesView->model());
+
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        auto goNextAction = available.findChild<QAction*>("goNextAction");
+        pagesView->setCurrentIndex(model.index(0, 0));
+
+        // WHEN
+        goNextAction->trigger();
+
+        // THEN
+        QCOMPARE(pagesView->currentIndex(),
+                 model.index(0, 0, model.indexFromItem(projects)));
+
+        // WHEN
+        goNextAction->trigger();
+
+        // THEN
+        QCOMPARE(pagesView->currentIndex(),
+                 model.index(1, 0, model.indexFromItem(projects)));
+
+        // WHEN
+        goNextAction->trigger();
+
+        // THEN
+        QCOMPARE(pagesView->currentIndex(),
+                 model.index(1, 0, model.indexFromItem(projects)));
     }
 };
 

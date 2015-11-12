@@ -27,6 +27,7 @@
 
 #include <QWidget>
 
+#include <QHash>
 #include <QSharedPointer>
 
 #include <functional>
@@ -51,6 +52,8 @@ public:
 
     explicit AvailablePagesView(QWidget *parent = Q_NULLPTR);
 
+    QHash<QString, QAction*> globalActions() const;
+
     QObject *model() const;
     QAbstractItemModel *projectSourcesModel() const;
     Domain::DataSource::Ptr defaultProjectSource() const;
@@ -70,9 +73,12 @@ private slots:
     void onCurrentChanged(const QModelIndex &current);
     void onAddTriggered();
     void onRemoveTriggered();
+    void onGoPreviousTriggered();
+    void onGoNextTriggered();
     void onInitTimeout();
 
 private:
+    QHash<QString, QAction*> m_actions;
     QObject *m_model;
     QAbstractItemModel *m_sources;
     Domain::DataSource::Ptr m_defaultSource;

@@ -86,6 +86,30 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
         return DialogPtr(new NewPageDialog(parent));
     };
     m_messageBoxInterface = MessageBox::Ptr::create();
+
+    auto goPreviousAction = new QAction(this);
+    goPreviousAction->setObjectName("goPreviousAction");
+    goPreviousAction->setText(tr("Previous page"));
+    goPreviousAction->setIcon(QIcon::fromTheme("go-up"));
+    goPreviousAction->setShortcut(Qt::ALT | Qt::Key_Up);
+    connect(goPreviousAction, SIGNAL(triggered(bool)), this, SLOT(onGoPreviousTriggered()));
+
+    auto goNextAction = new QAction(this);
+    goNextAction->setObjectName("goNextAction");
+    goNextAction->setText(tr("Next page"));
+    goNextAction->setIcon(QIcon::fromTheme("go-down"));
+    goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
+    connect(goNextAction, SIGNAL(triggered(bool)), this, SLOT(onGoNextTriggered()));
+
+    m_actions.insert("pages_add", addAction);
+    m_actions.insert("pages_remove", removeAction);
+    m_actions.insert("pages_go_previous", goPreviousAction);
+    m_actions.insert("pages_go_next", goNextAction);
+}
+
+QHash<QString, QAction *> AvailablePagesView::globalActions() const
+{
+    return m_actions;
 }
 
 QObject *AvailablePagesView::model() const
@@ -219,6 +243,30 @@ void AvailablePagesView::onRemoveTriggered()
 
     QMetaObject::invokeMethod(m_model, "removeItem",
                               Q_ARG(QModelIndex, current));
+}
+
+void AvailablePagesView::onGoPreviousTriggered()
+{
+    auto index = m_pagesView->indexAbove(m_pagesView->currentIndex());
+
+    while (index.isValid() && !(index.flags() & Qt::ItemIsSelectable)) {
+        index = m_pagesView->indexAbove(index);
+    }
+
+    if (index.isValid())
+        m_pagesView->setCurrentIndex(index);
+}
+
+void AvailablePagesView::onGoNextTriggered()
+{
+    auto index = m_pagesView->indexBelow(m_pagesView->currentIndex());
+
+    while (index.isValid() && !(index.flags() & Qt::ItemIsSelectable)) {
+        index = m_pagesView->indexBelow(index);
+    }
+
+    if (index.isValid())
+        m_pagesView->setCurrentIndex(index);
 }
 
 void AvailablePagesView::onInitTimeout()
