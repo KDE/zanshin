@@ -121,8 +121,7 @@ void App::initializeDependencies()
                                                    Domain::ContextQueries*,
                                                    Domain::ContextRepository*,
                                                    Domain::TaskQueries*,
-                                                   Domain::TaskRepository*,
-                                                   Domain::NoteRepository*)>();
+                                                   Domain::TaskRepository*)>();
 
     deps.add<Presentation::ApplicationModel,
              Presentation::ApplicationModel(Domain::DataSourceQueries*,

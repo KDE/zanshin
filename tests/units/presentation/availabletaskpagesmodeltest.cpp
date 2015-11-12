@@ -26,13 +26,7 @@
 #include "utils/mockobject.h"
 #include "utils/datetime.h"
 
-#include "domain/contextqueries.h"
-#include "domain/contextrepository.h"
-#include "domain/projectqueries.h"
-#include "domain/projectrepository.h"
 #include "domain/note.h"
-#include "domain/task.h"
-#include "domain/taskrepository.h"
 
 #include "presentation/availabletaskpagesmodel.h"
 #include "presentation/contextpagemodel.h"
@@ -106,8 +100,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    taskRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -341,8 +334,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -382,8 +374,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -428,8 +419,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -486,8 +476,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         // WHEN
         QAbstractItemModel *model = pages.pageListModel();
@@ -524,8 +513,7 @@ private slots:
                                                     Domain::ContextQueries::Ptr(),
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         // WHEN
         pages.addProject("Foo", source);
@@ -555,8 +543,7 @@ private slots:
                                                     Domain::ContextQueries::Ptr(),
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -581,8 +568,7 @@ private slots:
                                                     Domain::ContextQueries::Ptr(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         // WHEN
         pages.addContext("Foo");
@@ -607,8 +593,7 @@ private slots:
                                                     Domain::ContextQueries::Ptr(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -651,8 +636,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 
@@ -699,8 +683,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     Domain::ContextRepository::Ptr(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -751,8 +734,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
 
         QAbstractItemModel *model = pages.pageListModel();
 
@@ -798,8 +780,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    Domain::TaskRepository::Ptr(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    Domain::TaskRepository::Ptr());
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
 
@@ -864,8 +845,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    taskRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -929,8 +909,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    taskRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -995,8 +974,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    taskRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1062,8 +1040,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    taskRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
@@ -1117,8 +1094,7 @@ private slots:
                                                     contextQueriesMock.getInstance(),
                                                     contextRepositoryMock.getInstance(),
                                                     Domain::TaskQueries::Ptr(),
-                                                    taskRepositoryMock.getInstance(),
-                                                    Domain::NoteRepository::Ptr());
+                                                    taskRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);

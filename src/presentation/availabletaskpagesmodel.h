@@ -29,7 +29,6 @@
 
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
-#include "domain/noterepository.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/taskqueries.h"
@@ -51,7 +50,7 @@ public:
                                      const Domain::ContextQueries::Ptr &contextQueries,
                                      const Domain::ContextRepository::Ptr &contextRepository,
                                      const Domain::TaskQueries::Ptr &taskQueries,
-                                     const Domain::TaskRepository::Ptr &taskRepository, const Domain::NoteRepository::Ptr &noteRepository,
+                                     const Domain::TaskRepository::Ptr &taskRepository,
                                      QObject *parent = Q_NULLPTR);
 
     QAbstractItemModel *pageListModel() Q_DECL_OVERRIDE;
@@ -77,8 +76,6 @@ private:
 
     Domain::TaskQueries::Ptr m_taskQueries;
     Domain::TaskRepository::Ptr m_taskRepository;
-
-    Domain::NoteRepository::Ptr m_noteRepository;
 
     Domain::QueryResultProvider<QObjectPtr>::Ptr m_rootsProvider;
     QObjectPtr m_inboxObject;

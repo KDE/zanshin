@@ -52,7 +52,6 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ProjectQueries::P
                                                  const Domain::ContextRepository::Ptr &contextRepository,
                                                  const Domain::TaskQueries::Ptr &taskQueries,
                                                  const Domain::TaskRepository::Ptr &taskRepository,
-                                                 const Domain::NoteRepository::Ptr &noteRepository,
                                                  QObject *parent)
     : AvailablePagesModelInterface(parent),
       m_pageListModel(Q_NULLPTR),
@@ -62,8 +61,7 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ProjectQueries::P
       m_contextQueries(contextQueries),
       m_contextRepository(contextRepository),
       m_taskQueries(taskQueries),
-      m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository)
+      m_taskRepository(taskRepository)
 {
 }
 
