@@ -58,7 +58,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     auto sidebar = new QSplitter(Qt::Vertical, parentWidget);
 
     auto components = new Widgets::ApplicationComponents(parentWidget);
-    components->setModel(Utils::DependencyManager::globalInstance().create<Presentation::ApplicationModel>());
+    components->setModel(Presentation::ApplicationModel::Ptr::create());
 
     sidebar->addWidget(components->availablePagesView());
     sidebar->addWidget(components->availableSourcesView());

@@ -91,14 +91,7 @@ private slots:
     void shouldProvideAvailableSourcesModel()
     {
         // GIVEN
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
-        auto sourceRepository = Domain::DataSourceRepository::Ptr();
-        auto taskRepository = Domain::TaskRepository::Ptr();
-        auto noteRepository = Domain::NoteRepository::Ptr();
-        Presentation::ApplicationModel app(sourceQueries,
-                                           sourceRepository,
-                                           taskRepository,
-                                           noteRepository);
+        Presentation::ApplicationModel app;
 
         // WHEN
         QObject *available = app.availableSources();
@@ -110,14 +103,7 @@ private slots:
     void shouldProvideAvailablePagesModel()
     {
         // GIVEN
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
-        auto sourceRepository = Domain::DataSourceRepository::Ptr();
-        auto taskRepository = Domain::TaskRepository::Ptr();
-        auto noteRepository = Domain::NoteRepository::Ptr();
-        Presentation::ApplicationModel app(sourceQueries,
-                                           sourceRepository,
-                                           taskRepository,
-                                           noteRepository);
+        Presentation::ApplicationModel app;
 
         // WHEN
         QObject *available = app.availablePages();
@@ -129,14 +115,7 @@ private slots:
     void shouldProvideCurrentPage()
     {
         // GIVEN
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
-        auto sourceRepository = Domain::DataSourceRepository::Ptr();
-        auto taskRepository = Domain::TaskRepository::Ptr();
-        auto noteRepository = Domain::NoteRepository::Ptr();
-        Presentation::ApplicationModel app(sourceQueries,
-                                           sourceRepository,
-                                           taskRepository,
-                                           noteRepository);
+        Presentation::ApplicationModel app;
         QVERIFY(!app.currentPage());
         QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
@@ -153,14 +132,7 @@ private slots:
     void shouldProvideArtifactEditorModel()
     {
         // GIVEN
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
-        auto sourceRepository = Domain::DataSourceRepository::Ptr();
-        auto taskRepository = Domain::TaskRepository::Ptr();
-        auto noteRepository = Domain::NoteRepository::Ptr();
-        Presentation::ApplicationModel app(sourceQueries,
-                                           sourceRepository,
-                                           taskRepository,
-                                           noteRepository);
+        Presentation::ApplicationModel app;
 
         // WHEN
         QObject *page = app.editor();
@@ -175,15 +147,7 @@ private slots:
 
         // An ErrorHandler
         FakeErrorHandler errorHandler;
-
-        auto sourceQueries = Domain::DataSourceQueries::Ptr();
-        auto sourceRepository = Domain::DataSourceRepository::Ptr();
-        auto taskRepository = Domain::TaskRepository::Ptr();
-        auto noteRepository = Domain::NoteRepository::Ptr();
-        Presentation::ApplicationModel app(sourceQueries,
-                                           sourceRepository,
-                                           taskRepository,
-                                           noteRepository);
+        Presentation::ApplicationModel app;
 
         // WHEN
         app.setErrorHandler(&errorHandler);

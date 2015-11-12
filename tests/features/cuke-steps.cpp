@@ -132,7 +132,7 @@ public:
         using namespace Presentation;
         proxyModel->setDynamicSortFilter(true);
 
-        auto appModel = Utils::DependencyManager::globalInstance().create<ApplicationModel>();
+        auto appModel = ApplicationModel::Ptr::create();
 
         appModel->setErrorHandler(&m_errorHandler);
 

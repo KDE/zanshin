@@ -47,11 +47,9 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
 public:
-    explicit ApplicationModel(const Domain::DataSourceQueries::Ptr &sourceQueries,
-                              const Domain::DataSourceRepository::Ptr &sourceRepository,
-                              const Domain::TaskRepository::Ptr &taskRepository,
-                              const Domain::NoteRepository::Ptr &noteRepository,
-                              QObject *parent = Q_NULLPTR);
+    typedef QSharedPointer<ApplicationModel> Ptr;
+
+    explicit ApplicationModel(QObject *parent = Q_NULLPTR);
 
     QObject *availableSources();
     QObject *availablePages();
@@ -72,11 +70,6 @@ private:
     QObjectPtr m_availablePages;
     QObject *m_currentPage;
     QObjectPtr m_editor;
-
-    Domain::DataSourceQueries::Ptr m_sourceQueries;
-    Domain::DataSourceRepository::Ptr m_sourceRepository;
-    Domain::TaskRepository::Ptr m_taskRepository;
-    Domain::NoteRepository::Ptr m_noteRepository;
 
     ErrorHandler *m_errorHandler;
 };

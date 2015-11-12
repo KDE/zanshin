@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 
     auto widget = new QWidget;
     auto components = new Widgets::ApplicationComponents(widget);
-    components->setModel(Utils::DependencyManager::globalInstance().create<Presentation::ApplicationModel>());
+    components->setModel(Presentation::ApplicationModel::Ptr::create());
 
     auto layout = new QVBoxLayout;
     layout->addWidget(components->pageView());

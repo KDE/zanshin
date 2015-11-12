@@ -25,26 +25,17 @@
 #include "applicationmodel.h"
 
 #include "presentation/artifacteditormodel.h"
-#include "presentation/availabletaskpagesmodel.h"
+#include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
-#include "presentation/datasourcelistmodel.h"
 #include "presentation/errorhandler.h"
 
 #include "utils/dependencymanager.h"
 
 using namespace Presentation;
 
-ApplicationModel::ApplicationModel(const Domain::DataSourceQueries::Ptr &sourceQueries,
-                                   const Domain::DataSourceRepository::Ptr &sourceRepository,
-                                   const Domain::TaskRepository::Ptr &taskRepository,
-                                   const Domain::NoteRepository::Ptr &noteRepository,
-                                   QObject *parent)
+ApplicationModel::ApplicationModel(QObject *parent)
     : QObject(parent),
       m_currentPage(Q_NULLPTR),
-      m_sourceQueries(sourceQueries),
-      m_sourceRepository(sourceRepository),
-      m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository),
       m_errorHandler(Q_NULLPTR)
 {
     MetaTypes::registerAll();
