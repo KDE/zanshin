@@ -30,7 +30,6 @@
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
-#include "presentation/datasourcelistmodel.h"
 #include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"

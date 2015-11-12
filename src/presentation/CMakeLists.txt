@@ -8,7 +8,6 @@ set(presentation_SRCS
     availabletaskpagesmodel.cpp
     availablesourcesmodel.cpp
     contextpagemodel.cpp
-    datasourcelistmodel.cpp
     errorhandler.cpp
     errorhandlingmodelbase.cpp
     metatypes.cpp
