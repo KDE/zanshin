@@ -116,9 +116,19 @@ void App::initializeDependencies()
                                      Akonadi::SerializerInterface*,
                                      Akonadi::MessagingInterface*)>();
 
-    deps.add<Presentation::ArtifactEditorModel,
-             Presentation::ArtifactEditorModel(Domain::TaskRepository*,
-                                               Domain::NoteRepository*)>();
+    deps.add<Presentation::ArtifactEditorModel>([] (Utils::DependencyManager *deps) {
+        auto model = new Presentation::ArtifactEditorModel;
+        auto repository = deps->create<Domain::TaskRepository>();
+        model->setSaveFunction([repository] (const Domain::Artifact::Ptr &artifact) {
+            auto task = artifact.objectCast<Domain::Task>();
+            Q_ASSERT(task);
+            return repository->update(task);
+        });
+        model->setDelegateFunction([repository] (const Domain::Task::Ptr &task, const Domain::Task::Delegate &delegate) {
+            return repository->delegate(task, delegate);
+        });
+        return model;
+    });
 
     deps.add<Presentation::AvailablePagesModelInterface,
              Presentation::AvailableTaskPagesModel(Domain::ProjectQueries*,

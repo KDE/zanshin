@@ -27,19 +27,12 @@
 #include <QTimer>
 
 #include "domain/task.h"
-#include "domain/taskrepository.h"
-#include "domain/note.h"
-#include "domain/noterepository.h"
 #include "errorhandler.h"
 
 using namespace Presentation;
 
-ArtifactEditorModel::ArtifactEditorModel(const Domain::TaskRepository::Ptr &taskRepository,
-                                         const Domain::NoteRepository::Ptr &noteRepository,
-                                         QObject *parent)
+ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
     : QObject(parent),
-      m_taskRepository(taskRepository),
-      m_noteRepository(noteRepository),
       m_done(false),
       m_saveTimer(new QTimer(this)),
       m_saveNeeded(false)
@@ -110,6 +103,26 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     emit delegateTextChanged(m_delegateText);
     emit hasTaskPropertiesChanged(hasTaskProperties());
     emit artifactChanged(m_artifact);
+}
+
+bool ArtifactEditorModel::hasSaveFunction() const
+{
+    return bool(m_saveFunction);
+}
+
+void ArtifactEditorModel::setSaveFunction(const SaveFunction &function)
+{
+    m_saveFunction = function;
+}
+
+bool ArtifactEditorModel::hasDelegateFunction() const
+{
+    return bool(m_delegateFunction);
+}
+
+void ArtifactEditorModel::setDelegateFunction(const DelegateFunction &function)
+{
+    m_delegateFunction = function;
 }
 
 bool ArtifactEditorModel::hasTaskProperties() const
@@ -197,7 +210,7 @@ void ArtifactEditorModel::delegate(const QString &name, const QString &email)
     auto task = m_artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
     auto delegate = Domain::Task::Delegate(name, email);
-    m_taskRepository->delegate(task, delegate);
+    m_delegateFunction(task, delegate);
 }
 
 void ArtifactEditorModel::onTextChanged(const QString &text)
@@ -251,15 +264,10 @@ void ArtifactEditorModel::save()
         task->setDone(m_done);
         task->setStartDate(m_start);
         task->setDueDate(m_due);
-        const auto job = m_taskRepository->update(task);
-        installHandler(job, tr("Cannot modify task %1").arg(currentTitle));
-    } else {
-        auto note = m_artifact.objectCast<Domain::Note>();
-        Q_ASSERT(note);
-        const auto job = m_noteRepository->update(note);
-        installHandler(job, tr("Cannot modify note %1").arg(currentTitle));
     }
 
+    const auto job = m_saveFunction(m_artifact);
+    installHandler(job, tr("Cannot modify task %1").arg(currentTitle));
     setSaveNeeded(false);
 }
 

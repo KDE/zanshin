@@ -28,8 +28,9 @@
 #include <QDateTime>
 #include <QObject>
 
-#include "domain/noterepository.h"
-#include "domain/taskrepository.h"
+#include <functional>
+
+#include "domain/task.h"
 
 #include "presentation/errorhandlingmodelbase.h"
 
@@ -49,13 +50,20 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
     Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
 public:
-    explicit ArtifactEditorModel(const Domain::TaskRepository::Ptr &taskRepository,
-                                 const Domain::NoteRepository::Ptr &noteRepository,
-                                 QObject *parent = Q_NULLPTR);
+    typedef std::function<KJob*(const Domain::Artifact::Ptr &)> SaveFunction;
+    typedef std::function<KJob*(const Domain::Task::Ptr &, const Domain::Task::Delegate &)> DelegateFunction;
+
+    explicit ArtifactEditorModel(QObject *parent = Q_NULLPTR);
     ~ArtifactEditorModel();
 
     Domain::Artifact::Ptr artifact() const;
     void setArtifact(const Domain::Artifact::Ptr &artifact);
+
+    bool hasSaveFunction() const;
+    void setSaveFunction(const SaveFunction &function);
+
+    bool hasDelegateFunction() const;
+    void setDelegateFunction(const DelegateFunction &function);
 
     bool hasTaskProperties() const;
 
@@ -100,10 +108,9 @@ private:
     void setSaveNeeded(bool needed);
     bool isSaveNeeded() const;
 
-    Domain::TaskRepository::Ptr m_taskRepository;
-    Domain::NoteRepository::Ptr m_noteRepository;
-
     Domain::Artifact::Ptr m_artifact;
+    SaveFunction m_saveFunction;
+    DelegateFunction m_delegateFunction;
 
     QString m_text;
     QString m_title;

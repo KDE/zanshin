@@ -76,8 +76,7 @@ public:
                                                        FakeAvailablePagesModel>();
         Utils::DependencyManager::globalInstance().add<Presentation::ArtifactEditorModel>(
             [] (Utils::DependencyManager *) {
-                return new Presentation::ArtifactEditorModel(Domain::TaskRepository::Ptr(),
-                                                             Domain::NoteRepository::Ptr());
+                return new Presentation::ArtifactEditorModel;
         });
         Utils::DependencyManager::globalInstance().add<Presentation::AvailableSourcesModel>(
             [] (Utils::DependencyManager *) {

@@ -117,9 +117,16 @@ void App::initializeDependencies()
                                      Akonadi::MessagingInterface*)>();
 
 
-    deps.add<Presentation::ArtifactEditorModel,
-             Presentation::ArtifactEditorModel(Domain::TaskRepository*,
-                                               Domain::NoteRepository*)>();
+    deps.add<Presentation::ArtifactEditorModel>([] (Utils::DependencyManager *deps) {
+        auto model = new Presentation::ArtifactEditorModel;
+        auto repository = deps->create<Domain::NoteRepository>();
+        model->setSaveFunction([repository] (const Domain::Artifact::Ptr &artifact) {
+            auto note = artifact.objectCast<Domain::Note>();
+            Q_ASSERT(note);
+            return repository->update(note);
+        });
+        return model;
+    });
 
     deps.add<Presentation::AvailablePagesModelInterface,
              Presentation::AvailableNotePagesModel(Domain::NoteQueries*,
