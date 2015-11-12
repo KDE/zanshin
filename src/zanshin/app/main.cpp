@@ -24,15 +24,14 @@
 #include <QApplication>
 #include <QBoxLayout>
 #include <QDockWidget>
-#include <QMenu>
 #include <QProcess>
-#include <QToolBar>
-#include <QToolButton>
+
+#include <KApplication>
+#include <KCmdLineArgs>
+#include <KXmlGuiWindow>
 
 #include <KConfigGroup>
 #include <KSharedConfig>
-#include <KComponentData>
-#include <KMainWindow>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -42,8 +41,7 @@
 
 #include "presentation/applicationmodel.h"
 
-#include "utils/dependencymanager.h"
-
+#include "aboutdata.h"
 #include "dependencies.h"
 
 #include <iostream>
@@ -52,9 +50,9 @@ int main(int argc, char **argv)
 {
     App::initializeDependencies();
 
-    QApplication app(argc, argv);
-
-    KComponentData mainComponentData("zanshin");
+    auto about = App::getAboutData();
+    KCmdLineArgs::init(argc, argv, &about);
+    KApplication app;
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
     KConfigGroup group = config->group("Migrations");
@@ -86,15 +84,18 @@ int main(int argc, char **argv)
     editorDock->setObjectName("editorDock");
     editorDock->setWidget(components->editorView());
 
-    auto window = new KMainWindow;
-    window->resize(1024, 600);
-    window->setAutoSaveSettings("MainWindow");
+    auto window = new KXmlGuiWindow;
     window->setCentralWidget(widget);
 
     window->addDockWidget(Qt::RightDockWidgetArea, editorDock);
     window->addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
     window->addDockWidget(Qt::LeftDockWidgetArea, sourcesDock);
 
+    window->setupGUI(QSize(1024, 600),
+                     KXmlGuiWindow::ToolBar
+                   | KXmlGuiWindow::Keys
+                   | KXmlGuiWindow::Save
+                   | KXmlGuiWindow::Create);
     window->show();
 
     return app.exec();
