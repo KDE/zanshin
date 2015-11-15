@@ -19,4 +19,5 @@ target_link_libraries(renku
 
 install(TARGETS renku DESTINATION ${BIN_INSTALL_DIR})
 install(PROGRAMS renku.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(FILES renkuui.rc DESTINATION ${DATA_INSTALL_DIR}/renku)
 install(FILES renku.appdata.xml DESTINATION share/appdata)

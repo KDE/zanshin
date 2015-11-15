@@ -68,6 +68,15 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     splitter->addWidget(components->editorView());
     setWidget(splitter);
 
+    auto actions = QHash<QString, QAction*>();
+    actions.unite(components->availablePagesView()->globalActions());
+    actions.unite(components->pageView()->globalActions());
+
+    auto ac = actionCollection();
+    for (auto it = actions.constBegin(); it != actions.constEnd(); ++it) {
+        ac->addAction(it.key(), it.value());
+    }
+
     setXMLFile(KStandardDirs::locate("data", "zanshin/zanshin-next_part.rc"));
 }
 

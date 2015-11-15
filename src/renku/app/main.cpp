@@ -24,6 +24,7 @@
 #include <QBoxLayout>
 #include <QDockWidget>
 
+#include <KActionCollection>
 #include <KApplication>
 #include <KCmdLineArgs>
 #include <KXmlGuiWindow>
@@ -73,6 +74,16 @@ int main(int argc, char **argv)
     window->addDockWidget(Qt::RightDockWidgetArea, editorDock);
     window->addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
     window->addDockWidget(Qt::LeftDockWidgetArea, sourcesDock);
+
+    auto actions = QHash<QString, QAction*>();
+    actions.unite(components->availablePagesView()->globalActions());
+    actions.unite(components->pageView()->globalActions());
+
+    auto ac = window->actionCollection();
+    ac->addAction(KStandardAction::Quit, window, SLOT(close()));
+    for (auto it = actions.constBegin(); it != actions.constEnd(); ++it) {
+        ac->addAction(it.key(), it.value());
+    }
 
     window->setupGUI(QSize(1024, 600),
                      KXmlGuiWindow::ToolBar

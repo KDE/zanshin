@@ -19,4 +19,5 @@ target_link_libraries(zanshin-next
 
 install(TARGETS zanshin-next DESTINATION ${BIN_INSTALL_DIR})
 install(PROGRAMS zanshin-next.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(FILES zanshin-nextui.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin-next)
 install(FILES zanshin.appdata.xml DESTINATION share/appdata)
