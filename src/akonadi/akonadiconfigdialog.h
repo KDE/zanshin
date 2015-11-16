@@ -1,6 +1,6 @@
 /* This file is part of Zanshin
 
-   Copyright 2014 Kevin Ottens <ervin@kde.org>
+   Copyright 2011-2015 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,36 +21,32 @@
    USA.
 */
 
-#ifndef AKONADI_DATASOURCEREPOSITORY_H
-#define AKONADI_DATASOURCEREPOSITORY_H
+#ifndef AKONADI_CONFIGDIALOG_H
+#define AKONADI_CONFIGDIALOG_H
 
-#include "domain/datasourcerepository.h"
+#include <QDialog>
 
-#include "akonadi/akonadiserializerinterface.h"
-#include "akonadi/akonadistorageinterface.h"
+namespace Akonadi
+{
 
-namespace Akonadi {
+class AgentInstanceWidget;
 
-class SerializerInterface;
-class StorageInterface;
-
-class DataSourceRepository : public QObject, public Domain::DataSourceRepository
+class ConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    typedef QSharedPointer<DataSourceRepository> Ptr;
+    explicit ConfigDialog(QWidget *parent = 0);
 
-    DataSourceRepository(const StorageInterface::Ptr &storage,
-                         const SerializerInterface::Ptr &serializer);
-
-    KJob *update(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
-    void showConfigDialog() Q_DECL_OVERRIDE;
+private slots:
+    void onAddTriggered();
+    void onRemoveTriggered();
+    void onConfigureTriggered();
 
 private:
-    StorageInterface::Ptr m_storage;
-    SerializerInterface::Ptr m_serializer;
+    Akonadi::AgentInstanceWidget *m_agentInstanceWidget;
 };
 
 }
 
-#endif // AKONADI_DATASOURCEREPOSITORY_H
+#endif // AKONADI_CONFIGDIALOG_H
+

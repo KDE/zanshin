@@ -24,6 +24,10 @@
 
 #include "akonadidatasourcerepository.h"
 
+#include <QApplication>
+
+#include "akonadiconfigdialog.h"
+
 using namespace Akonadi;
 
 DataSourceRepository::DataSourceRepository(const StorageInterface::Ptr &storage,
@@ -38,4 +42,10 @@ KJob *DataSourceRepository::update(Domain::DataSource::Ptr source)
     auto collection = m_serializer->createCollectionFromDataSource(source);
     Q_ASSERT(collection.isValid());
     return m_storage->updateCollection(collection);
+}
+
+void DataSourceRepository::showConfigDialog()
+{
+    ConfigDialog dialog(qApp->activeWindow());
+    dialog.exec();
 }

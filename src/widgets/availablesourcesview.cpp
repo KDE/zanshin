@@ -25,13 +25,17 @@
 #include "availablesourcesview.h"
 
 #include <QAction>
+#include <QApplication>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
 #include <QToolBar>
 #include <QTreeView>
 #include <QVBoxLayout>
 
+#include <KAboutData>
 #include <KLineEdit>
+#include <KGlobal>
+#include <KComponentData>
 
 #include "presentation/metatypes.h"
 
@@ -84,6 +88,18 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     actionBarLayout->addWidget(actionBar);
     layout->addLayout(actionBarLayout);
     setLayout(layout);
+
+    auto settingsAction = new QAction(this);
+    settingsAction->setObjectName("settingsAction");
+    settingsAction->setText(tr("Configure %1...").arg(KGlobal::mainComponent().aboutData()->programName()));
+    settingsAction->setIcon(QIcon::fromTheme("configure"));
+    connect(settingsAction, SIGNAL(triggered()), this, SLOT(onSettingsTriggered()));
+    m_actions.insert("options_configure", settingsAction);
+}
+
+QHash<QString, QAction *> AvailableSourcesView::globalActions() const
+{
+    return m_actions;
 }
 
 QObject *AvailableSourcesView::model() const
@@ -101,6 +117,11 @@ void AvailableSourcesView::setModel(QObject *model)
     m_model = model;
 
     setSourceModel("sourceListModel");
+}
+
+void AvailableSourcesView::onSettingsTriggered()
+{
+    QMetaObject::invokeMethod(m_model, "showConfigDialog");
 }
 
 void AvailableSourcesView::onDefaultTriggered()

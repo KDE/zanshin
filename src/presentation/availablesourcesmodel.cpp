@@ -87,6 +87,11 @@ void AvailableSourcesModel::bookmarkSource(const Domain::DataSource::Ptr &source
     installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
+void AvailableSourcesModel::showConfigDialog()
+{
+    m_dataSourceRepository->showConfigDialog();
+}
+
 QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
 {
     auto query = [this] (const Domain::DataSource::Ptr &source) {

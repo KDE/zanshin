@@ -45,7 +45,8 @@ class AvailableSourcesModelStub : public QObject
     Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm)
 public:
     explicit AvailableSourcesModelStub(QObject *parent = Q_NULLPTR)
-        : QObject(parent)
+        : QObject(parent),
+          settingsCalled(false)
     {
     }
 
@@ -55,6 +56,11 @@ public:
     }
 
 public slots:
+    void showConfigDialog()
+    {
+        settingsCalled = true;
+    }
+
     void setDefaultItem(const QModelIndex &index)
     {
         defaultIndex = index;
@@ -81,6 +87,7 @@ public slots:
     }
 
 public:
+    bool settingsCalled;
     QList<Domain::DataSource::Ptr> listedSources;
     QList<Domain::DataSource::Ptr> unlistedSources;
     QList<Domain::DataSource::Ptr> bookmarkedSources;
@@ -125,6 +132,12 @@ private slots:
 
         auto defaultAction = available.findChild<QAction*>("defaultAction");
         QVERIFY(defaultAction);
+
+        auto settingsAction = available.findChild<QAction*>("settingsAction");
+        QVERIFY(settingsAction);
+
+        auto actions = available.globalActions();
+        QCOMPARE(actions.value("options_configure"), settingsAction);
     }
 
     void shouldDisplayListFromPageModel()
@@ -176,6 +189,25 @@ private slots:
 
         // THEN
         QCOMPARE(stubSourcesModel.defaultIndex, selectedIndex);
+    }
+
+    void shouldInvokeModelSettingsDialog()
+    {
+        // GIVEN
+        AvailableSourcesModelStub stubSourcesModel;
+        QVERIFY(!stubSourcesModel.settingsCalled);
+
+        Widgets::AvailableSourcesView available;
+        available.setModel(&stubSourcesModel);
+
+        auto settingsAction = available.findChild<QAction*>("settingsAction");
+        QVERIFY(settingsAction);
+
+        // WHEN
+        settingsAction->trigger();
+
+        // THEN
+        QVERIFY(stubSourcesModel.settingsCalled);
     }
 
     void shouldListASourceWhenTheDelegateButtonIsClicked()

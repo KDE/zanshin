@@ -93,6 +93,7 @@ int main(int argc, char **argv)
     window->addDockWidget(Qt::LeftDockWidgetArea, sourcesDock);
 
     auto actions = QHash<QString, QAction*>();
+    actions.unite(components->availableSourcesView()->globalActions());
     actions.unite(components->availablePagesView()->globalActions());
     actions.unite(components->pageView()->globalActions());
 

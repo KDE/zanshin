@@ -39,6 +39,7 @@ public:
     virtual ~DataSourceRepository();
 
     virtual KJob *update(DataSource::Ptr source) = 0;
+    virtual void showConfigDialog() = 0;
 };
 
 }

@@ -563,6 +563,22 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source 1: Foo"));
     }
+
+    void shouldExecBackendSettingsDialog()
+    {
+        // GIVEN
+        Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
+        sourceRepositoryMock(&Domain::DataSourceRepository::showConfigDialog).when().thenReturn();
+
+        Presentation::AvailableSourcesModel sources(Domain::DataSourceQueries::Ptr(),
+                                                    sourceRepositoryMock.getInstance());
+
+        // WHEN
+        sources.showConfigDialog();
+
+        // THEN
+        QVERIFY(sourceRepositoryMock(&Domain::DataSourceRepository::showConfigDialog).when().exactly(1));
+    }
 };
 
 QTEST_MAIN(AvailableSourcesModelTest)

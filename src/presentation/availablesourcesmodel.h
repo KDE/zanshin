@@ -64,6 +64,8 @@ public slots:
     void unlistSource(const Domain::DataSource::Ptr &source);
     void bookmarkSource(const Domain::DataSource::Ptr &source);
 
+    void showConfigDialog();
+
 private slots:
     void onDefaultSourceChanged();
 

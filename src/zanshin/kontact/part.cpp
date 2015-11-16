@@ -69,6 +69,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     setWidget(splitter);
 
     auto actions = QHash<QString, QAction*>();
+    actions.unite(components->availableSourcesView()->globalActions());
     actions.unite(components->availablePagesView()->globalActions());
     actions.unite(components->pageView()->globalActions());
 

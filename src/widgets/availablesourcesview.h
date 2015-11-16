@@ -27,6 +27,8 @@
 
 #include <QWidget>
 
+#include <QHash>
+
 #include "domain/datasource.h"
 
 class QSortFilterProxyModel;
@@ -40,6 +42,8 @@ class AvailableSourcesView : public QWidget
 public:
     explicit AvailableSourcesView(QWidget *parent = Q_NULLPTR);
 
+    QHash<QString, QAction*> globalActions() const;
+
     QObject *model() const;
 
     void setSourceModel(const QByteArray &propertyName);
@@ -47,11 +51,13 @@ public slots:
     void setModel(QObject *model);
 
 private slots:
+    void onSettingsTriggered();
     void onDefaultTriggered();
     void onActionTriggered(const Domain::DataSource::Ptr &source, int action);
     void onSearchTextChanged(const QString &text);
 
 private:
+    QHash<QString, QAction*> m_actions;
     QObject *m_model;
     QSortFilterProxyModel *m_sortProxy;
     QTreeView *m_sourcesView;
