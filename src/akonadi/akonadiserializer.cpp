@@ -339,6 +339,16 @@ void Serializer::removeItemParent(Akonadi::Item item)
     todo->setRelatedTo(QString());
 }
 
+void Serializer::promoteItemToProject(Akonadi::Item item)
+{
+    if (!isTaskItem(item))
+        return;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    todo->setRelatedTo(QString());
+    todo->setCustomProperty("Zanshin", "Project", "1");
+}
+
 void Serializer::clearItem(Akonadi::Item *item)
 {
     Q_ASSERT(item);

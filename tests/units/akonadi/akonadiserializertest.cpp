@@ -1950,6 +1950,36 @@ private slots:
             QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QString());
     }
 
+    void shouldPromoteItemToProject_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+
+        auto item = Akonadi::Item(15);
+        auto todo = KCalCore::Todo::Ptr::create();
+        todo->setRelatedTo("3");
+        item.setPayload(todo);
+
+        QTest::newRow("nominal case") << item;
+        QTest::newRow("invalid item") << Akonadi::Item(16);
+    }
+
+    void shouldPromoteItemToProject()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        serializer.promoteItemToProject(item);
+
+        // THEN
+        if (item.hasPayload<KCalCore::Todo::Ptr>()) {
+            auto todo = item.payload<KCalCore::Todo::Ptr>();
+            QCOMPARE(todo->relatedTo(), QString());
+            QVERIFY(!todo->customProperty("Zanshin", "Project").isEmpty());
+        }
+    }
+
     void shouldClearItem_data()
     {
         QTest::addColumn<Akonadi::Item*>("item");

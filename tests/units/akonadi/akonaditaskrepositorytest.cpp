@@ -352,6 +352,49 @@ private slots:
         }
     }
 
+    void shouldPromoteTaskToProject()
+    {
+        // GIVEN
+
+        // A default collection for saving
+        Akonadi::Collection col(42);
+
+        // A task and its corresponding item already existing in storage
+        Akonadi::Item item(42);
+        Domain::Task::Ptr task(new Domain::Task);
+
+        // A mock fetch job
+        auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
+        itemFetchJob->setItems(Akonadi::Item::List() << item);
+
+        // A mock modify job
+        auto itemModifyJob = new FakeJob(this);
+
+        // Serializer mock returning the item for the task and transforming it into a project
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).thenReturn(item);
+        serializerMock(&Akonadi::SerializerInterface::promoteItemToProject).when(item).thenReturn();
+
+        // Storage mock returning the modify job
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
+                                                          .thenReturn(itemFetchJob);
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
+                                                           .thenReturn(itemModifyJob);
+
+        // WHEN
+        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance(),
+                                                                                       Akonadi::MessagingInterface::Ptr()));
+        repository->promoteToProject(task)->exec();
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::promoteItemToProject).when(item).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+    }
+
     void shouldAssociateATaskToAnother_data()
     {
         QTest::addColumn<Akonadi::Item>("childItem");

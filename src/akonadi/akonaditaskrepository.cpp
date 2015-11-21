@@ -143,6 +143,27 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
     return compositeJob;
 }
 
+KJob *TaskRepository::promoteToProject(Domain::Task::Ptr task)
+{
+    auto item = m_serializer->createItemFromTask(task);
+
+    auto job = new CompositeJob();
+    auto fetchJob = m_storage->fetchItem(item);
+    job->install(fetchJob->kjob(), [fetchJob, job, this] {
+        if (fetchJob->kjob()->error() != KJob::NoError)
+           return;
+
+        Q_ASSERT(fetchJob->items().size() == 1);
+        auto item = fetchJob->items().first();
+        m_serializer->promoteItemToProject(item);
+
+        auto updateJob = m_storage->updateItem(item);
+        job->addSubjob(updateJob);
+        updateJob->start();
+    });
+    return job;
+}
+
 KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr child)
 {
     auto childItem = m_serializer->createItemFromTask(child);

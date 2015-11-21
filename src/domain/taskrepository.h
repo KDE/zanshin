@@ -48,6 +48,8 @@ public:
     virtual KJob *update(Task::Ptr task) = 0;
     virtual KJob *remove(Task::Ptr task) = 0;
 
+    virtual KJob *promoteToProject(Task::Ptr task) = 0;
+
     virtual KJob *associate(Task::Ptr parent, Task::Ptr child) = 0;
     virtual KJob *dissociate(Task::Ptr child) = 0;
     virtual KJob *dissociateAll(Task::Ptr child) = 0;

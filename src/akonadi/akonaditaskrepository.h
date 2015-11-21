@@ -52,6 +52,8 @@ public:
     virtual KJob *update(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
     virtual KJob *remove(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
 
+    virtual KJob *promoteToProject(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
+
     virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
     virtual KJob *dissociate(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
     virtual KJob *dissociateAll(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
