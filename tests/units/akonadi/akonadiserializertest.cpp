@@ -583,6 +583,11 @@ private slots:
         QFETCH(QString, delegateName);
         QFETCH(QString, delegateEmail);
 
+        // Switch to UTC
+        doneDate.setTimeSpec(Qt::UTC);
+        startDate.setTimeSpec(Qt::UTC);
+        dueDate.setTimeSpec(Qt::UTC);
+
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(summary);
@@ -738,6 +743,11 @@ private slots:
         QFETCH(QString, updatedDelegateName);
         QFETCH(QString, updatedDelegateEmail);
 
+        // Switch to UTC
+        updatedDoneDate.setTimeSpec(Qt::UTC);
+        updatedStartDate.setTimeSpec(Qt::UTC);
+        updatedDueDate.setTimeSpec(Qt::UTC);
+
         // ... in a new todo...
         KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
         updatedTodo->setSummary(updatedSummary);
@@ -771,9 +781,9 @@ private slots:
         QCOMPARE(task->title(), updatedSummary);
         QCOMPARE(task->text(), updatedContent);
         QCOMPARE(task->isDone(), updatedDone);
-        QCOMPARE(task->doneDate(), updatedDoneDate);
-        QCOMPARE(task->startDate(), updatedStartDate);
-        QCOMPARE(task->dueDate(), updatedDueDate);
+        QCOMPARE(task->doneDate(), updatedDoneDate.toUTC());
+        QCOMPARE(task->startDate(), updatedStartDate.toUTC());
+        QCOMPARE(task->dueDate(), updatedDueDate.toUTC());
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
@@ -784,9 +794,9 @@ private slots:
         QCOMPARE(task->title(), updatedSummary);
         QCOMPARE(task->text(), updatedContent);
         QCOMPARE(task->isDone(), updatedDone);
-        QCOMPARE(task->doneDate(), updatedDoneDate);
-        QCOMPARE(task->startDate(), updatedStartDate);
-        QCOMPARE(task->dueDate(), updatedDueDate);
+        QCOMPARE(task->doneDate(), updatedDoneDate.toUTC());
+        QCOMPARE(task->startDate(), updatedStartDate.toUTC());
+        QCOMPARE(task->dueDate(), updatedDueDate.toUTC());
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
@@ -802,9 +812,9 @@ private slots:
         const QString summary = "summary";
         const QString content = "content";
         const bool isDone = true;
-        const QDateTime doneDate(QDate(2013, 11, 30));
-        const QDateTime startDate(QDate(2013, 11, 24));
-        const QDateTime dueDate(QDate(2014, 03, 01));
+        const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
+        const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
+        const QDateTime dueDate(QDate(2014, 03, 01), QTime(0, 0), Qt::UTC);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
@@ -861,9 +871,9 @@ private slots:
         const QString summary = "summary";
         const QString content = "content";
         const bool isDone = true;
-        const QDateTime doneDate(QDate(2013, 11, 30));
-        const QDateTime startDate(QDate(2013, 11, 24));
-        const QDateTime dueDate(QDate(2014, 03, 01));
+        const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
+        const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
+        const QDateTime dueDate(QDate(2014, 03, 01), QTime(0, 0), Qt::UTC);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
@@ -974,6 +984,11 @@ private slots:
         QFETCH(QString, todoUid);
         QFETCH(Domain::Task::Delegate, delegate);
 
+        // Switch to UTC
+        doneDate.setTimeSpec(Qt::UTC);
+        startDate.setTimeSpec(Qt::UTC);
+        dueDate.setTimeSpec(Qt::UTC);
+
         // ... stored in a task
         auto task = Domain::Task::Ptr::create();
         task->setTitle(summary);
@@ -1036,9 +1051,9 @@ private slots:
         const QString summary = "summary";
         const QString content = "content";
         const bool isDone = true;
-        const QDateTime doneDate(QDate(2013, 11, 30));
-        const QDateTime startDate(QDate(2013, 11, 24));
-        const QDateTime dueDate(QDate(2014, 03, 01));
+        const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
+        const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
+        const QDateTime dueDate(QDate(2014, 03, 01), QTime(0, 0), Qt::UTC);
 
         // ... create a task
         Domain::Task::Ptr task(new Domain::Task);
