@@ -325,6 +325,89 @@ private slots:
         QCOMPARE(errorHandler.m_message, QString("Cannot remove task Task2 from project Project1: Foo"));
     }
 
+    void shouldPromoteItem()
+    {
+        // GIVEN
+
+        // One project
+        auto project = Domain::Project::Ptr::create();
+
+        // Two tasks
+        auto task1 = Domain::Task::Ptr::create();
+        auto task2 = Domain::Task::Ptr::create();
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(task1);
+        topLevelProvider->append(task2);
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(new FakeJob(this));
+
+        Presentation::ProjectPageModel page(project,
+                                            projectQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance());
+
+        // WHEN
+        const QModelIndex index = page.centralListModel()->index(1, 0);
+        page.promoteItem(index);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).exactly(1));
+    }
+
+    void shouldGetAnErrorMessageWhenPromoteItemFailed()
+    {
+        // GIVEN
+
+        // One project
+        auto project = Domain::Project::Ptr::create();
+        project->setName("Project1");
+
+        // Two tasks
+        auto task1 = Domain::Task::Ptr::create();
+        auto task2 = Domain::Task::Ptr::create();
+        task2->setTitle("Task2");
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(task1);
+        topLevelProvider->append(task2);
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(job);
+
+        Presentation::ProjectPageModel page(project,
+                                            projectQueriesMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        page.setErrorHandler(&errorHandler);
+
+        // WHEN
+        const QModelIndex index = page.centralListModel()->index(1, 0);
+        page.promoteItem(index);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot promote task Task2 to be a project: Foo"));
+    }
+
     void shouldGetAnErrorMessageWhenUpdateTaskFailed()
     {
         // GIVEN

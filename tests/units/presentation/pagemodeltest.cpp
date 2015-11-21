@@ -40,6 +40,7 @@ public:
 
     Domain::Artifact::Ptr addItem(const QString &) { return Domain::Artifact::Ptr::create(); }
     void removeItem(const QModelIndex &) {}
+    void promoteItem(const QModelIndex &) {}
 
 private:
     QAbstractItemModel *createCentralListModel()

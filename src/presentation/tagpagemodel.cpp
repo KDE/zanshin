@@ -75,6 +75,11 @@ void TagPageModel::removeItem(const QModelIndex &index)
     installHandler(job, tr("Cannot remove note %1 from tag %2").arg(note->title()).arg(m_tag->name()));
 }
 
+void TagPageModel::promoteItem(const QModelIndex &)
+{
+    qFatal("Not supported");
+}
+
 QAbstractItemModel *TagPageModel::createCentralListModel()
 {
     auto query = [this] (const Domain::Note::Ptr &note) -> Domain::QueryResultInterface<Domain::Note::Ptr>::Ptr {

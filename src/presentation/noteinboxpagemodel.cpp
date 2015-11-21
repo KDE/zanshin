@@ -59,6 +59,11 @@ void NoteInboxPageModel::removeItem(const QModelIndex &index)
     installHandler(job, tr("Cannot remove note %1 from Inbox").arg(note->title()));
 }
 
+void NoteInboxPageModel::promoteItem(const QModelIndex &)
+{
+    qFatal("Not supported");
+}
+
 QAbstractItemModel *NoteInboxPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Note::Ptr &note) -> Domain::QueryResultInterface<Domain::Note::Ptr>::Ptr {

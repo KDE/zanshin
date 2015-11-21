@@ -284,6 +284,74 @@ private slots:
         QCOMPARE(errorHandler.m_message, QString("Cannot remove task task2 from Inbox: Foo"));
     }
 
+    void shouldPromoteItem()
+    {
+        // GIVEN
+
+        // Two tasks
+        auto task1 = Domain::Task::Ptr::create();
+        auto task2 = Domain::Task::Ptr::create();
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(task1);
+        taskProvider->append(task2);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findInboxTopLevel).when().thenReturn(taskResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(new FakeJob(this));
+
+        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance());
+
+        // WHEN
+        const QModelIndex index = inbox.centralListModel()->index(1, 0);
+        inbox.promoteItem(index);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).exactly(1));
+    }
+
+    void shouldGetAnErrorMessageWhenPromoteItemFailed()
+    {
+        // GIVEN
+
+        // Two tasks
+        auto task1 = Domain::Task::Ptr::create();
+        auto task2 = Domain::Task::Ptr::create();
+        task2->setTitle("task2");
+        auto inboxProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto inboxResult = Domain::QueryResult<Domain::Task::Ptr>::create(inboxProvider);
+        inboxProvider->append(task1);
+        inboxProvider->append(task2);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findInboxTopLevel).when().thenReturn(inboxResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        auto job = new FakeJob(this);
+        job->setExpectedError(KJob::KilledJobError, "Foo");
+        taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(job);
+
+        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance());
+        FakeErrorHandler errorHandler;
+        inbox.setErrorHandler(&errorHandler);
+
+        // WHEN
+        const QModelIndex index = inbox.centralListModel()->index(1, 0);
+        inbox.promoteItem(index);
+
+        // THEN
+        QTest::qWait(150);
+        QCOMPARE(errorHandler.m_message, QString("Cannot promote task task2 to be a project: Foo"));
+    }
+
     void shouldGetAnErrorMessageWhenUpdateTaskFailed()
     {
         // GIVEN

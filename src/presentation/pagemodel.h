@@ -48,6 +48,7 @@ public:
 public slots:
     virtual Domain::Artifact::Ptr addItem(const QString &title) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
+    virtual void promoteItem(const QModelIndex &index) = 0;
 
 private:
     virtual QAbstractItemModel *createCentralListModel() = 0;

@@ -67,6 +67,16 @@ void WorkdayPageModel::removeItem(const QModelIndex &index)
     }
 }
 
+void WorkdayPageModel::promoteItem(const QModelIndex &index)
+{
+    QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto task = artifact.objectCast<Domain::Task>();
+    Q_ASSERT(task);
+    const auto job = m_taskRepository->promoteToProject(task);
+    installHandler(job, tr("Cannot promote task %1 to be a project").arg(task->title()));
+}
+
 QAbstractItemModel *WorkdayPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {

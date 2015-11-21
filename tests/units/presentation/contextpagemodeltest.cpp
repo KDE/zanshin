@@ -271,6 +271,41 @@ private slots:
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::dissociate).when(context, task).exactly(1));
     }
 
+    void shouldPromoteItem()
+    {
+        // GIVEN
+
+        // One context
+        auto context = Domain::Context::Ptr::create();
+
+        // A task
+        auto task = Domain::Task::Ptr::create();
+
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(task);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task).thenReturn(new FakeJob(this));
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
+                                            taskRepositoryMock.getInstance());
+
+        // WHEN
+        const QModelIndex indexTask = page.centralListModel()->index(0, 0);
+        page.promoteItem(indexTask);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task).exactly(1));
+    }
+
     void shouldGetAnErrorMessageWhenAddTaskFailed()
     {
         // GIVEN

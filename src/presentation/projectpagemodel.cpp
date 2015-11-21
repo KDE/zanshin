@@ -68,6 +68,16 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
     installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
 }
 
+void ProjectPageModel::promoteItem(const QModelIndex &index)
+{
+    QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto task = artifact.objectCast<Domain::Task>();
+    Q_ASSERT(task);
+    const auto job = m_taskRepository->promoteToProject(task);
+    installHandler(job, tr("Cannot promote task %1 to be a project").arg(task->title()));
+}
+
 QAbstractItemModel *ProjectPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
