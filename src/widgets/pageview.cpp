@@ -92,6 +92,12 @@ PageView::PageView(QWidget *parent)
     connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
     addAction(removeItemAction);
 
+    auto promoteItemAction = new QAction(this);
+    promoteItemAction->setObjectName("promoteItemAction");
+    promoteItemAction->setText(tr("Promote item to project"));
+    promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
+    connect(promoteItemAction, SIGNAL(triggered()), this, SLOT(onPromoteItemRequested()));
+
     auto filterViewAction = new QAction(this);
     filterViewAction->setObjectName("filterViewAction");
     filterViewAction->setText(tr("Filter..."));
@@ -101,6 +107,7 @@ PageView::PageView(QWidget *parent)
 
     m_actions.insert("page_view_add", addItemAction);
     m_actions.insert("page_view_remove", removeItemAction);
+    m_actions.insert("page_view_promote", promoteItemAction);
     m_actions.insert("page_view_filter", filterViewAction);
 }
 
@@ -204,6 +211,14 @@ void PageView::onRemoveItemRequested()
 
         QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
     }
+}
+
+void PageView::onPromoteItemRequested()
+{
+    QModelIndex currentIndex = m_centralView->currentIndex();
+    if (!currentIndex.isValid())
+        return;
+    QMetaObject::invokeMethod(m_model, "promoteItem", Q_ARG(QModelIndex, currentIndex));
 }
 
 void PageView::onCurrentChanged(const QModelIndex &current)

@@ -82,9 +82,15 @@ public slots:
         removedIndices << index;
     }
 
+    void promoteItem(const QModelIndex &index)
+    {
+        promotedIndices << index;
+    }
+
 public:
     QStringList taskNames;
     QList<QPersistentModelIndex> removedIndices;
+    QList<QPersistentModelIndex> promotedIndices;
     QStandardItemModel itemModel;
 };
 
@@ -121,12 +127,15 @@ private slots:
         QVERIFY(cancelAddAction);
         auto removeAction = page.findChild<QAction*>("removeItemAction");
         QVERIFY(removeAction);
+        auto promoteAction = page.findChild<QAction*>("promoteItemAction");
+        QVERIFY(promoteAction);
         auto filterAction = page.findChild<QAction*>("filterViewAction");
         QVERIFY(filterAction);
 
         auto actions = page.globalActions();
         QCOMPARE(actions.value("page_view_add"), addAction);
         QCOMPARE(actions.value("page_view_remove"), removeAction);
+        QCOMPARE(actions.value("page_view_promote"), promoteAction);
         QCOMPARE(actions.value("page_view_filter"), filterAction);
     }
 
@@ -360,6 +369,56 @@ private slots:
         QCOMPARE(stubPageModel.removedIndices.size(), 2);
         QCOMPARE(stubPageModel.removedIndices.first(), index);
         QCOMPARE(stubPageModel.removedIndices.at(1), index2);
+    }
+
+    void shouldPromoteItem()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        auto promoteAction = page.findChild<QAction*>("promoteItemAction");
+        QVERIFY(promoteAction);
+
+        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        centralView->setFocus();
+
+        // WHEN
+        promoteAction->trigger();
+
+        // THEN
+        QCOMPARE(stubPageModel.promotedIndices.size(), 1);
+        QCOMPARE(stubPageModel.promotedIndices.first(), index);
+    }
+
+    void shouldNotTryToPromoteItemIfThereIsNoSelection()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        auto promoteAction = page.findChild<QAction*>("promoteItemAction");
+        QVERIFY(promoteAction);
+
+        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->clear();
+        centralView->setFocus();
+
+        // WHEN
+        promoteAction->trigger();
+
+        // THEN
+        QVERIFY(stubPageModel.promotedIndices.isEmpty());
     }
 };
 

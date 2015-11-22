@@ -8,6 +8,7 @@
    <Action name="page_view_add" />
    <Action name="page_view_remove" />
    <Action name="page_view_move" />
+   <Action name="page_view_promote" />
   </Menu>
   <Menu name="go">
    <text>&amp;Go</text>
