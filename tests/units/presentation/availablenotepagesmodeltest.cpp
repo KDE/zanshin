@@ -51,6 +51,17 @@ class AvailableNotePagesModelTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void shouldDeclareOnlyProjectAndContextPages()
+    {
+        // GIVEN
+        Presentation::AvailableNotePagesModel pages({}, {}, {}, {});
+
+        // THEN
+        QVERIFY(!pages.hasProjectPages());
+        QVERIFY(!pages.hasContextPages());
+        QVERIFY(pages.hasTagPages());
+    }
+
     void shouldListAvailablePages()
     {
         // GIVEN

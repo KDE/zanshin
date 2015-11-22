@@ -77,6 +77,21 @@ QAbstractItemModel *AvailableTaskPagesModel::pageListModel()
     return m_sortProxyModel;
 }
 
+bool AvailableTaskPagesModel::hasProjectPages() const
+{
+    return true;
+}
+
+bool AvailableTaskPagesModel::hasContextPages() const
+{
+    return true;
+}
+
+bool AvailableTaskPagesModel::hasTagPages() const
+{
+    return false;
+}
+
 QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();

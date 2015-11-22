@@ -40,10 +40,17 @@ class AvailablePagesModelInterface : public QObject, public ErrorHandlingModelBa
 {
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
+    Q_PROPERTY(bool hasProjectPages READ hasProjectPages)
+    Q_PROPERTY(bool hasContextPages READ hasContextPages)
+    Q_PROPERTY(bool hasTagPages READ hasTagPages)
 public:
     explicit AvailablePagesModelInterface(QObject *parent = Q_NULLPTR);
 
     virtual QAbstractItemModel *pageListModel() = 0;
+
+    virtual bool hasProjectPages() const = 0;
+    virtual bool hasContextPages() const = 0;
+    virtual bool hasTagPages() const = 0;
 
     Q_SCRIPTABLE virtual QObject *createPageForIndex(const QModelIndex &index) = 0;
 

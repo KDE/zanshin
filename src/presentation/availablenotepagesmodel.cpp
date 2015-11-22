@@ -63,6 +63,21 @@ QAbstractItemModel *AvailableNotePagesModel::pageListModel()
     return m_sortProxyModel;
 }
 
+bool AvailableNotePagesModel::hasProjectPages() const
+{
+    return false;
+}
+
+bool AvailableNotePagesModel::hasContextPages() const
+{
+    return false;
+}
+
+bool AvailableNotePagesModel::hasTagPages() const
+{
+    return true;
+}
+
 QObject *AvailableNotePagesModel::createPageForIndex(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();

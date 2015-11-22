@@ -55,6 +55,10 @@ public:
 
     QAbstractItemModel *pageListModel() Q_DECL_OVERRIDE;
 
+    bool hasProjectPages() const Q_DECL_OVERRIDE;
+    bool hasContextPages() const Q_DECL_OVERRIDE;
+    bool hasTagPages() const Q_DECL_OVERRIDE;
+
     QObject *createPageForIndex(const QModelIndex &index) Q_DECL_OVERRIDE;
 
     void addProject(const QString &name, const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;
