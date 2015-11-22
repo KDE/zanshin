@@ -38,11 +38,18 @@ public:
         return QMessageBox::Yes;
     }
 
+    QString askTextInput(QWidget *, const QString &, const QString &) Q_DECL_OVERRIDE {
+        m_called = true;
+        return m_textInput;
+    }
+
     bool called() const { return m_called; }
+
+    void setTextInput(const QString &text) { m_textInput = text; }
 
 private:
     bool m_called;
+    QString m_textInput;
 };
 
 #endif
-

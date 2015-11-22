@@ -23,6 +23,8 @@
 
 #include "messagebox.h"
 
+#include <QInputDialog>
+
 Widgets::MessageBox::~MessageBox()
 {
 }
@@ -30,4 +32,9 @@ Widgets::MessageBox::~MessageBox()
 QMessageBox::Button Widgets::MessageBox::askConfirmation(QWidget *parent, const QString &title, const QString &text)
 {
     return QMessageBox::question(parent, title, text, QMessageBox::Yes | QMessageBox::No);
+}
+
+QString Widgets::MessageBox::askTextInput(QWidget *parent, const QString &title, const QString &text)
+{
+    return QInputDialog::getText(parent, title, text);
 }
