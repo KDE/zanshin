@@ -217,6 +217,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
                                    : (object == m_workdayObject)  ? "go-jump-today"
                                    : (object == m_projectsObject) ? "folder"
                                    : (object == m_contextsObject) ? "folder"
+                                   : object.objectCast<Domain::Context>() ? "view-pim-notes"
                                    : "view-pim-tasks";
 
             if (role == Qt::DecorationRole)

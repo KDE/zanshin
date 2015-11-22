@@ -17,7 +17,7 @@ Feature: Context creation
        | Projects / Prepare talk about TDD | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
        | Contexts                          | folder              |
-       | Contexts / Errands                | view-pim-tasks      |
-       | Contexts / Internet               | view-pim-tasks      |
-       | Contexts / Online                 | view-pim-tasks      |
+       | Contexts / Errands                | view-pim-notes      |
+       | Contexts / Internet               | view-pim-notes      |
+       | Contexts / Online                 | view-pim-notes      |
 

@@ -16,6 +16,6 @@ Feature: Project destruction
        | Projects / Party                  | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
        | Contexts                          | folder              |
-       | Contexts / Chores                 | view-pim-tasks      |
-       | Contexts / Internet               | view-pim-tasks      |
-       | Contexts / Online                 | view-pim-tasks      |
+       | Contexts / Chores                 | view-pim-notes      |
+       | Contexts / Internet               | view-pim-notes      |
+       | Contexts / Online                 | view-pim-notes      |
