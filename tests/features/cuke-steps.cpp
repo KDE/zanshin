@@ -431,6 +431,12 @@ WHEN("^I remove the item$") {
     context->waitForStableState();
 }
 
+WHEN("^I promote the item$") {
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(QMetaObject::invokeMethod(context->presentation, "promoteItem", Q_ARG(QModelIndex, context->index)));
+    context->waitForStableState();
+}
+
 WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
     REGEX_PARAM(QString, projectName);
     REGEX_PARAM(QString, sourceName);
