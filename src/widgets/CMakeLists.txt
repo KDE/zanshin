@@ -8,8 +8,8 @@ set(widgets_SRCS
     itemdelegate.cpp
     messagebox.cpp
     messageboxinterface.cpp
-    newpagedialog.cpp
-    newpagedialoginterface.cpp
+    newprojectdialog.cpp
+    newprojectdialoginterface.cpp
     pageview.cpp
     quickselectdialog.cpp
     scripteditor.cpp
@@ -17,7 +17,7 @@ set(widgets_SRCS
 
 qt4_wrap_ui(widgets_SRCS
     filterwidget.ui
-    newpagedialog.ui
+    newprojectdialog.ui
 )
 
 kde4_add_library(widgets STATIC ${widgets_SRCS})

@@ -22,10 +22,41 @@
 */
 
 
-#include "newpagedialoginterface.h"
+#ifndef WIDGETS_NEWPROJECTDIALOGINTERFACE_H
+#define WIDGETS_NEWPROJECTDIALOGINTERFACE_H
 
-using namespace Widgets;
+#include <QString>
 
-NewPageDialogInterface::~NewPageDialogInterface()
+#include "domain/datasource.h"
+
+class QAbstractItemModel;
+
+namespace Widgets {
+
+class NewProjectDialogInterface
 {
+public:
+    enum PageType {
+        Project = 0,
+        Context,
+        Tag
+    };
+
+    typedef QSharedPointer<NewProjectDialogInterface> Ptr;
+
+    virtual ~NewProjectDialogInterface();
+
+    virtual int exec() = 0;
+
+    virtual void setDataSourcesModel(QAbstractItemModel *model) = 0;
+    virtual void setPageType(PageType type) = 0;
+    virtual QString name() const = 0;
+    virtual PageType pageType() const = 0;
+    virtual Domain::DataSource::Ptr dataSource() const = 0;
+};
+
 }
+
+Q_DECLARE_METATYPE(Widgets::NewProjectDialogInterface::PageType)
+
+#endif // WIDGETS_NEWPROJECTDIALOGINTERFACE_H

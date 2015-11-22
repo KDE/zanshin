@@ -41,13 +41,13 @@ class QTreeView;
 
 namespace Widgets {
 
-class NewPageDialogInterface;
+class NewProjectDialogInterface;
 
 class AvailablePagesView : public QWidget
 {
     Q_OBJECT
 public:
-    typedef QSharedPointer<NewPageDialogInterface> DialogPtr;
+    typedef QSharedPointer<NewProjectDialogInterface> DialogPtr;
     typedef std::function<DialogPtr(QWidget*)> ProjectDialogFactory;
 
     explicit AvailablePagesView(QWidget *parent = Q_NULLPTR);

@@ -22,28 +22,28 @@
 */
 
 
-#ifndef WIDGETS_NEWPAGEDIALOG_H
-#define WIDGETS_NEWPAGEDIALOG_H
+#ifndef WIDGETS_NEWPROJECTDIALOG_H
+#define WIDGETS_NEWPROJECTDIALOG_H
 
 #include <QDialog>
 
-#include "widgets/newpagedialoginterface.h"
+#include "widgets/newprojectdialoginterface.h"
 
 class QModelIndex;
 class KDescendantsProxyModel;
 
 namespace Ui {
-    class NewPageDialog;
+    class NewProjectDialog;
 }
 
 namespace Widgets {
 
-class NewPageDialog : public QDialog, public NewPageDialogInterface
+class NewProjectDialog : public QDialog, public NewProjectDialogInterface
 {
     Q_OBJECT
 public:
-    explicit NewPageDialog(QWidget *parent = Q_NULLPTR);
-    ~NewPageDialog();
+    explicit NewProjectDialog(QWidget *parent = Q_NULLPTR);
+    ~NewProjectDialog();
 
     int exec() Q_DECL_OVERRIDE;
 
@@ -61,10 +61,10 @@ private slots:
     void onTypeIndexChanged(int index);
 
 private:
-    int indexOfType(NewPageDialogInterface::PageType type);
+    int indexOfType(NewProjectDialogInterface::PageType type);
     void applyDefaultSource(const QModelIndex &root);
 
-    Ui::NewPageDialog *ui;
+    Ui::NewProjectDialog *ui;
     KDescendantsProxyModel *m_flattenProxy;
     QString m_name;
     PageType m_pageType;
@@ -73,4 +73,4 @@ private:
 
 }
 
-#endif // WIDGETS_NEWPAGEDIALOG_H
+#endif // WIDGETS_NEWPROJECTDIALOG_H

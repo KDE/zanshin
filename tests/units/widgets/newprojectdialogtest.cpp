@@ -33,7 +33,7 @@
 
 #include "presentation/querytreemodelbase.h"
 
-#include "widgets/newpagedialog.h"
+#include "widgets/newprojectdialog.h"
 
 class UserInputSimulator : public QObject
 {
@@ -75,14 +75,14 @@ private slots:
     }
 
 public:
-    Widgets::NewPageDialog *dialog;
+    Widgets::NewProjectDialog *dialog;
     bool reject;
     QString nameInput;
     int sourceComboIndex;
     int typeComboIndex;
 };
 
-class NewPageDialogTest : public QObject
+class NewProjectDialogTest : public QObject
 {
     Q_OBJECT
 private:
@@ -132,12 +132,12 @@ private:
     }
 
 private slots:
-    int indexOfType(Widgets::NewPageDialog *dialog, const Widgets::NewPageDialogInterface::PageType type)
+    int indexOfType(Widgets::NewProjectDialog *dialog, const Widgets::NewProjectDialogInterface::PageType type)
     {
         auto typeCombo = dialog->findChild<QComboBox*>("typeCombo");
         const int count = typeCombo->count();
         for (int index = 0 ; index < count ; index++ ) {
-            auto pt = typeCombo->itemData(index).value<Widgets::NewPageDialogInterface::PageType>();
+            auto pt = typeCombo->itemData(index).value<Widgets::NewProjectDialogInterface::PageType>();
             if (pt == type)
                 return index;
         }
@@ -146,10 +146,10 @@ private slots:
 
     void shouldHaveDefaultState()
     {
-        Widgets::NewPageDialog dialog;
+        Widgets::NewProjectDialog dialog;
 
         QVERIFY(dialog.name().isEmpty());
-        QCOMPARE(dialog.pageType(), Widgets::NewPageDialogInterface::Project);
+        QCOMPARE(dialog.pageType(), Widgets::NewProjectDialogInterface::Project);
         QVERIFY(dialog.dataSource().isNull());
 
         auto nameEdit = dialog.findChild<QLineEdit*>("nameEdit");
@@ -174,11 +174,11 @@ private slots:
     void shouldPositionDefaultProperties()
     {
         // GIVEN
-        Widgets::NewPageDialog dialog;
+        Widgets::NewProjectDialog dialog;
         auto sourceModel = createSourceModel();
         auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
         auto pageTypeCombo = dialog.findChild<QComboBox*>("typeCombo");
-        auto pageType = Widgets::NewPageDialogInterface::Project;
+        auto pageType = Widgets::NewProjectDialogInterface::Project;
 
         // WHEN
         dialog.setDataSourcesModel(sourceModel);
@@ -188,13 +188,13 @@ private slots:
         QCOMPARE(sourceCombo->currentText(), QString("Root 2 / Task 2.1"));
 
         QVariant indexVariant = pageTypeCombo->itemData(pageTypeCombo->currentIndex());
-        QCOMPARE(indexVariant.value<Widgets::NewPageDialogInterface::PageType>(), pageType);
+        QCOMPARE(indexVariant.value<Widgets::NewProjectDialogInterface::PageType>(), pageType);
     }
 
     void shouldProvideUserInputWhenAccepted()
     {
         // GIVEN
-        Widgets::NewPageDialog dialog;
+        Widgets::NewProjectDialog dialog;
 
         auto sourceModel = createSourceModel();
         dialog.setDataSourcesModel(sourceModel);
@@ -221,7 +221,7 @@ private slots:
     void shouldNotProvideUserInputWhenReject()
     {
         // GIVEN
-        Widgets::NewPageDialog dialog;
+        Widgets::NewProjectDialog dialog;
 
         auto sourceModel = createSourceModel();
         dialog.setDataSourcesModel(sourceModel);
@@ -243,7 +243,7 @@ private slots:
     void shouldNotAllowEmptyName()
     {
         // GIVEN
-        Widgets::NewPageDialog dialog;
+        Widgets::NewProjectDialog dialog;
 
         auto sourceModel = createSourceModel();
         dialog.setDataSourcesModel(sourceModel);
@@ -267,17 +267,17 @@ private slots:
 
     void shouldHideSourceComboForNonProjectType_data()
     {
-        QTest::addColumn<Widgets::NewPageDialogInterface::PageType>("pageType");
+        QTest::addColumn<Widgets::NewProjectDialogInterface::PageType>("pageType");
 
-        QTest::newRow("typeComboWithContext") <<  Widgets::NewPageDialogInterface::Context;
-        QTest::newRow("typeComboWithTag") <<  Widgets::NewPageDialogInterface::Tag;
+        QTest::newRow("typeComboWithContext") <<  Widgets::NewProjectDialogInterface::Context;
+        QTest::newRow("typeComboWithTag") <<  Widgets::NewProjectDialogInterface::Tag;
     }
 
     void shouldHideSourceComboForNonProjectType()
     {
         // GIVEN
-        QFETCH(Widgets::NewPageDialogInterface::PageType, pageType);
-        Widgets::NewPageDialog dialog;
+        QFETCH(Widgets::NewProjectDialogInterface::PageType, pageType);
+        Widgets::NewProjectDialog dialog;
 
         int nonProjectIndex = indexOfType(&dialog, pageType);
         Q_ASSERT(nonProjectIndex != -1);
@@ -305,6 +305,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(NewPageDialogTest)
+QTEST_MAIN(NewProjectDialogTest)
 
-#include "newpagedialogtest.moc"
+#include "newprojectdialogtest.moc"

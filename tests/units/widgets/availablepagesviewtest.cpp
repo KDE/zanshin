@@ -40,16 +40,16 @@
 #include "presentation/querytreemodelbase.h"
 
 #include "widgets/availablepagesview.h"
-#include "widgets/newpagedialog.h"
+#include "widgets/newprojectdialog.h"
 
 #include "messageboxstub.h"
 
-class NewPageDialogStub : public Widgets::NewPageDialogInterface
+class NewProjectDialogStub : public Widgets::NewProjectDialogInterface
 {
 public:
-    typedef QSharedPointer<NewPageDialogStub> Ptr;
+    typedef QSharedPointer<NewProjectDialogStub> Ptr;
 
-    explicit NewPageDialogStub()
+    explicit NewProjectDialogStub()
         : parent(Q_NULLPTR),
           execCount(0),
           sourceModel(Q_NULLPTR),
@@ -172,7 +172,7 @@ private slots:
         QVERIFY(goNextAction);
 
         auto factory = available.projectDialogFactory();
-        QVERIFY(factory(&available).dynamicCast<Widgets::NewPageDialog>());
+        QVERIFY(factory(&available).dynamicCast<Widgets::NewProjectDialog>());
 
         auto actions = available.globalActions();
         QCOMPARE(actions.value("pages_project_add"), addProjectAction);
@@ -210,7 +210,7 @@ private slots:
         // GIVEN
         AvailablePagesModelStub model;
         QStringListModel sourceModel;
-        auto dialogStub = NewPageDialogStub::Ptr::create();
+        auto dialogStub = NewProjectDialogStub::Ptr::create();
 
         auto source = Domain::DataSource::Ptr::create();
 
@@ -244,7 +244,7 @@ private slots:
         // GIVEN
         AvailablePagesModelStub model;
         QStringListModel sourceModel;
-        auto dialogStub = NewPageDialogStub::Ptr::create();
+        auto dialogStub = NewProjectDialogStub::Ptr::create();
 
         auto source = Domain::DataSource::Ptr::create();
 
@@ -273,7 +273,7 @@ private slots:
         // GIVEN
         AvailablePagesModelStub model;
         QStringListModel sourceModel;
-        auto dialogStub = NewPageDialogStub::Ptr::create();
+        auto dialogStub = NewProjectDialogStub::Ptr::create();
 
         auto source = Domain::DataSource::Ptr::create();
 

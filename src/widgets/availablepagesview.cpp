@@ -35,7 +35,7 @@
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
-#include "widgets/newpagedialog.h"
+#include "widgets/newprojectdialog.h"
 #include "widgets/messagebox.h"
 
 #include "domain/project.h"
@@ -97,7 +97,7 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     setLayout(layout);
 
     m_projectDialogFactory = [] (QWidget *parent) {
-        return DialogPtr(new NewPageDialog(parent));
+        return DialogPtr(new NewProjectDialog(parent));
     };
     m_messageBoxInterface = MessageBox::Ptr::create();
 
@@ -202,7 +202,7 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 
 void AvailablePagesView::onAddProjectTriggered()
 {
-    NewPageDialogInterface::Ptr dialog = m_projectDialogFactory(this);
+    NewProjectDialogInterface::Ptr dialog = m_projectDialogFactory(this);
     dialog->setDataSourcesModel(m_sources);
 
     if (dialog->exec() == QDialog::Accepted) {

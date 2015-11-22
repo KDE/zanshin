@@ -22,9 +22,9 @@
 */
 
 
-#include "newpagedialog.h"
+#include "newprojectdialog.h"
 
-#include "ui_newpagedialog.h"
+#include "ui_newprojectdialog.h"
 
 #include <QPushButton>
 #include <QSortFilterProxyModel>
@@ -53,9 +53,9 @@ protected:
     }
 };
 
-NewPageDialog::NewPageDialog(QWidget *parent)
+NewProjectDialog::NewProjectDialog(QWidget *parent)
     : QDialog(parent),
-      ui(new Ui::NewPageDialog),
+      ui(new Ui::NewProjectDialog),
       m_flattenProxy(new KDescendantsProxyModel(this)),
       m_pageType(Project)
 {
@@ -76,17 +76,17 @@ NewPageDialog::NewPageDialog(QWidget *parent)
     m_flattenProxy->setDisplayAncestorData(true);
 }
 
-NewPageDialog::~NewPageDialog()
+NewProjectDialog::~NewProjectDialog()
 {
     delete ui;
 }
 
-int NewPageDialog::exec()
+int NewProjectDialog::exec()
 {
     return QDialog::exec();
 }
 
-void NewPageDialog::accept()
+void NewProjectDialog::accept()
 {
     m_name = ui->nameEdit->text();
     m_source = ui->sourceCombo->itemData(ui->sourceCombo->currentIndex(),
@@ -96,7 +96,7 @@ void NewPageDialog::accept()
     QDialog::accept();
 }
 
-void NewPageDialog::setDataSourcesModel(QAbstractItemModel *model)
+void NewProjectDialog::setDataSourcesModel(QAbstractItemModel *model)
 {
     m_flattenProxy->setSourceModel(model);
     auto proxy = ui->sourceCombo->model();
@@ -108,35 +108,35 @@ void NewPageDialog::setDataSourcesModel(QAbstractItemModel *model)
     }
 }
 
-void NewPageDialog::setPageType(PageType type)
+void NewProjectDialog::setPageType(PageType type)
 {
     int index = indexOfType(type);
     Q_ASSERT(index != -1);
     ui->typeCombo->setCurrentIndex(index);
 }
 
-QString NewPageDialog::name() const
+QString NewProjectDialog::name() const
 {
     return m_name;
 }
 
-NewPageDialogInterface::PageType NewPageDialog::pageType() const
+NewProjectDialogInterface::PageType NewProjectDialog::pageType() const
 {
     return m_pageType;
 }
 
-Domain::DataSource::Ptr NewPageDialog::dataSource() const
+Domain::DataSource::Ptr NewProjectDialog::dataSource() const
 {
     return m_source;
 }
 
-void NewPageDialog::onNameTextChanged(const QString &text)
+void NewProjectDialog::onNameTextChanged(const QString &text)
 {
     auto buttonOk = ui->buttonBox->button(QDialogButtonBox::Ok);
     buttonOk->setEnabled(!text.isEmpty());
 }
 
-void NewPageDialog::onTypeIndexChanged(int index)
+void NewProjectDialog::onTypeIndexChanged(int index)
 {
     if (index == -1)
         return;
@@ -146,7 +146,7 @@ void NewPageDialog::onTypeIndexChanged(int index)
     ui->sourceCombo->setVisible(selectedType == Project);
 }
 
-int NewPageDialog::indexOfType(PageType type)
+int NewProjectDialog::indexOfType(PageType type)
 {
     const int count = ui->typeCombo->count();
     for (int index = 0 ; index < count ; index++ ) {

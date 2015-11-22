@@ -5,7 +5,7 @@ zanshin_auto_tests(
   datasourcedelegatetest
   editorviewtest
   filterwidgettest
-  newpagedialogtest
+  newprojectdialogtest
   pageviewtest
   quickselectdialogtest
   scripteditortest
