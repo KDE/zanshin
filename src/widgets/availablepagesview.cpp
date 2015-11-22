@@ -82,7 +82,7 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     layout->addLayout(actionBarLayout);
     setLayout(layout);
 
-    m_dialogFactory = [] (QWidget *parent) {
+    m_projectDialogFactory = [] (QWidget *parent) {
         return DialogPtr(new NewPageDialog(parent));
     };
     m_messageBoxInterface = MessageBox::Ptr::create();
@@ -127,9 +127,9 @@ Domain::DataSource::Ptr AvailablePagesView::defaultProjectSource() const
     return m_defaultSource;
 }
 
-AvailablePagesView::DialogFactory AvailablePagesView::dialogFactory() const
+AvailablePagesView::ProjectDialogFactory AvailablePagesView::projectDialogFactory() const
 {
-    return m_dialogFactory;
+    return m_projectDialogFactory;
 }
 
 void AvailablePagesView::setModel(QObject *model)
@@ -165,9 +165,9 @@ void AvailablePagesView::setDefaultProjectSource(const Domain::DataSource::Ptr &
     m_defaultSource = source;
 }
 
-void AvailablePagesView::setDialogFactory(const AvailablePagesView::DialogFactory &factory)
+void AvailablePagesView::setProjectDialogFactory(const AvailablePagesView::ProjectDialogFactory &factory)
 {
-    m_dialogFactory = factory;
+    m_projectDialogFactory = factory;
 }
 
 void AvailablePagesView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)
@@ -186,7 +186,7 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 
 void AvailablePagesView::onAddTriggered()
 {
-    NewPageDialogInterface::Ptr dialog = m_dialogFactory(this);
+    NewPageDialogInterface::Ptr dialog = m_projectDialogFactory(this);
     dialog->setDataSourcesModel(m_sources);
 
     if (dialog->exec() == QDialog::Accepted) {

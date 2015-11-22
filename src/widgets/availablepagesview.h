@@ -48,7 +48,7 @@ class AvailablePagesView : public QWidget
     Q_OBJECT
 public:
     typedef QSharedPointer<NewPageDialogInterface> DialogPtr;
-    typedef std::function<DialogPtr(QWidget*)> DialogFactory;
+    typedef std::function<DialogPtr(QWidget*)> ProjectDialogFactory;
 
     explicit AvailablePagesView(QWidget *parent = Q_NULLPTR);
 
@@ -57,13 +57,13 @@ public:
     QObject *model() const;
     QAbstractItemModel *projectSourcesModel() const;
     Domain::DataSource::Ptr defaultProjectSource() const;
-    DialogFactory dialogFactory() const;
+    ProjectDialogFactory projectDialogFactory() const;
 
 public slots:
     void setModel(QObject *model);
     void setProjectSourcesModel(QAbstractItemModel *sources);
     void setDefaultProjectSource(const Domain::DataSource::Ptr &source);
-    void setDialogFactory(const DialogFactory &factory);
+    void setProjectDialogFactory(const ProjectDialogFactory &factory);
     void setMessageBoxInterface(const MessageBoxInterface::Ptr &interface);
 
 signals:
@@ -83,7 +83,7 @@ private:
     QAbstractItemModel *m_sources;
     Domain::DataSource::Ptr m_defaultSource;
     QTreeView *m_pagesView;
-    DialogFactory m_dialogFactory;
+    ProjectDialogFactory m_projectDialogFactory;
     MessageBoxInterface::Ptr m_messageBoxInterface;
 };
 

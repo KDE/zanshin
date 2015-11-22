@@ -167,7 +167,7 @@ private slots:
         auto goNextAction = available.findChild<QAction*>("goNextAction");
         QVERIFY(goNextAction);
 
-        auto factory = available.dialogFactory();
+        auto factory = available.projectDialogFactory();
         QVERIFY(factory(&available).dynamicCast<Widgets::NewPageDialog>());
 
         auto actions = available.globalActions();
@@ -212,7 +212,7 @@ private slots:
         available.setModel(&model);
         available.setProjectSourcesModel(&sourceModel);
         available.setDefaultProjectSource(source);
-        available.setDialogFactory([dialogStub] (QWidget *parent) {
+        available.setProjectDialogFactory([dialogStub] (QWidget *parent) {
             dialogStub->parent = parent;
             dialogStub->setPageType(Widgets::NewPageDialogInterface::Project);
             return dialogStub;
@@ -247,7 +247,7 @@ private slots:
         available.setModel(&model);
         available.setProjectSourcesModel(&sourceModel);
         available.setDefaultProjectSource(source);
-        available.setDialogFactory([dialogStub] (QWidget *parent) {
+        available.setProjectDialogFactory([dialogStub] (QWidget *parent) {
             dialogStub->parent = parent;
             dialogStub->setPageType(Widgets::NewPageDialogInterface::Context);
             return dialogStub;
@@ -280,7 +280,7 @@ private slots:
         available.setModel(&model);
         available.setProjectSourcesModel(&sourceModel);
         available.setDefaultProjectSource(source);
-        available.setDialogFactory([dialogStub] (QWidget *parent) {
+        available.setProjectDialogFactory([dialogStub] (QWidget *parent) {
             dialogStub->parent = parent;
             dialogStub->setPageType(Widgets::NewPageDialogInterface::Tag);
             return dialogStub;
