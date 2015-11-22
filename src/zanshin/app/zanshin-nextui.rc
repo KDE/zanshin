@@ -2,7 +2,8 @@
 <kpartgui name="zanshin-next" version="2">
  <MenuBar>
   <Menu name="file">
-   <Action name="pages_add" />
+   <Action name="pages_project_add" />
+   <Action name="pages_context_add" />
    <Action name="pages_remove" />
    <Separator />
    <Action name="page_view_add" />

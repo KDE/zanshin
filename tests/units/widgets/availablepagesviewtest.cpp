@@ -158,8 +158,12 @@ private slots:
         QVERIFY(actionBar);
         QVERIFY(actionBar->isVisibleTo(&available));
 
-        auto addAction = available.findChild<QAction*>("addAction");
-        QVERIFY(addAction);
+        auto addProjectAction = available.findChild<QAction*>("addProjectAction");
+        QVERIFY(addProjectAction);
+        auto addContextAction = available.findChild<QAction*>("addContextAction");
+        QVERIFY(addContextAction);
+        auto addTagAction = available.findChild<QAction*>("addTagAction");
+        QVERIFY(addTagAction);
         auto removeAction = available.findChild<QAction*>("removeAction");
         QVERIFY(removeAction);
         auto goPreviousAction = available.findChild<QAction*>("goPreviousAction");
@@ -171,7 +175,9 @@ private slots:
         QVERIFY(factory(&available).dynamicCast<Widgets::NewPageDialog>());
 
         auto actions = available.globalActions();
-        QCOMPARE(actions.value("pages_add"), addAction);
+        QCOMPARE(actions.value("pages_project_add"), addProjectAction);
+        QCOMPARE(actions.value("pages_context_add"), addContextAction);
+        QCOMPARE(actions.value("pages_tag_add"), addTagAction);
         QCOMPARE(actions.value("pages_remove"), removeAction);
         QCOMPARE(actions.value("pages_go_previous"), goPreviousAction);
         QCOMPARE(actions.value("pages_go_next"), goNextAction);
@@ -214,14 +220,13 @@ private slots:
         available.setDefaultProjectSource(source);
         available.setProjectDialogFactory([dialogStub] (QWidget *parent) {
             dialogStub->parent = parent;
-            dialogStub->setPageType(Widgets::NewPageDialogInterface::Project);
             return dialogStub;
         });
 
-        auto addAction = available.findChild<QAction*>("addAction");
+        auto addProjectAction = available.findChild<QAction*>("addProjectAction");
 
         // WHEN
-        addAction->trigger();
+        addProjectAction->trigger();
 
         // THEN
         QCOMPARE(dialogStub->execCount, 1);
@@ -243,28 +248,24 @@ private slots:
 
         auto source = Domain::DataSource::Ptr::create();
 
+        auto msgBoxStub = MessageBoxStub::Ptr::create();
+        msgBoxStub->setTextInput("Foo");
+
         Widgets::AvailablePagesView available;
         available.setModel(&model);
         available.setProjectSourcesModel(&sourceModel);
         available.setDefaultProjectSource(source);
-        available.setProjectDialogFactory([dialogStub] (QWidget *parent) {
-            dialogStub->parent = parent;
-            dialogStub->setPageType(Widgets::NewPageDialogInterface::Context);
-            return dialogStub;
-        });
+        available.setMessageBoxInterface(msgBoxStub);
 
-        auto addAction = available.findChild<QAction*>("addAction");
+        auto addContextAction = available.findChild<QAction*>("addContextAction");
 
         // WHEN
-        addAction->trigger();
+        addContextAction->trigger();
 
         // THEN
-        QCOMPARE(dialogStub->execCount, 1);
-        QCOMPARE(dialogStub->parent, &available);
-        QCOMPARE(dialogStub->sourceModel, &sourceModel);
-        QCOMPARE(dialogStub->pageType(), Widgets::NewPageDialogInterface::Context);
+        QVERIFY(msgBoxStub->called());
         QCOMPARE(model.contextNames.size(), 1);
-        QCOMPARE(model.contextNames.first(), dialogStub->name());
+        QCOMPARE(model.contextNames.first(), QString("Foo"));
     }
 
     void shouldAddNewTags()
@@ -276,28 +277,24 @@ private slots:
 
         auto source = Domain::DataSource::Ptr::create();
 
+        auto msgBoxStub = MessageBoxStub::Ptr::create();
+        msgBoxStub->setTextInput("Foo");
+
         Widgets::AvailablePagesView available;
         available.setModel(&model);
         available.setProjectSourcesModel(&sourceModel);
         available.setDefaultProjectSource(source);
-        available.setProjectDialogFactory([dialogStub] (QWidget *parent) {
-            dialogStub->parent = parent;
-            dialogStub->setPageType(Widgets::NewPageDialogInterface::Tag);
-            return dialogStub;
-        });
+        available.setMessageBoxInterface(msgBoxStub);
 
-        auto addAction = available.findChild<QAction*>("addAction");
+        auto addTagAction = available.findChild<QAction*>("addTagAction");
 
         // WHEN
-        addAction->trigger();
+        addTagAction->trigger();
 
         // THEN
-        QCOMPARE(dialogStub->execCount, 1);
-        QCOMPARE(dialogStub->parent, &available);
-        QCOMPARE(dialogStub->sourceModel, &sourceModel);
-        QCOMPARE(dialogStub->pageType(), Widgets::NewPageDialogInterface::Tag);
+        QVERIFY(msgBoxStub->called());
         QCOMPARE(model.tagNames.size(), 1);
-        QCOMPARE(model.tagNames.first(), dialogStub->name());
+        QCOMPARE(model.tagNames.first(), QString("Foo"));
     }
 
     void shouldRemoveAPage_data()

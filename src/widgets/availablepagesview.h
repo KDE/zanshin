@@ -71,7 +71,9 @@ signals:
 
 private slots:
     void onCurrentChanged(const QModelIndex &current);
-    void onAddTriggered();
+    void onAddProjectTriggered();
+    void onAddContextTriggered();
+    void onAddTagTriggered();
     void onRemoveTriggered();
     void onGoPreviousTriggered();
     void onGoNextTriggered();

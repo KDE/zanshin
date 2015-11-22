@@ -59,12 +59,26 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     actionBar->setObjectName("actionBar");
     actionBar->setIconSize(QSize(16, 16));
 
-    auto addAction = new QAction(this);
-    addAction->setObjectName("addAction");
-    addAction->setText(tr("New page"));
-    addAction->setIcon(QIcon::fromTheme("list-add"));
-    connect(addAction, SIGNAL(triggered()), this, SLOT(onAddTriggered()));
-    actionBar->addAction(addAction);
+    auto addProjectAction = new QAction(this);
+    addProjectAction->setObjectName("addProjectAction");
+    addProjectAction->setText(tr("New project"));
+    addProjectAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
+    connect(addProjectAction, SIGNAL(triggered()), this, SLOT(onAddProjectTriggered()));
+    actionBar->addAction(addProjectAction);
+
+    auto addContextAction = new QAction(this);
+    addContextAction->setObjectName("addContextAction");
+    addContextAction->setText(tr("New context"));
+    addContextAction->setIcon(QIcon::fromTheme("view-pim-notes"));
+    connect(addContextAction, SIGNAL(triggered()), this, SLOT(onAddContextTriggered()));
+    actionBar->addAction(addContextAction);
+
+    auto addTagAction = new QAction(this);
+    addTagAction->setObjectName("addTagAction");
+    addTagAction->setText(tr("New tag"));
+    addTagAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
+    connect(addTagAction, SIGNAL(triggered()), this, SLOT(onAddTagTriggered()));
+    actionBar->addAction(addTagAction);
 
     auto removeAction = new QAction(this);
     removeAction->setObjectName("removeAction");
@@ -101,7 +115,9 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
     connect(goNextAction, SIGNAL(triggered(bool)), this, SLOT(onGoNextTriggered()));
 
-    m_actions.insert("pages_add", addAction);
+    m_actions.insert("pages_project_add", addProjectAction);
+    m_actions.insert("pages_context_add", addContextAction);
+    m_actions.insert("pages_tag_add", addTagAction);
     m_actions.insert("pages_remove", removeAction);
     m_actions.insert("pages_go_previous", goPreviousAction);
     m_actions.insert("pages_go_next", goNextAction);
@@ -184,28 +200,34 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
     emit currentPageChanged(page);
 }
 
-void AvailablePagesView::onAddTriggered()
+void AvailablePagesView::onAddProjectTriggered()
 {
     NewPageDialogInterface::Ptr dialog = m_projectDialogFactory(this);
     dialog->setDataSourcesModel(m_sources);
 
     if (dialog->exec() == QDialog::Accepted) {
         m_defaultSource = dialog->dataSource();
-        switch (dialog->pageType()) {
-        case NewPageDialogInterface::Project:
-            QMetaObject::invokeMethod(m_model, "addProject",
-                                      Q_ARG(QString, dialog->name()),
-                                      Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));
-            break;
-        case NewPageDialogInterface::Context:
-            QMetaObject::invokeMethod(m_model, "addContext",
-                                      Q_ARG(QString, dialog->name()));
-            break;
-        case NewPageDialogInterface::Tag:
-            QMetaObject::invokeMethod(m_model, "addTag",
-                                      Q_ARG(QString, dialog->name()));
-            break;
-        }
+        QMetaObject::invokeMethod(m_model, "addProject",
+                                  Q_ARG(QString, dialog->name()),
+                                  Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));
+    }
+}
+
+void AvailablePagesView::onAddContextTriggered()
+{
+    const QString name = m_messageBoxInterface->askTextInput(this, tr("Add Context"), tr("Context name"));
+    if (!name.isEmpty()) {
+        QMetaObject::invokeMethod(m_model, "addContext",
+                                  Q_ARG(QString, name));
+    }
+}
+
+void AvailablePagesView::onAddTagTriggered()
+{
+    const QString name = m_messageBoxInterface->askTextInput(this, tr("Add Tag"), tr("Tag name"));
+    if (!name.isEmpty()) {
+        QMetaObject::invokeMethod(m_model, "addTag",
+                                  Q_ARG(QString, name));
     }
 }
 
