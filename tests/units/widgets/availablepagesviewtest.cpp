@@ -172,6 +172,51 @@ private slots:
         QCOMPARE(actions.value("pages_go_next"), goNextAction);
     }
 
+    void shouldShowOnlyAddActionsNeededByTheModel_data()
+    {
+        QTest::addColumn<bool>("hasProjects");
+        QTest::addColumn<bool>("hasContexts");
+        QTest::addColumn<bool>("hasTags");
+
+        QTest::newRow("!projects !contexts !tags") << false << false << false;
+        QTest::newRow("!projects !contexts tags") << false << false << true;
+        QTest::newRow("!projects contexts !tags") << false << true << false;
+        QTest::newRow("!projects contexts tags") << false << true << true;
+        QTest::newRow("projects !contexts !tags") << true << false << false;
+        QTest::newRow("projects !contexts tags") << true << false << true;
+        QTest::newRow("projects contexts !tags") << true << true << false;
+        QTest::newRow("projects contexts tags") << true << true << true;
+    }
+
+    void shouldShowOnlyAddActionsNeededByTheModel()
+    {
+        // GIVEN
+        QFETCH(bool, hasProjects);
+        QFETCH(bool, hasContexts);
+        QFETCH(bool, hasTags);
+
+        AvailablePagesModelStub stubPagesModel;
+        stubPagesModel.setProperty("hasProjectPages", hasProjects);
+        stubPagesModel.setProperty("hasContextPages", hasContexts);
+        stubPagesModel.setProperty("hasTagPages", hasTags);
+
+        Widgets::AvailablePagesView available;
+        auto addProjectAction = available.findChild<QAction*>("addProjectAction");
+        QVERIFY(addProjectAction);
+        auto addContextAction = available.findChild<QAction*>("addContextAction");
+        QVERIFY(addContextAction);
+        auto addTagAction = available.findChild<QAction*>("addTagAction");
+        QVERIFY(addTagAction);
+
+        // WHEN
+        available.setModel(&stubPagesModel);
+
+        // THEN
+        QCOMPARE(addProjectAction->isVisible(), hasProjects);
+        QCOMPARE(addContextAction->isVisible(), hasContexts);
+        QCOMPARE(addTagAction->isVisible(), hasTags);
+    }
+
     void shouldDisplayListFromPageModel()
     {
         // GIVEN

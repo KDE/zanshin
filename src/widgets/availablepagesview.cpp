@@ -47,6 +47,9 @@ using namespace Presentation;
 
 AvailablePagesView::AvailablePagesView(QWidget *parent)
     : QWidget(parent),
+      m_addProjectAction(new QAction(this)),
+      m_addContextAction(new QAction(this)),
+      m_addTagAction(new QAction(this)),
       m_model(Q_NULLPTR),
       m_sources(Q_NULLPTR),
       m_pagesView(new QTreeView(this))
@@ -59,26 +62,23 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     actionBar->setObjectName("actionBar");
     actionBar->setIconSize(QSize(16, 16));
 
-    auto addProjectAction = new QAction(this);
-    addProjectAction->setObjectName("addProjectAction");
-    addProjectAction->setText(tr("New project"));
-    addProjectAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
-    connect(addProjectAction, SIGNAL(triggered()), this, SLOT(onAddProjectTriggered()));
-    actionBar->addAction(addProjectAction);
+    m_addProjectAction->setObjectName("addProjectAction");
+    m_addProjectAction->setText(tr("New project"));
+    m_addProjectAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
+    connect(m_addProjectAction, SIGNAL(triggered()), this, SLOT(onAddProjectTriggered()));
+    actionBar->addAction(m_addProjectAction);
 
-    auto addContextAction = new QAction(this);
-    addContextAction->setObjectName("addContextAction");
-    addContextAction->setText(tr("New context"));
-    addContextAction->setIcon(QIcon::fromTheme("view-pim-notes"));
-    connect(addContextAction, SIGNAL(triggered()), this, SLOT(onAddContextTriggered()));
-    actionBar->addAction(addContextAction);
+    m_addContextAction->setObjectName("addContextAction");
+    m_addContextAction->setText(tr("New context"));
+    m_addContextAction->setIcon(QIcon::fromTheme("view-pim-notes"));
+    connect(m_addContextAction, SIGNAL(triggered()), this, SLOT(onAddContextTriggered()));
+    actionBar->addAction(m_addContextAction);
 
-    auto addTagAction = new QAction(this);
-    addTagAction->setObjectName("addTagAction");
-    addTagAction->setText(tr("New tag"));
-    addTagAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
-    connect(addTagAction, SIGNAL(triggered()), this, SLOT(onAddTagTriggered()));
-    actionBar->addAction(addTagAction);
+    m_addTagAction->setObjectName("addTagAction");
+    m_addTagAction->setText(tr("New tag"));
+    m_addTagAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
+    connect(m_addTagAction, SIGNAL(triggered()), this, SLOT(onAddTagTriggered()));
+    actionBar->addAction(m_addTagAction);
 
     auto removeAction = new QAction(this);
     removeAction->setObjectName("removeAction");
@@ -115,9 +115,9 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
     connect(goNextAction, SIGNAL(triggered(bool)), this, SLOT(onGoNextTriggered()));
 
-    m_actions.insert("pages_project_add", addProjectAction);
-    m_actions.insert("pages_context_add", addContextAction);
-    m_actions.insert("pages_tag_add", addTagAction);
+    m_actions.insert("pages_project_add", m_addProjectAction);
+    m_actions.insert("pages_context_add", m_addContextAction);
+    m_actions.insert("pages_tag_add", m_addTagAction);
     m_actions.insert("pages_remove", removeAction);
     m_actions.insert("pages_go_previous", goPreviousAction);
     m_actions.insert("pages_go_next", goNextAction);
@@ -160,6 +160,10 @@ void AvailablePagesView::setModel(QObject *model)
     m_pagesView->setModel(Q_NULLPTR);
 
     m_model = model;
+
+    m_addProjectAction->setVisible(m_model->property("hasProjectPages").toBool());
+    m_addContextAction->setVisible(m_model->property("hasContextPages").toBool());
+    m_addTagAction->setVisible(m_model->property("hasTagPages").toBool());
 
     QVariant modelProperty = m_model->property("pageListModel");
     if (modelProperty.canConvert<QAbstractItemModel*>())

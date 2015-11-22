@@ -80,7 +80,11 @@ private slots:
     void onInitTimeout();
 
 private:
+    QAction *m_addProjectAction;
+    QAction *m_addContextAction;
+    QAction *m_addTagAction;
     QHash<QString, QAction*> m_actions;
+
     QObject *m_model;
     QAbstractItemModel *m_sources;
     Domain::DataSource::Ptr m_defaultSource;
