@@ -45,6 +45,7 @@
     <p xml:lang="ca">Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
     <p xml:lang="ca-valencia">Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Vos ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment siga com l'aigua.</p>
     <p xml:lang="es">Zanshin es una potente y sencilla aplicación para gestionar sus acciones diarias. Le ayuda a organizar y reducir la presión cognitiva de lo que debe hacer en su trabajo y en su vida personal. Nunca más volverá a olvidarse de nada, teniendo una mente clara como el agua.</p>
+    <p xml:lang="gl">Zanshin é un programa potente pero sinxelo para xestionar as acciónsdo día a día. Axúdao a organizar o que ten que facer no seu traballo e na vida persoal para quitarlle ese peso de encima. Non volverá esquecer nada nunca máis, convertendo así a súa mente en auga.</p>
     <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer iets vergeten, uw geheugen is geen zeef meer.</p>
     <p xml:lang="pl">Zanshin jest zaawansowanym, a zarazem prostym programem do zarządzania codziennymi zadaniami. Pomaga zorganizować i zmniejszyć natłok czynności, które użytkownik musi wykonać w swojej pracy lub życiu osobistym. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
@@ -76,6 +77,7 @@
       <li xml:lang="ca-valencia">Recull les tasques de tot arreu</li>
       <li xml:lang="de">Sammelt Aufgaben von überall</li>
       <li xml:lang="es">Colecciona tareas de cualquier lugar</li>
+      <li xml:lang="gl">Recolle tarefas de calquera parte.</li>
       <li xml:lang="nl">Verzamelt notities overal vandaan</li>
       <li xml:lang="pl">Zbieranie zadań z każdego miejsca</li>
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
@@ -88,6 +90,7 @@
       <li xml:lang="ca-valencia">Organitza les tasques en projectes i contextos</li>
       <li xml:lang="de">Organisation von Aufgaben in Projekten und Kontexten</li>
       <li xml:lang="es">Organizar tareas en proyectos y contextos</li>
+      <li xml:lang="gl">Organice as tarefas por proxectos e contextos.</li>
       <li xml:lang="nl">Organiseert taken in projecten en contexten</li>
       <li xml:lang="pl">Porządkowanie zadań w projekty i konteksty</li>
       <li xml:lang="pt">Organiza as tarefas e notas em projectos e contextos</li>
