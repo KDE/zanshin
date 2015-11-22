@@ -68,16 +68,6 @@ public:
         sourceModel = model;
     }
 
-    void setPageType(PageType type) Q_DECL_OVERRIDE
-    {
-        lastPageAdded = type;
-    }
-
-    PageType pageType() const Q_DECL_OVERRIDE
-    {
-        return lastPageAdded;
-    }
-
     QString name() const Q_DECL_OVERRIDE
     {
         return "name";
@@ -92,7 +82,6 @@ public:
     int execCount;
     QAbstractItemModel *sourceModel;
     Domain::DataSource::Ptr source;
-    PageType lastPageAdded;
 };
 
 class AvailablePagesModelStub : public QObject

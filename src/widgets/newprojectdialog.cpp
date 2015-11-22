@@ -56,18 +56,12 @@ protected:
 NewProjectDialog::NewProjectDialog(QWidget *parent)
     : QDialog(parent),
       ui(new Ui::NewProjectDialog),
-      m_flattenProxy(new KDescendantsProxyModel(this)),
-      m_pageType(Project)
+      m_flattenProxy(new KDescendantsProxyModel(this))
 {
     ui->setupUi(this);
 
     QObject::connect(ui->nameEdit, SIGNAL(textChanged(QString)), this, SLOT(onNameTextChanged(QString)));
-    QObject::connect(ui->typeCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onTypeIndexChanged(int)));
     onNameTextChanged(m_name);
-
-    ui->typeCombo->addItem(tr("Project"), QVariant::fromValue<PageType>(Project));
-    ui->typeCombo->addItem(tr("Context"), QVariant::fromValue<PageType>(Context));
-    ui->typeCombo->addItem(tr("Tag"), QVariant::fromValue<PageType>(Tag));
 
     auto taskSourceProxy = new TaskSourceProxy(this);
     taskSourceProxy->setSourceModel(m_flattenProxy);
@@ -92,7 +86,6 @@ void NewProjectDialog::accept()
     m_source = ui->sourceCombo->itemData(ui->sourceCombo->currentIndex(),
                                          Presentation::QueryTreeModelBase::ObjectRole)
                               .value<Domain::DataSource::Ptr>();
-    m_pageType = ui->typeCombo->itemData(ui->typeCombo->currentIndex()).value<PageType>();
     QDialog::accept();
 }
 
@@ -108,21 +101,9 @@ void NewProjectDialog::setDataSourcesModel(QAbstractItemModel *model)
     }
 }
 
-void NewProjectDialog::setPageType(PageType type)
-{
-    int index = indexOfType(type);
-    Q_ASSERT(index != -1);
-    ui->typeCombo->setCurrentIndex(index);
-}
-
 QString NewProjectDialog::name() const
 {
     return m_name;
-}
-
-NewProjectDialogInterface::PageType NewProjectDialog::pageType() const
-{
-    return m_pageType;
 }
 
 Domain::DataSource::Ptr NewProjectDialog::dataSource() const
@@ -134,25 +115,4 @@ void NewProjectDialog::onNameTextChanged(const QString &text)
 {
     auto buttonOk = ui->buttonBox->button(QDialogButtonBox::Ok);
     buttonOk->setEnabled(!text.isEmpty());
-}
-
-void NewProjectDialog::onTypeIndexChanged(int index)
-{
-    if (index == -1)
-        return;
-
-    const PageType selectedType  = ui->typeCombo->itemData(index).value<PageType>();
-    ui->sourceLabel->setVisible(selectedType == Project);
-    ui->sourceCombo->setVisible(selectedType == Project);
-}
-
-int NewProjectDialog::indexOfType(PageType type)
-{
-    const int count = ui->typeCombo->count();
-    for (int index = 0 ; index < count ; index++ ) {
-        const PageType pt = ui->typeCombo->itemData(index).value<PageType>();
-        if (pt == type)
-            return index;
-    }
-    return -1;
 }

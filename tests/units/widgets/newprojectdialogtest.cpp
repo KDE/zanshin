@@ -40,7 +40,7 @@ class UserInputSimulator : public QObject
     Q_OBJECT
 public:
     explicit UserInputSimulator(QObject *parent = Q_NULLPTR)
-        : QObject(parent), dialog(Q_NULLPTR), reject(false), sourceComboIndex(-1), typeComboIndex(-1) {}
+        : QObject(parent), dialog(Q_NULLPTR), reject(false), sourceComboIndex(-1) {}
 
     void exec()
     {
@@ -62,11 +62,6 @@ private slots:
             sourceCombo->setCurrentIndex(sourceComboIndex);
         }
 
-        if (typeComboIndex >= 0) {
-            auto typeCombo = dialog->findChild<QComboBox*>("typeCombo");
-            typeCombo->setCurrentIndex(typeComboIndex);
-        }
-
         auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
         if (reject)
             buttonBox->button(QDialogButtonBox::Cancel)->click();
@@ -79,7 +74,6 @@ public:
     bool reject;
     QString nameInput;
     int sourceComboIndex;
-    int typeComboIndex;
 };
 
 class NewProjectDialogTest : public QObject
@@ -132,33 +126,16 @@ private:
     }
 
 private slots:
-    int indexOfType(Widgets::NewProjectDialog *dialog, const Widgets::NewProjectDialogInterface::PageType type)
-    {
-        auto typeCombo = dialog->findChild<QComboBox*>("typeCombo");
-        const int count = typeCombo->count();
-        for (int index = 0 ; index < count ; index++ ) {
-            auto pt = typeCombo->itemData(index).value<Widgets::NewProjectDialogInterface::PageType>();
-            if (pt == type)
-                return index;
-        }
-        return -1;
-    }
-
     void shouldHaveDefaultState()
     {
         Widgets::NewProjectDialog dialog;
 
         QVERIFY(dialog.name().isEmpty());
-        QCOMPARE(dialog.pageType(), Widgets::NewProjectDialogInterface::Project);
         QVERIFY(dialog.dataSource().isNull());
 
         auto nameEdit = dialog.findChild<QLineEdit*>("nameEdit");
         QVERIFY(nameEdit);
         QVERIFY(nameEdit->isVisibleTo(&dialog));
-
-        auto typeCombo = dialog.findChild<QComboBox*>("typeCombo");
-        QVERIFY(typeCombo);
-        QVERIFY(typeCombo->isVisibleTo(&dialog));
 
         auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
         QVERIFY(sourceCombo);
@@ -177,8 +154,6 @@ private slots:
         Widgets::NewProjectDialog dialog;
         auto sourceModel = createSourceModel();
         auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
-        auto pageTypeCombo = dialog.findChild<QComboBox*>("typeCombo");
-        auto pageType = Widgets::NewProjectDialogInterface::Project;
 
         // WHEN
         dialog.setDataSourcesModel(sourceModel);
@@ -186,9 +161,6 @@ private slots:
         // THEN
         QCOMPARE(sourceCombo->currentIndex(), 2);
         QCOMPARE(sourceCombo->currentText(), QString("Root 2 / Task 2.1"));
-
-        QVariant indexVariant = pageTypeCombo->itemData(pageTypeCombo->currentIndex());
-        QCOMPARE(indexVariant.value<Widgets::NewProjectDialogInterface::PageType>(), pageType);
     }
 
     void shouldProvideUserInputWhenAccepted()
@@ -251,7 +223,6 @@ private slots:
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
         userInput.sourceComboIndex = 0;
-        userInput.typeComboIndex = 0;
         userInput.nameInput = QString();
         userInput.reject = true;
 
@@ -263,45 +234,6 @@ private slots:
         QVERIFY(!buttonOk->isEnabled());
         QCOMPARE(dialog.name(), QString());
         QCOMPARE(dialog.dataSource(), Domain::DataSource::Ptr());
-    }
-
-    void shouldHideSourceComboForNonProjectType_data()
-    {
-        QTest::addColumn<Widgets::NewProjectDialogInterface::PageType>("pageType");
-
-        QTest::newRow("typeComboWithContext") <<  Widgets::NewProjectDialogInterface::Context;
-        QTest::newRow("typeComboWithTag") <<  Widgets::NewProjectDialogInterface::Tag;
-    }
-
-    void shouldHideSourceComboForNonProjectType()
-    {
-        // GIVEN
-        QFETCH(Widgets::NewProjectDialogInterface::PageType, pageType);
-        Widgets::NewProjectDialog dialog;
-
-        int nonProjectIndex = indexOfType(&dialog, pageType);
-        Q_ASSERT(nonProjectIndex != -1);
-
-        auto sourceModel = createSourceModel();
-        dialog.setDataSourcesModel(sourceModel);
-
-        UserInputSimulator userInput;
-        userInput.dialog = &dialog;
-        userInput.sourceComboIndex = 0;
-        userInput.typeComboIndex = nonProjectIndex;
-        userInput.nameInput = "name";
-        userInput.reject = false;
-
-        // WHEN
-        userInput.exec();
-
-        // THEN
-        auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
-        auto sourceLabel = dialog.findChild<QLabel*>("sourceLabel");
-
-        QVERIFY(sourceCombo->isHidden());
-        QVERIFY(sourceLabel->isHidden());
-        QCOMPARE(dialog.name(), userInput.nameInput);
     }
 };
 
