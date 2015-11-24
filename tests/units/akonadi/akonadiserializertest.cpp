@@ -605,7 +605,7 @@ private slots:
             KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(delegateName,
                                                                     delegateEmail,
                                                                     true,
-                                                                    KCalCore::Attendee::Delegated));
+                                                                    KCalCore::Attendee::Accepted));
             todo->addAttendee(attendee);
         }
 
@@ -717,7 +717,7 @@ private slots:
         KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee("John Doe",
                                                                         "j@d.com",
                                                                         true,
-                                                                        KCalCore::Attendee::Delegated));
+                                                                        KCalCore::Attendee::Accepted));
         originalTodo->addAttendee(originalAttendee);
 
         // ... as payload of an item...
@@ -765,7 +765,7 @@ private slots:
             KCalCore::Attendee::Ptr updatedAttendee(new KCalCore::Attendee(updatedDelegateName,
                                                                            updatedDelegateEmail,
                                                                            true,
-                                                                           KCalCore::Attendee::Delegated));
+                                                                           KCalCore::Attendee::Accepted));
             updatedTodo->addAttendee(updatedAttendee);
         }
 
