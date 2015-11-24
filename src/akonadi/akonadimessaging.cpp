@@ -25,8 +25,14 @@
 #include "akonadimessaging.h"
 
 #include <QApplication>
+#include <QInputDialog>
 
+#include <KPIMIdentities/Identity>
+#include <KPIMIdentities/IdentityManager>
+#include <Akonadi/Calendar/ETMCalendar>
 #include <Akonadi/Calendar/ITIPHandler>
+
+#include "utils/mem_fn.h"
 
 using namespace Akonadi;
 
@@ -34,6 +40,9 @@ Messaging::Messaging()
     : m_itip(new ITIPHandler)
 {
     m_itip->setShowDialogsOnError(true);
+
+    auto calendar = new ETMCalendar(QStringList() << KCalCore::Todo::todoMimeType());
+    m_itip->setCalendar(CalendarBase::Ptr(calendar));
 }
 
 Messaging::~Messaging()
@@ -48,8 +57,24 @@ void Messaging::sendDelegationMessage(Item item)
 
     QWidget *window = Q_NULLPTR;
     if (!QApplication::topLevelWidgets().isEmpty()) {
-        window = QApplication::topLevelWidgets().first();
+        window = QApplication::activeWindow();
     }
 
-    m_itip->sendiTIPMessage(KCalCore::iTIPRequest, todo, window);
+    KPIMIdentities::IdentityManager identities(true);
+    auto emails = QStringList();
+    std::transform(identities.begin(), identities.end(),
+                   std::back_inserter(emails),
+                   Utils::mem_fn(&KPIMIdentities::Identity::fullEmailAddr));
+    const auto defaultIndex = emails.indexOf(identities.defaultIdentity().fullEmailAddr());
+    const auto email = QInputDialog::getItem(window,
+                                             QObject::tr("Choose an identity"),
+                                             QObject::tr("Choose the identity to use for the groupware message"),
+                                             emails,
+                                             defaultIndex,
+                                             false);
+
+    if (!email.isEmpty()) {
+        todo->setOrganizer(email);
+        m_itip->sendiTIPMessage(KCalCore::iTIPRequest, todo, window);
+    }
 }
