@@ -253,5 +253,6 @@ void EditorView::onDelegateEntered()
         QMetaObject::invokeMethod(m_model, "delegate",
                                   Q_ARG(QString, name),
                                   Q_ARG(QString, email));
+        m_delegateEdit->clear();
     }
 }

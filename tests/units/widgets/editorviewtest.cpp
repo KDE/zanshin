@@ -558,6 +558,7 @@ private slots:
             QCOMPARE(model.delegateNames.first(), expectedName);
             QCOMPARE(model.delegateEmails.size(), 1);
             QCOMPARE(model.delegateEmails.first(), expectedEmail);
+            QVERIFY(delegateEdit->text().isEmpty());
         } else {
             QCOMPARE(model.delegateNames.size(), 0);
             QCOMPARE(model.delegateEmails.size(), 0);
