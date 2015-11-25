@@ -30,6 +30,7 @@
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
+#include "presentation/pagemodel.h"
 #include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
@@ -67,6 +68,21 @@ public:
     void addContext(const QString &) Q_DECL_OVERRIDE {}
     void addTag(const QString &) Q_DECL_OVERRIDE {}
     void removeItem(const QModelIndex &) Q_DECL_OVERRIDE {}
+};
+
+class FakePageModel : public Presentation::PageModel
+{
+    Q_OBJECT
+public:
+    explicit FakePageModel(QObject *parent = Q_NULLPTR)
+        : Presentation::PageModel(parent) {}
+
+    Domain::Artifact::Ptr addItem(const QString &) Q_DECL_OVERRIDE { return {}; }
+    void removeItem(const QModelIndex &) Q_DECL_OVERRIDE {}
+    void promoteItem(const QModelIndex &) Q_DECL_OVERRIDE {}
+
+private:
+    QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE { return {}; }
 };
 
 class ApplicationModelTest : public QObject
@@ -169,6 +185,7 @@ private slots:
         // An ErrorHandler
         FakeErrorHandler errorHandler;
         Presentation::ApplicationModel app;
+        app.setCurrentPage(new FakePageModel);
 
         // WHEN
         app.setErrorHandler(&errorHandler);
@@ -177,9 +194,11 @@ private slots:
         auto availableSource = static_cast<Presentation::AvailableSourcesModel*>(app.availableSources());
         auto availablePages = static_cast<FakeAvailablePagesModel*>(app.availablePages());
         auto editor = static_cast<Presentation::ArtifactEditorModel*>(app.editor());
+        auto page = static_cast<Presentation::PageModel*>(app.currentPage());
         QCOMPARE(availableSource->errorHandler(), &errorHandler);
         QCOMPARE(availablePages->errorHandler(), &errorHandler);
         QCOMPARE(editor->errorHandler(), &errorHandler);
+        QCOMPARE(page->errorHandler(), &errorHandler);
 
         // WHEN
         FakeErrorHandler errorHandler2;
@@ -190,6 +209,7 @@ private slots:
         QCOMPARE(availableSource->errorHandler(), &errorHandler2);
         QCOMPARE(availablePages->errorHandler(), &errorHandler2);
         QCOMPARE(editor->errorHandler(), &errorHandler2);
+        QCOMPARE(page->errorHandler(), &errorHandler2);
     }
 };
 

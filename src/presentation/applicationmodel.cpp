@@ -28,6 +28,7 @@
 #include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/errorhandler.h"
+#include "presentation/pagemodel.h"
 
 #include "utils/dependencymanager.h"
 
@@ -89,6 +90,10 @@ void ApplicationModel::setCurrentPage(QObject *page)
     page->setParent(Q_NULLPTR);
     m_currentPage = QObjectPtr(page);
 
+    auto pageModel = m_currentPage.staticCast<PageModel>();
+    Q_ASSERT(pageModel);
+    pageModel->setErrorHandler(errorHandler());
+
     emit currentPageChanged(page);
 }
 
@@ -101,4 +106,6 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
         m_availablePages.staticCast<AvailablePagesModelInterface>()->setErrorHandler(errorHandler);
     if (m_editor)
         m_editor.staticCast<ArtifactEditorModel>()->setErrorHandler(errorHandler);
+    if (m_currentPage)
+        m_currentPage.staticCast<PageModel>()->setErrorHandler(errorHandler);
 }
