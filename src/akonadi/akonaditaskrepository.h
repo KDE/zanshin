@@ -46,6 +46,7 @@ public:
                    const MessagingInterface::Ptr &messaging);
 
     virtual KJob *create(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
+    virtual KJob *createChild(Domain::Task::Ptr task, Domain::Task::Ptr parent) Q_DECL_OVERRIDE;
     virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project) Q_DECL_OVERRIDE;
     virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context) Q_DECL_OVERRIDE;
 

@@ -42,6 +42,7 @@ public:
     virtual ~TaskRepository();
 
     virtual KJob *create(Task::Ptr task) = 0;
+    virtual KJob *createChild(Domain::Task::Ptr task, Domain::Task::Ptr parent) = 0;
     virtual KJob *createInProject(Task::Ptr task, Project::Ptr project) = 0;
     virtual KJob *createInContext(Task::Ptr task, Context::Ptr context) = 0;
 

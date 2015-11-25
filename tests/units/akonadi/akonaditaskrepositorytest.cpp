@@ -133,6 +133,47 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col2).exactly(1));
     }
 
+    void shouldCreateNewChildrenInParentCollection()
+    {
+        // GIVEN
+
+        // A parent item with a collection
+        Akonadi::Collection col(42);
+        Akonadi::Item parentItem(43);
+        parentItem.setParentCollection(col);
+        auto parent = Domain::Task::Ptr::create();
+
+        // A task and its corresponding item not existing in storage yet
+        Akonadi::Item childItem;
+        auto child = Domain::Task::Ptr::create();
+
+        // A mock create job
+        auto itemCreateJob = new FakeJob(this);
+
+        // Storage mock returning the create job
+        Utils::MockObject<Akonadi::StorageInterface> storageMock;
+        storageMock(&Akonadi::StorageInterface::createItem).when(childItem, col)
+                                                           .thenReturn(itemCreateJob);
+
+        // Serializer mock returning the item for the task
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(parent).thenReturn(parentItem);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child).thenReturn(childItem);
+        serializerMock(&Akonadi::SerializerInterface::updateItemParent).when(childItem, parent).thenReturn();
+
+        // WHEN
+        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
+                                                                                       serializerMock.getInstance(),
+                                                                                       Akonadi::MessagingInterface::Ptr()));
+        repository->createChild(child, parent)->exec();
+
+        // THEN
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(parent).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::updateItemParent).when(childItem, parent).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(childItem, col).exactly(1));
+    }
+
     void shouldCreateNewItemsInProjectCollection()
     {
         // GIVEN
@@ -153,7 +194,7 @@ private slots:
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, col)
-                                                           .thenReturn(itemCreateJob);
+                .thenReturn(itemCreateJob);
 
         // Serializer mock returning the item for the task
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;

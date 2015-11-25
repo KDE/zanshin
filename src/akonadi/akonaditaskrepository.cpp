@@ -79,6 +79,20 @@ KJob *TaskRepository::create(Domain::Task::Ptr task)
     return createItem(item);
 }
 
+KJob *TaskRepository::createChild(Domain::Task::Ptr task, Domain::Task::Ptr parent)
+{
+    Item taskItem = m_serializer->createItemFromTask(task);
+    Q_ASSERT(!taskItem.isValid());
+
+    Item parentItem = m_serializer->createItemFromTask(parent);
+    Q_ASSERT(parentItem.isValid());
+    Q_ASSERT(parentItem.parentCollection().isValid());
+
+    m_serializer->updateItemParent(taskItem, parent);
+
+    return m_storage->createItem(taskItem, parentItem.parentCollection());
+}
+
 KJob *TaskRepository::createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project)
 {
     Item taskItem = m_serializer->createItemFromTask(task);
