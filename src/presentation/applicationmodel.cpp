@@ -35,7 +35,6 @@ using namespace Presentation;
 
 ApplicationModel::ApplicationModel(QObject *parent)
     : QObject(parent),
-      m_currentPage(Q_NULLPTR),
       m_errorHandler(Q_NULLPTR)
 {
     MetaTypes::registerAll();
@@ -63,7 +62,7 @@ QObject *ApplicationModel::availablePages()
 
 QObject *ApplicationModel::currentPage()
 {
-    return m_currentPage;
+    return m_currentPage.data();
 }
 
 QObject *ApplicationModel::editor()
@@ -87,7 +86,9 @@ void ApplicationModel::setCurrentPage(QObject *page)
     if (page == m_currentPage)
         return;
 
-    m_currentPage = page;
+    page->setParent(Q_NULLPTR);
+    m_currentPage = QObjectPtr(page);
+
     emit currentPageChanged(page);
 }
 

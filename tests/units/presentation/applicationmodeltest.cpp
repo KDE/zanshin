@@ -131,6 +131,25 @@ private slots:
         QCOMPARE(spy.takeFirst().takeFirst().value<QObject*>(), page);
     }
 
+    void shouldTakeOwnershipOfCurrentPage()
+    {
+        // GIVEN
+        auto page = QPointer<QObject>(new QObject(this));
+
+        {
+            Presentation::ApplicationModel app;
+
+            // WHEN
+            app.setCurrentPage(page.data());
+
+            // THEN
+            QVERIFY(!page->parent());
+            QCOMPARE(app.currentPage(), page.data());
+        }
+        // We don't crash and page is deleted
+        QVERIFY(!page);
+    }
+
     void shouldProvideArtifactEditorModel()
     {
         // GIVEN

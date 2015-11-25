@@ -68,7 +68,7 @@ signals:
 private:
     QObjectPtr m_availableSources;
     QObjectPtr m_availablePages;
-    QObject *m_currentPage;
+    QObjectPtr m_currentPage;
     QObjectPtr m_editor;
 
     ErrorHandler *m_errorHandler;
