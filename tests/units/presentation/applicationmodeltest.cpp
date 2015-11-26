@@ -138,7 +138,7 @@ private slots:
         QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
 
         // WHEN
-        auto page = new QObject(this);
+        auto page = new FakePageModel(this);
         app.setCurrentPage(page);
 
         // THEN
@@ -150,7 +150,7 @@ private slots:
     void shouldTakeOwnershipOfCurrentPage()
     {
         // GIVEN
-        auto page = QPointer<QObject>(new QObject(this));
+        auto page = QPointer<QObject>(new FakePageModel(this));
 
         {
             Presentation::ApplicationModel app;
