@@ -39,6 +39,7 @@
 #include "presentation/querytreemodelbase.h"
 
 #include "akonadi/akonadimonitorimpl.h"
+#include "akonadi/akonadimessaginginterface.h"
 
 #include "utils/dependencymanager.h"
 #include "utils/jobhandler.h"
@@ -119,6 +120,12 @@ public:
                          Utils::DependencyManager::UniqueInstance>(
                          [this] (Utils::DependencyManager *) {
                              return m_data.createStorage();
+                         }
+                );
+                deps.add<Akonadi::MessagingInterface,
+                         Utils::DependencyManager::UniqueInstance>(
+                         [this] (Utils::DependencyManager *) -> Akonadi::MessagingInterface* {
+                            return Q_NULLPTR;
                          }
                 );
             } else if (!TestLib::TestSafety::checkTestIsIsolated()) {
