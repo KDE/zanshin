@@ -541,6 +541,31 @@ WHEN("^I add a \"(.*)\" named \"(.+)\"$") {
     context->waitForStableState();
 }
 
+WHEN("^I add a child named \"(.+)\" under the task named \"(.+)\"$") {
+    REGEX_PARAM(QString, childName);
+    REGEX_PARAM(QString, parentName);
+
+    ScenarioScope<ZanshinContext> context;
+    context->waitForStableState();
+
+    auto parentIndex = QModelIndex();
+    for (int row = 0; row < context->indices.size(); row++) {
+        auto index = context->indices.at(row);
+        if (Zanshin::indexString(index) == parentName) {
+            parentIndex = index;
+            break;
+        }
+    }
+
+    VERIFY_OR_DUMP(parentIndex.isValid());
+
+    VERIFY(QMetaObject::invokeMethod(context->presentation,
+                                     "addItem",
+                                     Q_ARG(QString, childName),
+                                     Q_ARG(QModelIndex, parentIndex)));
+    context->waitForStableState();
+}
+
 WHEN("^I list the items$") {
     ScenarioScope<ZanshinContext> context;
     context->waitForStableState();
