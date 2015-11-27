@@ -219,6 +219,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setStartDate(todo->dtStart().dateTime());
     task->setDueDate(todo->dtDue().dateTime());
     task->setProperty("itemId", item.id());
+    task->setProperty("parentCollectionId", item.parentCollection().id());
     task->setProperty("todoUid", todo->uid());
     task->setProperty("relatedUid", todo->relatedTo());
 
@@ -280,6 +281,10 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     Akonadi::Item item;
     if (task->property("itemId").isValid()) {
         item.setId(task->property("itemId").value<Akonadi::Item::Id>());
+    }
+    if (task->property("parentCollectionId").isValid()) {
+        auto parentId = task->property("parentCollectionId").value<Akonadi::Collection::Id>();
+        item.setParentCollection(Akonadi::Collection(parentId));
     }
     item.setMimeType(KCalCore::Todo::todoMimeType());
     item.setPayload(todo);

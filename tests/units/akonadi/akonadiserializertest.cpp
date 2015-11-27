@@ -615,6 +615,10 @@ private slots:
         item.setMimeType("application/x-vnd.akonadi.calendar.todo");
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
+        // which has a parent collection
+        Akonadi::Collection collection(43);
+        item.setParentCollection(collection);
+
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Task::Ptr task = serializer.createTaskFromItem(item);
@@ -630,6 +634,7 @@ private slots:
         QCOMPARE(task->property("todoUid").toString(), todo->uid());
         QCOMPARE(task->property("relatedUid").toString(), todo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), item.id());
+        QCOMPARE(task->property("parentCollectionId").toLongLong(), collection.id());
         QCOMPARE(task->delegate().name(), delegateName);
         QCOMPARE(task->delegate().email(), delegateEmail);
 
@@ -643,6 +648,7 @@ private slots:
         QCOMPARE(artifact->property("todoUid").toString(), todo->uid());
         QCOMPARE(artifact->property("relatedUid").toString(), todo->relatedTo());
         QCOMPARE(artifact->property("itemId").toLongLong(), item.id());
+        QCOMPARE(artifact->property("parentCollectionId").toLongLong(), collection.id());
         QCOMPARE(artifact->delegate().name(), delegateName);
         QCOMPARE(artifact->delegate().email(), delegateEmail);
     }
@@ -725,6 +731,10 @@ private slots:
         originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
+        // ... which has a parent collection...
+        Akonadi::Collection originalCollection(43);
+        originalItem.setParentCollection(originalCollection);
+
         // ... deserialized as a task
         Akonadi::Serializer serializer;
         auto task = serializer.createTaskFromItem(originalItem);
@@ -774,6 +784,10 @@ private slots:
         updatedItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
         updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
 
+        // ... which has a new parent collection
+        Akonadi::Collection updatedCollection(45);
+        updatedItem.setParentCollection(updatedCollection);
+
         serializer.updateTaskFromItem(task, updatedItem);
         serializer.updateArtifactFromItem(artifact, updatedItem);
 
@@ -787,6 +801,7 @@ private slots:
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
         QCOMPARE(task->delegate().name(), updatedDelegateName);
         QCOMPARE(task->delegate().email(), updatedDelegateEmail);
 
@@ -800,6 +815,7 @@ private slots:
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
+        QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
         QCOMPARE(task->delegate().name(), updatedDelegateName);
         QCOMPARE(task->delegate().email(), updatedDelegateEmail);
     }
@@ -939,33 +955,34 @@ private slots:
         QTest::addColumn<QDateTime>("startDate");
         QTest::addColumn<QDateTime>("dueDate");
         QTest::addColumn<qint64>("itemId");
+        QTest::addColumn<qint64>("parentCollectionId");
         QTest::addColumn<QString>("todoUid");
         QTest::addColumn<Domain::Task::Delegate>("delegate");
 
         QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime()
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                              << qint64(-1) << QString()
+                                              << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                            << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                           << qint64(-1) << QString()
+                                           << qint64(-1) << qint64(-1) << QString()
                                            << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime()
                                             << QDateTime() << QDateTime()
-                                            << qint64(-1) << QString()
+                                            << qint64(-1) << qint64(-1) << QString()
                                             << Domain::Task::Delegate();
 
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                                << qint64(42) << "my-uid"
+                                                << qint64(42) << qint64(43) << "my-uid"
                                                 << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
-                                             << qint64(42) << "my-uid"
+                                             << qint64(42) << qint64(43) << "my-uid"
                                              << Domain::Task::Delegate("John Doe", "j@d.com");
         QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime()
                                               << QDateTime() << QDateTime()
-                                              << qint64(42) << "my-uid"
+                                              << qint64(42) << qint64(43) << "my-uid"
                                               << Domain::Task::Delegate();
     }
 
@@ -981,6 +998,7 @@ private slots:
         QFETCH(QDateTime, startDate);
         QFETCH(QDateTime, dueDate);
         QFETCH(qint64, itemId);
+        QFETCH(qint64, parentCollectionId);
         QFETCH(QString, todoUid);
         QFETCH(Domain::Task::Delegate, delegate);
 
@@ -1002,6 +1020,9 @@ private slots:
         if (itemId > 0)
             task->setProperty("itemId", itemId);
 
+        if (parentCollectionId > 0)
+            task->setProperty("parentCollectionId", parentCollectionId);
+
         if (!todoUid.isEmpty())
             task->setProperty("todoUid", todoUid);
 
@@ -1017,6 +1038,11 @@ private slots:
         QCOMPARE(item.isValid(), itemId > 0);
         if (itemId > 0) {
             QCOMPARE(item.id(), itemId);
+        }
+
+        QCOMPARE(item.parentCollection().isValid(), parentCollectionId > 0);
+        if (parentCollectionId > 0) {
+            QCOMPARE(item.parentCollection().id(), parentCollectionId);
         }
 
         auto todo = item.payload<KCalCore::Todo::Ptr>();
