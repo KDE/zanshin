@@ -479,6 +479,28 @@ private slots:
         // THEN
         QVERIFY(stubPageModel.promotedIndices.isEmpty());
     }
+
+    void shouldClearCentralViewSelectionOnEscape()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        auto centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+        QVERIFY(!centralView->selectionModel()->selectedIndexes().isEmpty());
+
+        // WHEN
+        QTest::keyClick(centralView, Qt::Key_Escape);
+
+        // THEN
+        QVERIFY(centralView->selectionModel()->selectedIndexes().isEmpty());
+    }
 };
 
 QTEST_MAIN(PageViewTest)

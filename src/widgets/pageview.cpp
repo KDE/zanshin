@@ -25,6 +25,7 @@
 #include "pageview.h"
 
 #include <QAction>
+#include <QKeyEvent>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QTreeView>
@@ -39,13 +40,31 @@
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
+namespace Widgets {
+class PageTreeView : public QTreeView
+{
+public:
+    using QTreeView::QTreeView;
+
+protected:
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE
+    {
+        if (event->key() == Qt::Key_Escape && state() != EditingState) {
+            selectionModel()->clear();
+        }
+
+        QTreeView::keyPressEvent(event);
+    }
+};
+}
+
 using namespace Widgets;
 
 PageView::PageView(QWidget *parent)
     : QWidget(parent),
       m_model(Q_NULLPTR),
       m_filterWidget(new FilterWidget(this)),
-      m_centralView(new QTreeView(this)),
+      m_centralView(new PageTreeView(this)),
       m_quickAddEdit(new QLineEdit(this))
 {
     m_filterWidget->setObjectName("filterWidget");
@@ -81,7 +100,9 @@ PageView::PageView(QWidget *parent)
     auto cancelAddItemAction = new QAction(this);
     cancelAddItemAction->setObjectName("cancelAddItemAction");
     cancelAddItemAction->setShortcut(Qt::Key_Escape);
-    addAction(cancelAddItemAction);
+    cancelAddItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    m_quickAddEdit->addAction(cancelAddItemAction);
+    m_filterWidget->addAction(cancelAddItemAction);
     connect(cancelAddItemAction, SIGNAL(triggered(bool)), m_centralView, SLOT(setFocus()));
 
     auto removeItemAction = new QAction(this);

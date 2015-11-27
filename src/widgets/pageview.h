@@ -37,12 +37,12 @@
 
 class QLineEdit;
 class QModelIndex;
-class QTreeView;
 class QMessageBox;
 
 namespace Widgets {
 
 class FilterWidget;
+class PageTreeView;
 
 class PageView : public QWidget
 {
@@ -72,7 +72,7 @@ private:
     QHash<QString, QAction*> m_actions;
     QObject *m_model;
     FilterWidget *m_filterWidget;
-    QTreeView *m_centralView;
+    PageTreeView *m_centralView;
     QLineEdit *m_quickAddEdit;
     MessageBoxInterface::Ptr m_messageBoxInterface;
 };
