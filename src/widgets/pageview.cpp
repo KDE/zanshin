@@ -77,6 +77,16 @@ PageView::PageView(QWidget *parent)
     m_centralView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_centralView->setModel(m_filterWidget->proxyModel());
 
+    m_centralView->setItemsExpandable(false);
+    m_centralView->setRootIsDecorated(false);
+    connect(m_centralView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+            m_centralView, SLOT(expand(QModelIndex)));
+    connect(m_centralView->model(), SIGNAL(layoutChanged()),
+            m_centralView, SLOT(expandAll()));
+    connect(m_centralView->model(), SIGNAL(modelReset()),
+            m_centralView, SLOT(expandAll()));
+    m_centralView->setStyleSheet( "QTreeView::branch { border-image: url(none.png); }" );
+
     m_quickAddEdit->setObjectName("quickAddEdit");
     m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an action"));
     connect(m_quickAddEdit, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
