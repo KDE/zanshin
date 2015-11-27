@@ -202,7 +202,7 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask5.objectCast<Domain::Task>()).exactly(0));
     }
 
-    void shouldAddTasks()
+    void shouldAddTasksInContext()
     {
         // GIVEN
 
@@ -234,6 +234,48 @@ private slots:
                                                                                     .exactly(1));
          QVERIFY(task);
          QCOMPARE(task->title(), title);
+    }
+
+    void shouldAddChildTask()
+    {
+        // GIVEN
+
+        // One Context
+        auto context = Domain::Context::Ptr::create();
+
+        // A task
+        auto task = Domain::Task::Ptr::create();
+
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(task);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
+                                                                      any<Domain::Task::Ptr>())
+                                                                .thenReturn(new FakeJob(this));
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
+                                            taskRepositoryMock.getInstance());
+
+        // WHEN
+        const auto title = QString("New task");
+        const auto parentIndex = page.centralListModel()->index(0, 0);
+        const auto createdTask = page.addItem(title, parentIndex).objectCast<Domain::Task>();
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
+                                                                              any<Domain::Task::Ptr>())
+                                                                        .exactly(1));
+        QVERIFY(createdTask);
+        QCOMPARE(createdTask->title(), title);
     }
 
     void shouldRemoveItem()

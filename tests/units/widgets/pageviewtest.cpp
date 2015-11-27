@@ -72,9 +72,10 @@ public:
     }
 
 public slots:
-    void addItem(const QString &name)
+    void addItem(const QString &name, const QModelIndex &parentIndex)
     {
         taskNames << name;
+        parentIndices << parentIndex;
     }
 
     void removeItem(const QModelIndex &index)
@@ -89,6 +90,7 @@ public slots:
 
 public:
     QStringList taskNames;
+    QList<QPersistentModelIndex> parentIndices;
     QList<QPersistentModelIndex> removedIndices;
     QList<QPersistentModelIndex> promotedIndices;
     QStandardItemModel itemModel;
@@ -229,7 +231,7 @@ private slots:
         QVERIFY(!filterEdit->hasFocus());
     }
 
-    void shouldCreateTasksWhenHittingReturn()
+    void shouldCreateTasksWithNoParentWhenHittingReturnWithoutSelectedIndex()
     {
         // GIVEN
         PageModelStub stubPageModel;
@@ -248,6 +250,63 @@ private slots:
 
         // THEN
         QCOMPARE(stubPageModel.taskNames, QStringList() << "Foo" << "Bar");
+        QCOMPARE(stubPageModel.parentIndices.size(), 2);
+        QCOMPARE(stubPageModel.parentIndices.first(), QPersistentModelIndex());
+        QCOMPARE(stubPageModel.parentIndices.last(), QPersistentModelIndex());
+    }
+
+    void shouldCreateTasksWithNoParentWhenHittingReturnWithSeveralSelectedIndices()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        QPersistentModelIndex index0 = stubPageModel.itemModel.index(0, 0);
+        QPersistentModelIndex index1 = stubPageModel.itemModel.index(1, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        auto centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->select(index0, QItemSelectionModel::ClearAndSelect);
+        centralView->selectionModel()->select(index1, QItemSelectionModel::Select);
+
+        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+
+        // WHEN
+        QTest::keyClicks(quickAddEdit, "Foo");
+        QTest::keyClick(quickAddEdit, Qt::Key_Return);
+
+        // THEN
+        QCOMPARE(stubPageModel.taskNames, QStringList() << "A" << "B" << "C" << "Foo");
+        QCOMPARE(stubPageModel.parentIndices.size(), 1);
+        QCOMPARE(stubPageModel.parentIndices.first(), QPersistentModelIndex());
+    }
+
+    void shouldCreateTasksWithParentWhenHittingReturnWithOneSelectedIndex()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        auto centralView = page.findChild<QTreeView*>("centralView");
+        centralView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+
+        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+
+        // WHEN
+        QTest::keyClicks(quickAddEdit, "Foo");
+        QTest::keyClick(quickAddEdit, Qt::Key_Return);
+
+        // THEN
+        QCOMPARE(stubPageModel.taskNames, QStringList() << "A" << "B" << "C" << "Foo");
+        QCOMPARE(stubPageModel.parentIndices.size(), 1);
+        QCOMPARE(stubPageModel.parentIndices.first(), index);
     }
 
     void shouldDeleteItemWhenHittingTheDeleteKey()

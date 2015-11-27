@@ -160,7 +160,13 @@ void PageView::onEditingFinished()
     if (m_quickAddEdit->text().isEmpty())
         return;
 
-    QMetaObject::invokeMethod(m_model, "addItem", Q_ARG(QString, m_quickAddEdit->text()));
+    auto parentIndex = QModelIndex();
+    if (m_centralView->selectionModel()->selectedIndexes().size() == 1)
+        parentIndex = m_centralView->selectionModel()->selectedIndexes().first();
+
+    QMetaObject::invokeMethod(m_model, "addItem",
+                              Q_ARG(QString, m_quickAddEdit->text()),
+                              Q_ARG(QModelIndex, parentIndex));
     m_quickAddEdit->clear();
 }
 

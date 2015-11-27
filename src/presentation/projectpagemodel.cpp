@@ -48,11 +48,17 @@ Domain::Project::Ptr ProjectPageModel::project() const
     return m_project;
 }
 
-Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title)
+Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
+    const auto parentData = parentIndex.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
+    const auto parentTask = parentArtifact.objectCast<Domain::Task>();
+
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    const auto job = m_taskRepository->createInProject(task, m_project);
+
+    const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
+                   : m_taskRepository->createInProject(task, m_project);
     installHandler(job, tr("Cannot add task %1 in project %2").arg(title).arg(m_project->name()));
 
     return task;

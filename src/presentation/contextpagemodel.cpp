@@ -55,11 +55,17 @@ Domain::Context::Ptr ContextPageModel::context() const
     return m_context;
 }
 
-Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title)
+Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
+    const auto parentData = parentIndex.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
+    const auto parentTask = parentArtifact.objectCast<Domain::Task>();
+
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    const auto job = m_taskRepository->createInContext(task, m_context);
+
+    const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
+                   : m_taskRepository->createInContext(task, m_context);
     installHandler(job, tr("Cannot add task %1 in context %2").arg(title).arg(m_context->name()));
 
     return task;

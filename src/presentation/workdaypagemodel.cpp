@@ -45,12 +45,18 @@ WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
 {
 }
 
-Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title)
+Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
+    const auto parentData = parentIndex.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
+    const auto parentTask = parentArtifact.objectCast<Domain::Task>();
+
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    task->setStartDate(Utils::DateTime::currentDateTime());
-    const auto job = m_taskRepository->create(task);
+    if (!parentTask)
+        task->setStartDate(Utils::DateTime::currentDateTime());
+    const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
+                   : m_taskRepository->create(task);
     installHandler(job, tr("Cannot add task %1 in Workday").arg(title));
 
     return task;

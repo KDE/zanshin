@@ -165,7 +165,7 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
     }
 
-    void shouldAddTasks()
+    void shouldAddTasksInInbox()
     {
         // GIVEN
 
@@ -187,6 +187,44 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).exactly(1));
         QVERIFY(task);
         QCOMPARE(task->title(), title);
+    }
+
+    void shouldAddChildTask()
+    {
+        // GIVEN
+
+        // Two tasks
+        auto task1 = Domain::Task::Ptr::create();
+        auto task2 = Domain::Task::Ptr::create();
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(task1);
+        taskProvider->append(task2);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findInboxTopLevel).when().thenReturn(taskResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
+                                                                      any<Domain::Task::Ptr>())
+                                                                .thenReturn(new FakeJob(this));
+
+        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+                                               taskRepositoryMock.getInstance());
+
+        // WHEN
+        const auto title = QString("New task");
+        const auto parentIndex = inbox.centralListModel()->index(0, 0);
+        const auto createdTask = inbox.addItem(title, parentIndex).objectCast<Domain::Task>();
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
+                                                                              any<Domain::Task::Ptr>())
+                                                                        .exactly(1));
+        QVERIFY(createdTask);
+        QCOMPARE(createdTask->title(), title);
     }
 
     void shouldGetAnErrorMessageWhenAddTaskFailed()

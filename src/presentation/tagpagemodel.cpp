@@ -56,7 +56,7 @@ Domain::Tag::Ptr TagPageModel::tag() const
     return m_tag;
 }
 
-Domain::Artifact::Ptr TagPageModel::addItem(const QString &title)
+Domain::Artifact::Ptr TagPageModel::addItem(const QString &title, const QModelIndex &)
 {
     auto note = Domain::Note::Ptr::create();
     note->setTitle(title);

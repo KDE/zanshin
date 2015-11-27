@@ -27,12 +27,12 @@
 
 #include <QObject>
 
+#include <QModelIndex>
+
 #include "domain/artifact.h"
 
 #include "presentation/metatypes.h"
 #include "presentation/errorhandlingmodelbase.h"
-
-class QModelIndex;
 
 namespace Presentation {
 
@@ -46,7 +46,7 @@ public:
     QAbstractItemModel *centralListModel();
 
 public slots:
-    virtual Domain::Artifact::Ptr addItem(const QString &title) = 0;
+    virtual Domain::Artifact::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
     virtual void promoteItem(const QModelIndex &index) = 0;
 

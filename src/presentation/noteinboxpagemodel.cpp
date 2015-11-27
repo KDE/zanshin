@@ -39,7 +39,7 @@ NoteInboxPageModel::NoteInboxPageModel(const Domain::NoteQueries::Ptr &noteQueri
 {
 }
 
-Domain::Artifact::Ptr NoteInboxPageModel::addItem(const QString &title)
+Domain::Artifact::Ptr NoteInboxPageModel::addItem(const QString &title, const QModelIndex &)
 {
     auto note = Domain::Note::Ptr::create();
     note->setTitle(title);
