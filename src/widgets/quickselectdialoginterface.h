@@ -1,7 +1,6 @@
 /* This file is part of Zanshin
 
    Copyright 2014 Kevin Ottens <ervin@kde.org>
-   Copyright 2015 Franck Arrecot <franck.arrecot@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,49 +21,30 @@
    USA.
 */
 
-#ifndef WIDGETS_QUICKSELECTDIALOG_H
-#define WIDGETS_QUICKSELECTDIALOG_H
 
-#include <QDialog>
+#ifndef WIDGETS_QUICKSELECTDIALOGINTERFACE_H
+#define WIDGETS_QUICKSELECTDIALOGINTERFACE_H
+
 #include <QPersistentModelIndex>
 #include <QSharedPointer>
 
-#include "presentation/metatypes.h"
-
-#include "widgets/quickselectdialoginterface.h"
-
 class QAbstractItemModel;
-class QLabel;
-class QTreeView;
-
-class KRecursiveFilterProxyModel;
 
 namespace Widgets {
 
-class QuickSelectDialog : public QDialog, public QuickSelectDialogInterface
+class QuickSelectDialogInterface
 {
-    Q_OBJECT
 public:
-    explicit QuickSelectDialog(QWidget *parent = Q_NULLPTR);
+    typedef QSharedPointer<QuickSelectDialogInterface> Ptr;
 
-    int exec() Q_DECL_OVERRIDE;
+    virtual ~QuickSelectDialogInterface();
 
-    QPersistentModelIndex selectedIndex() const Q_DECL_OVERRIDE;
-    void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
+    virtual int exec() = 0;
 
-private slots:
-    void applyFilterChanged(const QString &textFilter);
-    bool eventFilter(QObject *object, QEvent *ev) Q_DECL_OVERRIDE;
-
-private:
-    QString m_filter;
-    QAbstractItemModel *m_model;
-    KRecursiveFilterProxyModel *m_filterProxyModel;
-
-    QLabel *m_label;
-    QTreeView *m_tree;
+    virtual QPersistentModelIndex selectedIndex() const = 0;
+    virtual void setModel(QAbstractItemModel *model) = 0;
 };
 
 }
 
-#endif // WIDGETS_QUICKSELECTDIALOG_H
+#endif // WIDGETS_QUICKSELECTDIALOGINTERFACE_H

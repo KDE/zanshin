@@ -34,6 +34,8 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
+using namespace Widgets;
+
 QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     : QDialog(parent),
       m_model(Q_NULLPTR),
@@ -63,6 +65,11 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+}
+
+int QuickSelectDialog::exec()
+{
+    return QDialog::exec();
 }
 
 QPersistentModelIndex QuickSelectDialog::selectedIndex() const

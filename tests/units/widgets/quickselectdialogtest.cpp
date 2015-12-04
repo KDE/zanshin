@@ -42,7 +42,7 @@ class QuickSelectDialogTest : public QObject
     Q_OBJECT
 private:
     template <typename T>
-    T *widgetFromQuickSelectDialog(QuickSelectDialog *dlg)
+    T *widgetFromQuickSelectDialog(Widgets::QuickSelectDialog *dlg)
     {
         auto widgets = dlg->findChildren<T*>();
         Q_ASSERT(widgets.size() == 1);
@@ -106,7 +106,7 @@ private slots:
     {
         // GIVEN
         auto model = prepareQuickSelectDialogData();
-        QuickSelectDialog dlg;
+        Widgets::QuickSelectDialog dlg;
         dlg.setModel(model);
         auto treeView = widgetFromQuickSelectDialog<QTreeView>(&dlg);
         dlg.show();
@@ -122,7 +122,7 @@ private slots:
     {
         // GIVEN
         auto model = prepareQuickSelectDialogData();
-        QuickSelectDialog dlg;
+        Widgets::QuickSelectDialog dlg;
         dlg.setModel(model);
 
         auto treeView = widgetFromQuickSelectDialog<QTreeView>(&dlg);
@@ -154,7 +154,7 @@ private slots:
     {
         // GIVEN
         auto model = prepareQuickSelectDialogData();
-        QuickSelectDialog dlg;
+        Widgets::QuickSelectDialog dlg;
         dlg.setModel(model);
 
         auto treeView = widgetFromQuickSelectDialog<QTreeView>(&dlg);
@@ -191,7 +191,7 @@ private slots:
     {
         // GIVEN
         auto model = prepareQuickSelectDialogData();
-        QuickSelectDialog dlg;
+        Widgets::QuickSelectDialog dlg;
         dlg.setModel(model);
         dlg.show();
 
