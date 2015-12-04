@@ -41,6 +41,7 @@
 
 #include "widgets/availablepagesview.h"
 #include "widgets/newprojectdialog.h"
+#include "widgets/quickselectdialog.h"
 
 #include "messageboxstub.h"
 
@@ -82,6 +83,40 @@ public:
     int execCount;
     QAbstractItemModel *sourceModel;
     Domain::DataSource::Ptr source;
+};
+
+class QuickSelectDialogStub : public Widgets::QuickSelectDialogInterface
+{
+public:
+    typedef QSharedPointer<QuickSelectDialogStub> Ptr;
+
+    explicit QuickSelectDialogStub()
+        : parent(Q_NULLPTR),
+          execCount(0),
+          itemModel(Q_NULLPTR)
+    {
+    }
+
+    int exec()
+    {
+        execCount++;
+        return QDialog::Accepted;
+    }
+
+    void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE
+    {
+        itemModel = model;
+    }
+
+    QPersistentModelIndex selectedIndex() const Q_DECL_OVERRIDE
+    {
+        return index;
+    }
+
+    QWidget *parent;
+    int execCount;
+    QAbstractItemModel *itemModel;
+    QPersistentModelIndex index;
 };
 
 class AvailablePagesModelStub : public QObject
@@ -159,9 +194,14 @@ private slots:
         QVERIFY(goPreviousAction);
         auto goNextAction = available.findChild<QAction*>("goNextAction");
         QVERIFY(goNextAction);
+        auto goToAction = available.findChild<QAction*>("goToAction");
+        QVERIFY(goToAction);
 
-        auto factory = available.projectDialogFactory();
-        QVERIFY(factory(&available).dynamicCast<Widgets::NewProjectDialog>());
+        auto projectDialogFactory = available.projectDialogFactory();
+        QVERIFY(projectDialogFactory(&available).dynamicCast<Widgets::NewProjectDialog>());
+
+        auto quickSelectDialogFactory = available.quickSelectDialogFactory();
+        QVERIFY(quickSelectDialogFactory(&available).dynamicCast<Widgets::QuickSelectDialog>());
 
         auto actions = available.globalActions();
         QCOMPARE(actions.value("pages_project_add"), addProjectAction);
@@ -170,6 +210,7 @@ private slots:
         QCOMPARE(actions.value("pages_remove"), removeAction);
         QCOMPARE(actions.value("pages_go_previous"), goPreviousAction);
         QCOMPARE(actions.value("pages_go_next"), goNextAction);
+        QCOMPARE(actions.value("pages_go_to"), goToAction);
     }
 
     void shouldShowOnlyAddActionsNeededByTheModel_data()
@@ -477,6 +518,46 @@ private slots:
         // THEN
         QCOMPARE(pagesView->currentIndex(),
                  model.index(1, 0, model.indexFromItem(projects)));
+    }
+
+    void shouldGoToUserSelectedIndex()
+    {
+        // GIVEN
+        QStandardItemModel model;
+        model.appendRow(new QStandardItem("Inbox"));
+        auto projects = new QStandardItem("Projects");
+        projects->setFlags(Qt::NoItemFlags);
+        model.appendRow(projects);
+        projects->appendRow(new QStandardItem("Project 1"));
+        projects->appendRow(new QStandardItem("Project 2"));
+
+        AvailablePagesModelStub stubPagesModel;
+        stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+        auto dialogStub = QuickSelectDialogStub::Ptr::create();
+        // Project 2 will be selected
+        dialogStub->index = model.index(1, 0, model.index(1, 0));
+
+        Widgets::AvailablePagesView available;
+        available.setModel(&stubPagesModel);
+        available.setQuickSelectDialogFactory([dialogStub] (QWidget *parent) {
+            dialogStub->parent = parent;
+            return dialogStub;
+        });
+
+        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        QVERIFY(pagesView);
+        QCOMPARE(pagesView->model(), &model);
+
+        auto goToAction = available.findChild<QAction*>("goToAction");
+
+        // WHEN
+        goToAction->trigger();
+
+        // THEN
+        QCOMPARE(dialogStub->execCount, 1);
+        QCOMPARE(dialogStub->parent, &available);
+        QCOMPARE(dialogStub->itemModel, &model);
+        QCOMPARE(QPersistentModelIndex(pagesView->currentIndex()), dialogStub->index);
     }
 };
 

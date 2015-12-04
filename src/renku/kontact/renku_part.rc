@@ -15,6 +15,8 @@
    <Separator />
    <Action name="pages_go_previous" />
    <Action name="pages_go_next" />
+   <Separator />
+   <Action name="pages_go_to" />
   </Menu>
  </MenuBar>
  <ToolBar noMerge="1" name="mainToolBar" >

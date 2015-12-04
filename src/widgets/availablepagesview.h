@@ -42,13 +42,16 @@ class QTreeView;
 namespace Widgets {
 
 class NewProjectDialogInterface;
+class QuickSelectDialogInterface;
 
 class AvailablePagesView : public QWidget
 {
     Q_OBJECT
 public:
-    typedef QSharedPointer<NewProjectDialogInterface> DialogPtr;
-    typedef std::function<DialogPtr(QWidget*)> ProjectDialogFactory;
+    typedef QSharedPointer<NewProjectDialogInterface> NewProjectDialogPtr;
+    typedef std::function<NewProjectDialogPtr(QWidget*)> ProjectDialogFactory;
+    typedef QSharedPointer<QuickSelectDialogInterface> QuickSelectDialogPtr;
+    typedef std::function<QuickSelectDialogPtr(QWidget*)> QuickSelectDialogFactory;
 
     explicit AvailablePagesView(QWidget *parent = Q_NULLPTR);
 
@@ -58,12 +61,14 @@ public:
     QAbstractItemModel *projectSourcesModel() const;
     Domain::DataSource::Ptr defaultProjectSource() const;
     ProjectDialogFactory projectDialogFactory() const;
+    QuickSelectDialogFactory quickSelectDialogFactory() const;
 
 public slots:
     void setModel(QObject *model);
     void setProjectSourcesModel(QAbstractItemModel *sources);
     void setDefaultProjectSource(const Domain::DataSource::Ptr &source);
     void setProjectDialogFactory(const ProjectDialogFactory &factory);
+    void setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory);
     void setMessageBoxInterface(const MessageBoxInterface::Ptr &interface);
 
 signals:
@@ -77,6 +82,7 @@ private slots:
     void onRemoveTriggered();
     void onGoPreviousTriggered();
     void onGoNextTriggered();
+    void onGoToTriggered();
     void onInitTimeout();
 
 private:
@@ -90,6 +96,7 @@ private:
     Domain::DataSource::Ptr m_defaultSource;
     QTreeView *m_pagesView;
     ProjectDialogFactory m_projectDialogFactory;
+    QuickSelectDialogFactory m_quickSelectDialogFactory;
     MessageBoxInterface::Ptr m_messageBoxInterface;
 };
 

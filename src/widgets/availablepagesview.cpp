@@ -35,8 +35,9 @@
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
-#include "widgets/newprojectdialog.h"
 #include "widgets/messagebox.h"
+#include "widgets/newprojectdialog.h"
+#include "widgets/quickselectdialog.h"
 
 #include "domain/project.h"
 #include "domain/context.h"
@@ -97,7 +98,10 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     setLayout(layout);
 
     m_projectDialogFactory = [] (QWidget *parent) {
-        return DialogPtr(new NewProjectDialog(parent));
+        return NewProjectDialogPtr(new NewProjectDialog(parent));
+    };
+    m_quickSelectDialogFactory = [] (QWidget *parent) {
+        return QuickSelectDialogPtr(new QuickSelectDialog(parent));
     };
     m_messageBoxInterface = MessageBox::Ptr::create();
 
@@ -115,12 +119,19 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
     connect(goNextAction, SIGNAL(triggered(bool)), this, SLOT(onGoNextTriggered()));
 
+    auto goToAction = new QAction(this);
+    goToAction->setObjectName("goToAction");
+    goToAction->setText(tr("Go to page..."));
+    goToAction->setShortcut(Qt::Key_J);
+    connect(goToAction, SIGNAL(triggered(bool)), this, SLOT(onGoToTriggered()));
+
     m_actions.insert("pages_project_add", m_addProjectAction);
     m_actions.insert("pages_context_add", m_addContextAction);
     m_actions.insert("pages_tag_add", m_addTagAction);
     m_actions.insert("pages_remove", removeAction);
     m_actions.insert("pages_go_previous", goPreviousAction);
     m_actions.insert("pages_go_next", goNextAction);
+    m_actions.insert("pages_go_to", goToAction);
 }
 
 QHash<QString, QAction *> AvailablePagesView::globalActions() const
@@ -146,6 +157,11 @@ Domain::DataSource::Ptr AvailablePagesView::defaultProjectSource() const
 AvailablePagesView::ProjectDialogFactory AvailablePagesView::projectDialogFactory() const
 {
     return m_projectDialogFactory;
+}
+
+AvailablePagesView::QuickSelectDialogFactory AvailablePagesView::quickSelectDialogFactory() const
+{
+    return m_quickSelectDialogFactory;
 }
 
 void AvailablePagesView::setModel(QObject *model)
@@ -188,6 +204,11 @@ void AvailablePagesView::setDefaultProjectSource(const Domain::DataSource::Ptr &
 void AvailablePagesView::setProjectDialogFactory(const AvailablePagesView::ProjectDialogFactory &factory)
 {
     m_projectDialogFactory = factory;
+}
+
+void AvailablePagesView::setQuickSelectDialogFactory(const AvailablePagesView::QuickSelectDialogFactory &factory)
+{
+    m_quickSelectDialogFactory = factory;
 }
 
 void AvailablePagesView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)
@@ -293,6 +314,17 @@ void AvailablePagesView::onGoNextTriggered()
 
     if (index.isValid())
         m_pagesView->setCurrentIndex(index);
+}
+
+void AvailablePagesView::onGoToTriggered()
+{
+    QuickSelectDialogInterface::Ptr dialog = m_quickSelectDialogFactory(this);
+    dialog->setModel(m_pagesView->model());
+
+    if (dialog->exec() == QDialog::Accepted
+     && dialog->selectedIndex().isValid()) {
+        m_pagesView->setCurrentIndex(dialog->selectedIndex());
+    }
 }
 
 void AvailablePagesView::onInitTimeout()
