@@ -24,6 +24,7 @@
 
 #include <QtTestGui>
 
+#include <QHeaderView>
 #include <QLabel>
 #include <QSignalSpy>
 #include <QStandardItem>
@@ -102,6 +103,16 @@ private:
     }
 
 private slots:
+    void shouldHaveDefaultState()
+    {
+        Widgets::QuickSelectDialog dlg;
+
+        auto pagesView = dlg.findChild<QTreeView*>("pagesView");
+        QVERIFY(pagesView);
+        QVERIFY(pagesView->isVisibleTo(&dlg));
+        QVERIFY(!pagesView->header()->isVisibleTo(&dlg));
+    }
+
     void shouldCloseDialogOnOk()
     {
         // GIVEN

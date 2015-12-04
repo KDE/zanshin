@@ -29,6 +29,7 @@
 
 #include <QDialogButtonBox>
 #include <QEvent>
+#include <QHeaderView>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QTreeView>
@@ -49,6 +50,8 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     m_filterProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     m_tree->setModel(m_filterProxyModel);
+    m_tree->setObjectName("pagesView");
+    m_tree->header()->hide();
     m_tree->expandAll();
     m_tree->setFocus();
     m_tree->setSelectionMode(QAbstractItemView::SingleSelection);
