@@ -49,6 +49,17 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
 {
 }
 
+QHash<QString, QAction*> ApplicationComponents::globalActions() const
+{
+    auto actions = QHash<QString, QAction*>();
+    actions.unite(availableSourcesView()->globalActions());
+    actions.unite(availablePagesView()->globalActions());
+    actions.unite(pageView()->globalActions());
+    actions.unite(m_actions);
+
+    return actions;
+}
+
 QObjectPtr ApplicationComponents::model() const
 {
     return m_model;

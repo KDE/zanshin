@@ -25,6 +25,7 @@
 #ifndef WIDGETS_APPLICATIONCOMPONENTS_H
 #define WIDGETS_APPLICATIONCOMPONENTS_H
 
+#include <QHash>
 #include <QObject>
 
 #include "domain/artifact.h"
@@ -47,6 +48,8 @@ class ApplicationComponents : public QObject
 public:
     explicit ApplicationComponents(QWidget *parent = Q_NULLPTR);
 
+    QHash<QString, QAction*> globalActions() const;
+
     QObjectPtr model() const;
 
     AvailableSourcesView *availableSourcesView() const;
@@ -62,6 +65,7 @@ private slots:
     void onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact);
 
 private:
+    QHash<QString, QAction*> m_actions;
     QObjectPtr m_model;
 
     QWidget *m_parent;

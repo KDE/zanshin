@@ -424,6 +424,32 @@ private slots:
         QCOMPARE(editorModel.property("artifact").value<Domain::Artifact::Ptr>(),
                  pageModel.itemAtRow(index.row()));
     }
+
+    void shouldHaveDefaultActionsList()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+
+        // WHEN
+        auto actions = components.globalActions();
+
+        // THEN
+
+        // availablePages view
+        auto available = components.availablePagesView();
+        foreach (const auto &key,  available->globalActions().keys())
+            QCOMPARE(actions.value(key), available->globalActions().value(key));
+
+        // availableSources view
+        auto availableSources = components.availableSourcesView();
+        foreach (const auto &key, availableSources->globalActions().keys())
+            QCOMPARE(actions.value(key), availableSources->globalActions().value(key));
+
+        // page view
+        auto page = components.pageView();
+        foreach (const auto &key, page->globalActions().keys())
+            QCOMPARE(actions.value(key), page->globalActions().value(key));
+    }
 };
 
 QTEST_MAIN(ApplicationComponentsTest)

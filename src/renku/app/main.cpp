@@ -75,11 +75,7 @@ int main(int argc, char **argv)
     window->addDockWidget(Qt::LeftDockWidgetArea, pagesDock);
     window->addDockWidget(Qt::LeftDockWidgetArea, sourcesDock);
 
-    auto actions = QHash<QString, QAction*>();
-    actions.unite(components->availableSourcesView()->globalActions());
-    actions.unite(components->availablePagesView()->globalActions());
-    actions.unite(components->pageView()->globalActions());
-
+    auto actions = components->globalActions();
     auto ac = window->actionCollection();
     ac->addAction(KStandardAction::Quit, window, SLOT(close()));
     for (auto it = actions.constBegin(); it != actions.constEnd(); ++it) {
