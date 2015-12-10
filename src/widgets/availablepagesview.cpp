@@ -283,7 +283,7 @@ void AvailablePagesView::onRemoveTriggered()
         return;
     }
 
-    QMessageBox::Button button = m_messageBoxInterface->askConfirmation(this, text, title);
+    QMessageBox::Button button = m_messageBoxInterface->askConfirmation(this, title, text);
     if (button != QMessageBox::Yes) {
         return;
     }
