@@ -140,6 +140,8 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(StorageInterfac
 
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Tag &tag) const
 {
+    // TODO: Qt5, use the proper implementation once we got a working akonadi
+#if 0
     auto storage = m_storage;
     return [storage, tag] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
         auto job = storage->fetchTagItems(tag);
@@ -151,6 +153,17 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Tag &tag)
                 add(item);
         });
     };
+#else
+    auto fetchFunction = fetchItems(StorageInterface::Tasks | StorageInterface::Notes);
+
+    return [tag, fetchFunction] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
+        auto filterAdd = [tag, add] (const Item &item) {
+            if (item.tags().contains(tag))
+                add(item);
+        };
+        fetchFunction(filterAdd);
+    };
+#endif
 }
 
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &item) const
