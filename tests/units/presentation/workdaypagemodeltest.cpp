@@ -216,7 +216,7 @@ private slots:
 
         QVERIFY(task);
         QCOMPARE(task->title(), title);
-        QCOMPARE(task->startDate(), today);
+        QCOMPARE(task->startDate().date(), today.date());
     }
 
     void shouldAddChildTask()
