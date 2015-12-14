@@ -163,5 +163,6 @@ void ApplicationComponents::onCurrentPageChanged(QObject *page)
 void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact)
 {
     auto editorModel = m_model->property("editor").value<QObject*>();
-    editorModel->setProperty("artifact", QVariant::fromValue(artifact));
+    if (editorModel)
+        editorModel->setProperty("artifact", QVariant::fromValue(artifact));
 }
