@@ -28,6 +28,7 @@
 #include <QWidget>
 
 #include <QHash>
+#include <QModelIndexList>
 #include <QSharedPointer>
 
 #include <functional>
@@ -54,6 +55,7 @@ public:
 
     QObject *model() const;
     MessageBoxInterface::Ptr messageBoxInterface() const;
+    QModelIndexList selectedIndexes() const;
 
 public slots:
     void setModel(QObject *model);

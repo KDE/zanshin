@@ -36,6 +36,8 @@
 #include "itemdelegate.h"
 #include "messagebox.h"
 
+#include <algorithm>
+
 #include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
@@ -179,6 +181,20 @@ void PageView::setModel(QObject *model)
 MessageBoxInterface::Ptr PageView::messageBoxInterface() const
 {
     return m_messageBoxInterface;
+}
+
+QModelIndexList PageView::selectedIndexes() const
+{
+    using namespace std::placeholders;
+
+    const auto selection = m_centralView->selectionModel()->selectedIndexes();
+
+    auto sourceIndices = QModelIndexList();
+    std::transform(selection.constBegin(), selection.constEnd(),
+                   std::back_inserter(sourceIndices ),
+                   std::bind(&QSortFilterProxyModel::mapToSource, m_filterWidget->proxyModel(), _1));
+
+    return sourceIndices;
 }
 
 void PageView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)

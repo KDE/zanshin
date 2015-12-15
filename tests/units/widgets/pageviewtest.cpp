@@ -501,6 +501,40 @@ private slots:
         // THEN
         QVERIFY(centralView->selectionModel()->selectedIndexes().isEmpty());
     }
+
+    void shouldReturnSelectedIndexes()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        auto index = stubPageModel.itemModel.index(1, 0);
+        auto index2 = stubPageModel.itemModel.index(2, 0);
+
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+
+        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto filterWidget = page.findChild<Widgets::FilterWidget*>("filterWidget");
+
+        auto displayedModel = filterWidget->proxyModel();
+        auto displayedIndex = displayedModel->index(1, 0);
+        auto displayedIndex2 = displayedModel->index(2, 0);
+
+        // WHEN
+        centralView->selectionModel()->setCurrentIndex(displayedIndex, QItemSelectionModel::ClearAndSelect);
+        centralView->selectionModel()->setCurrentIndex(displayedIndex2, QItemSelectionModel::Select);
+
+        // THEN
+        auto selectedIndexes = page.selectedIndexes();
+        QCOMPARE(selectedIndexes.size(), 2);
+
+        QCOMPARE(selectedIndexes.at(0), index);
+        QCOMPARE(selectedIndexes.at(1), index2);
+
+        QCOMPARE(selectedIndexes.at(0).model(), index.model());
+        QCOMPARE(selectedIndexes.at(1).model(), index2.model());
+    }
 };
 
 QTEST_MAIN(PageViewTest)
