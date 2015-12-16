@@ -127,7 +127,7 @@ PageView::PageView(QWidget *parent)
 
     auto promoteItemAction = new QAction(this);
     promoteItemAction->setObjectName("promoteItemAction");
-    promoteItemAction->setText(tr("Promote item to project"));
+    promoteItemAction->setText(tr("Promote item as project"));
     promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
     connect(promoteItemAction, SIGNAL(triggered()), this, SLOT(onPromoteItemRequested()));
 

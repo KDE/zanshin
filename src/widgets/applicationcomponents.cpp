@@ -52,7 +52,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
 
     auto moveItemAction = new QAction(this);
     moveItemAction->setObjectName("moveItemAction");
-    moveItemAction->setText("Move an item");
+    moveItemAction->setText("Move item");
     moveItemAction->setShortcut(Qt::Key_M);
     connect(moveItemAction, SIGNAL(triggered()), this, SLOT(onMoveItemsRequested()));
 
