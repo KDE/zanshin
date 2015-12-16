@@ -25,10 +25,10 @@
 
 #include <KDE/KontactInterface/Core>
 
-EXPORT_KONTACT_PLUGIN(Plugin, zanshinnext)
+EXPORT_KONTACT_PLUGIN(Plugin, zanshin)
 
 Plugin::Plugin(KontactInterface::Core *core, const QVariantList&)
-    : KontactInterface::Plugin(core, core, "zanshinnext")
+    : KontactInterface::Plugin(core, core, "zanshin")
 {
     setComponentData(KontactPluginFactory::componentData());
 }
