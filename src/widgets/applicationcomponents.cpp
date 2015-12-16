@@ -36,8 +36,6 @@
 #include "pageview.h"
 #include "quickselectdialog.h"
 
-#include "presentation/applicationmodel.h"
-
 using namespace Widgets;
 
 ApplicationComponents::ApplicationComponents(QWidget *parent)
