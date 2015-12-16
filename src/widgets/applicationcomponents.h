@@ -26,7 +26,10 @@
 #define WIDGETS_APPLICATIONCOMPONENTS_H
 
 #include <QHash>
+#include <QModelIndexList>
 #include <QObject>
+
+#include <functional>
 
 #include "domain/artifact.h"
 
@@ -42,10 +45,15 @@ class AvailableSourcesView;
 class EditorView;
 class PageView;
 
+class QuickSelectDialogInterface;
+
 class ApplicationComponents : public QObject
 {
     Q_OBJECT
 public:
+    typedef QSharedPointer<QuickSelectDialogInterface> QuickSelectDialogPtr;
+    typedef std::function<QuickSelectDialogPtr(QWidget*)> QuickSelectDialogFactory;
+
     explicit ApplicationComponents(QWidget *parent = Q_NULLPTR);
 
     QHash<QString, QAction*> globalActions() const;
@@ -57,14 +65,20 @@ public:
     PageView *pageView() const;
     EditorView *editorView() const;
 
+    QuickSelectDialogFactory quickSelectDialogFactory() const;
+
 public slots:
     void setModel(const QObjectPtr &model);
+    void setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory);
 
 private slots:
     void onCurrentPageChanged(QObject *page);
     void onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact);
+    void onMoveItemsRequested();
 
 private:
+    void moveItems(const QModelIndex &destination, const QModelIndexList &droppedItems);
+
     QHash<QString, QAction*> m_actions;
     QObjectPtr m_model;
 
@@ -73,6 +87,8 @@ private:
     AvailablePagesView *m_availablePagesView;
     PageView *m_pageView;
     EditorView *m_editorView;
+
+    QuickSelectDialogFactory m_quickSelectDialogFactory;
 };
 
 }

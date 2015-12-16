@@ -28,19 +28,65 @@
 #include <QTreeView>
 #include <QWidgetAction>
 
+#include <algorithm>
+
 #include "utils/mem_fn.h"
 
 #include "domain/note.h"
 #include "domain/task.h"
 
-#include "presentation/applicationmodel.h"
+#include "presentation/artifactfilterproxymodel.h"
 #include "presentation/querytreemodelbase.h"
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
 #include "widgets/availablesourcesview.h"
 #include "widgets/editorview.h"
+#include "widgets/filterwidget.h"
 #include "widgets/pageview.h"
+#include "widgets/quickselectdialog.h"
+
+
+class CustomModelStub : public QStandardItemModel
+{
+    QMimeData *mimeData(const QModelIndexList &indexes) const
+    {
+        QStringList dataString;
+        std::transform(indexes.begin(), indexes.end(),
+                       std::back_inserter(dataString),
+                       [] (const QModelIndex &index) {
+                           return index.data().toString();
+                       });
+
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(dataString));
+
+        return data;
+    }
+
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &destination)
+    {
+        Q_UNUSED(action);
+
+        Q_ASSERT(row == -1);
+        Q_ASSERT(column == -1);
+        Q_ASSERT(destination.isValid());
+        Q_ASSERT(data->hasFormat("application/x-zanshin-object"));
+
+        auto dataString = data->property("objects").value<QStringList>();
+        Q_ASSERT(!dataString.isEmpty());
+
+        droppedItemDataString = dataString;
+        dropDestination = destination.data().toString();
+
+        return true;
+    }
+
+public:
+    QStringList droppedItemDataString;
+    QString dropDestination;
+};
 
 class ApplicationModelStub : public QObject
 {
@@ -81,12 +127,18 @@ public:
     explicit AvailablePagesModelStub(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
-        m_itemModel.setStringList(QStringList() << "Inbox" << "Project");
+        QStandardItem *inbox = new QStandardItem;
+        inbox->setData("Inbox", Qt::DisplayRole);
+        itemModel.appendRow(inbox);
+
+        QStandardItem *project = new QStandardItem;
+        project->setData("Project", Qt::DisplayRole);
+        itemModel.appendRow(project);
     }
 
     QAbstractItemModel *pageListModel()
     {
-        return &m_itemModel;
+        return &itemModel;
     }
 
     Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index)
@@ -100,11 +152,9 @@ public:
         return page;
     }
 
-private:
-    QStringListModel m_itemModel;
-
 public:
     QList<QObject*> createdPages;
+    CustomModelStub itemModel;
 };
 
 class PageModelStub : public QObject
@@ -139,8 +189,14 @@ public:
                                       .value<Domain::Artifact::Ptr>();
     }
 
+    QModelIndexList selectedIndexes() const
+    {
+        return selectedItems;
+    }
+
 public:
-    QStandardItemModel itemModel;
+    QModelIndexList selectedItems;
+    CustomModelStub itemModel;
 };
 
 class EditorModelStub : public QObject
@@ -188,6 +244,40 @@ signals:
     void doneChanged(bool done);
     void startDateChanged(const QDateTime &date);
     void dueDateChanged(const QDateTime &due);
+};
+
+class QuickSelectDialogStub : public Widgets::QuickSelectDialogInterface
+{
+public:
+    typedef QSharedPointer<QuickSelectDialogStub> Ptr;
+
+    explicit QuickSelectDialogStub()
+        : parent(Q_NULLPTR),
+          execCount(0),
+          itemModel(Q_NULLPTR)
+    {
+    }
+
+    int exec()
+    {
+        execCount++;
+        return QDialog::Accepted;
+    }
+
+    void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE
+    {
+        itemModel = model;
+    }
+
+    QPersistentModelIndex selectedIndex() const Q_DECL_OVERRIDE
+    {
+        return index;
+    }
+
+    QWidget *parent;
+    int execCount;
+    QAbstractItemModel *itemModel;
+    QPersistentModelIndex index;
 };
 
 class ApplicationComponentsTest : public QObject
@@ -449,6 +539,70 @@ private slots:
         auto page = components.pageView();
         foreach (const auto &key, page->globalActions().keys())
             QCOMPARE(actions.value(key), page->globalActions().value(key));
+
+        // application component own action
+        auto moveAction = components.findChild<QAction*>("moveItemAction");
+        QCOMPARE(actions.value("page_view_move"), moveAction);
+    }
+
+    void shouldMoveItem()
+    {
+        // GIVEN
+        auto model = QObjectPtr::create();
+
+        PageModelStub pageModel;
+        pageModel.addItem<Domain::Task>("0. First task");
+        pageModel.addItem<Domain::Note>("1. A note");
+        pageModel.addItem<Domain::Task>("2. Second task");
+        pageModel.addItem<Domain::Note>("3. Another note");
+        model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
+
+        AvailablePagesModelStub availablePagesModelStub;
+        model->setProperty("availablePages", QVariant::fromValue<QObject*>(&availablePagesModelStub));
+
+        QWidget *mainWidget = new QWidget;
+        Widgets::ApplicationComponents components(mainWidget);
+        components.setModel(model);
+
+        auto availablePageView = components.availablePagesView();
+        auto availablePagesTreeView = availablePageView->findChild<QTreeView*>("pagesView");
+        Q_ASSERT(availablePagesTreeView);
+
+        auto dialogStub = QuickSelectDialogStub::Ptr::create();
+        dialogStub->index = availablePagesModelStub.pageListModel()->index(0, 0); // inbox selected
+        components.setQuickSelectDialogFactory([dialogStub] (QWidget *parent) {
+            dialogStub->parent = parent;
+            return dialogStub;
+        });
+
+        auto pageView = components.pageView();
+        auto centralView = pageView->findChild<QTreeView*>("centralView");
+        QModelIndex index1 = pageModel.itemModel.index(0,0);
+        QModelIndex index2 = pageModel.itemModel.index(2,0);
+
+        auto filterWidget = pageView->findChild<Widgets::FilterWidget*>("filterWidget");
+        auto displayedModel = filterWidget->proxyModel();
+        auto displayedIndex = displayedModel->index(0, 0);
+        auto displayedIndex2 = displayedModel->index(2, 0);
+
+        auto moveAction = components.findChild<QAction*>("moveItemAction");
+
+        // WHEN
+        pageModel.selectedItems << index1 << index2;
+        centralView->selectionModel()->setCurrentIndex(displayedIndex, QItemSelectionModel::ClearAndSelect);
+        centralView->selectionModel()->setCurrentIndex(displayedIndex2, QItemSelectionModel::Select);
+
+        moveAction->trigger();
+
+        // THEN
+        QCOMPARE(dialogStub->execCount, 1);
+        QCOMPARE(dialogStub->parent, pageView);
+        QCOMPARE(dialogStub->itemModel, availablePagesModelStub.pageListModel());
+
+        QCOMPARE(availablePagesModelStub.itemModel.dropDestination, QString("Inbox"));
+        QCOMPARE(availablePagesModelStub.itemModel.droppedItemDataString.size(), 2);
+        QCOMPARE(availablePagesModelStub.itemModel.droppedItemDataString.at(0), index1.data().toString());
+        QCOMPARE(availablePagesModelStub.itemModel.droppedItemDataString.at(1), index2.data().toString());
     }
 };
 

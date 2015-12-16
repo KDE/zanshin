@@ -34,6 +34,7 @@
 #include "availablesourcesview.h"
 #include "editorview.h"
 #include "pageview.h"
+#include "quickselectdialog.h"
 
 #include "presentation/applicationmodel.h"
 
@@ -47,6 +48,17 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
       m_pageView(Q_NULLPTR),
       m_editorView(Q_NULLPTR)
 {
+    m_quickSelectDialogFactory = [] (QWidget *parent) {
+        return QuickSelectDialogPtr(new QuickSelectDialog(parent));
+    };
+
+    auto moveItemAction = new QAction(this);
+    moveItemAction->setObjectName("moveItemAction");
+    moveItemAction->setText("Move an item");
+    moveItemAction->setShortcut(Qt::Key_M);
+    connect(moveItemAction, SIGNAL(triggered()), this, SLOT(onMoveItemsRequested()));
+
+    m_actions.insert("page_view_move", moveItemAction);
 }
 
 QHash<QString, QAction*> ApplicationComponents::globalActions() const
@@ -136,6 +148,11 @@ EditorView *ApplicationComponents::editorView() const
     return m_editorView;
 }
 
+ApplicationComponents::QuickSelectDialogFactory ApplicationComponents::quickSelectDialogFactory() const
+{
+    return m_quickSelectDialogFactory;
+}
+
 void ApplicationComponents::setModel(const QObjectPtr &model)
 {
     if (m_model == model)
@@ -162,6 +179,11 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
         m_editorView->setModel(m_model->property("editor").value<QObject*>());
 }
 
+void ApplicationComponents::setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory)
+{
+    m_quickSelectDialogFactory = factory;
+}
+
 void ApplicationComponents::onCurrentPageChanged(QObject *page)
 {
     m_model->setProperty("currentPage", QVariant::fromValue(page));
@@ -177,3 +199,33 @@ void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr
     if (editorModel)
         editorModel->setProperty("artifact", QVariant::fromValue(artifact));
 }
+
+void ApplicationComponents::onMoveItemsRequested()
+{
+    if (m_pageView->selectedIndexes().size() == 0)
+        return;
+
+    auto pageListModel = m_availablePagesView->model()->property("pageListModel").value<QAbstractItemModel*>();
+    Q_ASSERT(pageListModel);
+
+    QuickSelectDialogInterface::Ptr dlg = m_quickSelectDialogFactory(m_pageView);
+    dlg->setModel(pageListModel);
+    if (dlg->exec() == QDialog::Accepted)
+        moveItems(dlg->selectedIndex(), m_pageView->selectedIndexes());
+}
+
+void ApplicationComponents::moveItems(const QModelIndex &destination, const QModelIndexList &droppedItems)
+{
+    Q_ASSERT(destination.isValid());
+    Q_ASSERT(!droppedItems.isEmpty());
+
+    auto centralListModel = droppedItems.first().model();
+    auto availablePagesModel = const_cast<QAbstractItemModel*>(destination.model());
+
+    // drag
+    const auto data = centralListModel->mimeData(droppedItems);
+
+    // drop
+    availablePagesModel->dropMimeData(data, Qt::MoveAction, -1, -1, destination);
+}
+
