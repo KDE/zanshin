@@ -1,6 +1,6 @@
-/* This file is part of Renku Notes
+/* This file is part of Zanshin Todo
 
-   Copyright 2011-2015 Kevin Ottens <ervin@kde.org>
+   Copyright 2015 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,29 +21,10 @@
    USA.
 */
 
-#include "aboutdata.h"
-#include "../../appversion.h"
+#ifndef APPVERSION_H
+#define APPVERSION_H
 
-KAboutData App::getAboutData()
-{
-    KAboutData about("renku", "renku",
-                     ki18n("Renku Notes"), APPLICATION_VERSION,
-                     ki18n("A note taking application which aims at getting your mind like water"),
-                     KAboutData::License_GPL_V3,
-                     ki18n("Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"));
+#define APPLICATION_VERSION "0.2.80"
 
-    about.addAuthor(ki18n("Kevin Ottens"),
-                    ki18n("Lead Developer"),
-                    "ervin@kde.org");
-
-    about.addAuthor(ki18n("Mario Bensi"),
-                    ki18n("Developer"),
-                    "nef@ipsquad.net");
-
-    about.addAuthor(ki18n("Franck Arrecot"),
-                    ki18n("Developer"),
-                    "franck.arrecot@gmail.com");
-
-    return about;
-}
+#endif
 

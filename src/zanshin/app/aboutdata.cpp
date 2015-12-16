@@ -22,11 +22,12 @@
 */
 
 #include "aboutdata.h"
+#include "../../appversion.h"
 
 KAboutData App::getAboutData()
 {
     KAboutData about("zanshin", "zanshin",
-                     ki18n("Zanshin Todo"), "0.2.50",
+                     ki18n("Zanshin Todo"), APPLICATION_VERSION,
                      ki18n("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutData::License_GPL_V3,
                      ki18n("Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"));
