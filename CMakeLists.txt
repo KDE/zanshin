@@ -101,5 +101,8 @@ set(KDEPIM_STATIC_LIBS
 
 add_subdirectory(3rdparty)
 add_subdirectory(src)
-add_subdirectory(tests)
+
+if(KDE4_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
 
