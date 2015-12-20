@@ -70,9 +70,10 @@ QAbstractItemModel *AvailableTaskPagesModel::pageListModel()
     if (!m_pageListModel)
         m_pageListModel = createPageListModel();
 
-    if (!m_sortProxyModel)
+    if (!m_sortProxyModel) {
         m_sortProxyModel = new AvailablePagesSortFilterProxyModel(this);
-    m_sortProxyModel->setSourceModel(m_pageListModel);
+        m_sortProxyModel->setSourceModel(m_pageListModel);
+    }
 
     return m_sortProxyModel;
 }
