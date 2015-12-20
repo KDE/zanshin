@@ -77,6 +77,22 @@ void JobHandler::install(KJob *job, const ResultHandlerWithJob &handler, StartMo
         job->start();
 }
 
+template<typename ResultHandler>
+void clearJobs(JobHandlerInstance *self, QHash<KJob*, QList<ResultHandler>> &jobs)
+{
+    foreach (auto *job, jobs.keys()) {
+        QObject::disconnect(job, 0, self, 0);
+    }
+    jobs.clear();
+}
+
+void JobHandler::clear()
+{
+    auto self = jobHandlerInstance();
+    clearJobs(self, self->m_handlers);
+    clearJobs(self, self->m_handlersWithJob);
+}
+
 int JobHandler::jobCount()
 {
     auto self = jobHandlerInstance();

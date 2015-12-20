@@ -31,6 +31,7 @@
 #include "presentation/pagemodel.h"
 
 #include "utils/dependencymanager.h"
+#include "utils/jobhandler.h"
 
 using namespace Presentation;
 
@@ -39,6 +40,11 @@ ApplicationModel::ApplicationModel(QObject *parent)
       m_errorHandler(Q_NULLPTR)
 {
     MetaTypes::registerAll();
+}
+
+ApplicationModel::~ApplicationModel()
+{
+    Utils::JobHandler::clear();
 }
 
 QObject *ApplicationModel::availableSources()

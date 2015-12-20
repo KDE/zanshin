@@ -44,6 +44,8 @@ namespace JobHandler
     void install(KJob *job, const ResultHandler &handler, StartMode startMode = AutoStart);
     void install(KJob *job, const ResultHandlerWithJob &handler, StartMode startMode = AutoStart);
 
+    void clear();
+
     int jobCount();
 }
 

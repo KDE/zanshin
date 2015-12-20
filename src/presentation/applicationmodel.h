@@ -50,6 +50,7 @@ public:
     typedef QSharedPointer<ApplicationModel> Ptr;
 
     explicit ApplicationModel(QObject *parent = Q_NULLPTR);
+    ~ApplicationModel();
 
     QObject *availableSources();
     QObject *availablePages();

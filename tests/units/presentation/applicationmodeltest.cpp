@@ -24,6 +24,7 @@
 #include <QtTest>
 
 #include "utils/dependencymanager.h"
+#include "utils/jobhandler.h"
 #include "utils/mockobject.h"
 
 #include "presentation/applicationmodel.h"
@@ -210,6 +211,21 @@ private slots:
         QCOMPARE(availablePages->errorHandler(), &errorHandler2);
         QCOMPARE(editor->errorHandler(), &errorHandler2);
         QCOMPARE(page->errorHandler(), &errorHandler2);
+    }
+
+    void shouldClearJobHandlersOnExit()
+    {
+        // GIVEN
+        auto app = new Presentation::ApplicationModel;
+        Utils::JobHandler::install(new FakeJob, [] { qFatal("Shouldn't happen"); });
+        QCOMPARE(Utils::JobHandler::jobCount(), 1);
+
+        // WHEN
+        delete app;
+
+        // THEN
+        QCOMPARE(Utils::JobHandler::jobCount(), 0);
+        QTest::qWait(FakeJob::DURATION * 2);
     }
 };
 
