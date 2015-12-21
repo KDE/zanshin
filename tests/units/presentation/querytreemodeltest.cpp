@@ -874,6 +874,75 @@ private slots:
             QCOMPARE(colorSeen, parent.data(Presentation::QueryTreeModelBase::ObjectRole).value<QColor>());
         }
     }
+
+    void shouldPreventCyclesByDragAndDrop()
+    {
+        // GIVEN
+        bool dropCalled = false;
+        const QMimeData *droppedData = Q_NULLPTR;
+
+        auto topProvider = Domain::QueryResultProvider<QString>::Ptr::create();
+        topProvider->append("1");
+        topProvider->append("2");
+        topProvider->append("3");
+
+        auto firstLevelProvider = Domain::QueryResultProvider<QString>::Ptr::create();
+        firstLevelProvider->append("2.1");
+        firstLevelProvider->append("2.2");
+        firstLevelProvider->append("2.3");
+
+        auto secondLevelProvider = Domain::QueryResultProvider<QString>::Ptr::create();
+        secondLevelProvider->append("2.1.1");
+        secondLevelProvider->append("2.1.2");
+        secondLevelProvider->append("2.1.3");
+
+        auto queryGenerator = [&] (const QString &string) {
+            if (string.isEmpty())
+                return Domain::QueryResult<QString>::create(topProvider);
+            else if (string == "2")
+                return Domain::QueryResult<QString>::create(firstLevelProvider);
+            else if (string == "2.1")
+                return Domain::QueryResult<QString>::create(secondLevelProvider);
+            else
+                return Domain::QueryResult<QString>::Ptr();
+        };
+        auto flagsFunction = [] (const QString &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [] (const QString &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [] (const QString &, const QVariant &, int) {
+            return false;
+        };
+        auto dropFunction = [&] (const QMimeData *, Qt::DropAction, const QString &) {
+            dropCalled = true;
+            return false;
+        };
+        auto dragFunction = [] (const QStringList &strings) -> QMimeData* {
+            auto data = new QMimeData;
+            data->setData("application/x-zanshin-object", "object");
+            data->setProperty("objects", QVariant::fromValue(strings));
+            return data;
+        };
+
+        Presentation::QueryTreeModel<QString> model(queryGenerator, flagsFunction,
+                                                    dataFunction, setDataFunction,
+                                                    dropFunction, dragFunction);
+        new ModelTest(&model);
+
+        const auto indexes = QModelIndexList() << model.index(0, 0)
+                                               << model.index(1, 0)
+                                               << model.index(1, 0, model.index(1, 0));
+
+        // WHEN
+        auto data = model.mimeData(indexes);
+        const auto parent = model.index(1, 0, model.index(0, 0, model.index(1, 0)));
+        model.dropMimeData(data, Qt::MoveAction, -1, -1, parent);
+
+        // THEN
+        QVERIFY(!dropCalled);
+    }
 };
 
 QTEST_MAIN(QueryTreeModelTest)

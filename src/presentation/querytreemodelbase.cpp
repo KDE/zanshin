@@ -25,9 +25,12 @@
 
 #include "querytreemodelbase.h"
 
+#include <QMimeData>
 #include <QStringList>
 
 #include <algorithm>
+
+Q_DECLARE_METATYPE(QModelIndexList)
 
 using namespace Presentation;
 
@@ -197,6 +200,20 @@ bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction acti
     if (row != -1 || column != -1)
         return false;
 
+    // If that's not holding that mime type we can't do the cycle checking
+    // this is relevant only for internal drag and drop anyway
+    if (data->hasFormat("application/x-zanshin-indexes")) {
+        const auto indexes = data->property("indexes").value<QModelIndexList>();
+        foreach (const auto &index, indexes) {
+            auto p = parent;
+            while (p.isValid()) {
+                if (p == index) // Oops, we found a cycle (one of the indexes is parent of the drop point)
+                    return false;
+                p = p.parent();
+            }
+        }
+    }
+
     return nodeFromIndex(parent)->dropMimeData(data, action);
 }
 
@@ -205,12 +222,15 @@ QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
     if (indexes.isEmpty())
         return Q_NULLPTR;
 
-    return createMimeData(indexes);
+    auto data = createMimeData(indexes);
+    data->setData("application/x-zanshin-indexes", "indexes");
+    data->setProperty("indexes", QVariant::fromValue(indexes));
+    return data;
 }
 
 QStringList QueryTreeModelBase::mimeTypes() const
 {
-    return QAbstractItemModel::mimeTypes() << "application/x-zanshin-object";
+    return QAbstractItemModel::mimeTypes() << "application/x-zanshin-object" << "application/x-zanshin-indexes";
 }
 
 QueryTreeNodeBase *QueryTreeModelBase::nodeFromIndex(const QModelIndex &index) const
