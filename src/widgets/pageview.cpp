@@ -90,7 +90,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->setStyleSheet( "QTreeView::branch { border-image: url(none.png); }" );
 
     m_quickAddEdit->setObjectName("quickAddEdit");
-    m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an action"));
+    m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an item"));
     connect(m_quickAddEdit, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 
     auto layout = new QVBoxLayout;
