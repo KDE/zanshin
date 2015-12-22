@@ -20,6 +20,14 @@
    <Separator />
    <Action name="pages_go_to" />
   </Menu>
+  <Menu name="settings">
+   <Menu>
+    <text>&amp;Panels</text>
+    <Action name="dock_sources" />
+    <Action name="dock_pages" />
+    <Action name="dock_editor" />
+   </Menu>
+  </Menu>
  </MenuBar>
  <ToolBar noMerge="1" name="mainToolBar" >
   <text context="@title:menu">Main Toolbar</text>

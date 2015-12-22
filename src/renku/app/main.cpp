@@ -76,6 +76,10 @@ int main(int argc, char **argv)
     window->addDockWidget(Qt::LeftDockWidgetArea, sourcesDock);
 
     auto actions = components->globalActions();
+    actions.insert("dock_sources", sourcesDock->toggleViewAction());
+    actions.insert("dock_pages", pagesDock->toggleViewAction());
+    actions.insert("dock_editor", editorDock->toggleViewAction());
+
     auto ac = window->actionCollection();
     ac->addAction(KStandardAction::Quit, window, SLOT(close()));
     for (auto it = actions.constBegin(); it != actions.constEnd(); ++it) {
