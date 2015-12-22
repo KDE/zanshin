@@ -418,10 +418,9 @@ void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
         return;
 
     auto message = item.payload<KMime::Message::Ptr>();
-    NoteUtils::NoteMessageWrapper wrappedNote(message);
 
-    note->setTitle(wrappedNote.title());
-    note->setText(wrappedNote.text());
+    note->setTitle(message->subject(true)->asUnicodeString());
+    note->setText(message->mainBodyPart()->decodedText());
     note->setProperty("itemId", item.id());
 
     if (auto relatedHeader = message->headerByType("X-Zanshin-RelatedProjectUid")) {
@@ -435,7 +434,7 @@ Item Serializer::createItemFromNote(Domain::Note::Ptr note)
 {
     NoteUtils::NoteMessageWrapper builder;
     builder.setTitle(note->title());
-    builder.setText(note->text());
+    builder.setText(note->text() + '\n'); // Adding an extra '\n' because KMime always removes it...
 
     KMime::Message::Ptr message = builder.message();
 

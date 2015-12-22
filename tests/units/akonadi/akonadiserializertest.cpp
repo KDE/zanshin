@@ -1222,6 +1222,7 @@ private slots:
 
         QTest::newRow("nominal case (no related)") << "A note title" << "A note content.\nWith two lines." << QString();
         QTest::newRow("nominal case (with related)") << "A note title" << "A note content.\nWith two lines." << "parent-uid";
+        QTest::newRow("trailing new lines") << "A note title" << "Empty lines at the end.\n\n\n" << QString();
         QTest::newRow("empty case") << QString() << QString() << QString();
     }
 
@@ -1256,14 +1257,16 @@ private slots:
         auto artifact = serializer.createArtifactFromItem(item).dynamicCast<Domain::Note>();
 
         // THEN
+        const auto expectedText = text.endsWith('\n') ? (text.chop(1), text) : text;
+
         QCOMPARE(note->title(), title);
-        QCOMPARE(note->text(), text);
+        QCOMPARE(note->text(), expectedText);
         QCOMPARE(note->property("itemId").toLongLong(), item.id());
         QCOMPARE(note->property("relatedUid").toString(), relatedUid);
 
         QVERIFY(!artifact.isNull());
         QCOMPARE(artifact->title(), title);
-        QCOMPARE(artifact->text(), text);
+        QCOMPARE(artifact->text(), expectedText);
         QCOMPARE(artifact->property("itemId").toLongLong(), item.id());
         QCOMPARE(artifact->property("relatedUid").toString(), relatedUid);
     }
@@ -1409,6 +1412,8 @@ private slots:
 
         QTest::newRow("nominal case (with id)") << "title" << "content" << "title" << "content" << qint64(42) << "parent-uid";
         QTest::newRow("empty case (with id)") << QString() << QString() << "New Note" << QString() << qint64(42) << "parent-uid";
+
+        QTest::newRow("empty line at the end") << "title" << "content\n\n\n" << "title" << "content\n\n\n" << qint64(-1) << QString();
     }
 
     void shouldCreateItemFromNote()
@@ -1448,7 +1453,7 @@ private slots:
         QFETCH(QString, expectedContent);
         auto message = item.payload<KMime::Message::Ptr>();
         QCOMPARE(message->subject(false)->asUnicodeString(), expectedTitle);
-        QCOMPARE(message->mainBodyPart()->decodedText(true), expectedContent);
+        QCOMPARE(message->mainBodyPart()->decodedText(), expectedContent);
 
         if (relatedUid.isEmpty()) {
             QVERIFY(!message->headerByType("X-Zanshin-RelatedProjectUid"));
