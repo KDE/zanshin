@@ -66,6 +66,7 @@ signals:
 
 private slots:
     void onEditingFinished();
+    void onAddItemRequested();
     void onRemoveItemRequested();
     void onPromoteItemRequested();
     void onCurrentChanged(const QModelIndex &current);

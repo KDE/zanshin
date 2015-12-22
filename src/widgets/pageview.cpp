@@ -27,10 +27,12 @@
 #include <QAction>
 #include <QKeyEvent>
 #include <QHeaderView>
+#include <QLabel>
 #include <QLineEdit>
 #include <QTreeView>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QTimer>
 
 #include "filterwidget.h"
 #include "itemdelegate.h"
@@ -59,6 +61,46 @@ protected:
     }
 };
 }
+
+class PassivePopup : public QFrame
+{
+public:
+    explicit PassivePopup(QWidget *parent = Q_NULLPTR)
+        : QFrame(parent),
+          m_hideTimer(new QTimer(this)),
+          m_label(new QLabel(this))
+    {
+        setWindowFlags(Qt::Tool
+                     | Qt::X11BypassWindowManagerHint
+                     | Qt::WindowStaysOnTopHint
+                     | Qt::FramelessWindowHint);
+        setFrameStyle(QFrame::Box | QFrame::Plain);
+        setLineWidth(2);
+        setAttribute(Qt::WA_DeleteOnClose);
+
+        setLayout(new QVBoxLayout);
+        layout()->addWidget(m_label);
+
+        connect(m_hideTimer, SIGNAL(timeout()), this, SLOT(hide()));
+    }
+
+    void setVisible(bool visible) Q_DECL_OVERRIDE
+    {
+        if (visible) {
+            m_hideTimer->start(2000);
+        }
+        QFrame::setVisible(visible);
+    }
+
+    void setText(const QString &text)
+    {
+        m_label->setText(text);
+    }
+
+private:
+    QTimer *m_hideTimer;
+    QLabel *m_label;
+};
 
 using namespace Widgets;
 
@@ -106,8 +148,7 @@ PageView::PageView(QWidget *parent)
     addItemAction->setText(tr("New item"));
     addItemAction->setIcon(QIcon::fromTheme("list-add"));
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
-    connect(addItemAction, SIGNAL(triggered(bool)), m_quickAddEdit, SLOT(selectAll()));
-    connect(addItemAction, SIGNAL(triggered(bool)), m_quickAddEdit, SLOT(setFocus()));
+    connect(addItemAction, SIGNAL(triggered(bool)), this, SLOT(onAddItemRequested()));
 
     auto cancelAddItemAction = new QAction(this);
     cancelAddItemAction->setObjectName("cancelAddItemAction");
@@ -215,6 +256,22 @@ void PageView::onEditingFinished()
                               Q_ARG(QString, m_quickAddEdit->text()),
                               Q_ARG(QModelIndex, parentIndex));
     m_quickAddEdit->clear();
+}
+
+void PageView::onAddItemRequested()
+{
+    if (m_quickAddEdit->hasFocus())
+        return;
+
+    const auto editTopLeft = m_quickAddEdit->geometry().topLeft();
+    const auto pos = mapToGlobal(editTopLeft);
+    auto popup = new PassivePopup(m_quickAddEdit);
+    popup->setText(tr("Type and press enter to add an item"));
+    popup->show();
+    popup->move(pos - QPoint(0, popup->height()));
+
+    m_quickAddEdit->selectAll();
+    m_quickAddEdit->setFocus();
 }
 
 void PageView::onRemoveItemRequested()
