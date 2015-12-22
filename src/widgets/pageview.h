@@ -72,7 +72,10 @@ private slots:
     void onCurrentChanged(const QModelIndex &current);
 
 private:
+    bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
+
     QHash<QString, QAction*> m_actions;
+    QAction *m_cancelAction;
     QObject *m_model;
     FilterWidget *m_filterWidget;
     PageTreeView *m_centralView;

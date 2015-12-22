@@ -106,6 +106,7 @@ using namespace Widgets;
 
 PageView::PageView(QWidget *parent)
     : QWidget(parent),
+      m_cancelAction(new QAction(this)),
       m_model(Q_NULLPTR),
       m_filterWidget(new FilterWidget(this)),
       m_centralView(new PageTreeView(this)),
@@ -120,6 +121,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->setDragDropMode(QTreeView::DragDrop);
     m_centralView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     m_centralView->setModel(m_filterWidget->proxyModel());
+    m_centralView->installEventFilter(this);
 
     m_centralView->setItemsExpandable(false);
     m_centralView->setRootIsDecorated(false);
@@ -150,13 +152,10 @@ PageView::PageView(QWidget *parent)
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
     connect(addItemAction, SIGNAL(triggered(bool)), this, SLOT(onAddItemRequested()));
 
-    auto cancelAddItemAction = new QAction(this);
-    cancelAddItemAction->setObjectName("cancelAddItemAction");
-    cancelAddItemAction->setShortcut(Qt::Key_Escape);
-    cancelAddItemAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    m_quickAddEdit->addAction(cancelAddItemAction);
-    m_filterWidget->addAction(cancelAddItemAction);
-    connect(cancelAddItemAction, SIGNAL(triggered(bool)), m_centralView, SLOT(setFocus()));
+    m_cancelAction->setObjectName("cancelAddItemAction");
+    m_cancelAction->setShortcut(Qt::Key_Escape);
+    addAction(m_cancelAction);
+    connect(m_cancelAction, SIGNAL(triggered(bool)), m_centralView, SLOT(setFocus()));
 
     auto removeItemAction = new QAction(this);
     removeItemAction->setObjectName("removeItemAction");
@@ -342,4 +341,21 @@ void PageView::onCurrentChanged(const QModelIndex &current)
         return;
 
     emit currentArtifactChanged(artifact);
+}
+
+bool PageView::eventFilter(QObject *object, QEvent *event)
+{
+    Q_ASSERT(object == m_centralView);
+    switch(event->type()) {
+    case QEvent::FocusIn:
+        m_cancelAction->setEnabled(false);
+        break;
+    case QEvent::FocusOut:
+        m_cancelAction->setEnabled(true);
+        break;
+    default:
+        break;
+    }
+
+    return false;
 }
