@@ -312,6 +312,30 @@ private slots:
                                                 + model.property("text").toString()));
     }
 
+    void shouldNotReactToTitleTrim()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        model.setProperty("title", "My title  ");
+        model.setProperty("text", "\nMy text");
+        model.setProperty("startDate", QDateTime::currentDateTime());
+        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("done", true);
+        editor.setModel(&model);
+
+        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+
+        // WHEN
+        model.setPropertyAndSignal("title", "My title");
+
+        // THEN
+        QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString() + "  "
+                                                + "\n"
+                                                + model.property("text").toString()));
+    }
+
     void shouldReactToTextChanges()
     {
         // GIVEN
@@ -334,6 +358,30 @@ private slots:
         QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
                                                 + "\n"
                                                 + model.property("text").toString()));
+    }
+
+    void shouldNotReactToTextTrim()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        model.setProperty("title", "My title");
+        model.setProperty("text", "\nMy text \n ");
+        model.setProperty("startDate", QDateTime::currentDateTime());
+        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("done", true);
+        editor.setModel(&model);
+
+        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+
+        // WHEN
+        model.setPropertyAndSignal("text", "\nMy text");
+
+        // THEN
+        QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
+                                                + "\n"
+                                                + model.property("text").toString() + " \n "));
     }
 
     void shouldApplyTextEditChanges()

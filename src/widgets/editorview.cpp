@@ -166,12 +166,12 @@ void EditorView::onHasTaskPropertiesChanged()
 
 void EditorView::onTextOrTitleChanged()
 {
-    const QString text = m_model->property("title").toString()
-                       + "\n"
-                       + m_model->property("text").toString();
+    const auto title = m_model->property("title").toString();
+    const auto text = m_model->property("text").toString();
 
-    if (text != m_textEdit->toPlainText())
-        m_textEdit->setPlainText(text);
+    QRegExp reg("^" + title + "\\s*\\n?" + text + "\\s*$");
+    if (!reg.exactMatch(m_textEdit->toPlainText()))
+        m_textEdit->setPlainText(title + '\n' + text);
 }
 
 void EditorView::onStartDateChanged()
