@@ -93,12 +93,15 @@ void ApplicationModel::setCurrentPage(QObject *page)
     if (page == m_currentPage)
         return;
 
-    page->setParent(Q_NULLPTR);
     m_currentPage = QObjectPtr(page);
 
-    auto pageModel = m_currentPage.staticCast<PageModel>();
-    Q_ASSERT(pageModel);
-    pageModel->setErrorHandler(errorHandler());
+    if (m_currentPage) {
+        m_currentPage->setParent(Q_NULLPTR);
+
+        auto pageModel = m_currentPage.staticCast<PageModel>();
+        Q_ASSERT(pageModel);
+        pageModel->setErrorHandler(errorHandler());
+    }
 
     emit currentPageChanged(page);
 }

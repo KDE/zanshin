@@ -148,6 +148,24 @@ private slots:
         QCOMPARE(spy.takeFirst().takeFirst().value<QObject*>(), page);
     }
 
+    void shouldSupportNullPage()
+    {
+        // GIVEN
+        Presentation::ApplicationModel app;
+        auto page = new FakePageModel(this);
+        app.setCurrentPage(page);
+        QCOMPARE(app.currentPage(), page);
+        QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
+
+        // WHEN
+        app.setCurrentPage(Q_NULLPTR);
+
+        // THEN
+        QVERIFY(!app.currentPage());
+        QCOMPARE(spy.count(), 1);
+        QVERIFY(!spy.takeFirst().takeFirst().value<QObject*>());
+    }
+
     void shouldTakeOwnershipOfCurrentPage()
     {
         // GIVEN
