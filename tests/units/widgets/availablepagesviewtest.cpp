@@ -375,23 +375,27 @@ private slots:
     void shouldRemoveAPage_data()
     {
         QTest::addColumn<QObjectPtr>("object");
+        QTest::addColumn<bool>("actionEnabled");
 
         auto project1 = Domain::Project::Ptr::create();
         project1->setName("Project 1");
-        QTest::newRow("project") << QObjectPtr(project1);
+        QTest::newRow("project") << QObjectPtr(project1) << true;
 
         auto context1 = Domain::Context::Ptr::create();
         context1->setName("Context 1");
-        QTest::newRow("context") << QObjectPtr(context1);
+        QTest::newRow("context") << QObjectPtr(context1) << true;
 
         auto tag1 = Domain::Tag::Ptr::create();
         tag1->setName("Tag 1");
-        QTest::newRow("tag") << QObjectPtr(tag1);
+        QTest::newRow("tag") << QObjectPtr(tag1) << true;
+
+        QTest::newRow("non removable") << QObjectPtr::create() << false;
     }
 
     void shouldRemoveAPage()
     {
         QFETCH(QObjectPtr, object);
+        QFETCH(bool, actionEnabled);
 
         // GIVEN
         QStringList list;
@@ -400,6 +404,7 @@ private slots:
         for (int row = 0; row < list.count(); ++row) {
             model.setItem(row, new QStandardItem(list.at(row)));
         }
+        QVERIFY(model.setData(model.index(0, 0), QVariant::fromValue(object), Presentation::QueryTreeModelBase::ObjectRole));
 
         AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
@@ -414,16 +419,18 @@ private slots:
 
         auto removeAction = available.findChild<QAction*>("removeAction");
 
-        QVERIFY(model.setData(model.index(0, 0), QVariant::fromValue(object), Presentation::QueryTreeModelBase::ObjectRole));
-
         auto msgbox = MessageBoxStub::Ptr::create();
         available.setMessageBoxInterface(msgbox);
 
         // WHEN
-        removeAction->trigger();
+        if (actionEnabled)
+            removeAction->trigger();
 
         // THEN
-        QCOMPARE(stubPagesModel.projectRemoved, list.first());
+        QCOMPARE(removeAction->isEnabled(), actionEnabled);
+        if (actionEnabled) {
+            QCOMPARE(stubPagesModel.projectRemoved, list.first());
+        }
     }
 
     void shouldGoToPreviousSelectablePage()

@@ -89,6 +89,7 @@ private:
     QAction *m_addProjectAction;
     QAction *m_addContextAction;
     QAction *m_addTagAction;
+    QAction *m_removeAction;
     QHash<QString, QAction*> m_actions;
 
     QObject *m_model;

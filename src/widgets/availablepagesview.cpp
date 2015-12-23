@@ -51,6 +51,7 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
       m_addProjectAction(new QAction(this)),
       m_addContextAction(new QAction(this)),
       m_addTagAction(new QAction(this)),
+      m_removeAction(new QAction(this)),
       m_model(Q_NULLPTR),
       m_sources(Q_NULLPTR),
       m_pagesView(new QTreeView(this))
@@ -81,12 +82,11 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     connect(m_addTagAction, SIGNAL(triggered()), this, SLOT(onAddTagTriggered()));
     actionBar->addAction(m_addTagAction);
 
-    auto removeAction = new QAction(this);
-    removeAction->setObjectName("removeAction");
-    removeAction->setText(tr("Remove page"));
-    removeAction->setIcon(QIcon::fromTheme("list-remove"));
-    connect(removeAction, SIGNAL(triggered()), this, SLOT(onRemoveTriggered()));
-    actionBar->addAction(removeAction);
+    m_removeAction->setObjectName("removeAction");
+    m_removeAction->setText(tr("Remove page"));
+    m_removeAction->setIcon(QIcon::fromTheme("list-remove"));
+    connect(m_removeAction, SIGNAL(triggered()), this, SLOT(onRemoveTriggered()));
+    actionBar->addAction(m_removeAction);
 
     auto actionBarLayout = new QHBoxLayout;
     actionBarLayout->setAlignment(Qt::AlignRight);
@@ -128,7 +128,7 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     m_actions.insert("pages_project_add", m_addProjectAction);
     m_actions.insert("pages_context_add", m_addContextAction);
     m_actions.insert("pages_tag_add", m_addTagAction);
-    m_actions.insert("pages_remove", removeAction);
+    m_actions.insert("pages_remove", m_removeAction);
     m_actions.insert("pages_go_previous", goPreviousAction);
     m_actions.insert("pages_go_next", goNextAction);
     m_actions.insert("pages_go_to", goToAction);
@@ -223,6 +223,11 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
                               Q_RETURN_ARG(QObject*, page),
                               Q_ARG(QModelIndex, current));
     emit currentPageChanged(page);
+
+    const auto object = current.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
+    m_removeAction->setEnabled(object.objectCast<Domain::Project>()
+                            || object.objectCast<Domain::Context>()
+                            || object.objectCast<Domain::Tag>());
 }
 
 void AvailablePagesView::onAddProjectTriggered()
