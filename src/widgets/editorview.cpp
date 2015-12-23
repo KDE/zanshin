@@ -203,10 +203,15 @@ void EditorView::onTextEditChanged()
 {
     const QString plainText = m_textEdit->toPlainText();
     const int index = plainText.indexOf('\n');
-    const QString title = plainText.left(index);
-    const QString text = plainText.mid(index + 1);
-    emit titleChanged(title);
-    emit textChanged(text);
+    if (index < 0) {
+        emit titleChanged(plainText);
+        emit textChanged(QString());
+    } else {
+        const QString title = plainText.left(index);
+        const QString text = plainText.mid(index + 1);
+        emit titleChanged(title);
+        emit textChanged(text);
+    }
 }
 
 void EditorView::onStartEditEntered(const QDate &start)

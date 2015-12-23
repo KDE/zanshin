@@ -384,6 +384,16 @@ private slots:
                                                 + model.property("text").toString() + " \n "));
     }
 
+    void shouldApplyTextEditChanges_data()
+    {
+        QTest::addColumn<QString>("plainText");
+        QTest::addColumn<QString>("expectedTitle");
+        QTest::addColumn<QString>("expectedText");
+
+        QTest::newRow("nominal case") << "Title\n\nText" << "Title" << "\nText";
+        QTest::newRow("single line") << "Title" << "Title" << "";
+    }
+
     void shouldApplyTextEditChanges()
     {
         // GIVEN
@@ -395,11 +405,14 @@ private slots:
         auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
 
         // WHEN
-        textEdit->setPlainText("Title\n\nText");
+        QFETCH(QString, plainText);
+        textEdit->setPlainText(plainText);
 
         // THEN
-        QCOMPARE(model.property("title").toString(), QString("Title"));
-        QCOMPARE(model.property("text").toString(), QString("\nText"));
+        QFETCH(QString, expectedTitle);
+        QCOMPARE(model.property("title").toString(), expectedTitle);
+        QFETCH(QString, expectedText);
+        QCOMPARE(model.property("text").toString(), expectedText);
     }
 
     void shouldReactToDoneChanges()
