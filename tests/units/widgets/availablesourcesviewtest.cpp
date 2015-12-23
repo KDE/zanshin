@@ -166,7 +166,24 @@ private slots:
     void shouldSetSelectedAsDefault()
     {
         // GIVEN
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStandardItemModel model;
+        auto itemA = new QStandardItem("A");
+        auto sourceA = Domain::DataSource::Ptr::create();
+        sourceA->setContentTypes(Domain::DataSource::Tasks);
+        itemA->setData(QVariant::fromValue(sourceA), Presentation::QueryTreeModelBase::ObjectRole);
+        model.appendRow(itemA);
+
+        auto itemB = new QStandardItem("B");
+        auto sourceB = Domain::DataSource::Ptr::create();
+        sourceB->setContentTypes(Domain::DataSource::Tasks);
+        itemB->setData(QVariant::fromValue(sourceB), Presentation::QueryTreeModelBase::ObjectRole);
+        model.appendRow(itemB);
+
+        auto itemC = new QStandardItem("C");
+        auto sourceC = Domain::DataSource::Ptr::create();
+        sourceC->setContentTypes(Domain::DataSource::NoContent);
+        itemC->setData(QVariant::fromValue(sourceC), Presentation::QueryTreeModelBase::ObjectRole);
+        model.appendRow(itemC);
 
         AvailableSourcesModelStub stubSourcesModel;
         stubSourcesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
@@ -183,12 +200,30 @@ private slots:
         QVERIFY(defaultAction);
 
         // WHEN
-        auto selectedIndex = QPersistentModelIndex(model.index(1));
+        auto selectedIndex = QPersistentModelIndex(model.index(1, 0));
         sourcesView->setCurrentIndex(proxy->mapFromSource(selectedIndex));
+
+        // THEN
+        QVERIFY(defaultAction->isEnabled());
+
+        // WHEN
         defaultAction->trigger();
 
         // THEN
         QCOMPARE(stubSourcesModel.defaultIndex, selectedIndex);
+
+        // WHEN
+        sourcesView->selectionModel()->clear();
+
+        // THEN
+        QVERIFY(!defaultAction->isEnabled());
+
+        // WHEN
+        selectedIndex = QPersistentModelIndex(model.index(2, 0));
+        sourcesView->setCurrentIndex(proxy->mapFromSource(selectedIndex));
+
+        // THEN
+        QVERIFY(!defaultAction->isEnabled());
     }
 
     void shouldInvokeModelSettingsDialog()

@@ -51,6 +51,7 @@ public slots:
     void setModel(QObject *model);
 
 private slots:
+    void onSelectionChanged();
     void onSettingsTriggered();
     void onDefaultTriggered();
     void onActionTriggered(const Domain::DataSource::Ptr &source, int action);
@@ -58,6 +59,7 @@ private slots:
 
 private:
     QHash<QString, QAction*> m_actions;
+    QAction *m_defaultAction;
     QObject *m_model;
     QSortFilterProxyModel *m_sortProxy;
     QTreeView *m_sourcesView;

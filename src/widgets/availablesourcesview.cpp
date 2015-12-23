@@ -24,6 +24,8 @@
 
 #include "availablesourcesview.h"
 
+#include <algorithm>
+
 #include <QAction>
 #include <QApplication>
 #include <QHeaderView>
@@ -38,6 +40,7 @@
 #include <KComponentData>
 
 #include "presentation/metatypes.h"
+#include "presentation/querytreemodelbase.h"
 
 #include "widgets/datasourcedelegate.h"
 
@@ -45,6 +48,7 @@ using namespace Widgets;
 
 AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     : QWidget(parent),
+      m_defaultAction(new QAction(this)),
       m_model(Q_NULLPTR),
       m_sortProxy(new QSortFilterProxyModel(this)),
       m_sourcesView(new QTreeView(this))
@@ -62,6 +66,8 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sourcesView->setObjectName("sourcesView");
     m_sourcesView->header()->hide();
     m_sourcesView->setModel(m_sortProxy);
+    connect(m_sourcesView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(onSelectionChanged()));
 
     auto delegate = new DataSourceDelegate(m_sourcesView);
     connect(delegate, SIGNAL(actionTriggered(Domain::DataSource::Ptr,int)),
@@ -72,12 +78,11 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     actionBar->setObjectName("actionBar");
     actionBar->setIconSize(QSize(16, 16));
 
-    auto addAction = new QAction(this);
-    addAction->setObjectName("defaultAction");
-    addAction->setText(tr("Use as default source"));
-    addAction->setIcon(QIcon::fromTheme("folder-favorites"));
-    connect(addAction, SIGNAL(triggered()), this, SLOT(onDefaultTriggered()));
-    actionBar->addAction(addAction);
+    m_defaultAction->setObjectName("defaultAction");
+    m_defaultAction->setText(tr("Use as default source"));
+    m_defaultAction->setIcon(QIcon::fromTheme("folder-favorites"));
+    connect(m_defaultAction, SIGNAL(triggered()), this, SLOT(onDefaultTriggered()));
+    actionBar->addAction(m_defaultAction);
 
     auto layout = new QVBoxLayout;
     layout->addWidget(searchEdit);
@@ -95,6 +100,8 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     settingsAction->setIcon(QIcon::fromTheme("configure"));
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(onSettingsTriggered()));
     m_actions.insert("options_configure", settingsAction);
+
+    onSelectionChanged();
 }
 
 QHash<QString, QAction *> AvailableSourcesView::globalActions() const
@@ -117,6 +124,21 @@ void AvailableSourcesView::setModel(QObject *model)
     m_model = model;
 
     setSourceModel("sourceListModel");
+}
+
+void AvailableSourcesView::onSelectionChanged()
+{
+    const auto selectedIndexes = m_sourcesView->selectionModel()->selectedIndexes();
+    auto selectedSources = Domain::DataSource::List();
+    std::transform(selectedIndexes.constBegin(), selectedIndexes.constEnd(),
+                   std::back_inserter(selectedSources),
+                   [] (const QModelIndex &index) {
+                       return index.data(Presentation::QueryTreeModelBase::ObjectRole)
+                                   .value<Domain::DataSource::Ptr>();
+                   });
+
+    m_defaultAction->setEnabled(selectedSources.size() == 1
+                             && selectedSources.first()->contentTypes() != Domain::DataSource::NoContent);
 }
 
 void AvailableSourcesView::onSettingsTriggered()
