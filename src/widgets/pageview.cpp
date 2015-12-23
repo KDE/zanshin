@@ -126,7 +126,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->setItemsExpandable(false);
     m_centralView->setRootIsDecorated(false);
     connect(m_centralView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
-            m_centralView, SLOT(expand(QModelIndex)));
+            m_centralView, SLOT(expandAll()));
     connect(m_centralView->model(), SIGNAL(layoutChanged()),
             m_centralView, SLOT(expandAll()));
     connect(m_centralView->model(), SIGNAL(modelReset()),
