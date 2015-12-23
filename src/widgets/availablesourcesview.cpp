@@ -62,6 +62,9 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     searchEdit->setClickMessage(tr("Search..."));
     connect(searchEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onSearchTextChanged(QString)));
+#ifndef ZANSHIN_HIDING_SOURCES_ENABLED
+    searchEdit->hide();
+#endif
 
     m_sourcesView->setObjectName("sourcesView");
     m_sourcesView->header()->hide();
@@ -70,6 +73,9 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
             this, SLOT(onSelectionChanged()));
 
     auto delegate = new DataSourceDelegate(m_sourcesView);
+#ifndef ZANSHIN_HIDING_SOURCES_ENABLED
+    delegate->setActionsEnabled(false);
+#endif
     connect(delegate, SIGNAL(actionTriggered(Domain::DataSource::Ptr,int)),
             this, SLOT(onActionTriggered(Domain::DataSource::Ptr,int)));
     m_sourcesView->setItemDelegate(delegate);

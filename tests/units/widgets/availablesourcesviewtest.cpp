@@ -112,11 +112,20 @@ private slots:
         QVERIFY(sourcesView);
         QVERIFY(sourcesView->isVisibleTo(&available));
         QVERIFY(!sourcesView->header()->isVisibleTo(&available));
-        QVERIFY(qobject_cast<Widgets::DataSourceDelegate*>(sourcesView->itemDelegate()));
+        auto delegate = qobject_cast<Widgets::DataSourceDelegate*>(sourcesView->itemDelegate());
+#ifdef ZANSHIN_HIDING_SOURCES_ENABLED
+        QVERIFY(delegate->actionsEnabled());
+#else
+        QVERIFY(!delegate->isActionsEnabled());
+#endif
 
         auto searchEdit = available.findChild<KLineEdit*>("searchEdit");
         QVERIFY(searchEdit);
+#ifdef ZANSHIN_HIDING_SOURCES_ENABLED
         QVERIFY(searchEdit->isVisibleTo(&available));
+#else
+        QVERIFY(!searchEdit->isVisibleTo(&available));
+#endif
         QVERIFY(searchEdit->isClearButtonShown());
         QCOMPARE(searchEdit->clickMessage(), tr("Search..."));
 
