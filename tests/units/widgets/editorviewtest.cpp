@@ -517,6 +517,24 @@ private slots:
         QCOMPARE(delegateLabel->text(), expectedText);
     }
 
+    void shouldClearDelegateEditOnArtifactChanges()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        editor.setModel(&model);
+
+        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
+        delegateEdit->setText("Foo");
+
+        // WHEN
+        model.makeTaskAvailable(); // simulates an artifact change
+
+        // THEN
+        QVERIFY(delegateEdit->text().isEmpty());
+    }
+
     void shouldRequestDelegationOnInput_data()
     {
         QTest::addColumn<QString>("userInput");

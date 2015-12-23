@@ -156,6 +156,7 @@ void EditorView::onArtifactChanged()
 {
     auto artifact = m_model->property("artifact").value<Domain::Artifact::Ptr>();
     setEnabled(artifact);
+    m_delegateEdit->clear();
 }
 
 void EditorView::onHasTaskPropertiesChanged()
