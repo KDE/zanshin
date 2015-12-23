@@ -59,6 +59,7 @@ public:
 private slots:
     void shouldHandleClickOnButtons_data()
     {
+        QTest::addColumn<bool>("actionsEnabled");
         QTest::addColumn<Domain::DataSource::Ptr>("source");
         QTest::addColumn<QList<int>>("expectedActions");
 
@@ -67,7 +68,7 @@ private slots:
         source->setName("No Content");
         source->setIconName("folder");
         source->setListStatus(Domain::DataSource::Bookmarked);
-        QTest::newRow("no content") << source << actions;
+        QTest::newRow("no content") << true << source << actions;
 
         actions.clear();
         actions << Widgets::DataSourceDelegate::AddToList;
@@ -76,7 +77,7 @@ private slots:
         source->setIconName("folder");
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setListStatus(Domain::DataSource::Unlisted);
-        QTest::newRow("not listed") << source << actions;
+        QTest::newRow("not listed") << true << source << actions;
 
         actions.clear();
         actions << Widgets::DataSourceDelegate::Bookmark << Widgets::DataSourceDelegate::RemoveFromList;
@@ -85,7 +86,7 @@ private slots:
         source->setIconName("folder");
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setListStatus(Domain::DataSource::Listed);
-        QTest::newRow("listed") << source << actions;
+        QTest::newRow("listed") << true << source << actions;
 
         actions.clear();
         actions << Widgets::DataSourceDelegate::Bookmark << Widgets::DataSourceDelegate::RemoveFromList;
@@ -94,16 +95,26 @@ private slots:
         source->setIconName("folder");
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setListStatus(Domain::DataSource::Bookmarked);
-        QTest::newRow("bookmarked") << source << actions;
+        QTest::newRow("bookmarked") << true << source << actions;
+
+        actions.clear();
+        source = Domain::DataSource::Ptr::create();
+        source->setName("Listed");
+        source->setIconName("folder");
+        source->setContentTypes(Domain::DataSource::Tasks);
+        source->setListStatus(Domain::DataSource::Listed);
+        QTest::newRow("actions disabled") << false << source << actions;
     }
 
     void shouldHandleClickOnButtons()
     {
         // GIVEN
+        QFETCH(bool, actionsEnabled);
         QFETCH(Domain::DataSource::Ptr, source);
         QFETCH(QList<int>, expectedActions);
 
         Widgets::DataSourceDelegate delegate;
+        delegate.setActionsEnabled(actionsEnabled);
         QSignalSpy spy(&delegate, SIGNAL(actionTriggered(Domain::DataSource::Ptr,int)));
 
         QStandardItemModel model;

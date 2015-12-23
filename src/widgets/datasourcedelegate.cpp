@@ -35,11 +35,23 @@ using namespace Widgets;
 const int DELEGATE_HEIGHT = 16;
 
 DataSourceDelegate::DataSourceDelegate(QObject *parent)
-    : QStyledItemDelegate(parent)
+    : QStyledItemDelegate(parent),
+      m_actionsEnabled(true)
 {
     m_pixmaps[AddToList] = QIcon::fromTheme("list-add").pixmap(DELEGATE_HEIGHT);
     m_pixmaps[RemoveFromList] = QIcon::fromTheme("list-remove").pixmap(DELEGATE_HEIGHT);
     m_pixmaps[Bookmark] = QIcon::fromTheme("bookmarks").pixmap(DELEGATE_HEIGHT);
+}
+
+
+bool DataSourceDelegate::isActionsEnabled() const
+{
+    return m_actionsEnabled;
+}
+
+void DataSourceDelegate::setActionsEnabled(bool actionsEnabled)
+{
+    m_actionsEnabled = actionsEnabled;
 }
 
 static QRect createButtonRect(const QRect &itemRect, int position)
@@ -73,9 +85,12 @@ static QStyleOptionButton createButtonOption(const QStyleOptionViewItemV4 &itemO
     return buttonOption;
 }
 
-static QList<DataSourceDelegate::Action> actionsForSource(const Domain::DataSource::Ptr &source, bool isHovered)
+static QList<DataSourceDelegate::Action> actionsForSource(const Domain::DataSource::Ptr &source, bool isHovered, bool enabled)
 {
     auto actions = QList<DataSourceDelegate::Action>();
+
+    if (!enabled)
+        return actions;
 
     if (source->contentTypes() == Domain::DataSource::NoContent)
         return actions;
@@ -114,7 +129,7 @@ void DataSourceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     QStyle *s = currentStyle(opt);
 
     int position = 0;
-    foreach (Action action, actionsForSource(source, isHovered)) {
+    foreach (Action action, actionsForSource(source, isHovered, m_actionsEnabled)) {
         QStyleOptionButton buttonOption = createButtonOption(option, m_pixmaps[action], position);
         if (action == Bookmark
          && source->listStatus() != Domain::DataSource::Bookmarked) {
@@ -166,7 +181,7 @@ bool DataSourceDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
     opt.state |= QStyle::State_MouseOver;
 
     const auto source = sourceForIndex(index);
-    auto actions = actionsForSource(source, true);
+    auto actions = actionsForSource(source, true, m_actionsEnabled);
     if (actions.count() > button) {
         const Action a = actions.at(button);
         emit actionTriggered(source, a);

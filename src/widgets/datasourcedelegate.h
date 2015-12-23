@@ -46,6 +46,9 @@ public:
 
     explicit DataSourceDelegate(QObject *parent = Q_NULLPTR);
 
+    bool isActionsEnabled() const;
+    void setActionsEnabled(bool isActionsEnabled);
+
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
@@ -57,6 +60,7 @@ protected:
                      const QStyleOptionViewItem &option, const QModelIndex &index) Q_DECL_OVERRIDE;
 
 private:
+    bool m_actionsEnabled;
     QHash<Action, QPixmap> m_pixmaps;
 };
 
