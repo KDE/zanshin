@@ -71,6 +71,12 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sourcesView->setModel(m_sortProxy);
     connect(m_sourcesView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(onSelectionChanged()));
+    connect(m_sourcesView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
+            m_sourcesView, SLOT(expand(QModelIndex)));
+    connect(m_sourcesView->model(), SIGNAL(layoutChanged()),
+            m_sourcesView, SLOT(expandAll()));
+    connect(m_sourcesView->model(), SIGNAL(modelReset()),
+            m_sourcesView, SLOT(expandAll()));
 
     auto delegate = new DataSourceDelegate(m_sourcesView);
 #ifndef ZANSHIN_HIDING_SOURCES_ENABLED
