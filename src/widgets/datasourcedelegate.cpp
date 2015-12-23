@@ -110,7 +110,6 @@ void DataSourceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     QStyleOptionViewItemV4 option = opt;
     initStyleOption(&option, index);
     option.font.setBold(isDefault);
-    QStyledItemDelegate::paint(painter, option, index);
 
     QStyle *s = currentStyle(opt);
 
@@ -124,6 +123,12 @@ void DataSourceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
         s->drawControl(QStyle::CE_PushButton, &buttonOption, painter, Q_NULLPTR);
         position++;
     }
+
+    if (position != 0) {
+        const auto firstButtonLeft = createButtonRect(option.rect, position - 1).left();
+        option.rect.setRight(firstButtonLeft);
+    }
+    QStyledItemDelegate::paint(painter, option, index);
 }
 
 bool DataSourceDelegate::editorEvent(QEvent *event, QAbstractItemModel *model,
