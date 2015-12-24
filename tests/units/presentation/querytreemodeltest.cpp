@@ -843,7 +843,7 @@ private slots:
         QTest::addColumn<bool>("callExpected");
 
         QTest::newRow("drop on object") << -1 << -1 << 2 << true;
-        QTest::newRow("drop between object") << 1 << 0 << -1 << false;
+        QTest::newRow("drop between object") << 1 << 0 << -1 << true;
         QTest::newRow("drop in empty area") << -1 << -1 << -1 << true;
     }
 

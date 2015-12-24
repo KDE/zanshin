@@ -197,8 +197,8 @@ bool QueryTreeModelBase::setData(const QModelIndex &index, const QVariant &value
 
 bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    if (row != -1 || column != -1)
-        return false;
+    Q_UNUSED(row);
+    Q_UNUSED(column);
 
     // If that's not holding that mime type we can't do the cycle checking
     // this is relevant only for internal drag and drop anyway
