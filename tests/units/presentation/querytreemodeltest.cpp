@@ -879,7 +879,6 @@ private slots:
     {
         // GIVEN
         bool dropCalled = false;
-        const QMimeData *droppedData = Q_NULLPTR;
 
         auto topProvider = Domain::QueryResultProvider<QString>::Ptr::create();
         topProvider->append("1");
