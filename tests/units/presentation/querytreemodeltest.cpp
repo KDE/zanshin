@@ -756,6 +756,37 @@ private slots:
         QCOMPARE(data.value<Domain::Artifact::Ptr>(), provider->data().at(1).staticCast<Domain::Artifact>());
     }
 
+    void shouldMoveOnlyDuringDragAndDrop()
+    {
+        // GIVEN
+        auto queryGenerator = [&] (const QColor &) {
+            return Domain::QueryResult<QColor>::Ptr();
+        };
+        auto flagsFunction = [] (const QColor &) {
+            return Qt::NoItemFlags;
+        };
+        auto dataFunction = [] (const QColor &, int) {
+            return QVariant();
+        };
+        auto setDataFunction = [] (const QColor &, const QVariant &, int) {
+            return false;
+        };
+        auto dropFunction = [] (const QMimeData *, Qt::DropAction, const QColor &) {
+            return false;
+        };
+        auto dragFunction = [] (const QList<QColor> &) {
+            return Q_NULLPTR;
+        };
+
+        Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
+                                                   dataFunction, setDataFunction,
+                                                   dropFunction, dragFunction);
+
+        // THEN
+        QCOMPARE(model.supportedDragActions(), Qt::MoveAction);
+        QCOMPARE(model.supportedDropActions(), Qt::MoveAction);
+    }
+
     void shouldCreateMimeData()
     {
         // GIVEN

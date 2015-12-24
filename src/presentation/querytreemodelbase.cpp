@@ -233,6 +233,11 @@ QStringList QueryTreeModelBase::mimeTypes() const
     return QAbstractItemModel::mimeTypes() << "application/x-zanshin-object" << "application/x-zanshin-indexes";
 }
 
+Qt::DropActions QueryTreeModelBase::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
 QueryTreeNodeBase *QueryTreeModelBase::nodeFromIndex(const QModelIndex &index) const
 {
     return index.isValid() ? static_cast<QueryTreeNodeBase*>(index.internalPointer()) : m_rootNode;
