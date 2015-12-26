@@ -93,10 +93,14 @@ private slots:
         // GIVEN
 
         // A few collections
-        Akonadi::Collection col1(42);
+        auto col1 = Akonadi::Collection(42);
         col1.setRights(Akonadi::Collection::ReadOnly);
-        Akonadi::Collection col2(42);
-        Akonadi::Collection col3(42);
+        auto col2 = Akonadi::Collection(43);
+        col2.setRights(Akonadi::Collection::CanCreateItem);
+        auto col3 = Akonadi::Collection(44);
+        col3.setRights(Akonadi::Collection::CanCreateItem
+                     | Akonadi::Collection::CanChangeItem
+                     | Akonadi::Collection::CanDeleteItem);
         auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob;
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
@@ -114,7 +118,7 @@ private slots:
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Tasks)
                                                                  .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::createItem).when(item, col2)
+        storageMock(&Akonadi::StorageInterface::createItem).when(item, col3)
                                                            .thenReturn(itemCreateJob);
 
         // Serializer mock returning the item for the task
@@ -130,7 +134,7 @@ private slots:
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col2).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col3).exactly(1));
     }
 
     void shouldCreateNewChildrenInParentCollection()

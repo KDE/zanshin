@@ -91,7 +91,9 @@ KJob *NoteRepository::createItem(const Item &item)
             const Akonadi::Collection::List collections = fetchCollectionJob->collections();
             Akonadi::Collection col = *std::find_if(collections.constBegin(), collections.constEnd(),
                                                     [] (const Akonadi::Collection &c) {
-                return c.rights() == Akonadi::Collection::AllRights;
+                return (c.rights() & Akonadi::Collection::CanCreateItem)
+                    && (c.rights() & Akonadi::Collection::CanChangeItem)
+                    && (c.rights() & Akonadi::Collection::CanDeleteItem);
             });
             Q_ASSERT(col.isValid());
             auto createJob = m_storage->createItem(item, col);

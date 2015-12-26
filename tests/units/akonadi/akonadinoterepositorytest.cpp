@@ -86,7 +86,11 @@ private slots:
         auto col1 = Akonadi::Collection(42);
         col1.setRights(Akonadi::Collection::ReadOnly);
         auto col2 = Akonadi::Collection(43);
+        col2.setRights(Akonadi::Collection::CanCreateItem);
         auto col3 = Akonadi::Collection(44);
+        col3.setRights(Akonadi::Collection::CanCreateItem
+                     | Akonadi::Collection::CanChangeItem
+                     | Akonadi::Collection::CanDeleteItem);
         auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob;
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
 
@@ -104,7 +108,7 @@ private slots:
                                                                        Akonadi::StorageInterface::Recursive,
                                                                        Akonadi::StorageInterface::Notes)
                                                                  .thenReturn(collectionFetchJob);
-        storageMock(&Akonadi::StorageInterface::createItem).when(item, col2)
+        storageMock(&Akonadi::StorageInterface::createItem).when(item, col3)
                                                            .thenReturn(itemCreateJob);
 
         // Serializer mock returning the item for the note
@@ -119,7 +123,7 @@ private slots:
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(note).exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::defaultNoteCollection).when().exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col2).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col3).exactly(1));
     }
 
     void shouldCreateNewItemsInTag()
