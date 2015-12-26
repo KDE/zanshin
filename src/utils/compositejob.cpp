@@ -59,6 +59,13 @@ bool CompositeJob::install(KJob *job, const JobHandler::ResultHandler &handler)
     return true;
 }
 
+void CompositeJob::emitError(const QString &errorText)
+{
+    setError(KJob::UserDefinedError);
+    setErrorText(errorText);
+    emitResult();
+}
+
 void CompositeJob::slotResult(KJob *job)
 {
     KCompositeJob::slotResult(job);

@@ -127,6 +127,28 @@ private slots:
         QVERIFY(!compositeJob->error());
         delete compositeJob;
     }
+
+    void shouldEmitErrorFromHandler()
+    {
+        // GIVEN
+        CompositeJob *compositeJob = new CompositeJob(this);
+        compositeJob->setAutoDelete(false);
+
+        auto handler = [&]() {
+            compositeJob->emitError("Error reached");
+        };
+
+        FakeJob *job = new FakeJob(this);
+        QVERIFY(compositeJob->install(job, handler));
+
+        // WHEN
+        compositeJob->start();
+        QTest::qWait(FakeJob::DURATION*2 + 10);
+
+        QCOMPARE(compositeJob->error(), static_cast<int>(KJob::UserDefinedError));
+        QCOMPARE(compositeJob->errorText(), QString("Error reached"));
+        delete compositeJob;
+    }
 };
 
 QTEST_MAIN(CompositeJobTest)
