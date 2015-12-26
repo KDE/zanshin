@@ -89,16 +89,21 @@ KJob *NoteRepository::createItem(const Item &item)
 
             Q_ASSERT(fetchCollectionJob->collections().size() > 0);
             const Akonadi::Collection::List collections = fetchCollectionJob->collections();
-            Akonadi::Collection col = *std::find_if(collections.constBegin(), collections.constEnd(),
-                                                    [] (const Akonadi::Collection &c) {
+            auto it = std::find_if(collections.constBegin(), collections.constEnd(),
+                                   [] (const Akonadi::Collection &c) {
                 return (c.rights() & Akonadi::Collection::CanCreateItem)
                     && (c.rights() & Akonadi::Collection::CanChangeItem)
                     && (c.rights() & Akonadi::Collection::CanDeleteItem);
             });
-            Q_ASSERT(col.isValid());
-            auto createJob = m_storage->createItem(item, col);
-            job->addSubjob(createJob);
-            createJob->start();
+            if (it == collections.constEnd()) {
+                job->emitError(tr("Could not find a collection to store the note into!"));
+            } else {
+                auto col = *it;
+                Q_ASSERT(col.isValid());
+                auto createJob = m_storage->createItem(item, col);
+                job->addSubjob(createJob);
+                createJob->start();
+            }
         });
         return job;
     }
