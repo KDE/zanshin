@@ -160,21 +160,34 @@ private slots:
         page.setModel(&stubPageModel);
 
         // THEN
+        QCOMPARE(page.model(), &stubPageModel);
+        QVERIFY(page.isEnabled());
         QCOMPARE(proxyModel->sourceModel(), &model);
     }
 
     void shouldNotCrashWithNullModel()
     {
         // GIVEN
-        Widgets::PageView page;
+        QStandardItemModel model;
         QObject stubPageModel;
+        stubPageModel.setProperty("centralListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::PageView page;
         page.setModel(&stubPageModel);
+
+        auto centralView = page.findChild<QTreeView*>("centralView");
+        QVERIFY(centralView);
+        auto proxyModel = qobject_cast<Presentation::ArtifactFilterProxyModel*>(centralView->model());
+        QVERIFY(proxyModel);
+        QCOMPARE(proxyModel->sourceModel(), &model);
 
         // WHEN
         page.setModel(Q_NULLPTR);
 
         // THEN
         QVERIFY(!page.model());
+        QVERIFY(!page.isEnabled());
+        QVERIFY(!proxyModel->sourceModel());
     }
 
     void shouldManageFocusThroughActions()
