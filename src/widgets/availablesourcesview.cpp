@@ -135,6 +135,11 @@ void AvailableSourcesView::setModel(QObject *model)
 
     m_model = model;
 
+    setEnabled(m_model);
+
+    if (!m_model)
+        return;
+
     setSourceModel("sourceListModel");
 }
 

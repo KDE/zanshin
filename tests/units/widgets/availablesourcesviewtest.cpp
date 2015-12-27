@@ -172,6 +172,33 @@ private slots:
         QCOMPARE(proxy->sourceModel(), &model);
     }
 
+    void shouldNotCrashWithNullModel()
+    {
+        // GIVEN
+        QStringListModel model(QStringList() << "A" << "B" << "C" );
+
+        QObject stubPagesModel;
+        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailableSourcesView available;
+        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        QVERIFY(sourcesView);
+        auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
+        QVERIFY(proxy);
+        QVERIFY(!proxy->sourceModel());
+
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        // WHEN
+        available.setModel(Q_NULLPTR);
+        QTest::qWait(10);
+
+        // THEN
+        QVERIFY(!available.isEnabled());
+        QVERIFY(!proxy->sourceModel());
+    }
+
     void shouldSetSelectedAsDefault()
     {
         // GIVEN
