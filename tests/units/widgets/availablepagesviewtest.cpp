@@ -280,6 +280,31 @@ private slots:
         QCOMPARE(pagesView->selectionModel()->currentIndex(), model.index(0, 0));
     }
 
+    void shouldNotCrashWithNullModel()
+    {
+        // GIVEN
+        QStringListModel model(QStringList() << "A" << "B" << "C" );
+
+        AvailablePagesModelStub stubPagesModel;
+        stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
+
+        Widgets::AvailablePagesView available;
+        available.setModel(&stubPagesModel);
+        QTest::qWait(10);
+
+        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        QVERIFY(pagesView);
+        QCOMPARE(pagesView->model(), &model);
+
+        // WHEN
+        available.setModel(Q_NULLPTR);
+        QTest::qWait(10);
+
+        // THEN
+        QVERIFY(!available.isEnabled());
+        QVERIFY(!pagesView->model());
+    }
+
     void shouldAddNewProjects()
     {
         // GIVEN

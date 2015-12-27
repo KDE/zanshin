@@ -177,6 +177,11 @@ void AvailablePagesView::setModel(QObject *model)
 
     m_model = model;
 
+    setEnabled(m_model);
+
+    if (!m_model)
+        return;
+
     m_addProjectAction->setVisible(m_model->property("hasProjectPages").toBool());
     m_addContextAction->setVisible(m_model->property("hasContextPages").toBool());
     m_addTagAction->setVisible(m_model->property("hasTagPages").toBool());
