@@ -446,6 +446,68 @@ private slots:
         QCOMPARE(components.editorView()->model(), editorModel);
     }
 
+    void shouldPropageNullModelsToViews()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+
+        auto model = QObjectPtr::create();
+        auto availableSources = new QObject(model.data());
+        model->setProperty("availableSources", QVariant::fromValue(availableSources));
+        auto availablePages = new QObject(model.data());
+        model->setProperty("availablePages", QVariant::fromValue(availablePages));
+        auto currentPage = new QObject(model.data());
+        model->setProperty("currentPage", QVariant::fromValue(currentPage));
+        auto editorModel = new EditorModelStub(model.data());
+        model->setProperty("editor", QVariant::fromValue<QObject*>(editorModel));
+
+        components.setModel(model);
+
+        // WHEN
+        components.setModel(QObjectPtr());
+        components.availableSourcesView();
+        components.availablePagesView();
+        components.pageView();
+        components.editorView();
+
+        // THEN
+        QVERIFY(!components.availableSourcesView()->model());
+        QVERIFY(!components.availablePagesView()->model());
+        QVERIFY(!components.pageView()->model());
+        QVERIFY(!components.editorView()->model());
+    }
+
+    void shouldPropageNullModelsToCreatedViews()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+        components.availableSourcesView();
+        components.availablePagesView();
+        components.pageView();
+        components.editorView();
+
+        auto model = QObjectPtr::create();
+        auto availableSources = new QObject(model.data());
+        model->setProperty("availableSources", QVariant::fromValue(availableSources));
+        auto availablePages = new QObject(model.data());
+        model->setProperty("availablePages", QVariant::fromValue(availablePages));
+        auto currentPage = new QObject(model.data());
+        model->setProperty("currentPage", QVariant::fromValue(currentPage));
+        auto editorModel = new EditorModelStub(model.data());
+        model->setProperty("editor", QVariant::fromValue<QObject*>(editorModel));
+
+        components.setModel(model);
+
+        // WHEN
+        components.setModel(QObjectPtr());
+
+        // THEN
+        QVERIFY(!components.availableSourcesView()->model());
+        QVERIFY(!components.availablePagesView()->model());
+        QVERIFY(!components.pageView()->model());
+        QVERIFY(!components.editorView()->model());
+    }
+
     void shouldApplyAvailablePagesSelectionToApplicationModel()
     {
         // GIVEN

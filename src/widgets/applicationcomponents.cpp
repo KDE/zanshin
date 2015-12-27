@@ -156,25 +156,41 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
     if (m_model == model)
         return;
 
+    if (m_model && m_pageView) {
+        disconnect(m_model.data(), 0, m_pageView, 0);
+    }
+
+    // Delay deletion of the old model until we're out of scope
+    auto tmp = m_model;
+    Q_UNUSED(tmp);
+
     m_model = model;
 
     if (m_availableSourcesView) {
-        m_availableSourcesView->setModel(m_model->property("availableSources").value<QObject*>());
+        m_availableSourcesView->setModel(m_model ? m_model->property("availableSources").value<QObject*>()
+                                                 : Q_NULLPTR);
     }
 
     if (m_availablePagesView) {
-        m_availablePagesView->setModel(m_model->property("availablePages").value<QObject*>());
-        m_availablePagesView->setProjectSourcesModel(m_model->property("dataSourcesModel").value<QAbstractItemModel*>());
+        m_availablePagesView->setModel(m_model ? m_model->property("availablePages").value<QObject*>()
+                                               : Q_NULLPTR);
+        m_availablePagesView->setProjectSourcesModel(m_model ? m_model->property("dataSourcesModel").value<QAbstractItemModel*>()
+                                                             : Q_NULLPTR);
     }
 
     if (m_pageView) {
-        m_pageView->setModel(m_model->property("currentPage").value<QObject*>());
-        connect(m_model.data(), SIGNAL(currentPageChanged(QObject*)),
-                m_pageView, SLOT(setModel(QObject*)));
+        m_pageView->setModel(m_model ? m_model->property("currentPage").value<QObject*>()
+                                     : Q_NULLPTR);
+        if (m_model) {
+            connect(m_model.data(), SIGNAL(currentPageChanged(QObject*)),
+                    m_pageView, SLOT(setModel(QObject*)));
+        }
     }
 
-    if (m_editorView)
-        m_editorView->setModel(m_model->property("editor").value<QObject*>());
+    if (m_editorView) {
+        m_editorView->setModel(m_model ? m_model->property("editor").value<QObject*>()
+                                       : Q_NULLPTR);
+    }
 }
 
 void ApplicationComponents::setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory)
@@ -184,6 +200,9 @@ void ApplicationComponents::setQuickSelectDialogFactory(const QuickSelectDialogF
 
 void ApplicationComponents::onCurrentPageChanged(QObject *page)
 {
+    if (!m_model)
+        return;
+
     m_model->setProperty("currentPage", QVariant::fromValue(page));
 
     QObject *editorModel = m_model->property("editor").value<QObject*>();
@@ -193,6 +212,9 @@ void ApplicationComponents::onCurrentPageChanged(QObject *page)
 
 void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact)
 {
+    if (!m_model)
+        return;
+
     auto editorModel = m_model->property("editor").value<QObject*>();
     if (editorModel)
         editorModel->setProperty("artifact", QVariant::fromValue(artifact));
@@ -200,6 +222,9 @@ void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr
 
 void ApplicationComponents::onMoveItemsRequested()
 {
+    if (!m_model)
+        return;
+
     if (m_pageView->selectedIndexes().size() == 0)
         return;
 
