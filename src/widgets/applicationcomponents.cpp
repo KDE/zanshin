@@ -59,6 +59,11 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
     m_actions.insert("page_view_move", moveItemAction);
 }
 
+ApplicationComponents::~ApplicationComponents()
+{
+    setModel({});
+}
+
 QHash<QString, QAction*> ApplicationComponents::globalActions() const
 {
     auto actions = QHash<QString, QAction*>();

@@ -55,6 +55,7 @@ public:
     typedef std::function<QuickSelectDialogPtr(QWidget*)> QuickSelectDialogFactory;
 
     explicit ApplicationComponents(QWidget *parent = Q_NULLPTR);
+    ~ApplicationComponents();
 
     QHash<QString, QAction*> globalActions() const;
 
