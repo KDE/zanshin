@@ -140,6 +140,47 @@ private slots:
         QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
 
+    void shouldNotCrashForNullModel()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.setTitle("Foo");
+        model.setText("Bar");
+        model.setPropertyAndSignal("hasTaskProperties", true);
+        editor.setModel(&model);
+
+        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        QVERIFY(textEdit);
+
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        QVERIFY(startDateEdit);
+
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
+        QVERIFY(dueDateEdit);
+
+        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        QVERIFY(doneButton);
+
+        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        QVERIFY(delegateLabel);
+
+        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
+        QVERIFY(delegateEdit);
+
+        // WHEN
+        editor.setModel(Q_NULLPTR);
+
+        // THEN
+        QVERIFY(!editor.isEnabled());
+        QVERIFY(textEdit->toPlainText().isEmpty());
+        QVERIFY(!startDateEdit->isVisibleTo(&editor));
+        QVERIFY(!dueDateEdit->isVisibleTo(&editor));
+        QVERIFY(!doneButton->isVisibleTo(&editor));
+        QVERIFY(!delegateLabel->isVisibleTo(&editor));
+        QVERIFY(!delegateEdit->isVisibleTo(&editor));
+    }
+
     void shouldShowTaskPropertiesEditorsOnlyForTasks()
     {
         // GIVEN

@@ -126,6 +126,14 @@ void EditorView::setModel(QObject *model)
 
     m_model = model;
 
+    setEnabled(m_model);
+
+    if (!m_model) {
+        m_taskGroup->setVisible(false);
+        m_textEdit->clear();
+        return;
+    }
+
     onArtifactChanged();
     onTextOrTitleChanged();
     onHasTaskPropertiesChanged();
