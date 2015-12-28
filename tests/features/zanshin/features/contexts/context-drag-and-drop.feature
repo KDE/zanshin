@@ -23,5 +23,7 @@ Feature: Context task association
     And I look at the central list
     And I list the items
     Then the list is:
-       | display                                       |
-       | Create examples and exercices                 |
+       | display                                                        |
+       | Create examples and exercices                                  |
+       | Create examples and exercices / Train for the FizzBuzz kata    |
+       | Create examples and exercices / Train for the Gilded Rose kata |

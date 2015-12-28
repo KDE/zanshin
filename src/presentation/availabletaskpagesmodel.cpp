@@ -121,6 +121,7 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
         auto contextPageModel = new ContextPageModel(context,
                                                      m_contextQueries,
                                                      m_contextRepository,
+                                                     m_taskQueries,
                                                      m_taskRepository,
                                                      this);
         contextPageModel->setErrorHandler(errorHandler());

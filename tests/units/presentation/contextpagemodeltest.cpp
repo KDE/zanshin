@@ -66,20 +66,40 @@ private slots:
         // A context
         auto context = Domain::Context::Ptr::create();
 
-        // A parent task and a child task
-        auto parentTask = Domain::Task::Ptr::create();
-        parentTask->setTitle("A parent task");
-        auto childTask = Domain::Task::Ptr::create();
-        childTask->setTitle("A child task");
+        // Three tasks
+        auto task1 = Domain::Task::Ptr::create();
+        task1->setTitle("task1");
+        auto task2 = Domain::Task::Ptr::create();
+        task2->setTitle("task2");
+        auto task3 = Domain::Task::Ptr::create();
+        task3->setTitle("task3");
 
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
-        taskProvider->append(parentTask);
-        taskProvider->append(childTask);
-        //FIXME : for now findTopLevelTasks(context) returns all tasks associated not just top level ones
+        taskProvider->append(task1);
+        taskProvider->append(task2);
+        taskProvider->append(task3);
+
+        // Two tasks under the task1
+        auto childTask11 = Domain::Task::Ptr::create();
+        childTask11->setTitle("childTask11");
+        auto childTask12 = Domain::Task::Ptr::create();
+        childTask12->setTitle("childTask12");
+        auto childTaskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto childTaskResult = Domain::QueryResult<Domain::Task::Ptr>::create(childTaskProvider);
+        taskProvider->append(childTask12);
+        childTaskProvider->append(childTask11);
+        childTaskProvider->append(childTask12);
 
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(childTaskResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task3).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask11).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask12).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -87,20 +107,33 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = page.centralListModel();
 
         // THEN
-        const QModelIndex parentTaskIndex = model->index(0, 0);
-        const QModelIndex childTaskIndex = model->index(1, 0);
+        const QModelIndex task1Index = model->index(0, 0);
+        const QModelIndex task2Index = model->index(1, 0);
+        const QModelIndex task3Index = model->index(2, 0);
+        const QModelIndex taskChildTask12Index = model->index(3, 0);
+
+        const QModelIndex childTask11Index = model->index(0, 0, task1Index);
+        const QModelIndex childTask12Index = model->index(1, 0, task1Index);
 
         QCOMPARE(page.context(), context);
 
-        QCOMPARE(model->rowCount(), 2);
-        QCOMPARE(model->rowCount(parentTaskIndex), 0);
-        QCOMPARE(model->rowCount(childTaskIndex), 0);
+        QCOMPARE(model->rowCount(), 4);
+        QCOMPARE(model->rowCount(task1Index), 2);
+        QCOMPARE(model->rowCount(task2Index), 0);
+        QCOMPARE(model->rowCount(task3Index), 0);
+        QCOMPARE(model->rowCount(taskChildTask12Index), 0);
+
+        QVERIFY(childTask11Index.isValid());
+        QVERIFY(childTask12Index.isValid());
+        QCOMPARE(model->rowCount(childTask11Index), 0);
+        QCOMPARE(model->rowCount(childTask12Index), 0);
 
         const Qt::ItemFlags taskFlags = Qt::ItemIsSelectable
                                       | Qt::ItemIsEnabled
@@ -108,87 +141,122 @@ private slots:
                                       | Qt::ItemIsDragEnabled
                                       | Qt::ItemIsUserCheckable
                                       | Qt::ItemIsDropEnabled;
-        QCOMPARE(model->flags(parentTaskIndex), taskFlags);
-        QCOMPARE(model->flags(childTaskIndex), taskFlags);
+        QCOMPARE(model->flags(task1Index), taskFlags);
+        QCOMPARE(model->flags(childTask11Index), taskFlags);
+        QCOMPARE(model->flags(childTask12Index), taskFlags);
+        QCOMPARE(model->flags(task2Index), taskFlags);
+        QCOMPARE(model->flags(task3Index), taskFlags);
+        QCOMPARE(model->flags(taskChildTask12Index), taskFlags);
 
-        QCOMPARE(model->data(parentTaskIndex).toString(), parentTask->title());
-        QCOMPARE(model->data(childTaskIndex).toString(), childTask->title());
+        QCOMPARE(model->data(task1Index).toString(), task1->title());
+        QCOMPARE(model->data(childTask11Index).toString(), childTask11->title());
+        QCOMPARE(model->data(childTask12Index).toString(), childTask12->title());
+        QCOMPARE(model->data(task2Index).toString(), task2->title());
+        QCOMPARE(model->data(task3Index).toString(), task3->title());
+        QCOMPARE(model->data(taskChildTask12Index).toString(), childTask12->title());
 
-        QCOMPARE(model->data(parentTaskIndex, Qt::EditRole).toString(), parentTask->title());
-        QCOMPARE(model->data(childTaskIndex, Qt::EditRole).toString(), childTask->title());
+        QCOMPARE(model->data(task1Index, Qt::EditRole).toString(), task1->title());
+        QCOMPARE(model->data(childTask11Index, Qt::EditRole).toString(), childTask11->title());
+        QCOMPARE(model->data(childTask12Index, Qt::EditRole).toString(), childTask12->title());
+        QCOMPARE(model->data(task2Index, Qt::EditRole).toString(), task2->title());
+        QCOMPARE(model->data(task3Index, Qt::EditRole).toString(), task3->title());
+        QCOMPARE(model->data(taskChildTask12Index, Qt::EditRole).toString(), childTask12->title());
 
-        QVERIFY(model->data(parentTaskIndex, Qt::CheckStateRole).isValid());
-        QVERIFY(model->data(childTaskIndex, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(task1Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(childTask11Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(childTask12Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(task2Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(task3Index, Qt::CheckStateRole).isValid());
+        QVERIFY(model->data(taskChildTask12Index, Qt::CheckStateRole).isValid());
 
-        QCOMPARE(model->data(parentTaskIndex, Qt::CheckStateRole).toBool(), parentTask->isDone());
-        QCOMPARE(model->data(childTaskIndex, Qt::CheckStateRole).toBool(), childTask->isDone());
-
-        QVERIFY(!model->data(parentTaskIndex, Qt::FontRole).isValid());
-        QVERIFY(!model->data(parentTaskIndex, Qt::ToolTipRole).isValid());
-
-        // WHEN
-        taskRepositoryMock(&Domain::TaskRepository::update).when(parentTask).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).thenReturn(new FakeJob(this));
-
-        QVERIFY(model->setData(parentTaskIndex, "newParentTask"));
-        QVERIFY(model->setData(childTaskIndex, "newChildTask"));
-
-        QVERIFY(model->setData(parentTaskIndex, Qt::Checked, Qt::CheckStateRole));
-        QVERIFY(model->setData(childTaskIndex, Qt::Unchecked, Qt::CheckStateRole));
-
-        // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(parentTask).exactly(2));
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).exactly(2));
-
-        QCOMPARE(parentTask->title(), QString("newParentTask"));
-        QCOMPARE(childTask->title(), QString("newChildTask"));
-
-        QCOMPARE(parentTask->isDone(), true);
-        QCOMPARE(childTask->isDone(), false);
+        QCOMPARE(model->data(task1Index, Qt::CheckStateRole).toBool(), task1->isDone());
+        QCOMPARE(model->data(childTask11Index, Qt::CheckStateRole).toBool(), childTask11->isDone());
+        QCOMPARE(model->data(childTask12Index, Qt::CheckStateRole).toBool(), childTask12->isDone());
+        QCOMPARE(model->data(task2Index, Qt::CheckStateRole).toBool(), task2->isDone());
+        QCOMPARE(model->data(task3Index, Qt::CheckStateRole).toBool(), task3->isDone());
+        QCOMPARE(model->data(taskChildTask12Index, Qt::CheckStateRole).toBool(), childTask12->isDone());
 
         // WHEN
-        QVERIFY(!model->setData(parentTaskIndex, QVariant(), Qt::WhatsThisRole));
-        QVERIFY(!model->setData(parentTaskIndex, QVariant(), Qt::ForegroundRole));
-        QVERIFY(!model->setData(parentTaskIndex, QVariant(), Qt::InitialSortOrderRole));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task1).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask11).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask12).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task2).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::update).when(task3).thenReturn(new FakeJob(this));
+
+        QVERIFY(model->setData(task1Index, "newTask1"));
+        QVERIFY(model->setData(childTask11Index, "newChildTask11"));
+        QVERIFY(model->setData(task2Index, "newTask2"));
+        QVERIFY(model->setData(task3Index, "newTask3"));
+        QVERIFY(model->setData(taskChildTask12Index, "newChildTask12"));
+
+        QVERIFY(model->setData(task1Index, Qt::Unchecked, Qt::CheckStateRole));
+        QVERIFY(model->setData(childTask11Index, Qt::Unchecked, Qt::CheckStateRole));
+        QVERIFY(model->setData(task2Index, Qt::Checked, Qt::CheckStateRole));
+        QVERIFY(model->setData(task3Index, Qt::Unchecked, Qt::CheckStateRole));
+        QVERIFY(model->setData(taskChildTask12Index, Qt::Checked, Qt::CheckStateRole));
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(parentTask).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task1).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask11).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask12).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task2).exactly(2));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task3).exactly(2));
 
-        QCOMPARE(parentTask->title(), QString("newParentTask"));
-        QCOMPARE(childTask->title(), QString("newChildTask"));
+        QCOMPARE(task1->title(), QString("newTask1"));
+        QCOMPARE(childTask11->title(), QString("newChildTask11"));
+        QCOMPARE(childTask12->title(), QString("newChildTask12"));
+        QCOMPARE(task2->title(), QString("newTask2"));
+        QCOMPARE(task3->title(), QString("newTask3"));
+
+        QCOMPARE(task1->isDone(), false);
+        QCOMPARE(childTask11->isDone(), false);
+        QCOMPARE(childTask12->isDone(), true);
+        QCOMPARE(task2->isDone(), true);
+        QCOMPARE(task3->isDone(), false);
+
+        // WHEN
+        QVERIFY(!model->setData(task1Index, QVariant(), Qt::WhatsThisRole));
+        QVERIFY(!model->setData(task1Index, QVariant(), Qt::ForegroundRole));
+        QVERIFY(!model->setData(task1Index, QVariant(), Qt::InitialSortOrderRole));
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task1).exactly(2));
+
+        QCOMPARE(task1->title(), QString("newTask1"));
+        QCOMPARE(task2->title(), QString("newTask2"));
 
         // WHEN a task is dragged
-        QMimeData *data = model->mimeData(QModelIndexList() << childTaskIndex);
+        QMimeData *data = model->mimeData(QModelIndexList() << task2Index);
 
         // THEN
         QVERIFY(data->hasFormat("application/x-zanshin-object"));
         QCOMPARE(data->property("objects").value<Domain::Artifact::List>(),
-                 Domain::Artifact::List() << childTask);
+                 Domain::Artifact::List() << task2);
 
         // WHEN a task is dropped
         auto childTask2 = Domain::Task::Ptr::create();
-        taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask2).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask2).thenReturn(new FakeJob(this));
         data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask2));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, parentTaskIndex);
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, task1Index);
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask2).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask2).exactly(1));
 
         // WHEN two tasks are dropped
         auto childTask3 = Domain::Task::Ptr::create();
         auto childTask4 = Domain::Task::Ptr::create();
-        taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask3).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask4).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask3).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask4).thenReturn(new FakeJob(this));
         data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask3 << childTask4));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, parentTaskIndex);
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, task1Index);
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask3).exactly(1));
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask4).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask3).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask4).exactly(1));
 
         // WHEN a task and a note are dropped
         Domain::Artifact::Ptr childTask5(new Domain::Task);
@@ -196,10 +264,10 @@ private slots:
         data = new QMimeData;
         data->setData("application/x-zanshin-object", "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask5 << childNote));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, parentTaskIndex);
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, task1Index);
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask5.objectCast<Domain::Task>()).exactly(0));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask5.objectCast<Domain::Task>()).exactly(0));
     }
 
     void shouldAddTasksInContext()
@@ -212,6 +280,7 @@ private slots:
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -222,6 +291,7 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
         // WHEN
@@ -250,10 +320,16 @@ private slots:
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
         taskProvider->append(task);
 
+        auto childProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto childResult = Domain::QueryResult<Domain::Task::Ptr>::create(childProvider);
+
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
@@ -263,6 +339,7 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
         // WHEN
@@ -278,7 +355,7 @@ private slots:
         QCOMPARE(createdTask->title(), title);
     }
 
-    void shouldRemoveItem()
+    void shouldRemoveTopLevelItem()
     {
         // GIVEN
 
@@ -292,17 +369,24 @@ private slots:
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
         taskProvider->append(task);
 
+        auto childProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto childResult = Domain::QueryResult<Domain::Task::Ptr>::create(childProvider);
+
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         contextRepositoryMock(&Domain::ContextRepository::dissociate).when(context, task).thenReturn(new FakeJob(this));
 
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
+
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
         // WHEN
@@ -311,6 +395,56 @@ private slots:
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::dissociate).when(context, task).exactly(1));
+    }
+
+    void shouldRemoveChildItem()
+    {
+        // GIVEN
+
+        // One context
+        auto context = Domain::Context::Ptr::create();
+
+        // A task...
+        auto task = Domain::Task::Ptr::create();
+
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(task);
+
+        // ... with a child
+        auto childTask = Domain::Task::Ptr::create();
+        auto childProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto childResult = Domain::QueryResult<Domain::Task::Ptr>::create(childProvider);
+        childProvider->append(childTask);
+
+        auto emptyProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto emptyResult = Domain::QueryResult<Domain::Task::Ptr>::create(emptyProvider);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(emptyResult);
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask).thenReturn(new FakeJob(this));
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance());
+
+        // WHEN
+        const auto taskIndex = page.centralListModel()->index(0, 0);
+        const auto childTaskIndex = page.centralListModel()->index(0, 0, taskIndex);
+        page.removeItem(childTaskIndex);
+
+        // THEN
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask).exactly(1));
     }
 
     void shouldPromoteItem()
@@ -327,10 +461,16 @@ private slots:
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
         taskProvider->append(task);
 
+        auto childProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto childResult = Domain::QueryResult<Domain::Task::Ptr>::create(childProvider);
+
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task).thenReturn(new FakeJob(this));
@@ -338,6 +478,7 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
         // WHEN
@@ -359,6 +500,7 @@ private slots:
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -371,6 +513,7 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         page.setErrorHandler(&errorHandler);
@@ -399,8 +542,14 @@ private slots:
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
         taskProvider->append(task);
 
+        auto childProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto childResult = Domain::QueryResult<Domain::Task::Ptr>::create(childProvider);
+
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -408,6 +557,7 @@ private slots:
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
         QAbstractItemModel *model = page.centralListModel();
@@ -446,21 +596,29 @@ private slots:
         taskProvider->append(parentTask);
         taskProvider->append(childTask);
 
+        auto childProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto childResult = Domain::QueryResult<Domain::Task::Ptr>::create(childProvider);
+
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(taskResult);
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(parentTask).thenReturn(childResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(childResult);
+
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
         Presentation::ContextPageModel page(context,
                                             contextQueriesMock.getInstance(),
                                             contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
         // WHEN
         QAbstractItemModel *model = page.centralListModel();
         const QModelIndex parentTaskIndex = model->index(0, 0);
-        const QModelIndex childTaskIndex = model->index(1, 0);
         FakeErrorHandler errorHandler;
         page.setErrorHandler(&errorHandler);
 

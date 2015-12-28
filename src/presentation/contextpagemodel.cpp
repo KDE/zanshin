@@ -39,12 +39,14 @@ using namespace Presentation;
 ContextPageModel::ContextPageModel(const Domain::Context::Ptr &context,
                                    const Domain::ContextQueries::Ptr &contextQueries,
                                    const Domain::ContextRepository::Ptr &contextRepository,
+                                   const Domain::TaskQueries::Ptr &taskQueries,
                                    const Domain::TaskRepository::Ptr &taskRepository,
                                    QObject *parent)
     : PageModel(parent),
       m_context(context),
       m_contextQueries(contextQueries),
       m_contextRepository(contextRepository),
+      m_taskQueries(taskQueries),
       m_taskRepository(taskRepository)
 {
 
@@ -76,7 +78,8 @@ void ContextPageModel::removeItem(const QModelIndex &index)
     QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
-    const auto job = m_contextRepository->dissociate(m_context, task);
+    const auto job = index.parent().isValid() ? m_taskRepository->dissociate(task)
+                   : m_contextRepository->dissociate(m_context, task);
     installHandler(job, tr("Cannot remove task %1 from context %2").arg(task->title()).arg(m_context->name()));
 }
 
@@ -94,9 +97,9 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
 {
     auto query = [this] (const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
         if (!task)
-            return m_contextQueries->findTopLevelTasks(m_context); //FIXME : for now returns all tasks associated, not only top level ones
+            return m_contextQueries->findTopLevelTasks(m_context);
         else
-            return Domain::QueryResult<Domain::Task::Ptr>::Ptr();
+            return m_taskQueries->findChildren(task);
     };
 
     auto flags = [] (const Domain::Task::Ptr &task) {
