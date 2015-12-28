@@ -44,6 +44,7 @@ int main(int argc, char **argv)
         }
         group.writeEntry("Migrated021Projects", true);
     }
+    config->sync();
 
     return 0;
 };
