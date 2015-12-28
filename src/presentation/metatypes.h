@@ -25,10 +25,9 @@
 #ifndef PRESENTATION_METATYPES_H
 #define PRESENTATION_METATYPES_H
 
+#include <QAbstractItemModel>
 #include <QMetaType>
 #include <QSharedPointer>
-
-class QAbstractItemModel;
 
 typedef QSharedPointer<QObject> QObjectPtr;
 typedef QList<QObjectPtr> QObjectPtrList;

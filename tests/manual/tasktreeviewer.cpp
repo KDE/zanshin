@@ -23,10 +23,13 @@
 */
 
 #include <KAboutData>
-#include <KApplication>
-#include <KCmdLineArgs>
+
+
 
 #include <QTreeView>
+#include <QApplication>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 #include "zanshin/app/dependencies.h"
 
@@ -39,11 +42,17 @@
 
 int main(int argc, char **argv)
 {
+    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
     App::initializeDependencies();
-    KAboutData about("tasktreeviewer", "tasktreeviewer",
-                     ki18n("Show all the tasks in tree"), "1.0");
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    KAboutData aboutData("tasktreeviewer",
+                     i18n("Show all the tasks in tree"), "1.0");
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 
     auto repository = Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>();
     auto queries = Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>();

@@ -4,10 +4,9 @@ set(app_SRCS
     main.cpp
 )
 
-kde4_add_executable(zanshin ${app_SRCS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+add_executable(zanshin ${app_SRCS})
+kde_enable_exceptions()
 target_link_libraries(zanshin
-    ${KDE4_KDEUI_LIBS}
     akonadi
     domain
     presentation
@@ -17,7 +16,7 @@ target_link_libraries(zanshin
     ${KDEPIM_STATIC_LIBS}
 )
 
-install(TARGETS zanshin DESTINATION ${BIN_INSTALL_DIR})
-install(PROGRAMS zanshin.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
-install(FILES zanshinui.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin)
-install(FILES zanshin.appdata.xml DESTINATION share/appdata)
+install(TARGETS zanshin DESTINATION ${KDE_INSTALL_BINDIR})
+install(PROGRAMS org.kde.zanshin.desktop DESTINATION ${KDE_INSTALL_APPDIR})
+install(FILES zanshinui.rc DESTINATION ${KDE_INSTALL_KXMLGUI5DIR}/zanshin)
+install(FILES zanshin.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})

@@ -54,7 +54,7 @@ static QString titleFromItem(const Akonadi::Item &item)
 
     } else if (item.hasPayload<KMime::Message::Ptr>()) {
         const auto message = item.payload<KMime::Message::Ptr>();
-        const auto note = Akonadi::NoteUtils::NoteMessageWrapper(message);
+        const Akonadi::NoteUtils::NoteMessageWrapper note(message);
         return note.title();
 
     } else {

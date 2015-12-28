@@ -1,7 +1,7 @@
 /* -*- c++ -*-
- * completionordereditor_p.h
+ * completionordereditor.h
  *
- *  Copyright (c) 2006 Till Adam <adam@kde.org>
+ *  Copyright (c) 2004 David Faure <faure@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,21 +28,35 @@
  *  your version.
  */
 
-#ifndef KDEPIM_COMPLETIONORDEREDITOR_P_H
-#define KDEPIM_COMPLETIONORDEREDITOR_P_H
+#ifndef KDEPIM_COMPLETIONORDEREDITOR_H
+#define KDEPIM_COMPLETIONORDEREDITOR_H
 
-#include <QtDBus/QDBusAbstractAdaptor>
+#include "kdepim_export.h"
+#include <QDialog>
 
-namespace KPIM {
-
-class CompletionOrderEditorAdaptor : public QDBusAbstractAdaptor
+namespace KLDAP
 {
-   Q_OBJECT
-   Q_CLASSINFO("D-Bus Interface", "org.kde.pim.CompletionOrder" )
+class LdapClientSearch;
+}
+
+namespace KPIM
+{
+class CompletionOrderEditorPrivate;
+class KDEPIM_EXPORT CompletionOrderEditor : public QDialog
+{
+    Q_OBJECT
+
 public:
-   explicit CompletionOrderEditorAdaptor( QObject *parent );
-Q_SIGNALS:
-   void completionOrderChanged();
+    CompletionOrderEditor(KLDAP::LdapClientSearch *ldapSearch, QWidget *parent);
+    ~CompletionOrderEditor();
+
+private Q_SLOTS:
+    void slotOk();
+
+private:
+    void readConfig();
+    void writeConfig();
+    CompletionOrderEditorPrivate *const d;
 };
 
 } // namespace

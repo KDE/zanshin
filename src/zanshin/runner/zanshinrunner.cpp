@@ -29,10 +29,10 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
 
-#include <KDE/KDebug>
-#include <KDE/KIcon>
-#include <KDE/KLocale>
-
+#include <KDebug>
+#include <QIcon>
+#include <KLocale>
+K_EXPORT_PLASMA_RUNNER(zanshin, ZanshinRunner)
 Domain::TaskRepository::Ptr createTaskRepository()
 {
     using namespace Akonadi;
@@ -74,12 +74,12 @@ void ZanshinRunner::match(Plasma::RunnerContext &context)
     Plasma::QueryMatch match(this);
     match.setData(summary);
     match.setType(Plasma::QueryMatch::ExactMatch);
-    match.setIcon(KIcon("zanshin"));
+    match.setIcon(QIcon::fromTheme("zanshin"));
     match.setText(i18n("Add \"%1\" to your todo list", summary));
     match.setRelevance(1.0);
 
     matches << match;
-    context.addMatches(context.query(), matches);
+    context.addMatches(matches);
 }
 
 void ZanshinRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)

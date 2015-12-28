@@ -24,7 +24,7 @@
 #ifndef AKONADI_COLLECTIONSEARCHJOBINTERFACE_H
 #define AKONADI_COLLECTIONSEARCHJOBINTERFACE_H
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 
 class KJob;
 

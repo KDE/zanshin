@@ -23,18 +23,18 @@
 
 #include "kontact_plugin.h"
 
-#include <KDE/KontactInterface/Core>
+#include <KontactInterface/Core>
 
 EXPORT_KONTACT_PLUGIN(Plugin, renku)
 
 Plugin::Plugin(KontactInterface::Core *core, const QVariantList&)
     : KontactInterface::Plugin(core, core, "renku")
 {
-    setComponentData(KontactPluginFactory::componentData());
+    setComponentName(QStringLiteral("renku"), QStringLiteral("renku"));
 }
 
 KParts::ReadOnlyPart *Plugin::createPart()
 {
     return loadPart();
 }
-
+#include "kontact_plugin.moc"

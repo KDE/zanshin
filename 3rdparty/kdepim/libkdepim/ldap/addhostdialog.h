@@ -22,31 +22,32 @@
 #ifndef ADDHOSTDIALOG_H
 #define ADDHOSTDIALOG_H
 
-#include <kdialog.h>
+#include "kdepim_export.h"
+#include <qdialog.h>
 
-namespace KLDAP {
-class LdapConfigWidget;
+namespace KLDAP
+{
 class LdapServer;
-}
-
-class AddHostDialog : public KDialog
+class AddHostDialogPrivate;
+class KDEPIM_EXPORT AddHostDialog : public QDialog
 {
     Q_OBJECT
 
-  public:
-    explicit AddHostDialog( KLDAP::LdapServer *server, QWidget *parent = 0 );
+public:
+    explicit AddHostDialog(KLDAP::LdapServer *server, QWidget *parent = Q_NULLPTR);
     ~AddHostDialog();
 
-  Q_SIGNALS:
-    void changed( bool );
+Q_SIGNALS:
+    void changed(bool);
 
-  private Q_SLOTS:
-    void slotHostEditChanged( const QString& );
+private Q_SLOTS:
+    void slotHostEditChanged(const QString &);
     void slotOk();
 
-  private:
-    KLDAP::LdapConfigWidget *mCfg;
-    KLDAP::LdapServer *mServer;
+private:
+    AddHostDialogPrivate *const d;
 };
+
+}
 
 #endif // ADDHOSTDIALOG_H

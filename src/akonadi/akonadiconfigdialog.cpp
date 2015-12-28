@@ -30,12 +30,12 @@
 #include <QMessageBox>
 #include <QToolBar>
 
-#include <Akonadi/AgentFilterProxyModel>
-#include <Akonadi/AgentInstance>
-#include <Akonadi/AgentInstanceWidget>
-#include <Akonadi/AgentInstanceCreateJob>
-#include <Akonadi/AgentManager>
-#include <Akonadi/AgentTypeDialog>
+#include <AkonadiCore/AgentFilterProxyModel>
+#include <AkonadiCore/AgentInstance>
+#include <AkonadiWidgets/AgentInstanceWidget>
+#include <AkonadiCore/AgentInstanceCreateJob>
+#include <AkonadiCore/AgentManager>
+#include <AkonadiWidgets/AgentTypeDialog>
 
 using namespace Akonadi;
 

@@ -33,3 +33,4 @@ GenericName[pt_BR]=Aplicativo de notas
 GenericName[sv]=Anteckningsprogram
 GenericName[uk]=Програма для роботи з нотатками
 GenericName[x-test]=xxNote Taking Applicationxx
+X-DBUS-ServiceName=org.kde.renku

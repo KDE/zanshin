@@ -63,7 +63,7 @@ AkonadiFakeData::~AkonadiFakeData()
 
 Akonadi::Collection::List AkonadiFakeData::collections() const
 {
-    return m_collections.values();
+    return m_collections.values().toVector();
 }
 
 Akonadi::Collection::List AkonadiFakeData::childCollections(Akonadi::Collection::Id parentId) const
@@ -165,7 +165,7 @@ void AkonadiFakeData::removeCollection(const Akonadi::Collection &collection)
 
 Akonadi::Tag::List AkonadiFakeData::tags() const
 {
-    return m_tags.values();
+    return m_tags.values().toVector();
 }
 
 Akonadi::Tag AkonadiFakeData::tag(Akonadi::Tag::Id id) const
@@ -214,7 +214,7 @@ void AkonadiFakeData::removeTag(const Akonadi::Tag &tag)
 
 Akonadi::Item::List AkonadiFakeData::items() const
 {
-    return m_items.values();
+    return m_items.values().toVector();
 }
 
 Akonadi::Item::List AkonadiFakeData::childItems(Akonadi::Collection::Id parentId) const
@@ -359,7 +359,7 @@ bool idLessThan(const T &left, const T &right)
     return left.id() < right.id();
 }
 
-Akonadi::Entity::Id AkonadiFakeData::maxCollectionId() const
+Akonadi::Collection::Id AkonadiFakeData::maxCollectionId() const
 {
     if (m_collections.isEmpty())
         return 0;
@@ -369,7 +369,7 @@ Akonadi::Entity::Id AkonadiFakeData::maxCollectionId() const
     return it.key();
 }
 
-Akonadi::Entity::Id AkonadiFakeData::maxItemId() const
+Akonadi::Item::Id AkonadiFakeData::maxItemId() const
 {
     if (m_items.isEmpty())
         return 0;

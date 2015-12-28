@@ -21,5 +21,5 @@ set(presentation_SRCS
     workdaypagemodel.cpp
 )
 
-kde4_add_library(presentation STATIC ${presentation_SRCS})
-target_link_libraries(presentation ${QT4_QTCORE_LIBRARY} domain utils)
+add_library(presentation STATIC ${presentation_SRCS})
+target_link_libraries(presentation Qt5::Core Qt5::Gui domain utils)

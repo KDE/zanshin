@@ -26,7 +26,7 @@
 
 #include <QObject>
 
-#include <Akonadi/Tag>
+#include <AkonadiCore/Tag>
 
 namespace Testlib {
 

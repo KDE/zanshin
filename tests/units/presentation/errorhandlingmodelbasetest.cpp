@@ -101,4 +101,4 @@ private slots:
 
 QTEST_MAIN(ErrorHandlingModelBaseTest)
 
-#include "errorhandlingModelBasetest.moc"
+#include "errorhandlingmodelbasetest.moc"

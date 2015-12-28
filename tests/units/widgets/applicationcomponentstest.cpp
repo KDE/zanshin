@@ -23,6 +23,7 @@
 
 #include <QtTestGui>
 
+#include <QMimeData>
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QTreeView>

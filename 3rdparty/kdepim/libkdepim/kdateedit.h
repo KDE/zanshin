@@ -25,6 +25,7 @@
 #define KDEPIM_KDATEEDIT_H
 
 #include "kdatepickerpopup.h"
+#include "kdepim_export.h"
 
 #include <QComboBox>
 #include <QDateTime>
@@ -53,7 +54,7 @@ namespace KPIM {
   @author David Jarvie <software@astrojar.org.uk>
   @author Tobias Koenig <tokoe@kde.org>
 */
-class KDateEdit : public QComboBox
+class KDEPIM_EXPORT KDateEdit : public QComboBox
 {
   Q_OBJECT
   Q_PROPERTY( QDate date READ date WRITE setDate )

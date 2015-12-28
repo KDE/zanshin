@@ -24,7 +24,8 @@
 #ifndef RENKU_PART_H
 #define RENKU_PART_H
 
-#include <KDE/KParts/Part>
+#include <KParts/Part>
+#include <KParts/ReadOnlyPart>
 
 class Part : public KParts::ReadOnlyPart
 {

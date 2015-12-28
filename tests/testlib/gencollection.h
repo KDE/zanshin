@@ -26,7 +26,7 @@
 
 #include <QObject>
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 
 namespace Testlib {
 

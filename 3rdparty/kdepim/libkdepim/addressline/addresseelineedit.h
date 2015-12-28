@@ -29,8 +29,6 @@
 
 #include "kdepim_export.h"
 
-#include "ldap/ldapclient.h"
-
 #include <KLineEdit>
 
 class QDropEvent;
@@ -39,19 +37,27 @@ class QKeyEvent;
 class QMenu;
 class QMouseEvent;
 class QObject;
-
-namespace Akonadi {
+class KJob;
+class KConfig;
+namespace Akonadi
+{
 class Item;
 }
 
-namespace KABC {
+namespace KContacts
+{
 class Addressee;
 class ContactGroup;
 }
+namespace KLDAP
+{
+class LdapClientSearch;
+}
 
-namespace KPIM {
+namespace KPIM
+{
 
-
+class AddresseeLineEditPrivate;
 class KDEPIM_EXPORT AddresseeLineEdit : public KLineEdit
 {
     Q_OBJECT
@@ -63,7 +69,7 @@ public:
      * @param parent The parent object.
      * @param enableCompletion Whether autocompletion shall be enabled.
      */
-    explicit AddresseeLineEdit( QWidget *parent, bool enableCompletion = true );
+    explicit AddresseeLineEdit(QWidget *parent, bool enableCompletion = true);
 
     /**
      * Destroys the addressee line edit.
@@ -73,14 +79,70 @@ public:
     /**
      * Sets whether semicolons are allowed as separators.
      */
-    void allowSemicolonAsSeparator( bool allow );
+    void allowSemicolonAsSeparator(bool allow);
 
     /**
      * Reimplemented for setting the @p font for line edit and completion box.
      */
-    void setFont( const QFont &font );
+    void setFont(const QFont &font);
+
+    void setEnableBalooSearch(bool enable);
+
+    bool isCompletionEnabled() const;
+
+    void setExpandIntern(bool);
+
+    bool expandIntern() const;
+
+    bool groupsIsEmpty() const;
+    /**
+     * Adds a new @p contact to the completion with a given
+     * @p weight
+     * @p source index
+     * @p append  is added to completion string, but removed, when mail is selected.
+     */
+    void addContact(const KContacts::Addressee &contact, int weight, int source = -1, QString append = QString());
+
+    /**
+     * Same as the above, but this time with contact groups.
+     */
+    void addContactGroup(const KContacts::ContactGroup &group, int weight, int source = -1);
+
+    void addItem(const Akonadi::Item &item, int weight, int source = -1);
+
+    /**
+     * Adds the @p name of a completion source and its @p weight
+     * to the internal list of completion sources and returns its index,
+     * which can be used for insertion of items associated with that source.
+     *
+     * If the source already exists, the weight will be updated.
+     */
+    int addCompletionSource(const QString &name, int weight);
+
+    void removeCompletionSource(const QString &source);
+    void emitTextCompleted();
+
+    void callUserCancelled(const QString &str);
+    void callSetCompletedText(const QString & /*text*/, bool /*marked*/);
+    void callSetCompletedText(const QString &text);
+    void callSetUserSelection(bool);
+
+    void updateBalooBlackList();
+    void updateCompletionOrder();
+    KLDAP::LdapClientSearch *ldapSearch() const;
+    QStringList balooBlackList() const;
+
+    void setAutoGroupExpand(bool autoGroupExpand);
+    bool autoGroupExpand() const;
+    void setShowRecentAddresses(bool b);
+    bool showRecentAddresses() const;
+    void setRecentAddressConfig(KConfig *config);
+    KConfig *recentAddressConfig() const;
+    void configureCompletion();
+
 Q_SIGNALS:
     void textCompleted();
+    void addAddress(const QString &address);
 
 public Q_SLOTS:
     /**
@@ -91,41 +153,19 @@ public Q_SLOTS:
     /**
      * Sets whether autocompletion shall be enabled.
      */
-    void enableCompletion( bool enable );
+    void enableCompletion(bool enable);
 
     /**
      * Reimplemented for stripping whitespace after completion
      * Danger: This is _not_ virtual in the base class!
      */
-    virtual void setText( const QString &text );
+    void setText(const QString &text) Q_DECL_OVERRIDE;
+
+    void expandGroups();
+    void slotEditingFinished();
+    void slotGroupSearchResult(KJob *job);
 
 protected:
-    /**
-     * Adds a new @p contact to the completion with a given
-     * @p weight
-     * @p source index
-     * @p append  is added to completion string, but removed, when mail is selected.
-     */
-    void addContact( const KABC::Addressee &contact, int weight, int source = -1, QString append = QString() );
-
-    /**
-     * Same as the above, but this time with contact groups.
-     */
-    void addContactGroup( const KABC::ContactGroup &group, int weight, int source = -1 );
-
-    void addItem( const Akonadi::Item &item, int weight, int source = -1 );
-
-    /**
-     * Adds the @p name of a completion source and its @p weight
-     * to the internal list of completion sources and returns its index,
-     * which can be used for insertion of items associated with that source.
-     *
-     * If the source already exists, the weight will be updated.
-     */
-    int addCompletionSource( const QString &name, int weight );
-
-    void removeCompletionSource(const QString &source);
-
     /**
      * Reimplemented for smart insertion of email addresses.
      * Features:
@@ -134,7 +174,7 @@ protected:
      * - Recognizes email addresses which are protected against address
      *   harvesters, i.e. "name at kde dot org" and "name(at)kde.org"
      */
-    virtual void insert( const QString & );
+    virtual void insert(const QString &);
 
     /**
      * Reimplemented for smart insertion of pasted email addresses.
@@ -144,19 +184,19 @@ protected:
     /**
      * Reimplemented for smart insertion with middle mouse button.
      */
-    virtual void mouseReleaseEvent( QMouseEvent * );
+    void mouseReleaseEvent(QMouseEvent *) Q_DECL_OVERRIDE;
 
 #ifndef QT_NO_DRAGANDDROP
     /**
      * Reimplemented for smart insertion of dragged email addresses.
      */
-    virtual void dropEvent( QDropEvent * );
+    void dropEvent(QDropEvent *) Q_DECL_OVERRIDE;
 #endif
 
     /**
      * Reimplemented for internal reasons.
      */
-    virtual void keyPressEvent( QKeyEvent * );
+    void keyPressEvent(QKeyEvent *) Q_DECL_OVERRIDE;
 
 #ifndef QT_NO_CONTEXTMENU
     /**
@@ -169,30 +209,20 @@ protected:
      *
      * See QLineEdit::contextMenuEvent().
      */
-    virtual void contextMenuEvent( QContextMenuEvent * );
+    void contextMenuEvent(QContextMenuEvent *) Q_DECL_OVERRIDE;
 #endif
 
+    QStringList cleanupEmailList(const QStringList &inputList);
+    void insertEmails(const QStringList &emails);
+    void loadContacts();
+
+private Q_SLOTS:
+    void groupExpandResult(KJob *job);
+    void slotToggleExpandGroups();
 private:
-    virtual bool eventFilter( QObject *, QEvent * );
-    void emitTextCompleted();
+    bool eventFilter(QObject *, QEvent *) Q_DECL_OVERRIDE;
 
-    //@cond PRIVATE
-    class Private;
-    Private *const d;
-
-    Q_PRIVATE_SLOT( d, void slotCompletion() )
-    Q_PRIVATE_SLOT( d, void slotPopupCompletion( const QString & ) )
-    Q_PRIVATE_SLOT( d, void slotReturnPressed( const QString & ) )
-    Q_PRIVATE_SLOT( d, void slotStartLDAPLookup() )
-    Q_PRIVATE_SLOT( d, void slotLDAPSearchData( const KLDAP::LdapResult::List & ) )
-    Q_PRIVATE_SLOT( d, void slotEditCompletionOrder() )
-    Q_PRIVATE_SLOT( d, void slotShowOUChanged( bool ) )
-    Q_PRIVATE_SLOT( d, void slotUserCancelled( const QString & ) )
-    Q_PRIVATE_SLOT( d, void slotAkonadiHandleItems( const Akonadi::Item::List & ) )
-    Q_PRIVATE_SLOT( d, void slotAkonadiSearchResult( KJob * ) )
-    Q_PRIVATE_SLOT( d, void slotAkonadiCollectionsReceived( const Akonadi::Collection::List & ) )
-    Q_PRIVATE_SLOT( d, void slotTriggerDelayedQueries() )
-    //@endcond
+    AddresseeLineEditPrivate *const d;
 };
 
 }

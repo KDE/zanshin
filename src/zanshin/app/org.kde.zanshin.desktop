@@ -63,3 +63,4 @@ GenericName[tr]=Yapılacaklar Yönetimi Uygulaması
 GenericName[ug]=قىلىدىغان ئىشلار تىزىمىنى باشقۇرۇش پروگراممىسى
 GenericName[uk]=Програма для керування записами завдань
 GenericName[x-test]=xxTODO Management Applicationxx
+X-DBUS-ServiceName=org.kde.zanshin

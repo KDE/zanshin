@@ -25,7 +25,7 @@
 #define AKONADI_MONITORIMPL_H
 
 #include "akonadimonitorinterface.h"
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 namespace Akonadi {
 

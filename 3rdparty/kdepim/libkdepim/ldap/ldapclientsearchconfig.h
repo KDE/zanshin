@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Laurent Montel <montel@kde.org>
+ * Copyright (C) 2013-2015 Laurent Montel <montel@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,21 +20,22 @@
 #ifndef LDAPCLIENTSEARCHCONFIG_H
 #define LDAPCLIENTSEARCHCONFIG_H
 
-#include "libkdepim/kdepim_export.h"
+#include "kdepim_export.h"
 
 #include <QObject>
 
 class KConfigGroup;
 class KConfig;
 
-namespace KLDAP {
+namespace KLDAP
+{
 class LdapServer;
 class LdapClient;
 class KDEPIM_EXPORT LdapClientSearchConfig : public QObject
 {
     Q_OBJECT
 public:
-    explicit LdapClientSearchConfig(QObject *parent = 0);
+    explicit LdapClientSearchConfig(QObject *parent = Q_NULLPTR);
     ~LdapClientSearchConfig();
 
     /**
@@ -48,8 +49,8 @@ public:
      *
      * @param active Defines whether the active settings shall be read.
      */
-    void readConfig( KLDAP::LdapServer &server, KConfigGroup &group,
-                     int clientNumber, bool active );
+    void readConfig(KLDAP::LdapServer &server, KConfigGroup &group,
+                    int clientNumber, bool active);
 
     /**
      * Writes the LDAP @p server settings to the given config @p group for the
@@ -57,15 +58,21 @@ public:
      *
      * @param active Defines whether the active settings shall be written.
      */
-    void writeConfig( const KLDAP::LdapServer &server, KConfigGroup &group,
-                      int clientNumber, bool active );
+    void writeConfig(const KLDAP::LdapServer &server, KConfigGroup &group,
+                     int clientNumber, bool active);
+
+    /**
+     * Should LdapClientSearchConfig ask, if it should use the KWallet to store passwords
+     */
+    void askForWallet(bool askForWallet);
+
 private Q_SLOTS:
     void slotWalletClosed();
 
 private:
     //@cond PRIVATE
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
 }

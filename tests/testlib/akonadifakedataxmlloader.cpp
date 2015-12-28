@@ -24,7 +24,8 @@
 #include "akonadifakedataxmlloader.h"
 #include "akonadifakedata.h"
 
-#include <akonadi/xml/xmldocument.h>
+#include <QDateTime>
+#include <AkonadiXml/xmldocument.h>
 
 #include <KCalCore/Todo>
 
@@ -89,8 +90,7 @@ void AkonadiFakeDataXmlLoader::load(const QString &fileName) const
             i.setId(itemId++);
             i.setParentCollection(c);
             i.setModificationTime(QDateTime::currentDateTime());
-
-            auto tags = QList<Akonadi::Tag>();
+            auto tags = Akonadi::Tag::List();
             std::transform(i.tags().constBegin(), i.tags().constEnd(),
                            std::back_inserter(tags),
                            [&tagByRid] (const Akonadi::Tag &tag) {

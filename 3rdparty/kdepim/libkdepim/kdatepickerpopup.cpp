@@ -22,10 +22,10 @@
 #include "kdatepickerpopup.h"
 
 #include <KDatePicker>
-#include <KLocale>
+#include <KLocalizedString>
 
-#include <QtCore/QDateTime>
-#include <QtGui/QWidgetAction>
+#include <QDateTime>
+#include <QWidgetAction>
 
 using namespace KPIM;
 
@@ -157,4 +157,3 @@ void KDatePickerPopup::slotNextMonth()
   emit dateChanged( QDate::currentDate().addMonths( 1 ) );
 }
 
-#include "kdatepickerpopup.moc"

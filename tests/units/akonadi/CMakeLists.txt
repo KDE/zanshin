@@ -25,4 +25,4 @@ zanshin_akonadi_auto_tests(
   akonadistoragetest
 )
 
-target_link_libraries(akonadistoragetest testlib)
+target_link_libraries(akonadistoragetest testlib KF5::AkonadiWidgets)

@@ -507,7 +507,7 @@ Akonadi::Tag::Id AkonadiFakeStorage::findId(const Akonadi::Tag &tag)
     return (result != tags.constEnd()) ? result->id() : tag.id();
 }
 
-Akonadi::Entity::Id AkonadiFakeStorage::findId(const Akonadi::Collection &collection)
+Akonadi::Collection::Id AkonadiFakeStorage::findId(const Akonadi::Collection &collection)
 {
     if (collection.isValid() || collection.remoteId().isEmpty())
         return collection.id();
@@ -521,7 +521,7 @@ Akonadi::Entity::Id AkonadiFakeStorage::findId(const Akonadi::Collection &collec
     return (result != collections.constEnd()) ? result->id() : collection.id();
 }
 
-Akonadi::Entity::Id AkonadiFakeStorage::findId(const Akonadi::Item &item)
+Akonadi::Item::Id AkonadiFakeStorage::findId(const Akonadi::Item &item)
 {
     if (item.isValid() || item.remoteId().isEmpty())
         return item.id();

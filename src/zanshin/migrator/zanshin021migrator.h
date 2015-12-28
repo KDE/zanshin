@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 #include <akonadi/akonadistorage.h>
 
 namespace Akonadi {

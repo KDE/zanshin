@@ -24,7 +24,7 @@
 #ifndef AKONADI_MESSAGINGINTERFACE_H
 #define AKONADI_MESSAGINGINTERFACE_H
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 namespace Akonadi {
 

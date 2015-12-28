@@ -22,16 +22,14 @@
 #ifndef LDAPCLIENTSEARCH_H
 #define LDAPCLIENTSEARCH_H
 
-#include "libkdepim/kdepim_export.h"
+#include "kdepim_export.h"
 #include <kldap/ldapobject.h>
-#include <QtCore/QObject>
-#include <QtCore/QStringList>
+#include <QObject>
+#include <QStringList>
 
-
-
-namespace KLDAP {
+namespace KLDAP
+{
 class LdapClient;
-
 
 /**
  * Describes the result returned by an LdapClientSearch query.
@@ -39,6 +37,7 @@ class LdapClient;
  * @since 4.14
  */
 struct LdapResultObject {
+    typedef QVector<LdapResultObject> List;
     const LdapClient *client;
     KLDAP::LdapObject object;
 };
@@ -48,12 +47,11 @@ struct LdapResultObject {
  *
  * @since 4.5
  */
-struct LdapResult
-{
+struct LdapResult {
     /**
-   * A list of LdapResult objects.
-   */
-    typedef QList<LdapResult> List;
+    * A list of LdapResult objects.
+    */
+    typedef QVector<LdapResult> List;
 
     LdapDN dn;
     QString name;         ///< The full name of the contact.
@@ -75,7 +73,7 @@ public:
      *
      * @param parent The parent object.
      */
-    explicit LdapClientSearch( QObject *parent = 0 );
+    explicit LdapClientSearch(QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the ldap client search object.
@@ -85,7 +83,7 @@ public:
     /**
      * Starts the LDAP search on all configured LDAP clients with the given search @p query.
      */
-    void startSearch( const QString &query );
+    void startSearch(const QString &query);
 
     /**
      * Cancels the currently running search query.
@@ -109,8 +107,7 @@ public:
     /**
      * Returns the list of configured LDAP clients.
      */
-    QList<LdapClient*> clients() const;
-
+    QList<LdapClient *> clients() const;
 
     /**
      * Returns the filter for the Query
@@ -133,12 +130,12 @@ public:
      */
     QStringList attributes() const;
 
-     /**
-     * Sets the attributes, that are queried the LDAP Server.
-     *
-     * @since 4.14
-     */
-    void setAttributes(const QStringList&);
+    /**
+    * Sets the attributes, that are queried the LDAP Server.
+    *
+    * @since 4.14
+    */
+    void setAttributes(const QStringList &);
 
 Q_SIGNALS:
     /**
@@ -147,7 +144,7 @@ Q_SIGNALS:
      *
      * @param results The contacts in the form "Full Name <email>"
      */
-    void searchData( const QStringList &results );
+    void searchData(const QStringList &results);
 
     /**
      * This signal is emitted whenever new contacts have been found
@@ -155,7 +152,7 @@ Q_SIGNALS:
      *
      * @param results The list of found contacts.
      */
-    void searchData( const KLDAP::LdapResult::List &results );
+    void searchData(const KLDAP::LdapResult::List &results);
 
     /**
      * This signal is emitted whenever new contacts have been found
@@ -163,7 +160,7 @@ Q_SIGNALS:
      *
      * @param results The list of found contacts.
      */
-    void searchData( const QList<KLDAP::LdapResultObject> &results );
+    void searchData(const KLDAP::LdapResultObject::List &results);
 
     /**
      * This signal is emitted whenever the lookup is complete or the
@@ -174,16 +171,18 @@ Q_SIGNALS:
 private:
     //@cond PRIVATE
     class Private;
-    Private* const d;
+    Private *const d;
 
-    Q_PRIVATE_SLOT( d, void slotLDAPResult( const KLDAP::LdapClient&, const KLDAP::LdapObject& ) )
-    Q_PRIVATE_SLOT( d, void slotLDAPError( const QString& ) )
-    Q_PRIVATE_SLOT( d, void slotLDAPDone() )
-    Q_PRIVATE_SLOT( d, void slotDataTimer() )
-    Q_PRIVATE_SLOT( d, void slotFileChanged( const QString& ) )
+    Q_PRIVATE_SLOT(d, void slotLDAPResult(const KLDAP::LdapClient &, const KLDAP::LdapObject &))
+    Q_PRIVATE_SLOT(d, void slotLDAPError(const QString &))
+    Q_PRIVATE_SLOT(d, void slotLDAPDone())
+    Q_PRIVATE_SLOT(d, void slotDataTimer())
+    Q_PRIVATE_SLOT(d, void slotFileChanged(const QString &))
     //@endcond
 };
 
 }
+Q_DECLARE_TYPEINFO(KLDAP::LdapResult, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(KLDAP::LdapResultObject, Q_MOVABLE_TYPE);
 
 #endif // LDAPCLIENTSEARCH_H

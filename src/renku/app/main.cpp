@@ -25,9 +25,13 @@
 #include <QDockWidget>
 
 #include <KActionCollection>
-#include <KApplication>
-#include <KCmdLineArgs>
+
+
 #include <KXmlGuiWindow>
+#include <QApplication>
+#include <KAboutData>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -42,11 +46,17 @@
 
 int main(int argc, char **argv)
 {
+    QApplication app(argc, argv);
     App::initializeDependencies();
 
-    auto about = App::getAboutData();
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    auto aboutData = App::getAboutData();
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 
     auto widget = new QWidget;
     auto components = new Widgets::ApplicationComponents(widget);

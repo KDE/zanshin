@@ -34,7 +34,6 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
-#include <KAboutData>
 #include <KLineEdit>
 #include <KGlobal>
 #include <KComponentData>
@@ -59,7 +58,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     auto searchEdit = new KLineEdit(this);
     searchEdit->setObjectName("searchEdit");
     searchEdit->setClearButtonShown(true);
-    searchEdit->setClickMessage(tr("Search..."));
+    searchEdit->setPlaceholderText(tr("Search..."));
     connect(searchEdit, SIGNAL(textChanged(QString)),
             this, SLOT(onSearchTextChanged(QString)));
 #ifndef ZANSHIN_HIDING_SOURCES_ENABLED
@@ -108,7 +107,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
 
     auto settingsAction = new QAction(this);
     settingsAction->setObjectName("settingsAction");
-    settingsAction->setText(tr("Configure %1...").arg(KGlobal::mainComponent().aboutData()->programName()));
+    settingsAction->setText(tr("Configure %1...").arg(QApplication::applicationName()));
     settingsAction->setIcon(QIcon::fromTheme("configure"));
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(onSettingsTriggered()));
     m_actions.insert("options_configure", settingsAction);

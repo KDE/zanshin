@@ -72,7 +72,7 @@ private:
     mutable QDate m_today;
 
     mutable TaskQueryOutput::Ptr m_findAll;
-    mutable QHash<Akonadi::Entity::Id, TaskQueryOutput::Ptr> m_findChildren;
+    mutable QHash<Akonadi::Item::Id, TaskQueryOutput::Ptr> m_findChildren;
     mutable TaskQueryOutput::Ptr m_findTopLevel;
     mutable TaskQueryOutput::Ptr m_findInboxTopLevel;
     mutable TaskQueryOutput::Ptr m_findWorkdayTopLevel;

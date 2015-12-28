@@ -30,43 +30,44 @@ class QListWidgetItem;
 class QPushButton;
 class QToolButton;
 
-namespace KLDAP {
+namespace KLDAP
+{
 class LdapClientSearchConfig;
 }
 
 class KCMLdap : public KCModule
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
-    explicit KCMLdap( QWidget *parent, const QVariantList &args );
+public:
+    explicit KCMLdap(QWidget *parent, const QVariantList &args);
     ~KCMLdap();
 
-    void load();
-    void save();
-    void defaults();
+    void load() override;
+    void save() override;
+    void defaults() override;
 
-  private Q_SLOTS:
+private Q_SLOTS:
     void slotAddHost();
     void slotEditHost();
     void slotRemoveHost();
-    void slotSelectionChanged( QListWidgetItem* );
-    void slotItemClicked( QListWidgetItem* );
+    void slotSelectionChanged(QListWidgetItem *);
+    void slotItemClicked(QListWidgetItem *);
     void slotMoveUp();
     void slotMoveDown();
 
-  private:
+private:
     void initGUI();
-    QWidget* dialogParent();
+    QWidget *dialogParent();
 
-    QListWidget* mHostListView;
+    QListWidget *mHostListView;
 
-    QPushButton* mAddButton;
-    QPushButton* mEditButton;
-    QPushButton* mRemoveButton;
+    QPushButton *mAddButton;
+    QPushButton *mEditButton;
+    QPushButton *mRemoveButton;
 
-    QToolButton* mUpButton;
-    QToolButton* mDownButton;
+    QToolButton *mUpButton;
+    QToolButton *mDownButton;
     KLDAP::LdapClientSearchConfig *mClientSearchConfig;
 };
 

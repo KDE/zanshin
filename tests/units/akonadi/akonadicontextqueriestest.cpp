@@ -437,4 +437,4 @@ private slots:
 
 QTEST_MAIN(AkonadiContextQueriesTest)
 
-#include "AkonadiContextQueriesTest.moc"
+#include "akonadicontextqueriestest.moc"

@@ -23,9 +23,9 @@
 
 #include "part.h"
 
-#include <KDE/KActionCollection>
-#include <KDE/KPluginFactory>
-#include <KDE/KStandardDirs>
+#include <KActionCollection>
+#include <KPluginFactory>
+#include <KStandardDirs>
 
 #include <QAction>
 #include <QBoxLayout>
@@ -45,14 +45,13 @@
 #include "utils/dependencymanager.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
-K_EXPORT_PLUGIN(PartFactory(App::getAboutData()))
 
 Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     : KParts::ReadOnlyPart(parent)
 {
     App::initializeDependencies();
 
-    setComponentData(PartFactory::componentData());
+    setComponentName(QStringLiteral("zanshin"), QStringLiteral("zanshin"));
 
     auto splitter = new QSplitter(parentWidget);
     auto sidebar = new QSplitter(Qt::Vertical, parentWidget);
@@ -86,3 +85,4 @@ bool Part::openFile()
     return false;
 }
 
+#include "part.moc"

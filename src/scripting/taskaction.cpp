@@ -31,4 +31,3 @@ TaskAction::TaskAction(const Domain::TaskRepository::Ptr &taskRepository)
 {
 }
 
-#include "taskaction.moc"

@@ -24,14 +24,15 @@
 #ifndef KLDAP_LDAPSEARCHDIALOG_H
 #define KLDAP_LDAPSEARCHDIALOG_H
 
-#include "libkdepim/kdepim_export.h"
+#include "kdepim_export.h"
 
-#include <kabc/addressee.h>
-#include <kdialog.h>
+#include <kcontacts/addressee.h>
+#include <QDialog>
 
 class QCloseEvent;
 
-namespace KLDAP {
+namespace KLDAP
+{
 
 class LdapClient;
 class LdapObject;
@@ -45,17 +46,24 @@ class LdapObject;
  * @author Steffen Hansen <hansen@kde.org>
  * @since 4.5
  */
-class KDEPIM_EXPORT LdapSearchDialog : public KDialog
+class KDEPIM_EXPORT LdapSearchDialog : public QDialog
 {
     Q_OBJECT
 
 public:
+    enum FilterType {
+        Name = 0,
+        Email,
+        HomeNumber,
+        WorkNumber
+    };
+
     /**
      * Creates a new ldap search dialog.
      *
      * @param parent The parent widget.
      */
-    explicit LdapSearchDialog( QWidget *parent = 0 );
+    explicit LdapSearchDialog(QWidget *parent = Q_NULLPTR);
 
     /**
      * Destroys the ldap search dialog.
@@ -65,13 +73,13 @@ public:
     /**
      * Sets the @p text in the search line edit.
      */
-    void setSearchText( const QString &text );
+    void setSearchText(const QString &text);
 
     /**
      * Returns a list of contacts that have been selected
      * in the LDAP search.
      */
-    KABC::Addressee::List selectedContacts() const;
+    KContacts::Addressee::List selectedContacts() const;
 
 Q_SIGNALS:
     /**
@@ -83,29 +91,29 @@ Q_SIGNALS:
 protected Q_SLOTS:
     void slotUser1();
     void slotUser2();
-    void slotCustomContextMenuRequested(const QPoint&);
+    void slotCustomContextMenuRequested(const QPoint &);
     void slotCancelClicked();
 
 protected:
-    void closeEvent( QCloseEvent* );
+    void closeEvent(QCloseEvent *) Q_DECL_OVERRIDE;
 
 private:
     //@cond PRIVATE
     class Private;
-    Private* const d;
+    Private *const d;
 
-    Q_PRIVATE_SLOT( d, void slotAddResult( const KLDAP::LdapClient&, const KLDAP::LdapObject& ) )
-    Q_PRIVATE_SLOT( d, void slotSetScope( bool ) )
-    Q_PRIVATE_SLOT( d, void slotStartSearch() )
-    Q_PRIVATE_SLOT( d, void slotStopSearch() )
-    Q_PRIVATE_SLOT( d, void slotSearchDone() )
-    Q_PRIVATE_SLOT( d, void slotError( const QString& ) )
-    Q_PRIVATE_SLOT( d, void slotSelectAll() )
-    Q_PRIVATE_SLOT( d, void slotUnselectAll() )
-    Q_PRIVATE_SLOT( d, void slotSelectionChanged() )
+    Q_PRIVATE_SLOT(d, void slotAddResult(const KLDAP::LdapClient &, const KLDAP::LdapObject &))
+    Q_PRIVATE_SLOT(d, void slotSetScope(bool))
+    Q_PRIVATE_SLOT(d, void slotStartSearch())
+    Q_PRIVATE_SLOT(d, void slotStopSearch())
+    Q_PRIVATE_SLOT(d, void slotSearchDone())
+    Q_PRIVATE_SLOT(d, void slotError(const QString &))
+    Q_PRIVATE_SLOT(d, void slotSelectAll())
+    Q_PRIVATE_SLOT(d, void slotUnselectAll())
+    Q_PRIVATE_SLOT(d, void slotSelectionChanged())
     //@endcond
 };
 
 }
-
+Q_DECLARE_METATYPE(KLDAP::LdapSearchDialog::FilterType)
 #endif

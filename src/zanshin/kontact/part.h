@@ -24,7 +24,7 @@
 #ifndef ZANSHIN_PART_H
 #define ZANSHIN_PART_H
 
-#include <KDE/KParts/Part>
+#include <KParts/ReadOnlyPart>
 
 class Part : public KParts::ReadOnlyPart
 {

@@ -2,7 +2,7 @@
   This file is part of libkldap.
 
   Copyright (c) 2002-2009 Tobias Koenig <tokoe@kde.org>
-  Copyright (c) 2013 Laurent Montel <montel@kde.org>
+  Copyright (C) 2013-2015 Laurent Montel <montel@kde.org>
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Library General  Public
@@ -30,82 +30,84 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
-#include <kaboutdata.h>
-#include <kapplication.h>
-#include <kcomponentdata.h>
+#include <KAboutData>
 #include <kconfig.h>
 #include <kconfiggroup.h>
-#include <kdemacros.h>
-#include <kdialogbuttonbox.h>
-#include <kgenericfactory.h>
-#include <khbox.h>
+#include <qdialogbuttonbox.h>
+#include <KPluginFactory>
+#include <QHBoxLayout>
 #include <kiconloader.h>
-#include <klocale.h>
-#include <kvbox.h>
+#include <KLocalizedString>
 #include <KMessageBox>
 
 #include "ldapclientsearch.h"
 #include "ldapclientsearchconfig.h"
 #include <kldap/ldapserver.h>
 
-#include "addhostdialog_p.h"
+#include "addhostdialog.h"
 
-K_PLUGIN_FACTORY( KCMLdapFactory, registerPlugin<KCMLdap>(); )
-K_EXPORT_PLUGIN( KCMLdapFactory( "kcmldap" ) )
+K_PLUGIN_FACTORY_WITH_JSON(KCMLdapFactory, "kcmldap.json", registerPlugin<KCMLdap>();)
 
 class LDAPItem : public QListWidgetItem
 {
 public:
-    LDAPItem( QListWidget *parent, const KLDAP::LdapServer &server, bool isActive = false )
-        : QListWidgetItem( parent, QListWidgetItem::UserType ),
-          mIsActive( isActive )
+    LDAPItem(QListWidget *parent, const KLDAP::LdapServer &server, bool isActive = false)
+        : QListWidgetItem(parent, QListWidgetItem::UserType),
+          mIsActive(isActive)
     {
-        setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable );
-        setCheckState( isActive ? Qt::Checked : Qt::Unchecked );
-        setServer( server );
+        setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+        setCheckState(isActive ? Qt::Checked : Qt::Unchecked);
+        setServer(server);
     }
 
-    void setServer( const KLDAP::LdapServer &server )
+    void setServer(const KLDAP::LdapServer &server)
     {
         mServer = server;
 
-        setText( mServer.host() );
+        setText(mServer.host());
     }
 
-    const KLDAP::LdapServer &server() const { return mServer; }
+    const KLDAP::LdapServer &server() const
+    {
+        return mServer;
+    }
 
-    void setIsActive( bool isActive ) { mIsActive = isActive; }
-    bool isActive() const { return mIsActive; }
+    void setIsActive(bool isActive)
+    {
+        mIsActive = isActive;
+    }
+    bool isActive() const
+    {
+        return mIsActive;
+    }
 
 private:
     KLDAP::LdapServer mServer;
     bool mIsActive;
 };
 
-KCMLdap::KCMLdap( QWidget *parent, const QVariantList& )
-    : KCModule( KCMLdapFactory::componentData(), parent )
+KCMLdap::KCMLdap(QWidget *parent, const QVariantList &)
+    : KCModule(parent)
 {
     setButtons(KCModule::Apply);
-    KAboutData *about = new KAboutData( I18N_NOOP( "kcmldap" ), 0,
-                                        ki18n( "LDAP Server Settings" ),
-                                        0, KLocalizedString(), KAboutData::License_LGPL,
-                                        ki18n( "(c) 2009 - 2010 Tobias Koenig" ) );
+    KAboutData *about = new KAboutData(QStringLiteral("kcmldap"),
+                                       i18n("kcmldap"),
+                                       QString(),
+                                       i18n("LDAP Server Settings"),
+                                       KAboutLicense::LGPL,
+                                       i18n("(c) 2009 - 2010 Tobias Koenig"));
+    about->addAuthor(i18n("Tobias Koenig"), QString(), QStringLiteral("tokoe@kde.org"));
+    setAboutData(about);
 
-    about->addAuthor( ki18n( "Tobias Koenig" ), KLocalizedString(), "tokoe@kde.org" );
-    KGlobal::locale()->insertCatalog(QLatin1String("libkdepim"));
-    setAboutData( about );
     mClientSearchConfig = new KLDAP::LdapClientSearchConfig;
     initGUI();
 
-    connect( mHostListView, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-             this, SLOT(slotSelectionChanged(QListWidgetItem*)) );
-    connect( mHostListView, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-             this, SLOT(slotEditHost()) );
-    connect( mHostListView, SIGNAL(itemClicked(QListWidgetItem*)),
-             this, SLOT(slotItemClicked(QListWidgetItem*)) );
+    connect(mHostListView, &QListWidget::currentItemChanged, this, &KCMLdap::slotSelectionChanged);
+    connect(mHostListView, &QListWidget::itemDoubleClicked, this, &KCMLdap::slotEditHost);
+    connect(mHostListView, &QListWidget::itemClicked, this, &KCMLdap::slotItemClicked);
 
-    connect( mUpButton, SIGNAL(clicked()), this, SLOT(slotMoveUp()) );
-    connect( mDownButton, SIGNAL(clicked()), this, SLOT(slotMoveDown()) );
+    connect(mUpButton, &QToolButton::clicked, this, &KCMLdap::slotMoveUp);
+    connect(mDownButton, &QToolButton::clicked, this, &KCMLdap::slotMoveDown);
 }
 
 KCMLdap::~KCMLdap()
@@ -113,190 +115,192 @@ KCMLdap::~KCMLdap()
     delete mClientSearchConfig;
 }
 
-void KCMLdap::slotSelectionChanged( QListWidgetItem *item )
+void KCMLdap::slotSelectionChanged(QListWidgetItem *item)
 {
-    bool state = ( item != 0 );
-    mEditButton->setEnabled( state );
-    mRemoveButton->setEnabled( state );
-    mDownButton->setEnabled( item && (mHostListView->row( item ) != (mHostListView->count() - 1)) );
-    mUpButton->setEnabled( item && (mHostListView->row( item ) != 0) );
+    bool state = (item != Q_NULLPTR);
+    mEditButton->setEnabled(state);
+    mRemoveButton->setEnabled(state);
+    mDownButton->setEnabled(item && (mHostListView->row(item) != (mHostListView->count() - 1)));
+    mUpButton->setEnabled(item && (mHostListView->row(item) != 0));
 }
 
-void KCMLdap::slotItemClicked( QListWidgetItem *item )
+void KCMLdap::slotItemClicked(QListWidgetItem *item)
 {
-    LDAPItem *ldapItem = dynamic_cast<LDAPItem*>( item );
-    if ( !ldapItem ) {
+    LDAPItem *ldapItem = dynamic_cast<LDAPItem *>(item);
+    if (!ldapItem) {
         return;
     }
 
-    if ( (ldapItem->checkState() == Qt::Checked) != ldapItem->isActive() ) {
-        emit changed( true );
-        ldapItem->setIsActive( ldapItem->checkState() == Qt::Checked );
+    if ((ldapItem->checkState() == Qt::Checked) != ldapItem->isActive()) {
+        Q_EMIT changed(true);
+        ldapItem->setIsActive(ldapItem->checkState() == Qt::Checked);
     }
 }
 
 void KCMLdap::slotAddHost()
 {
     KLDAP::LdapServer server;
-    AddHostDialog dlg( &server, dialogParent() );
+    KLDAP::AddHostDialog dlg(&server, dialogParent());
 
-    if ( dlg.exec() && !server.host().isEmpty() ) { //krazy:exclude=crashy
-        new LDAPItem( mHostListView, server );
+    if (dlg.exec() && !server.host().isEmpty()) {   //krazy:exclude=crashy
+        new LDAPItem(mHostListView, server);
 
-        emit changed( true );
+        Q_EMIT changed(true);
     }
 }
 
 void KCMLdap::slotEditHost()
 {
-    LDAPItem *item = dynamic_cast<LDAPItem*>( mHostListView->currentItem() );
-    if ( !item ) {
+    LDAPItem *item = dynamic_cast<LDAPItem *>(mHostListView->currentItem());
+    if (!item) {
         return;
     }
 
     KLDAP::LdapServer server = item->server();
-    AddHostDialog dlg( &server, dialogParent() );
-    dlg.setCaption( i18n( "Edit Host" ) );
+    KLDAP::AddHostDialog dlg(&server, dialogParent());
+    dlg.setWindowTitle(i18n("Edit Host"));
 
-    if ( dlg.exec() && !server.host().isEmpty() ) { //krazy:exclude=crashy
-        item->setServer( server );
+    if (dlg.exec() && !server.host().isEmpty()) {   //krazy:exclude=crashy
+        item->setServer(server);
 
-        emit changed( true );
+        Q_EMIT changed(true);
     }
 }
 
 void KCMLdap::slotRemoveHost()
 {
     QListWidgetItem *item = mHostListView->currentItem();
-    if (!item)
+    if (!item) {
         return;
-    LDAPItem *ldapItem = dynamic_cast<LDAPItem*>( item );
-    if (KMessageBox::No == KMessageBox::questionYesNo(this, i18n("Do you want to remove setting for host \"%1\"?", ldapItem->server().host() ), i18n("Remove Host")))
+    }
+    LDAPItem *ldapItem = dynamic_cast<LDAPItem *>(item);
+    if (KMessageBox::No == KMessageBox::questionYesNo(this, i18n("Do you want to remove setting for host \"%1\"?", ldapItem->server().host()), i18n("Remove Host"))) {
         return;
+    }
 
-    delete mHostListView->takeItem( mHostListView->currentRow() );
+    delete mHostListView->takeItem(mHostListView->currentRow());
 
-    slotSelectionChanged( mHostListView->currentItem() );
+    slotSelectionChanged(mHostListView->currentItem());
 
-    emit changed( true );
+    Q_EMIT changed(true);
 }
 
-static void swapItems( LDAPItem *item, LDAPItem *other )
+static void swapItems(LDAPItem *item, LDAPItem *other)
 {
     KLDAP::LdapServer server = item->server();
     bool isActive = item->isActive();
-    item->setServer( other->server() );
-    item->setIsActive( other->isActive() );
-    item->setCheckState( other->isActive() ? Qt::Checked : Qt::Unchecked );
-    other->setServer( server );
-    other->setIsActive( isActive );
-    other->setCheckState( isActive ? Qt::Checked : Qt::Unchecked );
+    item->setServer(other->server());
+    item->setIsActive(other->isActive());
+    item->setCheckState(other->isActive() ? Qt::Checked : Qt::Unchecked);
+    other->setServer(server);
+    other->setIsActive(isActive);
+    other->setCheckState(isActive ? Qt::Checked : Qt::Unchecked);
 }
 
 void KCMLdap::slotMoveUp()
 {
-    const QList<QListWidgetItem*> selectedItems = mHostListView->selectedItems();
-    if ( selectedItems.count() == 0 ) {
+    const QList<QListWidgetItem *> selectedItems = mHostListView->selectedItems();
+    if (selectedItems.isEmpty()) {
         return;
     }
 
-    LDAPItem *item = static_cast<LDAPItem *>( mHostListView->selectedItems().first() );
-    if ( !item ) {
+    LDAPItem *item = static_cast<LDAPItem *>(mHostListView->selectedItems().first());
+    if (!item) {
         return;
     }
 
-    LDAPItem *above = static_cast<LDAPItem *>( mHostListView->item( mHostListView->row( item ) - 1 ) );
-    if ( !above ) {
+    LDAPItem *above = static_cast<LDAPItem *>(mHostListView->item(mHostListView->row(item) - 1));
+    if (!above) {
         return;
     }
 
-    swapItems( item, above );
+    swapItems(item, above);
 
-    mHostListView->setCurrentItem( above );
-    above->setSelected( true );
+    mHostListView->setCurrentItem(above);
+    above->setSelected(true);
 
-    emit changed( true );
+    Q_EMIT changed(true);
 }
 
 void KCMLdap::slotMoveDown()
 {
-    const QList<QListWidgetItem*> selectedItems = mHostListView->selectedItems();
-    if ( selectedItems.count() == 0 ) {
+    const QList<QListWidgetItem *> selectedItems = mHostListView->selectedItems();
+    if (selectedItems.isEmpty()) {
         return;
     }
 
-    LDAPItem *item = static_cast<LDAPItem *>( mHostListView->selectedItems().first() );
-    if ( !item ) {
+    LDAPItem *item = static_cast<LDAPItem *>(mHostListView->selectedItems().first());
+    if (!item) {
         return;
     }
 
-    LDAPItem *below = static_cast<LDAPItem *>( mHostListView->item( mHostListView->row( item ) + 1 ) );
-    if ( !below ) {
+    LDAPItem *below = static_cast<LDAPItem *>(mHostListView->item(mHostListView->row(item) + 1));
+    if (!below) {
         return;
     }
 
-    swapItems( item, below );
+    swapItems(item, below);
 
-    mHostListView->setCurrentItem( below );
-    below->setSelected( true );
+    mHostListView->setCurrentItem(below);
+    below->setSelected(true);
 
-    emit changed( true );
+    Q_EMIT changed(true);
 }
 
 void KCMLdap::load()
 {
     mHostListView->clear();
     KConfig *config = KLDAP::LdapClientSearchConfig::config();
-    KConfigGroup group( config, "LDAP" );
+    KConfigGroup group(config, "LDAP");
 
-    uint count = group.readEntry( "NumSelectedHosts", 0 );
-    for ( uint i = 0; i < count; ++i ) {
+    uint count = group.readEntry("NumSelectedHosts", 0);
+    for (uint i = 0; i < count; ++i) {
         KLDAP::LdapServer server;
-        mClientSearchConfig->readConfig( server, group, i, true );
-        LDAPItem *item = new LDAPItem( mHostListView, server, true );
-        item->setCheckState( Qt::Checked );
+        mClientSearchConfig->readConfig(server, group, i, true);
+        LDAPItem *item = new LDAPItem(mHostListView, server, true);
+        item->setCheckState(Qt::Checked);
     }
 
-    count = group.readEntry( "NumHosts", 0 );
-    for ( uint i = 0; i < count; ++i ) {
+    count = group.readEntry("NumHosts", 0);
+    for (uint i = 0; i < count; ++i) {
         KLDAP::LdapServer server;
-        mClientSearchConfig->readConfig( server, group, i, false );
-        new LDAPItem( mHostListView, server );
+        mClientSearchConfig->readConfig(server, group, i, false);
+        new LDAPItem(mHostListView, server);
     }
 
-    emit changed( false );
+    Q_EMIT changed(false);
 }
 
 void KCMLdap::save()
 {
     KConfig *config = KLDAP::LdapClientSearchConfig::config();
-    config->deleteGroup( "LDAP" );
+    config->deleteGroup("LDAP");
 
-    KConfigGroup group( config, "LDAP" );
+    KConfigGroup group(config, "LDAP");
 
     uint selected = 0;
     uint unselected = 0;
-    for ( int i = 0; i < mHostListView->count(); ++i ) {
-        LDAPItem *item = dynamic_cast<LDAPItem*>( mHostListView->item( i ) );
-        if ( !item ) {
+    for (int i = 0; i < mHostListView->count(); ++i) {
+        LDAPItem *item = dynamic_cast<LDAPItem *>(mHostListView->item(i));
+        if (!item) {
             continue;
         }
 
         KLDAP::LdapServer server = item->server();
-        if ( item->checkState() == Qt::Checked ) {
-            mClientSearchConfig->writeConfig( server, group, selected, true );
+        if (item->checkState() == Qt::Checked) {
+            mClientSearchConfig->writeConfig(server, group, selected, true);
             selected++;
         } else {
-            mClientSearchConfig->writeConfig( server, group, unselected, false );
+            mClientSearchConfig->writeConfig(server, group, unselected, false);
             unselected++;
         }
     }
 
-    group.writeEntry( "NumSelectedHosts", selected );
-    group.writeEntry( "NumHosts", unselected );
+    group.writeEntry("NumSelectedHosts", selected);
+    group.writeEntry("NumHosts", unselected);
     config->sync();
 
-    emit changed( false );
+    Q_EMIT changed(false);
 }
 
 void KCMLdap::defaults()
@@ -307,64 +311,71 @@ void KCMLdap::defaults()
 void KCMLdap::initGUI()
 {
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->setSpacing( KDialog::spacingHint() );
-    layout->setMargin( 0 );
+    layout->setMargin(0);
     setLayout(layout);
 
-    QGroupBox *groupBox = new QGroupBox( i18n( "LDAP Servers" ), this );
-    QVBoxLayout *mainLayout = new QVBoxLayout( groupBox );
+    QGroupBox *groupBox = new QGroupBox(i18n("LDAP Servers"), this);
+    QVBoxLayout *mainLayout = new QVBoxLayout(groupBox);
 
     // Contents of the QVGroupBox: label and hbox
-    QLabel *label = new QLabel( i18n( "Check all servers that should be used:" ) );
-    mainLayout->addWidget( label );
+    QLabel *label = new QLabel(i18n("Check all servers that should be used:"));
+    mainLayout->addWidget(label);
 
-    KHBox *hBox = new KHBox;
-    hBox->setSpacing( 6 );
+    QWidget *hBox = new QWidget;
+    QHBoxLayout *hBoxHBoxLayout = new QHBoxLayout(hBox);
+    hBoxHBoxLayout->setMargin(0);
+    hBoxHBoxLayout->setSpacing(6);
     mainLayout->addWidget(hBox);
     // Contents of the hbox: listview and up/down buttons on the right (vbox)
-    mHostListView = new QListWidget( hBox );
-    mHostListView->setSortingEnabled( false );
+    mHostListView = new QListWidget(hBox);
+    hBoxHBoxLayout->addWidget(mHostListView);
+    mHostListView->setSortingEnabled(false);
 
-    KVBox *upDownBox = new KVBox( hBox );
-    upDownBox->setSpacing( 6 );
-    mUpButton = new QToolButton( upDownBox );
-    mUpButton->setIcon( KIcon( QLatin1String("go-up") ) );
-    mUpButton->setIconSize( QSize( KIconLoader::SizeSmall, KIconLoader::SizeSmall ) );
-    mUpButton->setEnabled( false ); // b/c no item is selected yet
+    QWidget *upDownBox = new QWidget(hBox);
+    QVBoxLayout *upDownBoxVBoxLayout = new QVBoxLayout(upDownBox);
+    upDownBoxVBoxLayout->setMargin(0);
+    hBoxHBoxLayout->addWidget(upDownBox);
+    upDownBoxVBoxLayout->setSpacing(6);
+    mUpButton = new QToolButton(upDownBox);
+    upDownBoxVBoxLayout->addWidget(mUpButton);
+    mUpButton->setIcon(QIcon::fromTheme(QStringLiteral("go-up")));
+    mUpButton->setIconSize(QSize(KIconLoader::SizeSmall, KIconLoader::SizeSmall));
+    mUpButton->setEnabled(false);   // b/c no item is selected yet
 
-    mDownButton = new QToolButton( upDownBox );
-    mDownButton->setIcon( KIcon( QLatin1String("go-down") ) );
-    mDownButton->setIconSize( QSize( KIconLoader::SizeSmall, KIconLoader::SizeSmall ) );
-    mDownButton->setEnabled( false ); // b/c no item is selected yet
+    mDownButton = new QToolButton(upDownBox);
+    upDownBoxVBoxLayout->addWidget(mDownButton);
+    mDownButton->setIcon(QIcon::fromTheme(QStringLiteral("go-down")));
+    mDownButton->setIconSize(QSize(KIconLoader::SizeSmall, KIconLoader::SizeSmall));
+    mDownButton->setEnabled(false);   // b/c no item is selected yet
 
-    QWidget *spacer = new QWidget( upDownBox );
-    upDownBox->setStretchFactor( spacer, 100 );
+    QWidget *spacer = new QWidget(upDownBox);
+    upDownBoxVBoxLayout->addWidget(spacer);
+    upDownBoxVBoxLayout->setStretchFactor(spacer, 100);
 
-    layout->addWidget( groupBox );
+    layout->addWidget(groupBox);
 
-    KDialogButtonBox *buttons = new KDialogButtonBox( this );
-    buttons->addButton( i18n( "&Add Host..." ),
-                        QDialogButtonBox::ActionRole, this, SLOT(slotAddHost()) );
-    mEditButton = buttons->addButton( i18n( "&Edit Host..." ),
-                                      QDialogButtonBox::ActionRole, this, SLOT(slotEditHost()) );
-    mEditButton->setEnabled( false );
-    mRemoveButton = buttons->addButton( i18n( "&Remove Host" ),
-                                        QDialogButtonBox::ActionRole, this, SLOT(slotRemoveHost()) );
-    mRemoveButton->setEnabled( false );
+    QDialogButtonBox *buttons = new QDialogButtonBox(this);
+    QPushButton *add = buttons->addButton(i18n("&Add Host..."),
+                                          QDialogButtonBox::ActionRole);
+    connect(add, &QPushButton::clicked, this, &KCMLdap::slotAddHost);
+    mEditButton = buttons->addButton(i18n("&Edit Host..."),
+                                     QDialogButtonBox::ActionRole);
+    connect(mEditButton, &QPushButton::clicked, this, &KCMLdap::slotEditHost);
+    mEditButton->setEnabled(false);
+    mRemoveButton = buttons->addButton(i18n("&Remove Host"),
+                                       QDialogButtonBox::ActionRole);
+    connect(mRemoveButton, &QPushButton::clicked, this, &KCMLdap::slotRemoveHost);
+    mRemoveButton->setEnabled(false);
     buttons->layout();
 
-    layout->addWidget( buttons );
+    layout->addWidget(buttons);
 
-    resize( QSize( 460, 300 ).expandedTo( sizeHint() ) );
+    resize(QSize(460, 300).expandedTo(sizeHint()));
 }
 
-QWidget* KCMLdap::dialogParent()
+QWidget *KCMLdap::dialogParent()
 {
-#ifdef Q_WS_MAEMO_5
-    return 0;
-#else
     return this;
-#endif
 }
 
-#include "moc_kcmldap_p.cpp"
+#include "kcmldap.moc"

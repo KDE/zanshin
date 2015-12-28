@@ -1,4 +1,4 @@
-/*  -*- mode: C++; c-file-style: "gnu" -*-
+/*
  *
  *  Copyright (c) 2001-2003 Carsten Pfeiffer <pfeiffer@kde.org>
  *  Copyright (c) 2003 Zack Rusin <zack@kde.org>
@@ -31,45 +31,12 @@
 #define KDEPIM_RECENTADDRESSES_H
 
 #include "kdepim_export.h"
-#include <kabc/addressee.h>
-#include <KDialog>
+#include <KContacts/Addressee>
 #include <QStringList>
 class KConfig;
-class KPushButton;
-class QListWidget;
-class KLineEdit;
 
-namespace KPIM {
-
-class KDEPIM_EXPORT RecentAddressDialog : public KDialog
+namespace KPIM
 {
-    Q_OBJECT
-public:
-    explicit RecentAddressDialog( QWidget *parent );
-    ~RecentAddressDialog();
-
-    void setAddresses( const QStringList &addrs );
-    QStringList addresses() const;
-    void addAddresses(KConfig *config);
-
-private slots:
-    void slotAddItem();
-    void slotRemoveItem();
-    void slotSelectionChanged();
-    void slotTypedSomething(const QString&);
-
-protected:
-    void updateButtonState();
-    bool eventFilter( QObject* o, QEvent* e );
-
-private:
-    void readConfig();
-    void writeConfig();
-    KPushButton* mNewButton, *mRemoveButton;
-    QListWidget *mListView;
-    KLineEdit *mLineEdit;
-};
-
 /**
  * Handles a list of "recent email-addresses". Simply set a max-count and
  * call @ref add() to add entries.
@@ -84,7 +51,7 @@ public:
     /**
      * @returns the only possible instance of this class.
      */
-    static RecentAddresses *self( KConfig *config = 0 );
+    static RecentAddresses *self(KConfig *config = Q_NULLPTR);
 
     /*
      * @return true if self() was called, i.e. a RecentAddresses instance exists
@@ -97,38 +64,36 @@ public:
      * like "Foo <foo@bar.org>, Bar Baz <bar@baz.org>".
      */
     QStringList     addresses() const;
-    const KABC::Addressee::List &kabcAddresses() const
-    { return m_addresseeList; }
 
     /**
      * Adds an entry to the list.
      * Note: an entry doesn't have to be one email address, it can be multiple,
      * like "Foo <foo@bar.org>, Bar Baz <bar@baz.org>".
      */
-    void add( const QString &entry );
+    void add(const QString &entry);
 
     /**
      * Sets the maximum number, the list can hold. The list adjusts to this
      * size if necessary. Default maximum is 40.
      */
-    void setMaxCount( int count );
+    void setMaxCount(int count);
 
     /**
      * @returns the current maximum number of entries.
      */
-    uint maxCount() const { return m_maxCount; }
+    uint maxCount() const;
 
     /**
      * Loads the list of recently used addresses from the configfile.
      * Automatically done on startup.
      */
-    void load( KConfig * );
+    void load(KConfig *);
 
     /**
      * Saves the list of recently used addresses to the configfile.
-     * Make sure to call KGlobal::config()->sync() afterwards, to really save.
+     * Make sure to call KSharedConfig::openConfig()->sync() afterwards, to really save.
      */
-    void save( KConfig * );
+    void save(KConfig *);
 
     /**
      * Removes all entries from the history.
@@ -136,11 +101,10 @@ public:
     void clear();
 
 private:
-    explicit RecentAddresses( KConfig *config = 0 );
-
-    KABC::Addressee::List m_addresseeList;
-
+    explicit RecentAddresses(KConfig *config = Q_NULLPTR);
     void adjustSize();
+
+    KContacts::Addressee::List m_addresseeList;
 
     int m_maxCount;
 };

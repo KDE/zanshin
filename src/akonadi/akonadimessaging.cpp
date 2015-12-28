@@ -27,8 +27,8 @@
 #include <QApplication>
 #include <QInputDialog>
 
-#include <KPIMIdentities/Identity>
-#include <KPIMIdentities/IdentityManager>
+#include <KIdentityManagement/Identity>
+#include <KIdentityManagement/IdentityManager>
 #include <Akonadi/Calendar/ETMCalendar>
 #include <Akonadi/Calendar/ITIPHandler>
 
@@ -60,11 +60,11 @@ void Messaging::sendDelegationMessage(Item item)
         window = QApplication::activeWindow();
     }
 
-    KPIMIdentities::IdentityManager identities(true);
+    KIdentityManagement::IdentityManager identities(true);
     auto emails = QStringList();
     std::transform(identities.begin(), identities.end(),
                    std::back_inserter(emails),
-                   Utils::mem_fn(&KPIMIdentities::Identity::fullEmailAddr));
+                   Utils::mem_fn(&KIdentityManagement::Identity::fullEmailAddr));
     const auto defaultIndex = emails.indexOf(identities.defaultIdentity().fullEmailAddr());
     const auto email = QInputDialog::getItem(window,
                                              QObject::tr("Choose an identity"),

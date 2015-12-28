@@ -34,9 +34,7 @@ inline bool zCompareHelper(bool isOk,
                            const char *actual, const char *expected,
                            const char *file, int line)
 {
-    return isOk
-         ? compare_helper(true, "COMPARE()", file, line)
-         : compare_helper(false, "Compared values are not the same",
+    return compare_helper(isOk, isOk ? "COMPARE()" : "Compared values are not the same",
                           toString<T>(left), toString<T>(right),
                           actual, expected,
                           file, line);
@@ -116,7 +114,7 @@ private slots:
         data.createCollection(c2);
 
         // THEN
-        QCOMPARE(data.collections().toSet(), colSet);
+        QCOMPARE(data.collections().toList().toSet(), colSet);
         QCOMPARE(data.collection(c1.id()), c1);
         QCOMPARE(data.collection(c2.id()), c2);
 
@@ -193,7 +191,7 @@ private slots:
 
         // THEN
         QVERIFY(data.childCollections(c2.id()).isEmpty());
-        QCOMPARE(data.childCollections(c1.id()).toSet(), colSet);
+        QCOMPARE(data.childCollections(c1.id()).toList().toSet(), colSet);
     }
 
     void shouldReparentCollectionsOnModify()
@@ -380,7 +378,7 @@ private slots:
         QCOMPARE(data.tagItems(t1.id()).first(), i1);
         QVERIFY(data.tagItems(t2.id()).isEmpty());
 
-        QCOMPARE(data.items().toSet(), itemSet);
+        QCOMPARE(data.items().toList().toSet(), itemSet);
 
         QVERIFY(data.item(i1.id()).isValid());
         QVERIFY(data.item(i2.id()).isValid());
@@ -412,7 +410,7 @@ private slots:
         data.createItem(i2);
 
         // THEN
-        QCOMPARE(data.items().toSet(), itemSet);
+        QCOMPARE(data.items().toList().toSet(), itemSet);
         QCOMPARE(data.item(i1.id()), i1);
         QCOMPARE(data.item(i2.id()), i2);
 

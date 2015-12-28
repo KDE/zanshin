@@ -23,7 +23,7 @@
 
 #include "gencollection.h"
 
-#include <Akonadi/EntityDisplayAttribute>
+#include <AkonadiCore/EntityDisplayAttribute>
 #include <Akonadi/Notes/NoteUtils>
 
 #include <KCalCore/Todo>

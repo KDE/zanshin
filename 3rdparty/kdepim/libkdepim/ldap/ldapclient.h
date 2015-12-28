@@ -22,14 +22,15 @@
 #ifndef KLDAP_LDAPCLIENT_H
 #define KLDAP_LDAPCLIENT_H
 
-#include "libkdepim/kdepim_export.h"
+#include "kdepim_export.h"
 
-#include <QtCore/QObject>
-#include <QtCore/QStringList>
+#include <QObject>
+#include <QStringList>
 
 class KJob;
 
-namespace KLDAP {
+namespace KLDAP
+{
 
 class LdapObject;
 class LdapServer;
@@ -54,7 +55,7 @@ public:
      * @param clientNumber The unique number of this client.
      * @param parent The parent object.
      */
-    explicit LdapClient( int clientNumber, QObject *parent = 0 );
+    explicit LdapClient(int clientNumber, QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the ldap client.
@@ -78,7 +79,7 @@ public:
      * This value will be used to sort the results of this
      * client when used for auto completion.
      */
-    void setCompletionWeight( int weight );
+    void setCompletionWeight(int weight);
 
     /**
      * Returns the completion weight of this client.
@@ -89,7 +90,7 @@ public:
      * Sets the LDAP @p server information that shall be
      * used by this client.
      */
-    void setServer( const KLDAP::LdapServer &server );
+    void setServer(const KLDAP::LdapServer &server);
 
     /**
      * Returns the ldap server information that are used
@@ -103,7 +104,7 @@ public:
      *
      * Pass an empty list to include all available attributes.
      */
-    void setAttributes( const QStringList &attributes );
+    void setAttributes(const QStringList &attributes);
 
     /**
      * Returns the LDAP attributes that should be returned
@@ -116,12 +117,12 @@ public:
      *
      * Valid values are 'one' or 'sub'.
      */
-    void setScope( const QString scope );
+    void setScope(const QString &scope);
 
     /**
      * Starts the query with the given @p filter.
      */
-    void startQuery( const QString &filter );
+    void startQuery(const QString &filter);
 
     /**
      * Cancels a running query.
@@ -139,23 +140,23 @@ Q_SIGNALS:
      *
      * @param message A message that describes the error.
      */
-    void error( const QString &message );
+    void error(const QString &message);
 
     /**
      * This signal is emitted once for each object that is
      * returned from the query
      */
-    void result( const KLDAP::LdapClient &client, const KLDAP::LdapObject& );
+    void result(const KLDAP::LdapClient &client, const KLDAP::LdapObject &);
 
 private:
     //@cond PRIVATE
     class Private;
-    Private* const d;
+    Private *const d;
 
-    Q_PRIVATE_SLOT( d, void slotData( KIO::Job*, const QByteArray& ) )
-    Q_PRIVATE_SLOT( d, void slotData( const QByteArray& ) )
-    Q_PRIVATE_SLOT( d, void slotInfoMessage( KJob*, const QString&, const QString& ) )
-    Q_PRIVATE_SLOT( d, void slotDone() )
+    Q_PRIVATE_SLOT(d, void slotData(KIO::Job *, const QByteArray &))
+    Q_PRIVATE_SLOT(d, void slotData(const QByteArray &))
+    Q_PRIVATE_SLOT(d, void slotInfoMessage(KJob *, const QString &, const QString &))
+    Q_PRIVATE_SLOT(d, void slotDone())
     //@endcond
 };
 

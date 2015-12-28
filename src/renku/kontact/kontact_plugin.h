@@ -24,7 +24,7 @@
 #ifndef RENKU_KONTACT_PLUGIN_H
 #define RENKU_KONTACT_PLUGIN_H
 
-#include <KDE/KontactInterface/Plugin>
+#include <KontactInterface/Plugin>
 
 class Plugin : public KontactInterface::Plugin
 {

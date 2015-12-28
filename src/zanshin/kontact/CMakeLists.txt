@@ -4,10 +4,10 @@ set(part_SRCS
     part.cpp
 )
 
-kde4_add_plugin(zanshin_part ${part_SRCS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+add_library(zanshin_part MODULE ${part_SRCS})
+kde_enable_exceptions()
 target_link_libraries(zanshin_part
-    ${KDE4_KPARTS_LIBS}
+    KF5::Parts
     akonadi
     domain
     presentation
@@ -17,8 +17,8 @@ target_link_libraries(zanshin_part
     ${KDEPIM_STATIC_LIBS}
 )
 
-install(TARGETS zanshin_part DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES zanshin_part.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(TARGETS zanshin_part DESTINATION ${KDE_INSTALL_PLUGINDIR})
+install(FILES zanshin_part.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
 
 ##########################
 
@@ -26,10 +26,10 @@ set(kontact_SRCS
     kontact_plugin.cpp
 )
 
-kde4_add_plugin(kontact_zanshinplugin ${kontact_SRCS})
-target_link_libraries(kontact_zanshinplugin ${KDE4_KPARTS_LIBS} ${KDEPIMLIBS_KONTACTINTERFACE_LIBS})
+add_library(kontact_zanshinplugin MODULE ${kontact_SRCS})
+target_link_libraries(kontact_zanshinplugin KF5::Parts KF5::KontactInterface)
 
-install(TARGETS kontact_zanshinplugin DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES zanshin_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR}/kontact)
-install(FILES zanshin_part.rc DESTINATION ${DATA_INSTALL_DIR}/zanshin)
+install(TARGETS kontact_zanshinplugin DESTINATION ${KDE_INSTALL_PLUGINDIR})
+install(FILES zanshin_plugin.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR}/kontact)
+install(FILES zanshin_part.rc DESTINATION ${KDE_INSTALL_KXMLGUI5DIR}/zanshin)
 

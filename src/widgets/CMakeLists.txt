@@ -16,10 +16,10 @@ set(widgets_SRCS
     scripteditor.cpp
 )
 
-qt4_wrap_ui(widgets_SRCS
+qt5_wrap_ui(widgets_SRCS
     filterwidget.ui
     newprojectdialog.ui
 )
 
-kde4_add_library(widgets STATIC ${widgets_SRCS})
-target_link_libraries(widgets ${QT4_QTGUI_LIBRARY} presentation ${KDEPIM_STATIC_LIBS})
+add_library(widgets STATIC ${widgets_SRCS})
+target_link_libraries(widgets Qt5::Widgets Qt5::Script KF5::Completion KF5::KDELibs4Support KF5::WidgetsAddons presentation zanshinkdepimstatic)

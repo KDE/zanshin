@@ -26,12 +26,12 @@
 
 #include <KCalCore/Todo>
 
-#include <Akonadi/AttributeFactory>
-#include <Akonadi/CollectionFetchScope>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/Monitor>
+#include <AkonadiCore/AttributeFactory>
+#include <AkonadiCore/CollectionFetchScope>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/Monitor>
 #include <Akonadi/Notes/NoteUtils>
-#include <Akonadi/TagFetchScope>
+#include <AkonadiCore/TagFetchScope>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonaditimestampattribute.h"

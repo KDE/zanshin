@@ -31,12 +31,12 @@ set(akonadi_SRCS
     akonaditimestampattribute.cpp
 )
 
-kde4_add_library(akonadi STATIC ${akonadi_SRCS})
+add_library(akonadi STATIC ${akonadi_SRCS})
 target_link_libraries(akonadi
-    ${KDEPIMLIBS_AKONADI_CALENDAR_LIBS}
-    ${KDEPIMLIBS_AKONADI_LIBS}
-    ${KDEPIMLIBS_AKONADI_NOTES_LIBS}
-    ${KDEPIMLIBS_KCALCORE_LIBS}
-    ${KDEPIMLIBS_KMIME_LIBS}
-    ${KDEPIMLIBS_KPIMIDENTITIES_LIBS}
+    KF5::AkonadiCalendar
+    KF5::AkonadiCore
+    KF5::AkonadiNotes
+    KF5::CalendarCore
+    KF5::Mime
+    KF5::IdentityManagement
 )

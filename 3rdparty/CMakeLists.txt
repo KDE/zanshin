@@ -1,4 +1,4 @@
-if(KDE4_BUILD_TESTS)
+if(BUILD_TESTING)
     find_package(Boost "1.40" COMPONENTS thread system regex date_time unit_test_framework)
     if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")

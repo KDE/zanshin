@@ -31,7 +31,7 @@
 #include "domain/project.h"
 #include "domain/context.h"
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 namespace Akonadi {
 

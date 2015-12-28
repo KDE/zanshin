@@ -22,7 +22,7 @@
 */
 
 #include <QtTest/QtTest>
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 #include <KCalCore/Todo>
 #include "domain/task.h"
 #include "akonadi/akonadiserializer.h"
@@ -111,4 +111,4 @@ void SerializerBenchmark::checkPayload()
 }
 
 QTEST_MAIN(SerializerBenchmark)
-#include "deserializerTest.moc"
+#include "serializerTest.moc"

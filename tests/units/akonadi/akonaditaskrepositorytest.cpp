@@ -23,8 +23,8 @@
 
 #include <QtTest>
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
 #include "utils/mockobject.h"
 

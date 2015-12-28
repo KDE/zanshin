@@ -30,8 +30,6 @@
 
 #include <algorithm>
 
-Q_DECLARE_METATYPE(QModelIndexList)
-
 using namespace Presentation;
 
 QueryTreeNodeBase::QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModelBase *model)

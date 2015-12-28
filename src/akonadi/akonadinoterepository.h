@@ -29,7 +29,7 @@
 #include "akonadi/akonadiserializerinterface.h"
 #include "akonadi/akonadistorageinterface.h"
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 
 namespace Akonadi {
 

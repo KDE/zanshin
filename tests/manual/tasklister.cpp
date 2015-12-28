@@ -22,10 +22,11 @@
 */
 
 #include <KAboutData>
-#include <KApplication>
-#include <KCmdLineArgs>
 
 #include <QListView>
+#include <QApplication>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 #include "zanshin/app/dependencies.h"
 
@@ -38,11 +39,17 @@
 
 int main(int argc, char **argv)
 {
+    QApplication app(argc, argv);
     App::initializeDependencies();
-    KAboutData about("tasklister", "tasklister",
-                     ki18n("Lists all the tasks"), "1.0");
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    KAboutData aboutData("tasklister",
+                     i18n("Lists all the tasks"), "1.0");
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 
     auto repository = Utils::DependencyManager::globalInstance().create<Domain::TaskRepository>();
     auto queries = Utils::DependencyManager::globalInstance().create<Domain::TaskQueries>();

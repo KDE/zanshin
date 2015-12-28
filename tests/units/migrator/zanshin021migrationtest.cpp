@@ -32,15 +32,15 @@
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
 
-#include <Akonadi/Collection>
-#include <Akonadi/TransactionSequence>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/TransactionSequence>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadistorage.h"
 
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
+#include <AkonadiCore/CollectionFetchJob>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
 
 #include <QProcess>
 

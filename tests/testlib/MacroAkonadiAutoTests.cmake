@@ -2,21 +2,15 @@ set(_akonaditest_source_dir ${CMAKE_CURRENT_LIST_DIR})
 
 MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
-    kde4_add_executable(${_testname} TEST ${_testname}.cpp)
+    add_executable(${_testname} ${_testname}.cpp)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
-    target_link_libraries(${_testname} ${KDE4_KDEUI_LIBS} ${KDEPIMLIBS_AKONADI_LIBS}
-                                       ${KDEPIMLIBS_KCALCORE_LIBS} ${KDEPIMLIBS_KMIME_LIBS} ${QT_QTTEST_LIBRARY}
-                                       akonadi
-                                       domain
-                                       utils
-                                       ${KDEPIM_STATIC_LIBS}
-    )
+    target_link_libraries(${_testname} KF5::CalendarCore KF5::AkonadiCore KF5::Mime Qt5::Test akonadi domain utils ${KDEPIM_STATIC_LIBS} )
 
     set(_location ${CMAKE_CURRENT_BINARY_DIR}/${_testname})
     if (WIN32)
-      set(_executable ${_location}.bat)
+      set(_executable ${_location}.exe)
     else (WIN32)
-      set(_executable ${_location}.shell)
+      set(_executable ${_location})
     endif (WIN32)
 
     find_program(_testrunner akonaditest)

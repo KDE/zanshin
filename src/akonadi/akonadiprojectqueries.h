@@ -58,7 +58,7 @@ private:
     LiveQueryIntegrator::Ptr m_integrator;
 
     mutable ProjectQueryOutput::Ptr m_findAll;
-    mutable QHash<Akonadi::Entity::Id, TaskQueryOutput::Ptr> m_findTopLevel;
+    mutable QHash<Akonadi::Item::Id, TaskQueryOutput::Ptr> m_findTopLevel;
 };
 
 }

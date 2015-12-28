@@ -610,7 +610,7 @@ private slots:
         startTodayButton->click();
 
         // THEN
-        QCOMPARE(startDateEdit->currentText(), KGlobal::locale()->formatDate(today, KLocale::ShortDate));
+        QCOMPARE(startDateEdit->currentText(), KLocale::global()->formatDate(today, KLocale::ShortDate));
         QCOMPARE(model.property("startDate").toDateTime().date(), today);
     }
 

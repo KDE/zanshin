@@ -37,6 +37,7 @@ if(CMAKE_EXTRA_GENERATOR OR MSVC_IDE)
     list(APPEND CUKE_SOURCES ${CUKE_HEADERS})
 endif()
 
+kde_enable_exceptions()
 add_library(cucumber-cpp-nomain STATIC ${CUKE_SOURCES})
 add_library(cucumber-cpp STATIC ${CUKE_SOURCES} main.cpp)
 

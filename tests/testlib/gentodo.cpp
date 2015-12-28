@@ -24,6 +24,7 @@
 #include "gentodo.h"
 
 #include <KCalCore/Todo>
+#include <QDate>
 
 using namespace Testlib;
 

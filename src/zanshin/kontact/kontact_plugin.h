@@ -24,7 +24,7 @@
 #ifndef ZANSHIN_KONTACT_PLUGIN_H
 #define ZANSHIN_KONTACT_PLUGIN_H
 
-#include <KDE/KontactInterface/Plugin>
+#include <KontactInterface/Plugin>
 
 class Plugin : public KontactInterface::Plugin
 {

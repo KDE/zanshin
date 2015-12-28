@@ -5,7 +5,7 @@ set(utils_SRCS
     jobhandler.cpp
 )
 
-kde4_add_library(utils STATIC ${utils_SRCS})
+add_library(utils STATIC ${utils_SRCS})
 target_link_libraries(utils
-    ${KDE4_KDECORE_LIBS}
+    KF5::CoreAddons
 )

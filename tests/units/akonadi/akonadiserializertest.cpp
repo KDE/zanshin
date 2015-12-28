@@ -28,11 +28,11 @@
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonaditimestampattribute.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/EntityDisplayAttribute>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/EntityDisplayAttribute>
+#include <AkonadiCore/Item>
 #include <Akonadi/Notes/NoteUtils>
-#include <Akonadi/Tag>
+#include <AkonadiCore/Tag>
 #include <KCalCore/Todo>
 #include <KMime/Message>
 

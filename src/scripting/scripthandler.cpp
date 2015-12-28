@@ -57,4 +57,3 @@ QScriptEngine *ScriptHandler::engine()
     return m_engine;
 }
 
-#include "scripthandler.moc"

@@ -24,7 +24,7 @@
 #include "testlib/gencollection.h"
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
-#include <Akonadi/EntityDisplayAttribute>
+#include <AkonadiCore/EntityDisplayAttribute>
 
 #include <QtTest>
 

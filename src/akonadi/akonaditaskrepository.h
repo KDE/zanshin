@@ -26,8 +26,8 @@
 
 #include "domain/taskrepository.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
 #include "akonadi/akonadimessaginginterface.h"
 #include "akonadi/akonadiserializerinterface.h"

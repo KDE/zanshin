@@ -24,7 +24,7 @@
 #ifndef APP_ABOUTDATA_H
 #define APP_ABOUTDATA_H
 
-#include <KDE/KAboutData>
+#include <KAboutData>
 
 namespace App
 {

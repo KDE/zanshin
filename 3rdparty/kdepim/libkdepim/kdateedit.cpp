@@ -27,7 +27,6 @@
 #include "kdateedit.h"
 
 #include <KCalendarSystem>
-#include <KDebug>
 #include <KGlobal>
 #include <KGlobalSettings>
 #include <KLocale>
@@ -457,5 +456,3 @@ void KDateEdit::updateView()
   insertItem( 0, dateString );
   blockSignals( blocked );
 }
-
-#include "kdateedit.moc"

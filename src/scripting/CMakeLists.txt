@@ -3,8 +3,9 @@ set(scripting_SRCS
     taskaction.cpp
 )
 
-kde4_add_library(scripting STATIC ${scripting_SRCS})
+add_library(scripting STATIC ${scripting_SRCS})
 target_link_libraries(scripting
-    ${KDE4_KDECORE_LIBS} ${QT_QTSCRIPT_LIBRARY}
+    Qt5::Core
+    Qt5::Script
 )
 

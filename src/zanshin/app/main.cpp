@@ -27,8 +27,8 @@
 #include <QProcess>
 
 #include <KActionCollection>
-#include <KApplication>
-#include <KCmdLineArgs>
+
+
 #include <KXmlGuiWindow>
 
 #include <KConfigGroup>
@@ -46,14 +46,23 @@
 #include "dependencies.h"
 
 #include <iostream>
+#include <KAboutData>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 int main(int argc, char **argv)
 {
+    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
     App::initializeDependencies();
 
-    auto about = App::getAboutData();
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    auto aboutData = App::getAboutData();
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
     KConfigGroup group = config->group("Migrations");

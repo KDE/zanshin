@@ -25,7 +25,7 @@
 #ifndef AKONADI_STORAGESETTINGS_H
 #define AKONADI_STORAGESETTINGS_H
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 
 namespace Akonadi
 {

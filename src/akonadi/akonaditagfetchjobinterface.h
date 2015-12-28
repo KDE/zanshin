@@ -25,7 +25,7 @@
 #ifndef AKONADI_TAGFETCHJOBINTERFACE_H
 #define AKONADI_TAGFETCHJOBINTERFACE_H
 
-#include <Akonadi/Tag>
+#include <AkonadiCore/Tag>
 
 class KJob;
 

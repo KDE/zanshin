@@ -23,25 +23,26 @@
 
 #include "aboutdata.h"
 #include "../../appversion.h"
+#include <KLocalizedString>
 
 KAboutData App::getAboutData()
 {
-    KAboutData about("renku", "renku",
-                     ki18n("Renku Notes"), APPLICATION_VERSION,
-                     ki18n("A note taking application which aims at getting your mind like water"),
-                     KAboutData::License_GPL_V3,
-                     ki18n("Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"));
+    KAboutData about("renku",
+                     i18n("Renku Notes"), APPLICATION_VERSION,
+                     i18n("A note taking application which aims at getting your mind like water"),
+                     KAboutLicense::GPL_V3,
+                     i18n("Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"));
 
-    about.addAuthor(ki18n("Kevin Ottens"),
-                    ki18n("Lead Developer"),
+    about.addAuthor(i18n("Kevin Ottens"),
+                    i18n("Lead Developer"),
                     "ervin@kde.org");
 
-    about.addAuthor(ki18n("Mario Bensi"),
-                    ki18n("Developer"),
+    about.addAuthor(i18n("Mario Bensi"),
+                    i18n("Developer"),
                     "nef@ipsquad.net");
 
-    about.addAuthor(ki18n("Franck Arrecot"),
-                    ki18n("Developer"),
+    about.addAuthor(i18n("Franck Arrecot"),
+                    i18n("Developer"),
                     "franck.arrecot@gmail.com");
 
     return about;
