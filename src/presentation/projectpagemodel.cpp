@@ -32,11 +32,13 @@ using namespace Presentation;
 
 ProjectPageModel::ProjectPageModel(const Domain::Project::Ptr &project,
                                    const Domain::ProjectQueries::Ptr &projectQueries,
+                                   const Domain::ProjectRepository::Ptr &projectRepository,
                                    const Domain::TaskQueries::Ptr &taskQueries,
                                    const Domain::TaskRepository::Ptr &taskRepository,
                                    QObject *parent)
     : PageModel(parent),
       m_projectQueries(projectQueries),
+      m_projectRepository(projectRepository),
       m_project(project),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository)
@@ -133,9 +135,6 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
     };
 
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &parentTask) {
-        if (!parentTask)
-            return false;
-
         if (!mimeData->hasFormat("application/x-zanshin-object"))
             return false;
 
@@ -150,10 +149,22 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
             return false;
         }
 
+        using namespace std::placeholders;
+        auto associate = std::function<KJob*(Domain::Task::Ptr)>();
+        auto parentTitle = QString();
+
+        if (parentTask) {
+            associate = std::bind(&Domain::TaskRepository::associate, m_taskRepository, parentTask, _1);
+            parentTitle = parentTask->title();
+        } else {
+            associate = std::bind(&Domain::ProjectRepository::associate, m_projectRepository, m_project, _1);
+            parentTitle = m_project->name();
+        }
+
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            const auto job = m_taskRepository->associate(parentTask, childTask);
-            installHandler(job, tr("Cannot move task %1 as a sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+            const auto job = associate(childTask);
+            installHandler(job, tr("Cannot move task %1 as a sub-task of %2").arg(childTask->title(), parentTitle));
         }
 
         return true;

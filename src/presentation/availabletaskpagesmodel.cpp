@@ -112,6 +112,7 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
     } else if (auto project = object.objectCast<Domain::Project>()) {
         auto projectPageModel = new ProjectPageModel(project,
                                                      m_projectQueries,
+                                                     m_projectRepository,
                                                      m_taskQueries,
                                                      m_taskRepository,
                                                      this);

@@ -73,6 +73,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -81,6 +83,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
@@ -182,6 +185,7 @@ private slots:
 
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // We'll gladly create a task though
@@ -192,6 +196,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
@@ -225,6 +230,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -236,6 +243,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
@@ -262,6 +270,7 @@ private slots:
 
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
 
         // We'll gladly create a task though
@@ -274,6 +283,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
@@ -305,6 +315,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -314,6 +326,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
@@ -345,6 +358,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -356,6 +371,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
@@ -388,6 +404,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -397,6 +415,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
@@ -428,6 +447,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
@@ -439,6 +460,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
@@ -471,6 +493,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
@@ -478,6 +502,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
@@ -516,6 +541,8 @@ private slots:
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
 
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
@@ -523,6 +550,7 @@ private slots:
 
         Presentation::ProjectPageModel page(project,
                                             projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
                                             taskQueriesMock.getInstance(),
                                             taskRepositoryMock.getInstance());
 
@@ -548,6 +576,68 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask3 as a sub-task of rootTask: Foo"));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
+    }
+
+    void shouldAssociateToProjectWhenDroppingOnEmptyArea()
+    {
+        // GIVEN
+
+        // One project
+        auto project = Domain::Project::Ptr::create();
+        project->setName("Project");
+
+        // One top level task
+        auto topLevelTask = Domain::Task::Ptr::create();
+        topLevelTask->setTitle("rootTask");
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(topLevelTask);
+
+        // Two tasks under the top level task
+        auto childTask1 = Domain::Task::Ptr::create();
+        childTask1->setTitle("childTask1");
+        childTask1->setDone(true);
+        auto childTask2 = Domain::Task::Ptr::create();
+        childTask2->setTitle("childTask2");
+        childTask2->setDone(false);
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(childTask1);
+        taskProvider->append(childTask2);
+
+        Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
+        projectQueriesMock(&Domain::ProjectQueries::findTopLevel).when(project).thenReturn(topLevelResult);
+
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(topLevelTask).thenReturn(taskResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+
+        Presentation::ProjectPageModel page(project,
+                                            projectQueriesMock.getInstance(),
+                                            projectRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance());
+
+        auto model = page.centralListModel();
+
+        // WHEN
+        projectRepositoryMock(&Domain::ProjectRepository::associate).when(project, childTask1).thenReturn(new FakeJob(this));
+        projectRepositoryMock(&Domain::ProjectRepository::associate).when(project, childTask2).thenReturn(new FakeJob(this));
+
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask1 << childTask2)); // both will be DnD on the empty part
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, QModelIndex());
+
+        // THEN
+        QTest::qWait(150);
+        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project, childTask1).exactly(1));
+        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project, childTask2).exactly(1));
     }
 };
 

@@ -28,6 +28,7 @@
 #include "presentation/pagemodel.h"
 
 #include "domain/projectqueries.h"
+#include "domain/projectrepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
@@ -39,6 +40,7 @@ class ProjectPageModel : public PageModel
 public:
     explicit ProjectPageModel(const Domain::Project::Ptr &project,
                               const Domain::ProjectQueries::Ptr &projectQueries,
+                              const Domain::ProjectRepository::Ptr &projectRepository,
                               const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
                               QObject *parent = Q_NULLPTR);
@@ -53,6 +55,7 @@ private:
     QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
 
     Domain::ProjectQueries::Ptr m_projectQueries;
+    Domain::ProjectRepository::Ptr m_projectRepository;
     Domain::Project::Ptr m_project;
 
     Domain::TaskQueries::Ptr m_taskQueries;
