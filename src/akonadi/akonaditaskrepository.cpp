@@ -191,7 +191,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
 
     auto job = new CompositeJob();
     ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
-    job->install(fetchItemJob->kjob(), [fetchItemJob, parent, job, this] {
+    job->install(fetchItemJob->kjob(), [fetchItemJob, child, parent, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
            return;
 
@@ -200,14 +200,38 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
         m_serializer->updateItemParent(childItem, parent);
 
         // Check collections to know if we need to move child
-        auto parentItem = m_serializer->createItemFromTask(parent);
-        ItemFetchJobInterface *fetchParentItemJob = m_storage->fetchItem(parentItem);
-        job->install(fetchParentItemJob->kjob(), [fetchParentItemJob, childItem, job, this] {
+        auto partialParentItem = m_serializer->createItemFromTask(parent);
+        ItemFetchJobInterface *fetchParentItemJob = m_storage->fetchItems(partialParentItem.parentCollection());
+        job->install(fetchParentItemJob->kjob(), [child, parent, fetchParentItemJob, partialParentItem, childItem, job, this] {
             if (fetchParentItemJob->kjob()->error() != KJob::NoError)
                 return;
 
-            Q_ASSERT(fetchParentItemJob->items().size() == 1);
-            auto parentItem = fetchParentItemJob->items().first();
+            const auto items = fetchParentItemJob->items();
+            const auto parentIndex = items.indexOf(partialParentItem);
+            Q_ASSERT(parentIndex >= 0);
+            const auto parentItem = items.at(parentIndex);
+
+            // TODO Qt5: This is a bit wasteful, add an itemUid on the serializer
+            const auto childUid = m_serializer->objectUid(m_serializer->createTaskFromItem(childItem));
+            auto relatedUid = m_serializer->relatedUidFromItem(parentItem);
+            while (!relatedUid.isEmpty()) {
+                if (relatedUid == childUid) {
+                    job->emitError(tr("Could not associate '%1', it is an ancestor of '%2'")
+                                   .arg(child->title(), parent->title()));
+                    return;
+                }
+
+                auto it = std::find_if(items.constBegin(), items.constEnd(),
+                                       [relatedUid, this] (const Akonadi::Item &item) {
+                    // TODO Qt5: This is a bit wasteful, add an itemUid on the serializer
+                    auto task = m_serializer->createTaskFromItem(item);
+                    return task && m_serializer->objectUid(task) == relatedUid;
+                });
+                if (it == items.end())
+                    break;
+
+                relatedUid = m_serializer->relatedUidFromItem(*it);
+            }
 
             const int itemCollectionId = childItem.parentCollection().id();
             const int parentCollectionId = parentItem.parentCollection().id();
