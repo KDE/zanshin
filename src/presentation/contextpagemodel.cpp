@@ -158,10 +158,28 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
             return false;
         }
 
+        using namespace std::placeholders;
+        auto associate = std::function<KJob*(Domain::Task::Ptr)>();
+        auto dissociate = std::function<KJob*(Domain::Task::Ptr)>();
+        auto parentTitle = QString();
+
+        if (parentTask) {
+            associate = std::bind(&Domain::TaskRepository::associate, m_taskRepository, parentTask, _1);
+            dissociate = [] (Domain::Task::Ptr) -> KJob* { return Q_NULLPTR; };
+            parentTitle = parentTask->title();
+        } else {
+            associate = std::bind(&Domain::ContextRepository::associate, m_contextRepository, m_context, _1);
+            dissociate = std::bind(&Domain::TaskRepository::dissociate, m_taskRepository, _1);
+            parentTitle = m_context->name();
+        }
+
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
-            const auto job = m_taskRepository->associate(parentTask, childTask);
-            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+            auto job = associate(childTask);
+            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title(), parentTitle));
+            job = dissociate(childTask);
+            if (job)
+                installHandler(job, tr("Cannot dissociate task %1 from its parent").arg(childTask->title()));
         }
 
         return true;

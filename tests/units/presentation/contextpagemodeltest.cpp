@@ -637,6 +637,72 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask2 as sub-task of A parent task: Foo"));
     }
+
+    void shouldAssociateToContextWithNoParentWhenDroppingOnEmptyArea()
+    {
+        // GIVEN
+
+        // One context
+        auto context = Domain::Context::Ptr::create();
+        context->setName("Context");
+
+        // One top level task
+        auto topLevelTask = Domain::Task::Ptr::create();
+        topLevelTask->setTitle("rootTask");
+        auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
+        topLevelProvider->append(topLevelTask);
+
+        // Two tasks under the top level task
+        auto childTask1 = Domain::Task::Ptr::create();
+        childTask1->setTitle("childTask1");
+        childTask1->setDone(true);
+        auto childTask2 = Domain::Task::Ptr::create();
+        childTask2->setTitle("childTask2");
+        childTask2->setDone(false);
+        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
+        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
+        taskProvider->append(childTask1);
+        taskProvider->append(childTask2);
+
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findTopLevelTasks).when(context).thenReturn(topLevelResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(topLevelTask).thenReturn(taskResult);
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
+
+        Presentation::ContextPageModel page(context,
+                                            contextQueriesMock.getInstance(),
+                                            contextRepositoryMock.getInstance(),
+                                            taskQueriesMock.getInstance(),
+                                            taskRepositoryMock.getInstance());
+
+        auto model = page.centralListModel();
+
+        // WHEN
+        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask1).thenReturn(new FakeJob(this));
+        taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask2).thenReturn(new FakeJob(this));
+        contextRepositoryMock(&Domain::ContextRepository::associate).when(context, childTask1).thenReturn(new FakeJob(this));
+        contextRepositoryMock(&Domain::ContextRepository::associate).when(context, childTask2).thenReturn(new FakeJob(this));
+
+        auto data = new QMimeData;
+        data->setData("application/x-zanshin-object", "object");
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask1 << childTask2)); // both will be DnD on the empty part
+        model->dropMimeData(data, Qt::MoveAction, -1, -1, QModelIndex());
+
+        // THEN
+        QTest::qWait(150);
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask1).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask2).exactly(1));
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context, childTask1).exactly(1));
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context, childTask2).exactly(1));
+    }
 };
 
 QTEST_MAIN(ContextPageModelTest)
