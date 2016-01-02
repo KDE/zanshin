@@ -2,6 +2,7 @@
 
 #include <sstream>
 
+#include <boost/version.hpp>
 #include <boost/bind.hpp>
 
 #include <boost/test/unit_test.hpp>
@@ -39,14 +40,22 @@ public:
     void test_unit_finish( std::ostream&, test_unit const& tu, unsigned long elapsed) {};
     void test_unit_skipped( std::ostream&, test_unit const& tu) {};
 
-    void log_exception( std::ostream&, log_checkpoint_data const&, execution_exception const& ex) {};
-
     void log_entry_start( std::ostream&, log_entry_data const&, log_entry_types let) {};
     void log_entry_value( std::ostream&, const_string value);
     void log_entry_value( std::ostream&, lazy_ostream const& value) {};
     void log_entry_finish( std::ostream&) {};
 
+#if BOOST_VERSION < 105900
+    void log_exception(std::ostream&, log_checkpoint_data const&, execution_exception const& ex) {};
     void log_exception(std::ostream&, const boost::unit_test::log_checkpoint_data&, boost::unit_test::const_string) {};
+#else
+    void entry_context_start(std::ostream&, log_level) {};
+    void log_entry_context(std::ostream&, const_string value ) {};
+    void entry_context_finish(std::ostream&) {};
+
+    void log_exception_start(std::ostream&, const log_checkpoint_data&, const boost::execution_exception&) {};
+    void log_exception_finish(std::ostream&) {};
+#endif
 
 private:
     std::stringstream description;
@@ -80,7 +89,11 @@ const InvokeResult BoostStep::invokeStepBody() {
 }
 
 void BoostStep::initBoostTest() {
+#if BOOST_VERSION < 105900
     if (!framework::is_initialized()) {
+#else
+    if (!framework::test_in_progress()) {
+#endif
         int argc = 2;
         char *argv[] = { (char *) "", (char *) "" };
         framework::init(&boost_test_init, argc, argv);
