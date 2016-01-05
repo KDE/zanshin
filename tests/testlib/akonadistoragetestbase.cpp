@@ -1319,7 +1319,6 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName()
     // WHEN
     auto job = storage->searchCollections(name, Akonadi::StorageInterface::FetchContentType(contentType));
     AKVERIFYEXEC(job->kjob());
-    monitorSpy.waitForStableState();
 
     // THEN
     auto collections = job->collections();
