@@ -29,10 +29,13 @@
 #include "akonadi/akonadilivequeryhelpers.h"
 #include "akonadi/akonadilivequeryintegrator.h"
 
+class QTimer;
+
 namespace Akonadi {
 
-class TaskQueries : public Domain::TaskQueries
+class TaskQueries : public QObject, public Domain::TaskQueries
 {
+    Q_OBJECT
 public:
     typedef QSharedPointer<TaskQueries> Ptr;
 
@@ -48,6 +51,9 @@ public:
                 const SerializerInterface::Ptr &serializer,
                 const MonitorInterface::Ptr &monitor);
 
+    int workdayPollInterval() const;
+    void setWorkdayPollInterval(int interval);
+
     TaskResult::Ptr findAll() const Q_DECL_OVERRIDE;
     TaskResult::Ptr findChildren(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
     TaskResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
@@ -55,10 +61,15 @@ public:
     TaskResult::Ptr findWorkdayTopLevel() const Q_DECL_OVERRIDE;
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
 
+private slots:
+    void onWorkdayPollTimeout();
+
 private:
     SerializerInterface::Ptr m_serializer;
     LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
+    QTimer *m_workdayPollTimer;
+    mutable QDate m_today;
 
     mutable TaskQueryOutput::Ptr m_findAll;
     mutable QHash<Akonadi::Entity::Id, TaskQueryOutput::Ptr> m_findChildren;

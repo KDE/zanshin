@@ -1489,6 +1489,51 @@ private slots:
         QCOMPARE(result->data().at(1)->title(), QString("43"));
     }
 
+    void shouldPollForCurrentDayToListWorkday()
+    {
+        // GIVEN
+        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10");
+        const auto today = Utils::DateTime::currentDateTime();
+        AkonadiFakeData data;
+
+        // Two top level collections
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
+
+        // One task in the first collection
+        data.createItem(GenTodo().withId(42).withParent(42)
+                                 .withTitle("42").withUid("uid-42")
+                                 .withStartDate(today));
+
+        // One task in the second collection
+        data.createItem(GenTodo().withId(43).withParent(43)
+                                 .withTitle("43").withUid("uid-43")
+                                 .withStartDate(today.addDays(1)));
+
+        QScopedPointer<Domain::TaskQueries> queries;
+        {
+            auto akqueries = new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                      Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                      Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+            QCOMPARE(akqueries->workdayPollInterval(), 30000);
+            akqueries->setWorkdayPollInterval(500);
+            queries.reset(akqueries);
+        }
+        auto result = queries->findWorkdayTopLevel();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+
+        // WHEN
+        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-11");
+        QTest::qWait(1000);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(1)->title(), QString("43"));
+    }
 };
 
 QTEST_MAIN(AkonadiTaskQueriesTest)

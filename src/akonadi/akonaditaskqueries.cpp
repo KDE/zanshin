@@ -26,6 +26,8 @@
 
 #include "utils/datetime.h"
 
+#include <QTimer>
+
 using namespace Akonadi;
 
 TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
@@ -33,11 +35,25 @@ TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
                          const MonitorInterface::Ptr &monitor)
     : m_serializer(serializer),
       m_helpers(new LiveQueryHelpers(serializer, storage)),
-      m_integrator(new LiveQueryIntegrator(serializer, monitor))
+      m_integrator(new LiveQueryIntegrator(serializer, monitor)),
+      m_workdayPollTimer(new QTimer(this))
 {
+    m_workdayPollTimer->setInterval(30000);
+    connect(m_workdayPollTimer, SIGNAL(timeout()), this, SLOT(onWorkdayPollTimeout()));
+
     m_integrator->addRemoveHandler([this] (const Item &item) {
         m_findChildren.remove(item.id());
     });
+}
+
+int TaskQueries::workdayPollInterval() const
+{
+    return m_workdayPollTimer->interval();
+}
+
+void TaskQueries::setWorkdayPollInterval(int interval)
+{
+    m_workdayPollTimer->setInterval(interval);
 }
 
 TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
@@ -88,6 +104,11 @@ TaskQueries::TaskResult::Ptr TaskQueries::findInboxTopLevel() const
 
 TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
 {
+    if (!m_findWorkdayTopLevel) {
+        m_workdayPollTimer->start();
+        m_today = Utils::DateTime::currentDateTime().date();
+    }
+
     auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
     auto predicate = [this] (const Akonadi::Item &item) {
         if (!m_serializer->isTaskItem(item))
@@ -118,4 +139,13 @@ TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task
     qFatal("Not implemented yet");
     Q_UNUSED(task);
     return ContextResult::Ptr();
+}
+
+void TaskQueries::onWorkdayPollTimeout()
+{
+    auto newDate = Utils::DateTime::currentDateTime().date();
+    if (m_findWorkdayTopLevel && m_today != newDate) {
+        m_today = newDate;
+        m_findWorkdayTopLevel->reset();
+    }
 }
