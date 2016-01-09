@@ -401,14 +401,29 @@ private slots:
                                                 + model.property("text").toString()));
     }
 
+    void shouldNotReactToTextTrim_data()
+    {
+        QTest::addColumn<QString>("title");
+        QTest::addColumn<QString>("text");
+
+        QTest::newRow("nominal case") << "My title" << "\nMy text \n ";
+        QTest::newRow("parentheses in the title") << "My (special) title" << "\nMy text \n ";
+        QTest::newRow("parentheses in the text") << "My title" << "\nMy (special) text \n ";
+        QTest::newRow("special char in the title") << "My +title" << "\nMy text \n ";
+        QTest::newRow("special char in the text") << "My title" << "\nMy +text \n ";
+    }
+
     void shouldNotReactToTextTrim()
     {
         // GIVEN
+        QFETCH(QString, title);
+        QFETCH(QString, text);
+
         Widgets::EditorView editor;
         EditorModelStub model;
         model.makeTaskAvailable();
-        model.setProperty("title", "My title");
-        model.setProperty("text", "\nMy text \n ");
+        model.setProperty("title", title);
+        model.setProperty("text", text);
         model.setProperty("startDate", QDateTime::currentDateTime());
         model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
         model.setProperty("done", true);
@@ -417,12 +432,11 @@ private slots:
         auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
 
         // WHEN
-        model.setPropertyAndSignal("text", "\nMy text");
+        model.setPropertyAndSignal("text", text.trimmed());
 
         // THEN
-        QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
-                                                + "\n"
-                                                + model.property("text").toString() + " \n "));
+        QCOMPARE(model.property("text").toString(), text.trimmed());
+        QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString() + "\n" + text));
     }
 
     void shouldApplyTextEditChanges_data()
