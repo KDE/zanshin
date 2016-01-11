@@ -49,8 +49,9 @@
 #include "testlib/monitorspy.h"
 #include "testlib/testsafety.h"
 
-static int argc = 0;
-static QApplication app(argc, Q_NULLPTR);
+static int argc = 1;
+static char *argv0 = "cuke-steps";
+static QApplication app(argc, &argv0);
 
 namespace CukeSteps
 {
