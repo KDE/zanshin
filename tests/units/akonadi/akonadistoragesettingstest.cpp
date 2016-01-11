@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <KGlobal>
 #include <KConfig>
@@ -163,6 +163,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiStorageSettingsTest)
+ZANSHIN_TEST_MAIN(AkonadiStorageSettingsTest)
 
 #include "akonadistoragesettingstest.moc"

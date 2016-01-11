@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "scripting/taskaction.h"
 
@@ -33,6 +33,6 @@ class TaskActionTest : public QObject
 private slots:
 };
 
-QTEST_MAIN(TaskActionTest)
+ZANSHIN_TEST_MAIN(TaskActionTest)
 
 #include "taskactiontest.moc"

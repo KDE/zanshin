@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -237,6 +237,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(NewProjectDialogTest)
+ZANSHIN_TEST_MAIN(NewProjectDialogTest)
 
 #include "newprojectdialogtest.moc"

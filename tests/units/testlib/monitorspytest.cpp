@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "testlib/monitorspy.h"
 #include "testlib/akonadifakemonitor.h"
@@ -91,6 +91,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(MonitorSpyTest)
+ZANSHIN_TEST_MAIN(MonitorSpyTest)
 
 #include "monitorspytest.moc"

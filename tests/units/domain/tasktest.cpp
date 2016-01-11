@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/task.h"
 
@@ -191,6 +191,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(TaskTest)
+ZANSHIN_TEST_MAIN(TaskTest)
 
 #include "tasktest.moc"

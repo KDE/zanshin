@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/dependencymanager.h"
 #include "utils/jobhandler.h"
@@ -247,6 +247,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ApplicationModelTest)
+ZANSHIN_TEST_MAIN(ApplicationModelTest)
 
 #include "applicationmodeltest.moc"

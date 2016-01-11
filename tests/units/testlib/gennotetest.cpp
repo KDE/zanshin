@@ -26,7 +26,7 @@
 #include <Akonadi/Notes/NoteUtils>
 #include <KMime/Message>
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 using namespace Testlib;
 
@@ -107,6 +107,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(GenNoteTest)
+ZANSHIN_TEST_MAIN(GenNoteTest)
 
 #include "gennotetest.moc"

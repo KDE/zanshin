@@ -22,7 +22,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <QColor>
 
@@ -975,6 +975,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(QueryTreeModelTest)
+ZANSHIN_TEST_MAIN(QueryTreeModelTest)
 
 #include "querytreemodeltest.moc"

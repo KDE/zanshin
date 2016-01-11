@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/dependencymanager.h"
 
@@ -362,6 +362,6 @@ private slots:
 bool DependencyManagerTest::s_firstImplFactoryCalled = false;
 DependencyManager *DependencyManagerTest::s_manager = Q_NULLPTR;
 
-QTEST_MAIN(DependencyManagerTest)
+ZANSHIN_TEST_MAIN(DependencyManagerTest)
 
 #include "dependencymanagertest.moc"

@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QAbstractItemModel>
 #include <QAction>
@@ -593,6 +593,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AvailablePagesViewTest)
+ZANSHIN_TEST_MAIN(AvailablePagesViewTest)
 
 #include "availablepagesviewtest.moc"

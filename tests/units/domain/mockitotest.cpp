@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <mockitopp/mockitopp.hpp>
 
@@ -73,6 +73,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(MockitoTest)
+ZANSHIN_TEST_MAIN(MockitoTest)
 
 #include "mockitotest.moc"

@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QMimeData>
 #include <QStandardItemModel>
@@ -669,6 +669,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ApplicationComponentsTest)
+ZANSHIN_TEST_MAIN(ApplicationComponentsTest)
 
 #include "applicationcomponentstest.moc"

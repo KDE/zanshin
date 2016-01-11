@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/compositejob.h"
 
@@ -151,6 +151,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(CompositeJobTest)
+ZANSHIN_TEST_MAIN(CompositeJobTest)
 
 #include "compositejobtest.moc"

@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QAction>
 #include <QHeaderView>
@@ -414,6 +414,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AvailableSourcesViewTest)
+ZANSHIN_TEST_MAIN(AvailableSourcesViewTest)
 
 #include "availablesourcesviewtest.moc"

@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <testlib/akonadistoragetestbase.h>
 
@@ -58,6 +58,6 @@ private:
     Testlib::AkonadiFakeData m_data;
 };
 
-QTEST_MAIN(AkonadiFakeStorageTest)
+ZANSHIN_TEST_MAIN(AkonadiFakeStorageTest)
 
 #include "akonadifakestoragetest.moc"

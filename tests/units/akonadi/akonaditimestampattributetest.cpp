@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "akonadi/akonaditimestampattribute.h"
 
@@ -94,6 +94,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiTimestampAttributeTest)
+ZANSHIN_TEST_MAIN(AkonadiTimestampAttributeTest)
 
 #include "akonaditimestampattributetest.moc"

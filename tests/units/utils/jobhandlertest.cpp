@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/jobhandler.h"
 #include "utils/compositejob.h"
@@ -68,6 +68,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(JobHandlerTest)
+ZANSHIN_TEST_MAIN(JobHandlerTest)
 
 #include "jobhandlertest.moc"

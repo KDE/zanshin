@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <QScriptEngine>
 
@@ -85,6 +85,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ScriptHandlerTest)
+ZANSHIN_TEST_MAIN(ScriptHandlerTest)
 
 #include "scripthandlertest.moc"

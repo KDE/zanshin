@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/livequery.h"
 
@@ -527,6 +527,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(LiveQueryTest)
+ZANSHIN_TEST_MAIN(LiveQueryTest)
 
 #include "livequerytest.moc"

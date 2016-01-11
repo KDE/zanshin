@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/mockobject.h"
 
@@ -78,6 +78,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(MockObjectTest)
+ZANSHIN_TEST_MAIN(MockObjectTest)
 
 #include "mockobjecttest.moc"

@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonadiserializer.h"
@@ -1536,6 +1536,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiTaskQueriesTest)
+ZANSHIN_TEST_MAIN(AkonadiTaskQueriesTest)
 
 #include "akonaditaskqueriestest.moc"

@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "presentation/errorhandler.h"
 
@@ -84,6 +84,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ErrorHandlerTest)
+ZANSHIN_TEST_MAIN(ErrorHandlerTest)
 
 #include "errorhandlertest.moc"

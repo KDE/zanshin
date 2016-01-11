@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/queryresult.h"
 
@@ -341,6 +341,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(QueryResultTest)
+ZANSHIN_TEST_MAIN(QueryResultTest)
 
 #include "queryresulttest.moc"

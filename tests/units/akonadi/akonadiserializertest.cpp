@@ -22,7 +22,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadiapplicationselectedattribute.h"
@@ -2428,6 +2428,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiSerializerTest)
+ZANSHIN_TEST_MAIN(AkonadiSerializerTest)
 
 #include "akonadiserializertest.moc"

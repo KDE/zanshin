@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/artifact.h"
 #include "domain/datasource.h"
@@ -47,6 +47,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(MetaTypesTest)
+ZANSHIN_TEST_MAIN(MetaTypesTest)
 
 #include "metatypestest.moc"

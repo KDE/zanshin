@@ -22,7 +22,7 @@
 */
 
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QHeaderView>
 #include <QLabel>
@@ -222,6 +222,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(QuickSelectDialogTest)
+ZANSHIN_TEST_MAIN(QuickSelectDialogTest)
 
 #include "quickselectdialogtest.moc"

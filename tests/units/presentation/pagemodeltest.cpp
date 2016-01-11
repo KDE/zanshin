@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <QStringListModel>
 
@@ -82,6 +82,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(PageModelTest)
+ZANSHIN_TEST_MAIN(PageModelTest)
 
 #include "pagemodeltest.moc"

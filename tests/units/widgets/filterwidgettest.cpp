@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QAbstractButton>
 #include <QComboBox>
@@ -176,6 +176,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(FilterWidgetTest)
+ZANSHIN_TEST_MAIN(FilterWidgetTest)
 
 #include "filterwidgettest.moc"

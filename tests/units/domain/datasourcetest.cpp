@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/datasource.h"
 
@@ -141,6 +141,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(DataSourceTest)
+ZANSHIN_TEST_MAIN(DataSourceTest)
 
 #include "datasourcetest.moc"

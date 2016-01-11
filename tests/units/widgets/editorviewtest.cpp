@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QAbstractButton>
 #include <QLabel>
@@ -700,6 +700,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(EditorViewTest)
+ZANSHIN_TEST_MAIN(EditorViewTest)
 
 #include "editorviewtest.moc"

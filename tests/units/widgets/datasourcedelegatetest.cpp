@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include <QHeaderView>
 #include <QSignalSpy>
@@ -145,6 +145,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(DataSourceDelegateTest)
+ZANSHIN_TEST_MAIN(DataSourceDelegateTest)
 
 #include "datasourcedelegatetest.moc"

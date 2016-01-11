@@ -23,7 +23,7 @@
 */
 
 #include <QStandardItem>
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <mockitopp/mockitopp.hpp>
 
@@ -105,6 +105,6 @@ private:
 
 };
 
-QTEST_MAIN(AvailablePagesSortFilterProxyModelTest)
+ZANSHIN_TEST_MAIN(AvailablePagesSortFilterProxyModelTest)
 
 #include "availablepagessortfilterproxymodeltest.moc"

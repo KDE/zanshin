@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/context.h"
 
@@ -56,6 +56,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ContextTest)
+ZANSHIN_TEST_MAIN(ContextTest)
 
 #include "contexttest.moc"

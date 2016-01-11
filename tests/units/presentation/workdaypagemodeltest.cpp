@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <testlib/fakejob.h>
 
@@ -371,6 +371,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(WorkdayPageModelTest)
+ZANSHIN_TEST_MAIN(WorkdayPageModelTest)
 
 #include "workdaypagemodeltest.moc"

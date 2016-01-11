@@ -26,7 +26,7 @@
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include <AkonadiCore/EntityDisplayAttribute>
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 using namespace Testlib;
 
@@ -185,6 +185,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(GenCollectionTest)
+ZANSHIN_TEST_MAIN(GenCollectionTest)
 
 #include "gencollectiontest.moc"

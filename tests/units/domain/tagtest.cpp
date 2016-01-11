@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/tag.h"
 
@@ -56,6 +56,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(TagTest)
+ZANSHIN_TEST_MAIN(TagTest)
 
 #include "tagtest.moc"

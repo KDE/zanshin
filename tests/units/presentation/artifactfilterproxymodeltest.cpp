@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <QStandardItemModel>
 
@@ -250,6 +250,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ArtifactFilterProxyModelTest)
+ZANSHIN_TEST_MAIN(ArtifactFilterProxyModelTest)
 
 #include "artifactfilterproxymodeltest.moc"

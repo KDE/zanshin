@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "akonadi/akonadilivequeryhelpers.h"
 
@@ -817,6 +817,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiLiveQueryHelpersTest)
+ZANSHIN_TEST_MAIN(AkonadiLiveQueryHelpersTest)
 
 #include "akonadilivequeryhelperstest.moc"

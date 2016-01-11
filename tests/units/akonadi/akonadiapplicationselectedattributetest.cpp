@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 
@@ -97,6 +97,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiApplicationSelectedAttributeTest)
+ZANSHIN_TEST_MAIN(AkonadiApplicationSelectedAttributeTest)
 
 #include "akonadiapplicationselectedattributetest.moc"

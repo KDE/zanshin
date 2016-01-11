@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/mockobject.h"
 #include "utils/datetime.h"
@@ -1128,6 +1128,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AvailableTaskPagesModelTest)
+ZANSHIN_TEST_MAIN(AvailableTaskPagesModelTest)
 
 #include "availabletaskpagesmodeltest.moc"

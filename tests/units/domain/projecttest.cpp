@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "domain/project.h"
 
@@ -56,6 +56,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ProjectTest)
+ZANSHIN_TEST_MAIN(ProjectTest)
 
 #include "projecttest.moc"

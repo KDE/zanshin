@@ -24,7 +24,7 @@
 #include "testlib/akonadifakedata.h"
 #include "testlib/akonadifakedataxmlloader.h"
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 class AkonadiFakeDataXmlLoaderTest : public QObject
 {
@@ -79,6 +79,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiFakeDataXmlLoaderTest)
+ZANSHIN_TEST_MAIN(AkonadiFakeDataXmlLoaderTest)
 
 #include "akonadifakedataxmlloadertest.moc"

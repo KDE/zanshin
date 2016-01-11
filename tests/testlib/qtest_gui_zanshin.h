@@ -1,6 +1,6 @@
 /* This file is part of Zanshin
 
-   Copyright 2014-2015 Kevin Ottens <ervin@kde.org>
+   Copyright 2016 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -21,40 +21,6 @@
    USA.
 */
 
+#include <QtTestGui>
 #include <testlib/qtest_zanshin.h>
 
-#include <testlib/akonadistoragetestbase.h>
-#include <testlib/testsafety.h>
-
-#include "akonadi/akonadimonitorimpl.h"
-#include "akonadi/akonadistorage.h"
-
-class AkonadiStorageTest : public Testlib::AkonadiStorageTestBase
-{
-    Q_OBJECT
-public:
-    explicit AkonadiStorageTest(QObject *parent = Q_NULLPTR)
-        : AkonadiStorageTestBase(parent)
-    {
-    }
-
-    Akonadi::StorageInterface::Ptr createStorage() Q_DECL_OVERRIDE
-    {
-        return Akonadi::StorageInterface::Ptr(new Akonadi::Storage);
-    }
-
-    Akonadi::MonitorInterface::Ptr createMonitor() Q_DECL_OVERRIDE
-    {
-        return Akonadi::MonitorInterface::Ptr(new Akonadi::MonitorImpl);
-    }
-
-private slots:
-    void initTestCase()
-    {
-        QVERIFY(TestLib::TestSafety::checkTestIsIsolated());
-    }
-};
-
-ZANSHIN_TEST_MAIN(AkonadiStorageTest)
-
-#include "akonadistoragetest.moc"

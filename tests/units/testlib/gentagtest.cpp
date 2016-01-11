@@ -23,7 +23,7 @@
 
 #include "testlib/gentag.h"
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "akonadi/akonadiserializerinterface.h"
 
@@ -84,6 +84,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(GenTagTest)
+ZANSHIN_TEST_MAIN(GenTagTest)
 
 #include "gentagtest.moc"

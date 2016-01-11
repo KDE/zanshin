@@ -25,7 +25,7 @@
 
 #include <KCalCore/Todo>
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 using namespace Testlib;
 
@@ -223,6 +223,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(GenTodoTest)
+ZANSHIN_TEST_MAIN(GenTodoTest)
 
 #include "gentodotest.moc"

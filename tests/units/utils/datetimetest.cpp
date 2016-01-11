@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/datetime.h"
 
@@ -70,6 +70,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(DateTimeTest)
+ZANSHIN_TEST_MAIN(DateTimeTest)
 
 #include "datetimetest.moc"

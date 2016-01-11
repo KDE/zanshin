@@ -24,7 +24,7 @@
 
 #include "zanshin021migrator.h"
 
-#include <QTest>
+#include <testlib/qtest_zanshin.h>
 #include <QSignalSpy>
 #include <testlib/testsafety.h>
 #include <testlib/akonadidebug.h>
@@ -169,7 +169,7 @@ private:
 };
 
 
-QTEST_MAIN(Zanshin021MigrationTest)
+ZANSHIN_TEST_MAIN(Zanshin021MigrationTest)
 
 #include "zanshin021migrationtest.moc"
 

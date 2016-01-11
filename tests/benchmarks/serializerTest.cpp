@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest/QtTest>
+#include <testlib/qtest_zanshin.h>
 #include <AkonadiCore/Item>
 #include <KCalCore/Todo>
 #include "domain/task.h"
@@ -110,5 +110,5 @@ void SerializerBenchmark::checkPayload()
     }
 }
 
-QTEST_MAIN(SerializerBenchmark)
+ZANSHIN_TEST_MAIN(SerializerBenchmark)
 #include "serializerTest.moc"

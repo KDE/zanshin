@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include "utils/mockobject.h"
 
@@ -532,6 +532,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(TaskInboxPageModelTest)
+ZANSHIN_TEST_MAIN(TaskInboxPageModelTest)
 
 #include "taskinboxpagemodeltest.moc"

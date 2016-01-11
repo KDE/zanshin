@@ -22,7 +22,7 @@
 */
 
 
-#include <QtTestGui>
+#include <testlib/qtest_gui_zanshin.h>
 
 #include "widgets/scripteditor.h"
 
@@ -53,6 +53,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(ScriptEditorTest)
+ZANSHIN_TEST_MAIN(ScriptEditorTest)
 
 #include "scripteditortest.moc"

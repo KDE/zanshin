@@ -21,7 +21,7 @@
    USA.
 */
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 #include <KCalCore/Todo>
 #include <KMime/Message>
@@ -1615,6 +1615,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiLiveQueryIntegratorTest)
+ZANSHIN_TEST_MAIN(AkonadiLiveQueryIntegratorTest)
 
 #include "akonadilivequeryintegratortest.moc"

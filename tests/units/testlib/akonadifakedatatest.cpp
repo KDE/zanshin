@@ -24,7 +24,7 @@
 #include "testlib/akonadifakedata.h"
 #include "akonadi/akonadimonitorinterface.h"
 
-#include <QtTest>
+#include <testlib/qtest_zanshin.h>
 
 namespace QTest {
 
@@ -617,6 +617,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(AkonadiFakeDataTest)
+ZANSHIN_TEST_MAIN(AkonadiFakeDataTest)
 
 #include "akonadifakedatatest.moc"
