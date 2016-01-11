@@ -107,6 +107,9 @@ void BoostStep::runWithMasterSuite() {
     using namespace ::boost::unit_test;
     test_case *tc = BOOST_TEST_CASE(boost::bind(&BoostStep::body, this));
     framework::master_test_suite().add(tc);
+#if BOOST_VERSION >= 105900
+    framework::finalize_setup_phase();
+#endif
     framework::run(tc, false);
     framework::master_test_suite().remove(tc->p_id);
 }
