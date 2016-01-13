@@ -42,6 +42,8 @@ MonitorSpy::MonitorSpy(Akonadi::MonitorInterface* monitor, QObject *parent)
       m_timer(new QTimer(this)),
       m_isFinished(false)
 {
+    m_timer->setTimerType(Qt::PreciseTimer);
+
     connect(m_monitor, SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(restartTimer()));
     connect(m_monitor, SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(restartTimer()));
     connect(m_monitor, SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(restartTimer()));

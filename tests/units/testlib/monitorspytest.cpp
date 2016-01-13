@@ -36,7 +36,7 @@ public:
     TimerTest(AkonadiFakeMonitor *monitor, int duration)
         : m_monitor(monitor)
     {
-        QTimer::singleShot(duration, this, SLOT(addItem()));
+        QTimer::singleShot(duration, Qt::PreciseTimer, this, SLOT(addItem()));
     }
 
 private slots:
