@@ -29,9 +29,8 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
 
-#include <KDebug>
 #include <QIcon>
-#include <KLocale>
+
 K_EXPORT_PLASMA_RUNNER(zanshin, ZanshinRunner)
 Domain::TaskRepository::Ptr createTaskRepository()
 {
@@ -75,7 +74,7 @@ void ZanshinRunner::match(Plasma::RunnerContext &context)
     match.setData(summary);
     match.setType(Plasma::QueryMatch::ExactMatch);
     match.setIcon(QIcon::fromTheme("zanshin"));
-    match.setText(i18n("Add \"%1\" to your todo list", summary));
+    match.setText(tr("Add \"%1\" to your todo list").arg(summary));
     match.setRelevance(1.0);
 
     matches << match;
