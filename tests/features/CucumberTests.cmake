@@ -6,7 +6,7 @@ macro(cucumber_tests)
 
         # cucumber with akonadi fake rules
         configure_file(cucumber-run.sh.in ${_testsuite}/cucumber-run.sh)
-        set(cucumber-run-cmd sh ${CMAKE_CURRENT_BINARY_DIR}/${_testsuite}/cucumber-run.sh ${CMAKE_CURRENT_SOURCE_DIR}/testenv/kdehome/testdata.xml)
+        set(cucumber-run-cmd sh ${CMAKE_CURRENT_BINARY_DIR}/${_testsuite}/cucumber-run.sh ${CMAKE_CURRENT_SOURCE_DIR}/testenv/data/testdata.xml)
 
         add_custom_target(cucumber-run-${_testsuite}
                           COMMAND ${cucumber-run-cmd}
