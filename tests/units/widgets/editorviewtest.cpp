@@ -34,8 +34,6 @@
 
 #include "addressline/addresseelineedit.h"
 #include "kdateedit.h"
-#include <kglobal.h>
-#include <klocale.h>
 
 class EditorModelStub : public QObject
 {
@@ -544,7 +542,7 @@ private slots:
         auto today = QDate::currentDate();
 
         // WHEN
-        startDateEdit->setEditText(today.toString(Qt::ISODate)); // ### ISO? really? this only works because KLocale::readDate is clever, but it's not what the user would type
+        startDateEdit->setEditText(today.toString("dd/MM/yyyy"));
         QTest::keyClick(startDateEdit, Qt::Key_Enter);
 
         // THEN
@@ -585,7 +583,7 @@ private slots:
 
         // WHEN
         QVERIFY(dueDateEdit->isEnabled());
-        dueDateEdit->setEditText(today.toString(Qt::ISODate));
+        dueDateEdit->setEditText(today.toString("dd/MM/yyyy"));
         QTest::keyClick(dueDateEdit, Qt::Key_Enter);
 
         // THEN
@@ -610,7 +608,7 @@ private slots:
         startTodayButton->click();
 
         // THEN
-        QCOMPARE(startDateEdit->currentText(), KLocale::global()->formatDate(today, KLocale::ShortDate));
+        QCOMPARE(startDateEdit->currentText(), today.toString("dd/MM/yyyy"));
         QCOMPARE(model.property("startDate").toDateTime().date(), today);
     }
 

@@ -54,7 +54,6 @@ target_link_libraries(zanshinkdepimstatic
   KF5::I18n
   KF5::ItemViews
   KF5::JobWidgets
-  KF5::KDELibs4Support
   KF5::KIOCore
   KF5::Ldap
   KF5::Wallet

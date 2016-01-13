@@ -26,21 +26,48 @@
 
 #include "kdateedit.h"
 
-#include <KCalendarSystem>
-#include <KGlobal>
-#include <KGlobalSettings>
-#include <KLocale>
-
 #include <QAbstractItemView>
 #include <QApplication>
 #include <QCompleter>
+#include <QDesktopWidget>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QLocale>
 #include <QMouseEvent>
 #include <QValidator>
 
+#include <KLocalizedString>
+
 using namespace KPIM;
+
+class DateFormat
+{
+public:
+    DateFormat()
+    {
+        // Check if we can use the QLocale::ShortFormat
+        if (!QLocale().toString(QDate(2015, 1, 1), QLocale::ShortFormat).contains(QStringLiteral("2015"))) {
+            mFallbackFormat = QStringLiteral("dd/MM/yyyy");
+        }
+    }
+
+    QDate toDate( const QString &string )
+    {
+        return mFallbackFormat.isEmpty() ? QLocale().toDate( string, QLocale::ShortFormat )
+                                         : QLocale().toDate( string, mFallbackFormat );
+    }
+
+    QString toString( const QDate &date )
+    {
+        return mFallbackFormat.isEmpty() ? QLocale().toString( date, QLocale::ShortFormat )
+                                         : QLocale().toString( date, mFallbackFormat );
+    }
+
+private:
+    QString mFallbackFormat;
+};
+Q_GLOBAL_STATIC(DateFormat, sDateFormat);
 
 class DateValidator : public QValidator
 {
@@ -62,9 +89,8 @@ class DateValidator : public QValidator
         return Acceptable;
       }
 
-      bool ok = false;
-      KGlobal::locale()->readDate( str, &ok );
-      if ( ok ) {
+      QDate result = sDateFormat->toDate( str );
+      if ( result.isValid() ) {
         return Acceptable;
       } else {
         return Intermediate;
@@ -83,7 +109,7 @@ KDateEdit::KDateEdit( QWidget *parent )
   setEditable( true );
 
   mDate = QDate::currentDate();
-  QString today = KGlobal::locale()->formatDate( mDate, KLocale::ShortDate );
+  QString today = sDateFormat->toString( mDate );
 
   addItem( today );
   setCurrentIndex( 0 );
@@ -142,7 +168,7 @@ void KDateEdit::showPopup()
     return;
   }
 
-  QRect desk = KGlobalSettings::desktopGeometry( this );
+  QRect desk = QApplication::desktop()->screenGeometry( this );
 
   QPoint popupPoint = mapToGlobal( QPoint( 0, 0 ) );
 
@@ -262,7 +288,7 @@ QDate KDateEdit::parseDate( bool *replaced ) const
         (*replaced) = true;
     }
   } else {
-      result = KGlobal::locale()->readDate( text );
+      result = sDateFormat->toDate( text );
   }
 
   return result;
@@ -424,7 +450,7 @@ void KDateEdit::setupKeywords()
 
   QString dayName;
   for ( int i = 1; i <= 7; ++i ) {
-    dayName = KGlobal::locale()->calendar()->weekDayName( i ).toLower();
+    dayName = QDate::longDayName( i ).toLower();
     mKeywordMap.insert( dayName, i + 100 );
   }
 
@@ -445,7 +471,7 @@ void KDateEdit::updateView()
 {
   QString dateString;
   if ( mDate.isValid() ) {
-    dateString = KGlobal::locale()->formatDate( mDate, KLocale::ShortDate );
+    dateString = sDateFormat->toString( mDate );
   }
 
   // We do not want to generate a signal here,
