@@ -94,8 +94,13 @@ void BoostStep::initBoostTest() {
 #else
     if (!framework::test_in_progress()) {
 #endif
+#if BOOST_VERSION < 106000
         int argc = 2;
         char *argv[] = { (char *) "", (char *) "" };
+#else
+        int argc = 1;
+        char *argv[] = { (char *) "cucumber-cpp" };
+#endif
         framework::init(&boost_test_init, argc, argv);
         logInterceptor = new CukeBoostLogInterceptor;
         ::boost::unit_test::unit_test_log.set_formatter(logInterceptor);
