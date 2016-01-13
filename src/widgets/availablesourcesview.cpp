@@ -35,8 +35,6 @@
 #include <QVBoxLayout>
 
 #include <KLineEdit>
-#include <KGlobal>
-#include <KComponentData>
 
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
