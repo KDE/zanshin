@@ -1,1 +1,8 @@
-ecm_install_icons( ICONS hi128-apps-zanshin.png  hi256-apps-zanshin.png  hi32-apps-zanshin.png  hi64-apps-zanshin.png  hisc-apps-zanshin.svgz DESTINATION ${KDE_INSTALL_ICONDIR} )
+ecm_install_icons(ICONS
+    128-apps-zanshin.png
+    256-apps-zanshin.png
+    32-apps-zanshin.png
+    64-apps-zanshin.png
+    sc-apps-zanshin.svgz
+    DESTINATION ${KDE_INSTALL_ICONDIR}
+)
