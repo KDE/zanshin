@@ -8,7 +8,6 @@ target_link_libraries(krunner_zanshin
     domain
     utils
     KF5::Runner
-    KF5::AkonadiWidgets
 )
 
 install(TARGETS krunner_zanshin DESTINATION ${KDE_INSTALL_PLUGINDIR})

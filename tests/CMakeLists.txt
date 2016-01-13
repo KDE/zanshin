@@ -17,7 +17,6 @@ MACRO(ZANSHIN_MANUAL_TESTS)
       scripting
       utils
       widgets
-      ${KDEPIM_STATIC_LIBS}
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_MANUAL_TESTS)

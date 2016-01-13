@@ -4,7 +4,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
     add_executable(${_testname} ${_testname}.cpp)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
-    target_link_libraries(${_testname} KF5::CalendarCore KF5::AkonadiCore KF5::Mime Qt5::Test akonadi domain utils ${KDEPIM_STATIC_LIBS} )
+    target_link_libraries(${_testname} Qt5::Test akonadi domain utils)
 
     set(_location ${CMAKE_CURRENT_BINARY_DIR}/${_testname})
     if (WIN32)

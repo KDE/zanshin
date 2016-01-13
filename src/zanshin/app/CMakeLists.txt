@@ -13,7 +13,6 @@ target_link_libraries(zanshin
     scripting
     utils
     widgets
-    ${KDEPIM_STATIC_LIBS}
 )
 
 install(TARGETS zanshin DESTINATION ${KDE_INSTALL_BINDIR})

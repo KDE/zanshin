@@ -62,28 +62,11 @@ find_package(KF5 REQUIRED COMPONENTS
     AkonadiCalendar
     AkonadiNotes
     AkonadiSearch
-    CalendarCore
-    Completion
-    Contacts
-    CoreAddons
-    DocTools
-    I18n
-    IconThemes
     IdentityManagement
-    KCMUtils
-    KDELibs4Support
-    KHtml
-    KIO
     KontactInterface
     Ldap
-    Mime
-    Parts
-    PimTextEdit
-    Plasma
     Runner
-    WidgetsAddons
     Wallet
-    Ldap
 )
 find_package(KF5Akonadi "5.1" CONFIG REQUIRED)
 

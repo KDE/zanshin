@@ -13,7 +13,6 @@ target_link_libraries(renku
     scripting
     utils
     widgets
-    ${KDEPIM_STATIC_LIBS}
 )
 
 install(TARGETS renku DESTINATION ${KDE_INSTALL_BINDIR})

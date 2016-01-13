@@ -14,7 +14,6 @@ target_link_libraries(renku_part
     scripting
     utils
     widgets
-    ${KDEPIM_STATIC_LIBS}
 )
 
 install(TARGETS renku_part DESTINATION ${KDE_INSTALL_PLUGINDIR})

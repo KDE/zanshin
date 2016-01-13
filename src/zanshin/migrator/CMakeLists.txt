@@ -7,7 +7,6 @@ target_link_libraries(migrator
     akonadi
     domain
     utils
-    KF5::AkonadiWidgets
 )
 
 add_executable(zanshin-migrator main.cpp)

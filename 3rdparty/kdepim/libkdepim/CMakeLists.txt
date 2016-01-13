@@ -45,16 +45,21 @@ add_library(zanshinkdepimstatic STATIC ${kdepim_LIB_SRCS})
 generate_export_header(zanshinkdepimstatic BASE_NAME kdepim)
 
 target_link_libraries(zanshinkdepimstatic
-  KF5::AkonadiCalendar
   KF5::AkonadiContact
-  KF5::AkonadiCore
   KF5::AkonadiSearchPIM
-  KF5::AkonadiWidgets
   KF5::Codecs
-  KF5::Contacts
-  KF5::KCMUtils
+  KF5::Completion
+  KF5::ConfigCore
+  KF5::ConfigWidgets
+  KF5::I18n
+  KF5::ItemViews
+  KF5::JobWidgets
+  KF5::KDELibs4Support
+  KF5::KIOCore
   KF5::Ldap
-  KF5::Mime
   KF5::Wallet
+  KF5::WidgetsAddons
+  Qt5::DBus
+  Qt5::Network
 )
 add_subdirectory(tests)

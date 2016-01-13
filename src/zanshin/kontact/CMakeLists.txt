@@ -14,7 +14,6 @@ target_link_libraries(zanshin_part
     scripting
     utils
     widgets
-    ${KDEPIM_STATIC_LIBS}
 )
 
 install(TARGETS zanshin_part DESTINATION ${KDE_INSTALL_PLUGINDIR})

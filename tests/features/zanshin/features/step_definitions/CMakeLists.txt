@@ -18,8 +18,6 @@ target_link_libraries(zanshin-cuke-steps
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     Qt5::Test
     Qt5::Script
-    KF5::AkonadiWidgets
-    KF5::AkonadiXml
     testlib
     akonadi
     domain
