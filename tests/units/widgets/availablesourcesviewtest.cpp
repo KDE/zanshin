@@ -127,7 +127,7 @@ private slots:
         QVERIFY(!searchEdit->isVisibleTo(&available));
 #endif
         QVERIFY(searchEdit->isClearButtonShown());
-        QCOMPARE(searchEdit->clickMessage(), tr("Search..."));
+        QCOMPARE(searchEdit->placeholderText(), tr("Search..."));
 
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
