@@ -23,7 +23,6 @@
 
 #include <testlib/qtest_zanshin.h>
 
-#include <KGlobal>
 #include <KConfig>
 #include <KConfigGroup>
 
@@ -48,7 +47,7 @@ public:
 private:
     KConfigGroup configGroup()
     {
-        return KConfigGroup(KGlobal::config(), "General");
+        return KConfigGroup(KSharedConfig::openConfig(), "General");
     }
 
     QList<Akonadi::Collection::Id> idList(int max)

@@ -32,7 +32,6 @@
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <KGlobal>
 
 #include "presentation/applicationmodel.h"
 #include "presentation/errorhandler.h"
@@ -723,7 +722,7 @@ WHEN("^the setting key (\\S+) changes to (\\d+)$") {
     REGEX_PARAM(qint64, id);
 
     ScenarioScope<ZanshinContext> context;
-    KConfigGroup config(KGlobal::config(), "General");
+    KConfigGroup config(KSharedConfig::openConfig(), "General");
     config.writeEntry(keyName, id);
 }
 
@@ -861,7 +860,7 @@ THEN("^the setting key (\\S+) is (\\d+)$") {
     REGEX_PARAM(QString, keyName);
     REGEX_PARAM(qint64, expectedId);
 
-    KConfigGroup config(KGlobal::config(), "General");
+    KConfigGroup config(KSharedConfig::openConfig(), "General");
     const qint64 id = config.readEntry(keyName, -1);
     COMPARE(id, expectedId);
 }
