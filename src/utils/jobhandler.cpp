@@ -52,6 +52,14 @@ private slots:
         }
     }
 
+    void onDestroyed(QObject *o)
+    {
+        auto job = static_cast<KJob*>(o);
+        Q_ASSERT(job);
+        m_handlers.remove(job);
+        m_handlersWithJob.remove(job);
+    }
+
 public:
     QHash<KJob *, QList<JobHandler::ResultHandler>> m_handlers;
     QHash<KJob *, QList<JobHandler::ResultHandlerWithJob>> m_handlersWithJob;
@@ -63,6 +71,7 @@ void JobHandler::install(KJob *job, const ResultHandler &handler, StartMode star
 {
     auto self = jobHandlerInstance();
     QObject::connect(job, SIGNAL(result(KJob*)), self, SLOT(handleJobResult(KJob*)), Qt::UniqueConnection);
+    QObject::connect(job, SIGNAL(destroyed(QObject*)), self, SLOT(onDestroyed(QObject*)), Qt::UniqueConnection);
     self->m_handlers[job] << handler;
     if (startMode == AutoStart)
         job->start();
@@ -72,6 +81,7 @@ void JobHandler::install(KJob *job, const ResultHandlerWithJob &handler, StartMo
 {
     auto self = jobHandlerInstance();
     QObject::connect(job, SIGNAL(result(KJob*)), self, SLOT(handleJobResult(KJob*)), Qt::UniqueConnection);
+    QObject::connect(job, SIGNAL(destroyed(QObject*)), self, SLOT(onDestroyed(QObject*)), Qt::UniqueConnection);
     self->m_handlersWithJob[job] << handler;
     if (startMode == AutoStart)
         job->start();
