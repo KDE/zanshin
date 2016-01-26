@@ -31,6 +31,7 @@
 
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
+#include <kcalcore_version.h>
 
 #include "utils/mem_fn.h"
 
@@ -759,7 +760,19 @@ void AkonadiStorageTestBase::shouldUpdateItem()
     QCOMPARE(spy.size(), 1);
     auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
+
+    // KCalCore 4.83 fixes this bug
+#if KCALCORE_VERSION < 0x045300
+    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->uid(), todo->uid());
+    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->summary(), todo->summary());
+    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->description(), todo->description());
+    QEXPECT_FAIL("", "Bug introduced by 76c686bc1de3a5d16956a627744ce352bc28d12a in KCalCore", Continue);
     QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+    QEXPECT_FAIL("", "Bug introduced by 76c686bc1de3a5d16956a627744ce352bc28d12a in KCalCore", Continue);
+    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->status(), todo->status());
+#else
+    QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+#endif
 }
 
 void AkonadiStorageTestBase::shouldUseTransaction()
