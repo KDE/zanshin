@@ -11,16 +11,18 @@ macro(cucumber_tests)
         add_custom_target(cucumber-run-${_testsuite}
                           COMMAND ${cucumber-run-cmd}
                           WORKING_DIRECTORY ${CUCUMBER_CWD}
+                          USES_TERMINAL
         )
 
         add_custom_target(cucumber-run-${_testsuite}-done
                           COMMAND ${cucumber-run-cmd} --tags ~@wip
                           WORKING_DIRECTORY ${CUCUMBER_CWD}
+                          USES_TERMINAL
         )
 
 
         # Default test target
-        add_test(${_testsuite}-features-done make cucumber-run-${_testsuite}-done)
+        add_test(${_testsuite}-features-done ${CMAKE_MAKE_PROGRAM} cucumber-run-${_testsuite}-done)
 
 
 
@@ -32,14 +34,16 @@ macro(cucumber_tests)
         add_custom_target(cucumber-akonadi-run-${_testsuite}
                           COMMAND ${cucumber-akonadi-run-cmd}
                           WORKING_DIRECTORY ${CUCUMBER_CWD}
+                          USES_TERMINAL
         )
 
         add_custom_target(cucumber-akonadi-run-${_testsuite}-done
                           COMMAND ${cucumber-akonadi-run-cmd} --tags ~@wip
                           WORKING_DIRECTORY ${CUCUMBER_CWD}
+                          USES_TERMINAL
         )
 
         # Default test target
-        add_test(${_testsuite}-features-done make cucumber-run-${_testsuite}-done)
+        add_test(${_testsuite}-features-done ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_BINARY_DIR} cucumber-run-${_testsuite}-done)
     endforeach()
 endmacro()

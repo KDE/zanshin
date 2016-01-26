@@ -25,8 +25,9 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
     add_custom_target(${_testname}-run
                       COMMAND ${akonaditest-run-cmd}
                       WORKING_DIRECTORY ${AKONADITEST_CWD}
+                      USES_TERMINAL
     )
 
-    add_test(zanshin-${_testname} make ${_testname}-run)
+    add_test(zanshin-${_testname} ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_BINARY_DIR} ${_testname}-run)
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AKONADI_AUTO_TESTS)
