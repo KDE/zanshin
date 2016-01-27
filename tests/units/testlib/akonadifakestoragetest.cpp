@@ -41,7 +41,7 @@ public:
     {
         MonitorSpy::setExpirationDelay(100);
         auto loader = Testlib::AkonadiFakeDataXmlLoader(&m_data);
-        loader.load(SOURCE_DIR "/akonadifakedataxmlloadertest.xml");
+        loader.load(SOURCE_DIR "/../akonadi/testenv/data/testdata.xml");
     }
 
     Akonadi::StorageInterface::Ptr createStorage() Q_DECL_OVERRIDE

@@ -17,7 +17,6 @@ PERCENT-COMPLETE:0&#xd;
 END:VTODO&#xd;
 
 END:VCALENDAR</payload>
-        <tag>errands-context</tag>
       </item>
       <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{5dc1aba7-eead-4254-ba7a-58e397de1179}">
         <payload>BEGIN:VCALENDAR
@@ -34,7 +33,6 @@ PERCENT-COMPLETE:0&#xd;
 END:VTODO&#xd;
 
 END:VCALENDAR</payload>
-        <tag>errands-context</tag>
       </item>
       <item mimetype="application/x-vnd.akonadi.calendar.event" rid="{f45ee587-38ee-4131-a93f-eaad2f9e2ddb}">
         <payload>BEGIN:VCALENDAR

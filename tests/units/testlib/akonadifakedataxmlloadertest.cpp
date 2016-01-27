@@ -44,7 +44,7 @@ private slots:
         auto loader = Testlib::AkonadiFakeDataXmlLoader(&data);
 
         // WHEN
-        loader.load(SOURCE_DIR "/akonadifakedataxmlloadertest.xml");
+        loader.load(SOURCE_DIR "/../akonadi/testenv/data/testdata.xml");
 
         // THEN
         QVERIFY(data.collections().size() > 1);
