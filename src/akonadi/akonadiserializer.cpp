@@ -215,9 +215,9 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setTitle(todo->summary());
     task->setText(todo->description());
     task->setDone(todo->isCompleted());
-    task->setDoneDate(todo->completed().dateTime());
-    task->setStartDate(todo->dtStart().dateTime());
-    task->setDueDate(todo->dtDue().dateTime());
+    task->setDoneDate(todo->completed().dateTime().toUTC());
+    task->setStartDate(todo->dtStart().dateTime().toUTC());
+    task->setDueDate(todo->dtDue().dateTime().toUTC());
     task->setProperty("itemId", item.id());
     task->setProperty("parentCollectionId", item.parentCollection().id());
     task->setProperty("todoUid", todo->uid());

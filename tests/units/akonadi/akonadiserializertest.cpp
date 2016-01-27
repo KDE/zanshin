@@ -1049,9 +1049,9 @@ private slots:
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->description(), content);
         QCOMPARE(todo->isCompleted(), isDone);
-        QCOMPARE(todo->completed().dateTime(), doneDate);
-        QCOMPARE(todo->dtStart().dateTime(), startDate);
-        QCOMPARE(todo->dtDue().dateTime(), dueDate);
+        QCOMPARE(todo->completed().dateTime().toUTC(), doneDate);
+        QCOMPARE(todo->dtStart().dateTime().toUTC(), startDate);
+        QCOMPARE(todo->dtDue().dateTime().toUTC(), dueDate);
 
         if (delegate.isValid()) {
             auto attendee = todo->attendeeByMail(delegate.email());
