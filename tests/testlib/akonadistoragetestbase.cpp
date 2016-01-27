@@ -92,7 +92,7 @@ void AkonadiStorageTestBase::shouldListCollections_data()
                                                   << true << true;
 
     QTest::newRow("exclude !referenced + !enabled") << Akonadi::Collection::root()
-                                                    << QStringList({ "Change me!", "Destroy me!", "Notes" })
+                                                    << QStringList({ "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
                                                     << Akonadi::Storage::Recursive
                                                     << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
                                                     << false << false;
