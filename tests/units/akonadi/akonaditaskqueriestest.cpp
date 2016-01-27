@@ -1492,7 +1492,7 @@ private slots:
     void shouldPollForCurrentDayToListWorkday()
     {
         // GIVEN
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10");
+        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10T23:59:59UTC");
         const auto today = Utils::DateTime::currentDateTime();
         AkonadiFakeData data;
 
@@ -1525,7 +1525,7 @@ private slots:
         QCOMPARE(result->data().at(0)->title(), QString("42"));
 
         // WHEN
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-11");
+        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-11T00:01:00UTC");
         QTest::qWait(1000);
         TestHelpers::waitForEmptyJobQueue();
 
