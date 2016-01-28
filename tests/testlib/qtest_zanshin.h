@@ -55,4 +55,15 @@
     } \
     static bool _zanshin_testlib_internal_isEnvironmentForced = _zanshin_testlib_internal_forceEnvironment(); \
     \
+    void _zanshin_testlib_internal_workaround_kxmlgui_startupfunc_leak() \
+    { \
+        QCoreApplication::processEvents(); \
+        QCoreApplication::processEvents(); \
+    } \
+    \
+    extern "C" void Q_CORE_EXPORT qt_startup_hook() \
+    { \
+        _zanshin_testlib_internal_workaround_kxmlgui_startupfunc_leak(); \
+    } \
+    \
     QTEST_MAIN(TestCase)
