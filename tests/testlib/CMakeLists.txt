@@ -21,6 +21,7 @@ include_directories(${CMAKE_SOURCE_DIR}/tests ${CMAKE_SOURCE_DIR}/src)
 add_library(testlib STATIC ${testlib_SRCS})
 target_link_libraries(testlib
     KF5::AkonadiCore
+    KF5::AkonadiNotes
     KF5::AkonadiXml
     KF5::CalendarCore
     KF5::Mime
