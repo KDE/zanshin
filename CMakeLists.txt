@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.3)
 project(zanshin)
+cmake_minimum_required(VERSION 3.2)
+cmake_policy(SET CMP0063 NEW)
 
 find_package(ECM REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
