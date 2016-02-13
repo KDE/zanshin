@@ -51,6 +51,7 @@
     { \
         qt_qhash_seed.store(0); \
         qputenv("KDE_DEBUG", "1"); \
+        qunsetenv("LANG"); \
         return true; \
     } \
     static bool _zanshin_testlib_internal_isEnvironmentForced = _zanshin_testlib_internal_forceEnvironment(); \
