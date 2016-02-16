@@ -55,7 +55,7 @@ public:
     DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
     QString searchTerm() const Q_DECL_OVERRIDE;
-    void setSearchTerm(QString term) Q_DECL_OVERRIDE;
+    void setSearchTerm(const QString &term) Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findSearchTopLevel() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 

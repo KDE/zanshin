@@ -39,7 +39,7 @@ public:
 
     GenNote &withId(Akonadi::Item::Id id);
     GenNote &withParent(Akonadi::Collection::Id id);
-    GenNote &withTags(QList<Akonadi::Tag::Id> ids);
+    GenNote &withTags(const QList<Akonadi::Tag::Id> &ids);
     GenNote &withParentUid(const QString &uid);
     GenNote &withTitle(const QString &title);
     GenNote &withText(const QString &text);

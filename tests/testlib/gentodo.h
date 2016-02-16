@@ -39,7 +39,7 @@ public:
 
     GenTodo &withId(Akonadi::Item::Id id);
     GenTodo &withParent(Akonadi::Collection::Id id);
-    GenTodo &withTags(QList<Akonadi::Tag::Id> ids);
+    GenTodo &withTags(const QList<Akonadi::Tag::Id> &ids);
     GenTodo &asProject(bool value = true);
     GenTodo &withUid(const QString &uid);
     GenTodo &withParentUid(const QString &uid);

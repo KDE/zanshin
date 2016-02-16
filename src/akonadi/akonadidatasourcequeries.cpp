@@ -87,7 +87,7 @@ QString DataSourceQueries::searchTerm() const
     return m_searchTerm;
 }
 
-void DataSourceQueries::setSearchTerm(QString term)
+void DataSourceQueries::setSearchTerm(const QString &term)
 {
     if (m_searchTerm == term)
         return;

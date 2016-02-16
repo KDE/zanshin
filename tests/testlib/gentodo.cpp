@@ -53,7 +53,7 @@ GenTodo &GenTodo::withParent(Akonadi::Collection::Id id)
     return *this;
 }
 
-GenTodo &GenTodo::withTags(QList<Akonadi::Tag::Id> ids)
+GenTodo &GenTodo::withTags(const QList<Akonadi::Tag::Id> &ids)
 {
     auto tags = Akonadi::Tag::List();
     std::transform(ids.constBegin(), ids.constEnd(),

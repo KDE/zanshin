@@ -55,7 +55,7 @@ GenNote &GenNote::withParent(Akonadi::Collection::Id id)
     return *this;
 }
 
-GenNote &GenNote::withTags(QList<Akonadi::Tag::Id> ids)
+GenNote &GenNote::withTags(const QList<Akonadi::Tag::Id> &ids)
 {
     auto tags = Akonadi::Tag::List();
     std::transform(ids.constBegin(), ids.constEnd(),
