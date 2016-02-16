@@ -101,7 +101,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionAdded);
 
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
@@ -128,7 +128,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
 
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
@@ -226,7 +226,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionRemoved);
 
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
@@ -284,7 +284,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagAdded);
 
         auto t1 = Akonadi::Tag(42);
         t1.setName("42");
@@ -312,7 +312,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagChanged);
 
         auto t1 = Akonadi::Tag(42);
         t1.setName("42");
@@ -337,8 +337,8 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy tagSpy(monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)));
-        QSignalSpy itemSpy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+        QSignalSpy tagSpy(monitor.data(), &Akonadi::MonitorInterface::tagRemoved);
+        QSignalSpy itemSpy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
 
         auto c1 = Akonadi::Collection(42);
         data.createCollection(c1);
@@ -397,7 +397,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(itemAdded(Akonadi::Item)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemAdded);
 
         auto i1 = Akonadi::Item(42);
         i1.setPayloadFromData("42");
@@ -424,8 +424,8 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
-        QSignalSpy moveSpy(monitor.data(), SIGNAL(itemMoved(Akonadi::Item)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
+        QSignalSpy moveSpy(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
 
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
@@ -504,7 +504,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(itemMoved(Akonadi::Item)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
 
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");
@@ -558,7 +558,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
 
         auto t1 = Akonadi::Tag(42);
         t1.setName("42");
@@ -593,7 +593,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
 
         auto c1 = Akonadi::Collection(42);
         c1.setName("42");

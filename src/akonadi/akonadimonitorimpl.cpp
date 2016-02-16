@@ -56,9 +56,10 @@ MonitorImpl::MonitorImpl()
     collectionScope.setAncestorRetrieval(CollectionFetchScope::All);
     m_monitor->setCollectionFetchScope(collectionScope);
 
-    connect(m_monitor, SIGNAL(collectionAdded(Akonadi::Collection,Akonadi::Collection)), this, SIGNAL(collectionAdded(Akonadi::Collection)));
-    connect(m_monitor, SIGNAL(collectionRemoved(Akonadi::Collection)), this, SIGNAL(collectionRemoved(Akonadi::Collection)));
-    connect(m_monitor, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)), this, SLOT(onCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
+    connect(m_monitor, &Akonadi::Monitor::collectionAdded, this, &MonitorImpl::collectionAdded);
+    connect(m_monitor, &Akonadi::Monitor::collectionRemoved, this, &MonitorImpl::collectionRemoved);
+    connect(m_monitor, static_cast<void(Akonadi::Monitor::*)(const Collection &, const QSet<QByteArray> &)>(&Akonadi::Monitor::collectionChanged),
+            this, &MonitorImpl::onCollectionChanged);
 
     auto itemScope = m_monitor->itemFetchScope();
     itemScope.fetchFullPayload();
@@ -68,15 +69,15 @@ MonitorImpl::MonitorImpl()
     itemScope.setAncestorRetrieval(ItemFetchScope::All);
     m_monitor->setItemFetchScope(itemScope);
 
-    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item, Akonadi::Collection)), this, SIGNAL(itemAdded(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SIGNAL(itemRemoved(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), this, SIGNAL(itemChanged(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(itemMoved(Akonadi::Item,Akonadi::Collection,Akonadi::Collection)), this, SIGNAL(itemMoved(Akonadi::Item)));
-    connect(m_monitor, SIGNAL(itemsTagsChanged(Akonadi::Item::List, QSet<Akonadi::Tag>, QSet<Akonadi::Tag>)), this, SLOT(onItemsTagsChanged(Akonadi::Item::List,QSet<Akonadi::Tag>,QSet<Akonadi::Tag>)));
+    connect(m_monitor, &Akonadi::Monitor::itemAdded, this, &MonitorImpl::itemAdded);
+    connect(m_monitor, &Akonadi::Monitor::itemRemoved, this, &MonitorImpl::itemRemoved);
+    connect(m_monitor, &Akonadi::Monitor::itemChanged, this, &MonitorImpl::itemChanged);
+    connect(m_monitor, &Akonadi::Monitor::itemMoved, this, &MonitorImpl::itemMoved);
+    connect(m_monitor, &Akonadi::Monitor::itemsTagsChanged, this, &MonitorImpl::onItemsTagsChanged);
 
-    connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SIGNAL(tagAdded(Akonadi::Tag)));
-    connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SIGNAL(tagRemoved(Akonadi::Tag)));
-    connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SIGNAL(tagChanged(Akonadi::Tag)));
+    connect(m_monitor, &Akonadi::Monitor::tagAdded, this, &MonitorImpl::tagAdded);
+    connect(m_monitor, &Akonadi::Monitor::tagRemoved, this, &MonitorImpl::tagRemoved);
+    connect(m_monitor, &Akonadi::Monitor::tagChanged, this, &MonitorImpl::tagChanged);
 }
 
 MonitorImpl::~MonitorImpl()

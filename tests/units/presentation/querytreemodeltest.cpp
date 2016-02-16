@@ -270,8 +270,8 @@ private slots:
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
-        QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
+        QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
 
         // WHEN
         queryMock(&Domain::TaskQueries::findChildren).when(tasks.at(0)).thenReturn(childrenList);
@@ -342,8 +342,8 @@ private slots:
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
-        QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
+        QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
 
         // WHEN
         queryMock(&Domain::TaskQueries::findChildren).when(childrenTasks.at(2)).thenReturn(emptyList);
@@ -412,10 +412,10 @@ private slots:
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
-        QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
-        QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
-        QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy aboutToBeRemovedSpy(&model, &QAbstractItemModel::rowsAboutToBeRemoved);
+        QSignalSpy removedSpy(&model, &QAbstractItemModel::rowsRemoved);
+        QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
+        QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
 
         QModelIndex removeIndex = model.index(0, 0);
 
@@ -516,7 +516,7 @@ private slots:
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
-        QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
+        QSignalSpy dataChangedSpy(&model, &QAbstractItemModel::dataChanged);
 
         // WHEN
         tasks.at(2)->setDone(true);
@@ -668,8 +668,8 @@ private slots:
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model);
-        QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
-        QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));
+        QSignalSpy titleChangedSpy(task.data(), &Domain::Task::titleChanged);
+        QSignalSpy doneChangedSpy(task.data(), &Domain::Task::doneChanged);
 
         // WHEN
         const auto index = model.index(taskPos, 0);

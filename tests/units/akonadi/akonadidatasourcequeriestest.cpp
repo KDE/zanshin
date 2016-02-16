@@ -147,7 +147,7 @@ private slots:
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
-        QSignalSpy spy(queries->notifier(), SIGNAL(defaultSourceChanged()));
+        QSignalSpy spy(queries->notifier(), &Domain::DataSourceQueriesNotifier::defaultSourceChanged);
         auto defaultSource = serializer->createDataSourceFromCollection(data.collection(defaultId), Akonadi::SerializerInterface::BaseName);
         queries->setDefaultSource(defaultSource);
 

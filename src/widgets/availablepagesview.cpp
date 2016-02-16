@@ -67,25 +67,25 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     m_addProjectAction->setObjectName("addProjectAction");
     m_addProjectAction->setText(tr("New project"));
     m_addProjectAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
-    connect(m_addProjectAction, SIGNAL(triggered()), this, SLOT(onAddProjectTriggered()));
+    connect(m_addProjectAction, &QAction::triggered, this, &AvailablePagesView::onAddProjectTriggered);
     actionBar->addAction(m_addProjectAction);
 
     m_addContextAction->setObjectName("addContextAction");
     m_addContextAction->setText(tr("New context"));
     m_addContextAction->setIcon(QIcon::fromTheme("view-pim-notes"));
-    connect(m_addContextAction, SIGNAL(triggered()), this, SLOT(onAddContextTriggered()));
+    connect(m_addContextAction, &QAction::triggered, this, &AvailablePagesView::onAddContextTriggered);
     actionBar->addAction(m_addContextAction);
 
     m_addTagAction->setObjectName("addTagAction");
     m_addTagAction->setText(tr("New tag"));
     m_addTagAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
-    connect(m_addTagAction, SIGNAL(triggered()), this, SLOT(onAddTagTriggered()));
+    connect(m_addTagAction, &QAction::triggered, this, &AvailablePagesView::onAddTagTriggered);
     actionBar->addAction(m_addTagAction);
 
     m_removeAction->setObjectName("removeAction");
     m_removeAction->setText(tr("Remove page"));
     m_removeAction->setIcon(QIcon::fromTheme("list-remove"));
-    connect(m_removeAction, SIGNAL(triggered()), this, SLOT(onRemoveTriggered()));
+    connect(m_removeAction, &QAction::triggered, this, &AvailablePagesView::onRemoveTriggered);
     actionBar->addAction(m_removeAction);
 
     auto actionBarLayout = new QHBoxLayout;
@@ -110,20 +110,20 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     goPreviousAction->setText(tr("Previous page"));
     goPreviousAction->setIcon(QIcon::fromTheme("go-up"));
     goPreviousAction->setShortcut(Qt::ALT | Qt::Key_Up);
-    connect(goPreviousAction, SIGNAL(triggered(bool)), this, SLOT(onGoPreviousTriggered()));
+    connect(goPreviousAction, &QAction::triggered, this, &AvailablePagesView::onGoPreviousTriggered);
 
     auto goNextAction = new QAction(this);
     goNextAction->setObjectName("goNextAction");
     goNextAction->setText(tr("Next page"));
     goNextAction->setIcon(QIcon::fromTheme("go-down"));
     goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
-    connect(goNextAction, SIGNAL(triggered(bool)), this, SLOT(onGoNextTriggered()));
+    connect(goNextAction, &QAction::triggered, this, &AvailablePagesView::onGoNextTriggered);
 
     auto goToAction = new QAction(this);
     goToAction->setObjectName("goToAction");
     goToAction->setText(tr("Go to page..."));
     goToAction->setShortcut(Qt::Key_J);
-    connect(goToAction, SIGNAL(triggered(bool)), this, SLOT(onGoToTriggered()));
+    connect(goToAction, &QAction::triggered, this, &AvailablePagesView::onGoToTriggered);
 
     m_actions.insert("pages_project_add", m_addProjectAction);
     m_actions.insert("pages_context_add", m_addContextAction);
@@ -190,8 +190,8 @@ void AvailablePagesView::setModel(QObject *model)
     if (modelProperty.canConvert<QAbstractItemModel*>())
         m_pagesView->setModel(modelProperty.value<QAbstractItemModel*>());
 
-    connect(m_pagesView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this, SLOT(onCurrentChanged(QModelIndex)));
+    connect(m_pagesView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &AvailablePagesView::onCurrentChanged);
 
     QMetaObject::invokeMethod(this, "onInitTimeout", Qt::QueuedConnection);
 }

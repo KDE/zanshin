@@ -41,7 +41,7 @@ private slots:
     void shouldNotifyTextChanges()
     {
         Artifact a;
-        QSignalSpy spy(&a, SIGNAL(textChanged(QString)));
+        QSignalSpy spy(&a, &Artifact::textChanged);
         a.setText("foo");
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toString(), QString("foo"));
@@ -51,7 +51,7 @@ private slots:
     {
         Artifact a;
         a.setText("foo");
-        QSignalSpy spy(&a, SIGNAL(textChanged(QString)));
+        QSignalSpy spy(&a, &Artifact::textChanged);
         a.setText("foo");
         QCOMPARE(spy.count(), 0);
     }
@@ -59,7 +59,7 @@ private slots:
     void shouldNotifyTitleChanges()
     {
         Artifact a;
-        QSignalSpy spy(&a, SIGNAL(titleChanged(QString)));
+        QSignalSpy spy(&a, &Artifact::titleChanged);
         a.setTitle("foo");
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toString(), QString("foo"));
@@ -69,7 +69,7 @@ private slots:
     {
         Artifact a;
         a.setTitle("foo");
-        QSignalSpy spy(&a, SIGNAL(titleChanged(QString)));
+        QSignalSpy spy(&a, &Artifact::titleChanged);
         a.setTitle("foo");
         QCOMPARE(spy.count(), 0);
     }

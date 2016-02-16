@@ -111,7 +111,7 @@ private slots:
 
         auto handler = [&]() {
             FakeJob *job2 = new FakeJob(this);
-            QObject::connect(job2, SIGNAL(result(KJob*)), this, SLOT(handleJobResult(KJob*)));
+            QObject::connect(job2, &KJob::result, this, &CompositeJobTest::handleJobResult);
             compositeJob->addSubjob(job2);
             job2->start();
         };

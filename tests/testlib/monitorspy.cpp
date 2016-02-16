@@ -44,21 +44,21 @@ MonitorSpy::MonitorSpy(Akonadi::MonitorInterface* monitor, QObject *parent)
 {
     m_timer->setTimerType(Qt::PreciseTimer);
 
-    connect(m_monitor, SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(restartTimer()));
+    connect(m_monitor, &Akonadi::MonitorInterface::collectionAdded, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::collectionRemoved, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::collectionChanged, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::collectionSelectionChanged, this, &MonitorSpy::restartTimer);
 
-    connect(m_monitor, SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(itemMoved(Akonadi::Item)), this, SLOT(restartTimer()));
+    connect(m_monitor, &Akonadi::MonitorInterface::itemAdded, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::itemRemoved, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::itemChanged, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::itemMoved, this, &MonitorSpy::restartTimer);
 
-    connect(m_monitor, SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(restartTimer()));
-    connect(m_monitor, SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(restartTimer()));
+    connect(m_monitor, &Akonadi::MonitorInterface::tagAdded, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::tagRemoved, this, &MonitorSpy::restartTimer);
+    connect(m_monitor, &Akonadi::MonitorInterface::tagChanged, this, &MonitorSpy::restartTimer);
 
-    connect(m_timer, SIGNAL(timeout()), this, SLOT(onDelayExpired()));
+    connect(m_timer, &QTimer::timeout, this, &MonitorSpy::onDelayExpired);
 }
 
 void MonitorSpy::waitForStableState()

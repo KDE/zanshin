@@ -38,7 +38,7 @@ public:
     JobHandlerInstance()
         : QObject() {}
 
-private slots:
+public slots:
     void handleJobResult(KJob *job)
     {
         Q_ASSERT(m_handlers.contains(job) || m_handlersWithJob.contains(job));
@@ -70,8 +70,8 @@ Q_GLOBAL_STATIC(JobHandlerInstance, jobHandlerInstance)
 void JobHandler::install(KJob *job, const ResultHandler &handler, StartMode startMode)
 {
     auto self = jobHandlerInstance();
-    QObject::connect(job, SIGNAL(result(KJob*)), self, SLOT(handleJobResult(KJob*)), Qt::UniqueConnection);
-    QObject::connect(job, SIGNAL(destroyed(QObject*)), self, SLOT(onDestroyed(QObject*)), Qt::UniqueConnection);
+    QObject::connect(job, &KJob::result, self, &JobHandlerInstance::handleJobResult, Qt::UniqueConnection);
+    QObject::connect(job, &KJob::destroyed, self, &JobHandlerInstance::onDestroyed, Qt::UniqueConnection);
     self->m_handlers[job] << handler;
     if (startMode == AutoStart)
         job->start();
@@ -80,8 +80,8 @@ void JobHandler::install(KJob *job, const ResultHandler &handler, StartMode star
 void JobHandler::install(KJob *job, const ResultHandlerWithJob &handler, StartMode startMode)
 {
     auto self = jobHandlerInstance();
-    QObject::connect(job, SIGNAL(result(KJob*)), self, SLOT(handleJobResult(KJob*)), Qt::UniqueConnection);
-    QObject::connect(job, SIGNAL(destroyed(QObject*)), self, SLOT(onDestroyed(QObject*)), Qt::UniqueConnection);
+    QObject::connect(job, &KJob::result, self, &JobHandlerInstance::handleJobResult, Qt::UniqueConnection);
+    QObject::connect(job, &KJob::destroyed, self, &JobHandlerInstance::onDestroyed, Qt::UniqueConnection);
     self->m_handlersWithJob[job] << handler;
     if (startMode == AutoStart)
         job->start();

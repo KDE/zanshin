@@ -60,7 +60,7 @@ NewProjectDialog::NewProjectDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QObject::connect(ui->nameEdit, SIGNAL(textChanged(QString)), this, SLOT(onNameTextChanged(QString)));
+    QObject::connect(ui->nameEdit, &QLineEdit::textChanged, this, &NewProjectDialog::onNameTextChanged);
     onNameTextChanged(m_name);
 
     auto taskSourceProxy = new TaskSourceProxy(this);

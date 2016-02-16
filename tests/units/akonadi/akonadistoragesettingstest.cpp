@@ -110,7 +110,7 @@ private slots:
     void shouldNotifyTaskCollectionChanges()
     {
         StorageSettings &settings = StorageSettings::instance();
-        QSignalSpy spy(&settings, SIGNAL(defaultTaskCollectionChanged(Akonadi::Collection)));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultTaskCollectionChanged);
         settings.setDefaultTaskCollection(Collection(2));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<Collection>(), Collection(2));
@@ -120,7 +120,7 @@ private slots:
     {
         StorageSettings &settings = StorageSettings::instance();
         settings.setDefaultTaskCollection(Collection(4));
-        QSignalSpy spy(&settings, SIGNAL(defaultTaskCollectionChanged(Akonadi::Collection)));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultTaskCollectionChanged);
         settings.setDefaultTaskCollection(Collection(4));
         QCOMPARE(spy.count(), 0);
     }
@@ -128,7 +128,7 @@ private slots:
     void shouldNotifyNoteCollectionChanges()
     {
         StorageSettings &settings = StorageSettings::instance();
-        QSignalSpy spy(&settings, SIGNAL(defaultNoteCollectionChanged(Akonadi::Collection)));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultNoteCollectionChanged);
         settings.setDefaultNoteCollection(Collection(2));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<Collection>(), Collection(2));
@@ -138,7 +138,7 @@ private slots:
     {
         StorageSettings &settings = StorageSettings::instance();
         settings.setDefaultNoteCollection(Collection(4));
-        QSignalSpy spy(&settings, SIGNAL(defaultNoteCollectionChanged(Akonadi::Collection)));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultNoteCollectionChanged);
         settings.setDefaultNoteCollection(Collection(4));
         QCOMPARE(spy.count(), 0);
     }
@@ -146,7 +146,7 @@ private slots:
     void shouldNotifyActiveCollectionsChanges()
     {
         StorageSettings &settings = StorageSettings::instance();
-        QSignalSpy spy(&settings, SIGNAL(activeCollectionsChanged(Akonadi::Collection::List)));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::activeCollectionsChanged);
         settings.setActiveCollections(colList(2));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<Akonadi::Collection::List>(), colList(2));
@@ -156,7 +156,7 @@ private slots:
     {
         StorageSettings &settings = StorageSettings::instance();
         settings.setActiveCollections(colList(4));
-        QSignalSpy spy(&settings, SIGNAL(activeCollectionsChanged(Akonadi::Collection::List)));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::activeCollectionsChanged);
         settings.setActiveCollections(colList(4));
         QCOMPARE(spy.count(), 0);
     }

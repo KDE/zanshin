@@ -77,12 +77,12 @@ private slots:
     {
         // GIVEN
         Presentation::ArtifactEditorModel model;
-        QSignalSpy textSpy(&model, SIGNAL(textChanged(QString)));
-        QSignalSpy titleSpy(&model, SIGNAL(titleChanged(QString)));
-        QSignalSpy doneSpy(&model, SIGNAL(doneChanged(bool)));
-        QSignalSpy startSpy(&model, SIGNAL(startDateChanged(QDateTime)));
-        QSignalSpy dueSpy(&model, SIGNAL(dueDateChanged(QDateTime)));
-        QSignalSpy delegateSpy(&model, SIGNAL(delegateTextChanged(QString)));
+        QSignalSpy textSpy(&model, &Presentation::ArtifactEditorModel::textChanged);
+        QSignalSpy titleSpy(&model, &Presentation::ArtifactEditorModel::titleChanged);
+        QSignalSpy doneSpy(&model, &Presentation::ArtifactEditorModel::doneChanged);
+        QSignalSpy startSpy(&model, &Presentation::ArtifactEditorModel::startDateChanged);
+        QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
+        QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         auto task = Domain::Task::Ptr::create();
         task->setText("description");
@@ -133,12 +133,12 @@ private slots:
     {
         // GIVEN
         Presentation::ArtifactEditorModel model;
-        QSignalSpy textSpy(&model, SIGNAL(textChanged(QString)));
-        QSignalSpy titleSpy(&model, SIGNAL(titleChanged(QString)));
-        QSignalSpy doneSpy(&model, SIGNAL(doneChanged(bool)));
-        QSignalSpy startSpy(&model, SIGNAL(startDateChanged(QDateTime)));
-        QSignalSpy dueSpy(&model, SIGNAL(dueDateChanged(QDateTime)));
-        QSignalSpy delegateSpy(&model, SIGNAL(delegateTextChanged(QString)));
+        QSignalSpy textSpy(&model, &Presentation::ArtifactEditorModel::textChanged);
+        QSignalSpy titleSpy(&model, &Presentation::ArtifactEditorModel::titleChanged);
+        QSignalSpy doneSpy(&model, &Presentation::ArtifactEditorModel::doneChanged);
+        QSignalSpy startSpy(&model, &Presentation::ArtifactEditorModel::startDateChanged);
+        QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
+        QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         auto note = Domain::Note::Ptr::create();
         note->setText("description");
@@ -248,7 +248,7 @@ private slots:
         auto task = Domain::Task::Ptr::create();
         Presentation::ArtifactEditorModel model;
         model.setArtifact(task);
-        QSignalSpy spy(&model, SIGNAL(delegateTextChanged(QString)));
+        QSignalSpy spy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         // WHEN
         task->setDelegate(Domain::Task::Delegate("John Doe", "john@doe.com"));

@@ -115,7 +115,7 @@ private slots:
 
         Widgets::DataSourceDelegate delegate;
         delegate.setActionsEnabled(actionsEnabled);
-        QSignalSpy spy(&delegate, SIGNAL(actionTriggered(Domain::DataSource::Ptr,int)));
+        QSignalSpy spy(&delegate, &Widgets::DataSourceDelegate::actionTriggered);
 
         QStandardItemModel model;
         model.appendRow(itemFromSource(source));

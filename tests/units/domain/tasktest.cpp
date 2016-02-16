@@ -82,7 +82,7 @@ private slots:
     void shouldNotifyStatusChanges()
     {
         Task t;
-        QSignalSpy spy(&t, SIGNAL(doneChanged(bool)));
+        QSignalSpy spy(&t, &Task::doneChanged);
         t.setDone(true);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toBool(), true);
@@ -92,7 +92,7 @@ private slots:
     {
         Task t;
         t.setDone(true);
-        QSignalSpy spy(&t, SIGNAL(doneChanged(bool)));
+        QSignalSpy spy(&t, &Task::doneChanged);
         t.setDone(true);
         QCOMPARE(spy.count(), 0);
     }
@@ -100,7 +100,7 @@ private slots:
     void shouldNotifyStartDateChanges()
     {
         Task t;
-        QSignalSpy spy(&t, SIGNAL(startDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::startDateChanged);
         t.setStartDate(QDateTime(QDate(2014, 1, 13)));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
@@ -110,7 +110,7 @@ private slots:
     {
         Task t;
         t.setStartDate(QDateTime(QDate(2014, 1, 13)));
-        QSignalSpy spy(&t, SIGNAL(startDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::startDateChanged);
         t.setStartDate(QDateTime(QDate(2014, 1, 13)));
         QCOMPARE(spy.count(), 0);
     }
@@ -118,7 +118,7 @@ private slots:
     void shouldNotifyDueDateChanges()
     {
         Task t;
-        QSignalSpy spy(&t, SIGNAL(dueDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::dueDateChanged);
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
@@ -128,7 +128,7 @@ private slots:
     {
         Task t;
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
-        QSignalSpy spy(&t, SIGNAL(dueDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::dueDateChanged);
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
         QCOMPARE(spy.count(), 0);
     }
@@ -136,7 +136,7 @@ private slots:
     void shouldNotifyDelegateChanges()
     {
         Task t;
-        QSignalSpy spy(&t, SIGNAL(delegateChanged(Domain::Task::Delegate)));
+        QSignalSpy spy(&t, &Task::delegateChanged);
         t.setDelegate(Task::Delegate("John Doe", "doe@somewhere.com"));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<Task::Delegate>(),
@@ -147,7 +147,7 @@ private slots:
     {
         Task t;
         t.setDelegate(Task::Delegate("John Doe", "doe@somewhere.com"));
-        QSignalSpy spy(&t, SIGNAL(delegateChanged(Domain::Task::Delegate)));
+        QSignalSpy spy(&t, &Task::delegateChanged);
         t.setDelegate(Task::Delegate("John Doe", "doe@somewhere.com"));
         QCOMPARE(spy.count(), 0);
     }
@@ -155,7 +155,7 @@ private slots:
     void shouldNotifyDoneDateChanges()
     {
         Task t;
-        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::doneDateChanged);
         t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
@@ -165,7 +165,7 @@ private slots:
     {
         Task t;
         t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
-        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::doneDateChanged);
         t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
         QCOMPARE(spy.count(), 0);
     }
@@ -173,7 +173,7 @@ private slots:
     void shouldNotifyDoneDateSet()
     {
         Task t;
-        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::doneDateChanged);
         t.setDone(true);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.takeFirst().at(0).toDateTime().date(), Utils::DateTime::currentDateTime().date());
@@ -184,7 +184,7 @@ private slots:
         Task t;
 
         t.setDone(true);
-        QSignalSpy spy(&t, SIGNAL(doneDateChanged(QDateTime)));
+        QSignalSpy spy(&t, &Task::doneDateChanged);
         t.setDone(false);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.takeFirst().at(0).toDateTime(), QDateTime());

@@ -46,14 +46,10 @@ FilterWidget::FilterWidget(QWidget *parent)
     ui->sortTypeCombo->addItem(tr("Sort by date"), Presentation::ArtifactFilterProxyModel::DateSort);
     setFocusProxy(ui->filterEdit);
 
-    connect(ui->filterEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(onTextChanged(QString)));
-    connect(ui->sortTypeCombo, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onSortTypeChanged(int)));
-    connect(ui->ascendingButton, SIGNAL(clicked()),
-            this, SLOT(onAscendingClicked()));
-    connect(ui->descendingButton, SIGNAL(clicked()),
-            this, SLOT(onDescendingClicked()));
+    connect(ui->filterEdit, &QLineEdit::textChanged, this, &FilterWidget::onTextChanged);
+    connect(ui->sortTypeCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &FilterWidget::onSortTypeChanged);
+    connect(ui->ascendingButton, &QToolButton::clicked, this, &FilterWidget::onAscendingClicked);
+    connect(ui->descendingButton, &QToolButton::clicked, this, &FilterWidget::onDescendingClicked);
 }
 
 FilterWidget::~FilterWidget()

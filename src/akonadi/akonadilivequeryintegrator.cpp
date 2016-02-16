@@ -33,19 +33,20 @@ LiveQueryIntegrator::LiveQueryIntegrator(const SerializerInterface::Ptr &seriali
       m_serializer(serializer),
       m_monitor(monitor)
 {
-    connect(m_monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)), this, SLOT(onCollectionSelectionChanged()));
+    connect(m_monitor.data(), &MonitorInterface::collectionSelectionChanged,
+            this, &LiveQueryIntegrator::onCollectionSelectionChanged);
 
-    connect(m_monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)), this, SLOT(onCollectionAdded(Akonadi::Collection)));
-    connect(m_monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)), this, SLOT(onCollectionRemoved(Akonadi::Collection)));
-    connect(m_monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)), this, SLOT(onCollectionChanged(Akonadi::Collection)));
+    connect(m_monitor.data(), &MonitorInterface::collectionAdded, this, &LiveQueryIntegrator::onCollectionAdded);
+    connect(m_monitor.data(), &MonitorInterface::collectionRemoved, this, &LiveQueryIntegrator::onCollectionRemoved);
+    connect(m_monitor.data(), &MonitorInterface::collectionChanged, this, &LiveQueryIntegrator::onCollectionChanged);
 
-    connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)), this, SLOT(onItemAdded(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)), this, SLOT(onItemRemoved(Akonadi::Item)));
-    connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)), this, SLOT(onItemChanged(Akonadi::Item)));
+    connect(m_monitor.data(), &MonitorInterface::itemAdded, this, &LiveQueryIntegrator::onItemAdded);
+    connect(m_monitor.data(), &MonitorInterface::itemRemoved, this, &LiveQueryIntegrator::onItemRemoved);
+    connect(m_monitor.data(), &MonitorInterface::itemChanged, this, &LiveQueryIntegrator::onItemChanged);
 
-    connect(m_monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)), this, SLOT(onTagAdded(Akonadi::Tag)));
-    connect(m_monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)), this, SLOT(onTagRemoved(Akonadi::Tag)));
-    connect(m_monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)), this, SLOT(onTagChanged(Akonadi::Tag)));
+    connect(m_monitor.data(), &MonitorInterface::tagAdded, this, &LiveQueryIntegrator::onTagAdded);
+    connect(m_monitor.data(), &MonitorInterface::tagRemoved, this, &LiveQueryIntegrator::onTagRemoved);
+    connect(m_monitor.data(), &MonitorInterface::tagChanged, this, &LiveQueryIntegrator::onTagChanged);
 }
 
 void LiveQueryIntegrator::addRemoveHandler(const LiveQueryIntegrator::CollectionRemoveHandler &handler)

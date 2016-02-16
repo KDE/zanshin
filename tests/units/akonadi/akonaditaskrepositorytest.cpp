@@ -677,7 +677,7 @@ private slots:
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                        serializer,
                                                                                        Akonadi::MessagingInterface::Ptr()));
-        QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(const Akonadi::Item &)));
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
 
         // WHEN
         auto job = repository->associate(task44, task42);
@@ -804,7 +804,7 @@ private slots:
         auto task = Domain::Task::Ptr::create();
         task->setDelegate(oldDelegate);
 
-        QSignalSpy spy(task.data(), SIGNAL(delegateChanged(Domain::Task::Delegate)));
+        QSignalSpy spy(task.data(), &Domain::Task::delegateChanged);
 
         auto item = Akonadi::Item(42);
 

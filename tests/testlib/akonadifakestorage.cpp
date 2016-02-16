@@ -46,7 +46,7 @@ public:
     }
 
 private slots:
-    void onTimeout()
+    void onTimeout() Q_DECL_OVERRIDE
     {
         auto jobs = childJobs();
         if (m_nextIdx == 0) {
@@ -66,7 +66,7 @@ private slots:
         }
 
         auto job = jobs[m_nextIdx];
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(onTimeout()));
+        connect(job, &KJob::result, this, &AkonadiFakeTransaction::onTimeout);
         job->start();
         m_nextIdx++;
     }

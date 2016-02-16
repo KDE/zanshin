@@ -81,7 +81,7 @@ public:
         setLayout(new QVBoxLayout);
         layout()->addWidget(m_label);
 
-        connect(m_hideTimer, SIGNAL(timeout()), this, SLOT(hide()));
+        connect(m_hideTimer, &QTimer::timeout, this, &QWidget::hide);
     }
 
     void setVisible(bool visible) Q_DECL_OVERRIDE
@@ -125,17 +125,14 @@ PageView::PageView(QWidget *parent)
 
     m_centralView->setItemsExpandable(false);
     m_centralView->setRootIsDecorated(false);
-    connect(m_centralView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
-            m_centralView, SLOT(expandAll()));
-    connect(m_centralView->model(), SIGNAL(layoutChanged()),
-            m_centralView, SLOT(expandAll()));
-    connect(m_centralView->model(), SIGNAL(modelReset()),
-            m_centralView, SLOT(expandAll()));
+    connect(m_centralView->model(), &QAbstractItemModel::rowsInserted, m_centralView, &QTreeView::expandAll);
+    connect(m_centralView->model(), &QAbstractItemModel::layoutChanged, m_centralView, &QTreeView::expandAll);
+    connect(m_centralView->model(), &QAbstractItemModel::modelReset, m_centralView, &QTreeView::expandAll);
     m_centralView->setStyleSheet( "QTreeView::branch { border-image: url(none.png); }" );
 
     m_quickAddEdit->setObjectName("quickAddEdit");
     m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an item"));
-    connect(m_quickAddEdit, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    connect(m_quickAddEdit, &QLineEdit::editingFinished, this, &PageView::onEditingFinished);
 
     auto layout = new QVBoxLayout;
     layout->addWidget(m_filterWidget);
@@ -150,33 +147,35 @@ PageView::PageView(QWidget *parent)
     addItemAction->setText(tr("New item"));
     addItemAction->setIcon(QIcon::fromTheme("list-add"));
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
-    connect(addItemAction, SIGNAL(triggered(bool)), this, SLOT(onAddItemRequested()));
+    connect(addItemAction, &QAction::triggered, this, &PageView::onAddItemRequested);
 
     m_cancelAction->setObjectName("cancelAddItemAction");
     m_cancelAction->setShortcut(Qt::Key_Escape);
     addAction(m_cancelAction);
-    connect(m_cancelAction, SIGNAL(triggered(bool)), m_centralView, SLOT(setFocus()));
+    connect(m_cancelAction, &QAction::triggered,
+            m_centralView, static_cast<void(QWidget::*)()>(&QWidget::setFocus));
 
     auto removeItemAction = new QAction(this);
     removeItemAction->setObjectName("removeItemAction");
     removeItemAction->setText(tr("Remove item"));
     removeItemAction->setIcon(QIcon::fromTheme("list-remove"));
     removeItemAction->setShortcut(Qt::Key_Delete);
-    connect(removeItemAction, SIGNAL(triggered()), this, SLOT(onRemoveItemRequested()));
+    connect(removeItemAction, &QAction::triggered, this, &PageView::onRemoveItemRequested);
     addAction(removeItemAction);
 
     auto promoteItemAction = new QAction(this);
     promoteItemAction->setObjectName("promoteItemAction");
     promoteItemAction->setText(tr("Promote item as project"));
     promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
-    connect(promoteItemAction, SIGNAL(triggered()), this, SLOT(onPromoteItemRequested()));
+    connect(promoteItemAction, &QAction::triggered, this, &PageView::onPromoteItemRequested);
 
     auto filterViewAction = new QAction(this);
     filterViewAction->setObjectName("filterViewAction");
     filterViewAction->setText(tr("Filter..."));
     filterViewAction->setIcon(QIcon::fromTheme("edit-find"));
     filterViewAction->setShortcut(Qt::CTRL | Qt::Key_F);
-    connect(filterViewAction, SIGNAL(triggered(bool)), m_filterWidget, SLOT(setFocus()));
+    connect(filterViewAction, &QAction::triggered,
+            m_filterWidget, static_cast<void(QWidget::*)()>(&QWidget::setFocus));
 
     m_actions.insert("page_view_add", addItemAction);
     m_actions.insert("page_view_remove", removeItemAction);
@@ -216,8 +215,7 @@ void PageView::setModel(QObject *model)
     if (modelProperty.canConvert<QAbstractItemModel*>())
         m_filterWidget->proxyModel()->setSourceModel(modelProperty.value<QAbstractItemModel*>());
 
-    connect(m_centralView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this, SLOT(onCurrentChanged(QModelIndex)));
+    connect(m_centralView->selectionModel(), &QItemSelectionModel::currentChanged, this, &PageView::onCurrentChanged);
 }
 
 MessageBoxInterface::Ptr PageView::messageBoxInterface() const

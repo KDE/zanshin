@@ -40,7 +40,7 @@ private slots:
     void shouldNotifyNameChanges()
     {
         Tag t;
-        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
+        QSignalSpy spy(&t, &Tag::nameChanged);
         t.setName("foo");
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toString(), QString("foo"));
@@ -50,7 +50,7 @@ private slots:
     {
         Tag t;
         t.setName("foo");
-        QSignalSpy spy(&t, SIGNAL(nameChanged(QString)));
+        QSignalSpy spy(&t, &Tag::nameChanged);
         t.setName("foo");
         QCOMPARE(spy.count(), 0);
     }

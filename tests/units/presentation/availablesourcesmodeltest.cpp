@@ -188,7 +188,7 @@ private slots:
         QVERIFY(!source4->isSelected());
 
         // WHEN
-        QSignalSpy spy(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
+        QSignalSpy spy(model, &QAbstractItemModel::dataChanged);
         sourceQueriesMock(&Domain::DataSourceQueries::changeDefaultSource).when(source4).thenReturn();
         sources.setDefaultItem(source4Index);
 

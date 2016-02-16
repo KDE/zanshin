@@ -54,7 +54,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
     moveItemAction->setObjectName("moveItemAction");
     moveItemAction->setText("Move item");
     moveItemAction->setShortcut(Qt::Key_M);
-    connect(moveItemAction, SIGNAL(triggered()), this, SLOT(onMoveItemsRequested()));
+    connect(moveItemAction, &QAction::triggered, this, &ApplicationComponents::onMoveItemsRequested);
 
     m_actions.insert("page_view_move", moveItemAction);
 }
@@ -109,8 +109,7 @@ AvailablePagesView *ApplicationComponents::availablePagesView() const
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
         self->m_availablePagesView = availablePagesView;
 
-        connect(self->m_availablePagesView, SIGNAL(currentPageChanged(QObject*)),
-                self, SLOT(onCurrentPageChanged(QObject*)));
+        connect(self->m_availablePagesView, &AvailablePagesView::currentPageChanged, self, &ApplicationComponents::onCurrentPageChanged);
     }
 
     return m_availablePagesView;
@@ -129,8 +128,7 @@ PageView *ApplicationComponents::pageView() const
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
         self->m_pageView = pageView;
 
-        connect(self->m_pageView, SIGNAL(currentArtifactChanged(Domain::Artifact::Ptr)),
-                self, SLOT(onCurrentArtifactChanged(Domain::Artifact::Ptr)));
+        connect(self->m_pageView, &PageView::currentArtifactChanged, self, &ApplicationComponents::onCurrentArtifactChanged);
     }
 
     return m_pageView;

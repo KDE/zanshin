@@ -39,7 +39,7 @@ TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
       m_workdayPollTimer(new QTimer(this))
 {
     m_workdayPollTimer->setInterval(30000);
-    connect(m_workdayPollTimer, SIGNAL(timeout()), this, SLOT(onWorkdayPollTimeout()));
+    connect(m_workdayPollTimer, &QTimer::timeout, this, &TaskQueries::onWorkdayPollTimeout);
 
     m_integrator->addRemoveHandler([this] (const Item &item) {
         m_findChildren.remove(item.id());

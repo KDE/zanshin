@@ -163,8 +163,8 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
         return Q_NULLPTR;
     };
 
-    connect(m_dataSourceQueries->notifier(), SIGNAL(defaultSourceChanged()),
-            this, SLOT(onDefaultSourceChanged()));
+    connect(m_dataSourceQueries->notifier(), &Domain::DataSourceQueriesNotifier::defaultSourceChanged,
+            this, &AvailableSourcesModel::onDefaultSourceChanged);
     return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, this);
 }
 

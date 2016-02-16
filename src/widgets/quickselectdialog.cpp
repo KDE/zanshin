@@ -66,8 +66,8 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     mainLayout->addWidget(m_tree);
     mainLayout->addWidget(buttonBox);
 
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QuickSelectDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QuickSelectDialog::reject);
 }
 
 int QuickSelectDialog::exec()

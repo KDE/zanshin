@@ -103,8 +103,8 @@ private slots:
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
         new ModelTest(&model);
-        QSignalSpy aboutToBeInsertedSpy(&model, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy insertedSpy(&model, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
+        QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
 
         // WHEN
         provider->insert(1, tasks.at(2));
@@ -132,8 +132,8 @@ private slots:
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
         new ModelTest(&model);
-        QSignalSpy aboutToBeRemovedSpy(&model, SIGNAL(rowsAboutToBeRemoved(QModelIndex, int, int)));
-        QSignalSpy removedSpy(&model, SIGNAL(rowsRemoved(QModelIndex, int, int)));
+        QSignalSpy aboutToBeRemovedSpy(&model, &QAbstractItemModel::rowsAboutToBeRemoved);
+        QSignalSpy removedSpy(&model, &QAbstractItemModel::rowsRemoved);
 
         // WHEN
         provider->removeAt(0);
@@ -161,7 +161,7 @@ private slots:
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
         new ModelTest(&model);
-        QSignalSpy dataChangedSpy(&model, SIGNAL(dataChanged(QModelIndex, QModelIndex)));
+        QSignalSpy dataChangedSpy(&model, &QAbstractItemModel::dataChanged);
 
         // WHEN
         tasks.at(2)->setDone(true);
@@ -213,8 +213,8 @@ private slots:
 
         Presentation::TaskListModel model(list, repositoryMock.getInstance());
         new ModelTest(&model);
-        QSignalSpy titleChangedSpy(task.data(), SIGNAL(titleChanged(QString)));
-        QSignalSpy doneChangedSpy(task.data(), SIGNAL(doneChanged(bool)));
+        QSignalSpy titleChangedSpy(task.data(), &Domain::Task::titleChanged);
+        QSignalSpy doneChangedSpy(task.data(), &Domain::Task::doneChanged);
 
         // WHEN
         const auto index = model.index(taskPos);

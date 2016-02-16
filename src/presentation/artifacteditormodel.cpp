@@ -39,7 +39,7 @@ ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
 {
     m_saveTimer->setSingleShot(true);
     m_saveTimer->setInterval(autoSaveDelay());
-    connect(m_saveTimer, SIGNAL(timeout()), this, SLOT(save()));
+    connect(m_saveTimer, &QTimer::timeout, this, &ArtifactEditorModel::save);
 }
 
 ArtifactEditorModel::~ArtifactEditorModel()
@@ -73,10 +73,8 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
         m_text = artifact->text();
         m_title = artifact->title();
 
-        connect(m_artifact.data(), SIGNAL(textChanged(QString)),
-                this, SLOT(onTextChanged(QString)));
-        connect(m_artifact.data(), SIGNAL(titleChanged(QString)),
-                this, SLOT(onTitleChanged(QString)));
+        connect(m_artifact.data(), &Domain::Artifact::textChanged, this, &ArtifactEditorModel::onTextChanged);
+        connect(m_artifact.data(), &Domain::Artifact::titleChanged, this, &ArtifactEditorModel::onTitleChanged);
     }
 
     if (auto task = artifact.objectCast<Domain::Task>()) {
@@ -85,14 +83,10 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
         m_due = task->dueDate();
         m_delegateText = task->delegate().display();
 
-        connect(m_artifact.data(), SIGNAL(doneChanged(bool)),
-                this, SLOT(onDoneChanged(bool)));
-        connect(m_artifact.data(), SIGNAL(startDateChanged(QDateTime)),
-                this, SLOT(onStartDateChanged(QDateTime)));
-        connect(m_artifact.data(), SIGNAL(dueDateChanged(QDateTime)),
-                this, SLOT(onDueDateChanged(QDateTime)));
-        connect(m_artifact.data(), SIGNAL(delegateChanged(Domain::Task::Delegate)),
-                this, SLOT(onDelegateChanged(Domain::Task::Delegate)));
+        connect(task.data(), &Domain::Task::doneChanged, this, &ArtifactEditorModel::onDoneChanged);
+        connect(task.data(), &Domain::Task::startDateChanged, this, &ArtifactEditorModel::onStartDateChanged);
+        connect(task.data(), &Domain::Task::dueDateChanged, this, &ArtifactEditorModel::onDueDateChanged);
+        connect(task.data(), &Domain::Task::delegateChanged, this, &ArtifactEditorModel::onDelegateChanged);
     }
 
     emit textChanged(m_text);

@@ -312,7 +312,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionAdded()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionAdded);
     MonitorSpy monitorSpy(monitor.data());
 
     // A collection
@@ -346,7 +346,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionRemoved()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionRemoved);
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)
@@ -372,7 +372,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionChanged()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // A colection with an existing id (if we trust the test data)
@@ -406,7 +406,7 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemAdded(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemAdded);
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
@@ -449,7 +449,7 @@ void AkonadiStorageTestBase::shouldNotifyItemRemoved()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
     MonitorSpy monitorSpy(monitor.data());
 
     const Akonadi::Collection notesCol = fetchCollectionByRID("{f5e3f1be-b998-4c56-aa3d-e3a6e7e5493a}");
@@ -481,7 +481,7 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
@@ -526,7 +526,7 @@ void AkonadiStorageTestBase::shouldNotifyItemTagAdded()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)...
@@ -587,7 +587,7 @@ void AkonadiStorageTestBase::shouldNotifyItemTagRemoved() // aka dissociate
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
@@ -610,7 +610,7 @@ void AkonadiStorageTestBase::shouldNotifyTagAdded()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagAdded);
     MonitorSpy monitorSpy(monitor.data());
 
     // A tag
@@ -652,8 +652,8 @@ void AkonadiStorageTestBase::shouldNotifyTagRemoved()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)));
-    QSignalSpy spyItemChanged(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagRemoved);
+    QSignalSpy spyItemChanged(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
@@ -679,7 +679,7 @@ void AkonadiStorageTestBase::shouldNotifyTagChanged()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing tag (if we trust the test data)
@@ -737,7 +737,7 @@ void AkonadiStorageTestBase::shouldUpdateItem()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
@@ -790,7 +790,7 @@ void AkonadiStorageTestBase::shouldUseTransaction()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spyUpdated(monitor.data(), SIGNAL(itemChanged(Akonadi::Item)));
+    QSignalSpy spyUpdated(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
@@ -832,7 +832,7 @@ void AkonadiStorageTestBase::shouldCreateItem()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemAdded(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemAdded);
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
@@ -901,7 +901,7 @@ void AkonadiStorageTestBase::shouldMoveItem()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spyMoved(monitor.data(), SIGNAL(itemMoved(Akonadi::Item)));
+    QSignalSpy spyMoved(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
     MonitorSpy monitorSpy(monitor.data());
 
     auto job = storage->moveItem(item, calendar1());
@@ -926,7 +926,7 @@ void AkonadiStorageTestBase::shouldMoveItems()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spyMoved(monitor.data(), SIGNAL(itemMoved(Akonadi::Item)));
+    QSignalSpy spyMoved(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
     MonitorSpy monitorSpy(monitor.data());
 
     auto job = storage->moveItems(list, calendar1());
@@ -946,7 +946,7 @@ void AkonadiStorageTestBase::shouldDeleteItem()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)
@@ -972,7 +972,7 @@ void AkonadiStorageTestBase::shouldDeleteItems()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)
@@ -1007,7 +1007,7 @@ void AkonadiStorageTestBase::shouldCreateTag()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagAdded);
     MonitorSpy monitorSpy(monitor.data());
 
     // A tag
@@ -1041,7 +1041,7 @@ void AkonadiStorageTestBase::shouldRemoveTag()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagRemoved);
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing tag
@@ -1066,7 +1066,7 @@ void AkonadiStorageTestBase::shouldUpdateTag()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy spy(monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)));
+    QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing tag
@@ -1096,8 +1096,8 @@ void AkonadiStorageTestBase::shouldUpdateCollection()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy changeSpy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
-    QSignalSpy selectionSpy(monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+    QSignalSpy changeSpy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
+    QSignalSpy selectionSpy(monitor.data(), &Akonadi::MonitorInterface::collectionSelectionChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
@@ -1130,7 +1130,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionTimestampChanges()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy changeSpy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
+    QSignalSpy changeSpy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
@@ -1160,8 +1160,8 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSelectionChanges()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy changeSpy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
-    QSignalSpy selectionSpy(monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+    QSignalSpy changeSpy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
+    QSignalSpy selectionSpy(monitor.data(), &Akonadi::MonitorInterface::collectionSelectionChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
@@ -1200,8 +1200,8 @@ void AkonadiStorageTestBase::shouldNotNotifyCollectionSelectionChangesForIrrelev
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy changeSpy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
-    QSignalSpy selectionSpy(monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)));
+    QSignalSpy changeSpy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
+    QSignalSpy selectionSpy(monitor.data(), &Akonadi::MonitorInterface::collectionSelectionChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
@@ -1245,7 +1245,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSubscriptionChanges()
 
     // A spied monitor
     auto monitor = createMonitor();
-    QSignalSpy changeSpy(monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)));
+    QSignalSpy changeSpy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN

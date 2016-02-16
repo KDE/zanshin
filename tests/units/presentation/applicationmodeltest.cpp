@@ -136,7 +136,7 @@ private slots:
         // GIVEN
         Presentation::ApplicationModel app;
         QVERIFY(!app.currentPage());
-        QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
+        QSignalSpy spy(&app, &Presentation::ApplicationModel::currentPageChanged);
 
         // WHEN
         auto page = new FakePageModel(this);
@@ -155,7 +155,7 @@ private slots:
         auto page = new FakePageModel(this);
         app.setCurrentPage(page);
         QCOMPARE(app.currentPage(), page);
-        QSignalSpy spy(&app, SIGNAL(currentPageChanged(QObject*)));
+        QSignalSpy spy(&app, &Presentation::ApplicationModel::currentPageChanged);
 
         // WHEN
         app.setCurrentPage(Q_NULLPTR);

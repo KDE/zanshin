@@ -59,27 +59,27 @@ ConfigDialog::ConfigDialog(QWidget *parent)
     addAction->setObjectName("addAction");
     addAction->setText(tr("Add resource"));
     addAction->setIcon(QIcon::fromTheme("list-add"));
-    connect(addAction, SIGNAL(triggered()), this, SLOT(onAddTriggered()));
+    connect(addAction, &QAction::triggered, this, &ConfigDialog::onAddTriggered);
     toolBar->addAction(addAction);
 
     auto removeAction = new QAction(this);
     removeAction->setObjectName("removeAction");
     removeAction->setText(tr("Remove resource"));
     removeAction->setIcon(QIcon::fromTheme("list-remove"));
-    connect(removeAction, SIGNAL(triggered()), this, SLOT(onRemoveTriggered()));
+    connect(removeAction, &QAction::triggered, this, &ConfigDialog::onRemoveTriggered);
     toolBar->addAction(removeAction);
 
     auto configureAction = new QAction(this);
     configureAction->setObjectName("settingsAction");
     configureAction->setText(tr("Configure resource..."));
     configureAction->setIcon(QIcon::fromTheme("configure"));
-    connect(configureAction, SIGNAL(triggered()), this, SLOT(onConfigureTriggered()));
+    connect(configureAction, &QAction::triggered, this, &ConfigDialog::onConfigureTriggered);
     toolBar->addAction(configureAction);
 
     auto buttons = new QDialogButtonBox(this);
     buttons->setStandardButtons(QDialogButtonBox::Close);
-    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttons, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttons, &QDialogButtonBox::accepted, this, &ConfigDialog::accept);
+    connect(buttons, &QDialogButtonBox::rejected, this, &ConfigDialog::reject);
 
     auto layout = new QVBoxLayout;
     layout->addWidget(description);

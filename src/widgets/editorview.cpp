@@ -99,12 +99,12 @@ EditorView::EditorView(QWidget *parent)
     m_delegateLabel->setVisible(false);
     m_taskGroup->setVisible(false);
 
-    connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(onTextEditChanged()));
-    connect(m_startDateEdit, SIGNAL(dateEntered(QDate)), this, SLOT(onStartEditEntered(QDate)));
-    connect(m_dueDateEdit, SIGNAL(dateEntered(QDate)), this, SLOT(onDueEditEntered(QDate)));
-    connect(m_doneButton, SIGNAL(toggled(bool)), this, SLOT(onDoneButtonChanged(bool)));
-    connect(m_startTodayButton, SIGNAL(clicked()), this, SLOT(onStartTodayClicked()));
-    connect(m_delegateEdit, SIGNAL(returnPressed()), this, SLOT(onDelegateEntered()));
+    connect(m_textEdit, &QPlainTextEdit::textChanged, this, &EditorView::onTextEditChanged);
+    connect(m_startDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onStartEditEntered);
+    connect(m_dueDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onDueEditEntered);
+    connect(m_doneButton, &QAbstractButton::toggled, this, &EditorView::onDoneButtonChanged);
+    connect(m_startTodayButton, &QAbstractButton::clicked, this, &EditorView::onStartTodayClicked);
+    connect(m_delegateEdit, &KLineEdit::returnPressed, this, &EditorView::onDelegateEntered);
 
     setEnabled(false);
 }

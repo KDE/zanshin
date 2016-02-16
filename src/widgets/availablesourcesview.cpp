@@ -57,8 +57,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     searchEdit->setObjectName("searchEdit");
     searchEdit->setClearButtonShown(true);
     searchEdit->setPlaceholderText(tr("Search..."));
-    connect(searchEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(onSearchTextChanged(QString)));
+    connect(searchEdit, &QLineEdit::textChanged, this, &AvailableSourcesView::onSearchTextChanged);
 #ifndef ZANSHIN_HIDING_SOURCES_ENABLED
     searchEdit->hide();
 #endif
@@ -66,21 +65,17 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sourcesView->setObjectName("sourcesView");
     m_sourcesView->header()->hide();
     m_sourcesView->setModel(m_sortProxy);
-    connect(m_sourcesView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SLOT(onSelectionChanged()));
-    connect(m_sourcesView->model(), SIGNAL(rowsInserted(QModelIndex, int, int)),
-            m_sourcesView, SLOT(expand(QModelIndex)));
-    connect(m_sourcesView->model(), SIGNAL(layoutChanged()),
-            m_sourcesView, SLOT(expandAll()));
-    connect(m_sourcesView->model(), SIGNAL(modelReset()),
-            m_sourcesView, SLOT(expandAll()));
+    connect(m_sourcesView->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &AvailableSourcesView::onSelectionChanged);
+    connect(m_sourcesView->model(), &QAbstractItemModel::rowsInserted, m_sourcesView, &QTreeView::expand);
+    connect(m_sourcesView->model(), &QAbstractItemModel::layoutChanged, m_sourcesView, &QTreeView::expandAll);
+    connect(m_sourcesView->model(), &QAbstractItemModel::modelReset, m_sourcesView, &QTreeView::expandAll);
 
     auto delegate = new DataSourceDelegate(m_sourcesView);
 #ifndef ZANSHIN_HIDING_SOURCES_ENABLED
     delegate->setActionsEnabled(false);
 #endif
-    connect(delegate, SIGNAL(actionTriggered(Domain::DataSource::Ptr,int)),
-            this, SLOT(onActionTriggered(Domain::DataSource::Ptr,int)));
+    connect(delegate, &DataSourceDelegate::actionTriggered, this, &AvailableSourcesView::onActionTriggered);
     m_sourcesView->setItemDelegate(delegate);
 
     auto actionBar = new QToolBar(this);
@@ -90,7 +85,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_defaultAction->setObjectName("defaultAction");
     m_defaultAction->setText(tr("Use as default source"));
     m_defaultAction->setIcon(QIcon::fromTheme("folder-favorites"));
-    connect(m_defaultAction, SIGNAL(triggered()), this, SLOT(onDefaultTriggered()));
+    connect(m_defaultAction, &QAction::triggered, this, &AvailableSourcesView::onDefaultTriggered);
     actionBar->addAction(m_defaultAction);
 
     auto layout = new QVBoxLayout;
@@ -107,7 +102,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     settingsAction->setObjectName("settingsAction");
     settingsAction->setText(tr("Configure %1...").arg(QApplication::applicationName()));
     settingsAction->setIcon(QIcon::fromTheme("configure"));
-    connect(settingsAction, SIGNAL(triggered()), this, SLOT(onSettingsTriggered()));
+    connect(settingsAction, &QAction::triggered, this, &AvailableSourcesView::onSettingsTriggered);
     m_actions.insert("options_configure", settingsAction);
 
     onSelectionChanged();

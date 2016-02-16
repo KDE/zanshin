@@ -40,7 +40,7 @@ void FakeJob::start()
 {
     if (!m_launched) {
         m_launched = true;
-        QTimer::singleShot(DURATION, Qt::PreciseTimer, this, SLOT(onTimeout()));
+        QTimer::singleShot(DURATION, Qt::PreciseTimer, this, &FakeJob::onTimeout);
     }
 }
 

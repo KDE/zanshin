@@ -52,7 +52,7 @@ private slots:
     void shouldNotifyNameChanges()
     {
         DataSource ds;
-        QSignalSpy spy(&ds, SIGNAL(nameChanged(QString)));
+        QSignalSpy spy(&ds, &DataSource::nameChanged);
         ds.setName("Foo");
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toString(), QString("Foo"));
@@ -62,7 +62,7 @@ private slots:
     {
         DataSource ds;
         ds.setName("Foo");
-        QSignalSpy spy(&ds, SIGNAL(nameChanged(QString)));
+        QSignalSpy spy(&ds, &DataSource::nameChanged);
         ds.setName("Foo");
         QCOMPARE(spy.count(), 0);
     }
@@ -70,7 +70,7 @@ private slots:
     void shouldNotifyIconNameChanges()
     {
         DataSource ds;
-        QSignalSpy spy(&ds, SIGNAL(iconNameChanged(QString)));
+        QSignalSpy spy(&ds, &DataSource::iconNameChanged);
         ds.setIconName("Foo");
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toString(), QString("Foo"));
@@ -80,7 +80,7 @@ private slots:
     {
         DataSource ds;
         ds.setIconName("Foo");
-        QSignalSpy spy(&ds, SIGNAL(iconNameChanged(QString)));
+        QSignalSpy spy(&ds, &DataSource::iconNameChanged);
         ds.setIconName("Foo");
         QCOMPARE(spy.count(), 0);
     }
@@ -88,7 +88,7 @@ private slots:
     void shouldNotifyContentTypesChanges()
     {
         DataSource ds;
-        QSignalSpy spy(&ds, SIGNAL(contentTypesChanged(Domain::DataSource::ContentTypes)));
+        QSignalSpy spy(&ds, &DataSource::contentTypesChanged);
         ds.setContentTypes(Domain::DataSource::Notes);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<Domain::DataSource::ContentTypes>(),
@@ -99,7 +99,7 @@ private slots:
     {
         DataSource ds;
         ds.setContentTypes(Domain::DataSource::Notes);
-        QSignalSpy spy(&ds, SIGNAL(contentTypesChanged(Domain::DataSource::ContentTypes)));
+        QSignalSpy spy(&ds, &DataSource::contentTypesChanged);
         ds.setContentTypes(Domain::DataSource::Notes);
         QCOMPARE(spy.count(), 0);
     }
@@ -107,7 +107,7 @@ private slots:
     void shouldNotifySelectedChanges()
     {
         DataSource ds;
-        QSignalSpy spy(&ds, SIGNAL(selectedChanged(bool)));
+        QSignalSpy spy(&ds, &DataSource::selectedChanged);
         ds.setSelected(true);
         QCOMPARE(spy.count(), 1);
         QVERIFY(spy.first().first().toBool());
@@ -117,7 +117,7 @@ private slots:
     {
         DataSource ds;
         ds.setSelected(true);
-        QSignalSpy spy(&ds, SIGNAL(selectedChanged(bool)));
+        QSignalSpy spy(&ds, &DataSource::selectedChanged);
         ds.setSelected(true);
         QCOMPARE(spy.count(), 0);
     }
@@ -125,7 +125,7 @@ private slots:
     void shouldNotifyListStatusChanges()
     {
         DataSource ds;
-        QSignalSpy spy(&ds, SIGNAL(listStatusChanged(Domain::DataSource::ListStatus)));
+        QSignalSpy spy(&ds, &DataSource::listStatusChanged);
         ds.setListStatus(DataSource::Bookmarked);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<DataSource::ListStatus>(), DataSource::Bookmarked);
@@ -135,7 +135,7 @@ private slots:
     {
         DataSource ds;
         ds.setListStatus(DataSource::Bookmarked);
-        QSignalSpy spy(&ds, SIGNAL(listStatusChanged(Domain::DataSource::ListStatus)));
+        QSignalSpy spy(&ds, &DataSource::listStatusChanged);
         ds.setListStatus(DataSource::Bookmarked);
         QCOMPARE(spy.count(), 0);
     }

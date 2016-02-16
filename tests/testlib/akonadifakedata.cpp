@@ -323,28 +323,28 @@ void AkonadiFakeData::removeItem(const Akonadi::Item &item)
 Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
 {
     auto monitor = new AkonadiFakeMonitor;
-    QObject::connect(m_monitor.data(), SIGNAL(collectionAdded(Akonadi::Collection)),
-                     monitor, SLOT(addCollection(Akonadi::Collection)));
-    QObject::connect(m_monitor.data(), SIGNAL(collectionChanged(Akonadi::Collection)),
-                     monitor, SLOT(changeCollection(Akonadi::Collection)));
-    QObject::connect(m_monitor.data(), SIGNAL(collectionSelectionChanged(Akonadi::Collection)),
-                     monitor, SLOT(changeCollectionSelection(Akonadi::Collection)));
-    QObject::connect(m_monitor.data(), SIGNAL(collectionRemoved(Akonadi::Collection)),
-                     monitor, SLOT(removeCollection(Akonadi::Collection)));
-    QObject::connect(m_monitor.data(), SIGNAL(tagAdded(Akonadi::Tag)),
-                     monitor, SLOT(addTag(Akonadi::Tag)));
-    QObject::connect(m_monitor.data(), SIGNAL(tagChanged(Akonadi::Tag)),
-                     monitor, SLOT(changeTag(Akonadi::Tag)));
-    QObject::connect(m_monitor.data(), SIGNAL(tagRemoved(Akonadi::Tag)),
-                     monitor, SLOT(removeTag(Akonadi::Tag)));
-    QObject::connect(m_monitor.data(), SIGNAL(itemAdded(Akonadi::Item)),
-                     monitor, SLOT(addItem(Akonadi::Item)));
-    QObject::connect(m_monitor.data(), SIGNAL(itemChanged(Akonadi::Item)),
-                     monitor, SLOT(changeItem(Akonadi::Item)));
-    QObject::connect(m_monitor.data(), SIGNAL(itemRemoved(Akonadi::Item)),
-                     monitor, SLOT(removeItem(Akonadi::Item)));
-    QObject::connect(m_monitor.data(), SIGNAL(itemMoved(Akonadi::Item)),
-                     monitor, SLOT(moveItem(Akonadi::Item)));
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::collectionAdded,
+                     monitor, &AkonadiFakeMonitor::addCollection);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::collectionChanged,
+                     monitor, &AkonadiFakeMonitor::changeCollection);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::collectionSelectionChanged,
+                     monitor, &AkonadiFakeMonitor::changeCollectionSelection);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::collectionRemoved,
+                     monitor, &AkonadiFakeMonitor::removeCollection);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::tagAdded,
+                     monitor, &AkonadiFakeMonitor::addTag);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::tagChanged,
+                     monitor, &AkonadiFakeMonitor::changeTag);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::tagRemoved,
+                     monitor, &AkonadiFakeMonitor::removeTag);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::itemAdded,
+                     monitor, &AkonadiFakeMonitor::addItem);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::itemChanged,
+                     monitor, &AkonadiFakeMonitor::changeItem);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::itemRemoved,
+                     monitor, &AkonadiFakeMonitor::removeItem);
+    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::itemMoved,
+                     monitor, &AkonadiFakeMonitor::moveItem);
     return monitor;
 }
 

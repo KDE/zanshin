@@ -38,7 +38,7 @@ public:
     void start();
 
 private slots:
-    void onTimeout();
+    virtual void onTimeout();
 
 public:
     bool isDone() const;

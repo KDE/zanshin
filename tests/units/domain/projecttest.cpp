@@ -40,7 +40,7 @@ private slots:
     void shouldNotifyNameChanges()
     {
         Project p;
-        QSignalSpy spy(&p, SIGNAL(nameChanged(QString)));
+        QSignalSpy spy(&p, &Project::nameChanged);
         p.setName("foo");
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toString(), QString("foo"));
@@ -50,7 +50,7 @@ private slots:
     {
         Project p;
         p.setName("foo");
-        QSignalSpy spy(&p, SIGNAL(nameChanged(QString)));
+        QSignalSpy spy(&p, &Project::nameChanged);
         p.setName("foo");
         QCOMPARE(spy.count(), 0);
     }

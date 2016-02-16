@@ -45,7 +45,7 @@ public:
     void exec()
     {
         Q_ASSERT(dialog);
-        QTimer::singleShot(50, Qt::PreciseTimer, this, SLOT(onTimeout()));
+        QTimer::singleShot(50, Qt::PreciseTimer, this, &UserInputSimulator::onTimeout);
         dialog->exec();
     }
 
