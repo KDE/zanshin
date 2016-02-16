@@ -23,6 +23,7 @@
 
 #include "errorhandler.h"
 
+#include <QCoreApplication>
 #include <KJob>
 
 #include "utils/jobhandler.h"
@@ -44,6 +45,6 @@ void ErrorHandler::installHandler(KJob *job, const QString &message)
 void ErrorHandler::displayMessage(KJob *job, const QString &message)
 {
     if (job->error() != KJob::NoError) {
-        doDisplayMessage(QStringLiteral("%1: %2").arg(message, job->errorString()));
+        doDisplayMessage(QCoreApplication::translate("ErrorHandler", "%1: %2").arg(message, job->errorString()));
     }
 }

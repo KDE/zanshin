@@ -44,7 +44,7 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
       m_label(new QLabel(this)),
       m_tree(new QTreeView(this))
 {
-    setWindowTitle("Quick Select Dialog");
+    setWindowTitle(tr("Quick Select Dialog"));
 
     m_label->setText(tr("You can start typing to filter the list of available pages"));
     m_filterProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -86,7 +86,7 @@ void QuickSelectDialog::applyFilterChanged(const QString &textFilter)
     if (textFilter.isEmpty())
         m_label->setText(tr("You can start typing to filter the list of available pages"));
     else
-        m_label->setText(QString("Path: %1").arg(textFilter));
+        m_label->setText(tr("Path: %1").arg(textFilter));
 
     m_filterProxyModel->setFilterFixedString(textFilter);
     m_tree->expandAll();

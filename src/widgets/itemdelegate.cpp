@@ -92,7 +92,7 @@ void ItemDelegate::paint(QPainter *painter,
         }
 
         if (task->delegate().isValid()) {
-            opt.text = QStringLiteral("(%1) %2").arg(task->delegate().display(), opt.text);
+            opt.text = tr("(%1) %2").arg(task->delegate().display(), opt.text);
             opt.font.setItalic(true);
         }
     }
