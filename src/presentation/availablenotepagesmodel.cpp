@@ -234,7 +234,7 @@ QAbstractItemModel *AvailableNotePagesModel::createPageListModel()
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto note = droppedArtifact.staticCast<Domain::Note>();
                 const auto job = m_tagRepository->associate(tag, note);
-                installHandler(job, tr("Cannot tag %1 with %2").arg(note->title()).arg(tag->name()));
+                installHandler(job, tr("Cannot tag %1 with %2").arg(note->title(), tag->name()));
             }
             return true;
         } else if (object == m_inboxObject) {

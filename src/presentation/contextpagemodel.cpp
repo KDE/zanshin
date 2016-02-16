@@ -68,7 +68,7 @@ Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title, const QMod
 
     const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
                    : m_taskRepository->createInContext(task, m_context);
-    installHandler(job, tr("Cannot add task %1 in context %2").arg(title).arg(m_context->name()));
+    installHandler(job, tr("Cannot add task %1 in context %2").arg(title, m_context->name()));
 
     return task;
 }
@@ -80,7 +80,7 @@ void ContextPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     const auto job = index.parent().isValid() ? m_taskRepository->dissociate(task)
                    : m_contextRepository->dissociate(m_context, task);
-    installHandler(job, tr("Cannot remove task %1 from context %2").arg(task->title()).arg(m_context->name()));
+    installHandler(job, tr("Cannot remove task %1 from context %2").arg(task->title(), m_context->name()));
 }
 
 void ContextPageModel::promoteItem(const QModelIndex &index)
@@ -139,7 +139,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
             task->setDone(value.toInt() == Qt::Checked);
 
         const auto job = m_taskRepository->update(task);
-        installHandler(job, tr("Cannot modify task %1 in context %2").arg(currentTitle).arg(m_context->name()));
+        installHandler(job, tr("Cannot modify task %1 in context %2").arg(currentTitle, m_context->name()));
         return true;
     };
 

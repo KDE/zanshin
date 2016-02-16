@@ -137,7 +137,7 @@ void AvailableTaskPagesModel::addProject(const QString &name, const Domain::Data
     auto project = Domain::Project::Ptr::create();
     project->setName(name);
     const auto job = m_projectRepository->create(project, source);
-    installHandler(job, tr("Cannot add project %1 in dataSource %2").arg(name).arg(source->name()));
+    installHandler(job, tr("Cannot add project %1 in dataSource %2").arg(name, source->name()));
 }
 
 void AvailableTaskPagesModel::addContext(const QString &name)
@@ -287,7 +287,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
         if (auto project = object.objectCast<Domain::Project>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 const auto job = m_projectRepository->associate(project, droppedArtifact);
-                installHandler(job, tr("Cannot add %1 to project %2").arg(droppedArtifact->title()).arg(project->name()));
+                installHandler(job, tr("Cannot add %1 to project %2").arg(droppedArtifact->title(), project->name()));
             }
             return true;
         } else if (auto context = object.objectCast<Domain::Context>()) {
@@ -300,7 +300,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto task = droppedArtifact.staticCast<Domain::Task>();
                 const auto job = m_contextRepository->associate(context, task);
-                installHandler(job, tr("Cannot add %1 to context %2").arg(task->title()).arg(context->name()));
+                installHandler(job, tr("Cannot add %1 to context %2").arg(task->title(), context->name()));
             }
             return true;
         } else if (object == m_inboxObject) {

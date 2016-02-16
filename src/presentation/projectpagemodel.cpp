@@ -61,7 +61,7 @@ Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title, const QMod
 
     const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
                    : m_taskRepository->createInProject(task, m_project);
-    installHandler(job, tr("Cannot add task %1 in project %2").arg(title).arg(m_project->name()));
+    installHandler(job, tr("Cannot add task %1 in project %2").arg(title, m_project->name()));
 
     return task;
 }
@@ -73,7 +73,7 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->remove(task);
-    installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title()).arg(m_project->name()));
+    installHandler(job, tr("Cannot remove task %1 from project %2").arg(task->title(), m_project->name()));
 }
 
 void ProjectPageModel::promoteItem(const QModelIndex &index)
@@ -130,7 +130,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
             task->setDone(value.toInt() == Qt::Checked);
 
         const auto job = m_taskRepository->update(task);
-        installHandler(job, tr("Cannot modify task %1 in project %2").arg(currentTitle).arg(m_project->name()));
+        installHandler(job, tr("Cannot modify task %1 in project %2").arg(currentTitle, m_project->name()));
         return true;
     };
 

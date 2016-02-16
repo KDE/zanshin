@@ -161,7 +161,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
 
             if (parentTask) {
                 const auto job = m_taskRepository->associate(parentTask, childTask);
-                installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title()).arg(parentTask->title()));
+                installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title(), parentTask->title()));
             } else {
                 childTask->setStartDate(Utils::DateTime::currentDateTime());
 
