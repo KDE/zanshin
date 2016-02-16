@@ -61,6 +61,15 @@ AkonadiFakeData::~AkonadiFakeData()
 {
 }
 
+AkonadiFakeData &AkonadiFakeData::operator=(const AkonadiFakeData &other)
+{
+    m_collections = other.m_collections;
+    m_childCollections = other.m_childCollections;
+    m_items = other.m_items;
+    m_childItems = other.m_childItems;
+    return *this;
+}
+
 Akonadi::Collection::List AkonadiFakeData::collections() const
 {
     return m_collections.values().toVector();

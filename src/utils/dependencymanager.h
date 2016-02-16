@@ -175,7 +175,10 @@ public:
     static DependencyManager &globalInstance();
 
     DependencyManager();
+    DependencyManager(const DependencyManager &other);
     ~DependencyManager();
+
+    DependencyManager &operator=(const DependencyManager &other);
 
     template<class Iface, class InstancePolicy>
     void add(const typename Internal::Provider<Iface>::FactoryType &factory)

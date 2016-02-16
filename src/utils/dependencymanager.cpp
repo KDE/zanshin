@@ -37,9 +37,20 @@ DependencyManager::DependencyManager()
 {
 }
 
+DependencyManager::DependencyManager(const DependencyManager &other)
+    : m_cleanupFunctions(other.m_cleanupFunctions)
+{
+}
+
 DependencyManager::~DependencyManager()
 {
     foreach (void (*cleanupFunction)(DependencyManager*), m_cleanupFunctions) {
         cleanupFunction(this);
     }
+}
+
+DependencyManager &DependencyManager::operator=(const DependencyManager &other)
+{
+    m_cleanupFunctions = other.m_cleanupFunctions;
+    return *this;
 }

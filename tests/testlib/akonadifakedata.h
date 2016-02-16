@@ -48,6 +48,8 @@ public:
     AkonadiFakeData(const AkonadiFakeData &other);
     ~AkonadiFakeData();
 
+    AkonadiFakeData &operator=(const AkonadiFakeData &other);
+
     Akonadi::Collection::List collections() const;
     Akonadi::Collection::List childCollections(Akonadi::Collection::Id parentId) const;
     Akonadi::Collection collection(Akonadi::Collection::Id id) const;

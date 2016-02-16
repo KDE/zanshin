@@ -43,6 +43,9 @@ public:
     }
 
 private:
+    ProcessKiller(const ProcessKiller &other);
+    ProcessKiller &operator=(const ProcessKiller &other);
+
     QProcess *m_process;
 };
 
