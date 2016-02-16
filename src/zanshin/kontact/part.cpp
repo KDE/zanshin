@@ -25,11 +25,11 @@
 
 #include <KActionCollection>
 #include <KPluginFactory>
-#include <KStandardDirs>
 
 #include <QAction>
 #include <QBoxLayout>
 #include <QSplitter>
+#include <QStandardPaths>
 
 #include "../app/aboutdata.h"
 #include "../app/dependencies.h"
@@ -73,7 +73,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
         ac->addAction(it.key(), it.value());
     }
 
-    setXMLFile(KStandardDirs::locate("data", QStringLiteral("zanshin/zanshin_part.rc")));
+    setXMLFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("zanshin/zanshin_part.rc")));
 }
 
 Part::~Part()
