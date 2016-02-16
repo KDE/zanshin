@@ -28,7 +28,7 @@
 
 using namespace Akonadi;
 
-DataSourceQueries::DataSourceQueries(const StorageInterface::FetchContentTypes &contentTypes,
+DataSourceQueries::DataSourceQueries(StorageInterface::FetchContentTypes contentTypes,
                                      const StorageInterface::Ptr &storage,
                                      const SerializerInterface::Ptr &serializer,
                                      const MonitorInterface::Ptr &monitor)

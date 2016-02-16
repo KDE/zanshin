@@ -41,7 +41,7 @@ public:
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
-    DataSourceQueries(const StorageInterface::FetchContentTypes &contentTypes,
+    DataSourceQueries(StorageInterface::FetchContentTypes contentTypes,
                       const StorageInterface::Ptr &storage,
                       const SerializerInterface::Ptr &serializer,
                       const MonitorInterface::Ptr &monitor);

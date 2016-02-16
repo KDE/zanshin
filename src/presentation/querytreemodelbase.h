@@ -100,7 +100,7 @@ protected:
                                 QObject *parent = Q_NULLPTR);
     virtual QMimeData *createMimeData(const QModelIndexList &indexes) const = 0;
     QueryTreeNodeBase *nodeFromIndex(const QModelIndex &index) const;
-    void setRootIndexFlag(const Qt::ItemFlags &flags);
+    void setRootIndexFlag(Qt::ItemFlags flags);
 
 private:
     friend class QueryTreeNodeBase;

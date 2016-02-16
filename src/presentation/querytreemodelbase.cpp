@@ -242,7 +242,7 @@ QueryTreeNodeBase *QueryTreeModelBase::nodeFromIndex(const QModelIndex &index) c
     return index.isValid() ? static_cast<QueryTreeNodeBase*>(index.internalPointer()) : m_rootNode;
 }
 
-void QueryTreeModelBase::setRootIndexFlag(const Qt::ItemFlags &flags)
+void QueryTreeModelBase::setRootIndexFlag(Qt::ItemFlags flags)
 {
     m_rootIndexFlag = flags;
 }
