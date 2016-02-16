@@ -32,7 +32,7 @@ namespace TestLib {
          */
         bool checkTestIsIsolated()
         {
-            if (qgetenv( "AKONADI_TESTRUNNER_PID").isEmpty()) {
+            if (qEnvironmentVariableIsEmpty("AKONADI_TESTRUNNER_PID")) {
                 qCritical() << "This test must be run using ctest, in order to use the testrunner environment. Aborting, to avoid messing up your real akonadi";
                 return false;
             }

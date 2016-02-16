@@ -51,7 +51,7 @@ EditorView::EditorView(QWidget *parent)
 {
     // To avoid having unit tests talking to akonadi
     // while we don't need the completion for them
-    if (qgetenv("ZANSHIN_UNIT_TEST_RUN").isEmpty())
+    if (qEnvironmentVariableIsEmpty("ZANSHIN_UNIT_TEST_RUN"))
         m_delegateEdit = new KPIM::AddresseeLineEdit(this);
     else
         m_delegateEdit = new KLineEdit(this);
