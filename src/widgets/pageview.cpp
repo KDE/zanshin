@@ -47,6 +47,7 @@
 namespace Widgets {
 class PageTreeView : public QTreeView
 {
+    Q_OBJECT
 public:
     using QTreeView::QTreeView;
 
@@ -64,6 +65,7 @@ protected:
 
 class PassivePopup : public QFrame
 {
+    Q_OBJECT
 public:
     explicit PassivePopup(QWidget *parent = Q_NULLPTR)
         : QFrame(parent),
@@ -359,3 +361,5 @@ bool PageView::eventFilter(QObject *object, QEvent *event)
 
     return false;
 }
+
+#include "pageview.moc"

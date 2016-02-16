@@ -36,6 +36,7 @@ using namespace Widgets;
 
 class TaskSourceProxy : public QSortFilterProxyModel
 {
+    Q_OBJECT
 public:
     explicit TaskSourceProxy(QObject *parent = Q_NULLPTR)
         : QSortFilterProxyModel(parent)
@@ -116,3 +117,5 @@ void NewProjectDialog::onNameTextChanged(const QString &text)
     auto buttonOk = ui->buttonBox->button(QDialogButtonBox::Ok);
     buttonOk->setEnabled(!text.isEmpty());
 }
+
+#include "newprojectdialog.moc"

@@ -50,6 +50,8 @@
 
 class CustomModelStub : public QStandardItemModel
 {
+    Q_OBJECT
+
     QMimeData *mimeData(const QModelIndexList &indexes) const
     {
         QStringList dataString;

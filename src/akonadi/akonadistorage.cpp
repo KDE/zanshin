@@ -56,6 +56,7 @@ using namespace Akonadi;
 
 class CollectionJob : public CollectionFetchJob, public CollectionFetchJobInterface
 {
+    Q_OBJECT
 public:
     CollectionJob(const Collection &collection, Type type = FirstLevel, QObject *parent = Q_NULLPTR)
         : CollectionFetchJob(collection, type, parent),
@@ -131,6 +132,7 @@ private:
 
 class CollectionSearchJob : public CollectionFetchJob, public CollectionSearchJobInterface
 {
+    Q_OBJECT
 public:
     CollectionSearchJob(const QString &collectionName, QObject *parent = Q_NULLPTR)
         : CollectionFetchJob(Akonadi::Collection::root(),
@@ -192,6 +194,7 @@ private:
 
 class ItemJob : public ItemFetchJob, public ItemFetchJobInterface
 {
+    Q_OBJECT
 public:
     using ItemFetchJob::ItemFetchJob;
 
@@ -205,6 +208,7 @@ public:
 
 class TagJob : public TagFetchJob, public TagFetchJobInterface
 {
+    Q_OBJECT
 public:
     using TagFetchJob::TagFetchJob;
 
@@ -399,3 +403,5 @@ void Storage::configureItemFetchJob(ItemJob *job)
     scope.setAncestorRetrieval(ItemFetchScope::All);
     job->setFetchScope(scope);
 }
+
+#include "akonadistorage.moc"
