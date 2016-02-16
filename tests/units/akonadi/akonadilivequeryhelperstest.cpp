@@ -100,20 +100,20 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Three top level collections (any content, tasks and notes)
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43").withTaskContent());
-        data.createCollection(GenCollection().withId(44).withRootAsParent().withName("44").withNoteContent());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43")).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withName(QStringLiteral("44")).withNoteContent());
 
         // Three children under each of the top level for each content type
-        data.createCollection(GenCollection().withId(45).withParent(42).withName("45"));
-        data.createCollection(GenCollection().withId(46).withParent(42).withName("46").withTaskContent());
-        data.createCollection(GenCollection().withId(47).withParent(42).withName("47").withNoteContent());
-        data.createCollection(GenCollection().withId(48).withParent(43).withName("48"));
-        data.createCollection(GenCollection().withId(49).withParent(43).withName("49").withTaskContent());
-        data.createCollection(GenCollection().withId(50).withParent(43).withName("50").withNoteContent());
-        data.createCollection(GenCollection().withId(51).withParent(44).withName("51"));
-        data.createCollection(GenCollection().withId(52).withParent(44).withName("52").withTaskContent());
-        data.createCollection(GenCollection().withId(53).withParent(44).withName("53").withNoteContent());
+        data.createCollection(GenCollection().withId(45).withParent(42).withName(QStringLiteral("45")));
+        data.createCollection(GenCollection().withId(46).withParent(42).withName(QStringLiteral("46")).withTaskContent());
+        data.createCollection(GenCollection().withId(47).withParent(42).withName(QStringLiteral("47")).withNoteContent());
+        data.createCollection(GenCollection().withId(48).withParent(43).withName(QStringLiteral("48")));
+        data.createCollection(GenCollection().withId(49).withParent(43).withName(QStringLiteral("49")).withTaskContent());
+        data.createCollection(GenCollection().withId(50).withParent(43).withName(QStringLiteral("50")).withNoteContent());
+        data.createCollection(GenCollection().withId(51).withParent(44).withName(QStringLiteral("51")));
+        data.createCollection(GenCollection().withId(52).withParent(44).withName(QStringLiteral("52")).withTaskContent());
+        data.createCollection(GenCollection().withId(53).withParent(44).withName(QStringLiteral("53")).withNoteContent());
 
         // The list which will be filled by the fetch function
         auto collections = Akonadi::Collection::List();
@@ -137,15 +137,15 @@ private slots:
         auto expected = QStringList();
 
         if (contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << "42" << "45" << "48" << "51";
+            expected << QStringLiteral("42") << QStringLiteral("45") << QStringLiteral("48") << QStringLiteral("51");
         }
 
         if ((contentTypes & Akonadi::StorageInterface::Tasks) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << "43" << "46" << "49" << "52";
+            expected << QStringLiteral("43") << QStringLiteral("46") << QStringLiteral("49") << QStringLiteral("52");
         }
 
         if ((contentTypes & Akonadi::StorageInterface::Notes) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << "44" << "47" << "50" << "53";
+            expected << QStringLiteral("44") << QStringLiteral("47") << QStringLiteral("50") << QStringLiteral("53");
         }
 
         expected.sort();
@@ -215,20 +215,20 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Three top level collections (any content, tasks and notes)
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43").withTaskContent());
-        data.createCollection(GenCollection().withId(44).withRootAsParent().withName("44").withNoteContent());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43")).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withName(QStringLiteral("44")).withNoteContent());
 
         // Three children under each of the top level for each content type
-        data.createCollection(GenCollection().withId(45).withParent(42).withName("45"));
-        data.createCollection(GenCollection().withId(46).withParent(42).withName("46").withTaskContent());
-        data.createCollection(GenCollection().withId(47).withParent(42).withName("47").withNoteContent());
-        data.createCollection(GenCollection().withId(48).withParent(43).withName("48"));
-        data.createCollection(GenCollection().withId(49).withParent(43).withName("49").withTaskContent());
-        data.createCollection(GenCollection().withId(50).withParent(43).withName("50").withNoteContent());
-        data.createCollection(GenCollection().withId(51).withParent(44).withName("51"));
-        data.createCollection(GenCollection().withId(52).withParent(44).withName("52").withTaskContent());
-        data.createCollection(GenCollection().withId(53).withParent(44).withName("53").withNoteContent());
+        data.createCollection(GenCollection().withId(45).withParent(42).withName(QStringLiteral("45")));
+        data.createCollection(GenCollection().withId(46).withParent(42).withName(QStringLiteral("46")).withTaskContent());
+        data.createCollection(GenCollection().withId(47).withParent(42).withName(QStringLiteral("47")).withNoteContent());
+        data.createCollection(GenCollection().withId(48).withParent(43).withName(QStringLiteral("48")));
+        data.createCollection(GenCollection().withId(49).withParent(43).withName(QStringLiteral("49")).withTaskContent());
+        data.createCollection(GenCollection().withId(50).withParent(43).withName(QStringLiteral("50")).withNoteContent());
+        data.createCollection(GenCollection().withId(51).withParent(44).withName(QStringLiteral("51")));
+        data.createCollection(GenCollection().withId(52).withParent(44).withName(QStringLiteral("52")).withTaskContent());
+        data.createCollection(GenCollection().withId(53).withParent(44).withName(QStringLiteral("53")).withNoteContent());
 
         // The list which will be filled by the fetch function
         auto collections = Akonadi::Collection::List();
@@ -253,7 +253,7 @@ private slots:
         auto expected = QStringList();
 
         if (root == Akonadi::Collection::root()) {
-            expected << "42" << "43" << "44";
+            expected << QStringLiteral("42") << QStringLiteral("43") << QStringLiteral("44");
         } else {
             const qint64 baseId = root.id() == 42 ? 45
                                 : root.id() == 43 ? 48
@@ -309,20 +309,20 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Three top level collections (any content, tasks and notes)
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42in"));
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43in").withTaskContent());
-        data.createCollection(GenCollection().withId(44).withRootAsParent().withName("44ex").withNoteContent());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42in")));
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43in")).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withName(QStringLiteral("44ex")).withNoteContent());
 
         // Three children under each of the top level for each content type
-        data.createCollection(GenCollection().withId(45).withParent(42).withName("45in"));
-        data.createCollection(GenCollection().withId(46).withParent(42).withName("46in").withNoteContent());
-        data.createCollection(GenCollection().withId(47).withParent(42).withName("47ex").withTaskContent());
-        data.createCollection(GenCollection().withId(48).withParent(43).withName("48in"));
-        data.createCollection(GenCollection().withId(49).withParent(43).withName("49in").withTaskContent());
-        data.createCollection(GenCollection().withId(50).withParent(43).withName("50ex").withNoteContent());
-        data.createCollection(GenCollection().withId(51).withParent(44).withName("51in"));
-        data.createCollection(GenCollection().withId(52).withParent(44).withName("52in").withTaskContent());
-        data.createCollection(GenCollection().withId(53).withParent(44).withName("53ex").withNoteContent());
+        data.createCollection(GenCollection().withId(45).withParent(42).withName(QStringLiteral("45in")));
+        data.createCollection(GenCollection().withId(46).withParent(42).withName(QStringLiteral("46in")).withNoteContent());
+        data.createCollection(GenCollection().withId(47).withParent(42).withName(QStringLiteral("47ex")).withTaskContent());
+        data.createCollection(GenCollection().withId(48).withParent(43).withName(QStringLiteral("48in")));
+        data.createCollection(GenCollection().withId(49).withParent(43).withName(QStringLiteral("49in")).withTaskContent());
+        data.createCollection(GenCollection().withId(50).withParent(43).withName(QStringLiteral("50ex")).withNoteContent());
+        data.createCollection(GenCollection().withId(51).withParent(44).withName(QStringLiteral("51in")));
+        data.createCollection(GenCollection().withId(52).withParent(44).withName(QStringLiteral("52in")).withTaskContent());
+        data.createCollection(GenCollection().withId(53).withParent(44).withName(QStringLiteral("53ex")).withNoteContent());
 
         // The list which will be filled by the fetch function
         auto collections = Akonadi::Collection::List();
@@ -353,7 +353,7 @@ private slots:
         result.clear();
         expected.clear();
 
-        term = "in";
+        term = QStringLiteral("in");
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -364,17 +364,17 @@ private slots:
 
         // THEN
         if (root == Akonadi::Collection::root()) {
-            expected << "42in" << "43in" << "44ex";
+            expected << QStringLiteral("42in") << QStringLiteral("43in") << QStringLiteral("44ex");
         } else {
             switch (root.id()) {
             case 42:
-                expected << "46in";
+                expected << QStringLiteral("46in");
                 break;
             case 43:
-                expected << "49in";
+                expected << QStringLiteral("49in");
                 break;
             case 44:
-                expected << "52in";
+                expected << QStringLiteral("52in");
                 break;
             }
 
@@ -390,7 +390,7 @@ private slots:
         result.clear();
         expected.clear();
 
-        term = "ex";
+        term = QStringLiteral("ex");
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -401,17 +401,17 @@ private slots:
 
         // THEN
         if (root == Akonadi::Collection::root()) {
-            expected << "42in" << "43in" << "44ex";
+            expected << QStringLiteral("42in") << QStringLiteral("43in") << QStringLiteral("44ex");
         } else {
             switch (root.id()) {
             case 42:
-                expected << "47ex";
+                expected << QStringLiteral("47ex");
                 break;
             case 43:
-                expected << "50ex";
+                expected << QStringLiteral("50ex");
                 break;
             case 44:
-                expected << "53ex";
+                expected << QStringLiteral("53ex");
                 break;
             }
 
@@ -442,19 +442,19 @@ private slots:
         QTest::addColumn<QStringList>("expected");
 
         auto expected = QStringList();
-        expected << "42-foo-all" << "43-foo-task" << "44-foo-note";
+        expected << QStringLiteral("42-foo-all") << QStringLiteral("43-foo-task") << QStringLiteral("44-foo-note");
         QTest::newRow("all") << int(Akonadi::StorageInterface::AllContent) << expected;
 
         expected.clear();
-        expected << "43-foo-task" << "44-foo-note";
+        expected << QStringLiteral("43-foo-task") << QStringLiteral("44-foo-note");
         QTest::newRow("task + note") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expected;
 
         expected.clear();
-        expected << "43-foo-task";
+        expected << QStringLiteral("43-foo-task");
         QTest::newRow("task") << int(Akonadi::StorageInterface::Tasks) << expected;
 
         expected.clear();
-        expected << "44-foo-note";
+        expected << QStringLiteral("44-foo-note");
         QTest::newRow("note") << int(Akonadi::StorageInterface::Notes) << expected;
     }
 
@@ -465,9 +465,9 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Three top level collections (any content, tasks and notes)
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42-foo-all"));
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43-foo-task").withTaskContent());
-        data.createCollection(GenCollection().withId(44).withRootAsParent().withName("44-foo-note").withNoteContent());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42-foo-all")));
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43-foo-task")).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withName(QStringLiteral("44-foo-note")).withNoteContent());
 
         // The list which will be filled by the fetch function
         auto collections = Akonadi::Collection::List();
@@ -497,7 +497,7 @@ private slots:
         collections.clear();
         result.clear();
 
-        term = "foo";
+        term = QStringLiteral("foo");
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -543,25 +543,25 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Two top level collections, one with no particular content, one with tasks
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43").withTaskContent());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43")).withTaskContent());
 
         // One note collection as child of the first one
-        data.createCollection(GenCollection().withId(44).withParent(42).withName("44").withNoteContent());
+        data.createCollection(GenCollection().withId(44).withParent(42).withName(QStringLiteral("44")).withNoteContent());
 
         // One task collection as child of the note collection
-        data.createCollection(GenCollection().withId(45).withParent(44).withName("45").withTaskContent());
+        data.createCollection(GenCollection().withId(45).withParent(44).withName(QStringLiteral("45")).withTaskContent());
 
         // One task in the first collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")));
 
         // Two items (tasks or notes) in all the other collections
-        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43"));
-        data.createItem(GenTodo().withId(44).withParent(43).withTitle("44"));
-        data.createItem(GenNote().withId(45).withParent(44).withTitle("45"));
-        data.createItem(GenNote().withId(46).withParent(44).withTitle("46"));
-        data.createItem(GenTodo().withId(47).withParent(45).withTitle("47"));
-        data.createItem(GenTodo().withId(48).withParent(45).withTitle("48"));
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")));
+        data.createItem(GenTodo().withId(44).withParent(43).withTitle(QStringLiteral("44")));
+        data.createItem(GenNote().withId(45).withParent(44).withTitle(QStringLiteral("45")));
+        data.createItem(GenNote().withId(46).withParent(44).withTitle(QStringLiteral("46")));
+        data.createItem(GenTodo().withId(47).withParent(45).withTitle(QStringLiteral("47")));
+        data.createItem(GenTodo().withId(48).withParent(45).withTitle(QStringLiteral("48")));
 
         // The list which will be filled by the fetch function
         auto items = Akonadi::Item::List();
@@ -585,11 +585,11 @@ private slots:
         auto expected = QStringList();
 
         if ((contentTypes & Akonadi::StorageInterface::Tasks) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << "43" << "44" << "47" << "48";
+            expected << QStringLiteral("43") << QStringLiteral("44") << QStringLiteral("47") << QStringLiteral("48");
         }
 
         if ((contentTypes & Akonadi::StorageInterface::Notes) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << "45" << "46";
+            expected << QStringLiteral("45") << QStringLiteral("46");
         }
 
         expected.sort();
@@ -625,8 +625,8 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Two top level collections with tasks
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42").withTaskContent());
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43").withTaskContent());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43")).withTaskContent());
 
         // Two tags
         data.createTag(GenTag().withId(42));
@@ -634,14 +634,14 @@ private slots:
 
         // Four items in each collection, one with no tag, one with the first tag,
         // one with the second tag, last one with both tags
-        data.createItem(GenTodo().withId(42).withParent(42).withTags({}).withTitle("42"));
-        data.createItem(GenTodo().withId(43).withParent(42).withTags({42}).withTitle("43"));
-        data.createItem(GenTodo().withId(44).withParent(42).withTags({43}).withTitle("44"));
-        data.createItem(GenTodo().withId(45).withParent(42).withTags({42, 43}).withTitle("45"));
-        data.createItem(GenTodo().withId(46).withParent(43).withTags({}).withTitle("46"));
-        data.createItem(GenTodo().withId(47).withParent(43).withTags({42}).withTitle("47"));
-        data.createItem(GenTodo().withId(48).withParent(43).withTags({43}).withTitle("48"));
-        data.createItem(GenTodo().withId(49).withParent(43).withTags({42, 43}).withTitle("49"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTags({}).withTitle(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(43).withParent(42).withTags({42}).withTitle(QStringLiteral("43")));
+        data.createItem(GenTodo().withId(44).withParent(42).withTags({43}).withTitle(QStringLiteral("44")));
+        data.createItem(GenTodo().withId(45).withParent(42).withTags({42, 43}).withTitle(QStringLiteral("45")));
+        data.createItem(GenTodo().withId(46).withParent(43).withTags({}).withTitle(QStringLiteral("46")));
+        data.createItem(GenTodo().withId(47).withParent(43).withTags({42}).withTitle(QStringLiteral("47")));
+        data.createItem(GenTodo().withId(48).withParent(43).withTags({43}).withTitle(QStringLiteral("48")));
+        data.createItem(GenTodo().withId(49).withParent(43).withTags({42, 43}).withTitle(QStringLiteral("49")));
 
         // The list which will be filled by the fetch function
         auto items = Akonadi::Item::List();
@@ -666,10 +666,10 @@ private slots:
 
         switch (tag.id()) {
         case 42:
-            expected << "43" << "45" << "47" << "49";
+            expected << QStringLiteral("43") << QStringLiteral("45") << QStringLiteral("47") << QStringLiteral("49");
             break;
         case 43:
-            expected << "44" << "45" << "48" << "49";
+            expected << QStringLiteral("44") << QStringLiteral("45") << QStringLiteral("48") << QStringLiteral("49");
             break;
         }
         QVERIFY(!expected.isEmpty());
@@ -707,18 +707,18 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Two top level collections (one with notes, one with tasks)
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42").withTaskContent());
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43").withNoteContent());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43")).withNoteContent());
 
         // Four items in each collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43"));
-        data.createItem(GenTodo().withId(44).withParent(42).withTitle("44"));
-        data.createItem(GenTodo().withId(45).withParent(42).withTitle("45"));
-        data.createItem(GenNote().withId(46).withParent(43).withTitle("46"));
-        data.createItem(GenNote().withId(47).withParent(43).withTitle("47"));
-        data.createItem(GenNote().withId(48).withParent(43).withTitle("48"));
-        data.createItem(GenNote().withId(49).withParent(43).withTitle("49"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44")));
+        data.createItem(GenTodo().withId(45).withParent(42).withTitle(QStringLiteral("45")));
+        data.createItem(GenNote().withId(46).withParent(43).withTitle(QStringLiteral("46")));
+        data.createItem(GenNote().withId(47).withParent(43).withTitle(QStringLiteral("47")));
+        data.createItem(GenNote().withId(48).withParent(43).withTitle(QStringLiteral("48")));
+        data.createItem(GenNote().withId(49).withParent(43).withTitle(QStringLiteral("49")));
 
         // The list which will be filled by the fetch function
         auto items = Akonadi::Item::List();
@@ -743,10 +743,10 @@ private slots:
 
         switch (item.id()) {
         case 43:
-            expected << "42" << "43" << "44" << "45";
+            expected << QStringLiteral("42") << QStringLiteral("43") << QStringLiteral("44") << QStringLiteral("45");
             break;
         case 48:
-            expected << "46" << "47" << "48" << "49";
+            expected << QStringLiteral("46") << QStringLiteral("47") << QStringLiteral("48") << QStringLiteral("49");
             break;
         }
         QVERIFY(!expected.isEmpty());
@@ -776,8 +776,8 @@ private slots:
         auto helpers = createHelpers(data);
 
         // Two tags (one plain, one context)
-        data.createTag(GenTag().withId(42).withName("42").asPlain());
-        data.createTag(GenTag().withId(43).withName("43").asContext());
+        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asPlain());
+        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asContext());
 
         // The list which will be filled by the fetch function
         auto tags = Akonadi::Tag::List();

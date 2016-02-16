@@ -112,9 +112,9 @@ PageView::PageView(QWidget *parent)
       m_centralView(new PageTreeView(this)),
       m_quickAddEdit(new QLineEdit(this))
 {
-    m_filterWidget->setObjectName("filterWidget");
+    m_filterWidget->setObjectName(QStringLiteral("filterWidget"));
 
-    m_centralView->setObjectName("centralView");
+    m_centralView->setObjectName(QStringLiteral("centralView"));
     m_centralView->header()->hide();
     m_centralView->setAlternatingRowColors(true);
     m_centralView->setItemDelegate(new ItemDelegate(this));
@@ -128,9 +128,9 @@ PageView::PageView(QWidget *parent)
     connect(m_centralView->model(), &QAbstractItemModel::rowsInserted, m_centralView, &QTreeView::expandAll);
     connect(m_centralView->model(), &QAbstractItemModel::layoutChanged, m_centralView, &QTreeView::expandAll);
     connect(m_centralView->model(), &QAbstractItemModel::modelReset, m_centralView, &QTreeView::expandAll);
-    m_centralView->setStyleSheet( "QTreeView::branch { border-image: url(none.png); }" );
+    m_centralView->setStyleSheet(QStringLiteral("QTreeView::branch { border-image: url(none.png); }"));
 
-    m_quickAddEdit->setObjectName("quickAddEdit");
+    m_quickAddEdit->setObjectName(QStringLiteral("quickAddEdit"));
     m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an item"));
     connect(m_quickAddEdit, &QLineEdit::editingFinished, this, &PageView::onEditingFinished);
 
@@ -143,44 +143,44 @@ PageView::PageView(QWidget *parent)
     m_messageBoxInterface = MessageBox::Ptr::create();
 
     auto addItemAction = new QAction(this);
-    addItemAction->setObjectName("addItemAction");
+    addItemAction->setObjectName(QStringLiteral("addItemAction"));
     addItemAction->setText(tr("New item"));
-    addItemAction->setIcon(QIcon::fromTheme("list-add"));
+    addItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
     connect(addItemAction, &QAction::triggered, this, &PageView::onAddItemRequested);
 
-    m_cancelAction->setObjectName("cancelAddItemAction");
+    m_cancelAction->setObjectName(QStringLiteral("cancelAddItemAction"));
     m_cancelAction->setShortcut(Qt::Key_Escape);
     addAction(m_cancelAction);
     connect(m_cancelAction, &QAction::triggered,
             m_centralView, static_cast<void(QWidget::*)()>(&QWidget::setFocus));
 
     auto removeItemAction = new QAction(this);
-    removeItemAction->setObjectName("removeItemAction");
+    removeItemAction->setObjectName(QStringLiteral("removeItemAction"));
     removeItemAction->setText(tr("Remove item"));
-    removeItemAction->setIcon(QIcon::fromTheme("list-remove"));
+    removeItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     removeItemAction->setShortcut(Qt::Key_Delete);
     connect(removeItemAction, &QAction::triggered, this, &PageView::onRemoveItemRequested);
     addAction(removeItemAction);
 
     auto promoteItemAction = new QAction(this);
-    promoteItemAction->setObjectName("promoteItemAction");
+    promoteItemAction->setObjectName(QStringLiteral("promoteItemAction"));
     promoteItemAction->setText(tr("Promote item as project"));
     promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
     connect(promoteItemAction, &QAction::triggered, this, &PageView::onPromoteItemRequested);
 
     auto filterViewAction = new QAction(this);
-    filterViewAction->setObjectName("filterViewAction");
+    filterViewAction->setObjectName(QStringLiteral("filterViewAction"));
     filterViewAction->setText(tr("Filter..."));
-    filterViewAction->setIcon(QIcon::fromTheme("edit-find"));
+    filterViewAction->setIcon(QIcon::fromTheme(QStringLiteral("edit-find")));
     filterViewAction->setShortcut(Qt::CTRL | Qt::Key_F);
     connect(filterViewAction, &QAction::triggered,
             m_filterWidget, static_cast<void(QWidget::*)()>(&QWidget::setFocus));
 
-    m_actions.insert("page_view_add", addItemAction);
-    m_actions.insert("page_view_remove", removeItemAction);
-    m_actions.insert("page_view_promote", promoteItemAction);
-    m_actions.insert("page_view_filter", filterViewAction);
+    m_actions.insert(QStringLiteral("page_view_add"), addItemAction);
+    m_actions.insert(QStringLiteral("page_view_remove"), removeItemAction);
+    m_actions.insert(QStringLiteral("page_view_promote"), promoteItemAction);
+    m_actions.insert(QStringLiteral("page_view_filter"), filterViewAction);
 }
 
 QHash<QString, QAction *> PageView::globalActions() const

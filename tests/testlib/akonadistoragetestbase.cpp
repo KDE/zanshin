@@ -274,7 +274,7 @@ void AkonadiStorageTestBase::shouldListItemsAssociatedWithTag()
 {
     // GIVEN
     auto storage = createStorage();
-    Akonadi::Tag tag = fetchTagByGID("errands-context");
+    Akonadi::Tag tag = fetchTagByGID(QStringLiteral("errands-context"));
     const QStringList expectedRemoteIds = { "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
                                             "{7824df00-2fd6-47a4-8319-52659dc82005}"
                                           };
@@ -318,8 +318,8 @@ void AkonadiStorageTestBase::shouldNotifyCollectionAdded()
     // A collection
     Akonadi::Collection collection;
     collection.setParentCollection(calendar2());
-    collection.setName("Foo!");
-    collection.setContentMimeTypes(QStringList() << "application/x-vnd.akonadi.calendar.todo");
+    collection.setName(QStringLiteral("Foo!"));
+    collection.setContentMimeTypes(QStringList() << QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
 
     // WHEN
     auto storage = createStorage();
@@ -350,7 +350,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionRemoved()
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)
-    Akonadi::Collection collection = fetchCollectionByRID("{1f78b360-a01b-4785-9187-75450190342c}");
+    Akonadi::Collection collection = fetchCollectionByRID(QStringLiteral("{1f78b360-a01b-4785-9187-75450190342c}"));
     QVERIFY(collection.isValid());
 
     // WHEN
@@ -376,9 +376,9 @@ void AkonadiStorageTestBase::shouldNotifyCollectionChanged()
     MonitorSpy monitorSpy(monitor.data());
 
     // A colection with an existing id (if we trust the test data)
-    Akonadi::Collection collection = fetchCollectionByRID("{28ef9f03-4ebc-4e33-970f-f379775894f9}");
+    Akonadi::Collection collection = fetchCollectionByRID(QStringLiteral("{28ef9f03-4ebc-4e33-970f-f379775894f9}"));
     QVERIFY(collection.isValid());
-    collection.setName("Bar!");
+    collection.setName(QStringLiteral("Bar!"));
 
     // WHEN
     auto storage = createStorage();
@@ -411,15 +411,15 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
 
     // A todo...
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary("summary");
-    todo->setDescription("content");
+    todo->setSummary(QStringLiteral("summary"));
+    todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
     todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
     todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
 
     // ... as payload of an item...
     Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     item.setPayload<KCalCore::Todo::Ptr>(todo);
     item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
@@ -452,8 +452,8 @@ void AkonadiStorageTestBase::shouldNotifyItemRemoved()
     QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
     MonitorSpy monitorSpy(monitor.data());
 
-    const Akonadi::Collection notesCol = fetchCollectionByRID("{f5e3f1be-b998-4c56-aa3d-e3a6e7e5493a}");
-    Akonadi::Item item = fetchItemByRID("{d0159c99-0d23-41fa-bb5f-436570140f8b}", notesCol);
+    const Akonadi::Collection notesCol = fetchCollectionByRID(QStringLiteral("{f5e3f1be-b998-4c56-aa3d-e3a6e7e5493a}"));
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{d0159c99-0d23-41fa-bb5f-436570140f8b}"), notesCol);
     QVERIFY(item.isValid());
 
     // WHEN
@@ -486,16 +486,16 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
 
     // A todo...
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary("summary");
-    todo->setDescription("content");
+    todo->setSummary(QStringLiteral("summary"));
+    todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
     todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
     todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
 
     // ... as payload of an existing item (if we trust the test data)...
-    Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff6}", calendar2());
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff6}"), calendar2());
     QVERIFY(item.isValid());
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     item.setPayload<KCalCore::Todo::Ptr>(todo);
     item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
@@ -530,9 +530,9 @@ void AkonadiStorageTestBase::shouldNotifyItemTagAdded()
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)...
-    Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff5}", calendar2());
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff5}"), calendar2());
     QVERIFY(item.isValid());
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
 
     // An existing tag (if we trust the test data)
     Akonadi::Tag tag(5);
@@ -571,8 +571,8 @@ void AkonadiStorageTestBase::shouldNotifyItemTagRemoved() // aka dissociate
 {
     // GIVEN
     auto storage = createStorage();
-    Akonadi::Tag tag = fetchTagByGID("philosophy-tag");
-    const QString expectedRemoteIds = {"{7824df00-2fd6-47a4-8319-52659dc82006}"};
+    Akonadi::Tag tag = fetchTagByGID(QStringLiteral("philosophy-tag"));
+    const QString expectedRemoteIds = {QStringLiteral("{7824df00-2fd6-47a4-8319-52659dc82006}")};
     auto job = storage->fetchTagItems(tag);
     AKVERIFYEXEC(job->kjob());
 
@@ -616,7 +616,7 @@ void AkonadiStorageTestBase::shouldNotifyTagAdded()
     // A tag
     Akonadi::Tag tag;
     tag.setGid("gid");
-    tag.setName("name");
+    tag.setName(QStringLiteral("name"));
     tag.setType("type");
 
     // WHEN
@@ -640,9 +640,9 @@ void AkonadiStorageTestBase::shouldNotifyTagRemoved()
 
     // An existing tag (if we trust the test data) connected to an existing item tagged to it
     auto storage = createStorage();
-    Akonadi::Tag tag = fetchTagByGID("delete-me");
+    Akonadi::Tag tag = fetchTagByGID(QStringLiteral("delete-me"));
     // NOTE : this item was linked to the delete-me tag during test time
-    const QString expectedRemoteIds = {"{1d33862f-f274-4c67-ab6c-362d56521ff5}"};
+    const QString expectedRemoteIds = {QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff5}")};
     auto job = storage->fetchTagItems(tag);
     AKVERIFYEXEC(job->kjob());
 
@@ -684,7 +684,7 @@ void AkonadiStorageTestBase::shouldNotifyTagChanged()
 
     // An existing tag (if we trust the test data)
     Akonadi::Tag tag(6);
-    tag.setName("Oh it changed!");
+    tag.setName(QStringLiteral("Oh it changed!"));
 
     // WHEN
     auto storage = createStorage();
@@ -742,12 +742,12 @@ void AkonadiStorageTestBase::shouldUpdateItem()
 
     // A todo...
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary("new summary");
-    todo->setDescription("new content");
+    todo->setSummary(QStringLiteral("new summary"));
+    todo->setDescription(QStringLiteral("new content"));
 
     // ... as payload of an existing item (if we trust the test data)...
-    Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff4}", calendar2());
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff4}"), calendar2());
+    item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 
     // WHEN
@@ -780,13 +780,13 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     // GIVEN
     auto storage = createStorage();
 
-    Akonadi::Item item1 = fetchItemByRID("{0aa4dc30-a2c2-4e08-8241-033b3344debc}", calendar1());
+    Akonadi::Item item1 = fetchItemByRID(QStringLiteral("{0aa4dc30-a2c2-4e08-8241-033b3344debc}"), calendar1());
     QVERIFY(item1.isValid());
-    Akonadi::Item item2 = fetchItemByRID("{5dc1aba7-eead-4254-ba7a-58e397de1179}", calendar1());
+    Akonadi::Item item2 = fetchItemByRID(QStringLiteral("{5dc1aba7-eead-4254-ba7a-58e397de1179}"), calendar1());
     QVERIFY(item2.isValid());
     // create wrong item
     Akonadi::Item item3(10000);
-    item3.setRemoteId("wrongId");
+    item3.setRemoteId(QStringLiteral("wrongId"));
 
     // A spied monitor
     auto monitor = createMonitor();
@@ -795,10 +795,10 @@ void AkonadiStorageTestBase::shouldUseTransaction()
 
     // WHEN
     auto todo = item1.payload<KCalCore::Todo::Ptr>();
-    todo->setSummary("Buy tomatoes");
+    todo->setSummary(QStringLiteral("Buy tomatoes"));
 
     todo = item2.payload<KCalCore::Todo::Ptr>();
-    todo->setSummary("Buy chocolate");
+    todo->setSummary(QStringLiteral("Buy chocolate"));
 
     auto transaction = storage->createTransaction();
     storage->updateItem(item1, transaction);
@@ -819,8 +819,8 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     QCOMPARE(job->items().size(), 1);
     item2 = job->items()[0];
 
-    QCOMPARE(item1.payload<KCalCore::Todo::Ptr>()->summary(), QString("Buy kiwis"));
-    QCOMPARE(item2.payload<KCalCore::Todo::Ptr>()->summary(), QString("Buy cheese"));
+    QCOMPARE(item1.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("Buy kiwis"));
+    QCOMPARE(item2.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("Buy cheese"));
 }
 
 void AkonadiStorageTestBase::shouldCreateItem()
@@ -837,15 +837,15 @@ void AkonadiStorageTestBase::shouldCreateItem()
 
     // A todo...
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary("summary");
-    todo->setDescription("content");
+    todo->setSummary(QStringLiteral("summary"));
+    todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
     todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
     todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
 
     // ... as payload of a new item
     Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 
     // WHEN
@@ -865,7 +865,7 @@ void AkonadiStorageTestBase::shouldRetrieveItem()
 {
     // GIVEN
     auto storage = createStorage();
-    Akonadi::Item findItem = fetchItemByRID("{7824df00-2fd6-47a4-8319-52659dc82005}", calendar2());
+    Akonadi::Item findItem = fetchItemByRID(QStringLiteral("{7824df00-2fd6-47a4-8319-52659dc82005}"), calendar2());
     QVERIFY(findItem.isValid());
 
     // WHEN
@@ -896,7 +896,7 @@ void AkonadiStorageTestBase::shouldMoveItem()
     // GIVEN
     auto storage = createStorage();
 
-    Akonadi::Item item = fetchItemByRID("{7824df00-2fd6-47a4-8319-52659dc82005}", calendar2());
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{7824df00-2fd6-47a4-8319-52659dc82005}"), calendar2());
     QVERIFY(item.isValid());
 
     // A spied monitor
@@ -919,7 +919,7 @@ void AkonadiStorageTestBase::shouldMoveItems()
     // GIVEN
     auto storage = createStorage();
 
-    Akonadi::Item item = fetchItemByRID("{1d33862f-f274-4c67-ab6c-362d56521ff4}", calendar2());
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff4}"), calendar2());
     QVERIFY(item.isValid());
     Akonadi::Item::List list;
     list << item;
@@ -950,7 +950,7 @@ void AkonadiStorageTestBase::shouldDeleteItem()
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)
-    Akonadi::Item item = fetchItemByRID("{0aa4dc30-a2c2-4e08-8241-033b3344debc}", calendar1());
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{0aa4dc30-a2c2-4e08-8241-033b3344debc}"), calendar1());
     QVERIFY(item.isValid());
 
     //When
@@ -976,9 +976,9 @@ void AkonadiStorageTestBase::shouldDeleteItems()
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing item (if we trust the test data)
-    Akonadi::Item item = fetchItemByRID("{6c7bf5b9-4136-4203-9f45-54e32ea0eacb}", calendar1());
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{6c7bf5b9-4136-4203-9f45-54e32ea0eacb}"), calendar1());
     QVERIFY(item.isValid());
-    Akonadi::Item item2 = fetchItemByRID("{83cf0b15-8d61-436b-97ae-4bd88fb2fef9}", calendar1());
+    Akonadi::Item item2 = fetchItemByRID(QStringLiteral("{83cf0b15-8d61-436b-97ae-4bd88fb2fef9}"), calendar1());
     QVERIFY(item2.isValid());
 
     Akonadi::Item::List list;
@@ -1012,7 +1012,7 @@ void AkonadiStorageTestBase::shouldCreateTag()
 
     // A tag
     Akonadi::Tag tag;
-    QString name = "Tag42";
+    QString name = QStringLiteral("Tag42");
     const QByteArray type = QByteArray("Zanshin-Context");
     const QByteArray gid = QByteArray(name.toLatin1());
     tag.setName(name);
@@ -1045,7 +1045,7 @@ void AkonadiStorageTestBase::shouldRemoveTag()
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing tag
-    Akonadi::Tag tag = fetchTagByGID("errands-context");
+    Akonadi::Tag tag = fetchTagByGID(QStringLiteral("errands-context"));
 
     // WHEN
     auto job = storage->removeTag(tag);
@@ -1070,7 +1070,7 @@ void AkonadiStorageTestBase::shouldUpdateTag()
     MonitorSpy monitorSpy(monitor.data());
 
     // An existing tag
-    Akonadi::Tag tag = fetchTagByGID("change-me");
+    Akonadi::Tag tag = fetchTagByGID(QStringLiteral("change-me"));
 
     // WHEN
     auto job = storage->updateTag(tag);
@@ -1102,7 +1102,7 @@ void AkonadiStorageTestBase::shouldUpdateCollection()
 
     // WHEN
     auto attr = new Akonadi::EntityDisplayAttribute;
-    attr->setDisplayName("Foo");
+    attr->setDisplayName(QStringLiteral("Foo"));
     collection.addAttribute(attr);
     auto job = storage->updateCollection(collection);
     AKVERIFYEXEC(job);
@@ -1251,7 +1251,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSubscriptionChanges()
     // WHEN
     static int run = 1;
     collection.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Collection::AddIfMissing)
-            ->setIconName(QString("folder-%1").arg(run++));
+            ->setIconName(QStringLiteral("folder-%1").arg(run++));
     collection.setEnabled(isEnabled);
     collection.setReferenced(isReferenced);
     auto job = storage->updateCollection(collection);
@@ -1277,27 +1277,27 @@ void AkonadiStorageTestBase::shouldFindCollectionsByName_data()
     QTest::addColumn<bool>("enableCalendar1");
 
     QStringList expectedResults;
-    expectedResults << "Calendar1";
+    expectedResults << QStringLiteral("Calendar1");
     QTest::newRow("get a collection") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
     expectedResults.clear();
     QTest::newRow("try with wrong type") << "Calendar1" << int(Akonadi::StorageInterface::Notes) << expectedResults << false << true;
 
-    expectedResults << "Notes";
+    expectedResults << QStringLiteral("Notes");
     QTest::newRow("get a note collection") << "Not" << int(Akonadi::StorageInterface::Notes) << expectedResults << false << true;
 
     expectedResults.clear();
     QTest::newRow("try with unknown name") << "toto" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
-    expectedResults << "Calendar3" << "Calendar2" << "Calendar1";
+    expectedResults << QStringLiteral("Calendar3") << QStringLiteral("Calendar2") << QStringLiteral("Calendar1");
     QTest::newRow("try with a part of a name") << "Calendar" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
     expectedResults.clear();
-    expectedResults << "Calendar2";
+    expectedResults << QStringLiteral("Calendar2");
     QTest::newRow("make sure it is case insensitive") << "calendar2" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
 
     expectedResults.clear();
-    expectedResults << "Calendar1";
+    expectedResults << QStringLiteral("Calendar1");
     QTest::newRow("include referenced") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << true << false;
     QTest::newRow("include referenced + enabled") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << true << true;
     QTest::newRow("include !referenced + !enabled") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << false;
@@ -1413,7 +1413,7 @@ Akonadi::Collection AkonadiStorageTestBase::fetchCollectionByRID(const QString &
     collection.setRemoteId(remoteId);
 
     auto job = createStorage()->fetchCollections(collection, Akonadi::StorageInterface::Base, Akonadi::StorageInterface::AllContent);
-    job->setResource("akonadi_knut_resource_0");
+    job->setResource(QStringLiteral("akonadi_knut_resource_0"));
     job->setFiltered(false);
     if (!job->kjob()->exec()) {
         qWarning() << job->kjob()->errorString() << remoteId;
@@ -1447,16 +1447,16 @@ Akonadi::Tag AkonadiStorageTestBase::fetchTagByGID(const QString &gid)
 
 Akonadi::Collection AkonadiStorageTestBase::calendar1()
 {
-    return fetchCollectionByRID("{cdc229c7-a9b5-4d37-989d-a28e372be2a9}");
+    return fetchCollectionByRID(QStringLiteral("{cdc229c7-a9b5-4d37-989d-a28e372be2a9}"));
 }
 
 Akonadi::Collection AkonadiStorageTestBase::calendar2()
 {
-    return fetchCollectionByRID("{e682b8b5-b67c-4538-8689-6166f64177f0}");
+    return fetchCollectionByRID(QStringLiteral("{e682b8b5-b67c-4538-8689-6166f64177f0}"));
 }
 
 Akonadi::Collection AkonadiStorageTestBase::emails()
 {
-    return fetchCollectionByRID("{14096930-7bfe-46ca-8fba-7c04d3b62ec8}");
+    return fetchCollectionByRID(QStringLiteral("{14096930-7bfe-46ca-8fba-7c04d3b62ec8}"));
 }
 

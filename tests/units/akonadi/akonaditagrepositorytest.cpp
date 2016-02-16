@@ -79,7 +79,7 @@ private slots:
         Akonadi::Tag akonadiTag(42);
         auto tag = Domain::Tag::Ptr::create();
         tag->setProperty("tagId", qint64(42)); // must be set
-        tag->setName("42");
+        tag->setName(QStringLiteral("42"));
 
         // A mock of removal job
         auto tagRemoveJob = new FakeJob(this);

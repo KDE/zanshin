@@ -60,7 +60,7 @@ class CustomModelStub : public QStandardItemModel
                        });
 
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(dataString));
 
         return data;
@@ -73,7 +73,7 @@ class CustomModelStub : public QStandardItemModel
         Q_ASSERT(row == -1);
         Q_ASSERT(column == -1);
         Q_ASSERT(destination.isValid());
-        Q_ASSERT(data->hasFormat("application/x-zanshin-object"));
+        Q_ASSERT(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
 
         auto dataString = data->property("objects").value<QStringList>();
         Q_ASSERT(!dataString.isEmpty());
@@ -146,7 +146,7 @@ public:
     {
         auto page = new QObject(this);
         auto model = new QStringListModel(page);
-        model->setStringList(QStringList() << "Items" << "from" << index.data().toString());
+        model->setStringList(QStringList() << QStringLiteral("Items") << QStringLiteral("from") << index.data().toString());
         page->setProperty("centralListModel",
                           QVariant::fromValue<QAbstractItemModel*>(model));
         createdPages << page;
@@ -527,7 +527,7 @@ private slots:
         components.setModel(model);
 
         Widgets::AvailablePagesView *availablePagesView = components.availablePagesView();
-        auto pagesView = availablePagesView->findChild<QTreeView*>("pagesView");
+        auto pagesView = availablePagesView->findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
 
         Widgets::PageView *pageView = components.pageView();
@@ -554,10 +554,10 @@ private slots:
         auto model = QObjectPtr::create();
 
         PageModelStub pageModel;
-        pageModel.addItem<Domain::Task>("0. First task");
-        pageModel.addItem<Domain::Note>("1. A note");
-        pageModel.addItem<Domain::Task>("2. Second task");
-        pageModel.addItem<Domain::Note>("3. Another note");
+        pageModel.addItem<Domain::Task>(QStringLiteral("0. First task"));
+        pageModel.addItem<Domain::Note>(QStringLiteral("1. A note"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("2. Second task"));
+        pageModel.addItem<Domain::Note>(QStringLiteral("3. Another note"));
         model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
 
         EditorModelStub editorModel;
@@ -567,7 +567,7 @@ private slots:
         components.setModel(model);
 
         Widgets::PageView *pageView = components.pageView();
-        auto centralView = pageView->findChild<QTreeView*>("centralView");
+        auto centralView = pageView->findChild<QTreeView*>(QStringLiteral("centralView"));
         QModelIndex index = centralView->model()->index(2, 0);
 
         // WHEN
@@ -604,8 +604,8 @@ private slots:
             QCOMPARE(actions.value(key), page->globalActions().value(key));
 
         // application component own action
-        auto moveAction = components.findChild<QAction*>("moveItemAction");
-        QCOMPARE(actions.value("page_view_move"), moveAction);
+        auto moveAction = components.findChild<QAction*>(QStringLiteral("moveItemAction"));
+        QCOMPARE(actions.value(QStringLiteral("page_view_move")), moveAction);
     }
 
     void shouldMoveItem()
@@ -614,10 +614,10 @@ private slots:
         auto model = QObjectPtr::create();
 
         PageModelStub pageModel;
-        pageModel.addItem<Domain::Task>("0. First task");
-        pageModel.addItem<Domain::Note>("1. A note");
-        pageModel.addItem<Domain::Task>("2. Second task");
-        pageModel.addItem<Domain::Note>("3. Another note");
+        pageModel.addItem<Domain::Task>(QStringLiteral("0. First task"));
+        pageModel.addItem<Domain::Note>(QStringLiteral("1. A note"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("2. Second task"));
+        pageModel.addItem<Domain::Note>(QStringLiteral("3. Another note"));
         model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
 
         AvailablePagesModelStub availablePagesModelStub;
@@ -628,7 +628,7 @@ private slots:
         components.setModel(model);
 
         auto availablePageView = components.availablePagesView();
-        auto availablePagesTreeView = availablePageView->findChild<QTreeView*>("pagesView");
+        auto availablePagesTreeView = availablePageView->findChild<QTreeView*>(QStringLiteral("pagesView"));
         Q_ASSERT(availablePagesTreeView);
 
         auto dialogStub = QuickSelectDialogStub::Ptr::create();
@@ -639,16 +639,16 @@ private slots:
         });
 
         auto pageView = components.pageView();
-        auto centralView = pageView->findChild<QTreeView*>("centralView");
+        auto centralView = pageView->findChild<QTreeView*>(QStringLiteral("centralView"));
         QModelIndex index1 = pageModel.itemModel.index(0,0);
         QModelIndex index2 = pageModel.itemModel.index(2,0);
 
-        auto filterWidget = pageView->findChild<Widgets::FilterWidget*>("filterWidget");
+        auto filterWidget = pageView->findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
         auto displayedModel = filterWidget->proxyModel();
         auto displayedIndex = displayedModel->index(0, 0);
         auto displayedIndex2 = displayedModel->index(2, 0);
 
-        auto moveAction = components.findChild<QAction*>("moveItemAction");
+        auto moveAction = components.findChild<QAction*>(QStringLiteral("moveItemAction"));
 
         // WHEN
         pageModel.selectedItems << index1 << index2;
@@ -662,7 +662,7 @@ private slots:
         QCOMPARE(dialogStub->parent, pageView);
         QCOMPARE(dialogStub->itemModel, availablePagesModelStub.pageListModel());
 
-        QCOMPARE(availablePagesModelStub.itemModel.dropDestination, QString("Inbox"));
+        QCOMPARE(availablePagesModelStub.itemModel.dropDestination, QStringLiteral("Inbox"));
         QCOMPARE(availablePagesModelStub.itemModel.droppedItemDataString.size(), 2);
         QCOMPARE(availablePagesModelStub.itemModel.droppedItemDataString.at(0), index1.data().toString());
         QCOMPARE(availablePagesModelStub.itemModel.droppedItemDataString.at(1), index2.data().toString());

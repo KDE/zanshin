@@ -77,12 +77,12 @@ private slots:
 
         // THEN
         // the migrator gathered all items and the initial state of "is a project" for each one is correct
-        m_expectedUids.insert("child-of-project", false);
-        m_expectedUids.insert("new-project-with-property", true);
-        m_expectedUids.insert("old-project-with-comment", false); // not yet
-        m_expectedUids.insert("project-with-comment-and-property", true);
-        m_expectedUids.insert("project-with-children", false); // not yet
-        m_expectedUids.insert("standalone-task", false);
+        m_expectedUids.insert(QStringLiteral("child-of-project"), false);
+        m_expectedUids.insert(QStringLiteral("new-project-with-property"), true);
+        m_expectedUids.insert(QStringLiteral("old-project-with-comment"), false); // not yet
+        m_expectedUids.insert(QStringLiteral("project-with-comment-and-property"), true);
+        m_expectedUids.insert(QStringLiteral("project-with-children"), false); // not yet
+        m_expectedUids.insert(QStringLiteral("standalone-task"), false);
 
         checkExpectedIsProject(hash, m_expectedUids);
     }
@@ -99,12 +99,12 @@ private slots:
 
         // THEN
         // the project with an old-style comment was modified to have the property
-        SeenItem item = hash.value("old-project-with-comment");
+        SeenItem item = hash.value(QStringLiteral("old-project-with-comment"));
         QVERIFY(item.isDirty());
 
-        m_expectedUids["old-project-with-comment"] = true; // migrated!
+        m_expectedUids[QStringLiteral("old-project-with-comment")] = true; // migrated!
         checkExpectedIsProject(hash, m_expectedUids);
-        m_expectedUids["old-project-with-comment"] = false; // revert for now
+        m_expectedUids[QStringLiteral("old-project-with-comment")] = false; // revert for now
 
         sequence->rollback();
         sequence->exec();
@@ -122,12 +122,12 @@ private slots:
 
         // THEN
         // the project with children was modified to have the property
-        SeenItem item = hash.value("project-with-children");
+        SeenItem item = hash.value(QStringLiteral("project-with-children"));
         QVERIFY(item.isDirty());
 
-        m_expectedUids["project-with-children"] = true; // migrated!
+        m_expectedUids[QStringLiteral("project-with-children")] = true; // migrated!
         checkExpectedIsProject(hash, m_expectedUids);
-        m_expectedUids["project-with-children"] = false; // revert for now
+        m_expectedUids[QStringLiteral("project-with-children")] = false; // revert for now
 
         sequence->rollback();
         sequence->exec();
@@ -143,8 +143,8 @@ private slots:
 
         // THEN
         QVERIFY(ret); // success
-        m_expectedUids["old-project-with-comment"] = true; // migrated!
-        m_expectedUids["project-with-children"] = true; // migrated!
+        m_expectedUids[QStringLiteral("old-project-with-comment")] = true; // migrated!
+        m_expectedUids[QStringLiteral("project-with-children")] = true; // migrated!
         Zanshin021Migrator::SeenItemHash hash = migrator.fetchAllItems();
         checkExpectedIsProject(hash, m_expectedUids);
     }

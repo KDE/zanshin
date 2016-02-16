@@ -125,7 +125,7 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &task) {
         auto parentTask = task.objectCast<Domain::Task>();
 
-        if (!mimeData->hasFormat("application/x-zanshin-object"))
+        if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
         auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
@@ -164,7 +164,7 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
         }
 
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
         return data;
     };

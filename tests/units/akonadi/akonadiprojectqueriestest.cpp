@@ -47,11 +47,11 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
 
         // One project in the first collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").asProject());
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
 
         // Two projects in the second collection
-        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43").asProject());
-        data.createItem(GenTodo().withId(44).withParent(43).withTitle("44").asProject());
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")).asProject());
+        data.createItem(GenTodo().withId(44).withParent(43).withTitle(QStringLiteral("44")).asProject());
 
         // WHEN
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -66,9 +66,9 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
-        QCOMPARE(result->data().at(1)->name(), QString("43"));
-        QCOMPARE(result->data().at(2)->name(), QString("44"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44"));
     }
 
     void shouldIgnoreItemsWhichAreNotProjects()
@@ -80,8 +80,8 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
         // One project and one regular task in the collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").asProject());
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
 
         // WHEN
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -93,7 +93,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
     }
 
     void shouldReactToItemAddsForProjectsOnly()
@@ -112,12 +112,12 @@ private slots:
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").asProject());
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
     }
 
     void shouldReactToItemRemovesForAllProjects()
@@ -129,9 +129,9 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
         // Three projects in the collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").asProject());
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43").asProject());
-        data.createItem(GenTodo().withId(44).withParent(42).withTitle("44").asProject());
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")).asProject());
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44")).asProject());
 
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                    Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -145,8 +145,8 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
-        QCOMPARE(result->data().at(1)->name(), QString("44"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44"));
     }
 
     void shouldReactToItemChangesForAllProjects()
@@ -158,9 +158,9 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
         // Three projects in the collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").asProject());
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43").asProject());
-        data.createItem(GenTodo().withId(44).withParent(42).withTitle("44").asProject());
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")).asProject());
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44")).asProject());
 
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                    Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -176,13 +176,13 @@ private slots:
         QCOMPARE(result->data().size(), 3);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(43)).withTitle("43bis"));
+        data.modifyItem(GenTodo(data.item(43)).withTitle(QStringLiteral("43bis")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
-        QCOMPARE(result->data().at(1)->name(), QString("43bis"));
-        QCOMPARE(result->data().at(2)->name(), QString("44"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43bis"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44"));
         QVERIFY(replaceHandlerCalled);
     }
 
@@ -196,8 +196,8 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
 
         // Two projects, one in each collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").asProject());
-        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43").asProject());
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")).asProject());
 
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                    Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -205,8 +205,8 @@ private slots:
         auto result = queries->findAll();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
-        QCOMPARE(result->data().at(1)->name(), QString("43"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43"));
 
         // WHEN
         data.modifyCollection(GenCollection(data.collection(43)).selected(false));
@@ -214,7 +214,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
     }
 
     void shouldLookOnlyInParentCollectionForProjectTopLevel()
@@ -228,17 +228,17 @@ private slots:
 
         // One project and two tasks in the first collection (one task being child of the project)
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
+                                 .withParentUid(QStringLiteral("uid-42")));
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44")));
 
         // Two tasks in the second collection (one having the project uid as parent)
         data.createItem(GenTodo().withId(45).withParent(43)
-                                 .withTitle("45").withParentUid("uid-42"));
-        data.createItem(GenTodo().withId(46).withParent(43).withTitle("46"));
+                                 .withTitle(QStringLiteral("45")).withParentUid(QStringLiteral("uid-42")));
+        data.createItem(GenTodo().withId(46).withParent(43).withTitle(QStringLiteral("46")));
 
         // WHEN
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -255,13 +255,13 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("43"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
 
         // Should not change nothing
         result = queries->findTopLevel(project);
 
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("43"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
     }
 
     void shouldNotCrashWhenWeAskAgainTheSameTopLevelArtifacts()
@@ -274,7 +274,7 @@ private slots:
 
         // One project in the collection
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -310,7 +310,7 @@ private slots:
 
         // One project in the collection
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -323,16 +323,16 @@ private slots:
 
         // WHEN
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
+                                 .withParentUid(QStringLiteral("uid-42")));
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-42")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("43"));
-        QCOMPARE(result->data().at(1)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("44"));
     }
 
     void shouldReactToItemChangesForTopLevelArtifacts()
@@ -345,13 +345,13 @@ private slots:
 
         // One project and two tasks in the collection (tasks being children of the project)
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
+                                 .withParentUid(QStringLiteral("uid-42")));
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-42")));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -368,12 +368,12 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(43)).withTitle("43bis"));
+        data.modifyItem(GenTodo(data.item(43)).withTitle(QStringLiteral("43bis")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("43bis"));
-        QCOMPARE(result->data().at(1)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("43bis"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("44"));
 
         QVERIFY(replaceHandlerCalled);
     }
@@ -388,13 +388,13 @@ private slots:
 
         // One project and two tasks in the collection (tasks being children of the project)
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
+                                 .withParentUid(QStringLiteral("uid-42")));
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-42")));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -406,11 +406,11 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(43)).withParentUid(""));
+        data.modifyItem(GenTodo(data.item(43)).withParentUid(QLatin1String("")));
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("44"));
     }
 
     void shouldAddItemToCorrespondingResultWhenRelatedItemChangeForChildrenTask()
@@ -423,12 +423,12 @@ private slots:
 
         // One project and two tasks in the collection (one being child of the project)
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43"));
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43")));
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-42")));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -445,12 +445,12 @@ private slots:
         QCOMPARE(result->data().size(), 1);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(43)).withParentUid("uid-42"));
+        data.modifyItem(GenTodo(data.item(43)).withParentUid(QStringLiteral("uid-42")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("44"));
-        QCOMPARE(result->data().at(1)->title(), QString("43"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("44"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43"));
 
         QVERIFY(!replaceHandlerCalled);
     }
@@ -465,12 +465,12 @@ private slots:
 
         // Two project and one task in the collection (task being child of the first project)
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43").asProject());
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43")).asProject());
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-42")));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -483,16 +483,16 @@ private slots:
 
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result1->data().size(), 1);
-        QCOMPARE(result1->data().at(0)->title(), QString("44"));
+        QCOMPARE(result1->data().at(0)->title(), QStringLiteral("44"));
         QCOMPARE(result2->data().size(), 0);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(44)).withParentUid("uid-43"));
+        data.modifyItem(GenTodo(data.item(44)).withParentUid(QStringLiteral("uid-43")));
 
         // THEN
         QCOMPARE(result1->data().size(), 0);
         QCOMPARE(result2->data().size(), 1);
-        QCOMPARE(result2->data().at(0)->title(), QString("44"));
+        QCOMPARE(result2->data().at(0)->title(), QStringLiteral("44"));
     }
 
     void shouldReactToItemRemovesForTopLevelArtifacts()
@@ -505,13 +505,13 @@ private slots:
 
         // One project and two tasks in the collection (tasks being children of the project)
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42").asProject());
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")).asProject());
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
+                                 .withParentUid(QStringLiteral("uid-42")));
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-42")));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::ProjectQueries> queries(new Akonadi::ProjectQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -527,7 +527,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("44"));
     }
 };
 

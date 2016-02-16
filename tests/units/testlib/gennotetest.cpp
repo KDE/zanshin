@@ -82,25 +82,25 @@ private slots:
     void shouldAllowToSetParentUid()
     {
         // GIVEN
-        Akonadi::Item item = GenNote().withParentUid("42");
+        Akonadi::Item item = GenNote().withParentUid(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KMime::Message::Ptr>()->headerByType("X-Zanshin-RelatedProjectUid")->asUnicodeString(), QString("42"));
+        QCOMPARE(item.payload<KMime::Message::Ptr>()->headerByType("X-Zanshin-RelatedProjectUid")->asUnicodeString(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetTitle()
     {
         // GIVEN
-        Akonadi::Item item = GenNote().withTitle("42");
+        Akonadi::Item item = GenNote().withTitle(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KMime::Message::Ptr>()->subject()->asUnicodeString(), QString("42"));
+        QCOMPARE(item.payload<KMime::Message::Ptr>()->subject()->asUnicodeString(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetText()
     {
         // GIVEN
-        Akonadi::Item item = GenNote().withText("42");
+        Akonadi::Item item = GenNote().withText(QStringLiteral("42"));
 
         // THEN
         QCOMPARE(item.payload<KMime::Message::Ptr>()->body(), QByteArray("42"));

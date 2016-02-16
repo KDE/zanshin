@@ -34,7 +34,8 @@ ScriptHandler::ScriptHandler(const Domain::TaskRepository::Ptr &taskRepository)
     : m_taskRepository(taskRepository),
       m_engine(new QScriptEngine(this))
 {
-    m_engine->globalObject().setProperty("task", m_engine->newQObject(new TaskAction(m_taskRepository)));
+    m_engine->globalObject().setProperty(QStringLiteral("task"),
+                                         m_engine->newQObject(new TaskAction(m_taskRepository)));
 }
 
 QScriptValue ScriptHandler::evaluateFile(const QString &filename)

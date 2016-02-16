@@ -124,7 +124,7 @@ KJob *AkonadiFakeStorage::createItem(Akonadi::Item item, Akonadi::Collection col
             m_data->createItem(item);
         });
     } else {
-        job->setExpectedError(1, "Item already exists");
+        job->setExpectedError(1, QStringLiteral("Item already exists"));
         Utils::JobHandler::install(job, noop);
     }
     return job;
@@ -142,7 +142,7 @@ KJob *AkonadiFakeStorage::updateItem(Akonadi::Item item, QObject *parent)
             m_data->modifyItem(item);
         }, startMode);
     } else {
-        job->setExpectedError(1, "Item doesn't exist");
+        job->setExpectedError(1, QStringLiteral("Item doesn't exist"));
         Utils::JobHandler::install(job, noop, startMode);
     }
     return job;
@@ -156,7 +156,7 @@ KJob *AkonadiFakeStorage::removeItem(Akonadi::Item item)
             m_data->removeItem(item);
         });
     } else {
-        job->setExpectedError(1, "Item doesn't exist");
+        job->setExpectedError(1, QStringLiteral("Item doesn't exist"));
         Utils::JobHandler::install(job, noop);
     }
     return job;
@@ -178,7 +178,7 @@ KJob *AkonadiFakeStorage::removeItems(Akonadi::Item::List items, QObject *parent
             }
         }, startMode);
     } else {
-        job->setExpectedError(1, "At least one item doesn't exist");
+        job->setExpectedError(1, QStringLiteral("At least one item doesn't exist"));
         Utils::JobHandler::install(job, noop, startMode);
     }
     return job;
@@ -197,7 +197,7 @@ KJob *AkonadiFakeStorage::moveItem(Akonadi::Item item, Akonadi::Collection colle
             m_data->modifyItem(item);
         }, startMode);
     } else {
-        job->setExpectedError(1, "The item or the collection doesn't exist");
+        job->setExpectedError(1, QStringLiteral("The item or the collection doesn't exist"));
         Utils::JobHandler::install(job, noop, startMode);
     }
     return job;
@@ -232,7 +232,7 @@ KJob *AkonadiFakeStorage::moveItems(Akonadi::Item::List items, Akonadi::Collecti
             }
         }, startMode);
     } else {
-        job->setExpectedError(1, "One of the items or the collection doesn't exist");
+        job->setExpectedError(1, QStringLiteral("One of the items or the collection doesn't exist"));
         Utils::JobHandler::install(job, noop, startMode);
     }
     return job;
@@ -250,7 +250,7 @@ KJob *AkonadiFakeStorage::createCollection(Akonadi::Collection collection, QObje
             m_data->createCollection(collection);
         }, startMode);
     } else {
-        job->setExpectedError(1, "The collection already exists");
+        job->setExpectedError(1, QStringLiteral("The collection already exists"));
         Utils::JobHandler::install(job, noop, startMode);
     }
     return job;
@@ -265,7 +265,7 @@ KJob *AkonadiFakeStorage::updateCollection(Akonadi::Collection collection, QObje
             m_data->modifyCollection(collection);
         }, startMode);
     } else {
-        job->setExpectedError(1, "The collection doesn't exist");
+        job->setExpectedError(1, QStringLiteral("The collection doesn't exist"));
         Utils::JobHandler::install(job, noop, startMode);
     }
     return job;
@@ -280,7 +280,7 @@ KJob *AkonadiFakeStorage::removeCollection(Akonadi::Collection collection, QObje
             m_data->removeCollection(collection);
         }, startMode);
     } else {
-        job->setExpectedError(1, "The collection doesn't exist");
+        job->setExpectedError(1, QStringLiteral("The collection doesn't exist"));
         Utils::JobHandler::install(job, noop, startMode);
     }
     return job;
@@ -304,7 +304,7 @@ KJob *AkonadiFakeStorage::createTag(Akonadi::Tag tag)
             m_data->createTag(tag);
         });
     } else {
-        job->setExpectedError(1, "The tag already exists");
+        job->setExpectedError(1, QStringLiteral("The tag already exists"));
         Utils::JobHandler::install(job, noop);
     }
     return job;
@@ -318,7 +318,7 @@ KJob *AkonadiFakeStorage::updateTag(Akonadi::Tag tag)
             m_data->modifyTag(tag);
         });
     } else {
-        job->setExpectedError(1, "The tag doesn't exist");
+        job->setExpectedError(1, QStringLiteral("The tag doesn't exist"));
         Utils::JobHandler::install(job, noop);
     }
     return job;
@@ -332,7 +332,7 @@ KJob *AkonadiFakeStorage::removeTag(Akonadi::Tag tag)
             m_data->removeTag(tag);
         });
     } else {
-        job->setExpectedError(1, "The tag doesn't exist");
+        job->setExpectedError(1, QStringLiteral("The tag doesn't exist"));
         Utils::JobHandler::install(job, noop);
     }
     return job;

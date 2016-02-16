@@ -85,12 +85,12 @@ private slots:
         QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         auto task = Domain::Task::Ptr::create();
-        task->setText("description");
-        task->setTitle("title");
+        task->setText(QStringLiteral("description"));
+        task->setTitle(QStringLiteral("title"));
         task->setDone(true);
         task->setStartDate(QDateTime::currentDateTime());
         task->setDueDate(QDateTime::currentDateTime().addDays(2));
-        task->setDelegate(Domain::Task::Delegate("John Doe", "john@doe.com"));
+        task->setDelegate(Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com")));
 
         // WHEN
         model.setArtifact(task);
@@ -141,8 +141,8 @@ private slots:
         QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         auto note = Domain::Note::Ptr::create();
-        note->setText("description");
-        note->setTitle("title");
+        note->setText(QStringLiteral("description"));
+        note->setTitle(QStringLiteral("title"));
 
         // WHEN
         model.setArtifact(note);
@@ -251,7 +251,7 @@ private slots:
         QSignalSpy spy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         // WHEN
-        task->setDelegate(Domain::Task::Delegate("John Doe", "john@doe.com"));
+        task->setDelegate(Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com")));
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -399,7 +399,7 @@ private slots:
     {
         // GIVEN
         auto task = Domain::Task::Ptr::create();
-        auto expectedDelegate = Domain::Task::Delegate("John Doe", "john@doe.com");
+        auto expectedDelegate = Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com"));
 
         auto delegatedTask = Domain::Task::Ptr();
         auto delegate = Domain::Task::Delegate();
@@ -415,7 +415,7 @@ private slots:
         model.setArtifact(task);
 
         // WHEN
-        model.delegate("John Doe", "john@doe.com");
+        model.delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com"));
 
         // THEN
         QCOMPARE(delegatedTask, task);
@@ -427,13 +427,13 @@ private slots:
     {
         // GIVEN
         auto task = Domain::Task::Ptr::create();
-        task->setTitle("Task 1");
+        task->setTitle(QStringLiteral("Task 1"));
 
         auto savedArtifact = Domain::Artifact::Ptr();
         auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
             savedArtifact = artifact;
             auto job = new FakeJob(this);
-            job->setExpectedError(KJob::KilledJobError, "Foo");
+            job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
             return job;
         };
 
@@ -450,7 +450,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify task Task 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify task Task 1: Foo"));
     }
 };
 

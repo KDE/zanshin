@@ -273,7 +273,7 @@ private slots:
         // GIVEN
         // a tag
         Akonadi::Tag tag;
-        tag.setName("tag42");
+        tag.setName(QStringLiteral("tag42"));
         tag.setId(42);
 
         // the context related to the tag
@@ -614,8 +614,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(childItem).thenReturn(child);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(parentItem).thenReturn(parent);
         serializerMock(&Akonadi::SerializerInterface::updateItemParent).when(childItem, parent).thenReturn();
-        serializerMock(&Akonadi::SerializerInterface::objectUid).when(parent).thenReturn(QString("parent"));
-        serializerMock(&Akonadi::SerializerInterface::objectUid).when(child).thenReturn(QString("child"));
+        serializerMock(&Akonadi::SerializerInterface::objectUid).when(parent).thenReturn(QStringLiteral("parent"));
+        serializerMock(&Akonadi::SerializerInterface::objectUid).when(child).thenReturn(QStringLiteral("child"));
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(parentItem).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(childItem).thenReturn(QString());
         if (execParentJob)
@@ -661,13 +661,13 @@ private slots:
 
         // Three tasks in the collection (one being child of the second one)
         data.createItem(GenTodo().withId(42).withParent(42)
-                                 .withTitle("42").withUid("uid-42"));
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")));
         data.createItem(GenTodo().withId(43).withParent(42)
-                                 .withTitle("43").withUid("uid-43")
-                                 .withParentUid("uid-42"));
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
+                                 .withParentUid(QStringLiteral("uid-42")));
         data.createItem(GenTodo().withId(44).withParent(42)
-                                 .withTitle("44").withUid("uid-44")
-                                 .withParentUid("uid-43"));
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-43")));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto task42 = serializer->createTaskFromItem(data.item(42));
@@ -798,8 +798,8 @@ private slots:
     void shouldSendDelegationMessage()
     {
         // GIVEN
-        auto oldDelegate = Domain::Task::Delegate("John Smith", "john@smith.com");
-        auto newDelegate = Domain::Task::Delegate("John Doe", "john@doe.com");
+        auto oldDelegate = Domain::Task::Delegate(QStringLiteral("John Smith"), QStringLiteral("john@smith.com"));
+        auto newDelegate = Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com"));
 
         auto task = Domain::Task::Ptr::create();
         task->setDelegate(oldDelegate);

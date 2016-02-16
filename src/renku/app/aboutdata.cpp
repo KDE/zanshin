@@ -27,23 +27,23 @@
 
 KAboutData App::getAboutData()
 {
-    KAboutData about("renku",
-                     i18n("Renku Notes"), APPLICATION_VERSION,
+    KAboutData about(QStringLiteral("renku"),
+                     i18n("Renku Notes"), QStringLiteral(APPLICATION_VERSION),
                      i18n("A note taking application which aims at getting your mind like water"),
                      KAboutLicense::GPL_V3,
                      i18n("Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"));
 
     about.addAuthor(i18n("Kevin Ottens"),
                     i18n("Lead Developer"),
-                    "ervin@kde.org");
+                    QStringLiteral("ervin@kde.org"));
 
     about.addAuthor(i18n("Mario Bensi"),
                     i18n("Developer"),
-                    "nef@ipsquad.net");
+                    QStringLiteral("nef@ipsquad.net"));
 
     about.addAuthor(i18n("Franck Arrecot"),
                     i18n("Developer"),
-                    "franck.arrecot@gmail.com");
+                    QStringLiteral("franck.arrecot@gmail.com"));
 
     return about;
 }

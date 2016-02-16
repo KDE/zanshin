@@ -77,7 +77,7 @@ private slots:
     {
         // GIVEN
         Akonadi::Tag tag;
-        tag.setName("tag42");
+        tag.setName(QStringLiteral("tag42"));
         tag.setId(42);
         auto context = Domain::Context::Ptr::create();
 
@@ -108,7 +108,7 @@ private slots:
     {
         // GIVEN
         Akonadi::Tag tag;
-        tag.setName("tag42");
+        tag.setName(QStringLiteral("tag42"));
         tag.setId(42);
         auto context = Domain::Context::Ptr::create();
 

@@ -53,16 +53,16 @@ private slots:
     void onTimeout()
     {
         if (!nameInput.isEmpty()) {
-            auto nameEdit = dialog->findChild<QLineEdit*>("nameEdit");
+            auto nameEdit = dialog->findChild<QLineEdit*>(QStringLiteral("nameEdit"));
             QTest::keyClicks(nameEdit, nameInput);
         }
 
         if (sourceComboIndex >= 0) {
-            auto sourceCombo = dialog->findChild<QComboBox*>("sourceCombo");
+            auto sourceCombo = dialog->findChild<QComboBox*>(QStringLiteral("sourceCombo"));
             sourceCombo->setCurrentIndex(sourceComboIndex);
         }
 
-        auto buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
+        auto buttonBox = dialog->findChild<QDialogButtonBox*>(QStringLiteral("buttonBox"));
         if (reject)
             buttonBox->button(QDialogButtonBox::Cancel)->click();
         else
@@ -111,15 +111,15 @@ private:
     {
         auto model = new QStandardItemModel(this);
 
-        auto root1 = createSourceItem("Root 1");
-        createSourceItem("Null", root1);
-        createTaskSourceItem("Task 1.1", root1);
-        createTaskSourceItem("Task 1.2", root1);
+        auto root1 = createSourceItem(QStringLiteral("Root 1"));
+        createSourceItem(QStringLiteral("Null"), root1);
+        createTaskSourceItem(QStringLiteral("Task 1.1"), root1);
+        createTaskSourceItem(QStringLiteral("Task 1.2"), root1);
         model->appendRow(root1);
 
-        auto root2 = createSourceItem("Root 2");
-        createDefaultSourceItem("Task 2.1", root2);
-        createTaskSourceItem("Task 2.2", root2);
+        auto root2 = createSourceItem(QStringLiteral("Root 2"));
+        createDefaultSourceItem(QStringLiteral("Task 2.1"), root2);
+        createTaskSourceItem(QStringLiteral("Task 2.2"), root2);
         model->appendRow(root2);
 
         return model;
@@ -133,15 +133,15 @@ private slots:
         QVERIFY(dialog.name().isEmpty());
         QVERIFY(dialog.dataSource().isNull());
 
-        auto nameEdit = dialog.findChild<QLineEdit*>("nameEdit");
+        auto nameEdit = dialog.findChild<QLineEdit*>(QStringLiteral("nameEdit"));
         QVERIFY(nameEdit);
         QVERIFY(nameEdit->isVisibleTo(&dialog));
 
-        auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
+        auto sourceCombo = dialog.findChild<QComboBox*>(QStringLiteral("sourceCombo"));
         QVERIFY(sourceCombo);
         QVERIFY(sourceCombo->isVisibleTo(&dialog));
 
-        auto buttonBox = dialog.findChild<QDialogButtonBox*>("buttonBox");
+        auto buttonBox = dialog.findChild<QDialogButtonBox*>(QStringLiteral("buttonBox"));
         QVERIFY(buttonBox);
         QVERIFY(buttonBox->isVisibleTo(&dialog));
         QVERIFY(buttonBox->button(QDialogButtonBox::Ok));
@@ -153,14 +153,14 @@ private slots:
         // GIVEN
         Widgets::NewProjectDialog dialog;
         auto sourceModel = createSourceModel();
-        auto sourceCombo = dialog.findChild<QComboBox*>("sourceCombo");
+        auto sourceCombo = dialog.findChild<QComboBox*>(QStringLiteral("sourceCombo"));
 
         // WHEN
         dialog.setDataSourcesModel(sourceModel);
 
         // THEN
         QCOMPARE(sourceCombo->currentIndex(), 2);
-        QCOMPARE(sourceCombo->currentText(), QString("Root 2 / Task 2.1"));
+        QCOMPARE(sourceCombo->currentText(), QStringLiteral("Root 2 / Task 2.1"));
     }
 
     void shouldProvideUserInputWhenAccepted()
@@ -174,7 +174,7 @@ private slots:
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
         userInput.sourceComboIndex = 1;
-        userInput.nameInput = "name";
+        userInput.nameInput = QStringLiteral("name");
 
         auto expectedSource = sourceModel->item(0)
                                          ->child(2)
@@ -201,7 +201,7 @@ private slots:
         UserInputSimulator userInput;
         userInput.dialog = &dialog;
         userInput.sourceComboIndex = 1;
-        userInput.nameInput = "name";
+        userInput.nameInput = QStringLiteral("name");
         userInput.reject = true;
 
         // WHEN
@@ -230,7 +230,7 @@ private slots:
         userInput.exec();
 
         // THEN
-        auto buttonOk = dialog.findChild<QDialogButtonBox*>("buttonBox")->button(QDialogButtonBox::Ok);
+        auto buttonOk = dialog.findChild<QDialogButtonBox*>(QStringLiteral("buttonBox"))->button(QDialogButtonBox::Ok);
         QVERIFY(!buttonOk->isEnabled());
         QCOMPARE(dialog.name(), QString());
         QCOMPARE(dialog.dataSource(), Domain::DataSource::Ptr());

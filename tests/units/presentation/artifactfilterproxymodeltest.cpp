@@ -82,54 +82,54 @@ private slots:
     {
         // GIVEN
         QStandardItemModel input;
-        input.appendRow(createTaskItem("1. foo", "find me"));
-        input.appendRow(createTaskItem("2. Find Me", "bar"));
-        input.appendRow(createTaskItem("3. baz", "baz"));
-        input.appendRow(createNoteItem("4. foo", "find me"));
-        input.appendRow(createNoteItem("5. find me", "bar"));
-        input.appendRow(createNoteItem("6. baz", "baz"));
+        input.appendRow(createTaskItem(QStringLiteral("1. foo"), QStringLiteral("find me")));
+        input.appendRow(createTaskItem(QStringLiteral("2. Find Me"), QStringLiteral("bar")));
+        input.appendRow(createTaskItem(QStringLiteral("3. baz"), QStringLiteral("baz")));
+        input.appendRow(createNoteItem(QStringLiteral("4. foo"), QStringLiteral("find me")));
+        input.appendRow(createNoteItem(QStringLiteral("5. find me"), QStringLiteral("bar")));
+        input.appendRow(createNoteItem(QStringLiteral("6. baz"), QStringLiteral("baz")));
 
         Presentation::ArtifactFilterProxyModel output;
         output.setSourceModel(&input);
 
         // WHEN
-        output.setFilterFixedString("find me");
+        output.setFilterFixedString(QStringLiteral("find me"));
 
         // THEN
         QCOMPARE(output.rowCount(), 4);
-        QCOMPARE(output.index(0, 0).data().toString(), QString("1. foo"));
-        QCOMPARE(output.index(1, 0).data().toString(), QString("2. Find Me"));
-        QCOMPARE(output.index(2, 0).data().toString(), QString("4. foo"));
-        QCOMPARE(output.index(3, 0).data().toString(), QString("5. find me"));
+        QCOMPARE(output.index(0, 0).data().toString(), QStringLiteral("1. foo"));
+        QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("2. Find Me"));
+        QCOMPARE(output.index(2, 0).data().toString(), QStringLiteral("4. foo"));
+        QCOMPARE(output.index(3, 0).data().toString(), QStringLiteral("5. find me"));
     }
 
     void shouldKeepRowIfItHasAcceptableChildren()
     {
         // GIVEN
         QStandardItemModel input;
-        input.appendRow(createTaskItem("1. foo", "find me"));
-        QStandardItem *item = createTaskItem("2. baz", "baz");
-        item->appendRow(createTaskItem("21. bar", "bar"));
-        item->appendRow(createNoteItem("22. foo", "Find Me"));
-        item->appendRow(createTaskItem("23. find me", "foo"));
+        input.appendRow(createTaskItem(QStringLiteral("1. foo"), QStringLiteral("find me")));
+        QStandardItem *item = createTaskItem(QStringLiteral("2. baz"), QStringLiteral("baz"));
+        item->appendRow(createTaskItem(QStringLiteral("21. bar"), QStringLiteral("bar")));
+        item->appendRow(createNoteItem(QStringLiteral("22. foo"), QStringLiteral("Find Me")));
+        item->appendRow(createTaskItem(QStringLiteral("23. find me"), QStringLiteral("foo")));
         input.appendRow(item);
-        input.appendRow(createTaskItem("3. baz", "baz"));
+        input.appendRow(createTaskItem(QStringLiteral("3. baz"), QStringLiteral("baz")));
 
         Presentation::ArtifactFilterProxyModel output;
         output.setSourceModel(&input);
 
         // WHEN
-        output.setFilterFixedString("find me");
+        output.setFilterFixedString(QStringLiteral("find me"));
 
         // THEN
         QCOMPARE(output.rowCount(), 2);
-        QCOMPARE(output.index(0, 0).data().toString(), QString("1. foo"));
-        QCOMPARE(output.index(1, 0).data().toString(), QString("2. baz"));
+        QCOMPARE(output.index(0, 0).data().toString(), QStringLiteral("1. foo"));
+        QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("2. baz"));
 
         const QModelIndex parent = output.index(1, 0);
         QCOMPARE(output.rowCount(parent), 2);
-        QCOMPARE(output.index(0, 0, parent).data().toString(), QString("22. foo"));
-        QCOMPARE(output.index(1, 0, parent).data().toString(), QString("23. find me"));
+        QCOMPARE(output.index(0, 0, parent).data().toString(), QStringLiteral("22. foo"));
+        QCOMPARE(output.index(1, 0, parent).data().toString(), QStringLiteral("23. find me"));
     }
 
     void shouldSortFollowingType_data()
@@ -144,78 +144,78 @@ private slots:
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("B", "foo") << createNoteItem("A", "foo") << createTaskItem("C", "foo");
-        expectedOutputTitles << "A" << "B" << "C";
+        inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo")) << createNoteItem(QStringLiteral("A"), QStringLiteral("foo")) << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"));
+        expectedOutputTitles << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C");
         QTest::newRow("title ascending") << int(Presentation::ArtifactFilterProxyModel::TitleSort)
                                          << int(Qt::AscendingOrder)
                                          << inputItems << expectedOutputTitles;
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("B", "foo") << createNoteItem("A", "foo") << createTaskItem("C", "foo");
-        expectedOutputTitles << "C" << "B" << "A";
+        inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo")) << createNoteItem(QStringLiteral("A"), QStringLiteral("foo")) << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"));
+        expectedOutputTitles << QStringLiteral("C") << QStringLiteral("B") << QStringLiteral("A");
         QTest::newRow("title descending") << int(Presentation::ArtifactFilterProxyModel::TitleSort)
                                          << int(Qt::DescendingOrder)
                                          << inputItems << expectedOutputTitles;
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("B", "foo", QDate(2014, 03, 10))
-                   << createNoteItem("A", "foo")
-                   << createTaskItem("C", "foo", QDate(2014, 03, 01))
-                   << createTaskItem("D", "foo");
-        expectedOutputTitles << "C" << "B" << "D" << "A";
+        inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(2014, 03, 10))
+                   << createNoteItem(QStringLiteral("A"), QStringLiteral("foo"))
+                   << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(2014, 03, 01))
+                   << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
+        expectedOutputTitles << QStringLiteral("C") << QStringLiteral("B") << QStringLiteral("D") << QStringLiteral("A");
         QTest::newRow("start date ascending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
                                               << int(Qt::AscendingOrder)
                                               << inputItems << expectedOutputTitles;
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("B", "foo", QDate(2014, 03, 10))
-                   << createNoteItem("A", "foo")
-                   << createTaskItem("C", "foo", QDate(2014, 03, 01))
-                   << createTaskItem("D", "foo");
-        expectedOutputTitles << "A" << "D" << "B" << "C";
+        inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(2014, 03, 10))
+                   << createNoteItem(QStringLiteral("A"), QStringLiteral("foo"))
+                   << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(2014, 03, 01))
+                   << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
+        expectedOutputTitles << QStringLiteral("A") << QStringLiteral("D") << QStringLiteral("B") << QStringLiteral("C");
         QTest::newRow("start date descending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
                                                << int(Qt::DescendingOrder)
                                                << inputItems << expectedOutputTitles;
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("B", "foo", QDate(), QDate(2014, 03, 10))
-                   << createNoteItem("A", "foo")
-                   << createTaskItem("C", "foo", QDate(), QDate(2014, 03, 01))
-                   << createTaskItem("D", "foo");
-        expectedOutputTitles << "C" << "B" << "D" << "A";
+        inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 10))
+                   << createNoteItem(QStringLiteral("A"), QStringLiteral("foo"))
+                   << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 01))
+                   << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
+        expectedOutputTitles << QStringLiteral("C") << QStringLiteral("B") << QStringLiteral("D") << QStringLiteral("A");
         QTest::newRow("due date ascending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
                                             << int(Qt::AscendingOrder)
                                             << inputItems << expectedOutputTitles;
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("B", "foo", QDate(), QDate(2014, 03, 10))
-                   << createNoteItem("A", "foo")
-                   << createTaskItem("C", "foo", QDate(), QDate(2014, 03, 01))
-                   << createTaskItem("D", "foo");
-        expectedOutputTitles << "A" << "D" << "B" << "C";
+        inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 10))
+                   << createNoteItem(QStringLiteral("A"), QStringLiteral("foo"))
+                   << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 01))
+                   << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
+        expectedOutputTitles << QStringLiteral("A") << QStringLiteral("D") << QStringLiteral("B") << QStringLiteral("C");
         QTest::newRow("due date descending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
                                              << int(Qt::DescendingOrder)
                                              << inputItems << expectedOutputTitles;
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("A", "foo", QDate(2014, 03, 01), QDate(2014, 03, 10))
-                   << createTaskItem("B", "foo", QDate(2014, 03, 10), QDate(2014, 03, 01));
-        expectedOutputTitles << "B" << "A";
+        inputItems << createTaskItem(QStringLiteral("A"), QStringLiteral("foo"), QDate(2014, 03, 01), QDate(2014, 03, 10))
+                   << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(2014, 03, 10), QDate(2014, 03, 01));
+        expectedOutputTitles << QStringLiteral("B") << QStringLiteral("A");
         QTest::newRow("due date over start date") << int(Presentation::ArtifactFilterProxyModel::DateSort)
                                                   << int(Qt::AscendingOrder)
                                                   << inputItems << expectedOutputTitles;
 
         inputItems.clear();
         expectedOutputTitles.clear();
-        inputItems << createTaskItem("A", "foo", QDate(), QDate(2014, 03, 10))
-                   << createTaskItem("B", "foo", QDate(2014, 03, 01), QDate());
-        expectedOutputTitles << "B" << "A";
+        inputItems << createTaskItem(QStringLiteral("A"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 10))
+                   << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(2014, 03, 01), QDate());
+        expectedOutputTitles << QStringLiteral("B") << QStringLiteral("A");
         QTest::newRow("due date over start date") << int(Presentation::ArtifactFilterProxyModel::DateSort)
                                                   << int(Qt::AscendingOrder)
                                                   << inputItems << expectedOutputTitles;

@@ -129,7 +129,7 @@ private slots:
         object->setProperty("todoUid", "my-uid");
 
         // THEN
-        QCOMPARE(serializer.objectUid(object), QString("my-uid"));
+        QCOMPARE(serializer.objectUid(object), QStringLiteral("my-uid"));
     }
 
     void shouldCreateDataSourceFromCollection_data()
@@ -142,9 +142,9 @@ private slots:
         QTest::addColumn<bool>("isReferenced");
         QTest::addColumn<bool>("isEnabled");
 
-        const auto noteMimeTypes = QStringList() << "text/x-vnd.akonadi.note";
-        const auto taskMimeTypes = QStringList() << "application/x-vnd.akonadi.calendar.todo";
-        const auto bogusMimeTypes = QStringList() << "foo/bar";
+        const auto noteMimeTypes = QStringList() << QStringLiteral("text/x-vnd.akonadi.note");
+        const auto taskMimeTypes = QStringList() << QStringLiteral("application/x-vnd.akonadi.calendar.todo");
+        const auto bogusMimeTypes = QStringList() << QStringLiteral("foo/bar");
         const auto allMimeTypes = noteMimeTypes + taskMimeTypes + bogusMimeTypes;
 
         QTest::newRow("nominal case") << "name" << "icon" << allMimeTypes << true << false << false << true;
@@ -179,10 +179,10 @@ private slots:
         QFETCH(bool, isEnabled);
 
         Domain::DataSource::ContentTypes expectedContentTypes;
-        if (mimeTypes.contains("text/x-vnd.akonadi.note")) {
+        if (mimeTypes.contains(QStringLiteral("text/x-vnd.akonadi.note"))) {
             expectedContentTypes |= Domain::DataSource::Notes;
         }
-        if (mimeTypes.contains("application/x-vnd.akonadi.calendar.todo")) {
+        if (mimeTypes.contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo"))) {
             expectedContentTypes |= Domain::DataSource::Tasks;
         }
 
@@ -242,7 +242,7 @@ private slots:
 
         // A collection...
         Akonadi::Collection originalCollection(42);
-        originalCollection.setName("name");
+        originalCollection.setName(QStringLiteral("name"));
 
         // ... deserialized as a data source
         Akonadi::Serializer serializer;
@@ -268,7 +268,7 @@ private slots:
         // GIVEN
 
         // Data...
-        const QString name = "name";
+        const QString name = QStringLiteral("name");
 
         // ... stored in a collection...
         Akonadi::Collection originalCollection(42);
@@ -280,7 +280,7 @@ private slots:
 
         // WHEN
         Akonadi::Collection invalidCollection;
-        invalidCollection.setName("foo");
+        invalidCollection.setName(QStringLiteral("foo"));
         serializer.updateDataSourceFromCollection(dataSource, invalidCollection, Akonadi::SerializerInterface::BaseName);
 
         // THEN
@@ -292,14 +292,14 @@ private slots:
         // GIVEN
 
         // Data...
-        const QString name = "name";
-        const QString parentName = "parent";
+        const QString name = QStringLiteral("name");
+        const QString parentName = QStringLiteral("parent");
 
         // ... stored in a collection with a parent
         Akonadi::Collection collection(42);
         collection.setName(name);
         Akonadi::Collection parentCollection(41);
-        parentCollection.setName("Foo");
+        parentCollection.setName(QStringLiteral("Foo"));
         auto attribute = new Akonadi::EntityDisplayAttribute;
         attribute->setDisplayName(parentName);
         parentCollection.addAttribute(attribute);
@@ -370,9 +370,9 @@ private slots:
 
         QStringList mimeTypes;
         if (contentTypes & Domain::DataSource::Tasks)
-            mimeTypes << "application/x-vnd.akonadi.calendar.todo";
+            mimeTypes << QStringLiteral("application/x-vnd.akonadi.calendar.todo");
         if (contentTypes & Domain::DataSource::Notes)
-            mimeTypes << "text/x-vnd.akonadi.note";
+            mimeTypes << QStringLiteral("text/x-vnd.akonadi.note");
 
 
         // ... stored in a data source
@@ -453,9 +453,9 @@ private slots:
         QTest::addColumn<bool>("isEnabled");
         QTest::addColumn<bool>("expectedSelected");
 
-        const auto noteMimeTypes = QStringList() << "text/x-vnd.akonadi.note";
-        const auto taskMimeTypes = QStringList() << "application/x-vnd.akonadi.calendar.todo";
-        const auto bogusMimeTypes = QStringList() << "foo/bar";
+        const auto noteMimeTypes = QStringList() << QStringLiteral("text/x-vnd.akonadi.note");
+        const auto taskMimeTypes = QStringList() << QStringLiteral("application/x-vnd.akonadi.calendar.todo");
+        const auto bogusMimeTypes = QStringList() << QStringLiteral("foo/bar");
         const auto allMimeTypes = noteMimeTypes + taskMimeTypes + bogusMimeTypes;
 
         QTest::newRow("nominal case") << allMimeTypes << true << false << false << true << false;
@@ -495,10 +495,10 @@ private slots:
         QFETCH(bool, isEnabled);
 
         Domain::DataSource::ContentTypes expectedContentTypes;
-        if (mimeTypes.contains("text/x-vnd.akonadi.note")) {
+        if (mimeTypes.contains(QStringLiteral("text/x-vnd.akonadi.note"))) {
             expectedContentTypes |= Domain::DataSource::Notes;
         }
-        if (mimeTypes.contains("application/x-vnd.akonadi.calendar.todo")) {
+        if (mimeTypes.contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo"))) {
             expectedContentTypes |= Domain::DataSource::Tasks;
         }
 
@@ -600,7 +600,7 @@ private slots:
 
         todo->setDtStart(KDateTime(startDate));
         todo->setDtDue(KDateTime(dueDate));
-        todo->setRelatedTo("my-uid");
+        todo->setRelatedTo(QStringLiteral("my-uid"));
         if (!delegateName.isEmpty() || !delegateEmail.isEmpty()) {
             KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(delegateName,
                                                                     delegateEmail,
@@ -612,7 +612,7 @@ private slots:
 
         // ... as payload of an item
         Akonadi::Item item;
-        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         // which has a parent collection
@@ -674,12 +674,12 @@ private slots:
 
         // A todo with the project flag
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-        todo->setSummary("foo");
-        todo->setCustomProperty("Zanshin", "Project", "1");
+        todo->setSummary(QStringLiteral("foo"));
+        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
 
         // ... as payload of an item
         Akonadi::Item item;
-        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         // WHEN
@@ -714,21 +714,21 @@ private slots:
 
         // A todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
-        originalTodo->setSummary("summary");
-        originalTodo->setDescription("content");
+        originalTodo->setSummary(QStringLiteral("summary"));
+        originalTodo->setDescription(QStringLiteral("content"));
         originalTodo->setCompleted(false);
         originalTodo->setDtStart(KDateTime(QDate(2013, 11, 24)));
         originalTodo->setDtDue(KDateTime(QDate(2014, 03, 01)));
-        originalTodo->setRelatedTo("my-uid");
-        KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee("John Doe",
-                                                                        "j@d.com",
+        originalTodo->setRelatedTo(QStringLiteral("my-uid"));
+        KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee(QStringLiteral("John Doe"),
+                                                                        QStringLiteral("j@d.com"),
                                                                         true,
                                                                         KCalCore::Attendee::Accepted));
         originalTodo->addAttendee(originalAttendee);
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
-        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
         // ... which has a parent collection...
@@ -781,7 +781,7 @@ private slots:
 
         // ... as payload of a new item
         Akonadi::Item updatedItem;
-        updatedItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        updatedItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
 
         // ... which has a new parent collection
@@ -825,8 +825,8 @@ private slots:
         // GIVEN
 
         // Data...
-        const QString summary = "summary";
-        const QString content = "content";
+        const QString summary = QStringLiteral("summary");
+        const QString content = QStringLiteral("content");
         const bool isDone = true;
         const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
         const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
@@ -847,7 +847,7 @@ private slots:
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
-        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a task
@@ -884,8 +884,8 @@ private slots:
         // GIVEN
 
         // Data...
-        const QString summary = "summary";
-        const QString content = "content";
+        const QString summary = QStringLiteral("summary");
+        const QString content = QStringLiteral("content");
         const bool isDone = true;
         const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
         const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
@@ -906,7 +906,7 @@ private slots:
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
-        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a task
@@ -917,12 +917,12 @@ private slots:
         // WHEN
         // A todo with the project flag
         KCalCore::Todo::Ptr projectTodo(new KCalCore::Todo);
-        projectTodo->setSummary("foo");
-        projectTodo->setCustomProperty("Zanshin", "Project", "1");
+        projectTodo->setSummary(QStringLiteral("foo"));
+        projectTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
 
         // ... as payload of an item
         Akonadi::Item projectItem;
-        projectItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        projectItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         projectItem.setPayload<KCalCore::Todo::Ptr>(projectTodo);
         serializer.updateTaskFromItem(task, projectItem);
         serializer.updateArtifactFromItem(artifact, projectItem);
@@ -962,11 +962,11 @@ private slots:
         QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime()
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                               << qint64(-1) << qint64(-1) << QString()
-                                              << Domain::Task::Delegate("John Doe", "j@d.com");
+                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                            << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                            << qint64(-1) << qint64(-1) << QString()
-                                           << Domain::Task::Delegate("John Doe", "j@d.com");
+                                           << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
         QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime()
                                             << QDateTime() << QDateTime()
                                             << qint64(-1) << qint64(-1) << QString()
@@ -975,11 +975,11 @@ private slots:
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                                 << qint64(42) << qint64(43) << "my-uid"
-                                                << Domain::Task::Delegate("John Doe", "j@d.com");
+                                                << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
         QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                              << qint64(42) << qint64(43) << "my-uid"
-                                             << Domain::Task::Delegate("John Doe", "j@d.com");
+                                             << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
         QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime()
                                               << QDateTime() << QDateTime()
                                               << qint64(42) << qint64(43) << "my-uid"
@@ -1064,7 +1064,7 @@ private slots:
             QCOMPARE(todo->uid(), todoUid);
         }
 
-        QCOMPARE(todo->relatedTo(), QString("parent-uid"));
+        QCOMPARE(todo->relatedTo(), QStringLiteral("parent-uid"));
     }
 
     void shouldVerifyIfAnItemIsATaskChild_data()
@@ -1074,8 +1074,8 @@ private slots:
         QTest::addColumn<bool>("isParent");
 
         // Create task
-        const QString summary = "summary";
-        const QString content = "content";
+        const QString summary = QStringLiteral("summary");
+        const QString content = QStringLiteral("content");
         const bool isDone = true;
         const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
         const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
@@ -1105,7 +1105,7 @@ private slots:
         childTodo->setDtDue(KDateTime(dueDate));
 
         Akonadi::Item childItem;
-        childItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        childItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         childItem.setPayload<KCalCore::Todo::Ptr>(childTodo);
 
         QTest::newRow("without parent") << task << childItem << false;
@@ -1122,10 +1122,10 @@ private slots:
 
         childTodo2->setDtStart(KDateTime(startDate));
         childTodo2->setDtDue(KDateTime(dueDate));
-        childTodo2->setRelatedTo("1");
+        childTodo2->setRelatedTo(QStringLiteral("1"));
 
         Akonadi::Item childItem2;
-        childItem2.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        childItem2.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         childItem2.setPayload<KCalCore::Todo::Ptr>(childTodo2);
 
         QTest::newRow("with parent") << task << childItem2 << true;
@@ -1164,20 +1164,20 @@ private slots:
 
         Akonadi::Item item2;
         KCalCore::Todo::Ptr todo2(new KCalCore::Todo);
-        todo2->setRelatedTo("1");
+        todo2->setRelatedTo(QStringLiteral("1"));
         item2.setPayload<KCalCore::Todo::Ptr>(todo2);
 
         Akonadi::Item item3;
         KMime::Message::Ptr message1(new KMime::Message);
-        message1->subject(true)->fromUnicodeString("foo", "utf-8");
-        message1->mainBodyPart()->fromUnicodeString("bar");
+        message1->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
+        message1->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
         item3.setMimeType(Akonadi::NoteUtils::noteMimeType());
         item3.setPayload<KMime::Message::Ptr>(message1);
 
         Akonadi::Item item4;
         KMime::Message::Ptr message2(new KMime::Message);
-        message2->subject(true)->fromUnicodeString("foo", "utf-8");
-        message2->mainBodyPart()->fromUnicodeString("bar");
+        message2->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
+        message2->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
         auto relatedHeader1 = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
         relatedHeader1->from7BitString("1");
         message2->appendHeader(relatedHeader1);
@@ -1186,8 +1186,8 @@ private slots:
 
         Akonadi::Item item5;
         KMime::Message::Ptr message3(new KMime::Message);
-        message3->subject(true)->fromUnicodeString("foo", "utf-8");
-        message3->mainBodyPart()->fromUnicodeString("bar");
+        message3->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
+        message3->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
         auto relatedHeader2 = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
         message3->appendHeader(relatedHeader2);
         item5.setMimeType(Akonadi::NoteUtils::noteMimeType());
@@ -1303,8 +1303,8 @@ private slots:
 
         // A message...
         KMime::Message::Ptr message(new KMime::Message);
-        message->subject(true)->fromUnicodeString("title", "utf-8");
-        message->mainBodyPart()->fromUnicodeString("text");
+        message->subject(true)->fromUnicodeString(QStringLiteral("title"), "utf-8");
+        message->mainBodyPart()->fromUnicodeString(QStringLiteral("text"));
         auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
         relatedHeader->from7BitString("parent-uid");
         message->appendHeader(relatedHeader);
@@ -1363,8 +1363,8 @@ private slots:
         // GIVEN
 
         // Data...
-        QString title = "A title";
-        QString text = "A note content";
+        QString title = QStringLiteral("A title");
+        QString text = QStringLiteral("A note content");
 
         // ... stored in a message...
         KMime::Message::Ptr message(new KMime::Message);
@@ -1481,12 +1481,12 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(summary);
-        todo->setCustomProperty("Zanshin", "Project", "1");
+        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
         QVERIFY(!todo->uid().isEmpty());
 
         // ... as payload of an item
         Akonadi::Item item(42);
-        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         // which has a prent collection
@@ -1523,11 +1523,11 @@ private slots:
 
         // A todo without the project flag
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-        todo->setSummary("foo");
+        todo->setSummary(QStringLiteral("foo"));
 
         // ... as payload of an item
         Akonadi::Item item;
-        item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         // WHEN
@@ -1552,12 +1552,12 @@ private slots:
 
         // A todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
-        originalTodo->setSummary("summary");
-        originalTodo->setCustomProperty("Zanshin", "Project", "1");
+        originalTodo->setSummary(QStringLiteral("summary"));
+        originalTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem(42);
-        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
         // ... which has a parent collection...
@@ -1576,12 +1576,12 @@ private slots:
         // ... in a new todo...
         KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
         updatedTodo->setSummary(updatedSummary);
-        updatedTodo->setCustomProperty("Zanshin", "Project", "1");
+        updatedTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
         QVERIFY(!updatedTodo->uid().isEmpty());
 
         // ... as payload of a new item
         Akonadi::Item updatedItem(44);
-        updatedItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        updatedItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
 
         // ... which has a new parent collection
@@ -1602,16 +1602,16 @@ private slots:
         // GIVEN
 
         // Data...
-        const QString summary = "summary";
+        const QString summary = QStringLiteral("summary");
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
         originalTodo->setSummary(summary);
-        originalTodo->setCustomProperty("Zanshin", "Project", "1");
+        originalTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
-        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a project
@@ -1631,16 +1631,16 @@ private slots:
         // GIVEN
 
         // Data...
-        const QString summary = "summary";
+        const QString summary = QStringLiteral("summary");
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
         originalTodo->setSummary(summary);
-        originalTodo->setCustomProperty("Zanshin", "Project", "1");
+        originalTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
-        originalItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a project
@@ -1650,11 +1650,11 @@ private slots:
         // WHEN
         // A todo without the project flag
         KCalCore::Todo::Ptr projectTodo(new KCalCore::Todo);
-        projectTodo->setSummary("foo");
+        projectTodo->setSummary(QStringLiteral("foo"));
 
         // ... as payload of an item
         Akonadi::Item projectItem;
-        projectItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        projectItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         projectItem.setPayload<KCalCore::Todo::Ptr>(projectTodo);
         serializer.updateProjectFromItem(project, projectItem);
 
@@ -1683,7 +1683,7 @@ private slots:
         QFETCH(QString, summary);
         QFETCH(qint64, itemId);
         QFETCH(qint64, parentCollectionId);
-        const QString todoUid = "test-uid";
+        const QString todoUid = QStringLiteral("test-uid");
 
         // ... stored in a project
         auto project = Domain::Project::Ptr::create();
@@ -1727,31 +1727,31 @@ private slots:
 
         // Create project
         auto project = Domain::Project::Ptr::create();
-        project->setName("project");
+        project->setName(QStringLiteral("project"));
         project->setProperty("todoUid", "1");
 
         // Create unrelated todo
         auto unrelatedTodo = KCalCore::Todo::Ptr::create();
-        unrelatedTodo->setSummary("summary");
+        unrelatedTodo->setSummary(QStringLiteral("summary"));
         Akonadi::Item unrelatedTodoItem;
-        unrelatedTodoItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        unrelatedTodoItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         unrelatedTodoItem.setPayload<KCalCore::Todo::Ptr>(unrelatedTodo);
 
         QTest::newRow("unrelated todo") << project << unrelatedTodoItem << false;
 
         // Create child todo
         auto childTodo = KCalCore::Todo::Ptr::create();
-        childTodo->setSummary("summary");
-        childTodo->setRelatedTo("1");
+        childTodo->setSummary(QStringLiteral("summary"));
+        childTodo->setRelatedTo(QStringLiteral("1"));
         Akonadi::Item childTodoItem;
-        childTodoItem.setMimeType("application/x-vnd.akonadi.calendar.todo");
+        childTodoItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         childTodoItem.setPayload<KCalCore::Todo::Ptr>(childTodo);
 
         QTest::newRow("child todo") << project << childTodoItem << true;
 
         // Create unrelated note
         KMime::Message::Ptr unrelatedNote(new KMime::Message);
-        unrelatedNote->subject(true)->fromUnicodeString("subject", "utf-8");
+        unrelatedNote->subject(true)->fromUnicodeString(QStringLiteral("subject"), "utf-8");
         Akonadi::Item unrelatedNoteItem;
         unrelatedNoteItem.setMimeType(Akonadi::NoteUtils::noteMimeType());
         unrelatedNoteItem.setPayload<KMime::Message::Ptr>(unrelatedNote);
@@ -1760,7 +1760,7 @@ private slots:
 
         // Create child note
         KMime::Message::Ptr childNote(new KMime::Message);
-        childNote->subject(true)->fromUnicodeString("subject", "utf-8");
+        childNote->subject(true)->fromUnicodeString(QStringLiteral("subject"), "utf-8");
         auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
         relatedHeader->from7BitString("1");
         childNote->appendHeader(relatedHeader);
@@ -1885,7 +1885,7 @@ private slots:
             const QString relatedUid = relatedHeader ? relatedHeader->asUnicodeString() : QString();
             QCOMPARE(relatedUid, expectedRelatedToUid);
             if (!expectedRelatedToUid.isEmpty())
-                QVERIFY(note->encodedContent().contains(QString("X-Zanshin-RelatedProjectUid: %1").arg(expectedRelatedToUid).toUtf8()));
+                QVERIFY(note->encodedContent().contains(QStringLiteral("X-Zanshin-RelatedProjectUid: %1").arg(expectedRelatedToUid).toUtf8()));
             else
                 QVERIFY(!note->encodedContent().contains("X-Zanshin-RelatedProjectUid:"));
         }
@@ -1899,7 +1899,7 @@ private slots:
 
         Akonadi::Item item(12);
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-        todo->setUid("1");
+        todo->setUid(QStringLiteral("1"));
         item.setPayload<KCalCore::Todo::Ptr>(todo);
         Akonadi::Item::List items;
 
@@ -1915,8 +1915,8 @@ private slots:
 
         Akonadi::Item item3(14);
         KCalCore::Todo::Ptr todo3(new KCalCore::Todo);
-        todo3->setUid("3");
-        todo3->setRelatedTo("1");
+        todo3->setUid(QStringLiteral("3"));
+        todo3->setRelatedTo(QStringLiteral("1"));
         item3.setPayload<KCalCore::Todo::Ptr>(todo3);
         Akonadi::Item::List items3;
         items3 << item2 << item3;
@@ -1925,7 +1925,7 @@ private slots:
 
         Akonadi::Item item4(15);
         KCalCore::Todo::Ptr todo4(new KCalCore::Todo);
-        todo4->setRelatedTo("3");
+        todo4->setRelatedTo(QStringLiteral("3"));
         item4.setPayload<KCalCore::Todo::Ptr>(todo4);
         Akonadi::Item::List items4;
         items4 << item2 << item3 << item4;
@@ -1958,7 +1958,7 @@ private slots:
 
         Akonadi::Item item(15);
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-        todo->setRelatedTo("3");
+        todo->setRelatedTo(QStringLiteral("3"));
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         QTest::newRow("nominal case") << item;
@@ -1987,7 +1987,7 @@ private slots:
 
         auto item = Akonadi::Item(15);
         auto todo = KCalCore::Todo::Ptr::create();
-        todo->setRelatedTo("3");
+        todo->setRelatedTo(QStringLiteral("3"));
         item.setPayload(todo);
 
         QTest::newRow("nominal case") << item;
@@ -2019,11 +2019,11 @@ private slots:
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
 
         // context
-        Akonadi::Tag context("42");
+        Akonadi::Tag context(QStringLiteral("42"));
         context.setType( Akonadi::SerializerInterface::contextTagType() );
 
         // tag
-        Akonadi::Tag tag("43");
+        Akonadi::Tag tag(QStringLiteral("43"));
         tag.setType( Akonadi::Tag::PLAIN );
 
         Akonadi::Tag::List tagsList = Akonadi::Tag::List() << tag << context;
@@ -2090,7 +2090,7 @@ private slots:
         // GIVEN
 
         // Data stored as an Akonadi Tag
-        Akonadi::Tag tag("context42");
+        Akonadi::Tag tag(QStringLiteral("context42"));
         tag.setType(QByteArray("wrongTagType"));
 
         // WHEN
@@ -2135,7 +2135,7 @@ private slots:
     {
         // GIVEN
 
-        Akonadi::Tag originalTag("Context42");
+        Akonadi::Tag originalTag(QStringLiteral("Context42"));
         originalTag.setType(Akonadi::Serializer::contextTagType());
         originalTag.setId(42);
 
@@ -2143,7 +2143,7 @@ private slots:
         Domain::Context::Ptr context = serializer.createContextFromTag(originalTag);
 
         // WHEN
-        Akonadi::Tag wrongTag("WrongContext42");
+        Akonadi::Tag wrongTag(QStringLiteral("WrongContext42"));
         wrongTag.setType(QByteArray("wrongTypeTag"));
         serializer.updateContextFromTag(context, wrongTag);
 
@@ -2198,11 +2198,11 @@ private slots:
         QTest::addColumn<bool>("contextsExpected");
         QTest::addColumn<bool>("tagsExpected");
 
-        Akonadi::Tag unrelatedTag("Foo");
+        Akonadi::Tag unrelatedTag(QStringLiteral("Foo"));
         unrelatedTag.setType("unrelated");
-        Akonadi::Tag contextTag("Bar");
+        Akonadi::Tag contextTag(QStringLiteral("Bar"));
         contextTag.setType(Akonadi::Serializer::contextTagType());
-        Akonadi::Tag akonadiTag("Baz");
+        Akonadi::Tag akonadiTag(QStringLiteral("Baz"));
         akonadiTag.setType(Akonadi::Tag::PLAIN);
 
         Akonadi::Item item;
@@ -2245,7 +2245,7 @@ private slots:
         QTest::addColumn<qint64>("tagId");
         QTest::addColumn<QByteArray>("tagGid");
 
-        QString nameInternet = "Internet";
+        QString nameInternet = QStringLiteral("Internet");
 
         QTest::newRow("nominal case") << QString(nameInternet) << qint64(42) << nameInternet.toLatin1();
         QTest::newRow("null name case") << QString() << qint64(42) << QByteArray();
@@ -2285,7 +2285,7 @@ private slots:
         QTest::addColumn<qint64>("tagId");
         QTest::addColumn<QByteArray>("type");
 
-        QString tagName = "Optional";
+        QString tagName = QStringLiteral("Optional");
         QByteArray plainType = Akonadi::Tag::PLAIN;
 
         QTest::newRow("nominal case") << tagName << qint64(42) << plainType;
@@ -2335,7 +2335,7 @@ private slots:
         // WHEN
         Akonadi::Serializer serializer;
         auto tag = Domain::Tag::Ptr::create();
-        tag->setName("tag42");
+        tag->setName(QStringLiteral("tag42"));
 
         serializer.updateTagFromAkonadiTag(tag, akonadiTag);
 

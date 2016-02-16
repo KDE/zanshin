@@ -69,7 +69,7 @@ GenTodo &GenTodo::asProject(bool value)
 {
     auto todo = m_item.payload<KCalCore::Todo::Ptr>();
     if (value)
-        todo->setCustomProperty("Zanshin", "Project", "1");
+        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
     else
         todo->removeCustomProperty("Zanshin", "Project");
     return *this;

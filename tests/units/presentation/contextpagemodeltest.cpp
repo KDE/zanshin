@@ -68,11 +68,11 @@ private slots:
 
         // Three tasks
         auto task1 = Domain::Task::Ptr::create();
-        task1->setTitle("task1");
+        task1->setTitle(QStringLiteral("task1"));
         auto task2 = Domain::Task::Ptr::create();
-        task2->setTitle("task2");
+        task2->setTitle(QStringLiteral("task2"));
         auto task3 = Domain::Task::Ptr::create();
-        task3->setTitle("task3");
+        task3->setTitle(QStringLiteral("task3"));
 
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
@@ -82,9 +82,9 @@ private slots:
 
         // Two tasks under the task1
         auto childTask11 = Domain::Task::Ptr::create();
-        childTask11->setTitle("childTask11");
+        childTask11->setTitle(QStringLiteral("childTask11"));
         auto childTask12 = Domain::Task::Ptr::create();
-        childTask12->setTitle("childTask12");
+        childTask12->setTitle(QStringLiteral("childTask12"));
         auto childTaskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto childTaskResult = Domain::QueryResult<Domain::Task::Ptr>::create(childTaskProvider);
         taskProvider->append(childTask12);
@@ -202,11 +202,11 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task2).exactly(2));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task3).exactly(2));
 
-        QCOMPARE(task1->title(), QString("newTask1"));
-        QCOMPARE(childTask11->title(), QString("newChildTask11"));
-        QCOMPARE(childTask12->title(), QString("newChildTask12"));
-        QCOMPARE(task2->title(), QString("newTask2"));
-        QCOMPARE(task3->title(), QString("newTask3"));
+        QCOMPARE(task1->title(), QStringLiteral("newTask1"));
+        QCOMPARE(childTask11->title(), QStringLiteral("newChildTask11"));
+        QCOMPARE(childTask12->title(), QStringLiteral("newChildTask12"));
+        QCOMPARE(task2->title(), QStringLiteral("newTask2"));
+        QCOMPARE(task3->title(), QStringLiteral("newTask3"));
 
         QCOMPARE(task1->isDone(), false);
         QCOMPARE(childTask11->isDone(), false);
@@ -222,14 +222,14 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(task1).exactly(2));
 
-        QCOMPARE(task1->title(), QString("newTask1"));
-        QCOMPARE(task2->title(), QString("newTask2"));
+        QCOMPARE(task1->title(), QStringLiteral("newTask1"));
+        QCOMPARE(task2->title(), QStringLiteral("newTask2"));
 
         // WHEN a task is dragged
         QMimeData *data = model->mimeData(QModelIndexList() << task2Index);
 
         // THEN
-        QVERIFY(data->hasFormat("application/x-zanshin-object"));
+        QVERIFY(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
         QCOMPARE(data->property("objects").value<Domain::Artifact::List>(),
                  Domain::Artifact::List() << task2);
 
@@ -237,7 +237,7 @@ private slots:
         auto childTask2 = Domain::Task::Ptr::create();
         taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask2).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask2));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, task1Index);
 
@@ -250,7 +250,7 @@ private slots:
         taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask3).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask4).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask3 << childTask4));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, task1Index);
 
@@ -262,7 +262,7 @@ private slots:
         Domain::Artifact::Ptr childTask5(new Domain::Task);
         Domain::Artifact::Ptr childNote(new Domain::Note);
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask5 << childNote));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, task1Index);
 
@@ -295,7 +295,7 @@ private slots:
                                             taskRepositoryMock.getInstance());
 
         // WHEN
-         auto title = QString("New task");
+         auto title = QStringLiteral("New task");
          auto task = page.addItem(title).objectCast<Domain::Task>();
 
          // THEN
@@ -343,7 +343,7 @@ private slots:
                                             taskRepositoryMock.getInstance());
 
         // WHEN
-        const auto title = QString("New task");
+        const auto title = QStringLiteral("New task");
         const auto parentIndex = page.centralListModel()->index(0, 0);
         const auto createdTask = page.addItem(title, parentIndex).objectCast<Domain::Task>();
 
@@ -495,7 +495,7 @@ private slots:
 
         // One Context
         auto context = Domain::Context::Ptr::create();
-        context->setName("Context1");
+        context->setName(QStringLiteral("Context1"));
 
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
@@ -505,7 +505,7 @@ private slots:
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::createInContext).when(any<Domain::Task::Ptr>(),
                                                                           any<Domain::Context::Ptr>())
                                                                     .thenReturn(job);
@@ -519,11 +519,11 @@ private slots:
         page.setErrorHandler(&errorHandler);
 
         // WHEN
-        page.addItem("New task");
+        page.addItem(QStringLiteral("New task"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in context Context1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add task New task in context Context1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUpdateTaskFailed()
@@ -532,11 +532,11 @@ private slots:
 
         // A context
         auto context = Domain::Context::Ptr::create();
-        context->setName("Context1");
+        context->setName(QStringLiteral("Context1"));
 
         // A task
         auto task = Domain::Task::Ptr::create();
-        task->setTitle("A task");
+        task->setTitle(QStringLiteral("A task"));
 
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
@@ -567,14 +567,14 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(job);
 
         QVERIFY(model->setData(taskIndex, "newTask"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify task A task in context Context1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify task A task in context Context1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenAssociateTaskFailed()
@@ -583,13 +583,13 @@ private slots:
 
         // A context
         auto context = Domain::Context::Ptr::create();
-        context->setName("Context1");
+        context->setName(QStringLiteral("Context1"));
 
         // A parent task and a child task
         auto parentTask = Domain::Task::Ptr::create();
-        parentTask->setTitle("A parent task");
+        parentTask->setTitle(QStringLiteral("A parent task"));
         auto childTask = Domain::Task::Ptr::create();
-        childTask->setTitle("A child task");
+        childTask->setTitle(QStringLiteral("A child task"));
 
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
@@ -624,18 +624,18 @@ private slots:
 
         // WHEN a task is dropped
         auto childTask2 = Domain::Task::Ptr::create();
-        childTask2->setTitle("childTask2");
+        childTask2->setTitle(QStringLiteral("childTask2"));
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::associate).when(parentTask, childTask2).thenReturn(job);
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask2));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, parentTaskIndex);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask2 as sub-task of A parent task: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot move task childTask2 as sub-task of A parent task: Foo"));
     }
 
     void shouldAssociateToContextWithNoParentWhenDroppingOnEmptyArea()
@@ -644,21 +644,21 @@ private slots:
 
         // One context
         auto context = Domain::Context::Ptr::create();
-        context->setName("Context");
+        context->setName(QStringLiteral("Context"));
 
         // One top level task
         auto topLevelTask = Domain::Task::Ptr::create();
-        topLevelTask->setTitle("rootTask");
+        topLevelTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
         topLevelProvider->append(topLevelTask);
 
         // Two tasks under the top level task
         auto childTask1 = Domain::Task::Ptr::create();
-        childTask1->setTitle("childTask1");
+        childTask1->setTitle(QStringLiteral("childTask1"));
         childTask1->setDone(true);
         auto childTask2 = Domain::Task::Ptr::create();
-        childTask2->setTitle("childTask2");
+        childTask2->setTitle(QStringLiteral("childTask2"));
         childTask2->setDone(false);
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
@@ -692,7 +692,7 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context, childTask2).thenReturn(new FakeJob(this));
 
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask1 << childTask2)); // both will be DnD on the empty part
         model->dropMimeData(data, Qt::MoveAction, -1, -1, QModelIndex());
 

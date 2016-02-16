@@ -163,15 +163,15 @@ private slots:
         QTest::addColumn<QStringList>("expectedNames");
 
         auto expectedNames = QStringList();
-        expectedNames << "42Task" << "44Note";
+        expectedNames << QStringLiteral("42Task") << QStringLiteral("44Note");
         QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expectedNames;
 
         expectedNames.clear();
-        expectedNames << "42Task";
+        expectedNames << QStringLiteral("42Task");
         QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks) << expectedNames;
 
         expectedNames.clear();
-        expectedNames << "44Note";
+        expectedNames << QStringLiteral("44Note");
         QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes) << expectedNames;
     }
 
@@ -181,14 +181,14 @@ private slots:
         AkonadiFakeData data;
 
         // Two top level collections, one with tasks, one with notes
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(44).withName("44Note").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent());
 
         // One with a note child collection
-        data.createCollection(GenCollection().withId(43).withName("43TaskChild").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43TaskChild")).withParent(42).withTaskContent());
 
         // One with a task child collection
-        data.createCollection(GenCollection().withId(45).withName("45NoteChild").withParent(44).withNoteContent());
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45NoteChild")).withParent(44).withNoteContent());
 
         // WHEN
         QFETCH(int, contentTypes);
@@ -231,13 +231,13 @@ private slots:
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Note")).withRootAsParent().withNoteContent());
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42Task"));
-        QCOMPARE(result->data().at(1)->name(), QString("43Note"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42Task"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43Note"));
     }
 
     void shouldReactToCollectionRemovesForTopLevelSources()
@@ -246,10 +246,10 @@ private slots:
         AkonadiFakeData data;
 
         // Two top level collections and two child collections
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
-        data.createCollection(GenCollection().withId(44).withName("43TaskChild").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(45).withName("43NoteChild").withParent(43).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Note")).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("43TaskChild")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("43NoteChild")).withParent(43).withNoteContent());
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -274,9 +274,9 @@ private slots:
         AkonadiFakeData data;
 
         // Two top level collections and one child collection
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
-        data.createCollection(GenCollection().withId(44).withName("44NoteChild").withParent(43).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Note")).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44NoteChild")).withParent(43).withNoteContent());
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -293,14 +293,14 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(42)).withName("42TaskBis"));
-        data.modifyCollection(GenCollection(data.collection(43)).withName("43NoteBis"));
+        data.modifyCollection(GenCollection(data.collection(42)).withName(QStringLiteral("42TaskBis")));
+        data.modifyCollection(GenCollection(data.collection(43)).withName(QStringLiteral("43NoteBis")));
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42TaskBis"));
-        QCOMPARE(result->data().at(1)->name(), QString("43NoteBis"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42TaskBis"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43NoteBis"));
         QVERIFY(replaceHandlerCalled);
     }
 
@@ -310,9 +310,9 @@ private slots:
         AkonadiFakeData data;
 
         // Two top level collections and one child collection
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43Note").withRootAsParent().withNoteContent());
-        data.createCollection(GenCollection().withId(44).withName("44NoteChild").withParent(43).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Note")).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44NoteChild")).withParent(43).withNoteContent());
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -328,7 +328,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("42Task"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("42Task"));
     }
 
     void shouldNotCrashDuringFindTopLevelWhenFetchJobFailedOrEmpty_data()
@@ -395,15 +395,15 @@ private slots:
         QTest::addColumn<QStringList>("expectedNames");
 
         auto expectedNames = QStringList();
-        expectedNames << "43TaskFirstChild" << "45NoteSecondChild";
+        expectedNames << QStringLiteral("43TaskFirstChild") << QStringLiteral("45NoteSecondChild");
         QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expectedNames;
 
         expectedNames.clear();
-        expectedNames << "43TaskFirstChild";
+        expectedNames << QStringLiteral("43TaskFirstChild");
         QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks) << expectedNames;
 
         expectedNames.clear();
-        expectedNames << "45NoteSecondChild";
+        expectedNames << QStringLiteral("45NoteSecondChild");
         QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes) << expectedNames;
     }
 
@@ -413,10 +413,10 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection with two children (one of them also having a child)
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43TaskFirstChild").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(44).withName("44TaskFirstChildChild").withParent(43).withTaskContent());
-        data.createCollection(GenCollection().withId(45).withName("45NoteSecondChild").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43TaskFirstChild")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44TaskFirstChildChild")).withParent(43).withTaskContent());
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45NoteSecondChild")).withParent(42).withNoteContent());
 
         // Serializer
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -454,7 +454,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection with no child yet
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
 
         // Serializer
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -472,11 +472,11 @@ private slots:
         QCOMPARE(result->data().size(), 0);
 
         // WHEN
-        data.createCollection(GenCollection().withId(43).withName("43TaskChild").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43TaskChild")).withParent(42).withTaskContent());
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("43TaskChild"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("43TaskChild"));
     }
 
     void shouldReactToCollectionRemovesForChildSources()
@@ -485,9 +485,9 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection with two children
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43TaskFirstChild").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(44).withName("45NoteSecondChild").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43TaskFirstChild")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("45NoteSecondChild")).withParent(42).withNoteContent());
 
         // Serializer
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -507,7 +507,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("43TaskFirstChild"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("43TaskFirstChild"));
     }
 
     void shouldReactToCollectionChangesForChildSources()
@@ -516,9 +516,9 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection with two children
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43TaskFirstChild").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(44).withName("44NoteSecondChild").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43TaskFirstChild")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44NoteSecondChild")).withParent(42).withNoteContent());
 
         // Serializer
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -538,13 +538,13 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(43)).withName("43TaskFirstChildBis"));
+        data.modifyCollection(GenCollection(data.collection(43)).withName(QStringLiteral("43TaskFirstChildBis")));
 
         // THEN
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().first()->name(), QString("43TaskFirstChildBis"));
-        QCOMPARE(result->data().at(1)->name(), QString("44NoteSecondChild"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("43TaskFirstChildBis"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44NoteSecondChild"));
         QVERIFY(replaceHandlerCalled);
     }
 
@@ -554,9 +554,9 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection with two children
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43TaskFirstChild").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(44).withName("44NoteSecondChild").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43TaskFirstChild")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44NoteSecondChild")).withParent(42).withNoteContent());
 
         // Serializer
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -576,7 +576,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("44NoteSecondChild"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("44NoteSecondChild"));
     }
 
     void shouldNotCrashDuringFindChildrenWhenFetchJobFailedOrEmpty_data()
@@ -610,9 +610,9 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection with two children
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("43TaskFirstChild").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(44).withName("44NoteSecondChild").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43TaskFirstChild")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44NoteSecondChild")).withParent(42).withNoteContent());
 
         // Serializer
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -650,22 +650,22 @@ private slots:
 
         auto expectedColNames = QStringList();
         auto expectedTitiNames = QStringList();
-        expectedColNames << "TaskToto" << "NoteCol";
-        expectedTitiNames << "NoteTiti" << "TaskTiti";
+        expectedColNames << QStringLiteral("TaskToto") << QStringLiteral("NoteCol");
+        expectedTitiNames << QStringLiteral("NoteTiti") << QStringLiteral("TaskTiti");
         QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                          << expectedColNames << expectedTitiNames;
 
         expectedColNames.clear();
         expectedTitiNames.clear();
-        expectedColNames << "TaskToto";
-        expectedTitiNames << "TaskTiti";
+        expectedColNames << QStringLiteral("TaskToto");
+        expectedTitiNames << QStringLiteral("TaskTiti");
         QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks)
                                << expectedColNames << expectedTitiNames;
 
         expectedColNames.clear();
         expectedTitiNames.clear();
-        expectedColNames << "NoteCol";
-        expectedTitiNames << "NoteTiti";
+        expectedColNames << QStringLiteral("NoteCol");
+        expectedTitiNames << QStringLiteral("NoteTiti");
         QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes)
                                << expectedColNames << expectedTitiNames;
     }
@@ -676,16 +676,16 @@ private slots:
         AkonadiFakeData data;
 
         // Four top level collections, two with tasks, two with notes
-        data.createCollection(GenCollection().withId(42).withName("TaskToto").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("NoteTiti").withRootAsParent().withNoteContent());
-        data.createCollection(GenCollection().withId(44).withName("TaskTiti").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(46).withName("NoteCol").withRootAsParent().withNoteContent());
-        data.createCollection(GenCollection().withId(47).withName("NoCol").withRootAsParent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("TaskToto")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("NoteTiti")).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("TaskTiti")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(46).withName(QStringLiteral("NoteCol")).withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(47).withName(QStringLiteral("NoCol")).withRootAsParent());
 
         // One child collection with tasks
-        data.createCollection(GenCollection().withId(45).withName("TaskTotoCol").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("TaskTotoCol")).withParent(42).withTaskContent());
 
-        QString searchTerm("Col");
+        QString searchTerm(QStringLiteral("Col"));
 
         // WHEN
         QFETCH(int, contentTypes);
@@ -714,7 +714,7 @@ private slots:
         QCOMPARE(actualNames, expectedColNames);
 
         // WHEN
-        QString searchTerm2("Titi");
+        QString searchTerm2(QStringLiteral("Titi"));
         queries->setSearchTerm(searchTerm2);
 
         // THEN
@@ -736,7 +736,7 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
-        QString searchTerm("col");
+        QString searchTerm(QStringLiteral("col"));
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -748,11 +748,11 @@ private slots:
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.createCollection(GenCollection().withId(42).withName("42Task").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent());
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("42Task"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("42Task"));
     }
 
     void shouldReactToCollectionRemovesForSearchTopLevelSources()
@@ -761,10 +761,10 @@ private slots:
         AkonadiFakeData data;
 
         // Two top level collections
-        data.createCollection(GenCollection().withId(42).withName("TaskToto").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("NoteToto").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("TaskToto")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("NoteToto")).withRootAsParent().withNoteContent());
 
-        QString searchTerm("Toto");
+        QString searchTerm(QStringLiteral("Toto"));
 
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -780,7 +780,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("NoteToto"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("NoteToto"));
     }
 
     void shouldReactToItemChangesForSearchTopLevelTasks()
@@ -789,13 +789,13 @@ private slots:
         AkonadiFakeData data;
 
         // Two top level collections
-        data.createCollection(GenCollection().withId(42).withName("TaskCol1").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("NoteCol2").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("TaskCol1")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("NoteCol2")).withRootAsParent().withNoteContent());
 
         // One child collection
-        data.createCollection(GenCollection().withId(44).withName("NoteCol2Child").withParent(43).withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("NoteCol2Child")).withParent(43).withNoteContent());
 
-        QString searchTerm("Col");
+        QString searchTerm(QStringLiteral("Col"));
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
@@ -812,13 +812,13 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(43)).withName("NoteCol2Bis"));
-        data.modifyCollection(GenCollection(data.collection(44)).withName("NoteCol2ChildBis"));
+        data.modifyCollection(GenCollection(data.collection(43)).withName(QStringLiteral("NoteCol2Bis")));
+        data.modifyCollection(GenCollection(data.collection(44)).withName(QStringLiteral("NoteCol2ChildBis")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("TaskCol1"));
-        QCOMPARE(result->data().at(1)->name(), QString("NoteCol2Bis"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("TaskCol1"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("NoteCol2Bis"));
         QVERIFY(replaceHandlerCalled);
     }
 
@@ -891,7 +891,7 @@ private slots:
         AkonadiFakeData data;
 
         // one top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("parent"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("parent")));
 
         // WHEN
         QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
@@ -916,21 +916,21 @@ private slots:
 
         auto expectedColNames = QStringList();
         auto expectedTotoNames = QStringList();
-        expectedColNames << "NoteCol1";
-        expectedTotoNames << "TaskToto";
+        expectedColNames << QStringLiteral("NoteCol1");
+        expectedTotoNames << QStringLiteral("TaskToto");
         QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes)
                                          << expectedColNames << expectedTotoNames;
 
         expectedColNames.clear();
         expectedTotoNames.clear();
-        expectedColNames << "NoteCol1";
-        expectedTotoNames << "TaskToto";
+        expectedColNames << QStringLiteral("NoteCol1");
+        expectedTotoNames << QStringLiteral("TaskToto");
         QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks)
                                << expectedColNames << expectedTotoNames;
 
         expectedColNames.clear();
         expectedTotoNames.clear();
-        expectedColNames << "NoteCol1";
+        expectedColNames << QStringLiteral("NoteCol1");
         QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes)
                                << expectedColNames << expectedTotoNames;
     }
@@ -941,18 +941,18 @@ private slots:
         AkonadiFakeData data;
 
         // Two top level collections
-        data.createCollection(GenCollection().withId(42).withName("parent").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(46).withName("Col46").withRootAsParent().withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("parent")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(46).withName(QStringLiteral("Col46")).withRootAsParent().withNoteContent());
 
         // two child of parent
-        data.createCollection(GenCollection().withId(43).withName("NoteCol1").withParent(42).withNoteContent());
-        data.createCollection(GenCollection().withId(44).withName("TaskToto").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(47).withName("NoCol").withParent(42));
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("NoteCol1")).withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("TaskToto")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(47).withName(QStringLiteral("NoCol")).withParent(42));
 
         // One child of the first child
-        data.createCollection(GenCollection().withId(45).withName("TaskCol43Child").withParent(43).withTaskContent());
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("TaskCol43Child")).withParent(43).withTaskContent());
 
-        QString searchTerm("Col");
+        QString searchTerm(QStringLiteral("Col"));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
@@ -984,7 +984,7 @@ private slots:
         QCOMPARE(actualNames, expectedColNames);
 
         // WHEN
-        QString searchTerm2("toto");
+        QString searchTerm2(QStringLiteral("toto"));
         queries->setSearchTerm(searchTerm2);
 
         // THEN
@@ -1007,9 +1007,9 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collections
-        data.createCollection(GenCollection().withId(42).withName("Col1").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("Col1")).withRootAsParent().withTaskContent());
 
-        QString searchTerm("Col");
+        QString searchTerm(QStringLiteral("Col"));
 
         // Serializer
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -1026,11 +1026,11 @@ private slots:
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.createCollection(GenCollection().withId(43).withName("Col2").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("Col2")).withParent(42).withNoteContent());
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("Col2"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("Col2"));
     }
 
     void shouldReactToCollectionRemovesForSearchChildSources()
@@ -1039,13 +1039,13 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withName("parent").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("parent")).withRootAsParent().withTaskContent());
 
         // two children of parent
-        data.createCollection(GenCollection().withId(43).withName("NoteCol1").withParent(42).withNoteContent());
-        data.createCollection(GenCollection().withId(44).withName("TaskCol2").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("NoteCol1")).withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("TaskCol2")).withParent(42).withTaskContent());
 
-        QString searchTerm("Col");
+        QString searchTerm(QStringLiteral("Col"));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
@@ -1065,7 +1065,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->name(), QString("TaskCol2"));
+        QCOMPARE(result->data().first()->name(), QStringLiteral("TaskCol2"));
     }
 
     void shouldReactToCollectionChangesForSearchChildSources()
@@ -1074,13 +1074,13 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withName("parent").withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("parent")).withRootAsParent().withTaskContent());
 
         // two children
-        data.createCollection(GenCollection().withId(43).withName("NoteCol1").withParent(42).withNoteContent());
-        data.createCollection(GenCollection().withId(44).withName("TaskCol2").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("NoteCol1")).withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("TaskCol2")).withParent(42).withTaskContent());
 
-        QString searchTerm("Col");
+        QString searchTerm(QStringLiteral("Col"));
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
@@ -1101,12 +1101,12 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(43)).withName("NoteCol1Bis"));
+        data.modifyCollection(GenCollection(data.collection(43)).withName(QStringLiteral("NoteCol1Bis")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("NoteCol1Bis"));
-        QCOMPARE(result->data().at(1)->name(), QString("TaskCol2"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("NoteCol1Bis"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("TaskCol2"));
         QVERIFY(replaceHandlerCalled);
     }
 
@@ -1141,9 +1141,9 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection with two children
-        data.createCollection(GenCollection().withId(42).withName("parent").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("TaskChild").withParent(42).withTaskContent());
-        data.createCollection(GenCollection().withId(44).withName("TaskChild").withParent(42).withNoteContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("parent")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("TaskChild")).withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("TaskChild")).withParent(42).withNoteContent());
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
@@ -1177,8 +1177,8 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection and its child
-        data.createCollection(GenCollection().withId(42).withName("parent").withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName("child").withParent(42).withTaskContent());
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("parent")).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("child")).withParent(42).withTaskContent());
 
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         Domain::DataSource::Ptr parentSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);

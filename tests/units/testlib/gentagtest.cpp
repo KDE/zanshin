@@ -58,10 +58,10 @@ private slots:
     void shouldAllowToSetName()
     {
         // GIVEN
-        Akonadi::Tag tag = GenTag().withName("42");
+        Akonadi::Tag tag = GenTag().withName(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(tag.name(), QString("42"));
+        QCOMPARE(tag.name(), QStringLiteral("42"));
         QCOMPARE(tag.gid(), tag.name().toLatin1());
     }
 

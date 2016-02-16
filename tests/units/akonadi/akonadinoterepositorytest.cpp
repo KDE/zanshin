@@ -174,7 +174,7 @@ private slots:
         // GIVEN
         // a tag
         Akonadi::Tag akonadiTag;
-        akonadiTag.setName("akonadiTag42");
+        akonadiTag.setName(QStringLiteral("akonadiTag42"));
         akonadiTag.setId(42);
 
         // the domain Tag related to the Akonadi Tag

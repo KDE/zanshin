@@ -104,7 +104,7 @@ private slots:
     {
         Widgets::PageView page;
 
-        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         QVERIFY(centralView);
         QVERIFY(centralView->isVisibleTo(&page));
         QVERIFY(!centralView->header()->isVisibleTo(&page));
@@ -112,33 +112,33 @@ private slots:
         QVERIFY(centralView->alternatingRowColors());
         QCOMPARE(centralView->dragDropMode(), QTreeView::DragDrop);
 
-        auto filter = page.findChild<Widgets::FilterWidget*>("filterWidget");
+        auto filter = page.findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
         QVERIFY(filter);
         QVERIFY(filter->proxyModel());
         QCOMPARE(filter->proxyModel(), centralView->model());
 
-        QLineEdit *quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+        QLineEdit *quickAddEdit = page.findChild<QLineEdit*>(QStringLiteral("quickAddEdit"));
         QVERIFY(quickAddEdit);
         QVERIFY(quickAddEdit->isVisibleTo(&page));
         QVERIFY(quickAddEdit->text().isEmpty());
         QCOMPARE(quickAddEdit->placeholderText(), tr("Type and press enter to add an item"));
 
-        auto addAction = page.findChild<QAction*>("addItemAction");
+        auto addAction = page.findChild<QAction*>(QStringLiteral("addItemAction"));
         QVERIFY(addAction);
-        auto cancelAddAction = page.findChild<QAction*>("cancelAddItemAction");
+        auto cancelAddAction = page.findChild<QAction*>(QStringLiteral("cancelAddItemAction"));
         QVERIFY(cancelAddAction);
-        auto removeAction = page.findChild<QAction*>("removeItemAction");
+        auto removeAction = page.findChild<QAction*>(QStringLiteral("removeItemAction"));
         QVERIFY(removeAction);
-        auto promoteAction = page.findChild<QAction*>("promoteItemAction");
+        auto promoteAction = page.findChild<QAction*>(QStringLiteral("promoteItemAction"));
         QVERIFY(promoteAction);
-        auto filterAction = page.findChild<QAction*>("filterViewAction");
+        auto filterAction = page.findChild<QAction*>(QStringLiteral("filterViewAction"));
         QVERIFY(filterAction);
 
         auto actions = page.globalActions();
-        QCOMPARE(actions.value("page_view_add"), addAction);
-        QCOMPARE(actions.value("page_view_remove"), removeAction);
-        QCOMPARE(actions.value("page_view_promote"), promoteAction);
-        QCOMPARE(actions.value("page_view_filter"), filterAction);
+        QCOMPARE(actions.value(QStringLiteral("page_view_add")), addAction);
+        QCOMPARE(actions.value(QStringLiteral("page_view_remove")), removeAction);
+        QCOMPARE(actions.value(QStringLiteral("page_view_promote")), promoteAction);
+        QCOMPARE(actions.value(QStringLiteral("page_view_filter")), filterAction);
     }
 
     void shouldDisplayListFromPageModel()
@@ -150,7 +150,7 @@ private slots:
         stubPageModel.setProperty("centralListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::PageView page;
-        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         QVERIFY(centralView);
         auto proxyModel = qobject_cast<Presentation::ArtifactFilterProxyModel*>(centralView->model());
         QVERIFY(proxyModel);
@@ -175,7 +175,7 @@ private slots:
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         QVERIFY(centralView);
         auto proxyModel = qobject_cast<Presentation::ArtifactFilterProxyModel*>(centralView->model());
         QVERIFY(proxyModel);
@@ -194,9 +194,9 @@ private slots:
     {
         // GIVEN
         Widgets::PageView page;
-        auto centralView = page.findChild<QTreeView*>("centralView");
-        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
-        auto filter = page.findChild<Widgets::FilterWidget*>("filterWidget");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
+        auto quickAddEdit = page.findChild<QLineEdit*>(QStringLiteral("quickAddEdit"));
+        auto filter = page.findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
         auto filterEdit = filter->findChild<QLineEdit*>();
         QVERIFY(filterEdit);
         page.show();
@@ -207,9 +207,9 @@ private slots:
         QVERIFY(!quickAddEdit->hasFocus());
         QVERIFY(!filterEdit->hasFocus());
 
-        auto addAction = page.findChild<QAction*>("addItemAction");
-        auto cancelAddAction = page.findChild<QAction*>("cancelAddItemAction");
-        auto filterAction = page.findChild<QAction*>("filterViewAction");
+        auto addAction = page.findChild<QAction*>(QStringLiteral("addItemAction"));
+        auto cancelAddAction = page.findChild<QAction*>(QStringLiteral("cancelAddItemAction"));
+        auto filterAction = page.findChild<QAction*>(QStringLiteral("filterViewAction"));
 
         // WHEN
         addAction->trigger();
@@ -250,19 +250,19 @@ private slots:
         PageModelStub stubPageModel;
         Widgets::PageView page;
         page.setModel(&stubPageModel);
-        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+        auto quickAddEdit = page.findChild<QLineEdit*>(QStringLiteral("quickAddEdit"));
 
         // WHEN
         QTest::keyClick(quickAddEdit, Qt::Key_Return); // Does nothing (edit empty)
-        QTest::keyClicks(quickAddEdit, "Foo");
+        QTest::keyClicks(quickAddEdit, QStringLiteral("Foo"));
         QTest::keyClick(quickAddEdit, Qt::Key_Return);
         QTest::keyClick(quickAddEdit, Qt::Key_Return); // Does nothing (edit empty)
-        QTest::keyClicks(quickAddEdit, "Bar");
+        QTest::keyClicks(quickAddEdit, QStringLiteral("Bar"));
         QTest::keyClick(quickAddEdit, Qt::Key_Return);
         QTest::keyClick(quickAddEdit, Qt::Key_Return); // Does nothing (edit empty)
 
         // THEN
-        QCOMPARE(stubPageModel.taskNames, QStringList() << "Foo" << "Bar");
+        QCOMPARE(stubPageModel.taskNames, QStringList() << QStringLiteral("Foo") << QStringLiteral("Bar"));
         QCOMPARE(stubPageModel.parentIndices.size(), 2);
         QCOMPARE(stubPageModel.parentIndices.first(), QPersistentModelIndex());
         QCOMPARE(stubPageModel.parentIndices.last(), QPersistentModelIndex());
@@ -273,25 +273,28 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
         QPersistentModelIndex index0 = stubPageModel.itemModel.index(0, 0);
         QPersistentModelIndex index1 = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->select(index0, QItemSelectionModel::ClearAndSelect);
         centralView->selectionModel()->select(index1, QItemSelectionModel::Select);
 
-        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+        auto quickAddEdit = page.findChild<QLineEdit*>(QStringLiteral("quickAddEdit"));
 
         // WHEN
-        QTest::keyClicks(quickAddEdit, "Foo");
+        QTest::keyClicks(quickAddEdit, QStringLiteral("Foo"));
         QTest::keyClick(quickAddEdit, Qt::Key_Return);
 
         // THEN
-        QCOMPARE(stubPageModel.taskNames, QStringList() << "A" << "B" << "C" << "Foo");
+        QCOMPARE(stubPageModel.taskNames, QStringList() << QStringLiteral("A")
+                                                        << QStringLiteral("B")
+                                                        << QStringLiteral("C")
+                                                        << QStringLiteral("Foo"));
         QCOMPARE(stubPageModel.parentIndices.size(), 1);
         QCOMPARE(stubPageModel.parentIndices.first(), QPersistentModelIndex());
     }
@@ -301,23 +304,26 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
 
-        auto quickAddEdit = page.findChild<QLineEdit*>("quickAddEdit");
+        auto quickAddEdit = page.findChild<QLineEdit*>(QStringLiteral("quickAddEdit"));
 
         // WHEN
-        QTest::keyClicks(quickAddEdit, "Foo");
+        QTest::keyClicks(quickAddEdit, QStringLiteral("Foo"));
         QTest::keyClick(quickAddEdit, Qt::Key_Return);
 
         // THEN
-        QCOMPARE(stubPageModel.taskNames, QStringList() << "A" << "B" << "C" << "Foo");
+        QCOMPARE(stubPageModel.taskNames, QStringList() << QStringLiteral("A")
+                                                        << QStringLiteral("B")
+                                                        << QStringLiteral("C")
+                                                        << QStringLiteral("Foo"));
         QCOMPARE(stubPageModel.parentIndices.size(), 1);
         QCOMPARE(stubPageModel.parentIndices.first(), index);
     }
@@ -327,13 +333,13 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
         centralView->setFocus();
 
@@ -355,14 +361,14 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->clearSelection();
-        page.findChild<QLineEdit*>("quickAddEdit")->setFocus();
+        page.findChild<QLineEdit*>(QStringLiteral("quickAddEdit"))->setFocus();
 
         // Needed for shortcuts to work
         page.show();
@@ -381,9 +387,9 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B"));
         QStandardItem *parentIndex = stubPageModel.itemModel.item(1, 0);
-        stubPageModel.addStubItem("C", parentIndex);
+        stubPageModel.addStubItem(QStringLiteral("C"), parentIndex);
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
@@ -391,7 +397,7 @@ private slots:
         auto msgbox = MessageBoxStub::Ptr::create();
         page.setMessageBoxInterface(msgbox);
 
-        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
         centralView->setFocus();
 
@@ -414,7 +420,7 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
         QPersistentModelIndex index2 = stubPageModel.itemModel.index(2, 0);
 
@@ -423,7 +429,7 @@ private slots:
         auto msgbox = MessageBoxStub::Ptr::create();
         page.setMessageBoxInterface(msgbox);
 
-        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
         centralView->selectionModel()->setCurrentIndex(index2, QItemSelectionModel::Select);
         centralView->setFocus();
@@ -448,16 +454,16 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        auto promoteAction = page.findChild<QAction*>("promoteItemAction");
+        auto promoteAction = page.findChild<QAction*>(QStringLiteral("promoteItemAction"));
         QVERIFY(promoteAction);
 
-        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
         centralView->setFocus();
 
@@ -474,15 +480,15 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        auto promoteAction = page.findChild<QAction*>("promoteItemAction");
+        auto promoteAction = page.findChild<QAction*>(QStringLiteral("promoteItemAction"));
         QVERIFY(promoteAction);
 
-        QTreeView *centralView = page.findChild<QTreeView*>("centralView");
+        QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->clear();
         centralView->setFocus();
 
@@ -498,13 +504,13 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        auto centralView = page.findChild<QTreeView*>("centralView");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
         QVERIFY(!centralView->selectionModel()->selectedIndexes().isEmpty());
 
@@ -520,15 +526,15 @@ private slots:
         // GIVEN
         PageModelStub stubPageModel;
         Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
-        stubPageModel.addStubItems(QStringList() << "A" << "B" << "C");
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C"));
         auto index = stubPageModel.itemModel.index(1, 0);
         auto index2 = stubPageModel.itemModel.index(2, 0);
 
         Widgets::PageView page;
         page.setModel(&stubPageModel);
 
-        auto centralView = page.findChild<QTreeView*>("centralView");
-        auto filterWidget = page.findChild<Widgets::FilterWidget*>("filterWidget");
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
+        auto filterWidget = page.findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
 
         auto displayedModel = filterWidget->proxyModel();
         auto displayedIndex = displayedModel->index(1, 0);

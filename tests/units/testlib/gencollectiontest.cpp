@@ -77,19 +77,19 @@ private slots:
     void shouldAllowToSetName()
     {
         // GIVEN
-        Akonadi::Collection col = GenCollection().withName("42");
+        Akonadi::Collection col = GenCollection().withName(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(col.name(), QString("42"));
+        QCOMPARE(col.name(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetIcon()
     {
         // GIVEN
-        Akonadi::Collection col = GenCollection().withIcon("42");
+        Akonadi::Collection col = GenCollection().withIcon(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(col.attribute<Akonadi::EntityDisplayAttribute>()->iconName(), QString("42"));
+        QCOMPARE(col.attribute<Akonadi::EntityDisplayAttribute>()->iconName(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetReferenced()
@@ -143,13 +143,13 @@ private slots:
         Akonadi::Collection col = GenCollection().withTaskContent();
 
         // THEN
-        QVERIFY(col.contentMimeTypes().contains("application/x-vnd.akonadi.calendar.todo"));
+        QVERIFY(col.contentMimeTypes().contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo")));
 
         // WHEN
         col = GenCollection(col).withTaskContent(false);
 
         // THEN
-        QVERIFY(!col.contentMimeTypes().contains("application/x-vnd.akonadi.calendar.todo"));
+        QVERIFY(!col.contentMimeTypes().contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo")));
     }
 
     void shouldAllowToSetNoteContent()
@@ -158,13 +158,13 @@ private slots:
         Akonadi::Collection col = GenCollection().withNoteContent();
 
         // THEN
-        QVERIFY(col.contentMimeTypes().contains("text/x-vnd.akonadi.note"));
+        QVERIFY(col.contentMimeTypes().contains(QStringLiteral("text/x-vnd.akonadi.note")));
 
         // WHEN
         col = GenCollection(col).withNoteContent(false);
 
         // THEN
-        QVERIFY(!col.contentMimeTypes().contains("text/x-vnd.akonadi.note"));
+        QVERIFY(!col.contentMimeTypes().contains(QStringLiteral("text/x-vnd.akonadi.note")));
     }
 
     void shouldAllowToSetNoteAndTaskContent()
@@ -173,15 +173,15 @@ private slots:
         Akonadi::Collection col = GenCollection().withTaskContent().withNoteContent();
 
         // THEN
-        QVERIFY(col.contentMimeTypes().contains("application/x-vnd.akonadi.calendar.todo"));
-        QVERIFY(col.contentMimeTypes().contains("text/x-vnd.akonadi.note"));
+        QVERIFY(col.contentMimeTypes().contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo")));
+        QVERIFY(col.contentMimeTypes().contains(QStringLiteral("text/x-vnd.akonadi.note")));
 
         // WHEN
         col = GenCollection(col).withTaskContent(false).withNoteContent(false);
 
         // THEN
-        QVERIFY(!col.contentMimeTypes().contains("application/x-vnd.akonadi.calendar.todo"));
-        QVERIFY(!col.contentMimeTypes().contains("text/x-vnd.akonadi.note"));
+        QVERIFY(!col.contentMimeTypes().contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo")));
+        QVERIFY(!col.contentMimeTypes().contains(QStringLiteral("text/x-vnd.akonadi.note")));
     }
 };
 

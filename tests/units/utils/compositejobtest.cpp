@@ -135,7 +135,7 @@ private slots:
         compositeJob->setAutoDelete(false);
 
         auto handler = [&]() {
-            compositeJob->emitError("Error reached");
+            compositeJob->emitError(QStringLiteral("Error reached"));
         };
 
         FakeJob *job = new FakeJob(this);
@@ -146,7 +146,7 @@ private slots:
         QTest::qWait(FakeJob::DURATION*2 + 10);
 
         QCOMPARE(compositeJob->error(), static_cast<int>(KJob::UserDefinedError));
-        QCOMPARE(compositeJob->errorText(), QString("Error reached"));
+        QCOMPARE(compositeJob->errorText(), QStringLiteral("Error reached"));
         delete compositeJob;
     }
 };

@@ -71,7 +71,7 @@ public:
 
     QString name() const Q_DECL_OVERRIDE
     {
-        return "name";
+        return QStringLiteral("name");
     }
 
     Domain::DataSource::Ptr dataSource() const Q_DECL_OVERRIDE
@@ -172,29 +172,29 @@ private slots:
         QVERIFY(!available.projectSourcesModel());
         QVERIFY(available.defaultProjectSource().isNull());
 
-        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        auto pagesView = available.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QVERIFY(pagesView->isVisibleTo(&available));
         QVERIFY(!pagesView->header()->isVisibleTo(&available));
         QCOMPARE(pagesView->dragDropMode(), QTreeView::DropOnly);
 
-        auto actionBar = available.findChild<QToolBar*>("actionBar");
+        auto actionBar = available.findChild<QToolBar*>(QStringLiteral("actionBar"));
         QVERIFY(actionBar);
         QVERIFY(actionBar->isVisibleTo(&available));
 
-        auto addProjectAction = available.findChild<QAction*>("addProjectAction");
+        auto addProjectAction = available.findChild<QAction*>(QStringLiteral("addProjectAction"));
         QVERIFY(addProjectAction);
-        auto addContextAction = available.findChild<QAction*>("addContextAction");
+        auto addContextAction = available.findChild<QAction*>(QStringLiteral("addContextAction"));
         QVERIFY(addContextAction);
-        auto addTagAction = available.findChild<QAction*>("addTagAction");
+        auto addTagAction = available.findChild<QAction*>(QStringLiteral("addTagAction"));
         QVERIFY(addTagAction);
-        auto removeAction = available.findChild<QAction*>("removeAction");
+        auto removeAction = available.findChild<QAction*>(QStringLiteral("removeAction"));
         QVERIFY(removeAction);
-        auto goPreviousAction = available.findChild<QAction*>("goPreviousAction");
+        auto goPreviousAction = available.findChild<QAction*>(QStringLiteral("goPreviousAction"));
         QVERIFY(goPreviousAction);
-        auto goNextAction = available.findChild<QAction*>("goNextAction");
+        auto goNextAction = available.findChild<QAction*>(QStringLiteral("goNextAction"));
         QVERIFY(goNextAction);
-        auto goToAction = available.findChild<QAction*>("goToAction");
+        auto goToAction = available.findChild<QAction*>(QStringLiteral("goToAction"));
         QVERIFY(goToAction);
 
         auto projectDialogFactory = available.projectDialogFactory();
@@ -204,13 +204,13 @@ private slots:
         QVERIFY(quickSelectDialogFactory(&available).dynamicCast<Widgets::QuickSelectDialog>());
 
         auto actions = available.globalActions();
-        QCOMPARE(actions.value("pages_project_add"), addProjectAction);
-        QCOMPARE(actions.value("pages_context_add"), addContextAction);
-        QCOMPARE(actions.value("pages_tag_add"), addTagAction);
-        QCOMPARE(actions.value("pages_remove"), removeAction);
-        QCOMPARE(actions.value("pages_go_previous"), goPreviousAction);
-        QCOMPARE(actions.value("pages_go_next"), goNextAction);
-        QCOMPARE(actions.value("pages_go_to"), goToAction);
+        QCOMPARE(actions.value(QStringLiteral("pages_project_add")), addProjectAction);
+        QCOMPARE(actions.value(QStringLiteral("pages_context_add")), addContextAction);
+        QCOMPARE(actions.value(QStringLiteral("pages_tag_add")), addTagAction);
+        QCOMPARE(actions.value(QStringLiteral("pages_remove")), removeAction);
+        QCOMPARE(actions.value(QStringLiteral("pages_go_previous")), goPreviousAction);
+        QCOMPARE(actions.value(QStringLiteral("pages_go_next")), goNextAction);
+        QCOMPARE(actions.value(QStringLiteral("pages_go_to")), goToAction);
     }
 
     void shouldShowOnlyAddActionsNeededByTheModel_data()
@@ -242,11 +242,11 @@ private slots:
         stubPagesModel.setProperty("hasTagPages", hasTags);
 
         Widgets::AvailablePagesView available;
-        auto addProjectAction = available.findChild<QAction*>("addProjectAction");
+        auto addProjectAction = available.findChild<QAction*>(QStringLiteral("addProjectAction"));
         QVERIFY(addProjectAction);
-        auto addContextAction = available.findChild<QAction*>("addContextAction");
+        auto addContextAction = available.findChild<QAction*>(QStringLiteral("addContextAction"));
         QVERIFY(addContextAction);
-        auto addTagAction = available.findChild<QAction*>("addTagAction");
+        auto addTagAction = available.findChild<QAction*>(QStringLiteral("addTagAction"));
         QVERIFY(addTagAction);
 
         // WHEN
@@ -261,13 +261,13 @@ private slots:
     void shouldDisplayListFromPageModel()
     {
         // GIVEN
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
 
         AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::AvailablePagesView available;
-        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        auto pagesView = available.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QVERIFY(!pagesView->model());
 
@@ -283,7 +283,7 @@ private slots:
     void shouldNotCrashWithNullModel()
     {
         // GIVEN
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
 
         AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
@@ -292,7 +292,7 @@ private slots:
         available.setModel(&stubPagesModel);
         QTest::qWait(10);
 
-        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        auto pagesView = available.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QCOMPARE(pagesView->model(), &model);
 
@@ -323,7 +323,7 @@ private slots:
             return dialogStub;
         });
 
-        auto addProjectAction = available.findChild<QAction*>("addProjectAction");
+        auto addProjectAction = available.findChild<QAction*>(QStringLiteral("addProjectAction"));
 
         // WHEN
         addProjectAction->trigger();
@@ -349,7 +349,7 @@ private slots:
         auto source = Domain::DataSource::Ptr::create();
 
         auto msgBoxStub = MessageBoxStub::Ptr::create();
-        msgBoxStub->setTextInput("Foo");
+        msgBoxStub->setTextInput(QStringLiteral("Foo"));
 
         Widgets::AvailablePagesView available;
         available.setModel(&model);
@@ -357,7 +357,7 @@ private slots:
         available.setDefaultProjectSource(source);
         available.setMessageBoxInterface(msgBoxStub);
 
-        auto addContextAction = available.findChild<QAction*>("addContextAction");
+        auto addContextAction = available.findChild<QAction*>(QStringLiteral("addContextAction"));
 
         // WHEN
         addContextAction->trigger();
@@ -365,7 +365,7 @@ private slots:
         // THEN
         QVERIFY(msgBoxStub->called());
         QCOMPARE(model.contextNames.size(), 1);
-        QCOMPARE(model.contextNames.first(), QString("Foo"));
+        QCOMPARE(model.contextNames.first(), QStringLiteral("Foo"));
     }
 
     void shouldAddNewTags()
@@ -378,7 +378,7 @@ private slots:
         auto source = Domain::DataSource::Ptr::create();
 
         auto msgBoxStub = MessageBoxStub::Ptr::create();
-        msgBoxStub->setTextInput("Foo");
+        msgBoxStub->setTextInput(QStringLiteral("Foo"));
 
         Widgets::AvailablePagesView available;
         available.setModel(&model);
@@ -386,7 +386,7 @@ private slots:
         available.setDefaultProjectSource(source);
         available.setMessageBoxInterface(msgBoxStub);
 
-        auto addTagAction = available.findChild<QAction*>("addTagAction");
+        auto addTagAction = available.findChild<QAction*>(QStringLiteral("addTagAction"));
 
         // WHEN
         addTagAction->trigger();
@@ -394,7 +394,7 @@ private slots:
         // THEN
         QVERIFY(msgBoxStub->called());
         QCOMPARE(model.tagNames.size(), 1);
-        QCOMPARE(model.tagNames.first(), QString("Foo"));
+        QCOMPARE(model.tagNames.first(), QStringLiteral("Foo"));
     }
 
     void shouldRemoveAPage_data()
@@ -403,15 +403,15 @@ private slots:
         QTest::addColumn<bool>("actionEnabled");
 
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         QTest::newRow("project") << QObjectPtr(project1) << true;
 
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("Context 1");
+        context1->setName(QStringLiteral("Context 1"));
         QTest::newRow("context") << QObjectPtr(context1) << true;
 
         auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("Tag 1");
+        tag1->setName(QStringLiteral("Tag 1"));
         QTest::newRow("tag") << QObjectPtr(tag1) << true;
 
         QTest::newRow("non removable") << QObjectPtr::create() << false;
@@ -424,7 +424,7 @@ private slots:
 
         // GIVEN
         QStringList list;
-        list << "A" << "B" << "C";
+        list << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C");
         QStandardItemModel model;
         for (int row = 0; row < list.count(); ++row) {
             model.setItem(row, new QStandardItem(list.at(row)));
@@ -435,14 +435,14 @@ private slots:
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::AvailablePagesView available;
-        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        auto pagesView = available.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QVERIFY(!pagesView->model());
 
         available.setModel(&stubPagesModel);
         QTest::qWait(10);
 
-        auto removeAction = available.findChild<QAction*>("removeAction");
+        auto removeAction = available.findChild<QAction*>(QStringLiteral("removeAction"));
 
         auto msgbox = MessageBoxStub::Ptr::create();
         available.setMessageBoxInterface(msgbox);
@@ -462,25 +462,25 @@ private slots:
     {
         // GIVEN
         QStandardItemModel model;
-        model.appendRow(new QStandardItem("Inbox"));
-        auto projects = new QStandardItem("Projects");
+        model.appendRow(new QStandardItem(QStringLiteral("Inbox")));
+        auto projects = new QStandardItem(QStringLiteral("Projects"));
         projects->setFlags(Qt::NoItemFlags);
         model.appendRow(projects);
-        projects->appendRow(new QStandardItem("Project 1"));
-        projects->appendRow(new QStandardItem("Project 2"));
+        projects->appendRow(new QStandardItem(QStringLiteral("Project 1")));
+        projects->appendRow(new QStandardItem(QStringLiteral("Project 2")));
 
         AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::AvailablePagesView available;
-        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        auto pagesView = available.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QVERIFY(!pagesView->model());
 
         available.setModel(&stubPagesModel);
         QTest::qWait(10);
 
-        auto goPreviousAction = available.findChild<QAction*>("goPreviousAction");
+        auto goPreviousAction = available.findChild<QAction*>(QStringLiteral("goPreviousAction"));
         pagesView->setCurrentIndex(model.index(1, 0, model.indexFromItem(projects)));
 
         // WHEN
@@ -509,25 +509,25 @@ private slots:
     {
         // GIVEN
         QStandardItemModel model;
-        model.appendRow(new QStandardItem("Inbox"));
-        auto projects = new QStandardItem("Projects");
+        model.appendRow(new QStandardItem(QStringLiteral("Inbox")));
+        auto projects = new QStandardItem(QStringLiteral("Projects"));
         projects->setFlags(Qt::NoItemFlags);
         model.appendRow(projects);
-        projects->appendRow(new QStandardItem("Project 1"));
-        projects->appendRow(new QStandardItem("Project 2"));
+        projects->appendRow(new QStandardItem(QStringLiteral("Project 1")));
+        projects->appendRow(new QStandardItem(QStringLiteral("Project 2")));
 
         AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::AvailablePagesView available;
-        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        auto pagesView = available.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QVERIFY(!pagesView->model());
 
         available.setModel(&stubPagesModel);
         QTest::qWait(10);
 
-        auto goNextAction = available.findChild<QAction*>("goNextAction");
+        auto goNextAction = available.findChild<QAction*>(QStringLiteral("goNextAction"));
         pagesView->setCurrentIndex(model.index(0, 0));
 
         // WHEN
@@ -556,12 +556,12 @@ private slots:
     {
         // GIVEN
         QStandardItemModel model;
-        model.appendRow(new QStandardItem("Inbox"));
-        auto projects = new QStandardItem("Projects");
+        model.appendRow(new QStandardItem(QStringLiteral("Inbox")));
+        auto projects = new QStandardItem(QStringLiteral("Projects"));
         projects->setFlags(Qt::NoItemFlags);
         model.appendRow(projects);
-        projects->appendRow(new QStandardItem("Project 1"));
-        projects->appendRow(new QStandardItem("Project 2"));
+        projects->appendRow(new QStandardItem(QStringLiteral("Project 1")));
+        projects->appendRow(new QStandardItem(QStringLiteral("Project 2")));
 
         AvailablePagesModelStub stubPagesModel;
         stubPagesModel.setProperty("pageListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
@@ -576,11 +576,11 @@ private slots:
             return dialogStub;
         });
 
-        auto pagesView = available.findChild<QTreeView*>("pagesView");
+        auto pagesView = available.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QCOMPARE(pagesView->model(), &model);
 
-        auto goToAction = available.findChild<QAction*>("goToAction");
+        auto goToAction = available.findChild<QAction*>(QStringLiteral("goToAction"));
 
         // WHEN
         goToAction->trigger();

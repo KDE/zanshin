@@ -52,15 +52,15 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQueryInput<QObject*>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
-                add(createObject(3, "0B"));
-                add(createObject(4, "1B"));
-                add(createObject(5, "2B"));
-                add(createObject(6, "0C"));
-                add(createObject(7, "1C"));
-                add(createObject(8, "2C"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
+                add(createObject(3, QStringLiteral("0B")));
+                add(createObject(4, QStringLiteral("1B")));
+                add(createObject(5, QStringLiteral("2B")));
+                add(createObject(6, QStringLiteral("0C")));
+                add(createObject(7, QStringLiteral("1C")));
+                add(createObject(8, QStringLiteral("2C")));
             });
         });
         query.setConvertFunction([] (QObject *object) {
@@ -79,9 +79,9 @@ private slots:
 
         // THEN
         QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(0, "0A")
-                 << QPair<int, QString>(3, "0B")
-                 << QPair<int, QString>(6, "0C");
+        expected << QPair<int, QString>(0, QStringLiteral("0A"))
+                 << QPair<int, QString>(3, QStringLiteral("0B"))
+                 << QPair<int, QString>(6, QStringLiteral("0C"));
         QCOMPARE(result->data(), expected);
     }
 
@@ -91,11 +91,11 @@ private slots:
         auto query = Domain::LiveQuery<QString, QObject*>();
         query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add("0");
-                add("1");
+                add(QStringLiteral("0"));
+                add(QStringLiteral("1"));
                 add(QString());
-                add("a");
-                add("2");
+                add(QStringLiteral("a"));
+                add(QStringLiteral("2"));
             });
         });
         query.setConvertFunction([this] (const QString &s) -> QObject* {
@@ -133,11 +133,11 @@ private slots:
         auto query = Domain::LiveQuery<QString, QObjectPtr>();
         query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add("0");
-                add("1");
+                add(QStringLiteral("0"));
+                add(QStringLiteral("1"));
                 add(QString());
-                add("a");
-                add("2");
+                add(QStringLiteral("a"));
+                add(QStringLiteral("2"));
             });
         });
         query.setConvertFunction([this] (const QString &s) {
@@ -175,15 +175,15 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
-                add(createObject(3, "0B"));
-                add(createObject(4, "1B"));
-                add(createObject(5, "2B"));
-                add(createObject(6, "0C"));
-                add(createObject(7, "1C"));
-                add(createObject(8, "2C"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
+                add(createObject(3, QStringLiteral("0B")));
+                add(createObject(4, QStringLiteral("1B")));
+                add(createObject(5, QStringLiteral("2B")));
+                add(createObject(6, QStringLiteral("0C")));
+                add(createObject(7, QStringLiteral("1C")));
+                add(createObject(8, QStringLiteral("2C")));
             });
         });
         query.setConvertFunction([] (QObject *object) {
@@ -201,9 +201,9 @@ private slots:
             QVERIFY(result->data().isEmpty());
             QTest::qWait(150);
             QList<QPair<int, QString>> expected;
-            expected << QPair<int, QString>(0, "0A")
-                     << QPair<int, QString>(3, "0B")
-                     << QPair<int, QString>(6, "0C");
+            expected << QPair<int, QString>(0, QStringLiteral("0A"))
+                     << QPair<int, QString>(3, QStringLiteral("0B"))
+                     << QPair<int, QString>(6, QStringLiteral("0C"));
             QCOMPARE(result->data(), expected);
         }
     }
@@ -214,9 +214,9 @@ private slots:
         auto query = new Domain::LiveQuery<QObject*, QPair<int, QString>>;
         query->setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
             });
         });
         query->setConvertFunction([] (QObject *object) {
@@ -243,9 +243,9 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
             });
         });
         query.setConvertFunction([] (QObject *object) {
@@ -258,16 +258,16 @@ private slots:
         Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
         QTest::qWait(150);
         QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(0, "0A");
+        expected << QPair<int, QString>(0, QStringLiteral("0A"));
         QCOMPARE(result->data(), expected);
 
         // WHEN
-        query.onAdded(createObject(3, "0B"));
-        query.onAdded(createObject(4, "1B"));
-        query.onAdded(createObject(5, "2B"));
+        query.onAdded(createObject(3, QStringLiteral("0B")));
+        query.onAdded(createObject(4, QStringLiteral("1B")));
+        query.onAdded(createObject(5, QStringLiteral("2B")));
 
         // THEN
-        expected << QPair<int, QString>(3, "0B");
+        expected << QPair<int, QString>(3, QStringLiteral("0B"));
         QCOMPARE(result->data(), expected);
     }
 
@@ -277,15 +277,15 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
-                add(createObject(3, "0B"));
-                add(createObject(4, "1B"));
-                add(createObject(5, "2B"));
-                add(createObject(6, "0C"));
-                add(createObject(7, "1C"));
-                add(createObject(8, "2C"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
+                add(createObject(3, QStringLiteral("0B")));
+                add(createObject(4, QStringLiteral("1B")));
+                add(createObject(5, QStringLiteral("2B")));
+                add(createObject(6, QStringLiteral("0C")));
+                add(createObject(7, QStringLiteral("1C")));
+                add(createObject(8, QStringLiteral("2C")));
             });
         });
         query.setConvertFunction([] (QObject *object) {
@@ -301,15 +301,15 @@ private slots:
         Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
         QTest::qWait(150);
         QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(0, "0A")
-                 << QPair<int, QString>(3, "0B")
-                 << QPair<int, QString>(6, "0C");
+        expected << QPair<int, QString>(0, QStringLiteral("0A"))
+                 << QPair<int, QString>(3, QStringLiteral("0B"))
+                 << QPair<int, QString>(6, QStringLiteral("0C"));
         QCOMPARE(result->data(), expected);
 
         // WHEN
-        query.onRemoved(createObject(3, "0B"));
-        query.onRemoved(createObject(4, "1B"));
-        query.onRemoved(createObject(5, "2B"));
+        query.onRemoved(createObject(3, QStringLiteral("0B")));
+        query.onRemoved(createObject(4, QStringLiteral("1B")));
+        query.onRemoved(createObject(5, QStringLiteral("2B")));
 
         // THEN
         expected.removeAt(1);
@@ -322,15 +322,15 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
-                add(createObject(3, "0B"));
-                add(createObject(4, "1B"));
-                add(createObject(5, "2B"));
-                add(createObject(6, "0C"));
-                add(createObject(7, "1C"));
-                add(createObject(8, "2C"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
+                add(createObject(3, QStringLiteral("0B")));
+                add(createObject(4, QStringLiteral("1B")));
+                add(createObject(5, QStringLiteral("2B")));
+                add(createObject(6, QStringLiteral("0C")));
+                add(createObject(7, QStringLiteral("1C")));
+                add(createObject(8, QStringLiteral("2C")));
             });
         });
         query.setConvertFunction([] (QObject *object) {
@@ -349,9 +349,9 @@ private slots:
         Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
         QTest::qWait(150);
         QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(0, "0A")
-                 << QPair<int, QString>(3, "0B")
-                 << QPair<int, QString>(6, "0C");
+        expected << QPair<int, QString>(0, QStringLiteral("0A"))
+                 << QPair<int, QString>(3, QStringLiteral("0B"))
+                 << QPair<int, QString>(6, QStringLiteral("0C"));
         QCOMPARE(result->data(), expected);
 
         bool replaceHandlerCalled = false;
@@ -360,13 +360,13 @@ private slots:
                                       });
 
         // WHEN
-        query.onChanged(createObject(3, "0BB"));
+        query.onChanged(createObject(3, QStringLiteral("0BB")));
 
         // Then
         expected.clear();
-        expected << QPair<int, QString>(0, "0A")
-                 << QPair<int, QString>(3, "0BB")
-                 << QPair<int, QString>(6, "0C");
+        expected << QPair<int, QString>(0, QStringLiteral("0A"))
+                 << QPair<int, QString>(3, QStringLiteral("0BB"))
+                 << QPair<int, QString>(6, QStringLiteral("0C"));
         QCOMPARE(result->data(), expected);
         QVERIFY(replaceHandlerCalled);
     }
@@ -377,15 +377,15 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
-                add(createObject(3, "0B"));
-                add(createObject(4, "1B"));
-                add(createObject(5, "2B"));
-                add(createObject(6, "0C"));
-                add(createObject(7, "1C"));
-                add(createObject(8, "2C"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
+                add(createObject(3, QStringLiteral("0B")));
+                add(createObject(4, QStringLiteral("1B")));
+                add(createObject(5, QStringLiteral("2B")));
+                add(createObject(6, QStringLiteral("0C")));
+                add(createObject(7, QStringLiteral("1C")));
+                add(createObject(8, QStringLiteral("2C")));
             });
         });
         query.setConvertFunction([] (QObject *object) {
@@ -401,9 +401,9 @@ private slots:
         Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
         QTest::qWait(150);
         QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(0, "0A")
-                 << QPair<int, QString>(3, "0B")
-                 << QPair<int, QString>(6, "0C");
+        expected << QPair<int, QString>(0, QStringLiteral("0A"))
+                 << QPair<int, QString>(3, QStringLiteral("0B"))
+                 << QPair<int, QString>(6, QStringLiteral("0C"));
         QCOMPARE(result->data(), expected);
 
         bool replaceHandlerCalled = false;
@@ -412,7 +412,7 @@ private slots:
                                       });
 
         // WHEN
-        query.onChanged(createObject(3, "1B"));
+        query.onChanged(createObject(3, QStringLiteral("1B")));
 
         // Then
         expected.removeAt(1);
@@ -426,15 +426,15 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
-                add(createObject(3, "0B"));
-                add(createObject(4, "1B"));
-                add(createObject(5, "2B"));
-                add(createObject(6, "0C"));
-                add(createObject(7, "1C"));
-                add(createObject(8, "2C"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
+                add(createObject(3, QStringLiteral("0B")));
+                add(createObject(4, QStringLiteral("1B")));
+                add(createObject(5, QStringLiteral("2B")));
+                add(createObject(6, QStringLiteral("0C")));
+                add(createObject(7, QStringLiteral("1C")));
+                add(createObject(8, QStringLiteral("2C")));
             });
         });
         query.setConvertFunction([] (QObject *object) {
@@ -450,9 +450,9 @@ private slots:
         Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
         QTest::qWait(150);
         QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(0, "0A")
-                 << QPair<int, QString>(3, "0B")
-                 << QPair<int, QString>(6, "0C");
+        expected << QPair<int, QString>(0, QStringLiteral("0A"))
+                 << QPair<int, QString>(3, QStringLiteral("0B"))
+                 << QPair<int, QString>(6, QStringLiteral("0C"));
         QCOMPARE(result->data(), expected);
 
         bool replaceHandlerCalled = false;
@@ -461,10 +461,10 @@ private slots:
                                       });
 
         // WHEN
-        query.onChanged(createObject(4, "0BB"));
+        query.onChanged(createObject(4, QStringLiteral("0BB")));
 
         // Then
-        expected << QPair<int, QString>(4, "0BB");
+        expected << QPair<int, QString>(4, QStringLiteral("0BB"));
         QCOMPARE(result->data(), expected);
         QVERIFY(!replaceHandlerCalled);
     }
@@ -477,17 +477,17 @@ private slots:
         Domain::LiveQuery<QObject*, QPair<int, QString>> query;
         query.setFetchFunction([this, &afterReset] (const Domain::LiveQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, &afterReset, add] {
-                add(createObject(0, "0A"));
-                add(createObject(1, "1A"));
-                add(createObject(2, "2A"));
-                add(createObject(3, "0B"));
-                add(createObject(4, "1B"));
-                add(createObject(5, "2B"));
+                add(createObject(0, QStringLiteral("0A")));
+                add(createObject(1, QStringLiteral("1A")));
+                add(createObject(2, QStringLiteral("2A")));
+                add(createObject(3, QStringLiteral("0B")));
+                add(createObject(4, QStringLiteral("1B")));
+                add(createObject(5, QStringLiteral("2B")));
 
                 if (afterReset) {
-                    add(createObject(6, "0C"));
-                    add(createObject(7, "1C"));
-                    add(createObject(8, "2C"));
+                    add(createObject(6, QStringLiteral("0C")));
+                    add(createObject(7, QStringLiteral("1C")));
+                    add(createObject(8, QStringLiteral("2C")));
                 }
             });
         });
@@ -518,9 +518,9 @@ private slots:
 
         // THEN
         QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(1, "1A")
-                 << QPair<int, QString>(4, "1B")
-                 << QPair<int, QString>(7, "1C");
+        expected << QPair<int, QString>(1, QStringLiteral("1A"))
+                 << QPair<int, QString>(4, QStringLiteral("1B"))
+                 << QPair<int, QString>(7, QStringLiteral("1C"));
         QVERIFY(afterReset);
         QCOMPARE(result->data(), expected);
         QCOMPARE(removeHandlerCallCount, 2);

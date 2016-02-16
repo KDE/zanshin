@@ -183,9 +183,9 @@ QAbstractItemModel *AvailableNotePagesModel::createPageListModel()
         if (role == Qt::DisplayRole || role == Qt::EditRole) {
             return object->property("name").toString();
         } else if (role == Qt::DecorationRole || role == QueryTreeModelBase::IconNameRole) {
-            const QString iconName = (object == m_inboxObject) ? "mail-folder-inbox"
-                                   : (object == m_tagsObject)  ? "folder"
-                                   : "view-pim-tasks";
+            const QString iconName = (object == m_inboxObject) ? QStringLiteral("mail-folder-inbox")
+                                   : (object == m_tagsObject)  ? QStringLiteral("folder")
+                                   : QStringLiteral("view-pim-tasks");
 
             if (role == Qt::DecorationRole)
                 return QVariant::fromValue(QIcon::fromTheme(iconName));
@@ -216,7 +216,7 @@ QAbstractItemModel *AvailableNotePagesModel::createPageListModel()
     };
 
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const QObjectPtr &object) {
-        if (!mimeData->hasFormat("application/x-zanshin-object"))
+        if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
         auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();

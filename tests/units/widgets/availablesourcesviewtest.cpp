@@ -108,7 +108,7 @@ private slots:
 
         QVERIFY(!available.model());
 
-        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        auto sourcesView = available.findChild<QTreeView*>(QStringLiteral("sourcesView"));
         QVERIFY(sourcesView);
         QVERIFY(sourcesView->isVisibleTo(&available));
         QVERIFY(!sourcesView->header()->isVisibleTo(&available));
@@ -119,7 +119,7 @@ private slots:
         QVERIFY(!delegate->isActionsEnabled());
 #endif
 
-        auto searchEdit = available.findChild<KLineEdit*>("searchEdit");
+        auto searchEdit = available.findChild<KLineEdit*>(QStringLiteral("searchEdit"));
         QVERIFY(searchEdit);
 #ifdef ZANSHIN_HIDING_SOURCES_ENABLED
         QVERIFY(searchEdit->isVisibleTo(&available));
@@ -135,30 +135,30 @@ private slots:
         QCOMPARE(proxy->sortColumn(), 0);
         QCOMPARE(proxy->sortOrder(), Qt::AscendingOrder);
 
-        auto actionBar = available.findChild<QToolBar*>("actionBar");
+        auto actionBar = available.findChild<QToolBar*>(QStringLiteral("actionBar"));
         QVERIFY(actionBar);
         QVERIFY(actionBar->isVisibleTo(&available));
 
-        auto defaultAction = available.findChild<QAction*>("defaultAction");
+        auto defaultAction = available.findChild<QAction*>(QStringLiteral("defaultAction"));
         QVERIFY(defaultAction);
 
-        auto settingsAction = available.findChild<QAction*>("settingsAction");
+        auto settingsAction = available.findChild<QAction*>(QStringLiteral("settingsAction"));
         QVERIFY(settingsAction);
 
         auto actions = available.globalActions();
-        QCOMPARE(actions.value("options_configure"), settingsAction);
+        QCOMPARE(actions.value(QStringLiteral("options_configure")), settingsAction);
     }
 
     void shouldDisplayListFromPageModel()
     {
         // GIVEN
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
 
         QObject stubPagesModel;
         stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::AvailableSourcesView available;
-        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        auto sourcesView = available.findChild<QTreeView*>(QStringLiteral("sourcesView"));
         QVERIFY(sourcesView);
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
@@ -175,13 +175,13 @@ private slots:
     void shouldNotCrashWithNullModel()
     {
         // GIVEN
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
 
         QObject stubPagesModel;
         stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
         Widgets::AvailableSourcesView available;
-        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        auto sourcesView = available.findChild<QTreeView*>(QStringLiteral("sourcesView"));
         QVERIFY(sourcesView);
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
@@ -203,19 +203,19 @@ private slots:
     {
         // GIVEN
         QStandardItemModel model;
-        auto itemA = new QStandardItem("A");
+        auto itemA = new QStandardItem(QStringLiteral("A"));
         auto sourceA = Domain::DataSource::Ptr::create();
         sourceA->setContentTypes(Domain::DataSource::Tasks);
         itemA->setData(QVariant::fromValue(sourceA), Presentation::QueryTreeModelBase::ObjectRole);
         model.appendRow(itemA);
 
-        auto itemB = new QStandardItem("B");
+        auto itemB = new QStandardItem(QStringLiteral("B"));
         auto sourceB = Domain::DataSource::Ptr::create();
         sourceB->setContentTypes(Domain::DataSource::Tasks);
         itemB->setData(QVariant::fromValue(sourceB), Presentation::QueryTreeModelBase::ObjectRole);
         model.appendRow(itemB);
 
-        auto itemC = new QStandardItem("C");
+        auto itemC = new QStandardItem(QStringLiteral("C"));
         auto sourceC = Domain::DataSource::Ptr::create();
         sourceC->setContentTypes(Domain::DataSource::NoContent);
         itemC->setData(QVariant::fromValue(sourceC), Presentation::QueryTreeModelBase::ObjectRole);
@@ -227,12 +227,12 @@ private slots:
         Widgets::AvailableSourcesView available;
         available.setModel(&stubSourcesModel);
 
-        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        auto sourcesView = available.findChild<QTreeView*>(QStringLiteral("sourcesView"));
         QVERIFY(sourcesView);
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
 
-        auto defaultAction = available.findChild<QAction*>("defaultAction");
+        auto defaultAction = available.findChild<QAction*>(QStringLiteral("defaultAction"));
         QVERIFY(defaultAction);
 
         // WHEN
@@ -271,7 +271,7 @@ private slots:
         Widgets::AvailableSourcesView available;
         available.setModel(&stubSourcesModel);
 
-        auto settingsAction = available.findChild<QAction*>("settingsAction");
+        auto settingsAction = available.findChild<QAction*>(QStringLiteral("settingsAction"));
         QVERIFY(settingsAction);
 
         // WHEN
@@ -286,7 +286,7 @@ private slots:
         // GIVEN
         auto source = Domain::DataSource::Ptr::create();
 
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
         AvailableSourcesModelStub stubPagesModel;
         stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
@@ -311,7 +311,7 @@ private slots:
         // GIVEN
         auto source = Domain::DataSource::Ptr::create();
 
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
         AvailableSourcesModelStub stubPagesModel;
         stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
@@ -336,7 +336,7 @@ private slots:
         // GIVEN
         auto source = Domain::DataSource::Ptr::create();
 
-        QStringListModel model(QStringList() << "A" << "B" << "C" );
+        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
         AvailableSourcesModelStub stubPagesModel;
         stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
 
@@ -359,22 +359,22 @@ private slots:
     void shouldSwitchToSearchListWhenASearchTermIsGiven()
     {
         // GIVEN
-        QStringListModel sourceModel(QStringList() << "A" << "B" << "C" );
-        QStringListModel searchModel(QStringList() << "D" << "E" << "F" );
+        QStringListModel sourceModel(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
+        QStringListModel searchModel(QStringList() << QStringLiteral("D") << QStringLiteral("E") << QStringLiteral("F") );
 
         AvailableSourcesModelStub stubPagesModel;
         stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&sourceModel)));
         stubPagesModel.setProperty("searchListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&searchModel)));
 
         Widgets::AvailableSourcesView available;
-        auto sourcesView = available.findChild<QTreeView*>("sourcesView");
+        auto sourcesView = available.findChild<QTreeView*>(QStringLiteral("sourcesView"));
         QVERIFY(sourcesView);
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
         available.setModel(&stubPagesModel);
         QCOMPARE(proxy->sourceModel(), &sourceModel);
 
-        auto searchEdit = available.findChild<QLineEdit*>("searchEdit");
+        auto searchEdit = available.findChild<QLineEdit*>(QStringLiteral("searchEdit"));
         QVERIFY(searchEdit);
 
         // WHEN
@@ -396,14 +396,14 @@ private slots:
 
         // THEN
         QCOMPARE(proxy->sourceModel(), &searchModel);
-        QCOMPARE(stubPagesModel.searchTerm(), QString("my "));
+        QCOMPARE(stubPagesModel.searchTerm(), QStringLiteral("my "));
 
         // WHEN
-        QTest::keyClicks(searchEdit, "term");
+        QTest::keyClicks(searchEdit, QStringLiteral("term"));
 
         // THEN
         QCOMPARE(proxy->sourceModel(), &searchModel);
-        QCOMPARE(stubPagesModel.searchTerm(), QString("my term"));
+        QCOMPARE(stubPagesModel.searchTerm(), QStringLiteral("my term"));
 
         // WHEN
         searchEdit->clear();

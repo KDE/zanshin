@@ -42,16 +42,16 @@ private slots:
 Akonadi::Item SerializerBenchmark::createTestItem()
 {
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-    todo->setSummary("summary");
-    todo->setDescription("content");
+    todo->setSummary(QStringLiteral("summary"));
+    todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
     todo->setDtStart(KDateTime(QDateTime(QDate(2013, 11, 24))));
     todo->setDtDue(KDateTime(QDateTime(QDate(2014, 03, 01))));
-    todo->setRelatedTo("5");
+    todo->setRelatedTo(QStringLiteral("5"));
 
     // ... as payload of an item
     Akonadi::Item item;
-    item.setMimeType("application/x-vnd.akonadi.calendar.todo");
+    item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 
     return item;
@@ -78,7 +78,7 @@ void SerializerBenchmark::checkPayloadAndDeserialize()
             return;
 
         auto todoCheck = item.payload<KCalCore::Todo::Ptr>();
-        if (todoCheck->relatedTo() != "5") {
+        if (todoCheck->relatedTo() != QLatin1String("5")) {
             return;
         }
 
@@ -104,7 +104,7 @@ void SerializerBenchmark::checkPayload()
             return;
 
         auto todoCheck = item.payload<KCalCore::Todo::Ptr>();
-        if (todoCheck->relatedTo() != "5") {
+        if (todoCheck->relatedTo() != QLatin1String("5")) {
             return;
         }
     }

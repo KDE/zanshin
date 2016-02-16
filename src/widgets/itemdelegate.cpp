@@ -92,14 +92,14 @@ void ItemDelegate::paint(QPainter *painter,
         }
 
         if (task->delegate().isValid()) {
-            opt.text = QString("(%1) %2").arg(task->delegate().display(), opt.text);
+            opt.text = QStringLiteral("(%1) %2").arg(task->delegate().display(), opt.text);
             opt.font.setItalic(true);
         }
     }
 
     if (note) {
         opt.features |= QStyleOptionViewItemV4::HasDecoration;
-        opt.icon = QIcon::fromTheme("text-plain");
+        opt.icon = QIcon::fromTheme(QStringLiteral("text-plain"));
     }
 
     const QWidget *widget = opt.widget;

@@ -93,16 +93,16 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // Three artifacts in the collection, one not matching the predicate
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42-in"));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle("43-in"));
-        data.createItem(GenNote().withId(44).withParent(42).withTitle("44-ex"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
+        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
+        data.createItem(GenNote().withId(44).withParent(42).withTitle(QStringLiteral("44-ex")));
 
         // Couple of projects in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle("40"));
-        data.createItem(GenTodo().withId(41).withParent(42).asProject().withTitle("41-in"));
+        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle(QStringLiteral("40")));
+        data.createItem(GenTodo().withId(41).withParent(42).asProject().withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -121,7 +121,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -137,18 +137,18 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to add
         // WHEN
-        data.createItem(GenTodo().withId(45).withParent(42).withTitle("45-in"));
+        data.createItem(GenTodo().withId(45).withParent(42).withTitle(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QString("45-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("45-in"));
 
         // Reacts to remove
         // WHEN
@@ -156,36 +156,36 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to change
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTitle("42-bis-in"));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle("44-in"));
+        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QString("44-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("44-in"));
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle("44-ex"));
+        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Don't keep a reference on any result
         result.clear();
@@ -215,16 +215,16 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // One task and one note which show in one query and not the other
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42-in"));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle("43-in"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
+        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
 
         // Couple of projects in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(39).withParent(42).asProject().withTitle("39"));
-        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle("40-ex"));
-        data.createItem(GenTodo().withId(41).withParent(42).asProject().withTitle("41-in"));
+        data.createItem(GenTodo().withId(39).withParent(42).asProject().withTitle(QStringLiteral("39")));
+        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle(QStringLiteral("40-ex")));
+        data.createItem(GenTodo().withId(41).withParent(42).asProject().withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -244,10 +244,10 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-ex");
+            return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind(inQuery, fetch, inPredicate);
@@ -262,8 +262,8 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTitle("42-ex"));
-        data.modifyItem(GenNote(data.item(43)).withTitle("43-ex"));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-ex")));
+        data.modifyItem(GenNote(data.item(43)).withTitle(QStringLiteral("43-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -280,12 +280,12 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
 
         // One task in each collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
-        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")));
 
         // Couple of projects in the collections which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle("40"));
-        data.createItem(GenTodo().withId(41).withParent(43).asProject().withTitle("41"));
+        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle(QStringLiteral("40")));
+        data.createItem(GenTodo().withId(41).withParent(43).asProject().withTitle(QStringLiteral("41")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -322,7 +322,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 
 
@@ -334,13 +334,13 @@ private slots:
         AkonadiFakeData data;
 
         // Three context tags, one not matching the predicate
-        data.createTag(GenTag().withId(42).asContext().withName("42-in"));
-        data.createTag(GenTag().withId(43).asContext().withName("43-in"));
-        data.createTag(GenTag().withId(44).asContext().withName("44-ex"));
+        data.createTag(GenTag().withId(42).asContext().withName(QStringLiteral("42-in")));
+        data.createTag(GenTag().withId(43).asContext().withName(QStringLiteral("43-in")));
+        data.createTag(GenTag().withId(44).asContext().withName(QStringLiteral("44-ex")));
 
         // Couple of plain tags which should not appear or create trouble
-        data.createTag(GenTag().withId(40).asPlain().withName("40"));
-        data.createTag(GenTag().withId(41).asPlain().withName("41-in"));
+        data.createTag(GenTag().withId(40).asPlain().withName(QStringLiteral("40")));
+        data.createTag(GenTag().withId(41).asPlain().withName(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -355,7 +355,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith("-in");
+            return tag.name().endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -371,18 +371,18 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to add
         // WHEN
-        data.createTag(GenTag().withId(45).asContext().withName("45-in"));
+        data.createTag(GenTag().withId(45).asContext().withName(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("45-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("45-in"));
 
         // Reacts to remove
         // WHEN
@@ -390,36 +390,36 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change
         // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName("42-bis-in"));
+        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName("44-in"));
+        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("44-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44-in"));
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName("44-ex"));
+        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Don't keep a reference on any result
         result.clear();
@@ -449,12 +449,12 @@ private slots:
         AkonadiFakeData data;
 
         // One context tag which shows in one query not the other
-        data.createTag(GenTag().withId(42).asContext().withName("42-in"));
+        data.createTag(GenTag().withId(42).asContext().withName(QStringLiteral("42-in")));
 
         // Couple of plain tags which should not appear or create trouble
-        data.createTag(GenTag().withId(39).asPlain().withName("39"));
-        data.createTag(GenTag().withId(40).asPlain().withName("40-ex"));
-        data.createTag(GenTag().withId(41).asPlain().withName("41-in"));
+        data.createTag(GenTag().withId(39).asPlain().withName(QStringLiteral("39")));
+        data.createTag(GenTag().withId(40).asPlain().withName(QStringLiteral("40-ex")));
+        data.createTag(GenTag().withId(41).asPlain().withName(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -470,10 +470,10 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith("-in");
+            return tag.name().endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith("-ex");
+            return tag.name().endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind(inQuery, fetch, inPredicate);
@@ -488,7 +488,7 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName("42-ex"));
+        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -504,9 +504,9 @@ private slots:
         AkonadiFakeData data;
 
         // Three top level collections, one not matching the predicate
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42-in"));
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName("43-in"));
-        data.createCollection(GenCollection().withId(44).withRootAsParent().withName("44-ex"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42-in")));
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43-in")));
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withName(QStringLiteral("44-ex")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -521,7 +521,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Collection &collection) {
-            return collection.name().endsWith("-in");
+            return collection.name().endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -537,18 +537,18 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to add
         // WHEN
-        data.createCollection(GenCollection().withId(45).withRootAsParent().withName("45-in"));
+        data.createCollection(GenCollection().withId(45).withRootAsParent().withName(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("45-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("45-in"));
 
         // Reacts to remove
         // WHEN
@@ -556,36 +556,36 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(42)).withName("42-bis-in"));
+        data.modifyCollection(GenCollection(data.collection(42)).withName(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(44)).withName("44-in"));
+        data.modifyCollection(GenCollection(data.collection(44)).withName(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("44-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44-in"));
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(44)).withName("44-ex"));
+        data.modifyCollection(GenCollection(data.collection(44)).withName(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Don't keep a reference on any result
         result.clear();
@@ -615,7 +615,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection which shows in one query not the other
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42-in"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -631,10 +631,10 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Collection &collection) {
-            return collection.name().endsWith("-in");
+            return collection.name().endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Collection &collection) {
-            return collection.name().endsWith("-ex");
+            return collection.name().endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind(inQuery, fetch, inPredicate);
@@ -649,7 +649,7 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyCollection(GenCollection(data.collection(42)).withName("42-ex"));
+        data.modifyCollection(GenCollection(data.collection(42)).withName(QStringLiteral("42-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -665,16 +665,16 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // Three notes in the collection, one not matching the predicate
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42-in"));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle("43-in"));
-        data.createItem(GenNote().withId(44).withParent(42).withTitle("44-ex"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
+        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
+        data.createItem(GenNote().withId(44).withParent(42).withTitle(QStringLiteral("44-ex")));
 
         // Couple of tasks in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle("40"));
-        data.createItem(GenTodo().withId(41).withParent(42).withTitle("41-in"));
+        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40")));
+        data.createItem(GenTodo().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -693,7 +693,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -709,18 +709,18 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to add
         // WHEN
-        data.createItem(GenNote().withId(45).withParent(42).withTitle("45-in"));
+        data.createItem(GenNote().withId(45).withParent(42).withTitle(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QString("45-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("45-in"));
 
         // Reacts to remove
         // WHEN
@@ -728,36 +728,36 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to change
         // WHEN
-        data.modifyItem(GenNote(data.item(42)).withTitle("42-bis-in"));
+        data.modifyItem(GenNote(data.item(42)).withTitle(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle("44-in"));
+        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QString("44-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("44-in"));
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle("44-ex"));
+        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Don't keep a reference on any result
         result.clear();
@@ -787,15 +787,15 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // One note which shows in one query and not the other
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42-in"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
 
         // Couple of tasks in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(39).withParent(42).withTitle("39"));
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle("40-ex"));
-        data.createItem(GenTodo().withId(41).withParent(42).withTitle("41-in"));
+        data.createItem(GenTodo().withId(39).withParent(42).withTitle(QStringLiteral("39")));
+        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40-ex")));
+        data.createItem(GenTodo().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -815,10 +815,10 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-ex");
+            return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind(inQuery, fetch, inPredicate);
@@ -833,7 +833,7 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyItem(GenNote(data.item(42)).withTitle("42-ex"));
+        data.modifyItem(GenNote(data.item(42)).withTitle(QStringLiteral("42-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -850,12 +850,12 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
 
         // One note in each collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
-        data.createItem(GenNote().withId(43).withParent(43).withTitle("43"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenNote().withId(43).withParent(43).withTitle(QStringLiteral("43")));
 
         // Couple of tasks in the collections which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle("40"));
-        data.createItem(GenTodo().withId(41).withParent(43).withTitle("41"));
+        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40")));
+        data.createItem(GenTodo().withId(41).withParent(43).withTitle(QStringLiteral("41")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -892,7 +892,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 
 
@@ -904,16 +904,16 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // Three projects in the collection, one not matching the predicate
-        data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle("42-in"));
-        data.createItem(GenTodo().withId(43).withParent(42).asProject().withTitle("43-in"));
-        data.createItem(GenTodo().withId(44).withParent(42).asProject().withTitle("44-ex"));
+        data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle(QStringLiteral("42-in")));
+        data.createItem(GenTodo().withId(43).withParent(42).asProject().withTitle(QStringLiteral("43-in")));
+        data.createItem(GenTodo().withId(44).withParent(42).asProject().withTitle(QStringLiteral("44-ex")));
 
         // Couple of tasks in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle("40"));
-        data.createItem(GenTodo().withId(41).withParent(42).withTitle("41-in"));
+        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40")));
+        data.createItem(GenTodo().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -932,7 +932,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -948,18 +948,18 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to add
         // WHEN
-        data.createItem(GenTodo().withId(45).withParent(42).asProject().withTitle("45-in"));
+        data.createItem(GenTodo().withId(45).withParent(42).asProject().withTitle(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("45-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("45-in"));
 
         // Reacts to remove
         // WHEN
@@ -967,36 +967,36 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTitle("42-bis-in"));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyItem(GenTodo(data.item(44)).withTitle("44-in"));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("44-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44-in"));
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyItem(GenTodo(data.item(44)).withTitle("44-ex"));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Don't keep a reference on any result
         result.clear();
@@ -1026,15 +1026,15 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // One project which shows in one query and not the other
-        data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle("42-in"));
+        data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle(QStringLiteral("42-in")));
 
         // Couple of tasks in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(39).withParent(42).withTitle("39"));
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle("40-ex"));
-        data.createItem(GenTodo().withId(41).withParent(42).withTitle("41-in"));
+        data.createItem(GenTodo().withId(39).withParent(42).withTitle(QStringLiteral("39")));
+        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40-ex")));
+        data.createItem(GenTodo().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1054,10 +1054,10 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-ex");
+            return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind(inQuery, fetch, inPredicate);
@@ -1072,7 +1072,7 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTitle("42-ex"));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -1089,12 +1089,12 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
 
         // One project in each collection
-        data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle("42"));
-        data.createItem(GenTodo().withId(43).withParent(43).asProject().withTitle("43"));
+        data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(43).withParent(43).asProject().withTitle(QStringLiteral("43")));
 
         // Couple of tasks in the collections which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle("40"));
-        data.createItem(GenTodo().withId(41).withParent(43).withTitle("41"));
+        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40")));
+        data.createItem(GenTodo().withId(41).withParent(43).withTitle(QStringLiteral("41")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1131,7 +1131,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->name(), QString("42"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
     }
 
 
@@ -1143,13 +1143,13 @@ private slots:
         AkonadiFakeData data;
 
         // Three plain tags, one not matching the predicate
-        data.createTag(GenTag().withId(42).asPlain().withName("42-in"));
-        data.createTag(GenTag().withId(43).asPlain().withName("43-in"));
-        data.createTag(GenTag().withId(44).asPlain().withName("44-ex"));
+        data.createTag(GenTag().withId(42).asPlain().withName(QStringLiteral("42-in")));
+        data.createTag(GenTag().withId(43).asPlain().withName(QStringLiteral("43-in")));
+        data.createTag(GenTag().withId(44).asPlain().withName(QStringLiteral("44-ex")));
 
         // Couple of context tags which should not appear or create trouble
-        data.createTag(GenTag().withId(40).asContext().withName("40"));
-        data.createTag(GenTag().withId(41).asContext().withName("41-in"));
+        data.createTag(GenTag().withId(40).asContext().withName(QStringLiteral("40")));
+        data.createTag(GenTag().withId(41).asContext().withName(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1164,7 +1164,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith("-in");
+            return tag.name().endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -1180,18 +1180,18 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to add
         // WHEN
-        data.createTag(GenTag().withId(45).asPlain().withName("45-in"));
+        data.createTag(GenTag().withId(45).asPlain().withName(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("45-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("45-in"));
 
         // Reacts to remove
         // WHEN
@@ -1199,36 +1199,36 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change
         // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName("42-bis-in"));
+        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName("44-in"));
+        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QString("44-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44-in"));
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName("44-ex"));
+        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
 
         // Don't keep a reference on any result
         result.clear();
@@ -1258,12 +1258,12 @@ private slots:
         AkonadiFakeData data;
 
         // One plain tag which shows in one query not the other
-        data.createTag(GenTag().withId(42).asPlain().withName("42-in"));
+        data.createTag(GenTag().withId(42).asPlain().withName(QStringLiteral("42-in")));
 
         // Couple of context tags which should not appear or create trouble
-        data.createTag(GenTag().withId(39).asContext().withName("39"));
-        data.createTag(GenTag().withId(40).asContext().withName("40-ex"));
-        data.createTag(GenTag().withId(41).asContext().withName("41-in"));
+        data.createTag(GenTag().withId(39).asContext().withName(QStringLiteral("39")));
+        data.createTag(GenTag().withId(40).asContext().withName(QStringLiteral("40-ex")));
+        data.createTag(GenTag().withId(41).asContext().withName(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1279,10 +1279,10 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith("-in");
+            return tag.name().endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith("-ex");
+            return tag.name().endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind(inQuery, fetch, inPredicate);
@@ -1297,7 +1297,7 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName("42-ex"));
+        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -1313,18 +1313,18 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // Three tasks in the collection, one not matching the predicate
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42-in"));
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43-in"));
-        data.createItem(GenTodo().withId(44).withParent(42).withTitle("44-ex"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44-ex")));
 
         // Couple of notes and projects in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(38).withParent(42).asProject().withTitle("38"));
-        data.createItem(GenTodo().withId(39).withParent(42).asProject().withTitle("39-in"));
-        data.createItem(GenNote().withId(40).withParent(42).withTitle("40"));
-        data.createItem(GenNote().withId(41).withParent(42).withTitle("41-in"));
+        data.createItem(GenTodo().withId(38).withParent(42).asProject().withTitle(QStringLiteral("38")));
+        data.createItem(GenTodo().withId(39).withParent(42).asProject().withTitle(QStringLiteral("39-in")));
+        data.createItem(GenNote().withId(40).withParent(42).withTitle(QStringLiteral("40")));
+        data.createItem(GenNote().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1343,7 +1343,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -1359,18 +1359,18 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to add
         // WHEN
-        data.createItem(GenTodo().withId(45).withParent(42).withTitle("45-in"));
+        data.createItem(GenTodo().withId(45).withParent(42).withTitle(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QString("45-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("45-in"));
 
         // Reacts to remove
         // WHEN
@@ -1378,36 +1378,36 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to change
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTitle("42-bis-in"));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyItem(GenTodo(data.item(44)).withTitle("44-in"));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QString("44-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("44-in"));
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyItem(GenTodo(data.item(44)).withTitle("44-ex"));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QString("43-in"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
 
         // Don't keep a reference on any result
         result.clear();
@@ -1437,15 +1437,15 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // One task which shows in one query and not the other
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42-in"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
 
         // Couple of notes in the collection which should not appear or create trouble
-        data.createItem(GenNote().withId(39).withParent(42).withTitle("39"));
-        data.createItem(GenNote().withId(40).withParent(42).withTitle("40-ex"));
-        data.createItem(GenNote().withId(41).withParent(42).withTitle("41-in"));
+        data.createItem(GenNote().withId(39).withParent(42).withTitle(QStringLiteral("39")));
+        data.createItem(GenNote().withId(40).withParent(42).withTitle(QStringLiteral("40-ex")));
+        data.createItem(GenNote().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1465,10 +1465,10 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-in");
+            return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith("-ex");
+            return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind(inQuery, fetch, inPredicate);
@@ -1483,7 +1483,7 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTitle("42-ex"));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -1500,12 +1500,12 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
 
         // One task in each collection
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle("42"));
-        data.createItem(GenTodo().withId(43).withParent(43).withTitle("43"));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")));
 
         // Couple of projects in the collections which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle("40"));
-        data.createItem(GenTodo().withId(41).withParent(43).asProject().withTitle("41"));
+        data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle(QStringLiteral("40")));
+        data.createItem(GenTodo().withId(41).withParent(43).asProject().withTitle(QStringLiteral("41")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1542,7 +1542,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 
 
@@ -1554,7 +1554,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         auto integrator = createIntegrator(data);
         qint64 removedId = -1;
@@ -1575,7 +1575,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName("42"));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
         // One item in the collection
         data.createItem(GenTodo().withId(42).withParent(42));
@@ -1599,7 +1599,7 @@ private slots:
         AkonadiFakeData data;
 
         // One tag
-        data.createTag(GenTag().withId(42).withName("42"));
+        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")));
 
         auto integrator = createIntegrator(data);
         qint64 removedId = -1;

@@ -65,16 +65,16 @@ private slots:
 
         QList<int> actions;
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("No Content");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("No Content"));
+        source->setIconName(QStringLiteral("folder"));
         source->setListStatus(Domain::DataSource::Bookmarked);
         QTest::newRow("no content") << true << source << actions;
 
         actions.clear();
         actions << Widgets::DataSourceDelegate::AddToList;
         source = Domain::DataSource::Ptr::create();
-        source->setName("Not listed");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Not listed"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setListStatus(Domain::DataSource::Unlisted);
         QTest::newRow("not listed") << true << source << actions;
@@ -82,8 +82,8 @@ private slots:
         actions.clear();
         actions << Widgets::DataSourceDelegate::Bookmark << Widgets::DataSourceDelegate::RemoveFromList;
         source = Domain::DataSource::Ptr::create();
-        source->setName("Listed");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Listed"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setListStatus(Domain::DataSource::Listed);
         QTest::newRow("listed") << true << source << actions;
@@ -91,16 +91,16 @@ private slots:
         actions.clear();
         actions << Widgets::DataSourceDelegate::Bookmark << Widgets::DataSourceDelegate::RemoveFromList;
         source = Domain::DataSource::Ptr::create();
-        source->setName("Bookmarked");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Bookmarked"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setListStatus(Domain::DataSource::Bookmarked);
         QTest::newRow("bookmarked") << true << source << actions;
 
         actions.clear();
         source = Domain::DataSource::Ptr::create();
-        source->setName("Listed");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Listed"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setListStatus(Domain::DataSource::Listed);
         QTest::newRow("actions disabled") << false << source << actions;

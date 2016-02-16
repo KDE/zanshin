@@ -57,7 +57,7 @@ static QString extractChildRowsTexts( QAbstractItemModel *model, int row, const 
     const int children = model->rowCount(index);
     for (int row = 0; row < children; ++row) {
         const QString txt = model->index(row, 0, index).data().toString();
-        result += txt.isEmpty() ? QString(" ") : txt;
+        result += txt.isEmpty() ? QStringLiteral(" ") : txt;
         if ( row + 1 < children )
             result += ';';
     }
@@ -73,32 +73,32 @@ private slots:
     {
         // GIVEN a tree model as source
         QStandardItemModel sourceModel;
-        sourceModel.appendRow(new QStandardItem("Projects"));
-        sourceModel.item(0, 0)->appendRow(new QStandardItem("D"));
-        sourceModel.item(0, 0)->appendRow(new QStandardItem("A"));
-        sourceModel.item(0, 0)->appendRow(new QStandardItem("F"));
-        sourceModel.appendRow(new QStandardItem("Contexts"));
-        sourceModel.item(1, 0)->appendRow(new QStandardItem("K"));
-        sourceModel.item(1, 0)->appendRow(new QStandardItem("D"));
-        sourceModel.item(1, 0)->appendRow(new QStandardItem("E"));
-        sourceModel.appendRow(new QStandardItem("Tags"));
+        sourceModel.appendRow(new QStandardItem(QStringLiteral("Projects")));
+        sourceModel.item(0, 0)->appendRow(new QStandardItem(QStringLiteral("D")));
+        sourceModel.item(0, 0)->appendRow(new QStandardItem(QStringLiteral("A")));
+        sourceModel.item(0, 0)->appendRow(new QStandardItem(QStringLiteral("F")));
+        sourceModel.appendRow(new QStandardItem(QStringLiteral("Contexts")));
+        sourceModel.item(1, 0)->appendRow(new QStandardItem(QStringLiteral("K")));
+        sourceModel.item(1, 0)->appendRow(new QStandardItem(QStringLiteral("D")));
+        sourceModel.item(1, 0)->appendRow(new QStandardItem(QStringLiteral("E")));
+        sourceModel.appendRow(new QStandardItem(QStringLiteral("Tags")));
 
-        QCOMPARE(sourceModel.index(0, 0).data().toString(), QString("Projects"));
-        QCOMPARE(extractChildRowsTexts(&sourceModel, 0), QString("D;A;F"));
-        QCOMPARE(sourceModel.index(1, 0).data().toString(), QString("Contexts"));
-        QCOMPARE(extractChildRowsTexts(&sourceModel, 1), QString("K;D;E"));
-        QCOMPARE(sourceModel.index(2, 0).data().toString(), QString("Tags"));
+        QCOMPARE(sourceModel.index(0, 0).data().toString(), QStringLiteral("Projects"));
+        QCOMPARE(extractChildRowsTexts(&sourceModel, 0), QStringLiteral("D;A;F"));
+        QCOMPARE(sourceModel.index(1, 0).data().toString(), QStringLiteral("Contexts"));
+        QCOMPARE(extractChildRowsTexts(&sourceModel, 1), QStringLiteral("K;D;E"));
+        QCOMPARE(sourceModel.index(2, 0).data().toString(), QStringLiteral("Tags"));
 
         // WHEN putting an AvailablePagesSortFilterProxyModel on top
         Presentation::AvailablePagesSortFilterProxyModel proxy;
         proxy.setSourceModel(&sourceModel);
 
         // THEN the projects and contexts should be sorted (but not the toplevel items)
-        QCOMPARE(proxy.index(0, 0).data().toString(), QString("Projects"));
-        QCOMPARE(extractChildRowsTexts(&proxy, 0), QString("A;D;F"));
-        QCOMPARE(proxy.index(1, 0).data().toString(), QString("Contexts"));
-        QCOMPARE(extractChildRowsTexts(&proxy, 1), QString("D;E;K"));
-        QCOMPARE(proxy.index(2, 0).data().toString(), QString("Tags"));
+        QCOMPARE(proxy.index(0, 0).data().toString(), QStringLiteral("Projects"));
+        QCOMPARE(extractChildRowsTexts(&proxy, 0), QStringLiteral("A;D;F"));
+        QCOMPARE(proxy.index(1, 0).data().toString(), QStringLiteral("Contexts"));
+        QCOMPARE(extractChildRowsTexts(&proxy, 1), QStringLiteral("D;E;K"));
+        QCOMPARE(proxy.index(2, 0).data().toString(), QStringLiteral("Tags"));
     }
 
 private:

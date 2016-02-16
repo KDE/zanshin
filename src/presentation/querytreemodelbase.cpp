@@ -200,7 +200,7 @@ bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction acti
 
     // If that's not holding that mime type we can't do the cycle checking
     // this is relevant only for internal drag and drop anyway
-    if (data->hasFormat("application/x-zanshin-indexes")) {
+    if (data->hasFormat(QStringLiteral("application/x-zanshin-indexes"))) {
         const auto indexes = data->property("indexes").value<QModelIndexList>();
         foreach (const auto &index, indexes) {
             auto p = parent;
@@ -221,14 +221,15 @@ QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
         return Q_NULLPTR;
 
     auto data = createMimeData(indexes);
-    data->setData("application/x-zanshin-indexes", "indexes");
+    data->setData(QStringLiteral("application/x-zanshin-indexes"), "indexes");
     data->setProperty("indexes", QVariant::fromValue(indexes));
     return data;
 }
 
 QStringList QueryTreeModelBase::mimeTypes() const
 {
-    return QAbstractItemModel::mimeTypes() << "application/x-zanshin-object" << "application/x-zanshin-indexes";
+    return QAbstractItemModel::mimeTypes() << QStringLiteral("application/x-zanshin-object")
+                                           << QStringLiteral("application/x-zanshin-indexes");
 }
 
 Qt::DropActions QueryTreeModelBase::supportedDropActions() const

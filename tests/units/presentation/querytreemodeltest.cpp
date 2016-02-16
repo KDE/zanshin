@@ -680,7 +680,7 @@ private slots:
         QVERIFY(repositoryMock(&Domain::TaskRepository::update).when(task).exactly(2));
 
         QCOMPARE(titleChangedSpy.size(), 1);
-        QCOMPARE(titleChangedSpy.first().first().toString(), QString("alternate second"));
+        QCOMPARE(titleChangedSpy.first().first().toString(), QStringLiteral("alternate second"));
         QCOMPARE(doneChangedSpy.size(), 1);
         QCOMPARE(doneChangedSpy.first().first().toBool(), true);
     }
@@ -829,7 +829,7 @@ private slots:
 
         // THEN
         QVERIFY(data);
-        QVERIFY(model.mimeTypes().contains("application/x-zanshin-object"));
+        QVERIFY(model.mimeTypes().contains(QStringLiteral("application/x-zanshin-object")));
         QList<QColor> colors;
         colors << Qt::green << Qt::blue;
         QCOMPARE(data->colorData().value<QList<QColor>>(), colors);
@@ -912,26 +912,26 @@ private slots:
         bool dropCalled = false;
 
         auto topProvider = Domain::QueryResultProvider<QString>::Ptr::create();
-        topProvider->append("1");
-        topProvider->append("2");
-        topProvider->append("3");
+        topProvider->append(QStringLiteral("1"));
+        topProvider->append(QStringLiteral("2"));
+        topProvider->append(QStringLiteral("3"));
 
         auto firstLevelProvider = Domain::QueryResultProvider<QString>::Ptr::create();
-        firstLevelProvider->append("2.1");
-        firstLevelProvider->append("2.2");
-        firstLevelProvider->append("2.3");
+        firstLevelProvider->append(QStringLiteral("2.1"));
+        firstLevelProvider->append(QStringLiteral("2.2"));
+        firstLevelProvider->append(QStringLiteral("2.3"));
 
         auto secondLevelProvider = Domain::QueryResultProvider<QString>::Ptr::create();
-        secondLevelProvider->append("2.1.1");
-        secondLevelProvider->append("2.1.2");
-        secondLevelProvider->append("2.1.3");
+        secondLevelProvider->append(QStringLiteral("2.1.1"));
+        secondLevelProvider->append(QStringLiteral("2.1.2"));
+        secondLevelProvider->append(QStringLiteral("2.1.3"));
 
         auto queryGenerator = [&] (const QString &string) {
             if (string.isEmpty())
                 return Domain::QueryResult<QString>::create(topProvider);
-            else if (string == "2")
+            else if (string == QLatin1String("2"))
                 return Domain::QueryResult<QString>::create(firstLevelProvider);
-            else if (string == "2.1")
+            else if (string == QLatin1String("2.1"))
                 return Domain::QueryResult<QString>::create(secondLevelProvider);
             else
                 return Domain::QueryResult<QString>::Ptr();
@@ -951,7 +951,7 @@ private slots:
         };
         auto dragFunction = [] (const QStringList &strings) -> QMimeData* {
             auto data = new QMimeData;
-            data->setData("application/x-zanshin-object", "object");
+            data->setData(QStringLiteral("application/x-zanshin-object"), "object");
             data->setProperty("objects", QVariant::fromValue(strings));
             return data;
         };

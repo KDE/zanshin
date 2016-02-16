@@ -49,30 +49,30 @@ ConfigDialog::ConfigDialog(QWidget *parent)
     description->setText(tr("Please select or create a resource which will be used by the application to store and query its TODOs."));
 
     m_agentInstanceWidget = new Akonadi::AgentInstanceWidget(this);
-    m_agentInstanceWidget->agentFilterProxyModel()->addMimeTypeFilter("application/x-vnd.akonadi.calendar.todo");
+    m_agentInstanceWidget->agentFilterProxyModel()->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
 
     auto toolBar = new QToolBar(this);
     toolBar->setIconSize(QSize(16, 16));
     toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     auto addAction = new QAction(this);
-    addAction->setObjectName("addAction");
+    addAction->setObjectName(QStringLiteral("addAction"));
     addAction->setText(tr("Add resource"));
-    addAction->setIcon(QIcon::fromTheme("list-add"));
+    addAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     connect(addAction, &QAction::triggered, this, &ConfigDialog::onAddTriggered);
     toolBar->addAction(addAction);
 
     auto removeAction = new QAction(this);
-    removeAction->setObjectName("removeAction");
+    removeAction->setObjectName(QStringLiteral("removeAction"));
     removeAction->setText(tr("Remove resource"));
-    removeAction->setIcon(QIcon::fromTheme("list-remove"));
+    removeAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     connect(removeAction, &QAction::triggered, this, &ConfigDialog::onRemoveTriggered);
     toolBar->addAction(removeAction);
 
     auto configureAction = new QAction(this);
-    configureAction->setObjectName("settingsAction");
+    configureAction->setObjectName(QStringLiteral("settingsAction"));
     configureAction->setText(tr("Configure resource..."));
-    configureAction->setIcon(QIcon::fromTheme("configure"));
+    configureAction->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
     connect(configureAction, &QAction::triggered, this, &ConfigDialog::onConfigureTriggered);
     toolBar->addAction(configureAction);
 
@@ -98,7 +98,7 @@ ConfigDialog::ConfigDialog(QWidget *parent)
 void ConfigDialog::onAddTriggered()
 {
     Akonadi::AgentTypeDialog dlg(this);
-    dlg.agentFilterProxyModel()->addMimeTypeFilter("application/x-vnd.akonadi.calendar.todo");
+    dlg.agentFilterProxyModel()->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     if (dlg.exec()) {
         const auto agentType = dlg.agentType();
 

@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 
     Zanshin021Migrator migrator;
 
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
+    KSharedConfig::Ptr config = KSharedConfig::openConfig(QStringLiteral("zanshin-migratorrc"));
     KConfigGroup group = config->group("Migrations");
     if (force || !group.readEntry("Migrated021Projects", false)) {
         if (!migrator.migrateProjects()) {

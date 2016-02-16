@@ -53,17 +53,17 @@ private slots:
     {
         DataSource ds;
         QSignalSpy spy(&ds, &DataSource::nameChanged);
-        ds.setName("Foo");
+        ds.setName(QStringLiteral("Foo"));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("Foo"));
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("Foo"));
     }
 
     void shouldNotNotifyIdenticalNameChanges()
     {
         DataSource ds;
-        ds.setName("Foo");
+        ds.setName(QStringLiteral("Foo"));
         QSignalSpy spy(&ds, &DataSource::nameChanged);
-        ds.setName("Foo");
+        ds.setName(QStringLiteral("Foo"));
         QCOMPARE(spy.count(), 0);
     }
 
@@ -71,17 +71,17 @@ private slots:
     {
         DataSource ds;
         QSignalSpy spy(&ds, &DataSource::iconNameChanged);
-        ds.setIconName("Foo");
+        ds.setIconName(QStringLiteral("Foo"));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("Foo"));
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("Foo"));
     }
 
     void shouldNotNotifyIdenticalIconNameChanges()
     {
         DataSource ds;
-        ds.setIconName("Foo");
+        ds.setIconName(QStringLiteral("Foo"));
         QSignalSpy spy(&ds, &DataSource::iconNameChanged);
-        ds.setIconName("Foo");
+        ds.setIconName(QStringLiteral("Foo"));
         QCOMPARE(spy.count(), 0);
     }
 

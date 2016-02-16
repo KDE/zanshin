@@ -73,9 +73,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project2);
@@ -83,9 +83,9 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto context2 = Domain::Context::Ptr::create();
-        context2->setName("context 2");
+        context2->setName(QStringLiteral("context 2"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -166,14 +166,14 @@ private slots:
         QCOMPARE(model->data(context1Index, Qt::EditRole).toString(), context1->name());
         QCOMPARE(model->data(context2Index, Qt::EditRole).toString(), context2->name());
 
-        QCOMPARE(model->data(inboxIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("mail-folder-inbox"));
-        QCOMPARE(model->data(workdayIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("go-jump-today"));
-        QCOMPARE(model->data(projectsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(project1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
-        QCOMPARE(model->data(project2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
-        QCOMPARE(model->data(contextsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(context1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-notes"));
-        QCOMPARE(model->data(context2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-notes"));
+        QCOMPARE(model->data(inboxIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("mail-folder-inbox"));
+        QCOMPARE(model->data(workdayIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("go-jump-today"));
+        QCOMPARE(model->data(projectsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
+        QCOMPARE(model->data(project1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-tasks"));
+        QCOMPARE(model->data(project2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-tasks"));
+        QCOMPARE(model->data(contextsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
+        QCOMPARE(model->data(context1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-notes"));
+        QCOMPARE(model->data(context2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-notes"));
 
         QVERIFY(!model->data(inboxIndex, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(workdayIndex, Qt::CheckStateRole).isValid());
@@ -204,15 +204,15 @@ private slots:
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::update).when(context1).exactly(1));
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::update).when(context2).exactly(1));
 
-        QCOMPARE(project1->name(), QString("New Project 1"));
-        QCOMPARE(project2->name(), QString("New Project 2"));
-        QCOMPARE(context1->name(), QString("New Context 1"));
-        QCOMPARE(context2->name(), QString("New Context 2"));
+        QCOMPARE(project1->name(), QStringLiteral("New Project 1"));
+        QCOMPARE(project2->name(), QStringLiteral("New Project 2"));
+        QCOMPARE(context1->name(), QStringLiteral("New Context 1"));
+        QCOMPARE(context2->name(), QStringLiteral("New Context 2"));
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).thenReturn(new FakeJob(this));
         QMimeData *data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, project1Index);
 
@@ -222,7 +222,7 @@ private slots:
         // WHEN a task is dropped on a context
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
 
@@ -233,7 +233,7 @@ private slots:
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
         QTest::qWait(150);
@@ -245,7 +245,7 @@ private slots:
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project2, noteToDrop).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, project2Index);
 
@@ -258,7 +258,7 @@ private slots:
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop2).thenReturn(new FakeJob(this));
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, noteToDrop2).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop2 << noteToDrop2));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, project1Index);
 
@@ -268,7 +268,7 @@ private slots:
 
         // WHEN a task and a note are dropped on a context
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop2 << noteToDrop2));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
 
@@ -281,7 +281,7 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop3).thenReturn(new FakeJob(this));
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop4).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop3 << taskToDrop4));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
 
@@ -293,7 +293,7 @@ private slots:
         Domain::Task::Ptr taskToDrop5(new Domain::Task);
         taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop5).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop5));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, workdayIndex);
 
@@ -306,7 +306,7 @@ private slots:
         taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop6).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop7).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop6 << taskToDrop7));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, workdayIndex);
 
@@ -403,9 +403,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
@@ -457,9 +457,9 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto context2 = Domain::Context::Ptr::create();
-        context2->setName("context 2");
+        context2->setName(QStringLiteral("context 2"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -527,7 +527,7 @@ private slots:
                                                     Domain::TaskRepository::Ptr());
 
         // WHEN
-        pages.addProject("Foo", source);
+        pages.addProject(QStringLiteral("Foo"), source);
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
@@ -540,11 +540,11 @@ private slots:
         // GIVEN
 
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("Source1");
+        source->setName(QStringLiteral("Source1"));
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         projectRepositoryMock(&Domain::ProjectRepository::create).when(any<Domain::Project::Ptr>(),
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(job);
@@ -559,11 +559,11 @@ private slots:
         pages.setErrorHandler(&errorHandler);
 
         // WHEN
-        pages.addProject("Foo", source);
+        pages.addProject(QStringLiteral("Foo"), source);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add project Foo in dataSource Source1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add project Foo in dataSource Source1: Foo"));
     }
 
     void shouldAddContexts()
@@ -582,7 +582,7 @@ private slots:
                                                     Domain::TaskRepository::Ptr());
 
         // WHEN
-        pages.addContext("Foo");
+        pages.addContext(QStringLiteral("Foo"));
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
@@ -595,7 +595,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(job);
 
@@ -609,11 +609,11 @@ private slots:
         pages.setErrorHandler(&errorHandler);
 
         // WHEN
-        pages.addContext("Foo");
+        pages.addContext(QStringLiteral("Foo"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add context Foo: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add context Foo: Foo"));
     }
 
     void shouldRemoveProject()
@@ -622,9 +622,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
@@ -669,9 +669,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
@@ -704,7 +704,7 @@ private slots:
         const QModelIndex project1Index = model->index(0, 0, projectsIndex);
 
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         projectRepositoryMock(&Domain::ProjectRepository::remove).when(project1).thenReturn(job);
 
         // WHEN
@@ -712,7 +712,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot remove project Project 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot remove project Project 1: Foo"));
     }
 
     void shouldRemoveContext()
@@ -721,7 +721,7 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -767,7 +767,7 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -801,7 +801,7 @@ private slots:
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
 
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         contextRepositoryMock(&Domain::ContextRepository::remove).when(context1).thenReturn(job);
 
         // WHEN
@@ -809,7 +809,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot remove context context 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot remove context context 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUpdateProjectFailed()
@@ -818,9 +818,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
@@ -828,9 +828,9 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto context2 = Domain::Context::Ptr::create();
-        context2->setName("context 2");
+        context2->setName(QStringLiteral("context 2"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -866,14 +866,14 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         projectRepositoryMock(&Domain::ProjectRepository::update).when(project1).thenReturn(job);
 
         QVERIFY(model->setData(project1Index, "New Project 1"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify project Project 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify project Project 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUpdateContextFailed()
@@ -882,9 +882,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
@@ -892,9 +892,9 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto context2 = Domain::Context::Ptr::create();
-        context2->setName("context 2");
+        context2->setName(QStringLiteral("context 2"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -930,14 +930,14 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         contextRepositoryMock(&Domain::ContextRepository::update).when(context1).thenReturn(job);
 
         QVERIFY(model->setData(context1Index, "New Context 1"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify context context 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify context context 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenAssociateProjectFailed()
@@ -946,9 +946,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
@@ -956,9 +956,9 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto context2 = Domain::Context::Ptr::create();
-        context2->setName("context 2");
+        context2->setName(QStringLiteral("context 2"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -966,7 +966,7 @@ private slots:
 
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
-        taskToDrop->setTitle("taskDropped");
+        taskToDrop->setTitle(QStringLiteral("taskDropped"));
         Domain::Artifact::Ptr noteToDrop(new Domain::Note);
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
@@ -995,16 +995,16 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).thenReturn(job);
         QMimeData *data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, project1Index);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add taskDropped to project Project 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add taskDropped to project Project 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenAssociateContextFailed()
@@ -1013,9 +1013,9 @@ private slots:
 
         // Two projects
         auto project1 = Domain::Project::Ptr::create();
-        project1->setName("Project 1");
+        project1->setName(QStringLiteral("Project 1"));
         auto project2 = Domain::Project::Ptr::create();
-        project2->setName("Project 2");
+        project2->setName(QStringLiteral("Project 2"));
         auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project1);
@@ -1023,9 +1023,9 @@ private slots:
 
         // Two contexts
         auto context1 = Domain::Context::Ptr::create();
-        context1->setName("context 1");
+        context1->setName(QStringLiteral("context 1"));
         auto context2 = Domain::Context::Ptr::create();
-        context2->setName("context 2");
+        context2->setName(QStringLiteral("context 2"));
         auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
         auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
         contextProvider->append(context1);
@@ -1033,7 +1033,7 @@ private slots:
 
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
-        taskToDrop->setTitle("taskDropped");
+        taskToDrop->setTitle(QStringLiteral("taskDropped"));
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
@@ -1061,16 +1061,16 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop.objectCast<Domain::Task>()).thenReturn(job);
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add taskDropped to context context 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add taskDropped to context context 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenDissociateFailed()
@@ -1087,7 +1087,7 @@ private slots:
 
         // Two artifacts (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
-        taskToDrop->setTitle("taskDropped");
+        taskToDrop->setTitle(QStringLiteral("taskDropped"));
 
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
         projectQueriesMock(&Domain::ProjectQueries::findAll).when().thenReturn(projectResult);
@@ -1114,17 +1114,17 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(job);
         taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot move taskDropped to Inbox: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot move taskDropped to Inbox: Foo"));
     }
 };
 

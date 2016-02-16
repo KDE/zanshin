@@ -104,9 +104,9 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionAdded);
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         auto c2 = Akonadi::Collection(43);
-        c2.setName("43");
+        c2.setName(QStringLiteral("43"));
         const auto colSet = QSet<Akonadi::Collection>() << c1 << c2;
 
         // WHEN
@@ -131,11 +131,11 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto c2 = Akonadi::Collection(c1.id());
-        c2.setName("42-bis");
+        c2.setName(QStringLiteral("42-bis"));
 
         // WHEN
         data.modifyCollection(c2);
@@ -154,16 +154,16 @@ private slots:
         auto data = Testlib::AkonadiFakeData();
 
         auto root = Akonadi::Collection(42);
-        root.setName("root");
+        root.setName(QStringLiteral("root"));
         data.createCollection(root);
 
         auto c1 = Akonadi::Collection(43);
-        c1.setName("43");
+        c1.setName(QStringLiteral("43"));
         c1.setParentCollection(Akonadi::Collection(root.id()));
         data.createCollection(c1);
 
         auto c2 = Akonadi::Collection(c1.id());
-        c2.setName("43-bis");
+        c2.setName(QStringLiteral("43-bis"));
 
         // WHEN
         data.modifyCollection(c2);
@@ -179,9 +179,9 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         auto c2 = Akonadi::Collection(43);
-        c2.setName("43");
+        c2.setName(QStringLiteral("43"));
         c2.setParentCollection(Akonadi::Collection(42));
         const auto colSet = QSet<Akonadi::Collection>() << c2;
 
@@ -200,11 +200,11 @@ private slots:
         auto data = Testlib::AkonadiFakeData();
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto c2 = Akonadi::Collection(43);
-        c2.setName("43");
+        c2.setName(QStringLiteral("43"));
         data.createCollection(c2);
 
         auto c3 = Akonadi::Collection(44);
@@ -229,16 +229,16 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionRemoved);
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto c2 = Akonadi::Collection(43);
-        c2.setName("43");
+        c2.setName(QStringLiteral("43"));
         c2.setParentCollection(Akonadi::Collection(42));
         data.createCollection(c2);
 
         auto c3 = Akonadi::Collection(44);
-        c3.setName("44");
+        c3.setName(QStringLiteral("44"));
         c3.setParentCollection(Akonadi::Collection(43));
         data.createCollection(c3);
 
@@ -287,9 +287,9 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagAdded);
 
         auto t1 = Akonadi::Tag(42);
-        t1.setName("42");
+        t1.setName(QStringLiteral("42"));
         auto t2 = Akonadi::Tag(43);
-        t2.setName("43");
+        t2.setName(QStringLiteral("43"));
 
         // WHEN
         data.createTag(t1);
@@ -315,11 +315,11 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagChanged);
 
         auto t1 = Akonadi::Tag(42);
-        t1.setName("42");
+        t1.setName(QStringLiteral("42"));
         data.createTag(t1);
 
         auto t2 = Akonadi::Tag(t1.id());
-        t2.setName("42-bis");
+        t2.setName(QStringLiteral("42-bis"));
 
         // WHEN
         data.modifyTag(t2);
@@ -344,11 +344,11 @@ private slots:
         data.createCollection(c1);
 
         auto t1 = Akonadi::Tag(42);
-        t1.setName("42");
+        t1.setName(QStringLiteral("42"));
         data.createTag(t1);
 
         auto t2 = Akonadi::Tag(43);
-        t2.setName("43");
+        t2.setName(QStringLiteral("43"));
         data.createTag(t2);
 
         auto i1 = Akonadi::Item(42);
@@ -428,7 +428,7 @@ private slots:
         QSignalSpy moveSpy(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto i1 = Akonadi::Item(42);
@@ -459,7 +459,7 @@ private slots:
         auto data = Testlib::AkonadiFakeData();
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto i1 = Akonadi::Item(42);
@@ -484,7 +484,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto i1 = Akonadi::Item(42);
@@ -507,11 +507,11 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto c2 = Akonadi::Collection(43);
-        c2.setName("43");
+        c2.setName(QStringLiteral("43"));
         data.createCollection(c2);
 
         auto i1 = Akonadi::Item(42);
@@ -538,7 +538,7 @@ private slots:
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         auto t1 = Akonadi::Tag(42);
-        t1.setName("42");
+        t1.setName(QStringLiteral("42"));
         data.createTag(t1);
 
         auto i1 = Akonadi::Item(42);
@@ -561,11 +561,11 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
 
         auto t1 = Akonadi::Tag(42);
-        t1.setName("42");
+        t1.setName(QStringLiteral("42"));
         data.createTag(t1);
 
         auto t2 = Akonadi::Tag(43);
-        t2.setName("43");
+        t2.setName(QStringLiteral("43"));
         data.createTag(t2);
 
         auto i1 = Akonadi::Item(42);
@@ -596,7 +596,7 @@ private slots:
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
 
         auto c1 = Akonadi::Collection(42);
-        c1.setName("42");
+        c1.setName(QStringLiteral("42"));
         data.createCollection(c1);
 
         auto i1 = Akonadi::Item(42);

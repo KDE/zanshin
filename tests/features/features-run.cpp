@@ -55,9 +55,9 @@ bool waitForCukeSteps(qint64 timeout)
     timer.start();
     QTcpSocket socket;
 
-    socket.connectToHost("localhost", 3902);
+    socket.connectToHost(QStringLiteral("localhost"), 3902);
     while (!socket.waitForConnected() && !timer.hasExpired(timeout)) {
-        socket.connectToHost("localhost", 3902);
+        socket.connectToHost(QStringLiteral("localhost"), 3902);
     }
 
     return socket.state() == QTcpSocket::ConnectedState;
@@ -69,11 +69,11 @@ int main(int argc, char **argv)
 
     QCoreApplication app(argc, argv);
 
-    QDir::setCurrent(FEATURES_DIR);
+    QDir::setCurrent(QStringLiteral(FEATURES_DIR));
 
     QProcess cukeSteps;
     cukeSteps.setProcessChannelMode(QProcess::ForwardedChannels);
-    cukeSteps.start(CUKE_STEPS);
+    cukeSteps.start(QStringLiteral(CUKE_STEPS));
 
     if (!cukeSteps.waitForStarted()) {
         qWarning() << "Couldn't start the cuke steps server, exiting...";
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    const QStringList args = app.arguments().contains("wip") ? QStringList()
-                                                             : QStringList({"--tags", "~@wip"});
-    return QProcess::execute("cucumber", args);
+    const QStringList args = app.arguments().contains(QStringLiteral("wip")) ? QStringList()
+                                                                             : QStringList({"--tags", "~@wip"});
+    return QProcess::execute(QStringLiteral("cucumber"), args);
 }

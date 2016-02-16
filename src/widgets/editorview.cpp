@@ -56,13 +56,13 @@ EditorView::EditorView(QWidget *parent)
     else
         m_delegateEdit = new KLineEdit(this);
 
-    m_delegateLabel->setObjectName("delegateLabel");
-    m_delegateEdit->setObjectName("delegateEdit");
-    m_textEdit->setObjectName("textEdit");
-    m_startDateEdit->setObjectName("startDateEdit");
-    m_dueDateEdit->setObjectName("dueDateEdit");
-    m_doneButton->setObjectName("doneButton");
-    m_startTodayButton->setObjectName("startTodayButton");
+    m_delegateLabel->setObjectName(QStringLiteral("delegateLabel"));
+    m_delegateEdit->setObjectName(QStringLiteral("delegateEdit"));
+    m_textEdit->setObjectName(QStringLiteral("textEdit"));
+    m_startDateEdit->setObjectName(QStringLiteral("startDateEdit"));
+    m_dueDateEdit->setObjectName(QStringLiteral("dueDateEdit"));
+    m_doneButton->setObjectName(QStringLiteral("doneButton"));
+    m_startTodayButton->setObjectName(QStringLiteral("startTodayButton"));
 
     m_startDateEdit->setMinimumContentsLength(10);
     m_dueDateEdit->setMinimumContentsLength(10);

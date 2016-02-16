@@ -42,17 +42,17 @@ private slots:
     {
         Artifact a;
         QSignalSpy spy(&a, &Artifact::textChanged);
-        a.setText("foo");
+        a.setText(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("foo"));
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("foo"));
     }
 
     void shouldNotNotifyIdenticalTextChanges()
     {
         Artifact a;
-        a.setText("foo");
+        a.setText(QStringLiteral("foo"));
         QSignalSpy spy(&a, &Artifact::textChanged);
-        a.setText("foo");
+        a.setText(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 0);
     }
 
@@ -60,17 +60,17 @@ private slots:
     {
         Artifact a;
         QSignalSpy spy(&a, &Artifact::titleChanged);
-        a.setTitle("foo");
+        a.setTitle(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("foo"));
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("foo"));
     }
 
     void shouldNotNotifyIdenticalTitleChanges()
     {
         Artifact a;
-        a.setTitle("foo");
+        a.setTitle(QStringLiteral("foo"));
         QSignalSpy spy(&a, &Artifact::titleChanged);
-        a.setTitle("foo");
+        a.setTitle(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 0);
     }
 };

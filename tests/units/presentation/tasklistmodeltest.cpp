@@ -225,7 +225,7 @@ private slots:
         QVERIFY(repositoryMock(&Domain::TaskRepository::update).when(task).exactly(2));
 
         QCOMPARE(titleChangedSpy.size(), 1);
-        QCOMPARE(titleChangedSpy.first().first().toString(), QString("alternate second"));
+        QCOMPARE(titleChangedSpy.first().first().toString(), QStringLiteral("alternate second"));
         QCOMPARE(doneChangedSpy.size(), 1);
         QCOMPARE(doneChangedSpy.first().first().toBool(), true);
     }

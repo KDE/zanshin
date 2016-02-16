@@ -114,7 +114,7 @@ QAbstractItemModel *NoteInboxPageModel::createCentralListModel()
                   std::back_inserter(artifacts));
 
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(artifacts));
         return data;
     };

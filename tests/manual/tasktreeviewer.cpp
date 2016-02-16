@@ -44,8 +44,8 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
     App::initializeDependencies();
-    KAboutData aboutData("tasktreeviewer",
-                     i18n("Show all the tasks in tree"), "1.0");
+    KAboutData aboutData(QStringLiteral("tasktreeviewer"),
+                     i18n("Show all the tasks in tree"), QStringLiteral("1.0"));
     QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();

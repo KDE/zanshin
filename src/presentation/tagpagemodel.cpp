@@ -134,7 +134,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
                   std::back_inserter(draggedArtifacts));
 
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
         return data;
     };

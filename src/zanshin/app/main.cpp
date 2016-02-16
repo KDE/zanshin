@@ -64,12 +64,12 @@ int main(int argc, char **argv)
     parser.process(app);
     aboutData.processCommandLine(&parser);
 
-    KSharedConfig::Ptr config = KSharedConfig::openConfig("zanshin-migratorrc");
+    KSharedConfig::Ptr config = KSharedConfig::openConfig(QStringLiteral("zanshin-migratorrc"));
     KConfigGroup group = config->group("Migrations");
     if (!group.readEntry("Migrated021Projects", false)) {
         std::cerr << "Migrating data from zanshin 0.2, please wait..." << std::endl;
         QProcess proc;
-        proc.start("zanshin-migrator");
+        proc.start(QStringLiteral("zanshin-migrator"));
         proc.waitForFinished();
         std::cerr << "Migration done" << std::endl;
     }
@@ -83,15 +83,15 @@ int main(int argc, char **argv)
     widget->setLayout(layout);
 
     auto sourcesDock = new QDockWidget(QObject::tr("Sources"));
-    sourcesDock->setObjectName("sourcesDock");
+    sourcesDock->setObjectName(QStringLiteral("sourcesDock"));
     sourcesDock->setWidget(components->availableSourcesView());
 
     auto pagesDock = new QDockWidget(QObject::tr("Pages"));
-    pagesDock->setObjectName("pagesDock");
+    pagesDock->setObjectName(QStringLiteral("pagesDock"));
     pagesDock->setWidget(components->availablePagesView());
 
     auto editorDock = new QDockWidget(QObject::tr("Editor"));
-    editorDock->setObjectName("editorDock");
+    editorDock->setObjectName(QStringLiteral("editorDock"));
     editorDock->setWidget(components->editorView());
 
     auto window = new KXmlGuiWindow;
@@ -102,9 +102,9 @@ int main(int argc, char **argv)
     window->addDockWidget(Qt::LeftDockWidgetArea, sourcesDock);
 
     auto actions = components->globalActions();
-    actions.insert("dock_sources", sourcesDock->toggleViewAction());
-    actions.insert("dock_pages", pagesDock->toggleViewAction());
-    actions.insert("dock_editor", editorDock->toggleViewAction());
+    actions.insert(QStringLiteral("dock_sources"), sourcesDock->toggleViewAction());
+    actions.insert(QStringLiteral("dock_pages"), pagesDock->toggleViewAction());
+    actions.insert(QStringLiteral("dock_editor"), editorDock->toggleViewAction());
 
     auto ac = window->actionCollection();
     ac->addAction(KStandardAction::Quit, window, SLOT(close()));

@@ -50,7 +50,7 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     m_filterProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     m_tree->setModel(m_filterProxyModel);
-    m_tree->setObjectName("pagesView");
+    m_tree->setObjectName(QStringLiteral("pagesView"));
     m_tree->header()->hide();
     m_tree->expandAll();
     m_tree->setFocus();

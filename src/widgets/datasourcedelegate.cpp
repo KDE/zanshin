@@ -38,9 +38,9 @@ DataSourceDelegate::DataSourceDelegate(QObject *parent)
     : QStyledItemDelegate(parent),
       m_actionsEnabled(true)
 {
-    m_pixmaps[AddToList] = QIcon::fromTheme("list-add").pixmap(DELEGATE_HEIGHT);
-    m_pixmaps[RemoveFromList] = QIcon::fromTheme("list-remove").pixmap(DELEGATE_HEIGHT);
-    m_pixmaps[Bookmark] = QIcon::fromTheme("bookmarks").pixmap(DELEGATE_HEIGHT);
+    m_pixmaps[AddToList] = QIcon::fromTheme(QStringLiteral("list-add")).pixmap(DELEGATE_HEIGHT);
+    m_pixmaps[RemoveFromList] = QIcon::fromTheme(QStringLiteral("list-remove")).pixmap(DELEGATE_HEIGHT);
+    m_pixmaps[Bookmark] = QIcon::fromTheme(QStringLiteral("bookmarks")).pixmap(DELEGATE_HEIGHT);
 }
 
 

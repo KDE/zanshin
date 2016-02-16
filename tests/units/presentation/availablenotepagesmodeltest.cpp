@@ -68,9 +68,9 @@ private slots:
 
         // Two tags
         auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("Tag 1");
+        tag1->setName(QStringLiteral("Tag 1"));
         auto tag2 = Domain::Tag::Ptr::create();
-        tag2->setName("Tag 2");
+        tag2->setName(QStringLiteral("Tag 2"));
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
         tagProvider->append(tag1);
@@ -121,10 +121,10 @@ private slots:
         QCOMPARE(model->data(tag1Index, Qt::EditRole).toString(), tag1->name());
         QCOMPARE(model->data(tag2Index, Qt::EditRole).toString(), tag2->name());
 
-        QCOMPARE(model->data(inboxIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("mail-folder-inbox"));
-        QCOMPARE(model->data(tagsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(tag1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
-        QCOMPARE(model->data(tag2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("view-pim-tasks"));
+        QCOMPARE(model->data(inboxIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("mail-folder-inbox"));
+        QCOMPARE(model->data(tagsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
+        QCOMPARE(model->data(tag1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-tasks"));
+        QCOMPARE(model->data(tag2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-tasks"));
 
         QVERIFY(!model->data(inboxIndex, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(tagsIndex, Qt::CheckStateRole).isValid());
@@ -139,7 +139,7 @@ private slots:
         // WHEN
         tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, noteToDrop).thenReturn(new FakeJob(this));
         QMimeData *data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
 
@@ -149,7 +149,7 @@ private slots:
         // WHEN
         tagRepositoryMock(&Domain::TagRepository::dissociateAll).when(noteToDrop).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
         QTest::qWait(150);
@@ -190,9 +190,9 @@ private slots:
 
         // Two tags
         auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("tag 1");
+        tag1->setName(QStringLiteral("tag 1"));
         auto tag2 = Domain::Tag::Ptr::create();
-        tag2->setName("tag 2");
+        tag2->setName(QStringLiteral("tag 2"));
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
         tagProvider->append(tag1);
@@ -241,7 +241,7 @@ private slots:
                                                     tagRepositoryMock.getInstance());
 
         // WHEN
-        pages.addTag("Foo");
+        pages.addTag(QStringLiteral("Foo"));
 
         // THEN
         QVERIFY(tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
@@ -254,7 +254,7 @@ private slots:
 
         Utils::MockObject<Domain::TagRepository> tagRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         tagRepositoryMock(&Domain::TagRepository::create).when(any<Domain::Tag::Ptr>())
                                                          .thenReturn(job);
 
@@ -266,11 +266,11 @@ private slots:
         pages.setErrorHandler(&errorHandler);
 
         // WHEN
-        pages.addTag("Foo");
+        pages.addTag(QStringLiteral("Foo"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add tag Foo: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add tag Foo: Foo"));
     }
 
     void shouldRemoveTag()
@@ -279,9 +279,9 @@ private slots:
 
         // Two tags
         auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("tag 1");
+        tag1->setName(QStringLiteral("tag 1"));
         auto tag2 = Domain::Tag::Ptr::create();
-        tag2->setName("tag 2");
+        tag2->setName(QStringLiteral("tag 2"));
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
         tagProvider->append(tag1);
@@ -323,9 +323,9 @@ private slots:
 
         // Two tags
         auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("tag 1");
+        tag1->setName(QStringLiteral("tag 1"));
         auto tag2 = Domain::Tag::Ptr::create();
-        tag2->setName("tag 2");
+        tag2->setName(QStringLiteral("tag 2"));
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
         tagProvider->append(tag1);
@@ -350,7 +350,7 @@ private slots:
         const QModelIndex tag1Index = model->index(0, 0, tagsIndex);
 
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         tagRepositoryMock(&Domain::TagRepository::remove).when(tag1).thenReturn(job);
 
         // WHEN
@@ -358,7 +358,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot remove tag tag 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot remove tag tag 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenAssociateTagFailed()
@@ -367,9 +367,9 @@ private slots:
 
         // Two tags
         auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("Tag 1");
+        tag1->setName(QStringLiteral("Tag 1"));
         auto tag2 = Domain::Tag::Ptr::create();
-        tag2->setName("Tag 2");
+        tag2->setName(QStringLiteral("Tag 2"));
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
         tagProvider->append(tag1);
@@ -377,7 +377,7 @@ private slots:
 
         // One note (used for dropping later on)
         auto noteToDrop = Domain::Note::Ptr::create();
-        noteToDrop->setTitle("noteDropped");
+        noteToDrop->setTitle(QStringLiteral("noteDropped"));
 
         // tags mocking
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
@@ -398,16 +398,16 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, noteToDrop).thenReturn(job);
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot tag noteDropped with Tag 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot tag noteDropped with Tag 1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenDissociateTaskFailed()
@@ -416,9 +416,9 @@ private slots:
 
         // Two tags
         auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName("tag 1");
+        tag1->setName(QStringLiteral("tag 1"));
         auto tag2 = Domain::Tag::Ptr::create();
-        tag2->setName("tag 2");
+        tag2->setName(QStringLiteral("tag 2"));
         auto tagProvider = Domain::QueryResultProvider<Domain::Tag::Ptr>::Ptr::create();
         auto tagResult = Domain::QueryResult<Domain::Tag::Ptr>::create(tagProvider);
         tagProvider->append(tag1);
@@ -426,7 +426,7 @@ private slots:
 
         // One note (used for dropping later on)
         auto noteToDrop = Domain::Note::Ptr::create();
-        noteToDrop->setTitle("noteDropped");
+        noteToDrop->setTitle(QStringLiteral("noteDropped"));
 
         // tags mocking
         Utils::MockObject<Domain::TagQueries> tagQueriesMock;
@@ -446,16 +446,16 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         tagRepositoryMock(&Domain::TagRepository::dissociateAll).when(noteToDrop).thenReturn(job);
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot move noteDropped to Inbox: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot move noteDropped to Inbox: Foo"));
     }
 };
 

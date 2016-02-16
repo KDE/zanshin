@@ -113,27 +113,27 @@ private slots:
 
         QVERIFY(!editor.isEnabled());
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
         QVERIFY(textEdit);
         QVERIFY(textEdit->isVisibleTo(&editor));
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         QVERIFY(startDateEdit);
         QVERIFY(!startDateEdit->isVisibleTo(&editor));
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         QVERIFY(dueDateEdit);
         QVERIFY(!dueDateEdit->isVisibleTo(&editor));
 
-        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(doneButton);
         QVERIFY(!doneButton->isVisibleTo(&editor));
 
-        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(delegateLabel);
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
-        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
+        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
         QVERIFY(delegateEdit);
         QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
@@ -143,27 +143,27 @@ private slots:
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
-        model.setTitle("Foo");
-        model.setText("Bar");
+        model.setTitle(QStringLiteral("Foo"));
+        model.setText(QStringLiteral("Bar"));
         model.setPropertyAndSignal("hasTaskProperties", true);
         editor.setModel(&model);
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
         QVERIFY(textEdit);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         QVERIFY(startDateEdit);
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         QVERIFY(dueDateEdit);
 
-        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(doneButton);
 
-        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(delegateLabel);
 
-        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
+        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
         QVERIFY(delegateEdit);
 
         // WHEN
@@ -186,19 +186,19 @@ private slots:
         EditorModelStub model;
         model.setPropertyAndSignal("hasTaskProperties", true);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         QVERIFY(!startDateEdit->isVisibleTo(&editor));
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         QVERIFY(!dueDateEdit->isVisibleTo(&editor));
 
-        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(!doneButton->isVisibleTo(&editor));
 
-        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
-        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
+        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
         QVERIFY(!delegateEdit->isVisibleTo(&editor));
 
         // WHEN
@@ -218,9 +218,9 @@ private slots:
         Widgets::EditorView editor;
         EditorModelStub model;
         model.makeTaskAvailable();
-        model.setDelegateText("John Doe");
+        model.setDelegateText(QStringLiteral("John Doe"));
 
-        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
         // WHEN
@@ -279,13 +279,13 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         QVERIFY(!startDateEdit->isVisibleTo(&editor));
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         QVERIFY(!dueDateEdit->isVisibleTo(&editor));
 
-        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(!doneButton->isVisibleTo(&editor));
 
         // WHEN
@@ -310,10 +310,10 @@ private slots:
         model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
         model.setProperty("done", true);
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
-        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
 
         // WHEN
         editor.setModel(&model);
@@ -340,7 +340,7 @@ private slots:
         model.setProperty("done", true);
         editor.setModel(&model);
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
 
         // WHEN
         model.setPropertyAndSignal("title", "New title");
@@ -364,7 +364,7 @@ private slots:
         model.setProperty("done", true);
         editor.setModel(&model);
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
 
         // WHEN
         model.setPropertyAndSignal("title", "My title");
@@ -388,7 +388,7 @@ private slots:
         model.setProperty("done", true);
         editor.setModel(&model);
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
 
         // WHEN
         model.setPropertyAndSignal("text", "\nNew text");
@@ -427,7 +427,7 @@ private slots:
         model.setProperty("done", true);
         editor.setModel(&model);
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
 
         // WHEN
         model.setPropertyAndSignal("text", text.trimmed());
@@ -455,7 +455,7 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto textEdit = editor.findChild<QPlainTextEdit*>("textEdit");
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
 
         // WHEN
         QFETCH(QString, plainText);
@@ -481,7 +481,7 @@ private slots:
         model.setProperty("done", false);
         editor.setModel(&model);
 
-        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(!doneButton->isChecked());
 
         // WHEN
@@ -499,7 +499,7 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto doneButton = editor.findChild<QAbstractButton*>("doneButton");
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
 
         // WHEN
         doneButton->setChecked(true);
@@ -521,7 +521,7 @@ private slots:
         model.setProperty("done", false);
         editor.setModel(&model);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
 
         // WHEN
         model.setPropertyAndSignal("startDate", QDateTime::currentDateTime().addDays(-2));
@@ -538,11 +538,11 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         auto today = QDate::currentDate();
 
         // WHEN
-        startDateEdit->setEditText(today.toString("dd/MM/yyyy"));
+        startDateEdit->setEditText(today.toString(QStringLiteral("dd/MM/yyyy")));
         QTest::keyClick(startDateEdit, Qt::Key_Enter);
 
         // THEN
@@ -561,7 +561,7 @@ private slots:
         model.setProperty("done", false);
         editor.setModel(&model);
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
 
         // WHEN
         model.setPropertyAndSignal("dueDate", QDateTime::currentDateTime().addDays(-2));
@@ -578,12 +578,12 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>("dueDateEdit");
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         auto today = QDate::currentDate();
 
         // WHEN
         QVERIFY(dueDateEdit->isEnabled());
-        dueDateEdit->setEditText(today.toString("dd/MM/yyyy"));
+        dueDateEdit->setEditText(today.toString(QStringLiteral("dd/MM/yyyy")));
         QTest::keyClick(dueDateEdit, Qt::Key_Enter);
 
         // THEN
@@ -598,9 +598,9 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        QAbstractButton *startTodayButton = editor.findChild<QAbstractButton *>("startTodayButton");
+        QAbstractButton *startTodayButton = editor.findChild<QAbstractButton *>(QStringLiteral("startTodayButton"));
         QVERIFY(startTodayButton);
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>("startDateEdit");
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         auto today = QDate::currentDate();
 
         // WHEN
@@ -608,7 +608,7 @@ private slots:
         startTodayButton->click();
 
         // THEN
-        QCOMPARE(startDateEdit->currentText(), today.toString("dd/MM/yyyy"));
+        QCOMPARE(startDateEdit->currentText(), today.toString(QStringLiteral("dd/MM/yyyy")));
         QCOMPARE(model.property("startDate").toDateTime().date(), today);
     }
 
@@ -618,13 +618,13 @@ private slots:
         Widgets::EditorView editor;
         EditorModelStub model;
         model.makeTaskAvailable();
-        model.setDelegateText("John Doe");
+        model.setDelegateText(QStringLiteral("John Doe"));
         editor.setModel(&model);
 
-        auto delegateLabel = editor.findChild<QLabel*>("delegateLabel");
+        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
 
         // WHEN
-        model.setDelegateText("John Smith");
+        model.setDelegateText(QStringLiteral("John Smith"));
 
         // THEN
         auto expectedText = tr("Delegated to: <b>%1</b>").arg(model.property("delegateText").toString());
@@ -639,8 +639,8 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
-        delegateEdit->setText("Foo");
+        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
+        delegateEdit->setText(QStringLiteral("Foo"));
 
         // WHEN
         model.makeTaskAvailable(); // simulates an artifact change
@@ -677,7 +677,7 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto delegateEdit = editor.findChild<KLineEdit*>("delegateEdit");
+        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
 
         // WHEN
         QVERIFY(delegateEdit->isEnabled());

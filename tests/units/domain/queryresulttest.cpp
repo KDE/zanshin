@@ -33,7 +33,7 @@ public:
     typedef QSharedPointer<Base> Ptr;
 
     virtual ~Base() {}
-    virtual QString whoAmI() { return "I'm Base"; }
+    virtual QString whoAmI() { return QStringLiteral("I'm Base"); }
 };
 
 class Derived : public Base
@@ -41,7 +41,7 @@ class Derived : public Base
 public:
     typedef QSharedPointer<Derived> Ptr;
 
-    QString whoAmI() { return "I'm Derived"; }
+    QString whoAmI() { return QStringLiteral("I'm Derived"); }
 };
 
 class QueryResultTest : public QObject
@@ -62,27 +62,27 @@ private slots:
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
         QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
-        provider->append("Bar");
+        provider->append(QStringLiteral("Bar"));
 
         QVERIFY(!provider->data().isEmpty());
         QVERIFY(!result->data().isEmpty());
 
         QCOMPARE(provider->data().size(), 1);
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(provider->data().first(), QString("Bar"));
-        QCOMPARE(result->data().first(), QString("Bar"));
+        QCOMPARE(provider->data().first(), QStringLiteral("Bar"));
+        QCOMPARE(result->data().first(), QStringLiteral("Bar"));
 
-        provider->prepend("Foo");
-        *provider << "Baz";
+        provider->prepend(QStringLiteral("Foo"));
+        *provider << QStringLiteral("Baz");
 
         QCOMPARE(provider->data().size(), 3);
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(provider->data().first(), QString("Foo"));
-        QCOMPARE(result->data().first(), QString("Foo"));
-        QCOMPARE(provider->data().at(1), QString("Bar"));
-        QCOMPARE(result->data().at(1), QString("Bar"));
-        QCOMPARE(provider->data().last(), QString("Baz"));
-        QCOMPARE(result->data().last(), QString("Baz"));
+        QCOMPARE(provider->data().first(), QStringLiteral("Foo"));
+        QCOMPARE(result->data().first(), QStringLiteral("Foo"));
+        QCOMPARE(provider->data().at(1), QStringLiteral("Bar"));
+        QCOMPARE(result->data().at(1), QStringLiteral("Bar"));
+        QCOMPARE(provider->data().last(), QStringLiteral("Baz"));
+        QCOMPARE(result->data().last(), QStringLiteral("Baz"));
     }
 
     void shouldCreateResultFromAnotherResultOfSameType()
@@ -90,9 +90,9 @@ private slots:
         auto provider = QueryResultProvider<QString>::Ptr::create();
         auto result = QueryResult<QString>::create(provider);
 
-        provider->append("Foo");
-        provider->append("Bar");
-        provider->append("Baz");
+        provider->append(QStringLiteral("Foo"));
+        provider->append(QStringLiteral("Bar"));
+        provider->append(QStringLiteral("Baz"));
 
         QVERIFY(!provider->data().isEmpty());
         QVERIFY(!result->data().isEmpty());
@@ -176,10 +176,10 @@ private slots:
             }
         );
 
-        provider->append("Bar");
-        provider->prepend("Foo");
-        *provider << "Baz";
-        provider->insert(1, "Bazz");
+        provider->append(QStringLiteral("Bar"));
+        provider->prepend(QStringLiteral("Foo"));
+        *provider << QStringLiteral("Baz");
+        provider->insert(1, QStringLiteral("Bazz"));
 
         const QList<QString> expectedInserts = {"Bar", "Foo", "Baz", "Bazz"};
         const QList<int> expectedInsertsPos = {0, 0, 2, 1};
@@ -231,7 +231,7 @@ private slots:
         QList<int> preRemovesPos, postRemovesPos;
 
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
-        *provider << "Foo" << "Bar" << "Baz" << "Bazz";
+        *provider << QStringLiteral("Foo") << QStringLiteral("Bar") << QStringLiteral("Baz") << QStringLiteral("Bazz");
 
         QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
@@ -269,7 +269,7 @@ private slots:
         QList<int> preRemovesPos, postRemovesPos;
 
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
-        *provider << "Foo" << "Bar" << "Baz" << "Bazz";
+        *provider << QStringLiteral("Foo") << QStringLiteral("Bar") << QStringLiteral("Baz") << QStringLiteral("Bazz");
 
         QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
@@ -308,7 +308,7 @@ private slots:
         QList<int> preReplacesPos, postReplacesPos;
 
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);
-        *provider << "Foo" << "Foo" << "Foo" << "Foo";
+        *provider << QStringLiteral("Foo") << QStringLiteral("Foo") << QStringLiteral("Foo") << QStringLiteral("Foo");
 
         QueryResult<QString>::Ptr result = QueryResult<QString>::create(provider);
 
@@ -328,8 +328,8 @@ private slots:
             }
         );
 
-        provider->replace(1, "Bar");
-        provider->replace(2, "Baz");
+        provider->replace(1, QStringLiteral("Bar"));
+        provider->replace(2, QStringLiteral("Baz"));
 
         const QList<QString> expectedPreReplaces = {"Foo", "Foo"};
         const QList<QString> expectedPostReplaces = {"Bar", "Baz"};

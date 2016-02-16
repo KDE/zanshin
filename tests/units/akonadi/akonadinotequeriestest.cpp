@@ -50,11 +50,11 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
 
         // One note in the first collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
 
         // Two notes in the second collection
-        data.createItem(GenNote().withId(43).withParent(43).withTitle("43"));
-        data.createItem(GenNote().withId(44).withParent(43).withTitle("44"));
+        data.createItem(GenNote().withId(43).withParent(43).withTitle(QStringLiteral("43")));
+        data.createItem(GenNote().withId(44).withParent(43).withTitle(QStringLiteral("44")));
 
         // WHEN
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -69,9 +69,9 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
-        QCOMPARE(result->data().at(1)->title(), QString("43"));
-        QCOMPARE(result->data().at(2)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("44"));
     }
 
     void shouldIgnoreItemsWhichAreNotNotes()
@@ -83,7 +83,7 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // Two notes in the collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
         auto item = Akonadi::Item(43);
         item.setPayloadFromData("FooBar");
         item.setParentCollection(Akonadi::Collection(42));
@@ -100,7 +100,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 
     void shouldReactToItemAddsForNotesOnly()
@@ -119,7 +119,7 @@ private slots:
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
         auto item = Akonadi::Item(43);
         item.setPayloadFromData("FooBar");
         item.setParentCollection(Akonadi::Collection(42));
@@ -127,7 +127,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->title(), QString("42"));
+        QCOMPARE(result->data().first()->title(), QStringLiteral("42"));
     }
 
     void shouldReactToItemRemovesForAllNotes()
@@ -139,9 +139,9 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // Three notes in the collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle("43"));
-        data.createItem(GenNote().withId(44).withParent(42).withTitle("44"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43")));
+        data.createItem(GenNote().withId(44).withParent(42).withTitle(QStringLiteral("44")));
 
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -155,8 +155,8 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
-        QCOMPARE(result->data().at(1)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("44"));
     }
 
     void shouldReactToItemChangesForAllNotes()
@@ -168,9 +168,9 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // Three Note in the collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle("43"));
-        data.createItem(GenNote().withId(44).withParent(42).withTitle("44"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43")));
+        data.createItem(GenNote().withId(44).withParent(42).withTitle(QStringLiteral("44")));
 
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -186,13 +186,13 @@ private slots:
         QCOMPARE(result->data().size(), 3);
 
         // WHEN
-        data.modifyItem(GenNote(data.item(43)).withTitle("43bis"));
+        data.modifyItem(GenNote(data.item(43)).withTitle(QStringLiteral("43bis")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
-        QCOMPARE(result->data().at(1)->title(), QString("43bis"));
-        QCOMPARE(result->data().at(2)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43bis"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("44"));
         QVERIFY(replaceHandlerCalled);
     }
 
@@ -207,14 +207,14 @@ private slots:
         data.createCollection(GenCollection().withId(44).withRootAsParent().withNoteContent().enabled(false));
 
         // One note in the first collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
 
         // Two notes in the second collection
-        data.createItem(GenNote().withId(43).withParent(43).withTitle("43"));
-        data.createItem(GenNote().withId(44).withParent(43).withTitle("44"));
+        data.createItem(GenNote().withId(43).withParent(43).withTitle(QStringLiteral("43")));
+        data.createItem(GenNote().withId(44).withParent(43).withTitle(QStringLiteral("44")));
 
         // One note in the third collection
-        data.createItem(GenNote().withId(45).withParent(44).withTitle("45"));
+        data.createItem(GenNote().withId(45).withParent(44).withTitle(QStringLiteral("45")));
 
         // WHEN
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -229,9 +229,9 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
-        QCOMPARE(result->data().at(1)->title(), QString("43"));
-        QCOMPARE(result->data().at(2)->title(), QString("44"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(2)->title(), QStringLiteral("44"));
     }
 
     void shouldIgnoreItemsWhichAreNotNotesInInbox()
@@ -243,9 +243,9 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // Three items in the collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
         // One of them is a task
-        data.createItem(GenTodo().withId(43).withParent(42).withTitle("43"));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
         // One of them is not a task or a note
         auto item = Akonadi::Item(44);
         item.setPayloadFromData("FooBar");
@@ -263,7 +263,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 
     void shouldNotHaveNotesWithTagsInInbox_data()
@@ -284,13 +284,13 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // One plain tag
-        data.createTag(GenTag().withId(42).withName("tag-42").asPlain());
+        data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asPlain());
 
         // One item in the collection
         QFETCH(bool, hasTags);
         auto tagIds = QList<Akonadi::Tag::Id>();
         if (hasTags) tagIds << 42;
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42").withTags(tagIds));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags(tagIds));
 
         // WHEN
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -305,7 +305,7 @@ private slots:
         QFETCH(bool, isExpectedInInbox);
         if (isExpectedInInbox) {
             QCOMPARE(result->data().size(), 1);
-            QCOMPARE(result->data().at(0)->title(), QString("42"));
+            QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
         } else {
             QVERIFY(result->data().isEmpty());
         }
@@ -333,7 +333,7 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent().withNoteContent());
 
         // One plain tag
-        data.createTag(GenTag().withId(42).withName("tag-42").asPlain());
+        data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asPlain());
 
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -349,16 +349,16 @@ private slots:
 
         QFETCH(bool, isTodo);
         if (isTodo) {
-            data.createItem(GenTodo().withId(42).withParent(42).withTitle("42").withTags(tagIds));
+            data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags(tagIds));
         } else {
-            data.createItem(GenNote().withId(42).withParent(42).withTitle("42").withTags(tagIds));
+            data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags(tagIds));
         }
 
         // THEN
         QFETCH(bool, reactionExpected);
         if (reactionExpected) {
             QCOMPARE(result->data().size(), 1);
-            QCOMPARE(result->data().at(0)->title(), QString("42"));
+            QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
         } else {
             QVERIFY(result->data().isEmpty());
         }
@@ -373,7 +373,7 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // One item in the collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
 
         // WHEN
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -382,7 +382,7 @@ private slots:
         auto result = queries->findInbox();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().first()->title(), QString("42"));
+        QCOMPARE(result->data().first()->title(), QStringLiteral("42"));
 
         // WHEN
         data.removeItem(Akonadi::Item(42));
@@ -410,14 +410,14 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
 
         // One plain tag
-        data.createTag(GenTag().withId(42).withName("tag-42").asPlain());
+        data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asPlain());
 
         // Note data
         QFETCH(bool, hasTagsBefore);
 
         auto tagIds = QList<Akonadi::Tag::Id>();
         if (hasTagsBefore) tagIds << 42;
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42").withTags(tagIds));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags(tagIds));
 
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -431,7 +431,7 @@ private slots:
             QVERIFY(result->data().isEmpty());
         } else {
             QCOMPARE(result->data().size(), 1);
-            QCOMPARE(result->data().at(0)->title(), QString("42"));
+            QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
         }
 
         // WHEN
@@ -444,7 +444,7 @@ private slots:
         // THEN
         if (inListAfterChange) {
             QCOMPARE(result->data().size(), 1);
-            QCOMPARE(result->data().at(0)->title(), QString("42"));
+            QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
         } else {
             QVERIFY(result->data().isEmpty());
         }
@@ -460,8 +460,8 @@ private slots:
         data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
 
         // One note in each collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle("42"));
-        data.createItem(GenNote().withId(43).withParent(43).withTitle("43"));
+        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenNote().withId(43).withParent(43).withTitle(QStringLiteral("43")));
 
         QScopedPointer<Domain::NoteQueries> queries(new Akonadi::NoteQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -469,8 +469,8 @@ private slots:
         auto result = queries->findInbox();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
-        QCOMPARE(result->data().at(1)->title(), QString("43"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43"));
 
         // WHEN
         data.modifyCollection(GenCollection(data.collection(43)).selected(false));
@@ -478,7 +478,7 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QString("42"));
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 };
 

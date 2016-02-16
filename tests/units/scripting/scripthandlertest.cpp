@@ -42,8 +42,8 @@ private slots:
         auto scripthandler = new Scripting::ScriptHandler(taskRepositoryMock.getInstance());
 
         // THEN
-        QVERIFY(!scripthandler->engine()->globalObject().property("task").isNull());
-        QVERIFY(scripthandler->engine()->globalObject().property("task").isObject());
+        QVERIFY(!scripthandler->engine()->globalObject().property(QStringLiteral("task")).isNull());
+        QVERIFY(scripthandler->engine()->globalObject().property(QStringLiteral("task")).isObject());
     }
 
     void shouldEvaluateString()
@@ -52,7 +52,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto scripthandler = new Scripting::ScriptHandler(taskRepositoryMock.getInstance());
 
-        auto expression = QString("41+1");
+        auto expression = QStringLiteral("41+1");
 
         // WHEN
         QScriptValue result = scripthandler->evaluateString(expression);
@@ -68,7 +68,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto scripthandler = new Scripting::ScriptHandler(taskRepositoryMock.getInstance());
 
-        auto expression = QString("41+1");
+        auto expression = QStringLiteral("41+1");
 
         QTemporaryFile scriptfile;
         scriptfile.setAutoRemove(true);

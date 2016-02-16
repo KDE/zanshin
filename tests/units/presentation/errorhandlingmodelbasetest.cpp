@@ -58,21 +58,21 @@ private slots:
 
         // create job
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
 
         // create ErrorHandlingModelBase
         FakeErrorHandler errorHandler;
         FakeErrorHandlingModelBase errorHandling;
         errorHandling.setErrorHandler(&errorHandler);
 
-        const QString message = "I Failed !!!!!!!!!!";
+        const QString message = QStringLiteral("I Failed !!!!!!!!!!");
 
         // WHEN
         errorHandling.install(job, message);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("I Failed !!!!!!!!!!: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("I Failed !!!!!!!!!!: Foo"));
         QCOMPARE(errorHandling.errorHandler(), &errorHandler);
     }
 
@@ -88,7 +88,7 @@ private slots:
         FakeErrorHandlingModelBase errorHandling;
         errorHandling.setErrorHandler(&errorHandler);
 
-        const QString message = "I Failed !!!!!!!!!!";
+        const QString message = QStringLiteral("I Failed !!!!!!!!!!");
 
         // WHEN
         errorHandling.install(job, message);

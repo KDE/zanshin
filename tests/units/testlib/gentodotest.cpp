@@ -96,37 +96,37 @@ private slots:
     void shouldAllowToSetUid()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withUid("42");
+        Akonadi::Item item = GenTodo().withUid(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->uid(), QString("42"));
+        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->uid(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetParentUid()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withParentUid("42");
+        Akonadi::Item item = GenTodo().withParentUid(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QString("42"));
+        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetTitle()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withTitle("42");
+        Akonadi::Item item = GenTodo().withTitle(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->summary(), QString("42"));
+        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetText()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withText("42");
+        Akonadi::Item item = GenTodo().withText(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->description(), QString("42"));
+        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->description(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetDoneState()
@@ -156,7 +156,7 @@ private slots:
     void shouldAllowToSetDoneDateString()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withDoneDate("2015-04-12");
+        Akonadi::Item item = GenTodo().withDoneDate(QStringLiteral("2015-04-12"));
 
         // THEN
         QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->completed().date(), QDate(2015, 04, 12));
@@ -174,7 +174,7 @@ private slots:
     void shouldAllowToSetStartDateString()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withStartDate("2015-04-12");
+        Akonadi::Item item = GenTodo().withStartDate(QStringLiteral("2015-04-12"));
 
         // THEN
         QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtStart().date(), QDate(2015, 04, 12));
@@ -192,7 +192,7 @@ private slots:
     void shouldAllowToSetDueDateString()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withDueDate("2015-04-12");
+        Akonadi::Item item = GenTodo().withDueDate(QStringLiteral("2015-04-12"));
 
         // THEN
         QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtDue().date(), QDate(2015, 04, 12));
@@ -201,7 +201,7 @@ private slots:
     void shouldAllowToSetDelegate()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withDelegate("John Doe", "john@doe.net");
+        Akonadi::Item item = GenTodo().withDelegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.net"));
 
         // THEN
         QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->attendeeCount(), 1);
@@ -212,8 +212,8 @@ private slots:
                                                return attendee->status() == KCalCore::Attendee::Delegated;
                                            });
         QVERIFY(delegate != attendees.constEnd());
-        QCOMPARE((*delegate)->name(), QString("John Doe"));
-        QCOMPARE((*delegate)->email(), QString("john@doe.net"));
+        QCOMPARE((*delegate)->name(), QStringLiteral("John Doe"));
+        QCOMPARE((*delegate)->email(), QStringLiteral("john@doe.net"));
 
         // WHEN
         item = GenTodo(item).withNoDelegate();

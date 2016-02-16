@@ -101,7 +101,7 @@ public:
             if (!xmlFile.isEmpty()) {
                 auto searchCollection = Akonadi::Collection(1);
                 searchCollection.setParentCollection(Akonadi::Collection::root());
-                searchCollection.setName("Search");
+                searchCollection.setName(QStringLiteral("Search"));
                 m_data.createCollection(searchCollection);
 
                 MonitorSpy::setExpirationDelay(200);
@@ -157,7 +157,7 @@ public:
     {
         m_sourceModel = model;
         if (!qobject_cast<QSortFilterProxyModel *>(model)) {
-            proxyModel->setObjectName("m_proxyModel_in_ZanshinContext");
+            proxyModel->setObjectName(QStringLiteral("m_proxyModel_in_ZanshinContext"));
             proxyModel->setSourceModel(model);
             proxyModel->setSortRole(Qt::DisplayRole);
             proxyModel->sort(0);
@@ -472,8 +472,8 @@ WHEN("^I rename a \"(.*)\" named \"(.*)\" to \"(.*)\"$") {
     REGEX_PARAM(QString, oldName);
     REGEX_PARAM(QString, newName);
 
-    const QString pageNodeName = (objectType == "project") ? "Projects / "
-                               : (objectType == "context") ? "Contexts / "
+    const QString pageNodeName = (objectType == QStringLiteral("project")) ? QStringLiteral("Projects / ")
+                               : (objectType == QStringLiteral("context")) ? QStringLiteral("Contexts / ")
                                : QString();
 
     VERIFY(!pageNodeName.isEmpty());
@@ -497,9 +497,9 @@ WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
     REGEX_PARAM(QString, objectType);
     REGEX_PARAM(QString, objectName);
 
-    const QString pageNodeName = (objectType == "project") ? "Projects / "
-                               : (objectType == "context") ? "Contexts / "
-                               : (objectType == "tag")     ? "Tags / "
+    const QString pageNodeName = (objectType == QStringLiteral("project")) ? QStringLiteral("Projects / ")
+                               : (objectType == QStringLiteral("context")) ? QStringLiteral("Contexts / ")
+                               : (objectType == QStringLiteral("tag"))     ? QStringLiteral("Tags / ")
                                : QString();
 
     VERIFY(!pageNodeName.isEmpty());
@@ -524,10 +524,10 @@ WHEN("^I add a \"(.*)\" named \"(.+)\"$") {
     REGEX_PARAM(QString, objectType);
     REGEX_PARAM(QString, objectName);
 
-    QByteArray actionName = (objectType == "context") ? "addContext"
-                          : (objectType == "note")    ? "addItem"
-                          : (objectType == "task")    ? "addItem"
-                          : (objectType == "tag")     ? "addTag"
+    QByteArray actionName = (objectType == QStringLiteral("context")) ? "addContext"
+                          : (objectType == QStringLiteral("note"))    ? "addItem"
+                          : (objectType == QStringLiteral("task"))    ? "addItem"
+                          : (objectType == QStringLiteral("tag"))     ? "addTag"
                           : QByteArray();
 
     VERIFY(!actionName.isEmpty());
@@ -593,16 +593,16 @@ WHEN("^I change the editor (.*) to \"(.*)\"$") {
     REGEX_PARAM(QString, field);
     REGEX_PARAM(QString, string);
 
-    const QVariant value = (field == "text") ? string
-                         : (field == "title") ? string
-                         : (field == "start date") ? QDateTime::fromString(string, Qt::ISODate)
-                         : (field == "due date") ? QDateTime::fromString(string, Qt::ISODate)
+    const QVariant value = (field == QStringLiteral("text")) ? string
+                         : (field == QStringLiteral("title")) ? string
+                         : (field == QStringLiteral("start date")) ? QDateTime::fromString(string, Qt::ISODate)
+                         : (field == QStringLiteral("due date")) ? QDateTime::fromString(string, Qt::ISODate)
                          : QVariant();
 
-    const QByteArray property = (field == "text") ? field.toUtf8()
-                              : (field == "title") ? field.toUtf8()
-                              : (field == "start date") ? "startDate"
-                              : (field == "due date") ? "dueDate"
+    const QByteArray property = (field == QStringLiteral("text")) ? field.toUtf8()
+                              : (field == QStringLiteral("title")) ? field.toUtf8()
+                              : (field == QStringLiteral("start date")) ? "startDate"
+                              : (field == QStringLiteral("due date")) ? "dueDate"
                               : QByteArray();
 
     VERIFY(value.isValid());
@@ -768,7 +768,7 @@ THEN("^the list is") {
         proxy.setSourceModel(&inputModel);
         proxy.setSortRole(Qt::DisplayRole);
         proxy.sort(0);
-        proxy.setObjectName("the_list_is_proxy");
+        proxy.setObjectName(QStringLiteral("the_list_is_proxy"));
     } else {
         referenceModel = &inputModel;
     }
@@ -824,18 +824,18 @@ THEN("^the editor shows \"(.*)\" as (.*)$") {
     REGEX_PARAM(QString, string);
     REGEX_PARAM(QString, field);
 
-    const QVariant value = (field == "text") ? string
-                         : (field == "title") ? string
-                         : (field == "delegate") ? string
-                         : (field == "start date") ? QDateTime::fromString(string, Qt::ISODate)
-                         : (field == "due date") ? QDateTime::fromString(string, Qt::ISODate)
+    const QVariant value = (field == QStringLiteral("text")) ? string
+                         : (field == QStringLiteral("title")) ? string
+                         : (field == QStringLiteral("delegate")) ? string
+                         : (field == QStringLiteral("start date")) ? QDateTime::fromString(string, Qt::ISODate)
+                         : (field == QStringLiteral("due date")) ? QDateTime::fromString(string, Qt::ISODate)
                          : QVariant();
 
-    const QByteArray property = (field == "text") ? field.toUtf8()
-                              : (field == "title") ? field.toUtf8()
-                              : (field == "delegate") ? "delegateText"
-                              : (field == "start date") ? "startDate"
-                              : (field == "due date") ? "dueDate"
+    const QByteArray property = (field == QStringLiteral("text")) ? field.toUtf8()
+                              : (field == QStringLiteral("title")) ? field.toUtf8()
+                              : (field == QStringLiteral("delegate")) ? "delegateText"
+                              : (field == QStringLiteral("start date")) ? "startDate"
+                              : (field == QStringLiteral("due date")) ? "dueDate"
                               : QByteArray();
 
     VERIFY(value.isValid());

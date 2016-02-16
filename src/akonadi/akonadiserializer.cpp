@@ -351,7 +351,7 @@ void Serializer::promoteItemToProject(Akonadi::Item item)
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
     todo->setRelatedTo(QString());
-    todo->setCustomProperty("Zanshin", "Project", "1");
+    todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
 }
 
 void Serializer::clearItem(Akonadi::Item *item)
@@ -489,7 +489,7 @@ Item Serializer::createItemFromProject(Domain::Project::Ptr project)
     auto todo = KCalCore::Todo::Ptr::create();
 
     todo->setSummary(project->name());
-    todo->setCustomProperty("Zanshin", "Project", "1");
+    todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
 
     if (project->property("todoUid").isValid()) {
         todo->setUid(project->property("todoUid").toString());

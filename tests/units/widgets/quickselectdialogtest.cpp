@@ -73,23 +73,23 @@ private:
 
         // a model with items
         auto model = new QStandardItemModel();
-        auto inbox = new QStandardItem("Inbox");
-        auto workday = new QStandardItem("Workday");
-        auto projects= new QStandardItem("Projects");
-        auto contexts = new QStandardItem("Contexts");
+        auto inbox = new QStandardItem(QStringLiteral("Inbox"));
+        auto workday = new QStandardItem(QStringLiteral("Workday"));
+        auto projects= new QStandardItem(QStringLiteral("Projects"));
+        auto contexts = new QStandardItem(QStringLiteral("Contexts"));
 
         auto structureNodeFlags = Qt::NoItemFlags;
         projects->setFlags(structureNodeFlags);
         contexts->setFlags(structureNodeFlags);
 
         // with items children
-        auto projectChildOne = new QStandardItem("ProjectOne");
-        auto projectChildTwo = new QStandardItem("ProjectTwo");
+        auto projectChildOne = new QStandardItem(QStringLiteral("ProjectOne"));
+        auto projectChildTwo = new QStandardItem(QStringLiteral("ProjectTwo"));
         projects->setChild(0, 0, projectChildOne);
         projects->setChild(1, 0,projectChildTwo);
 
-        auto contextChildOne = new QStandardItem("ContextOne");
-        auto contextChildTwo = new QStandardItem("ContextTwo");
+        auto contextChildOne = new QStandardItem(QStringLiteral("ContextOne"));
+        auto contextChildTwo = new QStandardItem(QStringLiteral("ContextTwo"));
         contexts->setChild(0, 0, contextChildOne);
         contexts->setChild(1, 0, contextChildTwo);
 
@@ -107,7 +107,7 @@ private slots:
     {
         Widgets::QuickSelectDialog dlg;
 
-        auto pagesView = dlg.findChild<QTreeView*>("pagesView");
+        auto pagesView = dlg.findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
         QVERIFY(pagesView->isVisibleTo(&dlg));
         QVERIFY(!pagesView->header()->isVisibleTo(&dlg));
@@ -148,10 +148,10 @@ private slots:
         auto projects = displayModel->index(2,0);
         auto contexts = displayModel->index(3,0);
 
-        QCOMPARE(inbox.data().toString(), QString("Inbox"));
-        QCOMPARE(workday.data().toString(), QString("Workday"));
-        QCOMPARE(projects.data().toString(), QString("Projects"));
-        QCOMPARE(contexts.data().toString(), QString("Contexts"));
+        QCOMPARE(inbox.data().toString(), QStringLiteral("Inbox"));
+        QCOMPARE(workday.data().toString(), QStringLiteral("Workday"));
+        QCOMPARE(projects.data().toString(), QStringLiteral("Projects"));
+        QCOMPARE(contexts.data().toString(), QStringLiteral("Contexts"));
 
         QCOMPARE(displayModel->columnCount(), 1);
         QCOMPARE(displayModel->rowCount(), 4); // inbox, workday, projects, contexts
@@ -183,19 +183,19 @@ private slots:
         auto projects = displayModel->index(0,0);
         auto contexts = displayModel->index(1,0);
 
-        QCOMPARE(labelFilter->text(), QString("Path: one"));
+        QCOMPARE(labelFilter->text(), QStringLiteral("Path: one"));
         QCOMPARE(displayModel->columnCount(), 1);
         QCOMPARE(displayModel->rowCount(), 2);
-        QCOMPARE(projects.data().toString(), QString("Projects"));
-        QCOMPARE(contexts.data().toString(), QString("Contexts"));
+        QCOMPARE(projects.data().toString(), QStringLiteral("Projects"));
+        QCOMPARE(contexts.data().toString(), QStringLiteral("Contexts"));
 
         QCOMPARE(displayModel->rowCount(projects), 1);
         auto projectsChild = displayModel->index(0, 0, projects);
-        QCOMPARE(projectsChild.data().toString(), QString("ProjectOne"));
+        QCOMPARE(projectsChild.data().toString(), QStringLiteral("ProjectOne"));
 
         QCOMPARE(displayModel->rowCount(contexts), 1);
         auto contextsChild = displayModel->index(0, 0, contexts);
-        QCOMPARE(contextsChild.data().toString(), QString("ContextOne"));
+        QCOMPARE(contextsChild.data().toString(), QStringLiteral("ContextOne"));
     }
 
     void shouldReturnTheSelectedIndex()
@@ -207,7 +207,7 @@ private slots:
         dlg.show();
 
         auto selectedItemNames = QVector<QString>();
-        selectedItemNames  << "Inbox" << "Workday" << "ProjectOne" << "ProjectTwo" <<  "ContextOne" << "ContextTwo" << "TagOne" << "TagTwo";
+        selectedItemNames  << QStringLiteral("Inbox") << QStringLiteral("Workday") << QStringLiteral("ProjectOne") << QStringLiteral("ProjectTwo") <<  QStringLiteral("ContextOne") << QStringLiteral("ContextTwo") << QStringLiteral("TagOne") << QStringLiteral("TagTwo");
 
         foreach (const auto &itemName, selectedItemNames) {
             auto treeview = widgetFromQuickSelectDialog<QTreeView>(&dlg);

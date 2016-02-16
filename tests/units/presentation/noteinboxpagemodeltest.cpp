@@ -54,9 +54,9 @@ private slots:
 
         // Two notes
         auto note1 = Domain::Note::Ptr::create();
-        note1->setTitle("note1");
+        note1->setTitle(QStringLiteral("note1"));
         auto note2 = Domain::Note::Ptr::create();
-        note2->setTitle("note2");
+        note2->setTitle(QStringLiteral("note2"));
         auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
         auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
         noteProvider->append(note1);
@@ -111,14 +111,14 @@ private slots:
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note1).exactly(1));
         QVERIFY(noteRepositoryMock(&Domain::NoteRepository::update).when(note2).exactly(1));
 
-        QCOMPARE(note1->title(), QString("newNote1"));
-        QCOMPARE(note2->title(), QString("newNote2"));
+        QCOMPARE(note1->title(), QStringLiteral("newNote1"));
+        QCOMPARE(note2->title(), QStringLiteral("newNote2"));
 
         // WHEN
         QMimeData *data = model->mimeData(QModelIndexList() << note2Index);
 
         // THEN
-        QVERIFY(data->hasFormat("application/x-zanshin-object"));
+        QVERIFY(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
         QCOMPARE(data->property("objects").value<Domain::Artifact::List>(),
                  Domain::Artifact::List() << note2);
     }
@@ -139,7 +139,7 @@ private slots:
                                                noteRepositoryMock.getInstance());
 
         // WHEN
-        auto title = QString("New note");
+        auto title = QStringLiteral("New note");
         auto note = inbox.addItem(title).objectCast<Domain::Note>();
 
         // THEN
@@ -158,7 +158,7 @@ private slots:
         // We'll gladly create a note though
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         noteRepositoryMock(&Domain::NoteRepository::create).when(any<Domain::Note::Ptr>()).thenReturn(job);
 
         Presentation::NoteInboxPageModel inbox(noteQueriesMock.getInstance(),
@@ -168,11 +168,11 @@ private slots:
         inbox.setErrorHandler(&errorHandler);
 
         // WHEN
-        inbox.addItem("New note");
+        inbox.addItem(QStringLiteral("New note"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add note New note in Inbox: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add note New note in Inbox: Foo"));
     }
 
     void shouldDeleteItems()
@@ -181,9 +181,9 @@ private slots:
 
         // Two notes
         auto note1 = Domain::Note::Ptr::create();
-        note1->setTitle("note1");
+        note1->setTitle(QStringLiteral("note1"));
         auto note2 = Domain::Note::Ptr::create();
-        note2->setTitle("note2");
+        note2->setTitle(QStringLiteral("note2"));
         auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
         auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
         noteProvider->append(note1);
@@ -212,9 +212,9 @@ private slots:
 
         // Two notes
         auto note1 = Domain::Note::Ptr::create();
-        note1->setTitle("note1");
+        note1->setTitle(QStringLiteral("note1"));
         auto note2 = Domain::Note::Ptr::create();
-        note2->setTitle("note2");
+        note2->setTitle(QStringLiteral("note2"));
         auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
         auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
         noteProvider->append(note1);
@@ -225,7 +225,7 @@ private slots:
 
         Utils::MockObject<Domain::NoteRepository> noteRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         noteRepositoryMock(&Domain::NoteRepository::remove).when(note2).thenReturn(job);
 
         Presentation::NoteInboxPageModel inbox(noteQueriesMock.getInstance(),
@@ -239,7 +239,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot remove note note2 from Inbox: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot remove note note2 from Inbox: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUpdateNoteFailed()
@@ -248,9 +248,9 @@ private slots:
 
         // Two notes
         auto note1 = Domain::Note::Ptr::create();
-        note1->setTitle("note1");
+        note1->setTitle(QStringLiteral("note1"));
         auto note2 = Domain::Note::Ptr::create();
-        note2->setTitle("note2");
+        note2->setTitle(QStringLiteral("note2"));
         auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();
         auto noteResult = Domain::QueryResult<Domain::Note::Ptr>::create(noteProvider);
         noteProvider->append(note1);
@@ -271,14 +271,14 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         noteRepositoryMock(&Domain::NoteRepository::update).when(note1).thenReturn(job);
 
         QVERIFY(model->setData(note1Index, "newNote1"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify note note1 in Inbox: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify note note1 in Inbox: Foo"));
     }
 };
 

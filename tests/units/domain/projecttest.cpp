@@ -41,17 +41,17 @@ private slots:
     {
         Project p;
         QSignalSpy spy(&p, &Project::nameChanged);
-        p.setName("foo");
+        p.setName(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("foo"));
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("foo"));
     }
 
     void shouldNotNotifyIdenticalNameChanges()
     {
         Project p;
-        p.setName("foo");
+        p.setName(QStringLiteral("foo"));
         QSignalSpy spy(&p, &Project::nameChanged);
-        p.setName("foo");
+        p.setName(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 0);
     }
 };

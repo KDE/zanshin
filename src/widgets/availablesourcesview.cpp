@@ -54,7 +54,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sortProxy->sort(0);
 
     auto searchEdit = new KLineEdit(this);
-    searchEdit->setObjectName("searchEdit");
+    searchEdit->setObjectName(QStringLiteral("searchEdit"));
     searchEdit->setClearButtonShown(true);
     searchEdit->setPlaceholderText(tr("Search..."));
     connect(searchEdit, &QLineEdit::textChanged, this, &AvailableSourcesView::onSearchTextChanged);
@@ -62,7 +62,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     searchEdit->hide();
 #endif
 
-    m_sourcesView->setObjectName("sourcesView");
+    m_sourcesView->setObjectName(QStringLiteral("sourcesView"));
     m_sourcesView->header()->hide();
     m_sourcesView->setModel(m_sortProxy);
     connect(m_sourcesView->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -79,12 +79,12 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sourcesView->setItemDelegate(delegate);
 
     auto actionBar = new QToolBar(this);
-    actionBar->setObjectName("actionBar");
+    actionBar->setObjectName(QStringLiteral("actionBar"));
     actionBar->setIconSize(QSize(16, 16));
 
-    m_defaultAction->setObjectName("defaultAction");
+    m_defaultAction->setObjectName(QStringLiteral("defaultAction"));
     m_defaultAction->setText(tr("Use as default source"));
-    m_defaultAction->setIcon(QIcon::fromTheme("folder-favorites"));
+    m_defaultAction->setIcon(QIcon::fromTheme(QStringLiteral("folder-favorites")));
     connect(m_defaultAction, &QAction::triggered, this, &AvailableSourcesView::onDefaultTriggered);
     actionBar->addAction(m_defaultAction);
 
@@ -99,11 +99,11 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     setLayout(layout);
 
     auto settingsAction = new QAction(this);
-    settingsAction->setObjectName("settingsAction");
+    settingsAction->setObjectName(QStringLiteral("settingsAction"));
     settingsAction->setText(tr("Configure %1...").arg(QApplication::applicationName()));
-    settingsAction->setIcon(QIcon::fromTheme("configure"));
+    settingsAction->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
     connect(settingsAction, &QAction::triggered, this, &AvailableSourcesView::onSettingsTriggered);
-    m_actions.insert("options_configure", settingsAction);
+    m_actions.insert(QStringLiteral("options_configure"), settingsAction);
 
     onSelectionChanged();
 }

@@ -57,14 +57,14 @@ private slots:
 
         // One note and one task
         auto rootTask = Domain::Task::Ptr::create();
-        rootTask->setTitle("rootTask");
+        rootTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
         topLevelProvider->append(rootTask);
 
         // One task under the root task
         auto childTask = Domain::Task::Ptr::create();
-        childTask->setTitle("childTask");
+        childTask->setTitle(QStringLiteral("childTask"));
         childTask->setDone(true);
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
@@ -135,8 +135,8 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).exactly(2));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).exactly(2));
 
-        QCOMPARE(rootTask->title(), QString("newRootTask"));
-        QCOMPARE(childTask->title(), QString("newChildTask"));
+        QCOMPARE(rootTask->title(), QStringLiteral("newRootTask"));
+        QCOMPARE(childTask->title(), QStringLiteral("newChildTask"));
 
         QCOMPARE(rootTask->isDone(), true);
         QCOMPARE(childTask->isDone(), false);
@@ -145,7 +145,7 @@ private slots:
         QMimeData *data = model->mimeData(QModelIndexList() << childTaskIndex);
 
         // THEN
-        QVERIFY(data->hasFormat("application/x-zanshin-object"));
+        QVERIFY(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
         QCOMPARE(data->property("objects").value<Domain::Artifact::List>(),
                  Domain::Artifact::List() << childTask);
 
@@ -153,7 +153,7 @@ private slots:
         auto childTask2 = Domain::Task::Ptr::create();
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask2).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask2));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, rootTaskIndex);
 
@@ -167,7 +167,7 @@ private slots:
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).thenReturn(new FakeJob(this));
         data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask3 << childTask4));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, rootTaskIndex);
 
@@ -201,7 +201,7 @@ private slots:
                                             taskRepositoryMock.getInstance());
 
         // WHEN
-        auto title = QString("New task");
+        auto title = QStringLiteral("New task");
         auto task = page.addItem(title).objectCast<Domain::Task>();
 
         // THEN
@@ -248,7 +248,7 @@ private slots:
                                             taskRepositoryMock.getInstance());
 
         // WHEN
-        const auto title = QString("New task");
+        const auto title = QStringLiteral("New task");
         const auto parentIndex = page.centralListModel()->index(0, 0);
         const auto createdTask = page.addItem(title, parentIndex).objectCast<Domain::Task>();
 
@@ -266,7 +266,7 @@ private slots:
 
         // One project
         auto project = Domain::Project::Ptr::create();
-        project->setName("Project1");
+        project->setName(QStringLiteral("Project1"));
 
         // ... in fact we won't list any model
         Utils::MockObject<Domain::ProjectQueries> projectQueriesMock;
@@ -276,7 +276,7 @@ private slots:
         // We'll gladly create a task though
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::createInProject).when(any<Domain::Task::Ptr>(),
                                                                           any<Domain::Project::Ptr>())
                                                                     .thenReturn(job);
@@ -290,11 +290,11 @@ private slots:
         page.setErrorHandler(&errorHandler);
 
         // WHEN
-        page.addItem("New task");
+        page.addItem(QStringLiteral("New task"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot add task New task in project Project1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot add task New task in project Project1: Foo"));
     }
 
     void shouldDeleteItems()
@@ -344,12 +344,12 @@ private slots:
 
         // One project
         auto project = Domain::Project::Ptr::create();
-        project->setName("Project1");
+        project->setName(QStringLiteral("Project1"));
 
         // Two tasks
         auto task1 = Domain::Task::Ptr::create();
         auto task2 = Domain::Task::Ptr::create();
-        task2->setTitle("Task2");
+        task2->setTitle(QStringLiteral("Task2"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
         topLevelProvider->append(task1);
@@ -366,7 +366,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(job);
 
         Presentation::ProjectPageModel page(project,
@@ -383,7 +383,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot remove task Task2 from project Project1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot remove task Task2 from project Project1: Foo"));
     }
 
     void shouldPromoteItem()
@@ -433,12 +433,12 @@ private slots:
 
         // One project
         auto project = Domain::Project::Ptr::create();
-        project->setName("Project1");
+        project->setName(QStringLiteral("Project1"));
 
         // Two tasks
         auto task1 = Domain::Task::Ptr::create();
         auto task2 = Domain::Task::Ptr::create();
-        task2->setTitle("Task2");
+        task2->setTitle(QStringLiteral("Task2"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
         topLevelProvider->append(task1);
@@ -455,7 +455,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(job);
 
         Presentation::ProjectPageModel page(project,
@@ -472,7 +472,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot promote task Task2 to be a project: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot promote task Task2 to be a project: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUpdateTaskFailed()
@@ -481,11 +481,11 @@ private slots:
 
         // One project
         auto project = Domain::Project::Ptr::create();
-        project->setName("Project1");
+        project->setName(QStringLiteral("Project1"));
 
         // One note and one task
         auto rootTask = Domain::Task::Ptr::create();
-        rootTask->setTitle("rootTask");
+        rootTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
         topLevelProvider->append(rootTask);
@@ -513,14 +513,14 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(job);
 
         QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify task rootTask in project Project1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify task rootTask in project Project1: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenAssociateTaskFailed()
@@ -529,11 +529,11 @@ private slots:
 
         // One project
         auto project = Domain::Project::Ptr::create();
-        project->setName("Project1");
+        project->setName(QStringLiteral("Project1"));
 
         // One note and one task
         auto rootTask = Domain::Task::Ptr::create();
-        rootTask->setTitle("rootTask");
+        rootTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
         topLevelProvider->append(rootTask);
@@ -561,20 +561,20 @@ private slots:
 
         // WHEN
         auto childTask3 = Domain::Task::Ptr::create();
-        childTask3->setTitle("childTask3");
+        childTask3->setTitle(QStringLiteral("childTask3"));
         auto childTask4 = Domain::Task::Ptr::create();
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).thenReturn(job);
         taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).thenReturn(new FakeJob(this));
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask3 << childTask4));
         model->dropMimeData(data, Qt::MoveAction, -1, -1, rootTaskIndex);
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot move task childTask3 as a sub-task of rootTask: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot move task childTask3 as a sub-task of rootTask: Foo"));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
     }
 
@@ -584,21 +584,21 @@ private slots:
 
         // One project
         auto project = Domain::Project::Ptr::create();
-        project->setName("Project");
+        project->setName(QStringLiteral("Project"));
 
         // One top level task
         auto topLevelTask = Domain::Task::Ptr::create();
-        topLevelTask->setTitle("rootTask");
+        topLevelTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto topLevelResult = Domain::QueryResult<Domain::Task::Ptr>::create(topLevelProvider);
         topLevelProvider->append(topLevelTask);
 
         // Two tasks under the top level task
         auto childTask1 = Domain::Task::Ptr::create();
-        childTask1->setTitle("childTask1");
+        childTask1->setTitle(QStringLiteral("childTask1"));
         childTask1->setDone(true);
         auto childTask2 = Domain::Task::Ptr::create();
-        childTask2->setTitle("childTask2");
+        childTask2->setTitle(QStringLiteral("childTask2"));
         childTask2->setDone(false);
         auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
@@ -630,7 +630,7 @@ private slots:
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project, childTask2).thenReturn(new FakeJob(this));
 
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask1 << childTask2)); // both will be DnD on the empty part
         model->dropMimeData(data, Qt::MoveAction, -1, -1, QModelIndex());
 

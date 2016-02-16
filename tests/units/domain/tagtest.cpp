@@ -41,17 +41,17 @@ private slots:
     {
         Tag t;
         QSignalSpy spy(&t, &Tag::nameChanged);
-        t.setName("foo");
+        t.setName(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toString(), QString("foo"));
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("foo"));
     }
 
     void shouldNotNotifyIdenticalNameChanges()
     {
         Tag t;
-        t.setName("foo");
+        t.setName(QStringLiteral("foo"));
         QSignalSpy spy(&t, &Tag::nameChanged);
-        t.setName("foo");
+        t.setName(QStringLiteral("foo"));
         QCOMPARE(spy.count(), 0);
     }
 };

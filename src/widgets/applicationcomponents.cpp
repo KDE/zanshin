@@ -51,12 +51,12 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
     };
 
     auto moveItemAction = new QAction(this);
-    moveItemAction->setObjectName("moveItemAction");
+    moveItemAction->setObjectName(QStringLiteral("moveItemAction"));
     moveItemAction->setText("Move item");
     moveItemAction->setShortcut(Qt::Key_M);
     connect(moveItemAction, &QAction::triggered, this, &ApplicationComponents::onMoveItemsRequested);
 
-    m_actions.insert("page_view_move", moveItemAction);
+    m_actions.insert(QStringLiteral("page_view_move"), moveItemAction);
 }
 
 ApplicationComponents::~ApplicationComponents()

@@ -71,7 +71,7 @@ void Zanshin021Migrator::markAsProject(SeenItem& seenItem, Akonadi::TransactionS
     Akonadi::Item &item = seenItem.item();
     if (!isProject(item)) {
         auto todo = item.payload<KCalCore::Todo::Ptr>();
-        todo->setCustomProperty("Zanshin", "Project", "1");
+        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
         item.setPayload(todo);
         seenItem.setDirty();
         qDebug() << "Marking as project:" << item.id() << item.remoteId() << todo->summary();
@@ -85,7 +85,7 @@ void Zanshin021Migrator::migrateProjectComments(Zanshin021Migrator::SeenItemHash
         SeenItem &seenItem = it.value();
         Akonadi::Item &item = seenItem.item();
         auto todo = item.payload<KCalCore::Todo::Ptr>();
-        if (todo->comments().contains("X-Zanshin-Project"))
+        if (todo->comments().contains(QStringLiteral("X-Zanshin-Project")))
             markAsProject(seenItem, sequence);
     }
 }

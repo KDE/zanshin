@@ -56,35 +56,35 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
       m_sources(Q_NULLPTR),
       m_pagesView(new QTreeView(this))
 {
-    m_pagesView->setObjectName("pagesView");
+    m_pagesView->setObjectName(QStringLiteral("pagesView"));
     m_pagesView->header()->hide();
     m_pagesView->setDragDropMode(QTreeView::DropOnly);
 
     auto actionBar = new QToolBar(this);
-    actionBar->setObjectName("actionBar");
+    actionBar->setObjectName(QStringLiteral("actionBar"));
     actionBar->setIconSize(QSize(16, 16));
 
-    m_addProjectAction->setObjectName("addProjectAction");
+    m_addProjectAction->setObjectName(QStringLiteral("addProjectAction"));
     m_addProjectAction->setText(tr("New project"));
-    m_addProjectAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
+    m_addProjectAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
     connect(m_addProjectAction, &QAction::triggered, this, &AvailablePagesView::onAddProjectTriggered);
     actionBar->addAction(m_addProjectAction);
 
-    m_addContextAction->setObjectName("addContextAction");
+    m_addContextAction->setObjectName(QStringLiteral("addContextAction"));
     m_addContextAction->setText(tr("New context"));
-    m_addContextAction->setIcon(QIcon::fromTheme("view-pim-notes"));
+    m_addContextAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-notes")));
     connect(m_addContextAction, &QAction::triggered, this, &AvailablePagesView::onAddContextTriggered);
     actionBar->addAction(m_addContextAction);
 
-    m_addTagAction->setObjectName("addTagAction");
+    m_addTagAction->setObjectName(QStringLiteral("addTagAction"));
     m_addTagAction->setText(tr("New tag"));
-    m_addTagAction->setIcon(QIcon::fromTheme("view-pim-tasks"));
+    m_addTagAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
     connect(m_addTagAction, &QAction::triggered, this, &AvailablePagesView::onAddTagTriggered);
     actionBar->addAction(m_addTagAction);
 
-    m_removeAction->setObjectName("removeAction");
+    m_removeAction->setObjectName(QStringLiteral("removeAction"));
     m_removeAction->setText(tr("Remove page"));
-    m_removeAction->setIcon(QIcon::fromTheme("list-remove"));
+    m_removeAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     connect(m_removeAction, &QAction::triggered, this, &AvailablePagesView::onRemoveTriggered);
     actionBar->addAction(m_removeAction);
 
@@ -106,32 +106,32 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     m_messageBoxInterface = MessageBox::Ptr::create();
 
     auto goPreviousAction = new QAction(this);
-    goPreviousAction->setObjectName("goPreviousAction");
+    goPreviousAction->setObjectName(QStringLiteral("goPreviousAction"));
     goPreviousAction->setText(tr("Previous page"));
-    goPreviousAction->setIcon(QIcon::fromTheme("go-up"));
+    goPreviousAction->setIcon(QIcon::fromTheme(QStringLiteral("go-up")));
     goPreviousAction->setShortcut(Qt::ALT | Qt::Key_Up);
     connect(goPreviousAction, &QAction::triggered, this, &AvailablePagesView::onGoPreviousTriggered);
 
     auto goNextAction = new QAction(this);
-    goNextAction->setObjectName("goNextAction");
+    goNextAction->setObjectName(QStringLiteral("goNextAction"));
     goNextAction->setText(tr("Next page"));
-    goNextAction->setIcon(QIcon::fromTheme("go-down"));
+    goNextAction->setIcon(QIcon::fromTheme(QStringLiteral("go-down")));
     goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
     connect(goNextAction, &QAction::triggered, this, &AvailablePagesView::onGoNextTriggered);
 
     auto goToAction = new QAction(this);
-    goToAction->setObjectName("goToAction");
+    goToAction->setObjectName(QStringLiteral("goToAction"));
     goToAction->setText(tr("Go to page..."));
     goToAction->setShortcut(Qt::Key_J);
     connect(goToAction, &QAction::triggered, this, &AvailablePagesView::onGoToTriggered);
 
-    m_actions.insert("pages_project_add", m_addProjectAction);
-    m_actions.insert("pages_context_add", m_addContextAction);
-    m_actions.insert("pages_tag_add", m_addTagAction);
-    m_actions.insert("pages_remove", m_removeAction);
-    m_actions.insert("pages_go_previous", goPreviousAction);
-    m_actions.insert("pages_go_next", goNextAction);
-    m_actions.insert("pages_go_to", goToAction);
+    m_actions.insert(QStringLiteral("pages_project_add"), m_addProjectAction);
+    m_actions.insert(QStringLiteral("pages_context_add"), m_addContextAction);
+    m_actions.insert(QStringLiteral("pages_tag_add"), m_addTagAction);
+    m_actions.insert(QStringLiteral("pages_remove"), m_removeAction);
+    m_actions.insert(QStringLiteral("pages_go_previous"), goPreviousAction);
+    m_actions.insert(QStringLiteral("pages_go_next"), goNextAction);
+    m_actions.insert(QStringLiteral("pages_go_to"), goToAction);
 }
 
 QHash<QString, QAction *> AvailablePagesView::globalActions() const

@@ -48,10 +48,10 @@ private slots:
         mock(&FakeInterface::doSomething).when().thenReturn();
         mock(&FakeInterface::doSomething).when().thenThrow("exception");
         for (int i = 0; i < 10; i++) {
-            mock(&FakeInterface::computeMe).when("A").thenReturn(0);
-            mock(&FakeInterface::computeMe).when("B").thenReturn(1);
-            mock(&FakeInterface::computeMe).when("C").thenReturn(-1);
-            mock(&FakeInterface::computeMe).when("Foo").thenReturn(-1);
+            mock(&FakeInterface::computeMe).when(QStringLiteral("A")).thenReturn(0);
+            mock(&FakeInterface::computeMe).when(QStringLiteral("B")).thenReturn(1);
+            mock(&FakeInterface::computeMe).when(QStringLiteral("C")).thenReturn(-1);
+            mock(&FakeInterface::computeMe).when(QStringLiteral("Foo")).thenReturn(-1);
         }
         QSharedPointer<FakeInterface> iface1 = mock.getInstance();
         QSharedPointer<FakeInterface> iface2 = mock.getInstance(); // Shouldn't cause a crash later
@@ -67,10 +67,10 @@ private slots:
         }
 
         for (int i = 0; i < 10; i++) {
-            QCOMPARE(iface1->computeMe("A"), 0);
-            QCOMPARE(iface2->computeMe("B"), 1);
-            QCOMPARE(iface1->computeMe("C"), -1);
-            QCOMPARE(iface2->computeMe("Foo"), -1);
+            QCOMPARE(iface1->computeMe(QStringLiteral("A")), 0);
+            QCOMPARE(iface2->computeMe(QStringLiteral("B")), 1);
+            QCOMPARE(iface1->computeMe(QStringLiteral("C")), -1);
+            QCOMPARE(iface2->computeMe(QStringLiteral("Foo")), -1);
         }
 
         QVERIFY(mock(&FakeInterface::doSomething).when().exactly(2));

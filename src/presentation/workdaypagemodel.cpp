@@ -142,7 +142,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Artifact::Ptr &artifact) {
         auto parentTask = artifact.objectCast<Domain::Task>();
 
-        if (!mimeData->hasFormat("application/x-zanshin-object"))
+        if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
         auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
@@ -181,7 +181,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
             return Q_NULLPTR;
 
         auto data = new QMimeData;
-        data->setData("application/x-zanshin-object", "object");
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(artifacts));
         return data;
     };

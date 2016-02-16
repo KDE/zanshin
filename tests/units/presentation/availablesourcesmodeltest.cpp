@@ -69,11 +69,11 @@ private slots:
 
         // Two top level sources
         auto source1 = Domain::DataSource::Ptr::create();
-        source1->setName("Source 1");
-        source1->setIconName("foo-icon");
+        source1->setName(QStringLiteral("Source 1"));
+        source1->setIconName(QStringLiteral("foo-icon"));
         source1->setSelected(true);
         auto source2 = Domain::DataSource::Ptr::create();
-        source2->setName("Source 2");
+        source2->setName(QStringLiteral("Source 2"));
         source2->setSelected(false);
         source2->setContentTypes(Domain::DataSource::Tasks);
         auto topLevelProvider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
@@ -83,12 +83,12 @@ private slots:
 
         // Two other sources under source1
         auto source3 = Domain::DataSource::Ptr::create();
-        source3->setName("Source 3");
+        source3->setName(QStringLiteral("Source 3"));
         source3->setSelected(false);
         source3->setContentTypes(Domain::DataSource::Notes);
         auto source4 = Domain::DataSource::Ptr::create();
         source4->setSelected(true);
-        source4->setName("Source 4");
+        source4->setName(QStringLiteral("Source 4"));
         source4->setContentTypes(Domain::DataSource::Notes | Domain::DataSource::Tasks);
         auto source1Provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
         auto source1Result = Domain::QueryResult<Domain::DataSource::Ptr>::create(source1Provider);
@@ -163,9 +163,9 @@ private slots:
         QCOMPARE(model->data(source4Index, Qt::CheckStateRole).toBool(), source4->isSelected());
 
         QCOMPARE(model->data(source1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), source1->iconName());
-        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
+        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
+        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
+        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
 
         QCOMPARE(model->data(source1Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), false);
         QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IsDefaultRole).toBool(), true);
@@ -218,11 +218,11 @@ private slots:
 
         // Two top level sources
         auto source1 = Domain::DataSource::Ptr::create();
-        source1->setName("Source 1");
-        source1->setIconName("foo-icon");
+        source1->setName(QStringLiteral("Source 1"));
+        source1->setIconName(QStringLiteral("foo-icon"));
         source1->setSelected(true);
         auto source2 = Domain::DataSource::Ptr::create();
-        source2->setName("Source 2");
+        source2->setName(QStringLiteral("Source 2"));
         source2->setSelected(false);
         source2->setContentTypes(Domain::DataSource::Tasks);
         auto topLevelProvider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
@@ -232,12 +232,12 @@ private slots:
 
         // Two other sources under source1
         auto source3 = Domain::DataSource::Ptr::create();
-        source3->setName("Source 3");
+        source3->setName(QStringLiteral("Source 3"));
         source3->setSelected(false);
         source3->setContentTypes(Domain::DataSource::Notes);
         auto source4 = Domain::DataSource::Ptr::create();
         source4->setSelected(true);
-        source4->setName("Source 4");
+        source4->setName(QStringLiteral("Source 4"));
         source4->setContentTypes(Domain::DataSource::Notes | Domain::DataSource::Tasks);
         auto source1Provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
         auto source1Result = Domain::QueryResult<Domain::DataSource::Ptr>::create(source1Provider);
@@ -303,9 +303,9 @@ private slots:
         QVERIFY(!model->data(source4Index, Qt::CheckStateRole).isValid());
 
         QCOMPARE(model->data(source1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), source1->iconName());
-        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
-        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QString("folder"));
+        QCOMPARE(model->data(source2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
+        QCOMPARE(model->data(source3Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
+        QCOMPARE(model->data(source4Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
 
         QVERIFY(!model->setData(source1Index, Qt::Unchecked, Qt::CheckStateRole));
         QVERIFY(!model->setData(source2Index, Qt::Checked, Qt::CheckStateRole));
@@ -317,8 +317,8 @@ private slots:
         // GIVEN
 
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("Source");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Source"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setSelected(false);
         source->setListStatus(Domain::DataSource::Unlisted);
@@ -346,8 +346,8 @@ private slots:
         // GIVEN
 
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("Source");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Source"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setSelected(true);
         source->setListStatus(Domain::DataSource::Bookmarked);
@@ -387,8 +387,8 @@ private slots:
         QFETCH(bool, wasBookmarked);
 
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("Source");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Source"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setSelected(wasSelected);
         if (wasBookmarked)
@@ -422,8 +422,8 @@ private slots:
         // GIVEN
 
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("Source");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Source"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setSelected(false);
         source->setListStatus(Domain::DataSource::Unlisted);
@@ -434,7 +434,7 @@ private slots:
         Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
 
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(job);
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
@@ -447,7 +447,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify source Source: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenUnlistSourceFailed()
@@ -455,8 +455,8 @@ private slots:
         // GIVEN
 
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("Source");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Source"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setSelected(false);
         source->setListStatus(Domain::DataSource::Unlisted);
@@ -467,7 +467,7 @@ private slots:
         Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
 
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(job);
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
@@ -480,7 +480,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify source Source: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenBookmarkSourceFailed()
@@ -488,8 +488,8 @@ private slots:
         // GIVEN
 
         auto source = Domain::DataSource::Ptr::create();
-        source->setName("Source");
-        source->setIconName("folder");
+        source->setName(QStringLiteral("Source"));
+        source->setIconName(QStringLiteral("folder"));
         source->setContentTypes(Domain::DataSource::Tasks);
         source->setSelected(false);
         source->setListStatus(Domain::DataSource::Unlisted);
@@ -500,7 +500,7 @@ private slots:
         Utils::MockObject<Domain::DataSourceRepository> sourceRepositoryMock;
 
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source).thenReturn(job);
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
@@ -513,7 +513,7 @@ private slots:
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify source Source: Foo"));
     }
 
     void shouldGetAnErrorMessageWhenSetDataSourceFailed()
@@ -522,8 +522,8 @@ private slots:
 
         // Two top level sources
         auto source1 = Domain::DataSource::Ptr::create();
-        source1->setName("Source 1");
-        source1->setIconName("foo-icon");
+        source1->setName(QStringLiteral("Source 1"));
+        source1->setIconName(QStringLiteral("foo-icon"));
         source1->setSelected(false);
         source1->setContentTypes(Domain::DataSource::Tasks);
         auto topLevelProvider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
@@ -554,14 +554,14 @@ private slots:
 
         // WHEN
         auto job = new FakeJob(this);
-        job->setExpectedError(KJob::KilledJobError, "Foo");
+        job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         sourceRepositoryMock(&Domain::DataSourceRepository::update).when(source1).thenReturn(job);
 
         QVERIFY(model->setData(source1Index, Qt::Unchecked, Qt::CheckStateRole));
 
         // THEN
         QTest::qWait(150);
-        QCOMPARE(errorHandler.m_message, QString("Cannot modify source Source 1: Foo"));
+        QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify source Source 1: Foo"));
     }
 
     void shouldExecBackendSettingsDialog()
