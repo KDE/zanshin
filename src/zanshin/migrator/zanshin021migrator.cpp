@@ -51,11 +51,11 @@ Zanshin021Migrator::SeenItemHash Zanshin021Migrator::fetchAllItems()
     collectionsJob->kjob()->exec();
 
     auto collections = collectionsJob->collections();
-    for (const auto &collection : collections) {
+    foreach (const auto &collection, collections) {
         auto job = m_storage.fetchItems(collection);
         job->kjob()->exec();
         auto items = job->items();
-        for (const Akonadi::Item &item : items) {
+        foreach (const Akonadi::Item &item, items) {
             if (item.hasPayload<KCalCore::Todo::Ptr>()) {
                 auto todo = item.payload<KCalCore::Todo::Ptr>();
                 hash.insert(todo->uid(), SeenItem(item));

@@ -159,7 +159,7 @@ void AkonadiStorageTestBase::shouldListCollections()
     // THEN
     auto collections = job->collections();
     QStringList collectionNames;
-    for (const auto &collection : collections) {
+    foreach (const auto &collection, collections) {
         collectionNames << collection.name();
     }
     collectionNames.sort();
@@ -189,7 +189,7 @@ void AkonadiStorageTestBase::shouldRetrieveAllCollectionAncestors()
 
     // THEN
     auto collections = job->collections();
-    for (const auto &collection : collections) {
+    foreach (const auto &collection, collections) {
         auto parent = collection.parentCollection();
         while (parent != Akonadi::Collection::root()) {
             QVERIFY(parent.isValid());
@@ -216,7 +216,7 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
     // THEN
     auto items = job->items();
     QStringList itemRemoteIds;
-    for (const auto &item : items) {
+    foreach (const auto &item, items) {
         itemRemoteIds << item.remoteId();
         QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
         QVERIFY(!item.attributes().isEmpty());
@@ -225,7 +225,7 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
 
         Akonadi::Tag::List tags = item.tags();
         QVERIFY(!item.tags().isEmpty());
-        for (const auto &tag : tags) {
+        foreach (const auto &tag, tags) {
             QVERIFY(tag.isValid());
             QVERIFY(!tag.name().isEmpty());
             QVERIFY(!tag.type().isEmpty());
@@ -260,7 +260,7 @@ void AkonadiStorageTestBase::shouldListTags()
     // THEN
     auto tags = job->tags();
     QStringList tagGids;
-    for (const Akonadi::Tag &tag : tags) {
+    foreach (const auto &tag, tags) {
         tagGids << tag.gid();
         QVERIFY(!tag.name().isEmpty());
         QVERIFY(!tag.type().isEmpty());
@@ -286,7 +286,7 @@ void AkonadiStorageTestBase::shouldListItemsAssociatedWithTag()
     // THEN
     auto items = job->items();
     QStringList itemRemoteIds;
-    for (const auto &item : items) {
+    foreach (const auto &item, items) {
         itemRemoteIds << item.remoteId();
 
         QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
@@ -554,7 +554,7 @@ void AkonadiStorageTestBase::shouldNotifyItemTagAdded()
     Akonadi::Tag::List notifiedTags = notifiedItem.tags();
 
     QVERIFY(notifiedTags.contains(tag));
-    for (const auto &tag : notifiedTags) {
+    foreach (const auto &tag, notifiedTags) {
         QVERIFY(tag.isValid());
         QVERIFY(!tag.name().isEmpty());
         QVERIFY(!tag.type().isEmpty());
@@ -1375,7 +1375,7 @@ void AkonadiStorageTestBase::shouldFindCollectionsByNameIncludingTheirAncestors(
 
     // THEN
     auto collections = job->collections();
-    for (const auto &collection : collections) {
+    foreach (const auto &collection, collections) {
         auto parent = collection.parentCollection();
         while (parent != Akonadi::Collection::root()) {
             QVERIFY(parent.isValid());
@@ -1437,7 +1437,7 @@ Akonadi::Tag AkonadiStorageTestBase::fetchTagByGID(const QString &gid)
     }
 
     auto tags = job->tags();
-    for (const Akonadi::Tag &tag : tags) {
+    foreach (const auto &tag, tags) {
         if (tag.gid() == gid)
             return tag;
     }

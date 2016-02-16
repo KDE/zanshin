@@ -118,12 +118,12 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : childrenTasks)
+        foreach (const auto &task, childrenTasks)
             childrenProvider->append(task);
 
         auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
@@ -232,7 +232,7 @@ private slots:
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : childrenTasks)
+        foreach (const auto &task, childrenTasks)
             childrenProvider->append(task);
 
         auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
@@ -296,7 +296,7 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
 
         auto childrenTasks = createChildrenTasks();
@@ -365,12 +365,12 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : childrenTasks)
+        foreach (const auto &task, childrenTasks)
             childrenProvider->append(task);
 
         auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
@@ -468,12 +468,12 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : childrenTasks)
+        foreach (const auto &task, childrenTasks)
             childrenProvider->append(task);
 
         auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
@@ -537,12 +537,12 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : childrenTasks)
+        foreach (const auto &task, childrenTasks)
             childrenProvider->append(task);
 
         auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);
@@ -607,12 +607,12 @@ private slots:
         const int taskPos = 1;
         const auto task = tasks[taskPos];
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
 
         auto childrenTasks = createChildrenTasks();
         auto childrenProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : childrenTasks)
+        foreach (const auto &task, childrenTasks)
             childrenProvider->append(task);
         
         auto childrenList = Domain::QueryResult<Domain::Task::Ptr>::create(childrenProvider);

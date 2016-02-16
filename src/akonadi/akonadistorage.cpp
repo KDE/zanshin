@@ -72,7 +72,7 @@ public:
         // Memorize them to reconstruct the ancestor chain later
         QMap<Collection::Id, Collection> collectionsMap;
         collectionsMap[m_collection.id()] = m_collection;
-        for (auto collection : collections) {
+        foreach (const auto &collection, collections) {
             collectionsMap[collection.id()] = collection;
         }
 
@@ -149,7 +149,7 @@ public:
         // Memorize them to reconstruct the ancestor chain later
         QMap<Collection::Id, Collection> collectionsMap;
         collectionsMap[Akonadi::Collection::root().id()] = Akonadi::Collection::root();
-        for (auto collection : collections) {
+        foreach (const auto &collection, collections) {
             collectionsMap[collection.id()] = collection;
         }
 

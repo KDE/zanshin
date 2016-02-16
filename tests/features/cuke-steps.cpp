@@ -777,7 +777,7 @@ THEN("^the list is") {
         QModelIndex expectedIndex = referenceModel->index(row, 0);
         QModelIndex resultIndex = context->indices.at(row);
 
-        for (auto role : usedRoles) {
+        foreach (const auto &role, usedRoles) {
             COMPARE_OR_DUMP(Zanshin::indexString(resultIndex, role),
                             Zanshin::indexString(expectedIndex, role));
         }

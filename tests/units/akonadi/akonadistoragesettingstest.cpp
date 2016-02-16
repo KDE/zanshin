@@ -62,7 +62,7 @@ private:
     Akonadi::Collection::List colList(int max)
     {
         Akonadi::Collection::List list;
-        for (auto id : idList(max)) {
+        foreach (auto id, idList(max)) {
             list << Collection(id);
         }
         return list;

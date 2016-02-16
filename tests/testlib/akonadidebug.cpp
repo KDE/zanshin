@@ -35,11 +35,11 @@ void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &stora
                                             Akonadi::StorageInterface::Recursive,
                                             Akonadi::StorageInterface::AllContent);
     colJob->kjob()->exec();
-    for (const auto &col : colJob->collections()) {
+    foreach (const auto &col, colJob->collections()) {
         qDebug() << "COL:" << col.id() << col.name() << col.remoteId();
         auto itemJob = storage->fetchItems(col);
         itemJob->kjob()->exec();
-        for (const auto &item : itemJob->items()) {
+        foreach (const auto &item, itemJob->items()) {
             QString summary;
             if (item.hasPayload<KCalCore::Todo::Ptr>())
                 summary = item.payload<KCalCore::Todo::Ptr>()->summary();
@@ -49,7 +49,7 @@ void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &stora
 
     auto tagJob = storage->fetchTags();
     tagJob->kjob()->exec();
-    for (const auto &tag : tagJob->tags()) {
+    foreach (const auto &tag, tagJob->tags()) {
         qDebug() << "TAG:" << tag.id() << tag.name();
     }
 }

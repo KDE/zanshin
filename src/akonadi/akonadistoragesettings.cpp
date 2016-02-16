@@ -44,7 +44,7 @@ Collection::List StorageSettings::activeCollections()
     KConfigGroup config(KSharedConfig::openConfig(), "General");
     QList<Collection::Id> ids = config.readEntry("activeCollections", QList<Collection::Id>());
     Collection::List list;
-    for (auto id : ids) {
+    foreach (const auto &id, ids) {
         list << Collection(id);
     }
     return list;

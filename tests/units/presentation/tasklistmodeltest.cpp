@@ -68,7 +68,7 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
@@ -125,7 +125,7 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
@@ -154,7 +154,7 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
@@ -178,7 +178,7 @@ private slots:
         // GIVEN
         auto tasks = createTasks();
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
@@ -204,7 +204,7 @@ private slots:
         const auto task = tasks[taskPos];
 
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        for (auto task : tasks)
+        foreach (const auto &task, tasks)
             provider->append(task);
         auto list = Domain::QueryResult<Domain::Task::Ptr>::create(provider);
 
