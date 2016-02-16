@@ -128,6 +128,10 @@ Task::Delegate::Delegate(const Task::Delegate &other)
 {
 }
 
+Task::Delegate::~Delegate()
+{
+}
+
 Task::Delegate &Task::Delegate::operator=(const Task::Delegate &other)
 {
     Delegate copy(other);

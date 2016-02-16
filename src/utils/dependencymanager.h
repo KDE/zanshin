@@ -70,6 +70,10 @@ namespace Internal {
         {
         }
 
+        ~Provider()
+        {
+        }
+
         Provider &operator=(const Provider &other)
         {
             Provider tmp(other);

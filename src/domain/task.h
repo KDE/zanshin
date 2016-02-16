@@ -47,6 +47,7 @@ public:
         Delegate();
         Delegate(const QString &name, const QString &email);
         Delegate(const Delegate &other);
+        ~Delegate();
 
         Delegate &operator=(const Delegate &other);
         bool operator==(const Delegate &other) const;
