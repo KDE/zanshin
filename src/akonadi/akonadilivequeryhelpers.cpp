@@ -73,7 +73,7 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(con
                     directChildren[directChild.id()] = directChild;
             }
 
-            foreach (const auto &directChild, directChildren.values())
+            foreach (const auto &directChild, directChildren)
                 add(directChild);
         });
     };
@@ -103,7 +103,7 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::searchCollections(co
                     directChildren[directChild.id()] = directChild;
             }
 
-            foreach (const auto &directChild, directChildren.values())
+            foreach (const auto &directChild, directChildren)
                 add(directChild);
         });
     };

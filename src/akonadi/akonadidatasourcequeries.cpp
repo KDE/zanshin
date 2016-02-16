@@ -96,7 +96,7 @@ void DataSourceQueries::setSearchTerm(const QString &term)
     if (m_findSearchTopLevel) {
         m_findSearchTopLevel->reset();
     }
-    foreach(auto query, m_findSearchChildren.values())
+    foreach (auto query, m_findSearchChildren)
         query->reset();
 }
 
