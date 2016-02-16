@@ -26,7 +26,7 @@
 #define UTILS_DEPENDENCYMANAGER_H
 
 #include <QList>
-#include <QMap>
+#include <QHash>
 #include <QSharedPointer>
 
 #include <utility>
@@ -120,11 +120,11 @@ namespace Internal {
     private:
         Supplier();
 
-        static QMap< DependencyManager*, Provider<Iface> > s_providers;
+        static QHash< DependencyManager*, Provider<Iface> > s_providers;
     };
 
     template<class Iface>
-    QMap< DependencyManager*, Provider<Iface> > Supplier<Iface>::s_providers;
+    QHash< DependencyManager*, Provider<Iface> > Supplier<Iface>::s_providers;
 
     struct MultipleInstancesPolicy
     {
