@@ -4,7 +4,4 @@ if(Boost_UNIT_TEST_FRAMEWORK_FOUND)
     add_subdirectory(zanshin)
     add_subdirectory(renku)
 
-    include(CucumberTests.cmake)
-    cucumber_tests(zanshin renku)
-
 endif()

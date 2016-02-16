@@ -12,7 +12,8 @@ void acceptWireProtocol(int port) {
     WireProtocolHandler protocolHandler(&wireCodec, &cukeEngine);
     SocketServer server(&protocolHandler);
     server.listen(port);
-    server.acceptOnce();
+    while (true)
+        server.acceptOnce();
 }
 
 }
