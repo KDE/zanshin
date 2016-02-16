@@ -76,7 +76,7 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact
            return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         m_serializer->updateItemProject(childItem, parent);
 
         // Check collections to know if we need to move child
@@ -87,7 +87,7 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact
                 return;
 
             Q_ASSERT(fetchParentItemJob->items().size() == 1);
-            auto parentItem = fetchParentItemJob->items().first();
+            auto parentItem = fetchParentItemJob->items().at(0);
 
             const int itemCollectionId = childItem.parentCollection().id();
             const int parentCollectionId = parentItem.parentCollection().id();
@@ -136,7 +136,7 @@ KJob *ProjectRepository::dissociate(Domain::Artifact::Ptr child)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
 
         m_serializer->removeItemParent(childItem);
 

@@ -145,7 +145,7 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
            return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto item = fetchItemJob->items().first();
+        auto item = fetchItemJob->items().at(0);
 
         ItemFetchJobInterface *fetchCollectionItemsJob = m_storage->fetchItems(item.parentCollection());
         compositeJob->install(fetchCollectionItemsJob->kjob(), [fetchCollectionItemsJob, item, compositeJob, this] {
@@ -175,7 +175,7 @@ KJob *TaskRepository::promoteToProject(Domain::Task::Ptr task)
            return;
 
         Q_ASSERT(fetchJob->items().size() == 1);
-        auto item = fetchJob->items().first();
+        auto item = fetchJob->items().at(0);
         m_serializer->promoteItemToProject(item);
 
         auto updateJob = m_storage->updateItem(item);
@@ -196,7 +196,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
            return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         m_serializer->updateItemParent(childItem, parent);
 
         // Check collections to know if we need to move child
@@ -272,7 +272,7 @@ KJob *TaskRepository::dissociate(Domain::Task::Ptr child)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
 
         m_serializer->removeItemParent(childItem);
 
@@ -294,7 +294,7 @@ KJob *TaskRepository::dissociateAll(Domain::Task::Ptr child)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
 
         m_serializer->removeItemParent(childItem);
         m_serializer->clearItem(&childItem);

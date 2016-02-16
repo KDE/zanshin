@@ -119,8 +119,8 @@ private slots:
         QCOMPARE(data.collection(c2.id()), c2);
 
         QCOMPARE(spy.size(), 2);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Collection>(), c1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Collection>(), c2);
     }
 
     void shouldModifyCollections()
@@ -145,7 +145,7 @@ private slots:
         QCOMPARE(data.collection(c1.id()), c2);
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Collection>(), c2);
     }
 
     void shouldNotLooseParentCollectionOnModifyCollection()
@@ -218,7 +218,7 @@ private slots:
         // THEN
         QVERIFY(data.childCollections(c1.id()).isEmpty());
         QCOMPARE(data.childCollections(c2.id()).size(), 1);
-        QCOMPARE(data.childCollections(c2.id()).first(), c3);
+        QCOMPARE(data.childCollections(c2.id()).at(0), c3);
     }
 
     void shouldRemoveCollections()
@@ -257,7 +257,7 @@ private slots:
 
         // THEN
         QCOMPARE(data.collections().size(), 1);
-        QCOMPARE(data.collections().first(), c1);
+        QCOMPARE(data.collections().at(0), c1);
 
         QVERIFY(!data.collection(c2.id()).isValid());
         QVERIFY(!data.collection(c3.id()).isValid());
@@ -275,8 +275,8 @@ private slots:
         QVERIFY(data.childItems(c3.id()).isEmpty());
 
         QCOMPARE(spy.size(), 2);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c3);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Collection>(), c2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Collection>(), c3);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Collection>(), c2);
     }
 
     void shouldCreateTags()
@@ -303,8 +303,8 @@ private slots:
         QCOMPARE(data.tag(t2.id()), t2);
 
         QCOMPARE(spy.size(), 2);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Tag>(), t1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Tag>(), t2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Tag>(), t1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Tag>(), t2);
     }
 
     void shouldModifyTags()
@@ -329,7 +329,7 @@ private slots:
         QCOMPARE(data.tag(t1.id()), t2);
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Tag>(), t2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Tag>(), t2);
     }
 
     void shouldRemoveTags()
@@ -370,12 +370,12 @@ private slots:
 
         // THEN
         QCOMPARE(data.tags().size(), 1);
-        QCOMPARE(data.tags().first(), t1);
+        QCOMPARE(data.tags().at(0), t1);
 
         QVERIFY(!data.tag(t2.id()).isValid());
 
         QCOMPARE(data.tagItems(t1.id()).size(), 1);
-        QCOMPARE(data.tagItems(t1.id()).first(), i1);
+        QCOMPARE(data.tagItems(t1.id()).at(0), i1);
         QVERIFY(data.tagItems(t2.id()).isEmpty());
 
         QCOMPARE(data.items().toList().toSet(), itemSet);
@@ -385,11 +385,11 @@ private slots:
         QVERIFY(!data.item(i2.id()).tags().contains(t2));
 
         QCOMPARE(tagSpy.size(), 1);
-        QCOMPARE(tagSpy.takeFirst().takeFirst().value<Akonadi::Tag>(), t2);
+        QCOMPARE(tagSpy.takeFirst().at(0).value<Akonadi::Tag>(), t2);
 
         QCOMPARE(itemSpy.size(), 1);
-        QCOMPARE(itemSpy.first().first().value<Akonadi::Item>(), i2);
-        QVERIFY(!itemSpy.first().first().value<Akonadi::Item>().tags().contains(t2));
+        QCOMPARE(itemSpy.first().at(0).value<Akonadi::Item>(), i2);
+        QVERIFY(!itemSpy.first().at(0).value<Akonadi::Item>().tags().contains(t2));
     }
 
     void shouldCreateItems()
@@ -415,8 +415,8 @@ private slots:
         QCOMPARE(data.item(i2.id()), i2);
 
         QCOMPARE(spy.size(), 2);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i2);
     }
 
     void shouldModifyItems()
@@ -448,7 +448,7 @@ private slots:
         QCOMPARE(data.item(i1.id()), i2);
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i2);
 
         QCOMPARE(moveSpy.size(), 0);
     }
@@ -496,7 +496,7 @@ private slots:
 
         // THEN
         QCOMPARE(data.childItems(c1.id()).size(), 1);
-        QCOMPARE(data.childItems(c1.id()).first(), i1);
+        QCOMPARE(data.childItems(c1.id()).at(0), i1);
     }
 
     void shouldReparentItemsOnModify()
@@ -527,10 +527,10 @@ private slots:
         // THEN
         QVERIFY(data.childItems(c1.id()).isEmpty());
         QCOMPARE(data.childItems(c2.id()).size(), 1);
-        QCOMPARE(data.childItems(c2.id()).first(), i1);
+        QCOMPARE(data.childItems(c2.id()).at(0), i1);
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i1);
     }
 
     void shouldListTagItems()
@@ -550,7 +550,7 @@ private slots:
 
         // THEN
         QCOMPARE(data.tagItems(t1.id()).size(), 1);
-        QCOMPARE(data.tagItems(t1.id()).first(), i1);
+        QCOMPARE(data.tagItems(t1.id()).at(0), i1);
     }
 
     void shouldRetagItemsOnModify()
@@ -582,10 +582,10 @@ private slots:
         // THEN
         QVERIFY(data.tagItems(t1.id()).isEmpty());
         QCOMPARE(data.tagItems(t2.id()).size(), 1);
-        QCOMPARE(data.tagItems(t2.id()).first(), i1);
+        QCOMPARE(data.tagItems(t2.id()).at(0), i1);
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i1);
     }
 
     void shouldRemoveItems()
@@ -613,7 +613,7 @@ private slots:
         QVERIFY(data.childItems(c1.id()).isEmpty());
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<Akonadi::Item>(), i1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i1);
     }
 };
 

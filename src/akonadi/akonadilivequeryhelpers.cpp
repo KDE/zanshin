@@ -176,7 +176,7 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &
                 return;
 
             Q_ASSERT(job->items().size() == 1);
-            auto item = job->items()[0];
+            auto item = job->items().at(0);
             Q_ASSERT(item.parentCollection().isValid());
             auto job = storage->fetchItems(item.parentCollection());
             Utils::JobHandler::install(job->kjob(), [job, add] {

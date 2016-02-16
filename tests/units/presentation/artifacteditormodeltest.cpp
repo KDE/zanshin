@@ -105,27 +105,27 @@ private slots:
         QVERIFY(model.hasTaskProperties());
 
         QCOMPARE(textSpy.size(), 1);
-        QCOMPARE(textSpy.takeFirst().takeFirst().toString(), task->text());
+        QCOMPARE(textSpy.takeFirst().at(0).toString(), task->text());
         QCOMPARE(model.property("text").toString(), task->text());
 
         QCOMPARE(titleSpy.size(), 1);
-        QCOMPARE(titleSpy.takeFirst().takeFirst().toString(), task->title());
+        QCOMPARE(titleSpy.takeFirst().at(0).toString(), task->title());
         QCOMPARE(model.property("title").toString(), task->title());
 
         QCOMPARE(doneSpy.size(), 1);
-        QCOMPARE(doneSpy.takeFirst().takeFirst().toBool(), task->isDone());
+        QCOMPARE(doneSpy.takeFirst().at(0).toBool(), task->isDone());
         QCOMPARE(model.property("done").toBool(), task->isDone());
 
         QCOMPARE(startSpy.size(), 1);
-        QCOMPARE(startSpy.takeFirst().takeFirst().toDateTime(), task->startDate());
+        QCOMPARE(startSpy.takeFirst().at(0).toDateTime(), task->startDate());
         QCOMPARE(model.property("startDate").toDateTime(), task->startDate());
 
         QCOMPARE(dueSpy.size(), 1);
-        QCOMPARE(dueSpy.takeFirst().takeFirst().toDateTime(), task->dueDate());
+        QCOMPARE(dueSpy.takeFirst().at(0).toDateTime(), task->dueDate());
         QCOMPARE(model.property("dueDate").toDateTime(), task->dueDate());
 
         QCOMPARE(delegateSpy.size(), 1);
-        QCOMPARE(delegateSpy.takeFirst().takeFirst().toString(), task->delegate().display());
+        QCOMPARE(delegateSpy.takeFirst().at(0).toString(), task->delegate().display());
         QCOMPARE(model.property("delegateText").toString(), task->delegate().display());
     }
 
@@ -154,27 +154,27 @@ private slots:
         QVERIFY(!model.hasTaskProperties());
 
         QCOMPARE(textSpy.size(), 1);
-        QCOMPARE(textSpy.takeFirst().takeFirst().toString(), note->text());
+        QCOMPARE(textSpy.takeFirst().at(0).toString(), note->text());
         QCOMPARE(model.property("text").toString(), note->text());
 
         QCOMPARE(titleSpy.size(), 1);
-        QCOMPARE(titleSpy.takeFirst().takeFirst().toString(), note->title());
+        QCOMPARE(titleSpy.takeFirst().at(0).toString(), note->title());
         QCOMPARE(model.property("title").toString(), note->title());
 
         QCOMPARE(doneSpy.size(), 1);
-        QCOMPARE(doneSpy.takeFirst().takeFirst().toBool(), false);
+        QCOMPARE(doneSpy.takeFirst().at(0).toBool(), false);
         QCOMPARE(model.property("done").toBool(), false);
 
         QCOMPARE(startSpy.size(), 1);
-        QVERIFY(startSpy.takeFirst().takeFirst().toDateTime().isNull());
+        QVERIFY(startSpy.takeFirst().at(0).toDateTime().isNull());
         QVERIFY(model.property("startDate").toDateTime().isNull());
 
         QCOMPARE(dueSpy.size(), 1);
-        QVERIFY(dueSpy.takeFirst().takeFirst().toDateTime().isNull());
+        QVERIFY(dueSpy.takeFirst().at(0).toDateTime().isNull());
         QVERIFY(model.property("dueDate").toDateTime().isNull());
 
         QCOMPARE(delegateSpy.size(), 1);
-        QVERIFY(delegateSpy.takeFirst().takeFirst().toString().isEmpty());
+        QVERIFY(delegateSpy.takeFirst().at(0).toString().isEmpty());
         QVERIFY(model.property("delegateText").toString().isEmpty());
     }
 
@@ -238,7 +238,7 @@ private slots:
 
         // THEN
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
+        QCOMPARE(spy.takeFirst().at(0), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
     }
 
@@ -255,7 +255,7 @@ private slots:
 
         // THEN
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().toString(), task->delegate().display());
+        QCOMPARE(spy.takeFirst().at(0).toString(), task->delegate().display());
         QCOMPARE(model.property("delegateText").toString(), task->delegate().display());
     }
 
@@ -288,7 +288,7 @@ private slots:
 
         // THEN
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
+        QCOMPARE(spy.takeFirst().at(0), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
         QVERIFY(!savedArtifact);
@@ -331,7 +331,7 @@ private slots:
 
         // THEN
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
+        QCOMPARE(spy.takeFirst().at(0), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
         QVERIFY(!savedArtifact);
@@ -382,7 +382,7 @@ private slots:
 
         // THEN
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst(), propertyValue);
+        QCOMPARE(spy.takeFirst().at(0), propertyValue);
         QCOMPARE(model->property(propertyName), propertyValue);
         QVERIFY(artifact->property(propertyName) != propertyValue);
         QVERIFY(!savedArtifact);

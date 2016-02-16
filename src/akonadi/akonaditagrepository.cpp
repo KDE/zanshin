@@ -67,7 +67,7 @@ KJob *TagRepository::associate(Domain::Tag::Ptr parent, Domain::Note::Ptr child)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         childItem.setTag(akonadiTag);
 
         auto updateJob = m_storage->updateItem(childItem);
@@ -89,7 +89,7 @@ KJob *TagRepository::dissociate(Domain::Tag::Ptr parent, Domain::Note::Ptr child
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         auto tag = m_serializer->createAkonadiTagFromTag(parent);
         Q_ASSERT(tag.isValid());
         childItem.clearTag(tag);
@@ -115,7 +115,7 @@ KJob *TagRepository::dissociateAll(Domain::Note::Ptr child)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         foreach (const Tag &tag, childItem.tags())
             childItem.clearTag(tag);
 

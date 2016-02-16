@@ -330,7 +330,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionAdded()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedCollection = spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    auto notifiedCollection = spy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.name(), collection.name());
 
     auto parent = notifiedCollection.parentCollection();
@@ -362,7 +362,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionRemoved()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedCollection= spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    auto notifiedCollection= spy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.id(), collection.id());
 }
 
@@ -389,7 +389,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionChanged()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedCollection = spy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    auto notifiedCollection = spy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.id(), collection.id());
     QCOMPARE(notifiedCollection.name(), collection.name());
 
@@ -432,7 +432,7 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
     QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
 
@@ -465,7 +465,7 @@ void AkonadiStorageTestBase::shouldNotifyItemRemoved()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
 
     auto parent = notifiedItem.parentCollection();
@@ -508,7 +508,7 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
     QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
     QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
@@ -547,7 +547,7 @@ void AkonadiStorageTestBase::shouldNotifyItemTagAdded()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
     QVERIFY(notifiedItem.hasPayload<KCalCore::Todo::Ptr>());
 
@@ -576,7 +576,7 @@ void AkonadiStorageTestBase::shouldNotifyItemTagRemoved() // aka dissociate
     auto job = storage->fetchTagItems(tag);
     AKVERIFYEXEC(job->kjob());
 
-    auto item = job->items().first();
+    auto item = job->items().at(0);
     QCOMPARE(item.remoteId(), expectedRemoteIds);
 
     QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
@@ -599,7 +599,7 @@ void AkonadiStorageTestBase::shouldNotifyItemTagRemoved() // aka dissociate
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
     QVERIFY(!notifiedItem.tags().contains(tag));
 }
@@ -628,7 +628,7 @@ void AkonadiStorageTestBase::shouldNotifyTagAdded()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+    auto notifiedTag = spy.takeFirst().at(0).value<Akonadi::Tag>();
     QCOMPARE(notifiedTag.gid(), tag.gid());
     QCOMPARE(notifiedTag.name(), tag.name());
     QCOMPARE(notifiedTag.type(), tag.type());
@@ -647,7 +647,7 @@ void AkonadiStorageTestBase::shouldNotifyTagRemoved()
     AKVERIFYEXEC(job->kjob());
 
     QCOMPARE(job->items().size(), 1);
-    auto itemTagged = job->items().first();
+    auto itemTagged = job->items().at(0);
     QCOMPARE(itemTagged.remoteId(), expectedRemoteIds);
 
     // A spied monitor
@@ -665,11 +665,11 @@ void AkonadiStorageTestBase::shouldNotifyTagRemoved()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+    auto notifiedTag = spy.takeFirst().at(0).value<Akonadi::Tag>();
     QCOMPARE(notifiedTag.id(), tag.id());
 
     QCOMPARE(spyItemChanged.size(), 1);
-    auto notifiedItem = spyItemChanged.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spyItemChanged.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), itemTagged.id());
 }
 
@@ -695,7 +695,7 @@ void AkonadiStorageTestBase::shouldNotifyTagChanged()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+    auto notifiedTag = spy.takeFirst().at(0).value<Akonadi::Tag>();
     QCOMPARE(notifiedTag.id(), tag.id());
     QCOMPARE(notifiedTag.name(), tag.name());
 }
@@ -758,7 +758,7 @@ void AkonadiStorageTestBase::shouldUpdateItem()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
 
     // KCalCore 4.83 fixes this bug
@@ -812,12 +812,12 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     auto job = storage->fetchItem(item1);
     AKVERIFYEXEC(job->kjob());
     QCOMPARE(job->items().size(), 1);
-    item1 = job->items()[0];
+    item1 = job->items().at(0);
 
     job = storage->fetchItem(item2);
     AKVERIFYEXEC(job->kjob());
     QCOMPARE(job->items().size(), 1);
-    item2 = job->items()[0];
+    item2 = job->items().at(0);
 
     QCOMPARE(item1.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("Buy kiwis"));
     QCOMPARE(item2.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("Buy cheese"));
@@ -856,7 +856,7 @@ void AkonadiStorageTestBase::shouldCreateItem()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.parentCollection(), calendar2());
     QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
 }
@@ -910,7 +910,7 @@ void AkonadiStorageTestBase::shouldMoveItem()
     QTRY_VERIFY(!spyMoved.isEmpty());
 
     QCOMPARE(spyMoved.size(), 1);
-    auto movedItem = spyMoved.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto movedItem = spyMoved.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(movedItem.id(), item.id());
 }
 
@@ -935,7 +935,7 @@ void AkonadiStorageTestBase::shouldMoveItems()
     QTRY_VERIFY(!spyMoved.isEmpty());
 
     QCOMPARE(spyMoved.size(), 1);
-    auto movedItem = spyMoved.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto movedItem = spyMoved.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(movedItem.id(), item.id());
 }
 
@@ -961,7 +961,7 @@ void AkonadiStorageTestBase::shouldDeleteItem()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
 }
 
@@ -992,9 +992,9 @@ void AkonadiStorageTestBase::shouldDeleteItems()
 
     // THEN
     QCOMPARE(spy.size(), 2);
-    auto notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
-    notifiedItem = spy.takeFirst().takeFirst().value<Akonadi::Item>();
+    notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item2.id());
 }
 
@@ -1027,7 +1027,7 @@ void AkonadiStorageTestBase::shouldCreateTag()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+    auto notifiedTag = spy.takeFirst().at(0).value<Akonadi::Tag>();
     QCOMPARE(notifiedTag.name(), name);
     QCOMPARE(notifiedTag.type(), type);
     QCOMPARE(notifiedTag.gid(), gid);
@@ -1055,7 +1055,7 @@ void AkonadiStorageTestBase::shouldRemoveTag()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+    auto notifiedTag = spy.takeFirst().at(0).value<Akonadi::Tag>();
     QCOMPARE(notifiedTag.id(), tag.id());
 }
 
@@ -1080,7 +1080,7 @@ void AkonadiStorageTestBase::shouldUpdateTag()
 
     // THEN
     QCOMPARE(spy.size(), 1);
-    auto notifiedTag = spy.takeFirst().takeFirst().value<Akonadi::Tag>();
+    auto notifiedTag = spy.takeFirst().at(0).value<Akonadi::Tag>();
     QCOMPARE(notifiedTag.id(), tag.id());
 }
 
@@ -1112,7 +1112,7 @@ void AkonadiStorageTestBase::shouldUpdateCollection()
     // THEN
     QCOMPARE(changeSpy.size(), 1);
     QCOMPARE(selectionSpy.size(), 0);
-    auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    auto notifiedCollection = changeSpy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.id(), collection.id());
     QVERIFY(notifiedCollection.hasAttribute<Akonadi::EntityDisplayAttribute>());
     QCOMPARE(notifiedCollection.attribute<Akonadi::EntityDisplayAttribute>()->displayName(), attr->displayName());
@@ -1143,7 +1143,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionTimestampChanges()
     // THEN
     QCOMPARE(changeSpy.size(), 1);
 
-    auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    auto notifiedCollection = changeSpy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.id(), collection.id());
     QVERIFY(notifiedCollection.hasAttribute<Akonadi::TimestampAttribute>());
 }
@@ -1177,12 +1177,12 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSelectionChanges()
     QCOMPARE(changeSpy.size(), 1);
     QCOMPARE(selectionSpy.size(), 1);
 
-    auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    auto notifiedCollection = changeSpy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.id(), collection.id());
     QVERIFY(notifiedCollection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
     QVERIFY(!notifiedCollection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected());
 
-    notifiedCollection = selectionSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    notifiedCollection = selectionSpy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.id(), collection.id());
     QVERIFY(notifiedCollection.hasAttribute<Akonadi::ApplicationSelectedAttribute>());
     QVERIFY(!notifiedCollection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected());
@@ -1262,7 +1262,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSubscriptionChanges()
     // THEN
     QCOMPARE(changeSpy.size(), 1);
 
-    auto notifiedCollection = changeSpy.takeFirst().takeFirst().value<Akonadi::Collection>();
+    auto notifiedCollection = changeSpy.takeFirst().at(0).value<Akonadi::Collection>();
     QCOMPARE(notifiedCollection.id(), collection.id());
     QCOMPARE(notifiedCollection.enabled(), isEnabled);
     QCOMPARE(notifiedCollection.referenced(), isReferenced);
@@ -1404,7 +1404,7 @@ Akonadi::Item AkonadiStorageTestBase::fetchItemByRID(const QString &remoteId, co
         return Akonadi::Item();
     }
 
-    return job->items().first();
+    return job->items().at(0);
 }
 
 Akonadi::Collection AkonadiStorageTestBase::fetchCollectionByRID(const QString &remoteId)
@@ -1425,7 +1425,7 @@ Akonadi::Collection AkonadiStorageTestBase::fetchCollectionByRID(const QString &
         return Akonadi::Collection();
     }
 
-    return job->collections().first();
+    return job->collections().at(0);
 }
 
 Akonadi::Tag AkonadiStorageTestBase::fetchTagByGID(const QString &gid)

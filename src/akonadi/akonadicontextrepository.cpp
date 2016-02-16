@@ -74,7 +74,7 @@ KJob *ContextRepository::associate(Domain::Context::Ptr parent, Domain::Task::Pt
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         auto tag = m_serializer->createTagFromContext(parent);
         Q_ASSERT(tag.isValid());
         childItem.setTag(tag);
@@ -100,7 +100,7 @@ KJob *ContextRepository::dissociate(Domain::Context::Ptr parent, Domain::Task::P
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         auto tag = m_serializer->createTagFromContext(parent);
         Q_ASSERT(tag.isValid());
         childItem.clearTag(tag);
@@ -126,7 +126,7 @@ KJob *ContextRepository::dissociateAll(Domain::Task::Ptr child)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
-        auto childItem = fetchItemJob->items().first();
+        auto childItem = fetchItemJob->items().at(0);
         childItem.clearTags();
 
         auto updateJob = m_storage->updateItem(childItem);

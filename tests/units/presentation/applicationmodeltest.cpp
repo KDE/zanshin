@@ -145,7 +145,7 @@ private slots:
         // THEN
         QCOMPARE(app.currentPage(), page);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.takeFirst().takeFirst().value<QObject*>(), page);
+        QCOMPARE(spy.takeFirst().at(0).value<QObject*>(), page);
     }
 
     void shouldSupportNullPage()
@@ -163,7 +163,7 @@ private slots:
         // THEN
         QVERIFY(!app.currentPage());
         QCOMPARE(spy.count(), 1);
-        QVERIFY(!spy.takeFirst().takeFirst().value<QObject*>());
+        QVERIFY(!spy.takeFirst().at(0).value<QObject*>());
     }
 
     void shouldTakeOwnershipOfCurrentPage()
