@@ -90,9 +90,9 @@ void AkonadiFakeDataXmlLoader::load(const QString &fileName) const
             i.setId(itemId++);
             i.setParentCollection(c);
             i.setModificationTime(QDateTime::currentDateTime());
-            auto tags = Akonadi::Tag::List();
-            std::transform(i.tags().constBegin(), i.tags().constEnd(),
-                           std::back_inserter(tags),
+            auto tags = i.tags();
+            std::transform(tags.constBegin(), tags.constEnd(),
+                           tags.begin(),
                            [&tagByRid] (const Akonadi::Tag &tag) {
                                return tagByRid.value(tag.remoteId());
                            });

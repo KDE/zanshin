@@ -205,8 +205,9 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
+        const auto sources = result->data();
         auto actualNames = QStringList();
-        std::transform(result->data().constBegin(), result->data().constEnd(),
+        std::transform(sources.constBegin(), sources.constEnd(),
                        std::back_inserter(actualNames),
                        [] (const Domain::DataSource::Ptr &source) { return source->name(); });
         actualNames.sort();
@@ -437,8 +438,9 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
+        const auto sources = result->data();
         auto actualNames = QStringList();
-        std::transform(result->data().constBegin(), result->data().constEnd(),
+        std::transform(sources.constBegin(), sources.constEnd(),
                        std::back_inserter(actualNames),
                        [] (const Domain::DataSource::Ptr &source) { return source->name(); });
         actualNames.sort();
@@ -703,8 +705,9 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
+        auto sources = result->data();
         auto actualNames = QStringList();
-        std::transform(result->data().constBegin(), result->data().constEnd(),
+        std::transform(sources.constBegin(), sources.constEnd(),
                        std::back_inserter(actualNames),
                        [] (const Domain::DataSource::Ptr &source) { return source->name(); });
         actualNames.sort();
@@ -720,8 +723,9 @@ private slots:
         // THEN
         TestHelpers::waitForEmptyJobQueue();
 
+        sources = result->data();
         actualNames.clear();
-        std::transform(result->data().constBegin(), result->data().constEnd(),
+        std::transform(sources.constBegin(), sources.constEnd(),
                        std::back_inserter(actualNames),
                        [] (const Domain::DataSource::Ptr &source) { return source->name(); });
         actualNames.sort();
@@ -973,8 +977,9 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
 
+        auto sources = result->data();
         auto actualNames = QStringList();
-        std::transform(result->data().constBegin(), result->data().constEnd(),
+        std::transform(sources.constBegin(), sources.constEnd(),
                        std::back_inserter(actualNames),
                        [] (const Domain::DataSource::Ptr &source) { return source->name(); });
         actualNames.sort();
@@ -990,8 +995,9 @@ private slots:
         // THEN
         TestHelpers::waitForEmptyJobQueue();
 
+        sources = result->data();
         actualNames.clear();
-        std::transform(result->data().constBegin(), result->data().constEnd(),
+        std::transform(sources.constBegin(), sources.constEnd(),
                        std::back_inserter(actualNames),
                        [] (const Domain::DataSource::Ptr &source) { return source->name(); });
         actualNames.sort();
