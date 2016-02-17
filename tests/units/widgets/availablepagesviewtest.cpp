@@ -58,7 +58,7 @@ public:
     {
     }
 
-    int exec()
+    int exec() Q_DECL_OVERRIDE
     {
         execCount++;
         return QDialog::Accepted;
@@ -97,7 +97,7 @@ public:
     {
     }
 
-    int exec()
+    int exec() Q_DECL_OVERRIDE
     {
         execCount++;
         return QDialog::Accepted;

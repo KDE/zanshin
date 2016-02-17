@@ -41,13 +41,13 @@ public:
     using FakeJob::FakeJob;
 
     void setCollections(const Akonadi::Collection::List &collections);
-    Akonadi::Collection::List collections() const;
+    Akonadi::Collection::List collections() const Q_DECL_OVERRIDE;
 
     QString resource() const;
     void setResource(const QString &resource) Q_DECL_OVERRIDE;
 
     bool filtered() const;
-    void setFiltered(bool filter);
+    void setFiltered(bool filter) Q_DECL_OVERRIDE;
 
 private:
     Akonadi::Collection::List m_collections;
@@ -62,7 +62,7 @@ public:
     using FakeJob::FakeJob;
 
     void setCollections(const Akonadi::Collection::List &collections);
-    Akonadi::Collection::List collections() const;
+    Akonadi::Collection::List collections() const Q_DECL_OVERRIDE;
 
 private:
     Akonadi::Collection::List m_collections;
@@ -75,7 +75,7 @@ public:
     using FakeJob::FakeJob;
 
     void setItems(const Akonadi::Item::List &items);
-    Akonadi::Item::List items() const;
+    Akonadi::Item::List items() const Q_DECL_OVERRIDE;
 
     Akonadi::Collection collection() const;
     void setCollection(const Akonadi::Collection &collection) Q_DECL_OVERRIDE;
@@ -92,7 +92,7 @@ public:
     using FakeJob::FakeJob;
 
     void setTags(const Akonadi::Tag::List &tags);
-    Akonadi::Tag::List tags() const;
+    Akonadi::Tag::List tags() const Q_DECL_OVERRIDE;
 
 private:
     Akonadi::Tag::List m_tags;
