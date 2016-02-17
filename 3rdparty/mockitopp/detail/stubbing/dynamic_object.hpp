@@ -132,6 +132,10 @@ namespace mockitopp
 
          void missing_vfunction()
             { throw missing_implementation_exception(); }
+
+      private:
+         dynamic_object(const dynamic_object &);
+         dynamic_object &operator=(const dynamic_object &);
       };
    } // namespace detail
 } // namespace mockitopp

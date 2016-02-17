@@ -143,6 +143,9 @@ namespace mockitopp
          ~matcher_element()
             { delete matcher; }
 
+         matcher_element &operator= (const matcher_element& rhs) const
+            { matcher_element tmp(rhs); std::swap(*this, tmp); return *this; }
+
          bool operator== (typename tr1::add_reference<typename tr1::add_const<T>::type>::type rhs) const
             { return (*matcher == rhs); }
 

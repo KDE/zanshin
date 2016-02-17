@@ -82,8 +82,21 @@ namespace mockitopp
                   , _count(count)
                   {}
 
+               shared_ptr_impl(const shared_ptr_impl &other)
+                  : _raw_ptr(other._raw_ptr)
+                  , _count(other._count)
+                  {}
+
                ~shared_ptr_impl()
                   { D()(_raw_ptr); }
+
+               shared_ptr_impl &operator=(const shared_ptr_impl &other)
+               {
+                   shared_ptr_impl tmp(other);
+                   std::swap(*this, other);
+                   return *this;
+               }
+
             }* _ptr_impl;
 
             void __decrement()
