@@ -159,6 +159,7 @@ void AkonadiStorageTestBase::shouldListCollections()
     // THEN
     auto collections = job->collections();
     QStringList collectionNames;
+    collectionNames.reserve(collections.size());
     foreach (const auto &collection, collections) {
         collectionNames << collection.name();
     }
@@ -216,6 +217,7 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
     // THEN
     auto items = job->items();
     QStringList itemRemoteIds;
+    itemRemoteIds.reserve(items.size());
     foreach (const auto &item, items) {
         itemRemoteIds << item.remoteId();
         QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
@@ -260,6 +262,7 @@ void AkonadiStorageTestBase::shouldListTags()
     // THEN
     auto tags = job->tags();
     QStringList tagGids;
+    tagGids.reserve(tags.size());
     foreach (const auto &tag, tags) {
         tagGids << tag.gid();
         QVERIFY(!tag.name().isEmpty());
@@ -286,6 +289,7 @@ void AkonadiStorageTestBase::shouldListItemsAssociatedWithTag()
     // THEN
     auto items = job->items();
     QStringList itemRemoteIds;
+    itemRemoteIds.reserve(items.size());
     foreach (const auto &item, items) {
         itemRemoteIds << item.remoteId();
 

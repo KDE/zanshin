@@ -53,6 +53,7 @@ private:
     QList<Akonadi::Collection::Id> idList(int max)
     {
         QList<Akonadi::Collection::Id> list;
+        list.reserve(max);
         for (int i = 1; i < max; i++) {
             list << i;
         }
@@ -62,6 +63,7 @@ private:
     Akonadi::Collection::List colList(int max)
     {
         Akonadi::Collection::List list;
+        list.reserve(max);
         foreach (auto id, idList(max)) {
             list << Collection(id);
         }

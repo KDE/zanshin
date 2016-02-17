@@ -190,6 +190,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
             return Q_NULLPTR;
 
         auto draggedArtifacts = Domain::Artifact::List();
+        draggedArtifacts.reserve(tasks.size());
         foreach (const Domain::Task::Ptr &task, tasks) {
             draggedArtifacts.append(task.objectCast<Domain::Artifact>());
         }

@@ -241,6 +241,7 @@ private slots:
         output.setSortOrder(Qt::SortOrder(sortOrder));
 
         QStringList outputTitles;
+        outputTitles.reserve(output.rowCount());
         for (int row = 0; row < output.rowCount(); row++) {
             outputTitles << output.index(row, 0).data().toString();
         }

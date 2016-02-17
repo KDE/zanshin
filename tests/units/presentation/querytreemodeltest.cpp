@@ -57,6 +57,7 @@ private:
         const QList<bool> doneStates = {true, false, false};
         Q_ASSERT(titles.size() == doneStates.size());
 
+        result.reserve(titles.size());
         for (int i = 0; i < titles.size(); i++) {
             auto task = Domain::Task::Ptr::create();
             task->setTitle(titles.at(i));
@@ -75,6 +76,7 @@ private:
         const QList<bool> doneStates = {true, false, false};
         Q_ASSERT(titles.size() == doneStates.size());
 
+        result.reserve(titles.size());
         for (int i = 0; i < titles.size(); i++) {
             auto task = Domain::Task::Ptr::create();
             task->setTitle(titles.at(i));
