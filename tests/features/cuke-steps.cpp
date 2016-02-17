@@ -402,8 +402,8 @@ GIVEN("^the central list contains items named:") {
     context->waitForEmptyJobQueue();
     context->setModel(model);
 
-    for (const auto row : tableParam.hashes()) {
-        for (const auto it : row) {
+    for (const auto &row : tableParam.hashes()) {
+        for (const auto &it : row) {
             const QString itemName = QString::fromUtf8(it.second.data());
             QModelIndex index = Zanshin::findIndex(context->model(), itemName);
             VERIFY_OR_DUMP(index.isValid());
@@ -747,9 +747,9 @@ THEN("^the list is") {
     QSet<int> usedRoles;
 
     QStandardItemModel inputModel;
-    for (const auto row : tableParam.hashes()) {
+    for (const auto &row : tableParam.hashes()) {
         QStandardItem *item = new QStandardItem;
-        for (const auto it : row) {
+        for (const auto &it : row) {
             const QByteArray roleName = it.first.data();
             const QString value = QString::fromUtf8(it.second.data());
             const int role = roleNames.key(roleName, -1);
