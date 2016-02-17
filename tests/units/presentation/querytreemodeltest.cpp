@@ -284,11 +284,11 @@ private slots:
 
         // THEN
         QCOMPARE(aboutToBeInsertedSpy.size(), 1);
-        QCOMPARE(aboutToBeInsertedSpy.first().at(0).value<QModelIndex>(), QModelIndex());
+        QCOMPARE(aboutToBeInsertedSpy.first().at(0).toModelIndex(), QModelIndex());
         QCOMPARE(aboutToBeInsertedSpy.first().at(1).toInt(), 0);
         QCOMPARE(aboutToBeInsertedSpy.first().at(2).toInt(), 0);
         QCOMPARE(insertedSpy.size(), 1);
-        QCOMPARE(insertedSpy.first().at(0).value<QModelIndex>(), QModelIndex());
+        QCOMPARE(insertedSpy.first().at(0).toModelIndex(), QModelIndex());
         QCOMPARE(insertedSpy.first().at(1).toInt(), 0);
         QCOMPARE(insertedSpy.first().at(2).toInt(), 0);
     }
@@ -353,11 +353,11 @@ private slots:
 
         // THEN
         QCOMPARE(aboutToBeInsertedSpy.size(), 1);
-        QCOMPARE(aboutToBeInsertedSpy.first().at(0).value<QModelIndex>(), model.index(0, 0));
+        QCOMPARE(aboutToBeInsertedSpy.first().at(0).toModelIndex(), model.index(0, 0));
         QCOMPARE(aboutToBeInsertedSpy.first().at(1).toInt(), 1);
         QCOMPARE(aboutToBeInsertedSpy.first().at(2).toInt(), 1);
         QCOMPARE(insertedSpy.size(), 1);
-        QCOMPARE(insertedSpy.first().at(0).value<QModelIndex>(), model.index(0, 0));
+        QCOMPARE(insertedSpy.first().at(0).toModelIndex(), model.index(0, 0));
         QCOMPARE(insertedSpy.first().at(1).toInt(), 1);
         QCOMPARE(insertedSpy.first().at(2).toInt(), 1);
     }
@@ -438,16 +438,16 @@ private slots:
         QCOMPARE(removedSpy.size(), 4);
         for (int i = 0; i < aboutToBeRemovedSpy.size(); i++) {
             if (i != 3)
-                QCOMPARE(aboutToBeRemovedSpy.at(i).at(0).value<QModelIndex>(), removeIndex);
+                QCOMPARE(aboutToBeRemovedSpy.at(i).at(0).toModelIndex(), removeIndex);
             else
-                QCOMPARE(aboutToBeRemovedSpy.at(i).at(0).value<QModelIndex>(), QModelIndex());
+                QCOMPARE(aboutToBeRemovedSpy.at(i).at(0).toModelIndex(), QModelIndex());
             QCOMPARE(aboutToBeRemovedSpy.at(i).at(1).toInt(), 0);
             QCOMPARE(aboutToBeRemovedSpy.at(i).at(2).toInt(), 0);
 
             if (i != 3)
-                QCOMPARE(removedSpy.at(i).at(0).value<QModelIndex>(), removeIndex);
+                QCOMPARE(removedSpy.at(i).at(0).toModelIndex(), removeIndex);
             else
-                QCOMPARE(removedSpy.at(i).at(0).value<QModelIndex>(), QModelIndex());
+                QCOMPARE(removedSpy.at(i).at(0).toModelIndex(), QModelIndex());
             QCOMPARE(removedSpy.at(i).at(1).toInt(), 0);
             QCOMPARE(removedSpy.at(i).at(2).toInt(), 0);
         }
@@ -455,10 +455,10 @@ private slots:
         QCOMPARE(aboutToBeInsertedSpy.size(), 3);
         QCOMPARE(insertedSpy.size(), 3);
         for (int i = 0; i < aboutToBeInsertedSpy.size(); i++) {
-            QCOMPARE(aboutToBeInsertedSpy.at(i).at(0).value<QModelIndex>(), QModelIndex());
+            QCOMPARE(aboutToBeInsertedSpy.at(i).at(0).toModelIndex(), QModelIndex());
             QCOMPARE(aboutToBeInsertedSpy.at(i).at(1).toInt(), i + 3);
             QCOMPARE(aboutToBeInsertedSpy.at(i).at(2).toInt(), i + 3);
-            QCOMPARE(insertedSpy.at(i).at(0).value<QModelIndex>(), QModelIndex());
+            QCOMPARE(insertedSpy.at(i).at(0).toModelIndex(), QModelIndex());
             QCOMPARE(insertedSpy.at(i).at(1).toInt(), i + 3);
             QCOMPARE(insertedSpy.at(i).at(1).toInt(), i + 3);
         }
@@ -528,10 +528,10 @@ private slots:
 
         // THEN
         QCOMPARE(dataChangedSpy.size(), 2);
-        QCOMPARE(dataChangedSpy.first().at(0).value<QModelIndex>(), model.index(2, 0));
-        QCOMPARE(dataChangedSpy.first().at(1).value<QModelIndex>(), model.index(2, 0));
-        QCOMPARE(dataChangedSpy.last().at(0).value<QModelIndex>(), model.index(2, 0, model.index(0, 0)));
-        QCOMPARE(dataChangedSpy.last().at(1).value<QModelIndex>(), model.index(2, 0, model.index(0, 0)));
+        QCOMPARE(dataChangedSpy.first().at(0).toModelIndex(), model.index(2, 0));
+        QCOMPARE(dataChangedSpy.first().at(1).toModelIndex(), model.index(2, 0));
+        QCOMPARE(dataChangedSpy.last().at(0).toModelIndex(), model.index(2, 0, model.index(0, 0)));
+        QCOMPARE(dataChangedSpy.last().at(1).toModelIndex(), model.index(2, 0, model.index(0, 0)));
     }
 
     void shouldAllowEditsAndChecks()

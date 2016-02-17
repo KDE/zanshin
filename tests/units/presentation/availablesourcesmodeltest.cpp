@@ -200,14 +200,14 @@ private slots:
 
         // Not overly efficient way of signaling the change, but doesn't happen often
         QCOMPARE(spy.count(), 4);
-        QCOMPARE(spy.at(0).at(0).value<QModelIndex>(), source1Index);
-        QCOMPARE(spy.at(0).at(1).value<QModelIndex>(), source1Index);
-        QCOMPARE(spy.at(1).at(0).value<QModelIndex>(), source3Index);
-        QCOMPARE(spy.at(1).at(1).value<QModelIndex>(), source3Index);
-        QCOMPARE(spy.at(2).at(0).value<QModelIndex>(), source4Index);
-        QCOMPARE(spy.at(2).at(1).value<QModelIndex>(), source4Index);
-        QCOMPARE(spy.at(3).at(0).value<QModelIndex>(), source2Index);
-        QCOMPARE(spy.at(3).at(1).value<QModelIndex>(), source2Index);
+        QCOMPARE(spy.at(0).at(0).toModelIndex(), source1Index);
+        QCOMPARE(spy.at(0).at(1).toModelIndex(), source1Index);
+        QCOMPARE(spy.at(1).at(0).toModelIndex(), source3Index);
+        QCOMPARE(spy.at(1).at(1).toModelIndex(), source3Index);
+        QCOMPARE(spy.at(2).at(0).toModelIndex(), source4Index);
+        QCOMPARE(spy.at(2).at(1).toModelIndex(), source4Index);
+        QCOMPARE(spy.at(3).at(0).toModelIndex(), source2Index);
+        QCOMPARE(spy.at(3).at(1).toModelIndex(), source2Index);
 
         QVERIFY(sourceQueriesMock(&Domain::DataSourceQueries::changeDefaultSource).when(source4).exactly(1));
     }

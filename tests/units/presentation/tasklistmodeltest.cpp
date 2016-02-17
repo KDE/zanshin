@@ -112,11 +112,11 @@ private slots:
 
         // THEN
         QCOMPARE(aboutToBeInsertedSpy.size(), 1);
-        QCOMPARE(aboutToBeInsertedSpy.first().at(0).value<QModelIndex>(), QModelIndex());
+        QCOMPARE(aboutToBeInsertedSpy.first().at(0).toModelIndex(), QModelIndex());
         QCOMPARE(aboutToBeInsertedSpy.first().at(1).toInt(), 1);
         QCOMPARE(aboutToBeInsertedSpy.first().at(2).toInt(), 1);
         QCOMPARE(insertedSpy.size(), 1);
-        QCOMPARE(insertedSpy.first().at(0).value<QModelIndex>(), QModelIndex());
+        QCOMPARE(insertedSpy.first().at(0).toModelIndex(), QModelIndex());
         QCOMPARE(insertedSpy.first().at(1).toInt(), 1);
         QCOMPARE(insertedSpy.first().at(2).toInt(), 1);
     }
@@ -141,11 +141,11 @@ private slots:
 
         // THEN
         QCOMPARE(aboutToBeRemovedSpy.size(), 1);
-        QCOMPARE(aboutToBeRemovedSpy.first().at(0).value<QModelIndex>(), QModelIndex());
+        QCOMPARE(aboutToBeRemovedSpy.first().at(0).toModelIndex(), QModelIndex());
         QCOMPARE(aboutToBeRemovedSpy.first().at(1).toInt(), 0);
         QCOMPARE(aboutToBeRemovedSpy.first().at(2).toInt(), 0);
         QCOMPARE(removedSpy.size(), 1);
-        QCOMPARE(removedSpy.first().at(0).value<QModelIndex>(), QModelIndex());
+        QCOMPARE(removedSpy.first().at(0).toModelIndex(), QModelIndex());
         QCOMPARE(removedSpy.first().at(1).toInt(), 0);
         QCOMPARE(removedSpy.first().at(2).toInt(), 0);
     }
@@ -170,8 +170,8 @@ private slots:
 
         // THEN
         QCOMPARE(dataChangedSpy.size(), 1);
-        QCOMPARE(dataChangedSpy.first().at(0).value<QModelIndex>(), model.index(2));
-        QCOMPARE(dataChangedSpy.first().at(1).value<QModelIndex>(), model.index(2));
+        QCOMPARE(dataChangedSpy.first().at(0).toModelIndex(), model.index(2));
+        QCOMPARE(dataChangedSpy.first().at(1).toModelIndex(), model.index(2));
     }
 
     void shouldAllowEditsAndChecks()
