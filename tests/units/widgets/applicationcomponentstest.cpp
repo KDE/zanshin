@@ -77,7 +77,7 @@ class CustomModelStub : public QStandardItemModel
         Q_ASSERT(destination.isValid());
         Q_ASSERT(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
 
-        auto dataString = data->property("objects").value<QStringList>();
+        auto dataString = data->property("objects").toStringList();
         Q_ASSERT(!dataString.isEmpty());
 
         droppedItemDataString = dataString;
