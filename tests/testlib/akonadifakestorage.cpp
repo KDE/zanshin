@@ -398,7 +398,7 @@ Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QSt
     std::copy_if(allCollections.constBegin(), allCollections.constEnd(),
                  std::back_inserter(foundCollections),
                  [collectionName, types] (const Akonadi::Collection &col) {
-                     const auto mime = col.contentMimeTypes();
+                     const auto mime = col.contentMimeTypes().toSet();
                      auto contentMimeTypes = QSet<QString>();
                      if (types & Notes)
                          contentMimeTypes << Akonadi::NoteUtils::noteMimeType();
@@ -406,7 +406,7 @@ Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QSt
                          contentMimeTypes << KCalCore::Todo::todoMimeType();
 
                      const bool supportedType = contentMimeTypes.isEmpty()
-                                             || !mime.toSet().intersect(contentMimeTypes).isEmpty();
+                                             || !(mime & contentMimeTypes).isEmpty();
                      return supportedType && col.displayName().contains(collectionName, Qt::CaseInsensitive);
                  });
 
