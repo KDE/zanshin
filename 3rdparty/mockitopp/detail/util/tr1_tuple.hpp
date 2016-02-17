@@ -170,12 +170,12 @@ namespace mockitopp
    } // namespace detail
 } // namespace mockitopp
 
-inline bool operator== (const mockitopp::detail::tr1::tuple_null_type&, const mockitopp::detail::tr1::tuple_null_type&) { return true;  }
-inline bool operator!= (const mockitopp::detail::tr1::tuple_null_type&, const mockitopp::detail::tr1::tuple_null_type&) { return false; }
-inline bool operator<  (const mockitopp::detail::tr1::tuple_null_type&, const mockitopp::detail::tr1::tuple_null_type&) { return false; }
-inline bool operator<= (const mockitopp::detail::tr1::tuple_null_type&, const mockitopp::detail::tr1::tuple_null_type&) { return true;  }
-inline bool operator>  (const mockitopp::detail::tr1::tuple_null_type&, const mockitopp::detail::tr1::tuple_null_type&) { return false; }
-inline bool operator>= (const mockitopp::detail::tr1::tuple_null_type&, const mockitopp::detail::tr1::tuple_null_type&) { return true;  }
+inline bool operator== (mockitopp::detail::tr1::tuple_null_type, mockitopp::detail::tr1::tuple_null_type) { return true;  }
+inline bool operator!= (mockitopp::detail::tr1::tuple_null_type, mockitopp::detail::tr1::tuple_null_type) { return false; }
+inline bool operator<  (mockitopp::detail::tr1::tuple_null_type, mockitopp::detail::tr1::tuple_null_type) { return false; }
+inline bool operator<= (mockitopp::detail::tr1::tuple_null_type, mockitopp::detail::tr1::tuple_null_type) { return true;  }
+inline bool operator>  (mockitopp::detail::tr1::tuple_null_type, mockitopp::detail::tr1::tuple_null_type) { return false; }
+inline bool operator>= (mockitopp::detail::tr1::tuple_null_type, mockitopp::detail::tr1::tuple_null_type) { return true;  }
 
 template <typename L0, typename L1, typename R0, typename R1>
 inline bool operator== (const mockitopp::detail::tr1::tuple_cons<L0, L1>& lhs, const mockitopp::detail::tr1::tuple_cons<R0, R1>& rhs)
