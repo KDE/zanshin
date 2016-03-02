@@ -23,6 +23,10 @@
 
 #include <testlib/qtest_zanshin.h>
 
+#include <memory>
+
+#include <QMimeData>
+
 #include "utils/mockobject.h"
 #include "utils/datetime.h"
 
@@ -211,20 +215,20 @@ private slots:
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).thenReturn(new FakeJob(this));
-        QMimeData *data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, project1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, project1Index);
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).exactly(1));
 
         // WHEN a task is dropped on a context
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, context1Index);
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop.objectCast<Domain::Task>()).exactly(1));
@@ -232,10 +236,10 @@ private slots:
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, inboxIndex);
         QTest::qWait(150);
 
         // THEN
@@ -244,10 +248,10 @@ private slots:
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project2, noteToDrop).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, project2Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, project2Index);
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project2, noteToDrop).exactly(1));
@@ -257,20 +261,20 @@ private slots:
         Domain::Artifact::Ptr noteToDrop2(new Domain::Note);
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop2).thenReturn(new FakeJob(this));
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, noteToDrop2).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop2 << noteToDrop2));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, project1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, project1Index);
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop2).exactly(1));
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, noteToDrop2).exactly(1));
 
         // WHEN a task and a note are dropped on a context
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop2 << noteToDrop2));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, context1Index);
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop2.objectCast<Domain::Task>()).exactly(0));
@@ -280,10 +284,10 @@ private slots:
         Domain::Task::Ptr taskToDrop4(new Domain::Task);
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop3).thenReturn(new FakeJob(this));
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop4).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop3 << taskToDrop4));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, context1Index);
 
         // THEN
         QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop3).exactly(1));
@@ -292,10 +296,10 @@ private slots:
         // WHEN a task is drop on the workday
         Domain::Task::Ptr taskToDrop5(new Domain::Task);
         taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop5).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop5));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, workdayIndex);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, workdayIndex);
 
         // THEN
         QCOMPARE(taskToDrop5->startDate().date(), Utils::DateTime::currentDateTime().date());
@@ -305,10 +309,10 @@ private slots:
         Domain::Task::Ptr taskToDrop7(new Domain::Task);
         taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop6).thenReturn(new FakeJob(this));
         taskRepositoryMock(&Domain::TaskRepository::update).when(taskToDrop7).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop6 << taskToDrop7));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, workdayIndex);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, workdayIndex);
 
         // THEN
         QCOMPARE(taskToDrop6->startDate().date(), Utils::DateTime::currentDateTime().date());
@@ -997,10 +1001,10 @@ private slots:
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project1, taskToDrop).thenReturn(job);
-        QMimeData *data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, project1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, project1Index);
 
         // THEN
         QTest::qWait(150);
@@ -1063,10 +1067,10 @@ private slots:
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop.objectCast<Domain::Task>()).thenReturn(job);
-        auto data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, context1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, context1Index);
 
         // THEN
         QTest::qWait(150);
@@ -1117,10 +1121,10 @@ private slots:
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         projectRepositoryMock(&Domain::ProjectRepository::dissociate).when(taskToDrop).thenReturn(job);
         taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).thenReturn(new FakeJob(this));
-        auto data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, inboxIndex);
 
         // THEN
         QTest::qWait(150);
