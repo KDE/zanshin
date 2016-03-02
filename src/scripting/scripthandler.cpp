@@ -30,12 +30,13 @@
 
 using namespace Scripting;
 
-ScriptHandler::ScriptHandler(const Domain::TaskRepository::Ptr &taskRepository)
-    : m_taskRepository(taskRepository),
+ScriptHandler::ScriptHandler(const Domain::TaskRepository::Ptr &taskRepository, QObject *parent)
+    : QObject(parent),
+      m_taskRepository(taskRepository),
       m_engine(new QScriptEngine(this))
 {
     m_engine->globalObject().setProperty(QStringLiteral("task"),
-                                         m_engine->newQObject(new TaskAction(m_taskRepository)));
+                                         m_engine->newQObject(new TaskAction(m_taskRepository, this)));
 }
 
 QScriptValue ScriptHandler::evaluateFile(const QString &filename)

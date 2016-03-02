@@ -26,8 +26,9 @@
 
 using namespace Scripting;
 
-TaskAction::TaskAction(const Domain::TaskRepository::Ptr &taskRepository)
-    : m_taskRepository(taskRepository)
+TaskAction::TaskAction(const Domain::TaskRepository::Ptr &taskRepository, QObject *parent)
+    : QObject(parent),
+      m_taskRepository(taskRepository)
 {
 }
 

@@ -37,7 +37,7 @@ class ScriptHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit ScriptHandler(const Domain::TaskRepository::Ptr &taskRepository);
+    explicit ScriptHandler(const Domain::TaskRepository::Ptr &taskRepository, QObject *parent = Q_NULLPTR);
 
     QScriptValue evaluateFile(const QString &filename);
     QScriptValue evaluateString(const QString &string);
