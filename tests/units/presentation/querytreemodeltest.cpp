@@ -167,7 +167,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // THEN
         QCOMPARE(model.rowCount(), 3);
@@ -218,7 +218,7 @@ private slots:
 
         // WHEN
         Presentation::QueryTreeModel<QString> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // THEN
         QCOMPARE(model.rowCount(), 0);
@@ -271,7 +271,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
         QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
 
@@ -343,7 +343,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
         QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
 
@@ -413,7 +413,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy aboutToBeRemovedSpy(&model, &QAbstractItemModel::rowsAboutToBeRemoved);
         QSignalSpy removedSpy(&model, &QAbstractItemModel::rowsRemoved);
         QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
@@ -517,7 +517,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy dataChangedSpy(&model, &QAbstractItemModel::dataChanged);
 
         // WHEN
@@ -586,7 +586,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // WHEN
         // Nothing particular
@@ -669,7 +669,7 @@ private slots:
             return true;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy titleChangedSpy(task.data(), &Domain::Task::titleChanged);
         QSignalSpy doneChangedSpy(task.data(), &Domain::Task::doneChanged);
 
@@ -711,7 +711,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction, dataFunction, setDataFunction);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // WHEN
         const QModelIndex index = model.index(1, 0);
@@ -745,7 +745,7 @@ private slots:
             return false;
         };
         Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // WHEN
         const QModelIndex index = model.index(1, 0);
@@ -824,7 +824,7 @@ private slots:
         Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
                                                    dataFunction, setDataFunction,
                                                    dropFunction, dragFunction);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // WHEN
         auto data = model.mimeData(QList<QModelIndex>() << model.index(1, 0) << model.index(2, 0));
@@ -893,7 +893,7 @@ private slots:
         Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
                                                    dataFunction, setDataFunction,
                                                    dropFunction, dragFunction);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // WHEN
         auto data = new QMimeData;
@@ -961,7 +961,7 @@ private slots:
         Presentation::QueryTreeModel<QString> model(queryGenerator, flagsFunction,
                                                     dataFunction, setDataFunction,
                                                     dropFunction, dragFunction);
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         const auto indexes = QModelIndexList() << model.index(0, 0)
                                                << model.index(1, 0)

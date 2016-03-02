@@ -76,7 +76,7 @@ private slots:
         // WHEN
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // THEN
         QCOMPARE(model.rowCount(), tasks.size());
@@ -103,7 +103,7 @@ private slots:
 
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
         QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
 
@@ -132,7 +132,7 @@ private slots:
 
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy aboutToBeRemovedSpy(&model, &QAbstractItemModel::rowsAboutToBeRemoved);
         QSignalSpy removedSpy(&model, &QAbstractItemModel::rowsRemoved);
 
@@ -161,7 +161,7 @@ private slots:
 
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy dataChangedSpy(&model, &QAbstractItemModel::dataChanged);
 
         // WHEN
@@ -185,7 +185,7 @@ private slots:
 
         Presentation::TaskListModel model(list,
                                           Domain::TaskRepository::Ptr());
-        new ModelTest(&model);
+        new ModelTest(&model, this);
 
         // WHEN
         // Nothing particular
@@ -213,7 +213,7 @@ private slots:
         repositoryMock(&Domain::TaskRepository::update).when(task).thenReturn(Q_NULLPTR);
 
         Presentation::TaskListModel model(list, repositoryMock.getInstance());
-        new ModelTest(&model);
+        new ModelTest(&model, this);
         QSignalSpy titleChangedSpy(task.data(), &Domain::Task::titleChanged);
         QSignalSpy doneChangedSpy(task.data(), &Domain::Task::doneChanged);
 
