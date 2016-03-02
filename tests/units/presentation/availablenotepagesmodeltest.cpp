@@ -23,6 +23,10 @@
 
 #include <testlib/qtest_zanshin.h>
 
+#include <memory>
+
+#include <QMimeData>
+
 #include "utils/mockobject.h"
 
 #include "presentation/availablenotepagesmodel.h"
@@ -138,20 +142,20 @@ private slots:
 
         // WHEN
         tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, noteToDrop).thenReturn(new FakeJob(this));
-        QMimeData *data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, tag1Index);
 
         // THEN
         QVERIFY(tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, noteToDrop).exactly(1));
 
         // WHEN
         tagRepositoryMock(&Domain::TagRepository::dissociateAll).when(noteToDrop).thenReturn(new FakeJob(this));
-        data = new QMimeData;
+        data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, inboxIndex);
         QTest::qWait(150);
 
         // THEN
@@ -400,10 +404,10 @@ private slots:
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         tagRepositoryMock(&Domain::TagRepository::associate).when(tag1, noteToDrop).thenReturn(job);
-        auto data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, tag1Index);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, tag1Index);
 
         // THEN
         QTest::qWait(150);
@@ -448,10 +452,10 @@ private slots:
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         tagRepositoryMock(&Domain::TagRepository::dissociateAll).when(noteToDrop).thenReturn(job);
-        auto data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
-        model->dropMimeData(data, Qt::MoveAction, -1, -1, inboxIndex);
+        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, inboxIndex);
 
         // THEN
         QTest::qWait(150);
