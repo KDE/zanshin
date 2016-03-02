@@ -23,6 +23,10 @@
 
 #include <testlib/qtest_zanshin.h>
 
+#include <memory>
+
+#include <QMimeData>
+
 #include "utils/mockobject.h"
 
 #include "presentation/noteinboxpagemodel.h"
@@ -115,7 +119,7 @@ private slots:
         QCOMPARE(note2->title(), QStringLiteral("newNote2"));
 
         // WHEN
-        QMimeData *data = model->mimeData(QModelIndexList() << note2Index);
+        auto data = std::unique_ptr<QMimeData>(model->mimeData(QModelIndexList() << note2Index));
 
         // THEN
         QVERIFY(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
