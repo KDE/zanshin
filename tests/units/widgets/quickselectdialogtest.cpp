@@ -72,7 +72,7 @@ private:
         // GIVEN
 
         // a model with items
-        auto model = new QStandardItemModel();
+        auto model = new QStandardItemModel(this);
         auto inbox = new QStandardItem(QStringLiteral("Inbox"));
         auto workday = new QStandardItem(QStringLiteral("Workday"));
         auto projects= new QStandardItem(QStringLiteral("Projects"));
