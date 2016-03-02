@@ -24,7 +24,10 @@
 
 #include <testlib/qtest_zanshin.h>
 
+#include <memory>
+
 #include <QColor>
+#include <QMimeData>
 
 #include "utils/mockobject.h"
 
@@ -827,10 +830,10 @@ private slots:
         new ModelTest(&model, this);
 
         // WHEN
-        auto data = model.mimeData(QList<QModelIndex>() << model.index(1, 0) << model.index(2, 0));
+        auto data = std::unique_ptr<QMimeData>(model.mimeData(QList<QModelIndex>() << model.index(1, 0) << model.index(2, 0)));
 
         // THEN
-        QVERIFY(data);
+        QVERIFY(data.get());
         QVERIFY(model.mimeTypes().contains(QStringLiteral("application/x-zanshin-object")));
         QList<QColor> colors;
         colors << Qt::green << Qt::blue;
@@ -896,14 +899,14 @@ private slots:
         new ModelTest(&model, this);
 
         // WHEN
-        auto data = new QMimeData;
+        auto data = std::make_unique<QMimeData>();
         const QModelIndex parent = parentRow >= 0 ? model.index(parentRow, 0) : QModelIndex();
-        model.dropMimeData(data, Qt::MoveAction, row, column, parent);
+        model.dropMimeData(data.get(), Qt::MoveAction, row, column, parent);
 
         // THEN
         QCOMPARE(dropCalled, callExpected);
         if (callExpected) {
-            QCOMPARE(droppedData, data);
+            QCOMPARE(droppedData, data.get());
             QCOMPARE(colorSeen, parent.data(Presentation::QueryTreeModelBase::ObjectRole).value<QColor>());
         }
     }
@@ -968,9 +971,9 @@ private slots:
                                                << model.index(1, 0, model.index(1, 0));
 
         // WHEN
-        auto data = model.mimeData(indexes);
+        auto data = std::unique_ptr<QMimeData>(model.mimeData(indexes));
         const auto parent = model.index(1, 0, model.index(0, 0, model.index(1, 0)));
-        model.dropMimeData(data, Qt::MoveAction, -1, -1, parent);
+        model.dropMimeData(data.get(), Qt::MoveAction, -1, -1, parent);
 
         // THEN
         QVERIFY(!dropCalled);
