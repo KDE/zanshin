@@ -26,6 +26,8 @@
 
 using namespace Domain;
 
+Q_GLOBAL_STATIC(DataSourceQueriesNotifier, s_notifier)
+
 DataSourceQueries::DataSourceQueries()
 {
 }
@@ -36,10 +38,7 @@ DataSourceQueries::~DataSourceQueries()
 
 DataSourceQueriesNotifier *DataSourceQueries::notifier() const
 {
-    if (!m_notifier)
-        m_notifier.reset(new DataSourceQueriesNotifier);
-
-    return m_notifier.data();
+    return s_notifier();
 }
 
 void DataSourceQueries::setDefaultSource(DataSource::Ptr source)

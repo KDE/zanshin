@@ -72,9 +72,6 @@ public:
     virtual void setSearchTerm(const QString &term) = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findSearchTopLevel() const = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findSearchChildren(DataSource::Ptr source) const = 0;
-
-private:
-    mutable QScopedPointer<DataSourceQueriesNotifier> m_notifier;
 };
 
 }
