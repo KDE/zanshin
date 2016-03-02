@@ -24,8 +24,11 @@
 
 #include "applicationcomponents.h"
 
+#include <memory>
+
 #include <QBoxLayout>
 #include <QLabel>
+#include <QMimeData>
 #include <QVariant>
 #include <QWidget>
 #include <QWidgetAction>
@@ -249,9 +252,9 @@ void ApplicationComponents::moveItems(const QModelIndex &destination, const QMod
     auto availablePagesModel = const_cast<QAbstractItemModel*>(destination.model());
 
     // drag
-    const auto data = centralListModel->mimeData(droppedItems);
+    const auto data = std::unique_ptr<QMimeData>(centralListModel->mimeData(droppedItems));
 
     // drop
-    availablePagesModel->dropMimeData(data, Qt::MoveAction, -1, -1, destination);
+    availablePagesModel->dropMimeData(data.get(), Qt::MoveAction, -1, -1, destination);
 }
 
