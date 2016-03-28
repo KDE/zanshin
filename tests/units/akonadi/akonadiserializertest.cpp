@@ -2434,6 +2434,32 @@ private slots:
         // THEN
         QCOMPARE(value, isChild);
     }
+
+    // Investigation into how to differenciate all-day events from events with time,
+    // using QDateTime only. Doesn't seem to be possible.
+    void KDateTimeShouldStillBeNeeded() // although I wish it wasn't...
+    {
+        // GIVEN a QDateTime without time information
+        QDateTime dateOnly(QDate(2016, 6, 12), QTime(-1, -1, -1));
+        // THEN we can't detect that there was no time information, i.e. all day event
+        QVERIFY(dateOnly.time().isValid()); // I wish this was "!"
+        QVERIFY(!dateOnly.time().isNull()); // got converted to midnight localtime by QDateTime
+        // This doesn't help, QDateTime converts "null time" to midnight.
+        dateOnly.setTime(QTime());
+        QVERIFY(dateOnly.time().isValid()); // same as above
+        QVERIFY(!dateOnly.time().isNull()); // same as above
+
+        // GIVEN a QDateTime at midnight
+        QDateTime atMidnight(QDate(2016, 6, 12), QTime(0, 0, 0));
+        // THEN we can detect that a time information was present
+        QVERIFY(atMidnight.time().isValid());
+        QVERIFY(!atMidnight.time().isNull());
+
+        // GIVEN a KDateTime without time information
+        KDateTime kdOnly(QDate(2016, 6, 12));
+        // THEN we can detect that there was no time information, i.e. all day event
+        QVERIFY(kdOnly.isDateOnly());
+    }
 };
 
 ZANSHIN_TEST_MAIN(AkonadiSerializerTest)
