@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QElapsedTimer>
+#include <QHostAddress>
 #include <QProcess>
 #include <QTcpSocket>
 
@@ -55,9 +56,9 @@ bool waitForCukeSteps(qint64 timeout)
     timer.start();
     QTcpSocket socket;
 
-    socket.connectToHost(QStringLiteral("localhost"), 3902);
+    socket.connectToHost(QHostAddress::LocalHost, 3902);
     while (!socket.waitForConnected() && !timer.hasExpired(timeout)) {
-        socket.connectToHost(QStringLiteral("localhost"), 3902);
+        socket.connectToHost(QHostAddress::LocalHost, 3902);
     }
 
     return socket.state() == QTcpSocket::ConnectedState;
