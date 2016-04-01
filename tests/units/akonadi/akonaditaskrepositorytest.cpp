@@ -793,6 +793,10 @@ private slots:
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::clearItem).when(any<Akonadi::Item*>()).exactly(1));
             QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, Q_NULLPTR).exactly(1));
         }
+
+        // Give a chance to job to delete themselves
+        // in case of an error (since they use deleteLater() internally)
+        QTest::qWait(10);
     }
 
     void shouldSendDelegationMessage()

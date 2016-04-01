@@ -245,7 +245,13 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
         if (execJob) {
             QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+        } else {
+            delete dissociateJob;
         }
+
+        // Give a chance to itemFetchJob to delete itself
+        // in case of an error (since it uses deleteLater() internally)
+        QTest::qWait(10);
     }
 };
 
