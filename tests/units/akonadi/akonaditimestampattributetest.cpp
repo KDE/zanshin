@@ -23,6 +23,8 @@
 
 #include <testlib/qtest_zanshin.h>
 
+#include <memory>
+
 #include "akonadi/akonaditimestampattribute.h"
 
 class AkonadiTimestampAttributeTest : public QObject
@@ -62,7 +64,7 @@ private slots:
         Akonadi::TimestampAttribute attr;
 
         // WHEN
-        auto clone = attr.clone();
+        auto clone = std::unique_ptr<Akonadi::TimestampAttribute>(attr.clone());
 
         // THEN
         QCOMPARE(clone->timestamp(), attr.timestamp());

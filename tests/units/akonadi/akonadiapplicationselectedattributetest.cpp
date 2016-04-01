@@ -23,6 +23,8 @@
 
 #include <testlib/qtest_zanshin.h>
 
+#include <memory>
+
 #include "akonadi/akonadiapplicationselectedattribute.h"
 
 class AkonadiApplicationSelectedAttributeTest : public QObject
@@ -46,7 +48,7 @@ private slots:
         attr.setSelected(false);
 
         // WHEN
-        auto clone = attr.clone();
+        auto clone = std::unique_ptr<Akonadi::ApplicationSelectedAttribute>(attr.clone());
 
         // THEN
         QCOMPARE(clone->isSelected(), attr.isSelected());
