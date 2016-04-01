@@ -59,6 +59,13 @@ AkonadiStorageTestBase::AkonadiStorageTestBase(QObject *parent)
     qRegisterMetaType<Akonadi::Tag>();
 }
 
+void AkonadiStorageTestBase::cleanupTestCase()
+{
+    // Give a chance for jobs still waiting for an event loop
+    // run to be deleted through deleteLater()
+    QTest::qWait(10);
+}
+
 void AkonadiStorageTestBase::dumpTree()
 {
     TestLib::AkonadiDebug::dumpTree(createStorage());

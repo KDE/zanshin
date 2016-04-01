@@ -42,6 +42,8 @@ protected:
     virtual Akonadi::MonitorInterface::Ptr createMonitor() = 0;
 
 private slots:
+    void cleanupTestCase();
+
     void dumpTree();
     void shouldListCollections_data();
     void shouldListCollections();

@@ -67,6 +67,13 @@ private slots:
         //qApp->exec();
     }
 
+    void cleanupTestCase()
+    {
+        // Give a chance for jobs still waiting for an event loop
+        // run to be deleted through deleteLater()
+        QTest::qWait(10);
+    }
+
     void shouldFetchAllItems()
     {
         // GIVEN
