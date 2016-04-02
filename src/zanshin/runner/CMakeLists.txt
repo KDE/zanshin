@@ -7,6 +7,7 @@ target_link_libraries(krunner_zanshin
     akonadi
     domain
     utils
+    KF5::ConfigCore
     KF5::Runner
 )
 

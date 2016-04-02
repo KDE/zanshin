@@ -31,6 +31,8 @@
 
 #include <QIcon>
 
+#include <KConfig>
+
 K_EXPORT_PLASMA_RUNNER(zanshin, ZanshinRunner)
 Domain::TaskRepository::Ptr createTaskRepository()
 {
@@ -85,9 +87,13 @@ void ZanshinRunner::run(const Plasma::RunnerContext &context, const Plasma::Quer
 {
     Q_UNUSED(context)
 
+    KConfig::setMainConfigName("zanshinrc");
+
     auto task = Domain::Task::Ptr::create();
     task->setTitle(match.data().toString());
     m_taskRepository->create(task);
+
+    KConfig::setMainConfigName(QString());
 }
 
 #include "zanshinrunner.moc"
