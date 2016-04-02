@@ -24,7 +24,7 @@
 #ifndef APPVERSION_H
 #define APPVERSION_H
 
-#define APPLICATION_VERSION "0.3.60"
+#define APPLICATION_VERSION "0.3.81"
 
 #endif
 
