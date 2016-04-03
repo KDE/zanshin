@@ -74,6 +74,10 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
 
     auto ac = actionCollection();
     for (auto it = actions.constBegin(); it != actions.constEnd(); ++it) {
+        auto shortcut = it.value()->shortcut();
+        if (!shortcut.isEmpty()) {
+            ac->setDefaultShortcut(it.value(), shortcut);
+        }
         ac->addAction(it.key(), it.value());
     }
 
