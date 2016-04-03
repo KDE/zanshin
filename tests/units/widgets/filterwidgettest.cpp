@@ -23,9 +23,9 @@
 
 #include <testlib/qtest_gui_zanshin.h>
 
-#include <QAbstractButton>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QToolButton>
 
 #include "widgets/filterwidget.h"
 
@@ -51,28 +51,31 @@ private slots:
         QVERIFY(filterEdit->text().isEmpty());
         QCOMPARE(filterEdit->placeholderText(), tr("Filter..."));
 
-        QAbstractButton *extensionButton = filter.findChild<QAbstractButton*>(QStringLiteral("extensionButton"));
+        auto extensionButton = filter.findChild<QToolButton*>(QStringLiteral("extensionButton"));
         QVERIFY(extensionButton);
         QVERIFY(extensionButton->isVisibleTo(&filter));
         QVERIFY(!extensionButton->isChecked());
         QCOMPARE(extensionButton->icon(), QIcon::fromTheme(QStringLiteral("arrow-down-double")));
+        QVERIFY(extensionButton->autoRaise());
 
         QComboBox *sortTypeCombo = filter.findChild<QComboBox*>(QStringLiteral("sortTypeCombo"));
         QVERIFY(sortTypeCombo);
         QVERIFY(!sortTypeCombo->isVisibleTo(&filter));
         QCOMPARE(sortTypeCombo->currentIndex(), 0);
 
-        QAbstractButton *ascendingButton = filter.findChild<QAbstractButton*>(QStringLiteral("ascendingButton"));
+        auto ascendingButton = filter.findChild<QToolButton*>(QStringLiteral("ascendingButton"));
         QVERIFY(ascendingButton);
         QVERIFY(!ascendingButton->isVisibleTo(&filter));
         QVERIFY(ascendingButton->isChecked());
         QCOMPARE(ascendingButton->icon(), QIcon::fromTheme(QStringLiteral("arrow-up")));
+        QVERIFY(ascendingButton->autoRaise());
 
-        QAbstractButton *descendingButton = filter.findChild<QAbstractButton*>(QStringLiteral("descendingButton"));
+        auto descendingButton = filter.findChild<QToolButton*>(QStringLiteral("descendingButton"));
         QVERIFY(descendingButton);
         QVERIFY(!descendingButton->isVisibleTo(&filter));
         QVERIFY(!descendingButton->isChecked());
         QCOMPARE(descendingButton->icon(), QIcon::fromTheme(QStringLiteral("arrow-down")));
+        QVERIFY(descendingButton->autoRaise());
     }
 
     void shouldChangeAppliedFilter()

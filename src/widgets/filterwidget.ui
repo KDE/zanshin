@@ -46,6 +46,9 @@
        <property name="checkable">
         <bool>true</bool>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>
@@ -70,6 +73,9 @@
       </item>
       <item>
        <widget class="QToolButton" name="ascendingButton">
+        <property name="toolTip">
+         <string>Sort in ascending order</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -82,6 +88,9 @@
         <property name="checked">
          <bool>true</bool>
         </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
         <attribute name="buttonGroup">
          <string notr="true">sortOrderGroup</string>
         </attribute>
@@ -89,6 +98,9 @@
       </item>
       <item>
        <widget class="QToolButton" name="descendingButton">
+        <property name="toolTip">
+         <string>Sort in descending order</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -96,6 +108,9 @@
          <iconset theme="arrow-down"/>
         </property>
         <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoRaise">
          <bool>true</bool>
         </property>
         <attribute name="buttonGroup">
