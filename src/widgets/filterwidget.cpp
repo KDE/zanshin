@@ -62,6 +62,11 @@ Presentation::ArtifactFilterProxyModel *FilterWidget::proxyModel() const
     return m_model;
 }
 
+void FilterWidget::clear()
+{
+    ui->filterEdit->clear();
+}
+
 void FilterWidget::onTextChanged(const QString &text)
 {
     m_model->setFilterFixedString(text);

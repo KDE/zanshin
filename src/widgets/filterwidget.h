@@ -50,6 +50,9 @@ public:
 
     Presentation::ArtifactFilterProxyModel *proxyModel() const;
 
+public slots:
+    void clear();
+
 private slots:
     void onTextChanged(const QString &text);
     void onSortTypeChanged(int index);

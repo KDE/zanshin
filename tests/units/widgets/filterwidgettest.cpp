@@ -93,6 +93,23 @@ private slots:
         QCOMPARE(filter.proxyModel()->filterRegExp().pattern(), QStringLiteral("find me"));
     }
 
+    void shouldClearFilter()
+    {
+        // GIVEN
+        Widgets::FilterWidget filter;
+
+        QLineEdit *filterEdit = filter.findChild<QLineEdit*>(QStringLiteral("filterEdit"));
+        QVERIFY(filterEdit);
+        filterEdit->setText("Foo");
+
+        // WHEN
+        filter.clear();
+
+        // THEN
+        QVERIFY(filterEdit->text().isEmpty());
+        QVERIFY(filter.proxyModel()->filterRegExp().pattern().isEmpty());
+    }
+
     void shouldShowExtension()
     {
         // GIVEN
