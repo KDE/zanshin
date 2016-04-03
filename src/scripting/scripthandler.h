@@ -26,7 +26,7 @@
 #define SCRIPTING_SCRIPTHANDLER_H
 
 #include <QObject>
-#include <QScriptValue>
+#include <QJSValue>
 
 #include "domain/taskrepository.h"
 
@@ -39,15 +39,15 @@ class ScriptHandler : public QObject
 public:
     explicit ScriptHandler(const Domain::TaskRepository::Ptr &taskRepository, QObject *parent = Q_NULLPTR);
 
-    QScriptValue evaluateFile(const QString &filename);
-    QScriptValue evaluateString(const QString &string);
+    QJSValue evaluateFile(const QString &filename);
+    QJSValue evaluateString(const QString &string);
 
-    QScriptEngine *engine();
+    QJSEngine *engine();
 
 private:
     Domain::TaskRepository::Ptr m_taskRepository;
 
-    QScriptEngine *m_engine;
+    QJSEngine *m_engine;
 };
 
 }

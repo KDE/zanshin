@@ -26,20 +26,20 @@
 #include "taskaction.h"
 
 #include <QFile>
-#include <QScriptEngine>
+#include <QJSEngine>
 
 using namespace Scripting;
 
 ScriptHandler::ScriptHandler(const Domain::TaskRepository::Ptr &taskRepository, QObject *parent)
     : QObject(parent),
       m_taskRepository(taskRepository),
-      m_engine(new QScriptEngine(this))
+      m_engine(new QJSEngine(this))
 {
     m_engine->globalObject().setProperty(QStringLiteral("task"),
                                          m_engine->newQObject(new TaskAction(m_taskRepository, this)));
 }
 
-QScriptValue ScriptHandler::evaluateFile(const QString &filename)
+QJSValue ScriptHandler::evaluateFile(const QString &filename)
 {
     QFile file(filename);
     file.open(QIODevice::ReadOnly);
@@ -49,12 +49,12 @@ QScriptValue ScriptHandler::evaluateFile(const QString &filename)
     return m_engine->evaluate(filecontent, filename);
 }
 
-QScriptValue ScriptHandler::evaluateString(const QString &string)
+QJSValue ScriptHandler::evaluateString(const QString &string)
 {
     return m_engine->evaluate(string);
 }
 
-QScriptEngine *ScriptHandler::engine()
+QJSEngine *ScriptHandler::engine()
 {
     return m_engine;
 }

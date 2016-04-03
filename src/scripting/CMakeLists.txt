@@ -6,6 +6,6 @@ set(scripting_SRCS
 add_library(scripting STATIC ${scripting_SRCS})
 target_link_libraries(scripting
     Qt5::Core
-    Qt5::Script
+    Qt5::Qml
 )
 

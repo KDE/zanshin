@@ -14,7 +14,7 @@ include(FeatureSummary)
 include(ECMInstallIcons)
 include(ECMMarkAsTest)
 
-find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Script Test)
+find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Qml Test)
 find_package(Boost REQUIRED)
 macro(assert_min_ver version)
     set(error_msg "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_VERSION} not supported")

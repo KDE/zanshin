@@ -23,7 +23,7 @@
 
 #include <testlib/qtest_zanshin.h>
 
-#include <QScriptEngine>
+#include <QJSEngine>
 
 #include "scripting/scripthandler.h"
 
@@ -55,11 +55,11 @@ private slots:
         auto expression = QStringLiteral("41+1");
 
         // WHEN
-        QScriptValue result = scripthandler->evaluateString(expression);
+        QJSValue result = scripthandler->evaluateString(expression);
 
         // THEN
         QVERIFY(result.isNumber());
-        QCOMPARE(result.toInt32(), 42);
+        QCOMPARE(result.toInt(), 42);
     }
 
     void shouldEvaluateFile()
@@ -77,11 +77,11 @@ private slots:
         scriptfile.close();
 
         // WHEN
-        QScriptValue result = scripthandler->evaluateFile(scriptfile.fileName());
+        QJSValue result = scripthandler->evaluateFile(scriptfile.fileName());
 
         // THEN
         QVERIFY(result.isNumber());
-        QCOMPARE(result.toInt32(), 42);
+        QCOMPARE(result.toInt(), 42);
     }
 };
 

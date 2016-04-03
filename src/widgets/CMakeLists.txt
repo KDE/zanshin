@@ -23,7 +23,7 @@ qt5_wrap_ui(widgets_SRCS
 
 add_library(widgets STATIC ${widgets_SRCS})
 target_link_libraries(widgets
-    Qt5::Script
+    Qt5::Qml
     Qt5::Widgets
     presentation
     zanshinkdepimstatic
