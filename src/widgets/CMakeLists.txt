@@ -17,6 +17,7 @@ set(widgets_SRCS
 )
 
 qt5_wrap_ui(widgets_SRCS
+    editorview.ui
     filterwidget.ui
     newprojectdialog.ui
 )

@@ -34,79 +34,54 @@
 
 #include "domain/artifact.h"
 
+#include "ui_editorview.h"
 
 using namespace Widgets;
 
 EditorView::EditorView(QWidget *parent)
     : QWidget(parent),
       m_model(Q_NULLPTR),
-      m_delegateLabel(new QLabel(this)),
-      m_textEdit(new QPlainTextEdit(this)),
-      m_taskGroup(new QWidget(this)),
-      m_startDateEdit(new KPIM::KDateEdit(m_taskGroup)),
-      m_dueDateEdit(new KPIM::KDateEdit(m_taskGroup)),
-      m_startTodayButton(new QPushButton(tr("Start today"), m_taskGroup)),
-      m_doneButton(new QCheckBox(tr("Done"), m_taskGroup)),
+      ui(new Ui::EditorView),
       m_delegateEdit(Q_NULLPTR)
 {
+    ui->setupUi(this);
+
     // To avoid having unit tests talking to akonadi
     // while we don't need the completion for them
     if (qEnvironmentVariableIsEmpty("ZANSHIN_UNIT_TEST_RUN"))
-        m_delegateEdit = new KPIM::AddresseeLineEdit(this);
+        m_delegateEdit = new KPIM::AddresseeLineEdit(ui->delegateEditPlaceHolder);
     else
-        m_delegateEdit = new KLineEdit(this);
+        m_delegateEdit = new KLineEdit(ui->delegateEditPlaceHolder);
 
-    m_delegateLabel->setObjectName(QStringLiteral("delegateLabel"));
-    m_delegateEdit->setObjectName(QStringLiteral("delegateEdit"));
-    m_textEdit->setObjectName(QStringLiteral("textEdit"));
-    m_startDateEdit->setObjectName(QStringLiteral("startDateEdit"));
-    m_dueDateEdit->setObjectName(QStringLiteral("dueDateEdit"));
-    m_doneButton->setObjectName(QStringLiteral("doneButton"));
-    m_startTodayButton->setObjectName(QStringLiteral("startTodayButton"));
+    // placing our special DelegateEdit into the placeholder we prepared
+    m_delegateEdit->setObjectName("delegateEdit");
+    ui->delegateToLabel->setBuddy(m_delegateEdit);
+    ui->delegateEditPlaceHolder->layout()->addWidget(m_delegateEdit);
 
-    m_startDateEdit->setMinimumContentsLength(10);
-    m_dueDateEdit->setMinimumContentsLength(10);
-
-    auto layout = new QVBoxLayout;
-    layout->addWidget(m_delegateLabel);
-    layout->addWidget(m_textEdit);
-    layout->addWidget(m_taskGroup);
-    setLayout(layout);
-
-    auto vbox = new QVBoxLayout;
-    auto delegateHBox = new QHBoxLayout;
-    delegateHBox->addWidget(new QLabel(tr("Delegate to"), m_taskGroup));
-    delegateHBox->addWidget(m_delegateEdit);
-    vbox->addLayout(delegateHBox);
-    auto datesHBox = new QHBoxLayout;
-    datesHBox->addWidget(new QLabel(tr("Start date"), m_taskGroup));
-    datesHBox->addWidget(m_startDateEdit, 1);
-    datesHBox->addWidget(new QLabel(tr("Due date"), m_taskGroup));
-    datesHBox->addWidget(m_dueDateEdit, 1);
-    vbox->addLayout(datesHBox);
-    auto bottomHBox = new QHBoxLayout;
-    bottomHBox->addWidget(m_startTodayButton);
-    bottomHBox->addWidget(m_doneButton);
-    bottomHBox->addStretch();
-    vbox->addLayout(bottomHBox);
-    m_taskGroup->setLayout(vbox);
+    ui->startDateEdit->setMinimumContentsLength(10);
+    ui->dueDateEdit->setMinimumContentsLength(10);
 
     // Make sure our minimum width is always the one with
     // the task group visible
-    layout->activate();
+    ui->layout->activate();
     setMinimumWidth(minimumSizeHint().width());
 
-    m_delegateLabel->setVisible(false);
-    m_taskGroup->setVisible(false);
+    ui->delegateLabel->setVisible(false);
+    ui->taskGroup->setVisible(false);
 
-    connect(m_textEdit, &QPlainTextEdit::textChanged, this, &EditorView::onTextEditChanged);
-    connect(m_startDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onStartEditEntered);
-    connect(m_dueDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onDueEditEntered);
-    connect(m_doneButton, &QAbstractButton::toggled, this, &EditorView::onDoneButtonChanged);
-    connect(m_startTodayButton, &QAbstractButton::clicked, this, &EditorView::onStartTodayClicked);
+    connect(ui->textEdit, &QPlainTextEdit::textChanged, this, &EditorView::onTextEditChanged);
+    connect(ui->startDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onStartEditEntered);
+    connect(ui->dueDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onDueEditEntered);
+    connect(ui->doneButton, &QAbstractButton::toggled, this, &EditorView::onDoneButtonChanged);
+    connect(ui->startTodayButton, &QAbstractButton::clicked, this, &EditorView::onStartTodayClicked);
     connect(m_delegateEdit, &KLineEdit::returnPressed, this, &EditorView::onDelegateEntered);
 
     setEnabled(false);
+}
+
+EditorView::~EditorView()
+{
+    delete ui;
 }
 
 QObject *EditorView::model() const
@@ -129,8 +104,8 @@ void EditorView::setModel(QObject *model)
     setEnabled(m_model);
 
     if (!m_model) {
-        m_taskGroup->setVisible(false);
-        m_textEdit->clear();
+        ui->taskGroup->setVisible(false);
+        ui->textEdit->clear();
         return;
     }
 
@@ -169,7 +144,7 @@ void EditorView::onArtifactChanged()
 
 void EditorView::onHasTaskPropertiesChanged()
 {
-    m_taskGroup->setVisible(m_model->property("hasTaskProperties").toBool());
+    ui->taskGroup->setVisible(m_model->property("hasTaskProperties").toBool());
 }
 
 void EditorView::onTextOrTitleChanged()
@@ -178,23 +153,23 @@ void EditorView::onTextOrTitleChanged()
     const auto text = m_model->property("text").toString();
 
     QRegExp reg("^" + QRegExp::escape(title) + "\\s*\\n?" + QRegExp::escape(text) + "\\s*$");
-    if (!reg.exactMatch(m_textEdit->toPlainText()))
-        m_textEdit->setPlainText(title + '\n' + text);
+    if (!reg.exactMatch(ui->textEdit->toPlainText()))
+        ui->textEdit->setPlainText(title + '\n' + text);
 }
 
 void EditorView::onStartDateChanged()
 {
-    m_startDateEdit->setDate(m_model->property("startDate").toDateTime().date());
+    ui->startDateEdit->setDate(m_model->property("startDate").toDateTime().date());
 }
 
 void EditorView::onDueDateChanged()
 {
-    m_dueDateEdit->setDate(m_model->property("dueDate").toDateTime().date());
+    ui->dueDateEdit->setDate(m_model->property("dueDate").toDateTime().date());
 }
 
 void EditorView::onDoneChanged()
 {
-    m_doneButton->setChecked(m_model->property("done").toBool());
+    ui->doneButton->setChecked(m_model->property("done").toBool());
 }
 
 void EditorView::onDelegateTextChanged()
@@ -203,13 +178,13 @@ void EditorView::onDelegateTextChanged()
     const auto labelText = delegateText.isEmpty() ? QString()
                          : tr("Delegated to: <b>%1</b>").arg(delegateText);
 
-    m_delegateLabel->setVisible(!labelText.isEmpty());
-    m_delegateLabel->setText(labelText);
+    ui->delegateLabel->setVisible(!labelText.isEmpty());
+    ui->delegateLabel->setText(labelText);
 }
 
 void EditorView::onTextEditChanged()
 {
-    const QString plainText = m_textEdit->toPlainText();
+    const QString plainText = ui->textEdit->toPlainText();
     const int index = plainText.indexOf('\n');
     if (index < 0) {
         emit titleChanged(plainText);
@@ -240,7 +215,7 @@ void EditorView::onDoneButtonChanged(bool checked)
 void EditorView::onStartTodayClicked()
 {
     QDate today(QDate::currentDate());
-    m_startDateEdit->setDate(today);
+    ui->startDateEdit->setDate(today);
     emit startDateChanged(QDateTime(today));
 }
 

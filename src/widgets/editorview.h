@@ -39,6 +39,10 @@ namespace KPIM {
     class KDateEdit;
 }
 
+namespace Ui {
+    class EditorView;
+}
+
 namespace Widgets {
 
 class EditorView : public QWidget
@@ -46,6 +50,7 @@ class EditorView : public QWidget
     Q_OBJECT
 public:
     explicit EditorView(QWidget *parent = Q_NULLPTR);
+    ~EditorView();
 
     QObject *model() const;
 
@@ -78,13 +83,7 @@ private slots:
 private:
     QObject *m_model;
 
-    QLabel *m_delegateLabel;
-    QPlainTextEdit *m_textEdit;
-    QWidget *m_taskGroup;
-    KPIM::KDateEdit *m_startDateEdit;
-    KPIM::KDateEdit *m_dueDateEdit;
-    QAbstractButton *m_startTodayButton;
-    QAbstractButton *m_doneButton;
+    Ui::EditorView *ui;
     KLineEdit *m_delegateEdit;
 };
 
