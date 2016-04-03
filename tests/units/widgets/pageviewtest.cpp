@@ -26,6 +26,7 @@
 #include <QAbstractItemModel>
 #include <QAction>
 #include <QHeaderView>
+#include <QLayout>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -103,6 +104,8 @@ private slots:
     void shouldHaveDefaultState()
     {
         Widgets::PageView page;
+        QCOMPARE(page.contentsMargins(), QMargins(0, 0, 0, 0));
+        QCOMPARE(page.layout()->contentsMargins(), QMargins(0, 0, 0, 0));
 
         auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         QVERIFY(centralView);

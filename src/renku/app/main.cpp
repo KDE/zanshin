@@ -63,6 +63,7 @@ int main(int argc, char **argv)
     components->setModel(Presentation::ApplicationModel::Ptr::create());
 
     auto layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(components->pageView());
     widget->setLayout(layout);
 
