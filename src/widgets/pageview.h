@@ -69,6 +69,7 @@ private slots:
     void onAddItemRequested();
     void onRemoveItemRequested();
     void onPromoteItemRequested();
+    void onFilterToggled(bool show);
     void onCurrentChanged(const QModelIndex &current);
 
 private:

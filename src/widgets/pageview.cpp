@@ -115,6 +115,7 @@ PageView::PageView(QWidget *parent)
       m_quickAddEdit(new QLineEdit(this))
 {
     m_filterWidget->setObjectName(QStringLiteral("filterWidget"));
+    m_filterWidget->hide();
 
     m_centralView->setObjectName(QStringLiteral("centralView"));
     m_centralView->header()->hide();
@@ -177,8 +178,8 @@ PageView::PageView(QWidget *parent)
     filterViewAction->setText(tr("Filter..."));
     filterViewAction->setIcon(QIcon::fromTheme(QStringLiteral("edit-find")));
     filterViewAction->setShortcut(Qt::CTRL | Qt::Key_F);
-    connect(filterViewAction, &QAction::triggered,
-            m_filterWidget, static_cast<void(QWidget::*)()>(&QWidget::setFocus));
+    filterViewAction->setCheckable(true);
+    connect(filterViewAction, &QAction::triggered, this, &PageView::onFilterToggled);
 
     m_actions.insert(QStringLiteral("page_view_add"), addItemAction);
     m_actions.insert(QStringLiteral("page_view_remove"), removeItemAction);
@@ -331,6 +332,15 @@ void PageView::onPromoteItemRequested()
     if (!currentIndex.isValid())
         return;
     QMetaObject::invokeMethod(m_model, "promoteItem", Q_ARG(QModelIndex, currentIndex));
+}
+
+void PageView::onFilterToggled(bool show)
+{
+    m_filterWidget->setVisible(show);
+    if (show)
+        m_filterWidget->setFocus();
+    else
+        m_filterWidget->clear();
 }
 
 void PageView::onCurrentChanged(const QModelIndex &current)

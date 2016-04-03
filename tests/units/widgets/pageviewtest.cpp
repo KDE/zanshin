@@ -117,6 +117,7 @@ private slots:
 
         auto filter = page.findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
         QVERIFY(filter);
+        QVERIFY(!filter->isVisibleTo(&page));
         QVERIFY(filter->proxyModel());
         QCOMPARE(filter->proxyModel(), centralView->model());
 
@@ -136,6 +137,8 @@ private slots:
         QVERIFY(promoteAction);
         auto filterAction = page.findChild<QAction*>(QStringLiteral("filterViewAction"));
         QVERIFY(filterAction);
+        QVERIFY(filterAction->isCheckable());
+        QVERIFY(!filterAction->isChecked());
 
         auto actions = page.globalActions();
         QCOMPARE(actions.value(QStringLiteral("page_view_add")), addAction);
@@ -208,6 +211,7 @@ private slots:
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
         QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(!filter->isVisibleTo(&page));
         QVERIFY(!filterEdit->hasFocus());
 
         auto addAction = page.findChild<QAction*>(QStringLiteral("addItemAction"));
@@ -220,6 +224,7 @@ private slots:
         // THEN
         QVERIFY(!centralView->hasFocus());
         QVERIFY(quickAddEdit->hasFocus());
+        QVERIFY(!filter->isVisibleTo(&page));
         QVERIFY(!filterEdit->hasFocus());
 
         // WHEN
@@ -228,6 +233,7 @@ private slots:
         // THEN
         QVERIFY(centralView->hasFocus());
         QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(!filter->isVisibleTo(&page));
         QVERIFY(!filterEdit->hasFocus());
 
         // WHEN
@@ -236,6 +242,7 @@ private slots:
         // THEN
         QVERIFY(!centralView->hasFocus());
         QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(filter->isVisibleTo(&page));
         QVERIFY(filterEdit->hasFocus());
 
         // WHEN
@@ -244,7 +251,50 @@ private slots:
         // THEN
         QVERIFY(centralView->hasFocus());
         QVERIFY(!quickAddEdit->hasFocus());
+        QVERIFY(filter->isVisibleTo(&page));
         QVERIFY(!filterEdit->hasFocus());
+    }
+
+    void shouldManageFilterVisibilityThroughAction()
+    {
+        // GIVEN
+        Widgets::PageView page;
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
+        auto filter = page.findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
+        auto filterEdit = filter->findChild<QLineEdit*>();
+        QVERIFY(filterEdit);
+        page.show();
+        QTest::qWaitForWindowShown(&page);
+
+        centralView->setFocus();
+        QVERIFY(centralView->hasFocus());
+        QVERIFY(!filter->isVisibleTo(&page));
+        QVERIFY(!filterEdit->hasFocus());
+
+        auto filterAction = page.findChild<QAction*>(QStringLiteral("filterViewAction"));
+
+        // WHEN
+        filterAction->trigger();
+
+        // THEN
+        QVERIFY(!centralView->hasFocus());
+        QVERIFY(filter->isVisibleTo(&page));
+        QVERIFY(filterEdit->hasFocus());
+
+        // WHEN
+        filterEdit->setText("Foo");
+
+        // THEN
+        QCOMPARE(filterEdit->text(), QString("Foo"));
+
+        // WHEN
+        filterAction->trigger();
+
+        // THEN
+        QVERIFY(centralView->hasFocus());
+        QVERIFY(!filter->isVisibleTo(&page));
+        QVERIFY(!filterEdit->hasFocus());
+        QVERIFY(filterEdit->text().isEmpty());
     }
 
     void shouldCreateTasksWithNoParentWhenHittingReturnWithoutSelectedIndex()
