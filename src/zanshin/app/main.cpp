@@ -25,6 +25,7 @@
 #include <QBoxLayout>
 #include <QDockWidget>
 #include <QProcess>
+#include <QAction>
 
 #include <KActionCollection>
 
@@ -109,6 +110,10 @@ int main(int argc, char **argv)
     auto ac = window->actionCollection();
     ac->addAction(KStandardAction::Quit, window, SLOT(close()));
     for (auto it = actions.constBegin(); it != actions.constEnd(); ++it) {
+        auto shortcut = it.value()->shortcut();
+        if (!shortcut.isEmpty()) {
+            ac->setDefaultShortcut(it.value(), shortcut);
+        }
         ac->addAction(it.key(), it.value());
     }
 
