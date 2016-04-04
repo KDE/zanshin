@@ -138,7 +138,7 @@ PageView::PageView(QWidget *parent)
     connect(m_quickAddEdit, &QLineEdit::editingFinished, this, &PageView::onEditingFinished);
 
     auto layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(0, 0, 0, 3);
     layout->addWidget(m_filterWidget);
     layout->addWidget(m_centralView);
     layout->addWidget(m_quickAddEdit);

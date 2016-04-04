@@ -93,10 +93,15 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     layout->addWidget(m_sourcesView);
 
     auto actionBarLayout = new QHBoxLayout;
+    actionBarLayout->setContentsMargins(0, 0, 0, 0);
     actionBarLayout->setAlignment(Qt::AlignRight);
     actionBarLayout->addWidget(actionBar);
     layout->addLayout(actionBarLayout);
     setLayout(layout);
+
+    auto margins = layout->contentsMargins();
+    margins.setBottom(0);
+    layout->setContentsMargins(margins);
 
     auto settingsAction = new QAction(this);
     settingsAction->setObjectName(QStringLiteral("settingsAction"));

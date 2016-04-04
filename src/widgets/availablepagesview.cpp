@@ -89,6 +89,7 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     actionBar->addAction(m_removeAction);
 
     auto actionBarLayout = new QHBoxLayout;
+    actionBarLayout->setContentsMargins(0, 0, 0, 0);
     actionBarLayout->setAlignment(Qt::AlignRight);
     actionBarLayout->addWidget(actionBar);
 
@@ -96,6 +97,10 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     layout->addWidget(m_pagesView);
     layout->addLayout(actionBarLayout);
     setLayout(layout);
+
+    auto margins = layout->contentsMargins();
+    margins.setBottom(0);
+    layout->setContentsMargins(margins);
 
     m_projectDialogFactory = [] (QWidget *parent) {
         return NewProjectDialogPtr(new NewProjectDialog(parent));
