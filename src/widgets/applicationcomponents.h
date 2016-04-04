@@ -28,6 +28,7 @@
 #include <QHash>
 #include <QModelIndexList>
 #include <QObject>
+#include <QPointer>
 
 #include <functional>
 
@@ -84,10 +85,10 @@ private:
     QObjectPtr m_model;
 
     QWidget *m_parent;
-    AvailableSourcesView *m_availableSourcesView;
-    AvailablePagesView *m_availablePagesView;
+    QPointer<AvailableSourcesView> m_availableSourcesView;
+    QPointer<AvailablePagesView> m_availablePagesView;
     PageView *m_pageView;
-    EditorView *m_editorView;
+    QPointer<EditorView> m_editorView;
 
     QuickSelectDialogFactory m_quickSelectDialogFactory;
 };
