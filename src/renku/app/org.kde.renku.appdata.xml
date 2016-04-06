@@ -129,4 +129,7 @@
     </screenshot>
   </screenshots>
   <project_group>KDE</project_group>
+  <provides>
+    <binary>renku</binary>
+  </provides>
 </component>
