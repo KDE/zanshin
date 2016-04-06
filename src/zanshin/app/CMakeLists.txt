@@ -18,4 +18,4 @@ target_link_libraries(zanshin
 install(TARGETS zanshin DESTINATION ${KDE_INSTALL_BINDIR})
 install(PROGRAMS org.kde.zanshin.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES zanshinui.rc DESTINATION ${KDE_INSTALL_KXMLGUI5DIR}/zanshin)
-install(FILES zanshin.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+install(FILES org.kde.zanshin.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})

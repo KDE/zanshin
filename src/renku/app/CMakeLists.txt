@@ -18,4 +18,4 @@ target_link_libraries(renku
 install(TARGETS renku DESTINATION ${KDE_INSTALL_BINDIR})
 install(PROGRAMS org.kde.renku.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES renkuui.rc DESTINATION ${KDE_INSTALL_KXMLGUI5DIR}/renku)
-install(FILES renku.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+install(FILES org.kde.renku.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
