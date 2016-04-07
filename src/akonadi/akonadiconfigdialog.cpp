@@ -116,7 +116,7 @@ void ConfigDialog::onRemoveTriggered()
     if (!list.isEmpty()) {
         auto answer = QMessageBox::question(this,
                                             tr("Multiple Agent Deletion"),
-                                            tr("Do you really want to delect the selected agent instances?"),
+                                            tr("Do you really want to delete the selected agent instances?"),
                                             QMessageBox::Yes | QMessageBox::No,
                                             QMessageBox::No);
         if (answer == QMessageBox::Yes) {
