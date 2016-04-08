@@ -3,6 +3,7 @@ set(app_SRCS
     dependencies.cpp
     main.cpp
 )
+ecm_create_qm_loader(app_SRCS zanshin_qt)
 
 add_executable(zanshin ${app_SRCS})
 kde_enable_exceptions()
