@@ -1,6 +1,6 @@
 /* This file is part of Zanshin Todo
 
-   Copyright 2015 Kevin Ottens <ervin@kde.org>
+   Copyright 2016 Kevin Ottens <ervin@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -24,7 +24,7 @@
 #ifndef APPVERSION_H
 #define APPVERSION_H
 
-#define APPLICATION_VERSION "0.3.81"
+#define APPLICATION_VERSION "0.3.91"
 
 #endif
 
