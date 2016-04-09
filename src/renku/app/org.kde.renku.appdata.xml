@@ -77,6 +77,7 @@
       <li>Collects notes</li>
       <li xml:lang="ca">Recull les notes</li>
       <li xml:lang="ca-valencia">Recull les notes</li>
+      <li xml:lang="de">Notizensammlung</li>
       <li xml:lang="es">Coleccionar notas</li>
       <li xml:lang="fi">Kokoaa muistiinpanot</li>
       <li xml:lang="gl">Recoller notas.</li>
@@ -92,6 +93,7 @@
       <li>Organize notes in topics</li>
       <li xml:lang="ca">Organitza les notes en temes</li>
       <li xml:lang="ca-valencia">Organitza les notes en temes</li>
+      <li xml:lang="de">Ordnen Sie Notizen nach Themen</li>
       <li xml:lang="es">Organizar notas por asuntos</li>
       <li xml:lang="fi">Järjestää muistiinpanot aiheiksi</li>
       <li xml:lang="gl">Organizar notas por temas.</li>
