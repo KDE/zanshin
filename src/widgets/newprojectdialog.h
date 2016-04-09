@@ -55,7 +55,7 @@ public:
     Domain::DataSource::Ptr dataSource() const Q_DECL_OVERRIDE;
 
 private slots:
-    void onNameTextChanged(const QString &text);
+    void onUserInputChanged();
 
 private:
     void applyDefaultSource(const QModelIndex &root);

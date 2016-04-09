@@ -61,14 +61,16 @@ NewProjectDialog::NewProjectDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QObject::connect(ui->nameEdit, &QLineEdit::textChanged, this, &NewProjectDialog::onNameTextChanged);
-    onNameTextChanged(m_name);
+    connect(ui->nameEdit, &QLineEdit::textChanged, this, &NewProjectDialog::onUserInputChanged);
 
     auto taskSourceProxy = new TaskSourceProxy(this);
     taskSourceProxy->setSourceModel(m_flattenProxy);
     ui->sourceCombo->setModel(taskSourceProxy);
-
     m_flattenProxy->setDisplayAncestorData(true);
+    connect(ui->sourceCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &NewProjectDialog::onUserInputChanged);
+
+    onUserInputChanged();
 }
 
 NewProjectDialog::~NewProjectDialog()
@@ -112,10 +114,15 @@ Domain::DataSource::Ptr NewProjectDialog::dataSource() const
     return m_source;
 }
 
-void NewProjectDialog::onNameTextChanged(const QString &text)
+void NewProjectDialog::onUserInputChanged()
 {
+    const auto text = ui->nameEdit->text();
+    const auto source = ui->sourceCombo->itemData(ui->sourceCombo->currentIndex(),
+                                                  Presentation::QueryTreeModelBase::ObjectRole)
+                                       .value<Domain::DataSource::Ptr>();
+
     auto buttonOk = ui->buttonBox->button(QDialogButtonBox::Ok);
-    buttonOk->setEnabled(!text.isEmpty());
+    buttonOk->setEnabled(!text.isEmpty() && source);
 }
 
 #include "newprojectdialog.moc"

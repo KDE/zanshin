@@ -57,10 +57,8 @@ private slots:
             QTest::keyClicks(nameEdit, nameInput);
         }
 
-        if (sourceComboIndex >= 0) {
-            auto sourceCombo = dialog->findChild<QComboBox*>(QStringLiteral("sourceCombo"));
-            sourceCombo->setCurrentIndex(sourceComboIndex);
-        }
+        auto sourceCombo = dialog->findChild<QComboBox*>(QStringLiteral("sourceCombo"));
+        sourceCombo->setCurrentIndex(sourceComboIndex);
 
         auto buttonBox = dialog->findChild<QDialogButtonBox*>(QStringLiteral("buttonBox"));
         if (reject)
@@ -224,6 +222,30 @@ private slots:
         userInput.dialog = &dialog;
         userInput.sourceComboIndex = 0;
         userInput.nameInput = QString();
+        userInput.reject = true;
+
+        // WHEN
+        userInput.exec();
+
+        // THEN
+        auto buttonOk = dialog.findChild<QDialogButtonBox*>(QStringLiteral("buttonBox"))->button(QDialogButtonBox::Ok);
+        QVERIFY(!buttonOk->isEnabled());
+        QCOMPARE(dialog.name(), QString());
+        QCOMPARE(dialog.dataSource(), Domain::DataSource::Ptr());
+    }
+
+    void shouldNotAllowNoSelectedSource()
+    {
+        // GIVEN
+        Widgets::NewProjectDialog dialog;
+
+        auto sourceModel = createSourceModel();
+        dialog.setDataSourcesModel(sourceModel);
+
+        UserInputSimulator userInput;
+        userInput.dialog = &dialog;
+        userInput.sourceComboIndex = -1;
+        userInput.nameInput = QStringLiteral("name");
         userInput.reject = true;
 
         // WHEN
