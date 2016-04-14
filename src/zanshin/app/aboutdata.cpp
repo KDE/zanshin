@@ -23,26 +23,26 @@
 
 #include "aboutdata.h"
 #include "../../appversion.h"
-#include <KLocalizedString>
+#include <QObject>
 
 KAboutData App::getAboutData()
 {
     KAboutData about(QStringLiteral("zanshin"),
-                     i18n("Zanshin Todo"), QStringLiteral(APPLICATION_VERSION),
-                     i18n("A Getting Things Done application which aims at getting your mind like water"),
+                     QObject::tr("Zanshin Todo"), QStringLiteral(APPLICATION_VERSION),
+                     QObject::tr("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutLicense::GPL_V3,
-                     i18n("Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"));
+                     QObject::tr("Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"));
 
-    about.addAuthor(i18n("Kevin Ottens"),
-                    i18n("Lead Developer"),
+    about.addAuthor(QObject::tr("Kevin Ottens"),
+                    QObject::tr("Lead Developer"),
                     QStringLiteral("ervin@kde.org"));
 
-    about.addAuthor(i18n("Mario Bensi"),
-                    i18n("Developer"),
+    about.addAuthor(QObject::tr("Mario Bensi"),
+                    QObject::tr("Developer"),
                     QStringLiteral("nef@ipsquad.net"));
 
-    about.addAuthor(i18n("Franck Arrecot"),
-                    i18n("Developer"),
+    about.addAuthor(QObject::tr("Franck Arrecot"),
+                    QObject::tr("Developer"),
                     QStringLiteral("franck.arrecot@gmail.com"));
 
     return about;

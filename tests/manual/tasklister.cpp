@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     App::initializeDependencies();
     KAboutData aboutData(QStringLiteral("tasklister"),
-                     i18n("Lists all the tasks"), QStringLiteral("1.0"));
+                     QStringLiteral("Lists all the tasks"), QStringLiteral("1.0"));
     QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
