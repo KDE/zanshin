@@ -13,7 +13,7 @@ include(KDECMakeSettings)
 include(FeatureSummary)
 include(ECMInstallIcons)
 include(ECMMarkAsTest)
-include(ECMCreateQmFromPoFiles)
+include(ECMPoQmTools)
 
 find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Qml Test)
 find_package(Boost REQUIRED)
