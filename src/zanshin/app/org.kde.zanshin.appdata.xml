@@ -21,6 +21,7 @@
   <name xml:lang="sv">Zanshin</name>
   <name xml:lang="uk">Zanshin</name>
   <name xml:lang="x-test">xxZanshinxx</name>
+  <name xml:lang="zh-CN">Zanshin</name>
   <summary>TODO Management Application</summary>
   <summary xml:lang="bs">Program za upravljanje zadacima</summary>
   <summary xml:lang="ca">Aplicació per a la gestió de les pendents</summary>
@@ -38,6 +39,7 @@
   <summary xml:lang="sv">ATT GÖRA: Hanteringsprogram</summary>
   <summary xml:lang="uk">Програма для керування записами завдань</summary>
   <summary xml:lang="x-test">xxTODO Management Applicationxx</summary>
+  <summary xml:lang="zh-CN">待办事项管理程序</summary>
   <description>
     <p>
       Zanshin is a powerful yet simple application for managing your day to day actions.
@@ -76,6 +78,7 @@
     <p xml:lang="sv">Funktioner:</p>
     <p xml:lang="uk">Можливості:</p>
     <p xml:lang="x-test">xxFeatures:xx</p>
+    <p xml:lang="zh-CN">功能：</p>
     <ul>
       <li>Collects tasks from everywhere</li>
       <li xml:lang="ca">Recull les tasques de tot arreu</li>
