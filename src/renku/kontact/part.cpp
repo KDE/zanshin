@@ -81,7 +81,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
         ac->addAction(it.key(), it.value());
     }
 
-    setXMLFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("renku/renku_part.rc")));
+    setXMLFile(QStringLiteral("renku_part.rc"), true);
 }
 
 Part::~Part()

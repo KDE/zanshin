@@ -77,7 +77,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
         ac->addAction(it.key(), it.value());
     }
 
-    setXMLFile(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("zanshin/zanshin_part.rc")));
+    setXMLFile(QStringLiteral("zanshin_part.rc"), true);
 }
 
 Part::~Part()
