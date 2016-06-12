@@ -257,7 +257,7 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     if (task->isDone())
         todo->setCompleted(KDateTime(task->doneDate()));
     else
-        todo->setCompleted(task->isDone());
+        todo->setCompleted(false);
 
     todo->setDtStart(KDateTime(task->startDate(), KDateTime::UTC));
     todo->setDtDue(KDateTime(task->dueDate(), KDateTime::UTC));
