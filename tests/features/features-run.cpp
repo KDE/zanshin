@@ -28,6 +28,7 @@
 #include <QHostAddress>
 #include <QProcess>
 #include <QTcpSocket>
+#include <QStandardPaths>
 
 class ProcessKiller
 {
@@ -90,5 +91,11 @@ int main(int argc, char **argv)
 
     const QStringList args = app.arguments().contains(QStringLiteral("wip")) ? QStringList()
                                                                              : QStringList({"--tags", "~@wip"});
-    return QProcess::execute(QStringLiteral("cucumber"), args);
+    const QString cucumber = QStringLiteral("cucumber");
+    if (QStandardPaths::findExecutable(cucumber).isEmpty()) {
+        qWarning() << "cucumber not found";
+        return 1;
+    }
+
+    return QProcess::execute(cucumber, args);
 }
