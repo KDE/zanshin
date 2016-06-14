@@ -598,8 +598,8 @@ private slots:
         else
             todo->setCompleted(isDone);
 
-        todo->setDtStart(KDateTime(startDate));
-        todo->setDtDue(KDateTime(dueDate));
+        todo->setDtStart(KDateTime(startDate, KDateTime::UTC));
+        todo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
         todo->setRelatedTo(QStringLiteral("my-uid"));
         if (!delegateName.isEmpty() || !delegateEmail.isEmpty()) {
             KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(delegateName,
@@ -717,8 +717,8 @@ private slots:
         originalTodo->setSummary(QStringLiteral("summary"));
         originalTodo->setDescription(QStringLiteral("content"));
         originalTodo->setCompleted(false);
-        originalTodo->setDtStart(KDateTime(QDate(2013, 11, 24)));
-        originalTodo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+        originalTodo->setDtStart(KDateTime(QDate(2013, 11, 24), KDateTime::UTC));
+        originalTodo->setDtDue(KDateTime(QDate(2014, 03, 01), KDateTime::UTC));
         originalTodo->setRelatedTo(QStringLiteral("my-uid"));
         KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee(QStringLiteral("John Doe"),
                                                                         QStringLiteral("j@d.com"),
@@ -768,8 +768,8 @@ private slots:
         else
             updatedTodo->setCompleted(updatedDone);
 
-        updatedTodo->setDtStart(KDateTime(updatedStartDate));
-        updatedTodo->setDtDue(KDateTime(updatedDueDate));
+        updatedTodo->setDtStart(KDateTime(updatedStartDate, KDateTime::UTC));
+        updatedTodo->setDtDue(KDateTime(updatedDueDate, KDateTime::UTC));
         updatedTodo->setRelatedTo(updatedRelated);
         if (!updatedDelegateName.isEmpty() || !updatedDelegateEmail.isEmpty()) {
             KCalCore::Attendee::Ptr updatedAttendee(new KCalCore::Attendee(updatedDelegateName,
@@ -842,8 +842,8 @@ private slots:
         else
             originalTodo->setCompleted(isDone);
 
-        originalTodo->setDtStart(KDateTime(startDate));
-        originalTodo->setDtDue(KDateTime(dueDate));
+        originalTodo->setDtStart(KDateTime(startDate, KDateTime::UTC));
+        originalTodo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -901,8 +901,8 @@ private slots:
         else
             originalTodo->setCompleted(isDone);
 
-        originalTodo->setDtStart(KDateTime(startDate));
-        originalTodo->setDtDue(KDateTime(dueDate));
+        originalTodo->setDtStart(KDateTime(startDate, KDateTime::UTC));
+        originalTodo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -971,6 +971,10 @@ private slots:
                                             << QDateTime() << QDateTime()
                                             << qint64(-1) << qint64(-1) << QString()
                                             << Domain::Task::Delegate();
+        QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
+                                              << QDateTime(QDate(2013, 11, 24), QTime(0, 1, 2), Qt::UTC) << QDateTime(QDate(2016, 3, 1), QTime(4, 5, 6), Qt::UTC)
+                                              << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
 
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
@@ -1052,6 +1056,10 @@ private slots:
         QCOMPARE(todo->completed().dateTime().toUTC(), doneDate);
         QCOMPARE(todo->dtStart().dateTime().toUTC(), startDate);
         QCOMPARE(todo->dtDue().dateTime().toUTC(), dueDate);
+        if (todo->dtStart().isValid()) {
+            QCOMPARE(int(todo->dtStart().timeType()), int(KDateTime::UTC));
+        }
+        QCOMPARE(todo->dtStart().isDateOnly(), todo->allDay());
 
         if (delegate.isValid()) {
             auto attendee = todo->attendeeByMail(delegate.email());
@@ -1101,8 +1109,8 @@ private slots:
         else
             childTodo->setCompleted(isDone);
 
-        childTodo->setDtStart(KDateTime(startDate));
-        childTodo->setDtDue(KDateTime(dueDate));
+        childTodo->setDtStart(KDateTime(startDate, KDateTime::UTC));
+        childTodo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
 
         Akonadi::Item childItem;
         childItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
@@ -1120,8 +1128,8 @@ private slots:
         else
             childTodo2->setCompleted(isDone);
 
-        childTodo2->setDtStart(KDateTime(startDate));
-        childTodo2->setDtDue(KDateTime(dueDate));
+        childTodo2->setDtStart(KDateTime(startDate, KDateTime::UTC));
+        childTodo2->setDtDue(KDateTime(dueDate, KDateTime::UTC));
         childTodo2->setRelatedTo(QStringLiteral("1"));
 
         Akonadi::Item childItem2;

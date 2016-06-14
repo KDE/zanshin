@@ -546,7 +546,9 @@ private slots:
         QTest::keyClick(startDateEdit, Qt::Key_Enter);
 
         // THEN
-        QCOMPARE(model.property("startDate").toDateTime().date(), today);
+        const QDateTime newStartDateTime = model.property("startDate").toDateTime();
+        QCOMPARE(newStartDateTime.date(), today);
+        QCOMPARE(newStartDateTime.timeSpec(), Qt::UTC);
     }
 
     void shouldReactToDueDateChanges()

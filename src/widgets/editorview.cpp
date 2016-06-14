@@ -199,12 +199,12 @@ void EditorView::onTextEditChanged()
 
 void EditorView::onStartEditEntered(const QDate &start)
 {
-    emit startDateChanged(QDateTime(start));
+    emit startDateChanged(QDateTime(start, QTime(), Qt::UTC));
 }
 
 void EditorView::onDueEditEntered(const QDate &due)
 {
-    emit dueDateChanged(QDateTime(due));
+    emit dueDateChanged(QDateTime(due, QTime(), Qt::UTC));
 }
 
 void EditorView::onDoneButtonChanged(bool checked)
@@ -216,7 +216,7 @@ void EditorView::onStartTodayClicked()
 {
     QDate today(QDate::currentDate());
     ui->startDateEdit->setDate(today);
-    emit startDateChanged(QDateTime(today));
+    emit startDateChanged(QDateTime(today, QTime(), Qt::UTC));
 }
 
 void EditorView::onDelegateEntered()
