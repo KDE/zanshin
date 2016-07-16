@@ -135,7 +135,7 @@ PageView::PageView(QWidget *parent)
 
     m_quickAddEdit->setObjectName(QStringLiteral("quickAddEdit"));
     m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an item"));
-    connect(m_quickAddEdit, &QLineEdit::editingFinished, this, &PageView::onEditingFinished);
+    connect(m_quickAddEdit, &QLineEdit::returnPressed, this, &PageView::onReturnPressed);
 
     auto layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 3);
@@ -246,7 +246,7 @@ void PageView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)
     m_messageBoxInterface = interface;
 }
 
-void PageView::onEditingFinished()
+void PageView::onReturnPressed()
 {
     if (m_quickAddEdit->text().isEmpty())
         return;

@@ -65,7 +65,7 @@ signals:
     void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
 
 private slots:
-    void onEditingFinished();
+    void onReturnPressed();
     void onAddItemRequested();
     void onRemoveItemRequested();
     void onPromoteItemRequested();
