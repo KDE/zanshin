@@ -6,6 +6,7 @@ zanshin_auto_tests(
   editorviewtest
   filterwidgettest
   newprojectdialogtest
+  pageviewerrorhandlertest
   pageviewtest
   quickselectdialogtest
   scripteditortest

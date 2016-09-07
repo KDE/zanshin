@@ -11,6 +11,7 @@ set(widgets_SRCS
     newprojectdialog.cpp
     newprojectdialoginterface.cpp
     pageview.cpp
+    pageviewerrorhandler.cpp
     quickselectdialog.cpp
     quickselectdialoginterface.cpp
     scripteditor.cpp
