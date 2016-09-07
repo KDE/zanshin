@@ -71,7 +71,7 @@ int main(int argc, char **argv)
         std::cerr << "Migrating data from zanshin 0.2, please wait..." << std::endl;
         QProcess proc;
         proc.start(QStringLiteral("zanshin-migrator"));
-        proc.waitForFinished();
+        proc.waitForFinished(-1);
         if (proc.exitStatus() == QProcess::CrashExit) {
             std::cerr << "Migrator crashed!" << std::endl;
         } else if (proc.exitCode() == 0) {
