@@ -72,7 +72,13 @@ int main(int argc, char **argv)
         QProcess proc;
         proc.start(QStringLiteral("zanshin-migrator"));
         proc.waitForFinished();
-        std::cerr << "Migration done" << std::endl;
+        if (proc.exitStatus() == QProcess::CrashExit) {
+            std::cerr << "Migrator crashed!" << std::endl;
+        } else if (proc.exitCode() == 0) {
+            std::cerr << "Migration done" << std::endl;
+        } else {
+            std::cerr << "Migration error, code" << proc.exitCode() << std::endl;
+        }
     }
 
     auto widget = new QWidget;
