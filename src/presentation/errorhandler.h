@@ -24,6 +24,7 @@
 #ifndef PRESENTATION_ERRORHANDLER_H
 #define PRESENTATION_ERRORHANDLER_H
 
+#include <QMetaType>
 #include <QString>
 
 class KJob;
@@ -44,5 +45,7 @@ private:
 };
 
 }
+
+Q_DECLARE_METATYPE(Presentation::ErrorHandler*)
 
 #endif // PRESENTATION_ERRORHANDLER_H

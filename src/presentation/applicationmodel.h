@@ -46,6 +46,7 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QObject* availablePages READ availablePages)
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
+    Q_PROPERTY(Presentation::ErrorHandler* errorHandler READ errorHandler WRITE setErrorHandler)
 public:
     typedef QSharedPointer<ApplicationModel> Ptr;
 
