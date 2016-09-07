@@ -34,6 +34,8 @@
 #include <QMessageBox>
 #include <QTimer>
 
+#include <KMessageWidget>
+
 #include "filterwidget.h"
 #include "itemdelegate.h"
 #include "messagebox.h"
@@ -110,10 +112,17 @@ PageView::PageView(QWidget *parent)
     : QWidget(parent),
       m_cancelAction(new QAction(this)),
       m_model(Q_NULLPTR),
+      m_messageWidget(new KMessageWidget(this)),
       m_filterWidget(new FilterWidget(this)),
       m_centralView(new PageTreeView(this)),
       m_quickAddEdit(new QLineEdit(this))
 {
+    m_messageWidget->setObjectName(QStringLiteral("messageWidget"));
+    m_messageWidget->setCloseButtonVisible(true);
+    m_messageWidget->setMessageType(KMessageWidget::Error);
+    m_messageWidget->setWordWrap(true);
+    m_messageWidget->hide();
+
     m_filterWidget->setObjectName(QStringLiteral("filterWidget"));
     m_filterWidget->hide();
 
@@ -139,6 +148,7 @@ PageView::PageView(QWidget *parent)
 
     auto layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 3);
+    layout->addWidget(m_messageWidget);
     layout->addWidget(m_filterWidget);
     layout->addWidget(m_centralView);
     layout->addWidget(m_quickAddEdit);
@@ -244,6 +254,12 @@ QModelIndexList PageView::selectedIndexes() const
 void PageView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)
 {
     m_messageBoxInterface = interface;
+}
+
+void PageView::displayErrorMessage(const QString &message)
+{
+    m_messageWidget->setText(message);
+    m_messageWidget->animatedShow();
 }
 
 void PageView::onReturnPressed()

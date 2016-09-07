@@ -30,7 +30,10 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QToolButton>
 #include <QTreeView>
+
+#include <KMessageWidget>
 
 #include "domain/task.h"
 
@@ -106,6 +109,17 @@ private slots:
         Widgets::PageView page;
         QCOMPARE(page.contentsMargins(), QMargins(0, 0, 0, 0));
         QCOMPARE(page.layout()->contentsMargins(), QMargins(0, 0, 0, 3));
+
+        auto messageWidget = page.findChild<KMessageWidget*>(QStringLiteral("messageWidget"));
+        QVERIFY(messageWidget);
+        QVERIFY(!messageWidget->isVisibleTo(&page));
+        QVERIFY(!messageWidget->isCloseButtonVisible());
+        QVERIFY(messageWidget->wordWrap());
+        QVERIFY(messageWidget->text().isEmpty());
+        QVERIFY(messageWidget->icon().isNull());
+        QCOMPARE(messageWidget->messageType(), KMessageWidget::Error);
+        QVERIFY(!messageWidget->isShowAnimationRunning());
+        QVERIFY(!messageWidget->isHideAnimationRunning());
 
         auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         QVERIFY(centralView);
@@ -606,6 +620,56 @@ private slots:
 
         QCOMPARE(selectedIndexes.at(0).model(), index.model());
         QCOMPARE(selectedIndexes.at(1).model(), index2.model());
+    }
+
+    void shouldDisplayMessageOnError()
+    {
+        // GIVEN
+        Widgets::PageView page;
+        page.show();
+        QTest::qWaitForWindowShown(&page);
+        QTest::qWait(100);
+
+        auto messageWidget = page.findChild<KMessageWidget*>(QStringLiteral("messageWidget"));
+        QVERIFY(messageWidget);
+        QVERIFY(!messageWidget->isVisibleTo(&page));
+
+        QCOMPARE(messageWidget->findChildren<QToolButton*>().size(), 1);
+        auto closeButton = messageWidget->findChildren<QToolButton*>().first();
+        QVERIFY(closeButton);
+
+        // WHEN
+        page.displayErrorMessage(QStringLiteral("Foo Error"));
+
+        // THEN
+        QVERIFY(messageWidget->isVisibleTo(&page));
+        QVERIFY(messageWidget->isCloseButtonVisible());
+        QCOMPARE(messageWidget->text(), QStringLiteral("Foo Error"));
+        QVERIFY(messageWidget->icon().isNull());
+        QCOMPARE(messageWidget->messageType(), KMessageWidget::Error);
+        QVERIFY(messageWidget->isShowAnimationRunning());
+        QVERIFY(!messageWidget->isHideAnimationRunning());
+
+        // WHEN
+        QTest::qWait(800);
+
+        // THEN
+        QVERIFY(!messageWidget->isShowAnimationRunning());
+        QVERIFY(!messageWidget->isHideAnimationRunning());
+
+        // WHEN
+        closeButton->click();
+
+        // THEN
+        QVERIFY(!messageWidget->isShowAnimationRunning());
+        QVERIFY(messageWidget->isHideAnimationRunning());
+
+        // WHEN
+        QTest::qWait(800);
+
+        // THEN
+        QVERIFY(!messageWidget->isShowAnimationRunning());
+        QVERIFY(!messageWidget->isHideAnimationRunning());
     }
 };
 

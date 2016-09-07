@@ -40,6 +40,8 @@ class QLineEdit;
 class QModelIndex;
 class QMessageBox;
 
+class KMessageWidget;
+
 namespace Widgets {
 
 class FilterWidget;
@@ -60,6 +62,7 @@ public:
 public slots:
     void setModel(QObject *model);
     void setMessageBoxInterface(const MessageBoxInterface::Ptr &interface);
+    void displayErrorMessage(const QString &message);
 
 signals:
     void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
@@ -78,6 +81,7 @@ private:
     QHash<QString, QAction*> m_actions;
     QAction *m_cancelAction;
     QObject *m_model;
+    KMessageWidget *m_messageWidget;
     FilterWidget *m_filterWidget;
     PageTreeView *m_centralView;
     QLineEdit *m_quickAddEdit;
