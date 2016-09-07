@@ -45,6 +45,7 @@
 #include "widgets/editorview.h"
 #include "widgets/filterwidget.h"
 #include "widgets/pageview.h"
+#include "widgets/pageviewerrorhandler.h"
 #include "widgets/quickselectdialog.h"
 
 
@@ -294,7 +295,7 @@ public:
     }
 
 private slots:
-    void shouldHaveApplicationModel()
+    void shouldHaveApplicationModelAndSetErrorHandler()
     {
         // GIVEN
         Widgets::ApplicationComponents components;
@@ -305,6 +306,17 @@ private slots:
 
         // THEN
         QCOMPARE(components.model(), model);
+        auto errorHandlerBase = model->property("errorHandler").value<Presentation::ErrorHandler*>();
+        QVERIFY(errorHandlerBase);
+        auto errorHandler = static_cast<Widgets::PageViewErrorHandler*>(errorHandlerBase);
+        QVERIFY(errorHandler);
+        QVERIFY(!errorHandler->pageView());
+
+        // WHEN
+        auto pageView = components.pageView();
+
+        // THEN
+        QCOMPARE(errorHandler->pageView(), pageView);
     }
 
     void shouldApplyAvailableSourcesModelToAvailableSourcesView()

@@ -39,12 +39,17 @@
 class QAction;
 class QWidget;
 
+namespace Presentation {
+class ErrorHandler;
+}
+
 namespace Widgets {
 
 class AvailablePagesView;
 class AvailableSourcesView;
 class EditorView;
 class PageView;
+class PageViewErrorHandler;
 
 class QuickSelectDialogInterface;
 
@@ -79,6 +84,7 @@ private slots:
     void onMoveItemsRequested();
 
 private:
+    Presentation::ErrorHandler *errorHandler() const;
     void moveItems(const QModelIndex &destination, const QModelIndexList &droppedItems);
 
     QHash<QString, QAction*> m_actions;
@@ -90,6 +96,7 @@ private:
     PageView *m_pageView;
     QPointer<EditorView> m_editorView;
 
+    QScopedPointer<PageViewErrorHandler> m_errorHandler;
     QuickSelectDialogFactory m_quickSelectDialogFactory;
 };
 

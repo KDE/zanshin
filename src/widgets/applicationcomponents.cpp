@@ -37,6 +37,7 @@
 #include "availablesourcesview.h"
 #include "editorview.h"
 #include "pageview.h"
+#include "pageviewerrorhandler.h"
 #include "quickselectdialog.h"
 
 using namespace Widgets;
@@ -47,7 +48,8 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
       m_availableSourcesView(Q_NULLPTR),
       m_availablePagesView(Q_NULLPTR),
       m_pageView(Q_NULLPTR),
-      m_editorView(Q_NULLPTR)
+      m_editorView(Q_NULLPTR),
+      m_errorHandler(new PageViewErrorHandler)
 {
     m_quickSelectDialogFactory = [] (QWidget *parent) {
         return QuickSelectDialogPtr(new QuickSelectDialog(parent));
@@ -130,6 +132,7 @@ PageView *ApplicationComponents::pageView() const
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
         self->m_pageView = pageView;
+        self->m_errorHandler->setPageView(pageView);
 
         connect(self->m_pageView, &PageView::currentArtifactChanged, self, &ApplicationComponents::onCurrentArtifactChanged);
     }
@@ -162,8 +165,10 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
     if (m_model == model)
         return;
 
-    if (m_model && m_pageView) {
-        disconnect(m_model.data(), 0, m_pageView, 0);
+    if (m_model) {
+        if (m_pageView)
+            disconnect(m_model.data(), 0, m_pageView, 0);
+        m_model->setProperty("errorHandler", 0);
     }
 
     // Delay deletion of the old model until we're out of scope
@@ -171,6 +176,9 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
     Q_UNUSED(tmp);
 
     m_model = model;
+
+    if (m_model)
+        m_model->setProperty("errorHandler", QVariant::fromValue(errorHandler()));
 
     if (m_availableSourcesView) {
         m_availableSourcesView->setModel(m_model ? m_model->property("availableSources").value<QObject*>()
@@ -241,6 +249,11 @@ void ApplicationComponents::onMoveItemsRequested()
     dlg->setModel(pageListModel);
     if (dlg->exec() == QDialog::Accepted)
         moveItems(dlg->selectedIndex(), m_pageView->selectedIndexes());
+}
+
+Presentation::ErrorHandler *ApplicationComponents::errorHandler() const
+{
+    return m_errorHandler.data();
 }
 
 void ApplicationComponents::moveItems(const QModelIndex &destination, const QModelIndexList &droppedItems)
