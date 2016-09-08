@@ -63,7 +63,7 @@
         <item>
          <widget class="QPushButton" name="startTodayButton">
           <property name="text">
-           <string>Start &amp;Today</string>
+           <string>Select for &amp;Today</string>
           </property>
          </widget>
         </item>
