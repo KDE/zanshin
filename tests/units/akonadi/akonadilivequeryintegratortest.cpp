@@ -86,6 +86,51 @@ private:
         return Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
     }
 
+    auto fetchCollectionsFunction(Akonadi::StorageInterface::Ptr storage) {
+        return [storage] (const Domain::LiveQueryInput<Akonadi::Collection>::AddFunction &add) {
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
+            Utils::JobHandler::install(job->kjob(), [add, job] {
+                foreach (const auto &col, job->collections()) {
+                    add(col);
+                }
+            });
+        };
+    }
+
+    auto fetchItemsInAllCollectionsFunction(Akonadi::StorageInterface::Ptr storage) {
+        return [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
+            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
+                foreach (const auto &col, job->collections()) {
+                    auto itemJob = storage->fetchItems(col);
+                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
+                        foreach (const auto &item, itemJob->items())
+                            add(item);
+                    });
+                }
+            });
+        };
+    }
+
+    auto fetchItemsInSelectedCollectionsFunction(Akonadi::StorageInterface::Ptr storage, Akonadi::SerializerInterface::Ptr serializer)
+    {
+        return [storage, serializer] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
+            Utils::JobHandler::install(job->kjob(), [add, job, storage, serializer] {
+                foreach (const auto &col, job->collections()) {
+                    if (!serializer->isSelectedCollection(col))
+                        continue;
+
+                    auto itemJob = storage->fetchItems(col);
+                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
+                        foreach (const auto &item, itemJob->items())
+                            add(item);
+                    });
+                }
+            });
+        };
+    }
+
 private slots:
     void shouldBindArtifactQueries()
     {
@@ -108,18 +153,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::Artifact::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto predicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -231,18 +265,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::Artifact::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Artifact::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto inPredicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -292,21 +315,7 @@ private slots:
         auto serializer = createSerializer();
 
         auto query = Domain::LiveQueryOutput<Domain::Artifact::Ptr>::Ptr();
-        auto fetch = [storage, serializer] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage, serializer] {
-                foreach (const auto &col, job->collections()) {
-                    if (!serializer->isSelectedCollection(col))
-                        continue;
-
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer);
         auto predicate = [] (const Akonadi::Item &) {
             return true;
         };
@@ -512,14 +521,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Collection>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job] {
-                foreach (const auto &col, job->collections()) {
-                    add(col);
-                }
-            });
-        };
+        auto fetch = fetchCollectionsFunction(storage);
         auto predicate = [] (const Akonadi::Collection &collection) {
             return collection.name().endsWith(QLatin1String("-in"));
         };
@@ -622,14 +624,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Collection>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job] {
-                foreach (const auto &col, job->collections()) {
-                    add(col);
-                }
-            });
-        };
+        auto fetch = fetchCollectionsFunction(storage);
         auto inPredicate = [] (const Akonadi::Collection &collection) {
             return collection.name().endsWith(QLatin1String("-in"));
         };
@@ -680,18 +675,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto predicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -802,18 +786,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto inPredicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -862,21 +835,7 @@ private slots:
         auto serializer = createSerializer();
 
         auto query = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
-        auto fetch = [storage, serializer] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage, serializer] {
-                foreach (const auto &col, job->collections()) {
-                    if (!serializer->isSelectedCollection(col))
-                        continue;
-
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer);
         auto predicate = [] (const Akonadi::Item &) {
             return true;
         };
@@ -919,18 +878,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto predicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -1041,18 +989,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto inPredicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -1101,21 +1038,7 @@ private slots:
         auto serializer = createSerializer();
 
         auto query = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
-        auto fetch = [storage, serializer] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage, serializer] {
-                foreach (const auto &col, job->collections()) {
-                    if (!serializer->isSelectedCollection(col))
-                        continue;
-
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer);
         auto predicate = [] (const Akonadi::Item &) {
             return true;
         };
@@ -1133,8 +1056,6 @@ private slots:
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
     }
-
-
 
 
     void shouldBindTagQueries()
@@ -1330,18 +1251,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto predicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -1452,18 +1362,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage] {
-                foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInAllCollectionsFunction(storage);
         auto inPredicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -1512,21 +1411,7 @@ private slots:
         auto serializer = createSerializer();
 
         auto query = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
-        auto fetch = [storage, serializer] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
-            Utils::JobHandler::install(job->kjob(), [add, job, storage, serializer] {
-                foreach (const auto &col, job->collections()) {
-                    if (!serializer->isSelectedCollection(col))
-                        continue;
-
-                    auto itemJob = storage->fetchItems(col);
-                    Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
-                        foreach (const auto &item, itemJob->items())
-                            add(item);
-                    });
-                }
-            });
-        };
+        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer);
         auto predicate = [] (const Akonadi::Item &) {
             return true;
         };
