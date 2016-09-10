@@ -62,6 +62,12 @@ protected:
 
         QTreeView::keyPressEvent(event);
     }
+
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE
+    {
+        header()->resizeSection(0, event->size().width());
+        QTreeView::resizeEvent(event);
+    }
 };
 }
 
