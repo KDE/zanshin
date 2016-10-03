@@ -93,8 +93,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findInboxTopLevel() const
     auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
     auto predicate = [this] (const Akonadi::Item &item) {
         const bool excluded = !m_serializer->isTaskItem(item)
-                           || !m_serializer->relatedUidFromItem(item).isEmpty()
-                           || m_serializer->hasContextTags(item);
+                           || !m_serializer->relatedUidFromItem(item).isEmpty();
 
         return !excluded;
     };

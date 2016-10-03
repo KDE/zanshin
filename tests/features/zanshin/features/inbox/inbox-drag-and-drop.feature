@@ -15,6 +15,7 @@ Feature: Inbox task association
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy pears                                               |
        | Buy rutabagas                                           |
 
@@ -30,6 +31,7 @@ Feature: Inbox task association
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy pears                                               |
        | Buy rutabagas                                           |
 
@@ -49,6 +51,7 @@ Feature: Inbox task association
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy rutabagas                                           |
 
   Scenario: Dropping two child tasks on the inbox makes them top-level
@@ -66,6 +69,7 @@ Feature: Inbox task association
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy pears                                               |
        | Buy rutabagas                                           |
 
@@ -83,6 +87,7 @@ Feature: Inbox task association
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy pears                                               |
        | Buy rutabagas                                           |
        | Create Sozi SVG                                         |
@@ -103,6 +108,7 @@ Feature: Inbox task association
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy pears                                               |
        | Buy rutabagas                                           |
        | Create Sozi SVG                                         |
@@ -122,6 +128,7 @@ Feature: Inbox task association
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy pears                                               |
        | Buy rutabagas                                           |
        | Create Sozi SVG                                         |

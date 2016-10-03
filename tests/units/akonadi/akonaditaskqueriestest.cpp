@@ -1133,16 +1133,16 @@ private slots:
         QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 
-    void shouldNotHaveTasksWithContextsInInboxTopLevel_data()
+    void shouldHaveTasksWithContextsInInboxTopLevel_data()
     {
         QTest::addColumn<bool>("hasContexts");
         QTest::addColumn<bool>("isExpectedInInbox");
 
         QTest::newRow("task with no context") << false << true;
-        QTest::newRow("task with contexts") << true << false;
+        QTest::newRow("task with contexts") << true << true;
     }
 
-    void shouldNotHaveTasksWithContextsInInboxTopLevel()
+    void shouldHaveTasksWithContextsInInboxTopLevel()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -1187,7 +1187,7 @@ private slots:
 
         QTest::newRow("task which should be in inbox") << true << QString() << false;
         QTest::newRow("task with related uid") << false << "foo" << false;
-        QTest::newRow("task with context") << false << QString() << true;
+        QTest::newRow("task with context") << true << QString() << true;
     }
 
     void shouldReactToItemAddsForInboxTopLevel()
@@ -1258,13 +1258,9 @@ private slots:
         QTest::addColumn<bool>("inListAfterChange");
         QTest::addColumn<QString>("relatedUidBefore");
         QTest::addColumn<QString>("relatedUidAfter");
-        QTest::addColumn<bool>("hasContextsBefore");
-        QTest::addColumn<bool>("hasContextsAfter");
 
-        QTest::newRow("task appears in inbox (related uid)") << true << "foo" << QString() << false << false;
-        QTest::newRow("task disappears from inbox (related uid)") << false << QString() << "foo" << false << false;
-        QTest::newRow("task appears in inbox (context)") << true << QString() << QString() << true << false;
-        QTest::newRow("task disappears from inbox (context)") << false << QString() << QString() << false << true;
+        QTest::newRow("task appears in inbox (related uid)") << true << "foo" << QString();
+        QTest::newRow("task disappears from inbox (related uid)") << false << QString() << "foo";
     }
 
     void shouldReactToItemChangesForInboxTopLevel()
@@ -1280,12 +1276,8 @@ private slots:
 
         // Artifact data
         QFETCH(QString, relatedUidBefore);
-        QFETCH(bool, hasContextsBefore);
 
-        auto tagIds = QList<Akonadi::Tag::Id>();
-        if (hasContextsBefore) tagIds << 42;
-
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags(tagIds).withParentUid(relatedUidBefore));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withParentUid(relatedUidBefore));
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -1304,12 +1296,8 @@ private slots:
 
         // WHEN
         QFETCH(QString, relatedUidAfter);
-        QFETCH(bool, hasContextsAfter);
 
-        tagIds.clear();
-        if (hasContextsAfter) tagIds << 42;
-
-        data.modifyItem(GenTodo(data.item(42)).withTags(tagIds).withParentUid(relatedUidAfter));
+        data.modifyItem(GenTodo(data.item(42)).withParentUid(relatedUidAfter));
 
         // THEN
         if (inListAfterChange) {

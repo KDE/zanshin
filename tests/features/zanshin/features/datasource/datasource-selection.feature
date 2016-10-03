@@ -26,6 +26,7 @@ Feature: Data sources selection
        | "Capital in the Twenty-First Century" by Thomas Piketty |
        | "The Pragmatic Programmer" by Hunt and Thomas           |
        | Buy cheese                                              |
+       | Buy kiwis                                               |
        | Buy apples                                              |
        | Buy pears                                               |
        | Errands                                                 |
