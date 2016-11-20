@@ -53,7 +53,7 @@
 
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
+    QApplication app(argc, argv);
     App::initializeDependencies();
 
     auto aboutData = App::getAboutData();
