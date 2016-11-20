@@ -153,8 +153,11 @@ public:
     {
     }
 
+    // Note that setModel might invalidate the 'index' member variable, due to proxyModel->setSourceModel.
     void setModel(QAbstractItemModel *model)
     {
+        if (m_sourceModel == model)
+            return;
         m_sourceModel = model;
         if (!qobject_cast<QSortFilterProxyModel *>(model)) {
             proxyModel->setObjectName(QStringLiteral("m_proxyModel_in_ZanshinContext"));
