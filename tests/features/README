@@ -1,0 +1,16 @@
+These tests use the ruby "cucumber" application.
+
+You can install it with distro packages or with `gem install cucumber` as root.
+
+The tests are run as part of `ctest` (or `make test`), but when debugging
+you can also run them separately, e.g.
+
+Run all tests:
+$ ./zanshin-features-run
+
+Run all tests and stop at first error:
+$ ./zanshin-features-run --fail-fast
+
+Run only specific tests, useful when debugging or developing new tests:
+$ ./zanshin-features-run --fail-fast features/editing/adding-task.feature features/editing/editing-task.feature
+

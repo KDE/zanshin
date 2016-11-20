@@ -29,6 +29,7 @@
 #include <QProcess>
 #include <QTcpSocket>
 #include <QStandardPaths>
+#include <QCommandLineParser>
 
 class ProcessKiller
 {
@@ -71,6 +72,16 @@ int main(int argc, char **argv)
 
     QCoreApplication app(argc, argv);
 
+    QCommandLineParser parser;
+    QCommandLineOption includeWIP("wip", "Run all scenarios including WIP scenarios (those with \"@wip\" above Scenario, on a separate line)");
+    parser.addOption(includeWIP);
+    QCommandLineOption failFast("fail-fast", "Stop at first error");
+    parser.addOption(failFast);
+    parser.addPositionalArgument("filesOrDirs", "Files or directories for selecting a subset of the features to test. Example: features/editing", "[ [FILE|DIR][:LINE[:LINE]*] ]*");
+    parser.addHelpOption();
+
+    parser.process(app);
+
     QDir::setCurrent(QStringLiteral(FEATURES_DIR));
 
     QProcess cukeSteps;
@@ -89,8 +100,16 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    const QStringList args = app.arguments().contains(QStringLiteral("wip")) ? QStringList()
-                                                                             : QStringList({"--tags", "~@wip"});
+    const QStringList appArgs = parser.positionalArguments();
+
+    QStringList args;
+    if (!parser.isSet(includeWIP))
+        args += QStringList{"--tags", "~@wip"};
+    if (parser.isSet(failFast))
+        args += QStringLiteral("--fail-fast");
+    if (!appArgs.isEmpty())
+        args += appArgs; // files or dirs
+
     const QString cucumber = QStringLiteral("cucumber");
     if (QStandardPaths::findExecutable(cucumber).isEmpty()) {
         qWarning() << "cucumber not found";
