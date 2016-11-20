@@ -245,15 +245,21 @@ QModelIndex findIndex(QAbstractItemModel *model,
     return QModelIndex();
 }
 
-void collectIndices(ZanshinContext *context, const QModelIndex &root = QModelIndex())
+static void collectIndicesImpl(ZanshinContext *context, const QModelIndex &root = QModelIndex())
 {
     QAbstractItemModel *model = context->model();
     for (int row = 0; row < model->rowCount(root); row++) {
         const QModelIndex index = model->index(row, 0, root);
         context->indices << index;
         if (model->rowCount(index) > 0)
-            collectIndices(context, index);
+            collectIndicesImpl(context, index);
     }
+}
+
+static void collectIndices(ZanshinContext *context)
+{
+    context->indices.clear();
+    collectIndicesImpl(context);
 }
 
 void dumpIndices(const QList<QPersistentModelIndex> &indices)
@@ -569,7 +575,6 @@ WHEN("^I add a child named \"(.+)\" under the task named \"(.+)\"$") {
 WHEN("^I list the items$") {
     ScenarioScope<ZanshinContext> context;
     context->waitForStableState();
-    context->indices.clear();
     Zanshin::collectIndices(context.get());
     context->waitForStableState();
 }
