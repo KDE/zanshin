@@ -634,6 +634,13 @@ WHEN("^I change the editor (.*) to \"(.*)\"$") {
     VERIFY(context->editor->setProperty(property, value));
 }
 
+WHEN("^I rename the item to \"(.+)\"$") {
+    REGEX_PARAM(QString, title);
+    ScenarioScope<ZanshinContext> context;
+    VERIFY(context->model()->setData(context->index, title, Qt::EditRole));
+    context->waitForStableState();
+}
+
 WHEN("^I open the item in the editor again$") {
     ScenarioScope<ZanshinContext> context;
     auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole)
