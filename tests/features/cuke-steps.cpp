@@ -304,6 +304,8 @@ do {\
         BOOST_REQUIRE(false);\
 } while (0)
 
+// Note: you should make sure that context->indices is filled in before calling this,
+// e.g. calling Zanshin::collectIndices(context.get()) if not already done.
 #define COMPARE_OR_DUMP(actual, expected) \
 do {\
     if (!Zanshin::compare(actual, expected, #actual, #expected, __FILE__, __LINE__)) {\
@@ -318,10 +320,20 @@ do {\
         BOOST_REQUIRE(false);\
 } while (0)
 
+// Note: you should make sure that context->indices is filled in before calling this,
+// e.g. calling Zanshin::collectIndices(context.get()) if not already done.
 #define VERIFY_OR_DUMP(statement) \
 do {\
     if (!Zanshin::verify((statement), #statement, __FILE__, __LINE__)) {\
         Zanshin::dumpIndices(context->indices); \
+        BOOST_REQUIRE(false);\
+    }\
+} while (0)
+
+#define VERIFY_OR_DO(statement, whatToDo) \
+do {\
+    if (!Zanshin::verify((statement), #statement, __FILE__, __LINE__)) {\
+        whatToDo; \
         BOOST_REQUIRE(false);\
     }\
 } while (0)
@@ -378,6 +390,7 @@ GIVEN("^there is an item named \"(.+)\" in the central list$") {
     context->setModel(model);
     context->waitForEmptyJobQueue();
 
+    Zanshin::collectIndices(context.get());
     context->index = Zanshin::findIndex(context->model(), itemName);
     VERIFY_OR_DUMP(context->index.isValid());
 }
@@ -394,6 +407,7 @@ GIVEN("^there is an item named \"(.+)\" in the available data sources$") {
     context->waitForEmptyJobQueue();
     context->setModel(model);
 
+    Zanshin::collectIndices(context.get());
     context->index = Zanshin::findIndex(context->model(), itemName);
     VERIFY_OR_DUMP(context->index.isValid());
 }
@@ -412,7 +426,7 @@ GIVEN("^the central list contains items named:") {
         for (const auto &it : row) {
             const QString itemName = QString::fromUtf8(it.second.data());
             QModelIndex index = Zanshin::findIndex(context->model(), itemName);
-            VERIFY_OR_DUMP(index.isValid());
+            VERIFY_OR_DO(index.isValid(), Zanshin::dumpIndices(context->dragIndices));
             context->dragIndices << index;
         }
     }
