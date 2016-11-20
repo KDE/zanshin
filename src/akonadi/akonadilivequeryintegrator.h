@@ -98,7 +98,8 @@ public:
 
 
     template<typename OutputType, typename FetchFunction, typename PredicateFunction, typename... ExtraArgs>
-    void bind(QSharedPointer<Domain::LiveQueryOutput<OutputType>> &output,
+    void bind(const QByteArray &debugName,
+              QSharedPointer<Domain::LiveQueryOutput<OutputType>> &output,
               FetchFunction fetch,
               PredicateFunction predicate,
               ExtraArgs... extra)
@@ -127,6 +128,7 @@ public:
 
         auto query = Domain::LiveQuery<InputType, OutputType>::Ptr::create();
 
+        query->setDebugName(debugName);
         query->setFetchFunction(fetch);
         query->setPredicateFunction(predicate);
         query->setConvertFunction(std::bind(&LiveQueryIntegrator::create<InputType, OutputType, ExtraArgs...>, this, _1, extra...));

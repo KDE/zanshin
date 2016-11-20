@@ -142,6 +142,11 @@ public:
         m_update = update;
     }
 
+    void setDebugName(const QByteArray &name)
+    {
+        m_debugName = name;
+    }
+
     void setRepresentsFunction(const RepresentsFunction &represents)
     {
         m_represents = represents;
@@ -270,6 +275,7 @@ private:
     ConvertFunction m_convert;
     UpdateFunction m_update;
     RepresentsFunction m_represents;
+    QByteArray m_debugName;
 
     typename Provider::WeakPtr m_provider;
 };

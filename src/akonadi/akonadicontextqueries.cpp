@@ -44,7 +44,7 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
     auto predicate = [this] (const Akonadi::Tag &tag) {
         return tag.type() == Akonadi::SerializerInterface::contextTagType();
     };
-    m_integrator->bind(m_findAll, fetch, predicate);
+    m_integrator->bind("ContextQueries::findAll", m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -56,6 +56,6 @@ ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Contex
         return m_serializer->isContextChild(context, item);
     };
     auto &query = m_findToplevel[tag.id()];
-    m_integrator->bind(query, fetch, predicate);
+    m_integrator->bind("ContextQueries::findTopLevelTasks", query, fetch, predicate);
     return query->result();
 }

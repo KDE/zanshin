@@ -68,7 +68,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
 {
     auto fetch = m_helpers->fetchCollections(Collection::root(), m_contentTypes);
     auto predicate = createFetchPredicate(Collection::root());
-    m_integrator->bind(m_findTopLevel, fetch, predicate);
+    m_integrator->bind("DataSourceQueries::findTopLevel", m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
 }
 
@@ -78,7 +78,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
     auto &query = m_findChildren[root.id()];
     auto fetch = m_helpers->fetchCollections(root, m_contentTypes);
     auto predicate = createFetchPredicate(root);
-    m_integrator->bind(query, fetch, predicate);
+    m_integrator->bind("DataSourceQueries::findChildren", query, fetch, predicate);
     return query->result();
 }
 
@@ -104,7 +104,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel()
 {
     auto fetch = m_helpers->searchCollections(Collection::root(), &m_searchTerm, m_contentTypes);
     auto predicate = createSearchPredicate(Collection::root());
-    m_integrator->bind(m_findSearchTopLevel, fetch, predicate);
+    m_integrator->bind("DataSourceQueries::findSearchTopLevel", m_findSearchTopLevel, fetch, predicate);
     return m_findSearchTopLevel->result();
 }
 
@@ -114,7 +114,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(D
     auto &query = m_findSearchChildren[root.id()];
     auto fetch = m_helpers->searchCollections(root, &m_searchTerm, m_contentTypes);
     auto predicate = createSearchPredicate(root);
-    m_integrator->bind(query, fetch, predicate);
+    m_integrator->bind("DataSourceQueries::findSearchChildren", query, fetch, predicate);
     return query->result();
 }
 

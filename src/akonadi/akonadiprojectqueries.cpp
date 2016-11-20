@@ -42,7 +42,7 @@ ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->isProjectItem(item);
     };
-    m_integrator->bind(m_findAll, fetch, predicate);
+    m_integrator->bind("ProjectQueries::findAll", m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -54,6 +54,6 @@ ProjectQueries::TaskResult::Ptr ProjectQueries::findTopLevel(Domain::Project::Pt
     auto predicate = [this, project] (const Akonadi::Item &item) {
         return m_serializer->isProjectChild(project, item);
     };
-    m_integrator->bind(query, fetch, predicate);
+    m_integrator->bind("ProjectQueries::findTopLevel", query, fetch, predicate);
     return query->result();
 }

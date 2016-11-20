@@ -160,10 +160,10 @@ private slots:
 
         // Initial listing
         // WHEN
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("artifact1", query, fetch, predicate);
         auto result = query->result();
         result->data();
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("artifact2", query, fetch, predicate);
         result = query->result(); // Should not cause any problem or wrong data
 
         // THEN
@@ -233,7 +233,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            integrator->bind(query, fetch, predicate);
+            integrator->bind("artifactN", query, fetch, predicate);
             auto result = query->result();
 
             // THEN * 2
@@ -273,10 +273,10 @@ private slots:
             return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
-        integrator->bind(inQuery, fetch, inPredicate);
+        integrator->bind("artifact-in", inQuery, fetch, inPredicate);
         auto inResult = inQuery->result();
 
-        integrator->bind(exQuery, fetch, exPredicate);
+        integrator->bind("artifact-ex", exQuery, fetch, exPredicate);
         auto exResult = exQuery->result();
 
         TestHelpers::waitForEmptyJobQueue();
@@ -320,7 +320,7 @@ private slots:
             return true;
         };
 
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("artifact query", query, fetch, predicate);
         auto result = query->result();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
@@ -369,10 +369,10 @@ private slots:
 
         // Initial listing
         // WHEN
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("context1", query, fetch, predicate);
         auto result = query->result();
         result->data();
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("context2", query, fetch, predicate);
         result = query->result(); // Should not cause any problem or wrong data
 
         // THEN
@@ -442,7 +442,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            integrator->bind(query, fetch, predicate);
+            integrator->bind("contextN", query, fetch, predicate);
             auto result = query->result();
 
             // THEN * 2
@@ -485,10 +485,10 @@ private slots:
             return tag.name().endsWith(QLatin1String("-ex"));
         };
 
-        integrator->bind(inQuery, fetch, inPredicate);
+        integrator->bind("context-in", inQuery, fetch, inPredicate);
         auto inResult = inQuery->result();
 
-        integrator->bind(exQuery, fetch, exPredicate);
+        integrator->bind("context-ex", exQuery, fetch, exPredicate);
         auto exResult = exQuery->result();
 
         TestHelpers::waitForEmptyJobQueue();
@@ -528,10 +528,10 @@ private slots:
 
         // Initial listing
         // WHEN
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("ds1", query, fetch, predicate);
         auto result = query->result();
         result->data();
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("ds2", query, fetch, predicate);
         result = query->result(); // Should not cause any problem or wrong data
 
         // THEN
@@ -601,7 +601,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            integrator->bind(query, fetch, predicate);
+            integrator->bind("dsN", query, fetch, predicate);
             auto result = query->result();
 
             // THEN * 2
@@ -632,10 +632,10 @@ private slots:
             return collection.name().endsWith(QLatin1String("-ex"));
         };
 
-        integrator->bind(inQuery, fetch, inPredicate);
+        integrator->bind("ds-in", inQuery, fetch, inPredicate);
         auto inResult = inQuery->result();
 
-        integrator->bind(exQuery, fetch, exPredicate);
+        integrator->bind("ds-ex", exQuery, fetch, exPredicate);
         auto exResult = exQuery->result();
 
         TestHelpers::waitForEmptyJobQueue();
@@ -682,10 +682,10 @@ private slots:
 
         // Initial listing
         // WHEN
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("note1", query, fetch, predicate);
         auto result = query->result();
         result->data();
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("note2", query, fetch, predicate);
         result = query->result(); // Should not cause any problem or wrong data
 
         // THEN
@@ -755,7 +755,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            integrator->bind(query, fetch, predicate);
+            integrator->bind("noteN", query, fetch, predicate);
             auto result = query->result();
 
             // THEN * 2
@@ -794,10 +794,10 @@ private slots:
             return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
-        integrator->bind(inQuery, fetch, inPredicate);
+        integrator->bind("note-in", inQuery, fetch, inPredicate);
         auto inResult = inQuery->result();
 
-        integrator->bind(exQuery, fetch, exPredicate);
+        integrator->bind("note-ex", exQuery, fetch, exPredicate);
         auto exResult = exQuery->result();
 
         TestHelpers::waitForEmptyJobQueue();
@@ -840,7 +840,7 @@ private slots:
             return true;
         };
 
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("note query", query, fetch, predicate);
         auto result = query->result();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
@@ -885,10 +885,10 @@ private slots:
 
         // Initial listing
         // WHEN
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("project1", query, fetch, predicate);
         auto result = query->result();
         result->data();
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("project2", query, fetch, predicate);
         result = query->result(); // Should not cause any problem or wrong data
 
         // THEN
@@ -958,7 +958,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            integrator->bind(query, fetch, predicate);
+            integrator->bind("projectN", query, fetch, predicate);
             auto result = query->result();
 
             // THEN * 2
@@ -997,10 +997,10 @@ private slots:
             return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
-        integrator->bind(inQuery, fetch, inPredicate);
+        integrator->bind("project-in", inQuery, fetch, inPredicate);
         auto inResult = inQuery->result();
 
-        integrator->bind(exQuery, fetch, exPredicate);
+        integrator->bind("project-ex", exQuery, fetch, exPredicate);
         auto exResult = exQuery->result();
 
         TestHelpers::waitForEmptyJobQueue();
@@ -1043,7 +1043,7 @@ private slots:
             return true;
         };
 
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("project query", query, fetch, predicate);
         auto result = query->result();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
@@ -1090,10 +1090,10 @@ private slots:
 
         // Initial listing
         // WHEN
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("tag1", query, fetch, predicate);
         auto result = query->result();
         result->data();
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("tag2", query, fetch, predicate);
         result = query->result(); // Should not cause any problem or wrong data
 
         // THEN
@@ -1163,7 +1163,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            integrator->bind(query, fetch, predicate);
+            integrator->bind("tagN", query, fetch, predicate);
             auto result = query->result();
 
             // THEN * 2
@@ -1206,10 +1206,10 @@ private slots:
             return tag.name().endsWith(QLatin1String("-ex"));
         };
 
-        integrator->bind(inQuery, fetch, inPredicate);
+        integrator->bind("tag-in", inQuery, fetch, inPredicate);
         auto inResult = inQuery->result();
 
-        integrator->bind(exQuery, fetch, exPredicate);
+        integrator->bind("tag-ex", exQuery, fetch, exPredicate);
         auto exResult = exQuery->result();
 
         TestHelpers::waitForEmptyJobQueue();
@@ -1258,10 +1258,10 @@ private slots:
 
         // Initial listing
         // WHEN
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("task1", query, fetch, predicate);
         auto result = query->result();
         result->data();
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("task2", query, fetch, predicate);
         result = query->result(); // Should not cause any problem or wrong data
 
         // THEN
@@ -1331,7 +1331,7 @@ private slots:
         //    to a crash, if it is properly done no crash will occur
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            integrator->bind(query, fetch, predicate);
+            integrator->bind("taskN", query, fetch, predicate);
             auto result = query->result();
 
             // THEN * 2
@@ -1370,10 +1370,10 @@ private slots:
             return titleFromItem(item).endsWith(QLatin1String("-ex"));
         };
 
-        integrator->bind(inQuery, fetch, inPredicate);
+        integrator->bind("task-in", inQuery, fetch, inPredicate);
         auto inResult = inQuery->result();
 
-        integrator->bind(exQuery, fetch, exPredicate);
+        integrator->bind("task-ex", exQuery, fetch, exPredicate);
         auto exResult = exQuery->result();
 
         TestHelpers::waitForEmptyJobQueue();
@@ -1416,7 +1416,7 @@ private slots:
             return true;
         };
 
-        integrator->bind(query, fetch, predicate);
+        integrator->bind("task query", query, fetch, predicate);
         auto result = query->result();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);

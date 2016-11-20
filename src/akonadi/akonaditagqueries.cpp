@@ -41,7 +41,7 @@ TagQueries::TagResult::Ptr TagQueries::findAll() const
     auto predicate = [this] (const Akonadi::Tag &akonadiTag) {
         return akonadiTag.type() == Akonadi::Tag::PLAIN;
     };
-    m_integrator->bind(m_findAll, fetch, predicate);
+    m_integrator->bind("TagQueries::findAll", m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -53,6 +53,6 @@ TagQueries::NoteResult::Ptr TagQueries::findNotes(Domain::Tag::Ptr tag) const
     auto predicate = [this, tag] (const Akonadi::Item &item) {
         return m_serializer->isTagChild(tag, item);
     };
-    m_integrator->bind(query, fetch, predicate);
+    m_integrator->bind("TagQueries::findNotes", query, fetch, predicate);
     return query->result();
 }

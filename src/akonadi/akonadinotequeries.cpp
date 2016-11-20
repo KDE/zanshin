@@ -41,7 +41,7 @@ NoteQueries::NoteResult::Ptr NoteQueries::findAll() const
     auto predicate = [this] (const Item &item) {
         return m_serializer->isNoteItem(item);
     };
-    m_integrator->bind(m_findAll, fetch, predicate);
+    m_integrator->bind("NoteQueries::findAll", m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -52,6 +52,6 @@ NoteQueries::NoteResult::Ptr NoteQueries::findInbox() const
         return m_serializer->isNoteItem(item)
             && !m_serializer->hasAkonadiTags(item);
     };
-    m_integrator->bind(m_findAll, fetch, predicate);
+    m_integrator->bind("NoteQueries::findInbox", m_findAll, fetch, predicate);
     return m_findAll->result();
 }

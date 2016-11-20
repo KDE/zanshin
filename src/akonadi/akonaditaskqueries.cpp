@@ -62,7 +62,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->isTaskItem(item);
     };
-    m_integrator->bind(m_findAll, fetch, predicate);
+    m_integrator->bind("TaskQueries::findAll", m_findAll, fetch, predicate);
     return m_findAll->result();
 }
 
@@ -74,7 +74,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
     auto predicate = [this, task] (const Akonadi::Item &item) {
         return m_serializer->isTaskChild(task, item);
     };
-    m_integrator->bind(query, fetch, predicate);
+    m_integrator->bind("TaskQueries::findChildren", query, fetch, predicate);
     return query->result();
 }
 
@@ -84,7 +84,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->relatedUidFromItem(item).isEmpty() && m_serializer->isTaskItem(item);
     };
-    m_integrator->bind(m_findTopLevel, fetch, predicate);
+    m_integrator->bind("TaskQueries::findTopLevel", m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
 }
 
@@ -97,7 +97,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findInboxTopLevel() const
 
         return !excluded;
     };
-    m_integrator->bind(m_findInboxTopLevel, fetch, predicate);
+    m_integrator->bind("TaskQueries::findInboxTopLevel", m_findInboxTopLevel, fetch, predicate);
     return m_findInboxTopLevel->result();
 }
 
@@ -129,7 +129,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
         else
             return pastStartDate || pastDueDate;
     };
-    m_integrator->bind(m_findWorkdayTopLevel, fetch, predicate);
+    m_integrator->bind("TaskQueries::findWorkdayTopLevel", m_findWorkdayTopLevel, fetch, predicate);
     return m_findWorkdayTopLevel->result();
 }
 
