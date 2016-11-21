@@ -75,8 +75,8 @@ int main(int argc, char **argv)
     QCommandLineParser parser;
     QCommandLineOption includeWIP("wip", "Run all scenarios including WIP scenarios (those with \"@wip\" above Scenario, on a separate line)");
     parser.addOption(includeWIP);
-    QCommandLineOption failFast("fail-fast", "Stop at first error");
-    parser.addOption(failFast);
+    QCommandLineOption keepGoing(QStringList{"k", "keep-going"}, "Keep going after errors");
+    parser.addOption(keepGoing);
     parser.addPositionalArgument("filesOrDirs", "Files or directories for selecting a subset of the features to test. Example: features/editing", "[ [FILE|DIR][:LINE[:LINE]*] ]*");
     parser.addHelpOption();
 
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
     QStringList args;
     if (!parser.isSet(includeWIP))
         args += QStringList{"--tags", "~@wip"};
-    if (parser.isSet(failFast))
+    if (!parser.isSet(keepGoing))
         args += QStringLiteral("--fail-fast");
     if (!appArgs.isEmpty())
         args += appArgs; // files or dirs
