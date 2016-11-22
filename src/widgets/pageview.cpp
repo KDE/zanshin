@@ -367,6 +367,10 @@ void PageView::onFilterToggled(bool show)
 
 void PageView::onCurrentChanged(const QModelIndex &current)
 {
+    auto delegate = qobject_cast<ItemDelegate*>(m_centralView->itemDelegate());
+    if (delegate)
+        delegate->setCurrentIndex(current);
+
     auto data = current.data(Presentation::QueryTreeModelBase::ObjectRole);
     if (!data.isValid())
         return;
