@@ -631,12 +631,14 @@ WHEN("^I change the editor (.*) to \"(.*)\"$") {
     VERIFY(!property.isEmpty());
 
     ScenarioScope<ZanshinContext> context;
+    VERIFY(context->editor->setProperty("editingInProgress", true));
     VERIFY(context->editor->setProperty(property, value));
 }
 
 WHEN("^I rename the item to \"(.+)\"$") {
     REGEX_PARAM(QString, title);
     ScenarioScope<ZanshinContext> context;
+    VERIFY(context->editor->setProperty("editingInProgress", false));
     VERIFY(context->model()->setData(context->index, title, Qt::EditRole));
     context->waitForStableState();
 }

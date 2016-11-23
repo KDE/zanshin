@@ -64,6 +64,9 @@ signals:
     void dueDateChanged(const QDateTime &due);
     void doneChanged(bool done);
 
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) Q_DECL_OVERRIDE;
+
 private slots:
     void onArtifactChanged();
     void onHasTaskPropertiesChanged();

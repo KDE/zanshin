@@ -35,7 +35,8 @@ ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
     : QObject(parent),
       m_done(false),
       m_saveTimer(new QTimer(this)),
-      m_saveNeeded(false)
+      m_saveNeeded(false),
+      m_editingInProgress(false)
 {
     m_saveTimer->setSingleShot(true);
     m_saveTimer->setInterval(autoSaveDelay());
@@ -160,11 +161,16 @@ int ArtifactEditorModel::autoSaveDelay()
     return 500;
 }
 
+bool ArtifactEditorModel::editingInProgress() const
+{
+    return m_editingInProgress;
+}
+
 void ArtifactEditorModel::setText(const QString &text)
 {
     if (m_text == text)
         return;
-    onTextChanged(text);
+    applyNewText(text);
     setSaveNeeded(true);
 }
 
@@ -172,7 +178,7 @@ void ArtifactEditorModel::setTitle(const QString &title)
 {
     if (m_title == title)
         return;
-    onTitleChanged(title);
+    applyNewTitle(title);
     setSaveNeeded(true);
 }
 
@@ -180,7 +186,7 @@ void ArtifactEditorModel::setDone(bool done)
 {
     if (m_done == done)
         return;
-    onDoneChanged(done);
+    applyNewDone(done);
     setSaveNeeded(true);
 }
 
@@ -188,7 +194,7 @@ void ArtifactEditorModel::setStartDate(const QDateTime &start)
 {
     if (m_start == start)
         return;
-    onStartDateChanged(start);
+    applyNewStartDate(start);
     setSaveNeeded(true);
 }
 
@@ -196,7 +202,7 @@ void ArtifactEditorModel::setDueDate(const QDateTime &due)
 {
     if (m_due == due)
         return;
-    onDueDateChanged(due);
+    applyNewDueDate(due);
     setSaveNeeded(true);
 }
 
@@ -208,34 +214,39 @@ void ArtifactEditorModel::delegate(const QString &name, const QString &email)
     m_delegateFunction(task, delegate);
 }
 
+void ArtifactEditorModel::setEditingInProgress(bool editing)
+{
+    m_editingInProgress = editing;
+}
+
 void ArtifactEditorModel::onTextChanged(const QString &text)
 {
-    m_text = text;
-    emit textChanged(m_text);
+    if (!m_editingInProgress)
+        applyNewText(text);
 }
 
 void ArtifactEditorModel::onTitleChanged(const QString &title)
 {
-    m_title = title;
-    emit titleChanged(m_title);
+    if (!m_editingInProgress)
+        applyNewTitle(title);
 }
 
 void ArtifactEditorModel::onDoneChanged(bool done)
 {
-    m_done = done;
-    emit doneChanged(m_done);
+    if (!m_editingInProgress)
+        applyNewDone(done);
 }
 
 void ArtifactEditorModel::onStartDateChanged(const QDateTime &start)
 {
-    m_start = start;
-    emit startDateChanged(m_start);
+    if (!m_editingInProgress)
+        applyNewStartDate(start);
 }
 
 void ArtifactEditorModel::onDueDateChanged(const QDateTime &due)
 {
-    m_due = due;
-    emit dueDateChanged(m_due);
+    if (!m_editingInProgress)
+        applyNewDueDate(due);
 }
 
 void ArtifactEditorModel::onDelegateChanged(const Domain::Task::Delegate &delegate)
@@ -279,4 +290,34 @@ void ArtifactEditorModel::setSaveNeeded(bool needed)
 bool ArtifactEditorModel::isSaveNeeded() const
 {
     return m_saveNeeded;
+}
+
+void ArtifactEditorModel::applyNewText(const QString &text)
+{
+    m_text = text;
+    emit textChanged(m_text);
+}
+
+void ArtifactEditorModel::applyNewTitle(const QString &title)
+{
+    m_title = title;
+    emit titleChanged(m_title);
+}
+
+void ArtifactEditorModel::applyNewDone(bool done)
+{
+    m_done = done;
+    emit doneChanged(m_done);
+}
+
+void ArtifactEditorModel::applyNewStartDate(const QDateTime &start)
+{
+    m_start = start;
+    emit startDateChanged(m_start);
+}
+
+void ArtifactEditorModel::applyNewDueDate(const QDateTime &due)
+{
+    m_due = due;
+    emit dueDateChanged(m_due);
 }

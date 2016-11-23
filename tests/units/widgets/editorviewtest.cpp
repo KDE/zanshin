@@ -39,9 +39,16 @@ class EditorModelStub : public QObject
 {
     Q_OBJECT
 public:
+    EditorModelStub()
+    {
+        setProperty("reactToNotifications", true);
+    }
+
     void setPropertyAndSignal(const QByteArray &name, const QVariant &value)
     {
         if (property(name) == value)
+            return;
+        if (!property("reactToNotifications").toBool())
             return;
 
         setProperty(name, value);
@@ -327,6 +334,54 @@ private slots:
         QCOMPARE(doneButton->isChecked(), model.property("done").toBool());
     }
 
+    void shouldNotReactToChangesWhileEditing()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        model.setProperty("title", "My title");
+        model.setProperty("text", "\nMy text");
+        model.setProperty("startDate", QDateTime::currentDateTime());
+        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("done", true);
+        editor.setModel(&model);
+
+        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
+        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
+        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
+        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
+        auto delegateEdit = editor.findChild<QWidget*>(QStringLiteral("delegateEdit"));
+        model.setDelegateText(QStringLiteral("John Doe"));
+        editor.setModel(&model);
+
+        // WHEN
+        editor.show();
+        QTest::qWaitForWindowShown(&editor);
+        editor.activateWindow();
+        textEdit->setFocus();
+        model.setTitle("New title");
+        model.setText("New text");
+        startDateEdit->setFocus();
+        model.setStartDate(QDateTime::currentDateTime().addDays(1));
+        dueDateEdit->setFocus();
+        model.setDueDate(QDateTime::currentDateTime().addDays(3));
+        doneButton->setFocus();
+        model.setDone(false);
+        delegateEdit->setFocus();
+        model.setDelegateText(QStringLiteral("John Smith"));
+
+        // THEN (nothing changed)
+        QCOMPARE(textEdit->toPlainText(), QStringLiteral("My title\n\nMy text"));
+        QCOMPARE(startDateEdit->date(), QDate::currentDate());
+        QCOMPARE(dueDateEdit->date(), QDate::currentDate().addDays(2));
+        QVERIFY(doneButton->isChecked());
+        auto expectedText = tr("Delegated to: <b>%1</b>").arg(QStringLiteral("John Doe"));
+        QCOMPARE(delegateLabel->text(), expectedText);
+
+    }
+
     void shouldReactToTitleChanges()
     {
         // GIVEN
@@ -347,30 +402,6 @@ private slots:
 
         // THEN
         QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
-                                                + "\n"
-                                                + model.property("text").toString()));
-    }
-
-    void shouldNotReactToTitleTrim()
-    {
-        // GIVEN
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.makeTaskAvailable();
-        model.setProperty("title", "My title  ");
-        model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
-        model.setProperty("done", true);
-        editor.setModel(&model);
-
-        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
-
-        // WHEN
-        model.setPropertyAndSignal("title", "My title");
-
-        // THEN
-        QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString() + "  "
                                                 + "\n"
                                                 + model.property("text").toString()));
     }
@@ -397,44 +428,6 @@ private slots:
         QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
                                                 + "\n"
                                                 + model.property("text").toString()));
-    }
-
-    void shouldNotReactToTextTrim_data()
-    {
-        QTest::addColumn<QString>("title");
-        QTest::addColumn<QString>("text");
-
-        QTest::newRow("nominal case") << "My title" << "\nMy text \n ";
-        QTest::newRow("parentheses in the title") << "My (special) title" << "\nMy text \n ";
-        QTest::newRow("parentheses in the text") << "My title" << "\nMy (special) text \n ";
-        QTest::newRow("special char in the title") << "My +title" << "\nMy text \n ";
-        QTest::newRow("special char in the text") << "My title" << "\nMy +text \n ";
-    }
-
-    void shouldNotReactToTextTrim()
-    {
-        // GIVEN
-        QFETCH(QString, title);
-        QFETCH(QString, text);
-
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.makeTaskAvailable();
-        model.setProperty("title", title);
-        model.setProperty("text", text);
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
-        model.setProperty("done", true);
-        editor.setModel(&model);
-
-        auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
-
-        // WHEN
-        model.setPropertyAndSignal("text", text.trimmed());
-
-        // THEN
-        QCOMPARE(model.property("text").toString(), text.trimmed());
-        QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString() + "\n" + text));
     }
 
     void shouldApplyTextEditChanges_data()

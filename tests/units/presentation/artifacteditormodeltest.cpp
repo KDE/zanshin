@@ -242,6 +242,33 @@ private slots:
         QCOMPARE(model.property(propertyName), propertyValue);
     }
 
+    void shouldNotReactToArtifactPropertyChangesWhenEditing_data()
+    {
+        shouldReactToArtifactPropertyChanges_data();
+    }
+
+    void shouldNotReactToArtifactPropertyChangesWhenEditing()
+    {
+        // GIVEN
+        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(QByteArray, propertyName);
+        QFETCH(QVariant, propertyValue);
+        QFETCH(QByteArray, signal);
+
+        Presentation::ArtifactEditorModel model;
+        model.setArtifact(artifact);
+        QSignalSpy spy(&model, signal.constData());
+
+        // WHEN
+        const auto oldPropertyValue = artifact->property(propertyName);
+        model.setEditingInProgress(true);
+        artifact->setProperty(propertyName, propertyValue);
+
+        // THEN
+        QVERIFY(spy.isEmpty());
+        QCOMPARE(model.property(propertyName), oldPropertyValue);
+    }
+
     void shouldReactToTaskDelegateChanges()
     {
         // GIVEN

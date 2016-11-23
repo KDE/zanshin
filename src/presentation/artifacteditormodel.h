@@ -49,6 +49,8 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
     Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
+    Q_PROPERTY(bool editingInProgress READ editingInProgress WRITE setEditingInProgress)
+
 public:
     typedef std::function<KJob*(const Domain::Artifact::Ptr &)> SaveFunction;
     typedef std::function<KJob*(const Domain::Task::Ptr &, const Domain::Task::Delegate &)> DelegateFunction;
@@ -76,6 +78,8 @@ public:
 
     static int autoSaveDelay();
 
+    bool editingInProgress() const;
+
 public slots:
     void setText(const QString &text);
     void setTitle(const QString &title);
@@ -83,6 +87,8 @@ public slots:
     void setStartDate(const QDateTime &start);
     void setDueDate(const QDateTime &due);
     void delegate(const QString &name, const QString &email);
+
+    void setEditingInProgress(bool editingInProgress);
 
 signals:
     void artifactChanged(const Domain::Artifact::Ptr &artifact);
@@ -107,6 +113,11 @@ private slots:
 private:
     void setSaveNeeded(bool needed);
     bool isSaveNeeded() const;
+    void applyNewText(const QString &text);
+    void applyNewTitle(const QString &title);
+    void applyNewDone(bool done);
+    void applyNewStartDate(const QDateTime &start);
+    void applyNewDueDate(const QDateTime &due);
 
     Domain::Artifact::Ptr m_artifact;
     SaveFunction m_saveFunction;
@@ -121,6 +132,7 @@ private:
 
     QTimer *m_saveTimer;
     bool m_saveNeeded;
+    bool m_editingInProgress;
 };
 
 }

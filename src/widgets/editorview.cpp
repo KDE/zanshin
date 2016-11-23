@@ -69,6 +69,12 @@ EditorView::EditorView(QWidget *parent)
     ui->delegateLabel->setVisible(false);
     ui->taskGroup->setVisible(false);
 
+    ui->textEdit->installEventFilter(this);
+    ui->startDateEdit->installEventFilter(this);
+    ui->dueDateEdit->installEventFilter(this);
+    ui->doneButton->installEventFilter(this);
+    m_delegateEdit->installEventFilter(this);
+
     connect(ui->textEdit, &QPlainTextEdit::textChanged, this, &EditorView::onTextEditChanged);
     connect(ui->startDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onStartEditEntered);
     connect(ui->dueDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onDueEditEntered);
@@ -135,6 +141,26 @@ void EditorView::setModel(QObject *model)
     connect(this, SIGNAL(doneChanged(bool)), m_model, SLOT(setDone(bool)));
 }
 
+bool EditorView::eventFilter(QObject *watched, QEvent *event)
+{
+    Q_UNUSED(watched);
+    switch (event->type()) {
+    case QEvent::FocusIn:
+        // We don't want to replace text being edited by the user with older text
+        // coming from akonadi notifications (async, after some older save job)
+        m_model->setProperty("reactToNotifications", false);
+        break;
+    case QEvent::FocusOut:
+        // We do react to notifications, however, when not having the focus,
+        // for instance when changing the title using the central list.
+        m_model->setProperty("reactToNotifications", true);
+        break;
+    default:
+        break;
+    }
+    return false;
+}
+
 void EditorView::onArtifactChanged()
 {
     auto artifact = m_model->property("artifact").value<Domain::Artifact::Ptr>();
@@ -151,10 +177,10 @@ void EditorView::onTextOrTitleChanged()
 {
     const auto title = m_model->property("title").toString();
     const auto text = m_model->property("text").toString();
+    const auto fullText = title + '\n' + text;
 
-    QRegExp reg("^" + QRegExp::escape(title) + "\\s*\\n?" + QRegExp::escape(text) + "\\s*$");
-    if (!reg.exactMatch(ui->textEdit->toPlainText()))
-        ui->textEdit->setPlainText(title + '\n' + text);
+    if (ui->textEdit->toPlainText() != fullText) // QPlainTextEdit doesn't do this check
+        ui->textEdit->setPlainText(fullText);
 }
 
 void EditorView::onStartDateChanged()

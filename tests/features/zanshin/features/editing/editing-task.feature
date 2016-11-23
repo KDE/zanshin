@@ -39,7 +39,8 @@ Feature: Editing tasks
   Scenario: Restoring the task title using the central list
     Given I display the "Inbox" page
     And there is an item named "Buy a better book" in the central list
-    When I rename the item to "Buy a book"
+    When I open the item in the editor
+    And I rename the item to "Buy a book"
     Then the editor shows "Buy a book" as title
 
   Scenario: Editing a task start date
