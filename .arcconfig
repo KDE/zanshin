@@ -1,4 +1,5 @@
 {
   "project.name" : "zanshin",
+  "repository.callsign" : "ZANSHIN",
   "phabricator.uri" : "https://phabricator.kde.org/"
 }
