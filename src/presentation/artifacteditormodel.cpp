@@ -65,13 +65,14 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     m_due = QDateTime();
     m_delegateText = QString();
 
+    if (m_artifact)
+        disconnect(m_artifact.data(), Q_NULLPTR, this, Q_NULLPTR);
+
     m_artifact = artifact;
 
     if (m_artifact) {
-        disconnect(m_artifact.data(), Q_NULLPTR, this, Q_NULLPTR);
-
-        m_text = artifact->text();
-        m_title = artifact->title();
+        m_text = m_artifact->text();
+        m_title = m_artifact->title();
 
         connect(m_artifact.data(), &Domain::Artifact::textChanged, this, &ArtifactEditorModel::onTextChanged);
         connect(m_artifact.data(), &Domain::Artifact::titleChanged, this, &ArtifactEditorModel::onTitleChanged);

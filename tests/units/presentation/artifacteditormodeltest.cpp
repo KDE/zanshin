@@ -452,6 +452,35 @@ private slots:
         QTest::qWait(150);
         QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify task Task 1: Foo"));
     }
+
+    void shouldDisconnectFromPreviousArtifact_data()
+    {
+        shouldReactToArtifactPropertyChanges_data();
+    }
+
+    void shouldDisconnectFromPreviousArtifact()
+    {
+        // GIVEN
+        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(QByteArray, propertyName);
+        QFETCH(QVariant, propertyValue);
+        QFETCH(QByteArray, signal);
+
+        Presentation::ArtifactEditorModel model;
+        model.setArtifact(artifact);
+        QSignalSpy spy(&model, signal.constData());
+
+        Domain::Artifact::Ptr newArtifact = Domain::Task::Ptr::create();
+
+        // WHEN
+        model.setArtifact(newArtifact);
+        // modifying the *old* artifact should have no effect.
+        artifact->setProperty(propertyName, propertyValue);
+
+        // THEN
+        QCOMPARE(spy.size(), 1); // emitted by setArtifact
+        QVERIFY(model.property(propertyName) != artifact->property(propertyName));
+    }
 };
 
 ZANSHIN_TEST_MAIN(ArtifactEditorModelTest)
