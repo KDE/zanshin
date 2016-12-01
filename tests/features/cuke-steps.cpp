@@ -180,6 +180,12 @@ public:
         return m_model;
     }
 
+    Domain::Artifact::Ptr currentArtifact() const
+    {
+        return context->index.data(Presentation::QueryTreeModelBase::ObjectRole)
+                .value<Domain::Artifact::Ptr>();
+    }
+
     void waitForEmptyJobQueue()
     {
         while (Utils::JobHandler::jobCount() != 0) {
@@ -598,8 +604,7 @@ WHEN("^I list the items$") {
 
 WHEN("^I open the item in the editor$") {
     ScenarioScope<ZanshinContext> context;
-    auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole)
-                                  .value<Domain::Artifact::Ptr>();
+    auto artifact = context->currentArtifact();
     VERIFY(artifact);
     context->editor = context->app->property("editor").value<QObject*>();
     VERIFY(context->editor);
@@ -645,8 +650,7 @@ WHEN("^I rename the item to \"(.+)\"$") {
 
 WHEN("^I open the item in the editor again$") {
     ScenarioScope<ZanshinContext> context;
-    auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole)
-                                  .value<Domain::Artifact::Ptr>();
+    auto artifact = context->currentArtifact();
     VERIFY(artifact);
     VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(Domain::Artifact::Ptr())));
     VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(artifact)));
@@ -839,7 +843,7 @@ THEN("^the list does not contain \"(.+)\"$") {
 
 THEN("^the task corresponding to the item is done$") {
     ScenarioScope<ZanshinContext> context;
-    auto artifact = context->index.data(Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
+    auto artifact = context->currentArtifact();
     VERIFY(artifact);
     auto task = artifact.dynamicCast<Domain::Task>();
     VERIFY(task);
