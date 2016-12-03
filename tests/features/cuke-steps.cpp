@@ -182,7 +182,7 @@ public:
 
     Domain::Artifact::Ptr currentArtifact() const
     {
-        return context->index.data(Presentation::QueryTreeModelBase::ObjectRole)
+        return index.data(Presentation::QueryTreeModelBase::ObjectRole)
                 .value<Domain::Artifact::Ptr>();
     }
 
