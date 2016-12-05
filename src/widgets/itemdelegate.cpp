@@ -34,24 +34,9 @@
 
 using namespace Widgets;
 
-namespace {
-    const int SELECTED_FACTOR = 3;
-}
-
 ItemDelegate::ItemDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
-}
-
-void ItemDelegate::setCurrentIndex(const QModelIndex &current)
-{
-    if (m_currentIndex.isValid())
-        emit sizeHintChanged(m_currentIndex);
-
-    m_currentIndex = current;
-
-    if (m_currentIndex.isValid())
-        emit sizeHintChanged(m_currentIndex);
 }
 
 QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
@@ -62,10 +47,7 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     initStyleOption(&opt, index);
     opt.features = QStyleOptionViewItemV4::HasCheckIndicator;
     opt.text += ' ' + QLocale().dateFormat(QLocale::ShortFormat).toUpper() + ' ';
-    QSize res = QStyledItemDelegate::sizeHint(opt, index);
-    if (m_currentIndex == index)
-        res.setHeight(res.height() * SELECTED_FACTOR);
-    return res;
+    return QStyledItemDelegate::sizeHint(opt, index);
 }
 
 void ItemDelegate::paint(QPainter *painter,
@@ -93,7 +75,6 @@ void ItemDelegate::paint(QPainter *painter,
     const auto isDone = task ? task->isDone() : false;
     const auto isEnabled = (opt.state & QStyle::State_Enabled);
     const auto isActive = (opt.state & QStyle::State_Active);
-    const auto isCurrent = (m_currentIndex == index);
     const auto isSelected = (opt.state & QStyle::State_Selected);
     const auto isEditing = (opt.state & QStyle::State_Editing);
 
@@ -133,16 +114,10 @@ void ItemDelegate::paint(QPainter *painter,
     const auto dueDateWidth = dueDate.isValid() ? (summaryMetrics.width(dueDateText) + 2 * textMargin) : 0;
 
 
-    if (isCurrent)
-        opt.rect.setHeight(opt.rect.height() / SELECTED_FACTOR);
-
     const auto checkRect = style->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &opt, widget);
     const auto summaryRect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget)
                              .adjusted(textMargin, 0, -dueDateWidth - textMargin, 0);
     const auto dueDateRect = opt.rect.adjusted(opt.rect.width() - dueDateWidth, 0, 0, 0);
-
-    if (isCurrent)
-        opt.rect.setHeight(opt.rect.height() * SELECTED_FACTOR);
 
 
     // Draw background
@@ -169,41 +144,4 @@ void ItemDelegate::paint(QPainter *painter,
     if (!dueDateText.isEmpty()) {
         painter->drawText(dueDateRect, Qt::AlignCenter, dueDateText);
     }
-
-    // Draw the extra text
-    const auto extraText = [artifact] {
-        auto text = artifact ? artifact->text() : QString();
-        while (text.startsWith('\n'))
-            text.remove(0, 1);
-        return text;
-    }();
-
-    if (isCurrent && !extraText.isEmpty()) {
-        const auto extraTextRect = opt.rect.adjusted(summaryRect.left(),
-                                                     opt.rect.height() / SELECTED_FACTOR,
-                                                     0, 0);
-
-        auto gradient = QLinearGradient(extraTextRect.topLeft(), extraTextRect.bottomLeft());
-        gradient.setColorAt(0.0, baseColor);
-        gradient.setColorAt(0.75, baseColor);
-        gradient.setColorAt(1.0, Qt::transparent);
-
-        painter->setPen(QPen(QBrush(gradient), 0.0));
-        painter->setFont(baseFont);
-        painter->drawText(extraTextRect, Qt::AlignTop | Qt::TextWordWrap, extraText);
-    }
-}
-
-void ItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    QStyleOptionViewItemV4 opt = option;
-    initStyleOption(&opt, index);
-
-    const QWidget *widget = opt.widget;
-    QStyle *style = widget ? widget->style() : QApplication::style();
-
-    if (m_currentIndex == index)
-        opt.rect.setHeight(option.rect.height() / SELECTED_FACTOR);
-    const auto textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget);
-    editor->setGeometry(textRect);
 }

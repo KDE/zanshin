@@ -35,19 +35,11 @@ class ItemDelegate : public QStyledItemDelegate
 public:
     explicit ItemDelegate(QObject *parent = Q_NULLPTR);
 
-    void setCurrentIndex(const QModelIndex &current);
-
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const Q_DECL_OVERRIDE;
     void paint(QPainter *painter,
                const QStyleOptionViewItem &option,
                const QModelIndex &index) const Q_DECL_OVERRIDE;
-    void updateEditorGeometry(QWidget *editor,
-                              const QStyleOptionViewItem &option,
-                              const QModelIndex &index) const Q_DECL_OVERRIDE;
-
-private:
-    QPersistentModelIndex m_currentIndex;
 };
 
 }
