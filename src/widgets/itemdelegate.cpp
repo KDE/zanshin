@@ -85,11 +85,14 @@ void ItemDelegate::paint(QPainter *painter,
     const auto pastDueDate = dueDate.isValid() && dueDate.date() < QDate::currentDate();
     const auto onDueDate = dueDate.isValid() && dueDate.date() == QDate::currentDate();
 
+    const auto taskDelegate = task ? task->delegate() : Domain::Task::Delegate();
+
     const auto baseFont = opt.font;
     const auto summaryFont = [=] {
         auto font = baseFont;
         font.setStrikeOut(isDone);
         font.setBold(!isDone && (onStartDate || onDueDate || pastDueDate));
+        font.setItalic(taskDelegate.isValid());
         return font;
     }();
     const auto summaryMetrics = QFontMetrics(summaryFont);
@@ -105,8 +108,7 @@ void ItemDelegate::paint(QPainter *painter,
                             : onDueDate ? QColor("orange")
                             : baseColor;
 
-    const auto hasDelegate = task && task->delegate().isValid();
-    const auto summaryText = hasDelegate ? tr("(%1) %2").arg(task->delegate().display(), opt.text) : opt.text;
+    const auto summaryText = taskDelegate.isValid() ? tr("(%1) %2").arg(taskDelegate.display(), opt.text) : opt.text;
     const auto dueDateText = dueDate.isValid() ? QLocale().toString(dueDate.date(), QLocale::ShortFormat)
                                                : QString();
 
@@ -137,7 +139,7 @@ void ItemDelegate::paint(QPainter *painter,
         painter->setPen(summaryColor);
         painter->setFont(summaryFont);
         painter->drawText(summaryRect, Qt::AlignVCenter,
-                          summaryMetrics.elidedText(opt.text, Qt::ElideRight, summaryRect.width()));
+                          summaryMetrics.elidedText(summaryText, Qt::ElideRight, summaryRect.width()));
     }
 
     // Draw the due date
