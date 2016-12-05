@@ -26,7 +26,7 @@
 
 #include <QApplication>
 #include <QPainter>
-#include <QStyleOptionViewItemV4>
+#include <QStyleOptionViewItem>
 
 #include "domain/note.h"
 #include "domain/task.h"
@@ -43,9 +43,9 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                              const QModelIndex &index) const
 {
     // Make sure they all get the height needed for a check indicator
-    QStyleOptionViewItemV4 opt = option;
+    QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
-    opt.features = QStyleOptionViewItemV4::HasCheckIndicator;
+    opt.features = QStyleOptionViewItem::HasCheckIndicator;
     opt.text += ' ' + QLocale().dateFormat(QLocale::ShortFormat).toUpper() + ' ';
     return QStyledItemDelegate::sizeHint(opt, index);
 }
@@ -67,7 +67,7 @@ void ItemDelegate::paint(QPainter *painter,
                         : note.staticCast<Domain::Artifact>();
     }
 
-    auto opt = QStyleOptionViewItemV4(option);
+    auto opt = QStyleOptionViewItem(option);
     initStyleOption(&opt, index);
     const auto widget = opt.widget;
     const auto style = widget ? widget->style() : QApplication::style();

@@ -64,15 +64,12 @@ static QRect createButtonRect(const QRect &itemRect, int position)
 
 static QStyle *currentStyle(const QStyleOptionViewItem &option)
 {
-    QWidget const *widget = Q_NULLPTR;
-    if (const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3 *>(&option)) {
-        widget = v3->widget;
-    }
+    QWidget const *widget = option.widget;
     QStyle *style = widget ? widget->style() : QApplication::style();
     return style;
 }
 
-static QStyleOptionButton createButtonOption(const QStyleOptionViewItemV4 &itemOption, const QPixmap &pixmap, int position)
+static QStyleOptionButton createButtonOption(const QStyleOptionViewItem &itemOption, const QPixmap &pixmap, int position)
 {
     const QRect itemRect = itemOption.rect;
     const QRect buttonRect = createButtonRect(itemRect, position);
@@ -122,7 +119,7 @@ void DataSourceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     const auto isHovered = bool(opt.state & QStyle::State_MouseOver);
     const auto isDefault = index.data(Presentation::QueryTreeModel<Domain::DataSource::Ptr>::IsDefaultRole).toBool();
 
-    QStyleOptionViewItemV4 option = opt;
+    QStyleOptionViewItem option = opt;
     initStyleOption(&option, index);
     option.font.setBold(isDefault);
 
