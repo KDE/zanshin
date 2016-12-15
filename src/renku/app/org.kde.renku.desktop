@@ -3,6 +3,7 @@ Type=Application
 Categories=Qt;KDE;Utility;X-KDE-Utilities-PIM;
 Exec=renku
 Name=Renku
+Name[ast]=Renku
 Name[ca]=Renku
 Name[ca@valencia]=Renku
 Name[de]=Renku
