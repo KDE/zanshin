@@ -41,14 +41,14 @@ class EditorModelStub : public QObject
 public:
     EditorModelStub()
     {
-        setProperty("reactToNotifications", true);
+        setProperty("editingInProgress", false);
     }
 
     void setPropertyAndSignal(const QByteArray &name, const QVariant &value)
     {
         if (property(name) == value)
             return;
-        if (!property("reactToNotifications").toBool())
+        if (property("editingInProgress").toBool())
             return;
 
         setProperty(name, value);

@@ -148,12 +148,12 @@ bool EditorView::eventFilter(QObject *watched, QEvent *event)
     case QEvent::FocusIn:
         // We don't want to replace text being edited by the user with older text
         // coming from akonadi notifications (async, after some older save job)
-        m_model->setProperty("reactToNotifications", false);
+        m_model->setProperty("editingInProgress", true);
         break;
     case QEvent::FocusOut:
         // We do react to notifications, however, when not having the focus,
         // for instance when changing the title using the central list.
-        m_model->setProperty("reactToNotifications", true);
+        m_model->setProperty("editingInProgress", false);
         break;
     default:
         break;
