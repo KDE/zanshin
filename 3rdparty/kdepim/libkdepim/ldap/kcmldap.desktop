@@ -54,6 +54,7 @@ Comment[uk]=Налаштовування доступних серверів LDA
 Comment[x-test]=xxConfigure the available LDAP serversxx
 Comment[zh_CN]=配置可用 LDAP 服务器
 X-KDE-Keywords=kaddressbook, configure, settings, LDAP
+X-KDE-Keywords[ast]=kaddressbook, configurar, axustes, LDAP
 X-KDE-Keywords[bs]=kaddressbook, konfigurirati, postavke, LDAP
 X-KDE-Keywords[ca]=kaddressbook, configura, arranjament, LDAP
 X-KDE-Keywords[ca@valencia]=kaddressbook, configura, arranjament, LDAP
