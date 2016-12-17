@@ -85,6 +85,7 @@
     <p xml:lang="zh-CN">功能：</p>
     <ul>
       <li>Collects notes</li>
+      <li xml:lang="ast">Coleiciona notes</li>
       <li xml:lang="ca">Recull les notes</li>
       <li xml:lang="ca-valencia">Recull les notes</li>
       <li xml:lang="de">Notizensammlung</li>
