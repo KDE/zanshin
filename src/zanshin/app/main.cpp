@@ -24,16 +24,12 @@
 #include <QApplication>
 #include <QBoxLayout>
 #include <QDockWidget>
-#include <QProcess>
 #include <QAction>
 
 #include <KActionCollection>
 
 
 #include <KXmlGuiWindow>
-
-#include <KConfigGroup>
-#include <KSharedConfig>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -64,22 +60,6 @@ int main(int argc, char **argv)
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
-
-    KSharedConfig::Ptr config = KSharedConfig::openConfig(QStringLiteral("zanshin-migratorrc"));
-    KConfigGroup group = config->group("Migrations");
-    if (!group.readEntry("Migrated021Projects", false)) {
-        std::cerr << "Migrating data from zanshin 0.2, please wait..." << std::endl;
-        QProcess proc;
-        proc.start(QStringLiteral("zanshin-migrator"));
-        proc.waitForFinished(-1);
-        if (proc.exitStatus() == QProcess::CrashExit) {
-            std::cerr << "Migrator crashed!" << std::endl;
-        } else if (proc.exitCode() == 0) {
-            std::cerr << "Migration done" << std::endl;
-        } else {
-            std::cerr << "Migration error, code" << proc.exitCode() << std::endl;
-        }
-    }
 
     auto widget = new QWidget;
     auto components = new Widgets::ApplicationComponents(widget);
