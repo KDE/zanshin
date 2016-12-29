@@ -50,6 +50,7 @@ FilterWidget::FilterWidget(QWidget *parent)
     connect(ui->sortTypeCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &FilterWidget::onSortTypeChanged);
     connect(ui->ascendingButton, &QToolButton::clicked, this, &FilterWidget::onAscendingClicked);
     connect(ui->descendingButton, &QToolButton::clicked, this, &FilterWidget::onDescendingClicked);
+    connect(ui->showFutureCheck, &QCheckBox::toggled, this, &FilterWidget::onShowFutureChanged);
 }
 
 FilterWidget::~FilterWidget()
@@ -86,4 +87,9 @@ void FilterWidget::onAscendingClicked()
 void FilterWidget::onDescendingClicked()
 {
     m_model->setSortOrder(Qt::DescendingOrder);
+}
+
+void FilterWidget::onShowFutureChanged(bool show)
+{
+    m_model->setShowFutureTasks(show);
 }

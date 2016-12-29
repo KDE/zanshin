@@ -23,6 +23,7 @@
 
 #include <testlib/qtest_gui_zanshin.h>
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QToolButton>
@@ -76,6 +77,11 @@ private slots:
         QVERIFY(!descendingButton->isChecked());
         QCOMPARE(descendingButton->icon(), QIcon::fromTheme(QStringLiteral("arrow-down")));
         QVERIFY(descendingButton->autoRaise());
+
+        auto showFutureCheck = filter.findChild<QCheckBox*>(QStringLiteral("showFutureCheck"));
+        QVERIFY(showFutureCheck);
+        QVERIFY(!showFutureCheck->isVisibleTo(&filter));
+        QVERIFY(!showFutureCheck->isChecked());
     }
 
     void shouldChangeAppliedFilter()
@@ -127,6 +133,9 @@ private slots:
         QAbstractButton *descendingButton = filter.findChild<QAbstractButton*>(QStringLiteral("descendingButton"));
         QVERIFY(descendingButton);
 
+        auto showFutureCheck = filter.findChild<QCheckBox*>(QStringLiteral("showFutureCheck"));
+        QVERIFY(showFutureCheck);
+
         // WHEN
         extensionButton->click();
 
@@ -135,6 +144,7 @@ private slots:
         QVERIFY(sortTypeCombo->isVisibleTo(&filter));
         QVERIFY(descendingButton->isVisibleTo(&filter));
         QVERIFY(descendingButton->isVisibleTo(&filter));
+        QVERIFY(showFutureCheck->isVisibleTo(&filter));
 
         // WHEN
         extensionButton->click();
@@ -144,6 +154,7 @@ private slots:
         QVERIFY(!sortTypeCombo->isVisibleTo(&filter));
         QVERIFY(!descendingButton->isVisibleTo(&filter));
         QVERIFY(!descendingButton->isVisibleTo(&filter));
+        QVERIFY(!showFutureCheck->isVisibleTo(&filter));
     }
 
     void shouldChangeSortType()
@@ -193,6 +204,29 @@ private slots:
         QVERIFY(ascendingButton->isChecked());
         QVERIFY(!descendingButton->isChecked());
         QCOMPARE(filter.proxyModel()->sortOrder(), Qt::AscendingOrder);
+    }
+
+    void shouldShowHideFutureTasks()
+    {
+        // GIVEN
+        Widgets::FilterWidget filter;
+
+        auto showFutureCheck = filter.findChild<QCheckBox*>(QStringLiteral("showFutureCheck"));
+        QVERIFY(showFutureCheck);
+
+        // WHEN
+        showFutureCheck->click();
+
+        // THEN
+        QVERIFY(showFutureCheck->isChecked());
+        QVERIFY(filter.proxyModel()->showFutureTasks());
+
+        // WHEN
+        showFutureCheck->click();
+
+        // THEN
+        QVERIFY(!showFutureCheck->isChecked());
+        QVERIFY(!filter.proxyModel()->showFutureTasks());
     }
 };
 

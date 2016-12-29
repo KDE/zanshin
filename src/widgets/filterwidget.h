@@ -58,6 +58,7 @@ private slots:
     void onSortTypeChanged(int index);
     void onAscendingClicked();
     void onDescendingClicked();
+    void onShowFutureChanged(bool show);
 
 private:
     Ui::FilterWidget *ui;
