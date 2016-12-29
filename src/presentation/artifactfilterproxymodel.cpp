@@ -35,7 +35,8 @@ using namespace Presentation;
 
 ArtifactFilterProxyModel::ArtifactFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent),
-      m_sortType(TitleSort)
+      m_sortType(TitleSort),
+      m_showFuture(false)
 {
     setDynamicSortFilter(true);
     setSortCaseSensitivity(Qt::CaseInsensitive);
@@ -58,6 +59,32 @@ void ArtifactFilterProxyModel::setSortOrder(Qt::SortOrder order)
     sort(0, order);
 }
 
+bool ArtifactFilterProxyModel::showFutureTasks() const
+{
+    return m_showFuture;
+}
+
+void ArtifactFilterProxyModel::setShowFutureTasks(bool show)
+{
+    if (m_showFuture == show)
+        return;
+
+    m_showFuture = show;
+    invalidate();
+}
+
+static bool isFutureTask(const Domain::Artifact::Ptr &artifact)
+{
+    auto task = artifact.objectCast<Domain::Task>();
+    if (!task)
+        return false;
+
+    if (!task->startDate().isValid())
+        return false;
+
+    return task->startDate() > QDateTime::currentDateTime();
+}
+
 bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     const QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
@@ -68,7 +95,7 @@ bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
 
         if (artifact->title().contains(regexp)
          || artifact->text().contains(regexp)) {
-            return true;
+            return m_showFuture || !isFutureTask(artifact);
         }
     }
 

@@ -76,6 +76,7 @@ private slots:
         QCOMPARE(proxy.sortOrder(), Qt::AscendingOrder);
         QCOMPARE(proxy.sortType(), Presentation::ArtifactFilterProxyModel::TitleSort);
         QCOMPARE(proxy.sortCaseSensitivity(), Qt::CaseInsensitive);
+        QVERIFY(!proxy.showFutureTasks());
     }
 
     void shouldFilterByTextAndTitle()
@@ -101,6 +102,38 @@ private slots:
         QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("2. Find Me"));
         QCOMPARE(output.index(2, 0).data().toString(), QStringLiteral("4. foo"));
         QCOMPARE(output.index(3, 0).data().toString(), QStringLiteral("5. find me"));
+    }
+
+    void shouldFilterByStartDate()
+    {
+        // GIVEN
+        QStandardItemModel input;
+        input.appendRow(createTaskItem(QStringLiteral("1. past"), QStringLiteral(""), QDate::currentDate().addDays(-1)));
+        input.appendRow(createTaskItem(QStringLiteral("2. present"), QStringLiteral(""), QDate::currentDate()));
+        input.appendRow(createTaskItem(QStringLiteral("3. future"), QStringLiteral(""), QDate::currentDate().addDays(1)));
+        input.appendRow(createTaskItem(QStringLiteral("4. whatever"), QStringLiteral("")));
+
+        Presentation::ArtifactFilterProxyModel output;
+        output.setSourceModel(&input);
+
+        // WHEN
+        output.setShowFutureTasks(true);
+
+        // THEN
+        QCOMPARE(output.rowCount(), 4);
+        QCOMPARE(output.index(0, 0).data().toString(), QStringLiteral("1. past"));
+        QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("2. present"));
+        QCOMPARE(output.index(2, 0).data().toString(), QStringLiteral("3. future"));
+        QCOMPARE(output.index(3, 0).data().toString(), QStringLiteral("4. whatever"));
+
+        // WHEN
+        output.setShowFutureTasks(false);
+
+        // THEN
+        QCOMPARE(output.rowCount(), 3);
+        QCOMPARE(output.index(0, 0).data().toString(), QStringLiteral("1. past"));
+        QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("2. present"));
+        QCOMPARE(output.index(2, 0).data().toString(), QStringLiteral("4. whatever"));
     }
 
     void shouldKeepRowIfItHasAcceptableChildren()

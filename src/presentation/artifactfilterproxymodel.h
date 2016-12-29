@@ -46,12 +46,16 @@ public:
 
     void setSortOrder(Qt::SortOrder order);
 
+    bool showFutureTasks() const;
+    void setShowFutureTasks(bool show);
+
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const Q_DECL_OVERRIDE;
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 
 private:
     SortType m_sortType;
+    bool m_showFuture;
 };
 
 }
