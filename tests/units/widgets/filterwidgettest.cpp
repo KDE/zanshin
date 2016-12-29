@@ -56,7 +56,6 @@ private slots:
         QVERIFY(extensionButton);
         QVERIFY(extensionButton->isVisibleTo(&filter));
         QVERIFY(!extensionButton->isChecked());
-        QCOMPARE(extensionButton->icon(), QIcon::fromTheme(QStringLiteral("arrow-down-double")));
         QVERIFY(extensionButton->autoRaise());
 
         QComboBox *sortTypeCombo = filter.findChild<QComboBox*>(QStringLiteral("sortTypeCombo"));
@@ -68,14 +67,12 @@ private slots:
         QVERIFY(ascendingButton);
         QVERIFY(!ascendingButton->isVisibleTo(&filter));
         QVERIFY(ascendingButton->isChecked());
-        QCOMPARE(ascendingButton->icon(), QIcon::fromTheme(QStringLiteral("arrow-up")));
         QVERIFY(ascendingButton->autoRaise());
 
         auto descendingButton = filter.findChild<QToolButton*>(QStringLiteral("descendingButton"));
         QVERIFY(descendingButton);
         QVERIFY(!descendingButton->isVisibleTo(&filter));
         QVERIFY(!descendingButton->isChecked());
-        QCOMPARE(descendingButton->icon(), QIcon::fromTheme(QStringLiteral("arrow-down")));
         QVERIFY(descendingButton->autoRaise());
 
         auto showFutureCheck = filter.findChild<QCheckBox*>(QStringLiteral("showFutureCheck"));
