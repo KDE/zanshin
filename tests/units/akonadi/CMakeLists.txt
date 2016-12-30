@@ -25,4 +25,4 @@ zanshin_akonadi_auto_tests(
   akonadistoragetest
 )
 
-target_link_libraries(akonadistoragetest akonadi testlib)
+target_link_libraries(tests-units-akonadi-akonadistoragetest akonadi testlib)

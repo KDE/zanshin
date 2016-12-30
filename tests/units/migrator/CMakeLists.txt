@@ -9,7 +9,7 @@ zanshin_akonadi_auto_tests(
   zanshin021migrationtest
 )
 
-target_link_libraries(zanshin021migrationtest
+target_link_libraries(tests-units-migrator-zanshin021migrationtest
    migrator
    testlib
 )
