@@ -299,7 +299,7 @@ private slots:
         auto tag = Domain::Tag::Ptr::create();
         tag->setName(QStringLiteral("Tag1"));
 
-        // One note and one task
+        // One note
         auto rootNote = Domain::Note::Ptr::create();
         rootNote->setTitle(QStringLiteral("rootNote"));
         auto noteProvider = Domain::QueryResultProvider<Domain::Note::Ptr>::Ptr::create();

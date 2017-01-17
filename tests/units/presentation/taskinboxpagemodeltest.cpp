@@ -59,7 +59,7 @@ private slots:
     {
         // GIVEN
 
-        // One note and one task
+        // One task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle(QStringLiteral("rootTask"));
         auto inboxProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -398,7 +398,7 @@ private slots:
     {
         // GIVEN
 
-        // One note and one task
+        // One task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle(QStringLiteral("rootTask"));
         auto inboxProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -436,7 +436,7 @@ private slots:
     {
         // GIVEN
 
-        // One note and one task
+        // One task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle(QStringLiteral("rootTask"));
         auto inboxProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -481,7 +481,7 @@ private slots:
     {
         // GIVEN
 
-        // One note and one task, both top level
+        // One task, top level
         auto topLevelTask = Domain::Task::Ptr::create();
         topLevelTask->setTitle(QStringLiteral("topLevelTask"));
         auto inboxProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();

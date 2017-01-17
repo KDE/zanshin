@@ -59,7 +59,7 @@ private slots:
         // One project
         auto project = Domain::Project::Ptr::create();
 
-        // One note and one task
+        // One task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -487,7 +487,7 @@ private slots:
         auto project = Domain::Project::Ptr::create();
         project->setName(QStringLiteral("Project1"));
 
-        // One note and one task
+        // One task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
@@ -535,7 +535,7 @@ private slots:
         auto project = Domain::Project::Ptr::create();
         project->setName(QStringLiteral("Project1"));
 
-        // One note and one task
+        // One task
         auto rootTask = Domain::Task::Ptr::create();
         rootTask->setTitle(QStringLiteral("rootTask"));
         auto topLevelProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
