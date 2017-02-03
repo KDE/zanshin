@@ -30,7 +30,7 @@
   <summary xml:lang="en-GB">Note Taking Application</summary>
   <summary xml:lang="es">Aplicación para tomar notas</summary>
   <summary xml:lang="fi">Muistiinpanosovellus</summary>
-  <summary xml:lang="gl">Programa para tomar notas</summary>
+  <summary xml:lang="gl">Aplicativo para tomar notas</summary>
   <summary xml:lang="it">Applicazione per prendere delle note</summary>
   <summary xml:lang="nl">Toepassing voor notities</summary>
   <summary xml:lang="pl">Aplikacja do robienia notatek</summary>
@@ -52,7 +52,7 @@
     <p xml:lang="en-GB">Renku is an efficient and simple application for managing your notes. It helps you organise the knowledge you accumulate and acts as a personal wiki. You'll never forget anything any more, getting your mind like water.</p>
     <p xml:lang="es">Renku es una aplicación sencilla y eficiente para gestionar sus notas. Le ayuda a organizar el conocimiento que acumula y funciona como una wiki personal. Ya no volverá a olvidarse de nada, teniendo la mente clara como el agua.</p>
     <p xml:lang="fi">Renku on yksinkertainen ja tehokas sovellus muistiinpanojesi hallitsemiseen. Se auttaa sinua järjestämään keräämiäsi tietoja ja toimii henkilökohtaisena wikinä. Et koskaan enää unohda mitään: se toimii kuin vettä vain.</p>
-    <p xml:lang="gl">Renku é un programa eficiente e sinxelo para xestionar notas. Axúdao a organizar o coñecemento que acumula, e actúa como un wiki persoal. Non volverá esquecer nada nunca máis, convertendo a súa mente en auga.</p>
+    <p xml:lang="gl">Renku é un aplicativo eficiente e sinxelo para xestionar notas. Axúdao a organizar o coñecemento que acumula, e actúa como un wiki persoal. Non volverá esquecer nada nunca máis, convertendo a súa mente en auga.</p>
     <p xml:lang="it">Renku è un'applicazione semplice ed efficiente per la gestione delle tue note. Consente di organizzare la conoscenza che accumuli e agisce come un wiki personale. Non dimenticherai mai più niente, lasciando la tua mente fluida come l'acqua.</p>
     <p xml:lang="nl">Renku is een efficiënte en eenvoudige toepassing voor het beheer van uw notities. Het helpt u de verzamelde kennis te organiseren en werkt als een persoonlijke wiki. U zult nooit meer iets vergeten en uw geheugen is geen zeef meer.</p>
     <p xml:lang="pl">Renku jest wydajną i prostą aplikacją do zarządzania notatkami. Pomaga uporządkować zbieraną przez ciebie wiedzę i działa jak osobista wikipedia. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
@@ -124,7 +124,7 @@
       <li xml:lang="en-GB">Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
       <li xml:lang="es">Aplicación que usa Akonadi para obtener datos de prácticamente cualquier lugar (locales, IMAP, servicios web...)</li>
       <li xml:lang="fi">Akonadiin perustuva sovellus sallii etsiä tietoa käytännössä mistä vain (kiintolevyltä, IMAPista, verkkopalveluista…)</li>
-      <li xml:lang="gl">O programa é compatíbel con Akonadi, e permítelle obter datos de practicamente calquera lugar (local, IMAP, servizos web).</li>
+      <li xml:lang="gl">O aplicativo é compatíbel con Akonadi, e permítelle obter datos de practicamente calquera lugar (local, IMAP, servizos web).</li>
       <li xml:lang="it">Applicazione basata su Akonadi che consente di ottenere i dati praticamente ovunque (locale, imap, servizio web...)</li>
       <li xml:lang="nl">In Akonadi opgenomen toepassing waarmee u gegevens werkelijk overal vandaan kunt halen (lokaal, imap, webservice...)</li>
       <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>
