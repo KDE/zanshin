@@ -9,7 +9,9 @@ zanshin_auto_tests(
   pageviewerrorhandlertest
   pageviewtest
   quickselectdialogtest
+  runningtaskwidgettest
   scripteditortest
+  taskapplicationcomponentstest
 )
 
 # These tests need a window that takes focus

@@ -45,6 +45,7 @@
 #include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
+#include "presentation/runningtaskmodelinterface.h"
 
 namespace Widgets {
 class PageTreeView : public QTreeView
@@ -197,10 +198,19 @@ PageView::PageView(QWidget *parent)
     filterViewAction->setCheckable(true);
     connect(filterViewAction, &QAction::triggered, this, &PageView::onFilterToggled);
 
+    m_runTaskAction = new QAction(this);
+    m_runTaskAction->setObjectName(QStringLiteral("runTaskAction"));
+    m_runTaskAction->setShortcut(Qt::CTRL | Qt::Key_Space);
+    m_runTaskAction->setText(tr("Start now"));
+    m_runTaskAction->setIcon(QIcon::fromTheme(QStringLiteral("media-playback-start")));
+    connect(m_runTaskAction, &QAction::triggered, this, &PageView::onRunTaskTriggered);
+    updateRunTaskAction();
+
     m_actions.insert(QStringLiteral("page_view_add"), addItemAction);
     m_actions.insert(QStringLiteral("page_view_remove"), removeItemAction);
     m_actions.insert(QStringLiteral("page_view_promote"), promoteItemAction);
     m_actions.insert(QStringLiteral("page_view_filter"), filterViewAction);
+    m_actions.insert(QStringLiteral("page_run_task"), m_runTaskAction);
 }
 
 QHash<QString, QAction *> PageView::globalActions() const
@@ -211,6 +221,11 @@ QHash<QString, QAction *> PageView::globalActions() const
 QObject *PageView::model() const
 {
     return m_model;
+}
+
+Presentation::RunningTaskModelInterface *PageView::runningTaskModel() const
+{
+    return m_runningTaskModel;
 }
 
 void PageView::setModel(QObject *model)
@@ -227,6 +242,8 @@ void PageView::setModel(QObject *model)
     m_model = model;
 
     setEnabled(m_model);
+
+    updateRunTaskAction();
 
     if (!m_model)
         return;
@@ -255,6 +272,13 @@ QModelIndexList PageView::selectedIndexes() const
                    std::bind(&QSortFilterProxyModel::mapToSource, m_filterWidget->proxyModel(), _1));
 
     return sourceIndices;
+}
+
+void PageView::setRunningTaskModel(Presentation::RunningTaskModelInterface *model)
+{
+    m_runningTaskModel = model;
+    connect(m_runningTaskModel, SIGNAL(runningTaskChanged(Domain::Task::Ptr)),
+            this, SLOT(onRunningTaskChanged(Domain::Task::Ptr)));
 }
 
 void PageView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)
@@ -365,13 +389,40 @@ void PageView::onFilterToggled(bool show)
         m_filterWidget->clear();
 }
 
+void PageView::updateRunTaskAction()
+{
+    const auto artifact = currentArtifact();
+    const auto task = artifact.objectCast<Domain::Task>();
+    m_runTaskAction->setEnabled(task);
+}
+
+void PageView::onRunTaskTriggered()
+{
+    auto task = currentArtifact().objectCast<Domain::Task>();
+    Q_ASSERT(task); // the action is supposed to be disabled otherwise
+    if (task->startDate().isNull())
+        task->setStartDate(QDateTime::currentDateTime());
+    m_runningTaskModel->setProperty("runningTask", QVariant::fromValue(task));
+}
+
+void PageView::onRunningTaskChanged(const Domain::Task::Ptr &task)
+{
+    if (!task) {
+        QWidget *toplevel = window();
+        toplevel->raise();
+        toplevel->activateWindow();
+    }
+}
+
 void PageView::onCurrentChanged(const QModelIndex &current)
 {
+    updateRunTaskAction();
+
     auto data = current.data(Presentation::QueryTreeModelBase::ObjectRole);
     if (!data.isValid())
         return;
 
-    auto artifact = data.value<Domain::Artifact::Ptr>();
+    auto artifact = currentArtifact();
     if (!artifact)
         return;
 
@@ -393,6 +444,16 @@ bool PageView::eventFilter(QObject *object, QEvent *event)
     }
 
     return false;
+}
+
+Domain::Artifact::Ptr PageView::currentArtifact() const
+{
+    const auto current = m_centralView->selectionModel()->currentIndex();
+    const auto data = current.data(Presentation::QueryTreeModelBase::ObjectRole);
+    if (!data.isValid())
+        return Domain::Artifact::Ptr(Q_NULLPTR);
+
+    return data.value<Domain::Artifact::Ptr>();
 }
 
 #include "pageview.moc"

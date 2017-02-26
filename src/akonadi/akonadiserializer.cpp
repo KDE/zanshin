@@ -222,6 +222,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("parentCollectionId", item.parentCollection().id());
     task->setProperty("todoUid", todo->uid());
     task->setProperty("relatedUid", todo->relatedTo());
+    task->setRunning(todo->customProperty("Zanshin", "Running") == QLatin1String("1"));
 
     if (todo->attendeeCount() > 0) {
         const auto attendees = todo->attendees();
@@ -276,6 +277,11 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
                                                                 true,
                                                                 KCalCore::Attendee::Accepted));
         todo->addAttendee(attendee);
+    }
+    if (task->isRunning()) {
+        todo->setCustomProperty("Zanshin", "Running", "1");
+    } else {
+        todo->removeCustomProperty("Zanshin", "Running");
     }
 
     Akonadi::Item item;

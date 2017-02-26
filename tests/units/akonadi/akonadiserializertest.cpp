@@ -703,9 +703,11 @@ private slots:
         QTest::addColumn<QString>("updatedRelated");
         QTest::addColumn<QString>("updatedDelegateName");
         QTest::addColumn<QString>("updatedDelegateEmail");
+        QTest::addColumn<bool>("updatedRunning");
 
-        QTest::newRow("no change") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << "John Doe" << "j@d.com";
-        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 28)) << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << "John Smith" << "j@s.com";
+        QTest::newRow("no change") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << "John Doe" << "j@d.com" << false;
+        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 28)) << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << "John Smith" << "j@s.com" << false;
+        QTest::newRow("set_to_running") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << "John Doe" << "j@d.com" << true;
     }
 
     void shouldUpdateTaskFromItem()
@@ -752,6 +754,7 @@ private slots:
         QFETCH(QString, updatedRelated);
         QFETCH(QString, updatedDelegateName);
         QFETCH(QString, updatedDelegateEmail);
+        QFETCH(bool, updatedRunning);
 
         // Switch to UTC
         updatedDoneDate.setTimeSpec(Qt::UTC);
@@ -777,6 +780,11 @@ private slots:
                                                                            true,
                                                                            KCalCore::Attendee::Accepted));
             updatedTodo->addAttendee(updatedAttendee);
+        }
+        if (updatedRunning) {
+            updatedTodo->setCustomProperty("Zanshin", "Running", "1");
+        } else {
+            updatedTodo->removeCustomProperty("Zanshin", "Running");
         }
 
         // ... as payload of a new item
@@ -804,6 +812,7 @@ private slots:
         QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
         QCOMPARE(task->delegate().name(), updatedDelegateName);
         QCOMPARE(task->delegate().email(), updatedDelegateEmail);
+        QCOMPARE(task->isRunning(), updatedRunning);
 
         task = artifact.dynamicCast<Domain::Task>();
         QCOMPARE(task->title(), updatedSummary);
@@ -818,6 +827,7 @@ private slots:
         QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
         QCOMPARE(task->delegate().name(), updatedDelegateName);
         QCOMPARE(task->delegate().email(), updatedDelegateEmail);
+        QCOMPARE(task->isRunning(), updatedRunning);
     }
 
     void shouldNotUpdateTaskFromInvalidItem()
@@ -958,36 +968,49 @@ private slots:
         QTest::addColumn<qint64>("parentCollectionId");
         QTest::addColumn<QString>("todoUid");
         QTest::addColumn<Domain::Task::Delegate>("delegate");
+        QTest::addColumn<bool>("running");
 
         QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime()
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                               << qint64(-1) << qint64(-1) << QString()
-                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
+                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                              << false;
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                            << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                            << qint64(-1) << qint64(-1) << QString()
-                                           << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
+                                           << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                           << false;
         QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime()
                                             << QDateTime() << QDateTime()
                                             << qint64(-1) << qint64(-1) << QString()
-                                            << Domain::Task::Delegate();
+                                            << Domain::Task::Delegate()
+                                            << false;
         QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
                                               << QDateTime(QDate(2013, 11, 24), QTime(0, 1, 2), Qt::UTC) << QDateTime(QDate(2016, 3, 1), QTime(4, 5, 6), Qt::UTC)
                                               << qint64(-1) << qint64(-1) << QString()
-                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
+                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                              << false;
 
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                                 << qint64(42) << qint64(43) << "my-uid"
-                                                << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
+                                                << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                                << false;
         QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                              << qint64(42) << qint64(43) << "my-uid"
-                                             << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"));
+                                             << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                             << false;
         QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime()
                                               << QDateTime() << QDateTime()
                                               << qint64(42) << qint64(43) << "my-uid"
-                                              << Domain::Task::Delegate();
+                                              << Domain::Task::Delegate()
+                                              << false;
+        QTest::newRow("nominal case (running)") << "running" << QString() << false << QDateTime()
+                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                              << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::Delegate()
+                                              << true;
     }
 
     void shouldCreateItemFromTask()
@@ -1005,6 +1028,7 @@ private slots:
         QFETCH(qint64, parentCollectionId);
         QFETCH(QString, todoUid);
         QFETCH(Domain::Task::Delegate, delegate);
+        QFETCH(bool, running);
 
         // Switch to UTC
         doneDate.setTimeSpec(Qt::UTC);
@@ -1020,6 +1044,7 @@ private slots:
         task->setStartDate(startDate);
         task->setDueDate(dueDate);
         task->setDelegate(delegate);
+        task->setRunning(running);
 
         if (itemId > 0)
             task->setProperty("itemId", itemId);
@@ -1073,6 +1098,7 @@ private slots:
         }
 
         QCOMPARE(todo->relatedTo(), QStringLiteral("parent-uid"));
+        QCOMPARE(todo->customProperty("Zanshin", "Running"), running ? QStringLiteral("1") : QString());
     }
 
     void shouldVerifyIfAnItemIsATaskChild_data()

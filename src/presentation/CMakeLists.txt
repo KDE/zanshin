@@ -15,9 +15,12 @@ set(presentation_SRCS
     pagemodel.cpp
     projectpagemodel.cpp
     querytreemodelbase.cpp
+    runningtaskmodelinterface.cpp
+    runningtaskmodel.cpp
     tagpagemodel.cpp
     taskinboxpagemodel.cpp
     tasklistmodel.cpp
+    taskapplicationmodel.cpp
     workdaypagemodel.cpp
 )
 

@@ -31,13 +31,13 @@
 
 #include <KXmlGuiWindow>
 
-#include "widgets/applicationcomponents.h"
+#include "widgets/taskapplicationcomponents.h"
 #include "widgets/availablepagesview.h"
 #include "widgets/availablesourcesview.h"
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
 
-#include "presentation/applicationmodel.h"
+#include "presentation/taskapplicationmodel.h"
 
 #include "aboutdata.h"
 #include "dependencies.h"
@@ -62,8 +62,8 @@ int main(int argc, char **argv)
     aboutData.processCommandLine(&parser);
 
     auto widget = new QWidget;
-    auto components = new Widgets::ApplicationComponents(widget);
-    components->setModel(Presentation::ApplicationModel::Ptr::create());
+    auto components = new Widgets::TaskApplicationComponents(widget);
+    components->setModel(Presentation::TaskApplicationModel::Ptr::create());
 
     auto layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);

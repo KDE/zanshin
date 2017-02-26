@@ -70,6 +70,7 @@ find_package(KF5 REQUIRED COMPONENTS
     Ldap
     Runner
     Wallet
+    WindowSystem
 )
 find_package(KF5Akonadi "5.1" CONFIG REQUIRED)
 

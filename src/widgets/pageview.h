@@ -34,6 +34,7 @@
 #include <functional>
 
 #include "domain/artifact.h"
+#include "domain/task.h"
 #include "messageboxinterface.h"
 
 class QLineEdit;
@@ -41,6 +42,10 @@ class QModelIndex;
 class QMessageBox;
 
 class KMessageWidget;
+
+namespace Presentation {
+class RunningTaskModelInterface;
+}
 
 namespace Widgets {
 
@@ -56,11 +61,13 @@ public:
     QHash<QString, QAction*> globalActions() const;
 
     QObject *model() const;
+    Presentation::RunningTaskModelInterface *runningTaskModel() const;
     MessageBoxInterface::Ptr messageBoxInterface() const;
     QModelIndexList selectedIndexes() const;
 
 public slots:
     void setModel(QObject *model);
+    void setRunningTaskModel(Presentation::RunningTaskModelInterface *model);
     void setMessageBoxInterface(const MessageBoxInterface::Ptr &interface);
     void displayErrorMessage(const QString &message);
 
@@ -74,18 +81,24 @@ private slots:
     void onPromoteItemRequested();
     void onFilterToggled(bool show);
     void onCurrentChanged(const QModelIndex &current);
+    void onRunTaskTriggered();
+    void onRunningTaskChanged(const Domain::Task::Ptr &task);
 
 private:
     bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
+    void updateRunTaskAction();
+    Domain::Artifact::Ptr currentArtifact() const;
 
     QHash<QString, QAction*> m_actions;
     QAction *m_cancelAction;
+    QAction *m_runTaskAction;
     QObject *m_model;
     KMessageWidget *m_messageWidget;
     FilterWidget *m_filterWidget;
     PageTreeView *m_centralView;
     QLineEdit *m_quickAddEdit;
     MessageBoxInterface::Ptr m_messageBoxInterface;
+    Presentation::RunningTaskModelInterface *m_runningTaskModel;
 };
 
 }

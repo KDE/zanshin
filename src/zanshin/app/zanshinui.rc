@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="zanshin" version="2">
+<kpartgui name="zanshin" version="3">
  <MenuBar>
   <Menu name="file">
    <Action name="pages_project_add" />
@@ -37,5 +37,7 @@
   <Action name="page_view_add" />
   <Separator />
   <Action name="page_view_filter" />
+  <Separator />
+  <Action name="page_run_task" />
  </ToolBar>
 </kpartgui>

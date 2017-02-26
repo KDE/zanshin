@@ -33,6 +33,7 @@ namespace Domain {
 class Task : public Artifact
 {
     Q_OBJECT
+    Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
@@ -69,6 +70,7 @@ public:
     explicit Task(QObject *parent = Q_NULLPTR);
     virtual ~Task();
 
+    bool isRunning() const;
     bool isDone() const;
     QDateTime startDate() const;
     QDateTime dueDate() const;
@@ -76,6 +78,7 @@ public:
     Delegate delegate() const;
 
 public slots:
+    void setRunning(bool running);
     void setDone(bool done);
     void setDoneDate(const QDateTime &doneDate);
     void setStartDate(const QDateTime &startDate);
@@ -83,6 +86,7 @@ public slots:
     void setDelegate(const Domain::Task::Delegate &delegate);
 
 signals:
+    void runningChanged(bool isRunning);
     void doneChanged(bool isDone);
     void doneDateChanged(const QDateTime &doneDate);
     void startDateChanged(const QDateTime &startDate);
@@ -90,6 +94,7 @@ signals:
     void delegateChanged(const Domain::Task::Delegate &delegate);
 
 private:
+    bool m_running;
     bool m_done;
     QDateTime m_startDate;
     QDateTime m_dueDate;

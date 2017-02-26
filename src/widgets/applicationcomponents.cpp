@@ -44,10 +44,10 @@ using namespace Widgets;
 
 ApplicationComponents::ApplicationComponents(QWidget *parent)
     : QObject(parent),
+      m_pageView(Q_NULLPTR),
       m_parent(parent),
       m_availableSourcesView(Q_NULLPTR),
       m_availablePagesView(Q_NULLPTR),
-      m_pageView(Q_NULLPTR),
       m_editorView(Q_NULLPTR),
       m_errorHandler(new PageViewErrorHandler)
 {
@@ -158,6 +158,11 @@ EditorView *ApplicationComponents::editorView() const
 ApplicationComponents::QuickSelectDialogFactory ApplicationComponents::quickSelectDialogFactory() const
 {
     return m_quickSelectDialogFactory;
+}
+
+QWidget *ApplicationComponents::parentWidget() const
+{
+    return m_parent;
 }
 
 void ApplicationComponents::setModel(const QObjectPtr &model)

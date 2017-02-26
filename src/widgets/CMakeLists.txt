@@ -12,9 +12,11 @@ set(widgets_SRCS
     newprojectdialoginterface.cpp
     pageview.cpp
     pageviewerrorhandler.cpp
+    runningtaskwidget.cpp
     quickselectdialog.cpp
     quickselectdialoginterface.cpp
     scripteditor.cpp
+    taskapplicationcomponents.cpp
 )
 
 qt5_wrap_ui(widgets_SRCS
@@ -29,4 +31,5 @@ target_link_libraries(widgets
     Qt5::Widgets
     presentation
     zanshinkdepimstatic
+    KF5::WindowSystem
 )

@@ -13,7 +13,9 @@ zanshin_auto_tests(
   pagemodeltest
   projectpagemodeltest
   querytreemodeltest
+  runningtaskmodeltest
   tagpagemodeltest
+  taskapplicationmodeltest
   taskinboxpagemodeltest
   tasklistmodeltest
   contextpagemodeltest

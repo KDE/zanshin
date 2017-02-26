@@ -69,14 +69,20 @@ public:
 
     AvailableSourcesView *availableSourcesView() const;
     AvailablePagesView *availablePagesView() const;
-    PageView *pageView() const;
+    virtual PageView *pageView() const;
     EditorView *editorView() const;
 
     QuickSelectDialogFactory quickSelectDialogFactory() const;
 
+protected:
+    QWidget *parentWidget() const;
+
 public slots:
-    void setModel(const QObjectPtr &model);
+    virtual void setModel(const QObjectPtr &model);
     void setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory);
+
+protected:
+    PageView *m_pageView;
 
 private slots:
     void onCurrentPageChanged(QObject *page);
@@ -93,7 +99,6 @@ private:
     QWidget *m_parent;
     QPointer<AvailableSourcesView> m_availableSourcesView;
     QPointer<AvailablePagesView> m_availablePagesView;
-    PageView *m_pageView;
     QPointer<EditorView> m_editorView;
 
     QScopedPointer<PageViewErrorHandler> m_errorHandler;

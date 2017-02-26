@@ -30,12 +30,18 @@ using namespace Domain;
 
 Task::Task(QObject *parent)
     : Artifact(parent),
+      m_running(false),
       m_done(false)
 {
 }
 
 Task::~Task()
 {
+}
+
+bool Task::isRunning() const
+{
+    return m_running;
 }
 
 bool Task::isDone() const
@@ -93,6 +99,14 @@ QDateTime Task::doneDate() const
 Task::Delegate Task::delegate() const
 {
     return m_delegate;
+}
+
+void Task::setRunning(bool running)
+{
+    if (m_running == running)
+        return;
+    m_running = running;
+    emit runningChanged(running);
 }
 
 void Task::setDueDate(const QDateTime &dueDate)

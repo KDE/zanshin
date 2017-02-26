@@ -40,6 +40,7 @@
 #include "presentation/artifacteditormodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/availabletaskpagesmodel.h"
+#include "presentation/runningtaskmodel.h"
 
 #include "utils/dependencymanager.h"
 
@@ -117,4 +118,8 @@ void App::initializeDependencies()
     deps.add<Presentation::AvailableSourcesModel,
              Presentation::AvailableSourcesModel(Domain::DataSourceQueries*,
                                                  Domain::DataSourceRepository*)>();
+
+    deps.add<Presentation::RunningTaskModel,
+             Presentation::RunningTaskModel(Domain::TaskQueries*,
+                                            Domain::TaskRepository*)>();
 }

@@ -32,6 +32,7 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 #include <QTreeView>
+#include <runningtaskmodelinterface.h>
 
 #include <KMessageWidget>
 
@@ -39,6 +40,7 @@
 
 #include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
+#include "presentation/querytreemodelbase.h"
 
 #include "widgets/filterwidget.h"
 #include "widgets/itemdelegate.h"
@@ -56,7 +58,7 @@ public:
         return &itemModel;
     }
 
-    void addStubItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
+    QStandardItem *addStubItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
     {
         QStandardItem *item = new QStandardItem;
         item->setData(title, Qt::DisplayRole);
@@ -66,6 +68,16 @@ public:
             parentItem->appendRow(item);
 
         taskNames << title;
+        return item;
+    }
+
+    Domain::Task::Ptr addTaskItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
+    {
+        auto item = addStubItem(title, parentItem);
+        auto task = Domain::Task::Ptr::create();
+        task->setTitle(title);
+        item->setData(QVariant::fromValue<Domain::Artifact::Ptr>(task), Presentation::QueryTreeModelBase::ObjectRole);
+        return task;
     }
 
     void addStubItems(const QStringList &list)
@@ -98,6 +110,19 @@ public:
     QList<QPersistentModelIndex> removedIndices;
     QList<QPersistentModelIndex> promotedIndices;
     QStandardItemModel itemModel;
+};
+
+class RunningTaskModelStub : public Presentation::RunningTaskModelInterface
+{
+    Q_OBJECT
+public:
+    Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE { return m_runningTask; }
+    void setRunningTask(const Domain::Task::Ptr &task) Q_DECL_OVERRIDE { m_runningTask = task; }
+public slots:
+    void stopTask() Q_DECL_OVERRIDE {}
+    void doneTask() Q_DECL_OVERRIDE {}
+private:
+    Domain::Task::Ptr m_runningTask;
 };
 
 class PageViewTest : public QObject
@@ -153,12 +178,16 @@ private slots:
         QVERIFY(filterAction);
         QVERIFY(filterAction->isCheckable());
         QVERIFY(!filterAction->isChecked());
+        auto runTaskAction = page.findChild<QAction*>(QStringLiteral("runTaskAction"));
+        QVERIFY(runTaskAction);
+        QVERIFY(!runTaskAction->isEnabled());
 
         auto actions = page.globalActions();
         QCOMPARE(actions.value(QStringLiteral("page_view_add")), addAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_remove")), removeAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_promote")), promoteAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_filter")), filterAction);
+        QCOMPARE(actions.value(QStringLiteral("page_run_task")), runTaskAction);
     }
 
     void shouldDisplayListFromPageModel()
@@ -466,6 +495,7 @@ private slots:
 
         QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        QVERIFY(centralView->selectionModel()->currentIndex().isValid());
         centralView->setFocus();
 
         // Needed for shortcuts to work
@@ -670,6 +700,44 @@ private slots:
         // THEN
         QVERIFY(!messageWidget->isShowAnimationRunning());
         QVERIFY(!messageWidget->isHideAnimationRunning());
+    }
+
+    void shouldRunTask()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        auto task1 = stubPageModel.addTaskItem(QStringLiteral("Task1"));
+        auto task2 = stubPageModel.addTaskItem(QStringLiteral("Task2"));
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+        RunningTaskModelStub stubRunningTaskModel;
+        page.setRunningTaskModel(&stubRunningTaskModel);
+        auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
+
+        QModelIndex index = stubPageModel.itemModel.index(0, 0);
+        centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        QVERIFY(centralView->selectionModel()->currentIndex().isValid());
+
+        auto runTaskAction = page.findChild<QAction*>(QStringLiteral("runTaskAction"));
+        QVERIFY(runTaskAction);
+        QVERIFY(runTaskAction->isEnabled());
+
+        // WHEN starting the first task
+        runTaskAction->trigger();
+
+        // THEN
+        QCOMPARE(stubRunningTaskModel.property("runningTask").value<Domain::Task::Ptr>(), task1);
+        QCOMPARE(task1->startDate().date(), QDate::currentDate());
+
+        // WHEN starting the second task
+        QModelIndex index2 = stubPageModel.itemModel.index(1, 0);
+        centralView->selectionModel()->setCurrentIndex(index2, QItemSelectionModel::ClearAndSelect);
+        runTaskAction->trigger();
+
+        // THEN
+        QCOMPARE(stubRunningTaskModel.property("runningTask").value<Domain::Task::Ptr>(), task2);
+        QCOMPARE(task2->startDate().date(), QDate::currentDate());
     }
 };
 
