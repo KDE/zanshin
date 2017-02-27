@@ -115,10 +115,10 @@ private slots:
         model.stopTask();
 
         // THEN
-        QCOMPARE(model.runningTask(), Domain::Task::Ptr(nullptr));
+        QCOMPARE(model.runningTask(), Domain::Task::Ptr());
         QVERIFY(!task->isRunning());
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.at(0).at(0).value<Domain::Task::Ptr>(), Domain::Task::Ptr(nullptr));
+        QCOMPARE(spy.at(0).at(0).value<Domain::Task::Ptr>(), Domain::Task::Ptr());
     }
 
     void shouldHandleDoneTask()
@@ -134,11 +134,11 @@ private slots:
         model.doneTask();
 
         // THEN
-        QCOMPARE(model.runningTask(), Domain::Task::Ptr(nullptr));
+        QCOMPARE(model.runningTask(), Domain::Task::Ptr());
         QVERIFY(!task->isRunning());
         QVERIFY(task->isDone());
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.at(0).at(0).value<Domain::Task::Ptr>(), Domain::Task::Ptr(nullptr));
+        QCOMPARE(spy.at(0).at(0).value<Domain::Task::Ptr>(), Domain::Task::Ptr());
     }
 
     void shouldHandleSwitchingToAnotherTask()

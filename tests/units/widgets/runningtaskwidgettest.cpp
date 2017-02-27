@@ -42,7 +42,7 @@ public slots:
     void stopTask() Q_DECL_OVERRIDE
     {
         Q_ASSERT(m_runningTask);
-        setRunningTask(nullptr);
+        setRunningTask(Domain::Task::Ptr());
     }
 
     void doneTask() Q_DECL_OVERRIDE
@@ -113,7 +113,7 @@ private slots:
         button->click();
 
         // THEN stopTask should have been called
-        QCOMPARE(model.runningTask(), Domain::Task::Ptr(nullptr));
+        QCOMPARE(model.runningTask(), Domain::Task::Ptr());
         QVERIFY(widget.isHidden());
     }
 

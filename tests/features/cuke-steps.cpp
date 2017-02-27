@@ -82,7 +82,7 @@ class ZanshinContext : public QObject
 public:
     explicit ZanshinContext(QObject *parent = Q_NULLPTR)
         : QObject(parent),
-          app(Q_NULLPTR),
+          app(),
           presentation(Q_NULLPTR),
           editor(Q_NULLPTR),
           proxyModel(new QSortFilterProxyModel(this)),

@@ -451,7 +451,7 @@ Domain::Artifact::Ptr PageView::currentArtifact() const
     const auto current = m_centralView->selectionModel()->currentIndex();
     const auto data = current.data(Presentation::QueryTreeModelBase::ObjectRole);
     if (!data.isValid())
-        return Domain::Artifact::Ptr(Q_NULLPTR);
+        return Domain::Artifact::Ptr();
 
     return data.value<Domain::Artifact::Ptr>();
 }

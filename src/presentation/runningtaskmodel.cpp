@@ -72,7 +72,7 @@ void RunningTaskModel::setRunningTask(const Domain::Task::Ptr &runningTask)
 
 void RunningTaskModel::stopTask()
 {
-    setRunningTask(nullptr);
+    setRunningTask(Domain::Task::Ptr());
 }
 
 void RunningTaskModel::doneTask()
