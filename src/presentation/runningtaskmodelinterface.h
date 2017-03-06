@@ -45,6 +45,8 @@ public:
     virtual Domain::Task::Ptr runningTask() const = 0;
     virtual void setRunningTask(const Domain::Task::Ptr &runningTask) = 0;
 
+    virtual void taskDeleted(const Domain::Task::Ptr &task) = 0;
+
 signals:
     void runningTaskChanged(const Domain::Task::Ptr &task);
 

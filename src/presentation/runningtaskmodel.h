@@ -45,6 +45,8 @@ public:
     Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE;
     void setRunningTask(const Domain::Task::Ptr &runningTask) Q_DECL_OVERRIDE;
 
+    void taskDeleted(const Domain::Task::Ptr &task) Q_DECL_OVERRIDE;
+
 public slots:
     void stopTask() Q_DECL_OVERRIDE;
     void doneTask() Q_DECL_OVERRIDE;

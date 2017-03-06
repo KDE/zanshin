@@ -36,6 +36,7 @@ class RunningTaskModelStub : public Presentation::RunningTaskModelInterface
 public:
     Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE { return {}; }
     void setRunningTask(const Domain::Task::Ptr &) Q_DECL_OVERRIDE {}
+    void taskDeleted(const Domain::Task::Ptr &) Q_DECL_OVERRIDE {}
     void stopTask() Q_DECL_OVERRIDE {}
     void doneTask() Q_DECL_OVERRIDE {}
 };

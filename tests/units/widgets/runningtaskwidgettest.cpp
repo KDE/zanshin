@@ -51,6 +51,13 @@ public:
         stopTask();
     }
 
+    void taskDeleted(const Domain::Task::Ptr &task) Q_DECL_OVERRIDE
+    {
+        Q_ASSERT(task);
+        if (m_runningTask == task)
+            setRunningTask(Domain::Task::Ptr());
+    }
+
 private:
     Domain::Task::Ptr m_runningTask;
 };
@@ -163,6 +170,22 @@ private slots:
 
         // WHEN
         model.doneTask();
+
+        // THEN
+        QVERIFY(widget.isHidden());
+    }
+
+    void shouldHideOnDeletion()
+    {
+        // GIVEN
+        Widgets::RunningTaskWidget widget;
+        auto task = Domain::Task::Ptr::create();
+        RunningTaskModelStub model;
+        widget.setModel(&model);
+        model.setRunningTask(task);
+
+        // WHEN
+        model.taskDeleted(task);
 
         // THEN
         QVERIFY(widget.isHidden());

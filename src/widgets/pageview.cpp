@@ -369,6 +369,12 @@ void PageView::onRemoveItemRequested()
             continue;
 
         QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
+        const auto data = currentIndex.data(Presentation::QueryTreeModelBase::ObjectRole);
+        if (data.isValid()) {
+            auto task = data.value<Domain::Artifact::Ptr>().objectCast<Domain::Task>();
+            if (task)
+                m_runningTaskModel->taskDeleted(task);
+        }
     }
 }
 

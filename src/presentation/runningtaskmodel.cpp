@@ -70,6 +70,12 @@ void RunningTaskModel::setRunningTask(const Domain::Task::Ptr &runningTask)
     emit runningTaskChanged(m_runningTask);
 }
 
+void RunningTaskModel::taskDeleted(const Domain::Task::Ptr &task)
+{
+    if (m_runningTask == task)
+        setRunningTask({});
+}
+
 void RunningTaskModel::stopTask()
 {
     setRunningTask(Domain::Task::Ptr());

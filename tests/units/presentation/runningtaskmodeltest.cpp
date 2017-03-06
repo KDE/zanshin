@@ -162,6 +162,45 @@ private slots:
         QCOMPARE(spy.at(0).at(0).value<Domain::Task::Ptr>(), task2);
     }
 
+    void shouldHandleTaskDeletion()
+    {
+        // GIVEN
+        TestDependencies deps;
+        Presentation::RunningTaskModel model(deps.m_taskQueriesMockInstance, deps.m_taskRepositoryMockInstance);
+        Domain::Task::Ptr task = Domain::Task::Ptr::create();
+        model.setRunningTask(task);
+        QSignalSpy spy(&model, &Presentation::RunningTaskModel::runningTaskChanged);
+
+        // WHEN
+        model.taskDeleted(task);
+
+        // THEN
+        QCOMPARE(model.runningTask(), Domain::Task::Ptr());
+        QVERIFY(!task->isRunning());
+        QVERIFY(!task->isDone());
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.at(0).at(0).value<Domain::Task::Ptr>(), Domain::Task::Ptr());
+    }
+
+    void shouldIgnoreDeletionOfAnotherTask()
+    {
+        // GIVEN
+        TestDependencies deps;
+        Presentation::RunningTaskModel model(deps.m_taskQueriesMockInstance, deps.m_taskRepositoryMockInstance);
+        Domain::Task::Ptr task = Domain::Task::Ptr::create();
+        model.setRunningTask(task);
+        QSignalSpy spy(&model, &Presentation::RunningTaskModel::runningTaskChanged);
+        Domain::Task::Ptr task2 = Domain::Task::Ptr::create();
+
+        // WHEN
+        model.taskDeleted(task2);
+
+        // THEN
+        QCOMPARE(model.runningTask(), task);
+        QVERIFY(task->isRunning());
+        QCOMPARE(spy.count(), 0);
+    }
+
 private:
 };
 
