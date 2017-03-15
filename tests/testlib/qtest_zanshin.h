@@ -44,12 +44,11 @@
 #endif
 
 #define ZANSHIN_TEST_MAIN(TestCase) \
-    extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed; \
     _ZANSHIN_TESTLIB_INTERNAL_FORCE_GUI_ENVIRONMENT \
     \
     bool _zanshin_testlib_internal_forceEnvironment() \
     { \
-        qt_qhash_seed.store(0); \
+        qSetGlobalQHashSeed(0); \
         qputenv("KDE_DEBUG", "1"); \
         qunsetenv("LANG"); \
         qunsetenv("LANGUAGE"); \
