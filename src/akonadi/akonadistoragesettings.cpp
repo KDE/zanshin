@@ -39,18 +39,6 @@ StorageSettings &StorageSettings::instance()
     return i;
 }
 
-Collection::List StorageSettings::activeCollections()
-{
-    KConfigGroup config(KSharedConfig::openConfig(), "General");
-    QList<Collection::Id> ids = config.readEntry("activeCollections", QList<Collection::Id>());
-    Collection::List list;
-    list.reserve(ids.size());
-    foreach (const auto &id, ids) {
-        list << Collection(id);
-    }
-    return list;
-}
-
 Collection StorageSettings::defaultNoteCollection()
 {
     KConfigGroup config(KSharedConfig::openConfig(), "General");
@@ -85,20 +73,4 @@ void StorageSettings::setDefaultTaskCollection(const Collection &collection)
     config.writeEntry("defaultCollection", QString::number(collection.id()));
     config.sync();
     emit defaultTaskCollectionChanged(collection);
-}
-
-void StorageSettings::setActiveCollections(const Collection::List &collections)
-{
-    if (activeCollections() == collections)
-        return;
-
-    QList<Collection::Id> ids;
-    for (const auto &col : collections) {
-        ids << col.id();
-    }
-
-    KConfigGroup config(KSharedConfig::openConfig(), "General");
-    config.writeEntry("activeCollections", ids);
-    config.sync();
-    emit activeCollectionsChanged(collections);
 }

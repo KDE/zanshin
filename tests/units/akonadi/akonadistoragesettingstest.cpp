@@ -81,12 +81,10 @@ private slots:
             // WHEN
             g.writeEntry("defaultCollection", i);
             g.writeEntry("defaultNoteCollection", i + 1);
-            g.writeEntry("activeCollections", idList(i + 2));
 
             // THEN
             QCOMPARE(StorageSettings::instance().defaultTaskCollection(), Collection(i));
             QCOMPARE(StorageSettings::instance().defaultNoteCollection(), Collection(i + 1));
-            QCOMPARE(StorageSettings::instance().activeCollections(), colList(i + 2));
         }
     }
 
@@ -100,12 +98,10 @@ private slots:
             // WHEN
             StorageSettings::instance().setDefaultTaskCollection(Collection(i));
             StorageSettings::instance().setDefaultNoteCollection(Collection(i + 1));
-            StorageSettings::instance().setActiveCollections(colList(i + 2));
 
             // THEN
             QCOMPARE(g.readEntry("defaultCollection", -1), i);
             QCOMPARE(g.readEntry("defaultNoteCollection", -1), i + 1);
-            QCOMPARE(g.readEntry("activeCollections", QList<Akonadi::Collection::Id>()), idList(i + 2));
         }
     }
 
@@ -142,24 +138,6 @@ private slots:
         settings.setDefaultNoteCollection(Collection(4));
         QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultNoteCollectionChanged);
         settings.setDefaultNoteCollection(Collection(4));
-        QCOMPARE(spy.count(), 0);
-    }
-
-    void shouldNotifyActiveCollectionsChanges()
-    {
-        StorageSettings &settings = StorageSettings::instance();
-        QSignalSpy spy(&settings, &Akonadi::StorageSettings::activeCollectionsChanged);
-        settings.setActiveCollections(colList(2));
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().value<Akonadi::Collection::List>(), colList(2));
-    }
-
-    void shouldNotNotifyIdenticalActiveCollectionsChanges()
-    {
-        StorageSettings &settings = StorageSettings::instance();
-        settings.setActiveCollections(colList(4));
-        QSignalSpy spy(&settings, &Akonadi::StorageSettings::activeCollectionsChanged);
-        settings.setActiveCollections(colList(4));
         QCOMPARE(spy.count(), 0);
     }
 };

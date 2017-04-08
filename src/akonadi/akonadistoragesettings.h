@@ -39,17 +39,14 @@ private:
 public:
     static StorageSettings &instance();
     
-    Akonadi::Collection::List activeCollections();
     Akonadi::Collection defaultNoteCollection();
     Akonadi::Collection defaultTaskCollection();
 
 public slots:
-    void setActiveCollections(const Akonadi::Collection::List &collections);
     void setDefaultNoteCollection(const Akonadi::Collection &collection);
     void setDefaultTaskCollection(const Akonadi::Collection &collection);
 
 signals:
-    void activeCollectionsChanged(const Akonadi::Collection::List &collections);
     void defaultNoteCollectionChanged(const Akonadi::Collection &collection);
     void defaultTaskCollectionChanged(const Akonadi::Collection &collection);
 };
