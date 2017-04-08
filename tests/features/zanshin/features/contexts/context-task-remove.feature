@@ -6,7 +6,8 @@ Feature: Context task dissociation
   Scenario: Removing a task from a context keeps it in the project page it's linked to
     Given I display the "Projects / Prepare talk about TDD" page
     And there is an item named "Create examples and exercices" in the central list
-    And I display the "Contexts / Internet" page
+    And I drop the item on "Contexts / Online" in the page list
+    And I display the "Contexts / Online" page
     And there is an item named "Create examples and exercices" in the central list
     When I remove the item
     And I look at the central list
@@ -19,10 +20,10 @@ Feature: Context task dissociation
     And I look at the central list
     Then the list is:
      | display          |
-    And I display the "Contexts / Chores" page
-    And there is an item named "Buy rutabagas" in the central list
+    And I display the "Contexts / Errands" page
+    And there is an item named "Buy kiwis" in the central list
     When I remove the item
     And I look at the central list
-    Then the list does not contain "Buy rutabagas"
+    Then the list does not contain "Buy kiwis"
     And I display the "Inbox" page
-    Then there is an item named "Buy rutabagas" in the central list
+    Then there is an item named "Buy kiwis" in the central list

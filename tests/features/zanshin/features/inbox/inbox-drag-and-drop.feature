@@ -21,6 +21,8 @@ Feature: Inbox task association
 
   Scenario: Dropping a child task on the inbox makes it top-level
     Given I display the "Inbox" page
+    And there is an item named "Buy apples" in the central list
+    And I drop the item on "Errands" in the central list
     And there is an item named "Errands / Buy apples" in the central list
     When I drop the item on "Inbox" in the page list
     And I list the items
@@ -56,6 +58,11 @@ Feature: Inbox task association
 
   Scenario: Dropping two child tasks on the inbox makes them top-level
     Given I display the "Inbox" page
+    And the central list contains items named:
+        | display       |
+        | Buy apples    |
+        | Buy pears     |
+    And I drop items on "Errands" in the central list
     And the central list contains items named:
         | display    |
         | Errands / Buy apples |
@@ -111,25 +118,12 @@ Feature: Inbox task association
        | Buy kiwis                                               |
        | Buy pears                                               |
        | Buy rutabagas                                           |
-       | Create Sozi SVG                                         |
 
-  @wip
   Scenario: Dropping a task on the inbox removes it from all it's contexts
-    Given I display the "Contexts / Chores" page
+    Given I display the "Contexts / Errands" page
     And there is an item named "Buy kiwis" in the central list
     When I drop the item on "Inbox" in the page list
-    And I display the "Inbox" page
+    And I display the "Contexts / Errands" page
     And I look at the central list
-    And I list the items
-    Then the list is:
-       | display                                                 |
-       | Errands                                                 |
-       | Buy apples                                              |
-       | "Capital in the Twenty-First Century" by Thomas Piketty |
-       | "The Pragmatic Programmer" by Hunt and Thomas           |
-       | Buy cheese                                              |
-       | Buy kiwis                                               |
-       | Buy pears                                               |
-       | Buy rutabagas                                           |
-       | Create Sozi SVG                                         |
-       | Buy kiwis                                               |
+    Then the list does not contain "Buy kiwis"
+

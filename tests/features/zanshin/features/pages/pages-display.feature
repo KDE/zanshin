@@ -15,7 +15,6 @@ Feature: Available pages content
        | Projects / Prepare talk about TDD | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
        | Contexts                          | folder              |
-       | Contexts / Chores                 | view-pim-notes      |
-       | Contexts / Internet               | view-pim-notes      |
+       | Contexts / Errands                | view-pim-notes      |
        | Contexts / Online                 | view-pim-notes      |
 

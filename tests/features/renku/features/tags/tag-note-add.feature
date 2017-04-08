@@ -11,5 +11,4 @@ Feature: Note creation from a tag
     Then the list is:
        | display                          |
        | A note about physics             |
-       | A note about nothing interesting |
        | Studies in fluid mechanics       |

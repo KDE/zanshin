@@ -4,7 +4,7 @@ I can promote a task into a project
 In order to organize my tasks
 
   Scenario: Task promoted into a project appears in the list
-    Given I display the "Projects / Party" page
+    Given I display the "Projects / Backlog" page
     And I add a "task" named "Design a present"
     And I look at the central list
     And there is an item named "Design a present" in the central list
@@ -18,10 +18,9 @@ In order to organize my tasks
        | Projects                          | folder              |
        | Projects / Backlog                | view-pim-tasks      |
        | Projects / Design a present       | view-pim-tasks      |
-       | Projects / Party                  | view-pim-tasks      |
+       | Projects / Prepare talk about TDD | view-pim-tasks      |
        | Projects / Read List              | view-pim-tasks      |
        | Contexts                          | folder              |
-       | Contexts / Chores                 | view-pim-notes      |
-       | Contexts / Internet               | view-pim-notes      |
+       | Contexts / Errands                | view-pim-notes      |
        | Contexts / Online                 | view-pim-notes      |
 

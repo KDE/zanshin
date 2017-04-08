@@ -44,8 +44,7 @@ Feature: Data sources selection
        | Projects                          |
        | Projects / Backlog                |
        | Contexts                          |
-       | Contexts / Chores                 |
-       | Contexts / Internet               |
+       | Contexts / Errands                |
        | Contexts / Online                 |
 
   Scenario: Checking impacts project list
@@ -62,6 +61,5 @@ Feature: Data sources selection
        | Projects / Prepare talk about TDD |
        | Projects / Read List              |
        | Contexts                          |
-       | Contexts / Chores                 |
-       | Contexts / Internet               |
+       | Contexts / Errands                |
        | Contexts / Online                 |

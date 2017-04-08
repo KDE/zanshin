@@ -11,7 +11,7 @@ Feature: Removing tasks
     Then the list does not contain "<title>"
 
   Examples:
-    | page               | title                 |
-    | Inbox              | Buy a book            |
-    | Projects / Backlog | Setup a release party |
+    | page                 | title                                |
+    | Inbox                | Buy cheese                           |
+    | Projects / Read List | "Domain Driven Design" by Eric Evans |
 

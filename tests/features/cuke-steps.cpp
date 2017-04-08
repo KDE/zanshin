@@ -96,45 +96,44 @@ public:
 
         if (!initializedDependencies) {
             CukeSteps::initializeAppDependencies();
-
-            QString xmlFile = QString::fromLocal8Bit(qgetenv("ZANSHIN_USER_XMLDATA"));
-            if (!xmlFile.isEmpty()) {
-                auto searchCollection = Akonadi::Collection(1);
-                searchCollection.setParentCollection(Akonadi::Collection::root());
-                searchCollection.setName(QStringLiteral("Search"));
-                m_data.createCollection(searchCollection);
-
-                MonitorSpy::setExpirationDelay(200);
-                auto loader = Testlib::AkonadiFakeDataXmlLoader(&m_data);
-                loader.load(xmlFile);
-
-                // Swap regular dependencies for the fake data ones
-                auto &deps = Utils::DependencyManager::globalInstance();
-                deps.add<Akonadi::MonitorInterface,
-                         Utils::DependencyManager::UniqueInstance>(
-                         [this] (Utils::DependencyManager *) {
-                             return m_data.createMonitor();
-                         }
-                );
-                deps.add<Akonadi::StorageInterface,
-                         Utils::DependencyManager::UniqueInstance>(
-                         [this] (Utils::DependencyManager *) {
-                             return m_data.createStorage();
-                         }
-                );
-                deps.add<Akonadi::MessagingInterface,
-                         Utils::DependencyManager::UniqueInstance>(
-                         [this] (Utils::DependencyManager *) -> Akonadi::MessagingInterface* {
-                            return Q_NULLPTR;
-                         }
-                );
-            } else if (!TestLib::TestSafety::checkTestIsIsolated()) {
-                qDebug() << "FATAL ERROR! SEE ABOVE\n\n";
-                exit(1);
-            }
-
+            MonitorSpy::setExpirationDelay(200);
             initializedDependencies = true;
         }
+
+        const auto xmlFile = QString::fromLocal8Bit(qgetenv("ZANSHIN_USER_XMLDATA"));
+        if (xmlFile.isEmpty()) {
+            qDebug() << "FATAL ERROR! ZANSHIN_USER_XMLDATA WAS NOT PROVIDED\n\n";
+            exit(1);
+        }
+
+        auto searchCollection = Akonadi::Collection(1);
+        searchCollection.setParentCollection(Akonadi::Collection::root());
+        searchCollection.setName(QStringLiteral("Search"));
+        m_data.createCollection(searchCollection);
+
+        auto loader = Testlib::AkonadiFakeDataXmlLoader(&m_data);
+        loader.load(xmlFile);
+
+        // Swap regular dependencies for the fake data ones
+        auto &deps = Utils::DependencyManager::globalInstance();
+        deps.add<Akonadi::MonitorInterface,
+                Utils::DependencyManager::UniqueInstance>(
+                    [this] (Utils::DependencyManager *) {
+            return m_data.createMonitor();
+        }
+        );
+        deps.add<Akonadi::StorageInterface,
+                Utils::DependencyManager::UniqueInstance>(
+                    [this] (Utils::DependencyManager *) {
+            return m_data.createStorage();
+        }
+        );
+        deps.add<Akonadi::MessagingInterface,
+                Utils::DependencyManager::UniqueInstance>(
+                    [this] (Utils::DependencyManager *) -> Akonadi::MessagingInterface* {
+            return Q_NULLPTR;
+        }
+        );
 
         using namespace Presentation;
         proxyModel->setDynamicSortFilter(true);
@@ -208,7 +207,7 @@ public:
     QList<QPersistentModelIndex> dragIndices;
 
 private:
-    static Testlib::AkonadiFakeData m_data;
+    Testlib::AkonadiFakeData m_data;
 
     QSortFilterProxyModel *proxyModel;
     QAbstractItemModel *m_model;
@@ -216,8 +215,6 @@ private:
     MonitorSpy *monitorSpy;
     FakeErrorHandler m_errorHandler;
 };
-
-Testlib::AkonadiFakeData ZanshinContext::m_data = {};
 
 namespace Zanshin {
 

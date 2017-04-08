@@ -17,6 +17,7 @@ Feature: Adding tasks
 
   Scenario Outline: Adding a task as a child of another task in a page
     Given I display the "<page>" page
+    And I add a "task" named "<parent>"
     And I look at the central list
     And I list the items
     When I add a child named "<title>" under the task named "<parent>"

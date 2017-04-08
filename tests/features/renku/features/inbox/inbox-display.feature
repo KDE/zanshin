@@ -10,4 +10,3 @@ Feature: Inbox content
     Then the list is:
        | display                          |
        | A note about nothing interesting |
-       | A random note on life            |

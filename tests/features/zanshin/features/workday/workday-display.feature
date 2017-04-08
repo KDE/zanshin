@@ -13,6 +13,3 @@ Feature: Workday content
        | Buy kiwis                       |
        | Buy pears                       |
        | Errands                         |
-       | Buy apples                      |
-       | Buy cheese                      |
-       | Create Sozi SVG                 |

@@ -5,8 +5,8 @@ Feature: Editing notes
 
   Scenario: Editing a note text
     Given I display the "Inbox" page
-    And there is an item named "A page of diary" in the central list
+    And there is an item named "A note about nothing interesting" in the central list
     When I open the item in the editor
-    And I change the editor text to "More on my day"
+    And I change the editor text to "This is a boring note"
     And I open the item in the editor again
-    Then the editor shows "More on my day" as text
+    Then the editor shows "This is a boring note" as text

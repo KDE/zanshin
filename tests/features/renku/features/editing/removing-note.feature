@@ -11,7 +11,7 @@ Feature: Removing notes
     Then the list does not contain "<title>"
 
   Examples:
-    | page               | title                 |
-    | Inbox              | A page of diary       |
-    | Tags / Philosophy  | A random note on life |
+    | page               | title                            |
+    | Inbox              | A note about nothing interesting |
+    | Tags / Philosophy  | A note about philosophy          |
 
