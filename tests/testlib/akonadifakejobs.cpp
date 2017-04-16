@@ -47,26 +47,6 @@ void AkonadiFakeCollectionFetchJob::setResource(const QString &resource)
     m_resource = resource;
 }
 
-bool AkonadiFakeCollectionFetchJob::filtered() const
-{
-    return m_filter;
-}
-
-void AkonadiFakeCollectionFetchJob::setFiltered(bool filter)
-{
-    m_filter = filter;
-}
-
-void AkonadiFakeCollectionSearchJob::setCollections(const Akonadi::Collection::List &collections)
-{
-    m_collections = collections;
-}
-
-Akonadi::Collection::List AkonadiFakeCollectionSearchJob::collections() const
-{
-    return isDone() ? m_collections : Akonadi::Collection::List();
-}
-
 void AkonadiFakeItemFetchJob::setItems(const Akonadi::Item::List &items)
 {
     m_items = items;

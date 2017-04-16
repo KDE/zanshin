@@ -2,7 +2,6 @@ zanshin_auto_tests(
   applicationcomponentstest
   availablepagesviewtest
   availablesourcesviewtest
-  datasourcedelegatetest
   editorviewtest
   filterwidgettest
   newprojectdialogtest

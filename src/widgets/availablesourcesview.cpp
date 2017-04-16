@@ -53,15 +53,6 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sortProxy->setDynamicSortFilter(true);
     m_sortProxy->sort(0);
 
-    auto searchEdit = new KLineEdit(this);
-    searchEdit->setObjectName(QStringLiteral("searchEdit"));
-    searchEdit->setClearButtonShown(true);
-    searchEdit->setPlaceholderText(tr("Search..."));
-    connect(searchEdit, &QLineEdit::textChanged, this, &AvailableSourcesView::onSearchTextChanged);
-#ifndef ZANSHIN_HIDING_SOURCES_ENABLED
-    searchEdit->hide();
-#endif
-
     m_sourcesView->setObjectName(QStringLiteral("sourcesView"));
     m_sourcesView->header()->hide();
     m_sourcesView->setModel(m_sortProxy);
@@ -72,10 +63,6 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     connect(m_sourcesView->model(), &QAbstractItemModel::modelReset, m_sourcesView, &QTreeView::expandAll);
 
     auto delegate = new DataSourceDelegate(m_sourcesView);
-#ifndef ZANSHIN_HIDING_SOURCES_ENABLED
-    delegate->setActionsEnabled(false);
-#endif
-    connect(delegate, &DataSourceDelegate::actionTriggered, this, &AvailableSourcesView::onActionTriggered);
     m_sourcesView->setItemDelegate(delegate);
 
     auto actionBar = new QToolBar(this);
@@ -89,7 +76,6 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     actionBar->addAction(m_defaultAction);
 
     auto layout = new QVBoxLayout;
-    layout->addWidget(searchEdit);
     layout->addWidget(m_sourcesView);
 
     auto actionBarLayout = new QHBoxLayout;
@@ -169,41 +155,9 @@ void AvailableSourcesView::onDefaultTriggered()
                                   Q_ARG(QModelIndex, index));
 }
 
-void AvailableSourcesView::onActionTriggered(const Domain::DataSource::Ptr &source, int action)
-{
-    switch (action) {
-    case DataSourceDelegate::AddToList:
-        QMetaObject::invokeMethod(m_model, "listSource",
-                                  Q_ARG(Domain::DataSource::Ptr, source));
-        break;
-    case DataSourceDelegate::RemoveFromList:
-        QMetaObject::invokeMethod(m_model, "unlistSource",
-                                  Q_ARG(Domain::DataSource::Ptr, source));
-        break;
-    case DataSourceDelegate::Bookmark:
-        QMetaObject::invokeMethod(m_model, "bookmarkSource",
-                                  Q_ARG(Domain::DataSource::Ptr, source));
-        break;
-    default:
-        qFatal("Shouldn't happen");
-        break;
-    }
-}
-
 void AvailableSourcesView::setSourceModel(const QByteArray &propertyName)
 {
     QVariant modelProperty = m_model->property(propertyName);
     if (modelProperty.canConvert<QAbstractItemModel*>())
         m_sortProxy->setSourceModel(modelProperty.value<QAbstractItemModel*>());
-}
-
-void AvailableSourcesView::onSearchTextChanged(const QString &text)
-{
-    if (text.size() <= 2) {
-        m_model->setProperty("searchTerm", QString());
-        setSourceModel("sourceListModel");
-    } else {
-        m_model->setProperty("searchTerm", text);
-        setSourceModel("searchListModel");
-    }
 }

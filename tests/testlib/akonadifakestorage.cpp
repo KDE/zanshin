@@ -389,43 +389,6 @@ Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akona
     return job;
 }
 
-Akonadi::CollectionSearchJobInterface *AkonadiFakeStorage::searchCollections(QString collectionName, FetchContentTypes types)
-{
-    auto job = new AkonadiFakeCollectionSearchJob;
-    const auto allCollections = m_data->collections();
-    auto foundCollections = Akonadi::Collection::List();
-
-    std::copy_if(allCollections.constBegin(), allCollections.constEnd(),
-                 std::back_inserter(foundCollections),
-                 [collectionName, types] (const Akonadi::Collection &col) {
-                     const auto mime = col.contentMimeTypes().toSet();
-                     auto contentMimeTypes = QSet<QString>();
-                     if (types & Notes)
-                         contentMimeTypes << Akonadi::NoteUtils::noteMimeType();
-                     if (types & Tasks)
-                         contentMimeTypes << KCalCore::Todo::todoMimeType();
-
-                     const bool supportedType = contentMimeTypes.isEmpty()
-                                             || !(mime & contentMimeTypes).isEmpty();
-                     return supportedType && col.displayName().contains(collectionName, Qt::CaseInsensitive);
-                 });
-
-    // Replace the dummy parents in the ancestor chain with proper ones
-    // full of juicy data
-    using namespace std::placeholders;
-    auto reconstructCollection = std::bind(&AkonadiFakeData::reconstructAncestors,
-                                           m_data, _1, Akonadi::Collection::root());
-    std::transform(foundCollections.begin(), foundCollections.end(),
-                   foundCollections.begin(), reconstructCollection);
-
-    const auto behavior = m_data->storageBehavior().searchCollectionsBehavior(collectionName);
-    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
-        job->setCollections(foundCollections);
-    job->setExpectedError(m_data->storageBehavior().searchCollectionsErrorCode(collectionName));
-    Utils::JobHandler::install(job, noop);
-    return job;
-}
-
 Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collection collection)
 {
     auto items = m_data->childItems(findId(collection));

@@ -67,11 +67,6 @@ private:
 public:
     virtual QueryResult<DataSource::Ptr>::Ptr findTopLevel() const = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findChildren(DataSource::Ptr source) const = 0;
-
-    virtual QString searchTerm() const = 0;
-    virtual void setSearchTerm(const QString &term) = 0;
-    virtual QueryResult<DataSource::Ptr>::Ptr findSearchTopLevel() const = 0;
-    virtual QueryResult<DataSource::Ptr>::Ptr findSearchChildren(DataSource::Ptr source) const = 0;
 };
 
 }

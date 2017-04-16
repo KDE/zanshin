@@ -26,7 +26,6 @@
 
 #include "fakejob.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
-#include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 
@@ -46,26 +45,9 @@ public:
     QString resource() const;
     void setResource(const QString &resource) Q_DECL_OVERRIDE;
 
-    bool filtered() const;
-    void setFiltered(bool filter) Q_DECL_OVERRIDE;
-
 private:
     Akonadi::Collection::List m_collections;
     QString m_resource;
-    bool m_filter;
-};
-
-class AkonadiFakeCollectionSearchJob : public FakeJob, public Akonadi::CollectionSearchJobInterface
-{
-    Q_OBJECT
-public:
-    using FakeJob::FakeJob;
-
-    void setCollections(const Akonadi::Collection::List &collections);
-    Akonadi::Collection::List collections() const Q_DECL_OVERRIDE;
-
-private:
-    Akonadi::Collection::List m_collections;
 };
 
 class AkonadiFakeItemFetchJob : public FakeJob, public Akonadi::ItemFetchJobInterface

@@ -42,8 +42,6 @@ public:
     GenCollection &withRootAsParent();
     GenCollection &withName(const QString &name);
     GenCollection &withIcon(const QString &iconName);
-    GenCollection &referenced(bool value = true);
-    GenCollection &enabled(bool value = true);
     GenCollection &selected(bool value = true);
     GenCollection &withTaskContent(bool value = true);
     GenCollection &withNoteContent(bool value = true);

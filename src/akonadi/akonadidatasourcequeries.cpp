@@ -39,7 +39,6 @@ DataSourceQueries::DataSourceQueries(StorageInterface::FetchContentTypes content
 {
     m_integrator->addRemoveHandler([this] (const Collection &collection) {
         m_findChildren.remove(collection.id());
-        m_findSearchChildren.remove(collection.id());
     });
 }
 
@@ -82,54 +81,9 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
     return query->result();
 }
 
-QString DataSourceQueries::searchTerm() const
-{
-    return m_searchTerm;
-}
-
-void DataSourceQueries::setSearchTerm(const QString &term)
-{
-    if (m_searchTerm == term)
-        return;
-
-    m_searchTerm = term;
-    if (m_findSearchTopLevel) {
-        m_findSearchTopLevel->reset();
-    }
-    foreach (auto query, m_findSearchChildren)
-        query->reset();
-}
-
-DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchTopLevel() const
-{
-    auto fetch = m_helpers->searchCollections(Collection::root(), &m_searchTerm, m_contentTypes);
-    auto predicate = createSearchPredicate(Collection::root());
-    m_integrator->bind("DataSourceQueries::findSearchTopLevel", m_findSearchTopLevel, fetch, predicate);
-    return m_findSearchTopLevel->result();
-}
-
-DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findSearchChildren(Domain::DataSource::Ptr source) const
-{
-    Collection root = m_serializer->createCollectionFromDataSource(source);
-    auto &query = m_findSearchChildren[root.id()];
-    auto fetch = m_helpers->searchCollections(root, &m_searchTerm, m_contentTypes);
-    auto predicate = createSearchPredicate(root);
-    m_integrator->bind("DataSourceQueries::findSearchChildren", query, fetch, predicate);
-    return query->result();
-}
-
 DataSourceQueries::CollectionInputQuery::PredicateFunction DataSourceQueries::createFetchPredicate(const Collection &root) const
 {
     return [this, root] (const Collection &collection) {
-        return collection.isValid()
-            && collection.parentCollection() == root
-            && m_serializer->isListedCollection(collection);
-    };
-}
-
-DataSourceQueries::CollectionInputQuery::PredicateFunction DataSourceQueries::createSearchPredicate(const Collection &root) const
-{
-    return [root] (const Collection &collection) {
         return collection.isValid()
             && collection.parentCollection() == root;
     };

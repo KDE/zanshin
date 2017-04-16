@@ -41,7 +41,6 @@
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
-#include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadistorage.h"
@@ -77,62 +76,36 @@ void AkonadiStorageTestBase::shouldListCollections_data()
     QTest::addColumn<QStringList>("expectedNames");
     QTest::addColumn<Akonadi::StorageInterface::FetchDepth>("depth");
     QTest::addColumn<int>("contentTypes");
-    QTest::addColumn<bool>("referenceCalendar1");
-    QTest::addColumn<bool>("enableCalendar1");
 
     QTest::newRow("all") << Akonadi::Collection::root()
                          << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
                          << Akonadi::Storage::Recursive
-                         << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                         << false << true;
-
-    QTest::newRow("include referenced") << Akonadi::Collection::root()
-                                        << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
-                                        << Akonadi::Storage::Recursive
-                                        << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                        << true << false;
-
-    QTest::newRow("include referenced + enabled") << Akonadi::Collection::root()
-                                                  << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
-                                                  << Akonadi::Storage::Recursive
-                                                  << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                                  << true << true;
-
-    QTest::newRow("exclude !referenced + !enabled") << Akonadi::Collection::root()
-                                                    << QStringList({ "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
-                                                    << Akonadi::Storage::Recursive
-                                                    << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                                    << false << false;
+                         << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks);
 
     QTest::newRow("notes") << Akonadi::Collection::root()
                            << QStringList({ "Notes" })
                            << Akonadi::Storage::Recursive
-                           << int(Akonadi::StorageInterface::Notes)
-                           << false << true;
+                           << int(Akonadi::StorageInterface::Notes);
 
     QTest::newRow("tasks") << Akonadi::Collection::root()
                            << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!" })
                            << Akonadi::Storage::Recursive
-                           << int(Akonadi::StorageInterface::Tasks)
-                           << false << true;
+                           << int(Akonadi::StorageInterface::Tasks);
 
     QTest::newRow("base type") << calendar2()
                                << QStringList({"Calendar2"})
                                << Akonadi::Storage::Base
-                               << int(Akonadi::StorageInterface::Tasks)
-                               << false << true;
+                               << int(Akonadi::StorageInterface::Tasks);
 
     QTest::newRow("firstLevel type") << calendar1()
                                      << QStringList({"Calendar2"})
                                      << Akonadi::Storage::FirstLevel
-                                     << int(Akonadi::StorageInterface::Tasks)
-                                     << false << true;
+                                     << int(Akonadi::StorageInterface::Tasks);
 
     QTest::newRow("recursive type") << calendar1()
                                     << QStringList({"Calendar2", "Calendar3"})
                                     << Akonadi::Storage::Recursive
-                                    << int(Akonadi::StorageInterface::Tasks)
-                                    << false << true;
+                                    << int(Akonadi::StorageInterface::Tasks);
 }
 
 void AkonadiStorageTestBase::shouldListCollections()
@@ -142,21 +115,8 @@ void AkonadiStorageTestBase::shouldListCollections()
     QFETCH(QStringList, expectedNames);
     QFETCH(Akonadi::StorageInterface::FetchDepth, depth);
     QFETCH(int, contentTypes);
-    QFETCH(bool, referenceCalendar1);
-    QFETCH(bool, enableCalendar1);
 
     auto storage = createStorage();
-
-    // Default is not referenced and enabled
-    // no need to feedle with the collection in that case
-    if (referenceCalendar1 || !enableCalendar1) {
-        Akonadi::Collection cal1 = calendar1();
-        cal1.setReferenced(referenceCalendar1);
-        cal1.setEnabled(enableCalendar1);
-        auto update = storage->updateCollection(cal1);
-        AKVERIFYEXEC(update);
-    }
-
 
     // WHEN
     auto job = storage->fetchCollections(collection, depth,
@@ -171,15 +131,6 @@ void AkonadiStorageTestBase::shouldListCollections()
         collectionNames << collection.name();
     }
     collectionNames.sort();
-
-    // Restore proper DB state
-    if (referenceCalendar1 || !enableCalendar1) {
-        Akonadi::Collection cal1 = calendar1();
-        cal1.setReferenced(false);
-        cal1.setEnabled(true);
-        auto update = storage->updateCollection(cal1);
-        AKVERIFYEXEC(update);
-    }
 
     QCOMPARE(collectionNames, expectedNames);
 }
@@ -1229,175 +1180,6 @@ void AkonadiStorageTestBase::shouldNotNotifyCollectionSelectionChangesForIrrelev
     QVERIFY(selectionSpy.isEmpty());
 }
 
-void AkonadiStorageTestBase::shouldNotifyCollectionSubscriptionChanges_data()
-{
-    QTest::addColumn<bool>("isEnabled");
-    QTest::addColumn<bool>("isReferenced");
-
-    QTest::newRow("enabled and !referenced") << true << false;
-    // Fails randomly due to an akonadi bug...
-    //QTest::newRow("!enabled and referenced") << false << true;
-    QTest::newRow("!enabled and !referenced") << false << false;
-    QTest::newRow("!enabled and referenced (again)") << false << true;
-    QTest::newRow("enabled and !referenced (again)") << true << false;
-}
-
-void AkonadiStorageTestBase::shouldNotifyCollectionSubscriptionChanges()
-{
-    // GIVEN
-    QFETCH(bool, isEnabled);
-    QFETCH(bool, isReferenced);
-
-    // A storage implementation
-    auto storage = createStorage();
-
-    // An existing collection
-    Akonadi::Collection collection(calendar2().id());
-
-    // A spied monitor
-    auto monitor = createMonitor();
-    QSignalSpy changeSpy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
-    MonitorSpy monitorSpy(monitor.data());
-
-    // WHEN
-    static int run = 1;
-    collection.attribute<Akonadi::EntityDisplayAttribute>(Akonadi::Collection::AddIfMissing)
-            ->setIconName(QStringLiteral("folder-%1").arg(run++));
-    collection.setEnabled(isEnabled);
-    collection.setReferenced(isReferenced);
-    auto job = storage->updateCollection(collection);
-    AKVERIFYEXEC(job);
-    monitorSpy.waitForStableState();
-    QTRY_VERIFY(!changeSpy.isEmpty());
-
-    // THEN
-    QCOMPARE(changeSpy.size(), 1);
-
-    auto notifiedCollection = changeSpy.takeFirst().at(0).value<Akonadi::Collection>();
-    QCOMPARE(notifiedCollection.id(), collection.id());
-    QCOMPARE(notifiedCollection.enabled(), isEnabled);
-    QCOMPARE(notifiedCollection.referenced(), isReferenced);
-}
-
-void AkonadiStorageTestBase::shouldFindCollectionsByName_data()
-{
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<int>("contentType");
-    QTest::addColumn<QStringList>("expectedResults");
-    QTest::addColumn<bool>("referenceCalendar1");
-    QTest::addColumn<bool>("enableCalendar1");
-
-    QStringList expectedResults;
-    expectedResults << QStringLiteral("Calendar1");
-    QTest::newRow("get a collection") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
-
-    expectedResults.clear();
-    QTest::newRow("try with wrong type") << "Calendar1" << int(Akonadi::StorageInterface::Notes) << expectedResults << false << true;
-
-    expectedResults << QStringLiteral("Notes");
-    QTest::newRow("get a note collection") << "Not" << int(Akonadi::StorageInterface::Notes) << expectedResults << false << true;
-
-    expectedResults.clear();
-    QTest::newRow("try with unknown name") << "toto" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
-
-    expectedResults << QStringLiteral("Calendar3") << QStringLiteral("Calendar2") << QStringLiteral("Calendar1");
-    QTest::newRow("try with a part of a name") << "Calendar" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
-
-    expectedResults.clear();
-    expectedResults << QStringLiteral("Calendar2");
-    QTest::newRow("make sure it is case insensitive") << "calendar2" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << true;
-
-    expectedResults.clear();
-    expectedResults << QStringLiteral("Calendar1");
-    QTest::newRow("include referenced") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << true << false;
-    QTest::newRow("include referenced + enabled") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << true << true;
-    QTest::newRow("include !referenced + !enabled") << "Calendar1" << int(Akonadi::StorageInterface::Tasks) << expectedResults << false << false;
-}
-
-void AkonadiStorageTestBase::shouldFindCollectionsByName()
-{
-    // GIVEN
-    auto storage = createStorage();
-
-    QFETCH(QString, name);
-    QFETCH(int, contentType);
-    QFETCH(QStringList, expectedResults);
-    QFETCH(bool, referenceCalendar1);
-    QFETCH(bool, enableCalendar1);
-
-    // A spied monitor
-    auto monitor = createMonitor();
-    MonitorSpy monitorSpy(monitor.data());
-
-    // Default is not referenced and enabled
-    // no need to feedle with the collection in that case
-    if (referenceCalendar1 || !enableCalendar1) {
-        Akonadi::Collection cal1 = calendar1();
-        cal1.setReferenced(referenceCalendar1);
-        cal1.setEnabled(enableCalendar1);
-        auto update = storage->updateCollection(cal1);
-        AKVERIFYEXEC(update);
-        monitorSpy.waitForStableState();
-    }
-
-    // WHEN
-    auto job = storage->searchCollections(name, Akonadi::StorageInterface::FetchContentType(contentType));
-    AKVERIFYEXEC(job->kjob());
-
-    // THEN
-    auto collections = job->collections();
-
-    // Restore proper DB state
-    if (referenceCalendar1 || !enableCalendar1) {
-        Akonadi::Collection cal1 = calendar1();
-        cal1.setReferenced(false);
-        cal1.setEnabled(true);
-        auto update = storage->updateCollection(cal1);
-        AKVERIFYEXEC(update);
-        monitorSpy.waitForStableState();
-    }
-
-    auto collectionNames = QStringList();
-    std::transform(collections.constBegin(), collections.constEnd(),
-                   std::back_inserter(collectionNames),
-                   Utils::mem_fn(&Akonadi::Collection::name));
-    QCOMPARE(collectionNames.toSet(), expectedResults.toSet());
-}
-
-void AkonadiStorageTestBase::shouldFindCollectionsByNameIncludingTheirAncestors_data()
-{
-    QTest::addColumn<QString>("searchTerm");
-    QTest::addColumn<int>("contentType");
-
-    QTest::newRow("task search") << "Calendar3" << int(Akonadi::StorageInterface::Tasks);
-    QTest::newRow("note search") << "Notes" << int(Akonadi::StorageInterface::Notes);
-}
-
-void AkonadiStorageTestBase::shouldFindCollectionsByNameIncludingTheirAncestors()
-{
-    // GIVEN
-    auto storage = createStorage();
-
-    // WHEN
-    QFETCH(QString, searchTerm);
-    QFETCH(int, contentType);
-    auto job = storage->searchCollections(searchTerm, Akonadi::StorageInterface::FetchContentType(contentType));
-    AKVERIFYEXEC(job->kjob());
-
-    // THEN
-    auto collections = job->collections();
-    foreach (const auto &collection, collections) {
-        auto parent = collection.parentCollection();
-        while (parent != Akonadi::Collection::root()) {
-            QVERIFY(parent.isValid());
-            QVERIFY(!parent.displayName().isEmpty());
-            parent = parent.parentCollection();
-        }
-    }
-}
-
-
-
 Akonadi::Item AkonadiStorageTestBase::fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
 {
     Akonadi::Item item;
@@ -1425,7 +1207,6 @@ Akonadi::Collection AkonadiStorageTestBase::fetchCollectionByRID(const QString &
 
     auto job = createStorage()->fetchCollections(collection, Akonadi::StorageInterface::Base, Akonadi::StorageInterface::AllContent);
     job->setResource(QStringLiteral("akonadi_knut_resource_0"));
-    job->setFiltered(false);
     if (!job->kjob()->exec()) {
         qWarning() << job->kjob()->errorString() << remoteId;
         return Akonadi::Collection();

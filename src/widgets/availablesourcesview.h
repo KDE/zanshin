@@ -54,8 +54,6 @@ private slots:
     void onSelectionChanged();
     void onSettingsTriggered();
     void onDefaultTriggered();
-    void onActionTriggered(const Domain::DataSource::Ptr &source, int action);
-    void onSearchTextChanged(const QString &text);
 
 private:
     QHash<QString, QAction*> m_actions;

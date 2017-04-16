@@ -92,36 +92,6 @@ private slots:
         QCOMPARE(col.attribute<Akonadi::EntityDisplayAttribute>()->iconName(), QStringLiteral("42"));
     }
 
-    void shouldAllowToSetReferenced()
-    {
-        // GIVEN
-        Akonadi::Collection col = GenCollection().referenced();
-
-        // THEN
-        QCOMPARE(col.referenced(), true);
-
-        // WHEN
-        col = GenCollection(col).referenced(false);
-
-        // THEN
-        QCOMPARE(col.referenced(), false);
-    }
-
-    void shouldAllowToSetEnabled()
-    {
-        // GIVEN
-        Akonadi::Collection col = GenCollection().enabled();
-
-        // THEN
-        QCOMPARE(col.enabled(), true);
-
-        // WHEN
-        col = GenCollection(col).enabled(false);
-
-        // THEN
-        QCOMPARE(col.enabled(), false);
-    }
-
     void shouldAllowToSetSelected()
     {
         // GIVEN

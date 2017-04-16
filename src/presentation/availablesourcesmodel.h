@@ -41,28 +41,15 @@ class AvailableSourcesModel : public QObject, public ErrorHandlingModelBase
 {
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* sourceListModel READ sourceListModel)
-    Q_PROPERTY(QAbstractItemModel* searchListModel READ searchListModel)
-    Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm NOTIFY searchTermChanged)
 public:
     explicit AvailableSourcesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
                                    const Domain::DataSourceRepository::Ptr &dataSourceRepository,
                                    QObject *parent = Q_NULLPTR);
 
     QAbstractItemModel *sourceListModel();
-    QAbstractItemModel *searchListModel();
-
-    QString searchTerm() const;
-    void setSearchTerm(const QString &term);
-
-signals:
-    void searchTermChanged(const QString &term);
 
 public slots:
     void setDefaultItem(const QModelIndex &index);
-
-    void listSource(const Domain::DataSource::Ptr &source);
-    void unlistSource(const Domain::DataSource::Ptr &source);
-    void bookmarkSource(const Domain::DataSource::Ptr &source);
 
     void showConfigDialog();
 
@@ -73,10 +60,8 @@ private:
     void emitDefaultSourceChanged(const QModelIndex &root);
 
     QAbstractItemModel *createSourceListModel();
-    QAbstractItemModel *createSearchListModel();
 
     QAbstractItemModel *m_sourceListModel;
-    QAbstractItemModel *m_searchListModel;
 
     Domain::DataSourceQueries::Ptr m_dataSourceQueries;
     Domain::DataSourceRepository::Ptr m_dataSourceRepository;

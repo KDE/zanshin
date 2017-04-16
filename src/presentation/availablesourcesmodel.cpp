@@ -38,7 +38,6 @@ AvailableSourcesModel::AvailableSourcesModel(const Domain::DataSourceQueries::Pt
                                              QObject *parent)
     : QObject(parent),
       m_sourceListModel(Q_NULLPTR),
-      m_searchListModel(Q_NULLPTR),
       m_dataSourceQueries(dataSourceQueries),
       m_dataSourceRepository(dataSourceRepository)
 {
@@ -49,42 +48,6 @@ QAbstractItemModel *AvailableSourcesModel::sourceListModel()
     if (!m_sourceListModel)
         m_sourceListModel = createSourceListModel();
     return m_sourceListModel;
-}
-
-QAbstractItemModel *AvailableSourcesModel::searchListModel()
-{
-    if (!m_searchListModel)
-        m_searchListModel = createSearchListModel();
-    return m_searchListModel;
-}
-
-void AvailableSourcesModel::listSource(const Domain::DataSource::Ptr &source)
-{
-    Q_ASSERT(source);
-    source->setSelected(true);
-    source->setListStatus(Domain::DataSource::Listed);
-    const auto job = m_dataSourceRepository->update(source);
-    installHandler(job, tr("Cannot modify source %1").arg(source->name()));
-}
-
-void AvailableSourcesModel::unlistSource(const Domain::DataSource::Ptr &source)
-{
-    Q_ASSERT(source);
-    source->setSelected(false);
-    source->setListStatus(Domain::DataSource::Unlisted);
-    const auto job = m_dataSourceRepository->update(source);
-    installHandler(job, tr("Cannot modify source %1").arg(source->name()));
-}
-
-void AvailableSourcesModel::bookmarkSource(const Domain::DataSource::Ptr &source)
-{
-    Q_ASSERT(source);
-    if (source->listStatus() == Domain::DataSource::Bookmarked)
-        source->setListStatus(Domain::DataSource::Listed);
-    else
-        source->setListStatus(Domain::DataSource::Bookmarked);
-    const auto job = m_dataSourceRepository->update(source);
-    installHandler(job, tr("Cannot modify source %1").arg(source->name()));
 }
 
 void AvailableSourcesModel::showConfigDialog()
@@ -166,76 +129,6 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
     connect(m_dataSourceQueries->notifier(), &Domain::DataSourceQueriesNotifier::defaultSourceChanged,
             this, &AvailableSourcesModel::onDefaultSourceChanged);
     return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, this);
-}
-
-QAbstractItemModel *AvailableSourcesModel::createSearchListModel()
-{
-    auto query = [this] (const Domain::DataSource::Ptr &source) {
-        if (!source)
-            return m_dataSourceQueries->findSearchTopLevel();
-        else
-            return m_dataSourceQueries->findSearchChildren(source);
-    };
-
-    auto flags = [] (const Domain::DataSource::Ptr &source) {
-        Q_UNUSED(source)
-        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-    };
-
-    auto data = [] (const Domain::DataSource::Ptr &source, int role) -> QVariant {
-        if (role != Qt::DisplayRole
-         && role != Qt::EditRole
-         && role != Qt::DecorationRole
-         && role != QueryTreeModelBase::IconNameRole) {
-            return QVariant();
-        }
-
-        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            return source->name();
-        } else if (role == Qt::DecorationRole || role == QueryTreeModelBase::IconNameRole) {
-            const QString iconName = source->iconName().isEmpty() ? QStringLiteral("folder") : source->iconName();
-
-            if (role == Qt::DecorationRole)
-                return QVariant::fromValue(QIcon::fromTheme(iconName));
-            else
-                return iconName;
-        } else {
-            return QVariant();
-        }
-    };
-
-    auto setData = [this] (const Domain::DataSource::Ptr &source, const QVariant &value, int role) {
-        Q_UNUSED(source)
-        Q_UNUSED(value)
-        Q_UNUSED(role)
-        return false;
-    };
-
-    auto drop = [] (const QMimeData *mimeData, Qt::DropAction, const Domain::DataSource::Ptr &source) {
-        Q_UNUSED(mimeData)
-        Q_UNUSED(source)
-        return false;
-    };
-
-    auto drag = [](const Domain::DataSource::List &) -> QMimeData* {
-        return Q_NULLPTR;
-    };
-
-    return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, this);
-}
-
-QString AvailableSourcesModel::searchTerm() const
-{
-    return m_dataSourceQueries->searchTerm();
-}
-
-void AvailableSourcesModel::setSearchTerm(const QString &term)
-{
-    if (term == searchTerm())
-        return;
-
-    m_dataSourceQueries->setSearchTerm(term);
-    emit searchTermChanged(term);
 }
 
 void AvailableSourcesModel::setDefaultItem(const QModelIndex &index)

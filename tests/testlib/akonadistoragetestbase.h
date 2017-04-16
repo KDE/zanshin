@@ -88,12 +88,6 @@ private slots:
     void shouldNotifyCollectionTimestampChanges();
     void shouldNotifyCollectionSelectionChanges();
     void shouldNotNotifyCollectionSelectionChangesForIrrelevantCollections();
-    void shouldNotifyCollectionSubscriptionChanges_data();
-    void shouldNotifyCollectionSubscriptionChanges();
-    void shouldFindCollectionsByName_data();
-    void shouldFindCollectionsByName();
-    void shouldFindCollectionsByNameIncludingTheirAncestors_data();
-    void shouldFindCollectionsByNameIncludingTheirAncestors();
 
 private:
     Akonadi::Item fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection);

@@ -35,7 +35,6 @@ public:
         : QObject(parent)
     {
         qRegisterMetaType<DataSource::ContentTypes>();
-        qRegisterMetaType<DataSource::ListStatus>();
     }
 
 private slots:
@@ -45,7 +44,6 @@ private slots:
         QCOMPARE(ds.name(), QString());
         QCOMPARE(ds.iconName(), QString());
         QCOMPARE(ds.contentTypes(), DataSource::NoContent);
-        QCOMPARE(ds.listStatus(), DataSource::Unlisted);
         QVERIFY(!ds.isSelected());
     }
 
@@ -119,24 +117,6 @@ private slots:
         ds.setSelected(true);
         QSignalSpy spy(&ds, &DataSource::selectedChanged);
         ds.setSelected(true);
-        QCOMPARE(spy.count(), 0);
-    }
-
-    void shouldNotifyListStatusChanges()
-    {
-        DataSource ds;
-        QSignalSpy spy(&ds, &DataSource::listStatusChanged);
-        ds.setListStatus(DataSource::Bookmarked);
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().value<DataSource::ListStatus>(), DataSource::Bookmarked);
-    }
-
-    void shouldNotNotifyIdenticalListStatusChanges()
-    {
-        DataSource ds;
-        ds.setListStatus(DataSource::Bookmarked);
-        QSignalSpy spy(&ds, &DataSource::listStatusChanged);
-        ds.setListStatus(DataSource::Bookmarked);
         QCOMPARE(spy.count(), 0);
     }
 };

@@ -25,7 +25,6 @@
 #include "akonadilivequeryhelpers.h"
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
-#include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 
@@ -69,36 +68,6 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(con
                 auto directChild = collection;
                 while (directChild.parentCollection() != root)
                     directChild = directChild.parentCollection();
-                if (!directChildren.contains(directChild.id()))
-                    directChildren[directChild.id()] = directChild;
-            }
-
-            foreach (const auto &directChild, directChildren)
-                add(directChild);
-        });
-    };
-}
-
-LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::searchCollections(const Collection &root, const QString *searchTerm,
-                                                                              StorageInterface::FetchContentTypes contentTypes) const
-{
-    auto storage = m_storage;
-    return [storage, contentTypes, searchTerm, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        if (searchTerm->isEmpty())
-            return;
-
-        auto job = storage->searchCollections(*searchTerm, contentTypes);
-        Utils::JobHandler::install(job->kjob(), [root, job, add] {
-            if (job->kjob()->error())
-                return;
-
-            auto directChildren = QHash<Collection::Id, Collection>();
-            foreach (const auto &collection, job->collections()) {
-                auto directChild = collection;
-                while (directChild.parentCollection() != root && directChild.parentCollection().isValid())
-                    directChild = directChild.parentCollection();
-                if (directChild.parentCollection() != root)
-                    continue;
                 if (!directChildren.contains(directChild.id()))
                     directChildren[directChild.id()] = directChild;
             }

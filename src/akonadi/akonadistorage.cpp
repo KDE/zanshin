@@ -47,7 +47,6 @@
 #include <AkonadiCore/TagModifyJob>
 #include <AkonadiCore/TagAttribute>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
-#include "akonadi/akonadicollectionsearchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonadistoragesettings.h"
@@ -119,77 +118,9 @@ public:
         fetchScope().setResource(resource);
     }
 
-    void setFiltered(bool filter) Q_DECL_OVERRIDE
-    {
-        fetchScope().setListFilter(filter ? Akonadi::CollectionFetchScope::Display
-                                          : Akonadi::CollectionFetchScope::NoFilter);
-    }
-
 private:
     const Collection m_collection;
     const Type m_type;
-};
-
-class CollectionSearchJob : public CollectionFetchJob, public CollectionSearchJobInterface
-{
-    Q_OBJECT
-public:
-    CollectionSearchJob(const QString &collectionName, QObject *parent = Q_NULLPTR)
-        : CollectionFetchJob(Akonadi::Collection::root(),
-                             CollectionJob::Recursive,
-                             parent),
-          m_collectionName(collectionName)
-    {
-    }
-
-    Collection::List collections() const Q_DECL_OVERRIDE
-    {
-        auto collections = CollectionFetchJob::collections();
-
-        // Memorize them to reconstruct the ancestor chain later
-        QMap<Collection::Id, Collection> collectionsMap;
-        collectionsMap[Akonadi::Collection::root().id()] = Akonadi::Collection::root();
-        foreach (const auto &collection, collections) {
-            collectionsMap[collection.id()] = collection;
-        }
-
-        // Why the hell isn't fetchScope() const and returning a reference???
-        auto self = const_cast<CollectionSearchJob*>(this);
-        const auto allowedMimeTypes = self->fetchScope().contentMimeTypes().toSet();
-
-        collections.erase(std::remove_if(collections.begin(), collections.end(),
-                                         [allowedMimeTypes, this] (const Collection &collection) {
-                                            auto mimeTypes = collection.contentMimeTypes().toSet();
-                                            return mimeTypes.intersect(allowedMimeTypes).isEmpty()
-                                                || !collection.displayName().contains(m_collectionName, Qt::CaseInsensitive);
-                                         }),
-                          collections.end());
-
-        // Replace the dummy parents in the ancestor chain with proper ones
-        // full of juicy data
-        std::function<Collection(const Collection&)> reconstructAncestors =
-        [collectionsMap, &reconstructAncestors, this] (const Collection &collection) -> Collection {
-            Q_ASSERT(collection.isValid());
-
-            if (collection == Akonadi::Collection::root())
-                return collection;
-
-            auto parent = collection.parentCollection();
-            auto reconstructedParent = reconstructAncestors(collectionsMap[parent.id()]);
-
-            auto result = collection;
-            result.setParentCollection(reconstructedParent);
-            return result;
-        };
-
-        std::transform(collections.begin(), collections.end(),
-                       collections.begin(), reconstructAncestors);
-
-        return collections;
-    }
-
-private:
-    QString m_collectionName;
 };
 
 class ItemJob : public ItemFetchJob, public ItemFetchJobInterface
@@ -317,27 +248,6 @@ CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, St
 
     return job;
 }
-
-CollectionSearchJobInterface *Storage::searchCollections(QString collectionName, FetchContentTypes types)
-{
-    QStringList contentMimeTypes;
-    if (types & Notes)
-        contentMimeTypes << NoteUtils::noteMimeType();
-    if (types & Tasks)
-        contentMimeTypes << KCalCore::Todo::todoMimeType();
-
-    auto job = new CollectionSearchJob(collectionName);
-
-    auto scope = job->fetchScope();
-    scope.setContentMimeTypes(contentMimeTypes);
-    scope.setIncludeStatistics(true);
-    scope.setAncestorRetrieval(CollectionFetchScope::All);
-    scope.setListFilter(Akonadi::CollectionFetchScope::NoFilter);
-    job->setFetchScope(scope);
-
-    return job;
-}
-
 
 ItemFetchJobInterface *Storage::fetchItems(Collection collection)
 {

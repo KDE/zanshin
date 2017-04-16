@@ -42,17 +42,11 @@
 class AvailableSourcesModelStub : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString searchTerm READ searchTerm WRITE setSearchTerm)
 public:
     explicit AvailableSourcesModelStub(QObject *parent = Q_NULLPTR)
         : QObject(parent),
           settingsCalled(false)
     {
-    }
-
-    QString searchTerm() const
-    {
-        return m_searchTerm;
     }
 
 public slots:
@@ -66,35 +60,9 @@ public slots:
         defaultIndex = index;
     }
 
-    void setSearchTerm(const QString &term)
-    {
-        m_searchTerm = term;
-    }
-
-    void listSource(const Domain::DataSource::Ptr &source)
-    {
-        listedSources << source;
-    }
-
-    void unlistSource(const Domain::DataSource::Ptr &source)
-    {
-        unlistedSources << source;
-    }
-
-    void bookmarkSource(const Domain::DataSource::Ptr &source)
-    {
-        bookmarkedSources << source;
-    }
-
 public:
     bool settingsCalled;
-    QList<Domain::DataSource::Ptr> listedSources;
-    QList<Domain::DataSource::Ptr> unlistedSources;
-    QList<Domain::DataSource::Ptr> bookmarkedSources;
     QPersistentModelIndex defaultIndex;
-
-private:
-    QString m_searchTerm;
 };
 
 
@@ -113,21 +81,7 @@ private slots:
         QVERIFY(sourcesView->isVisibleTo(&available));
         QVERIFY(!sourcesView->header()->isVisibleTo(&available));
         auto delegate = qobject_cast<Widgets::DataSourceDelegate*>(sourcesView->itemDelegate());
-#ifdef ZANSHIN_HIDING_SOURCES_ENABLED
-        QVERIFY(delegate->actionsEnabled());
-#else
-        QVERIFY(!delegate->isActionsEnabled());
-#endif
-
-        auto searchEdit = available.findChild<KLineEdit*>(QStringLiteral("searchEdit"));
-        QVERIFY(searchEdit);
-#ifdef ZANSHIN_HIDING_SOURCES_ENABLED
-        QVERIFY(searchEdit->isVisibleTo(&available));
-#else
-        QVERIFY(!searchEdit->isVisibleTo(&available));
-#endif
-        QVERIFY(searchEdit->isClearButtonShown());
-        QCOMPARE(searchEdit->placeholderText(), tr("Search..."));
+        QVERIFY(delegate);
 
         auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
         QVERIFY(proxy);
@@ -279,138 +233,6 @@ private slots:
 
         // THEN
         QVERIFY(stubSourcesModel.settingsCalled);
-    }
-
-    void shouldListASourceWhenTheDelegateButtonIsClicked()
-    {
-        // GIVEN
-        auto source = Domain::DataSource::Ptr::create();
-
-        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
-        AvailableSourcesModelStub stubPagesModel;
-        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
-
-        Widgets::AvailableSourcesView available;
-        auto sourcesDelegate = available.findChild<Widgets::DataSourceDelegate*>();
-        QVERIFY(sourcesDelegate);
-        available.setModel(&stubPagesModel);
-        QTest::qWait(10);
-
-        // WHEN
-        QVERIFY(QMetaObject::invokeMethod(sourcesDelegate, "actionTriggered",
-                                          Q_ARG(Domain::DataSource::Ptr, source),
-                                          Q_ARG(int, Widgets::DataSourceDelegate::AddToList)));
-
-        // THEN
-        QCOMPARE(stubPagesModel.listedSources.size(), 1);
-        QCOMPARE(stubPagesModel.listedSources.first(), source);
-    }
-
-    void shouldUnlistASourceWhenTheDelegateButtonIsClicked()
-    {
-        // GIVEN
-        auto source = Domain::DataSource::Ptr::create();
-
-        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
-        AvailableSourcesModelStub stubPagesModel;
-        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
-
-        Widgets::AvailableSourcesView available;
-        auto sourcesDelegate = available.findChild<Widgets::DataSourceDelegate*>();
-        QVERIFY(sourcesDelegate);
-        available.setModel(&stubPagesModel);
-        QTest::qWait(10);
-
-        // WHEN
-        QVERIFY(QMetaObject::invokeMethod(sourcesDelegate, "actionTriggered",
-                                          Q_ARG(Domain::DataSource::Ptr, source),
-                                          Q_ARG(int, Widgets::DataSourceDelegate::RemoveFromList)));
-
-        // THEN
-        QCOMPARE(stubPagesModel.unlistedSources.size(), 1);
-        QCOMPARE(stubPagesModel.unlistedSources.first(), source);
-    }
-
-    void shouldBookmarkASourceWhenTheDelegateButtonIsClicked()
-    {
-        // GIVEN
-        auto source = Domain::DataSource::Ptr::create();
-
-        QStringListModel model(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
-        AvailableSourcesModelStub stubPagesModel;
-        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&model)));
-
-        Widgets::AvailableSourcesView available;
-        auto sourcesDelegate = available.findChild<Widgets::DataSourceDelegate*>();
-        QVERIFY(sourcesDelegate);
-        available.setModel(&stubPagesModel);
-        QTest::qWait(10);
-
-        // WHEN
-        QVERIFY(QMetaObject::invokeMethod(sourcesDelegate, "actionTriggered",
-                                          Q_ARG(Domain::DataSource::Ptr, source),
-                                          Q_ARG(int, Widgets::DataSourceDelegate::Bookmark)));
-
-        // THEN
-        QCOMPARE(stubPagesModel.bookmarkedSources.size(), 1);
-        QCOMPARE(stubPagesModel.bookmarkedSources.first(), source);
-    }
-
-    void shouldSwitchToSearchListWhenASearchTermIsGiven()
-    {
-        // GIVEN
-        QStringListModel sourceModel(QStringList() << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") );
-        QStringListModel searchModel(QStringList() << QStringLiteral("D") << QStringLiteral("E") << QStringLiteral("F") );
-
-        AvailableSourcesModelStub stubPagesModel;
-        stubPagesModel.setProperty("sourceListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&sourceModel)));
-        stubPagesModel.setProperty("searchListModel", QVariant::fromValue(static_cast<QAbstractItemModel*>(&searchModel)));
-
-        Widgets::AvailableSourcesView available;
-        auto sourcesView = available.findChild<QTreeView*>(QStringLiteral("sourcesView"));
-        QVERIFY(sourcesView);
-        auto proxy = qobject_cast<QSortFilterProxyModel*>(sourcesView->model());
-        QVERIFY(proxy);
-        available.setModel(&stubPagesModel);
-        QCOMPARE(proxy->sourceModel(), &sourceModel);
-
-        auto searchEdit = available.findChild<QLineEdit*>(QStringLiteral("searchEdit"));
-        QVERIFY(searchEdit);
-
-        // WHEN
-        QTest::keyClick(searchEdit, 'm');
-
-        // THEN
-        QCOMPARE(proxy->sourceModel(), &sourceModel);
-        QVERIFY(stubPagesModel.searchTerm().isEmpty());
-
-        // WHEN
-        QTest::keyClick(searchEdit, 'y');
-
-        // THEN
-        QCOMPARE(proxy->sourceModel(), &sourceModel);
-        QVERIFY(stubPagesModel.searchTerm().isEmpty());
-
-        // WHEN
-        QTest::keyClick(searchEdit, ' ');
-
-        // THEN
-        QCOMPARE(proxy->sourceModel(), &searchModel);
-        QCOMPARE(stubPagesModel.searchTerm(), QStringLiteral("my "));
-
-        // WHEN
-        QTest::keyClicks(searchEdit, QStringLiteral("term"));
-
-        // THEN
-        QCOMPARE(proxy->sourceModel(), &searchModel);
-        QCOMPARE(stubPagesModel.searchTerm(), QStringLiteral("my term"));
-
-        // WHEN
-        searchEdit->clear();
-
-        // THEN
-        QCOMPARE(proxy->sourceModel(), &sourceModel);
-        QVERIFY(stubPagesModel.searchTerm().isEmpty());
     }
 };
 

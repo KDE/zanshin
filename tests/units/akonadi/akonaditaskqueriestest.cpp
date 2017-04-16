@@ -1042,7 +1042,7 @@ private slots:
         // Three top level collections
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
         data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(44).withRootAsParent().withTaskContent().enabled(false));
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withTaskContent().selected(false));
 
         // One note in the first collection
         data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));

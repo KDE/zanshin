@@ -73,18 +73,6 @@ GenCollection &GenCollection::withIcon(const QString &iconName)
     return *this;
 }
 
-GenCollection &GenCollection::referenced(bool value)
-{
-    m_collection.setReferenced(value);
-    return *this;
-}
-
-GenCollection &GenCollection::enabled(bool value)
-{
-    m_collection.setEnabled(value);
-    return *this;
-}
-
 GenCollection &GenCollection::selected(bool value)
 {
     if (!value) {

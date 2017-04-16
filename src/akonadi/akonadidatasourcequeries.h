@@ -54,14 +54,8 @@ public:
     DataSourceResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
-    QString searchTerm() const Q_DECL_OVERRIDE;
-    void setSearchTerm(const QString &term) Q_DECL_OVERRIDE;
-    DataSourceResult::Ptr findSearchTopLevel() const Q_DECL_OVERRIDE;
-    DataSourceResult::Ptr findSearchChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
-
 private:
     CollectionInputQuery::PredicateFunction createFetchPredicate(const Collection &root) const;
-    CollectionInputQuery::PredicateFunction createSearchPredicate(const Collection &root) const;
 
     StorageInterface::FetchContentTypes m_contentTypes;
     SerializerInterface::Ptr m_serializer;
@@ -70,9 +64,6 @@ private:
 
     mutable DataSourceQueryOutput::Ptr m_findTopLevel;
     mutable QHash<Akonadi::Collection::Id, DataSourceQueryOutput::Ptr> m_findChildren;
-    QString m_searchTerm;
-    mutable DataSourceQueryOutput::Ptr m_findSearchTopLevel;
-    mutable QHash<Akonadi::Collection::Id, DataSourceQueryOutput::Ptr> m_findSearchChildren;
 };
 
 }
