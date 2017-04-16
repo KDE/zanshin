@@ -37,6 +37,8 @@
 #include "presentation/errorhandler.h"
 #include "presentation/querytreemodelbase.h"
 
+#include "akonadi/akonadicache.h"
+#include "akonadi/akonadicachingstorage.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadimessaginginterface.h"
 
@@ -124,8 +126,9 @@ public:
         );
         deps.add<Akonadi::StorageInterface,
                 Utils::DependencyManager::UniqueInstance>(
-                    [this] (Utils::DependencyManager *) {
-            return m_data.createStorage();
+                    [this] (Utils::DependencyManager *deps) {
+            return new Akonadi::CachingStorage(deps->create<Akonadi::Cache>(),
+                                               Akonadi::StorageInterface::Ptr(m_data.createStorage()));
         }
         );
         deps.add<Akonadi::MessagingInterface,

@@ -32,6 +32,8 @@
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonaditaskrepository.h"
 
+#include "akonadi/akonadicache.h"
+#include "akonadi/akonadicachingstorage.h"
 #include "akonadi/akonadimessaging.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadiserializer.h"
@@ -48,11 +50,16 @@ void App::initializeDependencies()
 {
     auto &deps = Utils::DependencyManager::globalInstance();
 
+    deps.add<Akonadi::Cache,
+             Akonadi::Cache(Akonadi::SerializerInterface*, Akonadi::MonitorInterface*),
+             Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::MessagingInterface, Akonadi::Messaging, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::MonitorInterface, Akonadi::MonitorImpl, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::SerializerInterface, Akonadi::Serializer, Utils::DependencyManager::UniqueInstance>();
-    deps.add<Akonadi::StorageInterface, Akonadi::Storage, Utils::DependencyManager::UniqueInstance>();
-
+    deps.add<Akonadi::StorageInterface, Utils::DependencyManager::UniqueInstance>([] (Utils::DependencyManager *deps) {
+        return new Akonadi::CachingStorage(deps->create<Akonadi::Cache>(),
+                                           Akonadi::StorageInterface::Ptr(new Akonadi::Storage));
+    });
 
     deps.add<Domain::ContextQueries,
              Akonadi::ContextQueries(Akonadi::StorageInterface*,
