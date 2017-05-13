@@ -2461,7 +2461,7 @@ private slots:
         QCOMPARE(value, isChild);
     }
 
-    // Investigation into how to differenciate all-day events from events with time,
+    // Investigation into how to differentiate all-day events from events with time,
     // using QDateTime only. Doesn't seem to be possible.
     void KDateTimeShouldStillBeNeeded() // although I wish it wasn't...
     {

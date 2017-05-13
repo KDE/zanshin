@@ -220,7 +220,7 @@ public:
 
 private:
     template<typename T>
-    bool isValidOutput(const T &/*ouput*/)
+    bool isValidOutput(const T &/*output*/)
     {
         return true;
     }

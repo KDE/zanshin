@@ -1105,7 +1105,7 @@ private slots:
     {
         // TODO: Note that this specification is kind of an over simplification which
         // assumes that all the underlying data is correct. Ideally it should be checked
-        // that the uid refered to actually points to a todo which exists in a proper
+        // that the uid referred to actually points to a todo which exists in a proper
         // collection. We will need a cache to be able to implement that properly though.
 
         // GIVEN
