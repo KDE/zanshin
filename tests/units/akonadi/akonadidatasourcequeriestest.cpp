@@ -90,7 +90,7 @@ private slots:
 
         // A few data sources
         AkonadiFakeData data;
-        for (auto id = minId; id <= maxId; id++) {
+        for (auto id = minId; id <= maxId; ++id) {
             auto col = GenCollection().withId(id).withName(QString::number(id)).withRootAsParent();
             if (contentType == Akonadi::StorageInterface::Tasks)
                 data.createCollection(col.withTaskContent());
@@ -106,7 +106,7 @@ private slots:
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         // THEN
-        for (auto id = minId; id <= maxId; id++) {
+        for (auto id = minId; id <= maxId; ++id) {
             auto source = serializer->createDataSourceFromCollection(data.collection(id), Akonadi::SerializerInterface::BaseName);
             QCOMPARE(queries->isDefaultSource(source), id == defaultId);
         }
@@ -133,7 +133,7 @@ private slots:
 
         // A few data sources
         AkonadiFakeData data;
-        for (auto id = minId; id <= maxId; id++) {
+        for (auto id = minId; id <= maxId; ++id) {
             auto col = GenCollection().withId(id).withName(QString::number(id)).withRootAsParent();
             if (contentType == Akonadi::StorageInterface::Tasks)
                 data.createCollection(col.withTaskContent());
