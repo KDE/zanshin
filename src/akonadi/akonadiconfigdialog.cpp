@@ -28,6 +28,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QMessageBox>
+#include <QPointer>
 #include <QToolBar>
 
 #include <AkonadiCore/AgentFilterProxyModel>
@@ -97,10 +98,13 @@ ConfigDialog::ConfigDialog(QWidget *parent)
 
 void ConfigDialog::onAddTriggered()
 {
-    Akonadi::AgentTypeDialog dlg(this);
-    dlg.agentFilterProxyModel()->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    if (dlg.exec()) {
-        const auto agentType = dlg.agentType();
+    auto dlg = QPointer<AgentTypeDialog>(new AgentTypeDialog(this));
+    dlg->agentFilterProxyModel()->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+    if (dlg->exec()) {
+        if (!dlg)
+            return;
+
+        const auto agentType = dlg->agentType();
 
         if (agentType.isValid()) {
             auto job = new Akonadi::AgentInstanceCreateJob(agentType, this);
@@ -108,6 +112,7 @@ void ConfigDialog::onAddTriggered()
             job->start();
         }
     }
+    delete dlg;
 }
 
 void ConfigDialog::onRemoveTriggered()
