@@ -26,7 +26,135 @@
 #include "akonadicachingstorage.h"
 #include "akonadistorage.h"
 
+#include "akonadicollectionfetchjobinterface.h"
+
+#include <QTimer>
+
 using namespace Akonadi;
+
+class CachingCollectionFetchJob : public KCompositeJob, public CollectionFetchJobInterface
+{
+    Q_OBJECT
+public:
+    CachingCollectionFetchJob(const StorageInterface::Ptr &storage,
+                              const Cache::Ptr &cache,
+                              const Collection &collection,
+                              StorageInterface::FetchDepth depth,
+                              StorageInterface::FetchContentTypes types,
+                              QObject *parent = nullptr)
+        : KCompositeJob(parent),
+          m_started(false),
+          m_storage(storage),
+          m_cache(cache),
+          m_collection(collection),
+          m_depth(depth),
+          m_types(types)
+    {
+        QTimer::singleShot(0, this, &CachingCollectionFetchJob::start);
+    }
+
+    void start() override
+    {
+        if (m_started)
+            return;
+
+        if (m_cache->isContentTypesPopulated(m_types)) {
+            QTimer::singleShot(0, this, &CachingCollectionFetchJob::retrieveFromCache);
+        } else {
+            auto job = m_storage->fetchCollections(Akonadi::Collection::root(),
+                                                   Akonadi::StorageInterface::Recursive,
+                                                   m_types);
+            job->setResource(m_resource);
+            addSubjob(job->kjob());
+        }
+
+        m_started = true;
+    }
+
+
+    Collection::List collections() const override
+    {
+        const auto isInputCollection = [this] (const Collection &collection) {
+            return collection.id() == m_collection.id()
+                || (!m_collection.remoteId().isEmpty() && collection.remoteId() == m_collection.remoteId());
+        };
+
+        if (m_depth == StorageInterface::Base) {
+            auto it = std::find_if(m_collections.cbegin(), m_collections.cend(), isInputCollection);
+            if (it != m_collections.cend())
+                return Collection::List() << *it;
+            else
+                return Collection::List();
+        }
+
+        auto collections = m_collections;
+        auto it = collections.begin();
+
+        if (m_depth == StorageInterface::FirstLevel) {
+            it = std::remove_if(collections.begin(), collections.end(),
+                                [isInputCollection] (const Collection &collection) {
+                                    return !isInputCollection(collection.parentCollection());
+                                });
+        } else {
+            it = std::remove_if(collections.begin(), collections.end(),
+                                [isInputCollection] (const Collection &collection) {
+                                    auto parent = collection.parentCollection();
+                                    while (parent.isValid() && !isInputCollection(parent))
+                                        parent = parent.parentCollection();
+                                    return !isInputCollection(parent);
+                                });
+        }
+
+        collections.erase(it, collections.end());
+        return collections;
+    }
+
+    void setResource(const QString &resource) override
+    {
+        m_resource = resource;
+    }
+
+private:
+    void slotResult(KJob *kjob) override
+    {
+        if (kjob->error()) {
+            KCompositeJob::slotResult(kjob);
+            return;
+        }
+
+        auto job = dynamic_cast<CollectionFetchJobInterface*>(kjob);
+        Q_ASSERT(job);
+        auto cachedCollections = job->collections();
+        for (const auto &collection : job->collections()) {
+            auto parent = collection.parentCollection();
+            while (parent.isValid() && parent != Akonadi::Collection::root()) {
+                if (!cachedCollections.contains(parent)) {
+                    cachedCollections.append(parent);
+                }
+                parent = parent.parentCollection();
+            }
+        }
+        m_cache->setCollections(m_types, cachedCollections);
+        m_collections = job->collections();
+        emitResult();
+    }
+
+    void retrieveFromCache()
+    {
+        m_collections = m_cache->collections(m_types);
+        emitResult();
+    }
+
+    bool m_started;
+    StorageInterface::Ptr m_storage;
+    Cache::Ptr m_cache;
+    QString m_resource;
+    const Collection m_collection;
+    const StorageInterface::FetchDepth m_depth;
+    const StorageInterface::FetchContentTypes m_types;
+    Collection::List m_collections;
+};
+
 
 CachingStorage::CachingStorage(const Cache::Ptr &cache, const StorageInterface::Ptr &storage)
     : m_cache(cache),
@@ -115,7 +243,7 @@ KJob *CachingStorage::removeTag(Tag tag)
 
 CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
 {
-    return m_storage->fetchCollections(collection, depth, types);
+    return new CachingCollectionFetchJob(m_storage, m_cache, collection, depth, types);
 }
 
 ItemFetchJobInterface *CachingStorage::fetchItems(Collection collection)
@@ -137,3 +265,5 @@ TagFetchJobInterface *CachingStorage::fetchTags()
 {
     return m_storage->fetchTags();
 }
+
+#include "akonadicachingstorage.moc"
