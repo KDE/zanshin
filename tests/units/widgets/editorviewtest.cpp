@@ -327,7 +327,7 @@ private slots:
 
         // THEN
         QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
-                                                + "\n"
+                                                + '\n'
                                                 + model.property("text").toString()));
         QCOMPARE(startDateEdit->date(), model.property("startDate").toDateTime().date());
         QCOMPARE(dueDateEdit->date(), model.property("dueDate").toDateTime().date());
@@ -402,7 +402,7 @@ private slots:
 
         // THEN
         QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
-                                                + "\n"
+                                                + '\n'
                                                 + model.property("text").toString()));
     }
 
@@ -426,7 +426,7 @@ private slots:
 
         // THEN
         QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
-                                                + "\n"
+                                                + '\n'
                                                 + model.property("text").toString()));
     }
 
