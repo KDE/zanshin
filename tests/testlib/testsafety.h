@@ -21,6 +21,9 @@
    USA.
 */
 
+#ifndef TESTSAFETY_H
+#define TESTSAFETY_H
+
 #include <QTest>
 #include <QDebug>
 
@@ -42,3 +45,4 @@ namespace TestLib {
     }
 }
 
+#endif // TESTSAFETY_H

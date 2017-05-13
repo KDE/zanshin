@@ -21,6 +21,10 @@
    USA.
 */
 
+#ifndef QTEST_GUI_ZANSHIN_H
+#define QTEST_GUI_ZANSHIN_H
+
 #include <QtTestGui>
 #include <testlib/qtest_zanshin.h>
 
+#endif // QTEST_GUI_ZANSHIN_H

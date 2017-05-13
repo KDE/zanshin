@@ -21,6 +21,9 @@
    USA.
 */
 
+#ifndef ZANSHIN021MIGRATOR_H
+#define ZANSHIN021MIGRATOR_H
+
 #include <AkonadiCore/Item>
 #include <akonadi/akonadistorage.h>
 
@@ -75,3 +78,4 @@ private:
 
 };
 
+#endif // ZANSHIN021MIGRATOR_H

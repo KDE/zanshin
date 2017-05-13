@@ -21,6 +21,9 @@
    USA.
 */
 
+#ifndef QTEST_ZANSHIN_H
+#define QTEST_ZANSHIN_H
+
 #include <QtTest>
 #include <QDebug>
 
@@ -69,3 +72,5 @@
     } \
     \
     QTEST_MAIN(TestCase)
+
+#endif // QTEST_ZANSHIN_H

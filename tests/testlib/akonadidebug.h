@@ -21,6 +21,9 @@
    USA.
 */
 
+#ifndef AKONADIDEBUG_H
+#define AKONADIDEBUG_H
+
 #include "akonadi/akonadistorageinterface.h"
 
 namespace TestLib {
@@ -28,3 +31,5 @@ namespace TestLib {
         void dumpTree(const Akonadi::StorageInterface::Ptr &storage);
     }
 }
+
+#endif // AKONADIDEBUG_H
