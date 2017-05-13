@@ -44,7 +44,7 @@ DependencyManager::DependencyManager(const DependencyManager &other)
 
 DependencyManager::~DependencyManager()
 {
-    foreach (void (*cleanupFunction)(DependencyManager*), m_cleanupFunctions) {
+    for (const auto &cleanupFunction : qAsConst(m_cleanupFunctions)) {
         cleanupFunction(this);
     }
 }
