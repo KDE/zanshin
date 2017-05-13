@@ -41,9 +41,7 @@
 
 #include "modeltest.h"
 
-#include <QtGui/QtGui>
-
-#include <QtTest/QtTest>
+#include <QTest>
 #undef Q_ASSERT
 #define Q_ASSERT  QVERIFY
 
