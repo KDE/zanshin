@@ -21,8 +21,9 @@
    USA.
 */
 
-#include "runningtaskmodel.h"
 #include "taskapplicationmodel.h"
+
+#include "runningtaskmodel.h"
 #include "utils/dependencymanager.h"
 
 using namespace Presentation;
