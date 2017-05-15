@@ -406,6 +406,7 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collecti
     if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
         job->setItems(items);
     job->setExpectedError(m_data->storageBehavior().fetchItemsErrorCode(collection.id()));
+    Utils::JobHandler::install(job, noop);
     return job;
 }
 
@@ -421,6 +422,7 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItem(Akonadi::Item item
     if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
         job->setItems(Akonadi::Item::List() << fullItem);
     job->setExpectedError(m_data->storageBehavior().fetchItemErrorCode(item.id()));
+    Utils::JobHandler::install(job, noop);
     return job;
 }
 
@@ -443,6 +445,7 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchTagItems(Akonadi::Tag t
     if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
         job->setItems(items);
     job->setExpectedError(m_data->storageBehavior().fetchTagItemsErrorCode(tag.id()));
+    Utils::JobHandler::install(job, noop);
     return job;
 }
 
@@ -453,6 +456,7 @@ Akonadi::TagFetchJobInterface *AkonadiFakeStorage::fetchTags()
     if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
         job->setTags(m_data->tags());
     job->setExpectedError(m_data->storageBehavior().fetchTagsErrorCode());
+    Utils::JobHandler::install(job, noop);
     return job;
 }
 
