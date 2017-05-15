@@ -27,6 +27,7 @@
 #include "akonadistorage.h"
 
 #include "akonadicollectionfetchjobinterface.h"
+#include "akonadiitemfetchjobinterface.h"
 
 #include <QTimer>
 
@@ -155,6 +156,77 @@ private:
     Collection::List m_collections;
 };
 
+class CachingCollectionItemsFetchJob : public KCompositeJob, public ItemFetchJobInterface
+{
+    Q_OBJECT
+public:
+    CachingCollectionItemsFetchJob(const StorageInterface::Ptr &storage,
+                                   const Cache::Ptr &cache,
+                                   const Collection &collection,
+                                   QObject *parent = nullptr)
+        : KCompositeJob(parent),
+          m_started(false),
+          m_storage(storage),
+          m_cache(cache),
+          m_collection(collection)
+    {
+        QTimer::singleShot(0, this, &CachingCollectionItemsFetchJob::start);
+    }
+
+    void start() override
+    {
+        if (m_started)
+            return;
+
+        if (m_cache->isCollectionPopulated(m_collection.id())) {
+            QTimer::singleShot(0, this, &CachingCollectionItemsFetchJob::retrieveFromCache);
+        } else {
+            auto job = m_storage->fetchItems(m_collection);
+            addSubjob(job->kjob());
+        }
+
+        m_started = true;
+    }
+
+
+    Item::List items() const override
+    {
+        return m_items;
+    }
+
+    void setCollection(const Collection &collection) override
+    {
+        m_collection = collection;
+    }
+
+private:
+    void slotResult(KJob *kjob) override
+    {
+        if (kjob->error()) {
+            KCompositeJob::slotResult(kjob);
+            return;
+        }
+
+        auto job = dynamic_cast<ItemFetchJobInterface*>(kjob);
+        Q_ASSERT(job);
+        m_items = job->items();
+        m_cache->populateCollection(m_collection, m_items);
+        emitResult();
+    }
+
+    void retrieveFromCache()
+    {
+        m_items = m_cache->items(m_collection);
+        emitResult();
+    }
+
+    bool m_started;
+    StorageInterface::Ptr m_storage;
+    Cache::Ptr m_cache;
+    Collection m_collection;
+    Item::List m_items;
+};
+
 
 CachingStorage::CachingStorage(const Cache::Ptr &cache, const StorageInterface::Ptr &storage)
     : m_cache(cache),
@@ -248,7 +320,7 @@ CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collect
 
 ItemFetchJobInterface *CachingStorage::fetchItems(Collection collection)
 {
-    return m_storage->fetchItems(collection);
+    return new CachingCollectionItemsFetchJob(m_storage, m_cache, collection);
 }
 
 ItemFetchJobInterface *CachingStorage::fetchItem(Akonadi::Item item)
