@@ -38,7 +38,6 @@ public:
         emit runningTaskChanged(m_runningTask);
     }
 
-public slots:
     void stopTask() Q_DECL_OVERRIDE
     {
         Q_ASSERT(m_runningTask);

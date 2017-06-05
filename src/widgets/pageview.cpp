@@ -402,7 +402,7 @@ void PageView::onRunTaskTriggered()
     Q_ASSERT(task); // the action is supposed to be disabled otherwise
     if (task->startDate().isNull())
         task->setStartDate(QDateTime::currentDateTime());
-    m_runningTaskModel->setProperty("runningTask", QVariant::fromValue(task));
+    m_runningTaskModel->setRunningTask(task);
 }
 
 void PageView::onRunningTaskChanged(const Domain::Task::Ptr &task)

@@ -116,12 +116,12 @@ void RunningTaskWidget::onRunningTaskChanged(const Domain::Task::Ptr &task)
 
 void RunningTaskWidget::onTaskRunStopped()
 {
-    QMetaObject::invokeMethod(m_model, "stopTask");
+    m_model->stopTask();
 }
 
 void RunningTaskWidget::onTaskRunDone()
 {
-    QMetaObject::invokeMethod(m_model, "doneTask");
+    m_model->doneTask();
 }
 
 void RunningTaskWidget::resize()
