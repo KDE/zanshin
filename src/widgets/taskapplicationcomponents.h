@@ -38,7 +38,7 @@ public:
 
     virtual void setModel(const QObjectPtr &model) Q_DECL_OVERRIDE;
 
-    virtual PageView *pageView() const;
+    virtual PageView *pageView() const Q_DECL_OVERRIDE;
 
     RunningTaskWidget *runningTaskWidget() const;
 
