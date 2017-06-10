@@ -165,7 +165,7 @@ PageView::PageView(QWidget *parent)
 
     auto addItemAction = new QAction(this);
     addItemAction->setObjectName(QStringLiteral("addItemAction"));
-    addItemAction->setText(tr("New item"));
+    addItemAction->setText(tr("New Item"));
     addItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
     connect(addItemAction, &QAction::triggered, this, &PageView::onAddItemRequested);
@@ -178,7 +178,7 @@ PageView::PageView(QWidget *parent)
 
     auto removeItemAction = new QAction(this);
     removeItemAction->setObjectName(QStringLiteral("removeItemAction"));
-    removeItemAction->setText(tr("Remove item"));
+    removeItemAction->setText(tr("Remove Item"));
     removeItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     removeItemAction->setShortcut(Qt::Key_Delete);
     connect(removeItemAction, &QAction::triggered, this, &PageView::onRemoveItemRequested);
@@ -186,7 +186,7 @@ PageView::PageView(QWidget *parent)
 
     auto promoteItemAction = new QAction(this);
     promoteItemAction->setObjectName(QStringLiteral("promoteItemAction"));
-    promoteItemAction->setText(tr("Promote item as project"));
+    promoteItemAction->setText(tr("Promote Item as Project"));
     promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
     connect(promoteItemAction, &QAction::triggered, this, &PageView::onPromoteItemRequested);
 
@@ -201,7 +201,7 @@ PageView::PageView(QWidget *parent)
     m_runTaskAction = new QAction(this);
     m_runTaskAction->setObjectName(QStringLiteral("runTaskAction"));
     m_runTaskAction->setShortcut(Qt::CTRL | Qt::Key_Space);
-    m_runTaskAction->setText(tr("Start now"));
+    m_runTaskAction->setText(tr("Start Now"));
     m_runTaskAction->setIcon(QIcon::fromTheme(QStringLiteral("media-playback-start")));
     connect(m_runTaskAction, &QAction::triggered, this, &PageView::onRunTaskTriggered);
     updateRunTaskAction();

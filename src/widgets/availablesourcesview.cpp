@@ -70,7 +70,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     actionBar->setIconSize(QSize(16, 16));
 
     m_defaultAction->setObjectName(QStringLiteral("defaultAction"));
-    m_defaultAction->setText(tr("Use as default source"));
+    m_defaultAction->setText(tr("Use as Default Source"));
     m_defaultAction->setIcon(QIcon::fromTheme(QStringLiteral("folder-favorites")));
     connect(m_defaultAction, &QAction::triggered, this, &AvailableSourcesView::onDefaultTriggered);
     actionBar->addAction(m_defaultAction);
