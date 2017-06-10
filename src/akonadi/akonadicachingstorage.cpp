@@ -227,6 +227,81 @@ private:
     Item::List m_items;
 };
 
+class CachingSingleItemFetchJob : public KCompositeJob, public ItemFetchJobInterface
+{
+    Q_OBJECT
+public:
+    CachingSingleItemFetchJob(const StorageInterface::Ptr &storage,
+                              const Cache::Ptr &cache,
+                              const Item &item,
+                                   QObject *parent = nullptr)
+        : KCompositeJob(parent),
+          m_started(false),
+          m_storage(storage),
+          m_cache(cache),
+          m_item(item)
+    {
+        QTimer::singleShot(0, this, &CachingSingleItemFetchJob::start);
+    }
+
+    void start() override
+    {
+        if (m_started)
+            return;
+
+        const auto item = m_cache->item(m_item.id());
+        if (item.isValid()) {
+            QTimer::singleShot(0, this, [this, item] {
+                retrieveFromCache(item);
+            });
+        } else {
+            auto job = m_storage->fetchItem(m_item);
+            job->setCollection(m_collection);
+            addSubjob(job->kjob());
+        }
+
+        m_started = true;
+    }
+
+
+    Item::List items() const override
+    {
+        return m_items;
+    }
+
+    void setCollection(const Collection &collection) override
+    {
+        m_collection = collection;
+    }
+
+private:
+    void slotResult(KJob *kjob) override
+    {
+        if (kjob->error()) {
+            KCompositeJob::slotResult(kjob);
+            return;
+        }
+
+        auto job = dynamic_cast<ItemFetchJobInterface*>(kjob);
+        Q_ASSERT(job);
+        m_items = job->items();
+        emitResult();
+    }
+
+    void retrieveFromCache(const Item &item)
+    {
+        m_items = Item::List() << item;
+        emitResult();
+    }
+
+    bool m_started;
+    StorageInterface::Ptr m_storage;
+    Cache::Ptr m_cache;
+    Item m_item;
+    Collection m_collection;
+    Item::List m_items;
+};
+
 
 CachingStorage::CachingStorage(const Cache::Ptr &cache, const StorageInterface::Ptr &storage)
     : m_cache(cache),
@@ -325,7 +400,7 @@ ItemFetchJobInterface *CachingStorage::fetchItems(Collection collection)
 
 ItemFetchJobInterface *CachingStorage::fetchItem(Akonadi::Item item)
 {
-    return m_storage->fetchItem(item);
+    return new CachingSingleItemFetchJob(m_storage, m_cache, item);
 }
 
 ItemFetchJobInterface *CachingStorage::fetchTagItems(Tag tag)
