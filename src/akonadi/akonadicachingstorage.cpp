@@ -303,6 +303,79 @@ private:
     Item::List m_items;
 };
 
+class CachingTagItemsFetchJob : public KCompositeJob, public ItemFetchJobInterface
+{
+    Q_OBJECT
+public:
+    CachingTagItemsFetchJob(const StorageInterface::Ptr &storage,
+                            const Cache::Ptr &cache,
+                            const Tag &tag,
+                            QObject *parent = nullptr)
+        : KCompositeJob(parent),
+          m_started(false),
+          m_storage(storage),
+          m_cache(cache),
+          m_tag(tag)
+    {
+        QTimer::singleShot(0, this, &CachingTagItemsFetchJob::start);
+    }
+
+    void start() override
+    {
+        if (m_started)
+            return;
+
+        if (m_cache->isTagPopulated(m_tag.id())) {
+            QTimer::singleShot(0, this, &CachingTagItemsFetchJob::retrieveFromCache);
+        } else {
+            auto job = m_storage->fetchTagItems(m_tag);
+            job->setCollection(m_collection);
+            addSubjob(job->kjob());
+        }
+
+        m_started = true;
+    }
+
+
+    Item::List items() const override
+    {
+        return m_items;
+    }
+
+    void setCollection(const Collection &collection) override
+    {
+        m_collection = collection;
+    }
+
+private:
+    void slotResult(KJob *kjob) override
+    {
+        if (kjob->error()) {
+            KCompositeJob::slotResult(kjob);
+            return;
+        }
+
+        auto job = dynamic_cast<ItemFetchJobInterface*>(kjob);
+        Q_ASSERT(job);
+        m_items = job->items();
+        m_cache->populateTag(m_tag, m_items);
+        emitResult();
+    }
+
+    void retrieveFromCache()
+    {
+        m_items = m_cache->items(m_tag);
+        emitResult();
+    }
+
+    bool m_started;
+    StorageInterface::Ptr m_storage;
+    Cache::Ptr m_cache;
+    Tag m_tag;
+    Collection m_collection;
+    Item::List m_items;
+};
+
 class CachingTagFetchJob : public KCompositeJob, public TagFetchJobInterface
 {
     Q_OBJECT
@@ -467,7 +540,7 @@ ItemFetchJobInterface *CachingStorage::fetchItem(Akonadi::Item item)
 
 ItemFetchJobInterface *CachingStorage::fetchTagItems(Tag tag)
 {
-    return m_storage->fetchTagItems(tag);
+    return new CachingTagItemsFetchJob(m_storage, m_cache, tag);
 }
 
 TagFetchJobInterface *CachingStorage::fetchTags()
