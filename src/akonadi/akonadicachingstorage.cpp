@@ -28,6 +28,7 @@
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"
+#include "akonaditagfetchjobinterface.h"
 
 #include <QTimer>
 
@@ -302,6 +303,67 @@ private:
     Item::List m_items;
 };
 
+class CachingTagFetchJob : public KCompositeJob, public TagFetchJobInterface
+{
+    Q_OBJECT
+public:
+    CachingTagFetchJob(const StorageInterface::Ptr &storage,
+                       const Cache::Ptr &cache,
+                       QObject *parent = nullptr)
+        : KCompositeJob(parent),
+          m_started(false),
+          m_storage(storage),
+          m_cache(cache)
+    {
+        QTimer::singleShot(0, this, &CachingTagFetchJob::start);
+    }
+
+    void start() override
+    {
+        if (m_started)
+            return;
+
+        if (m_cache->isTagListPopulated()) {
+            QTimer::singleShot(0, this, &CachingTagFetchJob::retrieveFromCache);
+        } else {
+            auto job = m_storage->fetchTags();
+            addSubjob(job->kjob());
+        }
+
+        m_started = true;
+    }
+
+    Tag::List tags() const override
+    {
+        return m_tags;
+    }
+
+private:
+    void slotResult(KJob *kjob) override
+    {
+        if (kjob->error()) {
+            KCompositeJob::slotResult(kjob);
+            return;
+        }
+
+        auto job = dynamic_cast<TagFetchJobInterface*>(kjob);
+        Q_ASSERT(job);
+        m_tags = job->tags();
+        m_cache->setTags(m_tags);
+        emitResult();
+    }
+
+    void retrieveFromCache()
+    {
+        m_tags = m_cache->tags();
+        emitResult();
+    }
+
+    bool m_started;
+    StorageInterface::Ptr m_storage;
+    Cache::Ptr m_cache;
+    Tag::List m_tags;
+};
 
 CachingStorage::CachingStorage(const Cache::Ptr &cache, const StorageInterface::Ptr &storage)
     : m_cache(cache),
@@ -410,7 +472,7 @@ ItemFetchJobInterface *CachingStorage::fetchTagItems(Tag tag)
 
 TagFetchJobInterface *CachingStorage::fetchTags()
 {
-    return m_storage->fetchTags();
+    return new CachingTagFetchJob(m_storage, m_cache);
 }
 
 #include "akonadicachingstorage.moc"

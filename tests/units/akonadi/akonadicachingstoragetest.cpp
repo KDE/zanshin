@@ -372,6 +372,68 @@ private slots:
             QVERIFY(cache->item(44).isValid());
         }
     }
+
+    void shouldCacheTags()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        data.createTag(GenTag().withId(42).withName(QStringLiteral("42Plain")).asPlain());
+        data.createTag(GenTag().withId(43).withName(QStringLiteral("43Context")).asContext());
+        data.createTag(GenTag().withId(44).withName(QStringLiteral("44Plain")).asPlain());
+
+        auto cache = Akonadi::Cache::Ptr::create(Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                 Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        Akonadi::CachingStorage storage(cache, Akonadi::StorageInterface::Ptr(data.createStorage()));
+
+        // WHEN
+        auto job = storage.fetchTags();
+        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+
+        // THEN
+        const auto toTagNames = [](const Akonadi::Tag::List &tags) {
+            auto res = QStringList();
+            std::transform(tags.cbegin(), tags.cend(),
+                           std::back_inserter(res),
+                           std::mem_fn(&Akonadi::Tag::name));
+            res.sort();
+            return res;
+        };
+
+        auto expectedNames = QStringList() << "42Plain" << "43Context" << "44Plain";
+
+        {
+            const auto tagFetchNames = [job, toTagNames]{
+                return toTagNames(job->tags());
+            }();
+            QCOMPARE(tagFetchNames, expectedNames);
+
+            const auto tagCachedNames = [cache, toTagNames]{
+                const auto tags = cache->tags();
+                return toTagNames(tags);
+            }();
+            QCOMPARE(tagCachedNames, expectedNames);
+        }
+
+        // WHEN (second time shouldn't hit the original storage)
+        data.storageBehavior().setFetchTagsBehavior(AkonadiFakeStorageBehavior::EmptyFetch);
+        data.storageBehavior().setFetchTagsErrorCode(128);
+        job = storage.fetchTags();
+        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+
+        {
+            const auto tagFetchNames = [job, toTagNames]{
+                return toTagNames(job->tags());
+            }();
+            QCOMPARE(tagFetchNames, expectedNames);
+
+            const auto tagCachedNames = [cache, toTagNames]{
+                const auto tags = cache->tags();
+                return toTagNames(tags);
+            }();
+            QCOMPARE(tagCachedNames, expectedNames);
+        }
+    }
 };
 
 ZANSHIN_TEST_MAIN(AkonadiCachingStorageTest)
