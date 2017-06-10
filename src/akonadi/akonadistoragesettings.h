@@ -1,4 +1,4 @@
-/* This file is part of Zanshin Todo.
+/* This file is part of Zanshin
 
    Copyright 2012 Christian Mollekopf <chrigi_1@fastmail.fm>
    Copyright 2014 Kevin Ottens <ervin@kde.org>

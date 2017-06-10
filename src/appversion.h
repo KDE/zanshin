@@ -1,4 +1,4 @@
-/* This file is part of Zanshin Todo
+/* This file is part of Zanshin
 
    Copyright 2016 Kevin Ottens <ervin@kde.org>
 

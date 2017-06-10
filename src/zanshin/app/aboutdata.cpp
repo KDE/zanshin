@@ -28,7 +28,7 @@
 KAboutData App::getAboutData()
 {
     KAboutData about(QStringLiteral("zanshin"),
-                     QObject::tr("Zanshin Todo"), QStringLiteral(APPLICATION_VERSION),
+                     QObject::tr("Zanshin Tasks"), QStringLiteral(APPLICATION_VERSION),
                      QObject::tr("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutLicense::GPL_V3,
                      QObject::tr("Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"));
