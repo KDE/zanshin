@@ -60,6 +60,7 @@
     <p xml:lang="pl">Zanshin jest zaawansowanym, a zarazem prostym programem do zarządzania codziennymi zadaniami. Pomaga zorganizować i zmniejszyć natłok czynności, które użytkownik musi wykonać w swojej pracy lub życiu osobistym. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
     <p xml:lang="pt-BR">Zanshin é um aplicativo simples e poderoso, para gerenciar suas ações do dia a dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem que fazer na sua vida pessoal e profissional. Você nunca mais esquecerá de nada, mantendo sua mente limpa.</p>
+    <p xml:lang="sk">Zanshin je silná, ale jednoduchá aplikácia na správu vašich denných akcií a poznámok. Pomôže vám zorganizovať a znížiť kognitívny tlak, čo treba urobiť v práci a osobnom živote. Nikdy už nič nezabudnete, a vaša myseľ bude voľná.</p>
     <p xml:lang="sv">Zanshin är ett kraftfullt men ändå enkelt program för att hantera åtgärder från dag till dag. Det hjälper till att organisera och minska det kognitiva trycket av det som måste göras i arbetet och i det personliga livet. Du kommer inte att glömma något längre, och ditt sinne blir som flödande vatten.</p>
     <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
     <p xml:lang="x-test">xxZanshin is a powerful yet simple application for managing your day to day actions. It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything anymore, getting your mind like water.xx</p>
@@ -97,6 +98,7 @@
       <li xml:lang="pl">Zbieranie zadań z każdego miejsca</li>
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
       <li xml:lang="pt-BR">Coleta tarefas de qualquer lugar</li>
+      <li xml:lang="sk">Zbiera úlohy a poznámky odvšadiaľ</li>
       <li xml:lang="sv">Samla in uppgifter från alla möjliga ställen</li>
       <li xml:lang="uk">Збирання різноманітних записів завдань.</li>
       <li xml:lang="x-test">xxCollects tasks from everywherexx</li>
@@ -113,6 +115,7 @@
       <li xml:lang="pl">Porządkowanie zadań w projekty i konteksty</li>
       <li xml:lang="pt">Organiza as tarefas e notas em projectos e contextos</li>
       <li xml:lang="pt-BR">Organiza as tarefas em projetos e contextos</li>
+      <li xml:lang="sk">Organizuje úlohy v projektoch a kontextoch</li>
       <li xml:lang="sv">Organisera uppgifter i projekt och sammanhang</li>
       <li xml:lang="uk">Упорядковування завдань за проектами та контекстами.</li>
       <li xml:lang="x-test">xxOrganize tasks in projects and contextsxx</li>
