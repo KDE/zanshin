@@ -82,7 +82,7 @@ public slots:
     void setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory);
 
 protected:
-    PageView *m_pageView;
+    QPointer<PageView> m_pageView;
 
 private slots:
     void onCurrentPageChanged(QObject *page);
