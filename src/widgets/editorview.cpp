@@ -29,6 +29,9 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
+
+#include <KLocalizedString>
+
 #include "kdateedit.h"
 #include "addressline/addresseelineedit.h"
 
@@ -202,7 +205,7 @@ void EditorView::onDelegateTextChanged()
 {
     const auto delegateText = m_model->property("delegateText").toString();
     const auto labelText = delegateText.isEmpty() ? QString()
-                         : tr("Delegated to: <b>%1</b>").arg(delegateText);
+                         : i18n("Delegated to: <b>%1</b>", delegateText);
 
     ui->delegateLabel->setVisible(!labelText.isEmpty());
     ui->delegateLabel->setText(labelText);

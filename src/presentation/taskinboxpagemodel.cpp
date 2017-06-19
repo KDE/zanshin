@@ -26,6 +26,8 @@
 
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "presentation/querytreemodel.h"
 
 using namespace Presentation;
@@ -49,7 +51,7 @@ Domain::Artifact::Ptr TaskInboxPageModel::addItem(const QString &title, const QM
     task->setTitle(title);
     const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
                    : m_taskRepository->create(task);
-    installHandler(job, tr("Cannot add task %1 in Inbox").arg(title));
+    installHandler(job, i18n("Cannot add task %1 in Inbox", title));
 
     return task;
 }
@@ -61,7 +63,7 @@ void TaskInboxPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->remove(task);
-    installHandler(job, tr("Cannot remove task %1 from Inbox").arg(task->title()));
+    installHandler(job, i18n("Cannot remove task %1 from Inbox", task->title()));
 }
 
 void TaskInboxPageModel::promoteItem(const QModelIndex &index)
@@ -71,7 +73,7 @@ void TaskInboxPageModel::promoteItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->promoteToProject(task);
-    installHandler(job, tr("Cannot promote task %1 to be a project").arg(task->title()));
+    installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
 }
 
 QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
@@ -118,7 +120,7 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
             task->setDone(value.toInt() == Qt::Checked);
 
         const auto job = m_taskRepository->update(task);
-        installHandler(job, tr("Cannot modify task %1 in Inbox").arg(currentTitle));
+        installHandler(job, i18n("Cannot modify task %1 in Inbox", currentTitle));
         return true;
     };
 
@@ -144,10 +146,10 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
 
             if (parentTask) {
                 const auto job = m_taskRepository->associate(parentTask, childTask);
-                installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title(), parentTask->title()));
+                installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTask->title()));
             } else {
                 const auto job = m_taskRepository->dissociate(childTask);
-                installHandler(job, tr("Cannot deparent task %1 from its parent").arg(childTask->title()));
+                installHandler(job, i18n("Cannot deparent task %1 from its parent", childTask->title()));
             }
         }
 

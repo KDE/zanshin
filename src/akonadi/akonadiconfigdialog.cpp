@@ -31,6 +31,8 @@
 #include <QPointer>
 #include <QToolBar>
 
+#include <KLocalizedString>
+
 #include <AkonadiCore/AgentFilterProxyModel>
 #include <AkonadiCore/AgentInstance>
 #include <AkonadiWidgets/AgentInstanceWidget>
@@ -43,11 +45,11 @@ using namespace Akonadi;
 ConfigDialog::ConfigDialog(QWidget *parent)
     : QDialog(parent)
 {
-    setWindowTitle(tr("Configure"));
+    setWindowTitle(i18n("Configure"));
 
     auto description = new QLabel(this);
     description->setWordWrap(true);
-    description->setText(tr("Please select or create a resource which will be used by the application to store and query its TODOs."));
+    description->setText(i18n("Please select or create a resource which will be used by the application to store and query its TODOs."));
 
     m_agentInstanceWidget = new Akonadi::AgentInstanceWidget(this);
     m_agentInstanceWidget->agentFilterProxyModel()->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
@@ -58,21 +60,21 @@ ConfigDialog::ConfigDialog(QWidget *parent)
 
     auto addAction = new QAction(this);
     addAction->setObjectName(QStringLiteral("addAction"));
-    addAction->setText(tr("Add resource"));
+    addAction->setText(i18n("Add resource"));
     addAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     connect(addAction, &QAction::triggered, this, &ConfigDialog::onAddTriggered);
     toolBar->addAction(addAction);
 
     auto removeAction = new QAction(this);
     removeAction->setObjectName(QStringLiteral("removeAction"));
-    removeAction->setText(tr("Remove resource"));
+    removeAction->setText(i18n("Remove resource"));
     removeAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     connect(removeAction, &QAction::triggered, this, &ConfigDialog::onRemoveTriggered);
     toolBar->addAction(removeAction);
 
     auto configureAction = new QAction(this);
     configureAction->setObjectName(QStringLiteral("settingsAction"));
-    configureAction->setText(tr("Configure resource..."));
+    configureAction->setText(i18n("Configure resource..."));
     configureAction->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
     connect(configureAction, &QAction::triggered, this, &ConfigDialog::onConfigureTriggered);
     toolBar->addAction(configureAction);
@@ -120,8 +122,8 @@ void ConfigDialog::onRemoveTriggered()
     auto list = m_agentInstanceWidget->selectedAgentInstances();
     if (!list.isEmpty()) {
         auto answer = QMessageBox::question(this,
-                                            tr("Multiple Agent Deletion"),
-                                            tr("Do you really want to delete the selected agent instances?"),
+                                            i18n("Multiple Agent Deletion"),
+                                            i18n("Do you really want to delete the selected agent instances?"),
                                             QMessageBox::Yes | QMessageBox::No,
                                             QMessageBox::No);
         if (answer == QMessageBox::Yes) {

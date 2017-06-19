@@ -28,13 +28,15 @@
 
 #include <QTextEdit>
 
+#include <KLocalizedString>
+
 using namespace Widgets;
 
 ScriptEditor::ScriptEditor(QWidget *parent)
     : QMainWindow(parent),
       m_textEdit(new QTextEdit(this))
 {
-    setWindowTitle(tr("Script Editor - Zanshin"));
+    setWindowTitle(i18n("Script Editor - Zanshin"));
     resize(600, 600);
     setCentralWidget(m_textEdit);
 }

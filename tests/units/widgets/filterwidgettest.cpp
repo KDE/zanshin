@@ -28,6 +28,8 @@
 #include <QLineEdit>
 #include <QToolButton>
 
+#include <KLocalizedString>
+
 #include "widgets/filterwidget.h"
 
 #include "presentation/artifactfilterproxymodel.h"
@@ -50,7 +52,7 @@ private slots:
         QVERIFY(filterEdit);
         QVERIFY(filterEdit->isVisibleTo(&filter));
         QVERIFY(filterEdit->text().isEmpty());
-        QCOMPARE(filterEdit->placeholderText(), tr("Filter..."));
+        QCOMPARE(filterEdit->placeholderText(), i18n("Filter..."));
 
         auto extensionButton = filter.findChild<QToolButton*>(QStringLiteral("extensionButton"));
         QVERIFY(extensionButton);

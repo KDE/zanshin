@@ -26,6 +26,8 @@
 
 #include <QTimer>
 
+#include <KLocalizedString>
+
 #include "domain/task.h"
 #include "errorhandler.h"
 
@@ -273,7 +275,7 @@ void ArtifactEditorModel::save()
     }
 
     const auto job = m_saveFunction(m_artifact);
-    installHandler(job, tr("Cannot modify task %1").arg(currentTitle));
+    installHandler(job, i18n("Cannot modify task %1", currentTitle));
     setSaveNeeded(false);
 }
 

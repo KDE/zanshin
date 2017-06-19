@@ -35,6 +35,7 @@
 #include <QVBoxLayout>
 
 #include <KLineEdit>
+#include <KLocalizedString>
 
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
@@ -70,7 +71,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     actionBar->setIconSize(QSize(16, 16));
 
     m_defaultAction->setObjectName(QStringLiteral("defaultAction"));
-    m_defaultAction->setText(tr("Use as Default Source"));
+    m_defaultAction->setText(i18n("Use as Default Source"));
     m_defaultAction->setIcon(QIcon::fromTheme(QStringLiteral("folder-favorites")));
     connect(m_defaultAction, &QAction::triggered, this, &AvailableSourcesView::onDefaultTriggered);
     actionBar->addAction(m_defaultAction);
@@ -91,7 +92,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
 
     auto settingsAction = new QAction(this);
     settingsAction->setObjectName(QStringLiteral("settingsAction"));
-    settingsAction->setText(tr("Configure %1...").arg(QApplication::applicationName()));
+    settingsAction->setText(i18n("Configure %1...", QApplication::applicationName()));
     settingsAction->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
     connect(settingsAction, &QAction::triggered, this, &AvailableSourcesView::onSettingsTriggered);
     m_actions.insert(QStringLiteral("options_configure"), settingsAction);

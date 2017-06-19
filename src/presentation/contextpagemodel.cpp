@@ -26,6 +26,8 @@
 
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "domain/task.h"
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
@@ -68,7 +70,7 @@ Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title, const QMod
 
     const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
                    : m_taskRepository->createInContext(task, m_context);
-    installHandler(job, tr("Cannot add task %1 in context %2").arg(title, m_context->name()));
+    installHandler(job, i18n("Cannot add task %1 in context %2", title, m_context->name()));
 
     return task;
 }
@@ -80,7 +82,7 @@ void ContextPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     const auto job = index.parent().isValid() ? m_taskRepository->dissociate(task)
                    : m_contextRepository->dissociate(m_context, task);
-    installHandler(job, tr("Cannot remove task %1 from context %2").arg(task->title(), m_context->name()));
+    installHandler(job, i18n("Cannot remove task %1 from context %2", task->title(), m_context->name()));
 }
 
 void ContextPageModel::promoteItem(const QModelIndex &index)
@@ -90,7 +92,7 @@ void ContextPageModel::promoteItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->promoteToProject(task);
-    installHandler(job, tr("Cannot promote task %1 to be a project").arg(task->title()));
+    installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
 }
 
 QAbstractItemModel *ContextPageModel::createCentralListModel()
@@ -139,7 +141,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
             task->setDone(value.toInt() == Qt::Checked);
 
         const auto job = m_taskRepository->update(task);
-        installHandler(job, tr("Cannot modify task %1 in context %2").arg(currentTitle, m_context->name()));
+        installHandler(job, i18n("Cannot modify task %1 in context %2", currentTitle, m_context->name()));
         return true;
     };
 
@@ -176,10 +178,10 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
             auto childTask = droppedArtifact.objectCast<Domain::Task>();
             auto job = associate(childTask);
-            installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title(), parentTitle));
+            installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTitle));
             job = dissociate(childTask);
             if (job)
-                installHandler(job, tr("Cannot dissociate task %1 from its parent").arg(childTask->title()));
+                installHandler(job, i18n("Cannot dissociate task %1 from its parent", childTask->title()));
         }
 
         return true;

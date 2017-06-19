@@ -26,6 +26,8 @@
 
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "domain/noterepository.h"
 #include "domain/task.h"
 #include "domain/tagqueries.h"
@@ -61,7 +63,7 @@ Domain::Artifact::Ptr TagPageModel::addItem(const QString &title, const QModelIn
     auto note = Domain::Note::Ptr::create();
     note->setTitle(title);
     const auto job = m_noteRepository->createInTag(note, m_tag);
-    installHandler(job, tr("Cannot add note %1 in tag %2").arg(title, m_tag->name()));
+    installHandler(job, i18n("Cannot add note %1 in tag %2", title, m_tag->name()));
     return note;
 }
 
@@ -72,7 +74,7 @@ void TagPageModel::removeItem(const QModelIndex &index)
     auto note = artifact.objectCast<Domain::Note>();
     Q_ASSERT(note);
     const auto job = m_tagRepository->dissociate(m_tag, note);
-    installHandler(job, tr("Cannot remove note %1 from tag %2").arg(note->title(), m_tag->name()));
+    installHandler(job, i18n("Cannot remove note %1 from tag %2", note->title(), m_tag->name()));
 }
 
 void TagPageModel::promoteItem(const QModelIndex &)
@@ -117,7 +119,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
         const auto currentTitle = note->title();
         note->setTitle(value.toString());
         const auto job = m_noteRepository->update(note);
-        installHandler(job, tr("Cannot modify note %1 in tag %2").arg(currentTitle, m_tag->name()));
+        installHandler(job, i18n("Cannot modify note %1 in tag %2", currentTitle, m_tag->name()));
         return true;
     };
 

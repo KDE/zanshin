@@ -19,7 +19,7 @@ set(widgets_SRCS
     taskapplicationcomponents.cpp
 )
 
-qt5_wrap_ui(widgets_SRCS
+ki18n_wrap_ui(widgets_SRCS
     editorview.ui
     filterwidget.ui
     newprojectdialog.ui

@@ -27,6 +27,8 @@
 
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "utils/mockobject.h"
 
 #include "presentation/availablenotepagesmodel.h"
@@ -115,8 +117,8 @@ private slots:
         QCOMPARE(model->flags(tag1Index), defaultFlags | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(tag2Index), defaultFlags | Qt::ItemIsDropEnabled);
 
-        QCOMPARE(model->data(inboxIndex).toString(), tr("Inbox"));
-        QCOMPARE(model->data(tagsIndex).toString(), tr("Tags"));
+        QCOMPARE(model->data(inboxIndex).toString(), i18n("Inbox"));
+        QCOMPARE(model->data(tagsIndex).toString(), i18n("Tags"));
         QCOMPARE(model->data(tag1Index).toString(), tag1->name());
         QCOMPARE(model->data(tag2Index).toString(), tag2->name());
 

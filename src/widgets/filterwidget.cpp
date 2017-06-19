@@ -29,6 +29,8 @@
 #include <QLineEdit>
 #include <QToolButton>
 
+#include <KLocalizedString>
+
 #include "presentation/artifactfilterproxymodel.h"
 
 #include "ui_filterwidget.h"
@@ -42,8 +44,8 @@ FilterWidget::FilterWidget(QWidget *parent)
 {
     ui->setupUi(this);
     ui->extension->hide();
-    ui->sortTypeCombo->addItem(tr("Sort by title"), Presentation::ArtifactFilterProxyModel::TitleSort);
-    ui->sortTypeCombo->addItem(tr("Sort by date"), Presentation::ArtifactFilterProxyModel::DateSort);
+    ui->sortTypeCombo->addItem(i18n("Sort by title"), Presentation::ArtifactFilterProxyModel::TitleSort);
+    ui->sortTypeCombo->addItem(i18n("Sort by date"), Presentation::ArtifactFilterProxyModel::DateSort);
     setFocusProxy(ui->filterEdit);
 
     connect(ui->filterEdit, &QLineEdit::textChanged, this, &FilterWidget::onTextChanged);

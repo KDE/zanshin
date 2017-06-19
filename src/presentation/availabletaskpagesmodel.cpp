@@ -27,6 +27,8 @@
 #include <QIcon>
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
 #include "domain/projectqueries.h"
@@ -137,7 +139,7 @@ void AvailableTaskPagesModel::addProject(const QString &name, const Domain::Data
     auto project = Domain::Project::Ptr::create();
     project->setName(name);
     const auto job = m_projectRepository->create(project, source);
-    installHandler(job, tr("Cannot add project %1 in dataSource %2").arg(name, source->name()));
+    installHandler(job, i18n("Cannot add project %1 in dataSource %2", name, source->name()));
 }
 
 void AvailableTaskPagesModel::addContext(const QString &name)
@@ -145,7 +147,7 @@ void AvailableTaskPagesModel::addContext(const QString &name)
     auto context = Domain::Context::Ptr::create();
     context->setName(name);
     const auto job = m_contextRepository->create(context);
-    installHandler(job, tr("Cannot add context %1").arg(name));
+    installHandler(job, i18n("Cannot add context %1", name));
 }
 
 void AvailableTaskPagesModel::addTag(const QString &)
@@ -158,10 +160,10 @@ void AvailableTaskPagesModel::removeItem(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     if (auto project = object.objectCast<Domain::Project>()) {
         const auto job = m_projectRepository->remove(project);
-        installHandler(job, tr("Cannot remove project %1").arg(project->name()));
+        installHandler(job, i18n("Cannot remove project %1", project->name()));
     } else if (auto context = object.objectCast<Domain::Context>()) {
         const auto job = m_contextRepository->remove(context);
-        installHandler(job, tr("Cannot remove context %1").arg(context->name()));
+        installHandler(job, i18n("Cannot remove context %1", context->name()));
     } else {
         Q_ASSERT(false);
     }
@@ -170,13 +172,13 @@ void AvailableTaskPagesModel::removeItem(const QModelIndex &index)
 QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
 {
     m_inboxObject = QObjectPtr::create();
-    m_inboxObject->setProperty("name", tr("Inbox"));
+    m_inboxObject->setProperty("name", i18n("Inbox"));
     m_workdayObject = QObjectPtr::create();
-    m_workdayObject->setProperty("name", tr("Workday"));
+    m_workdayObject->setProperty("name", i18n("Workday"));
     m_projectsObject = QObjectPtr::create();
-    m_projectsObject->setProperty("name", tr("Projects"));
+    m_projectsObject->setProperty("name", i18n("Projects"));
     m_contextsObject = QObjectPtr::create();
-    m_contextsObject->setProperty("name", tr("Contexts"));
+    m_contextsObject->setProperty("name", i18n("Contexts"));
 
     m_rootsProvider = Domain::QueryResultProvider<QObjectPtr>::Ptr::create();
     m_rootsProvider->append(m_inboxObject);
@@ -263,12 +265,12 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
             const auto currentName = project->name();
             project->setName(value.toString());
             const auto job = m_projectRepository->update(project);
-            installHandler(job, tr("Cannot modify project %1").arg(currentName));
+            installHandler(job, i18n("Cannot modify project %1", currentName));
         } else if (auto context = object.objectCast<Domain::Context>()) {
             const auto currentName = context->name();
             context->setName(value.toString());
             const auto job = m_contextRepository->update(context);
-            installHandler(job, tr("Cannot modify context %1").arg(currentName));
+            installHandler(job, i18n("Cannot modify context %1", currentName));
         } else {
             Q_ASSERT(false);
         }
@@ -287,7 +289,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
         if (auto project = object.objectCast<Domain::Project>()) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 const auto job = m_projectRepository->associate(project, droppedArtifact);
-                installHandler(job, tr("Cannot add %1 to project %2").arg(droppedArtifact->title(), project->name()));
+                installHandler(job, i18n("Cannot add %1 to project %2", droppedArtifact->title(), project->name()));
             }
             return true;
         } else if (auto context = object.objectCast<Domain::Context>()) {
@@ -300,18 +302,18 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto task = droppedArtifact.staticCast<Domain::Task>();
                 const auto job = m_contextRepository->associate(context, task);
-                installHandler(job, tr("Cannot add %1 to context %2").arg(task->title(), context->name()));
+                installHandler(job, i18n("Cannot add %1 to context %2", task->title(), context->name()));
             }
             return true;
         } else if (object == m_inboxObject) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 const auto job = m_projectRepository->dissociate(droppedArtifact);
-                installHandler(job, tr("Cannot move %1 to Inbox").arg(droppedArtifact->title()));
+                installHandler(job, i18n("Cannot move %1 to Inbox", droppedArtifact->title()));
 
                 if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
                     Utils::JobHandler::install(job, [this, task] {
                         const auto dissociateJob = m_taskRepository->dissociateAll(task);
-                        installHandler(dissociateJob, tr("Cannot move task %1 to Inbox").arg(task->title()));
+                        installHandler(dissociateJob, i18n("Cannot move task %1 to Inbox", task->title()));
                     });
                 }
             }
@@ -324,7 +326,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
                     task->setStartDate(Utils::DateTime::currentDateTime());
                     const auto job = m_taskRepository->update(task);
 
-                    installHandler(job, tr("Cannot update task %1 to Workday").arg(task->title()));
+                    installHandler(job, i18n("Cannot update task %1 to Workday", task->title()));
                 }
             }
             return true;

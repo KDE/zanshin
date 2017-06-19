@@ -26,6 +26,8 @@
 
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "presentation/querytreemodel.h"
 
 using namespace Presentation;
@@ -44,7 +46,7 @@ Domain::Artifact::Ptr NoteInboxPageModel::addItem(const QString &title, const QM
     auto note = Domain::Note::Ptr::create();
     note->setTitle(title);
     const auto job = m_noteRepository->create(note);
-    installHandler(job, tr("Cannot add note %1 in Inbox").arg(title));
+    installHandler(job, i18n("Cannot add note %1 in Inbox", title));
 
     return note;
 }
@@ -56,7 +58,7 @@ void NoteInboxPageModel::removeItem(const QModelIndex &index)
     auto note = artifact.objectCast<Domain::Note>();
     Q_ASSERT(note);
     const auto job = m_noteRepository->remove(note);
-    installHandler(job, tr("Cannot remove note %1 from Inbox").arg(note->title()));
+    installHandler(job, i18n("Cannot remove note %1 from Inbox", note->title()));
 }
 
 void NoteInboxPageModel::promoteItem(const QModelIndex &)
@@ -96,7 +98,7 @@ QAbstractItemModel *NoteInboxPageModel::createCentralListModel()
         const auto currentTitle = note->title();
         note->setTitle(value.toString());
         const auto job = m_noteRepository->update(note);
-        installHandler(job, tr("Cannot modify note %1 in Inbox").arg(currentTitle));
+        installHandler(job, i18n("Cannot modify note %1 in Inbox", currentTitle));
         return true;
     };
 

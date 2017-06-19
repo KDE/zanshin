@@ -24,6 +24,8 @@
 
 #include "akonaditaskrepository.h"
 
+#include <KLocalizedString>
+
 #include <AkonadiCore/Item>
 
 #include "akonadicollectionfetchjobinterface.h"
@@ -66,7 +68,7 @@ KJob *TaskRepository::createItem(const Item &item)
                     && (c.rights() & Akonadi::Collection::CanDeleteItem);
             });
             if (it == collections.constEnd()) {
-                job->emitError(tr("Could not find a collection to store the task into!"));
+                job->emitError(i18n("Could not find a collection to store the task into!"));
             } else {
                 auto col = *it;
                 Q_ASSERT(col.isValid());
@@ -216,8 +218,9 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
             auto relatedUid = m_serializer->relatedUidFromItem(parentItem);
             while (!relatedUid.isEmpty()) {
                 if (relatedUid == childUid) {
-                    job->emitError(tr("Could not associate '%1', it is an ancestor of '%2'")
-                                   .arg(child->title(), parent->title()));
+                    job->emitError(i18n("Could not associate '%1', it is an ancestor of '%2'",
+                                        child->title(),
+                                        parent->title()));
                     return;
                 }
 

@@ -24,6 +24,8 @@
 
 #include "akonadinoterepository.h"
 
+#include <KLocalizedString>
+
 #include <AkonadiCore/Item>
 
 #include "akonadicollectionfetchjobinterface.h"
@@ -96,7 +98,7 @@ KJob *NoteRepository::createItem(const Item &item)
                     && (c.rights() & Akonadi::Collection::CanDeleteItem);
             });
             if (it == collections.constEnd()) {
-                job->emitError(tr("Could not find a collection to store the note into!"));
+                job->emitError(i18n("Could not find a collection to store the note into!"));
             } else {
                 auto col = *it;
                 Q_ASSERT(col.isValid());

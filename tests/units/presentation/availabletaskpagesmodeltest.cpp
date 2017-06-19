@@ -27,6 +27,8 @@
 
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "utils/mockobject.h"
 #include "utils/datetime.h"
 
@@ -152,12 +154,12 @@ private slots:
         QCOMPARE(model->flags(context1Index), defaultFlags | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(context2Index), defaultFlags | Qt::ItemIsDropEnabled);
 
-        QCOMPARE(model->data(inboxIndex).toString(), tr("Inbox"));
-        QCOMPARE(model->data(workdayIndex).toString(), tr("Workday"));
-        QCOMPARE(model->data(projectsIndex).toString(), tr("Projects"));
+        QCOMPARE(model->data(inboxIndex).toString(), i18n("Inbox"));
+        QCOMPARE(model->data(workdayIndex).toString(), i18n("Workday"));
+        QCOMPARE(model->data(projectsIndex).toString(), i18n("Projects"));
         QCOMPARE(model->data(project1Index).toString(), project1->name());
         QCOMPARE(model->data(project2Index).toString(), project2->name());
-        QCOMPARE(model->data(contextsIndex).toString(), tr("Contexts"));
+        QCOMPARE(model->data(contextsIndex).toString(), i18n("Contexts"));
         QCOMPARE(model->data(context1Index).toString(), context1->name());
         QCOMPARE(model->data(context2Index).toString(), context2->name());
 

@@ -49,6 +49,7 @@
 
 int main(int argc, char **argv)
 {
+    KLocalizedString::setApplicationDomain("zanshin");
     QApplication app(argc, argv);
     App::initializeDependencies();
 
@@ -70,15 +71,15 @@ int main(int argc, char **argv)
     layout->addWidget(components->pageView());
     widget->setLayout(layout);
 
-    auto sourcesDock = new QDockWidget(QObject::tr("Sources"));
+    auto sourcesDock = new QDockWidget(i18n("Sources"));
     sourcesDock->setObjectName(QStringLiteral("sourcesDock"));
     sourcesDock->setWidget(components->availableSourcesView());
 
-    auto pagesDock = new QDockWidget(QObject::tr("Pages"));
+    auto pagesDock = new QDockWidget(i18n("Pages"));
     pagesDock->setObjectName(QStringLiteral("pagesDock"));
     pagesDock->setWidget(components->availablePagesView());
 
-    auto editorDock = new QDockWidget(QObject::tr("Editor"));
+    auto editorDock = new QDockWidget(i18n("Editor"));
     editorDock->setObjectName(QStringLiteral("editorDock"));
     editorDock->setWidget(components->editorView());
 

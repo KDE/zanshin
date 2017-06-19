@@ -27,6 +27,8 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 
+#include <KLocalizedString>
+
 #include "domain/note.h"
 #include "domain/task.h"
 
@@ -234,7 +236,7 @@ private slots:
         editor.setModel(&model);
 
         // THEN
-        auto expectedText = tr("Delegated to: <b>%1</b>").arg(model.property("delegateText").toString());
+        auto expectedText = i18n("Delegated to: <b>%1</b>", model.property("delegateText").toString());
         QVERIFY(delegateLabel->isVisibleTo(&editor));
         QCOMPARE(delegateLabel->text(), expectedText);
     }
@@ -377,7 +379,7 @@ private slots:
         QCOMPARE(startDateEdit->date(), QDate::currentDate());
         QCOMPARE(dueDateEdit->date(), QDate::currentDate().addDays(2));
         QVERIFY(doneButton->isChecked());
-        auto expectedText = tr("Delegated to: <b>%1</b>").arg(QStringLiteral("John Doe"));
+        auto expectedText = i18n("Delegated to: <b>%1</b>", QStringLiteral("John Doe"));
         QCOMPARE(delegateLabel->text(), expectedText);
 
     }
@@ -622,7 +624,7 @@ private slots:
         model.setDelegateText(QStringLiteral("John Smith"));
 
         // THEN
-        auto expectedText = tr("Delegated to: <b>%1</b>").arg(model.property("delegateText").toString());
+        auto expectedText = i18n("Delegated to: <b>%1</b>", model.property("delegateText").toString());
         QCOMPARE(delegateLabel->text(), expectedText);
     }
 

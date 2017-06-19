@@ -26,6 +26,8 @@
 
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "domain/noterepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
@@ -57,7 +59,7 @@ Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title, const QMod
         task->setStartDate(Utils::DateTime::currentDateTime());
     const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
                    : m_taskRepository->create(task);
-    installHandler(job, tr("Cannot add task %1 in Workday").arg(title));
+    installHandler(job, i18n("Cannot add task %1 in Workday", title));
 
     return task;
 }
@@ -69,7 +71,7 @@ void WorkdayPageModel::removeItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     if (task) {
         const auto job = m_taskRepository->remove(task);
-        installHandler(job, tr("Cannot remove task %1 from Workday").arg(task->title()));
+        installHandler(job, i18n("Cannot remove task %1 from Workday", task->title()));
     }
 }
 
@@ -80,7 +82,7 @@ void WorkdayPageModel::promoteItem(const QModelIndex &index)
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->promoteToProject(task);
-    installHandler(job, tr("Cannot promote task %1 to be a project").arg(task->title()));
+    installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
 }
 
 QAbstractItemModel *WorkdayPageModel::createCentralListModel()
@@ -132,7 +134,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
                 task->setDone(value.toInt() == Qt::Checked);
 
             const auto job = m_taskRepository->update(task);
-            installHandler(job, tr("Cannot modify task %1 in Workday").arg(currentTitle));
+            installHandler(job, i18n("Cannot modify task %1 in Workday", currentTitle));
             return true;
         }
 
@@ -161,15 +163,15 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
 
             if (parentTask) {
                 const auto job = m_taskRepository->associate(parentTask, childTask);
-                installHandler(job, tr("Cannot move task %1 as sub-task of %2").arg(childTask->title(), parentTask->title()));
+                installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTask->title()));
             } else {
                 childTask->setStartDate(Utils::DateTime::currentDateTime());
 
                 auto job = m_taskRepository->update(childTask);
-                installHandler(job, tr("Cannot update task %1").arg(childTask->title()));
+                installHandler(job, i18n("Cannot update task %1", childTask->title()));
 
                 job = m_taskRepository->dissociate(childTask);
-                installHandler(job, tr("Cannot deparent task %1 from its parent").arg(childTask->title()));
+                installHandler(job, i18n("Cannot deparent task %1 from its parent", childTask->title()));
             }
         }
 

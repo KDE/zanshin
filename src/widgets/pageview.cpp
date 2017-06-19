@@ -34,6 +34,7 @@
 #include <QMessageBox>
 #include <QTimer>
 
+#include <KLocalizedString>
 #include <KMessageWidget>
 
 #include "filterwidget.h"
@@ -150,7 +151,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->setStyleSheet(QStringLiteral("QTreeView::branch { border-image: url(none.png); }"));
 
     m_quickAddEdit->setObjectName(QStringLiteral("quickAddEdit"));
-    m_quickAddEdit->setPlaceholderText(tr("Type and press enter to add an item"));
+    m_quickAddEdit->setPlaceholderText(i18n("Type and press enter to add an item"));
     connect(m_quickAddEdit, &QLineEdit::returnPressed, this, &PageView::onReturnPressed);
 
     auto layout = new QVBoxLayout;
@@ -165,7 +166,7 @@ PageView::PageView(QWidget *parent)
 
     auto addItemAction = new QAction(this);
     addItemAction->setObjectName(QStringLiteral("addItemAction"));
-    addItemAction->setText(tr("New Item"));
+    addItemAction->setText(i18n("New Item"));
     addItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
     connect(addItemAction, &QAction::triggered, this, &PageView::onAddItemRequested);
@@ -178,7 +179,7 @@ PageView::PageView(QWidget *parent)
 
     auto removeItemAction = new QAction(this);
     removeItemAction->setObjectName(QStringLiteral("removeItemAction"));
-    removeItemAction->setText(tr("Remove Item"));
+    removeItemAction->setText(i18n("Remove Item"));
     removeItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     removeItemAction->setShortcut(Qt::Key_Delete);
     connect(removeItemAction, &QAction::triggered, this, &PageView::onRemoveItemRequested);
@@ -186,13 +187,13 @@ PageView::PageView(QWidget *parent)
 
     auto promoteItemAction = new QAction(this);
     promoteItemAction->setObjectName(QStringLiteral("promoteItemAction"));
-    promoteItemAction->setText(tr("Promote Item as Project"));
+    promoteItemAction->setText(i18n("Promote Item as Project"));
     promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
     connect(promoteItemAction, &QAction::triggered, this, &PageView::onPromoteItemRequested);
 
     auto filterViewAction = new QAction(this);
     filterViewAction->setObjectName(QStringLiteral("filterViewAction"));
-    filterViewAction->setText(tr("Filter..."));
+    filterViewAction->setText(i18n("Filter..."));
     filterViewAction->setIcon(QIcon::fromTheme(QStringLiteral("edit-find")));
     filterViewAction->setShortcut(Qt::CTRL | Qt::Key_F);
     filterViewAction->setCheckable(true);
@@ -201,7 +202,7 @@ PageView::PageView(QWidget *parent)
     m_runTaskAction = new QAction(this);
     m_runTaskAction->setObjectName(QStringLiteral("runTaskAction"));
     m_runTaskAction->setShortcut(Qt::CTRL | Qt::Key_Space);
-    m_runTaskAction->setText(tr("Start Now"));
+    m_runTaskAction->setText(i18n("Start Now"));
     m_runTaskAction->setIcon(QIcon::fromTheme(QStringLiteral("media-playback-start")));
     connect(m_runTaskAction, &QAction::triggered, this, &PageView::onRunTaskTriggered);
     updateRunTaskAction();
@@ -315,7 +316,7 @@ void PageView::onAddItemRequested()
     const auto editTopLeft = m_quickAddEdit->geometry().topLeft();
     const auto pos = mapToGlobal(editTopLeft);
     auto popup = new PassivePopup(m_quickAddEdit);
-    popup->setText(tr("Type and press enter to add an item"));
+    popup->setText(i18n("Type and press enter to add an item"));
     popup->show();
     popup->move(pos - QPoint(0, popup->height()));
 
@@ -343,9 +344,9 @@ void PageView::onRemoveItemRequested()
         }
 
         if (hasDescendants)
-            text = tr("Do you really want to delete the selected items and their children?");
+            text = i18n("Do you really want to delete the selected items and their children?");
         else
-            text = tr("Do you really want to delete the selected items?");
+            text = i18n("Do you really want to delete the selected items?");
 
     } else {
         const QModelIndex &currentIndex = currentIndexes.first();
@@ -353,11 +354,11 @@ void PageView::onRemoveItemRequested()
             return;
 
         if (currentIndex.model()->rowCount(currentIndex) > 0)
-            text = tr("Do you really want to delete the selected task and all its children?");
+            text = i18n("Do you really want to delete the selected task and all its children?");
     }
 
     if (!text.isEmpty()) {
-        QMessageBox::Button button = m_messageBoxInterface->askConfirmation(this, tr("Delete Tasks"), text);
+        QMessageBox::Button button = m_messageBoxInterface->askConfirmation(this, i18n("Delete Tasks"), text);
         bool canRemove = (button == QMessageBox::Yes);
 
         if (!canRemove)

@@ -27,6 +27,8 @@
 #include <QIcon>
 #include <QMimeData>
 
+#include <KLocalizedString>
+
 #include "presentation/availablepagessortfilterproxymodel.h"
 #include "presentation/noteinboxpagemodel.h"
 #include "presentation/querytreemodel.h"
@@ -117,7 +119,7 @@ void AvailableNotePagesModel::addTag(const QString &name)
     auto tag = Domain::Tag::Ptr::create();
     tag->setName(name);
     const auto job = m_tagRepository->create(tag);
-    installHandler(job, tr("Cannot add tag %1").arg(name));
+    installHandler(job, i18n("Cannot add tag %1", name));
 }
 
 void AvailableNotePagesModel::removeItem(const QModelIndex &index)
@@ -125,7 +127,7 @@ void AvailableNotePagesModel::removeItem(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     if (auto tag = object.objectCast<Domain::Tag>()) {
         const auto job = m_tagRepository->remove(tag);
-        installHandler(job, tr("Cannot remove tag %1").arg(tag->name()));
+        installHandler(job, i18n("Cannot remove tag %1", tag->name()));
     } else {
         Q_ASSERT(false);
     }
@@ -134,9 +136,9 @@ void AvailableNotePagesModel::removeItem(const QModelIndex &index)
 QAbstractItemModel *AvailableNotePagesModel::createPageListModel()
 {
     m_inboxObject = QObjectPtr::create();
-    m_inboxObject->setProperty("name", tr("Inbox"));
+    m_inboxObject->setProperty("name", i18n("Inbox"));
     m_tagsObject = QObjectPtr::create();
-    m_tagsObject->setProperty("name", tr("Tags"));
+    m_tagsObject->setProperty("name", i18n("Tags"));
 
     m_rootsProvider = Domain::QueryResultProvider<QObjectPtr>::Ptr::create();
     m_rootsProvider->append(m_inboxObject);
@@ -234,14 +236,14 @@ QAbstractItemModel *AvailableNotePagesModel::createPageListModel()
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto note = droppedArtifact.staticCast<Domain::Note>();
                 const auto job = m_tagRepository->associate(tag, note);
-                installHandler(job, tr("Cannot tag %1 with %2").arg(note->title(), tag->name()));
+                installHandler(job, i18n("Cannot tag %1 with %2", note->title(), tag->name()));
             }
             return true;
         } else if (object == m_inboxObject) {
             foreach (const auto &droppedArtifact, droppedArtifacts) {
                 auto note = droppedArtifact.staticCast<Domain::Note>();
                 const auto job = m_tagRepository->dissociateAll(note);
-                installHandler(job, tr("Cannot move %1 to Inbox").arg(note->title()));
+                installHandler(job, i18n("Cannot move %1 to Inbox", note->title()));
             }
             return true;
         }

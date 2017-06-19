@@ -71,6 +71,7 @@ find_package(KF5 REQUIRED COMPONENTS
     Runner
     Wallet
     WindowSystem
+    I18n
 )
 find_package(KF5Akonadi "5.1" CONFIG REQUIRED)
 

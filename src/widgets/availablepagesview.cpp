@@ -32,6 +32,8 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
+#include <KLocalizedString>
+
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
@@ -65,25 +67,25 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     actionBar->setIconSize(QSize(16, 16));
 
     m_addProjectAction->setObjectName(QStringLiteral("addProjectAction"));
-    m_addProjectAction->setText(tr("New Project"));
+    m_addProjectAction->setText(i18n("New Project"));
     m_addProjectAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
     connect(m_addProjectAction, &QAction::triggered, this, &AvailablePagesView::onAddProjectTriggered);
     actionBar->addAction(m_addProjectAction);
 
     m_addContextAction->setObjectName(QStringLiteral("addContextAction"));
-    m_addContextAction->setText(tr("New Context"));
+    m_addContextAction->setText(i18n("New Context"));
     m_addContextAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-notes")));
     connect(m_addContextAction, &QAction::triggered, this, &AvailablePagesView::onAddContextTriggered);
     actionBar->addAction(m_addContextAction);
 
     m_addTagAction->setObjectName(QStringLiteral("addTagAction"));
-    m_addTagAction->setText(tr("New Tag"));
+    m_addTagAction->setText(i18n("New Tag"));
     m_addTagAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
     connect(m_addTagAction, &QAction::triggered, this, &AvailablePagesView::onAddTagTriggered);
     actionBar->addAction(m_addTagAction);
 
     m_removeAction->setObjectName(QStringLiteral("removeAction"));
-    m_removeAction->setText(tr("Remove Page"));
+    m_removeAction->setText(i18n("Remove Page"));
     m_removeAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     connect(m_removeAction, &QAction::triggered, this, &AvailablePagesView::onRemoveTriggered);
     actionBar->addAction(m_removeAction);
@@ -112,21 +114,21 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
 
     auto goPreviousAction = new QAction(this);
     goPreviousAction->setObjectName(QStringLiteral("goPreviousAction"));
-    goPreviousAction->setText(tr("Previous Page"));
+    goPreviousAction->setText(i18n("Previous Page"));
     goPreviousAction->setIcon(QIcon::fromTheme(QStringLiteral("go-up")));
     goPreviousAction->setShortcut(Qt::ALT | Qt::Key_Up);
     connect(goPreviousAction, &QAction::triggered, this, &AvailablePagesView::onGoPreviousTriggered);
 
     auto goNextAction = new QAction(this);
     goNextAction->setObjectName(QStringLiteral("goNextAction"));
-    goNextAction->setText(tr("Next Page"));
+    goNextAction->setText(i18n("Next Page"));
     goNextAction->setIcon(QIcon::fromTheme(QStringLiteral("go-down")));
     goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
     connect(goNextAction, &QAction::triggered, this, &AvailablePagesView::onGoNextTriggered);
 
     auto goToAction = new QAction(this);
     goToAction->setObjectName(QStringLiteral("goToAction"));
-    goToAction->setText(tr("Go to Page..."));
+    goToAction->setText(i18n("Go to Page..."));
     goToAction->setShortcut(Qt::Key_J);
     connect(goToAction, &QAction::triggered, this, &AvailablePagesView::onGoToTriggered);
 
@@ -255,7 +257,7 @@ void AvailablePagesView::onAddProjectTriggered()
 
 void AvailablePagesView::onAddContextTriggered()
 {
-    const QString name = m_messageBoxInterface->askTextInput(this, tr("Add Context"), tr("Context name"));
+    const QString name = m_messageBoxInterface->askTextInput(this, i18n("Add Context"), i18n("Context name"));
     if (!name.isEmpty()) {
         QMetaObject::invokeMethod(m_model, "addContext",
                                   Q_ARG(QString, name));
@@ -264,7 +266,7 @@ void AvailablePagesView::onAddContextTriggered()
 
 void AvailablePagesView::onAddTagTriggered()
 {
-    const QString name = m_messageBoxInterface->askTextInput(this, tr("Add Tag"), tr("Tag name"));
+    const QString name = m_messageBoxInterface->askTextInput(this, i18n("Add Tag"), i18n("Tag name"));
     if (!name.isEmpty()) {
         QMetaObject::invokeMethod(m_model, "addTag",
                                   Q_ARG(QString, name));
@@ -285,14 +287,14 @@ void AvailablePagesView::onRemoveTriggered()
         return;
     }
     if (Domain::Project::Ptr project = object.objectCast<Domain::Project>()) {
-        title = tr("Delete Project");
-        text = tr("Do you really want to delete the project '%1', with all its actions?").arg(project->name());
+        title = i18n("Delete Project");
+        text = i18n("Do you really want to delete the project '%1', with all its actions?", project->name());
     } else if (Domain::Context::Ptr context = object.objectCast<Domain::Context>()) {
-        title = tr("Delete Context");
-        text = tr("Do you really want to delete the context '%1'?").arg(context->name());
+        title = i18n("Delete Context");
+        text = i18n("Do you really want to delete the context '%1'?", context->name());
     } else if (Domain::Tag::Ptr tag = object.objectCast<Domain::Tag>()) {
-        title = tr("Delete Tag");
-        text = tr("Do you really want to delete the tag '%1'?").arg(tag->name());
+        title = i18n("Delete Tag");
+        text = i18n("Do you really want to delete the tag '%1'?", tag->name());
     } else {
         qFatal("Unrecognized object type");
         return;

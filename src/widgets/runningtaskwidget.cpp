@@ -23,11 +23,14 @@
 
 #include "runningtaskwidget.h"
 #include "runningtaskmodelinterface.h"
+
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+
+#include <KLocalizedString>
 #include <KWindowSystem>
 
 using namespace Widgets;
@@ -47,7 +50,7 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     KWindowSystem::setOnAllDesktops(winId(), true);
     KWindowSystem::setState(winId(), NET::KeepAbove | NET::SkipTaskbar | NET::SkipPager);
 
-    setWindowTitle(tr("Zanshin Running Task Banner"));
+    setWindowTitle(i18n("Zanshin Running Task Banner"));
 
     // Current idea for a good background color:
     // the selection color, i.e. usually blue. Arguable ;)
@@ -57,11 +60,11 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     setAutoFillBackground(true);
 
     m_stopButton->setObjectName(QStringLiteral("stopButton"));
-    m_stopButton->setText(tr("Stop"));
+    m_stopButton->setText(i18n("Stop"));
     connect(m_stopButton, &QAbstractButton::clicked, this, &RunningTaskWidget::onTaskRunStopped);
 
     m_doneButton->setObjectName(QStringLiteral("doneButton"));
-    m_doneButton->setText(tr("Done"));
+    m_doneButton->setText(i18n("Done"));
     connect(m_doneButton, &QAbstractButton::clicked, this, &RunningTaskWidget::onTaskRunDone);
 
     m_layout->setContentsMargins(0, 0, 0, 0);

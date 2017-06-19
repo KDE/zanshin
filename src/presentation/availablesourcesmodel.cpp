@@ -26,6 +26,8 @@
 
 #include <QIcon>
 
+#include <KLocalizedString>
+
 #include "domain/datasourcequeries.h"
 #include "domain/datasourcerepository.h"
 
@@ -112,7 +114,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
 
         source->setSelected(value.toInt() == Qt::Checked);
         const auto job = m_dataSourceRepository->update(source);
-        installHandler(job, tr("Cannot modify source %1").arg(source->name()));
+        installHandler(job, i18n("Cannot modify source %1", source->name()));
         return true;
     };
 

@@ -67,8 +67,8 @@ void Messaging::sendDelegationMessage(Item item)
                    Utils::mem_fn(&KIdentityManagement::Identity::fullEmailAddr));
     const auto defaultIndex = emails.indexOf(identities.defaultIdentity().fullEmailAddr());
     const auto email = QInputDialog::getItem(window,
-                                             QObject::tr("Choose an identity"),
-                                             QObject::tr("Choose the identity to use for the groupware message"),
+                                             i18n("Choose an identity"),
+                                             i18n("Choose the identity to use for the groupware message"),
                                              emails,
                                              defaultIndex,
                                              false);

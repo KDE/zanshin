@@ -28,6 +28,8 @@
 #include <QPainter>
 #include <QStyleOptionViewItem>
 
+#include <KLocalizedString>
+
 #include "domain/note.h"
 #include "domain/task.h"
 #include "presentation/querytreemodelbase.h"
@@ -108,7 +110,7 @@ void ItemDelegate::paint(QPainter *painter,
                             : onDueDate ? QColor("orange")
                             : baseColor;
 
-    const auto summaryText = taskDelegate.isValid() ? tr("(%1) %2").arg(taskDelegate.display(), opt.text) : opt.text;
+    const auto summaryText = taskDelegate.isValid() ? i18n("(%1) %2", taskDelegate.display(), opt.text) : opt.text;
     const auto dueDateText = dueDate.isValid() ? QLocale().toString(dueDate.date(), QLocale::ShortFormat)
                                                : QString();
 

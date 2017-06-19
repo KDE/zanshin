@@ -25,8 +25,6 @@
 
 #include "quickselectdialog.h"
 
-#include <KRecursiveFilterProxyModel>
-
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QHeaderView>
@@ -34,6 +32,9 @@
 #include <QLabel>
 #include <QTreeView>
 #include <QVBoxLayout>
+
+#include <KLocalizedString>
+#include <KRecursiveFilterProxyModel>
 
 using namespace Widgets;
 
@@ -44,9 +45,9 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
       m_label(new QLabel(this)),
       m_tree(new QTreeView(this))
 {
-    setWindowTitle(tr("Quick Select Dialog"));
+    setWindowTitle(i18n("Quick Select Dialog"));
 
-    m_label->setText(tr("You can start typing to filter the list of available pages"));
+    m_label->setText(i18n("You can start typing to filter the list of available pages"));
     m_filterProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     m_tree->setModel(m_filterProxyModel);
@@ -84,9 +85,9 @@ QPersistentModelIndex QuickSelectDialog::selectedIndex() const
 void QuickSelectDialog::applyFilterChanged(const QString &textFilter)
 {
     if (textFilter.isEmpty())
-        m_label->setText(tr("You can start typing to filter the list of available pages"));
+        m_label->setText(i18n("You can start typing to filter the list of available pages"));
     else
-        m_label->setText(tr("Path: %1").arg(textFilter));
+        m_label->setText(i18n("Path: %1", textFilter));
 
     m_filterProxyModel->setFilterFixedString(textFilter);
     m_tree->expandAll();

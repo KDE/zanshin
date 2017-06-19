@@ -33,6 +33,8 @@
 #include <QWidget>
 #include <QWidgetAction>
 
+#include <KLocalizedString>
+
 #include "availablepagesview.h"
 #include "availablesourcesview.h"
 #include "editorview.h"
@@ -57,7 +59,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
 
     auto moveItemAction = new QAction(this);
     moveItemAction->setObjectName(QStringLiteral("moveItemAction"));
-    moveItemAction->setText(tr("Move Item"));
+    moveItemAction->setText(i18n("Move Item"));
     moveItemAction->setShortcut(Qt::Key_M);
     connect(moveItemAction, &QAction::triggered, this, &ApplicationComponents::onMoveItemsRequested);
 
