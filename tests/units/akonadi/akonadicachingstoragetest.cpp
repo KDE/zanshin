@@ -196,7 +196,7 @@ private slots:
         QFETCH(int, contentTypesInt);
         const auto contentTypes = Akonadi::StorageInterface::FetchContentTypes(contentTypesInt);
         auto job = storage.fetchCollections(rootCollection, fetchDepth, contentTypes);
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
         const auto toCollectionNames = [](const Akonadi::Collection::List &collections) {
@@ -229,7 +229,7 @@ private slots:
         data.storageBehavior().setFetchCollectionsBehavior(rootCollection.id(), AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchCollectionsErrorCode(rootCollection.id(), 128);
         job = storage.fetchCollections(rootCollection, fetchDepth, contentTypes);
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
             const auto collectionFetchNames = [job, toCollectionNames]{
@@ -267,7 +267,7 @@ private slots:
 
         // WHEN
         auto job = storage.fetchItems(Akonadi::Collection(42));
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
@@ -298,7 +298,7 @@ private slots:
         data.storageBehavior().setFetchItemsBehavior(42, AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchItemsErrorCode(42, 128);
         job = storage.fetchItems(Akonadi::Collection(42));
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
             const auto itemFetchIds = [job, toItemIds]{
@@ -336,7 +336,7 @@ private slots:
 
         // WHEN
         auto job = storage.fetchItem(Akonadi::Item(44));
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
@@ -360,12 +360,12 @@ private slots:
 
         // WHEN (if collection is populated, shouldn't hit the original storage)
         job = storage.fetchItems(Akonadi::Collection(43));
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         data.storageBehavior().setFetchItemBehavior(44, AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchItemErrorCode(44, 128);
         job = storage.fetchItem(Akonadi::Item(44));
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
             const auto itemFetchIds = [job, toItemIds]{
@@ -401,7 +401,7 @@ private slots:
 
         // WHEN
         auto job = storage.fetchTagItems(Akonadi::Tag(43));
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
@@ -432,7 +432,7 @@ private slots:
         data.storageBehavior().setFetchTagItemsBehavior(43, AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchTagItemsErrorCode(43, 128);
         job = storage.fetchTagItems(Akonadi::Tag(43));
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
             const auto itemFetchIds = [job, toItemIds]{
@@ -463,7 +463,7 @@ private slots:
 
         // WHEN
         auto job = storage.fetchTags();
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
         const auto toTagNames = [](const Akonadi::Tag::List &tags) {
@@ -495,7 +495,7 @@ private slots:
         data.storageBehavior().setFetchTagsBehavior(AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchTagsErrorCode(128);
         job = storage.fetchTags();
-        QVERIFY2(job->kjob()->exec(), job->kjob()->errorString().toUtf8().constData());
+        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
             const auto tagFetchNames = [job, toTagNames]{
