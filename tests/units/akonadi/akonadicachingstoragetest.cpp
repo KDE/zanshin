@@ -201,6 +201,7 @@ private slots:
         // THEN
         const auto toCollectionNames = [](const Akonadi::Collection::List &collections) {
             auto res = QStringList();
+            res.reserve(collections.size());
             std::transform(collections.cbegin(), collections.cend(),
                            std::back_inserter(res),
                            std::mem_fn(&Akonadi::Collection::name));
@@ -271,6 +272,7 @@ private slots:
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
             auto res = QVector<Akonadi::Item::Id>();
+            res.reserve(items.size());
             std::transform(items.cbegin(), items.cend(),
                            std::back_inserter(res),
                            std::mem_fn(&Akonadi::Item::id));
@@ -339,6 +341,7 @@ private slots:
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
             auto res = QVector<Akonadi::Item::Id>();
+            res.reserve(items.size());
             std::transform(items.cbegin(), items.cend(),
                            std::back_inserter(res),
                            std::mem_fn(&Akonadi::Item::id));
@@ -403,6 +406,7 @@ private slots:
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
             auto res = QVector<Akonadi::Item::Id>();
+            res.reserve(items.size());
             std::transform(items.cbegin(), items.cend(),
                            std::back_inserter(res),
                            std::mem_fn(&Akonadi::Item::id));
@@ -464,6 +468,7 @@ private slots:
         // THEN
         const auto toTagNames = [](const Akonadi::Tag::List &tags) {
             auto res = QStringList();
+            res.reserve(tags.size());
             std::transform(tags.cbegin(), tags.cend(),
                            std::back_inserter(res),
                            std::mem_fn(&Akonadi::Tag::name));
