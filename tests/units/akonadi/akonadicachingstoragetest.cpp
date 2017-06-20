@@ -213,15 +213,11 @@ private slots:
         QFETCH(QStringList, expectedCachedNames);
 
         {
-            const auto collectionFetchNames = [job, toCollectionNames]{
-                return toCollectionNames(job->collections());
-            }();
+            const auto collectionFetchNames = toCollectionNames(job->collections());
             QCOMPARE(collectionFetchNames, expectedFetchNames);
 
-            const auto collectionCachedNames = [cache, toCollectionNames]{
-                const auto collections = cache->collections(Akonadi::StorageInterface::AllContent);
-                return toCollectionNames(collections);
-            }();
+            const auto collections = cache->collections(Akonadi::StorageInterface::AllContent);
+            const auto collectionCachedNames = toCollectionNames(collections);
             QCOMPARE(collectionCachedNames, expectedCachedNames);
         }
 
@@ -232,15 +228,11 @@ private slots:
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
-            const auto collectionFetchNames = [job, toCollectionNames]{
-                return toCollectionNames(job->collections());
-            }();
+            const auto collectionFetchNames = toCollectionNames(job->collections());
             QCOMPARE(collectionFetchNames, expectedFetchNames);
 
-            const auto collectionCachedNames = [cache, toCollectionNames]{
-                const auto collections = cache->collections(Akonadi::StorageInterface::AllContent);
-                return toCollectionNames(collections);
-            }();
+            const auto collections = cache->collections(Akonadi::StorageInterface::AllContent);
+            const auto collectionCachedNames = toCollectionNames(collections);
             QCOMPARE(collectionCachedNames, expectedCachedNames);
         }
     }
@@ -282,15 +274,11 @@ private slots:
 
         auto expectedIds = QVector<Akonadi::Item::Id>() << 42 << 45 << 52;
         {
-            const auto itemFetchIds = [job, toItemIds]{
-                return toItemIds(job->items());
-            }();
+            const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
 
-            const auto itemCachedIds = [cache, toItemIds]{
-                const auto items = cache->items(Akonadi::Collection(42));
-                return toItemIds(items);
-            }();
+            const auto items = cache->items(Akonadi::Collection(42));
+            const auto itemCachedIds = toItemIds(items);
             QCOMPARE(itemCachedIds, expectedIds);
         }
 
@@ -301,15 +289,11 @@ private slots:
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
-            const auto itemFetchIds = [job, toItemIds]{
-                return toItemIds(job->items());
-            }();
+            const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
 
-            const auto itemCachedIds = [cache, toItemIds]{
-                const auto items = cache->items(Akonadi::Collection(42));
-                return toItemIds(items);
-            }();
+            const auto items = cache->items(Akonadi::Collection(42));
+            const auto itemCachedIds = toItemIds(items);
             QCOMPARE(itemCachedIds, expectedIds);
         }
     }
@@ -351,9 +335,7 @@ private slots:
 
         auto expectedIds = QVector<Akonadi::Item::Id>() << 44;
         {
-            const auto itemFetchIds = [job, toItemIds]{
-                return toItemIds(job->items());
-            }();
+            const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
             QVERIFY(!cache->item(44).isValid());
         }
@@ -368,9 +350,7 @@ private slots:
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
-            const auto itemFetchIds = [job, toItemIds]{
-                return toItemIds(job->items());
-            }();
+            const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
             QVERIFY(cache->item(44).isValid());
         }
@@ -416,15 +396,11 @@ private slots:
 
         auto expectedIds = QVector<Akonadi::Item::Id>() << 45 << 48 << 50 << 52;
         {
-            const auto itemFetchIds = [job, toItemIds]{
-                return toItemIds(job->items());
-            }();
+            const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
 
-            const auto itemCachedIds = [cache, toItemIds]{
-                const auto items = cache->items(Akonadi::Tag(43));
-                return toItemIds(items);
-            }();
+            const auto items = cache->items(Akonadi::Tag(43));
+            const auto itemCachedIds = toItemIds(items);
             QCOMPARE(itemCachedIds, expectedIds);
         }
 
@@ -435,15 +411,11 @@ private slots:
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
-            const auto itemFetchIds = [job, toItemIds]{
-                return toItemIds(job->items());
-            }();
+            const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
 
-            const auto itemCachedIds = [cache, toItemIds]{
-                const auto items = cache->items(Akonadi::Tag(43));
-                return toItemIds(items);
-            }();
+            const auto items = cache->items(Akonadi::Tag(43));
+            const auto itemCachedIds = toItemIds(items);
             QCOMPARE(itemCachedIds, expectedIds);
         }
     }
@@ -479,15 +451,11 @@ private slots:
         auto expectedNames = QStringList() << "42Plain" << "43Context" << "44Plain";
 
         {
-            const auto tagFetchNames = [job, toTagNames]{
-                return toTagNames(job->tags());
-            }();
+            const auto tagFetchNames = toTagNames(job->tags());
             QCOMPARE(tagFetchNames, expectedNames);
 
-            const auto tagCachedNames = [cache, toTagNames]{
-                const auto tags = cache->tags();
-                return toTagNames(tags);
-            }();
+            const auto tags = cache->tags();
+            const auto tagCachedNames = toTagNames(tags);
             QCOMPARE(tagCachedNames, expectedNames);
         }
 
@@ -498,15 +466,11 @@ private slots:
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
-            const auto tagFetchNames = [job, toTagNames]{
-                return toTagNames(job->tags());
-            }();
+            const auto tagFetchNames = toTagNames(job->tags());
             QCOMPARE(tagFetchNames, expectedNames);
 
-            const auto tagCachedNames = [cache, toTagNames]{
-                const auto tags = cache->tags();
-                return toTagNames(tags);
-            }();
+            const auto tags = cache->tags();
+            const auto tagCachedNames = toTagNames(tags);
             QCOMPARE(tagCachedNames, expectedNames);
         }
     }
