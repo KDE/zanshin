@@ -26,6 +26,8 @@
 
 #include <QApplication>
 
+#include <AkonadiWidgets/ControlGui>
+
 #include "akonadiconfigdialog.h"
 
 using namespace Akonadi;
@@ -48,4 +50,9 @@ void DataSourceRepository::showConfigDialog()
 {
     ConfigDialog dialog(qApp->activeWindow());
     dialog.exec();
+}
+
+void DataSourceRepository::windowNeedsDataBackend(QWidget *window)
+{
+    Akonadi::ControlGui::widgetNeedsAkonadi(window);
 }

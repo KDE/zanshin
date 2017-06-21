@@ -44,7 +44,9 @@ public:
                          const SerializerInterface::Ptr &serializer);
 
     KJob *update(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
+
     void showConfigDialog() Q_DECL_OVERRIDE;
+    void windowNeedsDataBackend(QWidget *window) Q_DECL_OVERRIDE;
 
 private:
     StorageInterface::Ptr m_storage;

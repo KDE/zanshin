@@ -41,6 +41,8 @@
 
 #include "presentation/applicationmodel.h"
 
+#include "utils/dependencymanager.h"
+
 #include "aboutdata.h"
 #include "dependencies.h"
 
@@ -108,6 +110,12 @@ int main(int argc, char **argv)
                    | KXmlGuiWindow::Save
                    | KXmlGuiWindow::Create);
     window->show();
+
+    {
+        auto &deps = Utils::DependencyManager::globalInstance();
+        auto repo = deps.create<Domain::DataSourceRepository>();
+        repo->windowNeedsDataBackend(window);
+    }
 
     return app.exec();
 }
