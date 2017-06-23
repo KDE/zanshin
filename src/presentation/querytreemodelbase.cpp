@@ -232,6 +232,11 @@ QStringList QueryTreeModelBase::mimeTypes() const
                                            << QStringLiteral("application/x-zanshin-indexes");
 }
 
+Qt::DropActions QueryTreeModelBase::supportedDragActions() const
+{
+    return Qt::MoveAction;
+}
+
 Qt::DropActions QueryTreeModelBase::supportedDropActions() const
 {
     return Qt::MoveAction;
