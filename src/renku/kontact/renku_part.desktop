@@ -1,5 +1,23 @@
 [Desktop Entry]
 Name=Renku Part
+Name[ca]=Part del Renku
+Name[ca@valencia]=Part del Renku
+Name[de]=Renku Part
+Name[en_GB]=Renku Part
+Name[es]=Parte Renku
+Name[fi]=Renku-osa
+Name[gl]=Parte de Renku
+Name[it]=Componente di Renku
+Name[nl]=Gedeelte voor Renku
+Name[pl]=Moduł Renku
+Name[pt]=Componente do Renku
+Name[pt_BR]=Componente do Renku
+Name[sk]=Časť Renku
+Name[sv]=Renku-delprogram
+Name[tr]=Renku Kısmı
+Name[uk]=Модуль Renku
+Name[x-test]=xxRenku Partxx
+Name[zh_CN]=Renku 组件
 X-KDE-ServiceTypes=KParts/ReadOnlyPart
 X-KDE-Library=renku_part
 Type=Service
