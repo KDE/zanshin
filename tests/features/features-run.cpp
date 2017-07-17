@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 
     QProcess cukeSteps;
     cukeSteps.setProcessChannelMode(QProcess::ForwardedChannels);
-    cukeSteps.start(QStringLiteral(CUKE_STEPS));
+    cukeSteps.start(QStringLiteral(CUKE_STEPS), QStringList());
 
     if (!cukeSteps.waitForStarted()) {
         qWarning() << "Couldn't start the cuke steps server, exiting...";
