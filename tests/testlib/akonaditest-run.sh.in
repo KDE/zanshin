@@ -1,9 +1,9 @@
 #! /bin/sh
 
-_pwd=$PWD
+_pwd="$PWD"
 
 restorepwd() {
-	cd $_pwd
+	cd "$_pwd"
 }
 
 trap "restorepwd" EXIT
@@ -18,6 +18,6 @@ echo
 KNUT_RESOURCE="org.freedesktop.Akonadi.Resource.akonadi_knut_resource_0.$AKONADI_INSTANCE"
 qdbus $KNUT_RESOURCE / org.freedesktop.Akonadi.Resource.synchronize
 
-cd @AKONADITEST_CWD@
-@zanshin-testcommand@
+cd "@AKONADITEST_CWD@"
+"@zanshin-testcommand@" 2>&1
 exit $?

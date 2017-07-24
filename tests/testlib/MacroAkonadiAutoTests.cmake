@@ -24,7 +24,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
     find_program(_testrunner akonaditest)
 
     set(AKONADITEST_CWD "${CMAKE_CURRENT_SOURCE_DIR}")
-    set(zanshin-testcommand "${_executable} 2>&1")
+    set(zanshin-testcommand "${_executable}")
     configure_file(${_akonaditest_source_dir}/akonaditest-run.sh.in ${_prefixed_testname}-run.sh)
 
     set(akonaditest-run-cmd "${_testrunner}" -c "${CMAKE_CURRENT_SOURCE_DIR}/testenv/config.xml"
