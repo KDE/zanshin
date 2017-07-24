@@ -180,7 +180,7 @@ void EditorView::onTextOrTitleChanged()
 {
     const auto title = m_model->property("title").toString();
     const auto text = m_model->property("text").toString();
-    const auto fullText = title + '\n' + text;
+    const auto fullText = QString(title + '\n' + text);
 
     if (ui->textEdit->toPlainText() != fullText) // QPlainTextEdit doesn't do this check
         ui->textEdit->setPlainText(fullText);
