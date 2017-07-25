@@ -64,7 +64,8 @@ void App::initializeDependencies()
     deps.add<Domain::ContextQueries,
              Akonadi::ContextQueries(Akonadi::StorageInterface*,
                                      Akonadi::SerializerInterface*,
-                                     Akonadi::MonitorInterface*)>();
+                                     Akonadi::MonitorInterface*,
+                                     Akonadi::Cache*)>();
 
     deps.add<Domain::ContextRepository,
              Akonadi::ContextRepository(Akonadi::StorageInterface*,

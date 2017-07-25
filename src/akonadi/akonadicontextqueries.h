@@ -27,6 +27,7 @@
 
 #include "domain/contextqueries.h"
 
+#include "akonadi/akonadicache.h"
 #include "akonadi/akonadilivequeryhelpers.h"
 #include "akonadi/akonadilivequeryintegrator.h"
 
@@ -49,7 +50,8 @@ public:
 
     ContextQueries(const StorageInterface::Ptr &storage,
                    const SerializerInterface::Ptr &serializer,
-                   const MonitorInterface::Ptr &monitor);
+                   const MonitorInterface::Ptr &monitor,
+                   const Cache::Ptr &cache);
 
 
     ContextResult::Ptr findAll() const Q_DECL_OVERRIDE;
@@ -57,6 +59,7 @@ public:
 
 private:
     SerializerInterface::Ptr m_serializer;
+    Cache::Ptr m_cache;
     LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
 
