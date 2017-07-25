@@ -69,6 +69,16 @@ QString Serializer::objectUid(SerializerInterface::QObjectPtr object)
     return object->property("todoUid").toString();
 }
 
+QString Serializer::itemUid(const Item &item)
+{
+    if (isTaskItem(item)) {
+        const auto todo = item.payload<KCalCore::Todo::Ptr>();
+        return todo->uid();
+    } else {
+        return QString();
+    }
+}
+
 Domain::DataSource::Ptr Serializer::createDataSourceFromCollection(Collection collection, DataSourceNameScheme naming)
 {
     if (!collection.isValid())

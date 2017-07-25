@@ -132,6 +132,47 @@ private slots:
         QCOMPARE(serializer.objectUid(object), QStringLiteral("my-uid"));
     }
 
+    void shouldKnowTaskItemUid_data()
+    {
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<QString>("expectedUid");
+
+        Akonadi::Item item1;
+        KCalCore::Todo::Ptr todo1(new KCalCore::Todo);
+        todo1->setUid(QString());
+        item1.setPayload<KCalCore::Todo::Ptr>(todo1);
+
+        Akonadi::Item item2;
+        KCalCore::Todo::Ptr todo2(new KCalCore::Todo);
+        todo2->setUid(QStringLiteral("1"));
+        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+
+        Akonadi::Item item3;
+        KMime::Message::Ptr message(new KMime::Message);
+        message->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
+        message->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
+        item3.setMimeType(Akonadi::NoteUtils::noteMimeType());
+        item3.setPayload<KMime::Message::Ptr>(message);
+
+        QTest::newRow("task without uid") << item1 << QString();
+        QTest::newRow("task with uid") << item2 << "1";
+        QTest::newRow("note") << item3 << QString();
+    }
+
+    void shouldKnowTaskItemUid()
+    {
+        // GIVEN
+        QFETCH(Akonadi::Item, item);
+        QFETCH(QString, expectedUid);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        QString uid = serializer.itemUid(item);
+
+        // THEN
+        QCOMPARE(uid, expectedUid);
+    }
+
     void shouldCreateDataSourceFromCollection_data()
     {
         QTest::addColumn<QString>("name");

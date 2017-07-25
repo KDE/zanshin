@@ -43,6 +43,7 @@ public:
     bool representsAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) const Q_DECL_OVERRIDE;
 
     QString objectUid(QObjectPtr object) Q_DECL_OVERRIDE;
+    QString itemUid(const Item &item) Q_DECL_OVERRIDE;
 
     Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection, DataSourceNameScheme naming) Q_DECL_OVERRIDE;
     void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection, DataSourceNameScheme naming) Q_DECL_OVERRIDE;

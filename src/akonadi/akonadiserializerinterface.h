@@ -58,6 +58,7 @@ public:
     virtual bool representsAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) const = 0;
 
     virtual QString objectUid(QObjectPtr object) = 0;
+    virtual QString itemUid(const Item &item) = 0;
 
     virtual Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection, DataSourceNameScheme naming) = 0;
     virtual void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection, DataSourceNameScheme naming) = 0;
