@@ -111,7 +111,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
     }
 
     auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
-    auto predicate = [this] (const Akonadi::Item &item) {
+    auto isWorkdayItem = [this] (const Akonadi::Item &item) {
         if (!m_serializer->isTaskItem(item))
             return false;
 
@@ -130,6 +130,30 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
             return todayDoneDate;
         else
             return pastStartDate || pastDueDate;
+    };
+    auto predicate = [this, isWorkdayItem] (const Akonadi::Item &item) {
+        if (!isWorkdayItem(item))
+            return false;
+
+        const auto items = m_cache->items(item.parentCollection());
+        auto currentItem = item;
+        auto parentUid = m_serializer->relatedUidFromItem(currentItem);
+        while (!parentUid.isEmpty()) {
+            const auto parent = std::find_if(items.cbegin(), items.cend(),
+                                             [this, parentUid] (const Akonadi::Item &item) {
+                                                 return m_serializer->itemUid(item) == parentUid;
+                                             });
+            if (parent == items.cend())
+                break;
+
+            if (isWorkdayItem(*parent))
+                return false;
+
+            currentItem = *parent;
+            parentUid = m_serializer->relatedUidFromItem(currentItem);
+        }
+
+        return true;
     };
     m_integrator->bind("TaskQueries::findWorkdayTopLevel", m_findWorkdayTopLevel, fetch, predicate);
     return m_findWorkdayTopLevel->result();
