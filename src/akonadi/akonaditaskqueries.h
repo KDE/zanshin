@@ -26,6 +26,7 @@
 
 #include "domain/taskqueries.h"
 
+#include "akonadi/akonadicache.h"
 #include "akonadi/akonadilivequeryhelpers.h"
 #include "akonadi/akonadilivequeryintegrator.h"
 
@@ -49,7 +50,8 @@ public:
 
     TaskQueries(const StorageInterface::Ptr &storage,
                 const SerializerInterface::Ptr &serializer,
-                const MonitorInterface::Ptr &monitor);
+                const MonitorInterface::Ptr &monitor,
+                const Cache::Ptr &cache);
 
     int workdayPollInterval() const;
     void setWorkdayPollInterval(int interval);
@@ -66,6 +68,7 @@ private slots:
 
 private:
     SerializerInterface::Ptr m_serializer;
+    Cache::Ptr m_cache;
     LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
     QTimer *m_workdayPollTimer;

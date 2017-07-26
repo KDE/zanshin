@@ -23,6 +23,7 @@
 
 #include <testlib/qtest_zanshin.h>
 
+#include "akonadi/akonadicachingstorage.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonadiserializer.h"
 
@@ -40,6 +41,12 @@ using namespace Testlib;
 class AkonadiTaskQueriesTest : public QObject
 {
     Q_OBJECT
+private:
+    Akonadi::StorageInterface::Ptr createCachingStorage(AkonadiFakeData &data, const Akonadi::Cache::Ptr &cache)
+    {
+        auto storage = Akonadi::StorageInterface::Ptr(data.createStorage());
+        return Akonadi::StorageInterface::Ptr(new Akonadi::CachingStorage(cache, storage));
+    }
 
 private slots:
     void shouldLookInAllReportedForAllTasks()
@@ -61,7 +68,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findAll();
         result->data();
         result = queries->findAll(); // Should not cause any problem or wrong data
@@ -95,7 +103,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findAll();
 
         // THEN
@@ -116,7 +125,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findAll();
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
@@ -148,7 +158,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findAll();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 3);
@@ -177,7 +188,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findAll();
         // Even though the pointer didn't change it's convenient to user if we call
         // the replace handlers
@@ -221,7 +233,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
         result->data();
@@ -258,7 +271,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task = serializer->createTaskFromItem(data.item(42));
 
         // The bug we're trying to hit here is the following:
@@ -294,7 +308,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
         TestHelpers::waitForEmptyJobQueue();
@@ -335,7 +350,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
 
@@ -378,7 +394,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
         TestHelpers::waitForEmptyJobQueue();
@@ -412,7 +429,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
 
@@ -454,7 +472,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task1 = serializer->createTaskFromItem(data.item(42));
         auto task2 = serializer->createTaskFromItem(data.item(43));
         auto result1 = queries->findChildren(task1);
@@ -495,7 +514,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto task = serializer->createTaskFromItem(data.item(42));
         auto result = queries->findChildren(task);
         TestHelpers::waitForEmptyJobQueue();
@@ -528,7 +548,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         result->data();
         result = queries->findTopLevel(); // Should not cause any problem or wrong data
@@ -552,7 +573,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
@@ -585,7 +607,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
@@ -617,7 +640,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         // Even though the pointer didn't change it's convenient to user if we call
         // the replace handlers
@@ -657,7 +681,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
@@ -690,7 +715,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
@@ -723,7 +749,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
@@ -760,7 +787,8 @@ private slots:
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              serializer,
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
 
         data.storageBehavior().setFetchItemErrorCode(42, KJob::KilledJobError);
 
@@ -808,7 +836,8 @@ private slots:
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
                                                                              serializer,
-                                                                             monitor));
+                                                                             monitor,
+                                                                             Akonadi::Cache::Ptr()));
 
         QFETCH(int, errorCode);
         QFETCH(int, fetchBehavior);
@@ -884,7 +913,8 @@ private slots:
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
                                                                              serializer,
-                                                                             monitor));
+                                                                             monitor,
+                                                                             Akonadi::Cache::Ptr()));
 
         QFETCH(int, colErrorCode);
         QFETCH(int, colFetchBehavior);
@@ -967,7 +997,8 @@ private slots:
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
                                                                              serializer,
-                                                                             monitor));
+                                                                             monitor,
+                                                                             Akonadi::Cache::Ptr()));
 
         QFETCH(int, colErrorCode);
         QFETCH(int, colFetchBehavior);
@@ -1020,7 +1051,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findTopLevel();
         result->data();
         result = queries->findTopLevel(); // Should not cause any problem or wrong data
@@ -1057,7 +1089,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
         result->data();
         result = queries->findInboxTopLevel(); // Should not cause any problem or wrong data
@@ -1090,7 +1123,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
 
         // THEN
@@ -1122,7 +1156,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
 
         // THEN
@@ -1163,7 +1198,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
 
         // THEN
@@ -1203,7 +1239,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
@@ -1240,7 +1277,8 @@ private slots:
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
@@ -1281,7 +1319,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
 
@@ -1323,7 +1362,8 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             Akonadi::Cache::Ptr()));
         auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
@@ -1417,9 +1457,12 @@ private slots:
                                       .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43")));
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(createCachingStorage(data, cache),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
         auto result = queries->findWorkdayTopLevel();
         result->data();
         result = queries->findWorkdayTopLevel(); // Should not cause any problem or wrong data
@@ -1461,9 +1504,12 @@ private slots:
                                  .withStartDate(today.addSecs(3600)));
 
         // WHEN
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(createCachingStorage(data, cache),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
         auto result = queries->findWorkdayTopLevel();
         result->data();
         result = queries->findWorkdayTopLevel(); // Should not cause any problem or wrong data
@@ -1500,9 +1546,12 @@ private slots:
 
         QScopedPointer<Domain::TaskQueries> queries;
         {
-            auto akqueries = new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+            auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+            auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+            auto akqueries = new Akonadi::TaskQueries(createCachingStorage(data, cache),
                                                       Akonadi::Serializer::Ptr(new Akonadi::Serializer),
-                                                      Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+                                                      Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                      cache);
             QCOMPARE(akqueries->workdayPollInterval(), 30000);
             akqueries->setWorkdayPollInterval(500);
             queries.reset(akqueries);

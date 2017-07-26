@@ -32,8 +32,10 @@ using namespace Akonadi;
 
 TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
                          const SerializerInterface::Ptr &serializer,
-                         const MonitorInterface::Ptr &monitor)
+                         const MonitorInterface::Ptr &monitor,
+                         const Cache::Ptr &cache)
     : m_serializer(serializer),
+      m_cache(cache),
       m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor)),
       m_workdayPollTimer(new QTimer(this))

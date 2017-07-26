@@ -94,7 +94,8 @@ void App::initializeDependencies()
     deps.add<Domain::TaskQueries,
              Akonadi::TaskQueries(Akonadi::StorageInterface*,
                                   Akonadi::SerializerInterface*,
-                                  Akonadi::MonitorInterface*)>();
+                                  Akonadi::MonitorInterface*,
+                                  Akonadi::Cache*)>();
 
     deps.add<Domain::TaskRepository,
              Akonadi::TaskRepository(Akonadi::StorageInterface*,
