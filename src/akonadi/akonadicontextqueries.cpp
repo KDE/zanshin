@@ -55,7 +55,28 @@ ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Contex
     Akonadi::Tag tag = m_serializer->createTagFromContext(context);
     auto fetch = m_helpers->fetchItems(tag);
     auto predicate = [this, context] (const Akonadi::Item &item) {
-        return m_serializer->isContextChild(context, item);
+        if (!m_serializer->isContextChild(context, item))
+            return false;
+
+        const auto items = m_cache->items(item.parentCollection());
+        auto currentItem = item;
+        auto parentUid = m_serializer->relatedUidFromItem(currentItem);
+        while (!parentUid.isEmpty()) {
+            const auto parent = std::find_if(items.cbegin(), items.cend(),
+                                             [this, parentUid] (const Akonadi::Item &item) {
+                                                 return m_serializer->itemUid(item) == parentUid;
+                                             });
+            if (parent == items.cend())
+                break;
+
+            if (m_serializer->isContextChild(context, *parent))
+                return false;
+
+            currentItem = *parent;
+            parentUid = m_serializer->relatedUidFromItem(currentItem);
+        }
+
+        return true;
     };
     auto &query = m_findToplevel[tag.id()];
     m_integrator->bind("ContextQueries::findTopLevelTasks", query, fetch, predicate);

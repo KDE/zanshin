@@ -240,6 +240,52 @@ private slots:
         QCOMPARE(result->data().at(1)->title(), QStringLiteral("44"));
     }
 
+    void shouldNotListContextTasksTwiceIfTheyHaveAParentInTheSameContext()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One context tag
+        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+
+        // Five tasks in the collection, two related to context, three not, all forming an ancestry line
+        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withUid("42"));
+        data.createItem(GenTodo().withParent(42).withId(43).withTitle(QStringLiteral("43")).withUid("43").withParentUid("42").withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(44).withTitle(QStringLiteral("44")).withUid("44").withParentUid("43"));
+        data.createItem(GenTodo().withParent(42).withId(45).withTitle(QStringLiteral("45")).withUid("45").withParentUid("44").withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(46).withTitle(QStringLiteral("46")).withUid("46").withParentUid("45"));
+
+        // WHEN
+        auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(createCachingStorage(data, cache),
+                                                                                   Akonadi::Serializer::Ptr(new Akonadi::Serializer),
+                                                                                   Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                                   cache));
+
+        auto context = serializer->createContextFromTag(data.tag(42));
+        auto result = queries->findTopLevelTasks(context);
+        result->data();
+        result = queries->findTopLevelTasks(context); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
+
+        // Should not change anything
+        result = queries->findTopLevelTasks(context);
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
+    }
+
     void shouldReactToItemAddsForTopLevelTask()
     {
         // GIVEN
