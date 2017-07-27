@@ -40,7 +40,6 @@ Comment[sv]=Lägg till uppgifter i uppgiftslistan
 Comment[tr]=Yapılacaklar listenize görev ekler
 Comment[uk]=Додавання завдань до вашого списку
 Comment[x-test]=xxAdd tasks to your todo listxx
-Comment[zh_CN]=添加任务到您的待办事项
 X-KDE-ServiceTypes=Plasma/Runner
 Type=Service
 Icon=zanshin

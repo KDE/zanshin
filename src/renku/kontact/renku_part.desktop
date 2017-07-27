@@ -17,7 +17,6 @@ Name[sv]=Renku-delprogram
 Name[tr]=Renku Kısmı
 Name[uk]=Модуль Renku
 Name[x-test]=xxRenku Partxx
-Name[zh_CN]=Renku 组件
 X-KDE-ServiceTypes=KParts/ReadOnlyPart
 X-KDE-Library=renku_part
 Type=Service
