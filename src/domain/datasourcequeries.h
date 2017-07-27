@@ -27,6 +27,7 @@
 #include <QObject>
 
 #include "datasource.h"
+#include "project.h"
 #include "queryresult.h"
 
 namespace Domain {
@@ -67,6 +68,7 @@ private:
 public:
     virtual QueryResult<DataSource::Ptr>::Ptr findTopLevel() const = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findChildren(DataSource::Ptr source) const = 0;
+    virtual QueryResult<Project::Ptr>::Ptr findProjects(DataSource::Ptr source) const = 0;
 };
 
 }

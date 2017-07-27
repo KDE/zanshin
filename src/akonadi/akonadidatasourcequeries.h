@@ -41,6 +41,11 @@ public:
     typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
+    typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
+    typedef Domain::LiveQueryOutput<Domain::Project::Ptr> ProjectQueryOutput;
+    typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
+    typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
+
     DataSourceQueries(StorageInterface::FetchContentTypes contentTypes,
                       const StorageInterface::Ptr &storage,
                       const SerializerInterface::Ptr &serializer,
@@ -53,6 +58,7 @@ private:
 public:
     DataSourceResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
+    ProjectResult::Ptr findProjects(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
 private:
     CollectionInputQuery::PredicateFunction createFetchPredicate(const Collection &root) const;
@@ -64,6 +70,7 @@ private:
 
     mutable DataSourceQueryOutput::Ptr m_findTopLevel;
     mutable QHash<Akonadi::Collection::Id, DataSourceQueryOutput::Ptr> m_findChildren;
+    mutable QHash<Akonadi::Collection::Id, ProjectQueryOutput::Ptr> m_findProjects;
 };
 
 }

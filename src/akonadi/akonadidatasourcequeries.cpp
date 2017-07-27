@@ -81,6 +81,19 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
     return query->result();
 }
 
+DataSourceQueries::ProjectResult::Ptr DataSourceQueries::findProjects(Domain::DataSource::Ptr source) const
+{
+    Collection root = m_serializer->createCollectionFromDataSource(source);
+    auto &query = m_findProjects[root.id()];
+    auto fetch = m_helpers->fetchItems(root);
+    auto predicate = [this, root] (const Akonadi::Item &item) {
+        return root == item.parentCollection()
+            && m_serializer->isProjectItem(item);
+    };
+    m_integrator->bind("DataSourceQueries::findProjects", query, fetch, predicate);
+    return query->result();
+}
+
 DataSourceQueries::CollectionInputQuery::PredicateFunction DataSourceQueries::createFetchPredicate(const Collection &root) const
 {
     return [this, root] (const Collection &collection) {

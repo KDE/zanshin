@@ -32,6 +32,7 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
+#include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
 
 using namespace Testlib;
@@ -584,6 +585,185 @@ private slots:
         QVERIFY(result->data().isEmpty());
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 0);
+    }
+
+    void shouldLookInCollectionForProjects()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // Two top level collections
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
+
+        // One project in the first collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+
+        // Two projects in the second collection
+        data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")).asProject());
+        data.createItem(GenTodo().withId(44).withParent(43).withTitle(QStringLiteral("44")).asProject());
+
+        // WHEN
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        Domain::DataSource::Ptr dataSource1 = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
+        auto result1 = queries->findProjects(dataSource1);
+        result1->data();
+        result1 = queries->findProjects(dataSource1); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result1->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result1->data().size(), 1);
+        QCOMPARE(result1->data().at(0)->name(), QStringLiteral("42"));
+
+        // WHEN
+        Domain::DataSource::Ptr dataSource2 = serializer->createDataSourceFromCollection(data.collection(43), Akonadi::SerializerInterface::BaseName);
+        auto result2 = queries->findProjects(dataSource2);
+        result2->data();
+        result2 = queries->findProjects(dataSource2); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result2->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result1->data().size(), 1);
+        QCOMPARE(result1->data().at(0)->name(), QStringLiteral("42"));
+
+        QCOMPARE(result2->data().size(), 2);
+        QCOMPARE(result2->data().at(0)->name(), QStringLiteral("43"));
+        QCOMPARE(result2->data().at(1)->name(), QStringLiteral("44"));
+    }
+
+    void shouldIgnoreItemsWhichAreNotProjects()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One project and one regular task in the collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
+
+        // WHEN
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        Domain::DataSource::Ptr dataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
+        auto result = queries->findProjects(dataSource);
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+    }
+
+    void shouldReactToItemAddsForProjectsOnly()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One empty collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        Domain::DataSource::Ptr dataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
+        auto result = queries->findProjects(dataSource);
+        TestHelpers::waitForEmptyJobQueue();
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
+
+        // THEN
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+    }
+
+    void shouldReactToItemRemovesForProjects()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Three projects in the collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")).asProject());
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44")).asProject());
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        Domain::DataSource::Ptr dataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
+        auto result = queries->findProjects(dataSource);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 3);
+
+        // WHEN
+        data.removeItem(Akonadi::Item(43));
+
+        // THEN
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44"));
+    }
+
+    void shouldReactToItemChangesForProjects()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Three projects in the collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).asProject());
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")).asProject());
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44")).asProject());
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         serializer,
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        Domain::DataSource::Ptr dataSource = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
+        auto result = queries->findProjects(dataSource);
+        // Even though the pointer didn't change it's convenient to user if we call
+        // the replace handlers
+        bool replaceHandlerCalled = false;
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Project::Ptr &, int) {
+                                          replaceHandlerCalled = true;
+                                      });
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 3);
+
+        // WHEN
+        data.modifyItem(GenTodo(data.item(43)).withTitle(QStringLiteral("43bis")));
+
+        // THEN
+        QCOMPARE(result->data().size(), 3);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43bis"));
+        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44"));
+        QVERIFY(replaceHandlerCalled);
     }
 };
 
