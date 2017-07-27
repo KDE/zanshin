@@ -376,6 +376,79 @@ private slots:
         QCOMPARE(result, expected);
     }
 
+    void shouldFetchItemsByCollection_data()
+    {
+        QTest::addColumn<Akonadi::Collection>("collection");
+
+        QTest::newRow("first collection") << Akonadi::Collection(42);
+        QTest::newRow("second collection") << Akonadi::Collection(43);
+    }
+
+    void shouldFetchItemsByCollection()
+    {
+        // GIVEN
+        auto data = AkonadiFakeData();
+        auto helpers = createHelpers(data);
+
+        // Two top level collections with tasks
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43")).withTaskContent());
+
+        // Two items in each collection
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
+        data.createItem(GenTodo().withId(44).withParent(43).withTitle(QStringLiteral("44")));
+        data.createItem(GenTodo().withId(45).withParent(43).withTitle(QStringLiteral("45")));
+
+        // The list which will be filled by the fetch function
+        auto items = Akonadi::Item::List();
+        auto add = [&items] (const Akonadi::Item &item) {
+            items.append(item);
+        };
+
+        // WHEN
+        QFETCH(Akonadi::Collection, collection);
+        auto fetch = helpers->fetchItems(collection);
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        auto result = QStringList();
+        std::transform(items.constBegin(), items.constEnd(),
+                       std::back_inserter(result),
+                       titleFromItem);
+        result.sort();
+
+        // THEN
+        auto expected = QStringList();
+
+        switch (collection.id()) {
+        case 42:
+            expected << QStringLiteral("42") << QStringLiteral("43");
+            break;
+        case 43:
+            expected << QStringLiteral("44") << QStringLiteral("45");
+            break;
+        }
+        QVERIFY(!expected.isEmpty());
+
+        expected.sort();
+        QCOMPARE(result, expected);
+
+        // WHEN (should not crash when the helpers object is deleted)
+        helpers.clear();
+        items.clear();
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        result.clear();
+        std::transform(items.constBegin(), items.constEnd(),
+                       std::back_inserter(result),
+                       titleFromItem);
+        result.sort();
+        QCOMPARE(result, expected);
+    }
+
     void shouldFetchItemsByTag_data()
     {
         QTest::addColumn<Akonadi::Tag>("tag");

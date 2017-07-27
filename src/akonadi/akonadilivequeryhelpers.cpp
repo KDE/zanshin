@@ -107,6 +107,21 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(StorageInterfac
     };
 }
 
+LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Collection &collection) const
+{
+    auto storage = m_storage;
+    return [storage, collection] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
+        auto job = storage->fetchItems(collection);
+        Utils::JobHandler::install(job->kjob(), [job, add] {
+            if (job->kjob()->error() != KJob::NoError)
+                return;
+
+            foreach (const auto &item, job->items())
+                add(item);
+        });
+    };
+}
+
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Tag &tag) const
 {
     // TODO: Qt5, use the proper implementation once we got a working akonadi

@@ -47,6 +47,7 @@ public:
     CollectionFetchFunction fetchCollections(const Collection &root, StorageInterface::FetchContentTypes contentTypes) const;
 
     ItemFetchFunction fetchItems(StorageInterface::FetchContentTypes contentTypes) const;
+    ItemFetchFunction fetchItems(const Collection &collection) const;
     ItemFetchFunction fetchItems(const Tag &tag) const;
 
     ItemFetchFunction fetchSiblings(const Item &item) const;
