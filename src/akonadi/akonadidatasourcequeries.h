@@ -58,6 +58,7 @@ private:
 public:
     DataSourceResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
     DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findAllSelected() const Q_DECL_OVERRIDE;
     ProjectResult::Ptr findProjects(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
 
 private:
@@ -70,6 +71,7 @@ private:
 
     mutable DataSourceQueryOutput::Ptr m_findTopLevel;
     mutable QHash<Akonadi::Collection::Id, DataSourceQueryOutput::Ptr> m_findChildren;
+    mutable DataSourceQueryOutput::Ptr m_findAllSelected;
     mutable QHash<Akonadi::Collection::Id, ProjectQueryOutput::Ptr> m_findProjects;
 };
 

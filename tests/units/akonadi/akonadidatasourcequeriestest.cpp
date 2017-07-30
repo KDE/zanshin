@@ -587,6 +587,213 @@ private slots:
         QCOMPARE(result->data().size(), 0);
     }
 
+    void shouldLookInAllReportedForSelectedSources_data()
+    {
+        QTest::addColumn<int>("contentTypes");
+        QTest::addColumn<QStringList>("expectedNames");
+
+        auto expectedNames = QStringList();
+        expectedNames << QStringLiteral("43Task") << QStringLiteral("45Note");
+        QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expectedNames;
+
+        expectedNames.clear();
+        expectedNames << QStringLiteral("43Task");
+        QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks) << expectedNames;
+
+        expectedNames.clear();
+        expectedNames << QStringLiteral("45Note");
+        QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes) << expectedNames;
+    }
+
+    void shouldLookInAllReportedForSelectedSources()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // Two top level collections, one with tasks, one with notes and two child collections
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent().selected(false));
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Task")).withParent(42).withTaskContent().selected(true));
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
+
+        // WHEN
+        QFETCH(int, contentTypes);
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::FetchContentTypes(contentTypes),
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAllSelected();
+        result->data();
+        result = queries->findAllSelected(); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        const auto sources = result->data();
+        auto actualNames = QStringList();
+        std::transform(sources.constBegin(), sources.constEnd(),
+                       std::back_inserter(actualNames),
+                       [] (const Domain::DataSource::Ptr &source) { return source->name(); });
+        actualNames.sort();
+
+        QFETCH(QStringList, expectedNames);
+        expectedNames.sort();
+        QCOMPARE(actualNames, expectedNames);
+    }
+
+    void shouldReactToCollectionAddsForSelectedSources()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAllSelected();
+        TestHelpers::waitForEmptyJobQueue();
+        QVERIFY(result->data().isEmpty());
+
+        // WHEN
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent().selected(false));
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Task")).withParent(42).withTaskContent().selected(true));
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
+
+        // THEN
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43Task"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("45Note"));
+    }
+
+    void shouldReactToCollectionRemovesForSelectedSources()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // Two top level collections and two child collections
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent().selected(false));
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Task")).withParent(42).withTaskContent().selected(true));
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAllSelected();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        data.removeCollection(Akonadi::Collection(43));
+        data.removeCollection(Akonadi::Collection(45));
+
+        // THEN
+        QCOMPARE(result->data().size(), 0);
+    }
+
+    void shouldReactToCollectionChangesForSelectedSources()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // Two top level collections and one child collection
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent().selected(false));
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Task")).withParent(42).withTaskContent().selected(true));
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAllSelected();
+
+        bool replaceHandlerCalled = false;
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::DataSource::Ptr &, int) {
+                                          replaceHandlerCalled = true;
+                                      });
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 2);
+
+        // WHEN
+        data.modifyCollection(GenCollection(data.collection(43)).withName(QStringLiteral("43TaskBis")));
+        data.modifyCollection(GenCollection(data.collection(45)).withName(QStringLiteral("45NoteBis")));
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43TaskBis"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("45NoteBis"));
+        QVERIFY(replaceHandlerCalled);
+    }
+
+    void shouldNotCrashDuringFindAllSelectedWhenFetchJobFailedOrEmpty_data()
+    {
+        QTest::addColumn<int>("colErrorCode");
+        QTest::addColumn<int>("colFetchBehavior");
+        QTest::addColumn<bool>("deleteQuery");
+
+        QTest::newRow("No error with empty collection list") << int(KJob::NoError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                             << false;
+
+        QTest::newRow("No error with empty collection list (+ query delete)") << int(KJob::NoError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                             << true;
+
+        QTest::newRow("Error with empty collection list") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                          << false;
+
+        QTest::newRow("Error with empty collection list (+ query delete)") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::EmptyFetch)
+                                                          << true;
+
+        QTest::newRow("Error with collection list") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::NormalFetch)
+                                                    << false;
+
+        QTest::newRow("Error with collection list (+ query delete)") << int(KJob::KilledJobError) << int(AkonadiFakeStorageBehavior::NormalFetch)
+                                                    << true;
+    }
+
+    void shouldNotCrashDuringFindAllSelectedWhenFetchJobFailedOrEmpty()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // Two top level collections and two child collections
+        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Task")).withRootAsParent().withTaskContent().selected(false));
+        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Task")).withParent(42).withTaskContent().selected(true));
+        data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
+        data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
+
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+                                                                                         Akonadi::StorageInterface::Ptr(data.createStorage()),
+                                                                                         Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
+                                                                                         Akonadi::MonitorInterface::Ptr(data.createMonitor())));
+        QFETCH(int, colErrorCode);
+        QFETCH(int, colFetchBehavior);
+        data.storageBehavior().setFetchCollectionsErrorCode(Akonadi::Collection::root().id(), colErrorCode);
+        data.storageBehavior().setFetchCollectionsBehavior(Akonadi::Collection::root().id(),
+                                                           AkonadiFakeStorageBehavior::FetchBehavior(colFetchBehavior));
+
+        QFETCH(bool, deleteQuery);
+
+        // WHEN
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAllSelected();
+
+        if (deleteQuery)
+            delete queries.take();
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 0);
+    }
+
     void shouldLookInCollectionForProjects()
     {
         // GIVEN

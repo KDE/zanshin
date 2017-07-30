@@ -68,6 +68,7 @@ private:
 public:
     virtual QueryResult<DataSource::Ptr>::Ptr findTopLevel() const = 0;
     virtual QueryResult<DataSource::Ptr>::Ptr findChildren(DataSource::Ptr source) const = 0;
+    virtual QueryResult<DataSource::Ptr>::Ptr findAllSelected() const = 0;
     virtual QueryResult<Project::Ptr>::Ptr findProjects(DataSource::Ptr source) const = 0;
 };
 

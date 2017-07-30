@@ -81,6 +81,16 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
     return query->result();
 }
 
+DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findAllSelected() const
+{
+    auto fetch = m_helpers->fetchAllCollections(m_contentTypes);
+    auto predicate = [this] (const Akonadi::Collection &collection) {
+        return collection.isValid() && m_serializer->isSelectedCollection(collection);
+    };
+    m_integrator->bind("DataSourceQueries::findAllSelected", m_findAllSelected, fetch, predicate);
+    return m_findAllSelected->result();
+}
+
 DataSourceQueries::ProjectResult::Ptr DataSourceQueries::findProjects(Domain::DataSource::Ptr source) const
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
