@@ -180,6 +180,12 @@ void AvailablePagesView::setModel(QObject *model)
         disconnect(m_pagesView->selectionModel(), Q_NULLPTR, this, Q_NULLPTR);
     }
 
+    if (m_pagesView->model()) {
+        disconnect(m_pagesView->model(), &QAbstractItemModel::rowsInserted, m_pagesView, &QTreeView::expand);
+        disconnect(m_pagesView->model(), &QAbstractItemModel::layoutChanged, m_pagesView, &QTreeView::expandAll);
+        disconnect(m_pagesView->model(), &QAbstractItemModel::modelReset, m_pagesView, &QTreeView::expandAll);
+    }
+
     m_pagesView->setModel(Q_NULLPTR);
 
     m_model = model;
@@ -194,8 +200,13 @@ void AvailablePagesView::setModel(QObject *model)
     m_addTagAction->setVisible(m_model->property("hasTagPages").toBool());
 
     QVariant modelProperty = m_model->property("pageListModel");
-    if (modelProperty.canConvert<QAbstractItemModel*>())
+    if (modelProperty.canConvert<QAbstractItemModel*>()) {
         m_pagesView->setModel(modelProperty.value<QAbstractItemModel*>());
+
+        connect(m_pagesView->model(), &QAbstractItemModel::rowsInserted, m_pagesView, &QTreeView::expand);
+        connect(m_pagesView->model(), &QAbstractItemModel::layoutChanged, m_pagesView, &QTreeView::expandAll);
+        connect(m_pagesView->model(), &QAbstractItemModel::modelReset, m_pagesView, &QTreeView::expandAll);
+    }
 
     connect(m_pagesView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &AvailablePagesView::onCurrentChanged);
