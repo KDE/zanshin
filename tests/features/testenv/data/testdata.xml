@@ -329,6 +329,7 @@ END:VCALENDAR</payload>
         </item>
         <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{c9a13610-a9f6-433d-96f2-3b8fdb728fe5}" name="Calendar3">
           <attribute type="AccessRights">a</attribute>
+          <attribute type="ZanshinSelected">false</attribute>
         </collection>
       </collection>
     </collection>
