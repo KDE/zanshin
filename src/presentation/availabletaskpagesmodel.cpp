@@ -48,7 +48,8 @@
 
 using namespace Presentation;
 
-AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ProjectQueries::Ptr &projectQueries,
+AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
+                                                 const Domain::ProjectQueries::Ptr &projectQueries,
                                                  const Domain::ProjectRepository::Ptr &projectRepository,
                                                  const Domain::ContextQueries::Ptr &contextQueries,
                                                  const Domain::ContextRepository::Ptr &contextRepository,
@@ -58,6 +59,7 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::ProjectQueries::P
     : AvailablePagesModelInterface(parent),
       m_pageListModel(Q_NULLPTR),
       m_sortProxyModel(Q_NULLPTR),
+      m_dataSourceQueries(dataSourceQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
       m_contextQueries(contextQueries),
@@ -190,9 +192,11 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
         if (!object)
             return Domain::QueryResult<QObjectPtr>::create(m_rootsProvider);
         else if (object == m_projectsObject)
-            return Domain::QueryResult<Domain::Project::Ptr, QObjectPtr>::copy(m_projectQueries->findAll());
+            return Domain::QueryResult<Domain::DataSource::Ptr, QObjectPtr>::copy(m_dataSourceQueries->findAllSelected());
         else if (object == m_contextsObject)
             return Domain::QueryResult<Domain::Context::Ptr, QObjectPtr>::copy(m_contextQueries->findAll());
+        else if (const auto source = object.objectCast<Domain::DataSource>())
+            return Domain::QueryResult<Domain::Project::Ptr, QObjectPtr>::copy(m_dataSourceQueries->findProjects(source));
         else
             return Domain::QueryResult<QObjectPtr>::Ptr();
     };
@@ -226,7 +230,8 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
          && (object == m_inboxObject
           || object == m_workdayObject
           || object == m_projectsObject
-          || object == m_contextsObject)) {
+          || object == m_contextsObject
+          || object.objectCast<Domain::DataSource>())) {
             return QVariant();
         }
 
@@ -237,6 +242,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
                                    : (object == m_workdayObject)  ? QStringLiteral("go-jump-today")
                                    : (object == m_projectsObject) ? QStringLiteral("folder")
                                    : (object == m_contextsObject) ? QStringLiteral("folder")
+                                   : object.objectCast<Domain::DataSource>() ? QStringLiteral("folder")
                                    : object.objectCast<Domain::Context>() ? QStringLiteral("view-pim-notes")
                                    : QStringLiteral("view-pim-tasks");
 
@@ -257,7 +263,8 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
         if (object == m_inboxObject
          || object == m_workdayObject
          || object == m_projectsObject
-         || object == m_contextsObject) {
+         || object == m_contextsObject
+         || object.objectCast<Domain::DataSource>()) {
             return false;
         }
 

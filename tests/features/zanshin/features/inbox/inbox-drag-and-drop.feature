@@ -81,7 +81,7 @@ Feature: Inbox task association
        | Buy rutabagas                                           |
 
   Scenario: Dropping a task on the inbox removes it from it's associated project
-    Given I display the "Projects / Prepare talk about TDD" page
+    Given I display the "Projects / Calendar1 / Prepare talk about TDD" page
     And there is an item named "Create Sozi SVG" in the central list
     When I drop the item on "Inbox" in the page list
     And I display the "Inbox" page

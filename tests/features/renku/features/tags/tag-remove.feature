@@ -5,7 +5,7 @@ Feature: Tag removal
 
   Scenario: Removed tag disappear from the list
     Given I display the available pages
-    When I remove a "tag" named "Physics"
+    When I remove the page named "Physics" under "Tags"
     And I list the items
     Then the list is:
        | display                           | icon                |

@@ -38,14 +38,15 @@ Feature: Data sources selection
     And I display the available pages
     And I list the items
     Then the list is:
-       | display                           |
-       | Inbox                             |
-       | Workday                           |
-       | Projects                          |
-       | Projects / Backlog                |
-       | Contexts                          |
-       | Contexts / Errands                |
-       | Contexts / Online                 |
+       | display                        |
+       | Inbox                          |
+       | Workday                        |
+       | Projects                       |
+       | Projects / Calendar2           |
+       | Projects / Calendar2 / Backlog |
+       | Contexts                       |
+       | Contexts / Errands             |
+       | Contexts / Online              |
 
   Scenario: Checking impacts project list
     Given there is an item named "TestData / Calendar1" in the available data sources
@@ -53,13 +54,15 @@ Feature: Data sources selection
     And I display the available pages
     And I list the items
     Then the list is:
-       | display                           |
-       | Inbox                             |
-       | Workday                           |
-       | Projects                          |
-       | Projects / Backlog                |
-       | Projects / Prepare talk about TDD |
-       | Projects / Read List              |
-       | Contexts                          |
-       | Contexts / Errands                |
-       | Contexts / Online                 |
+       | display                                       |
+       | Inbox                                         |
+       | Workday                                       |
+       | Projects                                      |
+       | Projects / Calendar1                          |
+       | Projects / Calendar1 / Prepare talk about TDD |
+       | Projects / Calendar1 / Read List              |
+       | Projects / Calendar2                          |
+       | Projects / Calendar2 / Backlog                |
+       | Contexts                                      |
+       | Contexts / Errands                            |
+       | Contexts / Online                             |

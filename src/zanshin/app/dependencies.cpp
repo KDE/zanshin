@@ -117,7 +117,8 @@ void App::initializeDependencies()
     });
 
     deps.add<Presentation::AvailablePagesModelInterface,
-             Presentation::AvailableTaskPagesModel(Domain::ProjectQueries*,
+             Presentation::AvailableTaskPagesModel(Domain::DataSourceQueries*,
+                                                   Domain::ProjectQueries*,
                                                    Domain::ProjectRepository*,
                                                    Domain::ContextQueries*,
                                                    Domain::ContextRepository*,

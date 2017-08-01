@@ -11,9 +11,9 @@ Feature: Adding tasks
     Then the list contains "<title>"
 
   Examples:
-    | page               | title                 |
-    | Inbox              | Buy a book            |
-    | Projects / Backlog | Setup a release party |
+    | page                           | title                 |
+    | Inbox                          | Buy a book            |
+    | Projects / Calendar2 / Backlog | Setup a release party |
 
   Scenario Outline: Adding a task as a child of another task in a page
     Given I display the "<page>" page
@@ -25,6 +25,6 @@ Feature: Adding tasks
     Then the list contains "<parent> / <title>"
 
   Examples:
-    | page               | parent                | title                         |
-    | Inbox              | Buy a book            | Make sure it is a good book   |
-    | Projects / Backlog | Setup a release party | Make sure there was a release |
+    | page                           | parent                | title                         |
+    | Inbox                          | Buy a book            | Make sure it is a good book   |
+    | Projects / Calendar2 / Backlog | Setup a release party | Make sure there was a release |

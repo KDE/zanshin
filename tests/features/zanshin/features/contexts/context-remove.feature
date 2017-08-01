@@ -3,19 +3,20 @@ Feature: Context removal
   I can remove a context
   In order to maintain their semantic
 
-@wip
   Scenario: Removed context disappear from the list
     Given I display the available pages
-    When I remove a "context" named "Online"
+    When I remove the page named "Online" under "Contexts"
     And I list the items
     Then the list is:
-       | display                           | icon                |
-       | Contexts                          | folder              |
-       | Contexts / Chores                 | view-pim-notes      |
-       | Contexts / Internet               | view-pim-notes      |
-       | Inbox                             | mail-folder-inbox   |
-       | Projects                          | folder              |
-       | Projects / Backlog                | view-pim-tasks      |
-       | Projects / Prepare talk about TDD | view-pim-tasks      |
-       | Projects / Read List              | view-pim-tasks      |
+       | display                                       | icon              |
+       | Inbox                                         | mail-folder-inbox |
+       | Workday                                       | go-jump-today     |
+       | Projects                                      | folder            |
+       | Projects / Calendar1                          | folder            |
+       | Projects / Calendar1 / Prepare talk about TDD | view-pim-tasks    |
+       | Projects / Calendar1 / Read List              | view-pim-tasks    |
+       | Projects / Calendar2                          | folder            |
+       | Projects / Calendar2 / Backlog                | view-pim-tasks    |
+       | Contexts                                      | folder            |
+       | Contexts / Errands                            | view-pim-notes    |
 

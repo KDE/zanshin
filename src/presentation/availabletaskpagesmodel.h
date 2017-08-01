@@ -29,6 +29,7 @@
 
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
+#include "domain/datasourcequeries.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
 #include "domain/taskqueries.h"
@@ -45,7 +46,8 @@ class AvailableTaskPagesModel : public AvailablePagesModelInterface
 {
     Q_OBJECT
 public:
-    explicit AvailableTaskPagesModel(const Domain::ProjectQueries::Ptr &projectQueries,
+    explicit AvailableTaskPagesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
+                                     const Domain::ProjectQueries::Ptr &projectQueries,
                                      const Domain::ProjectRepository::Ptr &projectRepository,
                                      const Domain::ContextQueries::Ptr &contextQueries,
                                      const Domain::ContextRepository::Ptr &contextRepository,
@@ -71,6 +73,8 @@ private:
 
     QAbstractItemModel *m_pageListModel;
     Presentation::AvailablePagesSortFilterProxyModel *m_sortProxyModel;
+
+    Domain::DataSourceQueries::Ptr m_dataSourceQueries;
 
     Domain::ProjectQueries::Ptr m_projectQueries;
     Domain::ProjectRepository::Ptr m_projectRepository;

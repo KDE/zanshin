@@ -33,14 +33,18 @@
 #include <KConfig>
 #include <KConfigGroup>
 
+#include <AkonadiCore/AttributeFactory>
+
 #include "presentation/applicationmodel.h"
 #include "presentation/errorhandler.h"
 #include "presentation/querytreemodelbase.h"
 
+#include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadicache.h"
 #include "akonadi/akonadicachingstorage.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadimessaginginterface.h"
+#include "akonadi/akonaditimestampattribute.h"
 
 #include "utils/dependencymanager.h"
 #include "utils/jobhandler.h"
@@ -101,6 +105,9 @@ public:
             MonitorSpy::setExpirationDelay(200);
             initializedDependencies = true;
         }
+
+        Akonadi::AttributeFactory::registerAttribute<Akonadi::ApplicationSelectedAttribute>();
+        Akonadi::AttributeFactory::registerAttribute<Akonadi::TimestampAttribute>();
 
         const auto xmlFile = QString::fromLocal8Bit(qgetenv("ZANSHIN_USER_XMLDATA"));
         if (xmlFile.isEmpty()) {
@@ -496,14 +503,12 @@ WHEN("^I add a project named \"(.*)\" in the source named \"(.*)\"$") {
     context->waitForStableState();
 }
 
-WHEN("^I rename a \"(.*)\" named \"(.*)\" to \"(.*)\"$") {
-    REGEX_PARAM(QString, objectType);
+WHEN("^I rename the page named \"(.*)\" under \"(.*)\" to \"(.*)\"$") {
     REGEX_PARAM(QString, oldName);
+    REGEX_PARAM(QString, path);
     REGEX_PARAM(QString, newName);
 
-    const QString pageNodeName = (objectType == QStringLiteral("project")) ? QStringLiteral("Projects / ")
-                               : (objectType == QStringLiteral("context")) ? QStringLiteral("Contexts / ")
-                               : QString();
+    const QString pageNodeName = path + " / ";
 
     VERIFY(!pageNodeName.isEmpty());
 
@@ -522,14 +527,11 @@ WHEN("^I rename a \"(.*)\" named \"(.*)\" to \"(.*)\"$") {
     context->waitForStableState();
 }
 
-WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
-    REGEX_PARAM(QString, objectType);
-    REGEX_PARAM(QString, objectName);
+WHEN("^I remove the page named \"(.*)\" under \"(.*)\"$") {
+    REGEX_PARAM(QString, name);
+    REGEX_PARAM(QString, path);
 
-    const QString pageNodeName = (objectType == QStringLiteral("project")) ? QStringLiteral("Projects / ")
-                               : (objectType == QStringLiteral("context")) ? QStringLiteral("Contexts / ")
-                               : (objectType == QStringLiteral("tag"))     ? QStringLiteral("Tags / ")
-                               : QString();
+    const QString pageNodeName = path + " / ";
 
     VERIFY(!pageNodeName.isEmpty());
 
@@ -541,7 +543,7 @@ WHEN("^I remove a \"(.*)\" named \"(.*)\"$") {
     VERIFY(pageListModel);
     context->waitForStableState();
 
-    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageNodeName + objectName);
+    QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageNodeName + name);
     VERIFY(pageIndex.isValid());
 
     VERIFY(QMetaObject::invokeMethod(availablePages, "removeItem",
