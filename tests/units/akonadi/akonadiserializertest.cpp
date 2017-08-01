@@ -345,9 +345,9 @@ private slots:
         auto dataSource4 = serializer.createDataSourceFromCollection(collection, Akonadi::SerializerInterface::BaseName);
 
         // THEN
-        QCOMPARE(dataSource1->name(), QString(parentName + '/' + name));
+        QCOMPARE(dataSource1->name(), QString(parentName + " » " + name));
         QCOMPARE(dataSource2->name(), name);
-        QCOMPARE(dataSource3->name(), QString(parentName + '/' + name));
+        QCOMPARE(dataSource3->name(), QString(parentName + " » " + name));
         QCOMPARE(dataSource4->name(), name);
     }
 

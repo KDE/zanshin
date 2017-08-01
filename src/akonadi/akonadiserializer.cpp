@@ -99,7 +99,7 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
     if (naming == FullPath) {
         auto parent = collection.parentCollection();
         while (parent.isValid() && parent != Akonadi::Collection::root()) {
-            name = parent.displayName() + '/' + name;
+            name = parent.displayName() + " » " + name;
             parent = parent.parentCollection();
         }
     }
