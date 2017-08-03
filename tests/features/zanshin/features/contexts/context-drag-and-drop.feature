@@ -16,7 +16,7 @@ Feature: Context task association
        | Buy rutabagas                                 |
 
   Scenario: Dropping a task on a context from the project central list
-    Given I display the "Projects / Calendar1 / Prepare talk about TDD" page
+    Given I display the "Projects / TestData » Calendar1 / Prepare talk about TDD" page
     And there is an item named "Create examples and exercices" in the central list
     When I drop the item on "Contexts / Online" in the page list
     And I display the "Contexts / Online" page

@@ -87,7 +87,8 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findAllSelected() co
     auto predicate = [this] (const Akonadi::Collection &collection) {
         return collection.isValid() && m_serializer->isSelectedCollection(collection);
     };
-    m_integrator->bind("DataSourceQueries::findAllSelected", m_findAllSelected, fetch, predicate);
+    m_integrator->bind("DataSourceQueries::findAllSelected", m_findAllSelected, fetch, predicate,
+                       Akonadi::SerializerInterface::FullPath);
     return m_findAllSelected->result();
 }
 

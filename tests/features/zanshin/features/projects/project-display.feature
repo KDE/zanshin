@@ -4,7 +4,7 @@ Feature: Project content
   In order to see the artifacts associated to it
 
   Scenario: Project tasks appear in the corresponding page
-    Given I display the "Projects / Calendar1 / Read List" page
+    Given I display the "Projects / TestData » Calendar1 / Read List" page
     And I look at the central list
     When I list the items
     Then the list is:

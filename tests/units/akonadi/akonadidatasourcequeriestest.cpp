@@ -593,15 +593,15 @@ private slots:
         QTest::addColumn<QStringList>("expectedNames");
 
         auto expectedNames = QStringList();
-        expectedNames << QStringLiteral("43Task") << QStringLiteral("45Note");
+        expectedNames << QStringLiteral("42Task » 43Task") << QStringLiteral("44Note » 45Note");
         QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expectedNames;
 
         expectedNames.clear();
-        expectedNames << QStringLiteral("43Task");
+        expectedNames << QStringLiteral("42Task » 43Task");
         QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks) << expectedNames;
 
         expectedNames.clear();
-        expectedNames << QStringLiteral("45Note");
+        expectedNames << QStringLiteral("44Note » 45Note");
         QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes) << expectedNames;
     }
 
@@ -665,8 +665,8 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43Task"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("45Note"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42Task » 43Task"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44Note » 45Note"));
     }
 
     void shouldReactToCollectionRemovesForSelectedSources()
@@ -729,8 +729,8 @@ private slots:
 
         // THEN
         QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43TaskBis"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("45NoteBis"));
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42Task » 43TaskBis"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44Note » 45NoteBis"));
         QVERIFY(replaceHandlerCalled);
     }
 
