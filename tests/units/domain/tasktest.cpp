@@ -36,6 +36,7 @@ public:
     explicit TaskTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
+        qRegisterMetaType<Task::Recurrence>();
         qRegisterMetaType<Task::Attachments>();
         qRegisterMetaType<Task::Delegate>();
     }
@@ -50,6 +51,7 @@ private slots:
         QCOMPARE(t.startDate(), QDateTime());
         QCOMPARE(t.dueDate(), QDateTime());
         QCOMPARE(t.doneDate(), QDateTime());
+        QCOMPARE(t.recurrence(), Domain::Task::NoRecurrence);
         QVERIFY(t.attachments().isEmpty());
         QVERIFY(!t.delegate().isValid());
     }
@@ -207,6 +209,24 @@ private slots:
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
         QSignalSpy spy(&t, &Task::dueDateChanged);
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.count(), 0);
+    }
+
+    void shouldNotifyRecurrenceChanges()
+    {
+        Task t;
+        QSignalSpy spy(&t, &Task::recurrenceChanged);
+        t.setRecurrence(Task::RecursWeekly);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().value<Task::Recurrence>(), Task::RecursWeekly);
+    }
+
+    void shouldNotNotifyIdenticalRecurrenceChanges()
+    {
+        Task t;
+        t.setRecurrence(Task::RecursWeekly);
+        QSignalSpy spy(&t, &Task::recurrenceChanged);
+        t.setRecurrence(Task::RecursWeekly);
         QCOMPARE(spy.count(), 0);
     }
 

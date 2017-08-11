@@ -31,7 +31,8 @@ using namespace Domain;
 Task::Task(QObject *parent)
     : Artifact(parent),
       m_running(false),
-      m_done(false)
+      m_done(false),
+      m_recurrence(NoRecurrence)
 {
 }
 
@@ -96,6 +97,11 @@ QDateTime Task::doneDate() const
     return m_doneDate;
 }
 
+Task::Recurrence Task::recurrence() const
+{
+    return m_recurrence;
+}
+
 Task::Attachments Task::attachments() const
 {
     return m_attachments;
@@ -121,6 +127,15 @@ void Task::setDueDate(const QDateTime &dueDate)
 
     m_dueDate = dueDate;
     emit dueDateChanged(dueDate);
+}
+
+void Task::setRecurrence(Task::Recurrence recurrence)
+{
+    if (m_recurrence == recurrence)
+        return;
+
+    m_recurrence = recurrence;
+    emit recurrenceChanged(recurrence);
 }
 
 void Task::setAttachments(const Task::Attachments &attachments)

@@ -38,11 +38,20 @@ class Task : public Artifact
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
+    Q_PROPERTY(Domain::Task::Recurrence recurrence READ recurrence WRITE setRecurrence NOTIFY recurrenceChanged)
     Q_PROPERTY(Domain::Task::Delegate delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
     Q_PROPERTY(Domain::Task::Attachments attachements READ attachments WRITE setAttachments NOTIFY attachmentsChanged)
 public:
     typedef QSharedPointer<Task> Ptr;
     typedef QList<Task::Ptr> List;
+
+    enum Recurrence {
+        NoRecurrence = 0,
+        RecursDaily,
+        RecursWeekly,
+        RecursMonthly // for now only monthly on the same day (say 11th day of the month)
+    };
+    Q_ENUM(Recurrence)
 
     class Attachment
     {
@@ -117,6 +126,7 @@ public:
     QDateTime startDate() const;
     QDateTime dueDate() const;
     QDateTime doneDate() const;
+    Recurrence recurrence() const;
     Attachments attachments() const;
     Delegate delegate() const;
 
@@ -126,6 +136,7 @@ public slots:
     void setDoneDate(const QDateTime &doneDate);
     void setStartDate(const QDateTime &startDate);
     void setDueDate(const QDateTime &dueDate);
+    void setRecurrence(Domain::Task::Recurrence recurrence);
     void setAttachments(const Domain::Task::Attachments &attachments);
     void setDelegate(const Domain::Task::Delegate &delegate);
 
@@ -135,6 +146,7 @@ signals:
     void doneDateChanged(const QDateTime &doneDate);
     void startDateChanged(const QDateTime &startDate);
     void dueDateChanged(const QDateTime &dueDate);
+    void recurrenceChanged(Domain::Task::Recurrence recurrence);
     void attachmentsChanged(const Domain::Task::Attachments &attachments);
     void delegateChanged(const Domain::Task::Delegate &delegate);
 
@@ -144,6 +156,7 @@ private:
     QDateTime m_startDate;
     QDateTime m_dueDate;
     QDateTime m_doneDate;
+    Recurrence m_recurrence;
     Attachments m_attachments;
     Delegate m_delegate;
 };
