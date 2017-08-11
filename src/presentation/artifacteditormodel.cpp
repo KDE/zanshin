@@ -25,7 +25,10 @@
 #include "artifacteditormodel.h"
 
 #include <QAbstractListModel>
+#include <QDesktopServices>
+#include <QDir>
 #include <QIcon>
+#include <QTemporaryFile>
 #include <QTimer>
 
 #include <KLocalizedString>
@@ -289,6 +292,25 @@ void ArtifactEditorModel::delegate(const QString &name, const QString &email)
     Q_ASSERT(task);
     auto delegate = Domain::Task::Delegate(name, email);
     m_delegateFunction(task, delegate);
+}
+
+void ArtifactEditorModel::openAttachment(const QModelIndex &index)
+{
+    auto task = m_artifact.objectCast<Domain::Task>();
+    Q_ASSERT(task);
+    auto attachment = task->attachments().at(index.row());
+
+    auto uri = attachment.uri();
+    if (!attachment.isUri()) {
+        auto tempFile = new QTemporaryFile(QDir::tempPath() + QStringLiteral("/zanshin_attachment_XXXXXX"), this);
+        tempFile->open();
+        tempFile->setPermissions(QFile::ReadUser);
+        tempFile->write(attachment.data());
+        tempFile->close();
+        uri = QUrl::fromLocalFile(tempFile->fileName());
+    }
+
+    QDesktopServices::openUrl(uri);
 }
 
 void ArtifactEditorModel::setEditingInProgress(bool editing)

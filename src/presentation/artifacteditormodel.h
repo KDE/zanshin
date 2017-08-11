@@ -92,6 +92,7 @@ public slots:
     void setStartDate(const QDateTime &start);
     void setDueDate(const QDateTime &due);
     void delegate(const QString &name, const QString &email);
+    void openAttachment(const QModelIndex &index);
 
     void setEditingInProgress(bool editingInProgress);
 

@@ -83,6 +83,7 @@ EditorView::EditorView(QWidget *parent)
     connect(ui->dueDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onDueEditEntered);
     connect(ui->doneButton, &QAbstractButton::toggled, this, &EditorView::onDoneButtonChanged);
     connect(ui->startTodayButton, &QAbstractButton::clicked, this, &EditorView::onStartTodayClicked);
+    connect(ui->attachmentList, &QAbstractItemView::doubleClicked, this, &EditorView::onAttachmentDoubleClicked);
     connect(m_delegateEdit, &KLineEdit::returnPressed, this, &EditorView::onDelegateEntered);
 
     setEnabled(false);
@@ -277,4 +278,12 @@ void EditorView::onDelegateEntered()
                                   Q_ARG(QString, email));
         m_delegateEdit->clear();
     }
+}
+
+void EditorView::onAttachmentDoubleClicked(const QModelIndex &index)
+{
+    if (!m_model)
+        return;
+
+    QMetaObject::invokeMethod(m_model, "openAttachment", Q_ARG(QModelIndex, index));
 }

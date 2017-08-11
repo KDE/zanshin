@@ -83,6 +83,8 @@ private slots:
     void onStartTodayClicked();
     void onDelegateEntered();
 
+    void onAttachmentDoubleClicked(const QModelIndex &index);
+
 private:
     QObject *m_model;
 
