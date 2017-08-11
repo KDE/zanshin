@@ -34,9 +34,12 @@
 
 #include "presentation/errorhandlingmodelbase.h"
 
+class QAbstractItemModel;
 class QTimer;
 
 namespace Presentation {
+
+class AttachmentModel;
 
 class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
 {
@@ -47,6 +50,7 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
+    Q_PROPERTY(QAbstractItemModel* attachmentModel READ attachmentModel CONSTANT)
     Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
     Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
     Q_PROPERTY(bool editingInProgress READ editingInProgress WRITE setEditingInProgress)
@@ -74,6 +78,7 @@ public:
     bool isDone() const;
     QDateTime startDate() const;
     QDateTime dueDate() const;
+    QAbstractItemModel *attachmentModel() const;
     QString delegateText() const;
 
     static int autoSaveDelay();
@@ -128,6 +133,7 @@ private:
     bool m_done;
     QDateTime m_start;
     QDateTime m_due;
+    AttachmentModel *m_attachmentModel;
     QString m_delegateText;
 
     QTimer *m_saveTimer;

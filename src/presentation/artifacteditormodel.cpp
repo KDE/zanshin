@@ -24,6 +24,8 @@
 
 #include "artifacteditormodel.h"
 
+#include <QAbstractListModel>
+#include <QIcon>
 #include <QTimer>
 
 #include <KLocalizedString>
@@ -31,11 +33,77 @@
 #include "domain/task.h"
 #include "errorhandler.h"
 
+namespace Presentation {
+class AttachmentModel : public QAbstractListModel
+{
+    Q_OBJECT
+public:
+    explicit AttachmentModel(QObject *parent = nullptr)
+        : QAbstractListModel(parent)
+    {
+    }
+
+    void setTask(const Domain::Task::Ptr &task)
+    {
+        if (m_task == task)
+            return;
+
+        beginResetModel();
+        if (m_task) {
+            disconnect(m_task.data(), &Domain::Task::attachmentsChanged,
+                       this, &AttachmentModel::triggerReset);
+        }
+        m_task = task;
+        if (m_task) {
+            connect(m_task.data(), &Domain::Task::attachmentsChanged,
+                    this, &AttachmentModel::triggerReset);
+        }
+        endResetModel();
+    }
+
+    int rowCount(const QModelIndex &parent) const override
+    {
+        if (parent.isValid())
+            return 0;
+
+        return m_task->attachments().size();
+    }
+
+    QVariant data(const QModelIndex &index, int role) const override
+    {
+        if (!index.isValid())
+            return QVariant();
+
+        auto attachment = m_task->attachments().at(index.row());
+
+        switch (role) {
+        case Qt::DisplayRole:
+            return attachment.label();
+        case Qt::DecorationRole:
+            return QVariant::fromValue(QIcon::fromTheme(attachment.iconName()));
+        default:
+            return QVariant();
+        }
+    }
+
+private slots:
+    void triggerReset()
+    {
+        beginResetModel();
+        endResetModel();
+    }
+
+private:
+    Domain::Task::Ptr m_task;
+};
+}
+
 using namespace Presentation;
 
 ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
     : QObject(parent),
       m_done(false),
+      m_attachmentModel(new AttachmentModel(this)),
       m_saveTimer(new QTimer(this)),
       m_saveNeeded(false),
       m_editingInProgress(false)
@@ -66,6 +134,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     m_done = false;
     m_start = QDateTime();
     m_due = QDateTime();
+    m_attachmentModel->setTask(Domain::Task::Ptr());
     m_delegateText = QString();
 
     if (m_artifact)
@@ -85,6 +154,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
         m_done = task->isDone();
         m_start = task->startDate();
         m_due = task->dueDate();
+        m_attachmentModel->setTask(task);
         m_delegateText = task->delegate().display();
 
         connect(task.data(), &Domain::Task::doneChanged, this, &ArtifactEditorModel::onDoneChanged);
@@ -151,6 +221,11 @@ QDateTime ArtifactEditorModel::startDate() const
 QDateTime ArtifactEditorModel::dueDate() const
 {
     return m_due;
+}
+
+QAbstractItemModel *ArtifactEditorModel::attachmentModel() const
+{
+    return m_attachmentModel;
 }
 
 QString ArtifactEditorModel::delegateText() const
@@ -323,3 +398,5 @@ void ArtifactEditorModel::applyNewDueDate(const QDateTime &due)
     m_due = due;
     emit dueDateChanged(m_due);
 }
+
+#include "artifacteditormodel.moc"

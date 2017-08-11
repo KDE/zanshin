@@ -68,6 +68,7 @@ private slots:
         QVERIFY(!model.isDone());
         QVERIFY(model.startDate().isNull());
         QVERIFY(model.dueDate().isNull());
+        QVERIFY(model.attachmentModel() != nullptr);
         QVERIFY(model.delegateText().isNull());
         QVERIFY(!model.hasSaveFunction());
         QVERIFY(!model.hasDelegateFunction());
@@ -82,7 +83,24 @@ private slots:
         QSignalSpy doneSpy(&model, &Presentation::ArtifactEditorModel::doneChanged);
         QSignalSpy startSpy(&model, &Presentation::ArtifactEditorModel::startDateChanged);
         QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
+        QSignalSpy attachmentSpy(model.attachmentModel(), &QAbstractItemModel::modelReset);
         QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
+
+        Domain::Task::Attachments attachments;
+
+        Domain::Task::Attachment dataAttachment;
+        dataAttachment.setData("foo");
+        dataAttachment.setLabel("dataAttachment");
+        dataAttachment.setMimeType("text/plain");
+        dataAttachment.setIconName("text-plain");
+        attachments.append(dataAttachment);
+
+        Domain::Task::Attachment uriAttachment;
+        uriAttachment.setUri(QUrl("https://www.kde.org"));
+        uriAttachment.setLabel("uriAttachment");
+        uriAttachment.setMimeType("text/html");
+        uriAttachment.setIconName("text-html");
+        attachments.append(uriAttachment);
 
         auto task = Domain::Task::Ptr::create();
         task->setText(QStringLiteral("description"));
@@ -90,6 +108,7 @@ private slots:
         task->setDone(true);
         task->setStartDate(QDateTime::currentDateTime());
         task->setDueDate(QDateTime::currentDateTime().addDays(2));
+        task->setAttachments(attachments);
         task->setDelegate(Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com")));
 
         // WHEN
@@ -127,6 +146,14 @@ private slots:
         QCOMPARE(delegateSpy.size(), 1);
         QCOMPARE(delegateSpy.takeFirst().at(0).toString(), task->delegate().display());
         QCOMPARE(model.property("delegateText").toString(), task->delegate().display());
+
+        QCOMPARE(attachmentSpy.size(), 1);
+        auto am = model.attachmentModel();
+        QCOMPARE(am->rowCount(), 2);
+        QCOMPARE(am->data(am->index(0, 0), Qt::DisplayRole).toString(), QStringLiteral("dataAttachment"));
+        QCOMPARE(am->data(am->index(0, 0), Qt::DecorationRole).value<QIcon>(), QIcon::fromTheme("text-plain"));
+        QCOMPARE(am->data(am->index(1, 0), Qt::DisplayRole).toString(), QStringLiteral("uriAttachment"));
+        QCOMPARE(am->data(am->index(1, 0), Qt::DecorationRole).value<QIcon>(), QIcon::fromTheme("text-html"));
     }
 
     void shouldHaveNoteProperties()
