@@ -96,6 +96,11 @@ QDateTime Task::doneDate() const
     return m_doneDate;
 }
 
+Task::Attachments Task::attachments() const
+{
+    return m_attachments;
+}
+
 Task::Delegate Task::delegate() const
 {
     return m_delegate;
@@ -118,6 +123,15 @@ void Task::setDueDate(const QDateTime &dueDate)
     emit dueDateChanged(dueDate);
 }
 
+void Task::setAttachments(const Task::Attachments &attachments)
+{
+    if (m_attachments == attachments)
+        return;
+
+    m_attachments = attachments;
+    emit attachmentsChanged(attachments);
+}
+
 void Task::setDelegate(const Task::Delegate &delegate)
 {
     if (m_delegate == delegate)
@@ -125,6 +139,116 @@ void Task::setDelegate(const Task::Delegate &delegate)
 
     m_delegate = delegate;
     emit delegateChanged(delegate);
+}
+
+
+Task::Attachment::Attachment()
+{
+}
+
+Task::Attachment::Attachment(const QByteArray &data)
+{
+    setData(data);
+}
+
+Task::Attachment::Attachment(const QUrl &uri)
+{
+    setUri(uri);
+}
+
+Task::Attachment::Attachment(const Task::Attachment &other)
+    : m_uri(other.m_uri),
+      m_data(other.m_data),
+      m_label(other.m_label),
+      m_mimeType(other.m_mimeType),
+      m_iconName(other.m_iconName)
+{
+}
+
+Task::Attachment::~Attachment()
+{
+}
+
+Task::Attachment &Task::Attachment::operator=(const Task::Attachment &other)
+{
+    Attachment copy(other);
+    std::swap(m_uri, copy.m_uri);
+    std::swap(m_data, copy.m_data);
+    std::swap(m_label, copy.m_label);
+    std::swap(m_mimeType, copy.m_mimeType);
+    std::swap(m_iconName, copy.m_iconName);
+    return *this;
+}
+
+bool Task::Attachment::operator==(const Task::Attachment &other) const
+{
+    return m_uri == other.m_uri
+        && m_data == other.m_data
+        && m_label == other.m_label
+        && m_mimeType == other.m_mimeType
+            && m_iconName == other.m_iconName;
+}
+
+bool Task::Attachment::isValid() const
+{
+    return m_uri.isValid() || !m_data.isEmpty();
+}
+
+bool Task::Attachment::isUri() const
+{
+    return m_uri.isValid();
+}
+
+QUrl Task::Attachment::uri() const
+{
+    return m_uri;
+}
+
+void Task::Attachment::setUri(const QUrl &uri)
+{
+    m_uri = uri;
+    m_data.clear();
+}
+
+QByteArray Task::Attachment::data() const
+{
+    return m_data;
+}
+
+void Task::Attachment::setData(const QByteArray &data)
+{
+    m_data = data;
+    m_uri.clear();
+}
+
+QString Task::Attachment::label() const
+{
+    return m_label;
+}
+
+void Task::Attachment::setLabel(const QString &label)
+{
+    m_label = label;
+}
+
+QString Task::Attachment::mimeType() const
+{
+    return m_mimeType;
+}
+
+void Task::Attachment::setMimeType(const QString &mimeType)
+{
+    m_mimeType = mimeType;
+}
+
+QString Task::Attachment::iconName() const
+{
+    return m_iconName;
+}
+
+void Task::Attachment::setIconName(const QString &iconName)
+{
+    m_iconName = iconName;
 }
 
 

@@ -27,6 +27,7 @@
 
 #include "artifact.h"
 #include <QDateTime>
+#include <QUrl>
 
 namespace Domain {
 
@@ -38,9 +39,50 @@ class Task : public Artifact
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(Domain::Task::Delegate delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
+    Q_PROPERTY(Domain::Task::Attachments attachements READ attachments WRITE setAttachments NOTIFY attachmentsChanged)
 public:
     typedef QSharedPointer<Task> Ptr;
     typedef QList<Task::Ptr> List;
+
+    class Attachment
+    {
+    public:
+        Attachment();
+        explicit Attachment(const QByteArray &data);
+        explicit Attachment(const QUrl &uri);
+        Attachment(const Attachment &other);
+        ~Attachment();
+
+        Attachment &operator=(const Attachment &other);
+        bool operator==(const Attachment &other) const;
+
+        bool isValid() const;
+        bool isUri() const;
+
+        QUrl uri() const;
+        void setUri(const QUrl &uri);
+
+        QByteArray data() const;
+        void setData(const QByteArray &data);
+
+        QString label() const;
+        void setLabel(const QString &label);
+
+        QString mimeType() const;
+        void setMimeType(const QString &mimeType);
+
+        QString iconName() const;
+        void setIconName(const QString &iconName);
+
+    private:
+        QUrl m_uri;
+        QByteArray m_data;
+        QString m_label;
+        QString m_mimeType;
+        QString m_iconName;
+    };
+
+    typedef QList<Attachment> Attachments;
 
     class Delegate
     {
@@ -75,6 +117,7 @@ public:
     QDateTime startDate() const;
     QDateTime dueDate() const;
     QDateTime doneDate() const;
+    Attachments attachments() const;
     Delegate delegate() const;
 
 public slots:
@@ -83,6 +126,7 @@ public slots:
     void setDoneDate(const QDateTime &doneDate);
     void setStartDate(const QDateTime &startDate);
     void setDueDate(const QDateTime &dueDate);
+    void setAttachments(const Domain::Task::Attachments &attachments);
     void setDelegate(const Domain::Task::Delegate &delegate);
 
 signals:
@@ -91,6 +135,7 @@ signals:
     void doneDateChanged(const QDateTime &doneDate);
     void startDateChanged(const QDateTime &startDate);
     void dueDateChanged(const QDateTime &dueDate);
+    void attachmentsChanged(const Domain::Task::Attachments &attachments);
     void delegateChanged(const Domain::Task::Delegate &delegate);
 
 private:
@@ -99,6 +144,7 @@ private:
     QDateTime m_startDate;
     QDateTime m_dueDate;
     QDateTime m_doneDate;
+    Attachments m_attachments;
     Delegate m_delegate;
 };
 
@@ -106,6 +152,8 @@ private:
 
 Q_DECLARE_METATYPE(Domain::Task::Ptr)
 Q_DECLARE_METATYPE(Domain::Task::List)
+Q_DECLARE_METATYPE(Domain::Task::Attachment)
+Q_DECLARE_METATYPE(Domain::Task::Attachments)
 Q_DECLARE_METATYPE(Domain::Task::Delegate)
 
 #endif // DOMAIN_TASK_H

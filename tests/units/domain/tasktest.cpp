@@ -36,6 +36,7 @@ public:
     explicit TaskTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
+        qRegisterMetaType<Task::Attachments>();
         qRegisterMetaType<Task::Delegate>();
     }
 
@@ -49,7 +50,83 @@ private slots:
         QCOMPARE(t.startDate(), QDateTime());
         QCOMPARE(t.dueDate(), QDateTime());
         QCOMPARE(t.doneDate(), QDateTime());
+        QVERIFY(t.attachments().isEmpty());
         QVERIFY(!t.delegate().isValid());
+    }
+
+    void shouldHaveValueBasedAttachment()
+    {
+        Task::Attachment a;
+        QVERIFY(!a.isValid());
+        QVERIFY(!a.isUri());
+        QCOMPARE(a.uri(), QUrl());
+        QCOMPARE(a.data(), QByteArray());
+        QCOMPARE(a.label(), QString());
+        QCOMPARE(a.mimeType(), QString());
+        QCOMPARE(a.iconName(), QString());
+
+        a.setUri(QUrl("https://www.kde.org"));
+        QVERIFY(a.isValid());
+        QVERIFY(a.isUri());
+        QCOMPARE(a.uri(), QUrl("https://www.kde.org"));
+        QCOMPARE(a.data(), QByteArray());
+        QCOMPARE(a.label(), QString());
+        QCOMPARE(a.mimeType(), QString());
+        QCOMPARE(a.iconName(), QString());
+
+        a.setData(QByteArrayLiteral("foobar"));
+        QVERIFY(a.isValid());
+        QVERIFY(!a.isUri());
+        QCOMPARE(a.uri(), QUrl());
+        QCOMPARE(a.data(), QByteArrayLiteral("foobar"));
+        QCOMPARE(a.label(), QString());
+        QCOMPARE(a.mimeType(), QString());
+        QCOMPARE(a.iconName(), QString());
+
+        a.setLabel(QStringLiteral("baz"));
+        QVERIFY(a.isValid());
+        QVERIFY(!a.isUri());
+        QCOMPARE(a.uri(), QUrl());
+        QCOMPARE(a.data(), QByteArrayLiteral("foobar"));
+        QCOMPARE(a.label(), QStringLiteral("baz"));
+        QCOMPARE(a.mimeType(), QString());
+        QCOMPARE(a.iconName(), QString());
+
+        a.setMimeType(QStringLiteral("text/plain"));
+        QVERIFY(a.isValid());
+        QVERIFY(!a.isUri());
+        QCOMPARE(a.uri(), QUrl());
+        QCOMPARE(a.data(), QByteArrayLiteral("foobar"));
+        QCOMPARE(a.label(), QStringLiteral("baz"));
+        QCOMPARE(a.mimeType(), QStringLiteral("text/plain"));
+        QCOMPARE(a.iconName(), QString());
+
+        a.setIconName(QStringLiteral("text"));
+        QVERIFY(a.isValid());
+        QVERIFY(!a.isUri());
+        QCOMPARE(a.uri(), QUrl());
+        QCOMPARE(a.data(), QByteArrayLiteral("foobar"));
+        QCOMPARE(a.label(), QStringLiteral("baz"));
+        QCOMPARE(a.mimeType(), QStringLiteral("text/plain"));
+        QCOMPARE(a.iconName(), QStringLiteral("text"));
+
+        a.setUri(QUrl("https://www.kde.org"));
+        QVERIFY(a.isValid());
+        QVERIFY(a.isUri());
+        QCOMPARE(a.uri(), QUrl("https://www.kde.org"));
+        QCOMPARE(a.data(), QByteArray());
+        QCOMPARE(a.label(), QStringLiteral("baz"));
+        QCOMPARE(a.mimeType(), QStringLiteral("text/plain"));
+        QCOMPARE(a.iconName(), QStringLiteral("text"));
+
+        a.setUri(QUrl());
+        QVERIFY(!a.isValid());
+        QVERIFY(!a.isUri());
+        QCOMPARE(a.uri(), QUrl());
+        QCOMPARE(a.data(), QByteArray());
+        QCOMPARE(a.label(), QStringLiteral("baz"));
+        QCOMPARE(a.mimeType(), QStringLiteral("text/plain"));
+        QCOMPARE(a.iconName(), QStringLiteral("text"));
     }
 
     void shouldHaveValueBasedDelegate()
@@ -130,6 +207,32 @@ private slots:
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
         QSignalSpy spy(&t, &Task::dueDateChanged);
         t.setDueDate(QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.count(), 0);
+    }
+
+    void shouldNotifyAttachmentsChanges()
+    {
+        Task::Attachments attachments;
+        attachments.append(Task::Attachment(QByteArrayLiteral("foobar")));
+        attachments.append(Task::Attachment(QUrl("https://www.kde.org")));
+
+        Task t;
+        QSignalSpy spy(&t, &Task::attachmentsChanged);
+        t.setAttachments(attachments);
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().value<Task::Attachments>(), attachments);
+    }
+
+    void shouldNotNotifyIdenticalAttachmentsChanges()
+    {
+        Task::Attachments attachments;
+        attachments.append(Task::Attachment(QByteArrayLiteral("foobar")));
+        attachments.append(Task::Attachment(QUrl("https://www.kde.org")));
+
+        Task t;
+        t.setAttachments(attachments);
+        QSignalSpy spy(&t, &Task::attachmentsChanged);
+        t.setAttachments(attachments);
         QCOMPARE(spy.count(), 0);
     }
 
