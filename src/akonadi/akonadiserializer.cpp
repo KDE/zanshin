@@ -31,6 +31,7 @@
 #include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
 #include <KMime/Message>
+#include <QMimeDatabase>
 
 #include <numeric>
 
@@ -201,6 +202,25 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("relatedUid", todo->relatedTo());
     task->setRunning(todo->customProperty("Zanshin", "Running") == QLatin1String("1"));
 
+    QMimeDatabase mimeDb;
+    const auto attachmentsInput = todo->attachments();
+    Domain::Task::Attachments attachments;
+    attachments.reserve(attachmentsInput.size());
+    std::transform(attachmentsInput.cbegin(), attachmentsInput.cend(),
+                   std::back_inserter(attachments),
+                   [&mimeDb] (const KCalCore::Attachment::Ptr &attach) {
+                       Domain::Task::Attachment attachment;
+                       if (attach->isUri())
+                           attachment.setUri(attach->uri());
+                       else
+                           attachment.setData(attach->decodedData());
+                       attachment.setLabel(attach->label());
+                       attachment.setMimeType(attach->mimeType());
+                       attachment.setIconName(mimeDb.mimeTypeForName(attach->mimeType()).iconName());
+                       return attachment;
+                   });
+    task->setAttachments(attachments);
+
     if (todo->attendeeCount() > 0) {
         const auto attendees = todo->attendees();
         const auto delegate = std::find_if(attendees.begin(), attendees.end(),
@@ -246,6 +266,17 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 
     if (task->property("relatedUid").isValid()) {
         todo->setRelatedTo(task->property("relatedUid").toString());
+    }
+
+    for (const auto &attachment : task->attachments()) {
+        KCalCore::Attachment::Ptr attach(new KCalCore::Attachment(QByteArray()));
+        if (attachment.isUri())
+            attach->setUri(attachment.uri().toString());
+        else
+            attach->setDecodedData(attachment.data());
+        attach->setMimeType(attachment.mimeType());
+        attach->setLabel(attachment.label());
+        todo->addAttachment(attach);
     }
 
     if (task->delegate().isValid()) {

@@ -654,13 +654,18 @@ private slots:
         QTest::addColumn<QDateTime>("updatedStartDate");
         QTest::addColumn<QDateTime>("updatedDueDate");
         QTest::addColumn<QString>("updatedRelated");
+        QTest::addColumn<QByteArrayList>("updatedAttachmentData");
+        QTest::addColumn<QStringList>("updatedAttachmentUris");
+        QTest::addColumn<QStringList>("updatedAttachmentLabels");
+        QTest::addColumn<QStringList>("updatedAttachmentMimeTypes");
+        QTest::addColumn<QStringList>("updatedAttachmentIconNames");
         QTest::addColumn<QString>("updatedDelegateName");
         QTest::addColumn<QString>("updatedDelegateEmail");
         QTest::addColumn<bool>("updatedRunning");
 
-        QTest::newRow("no change") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << "John Doe" << "j@d.com" << false;
-        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 28)) << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << "John Smith" << "j@s.com" << false;
-        QTest::newRow("set_to_running") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << "John Doe" << "j@d.com" << true;
+        QTest::newRow("no change") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << false;
+        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 28)) << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << QByteArrayList({"foo", "# bar", QByteArray()}) << QStringList({QString(), QString(), "https://www.kde.org"}) << QStringList({"label1", "label2", "label3"}) << QStringList({"text/plain", "text/markdown", "text/html"}) << QStringList({"text-plain", "text-markdown", "text-html"}) << "John Smith" << "j@s.com" << false;
+        QTest::newRow("set_to_running") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << true;
     }
 
     void shouldUpdateTaskFromItem()
@@ -705,6 +710,11 @@ private slots:
         QFETCH(QDateTime, updatedStartDate);
         QFETCH(QDateTime, updatedDueDate);
         QFETCH(QString, updatedRelated);
+        QFETCH(QByteArrayList, updatedAttachmentData);
+        QFETCH(QStringList, updatedAttachmentUris);
+        QFETCH(QStringList, updatedAttachmentLabels);
+        QFETCH(QStringList, updatedAttachmentMimeTypes);
+        QFETCH(QStringList, updatedAttachmentIconNames);
         QFETCH(QString, updatedDelegateName);
         QFETCH(QString, updatedDelegateEmail);
         QFETCH(bool, updatedRunning);
@@ -727,6 +737,18 @@ private slots:
         updatedTodo->setDtStart(KDateTime(updatedStartDate, KDateTime::UTC));
         updatedTodo->setDtDue(KDateTime(updatedDueDate, KDateTime::UTC));
         updatedTodo->setRelatedTo(updatedRelated);
+
+        for (int i = 0; i < updatedAttachmentData.size(); i++) {
+            KCalCore::Attachment::Ptr attachment(new KCalCore::Attachment(QByteArray()));
+            if (!updatedAttachmentData.at(i).isEmpty())
+                attachment->setDecodedData(updatedAttachmentData.at(i));
+            else
+                attachment->setUri(updatedAttachmentUris.at(i));
+            attachment->setMimeType(updatedAttachmentMimeTypes.at(i));
+            attachment->setLabel(updatedAttachmentLabels.at(i));
+            updatedTodo->addAttachment(attachment);
+        }
+
         if (!updatedDelegateName.isEmpty() || !updatedDelegateEmail.isEmpty()) {
             KCalCore::Attendee::Ptr updatedAttendee(new KCalCore::Attendee(updatedDelegateName,
                                                                            updatedDelegateEmail,
@@ -763,6 +785,15 @@ private slots:
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
         QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
+        QCOMPARE(task->attachments().size(), updatedAttachmentData.size());
+        for (int i = 0; i < task->attachments().size(); i++) {
+            const auto attachment = task->attachments().at(i);
+            QCOMPARE(attachment.data(), updatedAttachmentData.at(i));
+            QCOMPARE(attachment.uri(), QUrl(updatedAttachmentUris.at(i)));
+            QCOMPARE(attachment.label(), updatedAttachmentLabels.at(i));
+            QCOMPARE(attachment.mimeType(), updatedAttachmentMimeTypes.at(i));
+            QCOMPARE(attachment.iconName(), updatedAttachmentIconNames.at(i));
+        }
         QCOMPARE(task->delegate().name(), updatedDelegateName);
         QCOMPARE(task->delegate().email(), updatedDelegateEmail);
         QCOMPARE(task->isRunning(), updatedRunning);
@@ -778,6 +809,15 @@ private slots:
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
         QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
+        QCOMPARE(task->attachments().size(), updatedAttachmentData.size());
+        for (int i = 0; i < task->attachments().size(); i++) {
+            const auto attachment = task->attachments().at(i);
+            QCOMPARE(attachment.data(), updatedAttachmentData.at(i));
+            QCOMPARE(attachment.uri(), QUrl(updatedAttachmentUris.at(i)));
+            QCOMPARE(attachment.label(), updatedAttachmentLabels.at(i));
+            QCOMPARE(attachment.mimeType(), updatedAttachmentMimeTypes.at(i));
+            QCOMPARE(attachment.iconName(), updatedAttachmentIconNames.at(i));
+        }
         QCOMPARE(task->delegate().name(), updatedDelegateName);
         QCOMPARE(task->delegate().email(), updatedDelegateEmail);
         QCOMPARE(task->isRunning(), updatedRunning);
@@ -920,48 +960,73 @@ private slots:
         QTest::addColumn<qint64>("itemId");
         QTest::addColumn<qint64>("parentCollectionId");
         QTest::addColumn<QString>("todoUid");
+        QTest::addColumn<Domain::Task::Attachments>("attachments");
         QTest::addColumn<Domain::Task::Delegate>("delegate");
         QTest::addColumn<bool>("running");
+
+        Domain::Task::Attachments attachments;
+
+        Domain::Task::Attachment dataAttachment;
+        dataAttachment.setData("foo");
+        dataAttachment.setLabel("dataAttachment");
+        dataAttachment.setMimeType("text/plain");
+        dataAttachment.setIconName("text-plain");
+        attachments.append(dataAttachment);
+
+        Domain::Task::Attachment uriAttachment;
+        uriAttachment.setUri(QUrl("https://www.kde.org"));
+        uriAttachment.setLabel("uriAttachment");
+        uriAttachment.setMimeType("text/html");
+        uriAttachment.setIconName("text-html");
+        attachments.append(uriAttachment);
 
         QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime()
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                               << qint64(-1) << qint64(-1) << QString()
+                                              << attachments
                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                            << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                            << qint64(-1) << qint64(-1) << QString()
+                                           << Domain::Task::Attachments()
                                            << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                            << false;
         QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime()
                                             << QDateTime() << QDateTime()
                                             << qint64(-1) << qint64(-1) << QString()
+                                            << Domain::Task::Attachments()
                                             << Domain::Task::Delegate()
                                             << false;
         QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
                                               << QDateTime(QDate(2013, 11, 24), QTime(0, 1, 2), Qt::UTC) << QDateTime(QDate(2016, 3, 1), QTime(4, 5, 6), Qt::UTC)
                                               << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::Attachments()
                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
 
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                                 << qint64(42) << qint64(43) << "my-uid"
+                                                << Domain::Task::Attachments()
                                                 << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                 << false;
         QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                              << qint64(42) << qint64(43) << "my-uid"
+                                             << Domain::Task::Attachments()
                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                              << false;
         QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime()
                                               << QDateTime() << QDateTime()
                                               << qint64(42) << qint64(43) << "my-uid"
+                                              << Domain::Task::Attachments()
                                               << Domain::Task::Delegate()
                                               << false;
         QTest::newRow("nominal case (running)") << "running" << QString() << false << QDateTime()
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                               << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::Attachments()
                                               << Domain::Task::Delegate()
                                               << true;
     }
@@ -980,6 +1045,7 @@ private slots:
         QFETCH(qint64, itemId);
         QFETCH(qint64, parentCollectionId);
         QFETCH(QString, todoUid);
+        QFETCH(Domain::Task::Attachments, attachments);
         QFETCH(Domain::Task::Delegate, delegate);
         QFETCH(bool, running);
 
@@ -996,6 +1062,7 @@ private slots:
         task->setDoneDate(doneDate);
         task->setStartDate(startDate);
         task->setDueDate(dueDate);
+        task->setAttachments(attachments);
         task->setDelegate(delegate);
         task->setRunning(running);
 
@@ -1038,6 +1105,16 @@ private slots:
             QCOMPARE(int(todo->dtStart().timeType()), int(KDateTime::UTC));
         }
         QCOMPARE(todo->dtStart().isDateOnly(), todo->allDay());
+
+        QCOMPARE(todo->attachments().size(), attachments.size());
+        for (int i = 0; i < attachments.size(); i++) {
+            auto attachment = todo->attachments().at(i);
+            QCOMPARE(attachment->isUri(), attachments.at(i).isUri());
+            QCOMPARE(QUrl(attachment->uri()), attachments.at(i).uri());
+            QCOMPARE(attachment->decodedData(), attachments.at(i).data());
+            QCOMPARE(attachment->label(), attachments.at(i).label());
+            QCOMPARE(attachment->mimeType(), attachments.at(i).mimeType());
+        }
 
         if (delegate.isValid()) {
             auto attendee = todo->attendeeByMail(delegate.email());
