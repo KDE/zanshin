@@ -25,7 +25,9 @@
 
 #include <QAbstractButton>
 #include <QLabel>
+#include <QListView>
 #include <QPlainTextEdit>
+#include <QStandardItemModel>
 
 #include <KLocalizedString>
 
@@ -44,6 +46,7 @@ public:
     EditorModelStub()
     {
         setProperty("editingInProgress", false);
+        setProperty("attachmentModel", QVariant::fromValue(&attachmentModel));
     }
 
     void setPropertyAndSignal(const QByteArray &name, const QVariant &value)
@@ -103,6 +106,7 @@ signals:
 public:
     QStringList delegateNames;
     QStringList delegateEmails;
+    QStandardItemModel attachmentModel;
 };
 
 class EditorViewTest : public QObject
@@ -138,6 +142,10 @@ private slots:
         QVERIFY(doneButton);
         QVERIFY(!doneButton->isVisibleTo(&editor));
 
+        auto attachmentList = editor.findChild<QListView*>(QStringLiteral("attachmentList"));
+        QVERIFY(attachmentList);
+        QVERIFY(!attachmentList->isVisibleTo(&editor));
+
         auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(delegateLabel);
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
@@ -169,6 +177,10 @@ private slots:
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(doneButton);
 
+        auto attachmentList = editor.findChild<QListView*>(QStringLiteral("attachmentList"));
+        QVERIFY(attachmentList);
+        QCOMPARE(attachmentList->model(), &model.attachmentModel);
+
         auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(delegateLabel);
 
@@ -184,6 +196,8 @@ private slots:
         QVERIFY(!startDateEdit->isVisibleTo(&editor));
         QVERIFY(!dueDateEdit->isVisibleTo(&editor));
         QVERIFY(!doneButton->isVisibleTo(&editor));
+        QVERIFY(!attachmentList->isVisibleTo(&editor));
+        QVERIFY(attachmentList->model() == nullptr);
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
         QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
@@ -204,6 +218,9 @@ private slots:
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(!doneButton->isVisibleTo(&editor));
 
+        auto attachmentList = editor.findChild<QListView*>(QStringLiteral("attachmentList"));
+        QVERIFY(attachmentList);
+
         auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
@@ -217,6 +234,7 @@ private slots:
         QVERIFY(startDateEdit->isVisibleTo(&editor));
         QVERIFY(dueDateEdit->isVisibleTo(&editor));
         QVERIFY(doneButton->isVisibleTo(&editor));
+        QVERIFY(attachmentList->isVisibleTo(&editor));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
         QVERIFY(delegateEdit->isVisibleTo(&editor));
     }

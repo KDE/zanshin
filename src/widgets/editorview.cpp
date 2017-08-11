@@ -104,6 +104,7 @@ void EditorView::setModel(QObject *model)
         return;
 
     if (m_model) {
+        ui->attachmentList->setModel(Q_NULLPTR);
         disconnect(m_model, Q_NULLPTR, this, Q_NULLPTR);
         disconnect(this, Q_NULLPTR, m_model, Q_NULLPTR);
     }
@@ -117,6 +118,9 @@ void EditorView::setModel(QObject *model)
         ui->textEdit->clear();
         return;
     }
+
+    auto attachments = m_model->property("attachmentModel").value<QAbstractItemModel*>();
+    ui->attachmentList->setModel(attachments);
 
     onArtifactChanged();
     onTextOrTitleChanged();
