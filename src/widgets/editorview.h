@@ -29,6 +29,8 @@
 
 #include <QDateTime>
 
+#include "domain/task.h"
+
 class QAbstractButton;
 class QLabel;
 class QPlainTextEdit;
@@ -63,6 +65,7 @@ signals:
     void startDateChanged(const QDateTime &start);
     void dueDateChanged(const QDateTime &due);
     void doneChanged(bool done);
+    void recurrenceChanged(Domain::Task::Recurrence recurrence);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) Q_DECL_OVERRIDE;
@@ -74,6 +77,7 @@ private slots:
     void onStartDateChanged();
     void onDueDateChanged();
     void onDoneChanged();
+    void onRecurrenceChanged();
     void onDelegateTextChanged();
 
     void onTextEditChanged();
@@ -81,6 +85,7 @@ private slots:
     void onDueEditEntered(const QDate &due);
     void onDoneButtonChanged(bool checked);
     void onStartTodayClicked();
+    void onRecurrenceComboChanged(int index);
     void onDelegateEntered();
 
     void onAttachmentDoubleClicked(const QModelIndex &index);

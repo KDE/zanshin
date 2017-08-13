@@ -64,6 +64,11 @@ EditorView::EditorView(QWidget *parent)
     ui->startDateEdit->setMinimumContentsLength(10);
     ui->dueDateEdit->setMinimumContentsLength(10);
 
+    ui->recurrenceCombo->addItem(i18n("Never"), QVariant::fromValue(Domain::Task::NoRecurrence));
+    ui->recurrenceCombo->addItem(i18n("Daily"), QVariant::fromValue(Domain::Task::RecursDaily));
+    ui->recurrenceCombo->addItem(i18n("Weekly"), QVariant::fromValue(Domain::Task::RecursWeekly));
+    ui->recurrenceCombo->addItem(i18n("Monthly"), QVariant::fromValue(Domain::Task::RecursMonthly));
+
     // Make sure our minimum width is always the one with
     // the task group visible
     ui->layout->activate();
@@ -76,6 +81,7 @@ EditorView::EditorView(QWidget *parent)
     ui->startDateEdit->installEventFilter(this);
     ui->dueDateEdit->installEventFilter(this);
     ui->doneButton->installEventFilter(this);
+    ui->recurrenceCombo->installEventFilter(this);
     m_delegateEdit->installEventFilter(this);
 
     connect(ui->textEdit, &QPlainTextEdit::textChanged, this, &EditorView::onTextEditChanged);
@@ -83,6 +89,8 @@ EditorView::EditorView(QWidget *parent)
     connect(ui->dueDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onDueEditEntered);
     connect(ui->doneButton, &QAbstractButton::toggled, this, &EditorView::onDoneButtonChanged);
     connect(ui->startTodayButton, &QAbstractButton::clicked, this, &EditorView::onStartTodayClicked);
+    connect(ui->recurrenceCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &EditorView::onRecurrenceComboChanged);
     connect(ui->attachmentList, &QAbstractItemView::doubleClicked, this, &EditorView::onAttachmentDoubleClicked);
     connect(m_delegateEdit, &KLineEdit::returnPressed, this, &EditorView::onDelegateEntered);
 
@@ -129,6 +137,7 @@ void EditorView::setModel(QObject *model)
     onStartDateChanged();
     onDueDateChanged();
     onDoneChanged();
+    onRecurrenceChanged();
     onDelegateTextChanged();
 
     connect(m_model, SIGNAL(artifactChanged(Domain::Artifact::Ptr)),
@@ -140,6 +149,7 @@ void EditorView::setModel(QObject *model)
     connect(m_model, SIGNAL(startDateChanged(QDateTime)), this, SLOT(onStartDateChanged()));
     connect(m_model, SIGNAL(dueDateChanged(QDateTime)), this, SLOT(onDueDateChanged()));
     connect(m_model, SIGNAL(doneChanged(bool)), this, SLOT(onDoneChanged()));
+    connect(m_model, SIGNAL(recurrenceChanged(Domain::Task::Recurrence)), this, SLOT(onRecurrenceChanged()));
     connect(m_model, SIGNAL(delegateTextChanged(QString)), this, SLOT(onDelegateTextChanged()));
 
     connect(this, SIGNAL(titleChanged(QString)), m_model, SLOT(setTitle(QString)));
@@ -147,6 +157,7 @@ void EditorView::setModel(QObject *model)
     connect(this, SIGNAL(startDateChanged(QDateTime)), m_model, SLOT(setStartDate(QDateTime)));
     connect(this, SIGNAL(dueDateChanged(QDateTime)), m_model, SLOT(setDueDate(QDateTime)));
     connect(this, SIGNAL(doneChanged(bool)), m_model, SLOT(setDone(bool)));
+    connect(this, SIGNAL(recurrenceChanged(Domain::Task::Recurrence)), m_model, SLOT(setRecurrence(Domain::Task::Recurrence)));
 }
 
 bool EditorView::eventFilter(QObject *watched, QEvent *event)
@@ -206,6 +217,17 @@ void EditorView::onDoneChanged()
     ui->doneButton->setChecked(m_model->property("done").toBool());
 }
 
+void EditorView::onRecurrenceChanged()
+{
+    const auto recurrence = m_model->property("recurrence").value<Domain::Task::Recurrence>();
+    for (int index = 0; index < ui->recurrenceCombo->count(); index++) {
+        if (recurrence == ui->recurrenceCombo->itemData(index).value<Domain::Task::Recurrence>()) {
+            ui->recurrenceCombo->setCurrentIndex(index);
+            return;
+        }
+    }
+}
+
 void EditorView::onDelegateTextChanged()
 {
     const auto delegateText = m_model->property("delegateText").toString();
@@ -251,6 +273,12 @@ void EditorView::onStartTodayClicked()
     QDate today(QDate::currentDate());
     ui->startDateEdit->setDate(today);
     emit startDateChanged(QDateTime(today, QTime(), Qt::UTC));
+}
+
+void EditorView::onRecurrenceComboChanged(int index)
+{
+    const auto recurrence = ui->recurrenceCombo->itemData(index).value<Domain::Task::Recurrence>();
+    emit recurrenceChanged(recurrence);
 }
 
 void EditorView::onDelegateEntered()

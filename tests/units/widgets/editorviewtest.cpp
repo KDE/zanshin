@@ -69,6 +69,8 @@ public:
             emit startDateChanged(value.toDateTime());
         else if (name == "dueDate")
             emit dueDateChanged(value.toDateTime());
+        else if (name == "recurrence")
+            emit recurrenceChanged(value.value<Domain::Task::Recurrence>());
         else if (name == "delegateText")
             emit delegateTextChanged(value.toString());
         else if (name == "hasTaskProperties")
@@ -84,6 +86,7 @@ public slots:
     void setDone(bool done) { setPropertyAndSignal("done", done); }
     void setStartDate(const QDateTime &start) { setPropertyAndSignal("startDate", start); }
     void setDueDate(const QDateTime &due) { setPropertyAndSignal("dueDate", due); }
+    void setRecurrence(Domain::Task::Recurrence recurrence) { setPropertyAndSignal("recurrence", QVariant::fromValue(recurrence)); }
     void setDelegateText(const QString &text) { setPropertyAndSignal("delegateText", text); }
     void makeTaskAvailable() { setArtifact(Domain::Artifact::Ptr(new Domain::Task)); }
 
@@ -101,6 +104,7 @@ signals:
     void doneChanged(bool done);
     void startDateChanged(const QDateTime &date);
     void dueDateChanged(const QDateTime &due);
+    void recurrenceChanged(Domain::Task::Recurrence recurrence);
     void delegateTextChanged(const QString &delegateText);
 
 public:
@@ -138,6 +142,10 @@ private slots:
         QVERIFY(dueDateEdit);
         QVERIFY(!dueDateEdit->isVisibleTo(&editor));
 
+        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
+        QVERIFY(recurrenceCombo);
+        QVERIFY(!recurrenceCombo->isVisibleTo(&editor));
+
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(doneButton);
         QVERIFY(!doneButton->isVisibleTo(&editor));
@@ -174,6 +182,9 @@ private slots:
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         QVERIFY(dueDateEdit);
 
+        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
+        QVERIFY(recurrenceCombo);
+
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(doneButton);
 
@@ -195,6 +206,7 @@ private slots:
         QVERIFY(textEdit->toPlainText().isEmpty());
         QVERIFY(!startDateEdit->isVisibleTo(&editor));
         QVERIFY(!dueDateEdit->isVisibleTo(&editor));
+        QVERIFY(!recurrenceCombo->isVisibleTo(&editor));
         QVERIFY(!doneButton->isVisibleTo(&editor));
         QVERIFY(!attachmentList->isVisibleTo(&editor));
         QVERIFY(attachmentList->model() == nullptr);
@@ -215,6 +227,9 @@ private slots:
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         QVERIFY(!dueDateEdit->isVisibleTo(&editor));
 
+        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
+        QVERIFY(recurrenceCombo);
+
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(!doneButton->isVisibleTo(&editor));
 
@@ -233,6 +248,7 @@ private slots:
         // THEN
         QVERIFY(startDateEdit->isVisibleTo(&editor));
         QVERIFY(dueDateEdit->isVisibleTo(&editor));
+        QVERIFY(recurrenceCombo->isVisibleTo(&editor));
         QVERIFY(doneButton->isVisibleTo(&editor));
         QVERIFY(attachmentList->isVisibleTo(&editor));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
@@ -335,11 +351,13 @@ private slots:
         model.setProperty("text", "\nMy text");
         model.setProperty("startDate", QDateTime::currentDateTime());
         model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("recurrence", QVariant::fromValue(Domain::Task::RecursWeekly));
         model.setProperty("done", true);
 
         auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
         auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
 
         // WHEN
@@ -351,6 +369,7 @@ private slots:
                                                 + model.property("text").toString()));
         QCOMPARE(startDateEdit->date(), model.property("startDate").toDateTime().date());
         QCOMPARE(dueDateEdit->date(), model.property("dueDate").toDateTime().date());
+        QCOMPARE(recurrenceCombo->currentData().value<Domain::Task::Recurrence>(), model.property("recurrence").value<Domain::Task::Recurrence>());
         QCOMPARE(doneButton->isChecked(), model.property("done").toBool());
     }
 
@@ -364,12 +383,14 @@ private slots:
         model.setProperty("text", "\nMy text");
         model.setProperty("startDate", QDateTime::currentDateTime());
         model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("recurrence", QVariant::fromValue(Domain::Task::RecursWeekly));
         model.setProperty("done", true);
         editor.setModel(&model);
 
         auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
         auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         auto delegateEdit = editor.findChild<QWidget*>(QStringLiteral("delegateEdit"));
@@ -387,6 +408,8 @@ private slots:
         model.setStartDate(QDateTime::currentDateTime().addDays(1));
         dueDateEdit->setFocus();
         model.setDueDate(QDateTime::currentDateTime().addDays(3));
+        recurrenceCombo->setFocus();
+        model.setRecurrence(Domain::Task::RecursDaily);
         doneButton->setFocus();
         model.setDone(false);
         delegateEdit->setFocus();
@@ -396,6 +419,7 @@ private slots:
         QCOMPARE(textEdit->toPlainText(), QStringLiteral("My title\n\nMy text"));
         QCOMPARE(startDateEdit->date(), QDate::currentDate());
         QCOMPARE(dueDateEdit->date(), QDate::currentDate().addDays(2));
+        QCOMPARE(recurrenceCombo->currentData().value<Domain::Task::Recurrence>(), Domain::Task::RecursWeekly);
         QVERIFY(doneButton->isChecked());
         auto expectedText = i18n("Delegated to: <b>%1</b>", QStringLiteral("John Doe"));
         QCOMPARE(delegateLabel->text(), expectedText);
@@ -625,6 +649,46 @@ private slots:
         // THEN
         QCOMPARE(startDateEdit->currentText(), today.toString(QStringLiteral("dd/MM/yyyy")));
         QCOMPARE(model.property("startDate").toDateTime().date(), today);
+    }
+
+    void shouldReactToRecurrenceChanges()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        model.setProperty("title", "My title");
+        model.setProperty("text", "\nMy text");
+        model.setProperty("startDate", QDateTime::currentDateTime());
+        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("recurrence", QVariant::fromValue(Domain::Task::RecursWeekly));
+        model.setProperty("done", false);
+        editor.setModel(&model);
+
+        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
+
+        // WHEN
+        model.setPropertyAndSignal("recurrence", Domain::Task::RecursMonthly);
+
+        // THEN
+        QCOMPARE(recurrenceCombo->currentData().value<Domain::Task::Recurrence>(), model.property("recurrence").value<Domain::Task::Recurrence>());
+    }
+
+    void shouldApplyRecurrenceComboChanges()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        editor.setModel(&model);
+
+        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
+
+        // WHEN
+        recurrenceCombo->setCurrentIndex(2); // Weekly
+
+        // THEN
+        QCOMPARE(model.property("recurrence").value<Domain::Task::Recurrence>(), Domain::Task::RecursWeekly);
     }
 
     void shouldReactToDelegateTextChanges()

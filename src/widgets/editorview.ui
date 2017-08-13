@@ -108,6 +108,22 @@
        <widget class="KPIM::KDateEdit" name="dueDateEdit"/>
       </item>
       <item row="3" column="0">
+       <widget class="QLabel" name="recurrenceLabel">
+        <property name="text">
+         <string>&amp;Recurrence</string>
+        </property>
+        <property name="margin">
+         <number>4</number>
+        </property>
+        <property name="buddy">
+         <cstring>recurrenceCombo</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="recurrenceCombo"/>
+      </item>
+      <item row="4" column="0">
        <widget class="QLabel" name="delegateToLabel">
         <property name="text">
          <string>De&amp;legate to</string>
@@ -117,7 +133,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <widget class="QWidget" name="delegateEditPlaceHolder" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="leftMargin">
@@ -135,7 +151,7 @@
         </layout>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <layout class="QHBoxLayout" name="doneLayout">
         <property name="leftMargin">
          <number>3</number>
