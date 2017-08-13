@@ -202,6 +202,21 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("relatedUid", todo->relatedTo());
     task->setRunning(todo->customProperty("Zanshin", "Running") == QLatin1String("1"));
 
+    switch (todo->recurrence()->recurrenceType()) {
+    case KCalCore::Recurrence::rDaily:
+        task->setRecurrence(Domain::Task::RecursDaily);
+        break;
+    case KCalCore::Recurrence::rWeekly:
+        task->setRecurrence(Domain::Task::RecursWeekly);
+        break;
+    case KCalCore::Recurrence::rMonthlyDay:
+        task->setRecurrence(Domain::Task::RecursMonthly);
+        break;
+    default:
+        // Other cases are not supported for now and as such just ignored
+        break;
+    }
+
     QMimeDatabase mimeDb;
     const auto attachmentsInput = todo->attachments();
     Domain::Task::Attachments attachments;
@@ -266,6 +281,20 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 
     if (task->property("relatedUid").isValid()) {
         todo->setRelatedTo(task->property("relatedUid").toString());
+    }
+
+    switch (task->recurrence()) {
+    case Domain::Task::NoRecurrence:
+        break;
+    case Domain::Task::RecursDaily:
+        todo->recurrence()->setDaily(1);
+        break;
+    case Domain::Task::RecursWeekly:
+        todo->recurrence()->setWeekly(1);
+        break;
+    case Domain::Task::RecursMonthly:
+        todo->recurrence()->setMonthly(1);
+        break;
     }
 
     for (const auto &attachment : task->attachments()) {

@@ -654,6 +654,7 @@ private slots:
         QTest::addColumn<QDateTime>("updatedStartDate");
         QTest::addColumn<QDateTime>("updatedDueDate");
         QTest::addColumn<QString>("updatedRelated");
+        QTest::addColumn<bool>("updatedRecurs");
         QTest::addColumn<QByteArrayList>("updatedAttachmentData");
         QTest::addColumn<QStringList>("updatedAttachmentUris");
         QTest::addColumn<QStringList>("updatedAttachmentLabels");
@@ -663,9 +664,9 @@ private slots:
         QTest::addColumn<QString>("updatedDelegateEmail");
         QTest::addColumn<bool>("updatedRunning");
 
-        QTest::newRow("no change") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << false;
-        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 28)) << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << QByteArrayList({"foo", "# bar", QByteArray()}) << QStringList({QString(), QString(), "https://www.kde.org"}) << QStringList({"label1", "label2", "label3"}) << QStringList({"text/plain", "text/markdown", "text/html"}) << QStringList({"text-plain", "text-markdown", "text-html"}) << "John Smith" << "j@s.com" << false;
-        QTest::newRow("set_to_running") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << true;
+        QTest::newRow("no change") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << false;
+        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 28)) << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << true << QByteArrayList({"foo", "# bar", QByteArray()}) << QStringList({QString(), QString(), "https://www.kde.org"}) << QStringList({"label1", "label2", "label3"}) << QStringList({"text/plain", "text/markdown", "text/html"}) << QStringList({"text-plain", "text-markdown", "text-html"}) << "John Smith" << "j@s.com" << false;
+        QTest::newRow("set_to_running") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << true;
     }
 
     void shouldUpdateTaskFromItem()
@@ -710,6 +711,7 @@ private slots:
         QFETCH(QDateTime, updatedStartDate);
         QFETCH(QDateTime, updatedDueDate);
         QFETCH(QString, updatedRelated);
+        QFETCH(bool, updatedRecurs);
         QFETCH(QByteArrayList, updatedAttachmentData);
         QFETCH(QStringList, updatedAttachmentUris);
         QFETCH(QStringList, updatedAttachmentLabels);
@@ -737,6 +739,9 @@ private slots:
         updatedTodo->setDtStart(KDateTime(updatedStartDate, KDateTime::UTC));
         updatedTodo->setDtDue(KDateTime(updatedDueDate, KDateTime::UTC));
         updatedTodo->setRelatedTo(updatedRelated);
+
+        if (updatedRecurs)
+            updatedTodo->recurrence()->setDaily(1);
 
         for (int i = 0; i < updatedAttachmentData.size(); i++) {
             KCalCore::Attachment::Ptr attachment(new KCalCore::Attachment(QByteArray()));
@@ -785,6 +790,7 @@ private slots:
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
         QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
+        QCOMPARE(task->recurrence(), (updatedRecurs ? Domain::Task::RecursDaily : Domain::Task::NoRecurrence));
         QCOMPARE(task->attachments().size(), updatedAttachmentData.size());
         for (int i = 0; i < task->attachments().size(); i++) {
             const auto attachment = task->attachments().at(i);
@@ -809,6 +815,7 @@ private slots:
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
         QCOMPARE(task->property("parentCollectionId").toLongLong(), updatedCollection.id());
+        QCOMPARE(task->recurrence(), (updatedRecurs ? Domain::Task::RecursDaily : Domain::Task::NoRecurrence));
         QCOMPARE(task->attachments().size(), updatedAttachmentData.size());
         for (int i = 0; i < task->attachments().size(); i++) {
             const auto attachment = task->attachments().at(i);
@@ -821,6 +828,69 @@ private slots:
         QCOMPARE(task->delegate().name(), updatedDelegateName);
         QCOMPARE(task->delegate().email(), updatedDelegateEmail);
         QCOMPARE(task->isRunning(), updatedRunning);
+    }
+
+    void shouldUpdateTaskRecurrenceFromItem_data()
+    {
+        QTest::addColumn<int>("todoRecurrence");
+        QTest::addColumn<Domain::Task::Recurrence>("expectedRecurrence");
+
+        QTest::newRow("none") << int(KCalCore::Recurrence::rNone) << Domain::Task::NoRecurrence;
+        QTest::newRow("minutely") << int(KCalCore::Recurrence::rMinutely) << Domain::Task::NoRecurrence;
+        QTest::newRow("hourly") << int(KCalCore::Recurrence::rHourly) << Domain::Task::NoRecurrence;
+        QTest::newRow("daily") << int(KCalCore::Recurrence::rDaily) << Domain::Task::RecursDaily;
+        QTest::newRow("weekly") << int(KCalCore::Recurrence::rWeekly) << Domain::Task::RecursWeekly;
+        QTest::newRow("monthly") << int(KCalCore::Recurrence::rMonthlyDay) << Domain::Task::RecursMonthly;
+    }
+
+    void shouldUpdateTaskRecurrenceFromItem()
+    {
+        // GIVEN
+
+        // A todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary(QStringLiteral("summary"));
+
+        QFETCH(int, todoRecurrence);
+        switch (todoRecurrence) {
+        case KCalCore::Recurrence::rNone:
+            break;
+        case KCalCore::Recurrence::rMinutely:
+            todo->recurrence()->setMinutely(1);
+            break;
+        case KCalCore::Recurrence::rHourly:
+            todo->recurrence()->setHourly(1);
+            break;
+        case KCalCore::Recurrence::rDaily:
+            todo->recurrence()->setDaily(1);
+            break;
+        case KCalCore::Recurrence::rWeekly:
+            todo->recurrence()->setWeekly(1);
+            break;
+        case KCalCore::Recurrence::rMonthlyDay:
+            todo->recurrence()->setMonthly(1);
+            break;
+        default:
+            qFatal("Shouldn't happen");
+        }
+
+        // ... as payload of an item...
+        Akonadi::Item item;
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // ... which has a parent collection...
+        Akonadi::Collection collection(43);
+        item.setParentCollection(collection);
+
+        // WHEN
+        // ... deserialized as a task
+        Akonadi::Serializer serializer;
+        auto task = serializer.createTaskFromItem(item);
+
+        // THEN
+        QFETCH(Domain::Task::Recurrence, expectedRecurrence);
+        QCOMPARE(task->recurrence(), expectedRecurrence);
     }
 
     void shouldNotUpdateTaskFromInvalidItem()
@@ -960,6 +1030,7 @@ private slots:
         QTest::addColumn<qint64>("itemId");
         QTest::addColumn<qint64>("parentCollectionId");
         QTest::addColumn<QString>("todoUid");
+        QTest::addColumn<Domain::Task::Recurrence>("recurrence");
         QTest::addColumn<Domain::Task::Attachments>("attachments");
         QTest::addColumn<Domain::Task::Delegate>("delegate");
         QTest::addColumn<bool>("running");
@@ -983,24 +1054,49 @@ private slots:
         QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime()
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                               << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::NoRecurrence
                                               << attachments
                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
+        QTest::newRow("nominal case (daily)") << "summary" << "content" << false << QDateTime()
+                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                              << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::RecursDaily
+                                              << Domain::Task::Attachments()
+                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                              << false;
+        QTest::newRow("nominal case (weekly)") << "summary" << "content" << false << QDateTime()
+                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                               << qint64(-1) << qint64(-1) << QString()
+                                               << Domain::Task::RecursWeekly
+                                               << Domain::Task::Attachments()
+                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                               << false;
+        QTest::newRow("nominal case (monthly)") << "summary" << "content" << false << QDateTime()
+                                                << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+                                                << qint64(-1) << qint64(-1) << QString()
+                                                << Domain::Task::RecursMonthly
+                                                << Domain::Task::Attachments()
+                                                << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
+                                                << false;
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                            << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                            << qint64(-1) << qint64(-1) << QString()
+                                           << Domain::Task::NoRecurrence
                                            << Domain::Task::Attachments()
                                            << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                            << false;
         QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime()
                                             << QDateTime() << QDateTime()
                                             << qint64(-1) << qint64(-1) << QString()
+                                            << Domain::Task::NoRecurrence
                                             << Domain::Task::Attachments()
                                             << Domain::Task::Delegate()
                                             << false;
         QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
                                               << QDateTime(QDate(2013, 11, 24), QTime(0, 1, 2), Qt::UTC) << QDateTime(QDate(2016, 3, 1), QTime(4, 5, 6), Qt::UTC)
                                               << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
@@ -1008,24 +1104,28 @@ private slots:
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                                 << qint64(42) << qint64(43) << "my-uid"
+                                                << Domain::Task::NoRecurrence
                                                 << Domain::Task::Attachments()
                                                 << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                 << false;
         QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                              << qint64(42) << qint64(43) << "my-uid"
+                                             << Domain::Task::NoRecurrence
                                              << Domain::Task::Attachments()
                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                              << false;
         QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime()
                                               << QDateTime() << QDateTime()
                                               << qint64(42) << qint64(43) << "my-uid"
+                                              << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
                                               << Domain::Task::Delegate()
                                               << false;
         QTest::newRow("nominal case (running)") << "running" << QString() << false << QDateTime()
                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
                                               << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
                                               << Domain::Task::Delegate()
                                               << true;
@@ -1045,6 +1145,7 @@ private slots:
         QFETCH(qint64, itemId);
         QFETCH(qint64, parentCollectionId);
         QFETCH(QString, todoUid);
+        QFETCH(Domain::Task::Recurrence, recurrence);
         QFETCH(Domain::Task::Attachments, attachments);
         QFETCH(Domain::Task::Delegate, delegate);
         QFETCH(bool, running);
@@ -1062,6 +1163,7 @@ private slots:
         task->setDoneDate(doneDate);
         task->setStartDate(startDate);
         task->setDueDate(dueDate);
+        task->setRecurrence(recurrence);
         task->setAttachments(attachments);
         task->setDelegate(delegate);
         task->setRunning(running);
@@ -1105,6 +1207,15 @@ private slots:
             QCOMPARE(int(todo->dtStart().timeType()), int(KDateTime::UTC));
         }
         QCOMPARE(todo->dtStart().isDateOnly(), todo->allDay());
+
+        const ushort expectedRecurrence = recurrence == Domain::Task::NoRecurrence ? KCalCore::Recurrence::rNone
+                                        : recurrence == Domain::Task::RecursDaily ? KCalCore::Recurrence::rDaily
+                                        : recurrence == Domain::Task::RecursWeekly ? KCalCore::Recurrence::rWeekly
+                                        : recurrence == Domain::Task::RecursMonthly ? KCalCore::Recurrence::rMonthlyDay
+                                        : KCalCore::Recurrence::rNone; // Shouldn't happen though
+        QCOMPARE(todo->recurrence()->recurrenceType(), expectedRecurrence);
+        if (recurrence != Domain::Task::NoRecurrence)
+            QCOMPARE(todo->recurrence()->frequency(), 1);
 
         QCOMPARE(todo->attachments().size(), attachments.size());
         for (int i = 0; i < attachments.size(); i++) {
