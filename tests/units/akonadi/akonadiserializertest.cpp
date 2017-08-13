@@ -893,6 +893,49 @@ private slots:
         QCOMPARE(task->recurrence(), expectedRecurrence);
     }
 
+    void shouldNotBreakRecurrenceDuringSerialization()
+    {
+        // GIVEN
+
+        // Data...
+        const QDateTime today(QDate::currentDate(), QTime(0, 0), Qt::UTC);
+        const QDateTime doneDate(QDate(2013, 11, 20), QTime(0, 0), Qt::UTC);
+        const QDateTime startDate(QDate(2013, 11, 10), QTime(0, 0), Qt::UTC);
+
+        // ... stored in a todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary(QStringLiteral("summary"));
+        todo->setDtStart(KDateTime(startDate, KDateTime::UTC));
+        todo->recurrence()->setMonthly(1);
+
+        // ... as payload of an item...
+        Akonadi::Item item;
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // ... deserialized as a task
+        Akonadi::Serializer serializer;
+        auto task = serializer.createTaskFromItem(item);
+
+        // WHEN
+        // Task is marked done...
+        task->setDoneDate(doneDate);
+        task->setDone(true);
+
+        // and goes through serialization and back
+        const auto newItem = serializer.createItemFromTask(task);
+        serializer.updateTaskFromItem(task, newItem);
+
+        // THEN
+        QCOMPARE(task->recurrence(), Domain::Task::RecursMonthly);
+        QVERIFY(!task->isDone());
+        const QDateTime lastOccurrence(QDate(today.date().year(), today.date().month(), 10), QTime(0, 0), Qt::UTC);
+        if (today.date().day() >= 10)
+            QCOMPARE(task->startDate(), lastOccurrence.addMonths(1));
+        else
+            QCOMPARE(task->startDate(), lastOccurrence);
+    }
+
     void shouldNotUpdateTaskFromInvalidItem()
     {
         // GIVEN

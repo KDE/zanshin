@@ -267,11 +267,6 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     todo->setSummary(task->title());
     todo->setDescription(task->text());
 
-    if (task->isDone())
-        todo->setCompleted(KDateTime(task->doneDate()));
-    else
-        todo->setCompleted(false);
-
     todo->setDtStart(KDateTime(task->startDate(), KDateTime::UTC));
     todo->setDtDue(KDateTime(task->dueDate(), KDateTime::UTC));
 
@@ -320,6 +315,13 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     } else {
         todo->removeCustomProperty("Zanshin", "Running");
     }
+
+    // Needs to be done after all other dates are positioned
+    // since this applies the recurrence logic
+    if (task->isDone())
+        todo->setCompleted(KDateTime(task->doneDate()));
+    else
+        todo->setCompleted(false);
 
     Akonadi::Item item;
     if (task->property("itemId").isValid()) {
