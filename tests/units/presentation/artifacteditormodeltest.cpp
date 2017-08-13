@@ -51,6 +51,13 @@ public:
 class ArtifactEditorModelTest : public QObject
 {
     Q_OBJECT
+public:
+    explicit ArtifactEditorModelTest(QObject *parent = Q_NULLPTR)
+        : QObject(parent)
+    {
+        qRegisterMetaType<Domain::Task::Recurrence>();
+    }
+
 private slots:
     void shouldHaveEmptyDefaultState()
     {
@@ -68,6 +75,7 @@ private slots:
         QVERIFY(!model.isDone());
         QVERIFY(model.startDate().isNull());
         QVERIFY(model.dueDate().isNull());
+        QCOMPARE(model.recurrence(), Domain::Task::NoRecurrence);
         QVERIFY(model.attachmentModel() != nullptr);
         QVERIFY(model.delegateText().isNull());
         QVERIFY(!model.hasSaveFunction());
@@ -83,6 +91,7 @@ private slots:
         QSignalSpy doneSpy(&model, &Presentation::ArtifactEditorModel::doneChanged);
         QSignalSpy startSpy(&model, &Presentation::ArtifactEditorModel::startDateChanged);
         QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
+        QSignalSpy recurrenceSpy(&model, &Presentation::ArtifactEditorModel::recurrenceChanged);
         QSignalSpy attachmentSpy(model.attachmentModel(), &QAbstractItemModel::modelReset);
         QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
@@ -108,6 +117,7 @@ private slots:
         task->setDone(true);
         task->setStartDate(QDateTime::currentDateTime());
         task->setDueDate(QDateTime::currentDateTime().addDays(2));
+        task->setRecurrence(Domain::Task::RecursDaily);
         task->setAttachments(attachments);
         task->setDelegate(Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com")));
 
@@ -119,6 +129,7 @@ private slots:
         model.setDone(task->isDone());
         model.setStartDate(task->startDate());
         model.setDueDate(task->dueDate());
+        model.setRecurrence(task->recurrence());
 
         // THEN
         QVERIFY(model.hasTaskProperties());
@@ -142,6 +153,10 @@ private slots:
         QCOMPARE(dueSpy.size(), 1);
         QCOMPARE(dueSpy.takeFirst().at(0).toDateTime(), task->dueDate());
         QCOMPARE(model.property("dueDate").toDateTime(), task->dueDate());
+
+        QCOMPARE(recurrenceSpy.size(), 1);
+        QCOMPARE(recurrenceSpy.takeFirst().at(0).value<Domain::Task::Recurrence>(), task->recurrence());
+        QCOMPARE(model.property("recurrence").value<Domain::Task::Recurrence>(), task->recurrence());
 
         QCOMPARE(delegateSpy.size(), 1);
         QCOMPARE(delegateSpy.takeFirst().at(0).toString(), task->delegate().display());
@@ -246,6 +261,11 @@ private slots:
                                   << QByteArray("dueDate")
                                   << QVariant(QDateTime::currentDateTime().addDays(2))
                                   << QByteArray(SIGNAL(dueDateChanged(QDateTime)));
+
+        QTest::newRow("task recurrence") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
+                                  << QByteArray("recurrence")
+                                  << QVariant::fromValue(Domain::Task::RecursDaily)
+                                  << QByteArray(SIGNAL(recurrenceChanged(Domain::Task::Recurrence)));
     }
 
     void shouldReactToArtifactPropertyChanges()

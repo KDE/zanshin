@@ -106,6 +106,7 @@ using namespace Presentation;
 ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
     : QObject(parent),
       m_done(false),
+      m_recurrence(Domain::Task::NoRecurrence),
       m_attachmentModel(new AttachmentModel(this)),
       m_saveTimer(new QTimer(this)),
       m_saveNeeded(false),
@@ -137,6 +138,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     m_done = false;
     m_start = QDateTime();
     m_due = QDateTime();
+    m_recurrence = Domain::Task::NoRecurrence;
     m_attachmentModel->setTask(Domain::Task::Ptr());
     m_delegateText = QString();
 
@@ -157,12 +159,14 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
         m_done = task->isDone();
         m_start = task->startDate();
         m_due = task->dueDate();
+        m_recurrence = task->recurrence();
         m_attachmentModel->setTask(task);
         m_delegateText = task->delegate().display();
 
         connect(task.data(), &Domain::Task::doneChanged, this, &ArtifactEditorModel::onDoneChanged);
         connect(task.data(), &Domain::Task::startDateChanged, this, &ArtifactEditorModel::onStartDateChanged);
         connect(task.data(), &Domain::Task::dueDateChanged, this, &ArtifactEditorModel::onDueDateChanged);
+        connect(task.data(), &Domain::Task::recurrenceChanged, this, &ArtifactEditorModel::onRecurrenceChanged);
         connect(task.data(), &Domain::Task::delegateChanged, this, &ArtifactEditorModel::onDelegateChanged);
     }
 
@@ -171,6 +175,7 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     emit doneChanged(m_done);
     emit startDateChanged(m_start);
     emit dueDateChanged(m_due);
+    emit recurrenceChanged(m_recurrence);
     emit delegateTextChanged(m_delegateText);
     emit hasTaskPropertiesChanged(hasTaskProperties());
     emit artifactChanged(m_artifact);
@@ -224,6 +229,11 @@ QDateTime ArtifactEditorModel::startDate() const
 QDateTime ArtifactEditorModel::dueDate() const
 {
     return m_due;
+}
+
+Domain::Task::Recurrence ArtifactEditorModel::recurrence() const
+{
+    return m_recurrence;
 }
 
 QAbstractItemModel *ArtifactEditorModel::attachmentModel() const
@@ -283,6 +293,14 @@ void ArtifactEditorModel::setDueDate(const QDateTime &due)
     if (m_due == due)
         return;
     applyNewDueDate(due);
+    setSaveNeeded(true);
+}
+
+void ArtifactEditorModel::setRecurrence(Domain::Task::Recurrence recurrence)
+{
+    if (m_recurrence == recurrence)
+        return;
+    applyNewRecurrence(recurrence);
     setSaveNeeded(true);
 }
 
@@ -348,6 +366,12 @@ void ArtifactEditorModel::onDueDateChanged(const QDateTime &due)
         applyNewDueDate(due);
 }
 
+void ArtifactEditorModel::onRecurrenceChanged(Domain::Task::Recurrence recurrence)
+{
+    if (!m_editingInProgress)
+        applyNewRecurrence(recurrence);
+}
+
 void ArtifactEditorModel::onDelegateChanged(const Domain::Task::Delegate &delegate)
 {
     m_delegateText = delegate.display();
@@ -369,6 +393,7 @@ void ArtifactEditorModel::save()
         task->setDone(m_done);
         task->setStartDate(m_start);
         task->setDueDate(m_due);
+        task->setRecurrence(m_recurrence);
     }
 
     const auto job = m_saveFunction(m_artifact);
@@ -419,6 +444,12 @@ void ArtifactEditorModel::applyNewDueDate(const QDateTime &due)
 {
     m_due = due;
     emit dueDateChanged(m_due);
+}
+
+void ArtifactEditorModel::applyNewRecurrence(Domain::Task::Recurrence recurrence)
+{
+    m_recurrence = recurrence;
+    emit recurrenceChanged(m_recurrence);
 }
 
 #include "artifacteditormodel.moc"

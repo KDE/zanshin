@@ -50,6 +50,7 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
+    Q_PROPERTY(Domain::Task::Recurrence recurrence READ recurrence WRITE setRecurrence NOTIFY recurrenceChanged)
     Q_PROPERTY(QAbstractItemModel* attachmentModel READ attachmentModel CONSTANT)
     Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
     Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
@@ -78,6 +79,7 @@ public:
     bool isDone() const;
     QDateTime startDate() const;
     QDateTime dueDate() const;
+    Domain::Task::Recurrence recurrence() const;
     QAbstractItemModel *attachmentModel() const;
     QString delegateText() const;
 
@@ -91,6 +93,7 @@ public slots:
     void setDone(bool done);
     void setStartDate(const QDateTime &start);
     void setDueDate(const QDateTime &due);
+    void setRecurrence(Domain::Task::Recurrence recurrence);
     void delegate(const QString &name, const QString &email);
     void openAttachment(const QModelIndex &index);
 
@@ -104,6 +107,7 @@ signals:
     void doneChanged(bool done);
     void startDateChanged(const QDateTime &date);
     void dueDateChanged(const QDateTime &due);
+    void recurrenceChanged(Domain::Task::Recurrence recurrence);
     void delegateTextChanged(const QString &delegateText);
 
 private slots:
@@ -112,6 +116,7 @@ private slots:
     void onDoneChanged(bool done);
     void onStartDateChanged(const QDateTime &start);
     void onDueDateChanged(const QDateTime &due);
+    void onRecurrenceChanged(Domain::Task::Recurrence recurrence);
     void onDelegateChanged(const Domain::Task::Delegate &delegate);
 
     void save();
@@ -124,6 +129,7 @@ private:
     void applyNewDone(bool done);
     void applyNewStartDate(const QDateTime &start);
     void applyNewDueDate(const QDateTime &due);
+    void applyNewRecurrence(Domain::Task::Recurrence recurrence);
 
     Domain::Artifact::Ptr m_artifact;
     SaveFunction m_saveFunction;
@@ -134,6 +140,7 @@ private:
     bool m_done;
     QDateTime m_start;
     QDateTime m_due;
+    Domain::Task::Recurrence m_recurrence;
     AttachmentModel *m_attachmentModel;
     QString m_delegateText;
 
