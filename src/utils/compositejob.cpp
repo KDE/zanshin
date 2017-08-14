@@ -68,8 +68,11 @@ void CompositeJob::emitError(const QString &errorText)
 
 void CompositeJob::slotResult(KJob *job)
 {
-    KCompositeJob::slotResult(job);
-
-    if (!hasSubjobs())
-        emitResult();
+    if (job->error()) {
+        KCompositeJob::slotResult(job);
+    } else {
+        removeSubjob(job);
+        if (!hasSubjobs())
+            emitResult();
+    }
 }

@@ -149,6 +149,36 @@ private slots:
         QCOMPARE(compositeJob->errorText(), QStringLiteral("Error reached"));
         delete compositeJob;
     }
+
+    void shouldNotEmitResultTwiceOnSecondSubJobError()
+    {
+        // GIVEN
+        int callCount = 0;
+
+        auto handler = [&]() {
+            callCount++;
+        };
+
+        FakeJob *job1 = new FakeJob(this);
+        FakeJob *job2 = new FakeJob(this);
+        job2->setExpectedError(KJob::UserDefinedError, "Fake error");
+
+        CompositeJob *compositeJob = new CompositeJob(this);
+        compositeJob->setAutoDelete(false);
+        compositeJob->install(job1, handler);
+        compositeJob->install(job2, handler);
+
+        QSignalSpy spy(compositeJob, &KJob::result);
+
+        // WHEN
+        compositeJob->start();
+        QTest::qWait(FakeJob::DURATION*2 + 10);
+
+        // THEN
+        QCOMPARE(spy.count(), 1);
+        delete compositeJob;
+
+    }
 };
 
 ZANSHIN_TEST_MAIN(CompositeJobTest)
