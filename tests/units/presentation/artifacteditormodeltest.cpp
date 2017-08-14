@@ -26,6 +26,7 @@
 #include "utils/mockobject.h"
 
 #include <QSignalSpy>
+#include <QTemporaryFile>
 
 #include "testlib/fakejob.h"
 
@@ -554,6 +555,85 @@ private slots:
         // THEN
         QCOMPARE(spy.size(), 1); // emitted by setArtifact
         QVERIFY(model.property(propertyName) != artifact->property(propertyName));
+    }
+
+    void shouldAddAttachments()
+    {
+        // GIVEN
+        QTemporaryFile temporaryFile(QDir::tempPath() + "/artifacteditormodeltest_XXXXXX.txt");
+        temporaryFile.open();
+        temporaryFile.write("foo bar");
+        temporaryFile.close();
+        auto fileName = temporaryFile.fileName().mid(QDir::tempPath().size() + 1);
+
+        auto task = Domain::Task::Ptr::create();
+
+        auto savedArtifact = Domain::Artifact::Ptr();
+        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
+            savedArtifact = artifact;
+            return new FakeJob(this);
+        };
+
+        Presentation::ArtifactEditorModel model;
+        model.setSaveFunction(save);
+        model.setArtifact(task);
+
+        QSignalSpy spy(model.attachmentModel(), &QAbstractItemModel::modelReset);
+
+        // WHEN
+        model.addAttachment(temporaryFile.fileName());
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(model.attachmentModel()->rowCount(), 1);
+        QVERIFY(!savedArtifact);
+
+        // WHEN (nothing else happens after a delay)
+        QTest::qWait(model.autoSaveDelay() + 50);
+
+        // THEN
+        QCOMPARE(savedArtifact.objectCast<Domain::Task>(), task);
+        QCOMPARE(task->attachments().size(), 1);
+        QCOMPARE(task->attachments().first().label(), fileName);
+        QCOMPARE(task->attachments().first().mimeType(), QStringLiteral("text/plain"));
+        QCOMPARE(task->attachments().first().iconName(), QStringLiteral("text-plain"));
+        QCOMPARE(task->attachments().first().data(), QByteArrayLiteral("foo bar"));
+    }
+
+    void shouldRemoveAttachments()
+    {
+        // GIVEN
+        auto task = Domain::Task::Ptr::create();
+        task->setAttachments(Domain::Task::Attachments() << Domain::Task::Attachment("foo")
+                                                         << Domain::Task::Attachment("bar"));
+
+        auto savedArtifact = Domain::Artifact::Ptr();
+        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
+            savedArtifact = artifact;
+            return new FakeJob(this);
+        };
+
+        Presentation::ArtifactEditorModel model;
+        model.setSaveFunction(save);
+        model.setArtifact(task);
+
+        QSignalSpy spy(model.attachmentModel(), &QAbstractItemModel::modelReset);
+
+        // WHEN
+        model.removeAttachment(model.attachmentModel()->index(0, 0));
+
+        // THEN
+        QCOMPARE(spy.size(), 1);
+        QCOMPARE(model.attachmentModel()->rowCount(), 1);
+        QVERIFY(!savedArtifact);
+
+        // WHEN (nothing else happens after a delay)
+        QTest::qWait(model.autoSaveDelay() + 50);
+
+        // THEN
+        QCOMPARE(savedArtifact.objectCast<Domain::Task>(), task);
+        QCOMPARE(task->attachments().size(), 1);
+        QCOMPARE(task->attachments().first().data(), QByteArrayLiteral("bar"));
     }
 };
 

@@ -95,6 +95,9 @@ public slots:
     void setDueDate(const QDateTime &due);
     void setRecurrence(Domain::Task::Recurrence recurrence);
     void delegate(const QString &name, const QString &email);
+
+    void addAttachment(const QString &fileName);
+    void removeAttachment(const QModelIndex &index);
     void openAttachment(const QModelIndex &index);
 
     void setEditingInProgress(bool editingInProgress);

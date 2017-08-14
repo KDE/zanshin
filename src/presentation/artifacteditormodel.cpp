@@ -25,9 +25,11 @@
 #include "artifacteditormodel.h"
 
 #include <QAbstractListModel>
+#include <QDebug>
 #include <QDesktopServices>
 #include <QDir>
 #include <QIcon>
+#include <QMimeDatabase>
 #include <QTemporaryFile>
 #include <QTimer>
 
@@ -310,6 +312,52 @@ void ArtifactEditorModel::delegate(const QString &name, const QString &email)
     Q_ASSERT(task);
     auto delegate = Domain::Task::Delegate(name, email);
     m_delegateFunction(task, delegate);
+}
+
+void ArtifactEditorModel::addAttachment(const QString &fileName)
+{
+    auto task = m_artifact.objectCast<Domain::Task>();
+    if (!task)
+        return;
+
+    QMimeDatabase mimeDb;
+    auto mimeType = mimeDb.mimeTypeForFile(fileName);
+
+    auto attachment = Domain::Task::Attachment();
+    attachment.setLabel(QFileInfo(fileName).fileName());
+    attachment.setMimeType(mimeType.name());
+    attachment.setIconName(mimeType.iconName());
+
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly)) {
+        // TODO: Might be worth extending error handling
+        // to deal with job-less errors later on
+        qWarning() << "Couldn't open" << fileName;
+        return;
+    }
+
+    attachment.setData(file.readAll());
+
+    file.close();
+
+    auto attachments = task->attachments();
+    attachments.append(attachment);
+    task->setAttachments(attachments);
+
+    setSaveNeeded(true);
+}
+
+void ArtifactEditorModel::removeAttachment(const QModelIndex &index)
+{
+    auto task = m_artifact.objectCast<Domain::Task>();
+    if (!task)
+        return;
+
+    auto attachments = task->attachments();
+    attachments.removeAt(index.row());
+    task->setAttachments(attachments);
+
+    setSaveNeeded(true);
 }
 
 void ArtifactEditorModel::openAttachment(const QModelIndex &index)
