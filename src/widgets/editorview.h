@@ -29,6 +29,8 @@
 
 #include <QDateTime>
 
+#include <functional>
+
 #include "domain/task.h"
 
 class QAbstractButton;
@@ -51,13 +53,17 @@ class EditorView : public QWidget
 {
     Q_OBJECT
 public:
+    typedef std::function<QString(QWidget*)> RequestFileNameFunction;
+
     explicit EditorView(QWidget *parent = Q_NULLPTR);
     ~EditorView();
 
     QObject *model() const;
+    RequestFileNameFunction requestFileNameFunction() const;
 
 public slots:
     void setModel(QObject *model);
+    void setRequestFileNameFunction(const RequestFileNameFunction &function);
 
 signals:
     void textChanged(const QString &text);
@@ -88,10 +94,14 @@ private slots:
     void onRecurrenceComboChanged(int index);
     void onDelegateEntered();
 
+    void onAttachmentSelectionChanged();
+    void onAddAttachmentClicked();
+    void onRemoveAttachmentClicked();
     void onAttachmentDoubleClicked(const QModelIndex &index);
 
 private:
     QObject *m_model;
+    RequestFileNameFunction m_requestFileNameFunction;
 
     Ui::EditorView *ui;
     KLineEdit *m_delegateEdit;

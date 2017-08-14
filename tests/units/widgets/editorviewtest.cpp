@@ -28,6 +28,7 @@
 #include <QListView>
 #include <QPlainTextEdit>
 #include <QStandardItemModel>
+#include <QToolButton>
 
 #include <KLocalizedString>
 
@@ -96,6 +97,18 @@ public slots:
         delegateEmails << email;
     }
 
+    void addAttachment(const QString &fileName)
+    {
+        auto item = new QStandardItem(fileName);
+        attachmentModel.appendRow(QList<QStandardItem*>() << item);
+    }
+
+    void removeAttachment(const QModelIndex &index)
+    {
+        if (index.isValid())
+            attachmentModel.removeRows(index.row(), 1, QModelIndex());
+    }
+
 signals:
     void artifactChanged(const Domain::Artifact::Ptr &artifact);
     void hasTaskPropertiesChanged(bool hasTaskProperties);
@@ -154,6 +167,14 @@ private slots:
         QVERIFY(attachmentList);
         QVERIFY(!attachmentList->isVisibleTo(&editor));
 
+        auto addAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("addAttachmentButton"));
+        QVERIFY(addAttachmentButton);
+        QVERIFY(!addAttachmentButton->isVisibleTo(&editor));
+
+        auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
+        QVERIFY(removeAttachmentButton);
+        QVERIFY(!removeAttachmentButton->isVisibleTo(&editor));
+
         auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(delegateLabel);
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
@@ -192,6 +213,12 @@ private slots:
         QVERIFY(attachmentList);
         QCOMPARE(attachmentList->model(), &model.attachmentModel);
 
+        auto addAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("addAttachmentButton"));
+        QVERIFY(addAttachmentButton);
+
+        auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
+        QVERIFY(removeAttachmentButton);
+
         auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(delegateLabel);
 
@@ -210,6 +237,8 @@ private slots:
         QVERIFY(!doneButton->isVisibleTo(&editor));
         QVERIFY(!attachmentList->isVisibleTo(&editor));
         QVERIFY(attachmentList->model() == nullptr);
+        QVERIFY(!addAttachmentButton->isVisibleTo(&editor));
+        QVERIFY(!removeAttachmentButton->isVisibleTo(&editor));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
         QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
@@ -236,6 +265,12 @@ private slots:
         auto attachmentList = editor.findChild<QListView*>(QStringLiteral("attachmentList"));
         QVERIFY(attachmentList);
 
+        auto addAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("addAttachmentButton"));
+        QVERIFY(addAttachmentButton);
+
+        auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
+        QVERIFY(removeAttachmentButton);
+
         auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
 
@@ -251,6 +286,8 @@ private slots:
         QVERIFY(recurrenceCombo->isVisibleTo(&editor));
         QVERIFY(doneButton->isVisibleTo(&editor));
         QVERIFY(attachmentList->isVisibleTo(&editor));
+        QVERIFY(addAttachmentButton->isVisibleTo(&editor));
+        QVERIFY(removeAttachmentButton->isVisibleTo(&editor));
         QVERIFY(!delegateLabel->isVisibleTo(&editor));
         QVERIFY(delegateEdit->isVisibleTo(&editor));
     }
@@ -689,6 +726,57 @@ private slots:
 
         // THEN
         QCOMPARE(model.property("recurrence").value<Domain::Task::Recurrence>(), Domain::Task::RecursWeekly);
+    }
+
+    void shouldAddAttachments()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        editor.setRequestFileNameFunction([](QWidget*) { return "/tmp/foobar"; });
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        editor.setModel(&model);
+
+        auto addAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("addAttachmentButton"));
+
+        // WHEN
+        addAttachmentButton->click();
+
+        // THEN
+        QCOMPARE(model.attachmentModel.rowCount(), 1);
+        QCOMPARE(model.attachmentModel.data(model.attachmentModel.index(0, 0)).toString(),
+                 QStringLiteral("/tmp/foobar"));
+    }
+
+    void shouldRemoveAttachments()
+    {
+        // GIVEN
+        Widgets::EditorView editor;
+        EditorModelStub model;
+        model.makeTaskAvailable();
+        model.addAttachment("/tmp/foo");
+        model.addAttachment("/tmp/bar");
+        editor.setModel(&model);
+
+        auto attachmentList = editor.findChild<QListView*>(QStringLiteral("attachmentList"));
+        auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
+
+        // THEN
+        QVERIFY(!removeAttachmentButton->isEnabled());
+
+        // WHEN
+        attachmentList->selectionModel()->select(model.attachmentModel.index(0, 0), QItemSelectionModel::ClearAndSelect);
+
+        // THEN
+        QVERIFY(removeAttachmentButton->isEnabled());
+
+        // WHEN
+        removeAttachmentButton->click();
+
+        // THEN
+        QCOMPARE(model.attachmentModel.rowCount(), 1);
+        QCOMPARE(model.attachmentModel.data(model.attachmentModel.index(0, 0)).toString(),
+                 QStringLiteral("/tmp/bar"));
     }
 
     void shouldReactToDelegateTextChanges()

@@ -26,6 +26,7 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QFileDialog>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
@@ -47,6 +48,10 @@ EditorView::EditorView(QWidget *parent)
       ui(new Ui::EditorView),
       m_delegateEdit(Q_NULLPTR)
 {
+    m_requestFileNameFunction = [](QWidget *parent) {
+        return QFileDialog::getOpenFileName(parent, i18n("Add Attachment"));
+    };
+
     ui->setupUi(this);
 
     // To avoid having unit tests talking to akonadi
@@ -92,6 +97,8 @@ EditorView::EditorView(QWidget *parent)
     connect(ui->recurrenceCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &EditorView::onRecurrenceComboChanged);
     connect(ui->attachmentList, &QAbstractItemView::doubleClicked, this, &EditorView::onAttachmentDoubleClicked);
+    connect(ui->addAttachmentButton, &QToolButton::clicked, this, &EditorView::onAddAttachmentClicked);
+    connect(ui->removeAttachmentButton, &QToolButton::clicked, this, &EditorView::onRemoveAttachmentClicked);
     connect(m_delegateEdit, &KLineEdit::returnPressed, this, &EditorView::onDelegateEntered);
 
     setEnabled(false);
@@ -107,12 +114,19 @@ QObject *EditorView::model() const
     return m_model;
 }
 
+EditorView::RequestFileNameFunction EditorView::requestFileNameFunction() const
+{
+    return m_requestFileNameFunction;
+}
+
 void EditorView::setModel(QObject *model)
 {
     if (model == m_model)
         return;
 
     if (m_model) {
+        disconnect(ui->attachmentList->selectionModel(), &QItemSelectionModel::selectionChanged,
+                   this, &EditorView::onAttachmentSelectionChanged);
         ui->attachmentList->setModel(Q_NULLPTR);
         disconnect(m_model, Q_NULLPTR, this, Q_NULLPTR);
         disconnect(this, Q_NULLPTR, m_model, Q_NULLPTR);
@@ -130,6 +144,8 @@ void EditorView::setModel(QObject *model)
 
     auto attachments = m_model->property("attachmentModel").value<QAbstractItemModel*>();
     ui->attachmentList->setModel(attachments);
+    connect(ui->attachmentList->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &EditorView::onAttachmentSelectionChanged);
 
     onArtifactChanged();
     onTextOrTitleChanged();
@@ -139,6 +155,7 @@ void EditorView::setModel(QObject *model)
     onDoneChanged();
     onRecurrenceChanged();
     onDelegateTextChanged();
+    onAttachmentSelectionChanged();
 
     connect(m_model, SIGNAL(artifactChanged(Domain::Artifact::Ptr)),
             this, SLOT(onArtifactChanged()));
@@ -158,6 +175,11 @@ void EditorView::setModel(QObject *model)
     connect(this, SIGNAL(dueDateChanged(QDateTime)), m_model, SLOT(setDueDate(QDateTime)));
     connect(this, SIGNAL(doneChanged(bool)), m_model, SLOT(setDone(bool)));
     connect(this, SIGNAL(recurrenceChanged(Domain::Task::Recurrence)), m_model, SLOT(setRecurrence(Domain::Task::Recurrence)));
+}
+
+void EditorView::setRequestFileNameFunction(const EditorView::RequestFileNameFunction &function)
+{
+    m_requestFileNameFunction = function;
 }
 
 bool EditorView::eventFilter(QObject *watched, QEvent *event)
@@ -306,6 +328,37 @@ void EditorView::onDelegateEntered()
                                   Q_ARG(QString, email));
         m_delegateEdit->clear();
     }
+}
+
+void EditorView::onAttachmentSelectionChanged()
+{
+    if (!m_model)
+        return;
+
+    const auto selectionModel = ui->attachmentList->selectionModel();
+    const auto selectedIndexes = selectionModel->selectedIndexes();
+    ui->removeAttachmentButton->setEnabled(!selectedIndexes.isEmpty());
+}
+
+void EditorView::onAddAttachmentClicked()
+{
+    if (!m_model)
+        return;
+
+    auto fileName = m_requestFileNameFunction(this);
+    if (!fileName.isEmpty())
+        QMetaObject::invokeMethod(m_model, "addAttachment", Q_ARG(QString, fileName));
+}
+
+void EditorView::onRemoveAttachmentClicked()
+{
+    if (!m_model)
+        return;
+
+    const auto selectionModel = ui->attachmentList->selectionModel();
+    const auto selectedIndexes = selectionModel->selectedIndexes();
+    if (!selectedIndexes.isEmpty())
+        QMetaObject::invokeMethod(m_model, "removeAttachment", Q_ARG(QModelIndex, selectedIndexes.first()));
 }
 
 void EditorView::onAttachmentDoubleClicked(const QModelIndex &index)
