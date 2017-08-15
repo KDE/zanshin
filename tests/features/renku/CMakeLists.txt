@@ -9,3 +9,5 @@ target_link_libraries(tests-features-renku
     Qt5::Core
     Qt5::Network
 )
+# Don't run this at the same time as tests-features-zanshin
+set_tests_properties(tests-features-renku PROPERTIES RUN_SERIAL TRUE)
