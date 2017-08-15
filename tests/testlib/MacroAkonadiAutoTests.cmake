@@ -36,6 +36,6 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
                       USES_TERMINAL
     )
 
-    add_test(${_prefixed_testname} ${CMAKE_MAKE_PROGRAM} -C "${CMAKE_BINARY_DIR}" ${_prefixed_testname}-run)
+    add_test(NAME ${_prefixed_testname} COMMAND ${CMAKE_MAKE_PROGRAM} -C "${CMAKE_BINARY_DIR}" ${_prefixed_testname}-run)
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AKONADI_AUTO_TESTS)

@@ -40,7 +40,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
     set(_prefixed_testname "${prefix}-${_testname}")
     add_executable(${_prefixed_testname} ${_testname}.cpp)
-    add_test(${_prefixed_testname} ${_prefixed_testname})
+    add_test(NAME ${_prefixed_testname} COMMAND ${_prefixed_testname})
     kde_enable_exceptions()
     target_link_libraries(${_prefixed_testname}
       Qt5::Test

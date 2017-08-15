@@ -1,7 +1,7 @@
 add_subdirectory(features)
 
 add_executable(tests-features-renku ../features-run.cpp)
-add_test(tests-features-renku tests-features-renku)
+add_test(NAME tests-features-renku COMMAND tests-features-renku)
 add_definitions(-DUSER_XMLDATA="${CMAKE_CURRENT_SOURCE_DIR}/../testenv/data/testdata.xml"
                 -DCUKE_STEPS="${CMAKE_CURRENT_BINARY_DIR}/features/step_definitions/renku-cuke-steps"
                 -DFEATURES_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
