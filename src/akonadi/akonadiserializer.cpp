@@ -226,7 +226,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
                    [&mimeDb] (const KCalCore::Attachment::Ptr &attach) {
                        Domain::Task::Attachment attachment;
                        if (attach->isUri())
-                           attachment.setUri(attach->uri());
+                           attachment.setUri(QUrl(attach->uri()));
                        else
                            attachment.setData(attach->decodedData());
                        attachment.setLabel(attach->label());
