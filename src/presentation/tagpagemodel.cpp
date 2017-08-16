@@ -132,6 +132,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
             return Q_NULLPTR;
 
         auto draggedArtifacts = Domain::Artifact::List();
+        draggedArtifacts.reserve(notes.count());
         std::copy(notes.constBegin(), notes.constEnd(),
                   std::back_inserter(draggedArtifacts));
 

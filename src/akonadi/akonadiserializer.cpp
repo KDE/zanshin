@@ -429,6 +429,7 @@ Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List 
                                       });
 
     Akonadi::Item::List itemsRemoved;
+    itemsRemoved.reserve(std::distance(itemsToProcess.begin(), bound));
     std::copy(itemsToProcess.begin(), bound, std::back_inserter(itemsRemoved));
     itemsToProcess.erase(itemsToProcess.begin(), bound);
 
