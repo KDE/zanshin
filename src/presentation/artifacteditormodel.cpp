@@ -105,6 +105,8 @@ private:
 
 using namespace Presentation;
 
+static int s_autoSaveDelay = 500;
+
 ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
     : QObject(parent),
       m_done(false),
@@ -115,7 +117,6 @@ ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
       m_editingInProgress(false)
 {
     m_saveTimer->setSingleShot(true);
-    m_saveTimer->setInterval(autoSaveDelay());
     connect(m_saveTimer, &QTimer::timeout, this, &ArtifactEditorModel::save);
 }
 
@@ -250,7 +251,12 @@ QString ArtifactEditorModel::delegateText() const
 
 int ArtifactEditorModel::autoSaveDelay()
 {
-    return 500;
+    return s_autoSaveDelay;
+}
+
+void ArtifactEditorModel::setAutoSaveDelay(int delay)
+{
+    s_autoSaveDelay = delay;
 }
 
 bool ArtifactEditorModel::editingInProgress() const
@@ -452,7 +458,7 @@ void ArtifactEditorModel::save()
 void ArtifactEditorModel::setSaveNeeded(bool needed)
 {
     if (needed)
-        m_saveTimer->start();
+        m_saveTimer->start(autoSaveDelay());
     else
         m_saveTimer->stop();
 

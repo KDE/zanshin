@@ -57,6 +57,7 @@ public:
         : QObject(parent)
     {
         qRegisterMetaType<Domain::Task::Recurrence>();
+        Presentation::ArtifactEditorModel::setAutoSaveDelay(50);
     }
 
 private slots:

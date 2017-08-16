@@ -84,6 +84,7 @@ public:
     QString delegateText() const;
 
     static int autoSaveDelay();
+    static void setAutoSaveDelay(int delay);
 
     bool editingInProgress() const;
 
