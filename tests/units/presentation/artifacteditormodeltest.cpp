@@ -82,6 +82,8 @@ private slots:
         QVERIFY(model.delegateText().isNull());
         QVERIFY(!model.hasSaveFunction());
         QVERIFY(!model.hasDelegateFunction());
+        auto am = model.attachmentModel();
+        QCOMPARE(am->rowCount(), 0);
     }
 
     void shouldHaveTaskProperties()

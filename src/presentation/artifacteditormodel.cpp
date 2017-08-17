@@ -68,7 +68,7 @@ public:
 
     int rowCount(const QModelIndex &parent) const override
     {
-        if (parent.isValid())
+        if (parent.isValid() || !m_task)
             return 0;
 
         return m_task->attachments().size();
