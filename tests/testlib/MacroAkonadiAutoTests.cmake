@@ -28,7 +28,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
     configure_file(${_akonaditest_source_dir}/akonaditest-run.sh.in ${_prefixed_testname}-run.sh)
 
     set(akonaditest-run-cmd "${_testrunner}" -c "${CMAKE_CURRENT_SOURCE_DIR}/testenv/config.xml"
-                            sh "${CMAKE_CURRENT_BINARY_DIR}/${_prefixed_testname}-run.sh" 2> "${CMAKE_CURRENT_BINARY_DIR}/akonaditest-${_prefixed_testname}.log")
+                            sh "${CMAKE_CURRENT_BINARY_DIR}/${_prefixed_testname}-run.sh")
 
     add_custom_target(${_prefixed_testname}-run
                       COMMAND ${akonaditest-run-cmd}
