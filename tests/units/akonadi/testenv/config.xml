@@ -1,5 +1,5 @@
 <config>
-  <confighome>config</confighome>
+  <confighome>xdgconfig</confighome>
   <datahome>data</datahome>
   <agent synchronize="true">akonadi_knut_resource</agent>
   <envvar name="AKONADI_DISABLE_AGENT_AUTOSTART">true</envvar>
