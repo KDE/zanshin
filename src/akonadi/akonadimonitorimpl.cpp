@@ -39,7 +39,7 @@
 using namespace Akonadi;
 
 MonitorImpl::MonitorImpl()
-    : m_monitor(new Akonadi::Monitor)
+    : m_monitor(new Akonadi::Monitor(this))
 {
     AttributeFactory::registerAttribute<ApplicationSelectedAttribute>();
     AttributeFactory::registerAttribute<TimestampAttribute>();
