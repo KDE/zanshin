@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.2)
 find_package(ECM REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
+include(GenerateExportHeader)
 include(KDEInstallDirs)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
@@ -75,6 +76,7 @@ find_package(KF5 REQUIRED COMPONENTS
     Wallet
     WindowSystem
     I18n
+    KDELibs4Support
 )
 find_package(KF5Akonadi "5.1" CONFIG REQUIRED)
 
