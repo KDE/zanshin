@@ -26,5 +26,6 @@ target_link_libraries(testlib
     KF5::CalendarCore
     KF5::Mime
     Qt5::Test
+    KF5::KDELibs4Support
 )
 

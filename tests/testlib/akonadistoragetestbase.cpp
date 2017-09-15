@@ -29,6 +29,7 @@
 #include <testlib/akonadidebug.h>
 #include <testlib/monitorspy.h>
 
+#include <KDateTime>
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
 #include <kcalcore_version.h>

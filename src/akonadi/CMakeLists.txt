@@ -41,4 +41,6 @@ target_link_libraries(akonadi
     KF5::Mime
     KF5::CalendarCore
     KF5::IdentityManagement
+    KF5::ConfigCore
+    KF5::KDELibs4Support
 )

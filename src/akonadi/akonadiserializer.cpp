@@ -32,6 +32,7 @@
 #include <KCalCore/Todo>
 #include <KMime/Message>
 #include <QMimeDatabase>
+#include <KDateTime>
 
 #include <numeric>
 
