@@ -31,7 +31,6 @@ Name[sv]=LDAP-serverinställningar
 Name[tr]=LDAP Sunucu Ayarları
 Name[uk]=Параметри сервера LDAP
 Name[x-test]=xxLDAP Server Settingsxx
-Name[zh_CN]=LDAP 服务器设置
 Comment=Configure the available LDAP servers
 Comment[bs]=Podešavanje dostupnih LDAP servera
 Comment[ca]=Configura els servidors LDAP disponibles
