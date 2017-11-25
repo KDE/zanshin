@@ -24,6 +24,7 @@
 #include <testlib/qtest_zanshin.h>
 #include <AkonadiCore/Item>
 #include <KCalCore/Todo>
+#include <kcalcore_version.h>
 #include "domain/task.h"
 #include "akonadi/akonadiserializer.h"
 
@@ -38,6 +39,10 @@ private slots:
     void deserializeAndDestroy();
     void checkPayload();
 };
+
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+#define KDateTime QDateTime
+#endif
 
 Akonadi::Item SerializerBenchmark::createTestItem()
 {

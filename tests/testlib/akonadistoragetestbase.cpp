@@ -29,10 +29,12 @@
 #include <testlib/akonadidebug.h>
 #include <testlib/monitorspy.h>
 
-#include <KDateTime>
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
 #include <kcalcore_version.h>
+#if KCALCORE_VERSION < QT_VERSION_CHECK(5, 6, 80)
+#include <KDateTime>
+#endif
 
 #include "utils/mem_fn.h"
 
@@ -48,6 +50,10 @@
 #include "akonadi/akonadistoragesettings.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonaditimestampattribute.h"
+
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+#define KDateTime QDateTime
+#endif
 
 using namespace Testlib;
 

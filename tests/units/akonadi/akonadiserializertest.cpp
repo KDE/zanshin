@@ -34,9 +34,25 @@
 #include <Akonadi/Notes/NoteUtils>
 #include <AkonadiCore/Tag>
 #include <KCalCore/Todo>
+#include <kcalcore_version.h>
 #include <KMime/Message>
 
 Q_DECLARE_METATYPE(Akonadi::Item*)
+
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+#define KDateTime QDateTime
+#endif
+
+
+static void setTodoDates(KCalCore::Todo::Ptr todo, const QDateTime &start, const QDateTime &due) {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+    todo->setDtStart(start);
+    todo->setDtDue(due);
+#else
+    todo->setDtStart(KDateTime(start, KDateTime::UTC));
+    todo->setDtDue(KDateTime(due, KDateTime::UTC));
+#endif
+}
 
 class AkonadiSerializerTest : public QObject
 {
@@ -551,8 +567,7 @@ private slots:
         else
             todo->setCompleted(isDone);
 
-        todo->setDtStart(KDateTime(startDate, KDateTime::UTC));
-        todo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
+        setTodoDates(todo, startDate, dueDate);
         todo->setRelatedTo(QStringLiteral("my-uid"));
         if (!delegateName.isEmpty() || !delegateEmail.isEmpty()) {
             KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(delegateName,
@@ -678,8 +693,8 @@ private slots:
         originalTodo->setSummary(QStringLiteral("summary"));
         originalTodo->setDescription(QStringLiteral("content"));
         originalTodo->setCompleted(false);
-        originalTodo->setDtStart(KDateTime(QDate(2013, 11, 24), KDateTime::UTC));
-        originalTodo->setDtDue(KDateTime(QDate(2014, 03, 01), KDateTime::UTC));
+        setTodoDates(originalTodo, QDateTime(QDate(2013, 11, 24)), QDateTime(QDate(2014, 03, 01)));
+
         originalTodo->setRelatedTo(QStringLiteral("my-uid"));
         KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee(QStringLiteral("John Doe"),
                                                                         QStringLiteral("j@d.com"),
@@ -736,8 +751,7 @@ private slots:
         else
             updatedTodo->setCompleted(updatedDone);
 
-        updatedTodo->setDtStart(KDateTime(updatedStartDate, KDateTime::UTC));
-        updatedTodo->setDtDue(KDateTime(updatedDueDate, KDateTime::UTC));
+        setTodoDates(updatedTodo, updatedStartDate, updatedDueDate);
         updatedTodo->setRelatedTo(updatedRelated);
 
         if (updatedRecurs)
@@ -905,7 +919,11 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(QStringLiteral("summary"));
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+        todo->setDtStart(startDate);
+#else
         todo->setDtStart(KDateTime(startDate, KDateTime::UTC));
+#endif
         todo->recurrence()->setMonthly(1);
 
         // ... as payload of an item...
@@ -957,9 +975,7 @@ private slots:
             originalTodo->setCompleted(KDateTime(doneDate));
         else
             originalTodo->setCompleted(isDone);
-
-        originalTodo->setDtStart(KDateTime(startDate, KDateTime::UTC));
-        originalTodo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
+        setTodoDates(originalTodo, startDate, dueDate);
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -1016,9 +1032,7 @@ private slots:
             originalTodo->setCompleted(KDateTime(doneDate));
         else
             originalTodo->setCompleted(isDone);
-
-        originalTodo->setDtStart(KDateTime(startDate, KDateTime::UTC));
-        originalTodo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
+        setTodoDates(originalTodo, startDate, dueDate);
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -1136,13 +1150,15 @@ private slots:
                                             << Domain::Task::Attachments()
                                             << Domain::Task::Delegate()
                                             << false;
-        QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
+#if 0 // if we ever need time info, then we need a Task::setAllDay(bool) just like KCalCore::Todo has.
+      QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
                                               << QDateTime(QDate(2013, 11, 24), QTime(0, 1, 2), Qt::UTC) << QDateTime(QDate(2016, 3, 1), QTime(4, 5, 6), Qt::UTC)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
+#endif
 
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
                                                 << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
@@ -1243,6 +1259,15 @@ private slots:
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->description(), content);
         QCOMPARE(todo->isCompleted(), isDone);
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+        QCOMPARE(todo->completed().toUTC(), doneDate);
+        QCOMPARE(todo->dtStart().toUTC(), startDate);
+        QCOMPARE(todo->dtDue().toUTC(), dueDate);
+        if (todo->dtStart().isValid()) {
+            QCOMPARE(int(todo->dtStart().timeSpec()), int(Qt::UTC));
+        }
+        QVERIFY(todo->allDay()); // this is always true currently...
+#else
         QCOMPARE(todo->completed().dateTime().toUTC(), doneDate);
         QCOMPARE(todo->dtStart().dateTime().toUTC(), startDate);
         QCOMPARE(todo->dtDue().dateTime().toUTC(), dueDate);
@@ -1251,6 +1276,7 @@ private slots:
         }
         QCOMPARE(todo->dtStart().isDateOnly(), todo->allDay());
 
+#endif
         const ushort expectedRecurrence = recurrence == Domain::Task::NoRecurrence ? KCalCore::Recurrence::rNone
                                         : recurrence == Domain::Task::RecursDaily ? KCalCore::Recurrence::rDaily
                                         : recurrence == Domain::Task::RecursWeekly ? KCalCore::Recurrence::rWeekly
@@ -1319,8 +1345,7 @@ private slots:
         else
             childTodo->setCompleted(isDone);
 
-        childTodo->setDtStart(KDateTime(startDate, KDateTime::UTC));
-        childTodo->setDtDue(KDateTime(dueDate, KDateTime::UTC));
+        setTodoDates(childTodo, startDate, dueDate);
 
         Akonadi::Item childItem;
         childItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
@@ -1337,9 +1362,7 @@ private slots:
             childTodo2->setCompleted(KDateTime(doneDate));
         else
             childTodo2->setCompleted(isDone);
-
-        childTodo2->setDtStart(KDateTime(startDate, KDateTime::UTC));
-        childTodo2->setDtDue(KDateTime(dueDate, KDateTime::UTC));
+        setTodoDates(childTodo2, startDate, dueDate);
         childTodo2->setRelatedTo(QStringLiteral("1"));
 
         Akonadi::Item childItem2;
@@ -2665,10 +2688,12 @@ private slots:
         QVERIFY(atMidnight.time().isValid());
         QVERIFY(!atMidnight.time().isNull());
 
+#if 0
         // GIVEN a KDateTime without time information
         KDateTime kdOnly(QDate(2016, 6, 12));
         // THEN we can detect that there was no time information, i.e. all day event
         QVERIFY(kdOnly.isDateOnly());
+#endif
     }
 };
 

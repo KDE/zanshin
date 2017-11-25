@@ -30,9 +30,12 @@
 #include <AkonadiCore/Item>
 #include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
+#include <kcalcore_version.h>
 #include <KMime/Message>
 #include <QMimeDatabase>
+#if KCALCORE_VERSION < QT_VERSION_CHECK(5, 6, 80)
 #include <KDateTime>
+#endif
 
 #include <numeric>
 
@@ -194,9 +197,21 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setTitle(todo->summary());
     task->setText(todo->description());
     task->setDone(todo->isCompleted());
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+    if (todo->allDay()) {
+        task->setDoneDate(QDateTime(todo->completed().date(), QTime(), Qt::UTC));
+        task->setStartDate(QDateTime(todo->dtStart().date(), QTime(), Qt::UTC));
+        task->setDueDate(QDateTime(todo->dtDue().date(), QTime(), Qt::UTC));
+    } else {
+        task->setDoneDate(todo->completed().toUTC());
+        task->setStartDate(todo->dtStart().toUTC());
+        task->setDueDate(todo->dtDue().toUTC());
+    }
+#else
     task->setDoneDate(todo->completed().dateTime().toUTC());
     task->setStartDate(todo->dtStart().dateTime().toUTC());
     task->setDueDate(todo->dtDue().dateTime().toUTC());
+#endif
     task->setProperty("itemId", item.id());
     task->setProperty("parentCollectionId", item.parentCollection().id());
     task->setProperty("todoUid", todo->uid());
@@ -261,6 +276,11 @@ bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
     return false;
 }
 
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+#define KDateTime QDateTime
+#endif
+
+
 Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 {
     auto todo = KCalCore::Todo::Ptr::create();
@@ -268,8 +288,18 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     todo->setSummary(task->title());
     todo->setDescription(task->text());
 
+    // We only support all-day todos, so ignore timezone information and possible effect from timezone on dates
+    // KCalCore reads "DUE;VALUE=DATE:20171130" as QDateTime(QDate(2017, 11, 30), QTime(), Qt::LocalTime), for lack of timezone information
+    // so we should never call toUtc() on that, it would mess up the date. Instead we force UTC while preserving the date.
+    // If one day we want to support time information, we need to add a task->isAllDay()/setAllDay().
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+    todo->setDtStart(QDateTime(task->startDate().date(), QTime(), Qt::UTC));
+    todo->setDtDue(QDateTime(task->dueDate().date(), QTime(), Qt::UTC));
+    todo->setAllDay(true);
+#else
     todo->setDtStart(KDateTime(task->startDate(), KDateTime::UTC));
     todo->setDtDue(KDateTime(task->dueDate(), KDateTime::UTC));
+#endif
 
     if (task->property("todoUid").isValid()) {
         todo->setUid(task->property("todoUid").toString());

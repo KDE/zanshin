@@ -25,7 +25,10 @@
 
 #include <KCalCore/Todo>
 #include <QDate>
+#include <kcalcore_version.h>
+#if KCALCORE_VERSION < QT_VERSION_CHECK(5, 6, 80)
 #include <KDateTime>
+#endif
 
 using namespace Testlib;
 
@@ -105,6 +108,17 @@ GenTodo &GenTodo::done(bool value)
     m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(value);
     return *this;
 }
+
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
+
+template <typename T>
+static QDateTime KDateTime(const T& input) {
+    QDateTime dt(input);
+    dt.setTimeSpec(Qt::UTC);
+    return dt;
+}
+
+#endif
 
 GenTodo &GenTodo::withDoneDate(const QString &date)
 {
