@@ -48,10 +48,17 @@ public:
 #if BOOST_VERSION < 105900
     void log_exception(std::ostream&, log_checkpoint_data const&, execution_exception const& ex) {};
     void log_exception(std::ostream&, const boost::unit_test::log_checkpoint_data&, boost::unit_test::const_string) {};
-#else
+#elif BOOST_VERSION < 106500
     void entry_context_start(std::ostream&, log_level) {};
     void log_entry_context(std::ostream&, const_string value ) {};
     void entry_context_finish(std::ostream&) {};
+
+    void log_exception_start(std::ostream&, const log_checkpoint_data&, const boost::execution_exception&) {};
+    void log_exception_finish(std::ostream&) {};
+#else
+    void entry_context_start(std::ostream&, log_level) {};
+    void log_entry_context(std::ostream&, log_level, const_string value ) {};
+    void entry_context_finish(std::ostream&, log_level) {};
 
     void log_exception_start(std::ostream&, const log_checkpoint_data&, const boost::execution_exception&) {};
     void log_exception_finish(std::ostream&) {};
