@@ -1,30 +1,33 @@
-Feature: Drag and drop a task on workday view
-  As someone reviewing his tasks
-  I can drag a task from the current view and drop it in the workday view
-  In order to have the task start today
+Feature: Drag and drop a task in workday view
+  As someone reviewing his tasks in the workday view
+  I can drag task within the workday view
+  In order to change parent/child relationships
 
-  Scenario: Dropping a task on Workday page
-    Given I display the "Inbox" page
-    And I add a "task" named "Buy Pineapples"
-    And there is an item named "Buy Pineapples" in the central list
-    When I drop the item on "Workday" in the page list
-    And I display the "Workday" page
+  Scenario: Parenting a task in the Workday page
+    Given I display the "Workday" page
+    And I add a "task" named "parent"
+    And I add a "task" named "child"
+    And there is an item named "parent" in the central list
+    And there is an item named "child" in the central list
+    When I drop the item on "parent" in the central list
     And I look at the central list
     And I list the items
-    Then the list contains "Buy Pineapples"
+    Then the list contains items named:
+       | display                                                 |
+       | parent                                                  |
+       | parent / child                                          |
 
-  Scenario: Dropping two tasks on Workday page
-    Given I display the "Inbox" page
-    And I add a "task" named "Don't eat the cake"
-    And I add a "task" named "The cake is a lie"
-    And the central list contains items named:
-      | display            |
-      | Don't eat the cake |
-      | The cake is a lie  |
-    When I drop items on "Workday" in the page list
-    And I display the "Workday" page
+  Scenario: Deparenting a task in the Workday page
+    Given I display the "Workday" page
+    And I add a "task" named "parent"
+    And there is an item named "parent" in the central list
+    And I add a child named "child" under the task named "parent"
+    And there is an item named "parent / child" in the central list
+    When I drop the item on the blank area of the central list
     And I look at the central list
     And I list the items
-    Then the list contains "Don't eat the cake"
-    And the list contains "The cake is a lie"
+    Then the list contains items named:
+       | display                                                 |
+       | parent                                                  |
+       | child                                                   |
 
