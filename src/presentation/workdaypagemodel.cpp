@@ -167,10 +167,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
             } else {
                 childTask->setStartDate(Utils::DateTime::currentDateTime());
 
-                auto job = m_taskRepository->update(childTask);
-                installHandler(job, i18n("Cannot update task %1", childTask->title()));
-
-                job = m_taskRepository->dissociate(childTask);
+                auto job = m_taskRepository->dissociate(childTask);
                 installHandler(job, i18n("Cannot deparent task %1 from its parent", childTask->title()));
             }
         }

@@ -233,7 +233,6 @@ private slots:
         auto childTask5 = Domain::Task::Ptr::create();
         QVERIFY(!childTask5->startDate().isValid());
         taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask5).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask5).thenReturn(new FakeJob(this));
         data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
         data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask5));
@@ -241,7 +240,7 @@ private slots:
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask5).exactly(1));
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask5).exactly(1));
+        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask5).exactly(0));
         QCOMPARE(childTask5->startDate().date(), today.date());
     }
 
