@@ -9,6 +9,7 @@
   <name xml:lang="ca">Zanshin</name>
   <name xml:lang="ca-valencia">Zanshin</name>
   <name xml:lang="cs">Zanshin</name>
+  <name xml:lang="da">Zanshin</name>
   <name xml:lang="de">Zanshin</name>
   <name xml:lang="en-GB">Zanshin</name>
   <name xml:lang="es">Zanshin</name>
@@ -28,6 +29,7 @@
   <summary xml:lang="bs">Program za upravljanje zadacima</summary>
   <summary xml:lang="ca">Aplicació per a la gestió de les pendents</summary>
   <summary xml:lang="ca-valencia">Aplicació per a la gestió de les pendents</summary>
+  <summary xml:lang="da">Program til håndtering af gøremål</summary>
   <summary xml:lang="de">Verwaltungsprogramm für Aufgaben</summary>
   <summary xml:lang="en-GB">TODO Management Application</summary>
   <summary xml:lang="es">Aplicación de gestión de lista de cosas pendientes</summary>
@@ -51,6 +53,7 @@
     </p>
     <p xml:lang="ca">Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
     <p xml:lang="ca-valencia">Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Vos ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment siga com l'aigua.</p>
+    <p xml:lang="da">Zanshin er et kraftfuldt men alligevel simpelt program til at håndtere dine daglige handlinger. Den hjælper dig med at organisere og reducere det kongnitive pres i forbindelse med job og det personlige liv. Du vil aldrig glemme noget længere, med tanker som var de vand.</p>
     <p xml:lang="en-GB">Zanshin is a powerful yet simple application for managing your day to day actions. It helps you organise and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything any more, getting your mind like water.</p>
     <p xml:lang="es">Zanshin es una potente y sencilla aplicación para gestionar sus acciones diarias. Le ayuda a organizar y reducir la presión cognitiva de lo que debe hacer en su trabajo y en su vida personal. Nunca más volverá a olvidarse de nada, teniendo una mente clara como el agua.</p>
     <p xml:lang="fi">Zanshin on tehokas mutta yksinkertainen päivittäisten toimiesi hallintasovellus. Se auttaa sinua järjestämään työtäsi ja yksityiselämääsi ja vähentämään ajanhallinnan paineita. Et koskaan enää unohda mitään.</p>
@@ -70,6 +73,7 @@
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
     <p xml:lang="cs">Vlastnosti:</p>
+    <p xml:lang="da">Funktioner:</p>
     <p xml:lang="de">Funktionen:</p>
     <p xml:lang="en-GB">Features:</p>
     <p xml:lang="es">Funciones:</p>
@@ -91,6 +95,7 @@
       <li>Collects tasks from everywhere</li>
       <li xml:lang="ca">Recull les tasques de tot arreu</li>
       <li xml:lang="ca-valencia">Recull les tasques de tot arreu</li>
+      <li xml:lang="da">Indsamler opgaver fra alle steder</li>
       <li xml:lang="de">Sammelt Aufgaben von überall</li>
       <li xml:lang="en-GB">Collects tasks from everywhere</li>
       <li xml:lang="es">Colecciona tareas de cualquier lugar</li>
@@ -109,6 +114,7 @@
       <li>Organize tasks in projects and contexts</li>
       <li xml:lang="ca">Organitza les tasques en projectes i contextos</li>
       <li xml:lang="ca-valencia">Organitza les tasques en projectes i contextos</li>
+      <li xml:lang="da">Organiser opgaver i projekter og sammenhænge</li>
       <li xml:lang="de">Organisation von Aufgaben in Projekten und Kontexten</li>
       <li xml:lang="en-GB">Organise tasks in projects and contexts</li>
       <li xml:lang="es">Organizar tareas en proyectos y contextos</li>
@@ -128,6 +134,7 @@
       <li xml:lang="bs">Akonadi omogućena aplikacija koja vam dopušta da dobavite podatke od u suštini bilo gdje (lokalno, imap, web servis...)</li>
       <li xml:lang="ca">Habilitant les capacitats de l'Akonadi es permet obtenir les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
       <li xml:lang="ca-valencia">Habilitant les capacitats de l'Akonadi es permet obtindre les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
+      <li xml:lang="da">Akonadi-aktiveret program som giver mulighed for at hente data fra næsten hvor som helst (lokalt, imap, webtjeneste...)</li>
       <li xml:lang="en-GB">Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
       <li xml:lang="es">Aplicación que usa Akonadi para obtener datos de prácticamente cualquier lugar (locales, IMAP, servicios web...)</li>
       <li xml:lang="fi">Akonadiin perustuva sovellus sallii etsiä tietoa käytännössä mistä vain (kiintolevyltä, IMAPista, verkkopalveluista…)</li>
