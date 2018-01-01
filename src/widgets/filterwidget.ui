@@ -38,7 +38,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset theme="arrow-down-double"/>
+        <iconset theme="arrow-down-double">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -67,7 +68,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="arrow-down"/>
+           <iconset theme="arrow-down">
+            <normaloff>.</normaloff>.</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -89,7 +91,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="arrow-up"/>
+           <iconset theme="arrow-up">
+            <normaloff>.</normaloff>.</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -106,13 +109,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="showFutureCheck">
-        <property name="text">
-         <string>Show future items</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
