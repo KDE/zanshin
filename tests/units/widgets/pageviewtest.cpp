@@ -251,7 +251,7 @@ private slots:
         auto filterEdit = filter->findChild<QLineEdit*>();
         QVERIFY(filterEdit);
         page.show();
-        QTest::qWaitForWindowShown(&page);
+        QVERIFY(QTest::qWaitForWindowShown(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -309,7 +309,7 @@ private slots:
         auto filterEdit = filter->findChild<QLineEdit*>();
         QVERIFY(filterEdit);
         page.show();
-        QTest::qWaitForWindowShown(&page);
+        QVERIFY(QTest::qWaitForWindowShown(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -443,7 +443,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QTest::qWaitForWindowShown(&page);
+        QVERIFY(QTest::qWaitForWindowShown(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -470,7 +470,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QTest::qWaitForWindowShown(&page);
+        QVERIFY(QTest::qWaitForWindowShown(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -502,7 +502,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QTest::qWaitForWindowShown(&page);
+        QVERIFY(QTest::qWaitForWindowShown(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -535,7 +535,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QTest::qWaitForWindowShown(&page);
+        QVERIFY(QTest::qWaitForWindowShown(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -659,7 +659,7 @@ private slots:
         // GIVEN
         Widgets::PageView page;
         page.show();
-        QTest::qWaitForWindowShown(&page);
+        QVERIFY(QTest::qWaitForWindowShown(&page));
         QTest::qWait(100);
 
         auto messageWidget = page.findChild<KMessageWidget*>(QStringLiteral("messageWidget"));
