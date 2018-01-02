@@ -34,8 +34,11 @@
 #include <QMessageBox>
 #include <QTimer>
 
+#include <KConfig>
+#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KMessageWidget>
+#include <KSharedConfig>
 
 #include "filterwidget.h"
 #include "itemdelegate.h"
@@ -206,6 +209,15 @@ PageView::PageView(QWidget *parent)
     futureViewAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
     futureViewAction->setCheckable(true);
     connect(futureViewAction, &QAction::triggered, m_filterWidget, &FilterWidget::setShowFutureTasks);
+
+    auto configGroup = KConfigGroup(KSharedConfig::openConfig(), "General");
+    if (configGroup.readEntry("ShowFuture", true))
+        futureViewAction->trigger();
+
+    connect(futureViewAction, &QAction::triggered,
+            futureViewAction, [configGroup] (bool checked) mutable {
+                configGroup.writeEntry("ShowFuture", checked);
+            });
 
     m_runTaskAction = new QAction(this);
     m_runTaskAction->setObjectName(QStringLiteral("runTaskAction"));

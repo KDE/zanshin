@@ -34,8 +34,11 @@
 #include <QTreeView>
 #include <runningtaskmodelinterface.h>
 
+#include <KConfig>
+#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KMessageWidget>
+#include <KSharedConfig>
 
 #include "domain/task.h"
 
@@ -130,6 +133,12 @@ private:
 class PageViewTest : public QObject
 {
     Q_OBJECT
+private:
+    KConfigGroup configGroup()
+    {
+        return KConfigGroup(KSharedConfig::openConfig(), "General");
+    }
+
 private slots:
     void shouldHaveDefaultState()
     {
@@ -183,7 +192,7 @@ private slots:
         auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
         QVERIFY(futureAction);
         QVERIFY(futureAction->isCheckable());
-        QVERIFY(!futureAction->isChecked());
+        QVERIFY(futureAction->isChecked());
         auto runTaskAction = page.findChild<QAction*>(QStringLiteral("runTaskAction"));
         QVERIFY(runTaskAction);
         QVERIFY(!runTaskAction->isEnabled());
@@ -355,7 +364,7 @@ private slots:
         auto filterProxy = filter->proxyModel();
         QVERIFY(filterProxy);
 
-        QVERIFY(!filterProxy->showFutureTasks());
+        QVERIFY(filterProxy->showFutureTasks());
 
         auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
 
@@ -363,13 +372,76 @@ private slots:
         futureAction->trigger();
 
         // THEN
-        QVERIFY(filterProxy->showFutureTasks());
+        QVERIFY(!filterProxy->showFutureTasks());
 
         // WHEN
         futureAction->trigger();
 
         // THEN
-        QVERIFY(!filterProxy->showFutureTasks());
+        QVERIFY(filterProxy->showFutureTasks());
+    }
+
+    void shouldStoreFutureTasksVisibilityDefaultState()
+    {
+        // GIVEN
+        configGroup().deleteEntry("ShowFuture");
+
+        {
+            Widgets::PageView page;
+            auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
+
+            // THEN
+            QVERIFY(futureAction->isChecked());
+        }
+
+        // WHEN
+        configGroup().writeEntry("ShowFuture", false);
+
+        {
+            Widgets::PageView page;
+            auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
+
+            // THEN
+            QVERIFY(!futureAction->isChecked());
+        }
+
+        // WHEN
+        configGroup().writeEntry("ShowFuture", true);
+
+        {
+            Widgets::PageView page;
+            auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
+
+            // THEN
+            QVERIFY(futureAction->isChecked());
+        }
+
+        // WHEN
+        configGroup().deleteEntry("ShowFuture");
+
+        {
+            Widgets::PageView page;
+            auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
+
+            // THEN
+            QVERIFY(futureAction->isChecked());
+        }
+
+        // WHEN
+        Widgets::PageView page;
+        auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
+        futureAction->trigger();
+
+        // THEN
+        QVERIFY(configGroup().hasKey("ShowFuture"));
+        QVERIFY(!configGroup().readEntry("ShowFuture", true));
+
+        // WHEN
+        futureAction->trigger();
+
+        // THEN
+        QVERIFY(configGroup().hasKey("ShowFuture"));
+        QVERIFY(configGroup().readEntry("ShowFuture", false));
     }
 
     void shouldCreateTasksWithNoParentWhenHittingReturnWithoutSelectedIndex()
