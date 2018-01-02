@@ -199,6 +199,14 @@ PageView::PageView(QWidget *parent)
     filterViewAction->setCheckable(true);
     connect(filterViewAction, &QAction::triggered, this, &PageView::onFilterToggled);
 
+    auto futureViewAction = new QAction(this);
+    futureViewAction->setObjectName(QStringLiteral("futureViewAction"));
+    futureViewAction->setText(i18n("Show future items"));
+    futureViewAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar-whatsnext")));
+    futureViewAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
+    futureViewAction->setCheckable(true);
+    connect(futureViewAction, &QAction::triggered, m_filterWidget, &FilterWidget::setShowFutureTasks);
+
     m_runTaskAction = new QAction(this);
     m_runTaskAction->setObjectName(QStringLiteral("runTaskAction"));
     m_runTaskAction->setShortcut(Qt::CTRL | Qt::Key_Space);
@@ -211,6 +219,7 @@ PageView::PageView(QWidget *parent)
     m_actions.insert(QStringLiteral("page_view_remove"), removeItemAction);
     m_actions.insert(QStringLiteral("page_view_promote"), promoteItemAction);
     m_actions.insert(QStringLiteral("page_view_filter"), filterViewAction);
+    m_actions.insert(QStringLiteral("page_view_future"), futureViewAction);
     m_actions.insert(QStringLiteral("page_run_task"), m_runTaskAction);
 }
 

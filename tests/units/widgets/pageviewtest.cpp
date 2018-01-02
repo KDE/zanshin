@@ -180,6 +180,10 @@ private slots:
         QVERIFY(filterAction);
         QVERIFY(filterAction->isCheckable());
         QVERIFY(!filterAction->isChecked());
+        auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
+        QVERIFY(futureAction);
+        QVERIFY(futureAction->isCheckable());
+        QVERIFY(!futureAction->isChecked());
         auto runTaskAction = page.findChild<QAction*>(QStringLiteral("runTaskAction"));
         QVERIFY(runTaskAction);
         QVERIFY(!runTaskAction->isEnabled());
@@ -189,6 +193,7 @@ private slots:
         QCOMPARE(actions.value(QStringLiteral("page_view_remove")), removeAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_promote")), promoteAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_filter")), filterAction);
+        QCOMPARE(actions.value(QStringLiteral("page_view_future")), futureAction);
         QCOMPARE(actions.value(QStringLiteral("page_run_task")), runTaskAction);
     }
 
@@ -340,6 +345,31 @@ private slots:
         QVERIFY(!filter->isVisibleTo(&page));
         QVERIFY(!filterEdit->hasFocus());
         QVERIFY(filterEdit->text().isEmpty());
+    }
+
+    void shouldManageFutureTasksVisibilityThroughAction()
+    {
+        // GIVEN
+        Widgets::PageView page;
+        auto filter = page.findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
+        auto filterProxy = filter->proxyModel();
+        QVERIFY(filterProxy);
+
+        QVERIFY(!filterProxy->showFutureTasks());
+
+        auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
+
+        // WHEN
+        futureAction->trigger();
+
+        // THEN
+        QVERIFY(filterProxy->showFutureTasks());
+
+        // WHEN
+        futureAction->trigger();
+
+        // THEN
+        QVERIFY(!filterProxy->showFutureTasks());
     }
 
     void shouldCreateTasksWithNoParentWhenHittingReturnWithoutSelectedIndex()
