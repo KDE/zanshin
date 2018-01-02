@@ -52,13 +52,13 @@ public:
 
 public slots:
     void clear();
+    void setShowFutureTasks(bool show);
 
 private slots:
     void onTextChanged(const QString &text);
     void onSortTypeChanged(int index);
     void onAscendingClicked();
     void onDescendingClicked();
-    void onShowFutureChanged(bool show);
 
 private:
     Ui::FilterWidget *ui;

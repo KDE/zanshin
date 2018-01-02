@@ -194,6 +194,22 @@ private slots:
         QVERIFY(!descendingButton->isChecked());
         QCOMPARE(filter.proxyModel()->sortOrder(), Qt::AscendingOrder);
     }
+
+    void shouldShowFutureTasks()
+    {
+        // GIVEN
+        Widgets::FilterWidget filter;
+        filter.setShowFutureTasks(false);
+
+        // THEN
+        QVERIFY(!filter.proxyModel()->showFutureTasks());
+
+        // WHEN
+        filter.setShowFutureTasks(true);
+
+        // THEN
+        QVERIFY(filter.proxyModel()->showFutureTasks());
+    }
 };
 
 ZANSHIN_TEST_MAIN(FilterWidgetTest)

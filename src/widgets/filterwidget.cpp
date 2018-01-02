@@ -69,6 +69,11 @@ void FilterWidget::clear()
     ui->filterEdit->clear();
 }
 
+void FilterWidget::setShowFutureTasks(bool show)
+{
+    m_model->setShowFutureTasks(show);
+}
+
 void FilterWidget::onTextChanged(const QString &text)
 {
     m_model->setFilterFixedString(text);
@@ -88,9 +93,4 @@ void FilterWidget::onAscendingClicked()
 void FilterWidget::onDescendingClicked()
 {
     m_model->setSortOrder(Qt::DescendingOrder);
-}
-
-void FilterWidget::onShowFutureChanged(bool show)
-{
-    m_model->setShowFutureTasks(show);
 }
