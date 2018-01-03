@@ -61,7 +61,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(collection);
 
         // WHEN
-        QScopedPointer<Akonadi::DataSourceRepository> repository(new Akonadi::DataSourceRepository(storageMock.getInstance(),
+        QScopedPointer<Akonadi::DataSourceRepository> repository(new Akonadi::DataSourceRepository(Akonadi::StorageInterface::Tasks,
+                                                                                                   storageMock.getInstance(),
                                                                                                    serializerMock.getInstance()));
         repository->update(source)->exec();
 

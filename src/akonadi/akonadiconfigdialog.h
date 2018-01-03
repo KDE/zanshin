@@ -26,16 +26,19 @@
 
 #include <QDialog>
 
+#include "akonadistorageinterface.h"
+
 namespace Akonadi
 {
 
+class AgentFilterProxyModel;
 class AgentInstanceWidget;
 
 class ConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ConfigDialog(QWidget *parent = 0);
+    explicit ConfigDialog(StorageInterface::FetchContentTypes types, QWidget *parent = 0);
 
 private slots:
     void onAddTriggered();
@@ -43,7 +46,10 @@ private slots:
     void onConfigureTriggered();
 
 private:
+    void applyContentTypes(AgentFilterProxyModel *model);
+
     Akonadi::AgentInstanceWidget *m_agentInstanceWidget;
+    const StorageInterface::FetchContentTypes m_types;
 };
 
 }

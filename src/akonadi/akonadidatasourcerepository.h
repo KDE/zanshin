@@ -40,7 +40,8 @@ class DataSourceRepository : public QObject, public Domain::DataSourceRepository
 public:
     typedef QSharedPointer<DataSourceRepository> Ptr;
 
-    DataSourceRepository(const StorageInterface::Ptr &storage,
+    DataSourceRepository(StorageInterface::FetchContentTypes contentTypes,
+                         const StorageInterface::Ptr &storage,
                          const SerializerInterface::Ptr &serializer);
 
     KJob *update(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
@@ -49,6 +50,7 @@ public:
     void windowNeedsDataBackend(QWidget *window) Q_DECL_OVERRIDE;
 
 private:
+    StorageInterface::FetchContentTypes m_contentTypes;
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
 };

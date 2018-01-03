@@ -32,9 +32,11 @@
 
 using namespace Akonadi;
 
-DataSourceRepository::DataSourceRepository(const StorageInterface::Ptr &storage,
+DataSourceRepository::DataSourceRepository(StorageInterface::FetchContentTypes contentTypes,
+                                           const StorageInterface::Ptr &storage,
                                            const SerializerInterface::Ptr &serializer)
-    : m_storage(storage),
+    : m_contentTypes(contentTypes),
+      m_storage(storage),
       m_serializer(serializer)
 {
 }
@@ -48,7 +50,7 @@ KJob *DataSourceRepository::update(Domain::DataSource::Ptr source)
 
 void DataSourceRepository::showConfigDialog()
 {
-    ConfigDialog dialog(qApp->activeWindow());
+    ConfigDialog dialog(m_contentTypes, qApp->activeWindow());
     dialog.exec();
 }
 

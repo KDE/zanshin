@@ -24,6 +24,7 @@
 #include "akonadiconfigdialog.h"
 
 #include <QAction>
+#include <QApplication>
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QLayout>
@@ -40,10 +41,15 @@
 #include <AkonadiCore/AgentManager>
 #include <AkonadiWidgets/AgentTypeDialog>
 
+#include <KCalCore/Todo>
+#include <Akonadi/Notes/NoteUtils>
+
 using namespace Akonadi;
 
-ConfigDialog::ConfigDialog(QWidget *parent)
-    : QDialog(parent)
+ConfigDialog::ConfigDialog(StorageInterface::FetchContentTypes types, QWidget *parent)
+    : QDialog(parent),
+      m_agentInstanceWidget(new Akonadi::AgentInstanceWidget(this)),
+      m_types(types)
 {
     setWindowTitle(i18n("Configure"));
 
@@ -51,8 +57,7 @@ ConfigDialog::ConfigDialog(QWidget *parent)
     description->setWordWrap(true);
     description->setText(i18n("Please select or create a resource which will be used by the application to store and query its TODOs."));
 
-    m_agentInstanceWidget = new Akonadi::AgentInstanceWidget(this);
-    m_agentInstanceWidget->agentFilterProxyModel()->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+    applyContentTypes(m_agentInstanceWidget->agentFilterProxyModel());
 
     auto toolBar = new QToolBar(this);
     toolBar->setIconSize(QSize(16, 16));
@@ -101,7 +106,7 @@ ConfigDialog::ConfigDialog(QWidget *parent)
 void ConfigDialog::onAddTriggered()
 {
     auto dlg = QPointer<AgentTypeDialog>(new AgentTypeDialog(this));
-    dlg->agentFilterProxyModel()->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+    applyContentTypes(dlg->agentFilterProxyModel());
     if (dlg->exec()) {
         if (!dlg)
             return;
@@ -139,5 +144,13 @@ void ConfigDialog::onConfigureTriggered()
     auto agent = m_agentInstanceWidget->currentAgentInstance();
     if (agent.isValid())
         agent.configure(this);
+}
+
+void ConfigDialog::applyContentTypes(AgentFilterProxyModel *model)
+{
+    if (m_types & StorageInterface::Notes)
+        model->addMimeTypeFilter(NoteUtils::noteMimeType());
+    if (m_types & StorageInterface::Tasks)
+        model->addMimeTypeFilter(KCalCore::Todo::todoMimeType());
 }
 
