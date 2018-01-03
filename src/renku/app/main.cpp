@@ -109,6 +109,10 @@ int main(int argc, char **argv)
                    | KXmlGuiWindow::Keys
                    | KXmlGuiWindow::Save
                    | KXmlGuiWindow::Create);
+
+    delete window->findChild<QAction*>("help_contents");
+    delete window->findChild<QAction*>("help_whats_this");
+
     window->show();
 
     {
