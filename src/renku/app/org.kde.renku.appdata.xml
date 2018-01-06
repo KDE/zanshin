@@ -23,6 +23,7 @@
   <name xml:lang="tr">Renku</name>
   <name xml:lang="uk">Renku</name>
   <name xml:lang="x-test">xxRenkuxx</name>
+  <name xml:lang="zh-CN">Renku</name>
   <summary>Note Taking Application</summary>
   <summary xml:lang="ast">Aplicación pa tomar notes</summary>
   <summary xml:lang="ca">Aplicació per prendre notes</summary>
@@ -42,6 +43,7 @@
   <summary xml:lang="tr">Not Alma Uygulaması</summary>
   <summary xml:lang="uk">Програма для роботи з нотатками</summary>
   <summary xml:lang="x-test">xxNote Taking Applicationxx</summary>
+  <summary xml:lang="zh-CN">笔记应用程序</summary>
   <description>
     <p>
       Renku is an efficient and simple application for managing your notes.
@@ -106,6 +108,7 @@
       <li xml:lang="tr">Notları toplar</li>
       <li xml:lang="uk">Збирання нотаток.</li>
       <li xml:lang="x-test">xxCollects notesxx</li>
+      <li xml:lang="zh-CN">收集便笺</li>
       <li>Organize notes in topics</li>
       <li xml:lang="ast">Organiza les notes en temes</li>
       <li xml:lang="ca">Organitza les notes en temes</li>
@@ -125,6 +128,7 @@
       <li xml:lang="tr">Notları, başlıklar şeklinde düzenler</li>
       <li xml:lang="uk">Упорядковування нотаток за темами.</li>
       <li xml:lang="x-test">xxOrganize notes in topicsxx</li>
+      <li xml:lang="zh-CN">按主题组织便笺</li>
       <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
       <li xml:lang="ca">Habilitant les capacitats de l'Akonadi es permet obtenir les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
       <li xml:lang="ca-valencia">Habilitant les capacitats de l'Akonadi es permet obtindre les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
