@@ -26,6 +26,7 @@ Name[sv]=Zanshin-delprogram
 Name[tr]=Zanshin Part
 Name[uk]=Модуль Zanshin
 Name[x-test]=xxZanshin Partxx
+Name[zh_CN]=Zanshin 组件
 X-KDE-ServiceTypes=KParts/ReadOnlyPart
 X-KDE-Library=zanshin_part
 Type=Service
