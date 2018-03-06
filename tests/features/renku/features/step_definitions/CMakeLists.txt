@@ -13,6 +13,7 @@ set(steps_SRCS
 add_executable(renku-cuke-steps ${steps_SRCS})
 target_link_libraries(renku-cuke-steps
     cucumber-cpp
+    Threads::Threads
     ${Boost_REGEX_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
