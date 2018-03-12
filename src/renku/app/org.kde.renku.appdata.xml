@@ -150,11 +150,6 @@
   </description>
   <url type="homepage">http://zanshin.kde.org</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=zanshin</url>
-  <screenshots>
-    <screenshot type="default">
-      <image>http://kde.org/images/screenshots/zanshin.png</image>
-    </screenshot>
-  </screenshots>
   <project_group>KDE</project_group>
   <provides>
     <binary>renku</binary>
