@@ -57,37 +57,37 @@ public:
         return create(provider);
     }
 
-    QList<OutputType> data() const
+    QList<OutputType> data() const override
     {
         return dataImpl<OutputType>();
     }
 
-    void addPreInsertHandler(const ChangeHandler &handler)
+    void addPreInsertHandler(const ChangeHandler &handler) override
     {
         QueryResultInputImpl<InputType>::m_preInsertHandlers << handler;
     }
 
-    void addPostInsertHandler(const ChangeHandler &handler)
+    void addPostInsertHandler(const ChangeHandler &handler) override
     {
         QueryResultInputImpl<InputType>::m_postInsertHandlers << handler;
     }
 
-    void addPreRemoveHandler(const ChangeHandler &handler)
+    void addPreRemoveHandler(const ChangeHandler &handler) override
     {
         QueryResultInputImpl<InputType>::m_preRemoveHandlers << handler;
     }
 
-    void addPostRemoveHandler(const ChangeHandler &handler)
+    void addPostRemoveHandler(const ChangeHandler &handler) override
     {
         QueryResultInputImpl<InputType>::m_postRemoveHandlers << handler;
     }
 
-    void addPreReplaceHandler(const ChangeHandler &handler)
+    void addPreReplaceHandler(const ChangeHandler &handler) override
     {
         QueryResultInputImpl<InputType>::m_preReplaceHandlers << handler;
     }
 
-    void addPostReplaceHandler(const ChangeHandler &handler)
+    void addPostReplaceHandler(const ChangeHandler &handler) override
     {
         QueryResultInputImpl<InputType>::m_postReplaceHandlers << handler;
     }

@@ -22,13 +22,13 @@ namespace mockitopp
             : _returnable(returnable)
             {}
 
-         R invoke() { return _returnable; }
+         R invoke() override { return _returnable; }
       };
 
       template <>
       struct returnable_action<void> : public action<void>
       {
-         void invoke() {}
+         void invoke() override {}
       };
 
       template <typename R, typename T>
@@ -40,7 +40,7 @@ namespace mockitopp
             : _throwable(throwable)
             {}
 
-         R invoke() { throw _throwable; }
+         R invoke() override { throw _throwable; }
       };
    } // namespace detail
 } // namespace mockitopp

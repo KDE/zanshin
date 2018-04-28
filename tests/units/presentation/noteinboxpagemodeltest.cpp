@@ -40,7 +40,7 @@ using namespace mockitopp::matcher;
 class FakeErrorHandler : public Presentation::ErrorHandler
 {
 public:
-    void doDisplayMessage(const QString &message)
+    void doDisplayMessage(const QString &message) override
     {
         m_message = message;
     }

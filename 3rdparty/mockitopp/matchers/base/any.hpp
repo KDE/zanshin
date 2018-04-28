@@ -15,10 +15,10 @@ namespace mockitopp
             AnyT()
                {}
 
-            virtual Matcher<T>* clone() const
+            Matcher<T>* clone() const override
                { return new AnyT(); }
 
-            virtual bool operator== (typename mockitopp::detail::tr1::add_reference<typename mockitopp::detail::tr1::add_const<T>::type>::type rhs) const
+            bool operator== (typename mockitopp::detail::tr1::add_reference<typename mockitopp::detail::tr1::add_const<T>::type>::type rhs) const override
             { 
                (void)rhs;
                return true; 

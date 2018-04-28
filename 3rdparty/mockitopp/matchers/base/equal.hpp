@@ -18,11 +18,11 @@ namespace mockitopp
                : element_(element)
                {}
 
-            virtual Matcher<T>* clone() const
+            Matcher<T>* clone() const override
                { return new EqualT(element_); }
 
-            virtual bool operator== (typename mockitopp::detail::tr1::add_reference<
-                                       typename mockitopp::detail::tr1::add_const<T>::type>::type rhs) const
+            bool operator== (typename mockitopp::detail::tr1::add_reference<
+                                       typename mockitopp::detail::tr1::add_const<T>::type>::type rhs) const override
                { return element_ == rhs; }
 
             private:

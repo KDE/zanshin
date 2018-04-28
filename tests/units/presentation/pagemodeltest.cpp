@@ -38,12 +38,12 @@ public:
     {
     }
 
-    Domain::Artifact::Ptr addItem(const QString &, const QModelIndex &) { return Domain::Artifact::Ptr::create(); }
-    void removeItem(const QModelIndex &) {}
-    void promoteItem(const QModelIndex &) {}
+    Domain::Artifact::Ptr addItem(const QString &, const QModelIndex &) override { return Domain::Artifact::Ptr::create(); }
+    void removeItem(const QModelIndex &) override {}
+    void promoteItem(const QModelIndex &) override {}
 
 private:
-    QAbstractItemModel *createCentralListModel()
+    QAbstractItemModel *createCentralListModel() override
     {
         createCount++;
         itemModel = new QStringListModel(this);

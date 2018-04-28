@@ -53,7 +53,7 @@ class CustomModelStub : public QStandardItemModel
 {
     Q_OBJECT
 
-    QMimeData *mimeData(const QModelIndexList &indexes) const
+    QMimeData *mimeData(const QModelIndexList &indexes) const override
     {
         QStringList dataString;
         std::transform(indexes.begin(), indexes.end(),
@@ -69,7 +69,7 @@ class CustomModelStub : public QStandardItemModel
         return data;
     }
 
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &destination)
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &destination) override
     {
         Q_UNUSED(action);
 

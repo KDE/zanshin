@@ -41,7 +41,7 @@ class Derived : public Base
 public:
     typedef QSharedPointer<Derived> Ptr;
 
-    QString whoAmI() { return QStringLiteral("I'm Derived"); }
+    QString whoAmI() override { return QStringLiteral("I'm Derived"); }
 };
 
 class QueryResultTest : public QObject

@@ -37,7 +37,7 @@ public:
     explicit AvailablePagesSortFilterProxyModel(QObject *parent = 0);
 
 protected:
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 };
 
 }

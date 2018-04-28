@@ -35,7 +35,7 @@ public:
 
     void setExpectedError(int errorCode, const QString &errorText = QString());
 
-    void start();
+    void start() override;
 
 private slots:
     virtual void onTimeout();

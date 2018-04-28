@@ -82,7 +82,7 @@ class KDEPIM_EXPORT KDateEdit : public QComboBox
      */
     bool isReadOnly() const;
 
-    virtual void showPopup();
+    void showPopup() override;
 
   Q_SIGNALS:
     /**
@@ -114,11 +114,11 @@ class KDEPIM_EXPORT KDateEdit : public QComboBox
     void dateSelected( const QDate & );
 
   protected:
-    virtual bool eventFilter( QObject *, QEvent * );
-    virtual void mousePressEvent( QMouseEvent * );
-    virtual void focusOutEvent( QFocusEvent * );
-    virtual void wheelEvent( QWheelEvent * );
-    virtual void keyPressEvent( QKeyEvent * );
+    bool eventFilter( QObject *, QEvent * ) override;
+    void mousePressEvent( QMouseEvent * ) override;
+    void focusOutEvent( QFocusEvent * ) override;
+    void wheelEvent( QWheelEvent * ) override;
+    void keyPressEvent( QKeyEvent * ) override;
 
     /**
       Sets the date, without altering the display.

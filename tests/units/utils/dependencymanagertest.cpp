@@ -40,13 +40,13 @@ public:
 class FirstImplementation0 : public Interface0
 {
 public:
-    virtual void doSomething() { qDebug() << "FirstImplementation"; }
+    void doSomething() override { qDebug() << "FirstImplementation"; }
 };
 
 class SecondImplementation0 : public Interface0
 {
 public:
-    virtual void doSomething() { qDebug() << "SecondImplementation"; }
+    void doSomething() override { qDebug() << "SecondImplementation"; }
 };
 
 #define DECLARE_IMPLEMENTED_INTERFACE(N) \
@@ -63,7 +63,7 @@ public: \
 class Implementation##N : public Interface##N \
 { \
 public: \
-    virtual void doSomething() { qDebug() << "Implementation##N"; } \
+    void doSomething() override { qDebug() << "Implementation##N"; } \
 };
 
 DECLARE_IMPLEMENTED_INTERFACE(1)
