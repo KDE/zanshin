@@ -68,6 +68,44 @@ private slots:
         // THEN
         QCOMPARE(zanshinDate.date(), QDateTime::currentDateTime().date());
     }
+
+    void shouldNotOverrideCurrentDate()
+    {
+        // GIVEN
+        const auto todayDate = QDate::currentDate();
+
+        // WHEN
+        const QDate zanshinDate = DateTime::currentDate();
+
+        // THEN
+        QCOMPARE(zanshinDate, todayDate);
+    }
+
+    void shouldOverrideCurrentDate()
+    {
+        // GIVEN
+        const QByteArray dateExpected = "2015-03-10";
+        qputenv("ZANSHIN_OVERRIDE_DATE", dateExpected);
+
+        // WHEN
+        const QDate zanshinDate = DateTime::currentDate();
+
+        // THEN
+        QCOMPARE(zanshinDate, QDate(2015, 3, 10));
+    }
+
+    void shouldNotOverrideCurrentDateWhenInvalidDate()
+    {
+        // GIVEN
+        const QByteArray dateExpected = "Invalid!";
+        qputenv("ZANSHIN_OVERRIDE_DATE", dateExpected);
+
+        // WHEN
+        const QDate zanshinDate = DateTime::currentDate();
+
+        // THEN
+        QCOMPARE(zanshinDate, QDate::currentDate());
+    }
 };
 
 ZANSHIN_TEST_MAIN(DateTimeTest)

@@ -34,3 +34,11 @@ QDateTime DateTime::currentDateTime()
 
     return customDateTime.isValid() ? customDateTime : QDateTime::currentDateTime();
 }
+
+QDate DateTime::currentDate()
+{
+    QByteArray overrideDate = qgetenv("ZANSHIN_OVERRIDE_DATE");
+    QDate customDate = QDate::fromString(QString::fromLocal8Bit(overrideDate), Qt::ISODate);
+
+    return customDate.isValid() ? customDate : QDate::currentDate();
+}

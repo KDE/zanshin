@@ -25,12 +25,14 @@
 #define UTILS_DATETIME
 
 class QDateTime;
+class QDate;
 
 namespace Utils {
 
 namespace DateTime
 {
     QDateTime currentDateTime();
+    QDate currentDate();
 }
 
 }
