@@ -41,7 +41,7 @@
         qputenv("QT_STYLE_OVERRIDE", "fusion"); \
         return true; \
     } \
-    static bool _zanshin_testlib_internal_isGuiEnvironmentForced = _zanshin_testlib_internal_forceGuiEnvironment();
+    Q_CONSTRUCTOR_FUNCTION(_zanshin_testlib_internal_forceGuiEnvironment)
 #else
 #define _ZANSHIN_TESTLIB_INTERNAL_FORCE_GUI_ENVIRONMENT
 #endif
@@ -58,7 +58,7 @@
         qputenv("LC_ALL", "en_US"); \
         return true; \
     } \
-    static bool _zanshin_testlib_internal_isEnvironmentForced = _zanshin_testlib_internal_forceEnvironment(); \
+    Q_CONSTRUCTOR_FUNCTION(_zanshin_testlib_internal_forceEnvironment) \
     \
     void _zanshin_testlib_internal_workaround_kxmlgui_startupfunc_leak() \
     { \
