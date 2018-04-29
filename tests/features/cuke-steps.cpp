@@ -96,7 +96,7 @@ public:
           m_sourceModel(Q_NULLPTR),
           monitorSpy(Q_NULLPTR)
     {
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10");
+        qputenv("ZANSHIN_OVERRIDE_DATE", "2015-03-10");
 
         static bool initializedDependencies = false;
 

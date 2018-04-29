@@ -107,7 +107,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
 {
     if (!m_findWorkdayTopLevel) {
         m_workdayPollTimer->start();
-        m_today = Utils::DateTime::currentDateTime().date();
+        m_today = Utils::DateTime::currentDate();
     }
 
     auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
@@ -117,10 +117,10 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
 
         const Domain::Task::Ptr task = m_serializer->createTaskFromItem(item);
 
-        const QDate doneDate = task->doneDate().date();
-        const QDate startDate = task->startDate().date();
-        const QDate dueDate = task->dueDate().date();
-        const QDate today = Utils::DateTime::currentDateTime().date();
+        const QDate doneDate = task->doneDate();
+        const QDate startDate = task->startDate();
+        const QDate dueDate = task->dueDate();
+        const QDate today = Utils::DateTime::currentDate();
 
         const bool pastStartDate = startDate.isValid() && startDate <= today;
         const bool pastDueDate = dueDate.isValid() && dueDate <= today;
@@ -168,7 +168,7 @@ TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task
 
 void TaskQueries::onWorkdayPollTimeout()
 {
-    auto newDate = Utils::DateTime::currentDateTime().date();
+    auto newDate = Utils::DateTime::currentDate();
     if (m_findWorkdayTopLevel && m_today != newDate) {
         m_today = newDate;
         m_findWorkdayTopLevel->reset();

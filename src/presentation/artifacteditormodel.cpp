@@ -139,8 +139,8 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     m_text = QString();
     m_title = QString();
     m_done = false;
-    m_start = QDateTime();
-    m_due = QDateTime();
+    m_start = QDate();
+    m_due = QDate();
     m_recurrence = Domain::Task::NoRecurrence;
     m_attachmentModel->setTask(Domain::Task::Ptr());
     m_delegateText = QString();
@@ -224,12 +224,12 @@ bool ArtifactEditorModel::isDone() const
     return m_done;
 }
 
-QDateTime ArtifactEditorModel::startDate() const
+QDate ArtifactEditorModel::startDate() const
 {
     return m_start;
 }
 
-QDateTime ArtifactEditorModel::dueDate() const
+QDate ArtifactEditorModel::dueDate() const
 {
     return m_due;
 }
@@ -288,7 +288,7 @@ void ArtifactEditorModel::setDone(bool done)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::setStartDate(const QDateTime &start)
+void ArtifactEditorModel::setStartDate(const QDate &start)
 {
     if (m_start == start)
         return;
@@ -296,7 +296,7 @@ void ArtifactEditorModel::setStartDate(const QDateTime &start)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::setDueDate(const QDateTime &due)
+void ArtifactEditorModel::setDueDate(const QDate &due)
 {
     if (m_due == due)
         return;
@@ -408,13 +408,13 @@ void ArtifactEditorModel::onDoneChanged(bool done)
         applyNewDone(done);
 }
 
-void ArtifactEditorModel::onStartDateChanged(const QDateTime &start)
+void ArtifactEditorModel::onStartDateChanged(const QDate &start)
 {
     if (!m_editingInProgress)
         applyNewStartDate(start);
 }
 
-void ArtifactEditorModel::onDueDateChanged(const QDateTime &due)
+void ArtifactEditorModel::onDueDateChanged(const QDate &due)
 {
     if (!m_editingInProgress)
         applyNewDueDate(due);
@@ -488,13 +488,13 @@ void ArtifactEditorModel::applyNewDone(bool done)
     emit doneChanged(m_done);
 }
 
-void ArtifactEditorModel::applyNewStartDate(const QDateTime &start)
+void ArtifactEditorModel::applyNewStartDate(const QDate &start)
 {
     m_start = start;
     emit startDateChanged(m_start);
 }
 
-void ArtifactEditorModel::applyNewDueDate(const QDateTime &due)
+void ArtifactEditorModel::applyNewDueDate(const QDate &due)
 {
     m_due = due;
     emit dueDateChanged(m_due);

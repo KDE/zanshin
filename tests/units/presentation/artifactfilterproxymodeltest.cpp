@@ -30,6 +30,7 @@
 
 #include "presentation/artifactfilterproxymodel.h"
 #include "presentation/querytreemodelbase.h"
+#include "utils/datetime.h"
 
 Q_DECLARE_METATYPE(QList<QStandardItem*>)
 
@@ -44,8 +45,8 @@ private:
         auto task = Domain::Task::Ptr::create();
         task->setTitle(title);
         task->setText(text);
-        task->setStartDate(QDateTime(start));
-        task->setDueDate(QDateTime(due));
+        task->setStartDate(start);
+        task->setDueDate(due);
 
         auto item = new QStandardItem;
         item->setData(task->title(), Qt::DisplayRole);
@@ -68,6 +69,11 @@ private:
     }
 
 private slots:
+    void initTestCase()
+    {
+        qputenv("ZANSHIN_OVERRIDE_DATE", "2015-03-11");
+    }
+
     void shouldHaveDefaultState()
     {
         Presentation::ArtifactFilterProxyModel proxy;
@@ -108,9 +114,10 @@ private slots:
     {
         // GIVEN
         QStandardItemModel input;
-        input.appendRow(createTaskItem(QStringLiteral("1. past"), QStringLiteral(""), QDate::currentDate().addDays(-1)));
-        input.appendRow(createTaskItem(QStringLiteral("2. present"), QStringLiteral(""), QDate::currentDate()));
-        input.appendRow(createTaskItem(QStringLiteral("3. future"), QStringLiteral(""), QDate::currentDate().addDays(1)));
+        const auto today = Utils::DateTime::currentDate();
+        input.appendRow(createTaskItem(QStringLiteral("1. past"), QStringLiteral(""), today.addDays(-1)));
+        input.appendRow(createTaskItem(QStringLiteral("2. present"), QStringLiteral(""), today));
+        input.appendRow(createTaskItem(QStringLiteral("3. future"), QStringLiteral(""), today.addDays(1)));
         input.appendRow(createTaskItem(QStringLiteral("4. whatever"), QStringLiteral("")));
 
         Presentation::ArtifactFilterProxyModel output;

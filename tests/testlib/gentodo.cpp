@@ -24,11 +24,8 @@
 #include "gentodo.h"
 
 #include <KCalCore/Todo>
-#include <QDate>
+#include <QDateTime>
 #include <kcalcore_version.h>
-#if KCALCORE_VERSION < QT_VERSION_CHECK(5, 6, 80)
-#include <KDateTime>
-#endif
 
 using namespace Testlib;
 
@@ -109,50 +106,39 @@ GenTodo &GenTodo::done(bool value)
     return *this;
 }
 
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-
-template <typename T>
-static QDateTime KDateTime(const T& input) {
-    QDateTime dt(input);
-    dt.setTimeSpec(Qt::UTC);
-    return dt;
-}
-
-#endif
-
 GenTodo &GenTodo::withDoneDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(KDateTime(QDate::fromString(date, Qt::ISODate)));
+    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(QDateTime(QDate::fromString(date, Qt::ISODate)));
     return *this;
 }
 
-GenTodo &GenTodo::withDoneDate(const QDateTime &date)
+GenTodo &GenTodo::withDoneDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(KDateTime(date));
+    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(QDateTime(date));
     return *this;
 }
 
 GenTodo &GenTodo::withStartDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(KDateTime(QDate::fromString(date, Qt::ISODate)));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(QDateTime(QDate::fromString(date, Qt::ISODate)));
     return *this;
 }
 
-GenTodo &GenTodo::withStartDate(const QDateTime &date)
+GenTodo &GenTodo::withStartDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(KDateTime(date));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(QDateTime(date));
     return *this;
 }
 
 GenTodo &GenTodo::withDueDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(KDateTime(QDate::fromString(date, Qt::ISODate)));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(QDateTime(QDate::fromString(date, Qt::ISODate)));
     return *this;
 }
 
-GenTodo &GenTodo::withDueDate(const QDateTime &date)
+GenTodo &GenTodo::withDueDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(KDateTime(date));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(QDateTime(date));
     return *this;
 }
 

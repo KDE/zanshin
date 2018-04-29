@@ -25,7 +25,7 @@
 #ifndef PRESENTATION_ARTIFACTEDITORMODEL_H
 #define PRESENTATION_ARTIFACTEDITORMODEL_H
 
-#include <QDateTime>
+#include <QDate>
 #include <QObject>
 
 #include <functional>
@@ -48,8 +48,8 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
-    Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
-    Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
+    Q_PROPERTY(QDate startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
+    Q_PROPERTY(QDate dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(Domain::Task::Recurrence recurrence READ recurrence WRITE setRecurrence NOTIFY recurrenceChanged)
     Q_PROPERTY(QAbstractItemModel* attachmentModel READ attachmentModel CONSTANT)
     Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
@@ -77,8 +77,8 @@ public:
     QString text() const;
     QString title() const;
     bool isDone() const;
-    QDateTime startDate() const;
-    QDateTime dueDate() const;
+    QDate startDate() const;
+    QDate dueDate() const;
     Domain::Task::Recurrence recurrence() const;
     QAbstractItemModel *attachmentModel() const;
     QString delegateText() const;
@@ -92,8 +92,8 @@ public slots:
     void setText(const QString &text);
     void setTitle(const QString &title);
     void setDone(bool done);
-    void setStartDate(const QDateTime &start);
-    void setDueDate(const QDateTime &due);
+    void setStartDate(const QDate &start);
+    void setDueDate(const QDate &due);
     void setRecurrence(Domain::Task::Recurrence recurrence);
     void delegate(const QString &name, const QString &email);
 
@@ -109,8 +109,8 @@ signals:
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
     void doneChanged(bool done);
-    void startDateChanged(const QDateTime &date);
-    void dueDateChanged(const QDateTime &due);
+    void startDateChanged(const QDate &date);
+    void dueDateChanged(const QDate &due);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
     void delegateTextChanged(const QString &delegateText);
 
@@ -118,8 +118,8 @@ private slots:
     void onTextChanged(const QString &text);
     void onTitleChanged(const QString &title);
     void onDoneChanged(bool done);
-    void onStartDateChanged(const QDateTime &start);
-    void onDueDateChanged(const QDateTime &due);
+    void onStartDateChanged(const QDate &start);
+    void onDueDateChanged(const QDate &due);
     void onRecurrenceChanged(Domain::Task::Recurrence recurrence);
     void onDelegateChanged(const Domain::Task::Delegate &delegate);
 
@@ -131,8 +131,8 @@ private:
     void applyNewText(const QString &text);
     void applyNewTitle(const QString &title);
     void applyNewDone(bool done);
-    void applyNewStartDate(const QDateTime &start);
-    void applyNewDueDate(const QDateTime &due);
+    void applyNewStartDate(const QDate &start);
+    void applyNewDueDate(const QDate &due);
     void applyNewRecurrence(Domain::Task::Recurrence recurrence);
 
     Domain::Artifact::Ptr m_artifact;
@@ -142,8 +142,8 @@ private:
     QString m_text;
     QString m_title;
     bool m_done;
-    QDateTime m_start;
-    QDateTime m_due;
+    QDate m_start;
+    QDate m_due;
     Domain::Task::Recurrence m_recurrence;
     AttachmentModel *m_attachmentModel;
     QString m_delegateText;

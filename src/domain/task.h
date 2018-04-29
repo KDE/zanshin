@@ -26,7 +26,7 @@
 #define DOMAIN_TASK_H
 
 #include "artifact.h"
-#include <QDateTime>
+#include <QDate>
 #include <QUrl>
 
 namespace Domain {
@@ -36,8 +36,8 @@ class Task : public Artifact
     Q_OBJECT
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
-    Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
-    Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
+    Q_PROPERTY(QDate startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
+    Q_PROPERTY(QDate dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(Domain::Task::Recurrence recurrence READ recurrence WRITE setRecurrence NOTIFY recurrenceChanged)
     Q_PROPERTY(Domain::Task::Delegate delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
     Q_PROPERTY(Domain::Task::Attachments attachements READ attachments WRITE setAttachments NOTIFY attachmentsChanged)
@@ -123,9 +123,9 @@ public:
 
     bool isRunning() const;
     bool isDone() const;
-    QDateTime startDate() const;
-    QDateTime dueDate() const;
-    QDateTime doneDate() const;
+    QDate startDate() const;
+    QDate dueDate() const;
+    QDate doneDate() const;
     Recurrence recurrence() const;
     Attachments attachments() const;
     Delegate delegate() const;
@@ -133,9 +133,9 @@ public:
 public slots:
     void setRunning(bool running);
     void setDone(bool done);
-    void setDoneDate(const QDateTime &doneDate);
-    void setStartDate(const QDateTime &startDate);
-    void setDueDate(const QDateTime &dueDate);
+    void setDoneDate(const QDate &doneDate);
+    void setStartDate(const QDate &startDate);
+    void setDueDate(const QDate &dueDate);
     void setRecurrence(Domain::Task::Recurrence recurrence);
     void setAttachments(const Domain::Task::Attachments &attachments);
     void setDelegate(const Domain::Task::Delegate &delegate);
@@ -143,9 +143,9 @@ public slots:
 signals:
     void runningChanged(bool isRunning);
     void doneChanged(bool isDone);
-    void doneDateChanged(const QDateTime &doneDate);
-    void startDateChanged(const QDateTime &startDate);
-    void dueDateChanged(const QDateTime &dueDate);
+    void doneDateChanged(const QDate &doneDate);
+    void startDateChanged(const QDate &startDate);
+    void dueDateChanged(const QDate &dueDate);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
     void attachmentsChanged(const Domain::Task::Attachments &attachments);
     void delegateChanged(const Domain::Task::Delegate &delegate);
@@ -153,9 +153,9 @@ signals:
 private:
     bool m_running;
     bool m_done;
-    QDateTime m_startDate;
-    QDateTime m_dueDate;
-    QDateTime m_doneDate;
+    QDate m_startDate;
+    QDate m_dueDate;
+    QDate m_doneDate;
     Recurrence m_recurrence;
     Attachments m_attachments;
     Delegate m_delegate;

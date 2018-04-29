@@ -44,14 +44,9 @@ Q_DECLARE_METATYPE(Akonadi::Item*)
 #endif
 
 
-static void setTodoDates(KCalCore::Todo::Ptr todo, const QDateTime &start, const QDateTime &due) {
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-    todo->setDtStart(start);
-    todo->setDtDue(due);
-#else
-    todo->setDtStart(KDateTime(start, KDateTime::UTC));
-    todo->setDtDue(KDateTime(due, KDateTime::UTC));
-#endif
+static void setTodoDates(KCalCore::Todo::Ptr todo, const QDate &start, const QDate &due) {
+    todo->setDtStart(QDateTime(start));
+    todo->setDtDue(QDateTime(due));
 }
 
 class AkonadiSerializerTest : public QObject
@@ -526,16 +521,16 @@ private slots:
         QTest::addColumn<QString>("summary");
         QTest::addColumn<QString>("content");
         QTest::addColumn<bool>("isDone");
-        QTest::addColumn<QDateTime>("doneDate");
-        QTest::addColumn<QDateTime>("startDate");
-        QTest::addColumn<QDateTime>("dueDate");
+        QTest::addColumn<QDate>("doneDate");
+        QTest::addColumn<QDate>("startDate");
+        QTest::addColumn<QDate>("dueDate");
         QTest::addColumn<QString>("delegateName");
         QTest::addColumn<QString>("delegateEmail");
 
-        QTest::newRow("nominal case") << "summary" << "content" << false << QDateTime() << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "John Doe" << "j@d.com";
-        QTest::newRow("done case") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30)) << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "John Doe" << "j@d.com";
-        QTest::newRow("done without doneDate case") << "summary" << "content" << true << QDateTime() << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "John Doe" << "j@d.com";
-        QTest::newRow("empty case") << QString() << QString() << false << QDateTime() << QDateTime() << QDateTime() << QString() << QString();
+        QTest::newRow("nominal case") << "summary" << "content" << false << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "John Doe" << "j@d.com";
+        QTest::newRow("done case") << "summary" << "content" << true << QDate(2013, 11, 30) << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "John Doe" << "j@d.com";
+        QTest::newRow("done without doneDate case") << "summary" << "content" << true << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "John Doe" << "j@d.com";
+        QTest::newRow("empty case") << QString() << QString() << false << QDate() << QDate() << QDate() << QString() << QString();
     }
 
     void shouldCreateTaskFromItem()
@@ -546,16 +541,11 @@ private slots:
         QFETCH(QString, summary);
         QFETCH(QString, content);
         QFETCH(bool, isDone);
-        QFETCH(QDateTime, doneDate);
-        QFETCH(QDateTime, startDate);
-        QFETCH(QDateTime, dueDate);
+        QFETCH(QDate, doneDate);
+        QFETCH(QDate, startDate);
+        QFETCH(QDate, dueDate);
         QFETCH(QString, delegateName);
         QFETCH(QString, delegateEmail);
-
-        // Switch to UTC
-        doneDate.setTimeSpec(Qt::UTC);
-        startDate.setTimeSpec(Qt::UTC);
-        dueDate.setTimeSpec(Qt::UTC);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -563,7 +553,7 @@ private slots:
         todo->setDescription(content);
 
         if (isDone)
-            todo->setCompleted(KDateTime(doneDate));
+            todo->setCompleted(QDateTime(doneDate));
         else
             todo->setCompleted(isDone);
 
@@ -665,9 +655,9 @@ private slots:
         QTest::addColumn<QString>("updatedSummary");
         QTest::addColumn<QString>("updatedContent");
         QTest::addColumn<bool>("updatedDone");
-        QTest::addColumn<QDateTime>("updatedDoneDate");
-        QTest::addColumn<QDateTime>("updatedStartDate");
-        QTest::addColumn<QDateTime>("updatedDueDate");
+        QTest::addColumn<QDate>("updatedDoneDate");
+        QTest::addColumn<QDate>("updatedStartDate");
+        QTest::addColumn<QDate>("updatedDueDate");
         QTest::addColumn<QString>("updatedRelated");
         QTest::addColumn<bool>("updatedRecurs");
         QTest::addColumn<QByteArrayList>("updatedAttachmentData");
@@ -679,9 +669,9 @@ private slots:
         QTest::addColumn<QString>("updatedDelegateEmail");
         QTest::addColumn<bool>("updatedRunning");
 
-        QTest::newRow("no change") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << false;
-        QTest::newRow("changed") << "new summary" << "new content" << true << QDateTime(QDate(2013, 11, 28)) << QDateTime(QDate(2013, 11, 25)) << QDateTime(QDate(2014, 03, 02)) << "my-new-uid" << true << QByteArrayList({"foo", "# bar", QByteArray()}) << QStringList({QString(), QString(), "https://www.kde.org"}) << QStringList({"label1", "label2", "label3"}) << QStringList({"text/plain", "text/markdown", "text/html"}) << QStringList({"text-plain", "text-markdown", "text-html"}) << "John Smith" << "j@s.com" << false;
-        QTest::newRow("set_to_running") << "summary" << "content" << false << QDateTime() <<  QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01)) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << true;
+        QTest::newRow("no change") << "summary" << "content" << false << QDate() <<  QDate(2013, 11, 24) << QDate(2014, 03, 01) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << false;
+        QTest::newRow("changed") << "new summary" << "new content" << true << QDate(2013, 11, 28) << QDate(2013, 11, 25) << QDate(2014, 03, 02) << "my-new-uid" << true << QByteArrayList({"foo", "# bar", QByteArray()}) << QStringList({QString(), QString(), "https://www.kde.org"}) << QStringList({"label1", "label2", "label3"}) << QStringList({"text/plain", "text/markdown", "text/html"}) << QStringList({"text-plain", "text-markdown", "text-html"}) << "John Smith" << "j@s.com" << false;
+        QTest::newRow("set_to_running") << "summary" << "content" << false << QDate() <<  QDate(2013, 11, 24) << QDate(2014, 03, 01) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << true;
     }
 
     void shouldUpdateTaskFromItem()
@@ -693,7 +683,7 @@ private slots:
         originalTodo->setSummary(QStringLiteral("summary"));
         originalTodo->setDescription(QStringLiteral("content"));
         originalTodo->setCompleted(false);
-        setTodoDates(originalTodo, QDateTime(QDate(2013, 11, 24)), QDateTime(QDate(2014, 03, 01)));
+        setTodoDates(originalTodo, QDate(2013, 11, 24), QDate(2014, 03, 01));
 
         originalTodo->setRelatedTo(QStringLiteral("my-uid"));
         KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee(QStringLiteral("John Doe"),
@@ -722,9 +712,9 @@ private slots:
         QFETCH(QString, updatedSummary);
         QFETCH(QString, updatedContent);
         QFETCH(bool, updatedDone);
-        QFETCH(QDateTime, updatedDoneDate);
-        QFETCH(QDateTime, updatedStartDate);
-        QFETCH(QDateTime, updatedDueDate);
+        QFETCH(QDate, updatedDoneDate);
+        QFETCH(QDate, updatedStartDate);
+        QFETCH(QDate, updatedDueDate);
         QFETCH(QString, updatedRelated);
         QFETCH(bool, updatedRecurs);
         QFETCH(QByteArrayList, updatedAttachmentData);
@@ -735,11 +725,6 @@ private slots:
         QFETCH(QString, updatedDelegateName);
         QFETCH(QString, updatedDelegateEmail);
         QFETCH(bool, updatedRunning);
-
-        // Switch to UTC
-        updatedDoneDate.setTimeSpec(Qt::UTC);
-        updatedStartDate.setTimeSpec(Qt::UTC);
-        updatedDueDate.setTimeSpec(Qt::UTC);
 
         // ... in a new todo...
         KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
@@ -797,9 +782,9 @@ private slots:
         QCOMPARE(task->title(), updatedSummary);
         QCOMPARE(task->text(), updatedContent);
         QCOMPARE(task->isDone(), updatedDone);
-        QCOMPARE(task->doneDate(), updatedDoneDate.toUTC());
-        QCOMPARE(task->startDate(), updatedStartDate.toUTC());
-        QCOMPARE(task->dueDate(), updatedDueDate.toUTC());
+        QCOMPARE(task->doneDate(), updatedDoneDate);
+        QCOMPARE(task->startDate(), updatedStartDate);
+        QCOMPARE(task->dueDate(), updatedDueDate);
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
@@ -822,9 +807,9 @@ private slots:
         QCOMPARE(task->title(), updatedSummary);
         QCOMPARE(task->text(), updatedContent);
         QCOMPARE(task->isDone(), updatedDone);
-        QCOMPARE(task->doneDate(), updatedDoneDate.toUTC());
-        QCOMPARE(task->startDate(), updatedStartDate.toUTC());
-        QCOMPARE(task->dueDate(), updatedDueDate.toUTC());
+        QCOMPARE(task->doneDate(), updatedDoneDate);
+        QCOMPARE(task->startDate(), updatedStartDate);
+        QCOMPARE(task->dueDate(), updatedDueDate);
         QCOMPARE(task->property("todoUid").toString(), updatedTodo->uid());
         QCOMPARE(task->property("relatedUid").toString(), updatedTodo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), updatedItem.id());
@@ -912,15 +897,15 @@ private slots:
         // GIVEN
 
         // Data...
-        const QDateTime today(QDate::currentDate(), QTime(0, 0), Qt::UTC);
-        const QDateTime doneDate(QDate(2013, 11, 20), QTime(0, 0), Qt::UTC);
-        const QDateTime startDate(QDate(2013, 11, 10), QTime(0, 0), Qt::UTC);
+        const QDate today(QDate::currentDate());
+        const QDate doneDate(2013, 11, 20);
+        const QDate startDate(2013, 11, 10);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(QStringLiteral("summary"));
 #if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-        todo->setDtStart(startDate);
+        todo->setDtStart(QDateTime(startDate));
 #else
         todo->setDtStart(KDateTime(startDate, KDateTime::UTC));
 #endif
@@ -947,8 +932,8 @@ private slots:
         // THEN
         QCOMPARE(task->recurrence(), Domain::Task::RecursMonthly);
         QVERIFY(!task->isDone());
-        const QDateTime lastOccurrence(QDate(today.date().year(), today.date().month(), 10), QTime(0, 0), Qt::UTC);
-        if (today.date().day() >= 10)
+        const QDate lastOccurrence(QDate(today.year(), today.month(), 10));
+        if (today.day() >= 10)
             QCOMPARE(task->startDate(), lastOccurrence.addMonths(1));
         else
             QCOMPARE(task->startDate(), lastOccurrence);
@@ -962,9 +947,9 @@ private slots:
         const QString summary = QStringLiteral("summary");
         const QString content = QStringLiteral("content");
         const bool isDone = true;
-        const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
-        const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
-        const QDateTime dueDate(QDate(2014, 03, 01), QTime(0, 0), Qt::UTC);
+        const QDate doneDate(2013, 11, 30);
+        const QDate startDate(2013, 11, 24);
+        const QDate dueDate(2014, 03, 01);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
@@ -1019,9 +1004,9 @@ private slots:
         const QString summary = QStringLiteral("summary");
         const QString content = QStringLiteral("content");
         const bool isDone = true;
-        const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
-        const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
-        const QDateTime dueDate(QDate(2014, 03, 01), QTime(0, 0), Qt::UTC);
+        const QDate doneDate(2013, 11, 30);
+        const QDate startDate(2013, 11, 24);
+        const QDate dueDate(2014, 03, 01);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
@@ -1081,9 +1066,9 @@ private slots:
         QTest::addColumn<QString>("summary");
         QTest::addColumn<QString>("content");
         QTest::addColumn<bool>("isDone");
-        QTest::addColumn<QDateTime>("doneDate");
-        QTest::addColumn<QDateTime>("startDate");
-        QTest::addColumn<QDateTime>("dueDate");
+        QTest::addColumn<QDate>("doneDate");
+        QTest::addColumn<QDate>("startDate");
+        QTest::addColumn<QDate>("dueDate");
         QTest::addColumn<qint64>("itemId");
         QTest::addColumn<qint64>("parentCollectionId");
         QTest::addColumn<QString>("todoUid");
@@ -1108,43 +1093,43 @@ private slots:
         uriAttachment.setIconName("text-html");
         attachments.append(uriAttachment);
 
-        QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDateTime()
-                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("nominal case (no id)") << "summary" << "content" << false << QDate()
+                                              << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << attachments
                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
-        QTest::newRow("nominal case (daily)") << "summary" << "content" << false << QDateTime()
-                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("nominal case (daily)") << "summary" << "content" << false << QDate()
+                                              << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::RecursDaily
                                               << Domain::Task::Attachments()
                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
-        QTest::newRow("nominal case (weekly)") << "summary" << "content" << false << QDateTime()
-                                               << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("nominal case (weekly)") << "summary" << "content" << false << QDate()
+                                               << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                << qint64(-1) << qint64(-1) << QString()
                                                << Domain::Task::RecursWeekly
                                                << Domain::Task::Attachments()
                                                << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                << false;
-        QTest::newRow("nominal case (monthly)") << "summary" << "content" << false << QDateTime()
-                                                << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("nominal case (monthly)") << "summary" << "content" << false << QDate()
+                                                << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                 << qint64(-1) << qint64(-1) << QString()
                                                 << Domain::Task::RecursMonthly
                                                 << Domain::Task::Attachments()
                                                 << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                 << false;
-        QTest::newRow("done case (no id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
-                                           << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("done case (no id)") << "summary" << "content" << true << QDate(2013, 11, 30)
+                                           << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                            << qint64(-1) << qint64(-1) << QString()
                                            << Domain::Task::NoRecurrence
                                            << Domain::Task::Attachments()
                                            << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                            << false;
-        QTest::newRow("empty case (no id)") << QString() << QString() << false << QDateTime()
-                                            << QDateTime() << QDateTime()
+        QTest::newRow("empty case (no id)") << QString() << QString() << false << QDate()
+                                            << QDate() << QDate()
                                             << qint64(-1) << qint64(-1) << QString()
                                             << Domain::Task::NoRecurrence
                                             << Domain::Task::Attachments()
@@ -1160,29 +1145,29 @@ private slots:
                                               << false;
 #endif
 
-        QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDateTime()
-                                                << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDate()
+                                                << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                 << qint64(42) << qint64(43) << "my-uid"
                                                 << Domain::Task::NoRecurrence
                                                 << Domain::Task::Attachments()
                                                 << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                 << false;
-        QTest::newRow("done case (with id)") << "summary" << "content" << true << QDateTime(QDate(2013, 11, 30))
-                                             << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("done case (with id)") << "summary" << "content" << true << QDate(2013, 11, 30)
+                                             << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                              << qint64(42) << qint64(43) << "my-uid"
                                              << Domain::Task::NoRecurrence
                                              << Domain::Task::Attachments()
                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                              << false;
-        QTest::newRow("empty case (with id)") << QString() << QString() << false << QDateTime()
-                                              << QDateTime() << QDateTime()
+        QTest::newRow("empty case (with id)") << QString() << QString() << false << QDate()
+                                              << QDate() << QDate()
                                               << qint64(42) << qint64(43) << "my-uid"
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
                                               << Domain::Task::Delegate()
                                               << false;
-        QTest::newRow("nominal case (running)") << "running" << QString() << false << QDateTime()
-                                              << QDateTime(QDate(2013, 11, 24)) << QDateTime(QDate(2014, 03, 01))
+        QTest::newRow("nominal case (running)") << "running" << QString() << false << QDate()
+                                              << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
@@ -1198,9 +1183,9 @@ private slots:
         QFETCH(QString, summary);
         QFETCH(QString, content);
         QFETCH(bool, isDone);
-        QFETCH(QDateTime, doneDate);
-        QFETCH(QDateTime, startDate);
-        QFETCH(QDateTime, dueDate);
+        QFETCH(QDate, doneDate);
+        QFETCH(QDate, startDate);
+        QFETCH(QDate, dueDate);
         QFETCH(qint64, itemId);
         QFETCH(qint64, parentCollectionId);
         QFETCH(QString, todoUid);
@@ -1208,11 +1193,6 @@ private slots:
         QFETCH(Domain::Task::Attachments, attachments);
         QFETCH(Domain::Task::Delegate, delegate);
         QFETCH(bool, running);
-
-        // Switch to UTC
-        doneDate.setTimeSpec(Qt::UTC);
-        startDate.setTimeSpec(Qt::UTC);
-        dueDate.setTimeSpec(Qt::UTC);
 
         // ... stored in a task
         auto task = Domain::Task::Ptr::create();
@@ -1260,19 +1240,19 @@ private slots:
         QCOMPARE(todo->description(), content);
         QCOMPARE(todo->isCompleted(), isDone);
 #if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-        QCOMPARE(todo->completed().toUTC(), doneDate);
-        QCOMPARE(todo->dtStart().toUTC(), startDate);
-        QCOMPARE(todo->dtDue().toUTC(), dueDate);
+        QCOMPARE(todo->completed().toLocalTime().date(), doneDate);
+        QCOMPARE(todo->dtStart().toLocalTime().date(), startDate);
+        QCOMPARE(todo->dtDue().toLocalTime().date(), dueDate);
         if (todo->dtStart().isValid()) {
-            QCOMPARE(int(todo->dtStart().timeSpec()), int(Qt::UTC));
+            QCOMPARE(int(todo->dtStart().timeSpec()), int(Qt::LocalTime));
         }
         QVERIFY(todo->allDay()); // this is always true currently...
 #else
-        QCOMPARE(todo->completed().dateTime().toUTC(), doneDate);
-        QCOMPARE(todo->dtStart().dateTime().toUTC(), startDate);
-        QCOMPARE(todo->dtDue().dateTime().toUTC(), dueDate);
+        QCOMPARE(todo->completed().dateTime().date(), doneDate);
+        QCOMPARE(todo->dtStart().dateTime().date(), startDate);
+        QCOMPARE(todo->dtDue().dateTime().date(), dueDate);
         if (todo->dtStart().isValid()) {
-            QCOMPARE(int(todo->dtStart().timeType()), int(KDateTime::UTC));
+            QCOMPARE(int(todo->dtStart().timeType()), int(KDateTime::LocalTime));
         }
         QCOMPARE(todo->dtStart().isDateOnly(), todo->allDay());
 
@@ -1321,9 +1301,9 @@ private slots:
         const QString summary = QStringLiteral("summary");
         const QString content = QStringLiteral("content");
         const bool isDone = true;
-        const QDateTime doneDate(QDate(2013, 11, 30), QTime(0, 0), Qt::UTC);
-        const QDateTime startDate(QDate(2013, 11, 24), QTime(0, 0), Qt::UTC);
-        const QDateTime dueDate(QDate(2014, 03, 01), QTime(0, 0), Qt::UTC);
+        const QDate doneDate(QDate(2013, 11, 30));
+        const QDate startDate(QDate(2013, 11, 24));
+        const QDate dueDate(QDate(2014, 03, 01));
 
         // ... create a task
         Domain::Task::Ptr task(new Domain::Task);
@@ -2670,7 +2650,7 @@ private slots:
 
     // Investigation into how to differentiate all-day events from events with time,
     // using QDateTime only. Doesn't seem to be possible.
-    void KDateTimeShouldStillBeNeeded() // although I wish it wasn't...
+    void noWayToHaveQDateTimeWithoutTime()
     {
         // GIVEN a QDateTime without time information
         QDateTime dateOnly(QDate(2016, 6, 12), QTime(-1, -1, -1));

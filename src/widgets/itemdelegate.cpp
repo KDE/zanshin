@@ -33,6 +33,7 @@
 #include "domain/note.h"
 #include "domain/task.h"
 #include "presentation/querytreemodelbase.h"
+#include "utils/datetime.h"
 
 using namespace Widgets;
 
@@ -80,12 +81,13 @@ void ItemDelegate::paint(QPainter *painter,
     const auto isSelected = (opt.state & QStyle::State_Selected);
     const auto isEditing = (opt.state & QStyle::State_Editing);
 
-    const auto startDate = task ? task->startDate() : QDateTime();
-    const auto dueDate = task ? task->dueDate() : QDateTime();
+    const auto startDate = task ? task->startDate() : QDate();
+    const auto dueDate = task ? task->dueDate() : QDate();
 
-    const auto onStartDate = startDate.isValid() && startDate.date() <= QDate::currentDate();
-    const auto pastDueDate = dueDate.isValid() && dueDate.date() < QDate::currentDate();
-    const auto onDueDate = dueDate.isValid() && dueDate.date() == QDate::currentDate();
+    const auto currentDate = Utils::DateTime::currentDate();
+    const auto onStartDate = startDate.isValid() && startDate <= currentDate;
+    const auto pastDueDate = dueDate.isValid() && dueDate < currentDate;
+    const auto onDueDate = dueDate.isValid() && dueDate == currentDate;
 
     const auto taskDelegate = task ? task->delegate() : Domain::Task::Delegate();
 
@@ -111,7 +113,7 @@ void ItemDelegate::paint(QPainter *painter,
                             : baseColor;
 
     const auto summaryText = taskDelegate.isValid() ? i18n("(%1) %2", taskDelegate.display(), opt.text) : opt.text;
-    const auto dueDateText = dueDate.isValid() ? QLocale().toString(dueDate.date(), QLocale::ShortFormat)
+    const auto dueDateText = dueDate.isValid() ? QLocale().toString(dueDate, QLocale::ShortFormat)
                                                : QString();
 
     const auto textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1;

@@ -330,7 +330,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
 
                 if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
 
-                    task->setStartDate(Utils::DateTime::currentDateTime());
+                    task->setStartDate(Utils::DateTime::currentDate());
                     const auto job = m_taskRepository->update(task);
 
                     installHandler(job, i18n("Cannot update task %1 to Workday", task->title()));

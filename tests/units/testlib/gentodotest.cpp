@@ -152,10 +152,10 @@ private slots:
     void shouldAllowToSetDoneDate()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withDoneDate(QDateTime(QDate(2015, 4, 12), QTime(12, 00)));
+        Akonadi::Item item = GenTodo().withDoneDate(QDate(2015, 4, 12));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->completed().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->completed().toLocalTime().date(), QDate(2015, 04, 12));
     }
 
     void shouldAllowToSetDoneDateString()
@@ -164,13 +164,13 @@ private slots:
         Akonadi::Item item = GenTodo().withDoneDate(QStringLiteral("2015-04-12"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->completed().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->completed().toLocalTime().date(), QDate(2015, 04, 12));
     }
 
     void shouldAllowToSetStartDate()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withStartDate(QDateTime(QDate(2015, 4, 12)));
+        Akonadi::Item item = GenTodo().withStartDate(QDate(2015, 4, 12));
 
         // THEN
         QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtStart().date(), QDate(2015, 04, 12));
@@ -188,7 +188,7 @@ private slots:
     void shouldAllowToSetDueDate()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withDueDate(QDateTime(QDate(2015, 4, 12)));
+        Akonadi::Item item = GenTodo().withDueDate(QDate(2015, 4, 12));
 
         // THEN
         QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtDue().date(), QDate(2015, 04, 12));

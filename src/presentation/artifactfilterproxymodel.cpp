@@ -28,6 +28,7 @@
 
 #include "domain/artifact.h"
 #include "domain/task.h"
+#include "utils/datetime.h"
 
 #include "presentation/querytreemodelbase.h"
 
@@ -82,7 +83,7 @@ static bool isFutureTask(const Domain::Artifact::Ptr &artifact)
     if (!task->startDate().isValid())
         return false;
 
-    return task->startDate() > QDateTime::currentDateTime();
+    return task->startDate() > Utils::DateTime::currentDate();
 }
 
 bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -107,12 +108,12 @@ bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
     return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }
 
-static QDateTime validDt(const QDateTime &date = QDateTime())
+static QDate validDt(const QDate &date = QDate())
 {
     if (date.isValid())
         return date;
 
-    return QDateTime::fromTime_t(std::numeric_limits<uint>::max() - 1);
+    return QDate(10000, 12, 31);
 }
 
 bool ArtifactFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
@@ -126,11 +127,13 @@ bool ArtifactFilterProxyModel::lessThan(const QModelIndex &left, const QModelInd
     const auto leftTask = leftArtifact.objectCast<Domain::Task>();
     const auto rightTask = rightArtifact.objectCast<Domain::Task>();
 
-    const QDateTime leftDue = leftTask ? validDt(leftTask->dueDate()) : validDt().addSecs(1);
-    const QDateTime rightDue = rightTask ? validDt(rightTask->dueDate()) : validDt().addSecs(1);
+    // The addDays(1) is so that we sort non-tasks (e.g. notes) at the end
 
-    const QDateTime leftStart = leftTask ? validDt(leftTask->startDate()) : validDt().addSecs(1);
-    const QDateTime rightStart = rightTask ? validDt(rightTask->startDate()) : validDt().addSecs(1);
+    const QDate leftDue = leftTask ? validDt(leftTask->dueDate()) : validDt().addDays(1);
+    const QDate rightDue = rightTask ? validDt(rightTask->dueDate()) : validDt().addDays(1);
+
+    const QDate leftStart = leftTask ? validDt(leftTask->startDate()) : validDt().addDays(1);
+    const QDate rightStart = rightTask ? validDt(rightTask->startDate()) : validDt().addDays(1);
 
     return leftDue < rightDue
         || leftStart < rightStart;

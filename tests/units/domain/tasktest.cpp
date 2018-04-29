@@ -48,9 +48,9 @@ private slots:
         QCOMPARE(t.text(), QString());
         QCOMPARE(t.title(), QString());
         QCOMPARE(t.isDone(), false);
-        QCOMPARE(t.startDate(), QDateTime());
-        QCOMPARE(t.dueDate(), QDateTime());
-        QCOMPARE(t.doneDate(), QDateTime());
+        QCOMPARE(t.startDate(), QDate());
+        QCOMPARE(t.dueDate(), QDate());
+        QCOMPARE(t.doneDate(), QDate());
         QCOMPARE(t.recurrence(), Domain::Task::NoRecurrence);
         QVERIFY(t.attachments().isEmpty());
         QVERIFY(!t.delegate().isValid());
@@ -180,7 +180,7 @@ private slots:
     {
         Task t;
         QSignalSpy spy(&t, &Task::startDateChanged);
-        t.setStartDate(QDateTime(QDate(2014, 1, 13)));
+        t.setStartDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
     }
@@ -188,9 +188,9 @@ private slots:
     void shouldNotNotifyIdenticalStartDateChanges()
     {
         Task t;
-        t.setStartDate(QDateTime(QDate(2014, 1, 13)));
+        t.setStartDate(QDate(2014, 1, 13));
         QSignalSpy spy(&t, &Task::startDateChanged);
-        t.setStartDate(QDateTime(QDate(2014, 1, 13)));
+        t.setStartDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 0);
     }
 
@@ -198,7 +198,7 @@ private slots:
     {
         Task t;
         QSignalSpy spy(&t, &Task::dueDateChanged);
-        t.setDueDate(QDateTime(QDate(2014, 1, 13)));
+        t.setDueDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
     }
@@ -206,9 +206,9 @@ private slots:
     void shouldNotNotifyIdenticalDueDateChanges()
     {
         Task t;
-        t.setDueDate(QDateTime(QDate(2014, 1, 13)));
+        t.setDueDate(QDate(2014, 1, 13));
         QSignalSpy spy(&t, &Task::dueDateChanged);
-        t.setDueDate(QDateTime(QDate(2014, 1, 13)));
+        t.setDueDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 0);
     }
 
@@ -279,17 +279,17 @@ private slots:
     {
         Task t;
         QSignalSpy spy(&t, &Task::doneDateChanged);
-        t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
+        t.setDoneDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.first().first().toDate(), QDate(2014, 1, 13));
     }
 
     void shouldNotNotifyIdenticalDoneDateChanges()
     {
         Task t;
-        t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
+        t.setDoneDate(QDate(2014, 1, 13));
         QSignalSpy spy(&t, &Task::doneDateChanged);
-        t.setDoneDate(QDateTime(QDate(2014, 1, 13)));
+        t.setDoneDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 0);
     }
 
@@ -299,7 +299,7 @@ private slots:
         QSignalSpy spy(&t, &Task::doneDateChanged);
         t.setDone(true);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.takeFirst().at(0).toDateTime().date(), Utils::DateTime::currentDateTime().date());
+        QCOMPARE(spy.takeFirst().at(0).toDate(), Utils::DateTime::currentDate());
     }
 
     void shouldNotifyDoneDateUnset()
@@ -310,7 +310,7 @@ private slots:
         QSignalSpy spy(&t, &Task::doneDateChanged);
         t.setDone(false);
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.takeFirst().at(0).toDateTime(), QDateTime());
+        QCOMPARE(spy.takeFirst().at(0).toDate(), QDate());
     }
 };
 

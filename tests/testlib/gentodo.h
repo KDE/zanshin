@@ -47,11 +47,11 @@ public:
     GenTodo &withText(const QString &text);
     GenTodo &done(bool value = true);
     GenTodo &withDoneDate(const QString &date);
-    GenTodo &withDoneDate(const QDateTime &date);
+    GenTodo &withDoneDate(const QDate &date);
     GenTodo &withStartDate(const QString &date);
-    GenTodo &withStartDate(const QDateTime &date);
+    GenTodo &withStartDate(const QDate &date);
     GenTodo &withDueDate(const QString &date);
-    GenTodo &withDueDate(const QDateTime &date);
+    GenTodo &withDueDate(const QDate &date);
     GenTodo &withDelegate(const QString &name, const QString &email);
     GenTodo &withNoDelegate();
 

@@ -119,8 +119,8 @@ private slots:
         task->setText(QStringLiteral("description"));
         task->setTitle(QStringLiteral("title"));
         task->setDone(true);
-        task->setStartDate(QDateTime::currentDateTime());
-        task->setDueDate(QDateTime::currentDateTime().addDays(2));
+        task->setStartDate(QDate::currentDate());
+        task->setDueDate(QDate::currentDate().addDays(2));
         task->setRecurrence(Domain::Task::RecursDaily);
         task->setAttachments(attachments);
         task->setDelegate(Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com")));
@@ -151,12 +151,12 @@ private slots:
         QCOMPARE(model.property("done").toBool(), task->isDone());
 
         QCOMPARE(startSpy.size(), 1);
-        QCOMPARE(startSpy.takeFirst().at(0).toDateTime(), task->startDate());
-        QCOMPARE(model.property("startDate").toDateTime(), task->startDate());
+        QCOMPARE(startSpy.takeFirst().at(0).toDate(), task->startDate());
+        QCOMPARE(model.property("startDate").toDate(), task->startDate());
 
         QCOMPARE(dueSpy.size(), 1);
-        QCOMPARE(dueSpy.takeFirst().at(0).toDateTime(), task->dueDate());
-        QCOMPARE(model.property("dueDate").toDateTime(), task->dueDate());
+        QCOMPARE(dueSpy.takeFirst().at(0).toDate(), task->dueDate());
+        QCOMPARE(model.property("dueDate").toDate(), task->dueDate());
 
         QCOMPARE(recurrenceSpy.size(), 1);
         QCOMPARE(recurrenceSpy.takeFirst().at(0).value<Domain::Task::Recurrence>(), task->recurrence());
@@ -212,12 +212,12 @@ private slots:
         QCOMPARE(model.property("done").toBool(), false);
 
         QCOMPARE(startSpy.size(), 1);
-        QVERIFY(startSpy.takeFirst().at(0).toDateTime().isNull());
-        QVERIFY(model.property("startDate").toDateTime().isNull());
+        QVERIFY(startSpy.takeFirst().at(0).toDate().isNull());
+        QVERIFY(model.property("startDate").toDate().isNull());
 
         QCOMPARE(dueSpy.size(), 1);
-        QVERIFY(dueSpy.takeFirst().at(0).toDateTime().isNull());
-        QVERIFY(model.property("dueDate").toDateTime().isNull());
+        QVERIFY(dueSpy.takeFirst().at(0).toDate().isNull());
+        QVERIFY(model.property("dueDate").toDate().isNull());
 
         QCOMPARE(delegateSpy.size(), 1);
         QVERIFY(delegateSpy.takeFirst().at(0).toString().isEmpty());
@@ -258,13 +258,13 @@ private slots:
 
         QTest::newRow("task start") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
                                     << QByteArray("startDate")
-                                    << QVariant(QDateTime::currentDateTime())
-                                    << QByteArray(SIGNAL(startDateChanged(QDateTime)));
+                                    << QVariant(QDate::currentDate())
+                                    << QByteArray(SIGNAL(startDateChanged(QDate)));
 
         QTest::newRow("task due") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
                                   << QByteArray("dueDate")
-                                  << QVariant(QDateTime::currentDateTime().addDays(2))
-                                  << QByteArray(SIGNAL(dueDateChanged(QDateTime)));
+                                  << QVariant(QDate::currentDate().addDays(2))
+                                  << QByteArray(SIGNAL(dueDateChanged(QDate)));
 
         QTest::newRow("task recurrence") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
                                   << QByteArray("recurrence")

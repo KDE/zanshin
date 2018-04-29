@@ -55,7 +55,7 @@ void Task::setDone(bool done)
     if (m_done == done)
         return;
 
-    const QDateTime doneDate = done ? Utils::DateTime::currentDateTime() : QDateTime();
+    const QDate doneDate = done ? Utils::DateTime::currentDate() : QDate();
 
     m_done = done;
     m_doneDate = doneDate;
@@ -64,7 +64,7 @@ void Task::setDone(bool done)
     emit doneDateChanged(doneDate);
 }
 
-void Task::setDoneDate(const QDateTime &doneDate)
+void Task::setDoneDate(const QDate &doneDate)
 {
     if (m_doneDate == doneDate)
         return;
@@ -73,12 +73,12 @@ void Task::setDoneDate(const QDateTime &doneDate)
     emit doneDateChanged(doneDate);
 }
 
-QDateTime Task::startDate() const
+QDate Task::startDate() const
 {
     return m_startDate;
 }
 
-void Task::setStartDate(const QDateTime &startDate)
+void Task::setStartDate(const QDate &startDate)
 {
     if (m_startDate == startDate)
         return;
@@ -87,12 +87,12 @@ void Task::setStartDate(const QDateTime &startDate)
     emit startDateChanged(startDate);
 }
 
-QDateTime Task::dueDate() const
+QDate Task::dueDate() const
 {
     return m_dueDate;
 }
 
-QDateTime Task::doneDate() const
+QDate Task::doneDate() const
 {
     return m_doneDate;
 }
@@ -120,7 +120,7 @@ void Task::setRunning(bool running)
     emit runningChanged(running);
 }
 
-void Task::setDueDate(const QDateTime &dueDate)
+void Task::setDueDate(const QDate &dueDate)
 {
     if (m_dueDate == dueDate)
         return;

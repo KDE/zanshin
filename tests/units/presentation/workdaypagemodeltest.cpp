@@ -48,7 +48,7 @@ private slots:
     {
         // GIVEN
 
-        const auto today = Utils::DateTime::currentDateTime();
+        const auto today = Utils::DateTime::currentDate();
 
         // Three tasks
         auto task1 = Domain::Task::Ptr::create();
@@ -241,7 +241,7 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask5).exactly(1));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask5).exactly(0));
-        QCOMPARE(childTask5->startDate().date(), today.date());
+        QCOMPARE(childTask5->startDate(), today);
     }
 
     void shouldAddTasksInWorkdayPage()
@@ -260,7 +260,7 @@ private slots:
 
         // WHEN
         auto title = QStringLiteral("New task");
-        auto today = Utils::DateTime::currentDateTime();
+        auto today = Utils::DateTime::currentDate();
         auto task = workday.addItem(title).objectCast<Domain::Task>();
 
         // THEN
@@ -268,7 +268,7 @@ private slots:
 
         QVERIFY(task);
         QCOMPARE(task->title(), title);
-        QCOMPARE(task->startDate().date(), today.date());
+        QCOMPARE(task->startDate(), today);
     }
 
     void shouldAddChildTask()

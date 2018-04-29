@@ -56,7 +56,7 @@ Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title, const QMod
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
     if (!parentTask)
-        task->setStartDate(Utils::DateTime::currentDateTime());
+        task->setStartDate(Utils::DateTime::currentDate());
     const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
                    : m_taskRepository->create(task);
     installHandler(job, i18n("Cannot add task %1 in Workday", title));
@@ -165,7 +165,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
                 const auto job = m_taskRepository->associate(parentTask, childTask);
                 installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTask->title()));
             } else {
-                childTask->setStartDate(Utils::DateTime::currentDateTime());
+                childTask->setStartDate(Utils::DateTime::currentDate());
 
                 auto job = m_taskRepository->dissociate(childTask);
                 installHandler(job, i18n("Cannot deparent task %1 from its parent", childTask->title()));

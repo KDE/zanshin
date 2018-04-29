@@ -1384,7 +1384,7 @@ private slots:
         QTest::addColumn<bool>("isExpectedInWorkday");
         QTest::addColumn<Akonadi::Item>("item2");
 
-        const auto today = Utils::DateTime::currentDateTime();
+        const auto today = Utils::DateTime::currentDate();
 
         QTest::newRow("todayTask") << true
                                    << Akonadi::Item(GenTodo()
@@ -1421,25 +1421,25 @@ private slots:
                                                         .withStartDate(today)
                                                         .withDueDate(today)
                                                         .done()
-                                                        .withDoneDate(QDateTime(today.date(), QTime(12, 00))));
+                                                        .withDoneDate(today));
 
         QTest::newRow("startTodayDoneTask") << true
                                             << Akonadi::Item(GenTodo()
                                                              .withStartDate(today)
                                                              .done()
-                                                             .withDoneDate(QDateTime(today.date(), QTime(12, 00))));
+                                                             .withDoneDate(today));
 
         QTest::newRow("endTodayDoneTask") << true
                                           << Akonadi::Item(GenTodo()
                                                            .withDueDate(today)
                                                            .done()
-                                                           .withDoneDate(QDateTime(today.date(), QTime(12, 00))));
+                                                           .withDoneDate(today));
     }
 
     void shouldLookInAllWorkdayReportedForAllTasks()
     {
         // GIVEN
-        const auto today = Utils::DateTime::currentDateTime();
+        const auto today = Utils::DateTime::currentDate();
         AkonadiFakeData data;
 
         // Two top level collections
@@ -1449,7 +1449,7 @@ private slots:
         // One task in the first collection
         data.createItem(GenTodo().withId(42).withParent(42)
                                  .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42"))
-                                 .withStartDate(today.addSecs(300)));
+                                 .withStartDate(today));
 
         // One task in the second collection (from data driven set)
         QFETCH(Akonadi::Item, item2);
@@ -1485,8 +1485,8 @@ private slots:
     void shouldLookInAllWorkdayReportedForAllTasksWhenOverrideDate()
     {
         // GIVEN
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10");
-        const auto today = Utils::DateTime::currentDateTime();
+        qputenv("ZANSHIN_OVERRIDE_DATE", "2015-03-10");
+        const auto today = Utils::DateTime::currentDate();
         AkonadiFakeData data;
 
         // Two top level collections
@@ -1501,7 +1501,7 @@ private slots:
         // One task in the second collection
         data.createItem(GenTodo().withId(43).withParent(43)
                                  .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
-                                 .withStartDate(today.addSecs(3600)));
+                                 .withStartDate(today));
 
         // WHEN
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
@@ -1526,8 +1526,8 @@ private slots:
     void shouldPollForCurrentDayToListWorkday()
     {
         // GIVEN
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-10T23:59:59UTC");
-        const auto today = Utils::DateTime::currentDateTime();
+        qputenv("ZANSHIN_OVERRIDE_DATE", "2015-03-10");
+        const auto today = Utils::DateTime::currentDate();
         AkonadiFakeData data;
 
         // Two top level collections
@@ -1562,7 +1562,7 @@ private slots:
         QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
 
         // WHEN
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", "2015-03-11T00:01:00UTC");
+        qputenv("ZANSHIN_OVERRIDE_DATE", "2015-03-11");
         QTest::qWait(1000);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -1575,7 +1575,7 @@ private slots:
     void shouldNotListWorkdayTasksTwiceIfTheyHaveAParentInWorkday()
     {
         // GIVEN
-        const auto today = Utils::DateTime::currentDateTime();
+        const auto today = Utils::DateTime::currentDate();
         AkonadiFakeData data;
 
         // One top level collection
@@ -1586,9 +1586,9 @@ private slots:
 
         // Five tasks in the collection, two start today, three not, all forming an ancestry line
         data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withUid("42"));
-        data.createItem(GenTodo().withParent(42).withId(43).withTitle(QStringLiteral("43")).withUid("43").withParentUid("42").withStartDate(today.addSecs(300)));
+        data.createItem(GenTodo().withParent(42).withId(43).withTitle(QStringLiteral("43")).withUid("43").withParentUid("42").withStartDate(today));
         data.createItem(GenTodo().withParent(42).withId(44).withTitle(QStringLiteral("44")).withUid("44").withParentUid("43"));
-        data.createItem(GenTodo().withParent(42).withId(45).withTitle(QStringLiteral("45")).withUid("45").withParentUid("44").withStartDate(today.addSecs(300)));
+        data.createItem(GenTodo().withParent(42).withId(45).withTitle(QStringLiteral("45")).withUid("45").withParentUid("44").withStartDate(today));
         data.createItem(GenTodo().withParent(42).withId(46).withTitle(QStringLiteral("46")).withUid("46").withParentUid("45"));
 
         // WHEN

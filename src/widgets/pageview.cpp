@@ -50,6 +50,7 @@
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 #include "presentation/runningtaskmodelinterface.h"
+#include "utils/datetime.h"
 
 namespace Widgets {
 class PageTreeView : public QTreeView
@@ -429,7 +430,7 @@ void PageView::onRunTaskTriggered()
     auto task = currentArtifact().objectCast<Domain::Task>();
     Q_ASSERT(task); // the action is supposed to be disabled otherwise
     if (task->startDate().isNull())
-        task->setStartDate(QDateTime::currentDateTime());
+        task->setStartDate(Utils::DateTime::currentDate());
     m_runningTaskModel->setRunningTask(task);
 }
 

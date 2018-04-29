@@ -365,7 +365,7 @@ private slots:
         model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, workdayIndex);
 
         // THEN
-        QCOMPARE(taskToDrop5->startDate().date(), Utils::DateTime::currentDateTime().date());
+        QCOMPARE(taskToDrop5->startDate(), Utils::DateTime::currentDate());
 
         // WHEN two task are drop on the workday
         Domain::Task::Ptr taskToDrop6(new Domain::Task);
@@ -378,8 +378,8 @@ private slots:
         model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, workdayIndex);
 
         // THEN
-        QCOMPARE(taskToDrop6->startDate().date(), Utils::DateTime::currentDateTime().date());
-        QCOMPARE(taskToDrop7->startDate().date(), Utils::DateTime::currentDateTime().date());
+        QCOMPARE(taskToDrop6->startDate(), Utils::DateTime::currentDate());
+        QCOMPARE(taskToDrop7->startDate(), Utils::DateTime::currentDate());
     }
 
 

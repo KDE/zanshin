@@ -832,7 +832,7 @@ private slots:
 
         // THEN
         QCOMPARE(stubRunningTaskModel.property("runningTask").value<Domain::Task::Ptr>(), task1);
-        QCOMPARE(task1->startDate().date(), QDate::currentDate());
+        QCOMPARE(task1->startDate(), QDate::currentDate());
 
         // WHEN starting the second task
         QModelIndex index2 = stubPageModel.itemModel.index(1, 0);
@@ -841,7 +841,7 @@ private slots:
 
         // THEN
         QCOMPARE(stubRunningTaskModel.property("runningTask").value<Domain::Task::Ptr>(), task2);
-        QCOMPARE(task2->startDate().date(), QDate::currentDate());
+        QCOMPARE(task2->startDate(), QDate::currentDate());
     }
 };
 
