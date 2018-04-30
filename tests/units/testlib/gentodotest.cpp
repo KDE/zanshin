@@ -24,7 +24,6 @@
 #include "testlib/gentodo.h"
 
 #include <KCalCore/Todo>
-#include <kcalcore_version.h>
 
 #include <testlib/qtest_zanshin.h>
 
@@ -142,10 +141,6 @@ private slots:
         item = GenTodo(item).done(false);
 
         // THEN
-        // KCalCore 5.2.40 fixes this bug
-#if KCALCORE_VERSION < 0x050228
-        QEXPECT_FAIL("", "Bug introduced in KCalCore, fixed in upcoming 16.04", Continue);
-#endif
         QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->isCompleted());
     }
 

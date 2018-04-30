@@ -24,7 +24,6 @@
 #include <testlib/qtest_zanshin.h>
 #include <AkonadiCore/Item>
 #include <KCalCore/Todo>
-#include <kcalcore_version.h>
 #include "domain/task.h"
 #include "akonadi/akonadiserializer.h"
 
@@ -40,18 +39,14 @@ private slots:
     void checkPayload();
 };
 
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-#define KDateTime QDateTime
-#endif
-
 Akonadi::Item SerializerBenchmark::createTestItem()
 {
     KCalCore::Todo::Ptr todo(new KCalCore::Todo);
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(KDateTime(QDateTime(QDate(2013, 11, 24))));
-    todo->setDtDue(KDateTime(QDateTime(QDate(2014, 03, 01))));
+    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
+    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
     todo->setRelatedTo(QStringLiteral("5"));
 
     // ... as payload of an item

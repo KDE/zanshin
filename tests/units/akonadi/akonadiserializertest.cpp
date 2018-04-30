@@ -34,15 +34,9 @@
 #include <Akonadi/Notes/NoteUtils>
 #include <AkonadiCore/Tag>
 #include <KCalCore/Todo>
-#include <kcalcore_version.h>
 #include <KMime/Message>
 
 Q_DECLARE_METATYPE(Akonadi::Item*)
-
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-#define KDateTime QDateTime
-#endif
-
 
 static void setTodoDates(KCalCore::Todo::Ptr todo, const QDate &start, const QDate &due) {
     todo->setDtStart(QDateTime(start));
@@ -732,7 +726,7 @@ private slots:
         updatedTodo->setDescription(updatedContent);
 
         if (updatedDone)
-            updatedTodo->setCompleted(KDateTime(updatedDoneDate));
+            updatedTodo->setCompleted(QDateTime(updatedDoneDate));
         else
             updatedTodo->setCompleted(updatedDone);
 
@@ -953,7 +947,7 @@ private slots:
         originalTodo->setDescription(content);
 
         if (originalTodo)
-            originalTodo->setCompleted(KDateTime(doneDate));
+            originalTodo->setCompleted(QDateTime(doneDate));
         else
             originalTodo->setCompleted(isDone);
         setTodoDates(originalTodo, startDate, dueDate);
@@ -1010,7 +1004,7 @@ private slots:
         originalTodo->setDescription(content);
 
         if (originalTodo)
-            originalTodo->setCompleted(KDateTime(doneDate));
+            originalTodo->setCompleted(QDateTime(doneDate));
         else
             originalTodo->setCompleted(isDone);
         setTodoDates(originalTodo, startDate, dueDate);
@@ -1306,7 +1300,7 @@ private slots:
         childTodo->setDescription(content);
 
         if (isDone)
-            childTodo->setCompleted(KDateTime(doneDate));
+            childTodo->setCompleted(QDateTime(doneDate));
         else
             childTodo->setCompleted(isDone);
 
@@ -1324,7 +1318,7 @@ private slots:
         childTodo2->setDescription(content);
 
         if (isDone)
-            childTodo2->setCompleted(KDateTime(doneDate));
+            childTodo2->setCompleted(QDateTime(doneDate));
         else
             childTodo2->setCompleted(isDone);
         setTodoDates(childTodo2, startDate, dueDate);

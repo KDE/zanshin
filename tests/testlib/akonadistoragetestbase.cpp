@@ -31,10 +31,6 @@
 
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
-#include <kcalcore_version.h>
-#if KCALCORE_VERSION < QT_VERSION_CHECK(5, 6, 80)
-#include <KDateTime>
-#endif
 
 #include "utils/mem_fn.h"
 
@@ -50,10 +46,6 @@
 #include "akonadi/akonadistoragesettings.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonaditimestampattribute.h"
-
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-#define KDateTime QDateTime
-#endif
 
 using namespace Testlib;
 
@@ -383,8 +375,8 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
-    todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
+    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
 
     // ... as payload of an item...
     Akonadi::Item item;
@@ -458,8 +450,8 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
-    todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
+    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
 
     // ... as payload of an existing item (if we trust the test data)...
     Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff6}"), calendar2());
@@ -730,18 +722,7 @@ void AkonadiStorageTestBase::shouldUpdateItem()
     auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
 
-    // KCalCore 4.83 fixes this bug
-#if KCALCORE_VERSION < 0x045300
-    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->uid(), todo->uid());
-    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->summary(), todo->summary());
-    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->description(), todo->description());
-    QEXPECT_FAIL("", "Bug introduced by 76c686bc1de3a5d16956a627744ce352bc28d12a in KCalCore", Continue);
     QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
-    QEXPECT_FAIL("", "Bug introduced by 76c686bc1de3a5d16956a627744ce352bc28d12a in KCalCore", Continue);
-    QCOMPARE(notifiedItem.payload<KCalCore::Todo::Ptr>()->status(), todo->status());
-#else
-    QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
-#endif
 }
 
 void AkonadiStorageTestBase::shouldUseTransaction()
@@ -809,8 +790,8 @@ void AkonadiStorageTestBase::shouldCreateItem()
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(KDateTime(QDate(2013, 11, 24)));
-    todo->setDtDue(KDateTime(QDate(2014, 03, 01)));
+    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
+    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
 
     // ... as payload of a new item
     Akonadi::Item item;

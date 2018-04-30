@@ -30,7 +30,6 @@
 #include <AkonadiCore/Item>
 #include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
-#include <kcalcore_version.h>
 #include <KMime/Message>
 #include <QMimeDatabase>
 
