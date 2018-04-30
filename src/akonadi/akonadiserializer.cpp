@@ -33,9 +33,6 @@
 #include <kcalcore_version.h>
 #include <KMime/Message>
 #include <QMimeDatabase>
-#if KCALCORE_VERSION < QT_VERSION_CHECK(5, 6, 80)
-#include <KDateTime>
-#endif
 
 #include <numeric>
 
@@ -197,15 +194,9 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setTitle(todo->summary());
     task->setText(todo->description());
     task->setDone(todo->isCompleted());
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
     task->setDoneDate(todo->completed().toLocalTime().date());
     task->setStartDate(todo->dtStart().toLocalTime().date());
     task->setDueDate(todo->dtDue().toLocalTime().date());
-#else
-    task->setDoneDate(todo->completed().dateTime().toLocalTime().date());
-    task->setStartDate(todo->dtStart().dateTime().toLocalTime().date());
-    task->setDueDate(todo->dtDue().dateTime().toLocalTime().date());
-#endif
     task->setProperty("itemId", item.id());
     task->setProperty("parentCollectionId", item.parentCollection().id());
     task->setProperty("todoUid", todo->uid());
@@ -269,11 +260,6 @@ bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
 
     return false;
 }
-
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
-#define KDateTime QDateTime
-#endif
-
 
 Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 {

@@ -904,11 +904,7 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(QStringLiteral("summary"));
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
         todo->setDtStart(QDateTime(startDate));
-#else
-        todo->setDtStart(KDateTime(startDate, KDateTime::UTC));
-#endif
         todo->recurrence()->setMonthly(1);
 
         // ... as payload of an item...
@@ -1239,7 +1235,6 @@ private slots:
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->description(), content);
         QCOMPARE(todo->isCompleted(), isDone);
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 80)
         QCOMPARE(todo->completed().toLocalTime().date(), doneDate);
         QCOMPARE(todo->dtStart().toLocalTime().date(), startDate);
         QCOMPARE(todo->dtDue().toLocalTime().date(), dueDate);
@@ -1247,16 +1242,6 @@ private slots:
             QCOMPARE(int(todo->dtStart().timeSpec()), int(Qt::LocalTime));
         }
         QVERIFY(todo->allDay()); // this is always true currently...
-#else
-        QCOMPARE(todo->completed().dateTime().date(), doneDate);
-        QCOMPARE(todo->dtStart().dateTime().date(), startDate);
-        QCOMPARE(todo->dtDue().dateTime().date(), dueDate);
-        if (todo->dtStart().isValid()) {
-            QCOMPARE(int(todo->dtStart().timeType()), int(KDateTime::LocalTime));
-        }
-        QCOMPARE(todo->dtStart().isDateOnly(), todo->allDay());
-
-#endif
         const ushort expectedRecurrence = recurrence == Domain::Task::NoRecurrence ? KCalCore::Recurrence::rNone
                                         : recurrence == Domain::Task::RecursDaily ? KCalCore::Recurrence::rDaily
                                         : recurrence == Domain::Task::RecursWeekly ? KCalCore::Recurrence::rWeekly

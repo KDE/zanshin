@@ -25,7 +25,6 @@
 
 #include <KCalCore/Todo>
 #include <QDateTime>
-#include <kcalcore_version.h>
 
 using namespace Testlib;
 

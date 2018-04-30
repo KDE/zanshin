@@ -27,14 +27,6 @@
 
 using namespace Utils;
 
-QDateTime DateTime::currentDateTime()
-{
-    QByteArray overrideDatetime = qgetenv("ZANSHIN_OVERRIDE_DATETIME");
-    QDateTime customDateTime = QDateTime::fromString(QString::fromLocal8Bit(overrideDatetime), Qt::ISODate);
-
-    return customDateTime.isValid() ? customDateTime : QDateTime::currentDateTime();
-}
-
 QDate DateTime::currentDate()
 {
     QByteArray overrideDate = qgetenv("ZANSHIN_OVERRIDE_DATE");

@@ -31,44 +31,6 @@ class DateTimeTest : public QObject
 {
     Q_OBJECT
 private slots:
-    void shouldNotOverrideCurrentDateTime()
-    {
-        // GIVEN
-        const auto todayDate = QDateTime::currentDateTime();
-
-        // WHEN
-        const QDateTime zanshinDate = DateTime::currentDateTime();
-
-        // THEN
-        QCOMPARE(zanshinDate.date(), todayDate.date());
-    }
-
-    void shouldOverrideCurrentDateTime()
-    {
-        // GIVEN
-        const QByteArray dateExpected = "2015-03-10";
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", dateExpected);
-
-        // WHEN
-        const QDateTime zanshinDate = DateTime::currentDateTime();
-
-        // THEN
-        QCOMPARE(zanshinDate.date(), QDateTime::fromString(QString::fromLocal8Bit(dateExpected), Qt::ISODate).date());
-    }
-
-    void shouldNotOverrideCurrentDateTimeWhenInvalidDate()
-    {
-        // GIVEN
-        const QByteArray dateExpected = "Invalid!";
-        qputenv("ZANSHIN_OVERRIDE_DATETIME", dateExpected);
-
-        // WHEN
-        const QDateTime zanshinDate = DateTime::currentDateTime();
-
-        // THEN
-        QCOMPARE(zanshinDate.date(), QDateTime::currentDateTime().date());
-    }
-
     void shouldNotOverrideCurrentDate()
     {
         // GIVEN

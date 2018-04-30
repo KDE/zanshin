@@ -31,7 +31,6 @@ namespace Utils {
 
 namespace DateTime
 {
-    QDateTime currentDateTime();
     QDate currentDate();
 }
 

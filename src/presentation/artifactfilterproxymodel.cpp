@@ -108,12 +108,12 @@ bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
     return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }
 
-static QDate validDt(const QDate &date = QDate())
+static QDate validDate(const QDate &date = QDate())
 {
     if (date.isValid())
         return date;
 
-    return QDate(10000, 12, 31);
+    return QDate(80000, 12, 31);
 }
 
 bool ArtifactFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
@@ -129,11 +129,11 @@ bool ArtifactFilterProxyModel::lessThan(const QModelIndex &left, const QModelInd
 
     // The addDays(1) is so that we sort non-tasks (e.g. notes) at the end
 
-    const QDate leftDue = leftTask ? validDt(leftTask->dueDate()) : validDt().addDays(1);
-    const QDate rightDue = rightTask ? validDt(rightTask->dueDate()) : validDt().addDays(1);
+    const QDate leftDue = leftTask ? validDate(leftTask->dueDate()) : validDate().addDays(1);
+    const QDate rightDue = rightTask ? validDate(rightTask->dueDate()) : validDate().addDays(1);
 
-    const QDate leftStart = leftTask ? validDt(leftTask->startDate()) : validDt().addDays(1);
-    const QDate rightStart = rightTask ? validDt(rightTask->startDate()) : validDt().addDays(1);
+    const QDate leftStart = leftTask ? validDate(leftTask->startDate()) : validDate().addDays(1);
+    const QDate rightStart = rightTask ? validDate(rightTask->startDate()) : validDate().addDays(1);
 
     return leftDue < rightDue
         || leftStart < rightStart;
