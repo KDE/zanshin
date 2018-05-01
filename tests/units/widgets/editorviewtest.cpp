@@ -67,9 +67,9 @@ public:
         else if (name == "done")
             emit doneChanged(value.toBool());
         else if (name == "startDate")
-            emit startDateChanged(value.toDateTime());
+            emit startDateChanged(value.toDate());
         else if (name == "dueDate")
-            emit dueDateChanged(value.toDateTime());
+            emit dueDateChanged(value.toDate());
         else if (name == "recurrence")
             emit recurrenceChanged(value.value<Domain::Task::Recurrence>());
         else if (name == "delegateText")
@@ -85,8 +85,8 @@ public slots:
     void setTitle(const QString &title) { setPropertyAndSignal("title", title); }
     void setText(const QString &text) { setPropertyAndSignal("text", text); }
     void setDone(bool done) { setPropertyAndSignal("done", done); }
-    void setStartDate(const QDateTime &start) { setPropertyAndSignal("startDate", start); }
-    void setDueDate(const QDateTime &due) { setPropertyAndSignal("dueDate", due); }
+    void setStartDate(const QDate &start) { setPropertyAndSignal("startDate", start); }
+    void setDueDate(const QDate &due) { setPropertyAndSignal("dueDate", due); }
     void setRecurrence(Domain::Task::Recurrence recurrence) { setPropertyAndSignal("recurrence", QVariant::fromValue(recurrence)); }
     void setDelegateText(const QString &text) { setPropertyAndSignal("delegateText", text); }
     void makeTaskAvailable() { setArtifact(Domain::Artifact::Ptr(new Domain::Task)); }
@@ -115,8 +115,8 @@ signals:
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
     void doneChanged(bool done);
-    void startDateChanged(const QDateTime &date);
-    void dueDateChanged(const QDateTime &due);
+    void startDateChanged(const QDate &date);
+    void dueDateChanged(const QDate &due);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
     void delegateTextChanged(const QString &delegateText);
 
@@ -386,8 +386,8 @@ private slots:
         model.setProperty("hasTaskProperties", true);
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("recurrence", QVariant::fromValue(Domain::Task::RecursWeekly));
         model.setProperty("done", true);
 
@@ -404,8 +404,8 @@ private slots:
         QCOMPARE(textEdit->toPlainText(), QString(model.property("title").toString()
                                                 + '\n'
                                                 + model.property("text").toString()));
-        QCOMPARE(startDateEdit->date(), model.property("startDate").toDateTime().date());
-        QCOMPARE(dueDateEdit->date(), model.property("dueDate").toDateTime().date());
+        QCOMPARE(startDateEdit->date(), model.property("startDate").toDate());
+        QCOMPARE(dueDateEdit->date(), model.property("dueDate").toDate());
         QCOMPARE(recurrenceCombo->currentData().value<Domain::Task::Recurrence>(), model.property("recurrence").value<Domain::Task::Recurrence>());
         QCOMPARE(doneButton->isChecked(), model.property("done").toBool());
     }
@@ -418,8 +418,8 @@ private slots:
         model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("recurrence", QVariant::fromValue(Domain::Task::RecursWeekly));
         model.setProperty("done", true);
         editor.setModel(&model);
@@ -442,9 +442,9 @@ private slots:
         model.setTitle("New title");
         model.setText("New text");
         startDateEdit->setFocus();
-        model.setStartDate(QDateTime::currentDateTime().addDays(1));
+        model.setStartDate(QDate::currentDate().addDays(1));
         dueDateEdit->setFocus();
-        model.setDueDate(QDateTime::currentDateTime().addDays(3));
+        model.setDueDate(QDate::currentDate().addDays(3));
         recurrenceCombo->setFocus();
         model.setRecurrence(Domain::Task::RecursDaily);
         doneButton->setFocus();
@@ -471,8 +471,8 @@ private slots:
         model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("done", true);
         editor.setModel(&model);
 
@@ -495,8 +495,8 @@ private slots:
         model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("done", true);
         editor.setModel(&model);
 
@@ -550,8 +550,8 @@ private slots:
         model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("done", false);
         editor.setModel(&model);
 
@@ -590,18 +590,18 @@ private slots:
         model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("done", false);
         editor.setModel(&model);
 
         auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
 
         // WHEN
-        model.setPropertyAndSignal("startDate", QDateTime::currentDateTime().addDays(-2));
+        model.setPropertyAndSignal("startDate", QDate::currentDate().addDays(-2));
 
         // THEN
-        QCOMPARE(startDateEdit->date(), model.property("startDate").toDateTime().date());
+        QCOMPARE(startDateEdit->date(), model.property("startDate").toDate());
     }
 
     void shouldApplyStartDateEditChanges()
@@ -620,9 +620,8 @@ private slots:
         QTest::keyClick(startDateEdit, Qt::Key_Enter);
 
         // THEN
-        const QDateTime newStartDateTime = model.property("startDate").toDateTime();
-        QCOMPARE(newStartDateTime.date(), today);
-        QCOMPARE(newStartDateTime.timeSpec(), Qt::UTC);
+        const QDate newStartDate = model.property("startDate").toDate();
+        QCOMPARE(newStartDate, today);
     }
 
     void shouldReactToDueDateChanges()
@@ -632,18 +631,18 @@ private slots:
         EditorModelStub model;
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("done", false);
         editor.setModel(&model);
 
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
 
         // WHEN
-        model.setPropertyAndSignal("dueDate", QDateTime::currentDateTime().addDays(-2));
+        model.setPropertyAndSignal("dueDate", QDate::currentDate().addDays(-2));
 
         // THEN
-        QCOMPARE(dueDateEdit->date(), model.property("dueDate").toDateTime().date());
+        QCOMPARE(dueDateEdit->date(), model.property("dueDate").toDate());
     }
 
     void shouldApplyDueDateEditChanges()
@@ -663,7 +662,7 @@ private slots:
         QTest::keyClick(dueDateEdit, Qt::Key_Enter);
 
         // THEN
-        QCOMPARE(model.property("dueDate").toDateTime().date(), today);
+        QCOMPARE(model.property("dueDate").toDate(), today);
     }
 
     void shouldApplyStartTodayChanges()
@@ -685,7 +684,7 @@ private slots:
 
         // THEN
         QCOMPARE(startDateEdit->currentText(), today.toString(QStringLiteral("dd/MM/yyyy")));
-        QCOMPARE(model.property("startDate").toDateTime().date(), today);
+        QCOMPARE(model.property("startDate").toDate(), today);
     }
 
     void shouldReactToRecurrenceChanges()
@@ -696,8 +695,8 @@ private slots:
         model.makeTaskAvailable();
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
-        model.setProperty("startDate", QDateTime::currentDateTime());
-        model.setProperty("dueDate", QDateTime::currentDateTime().addDays(2));
+        model.setProperty("startDate", QDate::currentDate());
+        model.setProperty("dueDate", QDate::currentDate().addDays(2));
         model.setProperty("recurrence", QVariant::fromValue(Domain::Task::RecursWeekly));
         model.setProperty("done", false);
         editor.setModel(&model);

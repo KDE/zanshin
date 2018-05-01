@@ -163,16 +163,16 @@ void EditorView::setModel(QObject *model)
             this, SLOT(onHasTaskPropertiesChanged()));
     connect(m_model, SIGNAL(titleChanged(QString)), this, SLOT(onTextOrTitleChanged()));
     connect(m_model, SIGNAL(textChanged(QString)), this, SLOT(onTextOrTitleChanged()));
-    connect(m_model, SIGNAL(startDateChanged(QDateTime)), this, SLOT(onStartDateChanged()));
-    connect(m_model, SIGNAL(dueDateChanged(QDateTime)), this, SLOT(onDueDateChanged()));
+    connect(m_model, SIGNAL(startDateChanged(QDate)), this, SLOT(onStartDateChanged()));
+    connect(m_model, SIGNAL(dueDateChanged(QDate)), this, SLOT(onDueDateChanged()));
     connect(m_model, SIGNAL(doneChanged(bool)), this, SLOT(onDoneChanged()));
     connect(m_model, SIGNAL(recurrenceChanged(Domain::Task::Recurrence)), this, SLOT(onRecurrenceChanged()));
     connect(m_model, SIGNAL(delegateTextChanged(QString)), this, SLOT(onDelegateTextChanged()));
 
     connect(this, SIGNAL(titleChanged(QString)), m_model, SLOT(setTitle(QString)));
     connect(this, SIGNAL(textChanged(QString)), m_model, SLOT(setText(QString)));
-    connect(this, SIGNAL(startDateChanged(QDateTime)), m_model, SLOT(setStartDate(QDateTime)));
-    connect(this, SIGNAL(dueDateChanged(QDateTime)), m_model, SLOT(setDueDate(QDateTime)));
+    connect(this, SIGNAL(startDateChanged(QDate)), m_model, SLOT(setStartDate(QDate)));
+    connect(this, SIGNAL(dueDateChanged(QDate)), m_model, SLOT(setDueDate(QDate)));
     connect(this, SIGNAL(doneChanged(bool)), m_model, SLOT(setDone(bool)));
     connect(this, SIGNAL(recurrenceChanged(Domain::Task::Recurrence)), m_model, SLOT(setRecurrence(Domain::Task::Recurrence)));
 }
@@ -226,12 +226,12 @@ void EditorView::onTextOrTitleChanged()
 
 void EditorView::onStartDateChanged()
 {
-    ui->startDateEdit->setDate(m_model->property("startDate").toDateTime().date());
+    ui->startDateEdit->setDate(m_model->property("startDate").toDate());
 }
 
 void EditorView::onDueDateChanged()
 {
-    ui->dueDateEdit->setDate(m_model->property("dueDate").toDateTime().date());
+    ui->dueDateEdit->setDate(m_model->property("dueDate").toDate());
 }
 
 void EditorView::onDoneChanged()
@@ -277,12 +277,12 @@ void EditorView::onTextEditChanged()
 
 void EditorView::onStartEditEntered(const QDate &start)
 {
-    emit startDateChanged(QDateTime(start, QTime(), Qt::UTC));
+    emit startDateChanged(start);
 }
 
 void EditorView::onDueEditEntered(const QDate &due)
 {
-    emit dueDateChanged(QDateTime(due, QTime(), Qt::UTC));
+    emit dueDateChanged(due);
 }
 
 void EditorView::onDoneButtonChanged(bool checked)
@@ -294,7 +294,7 @@ void EditorView::onStartTodayClicked()
 {
     QDate today(QDate::currentDate());
     ui->startDateEdit->setDate(today);
-    emit startDateChanged(QDateTime(today, QTime(), Qt::UTC));
+    emit startDateChanged(today);
 }
 
 void EditorView::onRecurrenceComboChanged(int index)

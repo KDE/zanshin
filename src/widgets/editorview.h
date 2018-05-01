@@ -27,7 +27,7 @@
 
 #include <QWidget>
 
-#include <QDateTime>
+#include <QDate>
 
 #include <functional>
 
@@ -68,8 +68,8 @@ public slots:
 signals:
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
-    void startDateChanged(const QDateTime &start);
-    void dueDateChanged(const QDateTime &due);
+    void startDateChanged(const QDate &start);
+    void dueDateChanged(const QDate &due);
     void doneChanged(bool done);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
 
