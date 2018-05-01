@@ -47,6 +47,8 @@ public:
 
     Presentation::RunningTaskModelInterface *model() const;
 
+    QString currentText() const; // for the unittest
+
 private slots:
     // connected to the model
     void onRunningTaskChanged(const Domain::Task::Ptr &task);

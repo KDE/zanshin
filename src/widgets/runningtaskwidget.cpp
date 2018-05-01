@@ -139,3 +139,8 @@ Presentation::RunningTaskModelInterface *RunningTaskWidget::model() const
 {
     return m_model;
 }
+
+QString RunningTaskWidget::currentText() const
+{
+    return m_titleLabel->text();
+}

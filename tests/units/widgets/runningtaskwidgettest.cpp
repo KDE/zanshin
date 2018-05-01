@@ -77,6 +77,8 @@ private slots:
         // GIVEN
         Widgets::RunningTaskWidget widget;
         auto task = Domain::Task::Ptr::create();
+        const QString title = QStringLiteral("title");
+        task->setTitle(title);
         RunningTaskModelStub model;
         widget.setModel(&model);
 
@@ -84,6 +86,7 @@ private slots:
         model.setRunningTask(task);
 
         // THEN
+        QCOMPARE(widget.currentText(), title);
         QVERIFY(!widget.isHidden());
     }
 
@@ -92,7 +95,9 @@ private slots:
         // GIVEN
         Widgets::RunningTaskWidget widget;
         auto task1 = Domain::Task::Ptr::create();
+        task1->setTitle(QStringLiteral("task1"));
         auto task2 = Domain::Task::Ptr::create();
+        task2->setTitle(QStringLiteral("task2"));
         RunningTaskModelStub model;
         widget.setModel(&model);
         model.setRunningTask(task1);
@@ -101,6 +106,7 @@ private slots:
         model.setRunningTask(task2);
 
         // THEN
+        QCOMPARE(widget.currentText(), QStringLiteral("task2"));
         QVERIFY(!widget.isHidden());
     }
 
