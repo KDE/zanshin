@@ -225,9 +225,9 @@ public:
         else if (name == "done")
             emit doneChanged(value.toBool());
         else if (name == "startDate")
-            emit startDateChanged(value.toDateTime());
+            emit startDateChanged(value.toDate());
         else if (name == "dueDate")
-            emit dueDateChanged(value.toDateTime());
+            emit dueDateChanged(value.toDate());
         else if (name == "hasTaskProperties")
             emit hasTaskPropertiesChanged(value.toBool());
         else
@@ -238,16 +238,16 @@ public slots:
     void setTitle(const QString &title) { setPropertyAndSignal("title", title); }
     void setText(const QString &text) { setPropertyAndSignal("text", text); }
     void setDone(bool done) { setPropertyAndSignal("done", done); }
-    void setStartDate(const QDateTime &start) { setPropertyAndSignal("startDate", start); }
-    void setDueDate(const QDateTime &due) { setPropertyAndSignal("dueDate", due); }
+    void setStartDate(const QDate &start) { setPropertyAndSignal("startDate", start); }
+    void setDueDate(const QDate &due) { setPropertyAndSignal("dueDate", due); }
 
 signals:
     void hasTaskPropertiesChanged(bool hasTaskProperties);
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
     void doneChanged(bool done);
-    void startDateChanged(const QDateTime &date);
-    void dueDateChanged(const QDateTime &due);
+    void startDateChanged(const QDate &date);
+    void dueDateChanged(const QDate &due);
 };
 
 class QuickSelectDialogStub : public Widgets::QuickSelectDialogInterface

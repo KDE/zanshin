@@ -182,7 +182,7 @@ private slots:
         QSignalSpy spy(&t, &Task::startDateChanged);
         t.setStartDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.first().first().toDate(), QDate(2014, 1, 13));
     }
 
     void shouldNotNotifyIdenticalStartDateChanges()
@@ -200,7 +200,7 @@ private slots:
         QSignalSpy spy(&t, &Task::dueDateChanged);
         t.setDueDate(QDate(2014, 1, 13));
         QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().toDateTime(), QDateTime(QDate(2014, 1, 13)));
+        QCOMPARE(spy.first().first().toDate(), QDate(2014, 1, 13));
     }
 
     void shouldNotNotifyIdenticalDueDateChanges()
