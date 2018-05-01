@@ -556,7 +556,7 @@ private slots:
         QCOMPARE(stubPageModel.removedIndices.first(), index);
     }
 
-    void shouldNoteTryToDeleteIfThereIsNoSelection()
+    void shouldNotTryToDeleteIfThereIsNoSelection()
     {
         // GIVEN
         PageModelStub stubPageModel;
