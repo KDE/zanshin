@@ -24,6 +24,7 @@
 #include <testlib/qtest_gui_zanshin.h>
 
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 #include <QAction>
 #include <QHeaderView>
 #include <QLayout>
@@ -57,8 +58,16 @@ class PageModelStub : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
+    void setProxyModel(QAbstractProxyModel *proxy)
+    {
+        proxyModel = proxy;
+        proxyModel->setSourceModel(&itemModel);
+    }
+
     QAbstractItemModel *centralListModel()
     {
+        if (proxyModel)
+            return proxyModel;
         return &itemModel;
     }
 
@@ -114,6 +123,7 @@ public:
     QList<QPersistentModelIndex> removedIndices;
     QList<QPersistentModelIndex> promotedIndices;
     QStandardItemModel itemModel;
+    QAbstractProxyModel *proxyModel = nullptr;
 };
 
 class RunningTaskModelStub : public Presentation::RunningTaskModelInterface
@@ -592,6 +602,45 @@ private slots:
         stubPageModel.addStubItem(QStringLiteral("C"), parentIndex);
         QPersistentModelIndex index = stubPageModel.itemModel.index(1, 0);
 
+        Widgets::PageView page;
+        page.setModel(&stubPageModel);
+        auto msgbox = MessageBoxStub::Ptr::create();
+        page.setMessageBoxInterface(msgbox);
+
+        QTreeView *centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
+        centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        QVERIFY(centralView->selectionModel()->currentIndex().isValid());
+        centralView->setFocus();
+
+        // Needed for shortcuts to work
+        page.show();
+        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QTest::qWait(100);
+
+        // WHEN
+        QTest::keyPress(centralView, Qt::Key_Delete);
+
+        // THEN
+        QVERIFY(msgbox->called());
+        QCOMPARE(stubPageModel.removedIndices.size(), 1);
+        QCOMPARE(stubPageModel.removedIndices.first(), index);
+    }
+
+    void shouldDisplayNotificationWhenHittingTheDeleteKeyOnAnItemWithHiddenChildren()
+    {
+        // GIVEN
+        PageModelStub stubPageModel;
+        Q_ASSERT(stubPageModel.property("centralListModel").canConvert<QAbstractItemModel*>());
+        stubPageModel.addStubItems(QStringList() << QStringLiteral("A") << QStringLiteral("B"));
+        QStandardItem *parentIndex = stubPageModel.itemModel.item(1, 0);
+        stubPageModel.addStubItem(QStringLiteral("C"), parentIndex);
+
+        QSortFilterProxyModel proxyModel;
+        stubPageModel.setProxyModel(&proxyModel);
+        proxyModel.setFilterFixedString("B");
+
+        QPersistentModelIndex index = stubPageModel.centralListModel()->index(0, 0);
+        QCOMPARE(index.data().toString(), QLatin1String("B"));
         Widgets::PageView page;
         page.setModel(&stubPageModel);
         auto msgbox = MessageBoxStub::Ptr::create();

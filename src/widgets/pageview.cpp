@@ -352,19 +352,17 @@ void PageView::onRemoveItemRequested()
     if (currentIndexes.isEmpty())
         return;
 
+    auto indexHasChildren = [](QModelIndex index) {
+        if (const QAbstractProxyModel *proxy = qobject_cast<const QAbstractProxyModel *>(index.model())) {
+            index = proxy->mapToSource(index);
+        }
+        return index.model()->rowCount(index) > 0;
+    };
+
     QString text;
     if (currentIndexes.size() > 1) {
-        bool hasDescendants = false;
-        foreach (const QModelIndex &currentIndex, currentIndexes) {
-            if (!currentIndex.isValid())
-                continue;
-
-            if (currentIndex.model()->rowCount(currentIndex) > 0) {
-                hasDescendants = true;
-                break;
-            }
-        }
-
+        const bool hasDescendants = std::any_of(currentIndexes.constBegin(), currentIndexes.constEnd(), [&](const QModelIndex &currentIndex) {
+            return currentIndex.isValid() && indexHasChildren(currentIndex); });
         if (hasDescendants)
             text = i18n("Do you really want to delete the selected items and their children?");
         else
@@ -375,7 +373,7 @@ void PageView::onRemoveItemRequested()
         if (!currentIndex.isValid())
             return;
 
-        if (currentIndex.model()->rowCount(currentIndex) > 0)
+        if (indexHasChildren(currentIndex))
             text = i18n("Do you really want to delete the selected task and all its children?");
     }
 
