@@ -13,6 +13,7 @@
   <name xml:lang="en-GB">Renku</name>
   <name xml:lang="es">Renku</name>
   <name xml:lang="fi">Renku</name>
+  <name xml:lang="fr">Renku</name>
   <name xml:lang="gl">Renku</name>
   <name xml:lang="it">Renku</name>
   <name xml:lang="nl">Renku</name>
@@ -33,6 +34,7 @@
   <summary xml:lang="en-GB">Note Taking Application</summary>
   <summary xml:lang="es">Aplicación para tomar notas</summary>
   <summary xml:lang="fi">Muistiinpanosovellus</summary>
+  <summary xml:lang="fr">Application de prise de notes</summary>
   <summary xml:lang="gl">Aplicativo para tomar notas</summary>
   <summary xml:lang="it">Applicazione per prendere delle note</summary>
   <summary xml:lang="nl">Toepassing voor notities</summary>
@@ -118,6 +120,7 @@
       <li xml:lang="en-GB">Organise notes in topics</li>
       <li xml:lang="es">Organización de las notas por temas</li>
       <li xml:lang="fi">Järjestää muistiinpanot aiheiksi</li>
+      <li xml:lang="fr">Organisation de notes au sein de sujets</li>
       <li xml:lang="gl">Organizar notas por temas.</li>
       <li xml:lang="it">Organizza le note in argomenti</li>
       <li xml:lang="nl">Organiseert notities in onderwerpen</li>
