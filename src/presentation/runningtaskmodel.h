@@ -52,6 +52,8 @@ public slots:
     void doneTask() Q_DECL_OVERRIDE;
 
 private:
+    void taskTitleChanged(const QString &title);
+
     Domain::Task::Ptr m_runningTask;
 
     Domain::QueryResult<Domain::Task::Ptr>::Ptr m_taskList;

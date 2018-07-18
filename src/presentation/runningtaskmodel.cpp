@@ -62,12 +62,16 @@ void RunningTaskModel::setRunningTask(const Domain::Task::Ptr &runningTask)
         m_runningTask->setRunning(false);
         KJob *job = m_taskRepository->update(m_runningTask);
         installHandler(job, i18n("Cannot update task %1 to 'not running'", m_runningTask->title()));
+        disconnect(runningTask.data(), &Domain::Task::titleChanged,
+                this, &RunningTaskModel::taskTitleChanged);
     }
     m_runningTask = runningTask;
     if (m_runningTask) {
         m_runningTask->setRunning(true);
         KJob *job = m_taskRepository->update(m_runningTask);
         installHandler(job, i18n("Cannot update task %1 to 'running'", m_runningTask->title()));
+        connect(runningTask.data(), &Domain::Task::titleChanged,
+                this, &RunningTaskModel::taskTitleChanged);
     }
     emit runningTaskChanged(m_runningTask);
 }
@@ -76,6 +80,12 @@ void RunningTaskModel::taskDeleted(const Domain::Task::Ptr &task)
 {
     if (m_runningTask == task)
         setRunningTask({});
+}
+
+void RunningTaskModel::taskTitleChanged(const QString &title)
+{
+    Q_UNUSED(title)
+    emit runningTaskChanged(m_runningTask);
 }
 
 void RunningTaskModel::stopTask()

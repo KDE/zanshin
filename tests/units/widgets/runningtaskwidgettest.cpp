@@ -58,6 +58,11 @@ public:
             setRunningTask(Domain::Task::Ptr());
     }
 
+    void currentTaskRenamed()
+    {
+        emit runningTaskChanged(m_runningTask);
+    }
+
 private:
     Domain::Task::Ptr m_runningTask;
 };
@@ -107,6 +112,26 @@ private slots:
 
         // THEN
         QCOMPARE(widget.currentText(), QStringLiteral("task2"));
+        QVERIFY(!widget.isHidden());
+    }
+
+    void shouldUpdateWhenRenamingATask()
+    {
+        // GIVEN
+        Widgets::RunningTaskWidget widget;
+        auto task = Domain::Task::Ptr::create();
+        task->setTitle(QStringLiteral("task1"));
+        RunningTaskModelStub model;
+        widget.setModel(&model);
+        model.setRunningTask(task);
+        QCOMPARE(widget.currentText(), QStringLiteral("task1"));
+
+        // WHEN
+        task->setTitle(QStringLiteral("renamed task1"));
+        model.currentTaskRenamed();
+
+        // THEN
+        QCOMPARE(widget.currentText(), QStringLiteral("renamed task1"));
         QVERIFY(!widget.isHidden());
     }
 

@@ -201,6 +201,51 @@ private slots:
         QCOMPARE(spy.count(), 0);
     }
 
+    void shouldUpdateOnTaskRenaming()
+    {
+        // GIVEN
+        TestDependencies deps;
+        Presentation::RunningTaskModel model(deps.m_taskQueriesMockInstance, deps.m_taskRepositoryMockInstance);
+        Domain::Task::Ptr task = Domain::Task::Ptr::create();
+        task->setTitle(QStringLiteral("Old title"));
+        model.setRunningTask(task);
+        //Domain::Task::Ptr task2 = Domain::Task::Ptr::create();
+        //model.setRunningTask(task2);
+        QSignalSpy spy(&model, &Presentation::RunningTaskModel::runningTaskChanged);
+
+        // WHEN
+        task->setTitle(QStringLiteral("New title"));
+
+        // THEN
+        QCOMPARE(model.runningTask(), task);
+        QVERIFY(task->isRunning());
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.at(0).at(0).value<Domain::Task::Ptr>(), task);
+    }
+
+    void shouldIgnoreRenamingAnotherTask()
+    {
+        // GIVEN
+        TestDependencies deps;
+        Presentation::RunningTaskModel model(deps.m_taskQueriesMockInstance, deps.m_taskRepositoryMockInstance);
+        Domain::Task::Ptr task = Domain::Task::Ptr::create();
+        task->setTitle(QStringLiteral("Task 1 title"));
+        model.setRunningTask(task);
+        Domain::Task::Ptr task2 = Domain::Task::Ptr::create();
+        task2->setTitle(QStringLiteral("Task 2 title"));
+        QSignalSpy spy(&model, &Presentation::RunningTaskModel::runningTaskChanged);
+
+        // WHEN
+        task2->setTitle(QStringLiteral("New task 2 title"));
+
+        // THEN
+        QCOMPARE(model.runningTask(), task);
+        QVERIFY(task->isRunning());
+        QCOMPARE(spy.count(), 0);
+    }
+
+
+
 private:
 };
 
