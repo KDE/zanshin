@@ -124,19 +124,6 @@ private slots:
         QVERIFY(!serializer.representsAkonadiTag(tag, akondiTag));
     }
 
-    void shouldKnowObjectUid()
-    {
-        // GIVEN
-        Akonadi::Serializer serializer;
-        auto object = Akonadi::Serializer::QObjectPtr::create();
-
-        // WHEN
-        object->setProperty("todoUid", "my-uid");
-
-        // THEN
-        QCOMPARE(serializer.objectUid(object), QStringLiteral("my-uid"));
-    }
-
     void shouldKnowTaskItemUid_data()
     {
         QTest::addColumn<Akonadi::Item>("item");

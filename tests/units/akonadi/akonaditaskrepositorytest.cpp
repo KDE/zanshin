@@ -614,8 +614,8 @@ private slots:
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(childItem).thenReturn(child);
         serializerMock(&Akonadi::SerializerInterface::createTaskFromItem).when(parentItem).thenReturn(parent);
         serializerMock(&Akonadi::SerializerInterface::updateItemParent).when(childItem, parent).thenReturn();
-        serializerMock(&Akonadi::SerializerInterface::objectUid).when(parent).thenReturn(QStringLiteral("parent"));
-        serializerMock(&Akonadi::SerializerInterface::objectUid).when(child).thenReturn(QStringLiteral("child"));
+        serializerMock(&Akonadi::SerializerInterface::itemUid).when(parentItem).thenReturn(QStringLiteral("parent"));
+        serializerMock(&Akonadi::SerializerInterface::itemUid).when(childItem).thenReturn(QStringLiteral("child"));
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(parentItem).thenReturn(QString());
         serializerMock(&Akonadi::SerializerInterface::relatedUidFromItem).when(childItem).thenReturn(QString());
         if (execParentJob)

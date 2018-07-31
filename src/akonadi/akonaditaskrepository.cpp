@@ -213,8 +213,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
             Q_ASSERT(parentIndex >= 0);
             const auto parentItem = items.at(parentIndex);
 
-            // TODO Qt5: This is a bit wasteful, add an itemUid on the serializer
-            const auto childUid = m_serializer->objectUid(m_serializer->createTaskFromItem(childItem));
+            const auto childUid = m_serializer->itemUid(childItem);
             auto relatedUid = m_serializer->relatedUidFromItem(parentItem);
             while (!relatedUid.isEmpty()) {
                 if (relatedUid == childUid) {
@@ -226,9 +225,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
 
                 auto it = std::find_if(items.constBegin(), items.constEnd(),
                                        [relatedUid, this] (const Akonadi::Item &item) {
-                    // TODO Qt5: This is a bit wasteful, add an itemUid on the serializer
-                    auto task = m_serializer->createTaskFromItem(item);
-                    return task && m_serializer->objectUid(task) == relatedUid;
+                    return m_serializer->itemUid(item) == relatedUid;
                 });
                 if (it == items.end())
                     break;

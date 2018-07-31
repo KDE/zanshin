@@ -65,11 +65,6 @@ bool Serializer::representsAkonadiTag(Domain::Tag::Ptr tag, Tag akonadiTag) cons
     return tag->property("tagId").toLongLong() == akonadiTag.id();
 }
 
-QString Serializer::objectUid(SerializerInterface::QObjectPtr object)
-{
-    return object->property("todoUid").toString();
-}
-
 QString Serializer::itemUid(const Item &item)
 {
     if (isTaskItem(item)) {
