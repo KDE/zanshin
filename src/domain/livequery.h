@@ -81,26 +81,9 @@ public:
     typedef std::function<void(const InputType &, OutputType &)> UpdateFunction;
     typedef std::function<bool(const InputType &, const OutputType &)> RepresentsFunction;
 
-    LiveQuery()
-    {
-    }
-
-    LiveQuery(const LiveQuery &other)
-        : m_fetch(other.m_fetch),
-          m_predicate(other.m_predicate),
-          m_convert(other.m_convert),
-          m_update(other.m_update),
-          m_represents(other.m_represents),
-          m_provider(other.m_provider)
-    {
-    }
-
-    LiveQuery &operator=(const LiveQuery &other)
-    {
-        LiveQuery tmp(other);
-        std::swap(*this, other);
-        return *this;
-    }
+    LiveQuery() = default;
+    LiveQuery(const LiveQuery &other) = default;
+    LiveQuery &operator=(const LiveQuery &other) = default;
 
     ~LiveQuery()
     {
