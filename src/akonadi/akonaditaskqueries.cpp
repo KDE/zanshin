@@ -73,8 +73,8 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
     Akonadi::Item item = m_serializer->createItemFromTask(task);
     auto &query = m_findChildren[item.id()];
     auto fetch = m_helpers->fetchSiblings(item);
-    auto predicate = [this, task] (const Akonadi::Item &item) {
-        return m_serializer->isTaskChild(task, item);
+    auto predicate = [this, task] (const Akonadi::Item &childItem) {
+        return m_serializer->isTaskChild(task, childItem);
     };
     m_integrator->bind("TaskQueries::findChildren", query, fetch, predicate);
     return query->result();
