@@ -32,6 +32,7 @@
 #include <AkonadiCore/Monitor>
 #include <Akonadi/Notes/NoteUtils>
 #include <AkonadiCore/TagFetchScope>
+#include <AkonadiCore/TagAttribute>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonaditimestampattribute.h"
@@ -43,6 +44,7 @@ MonitorImpl::MonitorImpl()
 {
     AttributeFactory::registerAttribute<ApplicationSelectedAttribute>();
     AttributeFactory::registerAttribute<TimestampAttribute>();
+    AttributeFactory::registerAttribute<TagAttribute>();
 
     m_monitor->fetchCollection(true);
     m_monitor->setCollectionMonitored(Akonadi::Collection::root());
@@ -66,8 +68,13 @@ MonitorImpl::MonitorImpl()
     itemScope.fetchAllAttributes();
     itemScope.setFetchTags(true);
     itemScope.tagFetchScope().setFetchIdOnly(false);
+    itemScope.tagFetchScope().fetchAttribute<TagAttribute>();
     itemScope.setAncestorRetrieval(ItemFetchScope::All);
     m_monitor->setItemFetchScope(itemScope);
+    auto tagFetchScope = m_monitor->tagFetchScope();
+    tagFetchScope.setFetchIdOnly(false);
+    tagFetchScope.fetchAttribute<TagAttribute>();
+    m_monitor->setTagFetchScope(tagFetchScope);
 
     connect(m_monitor, &Akonadi::Monitor::itemAdded, this, &MonitorImpl::itemAdded);
     connect(m_monitor, &Akonadi::Monitor::itemRemoved, this, &MonitorImpl::itemRemoved);
