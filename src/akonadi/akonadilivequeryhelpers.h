@@ -28,6 +28,7 @@
 #include "akonadi/akonadistorageinterface.h"
 
 #include "domain/livequery.h"
+#include "domain/task.h"
 
 namespace Akonadi {
 
@@ -49,6 +50,10 @@ public:
     ItemFetchFunction fetchItems(StorageInterface::FetchContentTypes contentTypes) const;
     ItemFetchFunction fetchItems(const Collection &collection) const;
     ItemFetchFunction fetchItems(const Tag &tag) const;
+
+    /// Returns a fetch function which calls a LiveQueryInput::AddFunction (provided as argument to the fetch function)
+    /// with the given task, then its parent, its grandparent etc. up until the project.
+    ItemFetchFunction fetchTaskAndAncestors(Domain::Task::Ptr task) const;
 
     ItemFetchFunction fetchSiblings(const Item &item) const;
 

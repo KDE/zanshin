@@ -48,6 +48,9 @@ public:
     typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
 
+    typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
+    typedef Domain::LiveQueryOutput<Domain::Project::Ptr> ProjectQueryOutput;
+
     TaskQueries(const StorageInterface::Ptr &storage,
                 const SerializerInterface::Ptr &serializer,
                 const MonitorInterface::Ptr &monitor,
@@ -62,6 +65,7 @@ public:
     TaskResult::Ptr findInboxTopLevel() const Q_DECL_OVERRIDE;
     TaskResult::Ptr findWorkdayTopLevel() const Q_DECL_OVERRIDE;
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
+    ProjectResult::Ptr findProject(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
 
 private slots:
     void onWorkdayPollTimeout();
@@ -76,6 +80,7 @@ private:
 
     mutable TaskQueryOutput::Ptr m_findAll;
     mutable QHash<Akonadi::Item::Id, TaskQueryOutput::Ptr> m_findChildren;
+    mutable QHash<Akonadi::Item::Id, ProjectQueryOutput::Ptr> m_findProject;
     mutable TaskQueryOutput::Ptr m_findTopLevel;
     mutable TaskQueryOutput::Ptr m_findInboxTopLevel;
     mutable TaskQueryOutput::Ptr m_findWorkdayTopLevel;

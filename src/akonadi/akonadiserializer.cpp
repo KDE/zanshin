@@ -67,7 +67,7 @@ bool Serializer::representsAkonadiTag(Domain::Tag::Ptr tag, Tag akonadiTag) cons
 
 QString Serializer::itemUid(const Item &item)
 {
-    if (isTaskItem(item)) {
+    if (item.hasPayload<KCalCore::Todo::Ptr>()) {
         const auto todo = item.payload<KCalCore::Todo::Ptr>();
         return todo->uid();
     } else {

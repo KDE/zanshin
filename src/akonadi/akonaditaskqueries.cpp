@@ -80,6 +80,21 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
     return query->result();
 }
 
+TaskQueries::ProjectResult::Ptr TaskQueries::findProject(Domain::Task::Ptr task) const
+{
+    Akonadi::Item childItem = m_serializer->createItemFromTask(task);
+    auto &query = m_findProject[childItem.id()];
+    auto fetch = m_helpers->fetchTaskAndAncestors(task);
+    auto predicate = [this, childItem] (const Akonadi::Item &item) {
+        return m_serializer->isProjectItem(item);
+    };
+    auto compare = [] (const Akonadi::Item &item1, const Akonadi::Item &item2) {
+        return item1.id() == item2.id();
+    };
+    m_integrator->bindRelationship("TaskQueries::findProject", query, fetch, compare, predicate);
+    return query->result();
+}
+
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
     auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);

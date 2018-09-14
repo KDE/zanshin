@@ -82,6 +82,13 @@ private slots:
         childTaskProvider->append(childTask11);
         childTaskProvider->append(childTask12);
 
+        // One project
+        auto project = Domain::Project::Ptr::create();
+        project->setName("KDE");
+        auto projectProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
+        projectProvider->append(project);
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findWorkdayTopLevel).when().thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(childTaskResult);
@@ -89,6 +96,9 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task3).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask11).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask12).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(task1).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(task2).thenReturn(projectResult);
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
@@ -156,6 +166,9 @@ private slots:
         QCOMPARE(model->data(task2Index, Qt::CheckStateRole).toBool(), task2->isDone());
         QCOMPARE(model->data(task3Index, Qt::CheckStateRole).toBool(), task3->isDone());
         QCOMPARE(model->data(taskChildTask12Index, Qt::CheckStateRole).toBool(), childTask12->isDone());
+
+        QCOMPARE(model->data(task1Index, Presentation::WorkdayPageModel::ProjectRole).toString(), "Inbox");
+        QCOMPARE(model->data(task2Index, Presentation::WorkdayPageModel::ProjectRole).toString(), "Project: KDE");
 
         // WHEN
         taskRepositoryMock(&Domain::TaskRepository::update).when(task1).thenReturn(new FakeJob(this));

@@ -26,6 +26,7 @@
 #include "akonadi/akonadicachingstorage.h"
 #include "akonadi/akonaditaskqueries.h"
 #include "akonadi/akonadiserializer.h"
+#include "akonadi/akonadiitemfetchjobinterface.h"
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
@@ -1616,6 +1617,201 @@ private slots:
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
     }
+
+    void findProjectShouldLookInCollection()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        auto collection = GenCollection().withId(42).withRootAsParent().withTaskContent();
+        data.createCollection(collection);
+
+        // Three tasks in the collection (two being children of the first one)
+        data.createItem(GenTodo().withId(42).asProject().withParent(42)
+                                 .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42")));
+        data.createItem(GenTodo().withId(43).withParent(42)
+                                 .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43"))
+                                 .withParentUid(QStringLiteral("uid-42")));
+        data.createItem(GenTodo().withId(44).withParent(42)
+                                 .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44"))
+                                 .withParentUid(QStringLiteral("uid-42")));
+
+        // WHEN
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto task = serializer->createTaskFromItem(data.item(44));
+        // populate cache for collection
+        auto *fetchJob = storage->fetchItems(collection);
+        QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
+
+        auto result = queries->findProject(task);
+
+        // THEN
+        QVERIFY(result);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+
+        // Should not change anything
+        result = queries->findProject(task);
+
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
+    }
+
+    void findProjectShouldReactToRelationshipChange()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        const Akonadi::Collection::Id colId = 42;
+        auto collection = GenCollection().withId(colId).withRootAsParent().withTaskContent();
+        data.createCollection(collection);
+
+        // Three tasks in the collection (two being children of the first one)
+        // 1->2->3 (project) where 1 changes to 1->4->5 (project)
+        data.createItem(GenTodo().withId(3).asProject().withParent(colId)
+                                 .withTitle(QStringLiteral("Project 3")).withUid(QStringLiteral("uid-3")));
+        data.createItem(GenTodo().withId(2).withParent(colId)
+                                 .withTitle(QStringLiteral("Intermediate item 2")).withUid(QStringLiteral("uid-2"))
+                                 .withParentUid(QStringLiteral("uid-3")));
+        data.createItem(GenTodo().withId(1).withParent(colId)
+                                 .withTitle(QStringLiteral("Item 1")).withUid(QStringLiteral("uid-1"))
+                                 .withParentUid(QStringLiteral("uid-2")));
+        data.createItem(GenTodo().withId(5).asProject().withParent(colId)
+                                 .withTitle(QStringLiteral("Project 5")).withUid(QStringLiteral("uid-5")));
+        data.createItem(GenTodo().withId(4).withParent(colId)
+                                 .withTitle(QStringLiteral("Intermediate item 4")).withUid(QStringLiteral("uid-4"))
+                                 .withParentUid(QStringLiteral("uid-5")));
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto task = serializer->createTaskFromItem(data.item(1));
+
+        auto result = queries->findProject(task);
+
+        QVERIFY(result);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("Project 3"));
+
+        // WHEN
+        data.modifyItem(GenTodo(data.item(1)).withParentUid(QStringLiteral("uid-4")));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("Project 5"));
+    }
+
+    void findProjectShouldReactToIntermediateParentChange()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        const Akonadi::Collection::Id colId = 42;
+        data.createCollection(GenCollection().withId(colId).withRootAsParent().withTaskContent());
+
+        // Three tasks in the collection (two being children of the first one)
+        // 1->2->3 (project)  where 2 changes to 1->2->4 (project)
+        data.createItem(GenTodo().withId(3).asProject().withParent(colId)
+                                 .withTitle(QStringLiteral("Project 3")).withUid(QStringLiteral("uid-3")));
+        data.createItem(GenTodo().withId(2).withParent(colId)
+                                 .withTitle(QStringLiteral("Intermediate item 2")).withUid(QStringLiteral("uid-2"))
+                                 .withParentUid(QStringLiteral("uid-3")));
+        data.createItem(GenTodo().withId(1).withParent(colId)
+                                 .withTitle(QStringLiteral("Item 1")).withUid(QStringLiteral("uid-1"))
+                                 .withParentUid(QStringLiteral("uid-2")));
+        data.createItem(GenTodo().withId(4).asProject().withParent(colId)
+                                 .withTitle(QStringLiteral("Project 4")).withUid(QStringLiteral("uid-4")));
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto task = serializer->createTaskFromItem(data.item(1));
+
+        auto result = queries->findProject(task);
+
+        QVERIFY(result);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("Project 3"));
+
+        // WHEN
+        data.modifyItem(GenTodo(data.item(2)).withParentUid(QStringLiteral("uid-4")));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("Project 4"));
+
+        // AND WHEN
+        data.removeItem(GenTodo(data.item(2)));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 0);
+    }
+
+    void findProjectShouldReactToChildItemRemoved()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        const Akonadi::Collection::Id colId = 42;
+        data.createCollection(GenCollection().withId(colId).withRootAsParent().withTaskContent());
+
+        // Three task in the collection: 1->2(project)
+        data.createItem(GenTodo().withId(2).asProject().withParent(colId)
+                                 .withTitle(QStringLiteral("Project 2")).withUid(QStringLiteral("uid-2")));
+        data.createItem(GenTodo().withId(1).withParent(colId)
+                                 .withTitle(QStringLiteral("Item 1")).withUid(QStringLiteral("uid-1"))
+                                 .withParentUid(QStringLiteral("uid-2")));
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto task = serializer->createTaskFromItem(data.item(1));
+        auto result = queries->findProject(task);
+        QVERIFY(result);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("Project 2"));
+
+        // WHEN
+        data.removeItem(Akonadi::Item(1));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 0);
+    }
+
 };
 
 ZANSHIN_TEST_MAIN(AkonadiTaskQueriesTest)

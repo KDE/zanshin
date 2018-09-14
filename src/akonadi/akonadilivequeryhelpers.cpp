@@ -150,6 +150,49 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Tag &tag)
 #endif
 }
 
+LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchTaskAndAncestors(Domain::Task::Ptr task) const
+{
+    Akonadi::Item childItem = m_serializer->createItemFromTask(task);
+    Q_ASSERT(childItem.parentCollection().isValid()); // do I really need a fetchItem first, like fetchSiblings does?
+    // Note: if the task moves to another collection, this live query will then be invalid...
+
+    const Akonadi::Item::Id childId = childItem.id();
+    auto storage = m_storage;
+    auto serializer = m_serializer;
+    return [storage, serializer, childItem, childId] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
+        auto job = storage->fetchItems(childItem.parentCollection());
+        Utils::JobHandler::install(job->kjob(), [job, add, serializer, childId] {
+            if (job->kjob()->error() != KJob::NoError)
+                return;
+
+            const auto items = job->items();
+            // The item itself is part of the result, we need that in findProject, to react on changes of the item itself
+            // To return a correct child item in case it got updated, we can't use childItem, we need to find it in the list.
+            const auto myself = std::find_if(items.cbegin(), items.cend(),
+                                             [childId] (const Akonadi::Item &item) {
+                                                 return childId == item.id();
+                                             });
+            if (myself == items.cend()) {
+                qWarning() << "Did not find item in the listing for its parent collection. Item ID:" << childId;
+                return;
+            }
+            add(*myself);
+            auto parentUid = serializer->relatedUidFromItem(*myself);
+            while (!parentUid.isEmpty()) {
+                const auto parent = std::find_if(items.cbegin(), items.cend(),
+                                                 [serializer, parentUid] (const Akonadi::Item &item) {
+                                                     return serializer->itemUid(item) == parentUid;
+                                                 });
+                if (parent == items.cend()) {
+                    break;
+                }
+                add(*parent);
+                parentUid = serializer->relatedUidFromItem(*parent);
+            }
+        });
+    };
+}
+
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &item) const
 {
     auto storage = m_storage;

@@ -108,7 +108,7 @@ public:
         typedef UnaryFunctionTraits<typename FetchTraits::ArgType> AddTraits;
         typedef UnaryFunctionTraits<PredicateFunction> PredicateTraits;
 
-        typedef typename std::decay<typename PredicateTraits::ArgType>::type InputType;
+        typedef typename std::decay<typename PredicateTraits::ArgType>::type InputType; // typically Akonadi::Item
 
         static_assert(std::is_same<typename FetchTraits::ReturnType, void>::value,
                       "Fetch function must return void");
@@ -133,6 +133,49 @@ public:
         query->setPredicateFunction(predicate);
         query->setConvertFunction(std::bind(&LiveQueryIntegrator::create<InputType, OutputType, ExtraArgs...>, this, _1, extra...));
         query->setUpdateFunction(std::bind(&LiveQueryIntegrator::update<InputType, OutputType, ExtraArgs...>, this, _1, _2, extra...));
+        query->setRepresentsFunction(std::bind(&LiveQueryIntegrator::represents<InputType, OutputType>, this, _1, _2));
+
+        inputQueries<InputType>() << query;
+        output = query;
+    }
+
+    template<typename OutputType, typename FetchFunction, typename CompareFunction, typename PredicateFunction, typename... ExtraArgs>
+    void bindRelationship(const QByteArray &debugName,
+              QSharedPointer<Domain::LiveQueryOutput<OutputType>> &output,
+              FetchFunction fetch,
+              CompareFunction compare,
+              PredicateFunction predicate,
+              ExtraArgs... extra)
+    {
+        typedef UnaryFunctionTraits<FetchFunction> FetchTraits;
+        typedef UnaryFunctionTraits<typename FetchTraits::ArgType> AddTraits;
+        typedef UnaryFunctionTraits<PredicateFunction> PredicateTraits;
+
+        typedef typename std::decay<typename PredicateTraits::ArgType>::type InputType; // typically Akonadi::Item
+
+        static_assert(std::is_same<typename FetchTraits::ReturnType, void>::value,
+                      "Fetch function must return void");
+        static_assert(std::is_same<typename AddTraits::ReturnType, void>::value,
+                      "Fetch add function must return void");
+        static_assert(std::is_same<typename PredicateTraits::ReturnType, bool>::value,
+                      "Predicate function must return bool");
+
+        typedef typename std::decay<typename AddTraits::ArgType>::type AddInputType;
+        static_assert(std::is_same<AddInputType, InputType>::value,
+                      "Fetch add and predicate functions must have the same input type");
+
+        if (output)
+            return;
+
+        using namespace std::placeholders;
+
+        auto query = Domain::LiveRelationshipQuery<InputType, OutputType>::Ptr::create();
+
+        query->setDebugName(debugName);
+        query->setFetchFunction(fetch);
+        query->setCompareFunction(compare);
+        query->setPredicateFunction(predicate);
+        query->setConvertFunction(std::bind(&LiveQueryIntegrator::create<InputType, OutputType, ExtraArgs...>, this, _1, extra...));
         query->setRepresentsFunction(std::bind(&LiveQueryIntegrator::represents<InputType, OutputType>, this, _1, _2));
 
         inputQueries<InputType>() << query;

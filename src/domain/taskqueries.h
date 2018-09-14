@@ -27,6 +27,7 @@
 #include "context.h"
 #include "queryresult.h"
 #include "task.h"
+#include "project.h"
 
 namespace Domain {
 
@@ -49,6 +50,8 @@ public:
     virtual QueryResult<Task::Ptr>::Ptr findWorkdayTopLevel() const = 0;
 
     virtual QueryResult<Context::Ptr>::Ptr findContexts(Task::Ptr task) const = 0;
+
+    virtual QueryResult<Project::Ptr>::Ptr findProject(Task::Ptr task) const = 0;
 };
 
 }

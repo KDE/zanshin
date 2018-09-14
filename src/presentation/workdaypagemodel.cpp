@@ -105,20 +105,36 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
         return artifact.dynamicCast<Domain::Task>() ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
     };
 
-    auto data = [](const Domain::Artifact::Ptr &artifact, int role) -> QVariant {
-        if (role != Qt::DisplayRole
-         && role != Qt::EditRole
-         && role != Qt::CheckStateRole) {
-            return QVariant();
+    auto data = [this](const Domain::Artifact::Ptr &artifact, int role) -> QVariant {
+        switch (role) {
+            case Qt::DisplayRole:
+            case Qt::EditRole:
+                return artifact->title();
+            case Qt::CheckStateRole:
+                if (auto task = artifact.dynamicCast<Domain::Task>()) {
+                    return task->isDone() ? Qt::Checked : Qt::Unchecked;
+                }
+                break;
+            case ProjectRole:
+            case Qt::ToolTipRole:
+                if (auto task = artifact.dynamicCast<Domain::Task>()) {
+                    static Domain::QueryResult<Domain::Project::Ptr>::Ptr lastProjectResult;
+                    auto projectResult = m_taskQueries->findProject(task);
+                    if (projectResult) {
+                        // keep a refcount to it, for next time we get here...
+                        lastProjectResult = projectResult;
+                        if (!projectResult->data().isEmpty()) {
+                            Domain::Project::Ptr project = projectResult->data().at(0);
+                            return i18n("Project: %1", project->name());
+                        }
+                    }
+                    return i18n("Inbox");
+                }
+                break;
+            default:
+                break;
         }
-
-        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            return artifact->title();
-        } else if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        } else {
-            return QVariant();
-        }
+        return QVariant();
     };
 
     auto setData = [this](const Domain::Artifact::Ptr &artifact, const QVariant &value, int role) {

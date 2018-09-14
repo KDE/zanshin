@@ -3,6 +3,7 @@ zanshin_auto_tests(
   contexttest
   datasourcetest
   livequerytest
+  liverelationshipquerytest
   mockitotest
   notetest
   projecttest
