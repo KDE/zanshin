@@ -150,8 +150,7 @@ void AvailableSourcesModel::emitDefaultSourceChanged(const QModelIndex &root)
     const auto rowCount = m_sourceListModel->rowCount(root);
     for (int row = 0; row < rowCount; row++) {
         const auto index = m_sourceListModel->index(row, 0, root);
-        // TODO Qt5: Remove static_cast
-        emit static_cast<QueryTreeModelBase*>(m_sourceListModel)->dataChanged(index, index);
+        emit m_sourceListModel->dataChanged(index, index);
         emitDefaultSourceChanged(index);
     }
 }

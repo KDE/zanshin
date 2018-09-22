@@ -93,9 +93,6 @@ public:
     Qt::DropActions supportedDragActions() const Q_DECL_OVERRIDE;
     Qt::DropActions supportedDropActions() const Q_DECL_OVERRIDE;
 
-    // TODO Qt5: Remove but needed in Qt4, so that we can trigger it from the outside
-    using QAbstractItemModel::dataChanged;
-
 protected:
     explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,
                                 QObject *parent = Q_NULLPTR);
