@@ -54,7 +54,7 @@ Domain::Project::Ptr ProjectPageModel::project() const
 
 Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
-    const auto parentData = parentIndex.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
     const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
     const auto parentTask = parentArtifact.objectCast<Domain::Task>();
 
@@ -70,7 +70,7 @@ Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title, const QMod
 
 void ProjectPageModel::removeItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
@@ -80,7 +80,7 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
 
 void ProjectPageModel::promoteItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);

@@ -53,7 +53,7 @@ Domain::Artifact::Ptr NoteInboxPageModel::addItem(const QString &title, const QM
 
 void NoteInboxPageModel::removeItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Note::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto note = artifact.objectCast<Domain::Note>();
     Q_ASSERT(note);

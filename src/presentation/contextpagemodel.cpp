@@ -61,7 +61,7 @@ Domain::Context::Ptr ContextPageModel::context() const
 
 Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
-    const auto parentData = parentIndex.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
     const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
     const auto parentTask = parentArtifact.objectCast<Domain::Task>();
 
@@ -77,7 +77,7 @@ Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title, const QMod
 
 void ContextPageModel::removeItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     const auto job = index.parent().isValid() ? m_taskRepository->dissociate(task)
@@ -87,7 +87,7 @@ void ContextPageModel::removeItem(const QModelIndex &index)
 
 void ContextPageModel::promoteItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);

@@ -69,7 +69,7 @@ Domain::Artifact::Ptr TagPageModel::addItem(const QString &title, const QModelIn
 
 void TagPageModel::removeItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto note = artifact.objectCast<Domain::Note>();
     Q_ASSERT(note);

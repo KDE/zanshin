@@ -43,7 +43,7 @@ TaskInboxPageModel::TaskInboxPageModel(const Domain::TaskQueries::Ptr &taskQueri
 
 Domain::Artifact::Ptr TaskInboxPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
-    const auto parentData = parentIndex.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
     const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
     const auto parentTask = parentArtifact.objectCast<Domain::Task>();
 
@@ -58,7 +58,7 @@ Domain::Artifact::Ptr TaskInboxPageModel::addItem(const QString &title, const QM
 
 void TaskInboxPageModel::removeItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Artifact::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);
@@ -68,7 +68,7 @@ void TaskInboxPageModel::removeItem(const QModelIndex &index)
 
 void TaskInboxPageModel::promoteItem(const QModelIndex &index)
 {
-    QVariant data = index.data(QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+    QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto artifact = data.value<Domain::Artifact::Ptr>();
     auto task = artifact.objectCast<Domain::Task>();
     Q_ASSERT(task);

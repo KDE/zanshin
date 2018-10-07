@@ -113,9 +113,9 @@ private slots:
 
         // THEN
         QCOMPARE(roles.value(Qt::DisplayRole), QByteArray("display"));
-        QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::ObjectRole), QByteArray("object"));
-        QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::IconNameRole), QByteArray("icon"));
-        QCOMPARE(roles.value(Presentation::QueryTreeModel<QColor>::IsDefaultRole), QByteArray("default"));
+        QCOMPARE(roles.value(Presentation::QueryTreeModelBase::ObjectRole), QByteArray("object"));
+        QCOMPARE(roles.value(Presentation::QueryTreeModelBase::IconNameRole), QByteArray("icon"));
+        QCOMPARE(roles.value(Presentation::QueryTreeModelBase::IsDefaultRole), QByteArray("default"));
     }
 
     void shouldListTasks()
@@ -718,7 +718,7 @@ private slots:
 
         // WHEN
         const QModelIndex index = model.index(1, 0);
-        const QVariant data = index.data(Presentation::QueryTreeModel<QColor>::ObjectRole);
+        const QVariant data = index.data(Presentation::QueryTreeModelBase::ObjectRole);
 
         // THEN
         QVERIFY(data.isValid());
@@ -752,7 +752,7 @@ private slots:
 
         // WHEN
         const QModelIndex index = model.index(1, 0);
-        const QVariant data = index.data(Presentation::QueryTreeModel<Domain::Task::Ptr>::ObjectRole);
+        const QVariant data = index.data(Presentation::QueryTreeModelBase::ObjectRole);
 
         // THEN
         QVERIFY(data.isValid());

@@ -43,7 +43,7 @@ void DataSourceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 {
     Q_ASSERT(index.isValid());
 
-    const auto isDefault = index.data(Presentation::QueryTreeModel<Domain::DataSource::Ptr>::IsDefaultRole).toBool();
+    const auto isDefault = index.data(Presentation::QueryTreeModelBase::IsDefaultRole).toBool();
 
     QStyleOptionViewItem option = opt;
     initStyleOption(&option, index);
