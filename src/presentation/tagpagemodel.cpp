@@ -123,7 +123,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
         return true;
     };
 
-    auto drop = [this] (const QMimeData *, Qt::DropAction, const Domain::Note::Ptr &) {
+    auto drop = [] (const QMimeData *, Qt::DropAction, const Domain::Note::Ptr &) {
         return false;
     };
 

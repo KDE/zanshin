@@ -102,7 +102,7 @@ QAbstractItemModel *NoteInboxPageModel::createCentralListModel()
         return true;
     };
 
-    auto drop = [this](const QMimeData *, Qt::DropAction, const Domain::Artifact::Ptr &) {
+    auto drop = [](const QMimeData *, Qt::DropAction, const Domain::Artifact::Ptr &) {
         return false;
     };
 
