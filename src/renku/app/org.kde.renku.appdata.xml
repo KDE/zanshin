@@ -4,7 +4,6 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Renku</name>
-  <name xml:lang="ast">Renku</name>
   <name xml:lang="ca">Renku</name>
   <name xml:lang="ca-valencia">Renku</name>
   <name xml:lang="cs">Renku</name>
@@ -27,7 +26,6 @@
   <name xml:lang="x-test">xxRenkuxx</name>
   <name xml:lang="zh-CN">Renku</name>
   <summary>Note Taking Application</summary>
-  <summary xml:lang="ast">Aplicación pa tomar notes</summary>
   <summary xml:lang="ca">Aplicació per prendre notes</summary>
   <summary xml:lang="ca-valencia">Aplicació per prendre notes</summary>
   <summary xml:lang="da">Program til at tage noter</summary>
@@ -73,7 +71,6 @@
     <p xml:lang="uk">Renku — ефективна і проста програма для керування вашими нотатками. Вона допомагає упорядкувати ваші значення і працює як особиста вікіпедія. Вам легше буде усе пам’ятати, ніщо не заважатиме вашим думкам.</p>
     <p xml:lang="x-test">xxRenku is an efficient and simple application for managing your notes. It helps you organize the knowledge you accumulate and acts as a personal wiki. You'll never forget anything anymore, getting your mind like water.xx</p>
     <p>Features:</p>
-    <p xml:lang="ast">Carauterístiques:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
     <p xml:lang="cs">Vlastnosti:</p>
@@ -97,7 +94,6 @@
     <p xml:lang="zh-CN">功能：</p>
     <ul>
       <li>Collects notes</li>
-      <li xml:lang="ast">Coleiciona notes</li>
       <li xml:lang="ca">Recull les notes</li>
       <li xml:lang="ca-valencia">Recull les notes</li>
       <li xml:lang="da">Indsamler noter</li>
@@ -119,7 +115,6 @@
       <li xml:lang="x-test">xxCollects notesxx</li>
       <li xml:lang="zh-CN">收集便笺</li>
       <li>Organize notes in topics</li>
-      <li xml:lang="ast">Organiza les notes en temes</li>
       <li xml:lang="ca">Organitza les notes en temes</li>
       <li xml:lang="ca-valencia">Organitza les notes en temes</li>
       <li xml:lang="da">Organiser noter i emner</li>
