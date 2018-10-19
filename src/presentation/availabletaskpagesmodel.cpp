@@ -218,7 +218,7 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
              : structureNodeFlags;
     };
 
-    auto data = [this](const QObjectPtr &object, int role) -> QVariant {
+    auto data = [this](const QObjectPtr &object, int role, int) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole
          && role != Qt::DecorationRole
@@ -346,5 +346,5 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
         return Q_NULLPTR;
     };
 
-    return new QueryTreeModel<QObjectPtr>(query, flags, data, setData, drop, drag, this);
+    return new QueryTreeModel<QObjectPtr>(query, flags, data, setData, drop, drag, nullptr, this);
 }

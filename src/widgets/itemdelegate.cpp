@@ -32,6 +32,7 @@
 
 #include "domain/note.h"
 #include "domain/task.h"
+#include "presentation/pagemodel.h"
 #include "presentation/querytreemodelbase.h"
 #include "utils/datetime.h"
 
@@ -45,12 +46,17 @@ ItemDelegate::ItemDelegate(QObject *parent)
 QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                              const QModelIndex &index) const
 {
-    // Make sure they all get the height needed for a check indicator
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
+    // Make sure they all get the height needed for a check indicator
     opt.features = QStyleOptionViewItem::HasCheckIndicator;
+    // and for a date on the right
     opt.text += ' ' + QLocale().dateFormat(QLocale::ShortFormat).toUpper() + ' ';
-    return QStyledItemDelegate::sizeHint(opt, index);
+    QSize sz = QStyledItemDelegate::sizeHint(opt, index);
+    const auto additionalInfo = index.data(Presentation::QueryTreeModelBase::AdditionalInfoRole).toString();
+    if (!additionalInfo.isEmpty())
+        sz.rheight() += opt.fontMetrics.height();
+    return sz;
 }
 
 void ItemDelegate::paint(QPainter *painter,
@@ -83,6 +89,7 @@ void ItemDelegate::paint(QPainter *painter,
 
     const auto startDate = task ? task->startDate() : QDate();
     const auto dueDate = task ? task->dueDate() : QDate();
+    const auto additionalInfo = index.data(Presentation::QueryTreeModelBase::AdditionalInfoRole).toString();
 
     const auto currentDate = Utils::DateTime::currentDate();
     const auto onStartDate = startDate.isValid() && startDate <= currentDate;
@@ -121,10 +128,15 @@ void ItemDelegate::paint(QPainter *painter,
 
 
     const auto checkRect = style->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &opt, widget);
-    const auto summaryRect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget)
-                             .adjusted(textMargin, 0, -dueDateWidth - textMargin, 0);
-    const auto dueDateRect = opt.rect.adjusted(opt.rect.width() - dueDateWidth, 0, 0, 0);
+    const auto textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget)
+                             .adjusted(textMargin, 0, - textMargin, 0);
+    auto summaryRect = textRect.adjusted(0, 0, -dueDateWidth, 0);
+    if (!additionalInfo.isEmpty())
+        summaryRect.setHeight(summaryRect.height() - opt.fontMetrics.height());
+    auto dueDateRect = textRect.adjusted(textRect.width() - dueDateWidth, 0, 0, 0);
+    dueDateRect.setHeight(summaryRect.height());
 
+    const auto additionalInfoRect = QRect(textRect.x(), summaryRect.bottom(), textRect.width(), textRect.height() - summaryRect.height());
 
     // Draw background
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, widget);
@@ -149,5 +161,14 @@ void ItemDelegate::paint(QPainter *painter,
     // Draw the due date
     if (!dueDateText.isEmpty()) {
         painter->drawText(dueDateRect, Qt::AlignCenter, dueDateText);
+    }
+
+    // Draw the second line
+    if (!additionalInfo.isEmpty()) {
+        QFont additionalInfoFont = baseFont;
+        additionalInfoFont.setItalic(true);
+        additionalInfoFont.setPointSize(additionalInfoFont.pointSize() - 1);
+        painter->setFont(additionalInfoFont);
+        painter->drawText(additionalInfoRect, Qt::AlignLeft, additionalInfo);
     }
 }

@@ -71,7 +71,7 @@ int main(int argc, char **argv)
              | Qt::ItemIsUserCheckable;
     };
 
-    auto treeData = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+    auto treeData = [](const Domain::Task::Ptr &task, int role, int) -> QVariant {
         if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
             return QVariant();
         }

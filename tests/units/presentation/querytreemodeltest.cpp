@@ -90,6 +90,18 @@ private:
         return result;
     }
 
+    static QVariant standardDataFunction(const Domain::Task::Ptr &task, int role, int)
+    {
+        if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
+            return QVariant();
+        }
+
+        if (role == Qt::DisplayRole)
+            return task->title();
+        else
+            return task->isDone() ? Qt::Checked : Qt::Unchecked;
+    }
+
 private slots:
     void shouldHaveRoleNames()
     {
@@ -100,7 +112,7 @@ private slots:
         auto flagsFunction = [](const QColor &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [](const QColor &, int) {
+        auto dataFunction = [](const QColor &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [](const QColor &, const QVariant &, int) {
@@ -156,20 +168,10 @@ private slots:
                  | Qt::ItemIsEditable
                  | Qt::ItemIsUserCheckable;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
-            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-                return QVariant();
-            }
-
-            if (role == Qt::DisplayRole)
-                return task->title();
-            else
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        };
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, standardDataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model, this);
 
         // THEN
@@ -212,7 +214,7 @@ private slots:
         auto flagsFunction = [](const QString &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [](const QString &, int) {
+        auto dataFunction = [](const QString &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [](const QString &, const QVariant &, int) {
@@ -260,20 +262,11 @@ private slots:
                  | Qt::ItemIsEditable
                  | Qt::ItemIsUserCheckable;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
-            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-                return QVariant();
-            }
 
-            if (role == Qt::DisplayRole)
-                return task->title();
-            else
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        };
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, standardDataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model, this);
         QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
         QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
@@ -332,20 +325,10 @@ private slots:
                  | Qt::ItemIsEditable
                  | Qt::ItemIsUserCheckable;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
-            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-                return QVariant();
-            }
-
-            if (role == Qt::DisplayRole)
-                return task->title();
-            else
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        };
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, standardDataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model, this);
         QSignalSpy aboutToBeInsertedSpy(&model, &QAbstractItemModel::rowsAboutToBeInserted);
         QSignalSpy insertedSpy(&model, &QAbstractItemModel::rowsInserted);
@@ -402,20 +385,10 @@ private slots:
                  | Qt::ItemIsEditable
                  | Qt::ItemIsUserCheckable;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
-            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-                return QVariant();
-            }
-
-            if (role == Qt::DisplayRole)
-                return task->title();
-            else
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        };
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, standardDataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model, this);
         QSignalSpy aboutToBeRemovedSpy(&model, &QAbstractItemModel::rowsAboutToBeRemoved);
         QSignalSpy removedSpy(&model, &QAbstractItemModel::rowsRemoved);
@@ -506,20 +479,10 @@ private slots:
                  | Qt::ItemIsEditable
                  | Qt::ItemIsUserCheckable;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
-            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-                return QVariant();
-            }
-
-            if (role == Qt::DisplayRole)
-                return task->title();
-            else
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        };
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, standardDataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model, this);
         QSignalSpy dataChangedSpy(&model, &QAbstractItemModel::dataChanged);
 
@@ -575,20 +538,10 @@ private slots:
                  | Qt::ItemIsEditable
                  | Qt::ItemIsUserCheckable;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
-            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-                return QVariant();
-            }
-
-            if (role == Qt::DisplayRole)
-                return task->title();
-            else
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        };
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
             return false;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, standardDataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model, this);
 
         // WHEN
@@ -647,16 +600,6 @@ private slots:
                  | Qt::ItemIsEditable
                  | Qt::ItemIsUserCheckable;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &task, int role) -> QVariant {
-            if (role != Qt::DisplayRole && role != Qt::CheckStateRole) {
-                return QVariant();
-            }
-
-            if (role == Qt::DisplayRole)
-                return task->title();
-            else
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        };
         auto setDataFunction = [&](const Domain::Task::Ptr &task, const QVariant &value, int role) {
             if (role != Qt::EditRole && role != Qt::CheckStateRole) {
                 return false;
@@ -671,7 +614,7 @@ private slots:
             repositoryMock.getInstance()->update(task);
             return true;
         };
-        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, dataFunction, setDataFunction, Q_NULLPTR);
+        Presentation::QueryTreeModel<Domain::Task::Ptr> model(queryGenerator, flagsFunction, standardDataFunction, setDataFunction, Q_NULLPTR);
         new ModelTest(&model, this);
         QSignalSpy titleChangedSpy(task.data(), &Domain::Task::titleChanged);
         QSignalSpy doneChangedSpy(task.data(), &Domain::Task::doneChanged);
@@ -707,7 +650,7 @@ private slots:
         auto flagsFunction = [](const QColor &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [](const QColor &, int) {
+        auto dataFunction = [](const QColor &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [](const QColor &, const QVariant &, int) {
@@ -741,7 +684,7 @@ private slots:
         auto flagsFunction = [](const Domain::Task::Ptr &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [](const Domain::Task::Ptr &, int) {
+        auto dataFunction = [](const Domain::Task::Ptr &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [](const Domain::Task::Ptr &, const QVariant &, int) {
@@ -770,7 +713,7 @@ private slots:
         auto flagsFunction = [] (const QColor &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [] (const QColor &, int) {
+        auto dataFunction = [] (const QColor &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [] (const QColor &, const QVariant &, int) {
@@ -785,7 +728,7 @@ private slots:
 
         Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
                                                    dataFunction, setDataFunction,
-                                                   dropFunction, dragFunction);
+                                                   dropFunction, dragFunction, nullptr);
 
         // THEN
         QCOMPARE(model.supportedDragActions(), Qt::MoveAction);
@@ -809,7 +752,7 @@ private slots:
         auto flagsFunction = [] (const QColor &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [] (const QColor &, int) {
+        auto dataFunction = [] (const QColor &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [] (const QColor &, const QVariant &, int) {
@@ -826,7 +769,7 @@ private slots:
 
         Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
                                                    dataFunction, setDataFunction,
-                                                   dropFunction, dragFunction);
+                                                   dropFunction, dragFunction, nullptr);
         new ModelTest(&model, this);
 
         // WHEN
@@ -877,7 +820,7 @@ private slots:
         auto flagsFunction = [] (const QColor &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [] (const QColor &, int) {
+        auto dataFunction = [] (const QColor &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [] (const QColor &, const QVariant &, int) {
@@ -895,7 +838,7 @@ private slots:
 
         Presentation::QueryTreeModel<QColor> model(queryGenerator, flagsFunction,
                                                    dataFunction, setDataFunction,
-                                                   dropFunction, dragFunction);
+                                                   dropFunction, dragFunction, nullptr);
         new ModelTest(&model, this);
 
         // WHEN
@@ -944,7 +887,7 @@ private slots:
         auto flagsFunction = [] (const QString &) {
             return Qt::NoItemFlags;
         };
-        auto dataFunction = [] (const QString &, int) {
+        auto dataFunction = [] (const QString &, int, int) {
             return QVariant();
         };
         auto setDataFunction = [] (const QString &, const QVariant &, int) {
@@ -963,7 +906,7 @@ private slots:
 
         Presentation::QueryTreeModel<QString> model(queryGenerator, flagsFunction,
                                                     dataFunction, setDataFunction,
-                                                    dropFunction, dragFunction);
+                                                    dropFunction, dragFunction, nullptr);
         new ModelTest(&model, this);
 
         const auto indexes = QModelIndexList() << model.index(0, 0)

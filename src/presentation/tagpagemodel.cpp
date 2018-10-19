@@ -98,7 +98,7 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
              | Qt::ItemIsDragEnabled;
     };
 
-    auto data = [](const Domain::Note::Ptr &note, int role) -> QVariant {
+    auto data = [](const Domain::Note::Ptr &note, int role, int) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole) {
             return QVariant();
@@ -142,5 +142,5 @@ QAbstractItemModel *TagPageModel::createCentralListModel()
         return data;
     };
 
-    return new QueryTreeModel<Domain::Note::Ptr>(query, flags, data, setData, drop, drag, this);
+    return new QueryTreeModel<Domain::Note::Ptr>(query, flags, data, setData, drop, drag, nullptr, this);
 }

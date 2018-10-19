@@ -36,6 +36,7 @@
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 #include "presentation/workdaypagemodel.h"
+#include "presentation/querytreemodelbase.h"
 
 using namespace mockitopp;
 using namespace mockitopp::matcher;
@@ -99,6 +100,9 @@ private slots:
 
         taskQueriesMock(&Domain::TaskQueries::findProject).when(task1).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findProject).when(task2).thenReturn(projectResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(task3).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(childTask11).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(childTask12).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
@@ -167,8 +171,8 @@ private slots:
         QCOMPARE(model->data(task3Index, Qt::CheckStateRole).toBool(), task3->isDone());
         QCOMPARE(model->data(taskChildTask12Index, Qt::CheckStateRole).toBool(), childTask12->isDone());
 
-        QCOMPARE(model->data(task1Index, Presentation::WorkdayPageModel::ProjectRole).toString(), QString("Inbox"));
-        QCOMPARE(model->data(task2Index, Presentation::WorkdayPageModel::ProjectRole).toString(), QString("Project: KDE"));
+        QCOMPARE(model->data(task1Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString("Inbox"));
+        QCOMPARE(model->data(task2Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString("Project: KDE"));
 
         // WHEN
         taskRepositoryMock(&Domain::TaskRepository::update).when(task1).thenReturn(new FakeJob(this));
@@ -300,6 +304,7 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findWorkdayTopLevel).when().thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
@@ -340,6 +345,7 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findWorkdayTopLevel).when().thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(new FakeJob(this));
@@ -371,6 +377,7 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findWorkdayTopLevel).when().thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(new FakeJob(this));

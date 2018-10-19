@@ -106,7 +106,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
              | Qt::ItemIsDropEnabled;
     };
 
-    auto data = [](const Domain::Task::Ptr &task, int role) -> QVariant {
+    auto data = [](const Domain::Task::Ptr &task, int role, int) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole
          && role != Qt::CheckStateRole) {
@@ -188,5 +188,5 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         return data;
     };
 
-    return new QueryTreeModel<Domain::Task::Ptr>(query, flags, data, setData, drop, drag, this);
+    return new QueryTreeModel<Domain::Task::Ptr>(query, flags, data, setData, drop, drag, nullptr, this);
 }

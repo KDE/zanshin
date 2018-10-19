@@ -33,23 +33,25 @@
 
 namespace Presentation {
 
-template<typename ItemType>
+template<typename ItemType, typename AdditionalInfo = int>
 class QueryTreeModel : public QueryTreeModelBase
 {
 public:
-    typedef typename QueryTreeNode<ItemType>::QueryGenerator QueryGenerator;
-    typedef typename QueryTreeNode<ItemType>::FlagsFunction FlagsFunction;
-    typedef typename QueryTreeNode<ItemType>::DataFunction DataFunction;
-    typedef typename QueryTreeNode<ItemType>::SetDataFunction SetDataFunction;
-    typedef typename QueryTreeNode<ItemType>::DropFunction DropFunction;
+    typedef typename QueryTreeNode<ItemType, AdditionalInfo>::QueryGenerator QueryGenerator;
+    typedef typename QueryTreeNode<ItemType, AdditionalInfo>::FlagsFunction FlagsFunction;
+    typedef typename QueryTreeNode<ItemType, AdditionalInfo>::DataFunction DataFunction;
+    typedef typename QueryTreeNode<ItemType, AdditionalInfo>::SetDataFunction SetDataFunction;
+    typedef typename QueryTreeNode<ItemType, AdditionalInfo>::DropFunction DropFunction;
     typedef std::function<QMimeData*(const QList<ItemType> &)> DragFunction;
+    using FetchAdditionalInfoFunction = std::function<AdditionalInfo(const QModelIndex &index, ItemType)>;
+    using NodeType = QueryTreeNode<ItemType, AdditionalInfo>;
 
     explicit QueryTreeModel(const QueryGenerator &queryGenerator,
                             const FlagsFunction &flagsFunction,
                             const DataFunction &dataFunction,
                             const SetDataFunction &setDataFunction,
                             QObject *parent = Q_NULLPTR)
-        : QueryTreeModelBase(new QueryTreeNode<ItemType>(ItemType(), Q_NULLPTR, this,
+        : QueryTreeModelBase(new QueryTreeNode<ItemType, AdditionalInfo>(ItemType(), Q_NULLPTR, this,
                                                          queryGenerator, flagsFunction,
                                                          dataFunction, setDataFunction),
                              parent)
@@ -62,13 +64,15 @@ public:
                             const SetDataFunction &setDataFunction,
                             const DropFunction &dropFunction,
                             const DragFunction &dragFunction,
+                            const FetchAdditionalInfoFunction &fetchAdditionalInfoFunction,
                             QObject *parent = Q_NULLPTR)
-        : QueryTreeModelBase(new QueryTreeNode<ItemType>(ItemType(), Q_NULLPTR, this,
+        : QueryTreeModelBase(new QueryTreeNode<ItemType, AdditionalInfo>(ItemType(), Q_NULLPTR, this,
                                                          queryGenerator, flagsFunction,
                                                          dataFunction, setDataFunction,
                                                          dropFunction),
                              parent),
-          m_dragFunction(dragFunction)
+          m_dragFunction(dragFunction),
+          m_fetchAdditionalInfoFunction(fetchAdditionalInfoFunction)
     {
     }
 
@@ -80,7 +84,7 @@ protected:
             std::transform(indexes.begin(), indexes.end(),
                            std::back_inserter(items),
                            [this](const QModelIndex &index) {
-                               return static_cast<QueryTreeNode<ItemType>*>(nodeFromIndex(index))->item();
+                               return itemAtIndex(index);
                            });
             return m_dragFunction(items);
         } else {
@@ -88,8 +92,29 @@ protected:
         }
     }
 
+
+    void fetchAdditionalInfo(const QModelIndex &index) override
+    {
+        if (m_fetchAdditionalInfoFunction) {
+            auto theNode = node(index);
+            if (!theNode->hasAdditionalInfo())
+                theNode->setAdditionalInfo(m_fetchAdditionalInfoFunction(index, theNode->item()));
+        }
+    }
+
+    ItemType itemAtIndex(const QModelIndex &index) const
+    {
+        return node(index)->item();
+    }
+
+    NodeType *node(const QModelIndex &index) const
+    {
+        return static_cast<NodeType *>(nodeFromIndex(index));
+    }
+
 private:
     DragFunction m_dragFunction;
+    FetchAdditionalInfoFunction m_fetchAdditionalInfoFunction;
 };
 
 }

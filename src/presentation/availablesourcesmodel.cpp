@@ -75,7 +75,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
             return defaultFlags;
     };
 
-    auto data = [this] (const Domain::DataSource::Ptr &source, int role) -> QVariant {
+    auto data = [this] (const Domain::DataSource::Ptr &source, int role, int) -> QVariant {
         if (role != Qt::DisplayRole
          && role != Qt::EditRole
          && role != Qt::DecorationRole
@@ -130,7 +130,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
 
     connect(m_dataSourceQueries->notifier(), &Domain::DataSourceQueriesNotifier::defaultSourceChanged,
             this, &AvailableSourcesModel::onDefaultSourceChanged);
-    return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, this);
+    return new QueryTreeModel<Domain::DataSource::Ptr>(query, flags, data, setData, drop, drag, nullptr, this);
 }
 
 void AvailableSourcesModel::setDefaultItem(const QModelIndex &index)

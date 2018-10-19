@@ -36,7 +36,6 @@ class WorkdayPageModel : public PageModel
 {
     Q_OBJECT
 public:
-    enum { ProjectRole = 0x386F4B };
     explicit WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
                               QObject *parent = Q_NULLPTR);

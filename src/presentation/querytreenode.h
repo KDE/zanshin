@@ -59,7 +59,7 @@ namespace Internal {
     }
 }
 
-template<typename ItemType>
+template<typename ItemType, typename AdditionalInfo>
 class QueryTreeNode : public QueryTreeNodeBase
 {
 public:
@@ -68,7 +68,7 @@ public:
 
     typedef std::function<ItemQueryPtr(const ItemType &)> QueryGenerator;
     typedef std::function<Qt::ItemFlags(const ItemType &)> FlagsFunction;
-    typedef std::function<QVariant(const ItemType &, int)> DataFunction;
+    typedef std::function<QVariant(const ItemType &, int, const AdditionalInfo &)> DataFunction;
     typedef std::function<bool(const ItemType &, const QVariant &, int)> SetDataFunction;
     typedef std::function<bool(const QMimeData *, Qt::DropAction, const ItemType &)> DropFunction;
 
@@ -111,7 +111,7 @@ public:
         if (role == QueryTreeModelBase::ObjectRole)
             return Internal::variantFromValue(m_item);
 
-        return m_dataFunction(m_item, role);
+        return m_dataFunction(m_item, role, m_additionalInfo);
     }
 
     bool setData(const QVariant &value, int role) Q_DECL_OVERRIDE { return m_setDataFunction(m_item, value, role); }
@@ -124,6 +124,9 @@ public:
             return false;
     }
 
+    bool hasAdditionalInfo() const { return m_additionalInfo; }
+    void setAdditionalInfo(const AdditionalInfo &info) { m_additionalInfo = info; }
+
 private:
     void init(QueryTreeModelBase *model, const QueryGenerator &queryGenerator)
     {
@@ -133,7 +136,7 @@ private:
             return;
 
         for (auto child : m_children->data()) {
-            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(child, this,
+            QueryTreeNodeBase *node = new QueryTreeNode<ItemType, AdditionalInfo>(child, this,
                                                                   model, queryGenerator,
                                                                   m_flagsFunction,
                                                                   m_dataFunction, m_setDataFunction,
@@ -146,7 +149,7 @@ private:
             beginInsertRows(parentIndex, index, index);
         });
         m_children->addPostInsertHandler([this, model, queryGenerator](const ItemType &item, int index) {
-            QueryTreeNodeBase *node = new QueryTreeNode<ItemType>(item, this,
+            QueryTreeNodeBase *node = new QueryTreeNode<ItemType, AdditionalInfo>(item, this,
                                                                   model, queryGenerator,
                                                                   m_flagsFunction,
                                                                   m_dataFunction, m_setDataFunction,
@@ -163,13 +166,15 @@ private:
             endRemoveRows();
         });
         m_children->addPostReplaceHandler([this](const ItemType &, int idx) {
-            QModelIndex parentIndex = parent() ? createIndex(row(), 0, this) : QModelIndex();
-            emitDataChanged(index(idx, 0, parentIndex), index(idx, 0, parentIndex));
+            const QModelIndex parentIndex = parent() ? createIndex(row(), 0, this) : QModelIndex();
+            const QModelIndex dataIndex = index(idx, 0, parentIndex);
+            emitDataChanged(dataIndex, dataIndex);
         });
     }
 
     ItemType m_item;
     ItemQueryPtr m_children;
+    mutable AdditionalInfo m_additionalInfo;
 
     FlagsFunction m_flagsFunction;
     DataFunction m_dataFunction;

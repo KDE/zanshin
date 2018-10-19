@@ -74,6 +74,7 @@ public:
         ObjectRole = Qt::UserRole + 1,
         IconNameRole,
         IsDefaultRole,
+        AdditionalInfoRole,
         UserRole
     };
 
@@ -97,6 +98,7 @@ protected:
     explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,
                                 QObject *parent = Q_NULLPTR);
     virtual QMimeData *createMimeData(const QModelIndexList &indexes) const = 0;
+    virtual void fetchAdditionalInfo(const QModelIndex &) {}
     QueryTreeNodeBase *nodeFromIndex(const QModelIndex &index) const;
     void setRootIndexFlag(Qt::ItemFlags flags);
 

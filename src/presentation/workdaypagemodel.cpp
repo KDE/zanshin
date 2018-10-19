@@ -105,7 +105,9 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
         return artifact.dynamicCast<Domain::Task>() ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
     };
 
-    auto data = [this](const Domain::Artifact::Ptr &artifact, int role) -> QVariant {
+    using AdditionalInfo = Domain::QueryResult<Domain::Project::Ptr>::Ptr; // later on we'll want a struct with the context query as well
+
+    auto data = [](const Domain::Artifact::Ptr &artifact, int role, const AdditionalInfo &projectQueryResult) -> QVariant {
         switch (role) {
             case Qt::DisplayRole:
             case Qt::EditRole:
@@ -115,26 +117,34 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
                     return task->isDone() ? Qt::Checked : Qt::Unchecked;
                 }
                 break;
-            case ProjectRole:
-            case Qt::ToolTipRole:
-                if (auto task = artifact.dynamicCast<Domain::Task>()) {
-                    static Domain::QueryResult<Domain::Project::Ptr>::Ptr lastProjectResult;
-                    auto projectResult = m_taskQueries->findProject(task);
-                    if (projectResult) {
-                        // keep a refcount to it, for next time we get here...
-                        lastProjectResult = projectResult;
-                        if (!projectResult->data().isEmpty()) {
-                            Domain::Project::Ptr project = projectResult->data().at(0);
-                            return i18n("Project: %1", project->name());
-                        }
-                    }
-                    return i18n("Inbox");
+            case Presentation::QueryTreeModelBase::AdditionalInfoRole:
+                if (projectQueryResult && !projectQueryResult->data().isEmpty()) {
+                    Domain::Project::Ptr project = projectQueryResult->data().at(0);
+                    return i18n("Project: %1", project->name());
                 }
-                break;
+                return i18n("Inbox"); // TODO add source name
             default:
                 break;
         }
         return QVariant();
+    };
+
+    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Artifact::Ptr &artifact) -> AdditionalInfo {
+        if (index.parent().isValid()) // children are in the same collection as their parent, so the same project
+            return nullptr;
+        if (auto task = artifact.dynamicCast<Domain::Task>()) {
+            AdditionalInfo projectQueryResult = m_taskQueries->findProject(task);
+            if (projectQueryResult) {
+                QPersistentModelIndex persistentIndex(index);
+                projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
+                    // When a project was found (inserted into the result), update the rendering of the item
+                    auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                    model->dataChanged(persistentIndex, persistentIndex);
+                });
+            }
+            return projectQueryResult;
+        }
+        return nullptr;
     };
 
     auto setData = [this](const Domain::Artifact::Ptr &artifact, const QVariant &value, int role) {
@@ -201,5 +211,5 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
         return data;
     };
 
-    return new QueryTreeModel<Domain::Artifact::Ptr>(query, flags, data, setData, drop, drag, this);
+    return new QueryTreeModel<Domain::Artifact::Ptr, AdditionalInfo>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
 }

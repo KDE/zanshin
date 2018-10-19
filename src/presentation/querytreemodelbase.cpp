@@ -181,6 +181,8 @@ QVariant QueryTreeModelBase::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
+    const_cast<QueryTreeModelBase *>(this)->fetchAdditionalInfo(index);
+
     return nodeFromIndex(index)->data(role);
 }
 
