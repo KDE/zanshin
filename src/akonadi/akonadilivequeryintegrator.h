@@ -313,6 +313,24 @@ inline bool LiveQueryIntegrator::represents<Item, Domain::Note::Ptr>(const Item 
 }
 
 template<>
+inline Domain::DataSource::Ptr LiveQueryIntegrator::create<Item, Domain::DataSource::Ptr>(const Item &input)
+{
+    return m_serializer->createDataSourceFromCollection(input.parentCollection(), SerializerInterface::BaseName);
+}
+
+template<>
+inline void LiveQueryIntegrator::update<Item, Domain::DataSource::Ptr>(const Item &input, Domain::DataSource::Ptr &output)
+{
+    m_serializer->updateDataSourceFromCollection(output, input.parentCollection(), SerializerInterface::BaseName);
+}
+
+template<>
+inline bool LiveQueryIntegrator::represents<Item, Domain::DataSource::Ptr>(const Item &input, const Domain::DataSource::Ptr &output)
+{
+    return m_serializer->representsCollection(output, input.parentCollection());
+}
+
+template<>
 inline Domain::Project::Ptr LiveQueryIntegrator::create<Item, Domain::Project::Ptr>(const Item &input)
 {
     return m_serializer->createProjectFromItem(input);

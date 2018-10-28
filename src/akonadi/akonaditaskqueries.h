@@ -51,6 +51,9 @@ public:
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
     typedef Domain::LiveQueryOutput<Domain::Project::Ptr> ProjectQueryOutput;
 
+    typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
+    typedef Domain::LiveQueryOutput<Domain::DataSource::Ptr> DataSourceQueryOutput;
+
     TaskQueries(const StorageInterface::Ptr &storage,
                 const SerializerInterface::Ptr &serializer,
                 const MonitorInterface::Ptr &monitor,
@@ -66,6 +69,8 @@ public:
     TaskResult::Ptr findWorkdayTopLevel() const Q_DECL_OVERRIDE;
     ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
     ProjectResult::Ptr findProject(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findDataSource(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
+
 
 private slots:
     void onWorkdayPollTimeout();
@@ -81,6 +86,7 @@ private:
     mutable TaskQueryOutput::Ptr m_findAll;
     mutable QHash<Akonadi::Item::Id, TaskQueryOutput::Ptr> m_findChildren;
     mutable QHash<Akonadi::Item::Id, ProjectQueryOutput::Ptr> m_findProject;
+    mutable QHash<Akonadi::Item::Id, DataSourceQueryOutput::Ptr> m_findDataSource;
     mutable TaskQueryOutput::Ptr m_findTopLevel;
     mutable TaskQueryOutput::Ptr m_findInboxTopLevel;
     mutable TaskQueryOutput::Ptr m_findWorkdayTopLevel;

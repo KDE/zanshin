@@ -27,6 +27,7 @@
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonaditagfetchjobinterface.h"
+#include "akonadi/akonadistorageinterface.h"
 
 #include "utils/jobhandler.h"
 
@@ -192,6 +193,21 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchTaskAndAncestors(Doma
         });
     };
 }
+
+LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchItemCollection(const Item& item) const
+{
+    auto storage = m_storage;
+    return [storage, item] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+        auto job = storage->fetchCollections(item.parentCollection(), StorageInterface::Base, StorageInterface::AllContent);
+        Utils::JobHandler::install(job->kjob(), [storage, job, add] {
+            if (job->kjob()->error() != KJob::NoError)
+                return;
+            auto collection = job->collections().at(0);
+            add(collection);
+        });
+    };
+}
+
 
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &item) const
 {

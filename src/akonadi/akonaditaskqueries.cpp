@@ -95,6 +95,17 @@ TaskQueries::ProjectResult::Ptr TaskQueries::findProject(Domain::Task::Ptr task)
     return query->result();
 }
 
+TaskQueries::DataSourceResult::Ptr TaskQueries::findDataSource(Domain::Task::Ptr task) const
+{
+    Akonadi::Item item = m_serializer->createItemFromTask(task);
+    auto &query = m_findDataSource[item.id()];
+    auto fetch = m_helpers->fetchItemCollection(item);
+    auto predicate = [] (const Akonadi::Collection &) { return true; };
+
+    m_integrator->bind("TaskQueries::findDataSource", query, fetch, predicate);
+    return query->result();
+}
+
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
     auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);

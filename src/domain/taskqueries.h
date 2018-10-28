@@ -28,6 +28,7 @@
 #include "queryresult.h"
 #include "task.h"
 #include "project.h"
+#include "datasource.h"
 
 namespace Domain {
 
@@ -52,6 +53,8 @@ public:
     virtual QueryResult<Context::Ptr>::Ptr findContexts(Task::Ptr task) const = 0;
 
     virtual QueryResult<Project::Ptr>::Ptr findProject(Task::Ptr task) const = 0;
+
+    virtual QueryResult<DataSource::Ptr>::Ptr findDataSource(Task::Ptr task) const = 0;
 };
 
 }

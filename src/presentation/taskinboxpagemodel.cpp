@@ -78,6 +78,8 @@ void TaskInboxPageModel::promoteItem(const QModelIndex &index)
 
 QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
 {
+    using AdditionalInfo = Domain::QueryResult<Domain::DataSource::Ptr>::Ptr;
+
     auto query = [this](const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
         if (!task)
             return m_taskQueries->findInboxTopLevel();
@@ -94,18 +96,42 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
              | Qt::ItemIsDropEnabled;
     };
 
-    auto data = [](const Domain::Task::Ptr &task, int role, int) -> QVariant {
-        if (role != Qt::DisplayRole
-         && role != Qt::EditRole
-         && role != Qt::CheckStateRole) {
-            return QVariant();
+    auto data = [](const Domain::Task::Ptr &task, int role, const AdditionalInfo &dataSourceQueryResult) -> QVariant {
+        switch (role) {
+            case Qt::DisplayRole:
+            case Qt::EditRole:
+                return task->title();
+            case Qt::CheckStateRole:
+                return task->isDone() ? Qt::Checked : Qt::Unchecked;
+            case Presentation::QueryTreeModelBase::AdditionalInfoRole:
+                if (dataSourceQueryResult && !dataSourceQueryResult->data().isEmpty()) {
+                    Domain::DataSource::Ptr dataSource = dataSourceQueryResult->data().at(0);
+                    return dataSource->name();
+                }
+                return QString();
+            default:
+                break;
         }
+        return QVariant();
+    };
 
-        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            return task->title();
-        } else {
-            return task->isDone() ? Qt::Checked : Qt::Unchecked;
+    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Artifact::Ptr &artifact) -> AdditionalInfo {
+        if (index.parent().isValid()) // children are in the same collection as their parent, so the same datasource
+            return nullptr;
+        if (auto task = artifact.dynamicCast<Domain::Task>()) {
+            AdditionalInfo datasourceQueryResult = m_taskQueries->findDataSource(task);
+            if (datasourceQueryResult) {
+                QPersistentModelIndex persistentIndex(index);
+                datasourceQueryResult->addPostInsertHandler([persistentIndex](const Domain::DataSource::Ptr &, int) {
+                    // When a datasource was found (inserted into the result), update the rendering of the item
+                    auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                    model->dataChanged(persistentIndex, persistentIndex);
+                });
+            }
+            return datasourceQueryResult;
         }
+        return nullptr;
+
     };
 
     auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {
@@ -172,5 +198,5 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
         return data;
     };
 
-    return new QueryTreeModel<Domain::Task::Ptr>(query, flags, data, setData, drop, drag, nullptr, this);
+    return new QueryTreeModel<Domain::Task::Ptr, AdditionalInfo>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
 }
