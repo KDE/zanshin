@@ -83,14 +83,14 @@ static QString asUtf8(const QByteArray &val)
 static QString join(const KLDAP::LdapAttrValue &lst, const QString &sep)
 {
     QString res;
-    bool alredy = false;
+    bool already = false;
     KLDAP::LdapAttrValue::ConstIterator end(lst.constEnd());
     for (KLDAP::LdapAttrValue::ConstIterator it = lst.constBegin(); it != end; ++it) {
-        if (alredy) {
+        if (already) {
             res += sep;
         }
 
-        alredy = true;
+        already = true;
         res += asUtf8(*it);
     }
 

@@ -336,7 +336,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionChanged()
     QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
     MonitorSpy monitorSpy(monitor.data());
 
-    // A colection with an existing id (if we trust the test data)
+    // A collection with an existing id (if we trust the test data)
     Akonadi::Collection collection = fetchCollectionByRID(QStringLiteral("{28ef9f03-4ebc-4e33-970f-f379775894f9}"));
     QVERIFY(collection.isValid());
     collection.setName(QStringLiteral("Bar!"));

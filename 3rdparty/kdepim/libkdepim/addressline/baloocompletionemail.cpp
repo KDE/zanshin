@@ -74,7 +74,7 @@ QStringList BalooCompletionEmail::cleanupEmailList()
     return hashEmail.values();
 }
 
-/* stips the name of an email address email
+/* strips the name of an email address email
  *
  * 'a' <a@example.com> -> a <a@example.com>
  * "a" <a@example.com> -> a <a@example.com>
