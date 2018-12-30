@@ -14,6 +14,7 @@
   <name xml:lang="fi">Renku</name>
   <name xml:lang="fr">Renku</name>
   <name xml:lang="gl">Renku</name>
+  <name xml:lang="id">Renku</name>
   <name xml:lang="it">Renku</name>
   <name xml:lang="nl">Renku</name>
   <name xml:lang="pl">Renku</name>
@@ -35,6 +36,7 @@
   <summary xml:lang="fi">Muistiinpanosovellus</summary>
   <summary xml:lang="fr">Application de prise de notes</summary>
   <summary xml:lang="gl">Aplicativo para tomar notas</summary>
+  <summary xml:lang="id">Aplikasi Pencatatan</summary>
   <summary xml:lang="it">Applicazione per prendere delle note</summary>
   <summary xml:lang="nl">Toepassing voor notities</summary>
   <summary xml:lang="pl">Aplikacja do robienia notatek</summary>
@@ -60,6 +62,7 @@
     <p xml:lang="fi">Renku on yksinkertainen ja tehokas sovellus muistiinpanojesi hallitsemiseen. Se auttaa sinua järjestämään keräämiäsi tietoja ja toimii henkilökohtaisena wikinä. Et koskaan enää unohda mitään: se toimii kuin vettä vain.</p>
     <p xml:lang="fr">Renku est une application simple et efficace de gestion de vos notes. Elle vous aide à organiser les connaissances que vous accumulez, à la manière d'un wiki personnel. Vous n'oublierez plus jamais rien et votre réflexion n'aura jamais été aussi fluide.</p>
     <p xml:lang="gl">Renku é un aplicativo eficiente e sinxelo para xestionar notas. Axúdao a organizar o coñecemento que acumula, e actúa como un wiki persoal. Non volverá esquecer nada nunca máis, convertendo a súa mente en auga.</p>
+    <p xml:lang="id">Renku adalah aplikasi yang efisien dan sederhana untuk mengelola catatanmu. Ini membantu kamu mengatur pengetahuan yang kamu kumpulkan dan bertindak sebagai wiki pribadi. Kamu tidak akan pernah melupakan apa pun lagi, membuat pikiranmu seperti air yang mengalir.</p>
     <p xml:lang="it">Renku è un'applicazione semplice ed efficiente per la gestione delle tue note. Consente di organizzare la conoscenza che accumuli e agisce come un wiki personale. Non dimenticherai mai più niente, lasciando la tua mente fluida come l'acqua.</p>
     <p xml:lang="nl">Renku is een efficiënte en eenvoudige toepassing voor het beheer van uw notities. Het helpt u de verzamelde kennis te organiseren en werkt als een persoonlijke wiki. U zult nooit meer iets vergeten en uw geheugen is geen zeef meer.</p>
     <p xml:lang="pl">Renku jest wydajną i prostą aplikacją do zarządzania notatkami. Pomaga uporządkować zbieraną przez ciebie wiedzę i działa jak osobista wikipedia. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
@@ -81,6 +84,7 @@
     <p xml:lang="fi">Ominaisuuksia:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
     <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Funzionalità:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pl">Możliwości:</p>
@@ -103,6 +107,7 @@
       <li xml:lang="fi">Kokoaa muistiinpanot</li>
       <li xml:lang="fr">Collection de notes</li>
       <li xml:lang="gl">Recoller notas.</li>
+      <li xml:lang="id">Mengumpulkan catatan</li>
       <li xml:lang="it">Raccoglie note</li>
       <li xml:lang="nl">Verzamelt notities</li>
       <li xml:lang="pl">Zbieranie notatek</li>
@@ -124,6 +129,7 @@
       <li xml:lang="fi">Järjestää muistiinpanot aiheiksi</li>
       <li xml:lang="fr">Organisation de notes au sein de sujets</li>
       <li xml:lang="gl">Organizar notas por temas.</li>
+      <li xml:lang="id">Mengatur catatan dalam topik</li>
       <li xml:lang="it">Organizza le note in argomenti</li>
       <li xml:lang="nl">Organiseert notities in onderwerpen</li>
       <li xml:lang="pl">Porządkowanie notatek w tematy</li>
@@ -144,6 +150,7 @@
       <li xml:lang="fi">Akonadiin perustuva sovellus sallii etsiä tietoa käytännössä mistä vain (kiintolevyltä, IMAPista, verkkopalveluista…)</li>
       <li xml:lang="fr">Prise en charge d'Akonadi dans l'application afin de recevoir les données quelle que soit leur source (local, imap, service web, ...)</li>
       <li xml:lang="gl">O aplicativo é compatíbel con Akonadi, e permítelle obter datos de practicamente calquera lugar (local, IMAP, servizos web).</li>
+      <li xml:lang="id">Aplikasi akonadi difungsikan memungkinkan untuk mendapatkan data dari mana pun secara virtual (layanan local, imap, web...)</li>
       <li xml:lang="it">Applicazione basata su Akonadi che consente di ottenere i dati praticamente ovunque (locale, imap, servizio web...)</li>
       <li xml:lang="nl">In Akonadi opgenomen toepassing waarmee u de gegevens werkelijk overal vandaan kunt halen (lokaal, imap, webservice...)</li>
       <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>

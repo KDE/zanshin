@@ -15,6 +15,7 @@
   <name xml:lang="fi">Zanshin</name>
   <name xml:lang="fr">Zanshin</name>
   <name xml:lang="gl">Zanshin</name>
+  <name xml:lang="id">Zanshin</name>
   <name xml:lang="it">Zanshin</name>
   <name xml:lang="nl">Zanshin</name>
   <name xml:lang="pl">Zanshin</name>
@@ -37,6 +38,7 @@
   <summary xml:lang="fi">Tehtävienhallintasovellus</summary>
   <summary xml:lang="fr">Application de gestion de tâches à faire</summary>
   <summary xml:lang="gl">Aplicativo de xestión de tarefas</summary>
+  <summary xml:lang="id">Aplikasi Pengelolaan TODO</summary>
   <summary xml:lang="it">Applicazione di gestione delle COSE DA FARE</summary>
   <summary xml:lang="nl">Beheertoepassing voor taken</summary>
   <summary xml:lang="pl">Program do zarządzania zadaniami</summary>
@@ -62,6 +64,7 @@
     <p xml:lang="fi">Zanshin on tehokas mutta yksinkertainen päivittäisten toimiesi hallintasovellus. Se auttaa sinua järjestämään työtäsi ja yksityiselämääsi ja vähentämään ajanhallinnan paineita. Et koskaan enää unohda mitään.</p>
     <p xml:lang="fr">Zanshin est une application simple mais puissante de gestion de vos tâches aux quotidien. Elle vous aide à organiser et à réduire la pression cognitive des tâches que vous avez à réaliser dans votre vie personnelle et professionnelle. Vous n'oublierez plus jamais rien et votre réflexion n'aura jamais été aussi fluide.</p>
     <p xml:lang="gl">Zanshin é un aplicativo potente pero sinxelo para xestionar as acciónsdo día a día. Axúdao a organizar o que ten que facer no seu traballo e na vida persoal para quitarlle ese peso de encima. Non volverá esquecer nada nunca máis, convertendo así a súa mente en auga.</p>
+    <p xml:lang="id">Zanshin adalah aplikasi yang kuat namun sederhana untuk mengelola tindakan Anda sehari-hari. Ini membantu Anda mengatur dan mengurangi tekanan kognitif dari apa yang harus dilakukan seseorang dalam pekerjaan dan kehidupan pribadinya. Anda tidak akan pernah melupakan apa pun lagi, membuat pikiran Anda seperti air.</p>
     <p xml:lang="it">Zanshin è un'applicazione semplice ma potente per la gestione delle tue attività giornaliere. Ti aiuta a organizzarti e riduce lo stress mentale che ciascuno di noi sperimenta durante la propria vita privata e lavorativa. Non dimenticherai più nulla, e la tua mente sarà fresca e leggera come l'acqua.</p>
     <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer iets vergeten, uw geheugen is geen zeef meer.</p>
     <p xml:lang="pl">Zanshin jest zaawansowanym, a zarazem prostym programem do zarządzania codziennymi zadaniami. Pomaga zorganizować i zmniejszyć natłok czynności, które użytkownik musi wykonać w swojej pracy lub życiu osobistym. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
@@ -84,6 +87,7 @@
     <p xml:lang="fi">Ominaisuuksia:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
     <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Caratteristiche:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
     <p xml:lang="pl">Możliwości:</p>
@@ -106,6 +110,7 @@
       <li xml:lang="fi">Kokoaa tehtävät kaikkialta</li>
       <li xml:lang="fr">Collection de tâches quelle que soit leur source</li>
       <li xml:lang="gl">Recolle tarefas de calquera parte.</li>
+      <li xml:lang="id">Mengumpulkan tugas dari mana pun</li>
       <li xml:lang="it">Raccoglie le attività da qualsiasi posizione</li>
       <li xml:lang="nl">Verzamelt notities overal vandaan</li>
       <li xml:lang="pl">Zbieranie zadań z każdego miejsca</li>
@@ -126,6 +131,7 @@
       <li xml:lang="fi">Järjestää tehtävät projekteiksi ja konteksteiksi</li>
       <li xml:lang="fr">Organisation des tâches en projets et contextes</li>
       <li xml:lang="gl">Organice as tarefas por proxectos e contextos.</li>
+      <li xml:lang="id">Mengatur tugas dalam projek dan konteks</li>
       <li xml:lang="it">Organizza le attività in progetti e contesti</li>
       <li xml:lang="nl">Organiseert taken in projecten en contexten</li>
       <li xml:lang="pl">Porządkowanie zadań w projekty i konteksty</li>
@@ -146,6 +152,7 @@
       <li xml:lang="fi">Akonadiin perustuva sovellus sallii etsiä tietoa käytännössä mistä vain (kiintolevyltä, IMAPista, verkkopalveluista…)</li>
       <li xml:lang="fr">Prise en charge d'Akonadi dans l'application afin de recevoir les données quelle que soit leur source (local, imap, service web, ...)</li>
       <li xml:lang="gl">O aplicativo é compatíbel con Akonadi, e permítelle obter datos de practicamente calquera lugar (local, IMAP, servizos web).</li>
+      <li xml:lang="id">Memungkinkan aplikasi akonadi difungsikan untuk mendapatkan data dari (layanan web, imap, local...) mana pun secara visual</li>
       <li xml:lang="it">Applicazione abilitata da Akonadi, che permette di recuperare i dati virtualmente da qualsiasi posizione (locale, imap, servizi web...)</li>
       <li xml:lang="nl">In Akonadi opgenomen toepassing waarmee de gegevens werkelijk overal vandaan kunt halen (lokaal, imap, webservice...)</li>
       <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>
