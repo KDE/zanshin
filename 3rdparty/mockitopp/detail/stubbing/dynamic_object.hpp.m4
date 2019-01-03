@@ -19,7 +19,10 @@ namespace mockitopp
          static int get(T ptr2member)
          {
             vtable_offset_helper f;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
             return (f.*reinterpret_cast<int (vtable_offset_helper::*)()>(ptr2member))();
+#pragma GCC diagnostic pop
          }
 
 include(`mockitopp/detail/m4/REPEAT.m4')dnl

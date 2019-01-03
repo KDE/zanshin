@@ -139,7 +139,10 @@ namespace mockitopp
          static void* get(M ptr2member)
          {
             proxy_vfunction_factory s;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
             return (s.*reinterpret_cast<void* (proxy_vfunction_factory::*)()>(ptr2member))();
+#pragma GCC diagnostic pop
          }
 
          virtual void* offset0() { return horrible_cast<void*>(&proxy_vfunction<0, typename remove_member_function_pointer_cv<M>::type>::invoke); }

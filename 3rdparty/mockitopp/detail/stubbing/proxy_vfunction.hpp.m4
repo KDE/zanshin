@@ -37,7 +37,10 @@ M4_REPEAT(eval(MOCKITOPP_MAX_VIRTUAL_FUNCTION_ARITY + 1), `DEFINE_PROXY_VFUNCTIO
          static void* get(M ptr2member)
          {
             proxy_vfunction_factory s;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-function-type"
             return (s.*reinterpret_cast<void* (proxy_vfunction_factory::*)()>(ptr2member))();
+#pragma GCC diagnostic pop
          }
 
 define(`DEFINE_PROXY_VFUNCTION_FACTORY_OFFSET_FUNCTION', `        virtual void* offset$1() { return horrible_cast<void*>(&proxy_vfunction<$1, typename remove_member_function_pointer_cv<M>::type>::invoke); }
