@@ -36,6 +36,7 @@
 
 #include <AkonadiCore/AgentFilterProxyModel>
 #include <AkonadiCore/AgentInstance>
+#include <AkonadiWidgets/AgentConfigurationDialog>
 #include <AkonadiWidgets/AgentInstanceWidget>
 #include <AkonadiCore/AgentInstanceCreateJob>
 #include <AkonadiCore/AgentManager>
@@ -142,8 +143,10 @@ void ConfigDialog::onRemoveTriggered()
 void ConfigDialog::onConfigureTriggered()
 {
     auto agent = m_agentInstanceWidget->currentAgentInstance();
-    if (agent.isValid())
-        agent.configure(this);
+    if (agent.isValid()) {
+        AgentConfigurationDialog dialog(agent, this);
+        dialog.exec();
+    }
 }
 
 void ConfigDialog::applyContentTypes(AgentFilterProxyModel *model)
