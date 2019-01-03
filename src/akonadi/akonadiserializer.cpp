@@ -369,7 +369,7 @@ void Serializer::updateItemProject(Item item, Domain::Project::Ptr project)
 
     } else if (isNoteItem(item)) {
         auto note = item.payload<KMime::Message::Ptr>();
-        note->removeHeader("X-Zanshin-RelatedProjectUid");
+        (void)note->removeHeader("X-Zanshin-RelatedProjectUid");
         const QByteArray parentUid = project->property("todoUid").toString().toUtf8();
         if (!parentUid.isEmpty()) {
             auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");

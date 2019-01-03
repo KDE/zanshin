@@ -75,7 +75,7 @@ GenNote &GenNote::withParentUid(const QString &uid)
         relatedHeader->from7BitString(uid.toUtf8());
         message->appendHeader(relatedHeader);
     } else {
-        message->removeHeader("X-Zanshin-RelatedProjectUid");
+        (void)message->removeHeader("X-Zanshin-RelatedProjectUid");
     }
     message->assemble();
     m_item.setPayload(message);
