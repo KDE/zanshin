@@ -230,17 +230,6 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
                        return attachment;
                    });
     task->setAttachments(attachments);
-
-    if (todo->attendeeCount() > 0) {
-        const auto attendees = todo->attendees();
-        const auto delegate = std::find_if(attendees.begin(), attendees.end(),
-                                           [] (const KCalCore::Attendee::Ptr &attendee) {
-                                               return attendee->status() == KCalCore::Attendee::Accepted;
-                                           });
-        if (delegate != attendees.end()) {
-            task->setDelegate(Domain::Task::Delegate((*delegate)->name(), (*delegate)->email()));
-        }
-    }
 }
 
 bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
@@ -303,13 +292,6 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
         todo->addAttachment(attach);
     }
 
-    if (task->delegate().isValid()) {
-        KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(task->delegate().name(),
-                                                                task->delegate().email(),
-                                                                true,
-                                                                KCalCore::Attendee::Accepted));
-        todo->addAttendee(attendee);
-    }
     if (task->isRunning()) {
         todo->setCustomProperty("Zanshin", "Running", "1");
     } else {

@@ -197,30 +197,6 @@ private slots:
         // THEN
         QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtDue().date(), QDate(2015, 04, 12));
     }
-
-    void shouldAllowToSetDelegate()
-    {
-        // GIVEN
-        Akonadi::Item item = GenTodo().withDelegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.net"));
-
-        // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->attendeeCount(), 1);
-
-        const auto attendees = item.payload<KCalCore::Todo::Ptr>()->attendees();
-        const auto delegate = std::find_if(attendees.begin(), attendees.end(),
-                                           [] (const KCalCore::Attendee::Ptr &attendee) {
-                                               return attendee->status() == KCalCore::Attendee::Delegated;
-                                           });
-        QVERIFY(delegate != attendees.constEnd());
-        QCOMPARE((*delegate)->name(), QStringLiteral("John Doe"));
-        QCOMPARE((*delegate)->email(), QStringLiteral("john@doe.net"));
-
-        // WHEN
-        item = GenTodo(item).withNoDelegate();
-
-        // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->attendeeCount(), 0);
-    }
 };
 
 ZANSHIN_TEST_MAIN(GenTodoTest)

@@ -35,7 +35,6 @@
 #include "testlib/gencollection.h"
 #include "testlib/gentodo.h"
 
-#include "akonadi/akonadimessaginginterface.h"
 #include "akonadi/akonaditaskrepository.h"
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorageinterface.h"
@@ -53,7 +52,6 @@ public:
     explicit AkonadiTaskRepositoryTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
-        qRegisterMetaType<Domain::Task::Delegate>();
     }
 
 private slots:
@@ -83,8 +81,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->create(task)->exec();
 
         // THEN
@@ -132,8 +129,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->create(task)->exec();
 
         // THEN
@@ -174,8 +170,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         auto job = repository->create(task);
         job->exec();
 
@@ -216,8 +211,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->createChild(child, parent)->exec();
 
         // THEN
@@ -257,8 +251,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->createInProject(task, project)->exec();
 
         // THEN
@@ -303,8 +296,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
 
         repository->createInContext(task, context)->exec();
 
@@ -342,8 +334,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->update(task)->exec();
 
         // THEN
@@ -431,8 +422,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->remove(task)->exec();
 
         // THEN
@@ -478,8 +468,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->promoteToProject(task)->exec();
 
         // THEN
@@ -623,8 +612,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         auto associateJob = repository->associate(parent, child);
         if (execJob)
             associateJob->exec();
@@ -675,8 +663,7 @@ private slots:
 
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(Akonadi::StorageInterface::Ptr(data.createStorage()),
-                                                                                       serializer,
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializer));
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
 
         // WHEN
@@ -738,8 +725,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->dissociate(child)->exec();
 
         // THEN
@@ -781,8 +767,7 @@ private slots:
 
         // WHEN
         QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(storageMock.getInstance(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       Akonadi::MessagingInterface::Ptr()));
+                                                                                       serializerMock.getInstance()));
         repository->dissociateAll(child)->exec();
 
         // THEN
@@ -797,39 +782,6 @@ private slots:
         // Give a chance to job to delete themselves
         // in case of an error (since they use deleteLater() internally)
         QTest::qWait(10);
-    }
-
-    void shouldSendDelegationMessage()
-    {
-        // GIVEN
-        auto oldDelegate = Domain::Task::Delegate(QStringLiteral("John Smith"), QStringLiteral("john@smith.com"));
-        auto newDelegate = Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com"));
-
-        auto task = Domain::Task::Ptr::create();
-        task->setDelegate(oldDelegate);
-
-        QSignalSpy spy(task.data(), &Domain::Task::delegateChanged);
-
-        auto item = Akonadi::Item(42);
-
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).thenReturn(item);
-
-        Utils::MockObject<Akonadi::MessagingInterface> messagingMock;
-        messagingMock(&Akonadi::MessagingInterface::sendDelegationMessage).when(item).thenReturn();
-
-        // WHEN
-        QScopedPointer<Akonadi::TaskRepository> repository(new Akonadi::TaskRepository(Akonadi::StorageInterface::Ptr(),
-                                                                                       serializerMock.getInstance(),
-                                                                                       messagingMock.getInstance()));
-        repository->delegate(task, newDelegate);
-
-        // THEN
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
-        QVERIFY(messagingMock(&Akonadi::MessagingInterface::sendDelegationMessage).when(item).exactly(1));
-
-        QCOMPARE(task->delegate(), oldDelegate);
-        QVERIFY(spy.isEmpty());
     }
 };
 

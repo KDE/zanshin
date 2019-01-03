@@ -34,7 +34,6 @@
 
 #include "akonadi/akonadicache.h"
 #include "akonadi/akonadicachingstorage.h"
-#include "akonadi/akonadimessaging.h"
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
@@ -53,7 +52,6 @@ void App::initializeDependencies()
     deps.add<Akonadi::Cache,
              Akonadi::Cache(Akonadi::SerializerInterface*, Akonadi::MonitorInterface*),
              Utils::DependencyManager::UniqueInstance>();
-    deps.add<Akonadi::MessagingInterface, Akonadi::Messaging, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::MonitorInterface, Akonadi::MonitorImpl, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::SerializerInterface, Akonadi::Serializer, Utils::DependencyManager::UniqueInstance>();
     deps.add<Akonadi::StorageInterface, Utils::DependencyManager::UniqueInstance>([] (Utils::DependencyManager *deps) {
@@ -101,8 +99,7 @@ void App::initializeDependencies()
 
     deps.add<Domain::TaskRepository,
              Akonadi::TaskRepository(Akonadi::StorageInterface*,
-                                     Akonadi::SerializerInterface*,
-                                     Akonadi::MessagingInterface*)>();
+                                     Akonadi::SerializerInterface*)>();
 
     deps.add<Presentation::ArtifactEditorModel>([] (Utils::DependencyManager *deps) {
         auto model = new Presentation::ArtifactEditorModel;
@@ -111,9 +108,6 @@ void App::initializeDependencies()
             auto task = artifact.objectCast<Domain::Task>();
             Q_ASSERT(task);
             return repository->update(task);
-        });
-        model->setDelegateFunction([repository] (const Domain::Task::Ptr &task, const Domain::Task::Delegate &delegate) {
-            return repository->delegate(task, delegate);
         });
         return model;
     });

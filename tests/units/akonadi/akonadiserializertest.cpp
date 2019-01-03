@@ -505,13 +505,11 @@ private slots:
         QTest::addColumn<QDate>("doneDate");
         QTest::addColumn<QDate>("startDate");
         QTest::addColumn<QDate>("dueDate");
-        QTest::addColumn<QString>("delegateName");
-        QTest::addColumn<QString>("delegateEmail");
 
-        QTest::newRow("nominal case") << "summary" << "content" << false << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "John Doe" << "j@d.com";
-        QTest::newRow("done case") << "summary" << "content" << true << QDate(2013, 11, 30) << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "John Doe" << "j@d.com";
-        QTest::newRow("done without doneDate case") << "summary" << "content" << true << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "John Doe" << "j@d.com";
-        QTest::newRow("empty case") << QString() << QString() << false << QDate() << QDate() << QDate() << QString() << QString();
+        QTest::newRow("nominal case") << "summary" << "content" << false << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01);
+        QTest::newRow("done case") << "summary" << "content" << true << QDate(2013, 11, 30) << QDate(2013, 11, 24) << QDate(2014, 03, 01);
+        QTest::newRow("done without doneDate case") << "summary" << "content" << true << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01);
+        QTest::newRow("empty case") << QString() << QString() << false << QDate() << QDate() << QDate();
     }
 
     void shouldCreateTaskFromItem()
@@ -525,8 +523,6 @@ private slots:
         QFETCH(QDate, doneDate);
         QFETCH(QDate, startDate);
         QFETCH(QDate, dueDate);
-        QFETCH(QString, delegateName);
-        QFETCH(QString, delegateEmail);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -540,13 +536,6 @@ private slots:
 
         setTodoDates(todo, startDate, dueDate);
         todo->setRelatedTo(QStringLiteral("my-uid"));
-        if (!delegateName.isEmpty() || !delegateEmail.isEmpty()) {
-            KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(delegateName,
-                                                                    delegateEmail,
-                                                                    true,
-                                                                    KCalCore::Attendee::Accepted));
-            todo->addAttendee(attendee);
-        }
 
 
         // ... as payload of an item
@@ -574,8 +563,6 @@ private slots:
         QCOMPARE(task->property("relatedUid").toString(), todo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), item.id());
         QCOMPARE(task->property("parentCollectionId").toLongLong(), collection.id());
-        QCOMPARE(task->delegate().name(), delegateName);
-        QCOMPARE(task->delegate().email(), delegateEmail);
 
         QVERIFY(!artifact.isNull());
         QCOMPARE(artifact->title(), summary);
@@ -588,8 +575,6 @@ private slots:
         QCOMPARE(artifact->property("relatedUid").toString(), todo->relatedTo());
         QCOMPARE(artifact->property("itemId").toLongLong(), item.id());
         QCOMPARE(artifact->property("parentCollectionId").toLongLong(), collection.id());
-        QCOMPARE(artifact->delegate().name(), delegateName);
-        QCOMPARE(artifact->delegate().email(), delegateEmail);
     }
 
     void shouldCreateNullTaskFromInvalidItem()
@@ -646,13 +631,11 @@ private slots:
         QTest::addColumn<QStringList>("updatedAttachmentLabels");
         QTest::addColumn<QStringList>("updatedAttachmentMimeTypes");
         QTest::addColumn<QStringList>("updatedAttachmentIconNames");
-        QTest::addColumn<QString>("updatedDelegateName");
-        QTest::addColumn<QString>("updatedDelegateEmail");
         QTest::addColumn<bool>("updatedRunning");
 
-        QTest::newRow("no change") << "summary" << "content" << false << QDate() <<  QDate(2013, 11, 24) << QDate(2014, 03, 01) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << false;
-        QTest::newRow("changed") << "new summary" << "new content" << true << QDate(2013, 11, 28) << QDate(2013, 11, 25) << QDate(2014, 03, 02) << "my-new-uid" << true << QByteArrayList({"foo", "# bar", QByteArray()}) << QStringList({QString(), QString(), "https://www.kde.org"}) << QStringList({"label1", "label2", "label3"}) << QStringList({"text/plain", "text/markdown", "text/html"}) << QStringList({"text-plain", "text-markdown", "text-html"}) << "John Smith" << "j@s.com" << false;
-        QTest::newRow("set_to_running") << "summary" << "content" << false << QDate() <<  QDate(2013, 11, 24) << QDate(2014, 03, 01) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << "John Doe" << "j@d.com" << true;
+        QTest::newRow("no change") << "summary" << "content" << false << QDate() <<  QDate(2013, 11, 24) << QDate(2014, 03, 01) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << false;
+        QTest::newRow("changed") << "new summary" << "new content" << true << QDate(2013, 11, 28) << QDate(2013, 11, 25) << QDate(2014, 03, 02) << "my-new-uid" << true << QByteArrayList({"foo", "# bar", QByteArray()}) << QStringList({QString(), QString(), "https://www.kde.org"}) << QStringList({"label1", "label2", "label3"}) << QStringList({"text/plain", "text/markdown", "text/html"}) << QStringList({"text-plain", "text-markdown", "text-html"}) << false;
+        QTest::newRow("set_to_running") << "summary" << "content" << false << QDate() <<  QDate(2013, 11, 24) << QDate(2014, 03, 01) << "my-uid" << false << QByteArrayList() << QStringList() << QStringList() << QStringList() << QStringList() << true;
     }
 
     void shouldUpdateTaskFromItem()
@@ -703,8 +686,6 @@ private slots:
         QFETCH(QStringList, updatedAttachmentLabels);
         QFETCH(QStringList, updatedAttachmentMimeTypes);
         QFETCH(QStringList, updatedAttachmentIconNames);
-        QFETCH(QString, updatedDelegateName);
-        QFETCH(QString, updatedDelegateEmail);
         QFETCH(bool, updatedRunning);
 
         // ... in a new todo...
@@ -734,13 +715,6 @@ private slots:
             updatedTodo->addAttachment(attachment);
         }
 
-        if (!updatedDelegateName.isEmpty() || !updatedDelegateEmail.isEmpty()) {
-            KCalCore::Attendee::Ptr updatedAttendee(new KCalCore::Attendee(updatedDelegateName,
-                                                                           updatedDelegateEmail,
-                                                                           true,
-                                                                           KCalCore::Attendee::Accepted));
-            updatedTodo->addAttendee(updatedAttendee);
-        }
         if (updatedRunning) {
             updatedTodo->setCustomProperty("Zanshin", "Running", "1");
         } else {
@@ -780,8 +754,6 @@ private slots:
             QCOMPARE(attachment.mimeType(), updatedAttachmentMimeTypes.at(i));
             QCOMPARE(attachment.iconName(), updatedAttachmentIconNames.at(i));
         }
-        QCOMPARE(task->delegate().name(), updatedDelegateName);
-        QCOMPARE(task->delegate().email(), updatedDelegateEmail);
         QCOMPARE(task->isRunning(), updatedRunning);
 
         task = artifact.dynamicCast<Domain::Task>();
@@ -805,8 +777,6 @@ private slots:
             QCOMPARE(attachment.mimeType(), updatedAttachmentMimeTypes.at(i));
             QCOMPARE(attachment.iconName(), updatedAttachmentIconNames.at(i));
         }
-        QCOMPARE(task->delegate().name(), updatedDelegateName);
-        QCOMPARE(task->delegate().email(), updatedDelegateEmail);
         QCOMPARE(task->isRunning(), updatedRunning);
     }
 
@@ -1051,7 +1021,6 @@ private slots:
         QTest::addColumn<QString>("todoUid");
         QTest::addColumn<Domain::Task::Recurrence>("recurrence");
         QTest::addColumn<Domain::Task::Attachments>("attachments");
-        QTest::addColumn<Domain::Task::Delegate>("delegate");
         QTest::addColumn<bool>("running");
 
         Domain::Task::Attachments attachments;
@@ -1075,42 +1044,36 @@ private slots:
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << attachments
-                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
         QTest::newRow("nominal case (daily)") << "summary" << "content" << false << QDate()
                                               << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::RecursDaily
                                               << Domain::Task::Attachments()
-                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
         QTest::newRow("nominal case (weekly)") << "summary" << "content" << false << QDate()
                                                << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                << qint64(-1) << qint64(-1) << QString()
                                                << Domain::Task::RecursWeekly
                                                << Domain::Task::Attachments()
-                                               << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                << false;
         QTest::newRow("nominal case (monthly)") << "summary" << "content" << false << QDate()
                                                 << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                 << qint64(-1) << qint64(-1) << QString()
                                                 << Domain::Task::RecursMonthly
                                                 << Domain::Task::Attachments()
-                                                << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                 << false;
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDate(2013, 11, 30)
                                            << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                            << qint64(-1) << qint64(-1) << QString()
                                            << Domain::Task::NoRecurrence
                                            << Domain::Task::Attachments()
-                                           << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                            << false;
         QTest::newRow("empty case (no id)") << QString() << QString() << false << QDate()
                                             << QDate() << QDate()
                                             << qint64(-1) << qint64(-1) << QString()
                                             << Domain::Task::NoRecurrence
                                             << Domain::Task::Attachments()
-                                            << Domain::Task::Delegate()
                                             << false;
 #if 0 // if we ever need time info, then we need a Task::setAllDay(bool) just like KCalCore::Todo has.
       QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
@@ -1118,7 +1081,6 @@ private slots:
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
-                                              << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                               << false;
 #endif
 
@@ -1127,28 +1089,24 @@ private slots:
                                                 << qint64(42) << qint64(43) << "my-uid"
                                                 << Domain::Task::NoRecurrence
                                                 << Domain::Task::Attachments()
-                                                << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                                 << false;
         QTest::newRow("done case (with id)") << "summary" << "content" << true << QDate(2013, 11, 30)
                                              << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                              << qint64(42) << qint64(43) << "my-uid"
                                              << Domain::Task::NoRecurrence
                                              << Domain::Task::Attachments()
-                                             << Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("j@d.com"))
                                              << false;
         QTest::newRow("empty case (with id)") << QString() << QString() << false << QDate()
                                               << QDate() << QDate()
                                               << qint64(42) << qint64(43) << "my-uid"
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
-                                              << Domain::Task::Delegate()
                                               << false;
         QTest::newRow("nominal case (running)") << "running" << QString() << false << QDate()
                                               << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
-                                              << Domain::Task::Delegate()
                                               << true;
     }
 
@@ -1168,7 +1126,6 @@ private slots:
         QFETCH(QString, todoUid);
         QFETCH(Domain::Task::Recurrence, recurrence);
         QFETCH(Domain::Task::Attachments, attachments);
-        QFETCH(Domain::Task::Delegate, delegate);
         QFETCH(bool, running);
 
         // ... stored in a task
@@ -1181,7 +1138,6 @@ private slots:
         task->setDueDate(dueDate);
         task->setRecurrence(recurrence);
         task->setAttachments(attachments);
-        task->setDelegate(delegate);
         task->setRunning(running);
 
         if (itemId > 0)
@@ -1240,13 +1196,6 @@ private slots:
             QCOMPARE(attachment->decodedData(), attachments.at(i).data());
             QCOMPARE(attachment->label(), attachments.at(i).label());
             QCOMPARE(attachment->mimeType(), attachments.at(i).mimeType());
-        }
-
-        if (delegate.isValid()) {
-            auto attendee = todo->attendeeByMail(delegate.email());
-            QVERIFY(attendee);
-            QCOMPARE(attendee->name(), delegate.name());
-            QCOMPARE(attendee->email(), delegate.email());
         }
 
         if (!todoUid.isEmpty()) {

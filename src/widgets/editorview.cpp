@@ -34,7 +34,6 @@
 #include <KLocalizedString>
 
 #include "kdateedit.h"
-#include "addressline/addresseelineedit.h"
 
 #include "domain/artifact.h"
 
@@ -45,26 +44,13 @@ using namespace Widgets;
 EditorView::EditorView(QWidget *parent)
     : QWidget(parent),
       m_model(Q_NULLPTR),
-      ui(new Ui::EditorView),
-      m_delegateEdit(Q_NULLPTR)
+      ui(new Ui::EditorView)
 {
     m_requestFileNameFunction = [](QWidget *parent) {
         return QFileDialog::getOpenFileName(parent, i18n("Add Attachment"));
     };
 
     ui->setupUi(this);
-
-    // To avoid having unit tests talking to akonadi
-    // while we don't need the completion for them
-    if (qEnvironmentVariableIsEmpty("ZANSHIN_UNIT_TEST_RUN"))
-        m_delegateEdit = new KPIM::AddresseeLineEdit(ui->delegateEditPlaceHolder);
-    else
-        m_delegateEdit = new KLineEdit(ui->delegateEditPlaceHolder);
-
-    // placing our special DelegateEdit into the placeholder we prepared
-    m_delegateEdit->setObjectName("delegateEdit");
-    ui->delegateToLabel->setBuddy(m_delegateEdit);
-    ui->delegateEditPlaceHolder->layout()->addWidget(m_delegateEdit);
 
     ui->startDateEdit->setMinimumContentsLength(10);
     ui->dueDateEdit->setMinimumContentsLength(10);
@@ -79,7 +65,6 @@ EditorView::EditorView(QWidget *parent)
     ui->layout->activate();
     setMinimumWidth(minimumSizeHint().width());
 
-    ui->delegateLabel->setVisible(false);
     ui->taskGroup->setVisible(false);
 
     ui->textEdit->installEventFilter(this);
@@ -87,7 +72,6 @@ EditorView::EditorView(QWidget *parent)
     ui->dueDateEdit->installEventFilter(this);
     ui->doneButton->installEventFilter(this);
     ui->recurrenceCombo->installEventFilter(this);
-    m_delegateEdit->installEventFilter(this);
 
     connect(ui->textEdit, &QPlainTextEdit::textChanged, this, &EditorView::onTextEditChanged);
     connect(ui->startDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onStartEditEntered);
@@ -99,7 +83,6 @@ EditorView::EditorView(QWidget *parent)
     connect(ui->attachmentList, &QAbstractItemView::doubleClicked, this, &EditorView::onAttachmentDoubleClicked);
     connect(ui->addAttachmentButton, &QToolButton::clicked, this, &EditorView::onAddAttachmentClicked);
     connect(ui->removeAttachmentButton, &QToolButton::clicked, this, &EditorView::onRemoveAttachmentClicked);
-    connect(m_delegateEdit, &KLineEdit::returnPressed, this, &EditorView::onDelegateEntered);
 
     setEnabled(false);
 }
@@ -154,7 +137,6 @@ void EditorView::setModel(QObject *model)
     onDueDateChanged();
     onDoneChanged();
     onRecurrenceChanged();
-    onDelegateTextChanged();
     onAttachmentSelectionChanged();
 
     connect(m_model, SIGNAL(artifactChanged(Domain::Artifact::Ptr)),
@@ -167,7 +149,6 @@ void EditorView::setModel(QObject *model)
     connect(m_model, SIGNAL(dueDateChanged(QDate)), this, SLOT(onDueDateChanged()));
     connect(m_model, SIGNAL(doneChanged(bool)), this, SLOT(onDoneChanged()));
     connect(m_model, SIGNAL(recurrenceChanged(Domain::Task::Recurrence)), this, SLOT(onRecurrenceChanged()));
-    connect(m_model, SIGNAL(delegateTextChanged(QString)), this, SLOT(onDelegateTextChanged()));
 
     connect(this, SIGNAL(titleChanged(QString)), m_model, SLOT(setTitle(QString)));
     connect(this, SIGNAL(textChanged(QString)), m_model, SLOT(setText(QString)));
@@ -206,7 +187,6 @@ void EditorView::onArtifactChanged()
 {
     auto artifact = m_model->property("artifact").value<Domain::Artifact::Ptr>();
     setEnabled(artifact);
-    m_delegateEdit->clear();
 }
 
 void EditorView::onHasTaskPropertiesChanged()
@@ -250,16 +230,6 @@ void EditorView::onRecurrenceChanged()
     }
 }
 
-void EditorView::onDelegateTextChanged()
-{
-    const auto delegateText = m_model->property("delegateText").toString();
-    const auto labelText = delegateText.isEmpty() ? QString()
-                         : i18n("Delegated to: <b>%1</b>", delegateText);
-
-    ui->delegateLabel->setVisible(!labelText.isEmpty());
-    ui->delegateLabel->setText(labelText);
-}
-
 void EditorView::onTextEditChanged()
 {
     const QString plainText = ui->textEdit->toPlainText();
@@ -301,33 +271,6 @@ void EditorView::onRecurrenceComboChanged(int index)
 {
     const auto recurrence = ui->recurrenceCombo->itemData(index).value<Domain::Task::Recurrence>();
     emit recurrenceChanged(recurrence);
-}
-
-void EditorView::onDelegateEntered()
-{
-    const auto input = m_delegateEdit->text();
-    auto name = QString();
-    auto email = QString();
-    auto gotMatch = false;
-
-    QRegExp fullRx("\\s*(.*) <([\\w\\.]+@[\\w\\.]+)>\\s*");
-    QRegExp emailOnlyRx("\\s*<?([\\w\\.]+@[\\w\\.]+)>?\\s*");
-
-    if (input.contains(fullRx)) {
-        name = fullRx.cap(1);
-        email = fullRx.cap(2);
-        gotMatch = true;
-    } else if (input.contains(emailOnlyRx)) {
-        email = emailOnlyRx.cap(1);
-        gotMatch = true;
-    }
-
-    if (gotMatch) {
-        QMetaObject::invokeMethod(m_model, "delegate",
-                                  Q_ARG(QString, name),
-                                  Q_ARG(QString, email));
-        m_delegateEdit->clear();
-    }
 }
 
 void EditorView::onAttachmentSelectionChanged()

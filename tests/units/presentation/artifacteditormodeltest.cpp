@@ -79,9 +79,7 @@ private slots:
         QVERIFY(model.dueDate().isNull());
         QCOMPARE(model.recurrence(), Domain::Task::NoRecurrence);
         QVERIFY(model.attachmentModel() != nullptr);
-        QVERIFY(model.delegateText().isNull());
         QVERIFY(!model.hasSaveFunction());
-        QVERIFY(!model.hasDelegateFunction());
         auto am = model.attachmentModel();
         QCOMPARE(am->rowCount(), 0);
     }
@@ -97,7 +95,6 @@ private slots:
         QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
         QSignalSpy recurrenceSpy(&model, &Presentation::ArtifactEditorModel::recurrenceChanged);
         QSignalSpy attachmentSpy(model.attachmentModel(), &QAbstractItemModel::modelReset);
-        QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         Domain::Task::Attachments attachments;
 
@@ -123,7 +120,6 @@ private slots:
         task->setDueDate(QDate::currentDate().addDays(2));
         task->setRecurrence(Domain::Task::RecursDaily);
         task->setAttachments(attachments);
-        task->setDelegate(Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com")));
 
         // WHEN
         model.setArtifact(task);
@@ -162,10 +158,6 @@ private slots:
         QCOMPARE(recurrenceSpy.takeFirst().at(0).value<Domain::Task::Recurrence>(), task->recurrence());
         QCOMPARE(model.property("recurrence").value<Domain::Task::Recurrence>(), task->recurrence());
 
-        QCOMPARE(delegateSpy.size(), 1);
-        QCOMPARE(delegateSpy.takeFirst().at(0).toString(), task->delegate().display());
-        QCOMPARE(model.property("delegateText").toString(), task->delegate().display());
-
         QCOMPARE(attachmentSpy.size(), 1);
         auto am = model.attachmentModel();
         QCOMPARE(am->rowCount(), 2);
@@ -184,7 +176,6 @@ private slots:
         QSignalSpy doneSpy(&model, &Presentation::ArtifactEditorModel::doneChanged);
         QSignalSpy startSpy(&model, &Presentation::ArtifactEditorModel::startDateChanged);
         QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
-        QSignalSpy delegateSpy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
 
         auto note = Domain::Note::Ptr::create();
         note->setText(QStringLiteral("description"));
@@ -218,10 +209,6 @@ private slots:
         QCOMPARE(dueSpy.size(), 1);
         QVERIFY(dueSpy.takeFirst().at(0).toDate().isNull());
         QVERIFY(model.property("dueDate").toDate().isNull());
-
-        QCOMPARE(delegateSpy.size(), 1);
-        QVERIFY(delegateSpy.takeFirst().at(0).toString().isEmpty());
-        QVERIFY(model.property("delegateText").toString().isEmpty());
     }
 
     void shouldReactToArtifactPropertyChanges_data()
@@ -318,23 +305,6 @@ private slots:
         // THEN
         QVERIFY(spy.isEmpty());
         QCOMPARE(model.property(propertyName), oldPropertyValue);
-    }
-
-    void shouldReactToTaskDelegateChanges()
-    {
-        // GIVEN
-        auto task = Domain::Task::Ptr::create();
-        Presentation::ArtifactEditorModel model;
-        model.setArtifact(task);
-        QSignalSpy spy(&model, &Presentation::ArtifactEditorModel::delegateTextChanged);
-
-        // WHEN
-        task->setDelegate(Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com")));
-
-        // THEN
-        QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().at(0).toString(), task->delegate().display());
-        QCOMPARE(model.property("delegateText").toString(), task->delegate().display());
     }
 
     void shouldApplyChangesBackToArtifactAfterADelay_data()
@@ -471,34 +441,6 @@ private slots:
         // THEN
         QCOMPARE(savedArtifact, artifact);
         QCOMPARE(artifact->property(propertyName), propertyValue);
-    }
-
-    void shouldLaunchDelegation()
-    {
-        // GIVEN
-        auto task = Domain::Task::Ptr::create();
-        auto expectedDelegate = Domain::Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com"));
-
-        auto delegatedTask = Domain::Task::Ptr();
-        auto delegate = Domain::Task::Delegate();
-        auto delegateFunction = [this, &delegatedTask, &delegate] (const Domain::Task::Ptr &task, const Domain::Task::Delegate &d) {
-            delegatedTask = task;
-            delegate = d;
-            return new FakeJob(this);
-        };
-
-        Presentation::ArtifactEditorModel model;
-        model.setDelegateFunction(delegateFunction);
-        QVERIFY(model.hasDelegateFunction());
-        model.setArtifact(task);
-
-        // WHEN
-        model.delegate(QStringLiteral("John Doe"), QStringLiteral("john@doe.com"));
-
-        // THEN
-        QCOMPARE(delegatedTask, task);
-        QCOMPARE(delegate, expectedDelegate);
-        QVERIFY(!task->delegate().isValid());
     }
 
     void shouldGetAnErrorMessageWhenSaveFailed()

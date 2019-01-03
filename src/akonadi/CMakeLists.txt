@@ -11,8 +11,6 @@ set(akonadi_SRCS
     akonadiitemfetchjobinterface.cpp
     akonadilivequeryhelpers.cpp
     akonadilivequeryintegrator.cpp
-    akonadimessaging.cpp
-    akonadimessaginginterface.cpp
     akonadimonitorimpl.cpp
     akonadimonitorinterface.cpp
     akonadinotequeries.cpp

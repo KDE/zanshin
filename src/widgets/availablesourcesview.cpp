@@ -34,7 +34,6 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 
-#include <KLineEdit>
 #include <KLocalizedString>
 
 #include "presentation/metatypes.h"

@@ -39,8 +39,7 @@ Domain::TaskRepository::Ptr createTaskRepository()
 {
     using namespace Akonadi;
     auto repository = new TaskRepository(StorageInterface::Ptr(new Storage),
-                                         SerializerInterface::Ptr(new Serializer),
-                                         MessagingInterface::Ptr());
+                                         SerializerInterface::Ptr(new Serializer));
     return Domain::TaskRepository::Ptr(repository);
 }
 

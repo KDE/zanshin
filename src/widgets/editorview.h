@@ -84,7 +84,6 @@ private slots:
     void onDueDateChanged();
     void onDoneChanged();
     void onRecurrenceChanged();
-    void onDelegateTextChanged();
 
     void onTextEditChanged();
     void onStartEditEntered(const QDate &start);
@@ -92,7 +91,6 @@ private slots:
     void onDoneButtonChanged(bool checked);
     void onStartTodayClicked();
     void onRecurrenceComboChanged(int index);
-    void onDelegateEntered();
 
     void onAttachmentSelectionChanged();
     void onAddAttachmentClicked();
@@ -104,7 +102,6 @@ private:
     RequestFileNameFunction m_requestFileNameFunction;
 
     Ui::EditorView *ui;
-    KLineEdit *m_delegateEdit;
 };
 
 }

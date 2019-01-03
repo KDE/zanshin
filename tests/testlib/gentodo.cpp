@@ -140,18 +140,3 @@ GenTodo &GenTodo::withDueDate(const QDate &date)
     m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(QDateTime(date));
     return *this;
 }
-
-GenTodo &GenTodo::withDelegate(const QString &name, const QString &email)
-{
-    withNoDelegate();
-    KCalCore::Attendee::Ptr attendee(new KCalCore::Attendee(name, email, true,
-                                                            KCalCore::Attendee::Delegated));
-    m_item.payload<KCalCore::Todo::Ptr>()->addAttendee(attendee);
-    return *this;
-}
-
-GenTodo &GenTodo::withNoDelegate()
-{
-    m_item.payload<KCalCore::Todo::Ptr>()->clearAttendees();
-    return *this;
-}

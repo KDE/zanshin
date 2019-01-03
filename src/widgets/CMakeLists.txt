@@ -31,5 +31,7 @@ target_link_libraries(widgets
     Qt5::Widgets
     presentation
     zanshinkdepimstatic
+    KF5::ConfigCore
+    KF5::ItemModels
     KF5::WindowSystem
 )

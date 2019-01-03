@@ -107,11 +107,6 @@ Task::Attachments Task::attachments() const
     return m_attachments;
 }
 
-Task::Delegate Task::delegate() const
-{
-    return m_delegate;
-}
-
 void Task::setRunning(bool running)
 {
     if (m_running == running)
@@ -145,15 +140,6 @@ void Task::setAttachments(const Task::Attachments &attachments)
 
     m_attachments = attachments;
     emit attachmentsChanged(attachments);
-}
-
-void Task::setDelegate(const Task::Delegate &delegate)
-{
-    if (m_delegate == delegate)
-        return;
-
-    m_delegate = delegate;
-    emit delegateChanged(delegate);
 }
 
 
@@ -265,69 +251,3 @@ void Task::Attachment::setIconName(const QString &iconName)
 {
     m_iconName = iconName;
 }
-
-
-Task::Delegate::Delegate()
-{
-}
-
-Task::Delegate::Delegate(const QString &name, const QString &email)
-    : m_name(name), m_email(email)
-{
-}
-
-Task::Delegate::Delegate(const Task::Delegate &other)
-    : m_name(other.m_name), m_email(other.m_email)
-{
-}
-
-Task::Delegate::~Delegate()
-{
-}
-
-Task::Delegate &Task::Delegate::operator=(const Task::Delegate &other)
-{
-    Delegate copy(other);
-    std::swap(m_name, copy.m_name);
-    std::swap(m_email, copy.m_email);
-    return *this;
-}
-
-bool Task::Delegate::operator==(const Task::Delegate &other) const
-{
-    return m_name == other.m_name
-        && m_email == other.m_email;
-}
-
-bool Task::Delegate::isValid() const
-{
-    return !m_email.isEmpty();
-}
-
-QString Task::Delegate::display() const
-{
-    return !isValid() ? QString()
-         : !m_name.isEmpty() ? m_name
-         : m_email;
-}
-
-QString Task::Delegate::name() const
-{
-    return m_name;
-}
-
-void Task::Delegate::setName(const QString &name)
-{
-    m_name = name;
-}
-
-QString Task::Delegate::email() const
-{
-    return m_email;
-}
-
-void Task::Delegate::setEmail(const QString &email)
-{
-    m_email = email;
-}
-

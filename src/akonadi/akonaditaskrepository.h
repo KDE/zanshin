@@ -29,7 +29,6 @@
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
 
-#include "akonadi/akonadimessaginginterface.h"
 #include "akonadi/akonadiserializerinterface.h"
 #include "akonadi/akonadistorageinterface.h"
 
@@ -42,8 +41,7 @@ public:
     typedef QSharedPointer<TaskRepository> Ptr;
 
     TaskRepository(const StorageInterface::Ptr &storage,
-                   const SerializerInterface::Ptr &serializer,
-                   const MessagingInterface::Ptr &messaging);
+                   const SerializerInterface::Ptr &serializer);
 
     virtual KJob *create(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
     virtual KJob *createChild(Domain::Task::Ptr task, Domain::Task::Ptr parent) Q_DECL_OVERRIDE;
@@ -59,12 +57,9 @@ public:
     virtual KJob *dissociate(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
     virtual KJob *dissociateAll(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
 
-    virtual KJob *delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate) Q_DECL_OVERRIDE;
-
 private:
     StorageInterface::Ptr m_storage;
     SerializerInterface::Ptr m_serializer;
-    MessagingInterface::Ptr m_messaging;
 
     KJob *createItem(const Akonadi::Item &item);
 };

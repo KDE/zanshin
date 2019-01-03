@@ -43,7 +43,6 @@
 #include "akonadi/akonadicache.h"
 #include "akonadi/akonadicachingstorage.h"
 #include "akonadi/akonadimonitorimpl.h"
-#include "akonadi/akonadimessaginginterface.h"
 #include "akonadi/akonaditimestampattribute.h"
 
 #include "utils/dependencymanager.h"
@@ -136,12 +135,6 @@ public:
                     [this] (Utils::DependencyManager *deps) {
             return new Akonadi::CachingStorage(deps->create<Akonadi::Cache>(),
                                                Akonadi::StorageInterface::Ptr(m_data.createStorage()));
-        }
-        );
-        deps.add<Akonadi::MessagingInterface,
-                Utils::DependencyManager::UniqueInstance>(
-                    [this] (Utils::DependencyManager *) -> Akonadi::MessagingInterface* {
-            return Q_NULLPTR;
         }
         );
 
@@ -863,14 +856,12 @@ THEN("^the editor shows \"(.*)\" as (.*)$") {
 
     const QVariant value = (field == QStringLiteral("text")) ? string
                          : (field == QStringLiteral("title")) ? string
-                         : (field == QStringLiteral("delegate")) ? string
                          : (field == QStringLiteral("start date")) ? QDateTime::fromString(string, Qt::ISODate)
                          : (field == QStringLiteral("due date")) ? QDateTime::fromString(string, Qt::ISODate)
                          : QVariant();
 
     const QByteArray property = (field == QStringLiteral("text")) ? field.toUtf8()
                               : (field == QStringLiteral("title")) ? field.toUtf8()
-                              : (field == QStringLiteral("delegate")) ? "delegateText"
                               : (field == QStringLiteral("start date")) ? "startDate"
                               : (field == QStringLiteral("due date")) ? "dueDate"
                               : QByteArray();

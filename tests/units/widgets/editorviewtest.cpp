@@ -37,7 +37,6 @@
 
 #include "widgets/editorview.h"
 
-#include "addressline/addresseelineedit.h"
 #include "kdateedit.h"
 
 class EditorModelStub : public QObject
@@ -72,8 +71,6 @@ public:
             emit dueDateChanged(value.toDate());
         else if (name == "recurrence")
             emit recurrenceChanged(value.value<Domain::Task::Recurrence>());
-        else if (name == "delegateText")
-            emit delegateTextChanged(value.toString());
         else if (name == "hasTaskProperties")
             emit hasTaskPropertiesChanged(value.toBool());
         else
@@ -88,14 +85,7 @@ public slots:
     void setStartDate(const QDate &start) { setPropertyAndSignal("startDate", start); }
     void setDueDate(const QDate &due) { setPropertyAndSignal("dueDate", due); }
     void setRecurrence(Domain::Task::Recurrence recurrence) { setPropertyAndSignal("recurrence", QVariant::fromValue(recurrence)); }
-    void setDelegateText(const QString &text) { setPropertyAndSignal("delegateText", text); }
     void makeTaskAvailable() { setArtifact(Domain::Artifact::Ptr(new Domain::Task)); }
-
-    void delegate(const QString &name, const QString &email)
-    {
-        delegateNames << name;
-        delegateEmails << email;
-    }
 
     void addAttachment(const QString &fileName)
     {
@@ -118,11 +108,8 @@ signals:
     void startDateChanged(const QDate &date);
     void dueDateChanged(const QDate &due);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
-    void delegateTextChanged(const QString &delegateText);
 
 public:
-    QStringList delegateNames;
-    QStringList delegateEmails;
     QStandardItemModel attachmentModel;
 };
 
@@ -174,14 +161,6 @@ private slots:
         auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
         QVERIFY(removeAttachmentButton);
         QVERIFY(!removeAttachmentButton->isVisibleTo(&editor));
-
-        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
-        QVERIFY(delegateLabel);
-        QVERIFY(!delegateLabel->isVisibleTo(&editor));
-
-        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
-        QVERIFY(delegateEdit);
-        QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
 
     void shouldNotCrashForNullModel()
@@ -219,12 +198,6 @@ private slots:
         auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
         QVERIFY(removeAttachmentButton);
 
-        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
-        QVERIFY(delegateLabel);
-
-        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
-        QVERIFY(delegateEdit);
-
         // WHEN
         editor.setModel(Q_NULLPTR);
 
@@ -239,8 +212,6 @@ private slots:
         QVERIFY(attachmentList->model() == nullptr);
         QVERIFY(!addAttachmentButton->isVisibleTo(&editor));
         QVERIFY(!removeAttachmentButton->isVisibleTo(&editor));
-        QVERIFY(!delegateLabel->isVisibleTo(&editor));
-        QVERIFY(!delegateEdit->isVisibleTo(&editor));
     }
 
     void shouldShowTaskPropertiesEditorsOnlyForTasks()
@@ -271,12 +242,6 @@ private slots:
         auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
         QVERIFY(removeAttachmentButton);
 
-        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
-        QVERIFY(!delegateLabel->isVisibleTo(&editor));
-
-        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
-        QVERIFY(!delegateEdit->isVisibleTo(&editor));
-
         // WHEN
         editor.setModel(&model);
 
@@ -288,28 +253,6 @@ private slots:
         QVERIFY(attachmentList->isVisibleTo(&editor));
         QVERIFY(addAttachmentButton->isVisibleTo(&editor));
         QVERIFY(removeAttachmentButton->isVisibleTo(&editor));
-        QVERIFY(!delegateLabel->isVisibleTo(&editor));
-        QVERIFY(delegateEdit->isVisibleTo(&editor));
-    }
-
-    void shouldDisplayDelegateLabelOnlyWhenNeeded()
-    {
-        // GIVEN
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.makeTaskAvailable();
-        model.setDelegateText(QStringLiteral("John Doe"));
-
-        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
-        QVERIFY(!delegateLabel->isVisibleTo(&editor));
-
-        // WHEN
-        editor.setModel(&model);
-
-        // THEN
-        auto expectedText = i18n("Delegated to: <b>%1</b>", model.property("delegateText").toString());
-        QVERIFY(delegateLabel->isVisibleTo(&editor));
-        QCOMPARE(delegateLabel->text(), expectedText);
     }
 
     void shouldBeEnabledOnlyWhenAnArtifactIsAvailable()
@@ -429,9 +372,6 @@ private slots:
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
-        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
-        auto delegateEdit = editor.findChild<QWidget*>(QStringLiteral("delegateEdit"));
-        model.setDelegateText(QStringLiteral("John Doe"));
         editor.setModel(&model);
 
         // WHEN
@@ -449,8 +389,6 @@ private slots:
         model.setRecurrence(Domain::Task::RecursDaily);
         doneButton->setFocus();
         model.setDone(false);
-        delegateEdit->setFocus();
-        model.setDelegateText(QStringLiteral("John Smith"));
 
         // THEN (nothing changed)
         QCOMPARE(textEdit->toPlainText(), QStringLiteral("My title\n\nMy text"));
@@ -458,9 +396,6 @@ private slots:
         QCOMPARE(dueDateEdit->date(), QDate::currentDate().addDays(2));
         QCOMPARE(recurrenceCombo->currentData().value<Domain::Task::Recurrence>(), Domain::Task::RecursWeekly);
         QVERIFY(doneButton->isChecked());
-        auto expectedText = i18n("Delegated to: <b>%1</b>", QStringLiteral("John Doe"));
-        QCOMPARE(delegateLabel->text(), expectedText);
-
     }
 
     void shouldReactToTitleChanges()
@@ -776,91 +711,6 @@ private slots:
         QCOMPARE(model.attachmentModel.rowCount(), 1);
         QCOMPARE(model.attachmentModel.data(model.attachmentModel.index(0, 0)).toString(),
                  QStringLiteral("/tmp/bar"));
-    }
-
-    void shouldReactToDelegateTextChanges()
-    {
-        // GIVEN
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.makeTaskAvailable();
-        model.setDelegateText(QStringLiteral("John Doe"));
-        editor.setModel(&model);
-
-        auto delegateLabel = editor.findChild<QLabel*>(QStringLiteral("delegateLabel"));
-
-        // WHEN
-        model.setDelegateText(QStringLiteral("John Smith"));
-
-        // THEN
-        auto expectedText = i18n("Delegated to: <b>%1</b>", model.property("delegateText").toString());
-        QCOMPARE(delegateLabel->text(), expectedText);
-    }
-
-    void shouldClearDelegateEditOnArtifactChanges()
-    {
-        // GIVEN
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.makeTaskAvailable();
-        editor.setModel(&model);
-
-        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
-        delegateEdit->setText(QStringLiteral("Foo"));
-
-        // WHEN
-        model.makeTaskAvailable(); // simulates an artifact change
-
-        // THEN
-        QVERIFY(delegateEdit->text().isEmpty());
-    }
-
-    void shouldRequestDelegationOnInput_data()
-    {
-        QTest::addColumn<QString>("userInput");
-        QTest::addColumn<QString>("expectedName");
-        QTest::addColumn<QString>("expectedEmail");
-        QTest::addColumn<bool>("expectedCall");
-
-        QTest::newRow("nominal case") << "John Doe <john@doe.com>" << "John Doe" << "john@doe.com" << true;
-        QTest::newRow("nominal case") << "John Doe <j.doe@some.server.com>" << "John Doe" << "j.doe@some.server.com" << true;
-        QTest::newRow("only name") << "John Doe" << QString() << QString() << false;
-        QTest::newRow("only email") << "john@doe.com" << QString() << "john@doe.com" << true;
-        QTest::newRow("only email again") << "<john@doe.com>" << QString() << "john@doe.com" << true;
-        QTest::newRow("nonsense case") << "bleh" << QString() << QString() << false;
-    }
-
-    void shouldRequestDelegationOnInput()
-    {
-        // GIVEN
-        QFETCH(QString, userInput);
-        QFETCH(QString, expectedName);
-        QFETCH(QString, expectedEmail);
-        QFETCH(bool, expectedCall);
-
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.makeTaskAvailable();
-        editor.setModel(&model);
-
-        auto delegateEdit = editor.findChild<KLineEdit*>(QStringLiteral("delegateEdit"));
-
-        // WHEN
-        QVERIFY(delegateEdit->isEnabled());
-        delegateEdit->setText(userInput);
-        QTest::keyClick(delegateEdit, Qt::Key_Enter);
-
-        // THEN
-        if (expectedCall) {
-            QCOMPARE(model.delegateNames.size(), 1);
-            QCOMPARE(model.delegateNames.first(), expectedName);
-            QCOMPARE(model.delegateEmails.size(), 1);
-            QCOMPARE(model.delegateEmails.first(), expectedEmail);
-            QVERIFY(delegateEdit->text().isEmpty());
-        } else {
-            QCOMPARE(model.delegateNames.size(), 0);
-            QCOMPARE(model.delegateEmails.size(), 0);
-        }
     }
 };
 

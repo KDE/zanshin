@@ -39,7 +39,6 @@ class Task : public Artifact
     Q_PROPERTY(QDate startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDate dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(Domain::Task::Recurrence recurrence READ recurrence WRITE setRecurrence NOTIFY recurrenceChanged)
-    Q_PROPERTY(Domain::Task::Delegate delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
     Q_PROPERTY(Domain::Task::Attachments attachements READ attachments WRITE setAttachments NOTIFY attachmentsChanged)
 public:
     typedef QSharedPointer<Task> Ptr;
@@ -93,31 +92,6 @@ public:
 
     typedef QList<Attachment> Attachments;
 
-    class Delegate
-    {
-    public:
-        Delegate();
-        Delegate(const QString &name, const QString &email);
-        Delegate(const Delegate &other);
-        ~Delegate();
-
-        Delegate &operator=(const Delegate &other);
-        bool operator==(const Delegate &other) const;
-
-        bool isValid() const;
-        QString display() const;
-
-        QString name() const;
-        void setName(const QString &name);
-
-        QString email() const;
-        void setEmail(const QString &email);
-
-    private:
-        QString m_name;
-        QString m_email;
-    };
-
     explicit Task(QObject *parent = Q_NULLPTR);
     virtual ~Task();
 
@@ -128,7 +102,6 @@ public:
     QDate doneDate() const;
     Recurrence recurrence() const;
     Attachments attachments() const;
-    Delegate delegate() const;
 
 public slots:
     void setRunning(bool running);
@@ -138,7 +111,6 @@ public slots:
     void setDueDate(const QDate &dueDate);
     void setRecurrence(Domain::Task::Recurrence recurrence);
     void setAttachments(const Domain::Task::Attachments &attachments);
-    void setDelegate(const Domain::Task::Delegate &delegate);
 
 signals:
     void runningChanged(bool isRunning);
@@ -148,7 +120,6 @@ signals:
     void dueDateChanged(const QDate &dueDate);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
     void attachmentsChanged(const Domain::Task::Attachments &attachments);
-    void delegateChanged(const Domain::Task::Delegate &delegate);
 
 private:
     bool m_running;
@@ -158,7 +129,6 @@ private:
     QDate m_doneDate;
     Recurrence m_recurrence;
     Attachments m_attachments;
-    Delegate m_delegate;
 };
 
 }
@@ -167,6 +137,5 @@ Q_DECLARE_METATYPE(Domain::Task::Ptr)
 Q_DECLARE_METATYPE(Domain::Task::List)
 Q_DECLARE_METATYPE(Domain::Task::Attachment)
 Q_DECLARE_METATYPE(Domain::Task::Attachments)
-Q_DECLARE_METATYPE(Domain::Task::Delegate)
 
 #endif // DOMAIN_TASK_H

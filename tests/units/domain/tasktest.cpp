@@ -38,7 +38,6 @@ public:
     {
         qRegisterMetaType<Task::Recurrence>();
         qRegisterMetaType<Task::Attachments>();
-        qRegisterMetaType<Task::Delegate>();
     }
 
 private slots:
@@ -53,7 +52,6 @@ private slots:
         QCOMPARE(t.doneDate(), QDate());
         QCOMPARE(t.recurrence(), Domain::Task::NoRecurrence);
         QVERIFY(t.attachments().isEmpty());
-        QVERIFY(!t.delegate().isValid());
     }
 
     void shouldHaveValueBasedAttachment()
@@ -129,33 +127,6 @@ private slots:
         QCOMPARE(a.label(), QStringLiteral("baz"));
         QCOMPARE(a.mimeType(), QStringLiteral("text/plain"));
         QCOMPARE(a.iconName(), QStringLiteral("text"));
-    }
-
-    void shouldHaveValueBasedDelegate()
-    {
-        Task::Delegate d;
-        QVERIFY(!d.isValid());
-        QCOMPARE(d.name(), QString());
-        QCOMPARE(d.email(), QString());
-        QCOMPARE(d.display(), QString());
-
-        d.setName(QStringLiteral("John Doe"));
-        QVERIFY(!d.isValid());
-        QCOMPARE(d.name(), QStringLiteral("John Doe"));
-        QCOMPARE(d.email(), QString());
-        QCOMPARE(d.display(), QString());
-
-        d.setEmail(QStringLiteral("doe@somewhere.com"));
-        QVERIFY(d.isValid());
-        QCOMPARE(d.name(), QStringLiteral("John Doe"));
-        QCOMPARE(d.email(), QStringLiteral("doe@somewhere.com"));
-        QCOMPARE(d.display(), QStringLiteral("John Doe"));
-
-        d.setName(QString());
-        QVERIFY(d.isValid());
-        QCOMPARE(d.name(), QString());
-        QCOMPARE(d.email(), QStringLiteral("doe@somewhere.com"));
-        QCOMPARE(d.display(), QStringLiteral("doe@somewhere.com"));
     }
 
     void shouldNotifyStatusChanges()
@@ -253,25 +224,6 @@ private slots:
         t.setAttachments(attachments);
         QSignalSpy spy(&t, &Task::attachmentsChanged);
         t.setAttachments(attachments);
-        QCOMPARE(spy.count(), 0);
-    }
-
-    void shouldNotifyDelegateChanges()
-    {
-        Task t;
-        QSignalSpy spy(&t, &Task::delegateChanged);
-        t.setDelegate(Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("doe@somewhere.com")));
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().value<Task::Delegate>(),
-                 Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("doe@somewhere.com")));
-    }
-
-    void shouldNotNotifyIdenticalDelegateChanges()
-    {
-        Task t;
-        t.setDelegate(Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("doe@somewhere.com")));
-        QSignalSpy spy(&t, &Task::delegateChanged);
-        t.setDelegate(Task::Delegate(QStringLiteral("John Doe"), QStringLiteral("doe@somewhere.com")));
         QCOMPARE(spy.count(), 0);
     }
 

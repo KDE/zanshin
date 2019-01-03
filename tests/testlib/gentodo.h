@@ -52,8 +52,6 @@ public:
     GenTodo &withStartDate(const QDate &date);
     GenTodo &withDueDate(const QString &date);
     GenTodo &withDueDate(const QDate &date);
-    GenTodo &withDelegate(const QString &name, const QString &email);
-    GenTodo &withNoDelegate();
 
 private:
     Akonadi::Item m_item;

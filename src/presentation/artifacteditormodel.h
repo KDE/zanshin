@@ -52,13 +52,11 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(QDate dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(Domain::Task::Recurrence recurrence READ recurrence WRITE setRecurrence NOTIFY recurrenceChanged)
     Q_PROPERTY(QAbstractItemModel* attachmentModel READ attachmentModel CONSTANT)
-    Q_PROPERTY(QString delegateText READ delegateText NOTIFY delegateTextChanged)
     Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
     Q_PROPERTY(bool editingInProgress READ editingInProgress WRITE setEditingInProgress)
 
 public:
     typedef std::function<KJob*(const Domain::Artifact::Ptr &)> SaveFunction;
-    typedef std::function<KJob*(const Domain::Task::Ptr &, const Domain::Task::Delegate &)> DelegateFunction;
 
     explicit ArtifactEditorModel(QObject *parent = Q_NULLPTR);
     ~ArtifactEditorModel();
@@ -69,9 +67,6 @@ public:
     bool hasSaveFunction() const;
     void setSaveFunction(const SaveFunction &function);
 
-    bool hasDelegateFunction() const;
-    void setDelegateFunction(const DelegateFunction &function);
-
     bool hasTaskProperties() const;
 
     QString text() const;
@@ -81,7 +76,6 @@ public:
     QDate dueDate() const;
     Domain::Task::Recurrence recurrence() const;
     QAbstractItemModel *attachmentModel() const;
-    QString delegateText() const;
 
     static int autoSaveDelay();
     static void setAutoSaveDelay(int delay);
@@ -95,7 +89,6 @@ public slots:
     void setStartDate(const QDate &start);
     void setDueDate(const QDate &due);
     void setRecurrence(Domain::Task::Recurrence recurrence);
-    void delegate(const QString &name, const QString &email);
 
     void addAttachment(const QString &fileName);
     void removeAttachment(const QModelIndex &index);
@@ -112,7 +105,6 @@ signals:
     void startDateChanged(const QDate &date);
     void dueDateChanged(const QDate &due);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
-    void delegateTextChanged(const QString &delegateText);
 
 private slots:
     void onTextChanged(const QString &text);
@@ -121,7 +113,6 @@ private slots:
     void onStartDateChanged(const QDate &start);
     void onDueDateChanged(const QDate &due);
     void onRecurrenceChanged(Domain::Task::Recurrence recurrence);
-    void onDelegateChanged(const Domain::Task::Delegate &delegate);
 
     void save();
 
@@ -137,7 +128,6 @@ private:
 
     Domain::Artifact::Ptr m_artifact;
     SaveFunction m_saveFunction;
-    DelegateFunction m_delegateFunction;
 
     QString m_text;
     QString m_title;
@@ -146,7 +136,6 @@ private:
     QDate m_due;
     Domain::Task::Recurrence m_recurrence;
     AttachmentModel *m_attachmentModel;
-    QString m_delegateText;
 
     QTimer *m_saveTimer;
     bool m_saveNeeded;

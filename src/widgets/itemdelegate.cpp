@@ -96,14 +96,11 @@ void ItemDelegate::paint(QPainter *painter,
     const auto pastDueDate = dueDate.isValid() && dueDate < currentDate;
     const auto onDueDate = dueDate.isValid() && dueDate == currentDate;
 
-    const auto taskDelegate = task ? task->delegate() : Domain::Task::Delegate();
-
     const auto baseFont = opt.font;
     const auto summaryFont = [=] {
         auto font = baseFont;
         font.setStrikeOut(isDone);
         font.setBold(!isDone && (onStartDate || onDueDate || pastDueDate));
-        font.setItalic(taskDelegate.isValid());
         return font;
     }();
     const auto summaryMetrics = QFontMetrics(summaryFont);
@@ -119,11 +116,11 @@ void ItemDelegate::paint(QPainter *painter,
                             : onDueDate ? QColor("orange")
                             : baseColor;
 
-    const auto summaryText = taskDelegate.isValid() ? i18n("(%1) %2", taskDelegate.display(), opt.text) : opt.text;
+    const auto summaryText = opt.text;
     const auto dueDateText = dueDate.isValid() ? QLocale().toString(dueDate, QLocale::ShortFormat)
                                                : QString();
 
-    const auto textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1;
+    const auto textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, nullptr, widget) + 1;
     const auto dueDateWidth = dueDate.isValid() ? (summaryMetrics.width(dueDateText) + 2 * textMargin) : 0;
 
 

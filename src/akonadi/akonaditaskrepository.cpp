@@ -37,11 +37,9 @@ using namespace Akonadi;
 using namespace Utils;
 
 TaskRepository::TaskRepository(const StorageInterface::Ptr &storage,
-                               const SerializerInterface::Ptr &serializer,
-                               const MessagingInterface::Ptr &messaging)
+                               const SerializerInterface::Ptr &serializer)
     : m_storage(storage),
-      m_serializer(serializer),
-      m_messaging(messaging)
+      m_serializer(serializer)
 {
 }
 
@@ -305,20 +303,4 @@ KJob *TaskRepository::dissociateAll(Domain::Task::Ptr child)
     });
 
     return job;
-}
-
-KJob *TaskRepository::delegate(Domain::Task::Ptr task, Domain::Task::Delegate delegate)
-{
-    auto originalDelegate = task->delegate();
-
-    task->blockSignals(true);
-    task->setDelegate(delegate);
-
-    auto item = m_serializer->createItemFromTask(task);
-
-    task->setDelegate(originalDelegate);
-    task->blockSignals(false);
-
-    m_messaging->sendDelegationMessage(item);
-    return Q_NULLPTR;
 }
