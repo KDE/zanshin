@@ -155,7 +155,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->setStyleSheet(QStringLiteral("QTreeView::branch { border-image: url(none.png); }"));
 
     m_quickAddEdit->setObjectName(QStringLiteral("quickAddEdit"));
-    m_quickAddEdit->setPlaceholderText(i18n("Type and press enter to add an item"));
+    m_quickAddEdit->setPlaceholderText(i18n("Type and press enter to add a task"));
     connect(m_quickAddEdit, &QLineEdit::returnPressed, this, &PageView::onReturnPressed);
 
     auto layout = new QVBoxLayout;
@@ -170,7 +170,7 @@ PageView::PageView(QWidget *parent)
 
     auto addItemAction = new QAction(this);
     addItemAction->setObjectName(QStringLiteral("addItemAction"));
-    addItemAction->setText(i18n("New Item"));
+    addItemAction->setText(i18n("New Task"));
     addItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
     connect(addItemAction, &QAction::triggered, this, &PageView::onAddItemRequested);
@@ -183,7 +183,7 @@ PageView::PageView(QWidget *parent)
 
     auto removeItemAction = new QAction(this);
     removeItemAction->setObjectName(QStringLiteral("removeItemAction"));
-    removeItemAction->setText(i18n("Remove Item"));
+    removeItemAction->setText(i18n("Remove Task"));
     removeItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     removeItemAction->setShortcut(Qt::Key_Delete);
     connect(removeItemAction, &QAction::triggered, this, &PageView::onRemoveItemRequested);
@@ -191,7 +191,7 @@ PageView::PageView(QWidget *parent)
 
     auto promoteItemAction = new QAction(this);
     promoteItemAction->setObjectName(QStringLiteral("promoteItemAction"));
-    promoteItemAction->setText(i18n("Promote Item as Project"));
+    promoteItemAction->setText(i18n("Promote Task as Project"));
     promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
     connect(promoteItemAction, &QAction::triggered, this, &PageView::onPromoteItemRequested);
 
@@ -205,7 +205,7 @@ PageView::PageView(QWidget *parent)
 
     auto futureViewAction = new QAction(this);
     futureViewAction->setObjectName(QStringLiteral("futureViewAction"));
-    futureViewAction->setText(i18n("Show future items"));
+    futureViewAction->setText(i18n("Show future tasks"));
     futureViewAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar-whatsnext")));
     futureViewAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
     futureViewAction->setCheckable(true);

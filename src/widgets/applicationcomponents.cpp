@@ -59,7 +59,7 @@ ApplicationComponents::ApplicationComponents(QWidget *parent)
 
     auto moveItemAction = new QAction(this);
     moveItemAction->setObjectName(QStringLiteral("moveItemAction"));
-    moveItemAction->setText(i18n("Move Item"));
+    moveItemAction->setText(i18n("Move Task"));
     moveItemAction->setShortcut(Qt::Key_M);
     connect(moveItemAction, &QAction::triggered, this, &ApplicationComponents::onMoveItemsRequested);
 

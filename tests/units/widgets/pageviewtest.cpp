@@ -185,7 +185,7 @@ private slots:
         QVERIFY(quickAddEdit);
         QVERIFY(quickAddEdit->isVisibleTo(&page));
         QVERIFY(quickAddEdit->text().isEmpty());
-        QCOMPARE(quickAddEdit->placeholderText(), i18n("Type and press enter to add an item"));
+        QCOMPARE(quickAddEdit->placeholderText(), i18n("Type and press enter to add a task"));
 
         auto addAction = page.findChild<QAction*>(QStringLiteral("addItemAction"));
         QVERIFY(addAction);
