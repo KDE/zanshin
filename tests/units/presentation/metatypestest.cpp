@@ -23,8 +23,8 @@
 
 #include <testlib/qtest_zanshin.h>
 
-#include "domain/artifact.h"
 #include "domain/datasource.h"
+#include "domain/task.h"
 
 #include "presentation/metatypes.h"
 
@@ -42,7 +42,7 @@ private slots:
         // THEN
         QVERIFY(QMetaType::isRegistered(qMetaTypeId<QAbstractItemModel*>()));
         QVERIFY(QMetaType::isRegistered(qMetaTypeId<QObjectPtr>()));
-        QVERIFY(QMetaType::isRegistered(qMetaTypeId<Domain::Artifact::Ptr>()));
+        QVERIFY(QMetaType::isRegistered(qMetaTypeId<Domain::Task::Ptr>()));
         QVERIFY(QMetaType::isRegistered(qMetaTypeId<Domain::DataSource::Ptr>()));
     }
 };

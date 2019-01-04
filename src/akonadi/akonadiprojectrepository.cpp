@@ -60,11 +60,9 @@ KJob *ProjectRepository::remove(Domain::Project::Ptr project)
     return m_storage->removeItem(item);
 }
 
-KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact::Ptr child)
+KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Task::Ptr child)
 {
-    Item childItem;
-    if (auto task = child.objectCast<Domain::Task>())
-        childItem = m_serializer->createItemFromTask(task);
+    Item childItem = m_serializer->createItemFromTask(child);
     Q_ASSERT(childItem.isValid());
 
     auto job = new Utils::CompositeJob();
@@ -90,8 +88,7 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact
             const int itemCollectionId = childItem.parentCollection().id();
             const int parentCollectionId = parentItem.parentCollection().id();
 
-            if (child.objectCast<Domain::Task>()
-             && itemCollectionId != parentCollectionId) {
+            if (itemCollectionId != parentCollectionId) {
                 ItemFetchJobInterface *fetchChildrenItemJob = m_storage->fetchItems(childItem.parentCollection());
                 job->install(fetchChildrenItemJob->kjob(), [fetchChildrenItemJob, childItem, parentItem, job, this] {
                     if (fetchChildrenItemJob->kjob()->error() != KJob::NoError)
@@ -117,13 +114,10 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact
     return job;
 }
 
-KJob *ProjectRepository::dissociate(Domain::Artifact::Ptr child)
+KJob *ProjectRepository::dissociate(Domain::Task::Ptr child)
 {
     auto job = new Utils::CompositeJob();
-    const auto task = child.objectCast<Domain::Task>();
-
-    const auto childItem = task ? m_serializer->createItemFromTask(task)
-                         : Akonadi::Item();
+    const auto childItem = m_serializer->createItemFromTask(child);
     Q_ASSERT(childItem.isValid());
 
     ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);

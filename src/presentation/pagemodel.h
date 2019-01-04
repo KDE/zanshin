@@ -29,7 +29,7 @@
 
 #include <QModelIndex>
 
-#include "domain/artifact.h"
+#include "domain/task.h"
 
 #include "presentation/metatypes.h"
 #include "presentation/errorhandlingmodelbase.h"
@@ -46,7 +46,7 @@ public:
     QAbstractItemModel *centralListModel();
 
 public slots:
-    virtual Domain::Artifact::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) = 0;
+    virtual Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
     virtual void promoteItem(const QModelIndex &index) = 0;
 

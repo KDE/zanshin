@@ -59,11 +59,10 @@ Domain::Context::Ptr ContextPageModel::context() const
     return m_context;
 }
 
-Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
+Domain::Task::Ptr ContextPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
     const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
-    const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
-    const auto parentTask = parentArtifact.objectCast<Domain::Task>();
+    const auto parentTask = parentData.value<Domain::Task::Ptr>();
 
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
@@ -78,8 +77,7 @@ Domain::Artifact::Ptr ContextPageModel::addItem(const QString &title, const QMod
 void ContextPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     const auto job = index.parent().isValid() ? m_taskRepository->dissociate(task)
                    : m_contextRepository->dissociate(m_context, task);
     installHandler(job, i18n("Cannot remove task %1 from context %2", task->title(), m_context->name()));
@@ -88,8 +86,7 @@ void ContextPageModel::removeItem(const QModelIndex &index)
 void ContextPageModel::promoteItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->promoteToProject(task);
     installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
@@ -135,20 +132,17 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         return QVariant();
     };
 
-    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Artifact::Ptr &artifact) -> AdditionalInfo {
-        if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            AdditionalInfo projectQueryResult = m_taskQueries->findProject(task);
-            if (projectQueryResult) {
-                QPersistentModelIndex persistentIndex(index);
-                projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
-                    // When a project was found (inserted into the result), update the rendering of the item
-                    auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
-                    model->dataChanged(persistentIndex, persistentIndex);
-                });
-            }
-            return projectQueryResult;
+    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) -> AdditionalInfo {
+        AdditionalInfo projectQueryResult = m_taskQueries->findProject(task);
+        if (projectQueryResult) {
+            QPersistentModelIndex persistentIndex(index);
+            projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
+                // When a project was found (inserted into the result), update the rendering of the item
+                auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                model->dataChanged(persistentIndex, persistentIndex);
+            });
         }
-        return nullptr;
+        return projectQueryResult;
     };
 
     auto setData = [this] (const Domain::Task::Ptr &task, const QVariant &value, int role) {
@@ -170,16 +164,9 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
-        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
-        if (droppedArtifacts.isEmpty())
+        auto droppedTasks = mimeData->property("objects").value<Domain::Task::List>();
+        if (droppedTasks.isEmpty())
             return false;
-
-        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
-                        [](const Domain::Artifact::Ptr &droppedArtifact) {
-                            return !droppedArtifact.objectCast<Domain::Task>();
-                        })) {
-            return false;
-        }
 
         using namespace std::placeholders;
         auto associate = std::function<KJob*(Domain::Task::Ptr)>();
@@ -196,8 +183,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
             parentTitle = m_context->name();
         }
 
-        foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
-            auto childTask = droppedArtifact.objectCast<Domain::Task>();
+        foreach(const Domain::Task::Ptr &childTask, droppedTasks) {
             auto job = associate(childTask);
             installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTitle));
             job = dissociate(childTask);
@@ -212,15 +198,9 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         if (tasks.isEmpty())
             return Q_NULLPTR;
 
-        auto draggedArtifacts = Domain::Artifact::List();
-        draggedArtifacts.reserve(tasks.size());
-        foreach (const Domain::Task::Ptr &task, tasks) {
-            draggedArtifacts.append(task.objectCast<Domain::Artifact>());
-        }
-
         auto data = new QMimeData();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
+        data->setProperty("objects", QVariant::fromValue(tasks));
         return data;
     };
 

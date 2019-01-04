@@ -35,23 +35,6 @@ SerializerInterface::~SerializerInterface()
 {
 }
 
-Domain::Artifact::Ptr SerializerInterface::createArtifactFromItem(const Item &item)
-{
-    if (isTaskItem(item)) {
-        auto task = createTaskFromItem(item);
-        return Domain::Artifact::Ptr(task);
-    } else {
-        return Domain::Artifact::Ptr();
-    }
-}
-
-void SerializerInterface::updateArtifactFromItem(const Domain::Artifact::Ptr &artifact, const Item &item)
-{
-    if (auto task = artifact.dynamicCast<Domain::Task>()) {
-        updateTaskFromItem(task, item);
-    }
-}
-
 QByteArray SerializerInterface::contextTagType()
 {
     return QByteArray("Zanshin-Context");

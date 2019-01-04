@@ -227,24 +227,6 @@ private:
 };
 
 template<>
-inline Domain::Artifact::Ptr LiveQueryIntegrator::create<Item, Domain::Artifact::Ptr>(const Item &input)
-{
-    return m_serializer->createArtifactFromItem(input);
-}
-
-template<>
-inline void LiveQueryIntegrator::update<Item, Domain::Artifact::Ptr>(const Item &input, Domain::Artifact::Ptr &output)
-{
-    m_serializer->updateArtifactFromItem(output, input);
-}
-
-template<>
-inline bool LiveQueryIntegrator::represents<Item, Domain::Artifact::Ptr>(const Item &input, const Domain::Artifact::Ptr &output)
-{
-    return m_serializer->representsItem(output, input);
-}
-
-template<>
 inline Domain::Context::Ptr LiveQueryIntegrator::create<Tag, Domain::Context::Ptr>(const Tag &input)
 {
     return m_serializer->createContextFromTag(input);

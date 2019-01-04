@@ -46,11 +46,10 @@ WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
 {
 }
 
-Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
+Domain::Task::Ptr WorkdayPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
     const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
-    const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
-    const auto parentTask = parentArtifact.objectCast<Domain::Task>();
+    const auto parentTask = parentData.value<Domain::Task::Ptr>();
 
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
@@ -66,8 +65,7 @@ Domain::Artifact::Ptr WorkdayPageModel::addItem(const QString &title, const QMod
 void WorkdayPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     if (task) {
         const auto job = m_taskRepository->remove(task);
         installHandler(job, i18n("Cannot remove task %1 from Workday", task->title()));
@@ -77,8 +75,7 @@ void WorkdayPageModel::removeItem(const QModelIndex &index)
 void WorkdayPageModel::promoteItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->promoteToProject(task);
     installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
@@ -86,106 +83,84 @@ void WorkdayPageModel::promoteItem(const QModelIndex &index)
 
 QAbstractItemModel *WorkdayPageModel::createCentralListModel()
 {
-    auto query = [this](const Domain::Artifact::Ptr &artifact) -> Domain::QueryResultInterface<Domain::Artifact::Ptr>::Ptr {
-        if (!artifact)
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findWorkdayTopLevel());
-        else if (auto task = artifact.dynamicCast<Domain::Task>())
-            return Domain::QueryResult<Domain::Task::Ptr, Domain::Artifact::Ptr>::copy(m_taskQueries->findChildren(task));
+    auto query = [this](const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
+        if (!task)
+            return m_taskQueries->findWorkdayTopLevel();
         else
-            return Domain::QueryResult<Domain::Artifact::Ptr>::Ptr();
+            return m_taskQueries->findChildren(task);
     };
 
-    auto flags = [](const Domain::Artifact::Ptr &artifact) {
+    auto flags = [](const Domain::Task::Ptr &task) {
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
                                          | Qt::ItemIsEditable
                                          | Qt::ItemIsDragEnabled;
 
-        return artifact.dynamicCast<Domain::Task>() ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
+        return task ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
     };
 
     using AdditionalInfo = Domain::QueryResult<Domain::Project::Ptr>::Ptr; // later on we'll want a struct with the context query as well
 
-    auto data = [](const Domain::Artifact::Ptr &artifact, int role, const AdditionalInfo &projectQueryResult) -> QVariant {
+    auto data = [](const Domain::Task::Ptr &task, int role, const AdditionalInfo &projectQueryResult) -> QVariant {
         switch (role) {
-            case Qt::DisplayRole:
-            case Qt::EditRole:
-                return artifact->title();
-            case Qt::CheckStateRole:
-                if (auto task = artifact.dynamicCast<Domain::Task>()) {
-                    return task->isDone() ? Qt::Checked : Qt::Unchecked;
-                }
-                break;
-            case Presentation::QueryTreeModelBase::AdditionalInfoRole:
-                if (projectQueryResult && !projectQueryResult->data().isEmpty()) {
-                    Domain::Project::Ptr project = projectQueryResult->data().at(0);
-                    return i18n("Project: %1", project->name());
-                }
-                return i18n("Inbox"); // TODO add source name
-            default:
-                break;
+        case Qt::DisplayRole:
+        case Qt::EditRole:
+            return task->title();
+        case Qt::CheckStateRole:
+            return task->isDone() ? Qt::Checked : Qt::Unchecked;
+        case Presentation::QueryTreeModelBase::AdditionalInfoRole:
+            if (projectQueryResult && !projectQueryResult->data().isEmpty()) {
+                Domain::Project::Ptr project = projectQueryResult->data().at(0);
+                return i18n("Project: %1", project->name());
+            }
+            return i18n("Inbox"); // TODO add source name
+        default:
+            break;
         }
         return QVariant();
     };
 
-    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Artifact::Ptr &artifact) -> AdditionalInfo {
+    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) -> AdditionalInfo {
         if (index.parent().isValid()) // children are in the same collection as their parent, so the same project
             return nullptr;
-        if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            AdditionalInfo projectQueryResult = m_taskQueries->findProject(task);
-            if (projectQueryResult) {
-                QPersistentModelIndex persistentIndex(index);
-                projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
-                    // When a project was found (inserted into the result), update the rendering of the item
-                    auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
-                    model->dataChanged(persistentIndex, persistentIndex);
-                });
-            }
-            return projectQueryResult;
+
+        AdditionalInfo projectQueryResult = m_taskQueries->findProject(task);
+        if (projectQueryResult) {
+            QPersistentModelIndex persistentIndex(index);
+            projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
+                // When a project was found (inserted into the result), update the rendering of the item
+                auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                model->dataChanged(persistentIndex, persistentIndex);
+            });
         }
-        return nullptr;
+        return projectQueryResult;
     };
 
-    auto setData = [this](const Domain::Artifact::Ptr &artifact, const QVariant &value, int role) {
+    auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {
         if (role != Qt::EditRole && role != Qt::CheckStateRole) {
             return false;
         }
 
-        if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            const auto currentTitle = task->title();
-            if (role == Qt::EditRole)
-                task->setTitle(value.toString());
-            else
-                task->setDone(value.toInt() == Qt::Checked);
+        const auto currentTitle = task->title();
+        if (role == Qt::EditRole)
+            task->setTitle(value.toString());
+        else
+            task->setDone(value.toInt() == Qt::Checked);
 
-            const auto job = m_taskRepository->update(task);
-            installHandler(job, i18n("Cannot modify task %1 in Workday", currentTitle));
-            return true;
-        }
-
-        return false;
+        const auto job = m_taskRepository->update(task);
+        installHandler(job, i18n("Cannot modify task %1 in Workday", currentTitle));
+        return true;
     };
 
-    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Artifact::Ptr &artifact) {
-        auto parentTask = artifact.objectCast<Domain::Task>();
-
+    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &parentTask) {
         if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
-        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
-        if (droppedArtifacts.isEmpty())
+        auto droppedTasks = mimeData->property("objects").value<Domain::Task::List>();
+        if (droppedTasks.isEmpty())
             return false;
 
-        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
-                        [](const Domain::Artifact::Ptr &droppedArtifact) {
-                            return !droppedArtifact.objectCast<Domain::Task>();
-                        })) {
-            return false;
-        }
-
-        foreach(const auto &droppedArtifact, droppedArtifacts) {
-            auto childTask = droppedArtifact.objectCast<Domain::Task>();
-
+        foreach(const auto &childTask, droppedTasks) {
             if (parentTask) {
                 const auto job = m_taskRepository->associate(parentTask, childTask);
                 installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTask->title()));
@@ -200,15 +175,15 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
         return true;
     };
 
-    auto drag = [](const Domain::Artifact::List &artifacts) -> QMimeData* {
-        if (artifacts.isEmpty())
-            return Q_NULLPTR;
+    auto drag = [](const Domain::Task::List &tasks) -> QMimeData* {
+        if (tasks.isEmpty())
+            return nullptr;
 
         auto data = new QMimeData;
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(artifacts));
+        data->setProperty("objects", QVariant::fromValue(tasks));
         return data;
     };
 
-    return new QueryTreeModel<Domain::Artifact::Ptr, AdditionalInfo>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
+    return new QueryTreeModel<Domain::Task::Ptr, AdditionalInfo>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
 }

@@ -491,7 +491,7 @@ private slots:
         auto result = queries->findTopLevelTasks(context);
 
         bool removeHandlerCalled = false;
-        result->addPostRemoveHandler([&removeHandlerCalled](const Domain::Artifact::Ptr &, int) {
+        result->addPostRemoveHandler([&removeHandlerCalled](const Domain::Task::Ptr &, int) {
                                           removeHandlerCalled = true;
                                       });
 

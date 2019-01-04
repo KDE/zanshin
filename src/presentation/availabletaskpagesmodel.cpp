@@ -289,52 +289,39 @@ QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
         if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
-        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
-        if (droppedArtifacts.isEmpty())
+        auto droppedTasks = mimeData->property("objects").value<Domain::Task::List>();
+        if (droppedTasks.isEmpty())
             return false;
 
         if (auto project = object.objectCast<Domain::Project>()) {
-            foreach (const auto &droppedArtifact, droppedArtifacts) {
-                const auto job = m_projectRepository->associate(project, droppedArtifact);
-                installHandler(job, i18n("Cannot add %1 to project %2", droppedArtifact->title(), project->name()));
+            foreach (const auto &task, droppedTasks) {
+                const auto job = m_projectRepository->associate(project, task);
+                installHandler(job, i18n("Cannot add %1 to project %2", task->title(), project->name()));
             }
             return true;
         } else if (auto context = object.objectCast<Domain::Context>()) {
-            if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
-                            [](const Domain::Artifact::Ptr &droppedArtifact) {
-                                return !droppedArtifact.objectCast<Domain::Task>();
-                            })) {
-                return false;
-            }
-            foreach (const auto &droppedArtifact, droppedArtifacts) {
-                auto task = droppedArtifact.staticCast<Domain::Task>();
+            foreach (const auto &task, droppedTasks) {
                 const auto job = m_contextRepository->associate(context, task);
                 installHandler(job, i18n("Cannot add %1 to context %2", task->title(), context->name()));
             }
             return true;
         } else if (object == m_inboxObject) {
-            foreach (const auto &droppedArtifact, droppedArtifacts) {
-                const auto job = m_projectRepository->dissociate(droppedArtifact);
-                installHandler(job, i18n("Cannot move %1 to Inbox", droppedArtifact->title()));
+            foreach (const auto &task, droppedTasks) {
+                const auto job = m_projectRepository->dissociate(task);
+                installHandler(job, i18n("Cannot move %1 to Inbox", task->title()));
 
-                if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
-                    Utils::JobHandler::install(job, [this, task] {
-                        const auto dissociateJob = m_taskRepository->dissociateAll(task);
-                        installHandler(dissociateJob, i18n("Cannot move task %1 to Inbox", task->title()));
-                    });
-                }
+                Utils::JobHandler::install(job, [this, task] {
+                    const auto dissociateJob = m_taskRepository->dissociateAll(task);
+                    installHandler(dissociateJob, i18n("Cannot move task %1 to Inbox", task->title()));
+                });
             }
             return true;
         } else if (object == m_workdayObject) {
-            foreach (const auto &droppedArtifact, droppedArtifacts) {
+            foreach (const auto &task, droppedTasks) {
+                task->setStartDate(Utils::DateTime::currentDate());
+                const auto job = m_taskRepository->update(task);
 
-                if (auto task = droppedArtifact.objectCast<Domain::Task>()) {
-
-                    task->setStartDate(Utils::DateTime::currentDate());
-                    const auto job = m_taskRepository->update(task);
-
-                    installHandler(job, i18n("Cannot update task %1 to Workday", task->title()));
-                }
+                installHandler(job, i18n("Cannot update task %1 to Workday", task->title()));
             }
             return true;
         }

@@ -35,7 +35,7 @@
 
 #include "kdateedit.h"
 
-#include "domain/artifact.h"
+#include "domain/task.h"
 
 #include "ui_editorview.h"
 

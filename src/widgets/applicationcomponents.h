@@ -32,7 +32,7 @@
 
 #include <functional>
 
-#include "domain/artifact.h"
+#include "domain/task.h"
 
 #include "presentation/metatypes.h"
 
@@ -86,7 +86,7 @@ protected:
 
 private slots:
     void onCurrentPageChanged(QObject *page);
-    void onCurrentTaskChanged(const Domain::Artifact::Ptr &artifact);
+    void onCurrentTaskChanged(const Domain::Task::Ptr &task);
     void onMoveItemsRequested();
 
 private:

@@ -392,7 +392,7 @@ void PageView::onRemoveItemRequested()
         QMetaObject::invokeMethod(m_model, "removeItem", Q_ARG(QModelIndex, currentIndex));
         const auto data = currentIndex.data(Presentation::QueryTreeModelBase::ObjectRole);
         if (data.isValid()) {
-            auto task = data.value<Domain::Artifact::Ptr>().objectCast<Domain::Task>();
+            auto task = data.value<Domain::Task::Ptr>();
             if (task)
                 m_runningTaskModel->taskDeleted(task);
         }
@@ -418,14 +418,13 @@ void PageView::onFilterToggled(bool show)
 
 void PageView::updateRunTaskAction()
 {
-    const auto artifact = currentArtifact();
-    const auto task = artifact.objectCast<Domain::Task>();
+    const auto task = currentTask();
     m_runTaskAction->setEnabled(task);
 }
 
 void PageView::onRunTaskTriggered()
 {
-    auto task = currentArtifact().objectCast<Domain::Task>();
+    auto task = currentTask();
     Q_ASSERT(task); // the action is supposed to be disabled otherwise
     if (task->startDate().isNull())
         task->setStartDate(Utils::DateTime::currentDate());
@@ -449,11 +448,11 @@ void PageView::onCurrentChanged(const QModelIndex &current)
     if (!data.isValid())
         return;
 
-    auto artifact = currentArtifact();
-    if (!artifact)
+    auto task = currentTask();
+    if (!task)
         return;
 
-    emit currentTaskChanged(artifact);
+    emit currentTaskChanged(task);
 }
 
 bool PageView::eventFilter(QObject *object, QEvent *event)
@@ -473,14 +472,14 @@ bool PageView::eventFilter(QObject *object, QEvent *event)
     return false;
 }
 
-Domain::Artifact::Ptr PageView::currentArtifact() const
+Domain::Task::Ptr PageView::currentTask() const
 {
     const auto current = m_centralView->selectionModel()->currentIndex();
     const auto data = current.data(Presentation::QueryTreeModelBase::ObjectRole);
     if (!data.isValid())
-        return Domain::Artifact::Ptr();
+        return Domain::Task::Ptr();
 
-    return data.value<Domain::Artifact::Ptr>();
+    return data.value<Domain::Task::Ptr>();
 }
 
 #include "pageview.moc"

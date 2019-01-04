@@ -47,7 +47,7 @@ public:
 
     Domain::Project::Ptr project() const;
 
-    Domain::Artifact::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) Q_DECL_OVERRIDE;
+    Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) Q_DECL_OVERRIDE;
     void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
     void promoteItem(const QModelIndex &index) Q_DECL_OVERRIDE;
 

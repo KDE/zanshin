@@ -228,17 +228,17 @@ void ApplicationComponents::onCurrentPageChanged(QObject *page)
 
     QObject *editorModel = m_model->property("editor").value<QObject*>();
     if (editorModel)
-        editorModel->setProperty("artifact", QVariant::fromValue(Domain::Artifact::Ptr()));
+        editorModel->setProperty("task", QVariant::fromValue(Domain::Task::Ptr()));
 }
 
-void ApplicationComponents::onCurrentTaskChanged(const Domain::Artifact::Ptr &artifact)
+void ApplicationComponents::onCurrentTaskChanged(const Domain::Task::Ptr &task)
 {
     if (!m_model)
         return;
 
     auto editorModel = m_model->property("editor").value<QObject*>();
     if (editorModel)
-        editorModel->setProperty("artifact", QVariant::fromValue(artifact));
+        editorModel->setProperty("task", QVariant::fromValue(task));
 }
 
 void ApplicationComponents::onMoveItemsRequested()

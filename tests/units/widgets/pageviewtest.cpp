@@ -89,7 +89,7 @@ public:
         auto item = addStubItem(title, parentItem);
         auto task = Domain::Task::Ptr::create();
         task->setTitle(title);
-        item->setData(QVariant::fromValue<Domain::Artifact::Ptr>(task), Presentation::QueryTreeModelBase::ObjectRole);
+        item->setData(QVariant::fromValue(task), Presentation::QueryTreeModelBase::ObjectRole);
         return task;
     }
 

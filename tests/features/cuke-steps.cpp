@@ -182,10 +182,10 @@ public:
         return m_model;
     }
 
-    Domain::Artifact::Ptr currentArtifact() const
+    Domain::Task::Ptr currentTask() const
     {
         return index.data(Presentation::QueryTreeModelBase::ObjectRole)
-                .value<Domain::Artifact::Ptr>();
+                .value<Domain::Task::Ptr>();
     }
 
     void waitForEmptyJobQueue()
@@ -599,11 +599,11 @@ WHEN("^I list the items$") {
 
 WHEN("^I open the item in the editor$") {
     ScenarioScope<ZanshinContext> context;
-    auto artifact = context->currentArtifact();
-    VERIFY(artifact);
+    auto task = context->currentTask();
+    VERIFY(task);
     context->editor = context->app->property("editor").value<QObject*>();
     VERIFY(context->editor);
-    VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(artifact)));
+    VERIFY(context->editor->setProperty("task", QVariant::fromValue(task)));
 }
 
 WHEN("^I mark it done in the editor$") {
@@ -645,10 +645,10 @@ WHEN("^I rename the item to \"(.+)\"$") {
 
 WHEN("^I open the item in the editor again$") {
     ScenarioScope<ZanshinContext> context;
-    auto artifact = context->currentArtifact();
-    VERIFY(artifact);
-    VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(Domain::Artifact::Ptr())));
-    VERIFY(context->editor->setProperty("artifact", QVariant::fromValue(artifact)));
+    auto task = context->currentTask();
+    VERIFY(task);
+    VERIFY(context->editor->setProperty("task", QVariant::fromValue(Domain::Task::Ptr())));
+    VERIFY(context->editor->setProperty("task", QVariant::fromValue(task)));
     context->waitForStableState();
 }
 
@@ -838,9 +838,7 @@ THEN("^the list does not contain \"(.+)\"$") {
 
 THEN("^the task corresponding to the item is done$") {
     ScenarioScope<ZanshinContext> context;
-    auto artifact = context->currentArtifact();
-    VERIFY(artifact);
-    auto task = artifact.dynamicCast<Domain::Task>();
+    auto task = context->currentTask();
     VERIFY(task);
     VERIFY(task->isDone());
 }

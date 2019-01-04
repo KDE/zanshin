@@ -44,8 +44,8 @@ public:
     KJob *update(Domain::Project::Ptr project) Q_DECL_OVERRIDE;
     KJob *remove(Domain::Project::Ptr project) Q_DECL_OVERRIDE;
 
-    KJob *associate(Domain::Project::Ptr parent, Domain::Artifact::Ptr child) Q_DECL_OVERRIDE;
-    KJob *dissociate(Domain::Artifact::Ptr child) Q_DECL_OVERRIDE;
+    KJob *associate(Domain::Project::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
+    KJob *dissociate(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
 
 private:
     StorageInterface::Ptr m_storage;

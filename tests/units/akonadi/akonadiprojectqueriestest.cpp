@@ -264,7 +264,7 @@ private slots:
         QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
     }
 
-    void shouldNotCrashWhenWeAskAgainTheSameTopLevelArtifacts()
+    void shouldNotCrashWhenWeAskAgainTheSameTopLevelTasks()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -300,7 +300,7 @@ private slots:
         }
     }
 
-    void shouldReactToItemAddsForTopLevelArtifact()
+    void shouldReactToItemAddsForTopLevelTask()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -335,7 +335,7 @@ private slots:
         QCOMPARE(result->data().at(1)->title(), QStringLiteral("44"));
     }
 
-    void shouldReactToItemChangesForTopLevelArtifacts()
+    void shouldReactToItemChangesForTopLevelTasks()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -361,7 +361,7 @@ private slots:
         auto result = queries->findTopLevel(project);
 
         bool replaceHandlerCalled = false;
-        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Artifact::Ptr &, int) {
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
         TestHelpers::waitForEmptyJobQueue();
@@ -378,7 +378,7 @@ private slots:
         QVERIFY(replaceHandlerCalled);
     }
 
-    void shouldRemoveItemFromCorrespondingResultWhenRelatedItemChangesForTopLevelArtifact()
+    void shouldRemoveItemFromCorrespondingResultWhenRelatedItemChangesForTopLevelTask()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -438,7 +438,7 @@ private slots:
         auto result = queries->findTopLevel(project);
 
         bool replaceHandlerCalled = false;
-        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Artifact::Ptr &, int) {
+        result->addPostReplaceHandler([&replaceHandlerCalled](const Domain::Task::Ptr &, int) {
                                           replaceHandlerCalled = true;
                                       });
         TestHelpers::waitForEmptyJobQueue();
@@ -455,7 +455,7 @@ private slots:
         QVERIFY(!replaceHandlerCalled);
     }
 
-    void shouldMoveItemToCorrespondingResultWhenRelatedItemChangeForTopLevelArtifacts()
+    void shouldMoveItemToCorrespondingResultWhenRelatedItemChangeForTopLevelTasks()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -495,7 +495,7 @@ private slots:
         QCOMPARE(result2->data().at(0)->title(), QStringLiteral("44"));
     }
 
-    void shouldReactToItemRemovesForTopLevelArtifacts()
+    void shouldReactToItemRemovesForTopLevelTasks()
     {
         // GIVEN
         AkonadiFakeData data;

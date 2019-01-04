@@ -170,26 +170,25 @@ public:
         return &itemModel;
     }
 
-    template<typename T>
-    void addItem(const QString &title)
+    void addTask(const QString &title)
     {
-        auto artifact = T::Ptr::create();
-        artifact->setTitle(title);
-        addItem(artifact);
+        auto task = Domain::Task::Ptr::create();
+        task->setTitle(title);
+        addTask(task);
     }
 
-    void addItem(const Domain::Artifact::Ptr &artifact)
+    void addTask(const Domain::Task::Ptr &task)
     {
         QStandardItem *item = new QStandardItem;
-        item->setData(QVariant::fromValue(artifact), Presentation::QueryTreeModelBase::ObjectRole);
-        item->setData(artifact->title(), Qt::DisplayRole);
+        item->setData(QVariant::fromValue(task), Presentation::QueryTreeModelBase::ObjectRole);
+        item->setData(task->title(), Qt::DisplayRole);
         itemModel.appendRow(item);
     }
 
-    Domain::Artifact::Ptr itemAtRow(int row) const
+    Domain::Task::Ptr itemAtRow(int row) const
     {
         return itemModel.index(row, 0).data(Presentation::QueryTreeModelBase::ObjectRole)
-                                      .value<Domain::Artifact::Ptr>();
+                                      .value<Domain::Task::Ptr>();
     }
 
     QModelIndexList selectedIndexes() const
@@ -529,8 +528,8 @@ private slots:
         model->setProperty("currentPage", QVariant::fromValue<QObject*>(Q_NULLPTR));
 
         QObject editorModel;
-        editorModel.setProperty("artifact",
-                                QVariant::fromValue<Domain::Artifact::Ptr>(Domain::Task::Ptr::create()));
+        editorModel.setProperty("task",
+                                QVariant::fromValue(Domain::Task::Ptr::create()));
         model->setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
 
         Widgets::ApplicationComponents components;
@@ -555,7 +554,7 @@ private slots:
                  availablePagesModel.createdPages.first());
         QCOMPARE(pageView->model(),
                  availablePagesModel.createdPages.first());
-        QVERIFY(editorModel.property("artifact").value<Domain::Artifact::Ptr>().isNull());
+        QVERIFY(editorModel.property("task").value<Domain::Task::Ptr>().isNull());
     }
 
     void shouldApplyPageViewSelectionToEditorModel()
@@ -564,10 +563,10 @@ private slots:
         auto model = QObjectPtr::create();
 
         PageModelStub pageModel;
-        pageModel.addItem<Domain::Task>(QStringLiteral("0. First task"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("1. Second task"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("2. Third task"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("3. Yet another task"));
+        pageModel.addTask(QStringLiteral("0. First task"));
+        pageModel.addTask(QStringLiteral("1. Second task"));
+        pageModel.addTask(QStringLiteral("2. Third task"));
+        pageModel.addTask(QStringLiteral("3. Yet another task"));
         model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
 
         EditorModelStub editorModel;
@@ -584,7 +583,7 @@ private slots:
         centralView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
 
         // THEN
-        QCOMPARE(editorModel.property("artifact").value<Domain::Artifact::Ptr>(),
+        QCOMPARE(editorModel.property("task").value<Domain::Task::Ptr>(),
                  pageModel.itemAtRow(index.row()));
     }
 
@@ -624,10 +623,10 @@ private slots:
         auto model = QObjectPtr::create();
 
         PageModelStub pageModel;
-        pageModel.addItem<Domain::Task>(QStringLiteral("0. First task"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("1. Second task"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("2. Third task"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("3. Yet another task"));
+        pageModel.addTask(QStringLiteral("0. First task"));
+        pageModel.addTask(QStringLiteral("1. Second task"));
+        pageModel.addTask(QStringLiteral("2. Third task"));
+        pageModel.addTask(QStringLiteral("3. Yet another task"));
         model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
 
         AvailablePagesModelStub availablePagesModelStub;

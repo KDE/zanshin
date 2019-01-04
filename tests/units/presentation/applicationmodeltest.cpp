@@ -78,7 +78,7 @@ public:
     explicit FakePageModel(QObject *parent = Q_NULLPTR)
         : Presentation::PageModel(parent) {}
 
-    Domain::Artifact::Ptr addItem(const QString &, const QModelIndex &) Q_DECL_OVERRIDE { return {}; }
+    Domain::Task::Ptr addItem(const QString &, const QModelIndex &) Q_DECL_OVERRIDE { return {}; }
     void removeItem(const QModelIndex &) Q_DECL_OVERRIDE {}
     void promoteItem(const QModelIndex &) Q_DECL_OVERRIDE {}
 

@@ -668,15 +668,15 @@ private slots:
         QCOMPARE(data.value<QColor>(), provider->data().at(1));
     }
 
-    void shouldProvideUnderlyingTaskAsArtifact()
+    void shouldProvideUnderlyingTask()
     {
         // GIVEN
         auto provider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
         foreach (const auto &task, createTasks())
             provider->append(task);
 
-        auto queryGenerator = [&](const Domain::Task::Ptr &artifact) {
-            if (!artifact)
+        auto queryGenerator = [&](const Domain::Task::Ptr &task) {
+            if (!task)
                 return Domain::QueryResult<Domain::Task::Ptr>::create(provider);
             else
                 return Domain::QueryResult<Domain::Task::Ptr>::Ptr();
@@ -699,9 +699,8 @@ private slots:
 
         // THEN
         QVERIFY(data.isValid());
-        // Note it says Artifact and *not* Task here, it should up-cast automatically
-        QVERIFY(!data.value<Domain::Artifact::Ptr>().isNull());
-        QCOMPARE(data.value<Domain::Artifact::Ptr>(), provider->data().at(1).staticCast<Domain::Artifact>());
+        QVERIFY(!data.value<Domain::Task::Ptr>().isNull());
+        QCOMPARE(data.value<Domain::Task::Ptr>(), provider->data().at(1));
     }
 
     void shouldMoveOnlyDuringDragAndDrop()

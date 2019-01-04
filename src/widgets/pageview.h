@@ -33,7 +33,6 @@
 
 #include <functional>
 
-#include "domain/artifact.h"
 #include "domain/task.h"
 #include "messageboxinterface.h"
 
@@ -72,7 +71,7 @@ public slots:
     void displayErrorMessage(const QString &message);
 
 signals:
-    void currentTaskChanged(const Domain::Artifact::Ptr &artifact);
+    void currentTaskChanged(const Domain::Task::Ptr &task);
 
 private slots:
     void onReturnPressed();
@@ -87,7 +86,7 @@ private slots:
 private:
     bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
     void updateRunTaskAction();
-    Domain::Artifact::Ptr currentArtifact() const;
+    Domain::Task::Ptr currentTask() const;
 
     QHash<QString, QAction*> m_actions;
     QAction *m_cancelAction;

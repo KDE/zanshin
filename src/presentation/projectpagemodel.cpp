@@ -52,11 +52,10 @@ Domain::Project::Ptr ProjectPageModel::project() const
     return m_project;
 }
 
-Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
+Domain::Task::Ptr ProjectPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
     const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
-    const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
-    const auto parentTask = parentArtifact.objectCast<Domain::Task>();
+    const auto parentTask = parentData.value<Domain::Task::Ptr>();
 
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
@@ -71,8 +70,7 @@ Domain::Artifact::Ptr ProjectPageModel::addItem(const QString &title, const QMod
 void ProjectPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->remove(task);
     installHandler(job, i18n("Cannot remove task %1 from project %2", task->title(), m_project->name()));
@@ -81,8 +79,7 @@ void ProjectPageModel::removeItem(const QModelIndex &index)
 void ProjectPageModel::promoteItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->promoteToProject(task);
     installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
@@ -140,16 +137,9 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
-        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
-        if (droppedArtifacts.isEmpty())
+        auto droppedTasks = mimeData->property("objects").value<Domain::Task::List>();
+        if (droppedTasks.isEmpty())
             return false;
-
-        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
-                        [](const Domain::Artifact::Ptr &droppedArtifact) {
-                            return !droppedArtifact.objectCast<Domain::Task>();
-                        })) {
-            return false;
-        }
 
         using namespace std::placeholders;
         auto associate = std::function<KJob*(Domain::Task::Ptr)>();
@@ -163,8 +153,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
             parentTitle = m_project->name();
         }
 
-        foreach(const Domain::Artifact::Ptr &droppedArtifact, droppedArtifacts) {
-            auto childTask = droppedArtifact.objectCast<Domain::Task>();
+        foreach(const Domain::Task::Ptr &childTask, droppedTasks) {
             const auto job = associate(childTask);
             installHandler(job, i18n("Cannot move task %1 as a sub-task of %2", childTask->title(), parentTitle));
         }
@@ -176,15 +165,9 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         if (tasks.isEmpty())
             return Q_NULLPTR;
 
-        auto draggedArtifacts = Domain::Artifact::List();
-        draggedArtifacts.reserve(tasks.size());
-        foreach (const Domain::Task::Ptr &task, tasks) {
-            draggedArtifacts.append(task.objectCast<Domain::Artifact>());
-        }
-
         auto data = new QMimeData;
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
+        data->setProperty("objects", QVariant::fromValue(tasks));
         return data;
     };
 

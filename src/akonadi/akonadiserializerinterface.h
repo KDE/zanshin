@@ -76,9 +76,6 @@ public:
     virtual void clearItem(Akonadi::Item *item) = 0;
     virtual Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) = 0;
 
-    Domain::Artifact::Ptr createArtifactFromItem(const Akonadi::Item &item);
-    void updateArtifactFromItem(const Domain::Artifact::Ptr &artifact, const Akonadi::Item &item);
-
     virtual bool isProjectItem(Akonadi::Item item) = 0;
     virtual Domain::Project::Ptr createProjectFromItem(Akonadi::Item item) = 0;
     virtual void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item) = 0;

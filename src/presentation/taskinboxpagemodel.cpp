@@ -41,11 +41,10 @@ TaskInboxPageModel::TaskInboxPageModel(const Domain::TaskQueries::Ptr &taskQueri
 {
 }
 
-Domain::Artifact::Ptr TaskInboxPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
+Domain::Task::Ptr TaskInboxPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
     const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
-    const auto parentArtifact = parentData.value<Domain::Artifact::Ptr>();
-    const auto parentTask = parentArtifact.objectCast<Domain::Task>();
+    const auto parentTask = parentData.value<Domain::Task::Ptr>();
 
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
@@ -59,8 +58,7 @@ Domain::Artifact::Ptr TaskInboxPageModel::addItem(const QString &title, const QM
 void TaskInboxPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->remove(task);
     installHandler(job, i18n("Cannot remove task %1 from Inbox", task->title()));
@@ -69,8 +67,7 @@ void TaskInboxPageModel::removeItem(const QModelIndex &index)
 void TaskInboxPageModel::promoteItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    auto task = artifact.objectCast<Domain::Task>();
+    auto task = data.value<Domain::Task::Ptr>();
     Q_ASSERT(task);
     const auto job = m_taskRepository->promoteToProject(task);
     installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
@@ -115,23 +112,20 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
         return QVariant();
     };
 
-    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Artifact::Ptr &artifact) -> AdditionalInfo {
+    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) -> AdditionalInfo {
         if (index.parent().isValid()) // children are in the same collection as their parent, so the same datasource
             return nullptr;
-        if (auto task = artifact.dynamicCast<Domain::Task>()) {
-            AdditionalInfo datasourceQueryResult = m_taskQueries->findDataSource(task);
-            if (datasourceQueryResult) {
-                QPersistentModelIndex persistentIndex(index);
-                datasourceQueryResult->addPostInsertHandler([persistentIndex](const Domain::DataSource::Ptr &, int) {
-                    // When a datasource was found (inserted into the result), update the rendering of the item
-                    auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
-                    model->dataChanged(persistentIndex, persistentIndex);
-                });
-            }
-            return datasourceQueryResult;
-        }
-        return nullptr;
 
+        AdditionalInfo datasourceQueryResult = m_taskQueries->findDataSource(task);
+        if (datasourceQueryResult) {
+            QPersistentModelIndex persistentIndex(index);
+            datasourceQueryResult->addPostInsertHandler([persistentIndex](const Domain::DataSource::Ptr &, int) {
+                // When a datasource was found (inserted into the result), update the rendering of the item
+                auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                model->dataChanged(persistentIndex, persistentIndex);
+            });
+        }
+        return datasourceQueryResult;
     };
 
     auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {
@@ -150,26 +144,15 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
         return true;
     };
 
-    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &task) {
-        auto parentTask = task.objectCast<Domain::Task>();
-
+    auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &parentTask) {
         if (!mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")))
             return false;
 
-        auto droppedArtifacts = mimeData->property("objects").value<Domain::Artifact::List>();
-        if (droppedArtifacts.isEmpty())
+        auto droppedTasks = mimeData->property("objects").value<Domain::Task::List>();
+        if (droppedTasks.isEmpty())
             return false;
 
-        if (std::any_of(droppedArtifacts.begin(), droppedArtifacts.end(),
-                        [](const Domain::Artifact::Ptr &droppedArtifact) {
-                            return !droppedArtifact.objectCast<Domain::Task>();
-                        })) {
-            return false;
-        }
-
-        foreach(const auto &droppedArtifact, droppedArtifacts) {
-            auto childTask = droppedArtifact.objectCast<Domain::Task>();
-
+        foreach(const auto &childTask, droppedTasks) {
             if (parentTask) {
                 const auto job = m_taskRepository->associate(parentTask, childTask);
                 installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTask->title()));
@@ -186,15 +169,9 @@ QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
         if (tasks.isEmpty())
             return Q_NULLPTR;
 
-        auto draggedArtifacts = Domain::Artifact::List();
-        draggedArtifacts.reserve(tasks.size());
-        foreach (const Domain::Task::Ptr &task, tasks) {
-            draggedArtifacts.append(task.objectCast<Domain::Artifact>());
-        }
-
         auto data = new QMimeData;
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(draggedArtifacts));
+        data->setProperty("objects", QVariant::fromValue(tasks));
         return data;
     };
 

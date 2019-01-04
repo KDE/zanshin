@@ -159,8 +159,8 @@ void EditorModel::setTask(const Domain::Task::Ptr &task)
         m_recurrence = m_task->recurrence();
         m_attachmentModel->setTask(m_task);
 
-        connect(m_task.data(), &Domain::Artifact::textChanged, this, &EditorModel::onTextChanged);
-        connect(m_task.data(), &Domain::Artifact::titleChanged, this, &EditorModel::onTitleChanged);
+        connect(m_task.data(), &Domain::Task::textChanged, this, &EditorModel::onTextChanged);
+        connect(m_task.data(), &Domain::Task::titleChanged, this, &EditorModel::onTitleChanged);
         connect(m_task.data(), &Domain::Task::doneChanged, this, &EditorModel::onDoneChanged);
         connect(m_task.data(), &Domain::Task::startDateChanged, this, &EditorModel::onStartDateChanged);
         connect(m_task.data(), &Domain::Task::dueDateChanged, this, &EditorModel::onDueDateChanged);
@@ -287,8 +287,7 @@ void EditorModel::setRecurrence(Domain::Task::Recurrence recurrence)
 
 void EditorModel::addAttachment(const QString &fileName)
 {
-    auto task = m_task.objectCast<Domain::Task>();
-    if (!task)
+    if (!m_task)
         return;
 
     QMimeDatabase mimeDb;
@@ -311,31 +310,29 @@ void EditorModel::addAttachment(const QString &fileName)
 
     file.close();
 
-    auto attachments = task->attachments();
+    auto attachments = m_task->attachments();
     attachments.append(attachment);
-    task->setAttachments(attachments);
+    m_task->setAttachments(attachments);
 
     setSaveNeeded(true);
 }
 
 void EditorModel::removeAttachment(const QModelIndex &index)
 {
-    auto task = m_task.objectCast<Domain::Task>();
-    if (!task)
+    if (!m_task)
         return;
 
-    auto attachments = task->attachments();
+    auto attachments = m_task->attachments();
     attachments.removeAt(index.row());
-    task->setAttachments(attachments);
+    m_task->setAttachments(attachments);
 
     setSaveNeeded(true);
 }
 
 void EditorModel::openAttachment(const QModelIndex &index)
 {
-    auto task = m_task.objectCast<Domain::Task>();
-    Q_ASSERT(task);
-    auto attachment = task->attachments().at(index.row());
+    Q_ASSERT(m_task);
+    auto attachment = m_task->attachments().at(index.row());
 
     auto uri = attachment.uri();
     if (!attachment.isUri()) {
@@ -402,12 +399,10 @@ void EditorModel::save()
     m_task->setTitle(m_title);
     m_task->setText(m_text);
 
-    if (auto task = m_task.objectCast<Domain::Task>()) {
-        task->setDone(m_done);
-        task->setStartDate(m_start);
-        task->setDueDate(m_due);
-        task->setRecurrence(m_recurrence);
-    }
+    m_task->setDone(m_done);
+    m_task->setStartDate(m_start);
+    m_task->setDueDate(m_due);
+    m_task->setRecurrence(m_recurrence);
 
     const auto job = m_saveFunction(m_task);
     installHandler(job, i18n("Cannot modify task %1", currentTitle));

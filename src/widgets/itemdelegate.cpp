@@ -63,16 +63,7 @@ void ItemDelegate::paint(QPainter *painter,
                          const QModelIndex &index) const
 {
     const auto data = index.data(Presentation::QueryTreeModelBase::ObjectRole);
-
-    auto task = Domain::Task::Ptr();
-    auto artifact = data.value<Domain::Artifact::Ptr>();
-    if (artifact) {
-        task = artifact.dynamicCast<Domain::Task>();
-    } else {
-        task = data.value<Domain::Task::Ptr>();
-        artifact = task ? task.staticCast<Domain::Artifact>()
-                        : Domain::Artifact::Ptr();
-    }
+    auto task = data.value<Domain::Task::Ptr>();
 
     auto opt = QStyleOptionViewItem(option);
     initStyleOption(&opt, index);

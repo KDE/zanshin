@@ -216,15 +216,15 @@ private slots:
 
         // THEN
         QVERIFY(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
-        QCOMPARE(data->property("objects").value<Domain::Artifact::List>(),
-                 Domain::Artifact::List() << childTask12);
+        QCOMPARE(data->property("objects").value<Domain::Task::List>(),
+                 Domain::Task::List() << childTask12);
 
         // WHEN
         auto childTask2 = Domain::Task::Ptr::create();
         taskRepositoryMock(&Domain::TaskRepository::associate).when(childTask11, childTask2).thenReturn(new FakeJob(this));
         data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask2));
+        data->setProperty("objects", QVariant::fromValue(Domain::Task::List() << childTask2));
         model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, childTask11Index);
 
         // THEN
@@ -238,7 +238,7 @@ private slots:
         taskRepositoryMock(&Domain::TaskRepository::associate).when(childTask12, childTask4).thenReturn(new FakeJob(this));
         data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask3 << childTask4));
+        data->setProperty("objects", QVariant::fromValue(Domain::Task::List() << childTask3 << childTask4));
         model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, childTask12Index);
 
         // THEN
@@ -251,7 +251,7 @@ private slots:
         taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask5).thenReturn(new FakeJob(this));
         data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask5));
+        data->setProperty("objects", QVariant::fromValue(Domain::Task::List() << childTask5));
         model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, QModelIndex());
 
         // THEN
@@ -277,7 +277,7 @@ private slots:
         // WHEN
         auto title = QStringLiteral("New task");
         auto today = Utils::DateTime::currentDate();
-        auto task = workday.addItem(title).objectCast<Domain::Task>();
+        auto task = workday.addItem(title);
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).exactly(1));
@@ -316,7 +316,7 @@ private slots:
         // WHEN
         const auto title = QStringLiteral("New task");
         const auto parentIndex = workday.centralListModel()->index(0, 0);
-        const auto createdTask = workday.addItem(title, parentIndex).objectCast<Domain::Task>();
+        const auto createdTask = workday.addItem(title, parentIndex);
 
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),

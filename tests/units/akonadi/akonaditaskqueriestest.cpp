@@ -1309,7 +1309,7 @@ private slots:
         // One context tag
         data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asContext());
 
-        // Artifact data
+        // Task data
         QFETCH(QString, relatedUidBefore);
 
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withParentUid(relatedUidBefore));

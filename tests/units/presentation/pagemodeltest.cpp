@@ -38,7 +38,7 @@ public:
     {
     }
 
-    Domain::Artifact::Ptr addItem(const QString &, const QModelIndex &) override { return Domain::Artifact::Ptr::create(); }
+    Domain::Task::Ptr addItem(const QString &, const QModelIndex &) override { return Domain::Task::Ptr::create(); }
     void removeItem(const QModelIndex &) override {}
     void promoteItem(const QModelIndex &) override {}
 

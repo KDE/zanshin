@@ -24,7 +24,6 @@
 
 #include "metatypes.h"
 
-#include "domain/artifact.h"
 #include "domain/datasource.h"
 #include "domain/task.h"
 
@@ -35,6 +34,6 @@ void MetaTypes::registerAll()
     qRegisterMetaType<QAbstractItemModel*>();
     qRegisterMetaType<QObjectPtr>();
     qRegisterMetaType<QObjectPtrList>();
-    qRegisterMetaType<Domain::Artifact::Ptr>();
+    qRegisterMetaType<Domain::Task::Ptr>();
     qRegisterMetaType<Domain::DataSource::Ptr>();
 }

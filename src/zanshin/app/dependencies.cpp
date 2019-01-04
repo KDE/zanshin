@@ -102,8 +102,7 @@ void App::initializeDependencies()
     deps.add<Presentation::EditorModel>([] (Utils::DependencyManager *deps) {
         auto model = new Presentation::EditorModel;
         auto repository = deps->create<Domain::TaskRepository>();
-        model->setSaveFunction([repository] (const Domain::Artifact::Ptr &artifact) {
-            auto task = artifact.objectCast<Domain::Task>();
+        model->setSaveFunction([repository] (const Domain::Task::Ptr &task) {
             Q_ASSERT(task);
             return repository->update(task);
         });

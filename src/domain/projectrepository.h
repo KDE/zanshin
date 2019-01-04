@@ -24,7 +24,7 @@
 #ifndef DOMAIN_PROJECTREPOSITORY_H
 #define DOMAIN_PROJECTREPOSITORY_H
 
-#include "artifact.h"
+#include "task.h"
 #include "datasource.h"
 #include "project.h"
 
@@ -44,8 +44,8 @@ public:
     virtual KJob *update(Project::Ptr project) = 0;
     virtual KJob *remove(Project::Ptr project) = 0;
 
-    virtual KJob *associate(Project::Ptr parent, Artifact::Ptr child) = 0;
-    virtual KJob *dissociate(Artifact::Ptr child) = 0;
+    virtual KJob *associate(Project::Ptr parent, Task::Ptr child) = 0;
+    virtual KJob *dissociate(Task::Ptr child) = 0;
 };
 
 }

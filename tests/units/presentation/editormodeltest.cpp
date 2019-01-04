@@ -479,7 +479,7 @@ private slots:
         QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
-        QCOMPARE(savedTask.objectCast<Domain::Task>(), task);
+        QCOMPARE(savedTask, task);
         QCOMPARE(task->attachments().size(), 1);
         QCOMPARE(task->attachments().first().label(), fileName);
         QCOMPARE(task->attachments().first().mimeType(), QStringLiteral("text/plain"));
@@ -518,7 +518,7 @@ private slots:
         QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
-        QCOMPARE(savedTask.objectCast<Domain::Task>(), task);
+        QCOMPARE(savedTask, task);
         QCOMPARE(task->attachments().size(), 1);
         QCOMPARE(task->attachments().first().data(), QByteArrayLiteral("bar"));
     }
