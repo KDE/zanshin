@@ -10,14 +10,10 @@ zanshin_auto_tests(
   akonadidatasourcerepositorytest
   akonadilivequeryhelperstest
   akonadilivequeryintegratortest
-  akonadinotequeriestest
-  akonadinoterepositorytest
   akonadiprojectqueriestest
   akonadiprojectrepositorytest
   akonadiserializertest
   akonadistoragesettingstest
-  akonaditagqueriestest
-  akonaditagrepositorytest
   akonaditaskqueriestest
   akonaditaskrepositorytest
   akonaditimestampattributetest

@@ -35,7 +35,6 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
-#include "testlib/gennote.h"
 #include "testlib/gentag.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
@@ -292,16 +291,6 @@ private slots:
         QCOMPARE(result, expected);
     }
 
-    void shouldFetchItemsByContentTypes_data()
-    {
-        QTest::addColumn<Akonadi::StorageInterface::FetchContentTypes>("contentTypes");
-
-        QTest::newRow("task collections only") << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
-        QTest::newRow("note collections only") << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes);
-        QTest::newRow("task and note collections only") << (Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
-        QTest::newRow("all collections") << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::AllContent);
-    }
-
     void shouldFetchItemsByContentTypes()
     {
         // GIVEN
@@ -321,11 +310,11 @@ private slots:
         // One task in the first collection
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")));
 
-        // Two items (tasks or notes) in all the other collections
+        // Two tasks in all the other collections
         data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")));
         data.createItem(GenTodo().withId(44).withParent(43).withTitle(QStringLiteral("44")));
-        data.createItem(GenNote().withId(45).withParent(44).withTitle(QStringLiteral("45")));
-        data.createItem(GenNote().withId(46).withParent(44).withTitle(QStringLiteral("46")));
+        data.createItem(GenTodo().withId(45).withParent(44).withTitle(QStringLiteral("45")));
+        data.createItem(GenTodo().withId(46).withParent(44).withTitle(QStringLiteral("46")));
         data.createItem(GenTodo().withId(47).withParent(45).withTitle(QStringLiteral("47")));
         data.createItem(GenTodo().withId(48).withParent(45).withTitle(QStringLiteral("48")));
 
@@ -336,8 +325,7 @@ private slots:
         };
 
         // WHEN
-        QFETCH(Akonadi::StorageInterface::FetchContentTypes, contentTypes);
-        auto fetch = helpers->fetchItems(contentTypes);
+        auto fetch = helpers->fetchItems(Akonadi::StorageInterface::Tasks);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -349,15 +337,7 @@ private slots:
 
         // THEN
         auto expected = QStringList();
-
-        if ((contentTypes & Akonadi::StorageInterface::Tasks) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << QStringLiteral("43") << QStringLiteral("44") << QStringLiteral("47") << QStringLiteral("48");
-        }
-
-        if ((contentTypes & Akonadi::StorageInterface::Notes) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << QStringLiteral("45") << QStringLiteral("46");
-        }
-
+        expected << QStringLiteral("43") << QStringLiteral("44") << QStringLiteral("47") << QStringLiteral("48");
         expected.sort();
         QCOMPARE(result, expected);
 
@@ -554,10 +534,10 @@ private slots:
         data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43")));
         data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44")));
         data.createItem(GenTodo().withId(45).withParent(42).withTitle(QStringLiteral("45")));
-        data.createItem(GenNote().withId(46).withParent(43).withTitle(QStringLiteral("46")));
-        data.createItem(GenNote().withId(47).withParent(43).withTitle(QStringLiteral("47")));
-        data.createItem(GenNote().withId(48).withParent(43).withTitle(QStringLiteral("48")));
-        data.createItem(GenNote().withId(49).withParent(43).withTitle(QStringLiteral("49")));
+        data.createItem(GenTodo().withId(46).withParent(43).withTitle(QStringLiteral("46")));
+        data.createItem(GenTodo().withId(47).withParent(43).withTitle(QStringLiteral("47")));
+        data.createItem(GenTodo().withId(48).withParent(43).withTitle(QStringLiteral("48")));
+        data.createItem(GenTodo().withId(49).withParent(43).withTitle(QStringLiteral("49")));
 
         // The list which will be filled by the fetch function
         auto items = Akonadi::Item::List();

@@ -34,7 +34,6 @@
 
 #include "domain/project.h"
 #include "domain/context.h"
-#include "domain/tag.h"
 
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
@@ -409,10 +408,6 @@ private slots:
         auto context1 = Domain::Context::Ptr::create();
         context1->setName(QStringLiteral("Context 1"));
         QTest::newRow("context") << QObjectPtr(context1) << true;
-
-        auto tag1 = Domain::Tag::Ptr::create();
-        tag1->setName(QStringLiteral("Tag 1"));
-        QTest::newRow("tag") << QObjectPtr(tag1) << true;
 
         QTest::newRow("non removable") << QObjectPtr::create() << false;
     }

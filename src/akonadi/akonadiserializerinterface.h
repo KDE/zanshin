@@ -25,9 +25,7 @@
 #define AKONADI_SERIALIZERINTERFACE_H
 
 #include "domain/datasource.h"
-#include "domain/tag.h"
 #include "domain/task.h"
-#include "domain/note.h"
 #include "domain/project.h"
 #include "domain/context.h"
 
@@ -55,7 +53,6 @@ public:
 
     virtual bool representsCollection(QObjectPtr object, Akonadi::Collection collection) = 0;
     virtual bool representsItem(QObjectPtr object, Akonadi::Item item) = 0;
-    virtual bool representsAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) const = 0;
 
     virtual QString itemUid(const Item &item) = 0;
 
@@ -63,7 +60,6 @@ public:
     virtual void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection, DataSourceNameScheme naming) = 0;
     virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource) = 0;
     virtual bool isSelectedCollection(Akonadi::Collection collection) = 0;
-    virtual bool isNoteCollection(Akonadi::Collection collection) = 0;
     virtual bool isTaskCollection(Akonadi::Collection collection) = 0;
 
     virtual bool isTaskItem(Akonadi::Item item) = 0;
@@ -80,12 +76,6 @@ public:
     virtual void clearItem(Akonadi::Item *item) = 0;
     virtual Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) = 0;
 
-    virtual bool isNoteItem(Akonadi::Item item) = 0;
-    virtual Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) = 0;
-    virtual void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) = 0;
-
-    virtual Akonadi::Item createItemFromNote(Domain::Note::Ptr note) = 0;
-
     Domain::Artifact::Ptr createArtifactFromItem(const Akonadi::Item &item);
     void updateArtifactFromItem(const Domain::Artifact::Ptr &artifact, const Akonadi::Item &item);
 
@@ -101,13 +91,7 @@ public:
     virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
     virtual bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const = 0;
 
-    virtual Domain::Tag::Ptr createTagFromAkonadiTag(Akonadi::Tag tag) = 0;
-    virtual void updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) = 0;
-    virtual Akonadi::Tag createAkonadiTagFromTag(Domain::Tag::Ptr tag) = 0;
-    virtual bool isTagChild(Domain::Tag::Ptr tag, Akonadi::Item item) = 0;
-
     virtual bool hasContextTags(Akonadi::Item item) const = 0;
-    virtual bool hasAkonadiTags(Akonadi::Item item) const = 0;
 
     static QByteArray contextTagType();
 };

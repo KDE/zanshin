@@ -43,7 +43,6 @@
 
 #include "domain/project.h"
 #include "domain/context.h"
-#include "domain/tag.h"
 
 using namespace Widgets;
 using namespace Presentation;
@@ -249,8 +248,7 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 
     const auto object = current.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     m_removeAction->setEnabled(object.objectCast<Domain::Project>()
-                            || object.objectCast<Domain::Context>()
-                            || object.objectCast<Domain::Tag>());
+                            || object.objectCast<Domain::Context>());
 }
 
 void AvailablePagesView::onAddProjectTriggered()
@@ -303,9 +301,6 @@ void AvailablePagesView::onRemoveTriggered()
     } else if (Domain::Context::Ptr context = object.objectCast<Domain::Context>()) {
         title = i18n("Delete Context");
         text = i18n("Do you really want to delete the context '%1'?", context->name());
-    } else if (Domain::Tag::Ptr tag = object.objectCast<Domain::Tag>()) {
-        title = i18n("Delete Tag");
-        text = i18n("Do you really want to delete the tag '%1'?", tag->name());
     } else {
         qFatal("Unrecognized object type");
         return;

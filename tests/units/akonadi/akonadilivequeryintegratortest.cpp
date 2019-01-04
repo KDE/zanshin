@@ -37,7 +37,6 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
-#include "testlib/gennote.h"
 #include "testlib/gentag.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
@@ -142,8 +141,8 @@ private slots:
 
         // Three artifacts in the collection, one not matching the predicate
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
-        data.createItem(GenNote().withId(44).withParent(42).withTitle(QStringLiteral("44-ex")));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
+        data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44-ex")));
 
         // Couple of projects in the collection which should not appear or create trouble
         data.createItem(GenTodo().withId(40).withParent(42).asProject().withTitle(QStringLiteral("40")));
@@ -204,7 +203,7 @@ private slots:
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-in")));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
@@ -214,7 +213,7 @@ private slots:
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-ex")));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
@@ -251,9 +250,9 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
 
-        // One task and one note which show in one query and not the other
+        // Two tasks: one which shows in one query and not the other
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
+        data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
 
         // Couple of projects in the collection which should not appear or create trouble
         data.createItem(GenTodo().withId(39).withParent(42).asProject().withTitle(QStringLiteral("39")));
@@ -286,7 +285,7 @@ private slots:
 
         // WHEN
         data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-ex")));
-        data.modifyItem(GenNote(data.item(43)).withTitle(QStringLiteral("43-ex")));
+        data.modifyItem(GenTodo(data.item(43)).withTitle(QStringLiteral("43-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -654,209 +653,6 @@ private slots:
 
 
 
-    void shouldBindNoteQueries()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
-
-        // Three notes in the collection, one not matching the predicate
-        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
-        data.createItem(GenNote().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
-        data.createItem(GenNote().withId(44).withParent(42).withTitle(QStringLiteral("44-ex")));
-
-        // Couple of tasks in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40")));
-        data.createItem(GenTodo().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
-
-        auto integrator = createIntegrator(data);
-        auto storage = createStorage(data);
-
-        auto query = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
-        auto fetch = fetchItemsInAllCollectionsFunction(storage);
-        auto predicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-in"));
-        };
-
-        // Initial listing
-        // WHEN
-        integrator->bind("note1", query, fetch, predicate);
-        auto result = query->result();
-        result->data();
-        integrator->bind("note2", query, fetch, predicate);
-        result = query->result(); // Should not cause any problem or wrong data
-
-        // THEN
-        QVERIFY(result->data().isEmpty());
-        TestHelpers::waitForEmptyJobQueue();
-
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
-
-        // Reacts to add
-        // WHEN
-        data.createItem(GenNote().withId(45).withParent(42).withTitle(QStringLiteral("45-in")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QStringLiteral("45-in"));
-
-        // Reacts to remove
-        // WHEN
-        data.removeItem(Akonadi::Item(45));
-
-        // THEN
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-in"));
-        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
-
-        // Reacts to change
-        // WHEN
-        data.modifyItem(GenNote(data.item(42)).withTitle(QStringLiteral("42-bis-in")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
-
-        // Reacts to change (which adds)
-        // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-in")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
-        QCOMPARE(result->data().at(2)->title(), QStringLiteral("44-in"));
-
-        // Reacts to change (which removes)
-        // WHEN
-        data.modifyItem(GenNote(data.item(44)).withTitle(QStringLiteral("44-ex")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42-bis-in"));
-        QCOMPARE(result->data().at(1)->title(), QStringLiteral("43-in"));
-
-        // Don't keep a reference on any result
-        result.clear();
-
-        // The bug we're trying to hit here is the following:
-        //  - when bind is called the first time a provider is created internally
-        //  - result is deleted at the end of the loop, no one holds the provider with
-        //    a strong reference anymore so it is deleted as well
-        //  - when bind is called the second time, there's a risk of a dangling
-        //    pointer if the recycling of providers is wrongly implemented which can lead
-        //    to a crash, if it is properly done no crash will occur
-        for (int i = 0; i < 2; i++) {
-            // WHEN * 2
-            integrator->bind("noteN", query, fetch, predicate);
-            auto result = query->result();
-
-            // THEN * 2
-            QVERIFY(result->data().isEmpty());
-            TestHelpers::waitForEmptyJobQueue();
-            QVERIFY(!result->data().isEmpty());
-        }
-    }
-
-    void shouldMoveNotesBetweenQueries()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
-
-        // One note which shows in one query and not the other
-        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
-
-        // Couple of tasks in the collection which should not appear or create trouble
-        data.createItem(GenTodo().withId(39).withParent(42).withTitle(QStringLiteral("39")));
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40-ex")));
-        data.createItem(GenTodo().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
-
-        auto integrator = createIntegrator(data);
-        auto storage = createStorage(data);
-
-        auto inQuery = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
-        auto exQuery = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
-        auto fetch = fetchItemsInAllCollectionsFunction(storage);
-        auto inPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-in"));
-        };
-        auto exPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-ex"));
-        };
-
-        integrator->bind("note-in", inQuery, fetch, inPredicate);
-        auto inResult = inQuery->result();
-
-        integrator->bind("note-ex", exQuery, fetch, exPredicate);
-        auto exResult = exQuery->result();
-
-        TestHelpers::waitForEmptyJobQueue();
-
-        QCOMPARE(inResult->data().size(), 1);
-        QCOMPARE(exResult->data().size(), 0);
-
-        // WHEN
-        data.modifyItem(GenNote(data.item(42)).withTitle(QStringLiteral("42-ex")));
-
-        // THEN
-        QCOMPARE(inResult->data().size(), 0);
-        QCOMPARE(exResult->data().size(), 1);
-    }
-
-    void shouldReactToCollectionSelectionChangesForNoteQueries()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        // Two top level collections
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
-
-        // One note in each collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
-        data.createItem(GenNote().withId(43).withParent(43).withTitle(QStringLiteral("43")));
-
-        // Couple of tasks in the collections which should not appear or create trouble
-        data.createItem(GenTodo().withId(40).withParent(42).withTitle(QStringLiteral("40")));
-        data.createItem(GenTodo().withId(41).withParent(43).withTitle(QStringLiteral("41")));
-
-        auto integrator = createIntegrator(data);
-        auto storage = createStorage(data);
-        auto serializer = createSerializer();
-
-        auto query = Domain::LiveQueryOutput<Domain::Note::Ptr>::Ptr();
-        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer);
-        auto predicate = [] (const Akonadi::Item &) {
-            return true;
-        };
-
-        integrator->bind("note query", query, fetch, predicate);
-        auto result = query->result();
-        TestHelpers::waitForEmptyJobQueue();
-        QCOMPARE(result->data().size(), 2);
-
-        // WHEN
-        data.modifyCollection(GenCollection(data.collection(43)).selected(false));
-        TestHelpers::waitForEmptyJobQueue();
-
-        // THEN
-        QCOMPARE(result->data().size(), 1);
-        QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
-    }
-
-
-
-
     void shouldBindProjectQueries()
     {
         // GIVEN
@@ -1058,173 +854,6 @@ private slots:
     }
 
 
-    void shouldBindTagQueries()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        // Three plain tags, one not matching the predicate
-        data.createTag(GenTag().withId(42).asPlain().withName(QStringLiteral("42-in")));
-        data.createTag(GenTag().withId(43).asPlain().withName(QStringLiteral("43-in")));
-        data.createTag(GenTag().withId(44).asPlain().withName(QStringLiteral("44-ex")));
-
-        // Couple of context tags which should not appear or create trouble
-        data.createTag(GenTag().withId(40).asContext().withName(QStringLiteral("40")));
-        data.createTag(GenTag().withId(41).asContext().withName(QStringLiteral("41-in")));
-
-        auto integrator = createIntegrator(data);
-        auto storage = createStorage(data);
-
-        auto query = Domain::LiveQueryOutput<Domain::Tag::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Tag>::AddFunction &add) {
-            auto job = storage->fetchTags();
-            Utils::JobHandler::install(job->kjob(), [add, job] {
-                foreach (const auto &tag, job->tags()) {
-                    add(tag);
-                }
-            });
-        };
-        auto predicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith(QLatin1String("-in"));
-        };
-
-        // Initial listing
-        // WHEN
-        integrator->bind("tag1", query, fetch, predicate);
-        auto result = query->result();
-        result->data();
-        integrator->bind("tag2", query, fetch, predicate);
-        result = query->result(); // Should not cause any problem or wrong data
-
-        // THEN
-        QVERIFY(result->data().isEmpty());
-        TestHelpers::waitForEmptyJobQueue();
-
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
-
-        // Reacts to add
-        // WHEN
-        data.createTag(GenTag().withId(45).asPlain().withName(QStringLiteral("45-in")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QStringLiteral("45-in"));
-
-        // Reacts to remove
-        // WHEN
-        data.removeTag(Akonadi::Tag(45));
-
-        // THEN
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-in"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
-
-        // Reacts to change
-        // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-bis-in")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
-
-        // Reacts to change (which adds)
-        // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-in")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 3);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
-        QCOMPARE(result->data().at(2)->name(), QStringLiteral("44-in"));
-
-        // Reacts to change (which removes)
-        // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-ex")));
-
-        // THEN
-        QCOMPARE(result->data().size(), 2);
-        QCOMPARE(result->data().at(0)->name(), QStringLiteral("42-bis-in"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("43-in"));
-
-        // Don't keep a reference on any result
-        result.clear();
-
-        // The bug we're trying to hit here is the following:
-        //  - when bind is called the first time a provider is created internally
-        //  - result is deleted at the end of the loop, no one holds the provider with
-        //    a strong reference anymore so it is deleted as well
-        //  - when bind is called the second time, there's a risk of a dangling
-        //    pointer if the recycling of providers is wrongly implemented which can lead
-        //    to a crash, if it is properly done no crash will occur
-        for (int i = 0; i < 2; i++) {
-            // WHEN * 2
-            integrator->bind("tagN", query, fetch, predicate);
-            auto result = query->result();
-
-            // THEN * 2
-            QVERIFY(result->data().isEmpty());
-            TestHelpers::waitForEmptyJobQueue();
-            QVERIFY(!result->data().isEmpty());
-        }
-    }
-
-    void shouldMoveTagBetweenQueries()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        // One plain tag which shows in one query not the other
-        data.createTag(GenTag().withId(42).asPlain().withName(QStringLiteral("42-in")));
-
-        // Couple of context tags which should not appear or create trouble
-        data.createTag(GenTag().withId(39).asContext().withName(QStringLiteral("39")));
-        data.createTag(GenTag().withId(40).asContext().withName(QStringLiteral("40-ex")));
-        data.createTag(GenTag().withId(41).asContext().withName(QStringLiteral("41-in")));
-
-        auto integrator = createIntegrator(data);
-        auto storage = createStorage(data);
-
-        auto inQuery = Domain::LiveQueryOutput<Domain::Tag::Ptr>::Ptr();
-        auto exQuery = Domain::LiveQueryOutput<Domain::Tag::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Tag>::AddFunction &add) {
-            auto job = storage->fetchTags();
-            Utils::JobHandler::install(job->kjob(), [add, job] {
-                foreach (const auto &tag, job->tags()) {
-                    add(tag);
-                }
-            });
-        };
-        auto inPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith(QLatin1String("-in"));
-        };
-        auto exPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith(QLatin1String("-ex"));
-        };
-
-        integrator->bind("tag-in", inQuery, fetch, inPredicate);
-        auto inResult = inQuery->result();
-
-        integrator->bind("tag-ex", exQuery, fetch, exPredicate);
-        auto exResult = exQuery->result();
-
-        TestHelpers::waitForEmptyJobQueue();
-
-        QCOMPARE(inResult->data().size(), 1);
-        QCOMPARE(exResult->data().size(), 0);
-
-        // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-ex")));
-
-        // THEN
-        QCOMPARE(inResult->data().size(), 0);
-        QCOMPARE(exResult->data().size(), 1);
-    }
-
 
 
 
@@ -1241,11 +870,9 @@ private slots:
         data.createItem(GenTodo().withId(43).withParent(42).withTitle(QStringLiteral("43-in")));
         data.createItem(GenTodo().withId(44).withParent(42).withTitle(QStringLiteral("44-ex")));
 
-        // Couple of notes and projects in the collection which should not appear or create trouble
+        // Couple of projects in the collection which should not appear or create trouble
         data.createItem(GenTodo().withId(38).withParent(42).asProject().withTitle(QStringLiteral("38")));
         data.createItem(GenTodo().withId(39).withParent(42).asProject().withTitle(QStringLiteral("39-in")));
-        data.createItem(GenNote().withId(40).withParent(42).withTitle(QStringLiteral("40")));
-        data.createItem(GenNote().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -1351,11 +978,6 @@ private slots:
 
         // One task which shows in one query and not the other
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
-
-        // Couple of notes in the collection which should not appear or create trouble
-        data.createItem(GenNote().withId(39).withParent(42).withTitle(QStringLiteral("39")));
-        data.createItem(GenNote().withId(40).withParent(42).withTitle(QStringLiteral("40-ex")));
-        data.createItem(GenNote().withId(41).withParent(42).withTitle(QStringLiteral("41-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);

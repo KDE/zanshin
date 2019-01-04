@@ -295,24 +295,6 @@ inline bool LiveQueryIntegrator::represents<Collection, Domain::DataSource::Ptr>
 }
 
 template<>
-inline Domain::Note::Ptr LiveQueryIntegrator::create<Item, Domain::Note::Ptr>(const Item &input)
-{
-    return m_serializer->createNoteFromItem(input);
-}
-
-template<>
-inline void LiveQueryIntegrator::update<Item, Domain::Note::Ptr>(const Item &input, Domain::Note::Ptr &output)
-{
-    m_serializer->updateNoteFromItem(output, input);
-}
-
-template<>
-inline bool LiveQueryIntegrator::represents<Item, Domain::Note::Ptr>(const Item &input, const Domain::Note::Ptr &output)
-{
-    return m_serializer->representsItem(output, input);
-}
-
-template<>
 inline Domain::DataSource::Ptr LiveQueryIntegrator::create<Item, Domain::DataSource::Ptr>(const Item &input)
 {
     return m_serializer->createDataSourceFromCollection(input.parentCollection(), SerializerInterface::BaseName);
@@ -346,24 +328,6 @@ template<>
 inline bool LiveQueryIntegrator::represents<Item, Domain::Project::Ptr>(const Item &input, const Domain::Project::Ptr &output)
 {
     return m_serializer->representsItem(output, input);
-}
-
-template<>
-inline Domain::Tag::Ptr LiveQueryIntegrator::create<Tag, Domain::Tag::Ptr>(const Tag &input)
-{
-    return m_serializer->createTagFromAkonadiTag(input);
-}
-
-template<>
-inline void LiveQueryIntegrator::update<Tag, Domain::Tag::Ptr>(const Tag &input, Domain::Tag::Ptr &output)
-{
-    m_serializer->updateTagFromAkonadiTag(output, input);
-}
-
-template<>
-inline bool LiveQueryIntegrator::represents<Tag, Domain::Tag::Ptr>(const Tag &input, const Domain::Tag::Ptr &output)
-{
-    return m_serializer->representsAkonadiTag(output, input);
 }
 
 template<>

@@ -2,7 +2,6 @@ set(presentation_SRCS
     applicationmodel.cpp
     artifacteditormodel.cpp
     artifactfilterproxymodel.cpp
-    availablenotepagesmodel.cpp
     availablepagesmodelinterface.cpp
     availablepagessortfilterproxymodel.cpp
     availabletaskpagesmodel.cpp
@@ -11,13 +10,11 @@ set(presentation_SRCS
     errorhandler.cpp
     errorhandlingmodelbase.cpp
     metatypes.cpp
-    noteinboxpagemodel.cpp
     pagemodel.cpp
     projectpagemodel.cpp
     querytreemodelbase.cpp
     runningtaskmodelinterface.cpp
     runningtaskmodel.cpp
-    tagpagemodel.cpp
     taskinboxpagemodel.cpp
     tasklistmodel.cpp
     taskapplicationmodel.cpp

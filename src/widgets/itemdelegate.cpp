@@ -30,7 +30,6 @@
 
 #include <KLocalizedString>
 
-#include "domain/note.h"
 #include "domain/task.h"
 #include "presentation/pagemodel.h"
 #include "presentation/querytreemodelbase.h"
@@ -71,9 +70,8 @@ void ItemDelegate::paint(QPainter *painter,
         task = artifact.dynamicCast<Domain::Task>();
     } else {
         task = data.value<Domain::Task::Ptr>();
-        auto note = data.value<Domain::Note::Ptr>();
         artifact = task ? task.staticCast<Domain::Artifact>()
-                        : note.staticCast<Domain::Artifact>();
+                        : Domain::Artifact::Ptr();
     }
 
     auto opt = QStyleOptionViewItem(option);

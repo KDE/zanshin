@@ -28,7 +28,6 @@
 
 #include <KLocalizedString>
 
-#include "domain/noterepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 

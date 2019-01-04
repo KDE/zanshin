@@ -65,8 +65,6 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Artifact
     Item childItem;
     if (auto task = child.objectCast<Domain::Task>())
         childItem = m_serializer->createItemFromTask(task);
-    else if (auto note = child.objectCast<Domain::Note>())
-        childItem = m_serializer->createItemFromNote(note);
     Q_ASSERT(childItem.isValid());
 
     auto job = new Utils::CompositeJob();
@@ -123,10 +121,8 @@ KJob *ProjectRepository::dissociate(Domain::Artifact::Ptr child)
 {
     auto job = new Utils::CompositeJob();
     const auto task = child.objectCast<Domain::Task>();
-    const auto note = child.objectCast<Domain::Note>();
 
     const auto childItem = task ? m_serializer->createItemFromTask(task)
-                         : note ? m_serializer->createItemFromNote(note)
                          : Akonadi::Item();
     Q_ASSERT(childItem.isValid());
 

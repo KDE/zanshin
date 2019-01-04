@@ -29,7 +29,6 @@
 
 #include "domain/datasourcerepository.h"
 #include "domain/datasourcequeries.h"
-#include "domain/noterepository.h"
 #include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"

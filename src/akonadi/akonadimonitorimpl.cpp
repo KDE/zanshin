@@ -30,7 +30,6 @@
 #include <AkonadiCore/CollectionFetchScope>
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/Monitor>
-#include <Akonadi/Notes/NoteUtils>
 #include <AkonadiCore/TagFetchScope>
 #include <AkonadiCore/TagAttribute>
 
@@ -50,7 +49,6 @@ MonitorImpl::MonitorImpl()
     m_monitor->setCollectionMonitored(Akonadi::Collection::root());
 
     m_monitor->setMimeTypeMonitored(KCalCore::Todo::todoMimeType());
-    m_monitor->setMimeTypeMonitored(NoteUtils::noteMimeType());
 
     auto collectionScope = m_monitor->collectionFetchScope();
     collectionScope.setContentMimeTypes(m_monitor->mimeTypesMonitored());

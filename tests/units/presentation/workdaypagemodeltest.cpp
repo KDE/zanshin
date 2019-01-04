@@ -32,7 +32,6 @@
 #include "utils/datetime.h"
 #include "utils/mockobject.h"
 
-#include "domain/noterepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 #include "presentation/workdaypagemodel.h"

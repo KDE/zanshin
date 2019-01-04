@@ -37,7 +37,6 @@
 #include "domain/contextrepository.h"
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
-#include "domain/noterepository.h"
 
 #include "presentation/contextpagemodel.h"
 #include "presentation/errorhandler.h"
@@ -228,7 +227,6 @@ private slots:
 
         QCOMPARE(task1->title(), QStringLiteral("newTask1"));
         QCOMPARE(task2->title(), QStringLiteral("newTask2"));
-
         // WHEN a task is dragged
         auto data = std::unique_ptr<QMimeData>(model->mimeData(QModelIndexList() << task2Index));
 
@@ -261,17 +259,6 @@ private slots:
         // THEN
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask3).exactly(1));
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask4).exactly(1));
-
-        // WHEN a task and a note are dropped
-        Domain::Artifact::Ptr childTask5(new Domain::Task);
-        Domain::Artifact::Ptr childNote(new Domain::Note);
-        data.reset(new QMimeData);
-        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << childTask5 << childNote));
-        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, task1Index);
-
-        // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(task1, childTask5.objectCast<Domain::Task>()).exactly(0));
     }
 
     void shouldAddTasksInContext()

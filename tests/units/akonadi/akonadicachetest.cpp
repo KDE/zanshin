@@ -107,20 +107,6 @@ private slots:
         QCOMPARE(cache->collection(stuffCollection.id()).name(), QStringLiteral("stuff2"));
 
         // WHEN
-        cache->setCollections(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks,
-                              Akonadi::Collection::List() << noteTaskCollection << taskCollection << noteCollection);
-
-        // THEN
-        QVERIFY(cache->isContentTypesPopulated(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks));
-        QVERIFY(cache->isCollectionKnown(noteTaskCollection.id()));
-        QVERIFY(!cache->isCollectionPopulated(noteTaskCollection.id()));
-        QVERIFY(cache->items(noteTaskCollection).isEmpty());
-        QCOMPARE(cache->collections(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks),
-                 Akonadi::Collection::List() << noteTaskCollection << taskCollection << noteCollection);
-        QCOMPARE(cache->collection(noteTaskCollection.id()), noteTaskCollection);
-        QCOMPARE(cache->collection(noteTaskCollection.id()).name(), noteTaskCollection.name());
-
-        // WHEN
         monitor->changeCollection(GenCollection(noteTaskCollection).withName("note+task2"));
 
         // THEN
@@ -145,20 +131,6 @@ private slots:
 
         // THEN
         QCOMPARE(cache->collection(taskCollection.id()).name(), QStringLiteral("task2"));
-
-        // WHEN
-        cache->setCollections(Akonadi::StorageInterface::Notes,
-                              Akonadi::Collection::List() << noteTaskCollection << noteCollection);
-
-        // THEN
-        QVERIFY(cache->isContentTypesPopulated(Akonadi::StorageInterface::Notes));
-        QVERIFY(cache->isCollectionKnown(noteCollection.id()));
-        QVERIFY(!cache->isCollectionPopulated(noteCollection.id()));
-        QVERIFY(cache->items(noteCollection).isEmpty());
-        QCOMPARE(cache->collections(Akonadi::StorageInterface::Notes),
-                 Akonadi::Collection::List() << noteTaskCollection << noteCollection);
-        QCOMPARE(cache->collection(noteCollection.id()), noteCollection);
-        QCOMPARE(cache->collection(noteCollection.id()).name(), noteCollection.name());
     }
 
     void shouldHandleCollectionAdds_data()
@@ -167,11 +139,7 @@ private slots:
         QTest::addColumn<Akonadi::Collection>("collection");
         QTest::addColumn<bool>("seen");
 
-        const auto allContent = Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::AllContent);
         const auto taskContent = Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
-        const auto noteContent = Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes);
-        const auto taskNoteContent = Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes
-                                                                                | Akonadi::StorageInterface::Tasks);
 
         const auto none = Akonadi::Collection(GenCollection().withRootAsParent()
                                                              .withId(2)
@@ -180,22 +148,10 @@ private slots:
         const auto note = Akonadi::Collection(GenCollection(none).withNoteContent());
         const auto taskNote = Akonadi::Collection(GenCollection(none).withNoteContent().withTaskContent());
 
-        QTest::newRow("all vs none") << allContent << none << true;
-        QTest::newRow("all vs task") << allContent << task << true;
-        QTest::newRow("all vs note") << allContent << note << true;
-        QTest::newRow("all vs taskNote") << allContent << taskNote << true;
         QTest::newRow("tasks vs none") << taskContent << none << false;
         QTest::newRow("tasks vs task") << taskContent << task << true;
         QTest::newRow("tasks vs note") << taskContent << note << false;
         QTest::newRow("tasks vs taskNote") << taskContent << taskNote << true;
-        QTest::newRow("notes vs none") << noteContent << none << false;
-        QTest::newRow("notes vs task") << noteContent << task << false;
-        QTest::newRow("notes vs note") << noteContent << note << true;
-        QTest::newRow("notes vs taskNote") << noteContent << taskNote << true;
-        QTest::newRow("notes+tasks vs none") << taskNoteContent << none << false;
-        QTest::newRow("notes+tasks vs task") << taskNoteContent << task << true;
-        QTest::newRow("notes+tasks vs note") << taskNoteContent << note << true;
-        QTest::newRow("notes+tasks vs taskNote") << taskNoteContent << taskNote << true;
     }
 
     void shouldHandleCollectionAdds()

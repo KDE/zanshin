@@ -40,9 +40,6 @@ Domain::Artifact::Ptr SerializerInterface::createArtifactFromItem(const Item &it
     if (isTaskItem(item)) {
         auto task = createTaskFromItem(item);
         return Domain::Artifact::Ptr(task);
-    } else if (isNoteItem(item)) {
-        auto note = createNoteFromItem(item);
-        return Domain::Artifact::Ptr(note);
     } else {
         return Domain::Artifact::Ptr();
     }
@@ -52,8 +49,6 @@ void SerializerInterface::updateArtifactFromItem(const Domain::Artifact::Ptr &ar
 {
     if (auto task = artifact.dynamicCast<Domain::Task>()) {
         updateTaskFromItem(task, item);
-    } else if (auto note = artifact.dynamicCast<Domain::Note>()) {
-        updateNoteFromItem(note, item);
     }
 }
 

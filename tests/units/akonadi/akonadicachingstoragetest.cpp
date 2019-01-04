@@ -88,70 +88,30 @@ private slots:
                                                   << "57Note" << "58Note" << "59Note"
                                                   << "60Stuff" << "61Stuff" << "62Stuff";
 
-        const auto noteCollections = QStringList() << "42Task" << "44Note"
-                                                   << "46Note" << "48Note"
-                                                   << "50Stuff" << "52Note"
-                                                   << "57Note" << "58Note" << "59Note";
-
         const auto taskCollections = QStringList() << "42Task" << "43Task"
                                                    << "46Note" << "47Task"
                                                    << "50Stuff" << "51Task"
                                                    << "54Task" << "55Task" << "56Task";
 
-        const auto noteTaskCollections = QStringList() << "42Task" << "43Task" << "44Note"
-                                                       << "46Note" << "47Task" << "48Note"
-                                                       << "50Stuff" << "51Task" << "52Note"
-                                                       << "54Task" << "55Task" << "56Task"
-                                                       << "57Note" << "58Note" << "59Note";
-
         QTest::newRow("rootRecursiveAll") << Akonadi::Collection::root() << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::AllContent)
                                           << allCollections << allCollections;
         QTest::newRow("rootRecursiveTask") << Akonadi::Collection::root() << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::Tasks)
                                           << onlyWithSuffix(taskCollections, "Task") << taskCollections;
-        QTest::newRow("rootRecursiveNote") << Akonadi::Collection::root() << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::Notes)
-                                           << onlyWithSuffix(noteCollections, "Note") << noteCollections;
-        QTest::newRow("rootRecursiveNoteTask") << Akonadi::Collection::root() << Akonadi::StorageInterface::Recursive
-                                               << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                               << onlyWithSuffixes(noteTaskCollections, {"Task", "Note"}) << noteTaskCollections;
 
         QTest::newRow("60RecursiveAll") << Akonadi::Collection(60) << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::AllContent)
                                         << (QStringList() << "61Stuff" << "62Stuff") << allCollections;
         QTest::newRow("54RecursiveTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::Tasks)
                                          << (QStringList() << "55Task" << "56Task") << taskCollections;
-        QTest::newRow("57RecursiveNote") << Akonadi::Collection(57) << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::Notes)
-                                         << (QStringList() << "58Note" << "59Note") << noteCollections;
-        QTest::newRow("54RecursiveNoteTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Recursive
-                                             << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                             << (QStringList() << "55Task" << "56Task") << noteTaskCollections;
-        QTest::newRow("57RecursiveNoteTask") << Akonadi::Collection(57) << Akonadi::StorageInterface::Recursive
-                                             << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                             << (QStringList() << "58Note" << "59Note") << noteTaskCollections;
 
         QTest::newRow("60FirstLevelAll") << Akonadi::Collection(60) << Akonadi::StorageInterface::FirstLevel << int(Akonadi::StorageInterface::AllContent)
                                          << (QStringList() << "61Stuff") << allCollections;
         QTest::newRow("54FirstLevelTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::FirstLevel << int(Akonadi::StorageInterface::Tasks)
                                           << (QStringList() << "55Task") << taskCollections;
-        QTest::newRow("57FirstLevelNote") << Akonadi::Collection(57) << Akonadi::StorageInterface::FirstLevel << int(Akonadi::StorageInterface::Notes)
-                                          << (QStringList() << "58Note") << noteCollections;
-        QTest::newRow("54FirstLevelNoteTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::FirstLevel
-                                              << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                              << (QStringList() << "55Task") << noteTaskCollections;
-        QTest::newRow("57FirstLevelNoteTask") << Akonadi::Collection(57) << Akonadi::StorageInterface::FirstLevel
-                                              << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                              << (QStringList() << "58Note") << noteTaskCollections;
 
         QTest::newRow("60BaseAll") << Akonadi::Collection(60) << Akonadi::StorageInterface::Base << int(Akonadi::StorageInterface::AllContent)
                                    << (QStringList() << "60Stuff") << allCollections;
         QTest::newRow("54BaseTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Base << int(Akonadi::StorageInterface::Tasks)
                                     << (QStringList() << "54Task") << taskCollections;
-        QTest::newRow("57BaseNote") << Akonadi::Collection(57) << Akonadi::StorageInterface::Base << int(Akonadi::StorageInterface::Notes)
-                                    << (QStringList() << "57Note") << noteCollections;
-        QTest::newRow("54BaseNoteTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Base
-                                        << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                        << (QStringList() << "54Task") << noteTaskCollections;
-        QTest::newRow("57BaseNoteTask") << Akonadi::Collection(57) << Akonadi::StorageInterface::Base
-                                        << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks)
-                                        << (QStringList() << "57Note") << noteTaskCollections;
     }
 
     void shouldCacheAllCollectionsPerFetchType()

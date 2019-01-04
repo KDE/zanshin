@@ -5,7 +5,6 @@ add_subdirectory(icons)
 
 # frontends
 add_subdirectory(zanshin)
-add_subdirectory(renku)
 
 # modules
 add_subdirectory(akonadi)

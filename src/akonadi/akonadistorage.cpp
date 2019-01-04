@@ -38,7 +38,6 @@
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/ItemMoveJob>
-#include <Akonadi/Notes/NoteUtils>
 #include <AkonadiCore/TransactionSequence>
 #include <AkonadiCore/TagCreateJob>
 #include <AkonadiCore/TagDeleteJob>
@@ -232,8 +231,6 @@ KJob *Storage::removeTag(Tag tag)
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
 {
     QStringList contentMimeTypes;
-    if (types & Notes)
-        contentMimeTypes << NoteUtils::noteMimeType();
     if (types & Tasks)
         contentMimeTypes << KCalCore::Todo::todoMimeType();
 

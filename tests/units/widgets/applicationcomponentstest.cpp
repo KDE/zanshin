@@ -33,7 +33,6 @@
 
 #include "utils/mem_fn.h"
 
-#include "domain/note.h"
 #include "domain/task.h"
 
 #include "presentation/artifactfilterproxymodel.h"
@@ -569,9 +568,9 @@ private slots:
 
         PageModelStub pageModel;
         pageModel.addItem<Domain::Task>(QStringLiteral("0. First task"));
-        pageModel.addItem<Domain::Note>(QStringLiteral("1. A note"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("2. Second task"));
-        pageModel.addItem<Domain::Note>(QStringLiteral("3. Another note"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("1. Second task"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("2. Third task"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("3. Yet another task"));
         model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
 
         EditorModelStub editorModel;
@@ -629,9 +628,9 @@ private slots:
 
         PageModelStub pageModel;
         pageModel.addItem<Domain::Task>(QStringLiteral("0. First task"));
-        pageModel.addItem<Domain::Note>(QStringLiteral("1. A note"));
-        pageModel.addItem<Domain::Task>(QStringLiteral("2. Second task"));
-        pageModel.addItem<Domain::Note>(QStringLiteral("3. Another note"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("1. Second task"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("2. Third task"));
+        pageModel.addItem<Domain::Task>(QStringLiteral("3. Yet another task"));
         model->setProperty("currentPage", QVariant::fromValue<QObject*>(&pageModel));
 
         AvailablePagesModelStub availablePagesModelStub;

@@ -151,7 +151,6 @@ private slots:
         Akonadi::Item childItem(42);
         childItem.setParentCollection(col);
         Domain::Artifact::Ptr childTask(new Domain::Task);
-        Domain::Artifact::Ptr childNote(new Domain::Note);
 
         Akonadi::Item parentItem(41);
         parentItem.setParentCollection(col);
@@ -168,13 +167,6 @@ private slots:
         QTest::newRow("nominal case (task)") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list;
 
         itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
-        itemFetchJob3 = new Testlib::AkonadiFakeItemFetchJob(this);
-        QTest::newRow("nominal case (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << true << list;
-
-        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setExpectedError(KJob::KilledJobError);
         QTest::newRow("child job error with empty list") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
 
@@ -182,11 +174,6 @@ private slots:
         itemFetchJob1->setExpectedError(KJob::KilledJobError);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("child job error with item (task)") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
-
-        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob1->setExpectedError(KJob::KilledJobError);
-        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        QTest::newRow("child job error with item (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << false << false << list;
 
         itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
@@ -198,21 +185,8 @@ private slots:
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
         itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob2->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("parent job error with empty list (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
-
-        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob2->setExpectedError(KJob::KilledJobError);
         itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
         QTest::newRow("parent job error with item (task)") << childItem << parentItem << childTask << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
-
-        itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
-        itemFetchJob2 = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob2->setExpectedError(KJob::KilledJobError);
-        itemFetchJob2->setItems(Akonadi::Item::List() << parentItem);
-        QTest::newRow("parent job error with item (note)") << childItem << parentItem << childNote << parent << itemFetchJob1 << itemFetchJob2 << itemFetchJob3 << true << false << list;
 
         itemFetchJob1 = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob1->setItems(Akonadi::Item::List() << childItem);
@@ -281,7 +255,6 @@ private slots:
         // Serializer mock returning the item for the task
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child.objectCast<Domain::Task>()).thenReturn(childItem);
-        serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(child.objectCast<Domain::Note>()).thenReturn(childItem);
         serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(parent).thenReturn(parentItem);
         serializerMock(&Akonadi::SerializerInterface::updateItemProject).when(childItem, parent).thenReturn();
         if (execParentJob)
@@ -322,7 +295,6 @@ private slots:
         QTest::addColumn<bool>("fetchJobFailed");
 
         Domain::Artifact::Ptr taskChild(new Domain::Task);
-        Domain::Artifact::Ptr noteChild(new Domain::Note);
         Akonadi::Item childItem(42);
 
         auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
@@ -337,19 +309,6 @@ private slots:
         itemFetchJob->setExpectedError(KJob::KilledJobError);
         itemFetchJob->setItems(Akonadi::Item::List() << childItem);
         QTest::newRow("task job error with item") << taskChild << childItem << itemFetchJob << true;
-
-        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setItems(Akonadi::Item::List() << childItem);
-        QTest::newRow("note nominal case") << noteChild << childItem << itemFetchJob << false;
-
-        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("note job error with empty list") << noteChild << childItem << itemFetchJob << true;
-
-        itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
-        itemFetchJob->setExpectedError(KJob::KilledJobError);
-        itemFetchJob->setItems(Akonadi::Item::List() << childItem);
-        QTest::newRow("note job error with item") << noteChild << childItem << itemFetchJob << true;
     }
 
     void shouldDissociateAnArtifactFromItsProject()
@@ -371,10 +330,7 @@ private slots:
 
         // Serializer mock returning the item for the task
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
-        if (child.objectCast<Domain::Task>())
-            serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child.objectCast<Domain::Task>()).thenReturn(childItem);
-        else
-            serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(child.objectCast<Domain::Note>()).thenReturn(childItem);
+        serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child.objectCast<Domain::Task>()).thenReturn(childItem);
         serializerMock(&Akonadi::SerializerInterface::removeItemParent).when(childItem).thenReturn();
 
         // WHEN
@@ -383,10 +339,7 @@ private slots:
         repository->dissociate(child)->exec();
 
         // THEN
-        if (child.objectCast<Domain::Task>())
-            QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child.objectCast<Domain::Task>()).exactly(1));
-        else
-            QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromNote).when(child.objectCast<Domain::Note>()).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(child.objectCast<Domain::Task>()).exactly(1));
 
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(childItem).exactly(1));
         if (!fetchJobFailed) {

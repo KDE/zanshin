@@ -33,10 +33,6 @@
 #include "domain/contextrepository.h"
 #include "domain/projectqueries.h"
 #include "domain/projectrepository.h"
-#include "domain/note.h"
-#include "domain/tag.h"
-#include "domain/tagqueries.h"
-#include "domain/tagrepository.h"
 #include "domain/task.h"
 #include "domain/taskrepository.h"
 

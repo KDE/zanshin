@@ -40,7 +40,6 @@ public:
 
     bool representsCollection(QObjectPtr object, Collection collection) Q_DECL_OVERRIDE;
     bool representsItem(QObjectPtr object, Item item) Q_DECL_OVERRIDE;
-    bool representsAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) const Q_DECL_OVERRIDE;
 
     QString itemUid(const Item &item) Q_DECL_OVERRIDE;
 
@@ -48,7 +47,6 @@ public:
     void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection, DataSourceNameScheme naming) Q_DECL_OVERRIDE;
     virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource) Q_DECL_OVERRIDE;
     virtual bool isSelectedCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
-    virtual bool isNoteCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
     virtual bool isTaskCollection(Akonadi::Collection collection) Q_DECL_OVERRIDE;
 
     bool isTaskItem(Akonadi::Item item) Q_DECL_OVERRIDE;
@@ -64,11 +62,6 @@ public:
     void clearItem(Akonadi::Item *item) Q_DECL_OVERRIDE;
     Akonadi::Item::List filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem) Q_DECL_OVERRIDE;
 
-    bool isNoteItem(Akonadi::Item item) Q_DECL_OVERRIDE;
-    Domain::Note::Ptr createNoteFromItem(Akonadi::Item item) Q_DECL_OVERRIDE;
-    void updateNoteFromItem(Domain::Note::Ptr note, Akonadi::Item item) Q_DECL_OVERRIDE;
-    Akonadi::Item createItemFromNote(Domain::Note::Ptr note) Q_DECL_OVERRIDE;
-
     bool isProjectItem(Akonadi::Item item) Q_DECL_OVERRIDE;
     Domain::Project::Ptr createProjectFromItem(Akonadi::Item item) Q_DECL_OVERRIDE;
     void updateProjectFromItem(Domain::Project::Ptr project, Akonadi::Item item) Q_DECL_OVERRIDE;
@@ -81,17 +74,10 @@ public:
     bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const Q_DECL_OVERRIDE;
     bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const Q_DECL_OVERRIDE;
 
-    Domain::Tag::Ptr createTagFromAkonadiTag(Akonadi::Tag akonadiTag) Q_DECL_OVERRIDE;
-    void updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag) Q_DECL_OVERRIDE;
-    Akonadi::Tag createAkonadiTagFromTag(Domain::Tag::Ptr tag) Q_DECL_OVERRIDE;
-    bool isTagChild(Domain::Tag::Ptr tag, Akonadi::Item item) Q_DECL_OVERRIDE;
-
     bool hasContextTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
-    bool hasAkonadiTags(Akonadi::Item item) const Q_DECL_OVERRIDE;
 
 private:
     bool isContext(const Akonadi::Tag &tag) const;
-    bool isAkonadiTag(const Akonadi::Tag &tag) const;
 };
 
 }

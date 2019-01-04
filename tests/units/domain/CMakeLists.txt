@@ -5,9 +5,7 @@ zanshin_auto_tests(
   livequerytest
   liverelationshipquerytest
   mockitotest
-  notetest
   projecttest
   queryresulttest
-  tagtest
   tasktest
 )

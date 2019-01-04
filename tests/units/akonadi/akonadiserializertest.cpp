@@ -99,31 +99,6 @@ private slots:
         QVERIFY(!serializer.representsItem(object, item));
     }
 
-    void shouldKnowWhenAnAkonadiTagRepresentsATag()
-    {
-        // GIVEN
-        Akonadi::Serializer serializer;
-        Akonadi::Tag akondiTag(42);
-        auto tag = Domain::Tag::Ptr::create();
-
-        // WHEN
-        // Nothing yet
-        // THEN
-        QVERIFY(!serializer.representsAkonadiTag(tag, akondiTag));
-
-        // WHEN
-        tag->setProperty("tagId", 42);
-
-        // THEN
-        QVERIFY(serializer.representsAkonadiTag(tag, akondiTag));
-
-        // WHEN
-        tag->setProperty("tagId", 43);
-
-        // THEN
-        QVERIFY(!serializer.representsAkonadiTag(tag, akondiTag));
-    }
-
     void shouldKnowTaskItemUid_data()
     {
         QTest::addColumn<Akonadi::Item>("item");
@@ -203,9 +178,6 @@ private slots:
         QFETCH(bool, isSelected);
 
         Domain::DataSource::ContentTypes expectedContentTypes;
-        if (mimeTypes.contains(QStringLiteral("text/x-vnd.akonadi.note"))) {
-            expectedContentTypes |= Domain::DataSource::Notes;
-        }
         if (mimeTypes.contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo"))) {
             expectedContentTypes |= Domain::DataSource::Tasks;
         }
@@ -412,18 +384,15 @@ private slots:
         QTest::addColumn<bool>("isSelected");
         QTest::addColumn<bool>("expectedSelected");
 
-        const auto noteMimeTypes = QStringList() << QStringLiteral("text/x-vnd.akonadi.note");
         const auto taskMimeTypes = QStringList() << QStringLiteral("application/x-vnd.akonadi.calendar.todo");
         const auto bogusMimeTypes = QStringList() << QStringLiteral("foo/bar");
-        const auto allMimeTypes = noteMimeTypes + taskMimeTypes + bogusMimeTypes;
+        const auto allMimeTypes = taskMimeTypes + bogusMimeTypes;
 
         QTest::newRow("nominal case") << allMimeTypes << true << false << false;
 
-        QTest::newRow("only notes") << noteMimeTypes << true << false << false;
         QTest::newRow("only tasks") << taskMimeTypes << true << false << false;
         QTest::newRow("only bogus") << bogusMimeTypes << true << false << false;
 
-        QTest::newRow("selected, only notes") << noteMimeTypes << true << true << true;
         QTest::newRow("selected, only tasks") << taskMimeTypes << true << true << true;
         QTest::newRow("selected, only bogus") << bogusMimeTypes << true << true << false;
 
@@ -469,11 +438,10 @@ private slots:
     void shouldVerifyCollectionContents_data()
     {
         QTest::addColumn<QString>("mimeType");
-        QTest::addColumn<bool>("expectedNotes");
         QTest::addColumn<bool>("expectedTasks");
 
-        QTest::newRow("task collection") << "application/x-vnd.akonadi.calendar.todo" << false << true;
-        QTest::newRow("note collection") << "text/x-vnd.akonadi.note" << true << false;
+        QTest::newRow("task collection") << "application/x-vnd.akonadi.calendar.todo" << true;
+        QTest::newRow("note collection") << "text/x-vnd.akonadi.note" << false;
     }
 
     void shouldVerifyCollectionContents()
@@ -489,11 +457,9 @@ private slots:
 
         // WHEN
         Akonadi::Serializer serializer;
-        QFETCH(bool, expectedNotes);
         QFETCH(bool, expectedTasks);
 
         // THEN
-        QCOMPARE(serializer.isNoteCollection(collection), expectedNotes);
         QCOMPARE(serializer.isTaskCollection(collection), expectedTasks);
     }
 
@@ -1303,37 +1269,8 @@ private slots:
         todo2->setRelatedTo(QStringLiteral("1"));
         item2.setPayload<KCalCore::Todo::Ptr>(todo2);
 
-        Akonadi::Item item3;
-        KMime::Message::Ptr message1(new KMime::Message);
-        message1->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
-        message1->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
-        item3.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        item3.setPayload<KMime::Message::Ptr>(message1);
-
-        Akonadi::Item item4;
-        KMime::Message::Ptr message2(new KMime::Message);
-        message2->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
-        message2->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
-        auto relatedHeader1 = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-        relatedHeader1->from7BitString("1");
-        message2->appendHeader(relatedHeader1);
-        item4.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        item4.setPayload<KMime::Message::Ptr>(message2);
-
-        Akonadi::Item item5;
-        KMime::Message::Ptr message3(new KMime::Message);
-        message3->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
-        message3->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
-        auto relatedHeader2 = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-        message3->appendHeader(relatedHeader2);
-        item5.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        item5.setPayload<KMime::Message::Ptr>(message3);
-
         QTest::newRow("task without related") << item1 << QString();
         QTest::newRow("task with related") << item2 << "1";
-        QTest::newRow("note without related") << item3 << QString();
-        QTest::newRow("note with related") << item4 << "1";
-        QTest::newRow("note with empty related") << item5 << QString();
     }
 
     void shouldRetrieveRelatedUidFromItem()
@@ -1360,243 +1297,6 @@ private slots:
         QTest::newRow("nominal case (with related)") << "A note title" << "A note content.\nWith two lines." << "parent-uid";
         QTest::newRow("trailing new lines") << "A note title" << "Empty lines at the end.\n\n\n" << QString();
         QTest::newRow("empty case") << QString() << QString() << QString();
-    }
-
-    void shouldCreateNoteFromItem()
-    {
-        // GIVEN
-
-        // Data...
-        QFETCH(QString, title);
-        QFETCH(QString, text);
-        QFETCH(QString, relatedUid);
-
-        // ... stored in a message...
-        KMime::Message::Ptr message(new KMime::Message);
-        message->subject(true)->fromUnicodeString(title, "utf-8");
-        message->mainBodyPart()->fromUnicodeString(text);
-
-        if (!relatedUid.isEmpty()) {
-            auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-            relatedHeader->from7BitString(relatedUid.toUtf8());
-            message->appendHeader(relatedHeader);
-        }
-
-        // ... as payload of an item.
-        Akonadi::Item item;
-        item.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        item.setPayload<KMime::Message::Ptr>(message);
-
-        // WHEN
-        Akonadi::Serializer serializer;
-        Domain::Note::Ptr note = serializer.createNoteFromItem(item);
-        auto artifact = serializer.createArtifactFromItem(item).dynamicCast<Domain::Note>();
-
-        // THEN
-        const auto expectedText = text.endsWith('\n') ? (text.chop(1), text) : text;
-
-        QCOMPARE(note->title(), title);
-        QCOMPARE(note->text(), expectedText);
-        QCOMPARE(note->property("itemId").toLongLong(), item.id());
-        QCOMPARE(note->property("relatedUid").toString(), relatedUid);
-
-        QVERIFY(!artifact.isNull());
-        QCOMPARE(artifact->title(), title);
-        QCOMPARE(artifact->text(), expectedText);
-        QCOMPARE(artifact->property("itemId").toLongLong(), item.id());
-        QCOMPARE(artifact->property("relatedUid").toString(), relatedUid);
-    }
-
-    void shouldCreateNullNoteFromInvalidItem()
-    {
-        // GIVEN
-        Akonadi::Item item;
-
-        // WHEN
-        Akonadi::Serializer serializer;
-        Domain::Note::Ptr note = serializer.createNoteFromItem(item);
-        auto artifact = serializer.createArtifactFromItem(item);
-
-        // THEN
-        QVERIFY(note.isNull());
-        QVERIFY(artifact.isNull());
-    }
-
-    void shouldUpdateNoteFromItem_data()
-    {
-        QTest::addColumn<QString>("updatedTitle");
-        QTest::addColumn<QString>("updatedText");
-        QTest::addColumn<QString>("updatedRelatedUid");
-
-        QTest::newRow("no change") << "title" << "content" << "parent-uid";
-        QTest::newRow("data changed (with related)") << "A new title" << "A new content" << "new-parent-uid";
-        QTest::newRow("data changed (with no related)") << "A new title" << "A new content" << QString();
-    }
-
-    void shouldUpdateNoteFromItem()
-    {
-        // GIVEN
-
-        // A message...
-        KMime::Message::Ptr message(new KMime::Message);
-        message->subject(true)->fromUnicodeString(QStringLiteral("title"), "utf-8");
-        message->mainBodyPart()->fromUnicodeString(QStringLiteral("text"));
-        auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-        relatedHeader->from7BitString("parent-uid");
-        message->appendHeader(relatedHeader);
-
-        //... as the payload of an item...
-        Akonadi::Item item;
-        item.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        item.setPayload<KMime::Message::Ptr>(message);
-
-        //... deserialized as a note
-        Akonadi::Serializer serializer;
-        auto note = serializer.createNoteFromItem(item);
-        auto artifact = serializer.createNoteFromItem(item);
-
-        // WHEN
-
-        // Data...
-        QFETCH(QString, updatedTitle);
-        QFETCH(QString, updatedText);
-        QFETCH(QString, updatedRelatedUid);
-
-        //... stored in a new message...
-        KMime::Message::Ptr updatedMessage(new KMime::Message);
-        updatedMessage->subject(true)->fromUnicodeString(updatedTitle, "utf-8");
-        updatedMessage->mainBodyPart()->fromUnicodeString(updatedText);
-
-        if (!updatedRelatedUid.isEmpty()) {
-            relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-            relatedHeader->from7BitString(updatedRelatedUid.toUtf8());
-            updatedMessage->appendHeader(relatedHeader);
-        }
-
-        //... as the payload of a new item...
-        Akonadi::Item updatedItem;
-        updatedItem.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        updatedItem.setPayload<KMime::Message::Ptr>(updatedMessage);
-
-        serializer.updateNoteFromItem(note, updatedItem);
-        serializer.updateArtifactFromItem(artifact, updatedItem);
-
-        // THEN
-        QCOMPARE(note->title(), updatedTitle);
-        QCOMPARE(note->text(), updatedText);
-        QCOMPARE(note->property("itemId").toLongLong(), updatedItem.id());
-        QCOMPARE(note->property("relatedUid").toString(), updatedRelatedUid);
-
-        note = artifact.dynamicCast<Domain::Note>();
-        QCOMPARE(note->title(), updatedTitle);
-        QCOMPARE(note->text(), updatedText);
-        QCOMPARE(note->property("itemId").toLongLong(), updatedItem.id());
-        QCOMPARE(note->property("relatedUid").toString(), updatedRelatedUid);
-    }
-
-    void shouldNotUpdateNoteFromInvalidItem()
-    {
-        // GIVEN
-
-        // Data...
-        QString title = QStringLiteral("A title");
-        QString text = QStringLiteral("A note content");
-
-        // ... stored in a message...
-        KMime::Message::Ptr message(new KMime::Message);
-        message->subject(true)->fromUnicodeString(title, "utf-8");
-        message->mainBodyPart()->fromUnicodeString(text);
-
-        //... as the payload of an item...
-        Akonadi::Item item;
-        item.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        item.setPayload<KMime::Message::Ptr>(message);
-
-        //... deserialized as a note
-        Akonadi::Serializer serializer;
-        auto note = serializer.createNoteFromItem(item);
-        auto artifact = serializer.createArtifactFromItem(item);
-
-        // WHEN
-        Akonadi::Item invalidItem;
-
-        serializer.updateNoteFromItem(note, invalidItem);
-        serializer.updateArtifactFromItem(artifact, invalidItem);
-
-        //THEN
-        QCOMPARE(note->title(), title);
-        QCOMPARE(note->text(), text);
-        QCOMPARE(note->property("itemId").toLongLong(), item.id());
-
-        note = artifact.dynamicCast<Domain::Note>();
-        QCOMPARE(note->title(), title);
-        QCOMPARE(note->text(), text);
-        QCOMPARE(note->property("itemId").toLongLong(), item.id());
-    }
-
-    void shouldCreateItemFromNote_data()
-    {
-        QTest::addColumn<QString>("title");
-        QTest::addColumn<QString>("content");
-        QTest::addColumn<QString>("expectedTitle");
-        QTest::addColumn<QString>("expectedContent");
-        QTest::addColumn<qint64>("itemId");
-        QTest::addColumn<QString>("relatedUid");
-
-        QTest::newRow("nominal case (no id)") << "title" << "content" << "title" << "content" << qint64(-1) << QString();
-        QTest::newRow("empty case (no id)") << QString() << QString() << "New Note" << QString() << qint64(-1) << QString();
-
-        QTest::newRow("nominal case (with id)") << "title" << "content" << "title" << "content" << qint64(42) << "parent-uid";
-        QTest::newRow("empty case (with id)") << QString() << QString() << "New Note" << QString() << qint64(42) << "parent-uid";
-
-        QTest::newRow("empty line at the end") << "title" << "content\n\n\n" << "title" << "content\n\n\n" << qint64(-1) << QString();
-    }
-
-    void shouldCreateItemFromNote()
-    {
-        // GIVEN
-
-        // Data...
-        QFETCH(QString, title);
-        QFETCH(QString, content);
-        QFETCH(qint64, itemId);
-        QFETCH(QString, relatedUid);
-
-        // ... stored in a note
-        auto note = Domain::Note::Ptr::create();
-        note->setTitle(title);
-        note->setText(content);
-
-        if (itemId > 0)
-            note->setProperty("itemId", itemId);
-
-        if (!relatedUid.isEmpty())
-            note->setProperty("relatedUid", relatedUid);
-
-        // WHEN
-        Akonadi::Serializer serializer;
-        auto item = serializer.createItemFromNote(note);
-
-        // THEN
-        QCOMPARE(item.mimeType(), Akonadi::NoteUtils::noteMimeType());
-
-        QCOMPARE(item.isValid(), itemId > 0);
-        if (itemId > 0) {
-            QCOMPARE(item.id(), itemId);
-        }
-
-        QFETCH(QString, expectedTitle);
-        QFETCH(QString, expectedContent);
-        auto message = item.payload<KMime::Message::Ptr>();
-        QCOMPARE(message->subject(false)->asUnicodeString(), expectedTitle);
-        QCOMPARE(message->mainBodyPart()->decodedText(), expectedContent);
-
-        if (relatedUid.isEmpty()) {
-            QVERIFY(!message->headerByType("X-Zanshin-RelatedProjectUid"));
-        } else {
-            QVERIFY(message->headerByType("X-Zanshin-RelatedProjectUid"));
-            QCOMPARE(message->headerByType("X-Zanshin-RelatedProjectUid")->asUnicodeString(), relatedUid);
-        }
     }
 
     void shouldCreateProjectFromItem_data()
@@ -1885,29 +1585,8 @@ private slots:
 
         QTest::newRow("child todo") << project << childTodoItem << true;
 
-        // Create unrelated note
-        KMime::Message::Ptr unrelatedNote(new KMime::Message);
-        unrelatedNote->subject(true)->fromUnicodeString(QStringLiteral("subject"), "utf-8");
-        Akonadi::Item unrelatedNoteItem;
-        unrelatedNoteItem.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        unrelatedNoteItem.setPayload<KMime::Message::Ptr>(unrelatedNote);
-
-        QTest::newRow("unrelated note") << project << unrelatedNoteItem << false;
-
-        // Create child note
-        KMime::Message::Ptr childNote(new KMime::Message);
-        childNote->subject(true)->fromUnicodeString(QStringLiteral("subject"), "utf-8");
-        auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-        relatedHeader->from7BitString("1");
-        childNote->appendHeader(relatedHeader);
-        Akonadi::Item childNoteItem;
-        childNoteItem.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        childNoteItem.setPayload<KMime::Message::Ptr>(childNote);
-
-        QTest::newRow("child todo") << project << childNoteItem << true;
-
         auto invalidProject = Domain::Project::Ptr::create();
-        QTest::newRow("invalid project") << invalidProject << unrelatedNoteItem << false;
+        QTest::newRow("invalid project") << invalidProject << unrelatedTodoItem << false;
 
         Akonadi::Item invalidItem;
         QTest::newRow("invalid item") << project << invalidItem << false;
@@ -1987,13 +1666,6 @@ private slots:
 
         auto invalidParent = Domain::Project::Ptr::create();
         QTest::newRow("update todo item with a empty parent uid") << todoItem << invalidParent << QString();
-
-        Akonadi::Item noteItem;
-        KMime::Message::Ptr note(new KMime::Message);
-        noteItem.setPayload<KMime::Message::Ptr>(note);
-
-        QTest::newRow("nominal note case") << noteItem << parent << "1";
-        QTest::newRow("update note item with a empty parent uid") << noteItem << invalidParent << QString();
 
         Akonadi::Item invalidItem;
         QTest::newRow("update item without payload") << invalidItem << parent << QString();
@@ -2328,11 +2000,10 @@ private slots:
         QCOMPARE(value, isChild);
     }
 
-    void shouldCheckIfAnItemHasContextsOrTags_data()
+    void shouldCheckIfAnItemHasContexts_data()
     {
         QTest::addColumn<Akonadi::Item>("item");
         QTest::addColumn<bool>("contextsExpected");
-        QTest::addColumn<bool>("tagsExpected");
 
         Akonadi::Tag unrelatedTag(QStringLiteral("Foo"));
         unrelatedTag.setType("unrelated");
@@ -2342,37 +2013,34 @@ private slots:
         akonadiTag.setType(Akonadi::Tag::PLAIN);
 
         Akonadi::Item item;
-        QTest::newRow("no tags") << item << false << false;
+        QTest::newRow("no tags") << item << false;
 
         item.setTags({ unrelatedTag });
-        QTest::newRow("unrelated tags") << item << false << false;
+        QTest::newRow("unrelated tags") << item << false;
 
         item.setTags({ unrelatedTag, contextTag });
-        QTest::newRow("has contexts") << item << true << false;
+        QTest::newRow("has contexts") << item << true;
 
         item.setTags({ unrelatedTag, akonadiTag });
-        QTest::newRow("has tags") << item << false << true;
+        QTest::newRow("has tags") << item << false;
 
         item.setTags({ unrelatedTag, contextTag, akonadiTag });
-        QTest::newRow("has both") << item << true << true;
+        QTest::newRow("has both") << item << true;
     }
 
-    void shouldCheckIfAnItemHasContextsOrTags()
+    void shouldCheckIfAnItemHasContexts()
     {
         // GIVEN
         QFETCH(Akonadi::Item, item);
         QFETCH(bool, contextsExpected);
-        QFETCH(bool, tagsExpected);
 
         Akonadi::Serializer serializer;
 
         // WHEN
         const bool hasContexts = serializer.hasContextTags(item);
-        const bool hasTags = serializer.hasAkonadiTags(item);
 
         // THEN
         QCOMPARE(hasContexts, contextsExpected);
-        QCOMPARE(hasTags, tagsExpected);
     }
 
     void shouldCreateTagFromContext_data()
@@ -2413,154 +2081,6 @@ private slots:
             QCOMPARE(tag.gid(), tagGid);
             QCOMPARE(tag.type(), Akonadi::SerializerInterface::contextTagType());
         }
-    }
-
-    void shouldCreateTagFromAkonadiTag_data()
-    {
-        QTest::addColumn<QString>("name");
-        QTest::addColumn<qint64>("tagId");
-        QTest::addColumn<QByteArray>("type");
-
-        QString tagName = QStringLiteral("Optional");
-        QByteArray plainType = Akonadi::Tag::PLAIN;
-
-        QTest::newRow("nominal case") << tagName << qint64(42) << plainType;
-        QTest::newRow("null name case") << QString() << qint64(42) << plainType;
-        QTest::newRow("null tagId case") << tagName << qint64(-1) << plainType;
-        QTest::newRow("totally null tag case") << QString() << qint64(-1) << plainType;
-    }
-
-    void shouldCreateTagFromAkonadiTag()
-    {
-        // GIVEN
-        QFETCH(QString, name);
-        QFETCH(qint64, tagId);
-        QFETCH(QByteArray, type);
-
-        auto akonadiTag = Akonadi::Tag();
-        akonadiTag.setName(name);
-        akonadiTag.setId(tagId);
-        akonadiTag.setType(type);
-
-        // WHEN
-        Akonadi::Serializer serializer;
-        Domain::Tag::Ptr resultTag = serializer.createTagFromAkonadiTag(akonadiTag);
-
-        // THEN
-        QCOMPARE(resultTag->name(), akonadiTag.name());
-        QCOMPARE(resultTag->property("tagId").toLongLong(), akonadiTag.id());
-    }
-
-    void shouldUpdateTagFromAkonadiTag_data()
-    {
-        shouldCreateTagFromAkonadiTag_data();
-    }
-
-    void shouldUpdateTagFromAkonadiTag()
-    {
-        // GIVEN
-        QFETCH(QString, name);
-        QFETCH(qint64, tagId);
-        QFETCH(QByteArray, type);
-
-        // ... stored as an Akonadi Tag
-        Akonadi::Tag akonadiTag(name);
-        akonadiTag.setId(tagId);
-        akonadiTag.setType(type);
-
-        // WHEN
-        Akonadi::Serializer serializer;
-        auto tag = Domain::Tag::Ptr::create();
-        tag->setName(QStringLiteral("tag42"));
-
-        serializer.updateTagFromAkonadiTag(tag, akonadiTag);
-
-        // THEN
-        QCOMPARE(tag->name(), akonadiTag.name());
-        QCOMPARE(tag->property("tagId").toLongLong(), akonadiTag.id());
-    }
-
-    void shouldCreateAkonadiTagFromTag_data()
-    {
-        // GIVEN
-        QTest::addColumn<QString>("name");
-        QTest::addColumn<qint64>("tagId");
-        QTest::addColumn<QByteArray>("tagGid");
-
-        const QByteArray namePhilo = "Philosophy";
-
-        QTest::newRow("nominal case") << QString(namePhilo) << qint64(42) << namePhilo;
-        QTest::newRow("null name case") << QString() << qint64(42) << QByteArray();
-        QTest::newRow("null tagId case") << QString(namePhilo) << qint64(-1) << namePhilo;
-        QTest::newRow("totally null tag case") << QString() << qint64(-1) << QByteArray();
-    }
-
-    void shouldCreateAkonadiTagFromTag()
-    {
-        // GIVEN
-        QFETCH(QString, name);
-        QFETCH(qint64, tagId);
-        QFETCH(QByteArray, tagGid);
-
-        // WHEN
-        auto tag = Domain::Tag::Ptr::create();
-        tag->setProperty("tagId", tagId);
-        tag->setName(name);
-
-        Akonadi::Serializer serializer;
-        Akonadi::Tag akonadiTag = serializer.createAkonadiTagFromTag(tag);
-
-        // THEN
-        QCOMPARE(akonadiTag.name(), name);
-        QCOMPARE(akonadiTag.isValid(), tagId > 0);
-
-        if (tagId > 0) {
-            QCOMPARE(akonadiTag.id(), tagId);
-            QCOMPARE(akonadiTag.gid(), tagGid);
-            QCOMPARE(akonadiTag.type(), QByteArray(Akonadi::Tag::PLAIN));
-        }
-    }
-
-    void shouldVerifyIfAnItemIsATagChild_data()
-    {
-        QTest::addColumn<Domain::Tag::Ptr>("tag");
-        QTest::addColumn<Akonadi::Item>("item");
-        QTest::addColumn<bool>("isChild");
-
-        // Create a Tag
-        auto tag = Domain::Tag::Ptr::create();
-        tag->setProperty("tagId", qint64(43));
-        Akonadi::Tag akonadiTag(Akonadi::Tag::Id(43));
-
-        Akonadi::Item unrelatedItem;
-        QTest::newRow("Unrelated item") << tag << unrelatedItem << false;
-
-        Akonadi::Item relatedItem;
-        relatedItem.setTag(akonadiTag);
-        QTest::newRow("Related item") << tag << relatedItem << true;
-
-        auto invalidTag = Domain::Tag::Ptr::create();
-        QTest::newRow("Invalid Tag") << invalidTag << relatedItem << false;
-
-        Akonadi::Item invalidItem;
-        QTest::newRow("Invalid Item") << tag << invalidItem << false;
-
-        QTest::newRow("both invalid") << invalidTag << invalidItem << false;
-    }
-
-    void shouldVerifyIfAnItemIsATagChild()
-    {
-        // GIVEN
-        QFETCH(Domain::Tag::Ptr, tag);
-        QFETCH(Akonadi::Item, item);
-        QFETCH(bool, isChild);
-
-        // WHEN
-        Akonadi::Serializer serializer;
-        bool value = serializer.isTagChild(tag, item);
-
-        // THEN
-        QCOMPARE(value, isChild);
     }
 
     // Investigation into how to differentiate all-day events from events with time,

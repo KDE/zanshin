@@ -32,7 +32,6 @@
 
 #include <KLocalizedString>
 
-#include "domain/note.h"
 #include "domain/task.h"
 
 #include "widgets/editorview.h"

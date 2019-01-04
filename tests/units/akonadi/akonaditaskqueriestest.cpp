@@ -30,7 +30,6 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
-#include "testlib/gennote.h"
 #include "testlib/gentag.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
@@ -1076,9 +1075,6 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withNoteContent());
         data.createCollection(GenCollection().withId(43).withRootAsParent().withTaskContent());
         data.createCollection(GenCollection().withId(44).withRootAsParent().withTaskContent().selected(false));
-
-        // One note in the first collection
-        data.createItem(GenNote().withId(42).withParent(42).withTitle(QStringLiteral("42")));
 
         // Two tasks in the second collection
         data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")));

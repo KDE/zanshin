@@ -587,24 +587,6 @@ private slots:
         QCOMPARE(result->data().size(), 0);
     }
 
-    void shouldLookInAllReportedForSelectedSources_data()
-    {
-        QTest::addColumn<int>("contentTypes");
-        QTest::addColumn<QStringList>("expectedNames");
-
-        auto expectedNames = QStringList();
-        expectedNames << QStringLiteral("42Task » 43Task") << QStringLiteral("44Note » 45Note");
-        QTest::newRow("tasks and notes") << int(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes) << expectedNames;
-
-        expectedNames.clear();
-        expectedNames << QStringLiteral("42Task » 43Task");
-        QTest::newRow("tasks") << int(Akonadi::StorageInterface::Tasks) << expectedNames;
-
-        expectedNames.clear();
-        expectedNames << QStringLiteral("44Note » 45Note");
-        QTest::newRow("notes") << int(Akonadi::StorageInterface::Notes) << expectedNames;
-    }
-
     void shouldLookInAllReportedForSelectedSources()
     {
         // GIVEN
@@ -617,8 +599,7 @@ private slots:
         data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
 
         // WHEN
-        QFETCH(int, contentTypes);
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::FetchContentTypes(contentTypes),
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
@@ -638,9 +619,7 @@ private slots:
                        [] (const Domain::DataSource::Ptr &source) { return source->name(); });
         actualNames.sort();
 
-        QFETCH(QStringList, expectedNames);
-        expectedNames.sort();
-        QCOMPARE(actualNames, expectedNames);
+        QCOMPARE(actualNames, QStringList() << QStringLiteral("42Task » 43Task"));
     }
 
     void shouldReactToCollectionAddsForSelectedSources()
@@ -648,7 +627,7 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
@@ -664,9 +643,8 @@ private slots:
         data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
 
         // THEN
-        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->name(), QStringLiteral("42Task » 43Task"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44Note » 45Note"));
     }
 
     void shouldReactToCollectionRemovesForSelectedSources()
@@ -680,14 +658,14 @@ private slots:
         data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
         data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAllSelected();
         TestHelpers::waitForEmptyJobQueue();
-        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().size(), 1);
 
         // WHEN
         data.removeCollection(Akonadi::Collection(43));
@@ -708,7 +686,7 @@ private slots:
         data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
         data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes,
+        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks,
                                                                                          Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
@@ -720,7 +698,7 @@ private slots:
                                           replaceHandlerCalled = true;
                                       });
         TestHelpers::waitForEmptyJobQueue();
-        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().size(), 1);
 
         // WHEN
         data.modifyCollection(GenCollection(data.collection(43)).withName(QStringLiteral("43TaskBis")));
@@ -728,9 +706,8 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->name(), QStringLiteral("42Task » 43TaskBis"));
-        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44Note » 45NoteBis"));
         QVERIFY(replaceHandlerCalled);
     }
 

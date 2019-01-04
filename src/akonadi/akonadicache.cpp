@@ -322,6 +322,5 @@ void Cache::onItemRemoved(const Item &item)
 bool Cache::matchCollection(StorageInterface::FetchContentTypes contentTypes, const Collection &collection) const
 {
     return (contentTypes == StorageInterface::AllContent)
-        || ((contentTypes & StorageInterface::Tasks) && m_serializer->isTaskCollection(collection))
-        || ((contentTypes & StorageInterface::Notes) && m_serializer->isNoteCollection(collection));
+        || ((contentTypes & StorageInterface::Tasks) && m_serializer->isTaskCollection(collection));
 }

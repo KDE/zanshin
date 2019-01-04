@@ -31,7 +31,6 @@
 #include "testlib/fakejob.h"
 
 #include "domain/task.h"
-#include "domain/note.h"
 
 #include "presentation/artifacteditormodel.h"
 #include "presentation/errorhandler.h"
@@ -167,66 +166,12 @@ private slots:
         QCOMPARE(am->data(am->index(1, 0), Qt::DecorationRole).value<QIcon>(), QIcon::fromTheme("text-html"));
     }
 
-    void shouldHaveNoteProperties()
-    {
-        // GIVEN
-        Presentation::ArtifactEditorModel model;
-        QSignalSpy textSpy(&model, &Presentation::ArtifactEditorModel::textChanged);
-        QSignalSpy titleSpy(&model, &Presentation::ArtifactEditorModel::titleChanged);
-        QSignalSpy doneSpy(&model, &Presentation::ArtifactEditorModel::doneChanged);
-        QSignalSpy startSpy(&model, &Presentation::ArtifactEditorModel::startDateChanged);
-        QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
-
-        auto note = Domain::Note::Ptr::create();
-        note->setText(QStringLiteral("description"));
-        note->setTitle(QStringLiteral("title"));
-
-        // WHEN
-        model.setArtifact(note);
-        // To make sure we don't signal too much
-        model.setText(note->text());
-        model.setTitle(note->title());
-
-        // THEN
-        QVERIFY(!model.hasTaskProperties());
-
-        QCOMPARE(textSpy.size(), 1);
-        QCOMPARE(textSpy.takeFirst().at(0).toString(), note->text());
-        QCOMPARE(model.property("text").toString(), note->text());
-
-        QCOMPARE(titleSpy.size(), 1);
-        QCOMPARE(titleSpy.takeFirst().at(0).toString(), note->title());
-        QCOMPARE(model.property("title").toString(), note->title());
-
-        QCOMPARE(doneSpy.size(), 1);
-        QCOMPARE(doneSpy.takeFirst().at(0).toBool(), false);
-        QCOMPARE(model.property("done").toBool(), false);
-
-        QCOMPARE(startSpy.size(), 1);
-        QVERIFY(startSpy.takeFirst().at(0).toDate().isNull());
-        QVERIFY(model.property("startDate").toDate().isNull());
-
-        QCOMPARE(dueSpy.size(), 1);
-        QVERIFY(dueSpy.takeFirst().at(0).toDate().isNull());
-        QVERIFY(model.property("dueDate").toDate().isNull());
-    }
-
     void shouldReactToArtifactPropertyChanges_data()
     {
         QTest::addColumn<Domain::Artifact::Ptr>("artifact");
         QTest::addColumn<QByteArray>("propertyName");
         QTest::addColumn<QVariant>("propertyValue");
         QTest::addColumn<QByteArray>("signal");
-
-        QTest::newRow("note text") << Domain::Artifact::Ptr(Domain::Note::Ptr::create())
-                                   << QByteArray("text")
-                                   << QVariant("new text")
-                                   << QByteArray(SIGNAL(textChanged(QString)));
-
-        QTest::newRow("note title") << Domain::Artifact::Ptr(Domain::Note::Ptr::create())
-                                    << QByteArray("title")
-                                    << QVariant("new title")
-                                    << QByteArray(SIGNAL(titleChanged(QString)));
 
         QTest::newRow("task text") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
                                    << QByteArray("text")

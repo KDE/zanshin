@@ -32,8 +32,6 @@
 #include "utils/mockobject.h"
 #include "utils/datetime.h"
 
-#include "domain/note.h"
-
 #include "presentation/availabletaskpagesmodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/errorhandler.h"
@@ -117,9 +115,8 @@ private slots:
         contextProvider->append(context1);
         contextProvider->append(context2);
 
-        // Two artifacts (used for dropping later on)
+        // One artifact (used for dropping later on)
         Domain::Artifact::Ptr taskToDrop(new Domain::Task);
-        Domain::Artifact::Ptr noteToDrop(new Domain::Note);
 
         Utils::MockObject<Domain::DataSourceQueries> dataSourceQueriesMock;
         dataSourceQueriesMock(&Domain::DataSourceQueries::findAllSelected).when().thenReturn(sourceResult);
@@ -310,37 +307,15 @@ private slots:
         QVERIFY(taskRepositoryMock(&Domain::TaskRepository::dissociateAll).when(taskToDrop.objectCast<Domain::Task>()).exactly(1));
 
         // WHEN
-        projectRepositoryMock(&Domain::ProjectRepository::associate).when(project12, noteToDrop).thenReturn(new FakeJob(this));
-        data.reset(new QMimeData);
-        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << noteToDrop));
-        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, project12Index);
-
-        // THEN
-        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project12, noteToDrop).exactly(1));
-
-        // WHEN
         Domain::Artifact::Ptr taskToDrop2(new Domain::Task);
-        Domain::Artifact::Ptr noteToDrop2(new Domain::Note);
         projectRepositoryMock(&Domain::ProjectRepository::associate).when(project11, taskToDrop2).thenReturn(new FakeJob(this));
-        projectRepositoryMock(&Domain::ProjectRepository::associate).when(project11, noteToDrop2).thenReturn(new FakeJob(this));
         data.reset(new QMimeData);
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop2 << noteToDrop2));
+        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop2));
         model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, project11Index);
 
         // THEN
         QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project11, taskToDrop2).exactly(1));
-        QVERIFY(projectRepositoryMock(&Domain::ProjectRepository::associate).when(project11, noteToDrop2).exactly(1));
-
-        // WHEN a task and a note are dropped on a context
-        data.reset(new QMimeData);
-        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Artifact::List() << taskToDrop2 << noteToDrop2));
-        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, context1Index);
-
-        // THEN
-        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::associate).when(context1, taskToDrop2.objectCast<Domain::Task>()).exactly(0));
 
         // WHEN two tasks are dropped on a context
         Domain::Task::Ptr taskToDrop3(new Domain::Task);

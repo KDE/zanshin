@@ -28,7 +28,6 @@
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Item>
-#include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
 #include <KMime/Message>
 #include <QMimeDatabase>
@@ -58,11 +57,6 @@ bool Serializer::representsCollection(SerializerInterface::QObjectPtr object, Co
 bool Serializer::representsItem(QObjectPtr object, Item item)
 {
     return object->property("itemId").toLongLong() == item.id();
-}
-
-bool Serializer::representsAkonadiTag(Domain::Tag::Ptr tag, Tag akonadiTag) const
-{
-    return tag->property("tagId").toLongLong() == akonadiTag.id();
 }
 
 QString Serializer::itemUid(const Item &item)
@@ -104,8 +98,6 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
 
     const auto mimeTypes = collection.contentMimeTypes();
     auto types = Domain::DataSource::ContentTypes();
-    if (mimeTypes.contains(NoteUtils::noteMimeType()))
-        types |= Domain::DataSource::Notes;
     if (mimeTypes.contains(KCalCore::Todo::todoMimeType()))
         types |= Domain::DataSource::Tasks;
     dataSource->setContentTypes(types);
@@ -140,18 +132,13 @@ Collection Serializer::createCollectionFromDataSource(Domain::DataSource::Ptr da
 
 bool Serializer::isSelectedCollection(Collection collection)
 {
-    if (!isNoteCollection(collection) && !isTaskCollection(collection))
+    if (!isTaskCollection(collection))
         return false;
 
     if (!collection.hasAttribute<Akonadi::ApplicationSelectedAttribute>())
         return true;
 
     return collection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected();
-}
-
-bool Akonadi::Serializer::isNoteCollection(Akonadi::Collection collection)
-{
-    return collection.contentMimeTypes().contains(NoteUtils::noteMimeType());
 }
 
 bool Akonadi::Serializer::isTaskCollection(Akonadi::Collection collection)
@@ -323,12 +310,6 @@ QString Serializer::relatedUidFromItem(Akonadi::Item item)
     if (isTaskItem(item)) {
         const auto todo = item.payload<KCalCore::Todo::Ptr>();
         return todo->relatedTo();
-
-    } else if (isNoteItem(item)) {
-        const auto message = item.payload<KMime::Message::Ptr>();
-        const auto relatedHeader = message->headerByType("X-Zanshin-RelatedProjectUid");
-        return relatedHeader ? relatedHeader->asUnicodeString() : QString();
-
     } else {
         return QString();
     }
@@ -348,17 +329,6 @@ void Serializer::updateItemProject(Item item, Domain::Project::Ptr project)
     if (isTaskItem(item)) {
         auto todo = item.payload<KCalCore::Todo::Ptr>();
         todo->setRelatedTo(project->property("todoUid").toString());
-
-    } else if (isNoteItem(item)) {
-        auto note = item.payload<KMime::Message::Ptr>();
-        (void)note->removeHeader("X-Zanshin-RelatedProjectUid");
-        const QByteArray parentUid = project->property("todoUid").toString().toUtf8();
-        if (!parentUid.isEmpty()) {
-            auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-            relatedHeader->from7BitString(parentUid);
-            note->appendHeader(relatedHeader);
-        }
-        note->assemble();
     }
 }
 
@@ -422,63 +392,6 @@ Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List 
                                  });
 
     return result;
-}
-
-bool Serializer::isNoteItem(Item item)
-{
-    return item.hasPayload<KMime::Message::Ptr>();
-}
-
-Domain::Note::Ptr Serializer::createNoteFromItem(Akonadi::Item item)
-{
-    if (!isNoteItem(item))
-        return Domain::Note::Ptr();
-
-    Domain::Note::Ptr note = Domain::Note::Ptr::create();
-    updateNoteFromItem(note, item);
-
-    return note;
-}
-
-void Serializer::updateNoteFromItem(Domain::Note::Ptr note, Item item)
-{
-    if (!isNoteItem(item))
-        return;
-
-    auto message = item.payload<KMime::Message::Ptr>();
-
-    note->setTitle(message->subject(true)->asUnicodeString());
-    note->setText(message->mainBodyPart()->decodedText());
-    note->setProperty("itemId", item.id());
-
-    if (auto relatedHeader = message->headerByType("X-Zanshin-RelatedProjectUid")) {
-        note->setProperty("relatedUid", relatedHeader->asUnicodeString());
-    } else {
-        note->setProperty("relatedUid", QVariant());
-    }
-}
-
-Item Serializer::createItemFromNote(Domain::Note::Ptr note)
-{
-    NoteUtils::NoteMessageWrapper builder;
-    builder.setTitle(note->title());
-    builder.setText(note->text() + '\n'); // Adding an extra '\n' because KMime always removes it...
-
-    KMime::Message::Ptr message = builder.message();
-
-    if (!note->property("relatedUid").toString().isEmpty()) {
-        auto relatedHeader = new KMime::Headers::Generic("X-Zanshin-RelatedProjectUid");
-        relatedHeader->from7BitString(note->property("relatedUid").toString().toUtf8());
-        message->appendHeader(relatedHeader);
-    }
-
-    Akonadi::Item item;
-    if (note->property("itemId").isValid()) {
-        item.setId(note->property("itemId").value<Akonadi::Item::Id>());
-    }
-    item.setMimeType(Akonadi::NoteUtils::noteMimeType());
-    item.setPayload(message);
-    return item;
 }
 
 bool Serializer::isProjectItem(Item item)
@@ -586,22 +499,9 @@ bool Serializer::hasContextTags(Item item) const
                        std::bind(Utils::mem_fn(&Serializer::isContext), this, _1));
 }
 
-bool Serializer::hasAkonadiTags(Item item) const
-{
-    using namespace std::placeholders;
-    Tag::List tags = item.tags();
-    return std::any_of(tags.constBegin(), tags.constEnd(),
-                       std::bind(Utils::mem_fn(&Serializer::isAkonadiTag), this, _1));
-}
-
 bool Serializer::isContext(const Akonadi::Tag &tag) const
 {
     return (tag.type() == Akonadi::SerializerInterface::contextTagType());
-}
-
-bool Serializer::isAkonadiTag(const Tag &tag) const
-{
-    return tag.type() == Akonadi::Tag::PLAIN;
 }
 
 bool Serializer::isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const
@@ -618,48 +518,4 @@ bool Serializer::isContextChild(Domain::Context::Ptr context, Item item) const
     Akonadi::Tag tag(tagId);
 
     return item.hasTag(tag);
-}
-
-Domain::Tag::Ptr Serializer::createTagFromAkonadiTag(Akonadi::Tag akonadiTag)
-{
-    if (!isAkonadiTag(akonadiTag))
-        return Domain::Tag::Ptr();
-
-    auto tag = Domain::Tag::Ptr::create();
-    updateTagFromAkonadiTag(tag, akonadiTag);
-    return tag;
-}
-
-void Serializer::updateTagFromAkonadiTag(Domain::Tag::Ptr tag, Akonadi::Tag akonadiTag)
-{
-    if (!isAkonadiTag(akonadiTag))
-        return;
-
-    tag->setProperty("tagId", akonadiTag.id());
-    tag->setName(akonadiTag.name());
-}
-
-Akonadi::Tag Serializer::createAkonadiTagFromTag(Domain::Tag::Ptr tag)
-{
-    auto akonadiTag = Akonadi::Tag();
-    akonadiTag.setName(tag->name());
-    akonadiTag.setType(Akonadi::Tag::PLAIN);
-    akonadiTag.setGid(QByteArray(tag->name().toLatin1()));
-
-    const auto tagProperty = tag->property("tagId");
-    if (tagProperty.isValid())
-        akonadiTag.setId(tagProperty.value<Akonadi::Tag::Id>());
-
-    return akonadiTag;
-}
-
-bool Serializer::isTagChild(Domain::Tag::Ptr tag, Akonadi::Item item)
-{
-    if (!tag->property("tagId").isValid())
-        return false;
-
-    auto tagId = tag->property("tagId").value<Akonadi::Tag::Id>();
-    Akonadi::Tag akonadiTag(tagId);
-
-    return item.hasTag(akonadiTag);
 }

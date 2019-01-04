@@ -43,7 +43,6 @@
 #include <AkonadiWidgets/AgentTypeDialog>
 
 #include <KCalCore/Todo>
-#include <Akonadi/Notes/NoteUtils>
 
 using namespace Akonadi;
 
@@ -151,8 +150,6 @@ void ConfigDialog::onConfigureTriggered()
 
 void ConfigDialog::applyContentTypes(AgentFilterProxyModel *model)
 {
-    if (m_types & StorageInterface::Notes)
-        model->addMimeTypeFilter(NoteUtils::noteMimeType());
     if (m_types & StorageInterface::Tasks)
         model->addMimeTypeFilter(KCalCore::Todo::todoMimeType());
 }
