@@ -15,7 +15,6 @@ set(presentation_SRCS
     runningtaskmodelinterface.cpp
     runningtaskmodel.cpp
     taskfilterproxymodel.cpp
-    tasklistmodel.cpp
     taskapplicationmodel.cpp
     workdaypagemodel.cpp
 )
