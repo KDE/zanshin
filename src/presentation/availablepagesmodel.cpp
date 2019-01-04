@@ -22,7 +22,7 @@
 */
 
 
-#include "availabletaskpagesmodel.h"
+#include "availablepagesmodel.h"
 
 #include <QIcon>
 #include <QMimeData>
@@ -48,7 +48,7 @@
 
 using namespace Presentation;
 
-AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
+AvailablePagesModel::AvailablePagesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
                                                  const Domain::ProjectQueries::Ptr &projectQueries,
                                                  const Domain::ProjectRepository::Ptr &projectRepository,
                                                  const Domain::ContextQueries::Ptr &contextQueries,
@@ -56,7 +56,7 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::DataSourceQueries
                                                  const Domain::TaskQueries::Ptr &taskQueries,
                                                  const Domain::TaskRepository::Ptr &taskRepository,
                                                  QObject *parent)
-    : AvailablePagesModelInterface(parent),
+    : QObject(parent),
       m_pageListModel(Q_NULLPTR),
       m_sortProxyModel(Q_NULLPTR),
       m_dataSourceQueries(dataSourceQueries),
@@ -69,7 +69,7 @@ AvailableTaskPagesModel::AvailableTaskPagesModel(const Domain::DataSourceQueries
 {
 }
 
-QAbstractItemModel *AvailableTaskPagesModel::pageListModel()
+QAbstractItemModel *AvailablePagesModel::pageListModel()
 {
     if (!m_pageListModel)
         m_pageListModel = createPageListModel();
@@ -82,22 +82,7 @@ QAbstractItemModel *AvailableTaskPagesModel::pageListModel()
     return m_sortProxyModel;
 }
 
-bool AvailableTaskPagesModel::hasProjectPages() const
-{
-    return true;
-}
-
-bool AvailableTaskPagesModel::hasContextPages() const
-{
-    return true;
-}
-
-bool AvailableTaskPagesModel::hasTagPages() const
-{
-    return false;
-}
-
-QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
+QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
 
@@ -136,7 +121,7 @@ QObject *AvailableTaskPagesModel::createPageForIndex(const QModelIndex &index)
     return Q_NULLPTR;
 }
 
-void AvailableTaskPagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
+void AvailablePagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
 {
     auto project = Domain::Project::Ptr::create();
     project->setName(name);
@@ -144,7 +129,7 @@ void AvailableTaskPagesModel::addProject(const QString &name, const Domain::Data
     installHandler(job, i18n("Cannot add project %1 in dataSource %2", name, source->name()));
 }
 
-void AvailableTaskPagesModel::addContext(const QString &name)
+void AvailablePagesModel::addContext(const QString &name)
 {
     auto context = Domain::Context::Ptr::create();
     context->setName(name);
@@ -152,12 +137,7 @@ void AvailableTaskPagesModel::addContext(const QString &name)
     installHandler(job, i18n("Cannot add context %1", name));
 }
 
-void AvailableTaskPagesModel::addTag(const QString &)
-{
-    qFatal("Not supported");
-}
-
-void AvailableTaskPagesModel::removeItem(const QModelIndex &index)
+void AvailablePagesModel::removeItem(const QModelIndex &index)
 {
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     if (auto project = object.objectCast<Domain::Project>()) {
@@ -171,7 +151,7 @@ void AvailableTaskPagesModel::removeItem(const QModelIndex &index)
     }
 }
 
-QAbstractItemModel *AvailableTaskPagesModel::createPageListModel()
+QAbstractItemModel *AvailablePagesModel::createPageListModel()
 {
     m_inboxObject = QObjectPtr::create();
     m_inboxObject->setProperty("name", i18n("Inbox"));

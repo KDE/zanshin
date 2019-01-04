@@ -78,7 +78,6 @@ private slots:
     void onCurrentChanged(const QModelIndex &current);
     void onAddProjectTriggered();
     void onAddContextTriggered();
-    void onAddTagTriggered();
     void onRemoveTriggered();
     void onGoPreviousTriggered();
     void onGoNextTriggered();
@@ -88,7 +87,6 @@ private slots:
 private:
     QAction *m_addProjectAction;
     QAction *m_addContextAction;
-    QAction *m_addTagAction;
     QAction *m_removeAction;
     QHash<QString, QAction*> m_actions;
 

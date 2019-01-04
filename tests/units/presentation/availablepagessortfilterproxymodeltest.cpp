@@ -36,8 +36,8 @@
 #include "domain/task.h"
 #include "domain/taskrepository.h"
 
+#include "presentation/availablepagesmodel.h"
 #include "presentation/availablepagessortfilterproxymodel.h"
-#include "presentation/availabletaskpagesmodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodelbase.h"

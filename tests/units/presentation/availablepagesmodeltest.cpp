@@ -32,7 +32,7 @@
 #include "utils/mockobject.h"
 #include "utils/datetime.h"
 
-#include "presentation/availabletaskpagesmodel.h"
+#include "presentation/availablepagesmodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/errorhandler.h"
 #include "presentation/projectpagemodel.h"
@@ -56,21 +56,10 @@ public:
     QString m_message;
 };
 
-class AvailableTaskPagesModelTest : public QObject
+class AvailablePagesModelTest : public QObject
 {
     Q_OBJECT
 private slots:
-    void shouldDeclareOnlyProjectAndContextPages()
-    {
-        // GIVEN
-        Presentation::AvailableTaskPagesModel pages({}, {}, {}, {}, {}, {}, {});
-
-        // THEN
-        QVERIFY(pages.hasProjectPages());
-        QVERIFY(pages.hasContextPages());
-        QVERIFY(!pages.hasTagPages());
-    }
-
     void shouldListAvailablePages()
     {
         // GIVEN
@@ -131,7 +120,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -382,7 +371,7 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -423,7 +412,7 @@ private slots:
 
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -478,7 +467,7 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -540,7 +529,7 @@ private slots:
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
 
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -578,7 +567,7 @@ private slots:
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailableTaskPagesModel pages(Domain::DataSourceQueries::Ptr(),
+        Presentation::AvailablePagesModel pages(Domain::DataSourceQueries::Ptr(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     Domain::ContextQueries::Ptr(),
@@ -609,7 +598,7 @@ private slots:
                                                                        any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(job);
 
-        Presentation::AvailableTaskPagesModel pages(Domain::DataSourceQueries::Ptr(),
+        Presentation::AvailablePagesModel pages(Domain::DataSourceQueries::Ptr(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     Domain::ContextQueries::Ptr(),
@@ -635,7 +624,7 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
-        Presentation::AvailableTaskPagesModel pages(Domain::DataSourceQueries::Ptr(),
+        Presentation::AvailablePagesModel pages(Domain::DataSourceQueries::Ptr(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     Domain::ContextQueries::Ptr(),
@@ -661,7 +650,7 @@ private slots:
         contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
                                                                  .thenReturn(job);
 
-        Presentation::AvailableTaskPagesModel pages(Domain::DataSourceQueries::Ptr(),
+        Presentation::AvailablePagesModel pages(Domain::DataSourceQueries::Ptr(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     Domain::ContextQueries::Ptr(),
@@ -716,7 +705,7 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -776,7 +765,7 @@ private slots:
         Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
         contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -830,7 +819,7 @@ private slots:
         dataSourceQueriesMock(&Domain::DataSourceQueries::findAllSelected).when().thenReturn(sourceResult);
 
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     contextQueriesMock.getInstance(),
@@ -878,7 +867,7 @@ private slots:
         dataSourceQueriesMock(&Domain::DataSourceQueries::findAllSelected).when().thenReturn(sourceResult);
 
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     Domain::ProjectRepository::Ptr(),
                                                     contextQueriesMock.getInstance(),
@@ -947,7 +936,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -1016,7 +1005,7 @@ private slots:
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -1090,7 +1079,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -1167,7 +1156,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -1224,7 +1213,7 @@ private slots:
         Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::AvailableTaskPagesModel pages(dataSourceQueriesMock.getInstance(),
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
                                                     Domain::ProjectQueries::Ptr(),
                                                     projectRepositoryMock.getInstance(),
                                                     contextQueriesMock.getInstance(),
@@ -1253,6 +1242,6 @@ private slots:
     }
 };
 
-ZANSHIN_TEST_MAIN(AvailableTaskPagesModelTest)
+ZANSHIN_TEST_MAIN(AvailablePagesModelTest)
 
-#include "availabletaskpagesmodeltest.moc"
+#include "availablepagesmodeltest.moc"

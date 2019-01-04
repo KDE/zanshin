@@ -35,7 +35,6 @@
 
 namespace Presentation {
 
-class AvailablePagesModelInterface;
 class ErrorHandler;
 
 class ApplicationModel : public QObject

@@ -28,7 +28,7 @@
 #include "utils/mockobject.h"
 
 #include "presentation/applicationmodel.h"
-#include "presentation/availablepagesmodelinterface.h"
+#include "presentation/availablepagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/editormodel.h"
 #include "presentation/pagemodel.h"
@@ -48,27 +48,6 @@ public:
     }
 
     QString m_message;
-};
-
-class FakeAvailablePagesModel : public Presentation::AvailablePagesModelInterface
-{
-    Q_OBJECT
-public:
-    explicit FakeAvailablePagesModel(QObject *parent = Q_NULLPTR)
-        : Presentation::AvailablePagesModelInterface(parent) {}
-
-    QAbstractItemModel *pageListModel() Q_DECL_OVERRIDE { return Q_NULLPTR; }
-
-    bool hasProjectPages() const Q_DECL_OVERRIDE { return false; }
-    bool hasContextPages() const Q_DECL_OVERRIDE { return false; }
-    bool hasTagPages() const Q_DECL_OVERRIDE { return false; }
-
-    QObject *createPageForIndex(const QModelIndex &) Q_DECL_OVERRIDE { return Q_NULLPTR; }
-
-    void addProject(const QString &, const Domain::DataSource::Ptr &) Q_DECL_OVERRIDE {}
-    void addContext(const QString &) Q_DECL_OVERRIDE {}
-    void addTag(const QString &) Q_DECL_OVERRIDE {}
-    void removeItem(const QModelIndex &) Q_DECL_OVERRIDE {}
 };
 
 class FakePageModel : public Presentation::PageModel
@@ -93,8 +72,16 @@ public:
     explicit ApplicationModelTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
-        Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModelInterface,
-                                                       FakeAvailablePagesModel>();
+        Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModel>(
+            [] (Utils::DependencyManager *) {
+                return new Presentation::AvailablePagesModel(Domain::DataSourceQueries::Ptr(),
+                                                             Domain::ProjectQueries::Ptr(),
+                                                             Domain::ProjectRepository::Ptr(),
+                                                             Domain::ContextQueries::Ptr(),
+                                                             Domain::ContextRepository::Ptr(),
+                                                             Domain::TaskQueries::Ptr(),
+                                                             Domain::TaskRepository::Ptr());
+        });
         Utils::DependencyManager::globalInstance().add<Presentation::EditorModel>(
             [] (Utils::DependencyManager *) {
                 return new Presentation::EditorModel;
@@ -128,7 +115,7 @@ private slots:
         QObject *available = app.availablePages();
 
         // THEN
-        QVERIFY(qobject_cast<FakeAvailablePagesModel*>(available));
+        QVERIFY(qobject_cast<Presentation::AvailablePagesModel*>(available));
     }
 
     void shouldProvideCurrentPage()
@@ -211,7 +198,7 @@ private slots:
 
         // THEN
         auto availableSource = static_cast<Presentation::AvailableSourcesModel*>(app.availableSources());
-        auto availablePages = static_cast<FakeAvailablePagesModel*>(app.availablePages());
+        auto availablePages = static_cast<Presentation::AvailablePagesModel*>(app.availablePages());
         auto editor = static_cast<Presentation::EditorModel*>(app.editor());
         auto page = static_cast<Presentation::PageModel*>(app.currentPage());
         QCOMPARE(availableSource->errorHandler(), &errorHandler);

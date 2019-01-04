@@ -51,7 +51,6 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     : QWidget(parent),
       m_addProjectAction(new QAction(this)),
       m_addContextAction(new QAction(this)),
-      m_addTagAction(new QAction(this)),
       m_removeAction(new QAction(this)),
       m_model(Q_NULLPTR),
       m_sources(Q_NULLPTR),
@@ -76,12 +75,6 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     m_addContextAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-notes")));
     connect(m_addContextAction, &QAction::triggered, this, &AvailablePagesView::onAddContextTriggered);
     actionBar->addAction(m_addContextAction);
-
-    m_addTagAction->setObjectName(QStringLiteral("addTagAction"));
-    m_addTagAction->setText(i18n("New Tag"));
-    m_addTagAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
-    connect(m_addTagAction, &QAction::triggered, this, &AvailablePagesView::onAddTagTriggered);
-    actionBar->addAction(m_addTagAction);
 
     m_removeAction->setObjectName(QStringLiteral("removeAction"));
     m_removeAction->setText(i18n("Remove Page"));
@@ -133,7 +126,6 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
 
     m_actions.insert(QStringLiteral("pages_project_add"), m_addProjectAction);
     m_actions.insert(QStringLiteral("pages_context_add"), m_addContextAction);
-    m_actions.insert(QStringLiteral("pages_tag_add"), m_addTagAction);
     m_actions.insert(QStringLiteral("pages_remove"), m_removeAction);
     m_actions.insert(QStringLiteral("pages_go_previous"), goPreviousAction);
     m_actions.insert(QStringLiteral("pages_go_next"), goNextAction);
@@ -193,10 +185,6 @@ void AvailablePagesView::setModel(QObject *model)
 
     if (!m_model)
         return;
-
-    m_addProjectAction->setVisible(m_model->property("hasProjectPages").toBool());
-    m_addContextAction->setVisible(m_model->property("hasContextPages").toBool());
-    m_addTagAction->setVisible(m_model->property("hasTagPages").toBool());
 
     QVariant modelProperty = m_model->property("pageListModel");
     if (modelProperty.canConvert<QAbstractItemModel*>()) {
@@ -269,15 +257,6 @@ void AvailablePagesView::onAddContextTriggered()
     const QString name = m_messageBoxInterface->askTextInput(this, i18n("Add Context"), i18n("Context name"));
     if (!name.isEmpty()) {
         QMetaObject::invokeMethod(m_model, "addContext",
-                                  Q_ARG(QString, name));
-    }
-}
-
-void AvailablePagesView::onAddTagTriggered()
-{
-    const QString name = m_messageBoxInterface->askTextInput(this, i18n("Add Tag"), i18n("Tag name"));
-    if (!name.isEmpty()) {
-        QMetaObject::invokeMethod(m_model, "addTag",
                                   Q_ARG(QString, name));
     }
 }

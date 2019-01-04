@@ -1,9 +1,9 @@
 zanshin_auto_tests(
   applicationmodeltest
   editormodeltest
+  availablepagesmodeltest
   availablepagessortfilterproxymodeltest
   availablesourcesmodeltest
-  availabletaskpagesmodeltest
   errorhandlertest
   errorhandlingmodelbasetest
   metatypestest

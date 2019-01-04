@@ -38,8 +38,8 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
 
+#include "presentation/availablepagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
-#include "presentation/availabletaskpagesmodel.h"
 #include "presentation/editormodel.h"
 #include "presentation/runningtaskmodel.h"
 
@@ -109,14 +109,14 @@ void App::initializeDependencies()
         return model;
     });
 
-    deps.add<Presentation::AvailablePagesModelInterface,
-             Presentation::AvailableTaskPagesModel(Domain::DataSourceQueries*,
-                                                   Domain::ProjectQueries*,
-                                                   Domain::ProjectRepository*,
-                                                   Domain::ContextQueries*,
-                                                   Domain::ContextRepository*,
-                                                   Domain::TaskQueries*,
-                                                   Domain::TaskRepository*)>();
+    deps.add<Presentation::AvailablePagesModel,
+             Presentation::AvailablePagesModel(Domain::DataSourceQueries*,
+                                               Domain::ProjectQueries*,
+                                               Domain::ProjectRepository*,
+                                               Domain::ContextQueries*,
+                                               Domain::ContextRepository*,
+                                               Domain::TaskQueries*,
+                                               Domain::TaskRepository*)>();
 
     deps.add<Presentation::AvailableSourcesModel,
              Presentation::AvailableSourcesModel(Domain::DataSourceQueries*,

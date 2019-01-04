@@ -185,8 +185,6 @@ private slots:
         QVERIFY(addProjectAction);
         auto addContextAction = available.findChild<QAction*>(QStringLiteral("addContextAction"));
         QVERIFY(addContextAction);
-        auto addTagAction = available.findChild<QAction*>(QStringLiteral("addTagAction"));
-        QVERIFY(addTagAction);
         auto removeAction = available.findChild<QAction*>(QStringLiteral("removeAction"));
         QVERIFY(removeAction);
         auto goPreviousAction = available.findChild<QAction*>(QStringLiteral("goPreviousAction"));
@@ -205,7 +203,6 @@ private slots:
         auto actions = available.globalActions();
         QCOMPARE(actions.value(QStringLiteral("pages_project_add")), addProjectAction);
         QCOMPARE(actions.value(QStringLiteral("pages_context_add")), addContextAction);
-        QCOMPARE(actions.value(QStringLiteral("pages_tag_add")), addTagAction);
         QCOMPARE(actions.value(QStringLiteral("pages_remove")), removeAction);
         QCOMPARE(actions.value(QStringLiteral("pages_go_previous")), goPreviousAction);
         QCOMPARE(actions.value(QStringLiteral("pages_go_next")), goNextAction);
@@ -226,35 +223,6 @@ private slots:
         QTest::newRow("projects !contexts tags") << true << false << true;
         QTest::newRow("projects contexts !tags") << true << true << false;
         QTest::newRow("projects contexts tags") << true << true << true;
-    }
-
-    void shouldShowOnlyAddActionsNeededByTheModel()
-    {
-        // GIVEN
-        QFETCH(bool, hasProjects);
-        QFETCH(bool, hasContexts);
-        QFETCH(bool, hasTags);
-
-        AvailablePagesModelStub stubPagesModel;
-        stubPagesModel.setProperty("hasProjectPages", hasProjects);
-        stubPagesModel.setProperty("hasContextPages", hasContexts);
-        stubPagesModel.setProperty("hasTagPages", hasTags);
-
-        Widgets::AvailablePagesView available;
-        auto addProjectAction = available.findChild<QAction*>(QStringLiteral("addProjectAction"));
-        QVERIFY(addProjectAction);
-        auto addContextAction = available.findChild<QAction*>(QStringLiteral("addContextAction"));
-        QVERIFY(addContextAction);
-        auto addTagAction = available.findChild<QAction*>(QStringLiteral("addTagAction"));
-        QVERIFY(addTagAction);
-
-        // WHEN
-        available.setModel(&stubPagesModel);
-
-        // THEN
-        QCOMPARE(addProjectAction->isVisible(), hasProjects);
-        QCOMPARE(addContextAction->isVisible(), hasContexts);
-        QCOMPARE(addTagAction->isVisible(), hasTags);
     }
 
     void shouldDisplayListFromPageModel()
@@ -365,35 +333,6 @@ private slots:
         QVERIFY(msgBoxStub->called());
         QCOMPARE(model.contextNames.size(), 1);
         QCOMPARE(model.contextNames.first(), QStringLiteral("Foo"));
-    }
-
-    void shouldAddNewTags()
-    {
-        // GIVEN
-        AvailablePagesModelStub model;
-        QStringListModel sourceModel;
-        auto dialogStub = NewProjectDialogStub::Ptr::create();
-
-        auto source = Domain::DataSource::Ptr::create();
-
-        auto msgBoxStub = MessageBoxStub::Ptr::create();
-        msgBoxStub->setTextInput(QStringLiteral("Foo"));
-
-        Widgets::AvailablePagesView available;
-        available.setModel(&model);
-        available.setProjectSourcesModel(&sourceModel);
-        available.setDefaultProjectSource(source);
-        available.setMessageBoxInterface(msgBoxStub);
-
-        auto addTagAction = available.findChild<QAction*>(QStringLiteral("addTagAction"));
-
-        // WHEN
-        addTagAction->trigger();
-
-        // THEN
-        QVERIFY(msgBoxStub->called());
-        QCOMPARE(model.tagNames.size(), 1);
-        QCOMPARE(model.tagNames.first(), QStringLiteral("Foo"));
     }
 
     void shouldRemoveAPage_data()

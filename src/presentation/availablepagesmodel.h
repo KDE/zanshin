@@ -25,7 +25,7 @@
 #ifndef PRESENTATION_AVAILABLETASKPAGESMODEL_H
 #define PRESENTATION_AVAILABLETASKPAGESMODEL_H
 
-#include "presentation/availablepagesmodelinterface.h"
+#include "presentation/errorhandlingmodelbase.h"
 
 #include "domain/contextqueries.h"
 #include "domain/contextrepository.h"
@@ -42,31 +42,27 @@ class QModelIndex;
 namespace Presentation {
 class AvailablePagesSortFilterProxyModel;
 
-class AvailableTaskPagesModel : public AvailablePagesModelInterface
+class AvailablePagesModel : public QObject, public ErrorHandlingModelBase
 {
     Q_OBJECT
+    Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
-    explicit AvailableTaskPagesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
-                                     const Domain::ProjectQueries::Ptr &projectQueries,
-                                     const Domain::ProjectRepository::Ptr &projectRepository,
-                                     const Domain::ContextQueries::Ptr &contextQueries,
-                                     const Domain::ContextRepository::Ptr &contextRepository,
-                                     const Domain::TaskQueries::Ptr &taskQueries,
-                                     const Domain::TaskRepository::Ptr &taskRepository,
-                                     QObject *parent = Q_NULLPTR);
+    explicit AvailablePagesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
+                                 const Domain::ProjectQueries::Ptr &projectQueries,
+                                 const Domain::ProjectRepository::Ptr &projectRepository,
+                                 const Domain::ContextQueries::Ptr &contextQueries,
+                                 const Domain::ContextRepository::Ptr &contextRepository,
+                                 const Domain::TaskQueries::Ptr &taskQueries,
+                                 const Domain::TaskRepository::Ptr &taskRepository,
+                                 QObject *parent = Q_NULLPTR);
 
-    QAbstractItemModel *pageListModel() Q_DECL_OVERRIDE;
+    QAbstractItemModel *pageListModel();
 
-    bool hasProjectPages() const Q_DECL_OVERRIDE;
-    bool hasContextPages() const Q_DECL_OVERRIDE;
-    bool hasTagPages() const Q_DECL_OVERRIDE;
+    Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index);
 
-    QObject *createPageForIndex(const QModelIndex &index) Q_DECL_OVERRIDE;
-
-    void addProject(const QString &name, const Domain::DataSource::Ptr &source) Q_DECL_OVERRIDE;
-    void addContext(const QString &name) Q_DECL_OVERRIDE;
-    void addTag(const QString &name) Q_DECL_OVERRIDE;
-    void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
+    void addProject(const QString &name, const Domain::DataSource::Ptr &source);
+    void addContext(const QString &name);
+    void removeItem(const QModelIndex &index);
 
 private:
     QAbstractItemModel *createPageListModel();

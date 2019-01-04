@@ -1,9 +1,8 @@
 set(presentation_SRCS
     applicationmodel.cpp
     editormodel.cpp
-    availablepagesmodelinterface.cpp
+    availablepagesmodel.cpp
     availablepagessortfilterproxymodel.cpp
-    availabletaskpagesmodel.cpp
     availablesourcesmodel.cpp
     contextpagemodel.cpp
     errorhandler.cpp
