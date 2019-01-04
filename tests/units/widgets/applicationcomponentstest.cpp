@@ -227,8 +227,6 @@ public:
             emit startDateChanged(value.toDate());
         else if (name == "dueDate")
             emit dueDateChanged(value.toDate());
-        else if (name == "hasTaskProperties")
-            emit hasTaskPropertiesChanged(value.toBool());
         else
             qFatal("Unsupported property %s", name.constData());
     }
@@ -241,7 +239,6 @@ public slots:
     void setDueDate(const QDate &due) { setPropertyAndSignal("dueDate", due); }
 
 signals:
-    void hasTaskPropertiesChanged(bool hasTaskProperties);
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
     void doneChanged(bool done);

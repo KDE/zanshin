@@ -1,6 +1,6 @@
 zanshin_auto_tests(
   applicationmodeltest
-  artifacteditormodeltest
+  editormodeltest
   artifactfilterproxymodeltest
   availablepagessortfilterproxymodeltest
   availablesourcesmodeltest

@@ -32,7 +32,7 @@
 
 #include "domain/task.h"
 
-#include "presentation/artifacteditormodel.h"
+#include "presentation/editormodel.h"
 #include "presentation/errorhandler.h"
 
 using namespace mockitopp;
@@ -48,29 +48,28 @@ public:
     QString m_message;
 };
 
-class ArtifactEditorModelTest : public QObject
+class EditorModelTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ArtifactEditorModelTest(QObject *parent = Q_NULLPTR)
+    explicit EditorModelTest(QObject *parent = Q_NULLPTR)
         : QObject(parent)
     {
         qRegisterMetaType<Domain::Task::Recurrence>();
-        Presentation::ArtifactEditorModel::setAutoSaveDelay(50);
+        Presentation::EditorModel::setAutoSaveDelay(50);
     }
 
 private slots:
     void shouldHaveEmptyDefaultState()
     {
         // GIVEN
-        Presentation::ArtifactEditorModel model;
+        Presentation::EditorModel model;
 
         // WHEN
         // Nothing
 
         // THEN
-        QVERIFY(model.artifact().isNull());
-        QVERIFY(!model.hasTaskProperties());
+        QVERIFY(model.task().isNull());
         QVERIFY(model.text().isEmpty());
         QVERIFY(model.title().isEmpty());
         QVERIFY(!model.isDone());
@@ -86,13 +85,13 @@ private slots:
     void shouldHaveTaskProperties()
     {
         // GIVEN
-        Presentation::ArtifactEditorModel model;
-        QSignalSpy textSpy(&model, &Presentation::ArtifactEditorModel::textChanged);
-        QSignalSpy titleSpy(&model, &Presentation::ArtifactEditorModel::titleChanged);
-        QSignalSpy doneSpy(&model, &Presentation::ArtifactEditorModel::doneChanged);
-        QSignalSpy startSpy(&model, &Presentation::ArtifactEditorModel::startDateChanged);
-        QSignalSpy dueSpy(&model, &Presentation::ArtifactEditorModel::dueDateChanged);
-        QSignalSpy recurrenceSpy(&model, &Presentation::ArtifactEditorModel::recurrenceChanged);
+        Presentation::EditorModel model;
+        QSignalSpy textSpy(&model, &Presentation::EditorModel::textChanged);
+        QSignalSpy titleSpy(&model, &Presentation::EditorModel::titleChanged);
+        QSignalSpy doneSpy(&model, &Presentation::EditorModel::doneChanged);
+        QSignalSpy startSpy(&model, &Presentation::EditorModel::startDateChanged);
+        QSignalSpy dueSpy(&model, &Presentation::EditorModel::dueDateChanged);
+        QSignalSpy recurrenceSpy(&model, &Presentation::EditorModel::recurrenceChanged);
         QSignalSpy attachmentSpy(model.attachmentModel(), &QAbstractItemModel::modelReset);
 
         Domain::Task::Attachments attachments;
@@ -121,7 +120,7 @@ private slots:
         task->setAttachments(attachments);
 
         // WHEN
-        model.setArtifact(task);
+        model.setTask(task);
         // To make sure we don't signal too much
         model.setText(task->text());
         model.setTitle(task->title());
@@ -131,8 +130,6 @@ private slots:
         model.setRecurrence(task->recurrence());
 
         // THEN
-        QVERIFY(model.hasTaskProperties());
-
         QCOMPARE(textSpy.size(), 1);
         QCOMPARE(textSpy.takeFirst().at(0).toString(), task->text());
         QCOMPARE(model.property("text").toString(), task->text());
@@ -166,58 +163,58 @@ private slots:
         QCOMPARE(am->data(am->index(1, 0), Qt::DecorationRole).value<QIcon>(), QIcon::fromTheme("text-html"));
     }
 
-    void shouldReactToArtifactPropertyChanges_data()
+    void shouldReactToTaskPropertyChanges_data()
     {
-        QTest::addColumn<Domain::Artifact::Ptr>("artifact");
+        QTest::addColumn<Domain::Task::Ptr>("task");
         QTest::addColumn<QByteArray>("propertyName");
         QTest::addColumn<QVariant>("propertyValue");
         QTest::addColumn<QByteArray>("signal");
 
-        QTest::newRow("task text") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
+        QTest::newRow("task text") << Domain::Task::Ptr(Domain::Task::Ptr::create())
                                    << QByteArray("text")
                                    << QVariant("new text")
                                    << QByteArray(SIGNAL(textChanged(QString)));
 
-        QTest::newRow("task title") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
+        QTest::newRow("task title") << Domain::Task::Ptr(Domain::Task::Ptr::create())
                                     << QByteArray("title")
                                     << QVariant("new title")
                                     << QByteArray(SIGNAL(titleChanged(QString)));
 
-        QTest::newRow("task done") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
+        QTest::newRow("task done") << Domain::Task::Ptr(Domain::Task::Ptr::create())
                                    << QByteArray("done")
                                    << QVariant(true)
                                    << QByteArray(SIGNAL(doneChanged(bool)));
 
-        QTest::newRow("task start") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
+        QTest::newRow("task start") << Domain::Task::Ptr(Domain::Task::Ptr::create())
                                     << QByteArray("startDate")
                                     << QVariant(QDate::currentDate())
                                     << QByteArray(SIGNAL(startDateChanged(QDate)));
 
-        QTest::newRow("task due") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
+        QTest::newRow("task due") << Domain::Task::Ptr(Domain::Task::Ptr::create())
                                   << QByteArray("dueDate")
                                   << QVariant(QDate::currentDate().addDays(2))
                                   << QByteArray(SIGNAL(dueDateChanged(QDate)));
 
-        QTest::newRow("task recurrence") << Domain::Artifact::Ptr(Domain::Task::Ptr::create())
+        QTest::newRow("task recurrence") << Domain::Task::Ptr(Domain::Task::Ptr::create())
                                   << QByteArray("recurrence")
                                   << QVariant::fromValue(Domain::Task::RecursDaily)
                                   << QByteArray(SIGNAL(recurrenceChanged(Domain::Task::Recurrence)));
     }
 
-    void shouldReactToArtifactPropertyChanges()
+    void shouldReactToTaskPropertyChanges()
     {
         // GIVEN
-        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(Domain::Task::Ptr, task);
         QFETCH(QByteArray, propertyName);
         QFETCH(QVariant, propertyValue);
         QFETCH(QByteArray, signal);
 
-        Presentation::ArtifactEditorModel model;
-        model.setArtifact(artifact);
+        Presentation::EditorModel model;
+        model.setTask(task);
         QSignalSpy spy(&model, signal.constData());
 
         // WHEN
-        artifact->setProperty(propertyName, propertyValue);
+        task->setProperty(propertyName, propertyValue);
 
         // THEN
         QCOMPARE(spy.size(), 1);
@@ -225,55 +222,55 @@ private slots:
         QCOMPARE(model.property(propertyName), propertyValue);
     }
 
-    void shouldNotReactToArtifactPropertyChangesWhenEditing_data()
+    void shouldNotReactToTaskPropertyChangesWhenEditing_data()
     {
-        shouldReactToArtifactPropertyChanges_data();
+        shouldReactToTaskPropertyChanges_data();
     }
 
-    void shouldNotReactToArtifactPropertyChangesWhenEditing()
+    void shouldNotReactToTaskPropertyChangesWhenEditing()
     {
         // GIVEN
-        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(Domain::Task::Ptr, task);
         QFETCH(QByteArray, propertyName);
         QFETCH(QVariant, propertyValue);
         QFETCH(QByteArray, signal);
 
-        Presentation::ArtifactEditorModel model;
-        model.setArtifact(artifact);
+        Presentation::EditorModel model;
+        model.setTask(task);
         QSignalSpy spy(&model, signal.constData());
 
         // WHEN
-        const auto oldPropertyValue = artifact->property(propertyName);
+        const auto oldPropertyValue = task->property(propertyName);
         model.setEditingInProgress(true);
-        artifact->setProperty(propertyName, propertyValue);
+        task->setProperty(propertyName, propertyValue);
 
         // THEN
         QVERIFY(spy.isEmpty());
         QCOMPARE(model.property(propertyName), oldPropertyValue);
     }
 
-    void shouldApplyChangesBackToArtifactAfterADelay_data()
+    void shouldApplyChangesBackToTaskAfterADelay_data()
     {
-        shouldReactToArtifactPropertyChanges_data();
+        shouldReactToTaskPropertyChanges_data();
     }
 
-    void shouldApplyChangesBackToArtifactAfterADelay()
+    void shouldApplyChangesBackToTaskAfterADelay()
     {
         // GIVEN
-        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(Domain::Task::Ptr, task);
         QFETCH(QByteArray, propertyName);
         QFETCH(QVariant, propertyValue);
         QFETCH(QByteArray, signal);
 
-        auto savedArtifact = Domain::Artifact::Ptr();
-        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
-            savedArtifact = artifact;
+        auto savedTask = Domain::Task::Ptr();
+        auto save = [this, &savedTask] (const Domain::Task::Ptr &task) {
+            savedTask = task;
             return new FakeJob(this);
         };
 
-        Presentation::ArtifactEditorModel model;
+        Presentation::EditorModel model;
         model.setSaveFunction(save);
-        model.setArtifact(artifact);
+        model.setTask(task);
         QSignalSpy spy(&model, signal.constData());
 
         // WHEN
@@ -283,40 +280,40 @@ private slots:
         QCOMPARE(spy.size(), 1);
         QCOMPARE(spy.takeFirst().at(0), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
-        QVERIFY(artifact->property(propertyName) != propertyValue);
-        QVERIFY(!savedArtifact);
+        QVERIFY(task->property(propertyName) != propertyValue);
+        QVERIFY(!savedTask);
 
         // WHEN (apply after delay)
         QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
-        QCOMPARE(savedArtifact, artifact);
-        QCOMPARE(artifact->property(propertyName), propertyValue);
+        QCOMPARE(savedTask, task);
+        QCOMPARE(task->property(propertyName), propertyValue);
     }
 
-    void shouldApplyChangesImmediatelyIfANewArtifactIsSet_data()
+    void shouldApplyChangesImmediatelyIfANewTaskIsSet_data()
     {
-        shouldReactToArtifactPropertyChanges_data();
+        shouldReactToTaskPropertyChanges_data();
     }
 
-    void shouldApplyChangesImmediatelyIfANewArtifactIsSet()
+    void shouldApplyChangesImmediatelyIfANewTaskIsSet()
     {
         // GIVEN
-        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(Domain::Task::Ptr, task);
         QFETCH(QByteArray, propertyName);
         QFETCH(QVariant, propertyValue);
         QFETCH(QByteArray, signal);
 
-        auto savedArtifact = Domain::Artifact::Ptr();
-        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
-            savedArtifact = artifact;
+        auto savedTask = Domain::Task::Ptr();
+        auto save = [this, &savedTask] (const Domain::Task::Ptr &task) {
+            savedTask = task;
             return new FakeJob(this);
         };
 
-        Presentation::ArtifactEditorModel model;
+        Presentation::EditorModel model;
         model.setSaveFunction(save);
         QVERIFY(model.hasSaveFunction());
-        model.setArtifact(artifact);
+        model.setTask(task);
         QSignalSpy spy(&model, signal.constData());
 
         // WHEN
@@ -326,48 +323,48 @@ private slots:
         QCOMPARE(spy.size(), 1);
         QCOMPARE(spy.takeFirst().at(0), propertyValue);
         QCOMPARE(model.property(propertyName), propertyValue);
-        QVERIFY(artifact->property(propertyName) != propertyValue);
-        QVERIFY(!savedArtifact);
+        QVERIFY(task->property(propertyName) != propertyValue);
+        QVERIFY(!savedTask);
 
         // WHEN (apply immediately)
-        model.setArtifact(Domain::Task::Ptr::create());
+        model.setTask(Domain::Task::Ptr::create());
 
         // THEN
-        QCOMPARE(savedArtifact, artifact);
-        QCOMPARE(artifact->property(propertyName), propertyValue);
-        savedArtifact.clear();
+        QCOMPARE(savedTask, task);
+        QCOMPARE(task->property(propertyName), propertyValue);
+        savedTask.clear();
 
         // WHEN (nothing else happens after a delay)
         QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
-        QVERIFY(!savedArtifact);
-        QCOMPARE(artifact->property(propertyName), propertyValue);
+        QVERIFY(!savedTask);
+        QCOMPARE(task->property(propertyName), propertyValue);
     }
 
     void shouldApplyChangesImmediatelyIfDeleted_data()
     {
-        shouldReactToArtifactPropertyChanges_data();
+        shouldReactToTaskPropertyChanges_data();
     }
 
     void shouldApplyChangesImmediatelyIfDeleted()
     {
         // GIVEN
-        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(Domain::Task::Ptr, task);
         QFETCH(QByteArray, propertyName);
         QFETCH(QVariant, propertyValue);
         QFETCH(QByteArray, signal);
 
-        auto savedArtifact = Domain::Artifact::Ptr();
-        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
-            savedArtifact = artifact;
+        auto savedTask = Domain::Task::Ptr();
+        auto save = [this, &savedTask] (const Domain::Task::Ptr &task) {
+            savedTask = task;
             return new FakeJob(this);
         };
 
-        auto model = new Presentation::ArtifactEditorModel;
+        auto model = new Presentation::EditorModel;
         model->setSaveFunction(save);
         QVERIFY(model->hasSaveFunction());
-        model->setArtifact(artifact);
+        model->setTask(task);
         QSignalSpy spy(model, signal.constData());
 
         // WHEN
@@ -377,15 +374,15 @@ private slots:
         QCOMPARE(spy.size(), 1);
         QCOMPARE(spy.takeFirst().at(0), propertyValue);
         QCOMPARE(model->property(propertyName), propertyValue);
-        QVERIFY(artifact->property(propertyName) != propertyValue);
-        QVERIFY(!savedArtifact);
+        QVERIFY(task->property(propertyName) != propertyValue);
+        QVERIFY(!savedTask);
 
         // WHEN (apply immediately)
         delete model;
 
         // THEN
-        QCOMPARE(savedArtifact, artifact);
-        QCOMPARE(artifact->property(propertyName), propertyValue);
+        QCOMPARE(savedTask, task);
+        QCOMPARE(task->property(propertyName), propertyValue);
     }
 
     void shouldGetAnErrorMessageWhenSaveFailed()
@@ -394,20 +391,20 @@ private slots:
         auto task = Domain::Task::Ptr::create();
         task->setTitle(QStringLiteral("Task 1"));
 
-        auto savedArtifact = Domain::Artifact::Ptr();
-        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
-            savedArtifact = artifact;
+        auto savedTask = Domain::Task::Ptr();
+        auto save = [this, &savedTask] (const Domain::Task::Ptr &task) {
+            savedTask = task;
             auto job = new FakeJob(this);
             job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
             return job;
         };
 
-        auto model = new Presentation::ArtifactEditorModel;
+        auto model = new Presentation::EditorModel;
         model->setSaveFunction(save);
         QVERIFY(model->hasSaveFunction());
         FakeErrorHandler errorHandler;
         model->setErrorHandler(&errorHandler);
-        model->setArtifact(task);
+        model->setTask(task);
 
         // WHEN
         model->setProperty("title", "Foo");
@@ -418,39 +415,39 @@ private slots:
         QCOMPARE(errorHandler.m_message, QStringLiteral("Cannot modify task Task 1: Foo"));
     }
 
-    void shouldDisconnectFromPreviousArtifact_data()
+    void shouldDisconnectFromPreviousTask_data()
     {
-        shouldReactToArtifactPropertyChanges_data();
+        shouldReactToTaskPropertyChanges_data();
     }
 
-    void shouldDisconnectFromPreviousArtifact()
+    void shouldDisconnectFromPreviousTask()
     {
         // GIVEN
-        QFETCH(Domain::Artifact::Ptr, artifact);
+        QFETCH(Domain::Task::Ptr, task);
         QFETCH(QByteArray, propertyName);
         QFETCH(QVariant, propertyValue);
         QFETCH(QByteArray, signal);
 
-        Presentation::ArtifactEditorModel model;
-        model.setArtifact(artifact);
+        Presentation::EditorModel model;
+        model.setTask(task);
         QSignalSpy spy(&model, signal.constData());
 
-        Domain::Artifact::Ptr newArtifact = Domain::Task::Ptr::create();
+        Domain::Task::Ptr newTask = Domain::Task::Ptr::create();
 
         // WHEN
-        model.setArtifact(newArtifact);
-        // modifying the *old* artifact should have no effect.
-        artifact->setProperty(propertyName, propertyValue);
+        model.setTask(newTask);
+        // modifying the *old* task should have no effect.
+        task->setProperty(propertyName, propertyValue);
 
         // THEN
-        QCOMPARE(spy.size(), 1); // emitted by setArtifact
-        QVERIFY(model.property(propertyName) != artifact->property(propertyName));
+        QCOMPARE(spy.size(), 1); // emitted by setTask
+        QVERIFY(model.property(propertyName) != task->property(propertyName));
     }
 
     void shouldAddAttachments()
     {
         // GIVEN
-        QTemporaryFile temporaryFile(QDir::tempPath() + "/artifacteditormodeltest_XXXXXX.txt");
+        QTemporaryFile temporaryFile(QDir::tempPath() + "/taskeditormodeltest_XXXXXX.txt");
         temporaryFile.open();
         temporaryFile.write("foo bar");
         temporaryFile.close();
@@ -458,15 +455,15 @@ private slots:
 
         auto task = Domain::Task::Ptr::create();
 
-        auto savedArtifact = Domain::Artifact::Ptr();
-        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
-            savedArtifact = artifact;
+        auto savedTask = Domain::Task::Ptr();
+        auto save = [this, &savedTask] (const Domain::Task::Ptr &task) {
+            savedTask = task;
             return new FakeJob(this);
         };
 
-        Presentation::ArtifactEditorModel model;
+        Presentation::EditorModel model;
         model.setSaveFunction(save);
-        model.setArtifact(task);
+        model.setTask(task);
 
         QSignalSpy spy(model.attachmentModel(), &QAbstractItemModel::modelReset);
 
@@ -476,13 +473,13 @@ private slots:
         // THEN
         QCOMPARE(spy.size(), 1);
         QCOMPARE(model.attachmentModel()->rowCount(), 1);
-        QVERIFY(!savedArtifact);
+        QVERIFY(!savedTask);
 
         // WHEN (nothing else happens after a delay)
         QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
-        QCOMPARE(savedArtifact.objectCast<Domain::Task>(), task);
+        QCOMPARE(savedTask.objectCast<Domain::Task>(), task);
         QCOMPARE(task->attachments().size(), 1);
         QCOMPARE(task->attachments().first().label(), fileName);
         QCOMPARE(task->attachments().first().mimeType(), QStringLiteral("text/plain"));
@@ -497,15 +494,15 @@ private slots:
         task->setAttachments(Domain::Task::Attachments() << Domain::Task::Attachment("foo")
                                                          << Domain::Task::Attachment("bar"));
 
-        auto savedArtifact = Domain::Artifact::Ptr();
-        auto save = [this, &savedArtifact] (const Domain::Artifact::Ptr &artifact) {
-            savedArtifact = artifact;
+        auto savedTask = Domain::Task::Ptr();
+        auto save = [this, &savedTask] (const Domain::Task::Ptr &task) {
+            savedTask = task;
             return new FakeJob(this);
         };
 
-        Presentation::ArtifactEditorModel model;
+        Presentation::EditorModel model;
         model.setSaveFunction(save);
-        model.setArtifact(task);
+        model.setTask(task);
 
         QSignalSpy spy(model.attachmentModel(), &QAbstractItemModel::modelReset);
 
@@ -515,18 +512,18 @@ private slots:
         // THEN
         QCOMPARE(spy.size(), 1);
         QCOMPARE(model.attachmentModel()->rowCount(), 1);
-        QVERIFY(!savedArtifact);
+        QVERIFY(!savedTask);
 
         // WHEN (nothing else happens after a delay)
         QTest::qWait(model.autoSaveDelay() + 50);
 
         // THEN
-        QCOMPARE(savedArtifact.objectCast<Domain::Task>(), task);
+        QCOMPARE(savedTask.objectCast<Domain::Task>(), task);
         QCOMPARE(task->attachments().size(), 1);
         QCOMPARE(task->attachments().first().data(), QByteArrayLiteral("bar"));
     }
 };
 
-ZANSHIN_TEST_MAIN(ArtifactEditorModelTest)
+ZANSHIN_TEST_MAIN(EditorModelTest)
 
-#include "artifacteditormodeltest.moc"
+#include "editormodeltest.moc"

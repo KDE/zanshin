@@ -60,13 +60,6 @@ EditorView::EditorView(QWidget *parent)
     ui->recurrenceCombo->addItem(i18n("Weekly"), QVariant::fromValue(Domain::Task::RecursWeekly));
     ui->recurrenceCombo->addItem(i18n("Monthly"), QVariant::fromValue(Domain::Task::RecursMonthly));
 
-    // Make sure our minimum width is always the one with
-    // the task group visible
-    ui->layout->activate();
-    setMinimumWidth(minimumSizeHint().width());
-
-    ui->taskGroup->setVisible(false);
-
     ui->textEdit->installEventFilter(this);
     ui->startDateEdit->installEventFilter(this);
     ui->dueDateEdit->installEventFilter(this);
@@ -130,19 +123,16 @@ void EditorView::setModel(QObject *model)
     connect(ui->attachmentList->selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &EditorView::onAttachmentSelectionChanged);
 
-    onArtifactChanged();
+    onTaskChanged();
     onTextOrTitleChanged();
-    onHasTaskPropertiesChanged();
     onStartDateChanged();
     onDueDateChanged();
     onDoneChanged();
     onRecurrenceChanged();
     onAttachmentSelectionChanged();
 
-    connect(m_model, SIGNAL(artifactChanged(Domain::Artifact::Ptr)),
-            this, SLOT(onArtifactChanged()));
-    connect(m_model, SIGNAL(hasTaskPropertiesChanged(bool)),
-            this, SLOT(onHasTaskPropertiesChanged()));
+    connect(m_model, SIGNAL(taskChanged(Domain::Task::Ptr)),
+            this, SLOT(onTaskChanged()));
     connect(m_model, SIGNAL(titleChanged(QString)), this, SLOT(onTextOrTitleChanged()));
     connect(m_model, SIGNAL(textChanged(QString)), this, SLOT(onTextOrTitleChanged()));
     connect(m_model, SIGNAL(startDateChanged(QDate)), this, SLOT(onStartDateChanged()));
@@ -183,15 +173,10 @@ bool EditorView::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
-void EditorView::onArtifactChanged()
+void EditorView::onTaskChanged()
 {
-    auto artifact = m_model->property("artifact").value<Domain::Artifact::Ptr>();
-    setEnabled(artifact);
-}
-
-void EditorView::onHasTaskPropertiesChanged()
-{
-    ui->taskGroup->setVisible(m_model->property("hasTaskProperties").toBool());
+    auto task = m_model->property("task").value<Domain::Task::Ptr>();
+    setEnabled(task);
 }
 
 void EditorView::onTextOrTitleChanged()

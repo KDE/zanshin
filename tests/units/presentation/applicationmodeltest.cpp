@@ -28,9 +28,9 @@
 #include "utils/mockobject.h"
 
 #include "presentation/applicationmodel.h"
-#include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
+#include "presentation/editormodel.h"
 #include "presentation/pagemodel.h"
 #include "presentation/errorhandler.h"
 
@@ -95,9 +95,9 @@ public:
     {
         Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModelInterface,
                                                        FakeAvailablePagesModel>();
-        Utils::DependencyManager::globalInstance().add<Presentation::ArtifactEditorModel>(
+        Utils::DependencyManager::globalInstance().add<Presentation::EditorModel>(
             [] (Utils::DependencyManager *) {
-                return new Presentation::ArtifactEditorModel;
+                return new Presentation::EditorModel;
         });
         Utils::DependencyManager::globalInstance().add<Presentation::AvailableSourcesModel>(
             [] (Utils::DependencyManager *) {
@@ -185,7 +185,7 @@ private slots:
         QVERIFY(!page);
     }
 
-    void shouldProvideArtifactEditorModel()
+    void shouldProvideEditorModel()
     {
         // GIVEN
         Presentation::ApplicationModel app;
@@ -194,7 +194,7 @@ private slots:
         QObject *page = app.editor();
 
         // THEN
-        QVERIFY(qobject_cast<Presentation::ArtifactEditorModel*>(page));
+        QVERIFY(qobject_cast<Presentation::EditorModel*>(page));
     }
 
     void shouldSetErrorHandlerToAllModels()
@@ -212,7 +212,7 @@ private slots:
         // THEN
         auto availableSource = static_cast<Presentation::AvailableSourcesModel*>(app.availableSources());
         auto availablePages = static_cast<FakeAvailablePagesModel*>(app.availablePages());
-        auto editor = static_cast<Presentation::ArtifactEditorModel*>(app.editor());
+        auto editor = static_cast<Presentation::EditorModel*>(app.editor());
         auto page = static_cast<Presentation::PageModel*>(app.currentPage());
         QCOMPARE(availableSource->errorHandler(), &errorHandler);
         QCOMPARE(availablePages->errorHandler(), &errorHandler);

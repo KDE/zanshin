@@ -56,8 +56,8 @@ public:
             return;
 
         setProperty(name, value);
-        if (name == "artifact")
-            emit artifactChanged(value.value<Domain::Artifact::Ptr>());
+        if (name == "task")
+            emit taskChanged(value.value<Domain::Task::Ptr>());
         else if (name == "text")
             emit textChanged(value.toString());
         else if (name == "title")
@@ -70,21 +70,19 @@ public:
             emit dueDateChanged(value.toDate());
         else if (name == "recurrence")
             emit recurrenceChanged(value.value<Domain::Task::Recurrence>());
-        else if (name == "hasTaskProperties")
-            emit hasTaskPropertiesChanged(value.toBool());
         else
             qFatal("Unsupported property %s", name.constData());
     }
 
 public slots:
-    void setArtifact(const Domain::Artifact::Ptr &artifact) { setPropertyAndSignal("artifact", QVariant::fromValue(artifact)); }
+    void setTask(const Domain::Task::Ptr &task) { setPropertyAndSignal("task", QVariant::fromValue(task)); }
     void setTitle(const QString &title) { setPropertyAndSignal("title", title); }
     void setText(const QString &text) { setPropertyAndSignal("text", text); }
     void setDone(bool done) { setPropertyAndSignal("done", done); }
     void setStartDate(const QDate &start) { setPropertyAndSignal("startDate", start); }
     void setDueDate(const QDate &due) { setPropertyAndSignal("dueDate", due); }
     void setRecurrence(Domain::Task::Recurrence recurrence) { setPropertyAndSignal("recurrence", QVariant::fromValue(recurrence)); }
-    void makeTaskAvailable() { setArtifact(Domain::Artifact::Ptr(new Domain::Task)); }
+    void makeTaskAvailable() { setTask(Domain::Task::Ptr(new Domain::Task)); }
 
     void addAttachment(const QString &fileName)
     {
@@ -99,8 +97,7 @@ public slots:
     }
 
 signals:
-    void artifactChanged(const Domain::Artifact::Ptr &artifact);
-    void hasTaskPropertiesChanged(bool hasTaskProperties);
+    void taskChanged(const Domain::Task::Ptr &task);
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
     void doneChanged(bool done);
@@ -135,31 +132,31 @@ private slots:
 
         auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
         QVERIFY(startDateEdit);
-        QVERIFY(!startDateEdit->isVisibleTo(&editor));
+        QVERIFY(startDateEdit->isVisibleTo(&editor));
 
         auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
         QVERIFY(dueDateEdit);
-        QVERIFY(!dueDateEdit->isVisibleTo(&editor));
+        QVERIFY(dueDateEdit->isVisibleTo(&editor));
 
         auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
         QVERIFY(recurrenceCombo);
-        QVERIFY(!recurrenceCombo->isVisibleTo(&editor));
+        QVERIFY(recurrenceCombo->isVisibleTo(&editor));
 
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         QVERIFY(doneButton);
-        QVERIFY(!doneButton->isVisibleTo(&editor));
+        QVERIFY(doneButton->isVisibleTo(&editor));
 
         auto attachmentList = editor.findChild<QListView*>(QStringLiteral("attachmentList"));
         QVERIFY(attachmentList);
-        QVERIFY(!attachmentList->isVisibleTo(&editor));
+        QVERIFY(attachmentList->isVisibleTo(&editor));
 
         auto addAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("addAttachmentButton"));
         QVERIFY(addAttachmentButton);
-        QVERIFY(!addAttachmentButton->isVisibleTo(&editor));
+        QVERIFY(addAttachmentButton->isVisibleTo(&editor));
 
         auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
         QVERIFY(removeAttachmentButton);
-        QVERIFY(!removeAttachmentButton->isVisibleTo(&editor));
+        QVERIFY(removeAttachmentButton->isVisibleTo(&editor));
     }
 
     void shouldNotCrashForNullModel()
@@ -169,7 +166,6 @@ private slots:
         EditorModelStub model;
         model.setTitle(QStringLiteral("Foo"));
         model.setText(QStringLiteral("Bar"));
-        model.setPropertyAndSignal("hasTaskProperties", true);
         editor.setModel(&model);
 
         auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
@@ -213,48 +209,7 @@ private slots:
         QVERIFY(!removeAttachmentButton->isVisibleTo(&editor));
     }
 
-    void shouldShowTaskPropertiesEditorsOnlyForTasks()
-    {
-        // GIVEN
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.setPropertyAndSignal("hasTaskProperties", true);
-
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
-        QVERIFY(!startDateEdit->isVisibleTo(&editor));
-
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
-        QVERIFY(!dueDateEdit->isVisibleTo(&editor));
-
-        auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
-        QVERIFY(recurrenceCombo);
-
-        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
-        QVERIFY(!doneButton->isVisibleTo(&editor));
-
-        auto attachmentList = editor.findChild<QListView*>(QStringLiteral("attachmentList"));
-        QVERIFY(attachmentList);
-
-        auto addAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("addAttachmentButton"));
-        QVERIFY(addAttachmentButton);
-
-        auto removeAttachmentButton = editor.findChild<QToolButton*>(QStringLiteral("removeAttachmentButton"));
-        QVERIFY(removeAttachmentButton);
-
-        // WHEN
-        editor.setModel(&model);
-
-        // THEN
-        QVERIFY(startDateEdit->isVisibleTo(&editor));
-        QVERIFY(dueDateEdit->isVisibleTo(&editor));
-        QVERIFY(recurrenceCombo->isVisibleTo(&editor));
-        QVERIFY(doneButton->isVisibleTo(&editor));
-        QVERIFY(attachmentList->isVisibleTo(&editor));
-        QVERIFY(addAttachmentButton->isVisibleTo(&editor));
-        QVERIFY(removeAttachmentButton->isVisibleTo(&editor));
-    }
-
-    void shouldBeEnabledOnlyWhenAnArtifactIsAvailable()
+    void shouldBeEnabledOnlyWhenAnTaskIsAvailable()
     {
         // GIVEN
         Widgets::EditorView editor;
@@ -268,14 +223,14 @@ private slots:
 
         // WHEN
         // like model.makeTaskAvailable() does:
-        Domain::Artifact::Ptr artifact(new Domain::Task);
-        model.setPropertyAndSignal("artifact", QVariant::fromValue(artifact));
+        Domain::Task::Ptr task(new Domain::Task);
+        model.setPropertyAndSignal("task", QVariant::fromValue(task));
 
         // THEN
         QVERIFY(editor.isEnabled());
 
         // WHEN
-        model.setPropertyAndSignal("artifact", QVariant::fromValue(Domain::Artifact::Ptr()));
+        model.setPropertyAndSignal("task", QVariant::fromValue(Domain::Task::Ptr()));
 
         // THEN
         QVERIFY(!editor.isEnabled());
@@ -284,7 +239,7 @@ private slots:
 
         // GIVEN
         EditorModelStub model2;
-        model2.setPropertyAndSignal("artifact", QVariant::fromValue(artifact));
+        model2.setPropertyAndSignal("task", QVariant::fromValue(task));
 
         // WHEN
         editor.setModel(&model2);
@@ -293,39 +248,12 @@ private slots:
         QVERIFY(editor.isEnabled());
     }
 
-    void shouldReactToHasTaskPropertiesChanged()
-    {
-        // GIVEN
-        Widgets::EditorView editor;
-        EditorModelStub model;
-        model.makeTaskAvailable();
-        editor.setModel(&model);
-
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
-        QVERIFY(!startDateEdit->isVisibleTo(&editor));
-
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
-        QVERIFY(!dueDateEdit->isVisibleTo(&editor));
-
-        auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
-        QVERIFY(!doneButton->isVisibleTo(&editor));
-
-        // WHEN
-        model.setPropertyAndSignal("hasTaskProperties", true);
-
-        // THEN
-        QVERIFY(startDateEdit->isVisibleTo(&editor));
-        QVERIFY(dueDateEdit->isVisibleTo(&editor));
-        QVERIFY(doneButton->isVisibleTo(&editor));
-    }
-
     void shouldDisplayModelProperties()
     {
         // GIVEN
         Widgets::EditorView editor;
         EditorModelStub model;
         model.makeTaskAvailable();
-        model.setProperty("hasTaskProperties", true);
         model.setProperty("title", "My title");
         model.setProperty("text", "\nMy text");
         model.setProperty("startDate", QDate::currentDate());

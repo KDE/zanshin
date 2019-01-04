@@ -86,7 +86,7 @@ protected:
 
 private slots:
     void onCurrentPageChanged(QObject *page);
-    void onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact);
+    void onCurrentTaskChanged(const Domain::Artifact::Ptr &artifact);
     void onMoveItemsRequested();
 
 private:

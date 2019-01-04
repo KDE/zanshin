@@ -22,7 +22,7 @@
 */
 
 
-#include "artifacteditormodel.h"
+#include "editormodel.h"
 
 #include <QAbstractListModel>
 #include <QDebug>
@@ -107,7 +107,7 @@ using namespace Presentation;
 
 static int s_autoSaveDelay = 500;
 
-ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
+EditorModel::EditorModel(QObject *parent)
     : QObject(parent),
       m_done(false),
       m_recurrence(Domain::Task::NoRecurrence),
@@ -117,21 +117,22 @@ ArtifactEditorModel::ArtifactEditorModel(QObject *parent)
       m_editingInProgress(false)
 {
     m_saveTimer->setSingleShot(true);
-    connect(m_saveTimer, &QTimer::timeout, this, &ArtifactEditorModel::save);
+    connect(m_saveTimer, &QTimer::timeout, this, &EditorModel::save);
 }
 
-ArtifactEditorModel::~ArtifactEditorModel()
+EditorModel::~EditorModel()
 {
     save();
 }
-Domain::Artifact::Ptr ArtifactEditorModel::artifact() const
+
+Domain::Task::Ptr EditorModel::task() const
 {
-    return m_artifact;
+    return m_task;
 }
 
-void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
+void EditorModel::setTask(const Domain::Task::Ptr &task)
 {
-    if (m_artifact == artifact)
+    if (m_task == task)
         return;
 
     save();
@@ -144,31 +145,28 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     m_recurrence = Domain::Task::NoRecurrence;
     m_attachmentModel->setTask(Domain::Task::Ptr());
 
-    if (m_artifact)
-        disconnect(m_artifact.data(), Q_NULLPTR, this, Q_NULLPTR);
+    if (m_task)
+        disconnect(m_task.data(), Q_NULLPTR, this, Q_NULLPTR);
 
-    m_artifact = artifact;
+    m_task = task;
 
-    if (m_artifact) {
-        m_text = m_artifact->text();
-        m_title = m_artifact->title();
+    if (m_task) {
+        m_text = m_task->text();
+        m_title = m_task->title();
+        m_done = m_task->isDone();
+        m_start = m_task->startDate();
+        m_due = m_task->dueDate();
+        m_recurrence = m_task->recurrence();
+        m_attachmentModel->setTask(m_task);
 
-        connect(m_artifact.data(), &Domain::Artifact::textChanged, this, &ArtifactEditorModel::onTextChanged);
-        connect(m_artifact.data(), &Domain::Artifact::titleChanged, this, &ArtifactEditorModel::onTitleChanged);
+        connect(m_task.data(), &Domain::Artifact::textChanged, this, &EditorModel::onTextChanged);
+        connect(m_task.data(), &Domain::Artifact::titleChanged, this, &EditorModel::onTitleChanged);
+        connect(m_task.data(), &Domain::Task::doneChanged, this, &EditorModel::onDoneChanged);
+        connect(m_task.data(), &Domain::Task::startDateChanged, this, &EditorModel::onStartDateChanged);
+        connect(m_task.data(), &Domain::Task::dueDateChanged, this, &EditorModel::onDueDateChanged);
+        connect(m_task.data(), &Domain::Task::recurrenceChanged, this, &EditorModel::onRecurrenceChanged);
     }
 
-    if (auto task = artifact.objectCast<Domain::Task>()) {
-        m_done = task->isDone();
-        m_start = task->startDate();
-        m_due = task->dueDate();
-        m_recurrence = task->recurrence();
-        m_attachmentModel->setTask(task);
-
-        connect(task.data(), &Domain::Task::doneChanged, this, &ArtifactEditorModel::onDoneChanged);
-        connect(task.data(), &Domain::Task::startDateChanged, this, &ArtifactEditorModel::onStartDateChanged);
-        connect(task.data(), &Domain::Task::dueDateChanged, this, &ArtifactEditorModel::onDueDateChanged);
-        connect(task.data(), &Domain::Task::recurrenceChanged, this, &ArtifactEditorModel::onRecurrenceChanged);
-    }
 
     emit textChanged(m_text);
     emit titleChanged(m_title);
@@ -176,76 +174,70 @@ void ArtifactEditorModel::setArtifact(const Domain::Artifact::Ptr &artifact)
     emit startDateChanged(m_start);
     emit dueDateChanged(m_due);
     emit recurrenceChanged(m_recurrence);
-    emit hasTaskPropertiesChanged(hasTaskProperties());
-    emit artifactChanged(m_artifact);
+    emit taskChanged(m_task);
 }
 
-bool ArtifactEditorModel::hasSaveFunction() const
+bool EditorModel::hasSaveFunction() const
 {
     return bool(m_saveFunction);
 }
 
-void ArtifactEditorModel::setSaveFunction(const SaveFunction &function)
+void EditorModel::setSaveFunction(const SaveFunction &function)
 {
     m_saveFunction = function;
 }
 
-bool ArtifactEditorModel::hasTaskProperties() const
-{
-    return m_artifact.objectCast<Domain::Task>();
-}
-
-QString ArtifactEditorModel::text() const
+QString EditorModel::text() const
 {
     return m_text;
 }
 
-QString ArtifactEditorModel::title() const
+QString EditorModel::title() const
 {
     return m_title;
 }
 
-bool ArtifactEditorModel::isDone() const
+bool EditorModel::isDone() const
 {
     return m_done;
 }
 
-QDate ArtifactEditorModel::startDate() const
+QDate EditorModel::startDate() const
 {
     return m_start;
 }
 
-QDate ArtifactEditorModel::dueDate() const
+QDate EditorModel::dueDate() const
 {
     return m_due;
 }
 
-Domain::Task::Recurrence ArtifactEditorModel::recurrence() const
+Domain::Task::Recurrence EditorModel::recurrence() const
 {
     return m_recurrence;
 }
 
-QAbstractItemModel *ArtifactEditorModel::attachmentModel() const
+QAbstractItemModel *EditorModel::attachmentModel() const
 {
     return m_attachmentModel;
 }
 
-int ArtifactEditorModel::autoSaveDelay()
+int EditorModel::autoSaveDelay()
 {
     return s_autoSaveDelay;
 }
 
-void ArtifactEditorModel::setAutoSaveDelay(int delay)
+void EditorModel::setAutoSaveDelay(int delay)
 {
     s_autoSaveDelay = delay;
 }
 
-bool ArtifactEditorModel::editingInProgress() const
+bool EditorModel::editingInProgress() const
 {
     return m_editingInProgress;
 }
 
-void ArtifactEditorModel::setText(const QString &text)
+void EditorModel::setText(const QString &text)
 {
     if (m_text == text)
         return;
@@ -253,7 +245,7 @@ void ArtifactEditorModel::setText(const QString &text)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::setTitle(const QString &title)
+void EditorModel::setTitle(const QString &title)
 {
     if (m_title == title)
         return;
@@ -261,7 +253,7 @@ void ArtifactEditorModel::setTitle(const QString &title)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::setDone(bool done)
+void EditorModel::setDone(bool done)
 {
     if (m_done == done)
         return;
@@ -269,7 +261,7 @@ void ArtifactEditorModel::setDone(bool done)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::setStartDate(const QDate &start)
+void EditorModel::setStartDate(const QDate &start)
 {
     if (m_start == start)
         return;
@@ -277,7 +269,7 @@ void ArtifactEditorModel::setStartDate(const QDate &start)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::setDueDate(const QDate &due)
+void EditorModel::setDueDate(const QDate &due)
 {
     if (m_due == due)
         return;
@@ -285,7 +277,7 @@ void ArtifactEditorModel::setDueDate(const QDate &due)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::setRecurrence(Domain::Task::Recurrence recurrence)
+void EditorModel::setRecurrence(Domain::Task::Recurrence recurrence)
 {
     if (m_recurrence == recurrence)
         return;
@@ -293,9 +285,9 @@ void ArtifactEditorModel::setRecurrence(Domain::Task::Recurrence recurrence)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::addAttachment(const QString &fileName)
+void EditorModel::addAttachment(const QString &fileName)
 {
-    auto task = m_artifact.objectCast<Domain::Task>();
+    auto task = m_task.objectCast<Domain::Task>();
     if (!task)
         return;
 
@@ -326,9 +318,9 @@ void ArtifactEditorModel::addAttachment(const QString &fileName)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::removeAttachment(const QModelIndex &index)
+void EditorModel::removeAttachment(const QModelIndex &index)
 {
-    auto task = m_artifact.objectCast<Domain::Task>();
+    auto task = m_task.objectCast<Domain::Task>();
     if (!task)
         return;
 
@@ -339,9 +331,9 @@ void ArtifactEditorModel::removeAttachment(const QModelIndex &index)
     setSaveNeeded(true);
 }
 
-void ArtifactEditorModel::openAttachment(const QModelIndex &index)
+void EditorModel::openAttachment(const QModelIndex &index)
 {
-    auto task = m_artifact.objectCast<Domain::Task>();
+    auto task = m_task.objectCast<Domain::Task>();
     Q_ASSERT(task);
     auto attachment = task->attachments().at(index.row());
 
@@ -358,71 +350,71 @@ void ArtifactEditorModel::openAttachment(const QModelIndex &index)
     QDesktopServices::openUrl(uri);
 }
 
-void ArtifactEditorModel::setEditingInProgress(bool editing)
+void EditorModel::setEditingInProgress(bool editing)
 {
     m_editingInProgress = editing;
 }
 
-void ArtifactEditorModel::onTextChanged(const QString &text)
+void EditorModel::onTextChanged(const QString &text)
 {
     if (!m_editingInProgress)
         applyNewText(text);
 }
 
-void ArtifactEditorModel::onTitleChanged(const QString &title)
+void EditorModel::onTitleChanged(const QString &title)
 {
     if (!m_editingInProgress)
         applyNewTitle(title);
 }
 
-void ArtifactEditorModel::onDoneChanged(bool done)
+void EditorModel::onDoneChanged(bool done)
 {
     if (!m_editingInProgress)
         applyNewDone(done);
 }
 
-void ArtifactEditorModel::onStartDateChanged(const QDate &start)
+void EditorModel::onStartDateChanged(const QDate &start)
 {
     if (!m_editingInProgress)
         applyNewStartDate(start);
 }
 
-void ArtifactEditorModel::onDueDateChanged(const QDate &due)
+void EditorModel::onDueDateChanged(const QDate &due)
 {
     if (!m_editingInProgress)
         applyNewDueDate(due);
 }
 
-void ArtifactEditorModel::onRecurrenceChanged(Domain::Task::Recurrence recurrence)
+void EditorModel::onRecurrenceChanged(Domain::Task::Recurrence recurrence)
 {
     if (!m_editingInProgress)
         applyNewRecurrence(recurrence);
 }
 
-void ArtifactEditorModel::save()
+void EditorModel::save()
 {
     if (!isSaveNeeded())
         return;
 
-    Q_ASSERT(m_artifact);
+    Q_ASSERT(m_task);
 
-    const auto currentTitle = m_artifact->title();
-    m_artifact->setTitle(m_title);
-    m_artifact->setText(m_text);
+    const auto currentTitle = m_task->title();
+    m_task->setTitle(m_title);
+    m_task->setText(m_text);
 
-    if (auto task = m_artifact.objectCast<Domain::Task>()) {
+    if (auto task = m_task.objectCast<Domain::Task>()) {
         task->setDone(m_done);
         task->setStartDate(m_start);
         task->setDueDate(m_due);
         task->setRecurrence(m_recurrence);
     }
 
-    const auto job = m_saveFunction(m_artifact);
+    const auto job = m_saveFunction(m_task);
     installHandler(job, i18n("Cannot modify task %1", currentTitle));
     setSaveNeeded(false);
 }
 
-void ArtifactEditorModel::setSaveNeeded(bool needed)
+void EditorModel::setSaveNeeded(bool needed)
 {
     if (needed)
         m_saveTimer->start(autoSaveDelay());
@@ -432,45 +424,45 @@ void ArtifactEditorModel::setSaveNeeded(bool needed)
     m_saveNeeded = needed;
 }
 
-bool ArtifactEditorModel::isSaveNeeded() const
+bool EditorModel::isSaveNeeded() const
 {
     return m_saveNeeded;
 }
 
-void ArtifactEditorModel::applyNewText(const QString &text)
+void EditorModel::applyNewText(const QString &text)
 {
     m_text = text;
     emit textChanged(m_text);
 }
 
-void ArtifactEditorModel::applyNewTitle(const QString &title)
+void EditorModel::applyNewTitle(const QString &title)
 {
     m_title = title;
     emit titleChanged(m_title);
 }
 
-void ArtifactEditorModel::applyNewDone(bool done)
+void EditorModel::applyNewDone(bool done)
 {
     m_done = done;
     emit doneChanged(m_done);
 }
 
-void ArtifactEditorModel::applyNewStartDate(const QDate &start)
+void EditorModel::applyNewStartDate(const QDate &start)
 {
     m_start = start;
     emit startDateChanged(m_start);
 }
 
-void ArtifactEditorModel::applyNewDueDate(const QDate &due)
+void EditorModel::applyNewDueDate(const QDate &due)
 {
     m_due = due;
     emit dueDateChanged(m_due);
 }
 
-void ArtifactEditorModel::applyNewRecurrence(Domain::Task::Recurrence recurrence)
+void EditorModel::applyNewRecurrence(Domain::Task::Recurrence recurrence)
 {
     m_recurrence = recurrence;
     emit recurrenceChanged(m_recurrence);
 }
 
-#include "artifacteditormodel.moc"
+#include "editormodel.moc"

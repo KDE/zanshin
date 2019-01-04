@@ -38,9 +38,9 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
 
-#include "presentation/artifacteditormodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/availabletaskpagesmodel.h"
+#include "presentation/editormodel.h"
 #include "presentation/runningtaskmodel.h"
 
 #include "utils/dependencymanager.h"
@@ -99,8 +99,8 @@ void App::initializeDependencies()
              Akonadi::TaskRepository(Akonadi::StorageInterface*,
                                      Akonadi::SerializerInterface*)>();
 
-    deps.add<Presentation::ArtifactEditorModel>([] (Utils::DependencyManager *deps) {
-        auto model = new Presentation::ArtifactEditorModel;
+    deps.add<Presentation::EditorModel>([] (Utils::DependencyManager *deps) {
+        auto model = new Presentation::EditorModel;
         auto repository = deps->create<Domain::TaskRepository>();
         model->setSaveFunction([repository] (const Domain::Artifact::Ptr &artifact) {
             auto task = artifact.objectCast<Domain::Task>();

@@ -453,7 +453,7 @@ void PageView::onCurrentChanged(const QModelIndex &current)
     if (!artifact)
         return;
 
-    emit currentArtifactChanged(artifact);
+    emit currentTaskChanged(artifact);
 }
 
 bool PageView::eventFilter(QObject *object, QEvent *event)

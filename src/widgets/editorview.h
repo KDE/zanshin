@@ -77,8 +77,7 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) Q_DECL_OVERRIDE;
 
 private slots:
-    void onArtifactChanged();
-    void onHasTaskPropertiesChanged();
+    void onTaskChanged();
     void onTextOrTitleChanged();
     void onStartDateChanged();
     void onDueDateChanged();

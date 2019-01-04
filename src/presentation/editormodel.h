@@ -22,8 +22,8 @@
 */
 
 
-#ifndef PRESENTATION_ARTIFACTEDITORMODEL_H
-#define PRESENTATION_ARTIFACTEDITORMODEL_H
+#ifndef PRESENTATION_EDITORMODEL_H
+#define PRESENTATION_EDITORMODEL_H
 
 #include <QDate>
 #include <QObject>
@@ -41,10 +41,10 @@ namespace Presentation {
 
 class AttachmentModel;
 
-class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
+class EditorModel : public QObject, public ErrorHandlingModelBase
 {
     Q_OBJECT
-    Q_PROPERTY(Domain::Artifact::Ptr artifact READ artifact WRITE setArtifact NOTIFY artifactChanged)
+    Q_PROPERTY(Domain::Task::Ptr task READ task WRITE setTask NOTIFY taskChanged)
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
@@ -52,22 +52,19 @@ class ArtifactEditorModel : public QObject, public ErrorHandlingModelBase
     Q_PROPERTY(QDate dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(Domain::Task::Recurrence recurrence READ recurrence WRITE setRecurrence NOTIFY recurrenceChanged)
     Q_PROPERTY(QAbstractItemModel* attachmentModel READ attachmentModel CONSTANT)
-    Q_PROPERTY(bool hasTaskProperties READ hasTaskProperties NOTIFY hasTaskPropertiesChanged)
     Q_PROPERTY(bool editingInProgress READ editingInProgress WRITE setEditingInProgress)
 
 public:
-    typedef std::function<KJob*(const Domain::Artifact::Ptr &)> SaveFunction;
+    typedef std::function<KJob*(const Domain::Task::Ptr &)> SaveFunction;
 
-    explicit ArtifactEditorModel(QObject *parent = Q_NULLPTR);
-    ~ArtifactEditorModel();
+    explicit EditorModel(QObject *parent = Q_NULLPTR);
+    ~EditorModel();
 
-    Domain::Artifact::Ptr artifact() const;
-    void setArtifact(const Domain::Artifact::Ptr &artifact);
+    Domain::Task::Ptr task() const;
+    void setTask(const Domain::Task::Ptr &task);
 
     bool hasSaveFunction() const;
     void setSaveFunction(const SaveFunction &function);
-
-    bool hasTaskProperties() const;
 
     QString text() const;
     QString title() const;
@@ -97,8 +94,7 @@ public slots:
     void setEditingInProgress(bool editingInProgress);
 
 signals:
-    void artifactChanged(const Domain::Artifact::Ptr &artifact);
-    void hasTaskPropertiesChanged(bool hasTaskProperties);
+    void taskChanged(const Domain::Task::Ptr &task);
     void textChanged(const QString &text);
     void titleChanged(const QString &title);
     void doneChanged(bool done);
@@ -126,7 +122,7 @@ private:
     void applyNewDueDate(const QDate &due);
     void applyNewRecurrence(Domain::Task::Recurrence recurrence);
 
-    Domain::Artifact::Ptr m_artifact;
+    Domain::Task::Ptr m_task;
     SaveFunction m_saveFunction;
 
     QString m_text;
@@ -144,4 +140,4 @@ private:
 
 }
 
-#endif // PRESENTATION_ARTIFACTEDITORMODEL_H
+#endif // PRESENTATION_EDITORMODEL_H

@@ -24,9 +24,9 @@
 
 #include "applicationmodel.h"
 
-#include "presentation/artifacteditormodel.h"
 #include "presentation/availablepagesmodelinterface.h"
 #include "presentation/availablesourcesmodel.h"
+#include "presentation/editormodel.h"
 #include "presentation/errorhandler.h"
 #include "presentation/pagemodel.h"
 
@@ -75,7 +75,7 @@ QObject *ApplicationModel::currentPage()
 QObject *ApplicationModel::editor()
 {
     if (!m_editor) {
-        auto model = Utils::DependencyManager::globalInstance().create<ArtifactEditorModel>();
+        auto model = Utils::DependencyManager::globalInstance().create<EditorModel>();
         model->setErrorHandler(errorHandler());
         m_editor = model;
     }
@@ -114,7 +114,7 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
     if (m_availablePages)
         m_availablePages.staticCast<AvailablePagesModelInterface>()->setErrorHandler(errorHandler);
     if (m_editor)
-        m_editor.staticCast<ArtifactEditorModel>()->setErrorHandler(errorHandler);
+        m_editor.staticCast<EditorModel>()->setErrorHandler(errorHandler);
     if (m_currentPage)
         m_currentPage.staticCast<PageModel>()->setErrorHandler(errorHandler);
 }

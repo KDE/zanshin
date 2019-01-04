@@ -72,7 +72,7 @@ public slots:
     void displayErrorMessage(const QString &message);
 
 signals:
-    void currentArtifactChanged(const Domain::Artifact::Ptr &artifact);
+    void currentTaskChanged(const Domain::Artifact::Ptr &artifact);
 
 private slots:
     void onReturnPressed();

@@ -136,7 +136,7 @@ PageView *ApplicationComponents::pageView() const
         self->m_pageView = pageView;
         self->m_errorHandler->setPageView(pageView);
 
-        connect(self->m_pageView, &PageView::currentArtifactChanged, self, &ApplicationComponents::onCurrentArtifactChanged);
+        connect(self->m_pageView, &PageView::currentTaskChanged, self, &ApplicationComponents::onCurrentTaskChanged);
     }
 
     return m_pageView;
@@ -231,7 +231,7 @@ void ApplicationComponents::onCurrentPageChanged(QObject *page)
         editorModel->setProperty("artifact", QVariant::fromValue(Domain::Artifact::Ptr()));
 }
 
-void ApplicationComponents::onCurrentArtifactChanged(const Domain::Artifact::Ptr &artifact)
+void ApplicationComponents::onCurrentTaskChanged(const Domain::Artifact::Ptr &artifact)
 {
     if (!m_model)
         return;
