@@ -22,8 +22,8 @@
 */
 
 
-#ifndef PRESENTATION_TASKINBOXPAGEMODEL_H
-#define PRESENTATION_TASKINBOXPAGEMODEL_H
+#ifndef PRESENTATION_INBOXPAGEMODEL_H
+#define PRESENTATION_INBOXPAGEMODEL_H
 
 #include "presentation/pagemodel.h"
 
@@ -32,13 +32,13 @@
 
 namespace Presentation {
 
-class TaskInboxPageModel : public PageModel
+class InboxPageModel : public PageModel
 {
     Q_OBJECT
 public:
-    explicit TaskInboxPageModel(const Domain::TaskQueries::Ptr &taskQueries,
-                                const Domain::TaskRepository::Ptr &taskRepository,
-                                QObject *parent = Q_NULLPTR);
+    explicit InboxPageModel(const Domain::TaskQueries::Ptr &taskQueries,
+                            const Domain::TaskRepository::Ptr &taskRepository,
+                            QObject *parent = Q_NULLPTR);
 
     Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) Q_DECL_OVERRIDE;
     void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
@@ -53,4 +53,4 @@ private:
 
 }
 
-#endif // PRESENTATION_TASKINBOXPAGEMODEL_H
+#endif // PRESENTATION_INBOXPAGEMODEL_H

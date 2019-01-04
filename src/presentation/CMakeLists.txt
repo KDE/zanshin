@@ -7,6 +7,7 @@ set(presentation_SRCS
     contextpagemodel.cpp
     errorhandler.cpp
     errorhandlingmodelbase.cpp
+    inboxpagemodel.cpp
     metatypes.cpp
     pagemodel.cpp
     projectpagemodel.cpp
@@ -14,7 +15,6 @@ set(presentation_SRCS
     runningtaskmodelinterface.cpp
     runningtaskmodel.cpp
     taskfilterproxymodel.cpp
-    taskinboxpagemodel.cpp
     tasklistmodel.cpp
     taskapplicationmodel.cpp
     workdaypagemodel.cpp

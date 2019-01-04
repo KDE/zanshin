@@ -6,6 +6,7 @@ zanshin_auto_tests(
   availablesourcesmodeltest
   errorhandlertest
   errorhandlingmodelbasetest
+  inboxpagemodeltest
   metatypestest
   pagemodeltest
   projectpagemodeltest
@@ -13,7 +14,6 @@ zanshin_auto_tests(
   runningtaskmodeltest
   taskapplicationmodeltest
   taskfilterproxymodeltest
-  taskinboxpagemodeltest
   tasklistmodeltest
   contextpagemodeltest
   workdaypagemodeltest

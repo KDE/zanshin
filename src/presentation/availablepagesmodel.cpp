@@ -37,10 +37,10 @@
 
 #include "presentation/availablepagessortfilterproxymodel.h"
 #include "presentation/contextpagemodel.h"
+#include "presentation/inboxpagemodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
-#include "presentation/taskinboxpagemodel.h"
 #include "presentation/workdaypagemodel.h"
 
 #include "utils/jobhandler.h"
@@ -49,13 +49,13 @@
 using namespace Presentation;
 
 AvailablePagesModel::AvailablePagesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
-                                                 const Domain::ProjectQueries::Ptr &projectQueries,
-                                                 const Domain::ProjectRepository::Ptr &projectRepository,
-                                                 const Domain::ContextQueries::Ptr &contextQueries,
-                                                 const Domain::ContextRepository::Ptr &contextRepository,
-                                                 const Domain::TaskQueries::Ptr &taskQueries,
-                                                 const Domain::TaskRepository::Ptr &taskRepository,
-                                                 QObject *parent)
+                                         const Domain::ProjectQueries::Ptr &projectQueries,
+                                         const Domain::ProjectRepository::Ptr &projectRepository,
+                                         const Domain::ContextQueries::Ptr &contextQueries,
+                                         const Domain::ContextRepository::Ptr &contextRepository,
+                                         const Domain::TaskQueries::Ptr &taskQueries,
+                                         const Domain::TaskRepository::Ptr &taskRepository,
+                                         QObject *parent)
     : QObject(parent),
       m_pageListModel(Q_NULLPTR),
       m_sortProxyModel(Q_NULLPTR),
@@ -87,9 +87,9 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
     QObjectPtr object = index.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
 
     if (object == m_inboxObject) {
-        auto inboxPageModel = new TaskInboxPageModel(m_taskQueries,
-                                                     m_taskRepository,
-                                                     this);
+        auto inboxPageModel = new InboxPageModel(m_taskQueries,
+                                                 m_taskRepository,
+                                                 this);
         inboxPageModel->setErrorHandler(errorHandler());
         return inboxPageModel;
     } else if (object == m_workdayObject) {

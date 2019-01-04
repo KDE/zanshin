@@ -22,7 +22,7 @@
 */
 
 
-#include "taskinboxpagemodel.h"
+#include "inboxpagemodel.h"
 
 #include <QMimeData>
 
@@ -32,16 +32,16 @@
 
 using namespace Presentation;
 
-TaskInboxPageModel::TaskInboxPageModel(const Domain::TaskQueries::Ptr &taskQueries,
-                                       const Domain::TaskRepository::Ptr &taskRepository,
-                                       QObject *parent)
+InboxPageModel::InboxPageModel(const Domain::TaskQueries::Ptr &taskQueries,
+                               const Domain::TaskRepository::Ptr &taskRepository,
+                               QObject *parent)
     : PageModel(parent),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository)
 {
 }
 
-Domain::Task::Ptr TaskInboxPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
+Domain::Task::Ptr InboxPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
     const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
     const auto parentTask = parentData.value<Domain::Task::Ptr>();
@@ -55,7 +55,7 @@ Domain::Task::Ptr TaskInboxPageModel::addItem(const QString &title, const QModel
     return task;
 }
 
-void TaskInboxPageModel::removeItem(const QModelIndex &index)
+void InboxPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto task = data.value<Domain::Task::Ptr>();
@@ -64,7 +64,7 @@ void TaskInboxPageModel::removeItem(const QModelIndex &index)
     installHandler(job, i18n("Cannot remove task %1 from Inbox", task->title()));
 }
 
-void TaskInboxPageModel::promoteItem(const QModelIndex &index)
+void InboxPageModel::promoteItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto task = data.value<Domain::Task::Ptr>();
@@ -73,7 +73,7 @@ void TaskInboxPageModel::promoteItem(const QModelIndex &index)
     installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
 }
 
-QAbstractItemModel *TaskInboxPageModel::createCentralListModel()
+QAbstractItemModel *InboxPageModel::createCentralListModel()
 {
     using AdditionalInfo = Domain::QueryResult<Domain::DataSource::Ptr>::Ptr;
 

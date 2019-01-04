@@ -32,7 +32,7 @@
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
 
-#include "presentation/taskinboxpagemodel.h"
+#include "presentation/inboxpagemodel.h"
 #include "presentation/errorhandler.h"
 
 #include "testlib/fakejob.h"
@@ -51,7 +51,7 @@ public:
     QString m_message;
 };
 
-class TaskInboxPageModelTest : public QObject
+class InboxPageModelTest : public QObject
 {
     Q_OBJECT
 private slots:
@@ -82,7 +82,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         // WHEN
@@ -181,7 +181,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(new FakeJob(this));
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         // WHEN
@@ -217,7 +217,7 @@ private slots:
                                                                       any<Domain::Task::Ptr>())
                                                                 .thenReturn(new FakeJob(this));
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         // WHEN
@@ -246,7 +246,7 @@ private slots:
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(job);
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         FakeErrorHandler errorHandler;
@@ -281,7 +281,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(new FakeJob(this));
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         // WHEN
@@ -316,7 +316,7 @@ private slots:
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(job);
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         inbox.setErrorHandler(&errorHandler);
@@ -351,7 +351,7 @@ private slots:
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(new FakeJob(this));
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         // WHEN
@@ -386,7 +386,7 @@ private slots:
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
         taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(job);
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
         FakeErrorHandler errorHandler;
         inbox.setErrorHandler(&errorHandler);
@@ -419,7 +419,7 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findDataSource).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         QAbstractItemModel *model = inbox.centralListModel();
@@ -458,7 +458,7 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findDataSource).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         QAbstractItemModel *model = inbox.centralListModel();
@@ -517,7 +517,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
-        Presentation::TaskInboxPageModel inbox(taskQueriesMock.getInstance(),
+        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
                                                taskRepositoryMock.getInstance());
 
         QAbstractItemModel *model = inbox.centralListModel();
@@ -545,6 +545,6 @@ private slots:
     }
 };
 
-ZANSHIN_TEST_MAIN(TaskInboxPageModelTest)
+ZANSHIN_TEST_MAIN(InboxPageModelTest)
 
-#include "taskinboxpagemodeltest.moc"
+#include "inboxpagemodeltest.moc"

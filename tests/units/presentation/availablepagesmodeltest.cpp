@@ -35,9 +35,9 @@
 #include "presentation/availablepagesmodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/errorhandler.h"
+#include "presentation/inboxpagemodel.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodelbase.h"
-#include "presentation/taskinboxpagemodel.h"
 #include "presentation/workdaypagemodel.h"
 
 #include "testlib/fakejob.h"
@@ -386,7 +386,7 @@ private slots:
         const QModelIndex inboxIndex = model->index(0, 0);
 
         QObject *inboxPage = pages.createPageForIndex(inboxIndex);
-        QVERIFY(qobject_cast<Presentation::TaskInboxPageModel*>(inboxPage));
+        QVERIFY(qobject_cast<Presentation::InboxPageModel*>(inboxPage));
     }
 
     void shouldCreateWorkdayPage()
