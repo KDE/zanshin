@@ -103,6 +103,7 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task3).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask11).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask12).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -333,6 +334,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
@@ -383,6 +385,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
@@ -431,6 +434,7 @@ private slots:
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(emptyResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::dissociate).when(childTask).thenReturn(new FakeJob(this));
@@ -474,6 +478,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
         taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task).thenReturn(new FakeJob(this));
@@ -553,6 +558,7 @@ private slots:
 
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task).thenReturn(childResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
@@ -610,6 +616,7 @@ private slots:
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(parentTask).thenReturn(childResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(childResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
@@ -677,6 +684,7 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(topLevelTask).thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
