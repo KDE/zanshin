@@ -27,13 +27,13 @@
 
 #include "domain/task.h"
 
-#include "presentation/artifactfilterproxymodel.h"
 #include "presentation/querytreemodelbase.h"
+#include "presentation/taskfilterproxymodel.h"
 #include "utils/datetime.h"
 
 Q_DECLARE_METATYPE(QList<QStandardItem*>)
 
-class ArtifactFilterProxyModelTest : public QObject
+class TaskFilterProxyModelTest : public QObject
 {
     Q_OBJECT
 private:
@@ -49,7 +49,7 @@ private:
 
         auto item = new QStandardItem;
         item->setData(task->title(), Qt::DisplayRole);
-        item->setData(QVariant::fromValue(Domain::Artifact::Ptr(task)),
+        item->setData(QVariant::fromValue(task),
                       Presentation::QueryTreeModelBase::ObjectRole);
         return item;
     }
@@ -62,11 +62,11 @@ private slots:
 
     void shouldHaveDefaultState()
     {
-        Presentation::ArtifactFilterProxyModel proxy;
+        Presentation::TaskFilterProxyModel proxy;
         QVERIFY(!proxy.sourceModel());
         QCOMPARE(proxy.sortColumn(), 0);
         QCOMPARE(proxy.sortOrder(), Qt::AscendingOrder);
-        QCOMPARE(proxy.sortType(), Presentation::ArtifactFilterProxyModel::TitleSort);
+        QCOMPARE(proxy.sortType(), Presentation::TaskFilterProxyModel::TitleSort);
         QCOMPARE(proxy.sortCaseSensitivity(), Qt::CaseInsensitive);
         QVERIFY(!proxy.showFutureTasks());
     }
@@ -79,7 +79,7 @@ private slots:
         input.appendRow(createTaskItem(QStringLiteral("2. Find Me"), QStringLiteral("bar")));
         input.appendRow(createTaskItem(QStringLiteral("3. baz"), QStringLiteral("baz")));
 
-        Presentation::ArtifactFilterProxyModel output;
+        Presentation::TaskFilterProxyModel output;
         output.setSourceModel(&input);
 
         // WHEN
@@ -101,7 +101,7 @@ private slots:
         input.appendRow(createTaskItem(QStringLiteral("3. future"), QStringLiteral(""), today.addDays(1)));
         input.appendRow(createTaskItem(QStringLiteral("4. whatever"), QStringLiteral("")));
 
-        Presentation::ArtifactFilterProxyModel output;
+        Presentation::TaskFilterProxyModel output;
         output.setSourceModel(&input);
 
         // WHEN
@@ -135,7 +135,7 @@ private slots:
         input.appendRow(item);
         input.appendRow(createTaskItem(QStringLiteral("3. baz"), QStringLiteral("baz")));
 
-        Presentation::ArtifactFilterProxyModel output;
+        Presentation::TaskFilterProxyModel output;
         output.setSourceModel(&input);
 
         // WHEN
@@ -165,7 +165,7 @@ private slots:
         expectedOutputTitles.clear();
         inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo")) << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"));
         expectedOutputTitles << QStringLiteral("B") << QStringLiteral("C");
-        QTest::newRow("title ascending") << int(Presentation::ArtifactFilterProxyModel::TitleSort)
+        QTest::newRow("title ascending") << int(Presentation::TaskFilterProxyModel::TitleSort)
                                          << int(Qt::AscendingOrder)
                                          << inputItems << expectedOutputTitles;
 
@@ -173,7 +173,7 @@ private slots:
         expectedOutputTitles.clear();
         inputItems << createTaskItem(QStringLiteral("B"), QStringLiteral("foo")) << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"));
         expectedOutputTitles << QStringLiteral("C") << QStringLiteral("B");
-        QTest::newRow("title descending") << int(Presentation::ArtifactFilterProxyModel::TitleSort)
+        QTest::newRow("title descending") << int(Presentation::TaskFilterProxyModel::TitleSort)
                                          << int(Qt::DescendingOrder)
                                          << inputItems << expectedOutputTitles;
 
@@ -183,7 +183,7 @@ private slots:
                    << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(2014, 03, 01))
                    << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
         expectedOutputTitles << QStringLiteral("C") << QStringLiteral("B") << QStringLiteral("D");
-        QTest::newRow("start date ascending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+        QTest::newRow("start date ascending") << int(Presentation::TaskFilterProxyModel::DateSort)
                                               << int(Qt::AscendingOrder)
                                               << inputItems << expectedOutputTitles;
 
@@ -193,7 +193,7 @@ private slots:
                    << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(2014, 03, 01))
                    << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
         expectedOutputTitles << QStringLiteral("D") << QStringLiteral("B") << QStringLiteral("C");
-        QTest::newRow("start date descending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+        QTest::newRow("start date descending") << int(Presentation::TaskFilterProxyModel::DateSort)
                                                << int(Qt::DescendingOrder)
                                                << inputItems << expectedOutputTitles;
 
@@ -203,7 +203,7 @@ private slots:
                    << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 01))
                    << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
         expectedOutputTitles << QStringLiteral("C") << QStringLiteral("B") << QStringLiteral("D");
-        QTest::newRow("due date ascending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+        QTest::newRow("due date ascending") << int(Presentation::TaskFilterProxyModel::DateSort)
                                             << int(Qt::AscendingOrder)
                                             << inputItems << expectedOutputTitles;
 
@@ -213,7 +213,7 @@ private slots:
                    << createTaskItem(QStringLiteral("C"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 01))
                    << createTaskItem(QStringLiteral("D"), QStringLiteral("foo"));
         expectedOutputTitles << QStringLiteral("D") << QStringLiteral("B") << QStringLiteral("C");
-        QTest::newRow("due date descending") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+        QTest::newRow("due date descending") << int(Presentation::TaskFilterProxyModel::DateSort)
                                              << int(Qt::DescendingOrder)
                                              << inputItems << expectedOutputTitles;
 
@@ -222,7 +222,7 @@ private slots:
         inputItems << createTaskItem(QStringLiteral("A"), QStringLiteral("foo"), QDate(2014, 03, 01), QDate(2014, 03, 10))
                    << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(2014, 03, 10), QDate(2014, 03, 01));
         expectedOutputTitles << QStringLiteral("B") << QStringLiteral("A");
-        QTest::newRow("due date over start date") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+        QTest::newRow("due date over start date") << int(Presentation::TaskFilterProxyModel::DateSort)
                                                   << int(Qt::AscendingOrder)
                                                   << inputItems << expectedOutputTitles;
 
@@ -231,7 +231,7 @@ private slots:
         inputItems << createTaskItem(QStringLiteral("A"), QStringLiteral("foo"), QDate(), QDate(2014, 03, 10))
                    << createTaskItem(QStringLiteral("B"), QStringLiteral("foo"), QDate(2014, 03, 01), QDate());
         expectedOutputTitles << QStringLiteral("B") << QStringLiteral("A");
-        QTest::newRow("due date over start date") << int(Presentation::ArtifactFilterProxyModel::DateSort)
+        QTest::newRow("due date over start date") << int(Presentation::TaskFilterProxyModel::DateSort)
                                                   << int(Qt::AscendingOrder)
                                                   << inputItems << expectedOutputTitles;
     }
@@ -250,9 +250,9 @@ private slots:
         }
 
         // WHEN
-        Presentation::ArtifactFilterProxyModel output;
+        Presentation::TaskFilterProxyModel output;
         output.setSourceModel(&input);
-        output.setSortType(Presentation::ArtifactFilterProxyModel::SortType(sortType));
+        output.setSortType(Presentation::TaskFilterProxyModel::SortType(sortType));
         output.setSortOrder(Qt::SortOrder(sortOrder));
 
         QStringList outputTitles;
@@ -266,6 +266,6 @@ private slots:
     }
 };
 
-ZANSHIN_TEST_MAIN(ArtifactFilterProxyModelTest)
+ZANSHIN_TEST_MAIN(TaskFilterProxyModelTest)
 
-#include "artifactfilterproxymodeltest.moc"
+#include "taskfilterproxymodeltest.moc"

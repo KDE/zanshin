@@ -1,7 +1,6 @@
 set(presentation_SRCS
     applicationmodel.cpp
     editormodel.cpp
-    artifactfilterproxymodel.cpp
     availablepagesmodelinterface.cpp
     availablepagessortfilterproxymodel.cpp
     availabletaskpagesmodel.cpp
@@ -15,6 +14,7 @@ set(presentation_SRCS
     querytreemodelbase.cpp
     runningtaskmodelinterface.cpp
     runningtaskmodel.cpp
+    taskfilterproxymodel.cpp
     taskinboxpagemodel.cpp
     tasklistmodel.cpp
     taskapplicationmodel.cpp

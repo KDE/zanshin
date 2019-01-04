@@ -22,11 +22,10 @@
 */
 
 
-#include "artifactfilterproxymodel.h"
+#include "taskfilterproxymodel.h"
 
 #include <limits>
 
-#include "domain/artifact.h"
 #include "domain/task.h"
 #include "utils/datetime.h"
 
@@ -34,7 +33,7 @@
 
 using namespace Presentation;
 
-ArtifactFilterProxyModel::ArtifactFilterProxyModel(QObject *parent)
+TaskFilterProxyModel::TaskFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent),
       m_sortType(TitleSort),
       m_showFuture(false)
@@ -44,28 +43,28 @@ ArtifactFilterProxyModel::ArtifactFilterProxyModel(QObject *parent)
     setSortOrder(Qt::AscendingOrder);
 }
 
-ArtifactFilterProxyModel::SortType ArtifactFilterProxyModel::sortType() const
+TaskFilterProxyModel::SortType TaskFilterProxyModel::sortType() const
 {
     return m_sortType;
 }
 
-void ArtifactFilterProxyModel::setSortType(ArtifactFilterProxyModel::SortType type)
+void TaskFilterProxyModel::setSortType(TaskFilterProxyModel::SortType type)
 {
     m_sortType = type;
     invalidate();
 }
 
-void ArtifactFilterProxyModel::setSortOrder(Qt::SortOrder order)
+void TaskFilterProxyModel::setSortOrder(Qt::SortOrder order)
 {
     sort(0, order);
 }
 
-bool ArtifactFilterProxyModel::showFutureTasks() const
+bool TaskFilterProxyModel::showFutureTasks() const
 {
     return m_showFuture;
 }
 
-void ArtifactFilterProxyModel::setShowFutureTasks(bool show)
+void TaskFilterProxyModel::setShowFutureTasks(bool show)
 {
     if (m_showFuture == show)
         return;
@@ -74,9 +73,8 @@ void ArtifactFilterProxyModel::setShowFutureTasks(bool show)
     invalidate();
 }
 
-static bool isFutureTask(const Domain::Artifact::Ptr &artifact)
+static bool isFutureTask(const Domain::Task::Ptr &task)
 {
-    auto task = artifact.objectCast<Domain::Task>();
     if (!task)
         return false;
 
@@ -86,17 +84,17 @@ static bool isFutureTask(const Domain::Artifact::Ptr &artifact)
     return task->startDate() > Utils::DateTime::currentDate();
 }
 
-bool ArtifactFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool TaskFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     const QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
-    const auto artifact = index.data(QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
-    if (artifact) {
+    const auto task = index.data(QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+    if (task) {
         QRegExp regexp = filterRegExp();
         regexp.setCaseSensitivity(Qt::CaseInsensitive);
 
-        if (artifact->title().contains(regexp)
-         || artifact->text().contains(regexp)) {
-            return m_showFuture || !isFutureTask(artifact);
+        if (task->title().contains(regexp)
+         || task->text().contains(regexp)) {
+            return m_showFuture || !isFutureTask(task);
         }
     }
 
@@ -116,16 +114,13 @@ static QDate validDate(const QDate &date = QDate())
     return QDate(80000, 12, 31);
 }
 
-bool ArtifactFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+bool TaskFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
     if (m_sortType != DateSort)
         return QSortFilterProxyModel::lessThan(left, right);
 
-    const auto leftArtifact = left.data(QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
-    const auto rightArtifact = right.data(QueryTreeModelBase::ObjectRole).value<Domain::Artifact::Ptr>();
-
-    const auto leftTask = leftArtifact.objectCast<Domain::Task>();
-    const auto rightTask = rightArtifact.objectCast<Domain::Task>();
+    const auto leftTask = left.data(QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+    const auto rightTask = right.data(QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
 
     // The addDays(1) is so that we sort non-tasks (e.g. notes) at the end
 

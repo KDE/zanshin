@@ -43,7 +43,7 @@
 
 #include "domain/task.h"
 
-#include "presentation/artifactfilterproxymodel.h"
+#include "presentation/taskfilterproxymodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
@@ -227,7 +227,7 @@ private slots:
         Widgets::PageView page;
         auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         QVERIFY(centralView);
-        auto proxyModel = qobject_cast<Presentation::ArtifactFilterProxyModel*>(centralView->model());
+        auto proxyModel = qobject_cast<Presentation::TaskFilterProxyModel*>(centralView->model());
         QVERIFY(proxyModel);
         QVERIFY(!proxyModel->sourceModel());
 
@@ -252,7 +252,7 @@ private slots:
 
         auto centralView = page.findChild<QTreeView*>(QStringLiteral("centralView"));
         QVERIFY(centralView);
-        auto proxyModel = qobject_cast<Presentation::ArtifactFilterProxyModel*>(centralView->model());
+        auto proxyModel = qobject_cast<Presentation::TaskFilterProxyModel*>(centralView->model());
         QVERIFY(proxyModel);
         QCOMPARE(proxyModel->sourceModel(), &model);
 

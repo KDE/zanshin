@@ -22,14 +22,14 @@
 */
 
 
-#ifndef PRESENTATION_ARTIFACTFILTERPROXYMODEL_H
-#define PRESENTATION_ARTIFACTFILTERPROXYMODEL_H
+#ifndef PRESENTATION_TASKFILTERPROXYMODEL_H
+#define PRESENTATION_TASKFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
 
 namespace Presentation {
 
-class ArtifactFilterProxyModel : public QSortFilterProxyModel
+class TaskFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_ENUMS(SortType)
@@ -39,7 +39,7 @@ public:
         DateSort
     };
 
-    explicit ArtifactFilterProxyModel(QObject *parent = Q_NULLPTR);
+    explicit TaskFilterProxyModel(QObject *parent = Q_NULLPTR);
 
     SortType sortType() const;
     void setSortType(SortType type);
@@ -60,4 +60,4 @@ private:
 
 }
 
-#endif // PRESENTATION_ARTIFACTFILTERPROXYMODEL_H
+#endif // PRESENTATION_TASKFILTERPROXYMODEL_H

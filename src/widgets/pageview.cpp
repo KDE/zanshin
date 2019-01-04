@@ -46,10 +46,10 @@
 
 #include <algorithm>
 
-#include "presentation/artifactfilterproxymodel.h"
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 #include "presentation/runningtaskmodelinterface.h"
+#include "presentation/taskfilterproxymodel.h"
 #include "utils/datetime.h"
 
 namespace Widgets {

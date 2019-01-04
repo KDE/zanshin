@@ -32,7 +32,7 @@ class QLineEdit;
 
 namespace Presentation
 {
-    class ArtifactFilterProxyModel;
+    class TaskFilterProxyModel;
 }
 
 namespace Ui {
@@ -48,7 +48,7 @@ public:
     explicit FilterWidget(QWidget *parent = Q_NULLPTR);
     ~FilterWidget();
 
-    Presentation::ArtifactFilterProxyModel *proxyModel() const;
+    Presentation::TaskFilterProxyModel *proxyModel() const;
 
 public slots:
     void clear();
@@ -62,7 +62,7 @@ private slots:
 
 private:
     Ui::FilterWidget *ui;
-    Presentation::ArtifactFilterProxyModel *m_model;
+    Presentation::TaskFilterProxyModel *m_model;
 };
 
 }

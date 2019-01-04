@@ -35,7 +35,7 @@
 
 #include "domain/task.h"
 
-#include "presentation/artifactfilterproxymodel.h"
+#include "presentation/taskfilterproxymodel.h"
 #include "presentation/querytreemodelbase.h"
 
 #include "widgets/applicationcomponents.h"

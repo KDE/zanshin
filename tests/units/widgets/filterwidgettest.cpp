@@ -32,7 +32,7 @@
 
 #include "widgets/filterwidget.h"
 
-#include "presentation/artifactfilterproxymodel.h"
+#include "presentation/taskfilterproxymodel.h"
 
 class FilterWidgetTest : public QObject
 {
@@ -46,7 +46,7 @@ private slots:
         QVERIFY(!filter.proxyModel()->sourceModel());
         QCOMPARE(filter.proxyModel()->filterRegExp(), QRegExp());
         QCOMPARE(filter.proxyModel()->sortOrder(), Qt::AscendingOrder);
-        QCOMPARE(filter.proxyModel()->sortType(), Presentation::ArtifactFilterProxyModel::TitleSort);
+        QCOMPARE(filter.proxyModel()->sortType(), Presentation::TaskFilterProxyModel::TitleSort);
 
         QLineEdit *filterEdit = filter.findChild<QLineEdit*>(QStringLiteral("filterEdit"));
         QVERIFY(filterEdit);
@@ -158,13 +158,13 @@ private slots:
         sortTypeCombo->setCurrentIndex(1);
 
         // THEN
-        QCOMPARE(filter.proxyModel()->sortType(), Presentation::ArtifactFilterProxyModel::DateSort);
+        QCOMPARE(filter.proxyModel()->sortType(), Presentation::TaskFilterProxyModel::DateSort);
 
         // WHEN
         sortTypeCombo->setCurrentIndex(0);
 
         // THEN
-        QCOMPARE(filter.proxyModel()->sortType(), Presentation::ArtifactFilterProxyModel::TitleSort);
+        QCOMPARE(filter.proxyModel()->sortType(), Presentation::TaskFilterProxyModel::TitleSort);
     }
 
     void shouldChangeSortOrder()

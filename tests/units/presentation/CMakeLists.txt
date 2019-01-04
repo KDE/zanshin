@@ -1,7 +1,6 @@
 zanshin_auto_tests(
   applicationmodeltest
   editormodeltest
-  artifactfilterproxymodeltest
   availablepagessortfilterproxymodeltest
   availablesourcesmodeltest
   availabletaskpagesmodeltest
@@ -13,6 +12,7 @@ zanshin_auto_tests(
   querytreemodeltest
   runningtaskmodeltest
   taskapplicationmodeltest
+  taskfilterproxymodeltest
   taskinboxpagemodeltest
   tasklistmodeltest
   contextpagemodeltest

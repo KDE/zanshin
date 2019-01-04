@@ -31,7 +31,7 @@
 
 #include <KLocalizedString>
 
-#include "presentation/artifactfilterproxymodel.h"
+#include "presentation/taskfilterproxymodel.h"
 
 #include "ui_filterwidget.h"
 
@@ -40,12 +40,12 @@ using namespace Widgets;
 FilterWidget::FilterWidget(QWidget *parent)
     : QWidget(parent),
       ui(new Ui::FilterWidget),
-      m_model(new Presentation::ArtifactFilterProxyModel(this))
+      m_model(new Presentation::TaskFilterProxyModel(this))
 {
     ui->setupUi(this);
     ui->extension->hide();
-    ui->sortTypeCombo->addItem(i18n("Sort by title"), Presentation::ArtifactFilterProxyModel::TitleSort);
-    ui->sortTypeCombo->addItem(i18n("Sort by date"), Presentation::ArtifactFilterProxyModel::DateSort);
+    ui->sortTypeCombo->addItem(i18n("Sort by title"), Presentation::TaskFilterProxyModel::TitleSort);
+    ui->sortTypeCombo->addItem(i18n("Sort by date"), Presentation::TaskFilterProxyModel::DateSort);
     setFocusProxy(ui->filterEdit);
 
     connect(ui->filterEdit, &QLineEdit::textChanged, this, &FilterWidget::onTextChanged);
@@ -59,7 +59,7 @@ FilterWidget::~FilterWidget()
     delete ui;
 }
 
-Presentation::ArtifactFilterProxyModel *FilterWidget::proxyModel() const
+Presentation::TaskFilterProxyModel *FilterWidget::proxyModel() const
 {
     return m_model;
 }
@@ -82,7 +82,7 @@ void FilterWidget::onTextChanged(const QString &text)
 void FilterWidget::onSortTypeChanged(int index)
 {
     const int data = ui->sortTypeCombo->itemData(index).toInt();
-    m_model->setSortType(Presentation::ArtifactFilterProxyModel::SortType(data));
+    m_model->setSortType(Presentation::TaskFilterProxyModel::SortType(data));
 }
 
 void FilterWidget::onAscendingClicked()
