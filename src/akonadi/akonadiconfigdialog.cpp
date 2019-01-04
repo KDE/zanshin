@@ -46,10 +46,9 @@
 
 using namespace Akonadi;
 
-ConfigDialog::ConfigDialog(StorageInterface::FetchContentTypes types, QWidget *parent)
+ConfigDialog::ConfigDialog(QWidget *parent)
     : QDialog(parent),
-      m_agentInstanceWidget(new Akonadi::AgentInstanceWidget(this)),
-      m_types(types)
+      m_agentInstanceWidget(new Akonadi::AgentInstanceWidget(this))
 {
     setWindowTitle(i18n("Configure"));
 
@@ -150,7 +149,6 @@ void ConfigDialog::onConfigureTriggered()
 
 void ConfigDialog::applyContentTypes(AgentFilterProxyModel *model)
 {
-    if (m_types & StorageInterface::Tasks)
-        model->addMimeTypeFilter(KCalCore::Todo::todoMimeType());
+    model->addMimeTypeFilter(KCalCore::Todo::todoMimeType());
 }
 

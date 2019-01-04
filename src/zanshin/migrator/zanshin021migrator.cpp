@@ -47,7 +47,7 @@ Zanshin021Migrator::SeenItemHash Zanshin021Migrator::fetchAllItems()
 {
     SeenItemHash hash;
 
-    auto collectionsJob = m_storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::StorageInterface::Tasks);
+    auto collectionsJob = m_storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
     collectionsJob->kjob()->exec();
 
     auto collections = collectionsJob->collections();

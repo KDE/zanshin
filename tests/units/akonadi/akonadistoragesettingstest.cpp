@@ -80,11 +80,9 @@ private slots:
         for (int i = 1; i <= 18; i += 3) {
             // WHEN
             g.writeEntry("defaultCollection", i);
-            g.writeEntry("defaultNoteCollection", i + 1);
 
             // THEN
-            QCOMPARE(StorageSettings::instance().defaultTaskCollection(), Collection(i));
-            QCOMPARE(StorageSettings::instance().defaultNoteCollection(), Collection(i + 1));
+            QCOMPARE(StorageSettings::instance().defaultCollection(), Collection(i));
         }
     }
 
@@ -96,20 +94,18 @@ private slots:
 
         for (int i = 1; i <= 18; i += 3) {
             // WHEN
-            StorageSettings::instance().setDefaultTaskCollection(Collection(i));
-            StorageSettings::instance().setDefaultNoteCollection(Collection(i + 1));
+            StorageSettings::instance().setDefaultCollection(Collection(i));
 
             // THEN
             QCOMPARE(g.readEntry("defaultCollection", -1), i);
-            QCOMPARE(g.readEntry("defaultNoteCollection", -1), i + 1);
         }
     }
 
     void shouldNotifyTaskCollectionChanges()
     {
         StorageSettings &settings = StorageSettings::instance();
-        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultTaskCollectionChanged);
-        settings.setDefaultTaskCollection(Collection(2));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultCollectionChanged);
+        settings.setDefaultCollection(Collection(2));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<Collection>(), Collection(2));
     }
@@ -117,27 +113,9 @@ private slots:
     void shouldNotNotifyIdenticalTaskCollectionChanges()
     {
         StorageSettings &settings = StorageSettings::instance();
-        settings.setDefaultTaskCollection(Collection(4));
-        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultTaskCollectionChanged);
-        settings.setDefaultTaskCollection(Collection(4));
-        QCOMPARE(spy.count(), 0);
-    }
-
-    void shouldNotifyNoteCollectionChanges()
-    {
-        StorageSettings &settings = StorageSettings::instance();
-        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultNoteCollectionChanged);
-        settings.setDefaultNoteCollection(Collection(2));
-        QCOMPARE(spy.count(), 1);
-        QCOMPARE(spy.first().first().value<Collection>(), Collection(2));
-    }
-
-    void shouldNotNotifyIdenticalNoteCollectionChanges()
-    {
-        StorageSettings &settings = StorageSettings::instance();
-        settings.setDefaultNoteCollection(Collection(4));
-        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultNoteCollectionChanged);
-        settings.setDefaultNoteCollection(Collection(4));
+        settings.setDefaultCollection(Collection(4));
+        QSignalSpy spy(&settings, &Akonadi::StorageSettings::defaultCollectionChanged);
+        settings.setDefaultCollection(Collection(4));
         QCOMPARE(spy.count(), 0);
     }
 };

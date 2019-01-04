@@ -74,37 +74,22 @@ void AkonadiStorageTestBase::shouldListCollections_data()
     QTest::addColumn<Akonadi::Collection>("collection");
     QTest::addColumn<QStringList>("expectedNames");
     QTest::addColumn<Akonadi::StorageInterface::FetchDepth>("depth");
-    QTest::addColumn<int>("contentTypes");
 
     QTest::newRow("all") << Akonadi::Collection::root()
-                         << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!", "Notes" })
-                         << Akonadi::Storage::Recursive
-                         << int(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks);
-
-    QTest::newRow("notes") << Akonadi::Collection::root()
-                           << QStringList({ "Notes" })
-                           << Akonadi::Storage::Recursive
-                           << int(Akonadi::StorageInterface::Notes);
-
-    QTest::newRow("tasks") << Akonadi::Collection::root()
-                           << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!" })
-                           << Akonadi::Storage::Recursive
-                           << int(Akonadi::StorageInterface::Tasks);
+                         << QStringList({ "Calendar1", "Calendar2", "Calendar3", "Change me!", "Destroy me!" })
+                         << Akonadi::Storage::Recursive;
 
     QTest::newRow("base type") << calendar2()
                                << QStringList({"Calendar2"})
-                               << Akonadi::Storage::Base
-                               << int(Akonadi::StorageInterface::Tasks);
+                               << Akonadi::Storage::Base;
 
     QTest::newRow("firstLevel type") << calendar1()
                                      << QStringList({"Calendar2"})
-                                     << Akonadi::Storage::FirstLevel
-                                     << int(Akonadi::StorageInterface::Tasks);
+                                     << Akonadi::Storage::FirstLevel;
 
     QTest::newRow("recursive type") << calendar1()
                                     << QStringList({"Calendar2", "Calendar3"})
-                                    << Akonadi::Storage::Recursive
-                                    << int(Akonadi::StorageInterface::Tasks);
+                                    << Akonadi::Storage::Recursive;
 }
 
 void AkonadiStorageTestBase::shouldListCollections()
@@ -113,13 +98,11 @@ void AkonadiStorageTestBase::shouldListCollections()
     QFETCH(Akonadi::Collection, collection);
     QFETCH(QStringList, expectedNames);
     QFETCH(Akonadi::StorageInterface::FetchDepth, depth);
-    QFETCH(int, contentTypes);
 
     auto storage = createStorage();
 
     // WHEN
-    auto job = storage->fetchCollections(collection, depth,
-                                         Akonadi::StorageInterface::FetchContentTypes(contentTypes));
+    auto job = storage->fetchCollections(collection, depth);
     AKVERIFYEXEC(job->kjob());
 
     // THEN
@@ -141,8 +124,7 @@ void AkonadiStorageTestBase::shouldRetrieveAllCollectionAncestors()
 
     // WHEN
     auto job = storage->fetchCollections(Akonadi::Collection::root(),
-                                         Akonadi::Storage::Recursive,
-                                         Akonadi::Storage::Tasks|Akonadi::Storage::Notes);
+                                         Akonadi::Storage::Recursive);
     AKVERIFYEXEC(job->kjob());
 
     // THEN
@@ -661,7 +643,7 @@ void AkonadiStorageTestBase::shouldNotifyTagChanged()
     QCOMPARE(notifiedTag.name(), tag.name());
 }
 
-void AkonadiStorageTestBase::shouldReadDefaultNoteCollectionFromSettings()
+void AkonadiStorageTestBase::shouldReadDefaultCollectionFromSettings()
 {
     // GIVEN
 
@@ -669,24 +651,10 @@ void AkonadiStorageTestBase::shouldReadDefaultNoteCollectionFromSettings()
     auto storage = createStorage();
 
     // WHEN
-    Akonadi::StorageSettings::instance().setDefaultNoteCollection(Akonadi::Collection(24));
+    Akonadi::StorageSettings::instance().setDefaultCollection(Akonadi::Collection(24));
 
     // THEN
-    QCOMPARE(storage->defaultNoteCollection(), Akonadi::Collection(24));
-}
-
-void AkonadiStorageTestBase::shouldReadDefaultTaskCollectionFromSettings()
-{
-    // GIVEN
-
-    // A storage implementation
-    auto storage = createStorage();
-
-    // WHEN
-    Akonadi::StorageSettings::instance().setDefaultTaskCollection(Akonadi::Collection(24));
-
-    // THEN
-    QCOMPARE(storage->defaultTaskCollection(), Akonadi::Collection(24));
+    QCOMPARE(storage->defaultCollection(), Akonadi::Collection(24));
 }
 
 void AkonadiStorageTestBase::shouldUpdateItem()
@@ -1193,7 +1161,7 @@ Akonadi::Collection AkonadiStorageTestBase::fetchCollectionByRID(const QString &
     Akonadi::Collection collection;
     collection.setRemoteId(remoteId);
 
-    auto job = createStorage()->fetchCollections(collection, Akonadi::StorageInterface::Base, Akonadi::StorageInterface::AllContent);
+    auto job = createStorage()->fetchCollections(collection, Akonadi::StorageInterface::Base);
     job->setResource(QStringLiteral("akonadi_knut_resource_0"));
     if (!job->kjob()->exec()) {
         qWarning() << job->kjob()->errorString() << remoteId;

@@ -23,8 +23,6 @@
 
 #include "akonadifakestorage.h"
 
-#include <Akonadi/Notes/NoteUtils>
-#include <KCalCore/Todo>
 #include <QTimer>
 
 #include "akonadi/akonadistoragesettings.h"
@@ -100,14 +98,9 @@ AkonadiFakeStorage::AkonadiFakeStorage(AkonadiFakeData *data)
 {
 }
 
-Akonadi::Collection AkonadiFakeStorage::defaultTaskCollection()
+Akonadi::Collection AkonadiFakeStorage::defaultCollection()
 {
-    return Akonadi::StorageSettings::instance().defaultTaskCollection();
-}
-
-Akonadi::Collection AkonadiFakeStorage::defaultNoteCollection()
-{
-    return Akonadi::StorageSettings::instance().defaultNoteCollection();
+    return Akonadi::StorageSettings::instance().defaultCollection();
 }
 
 KJob *AkonadiFakeStorage::createItem(Akonadi::Item item, Akonadi::Collection collection)
@@ -339,8 +332,7 @@ KJob *AkonadiFakeStorage::removeTag(Akonadi::Tag tag)
 }
 
 Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akonadi::Collection collection,
-                                                                           Akonadi::StorageInterface::FetchDepth depth,
-                                                                           Akonadi::StorageInterface::FetchContentTypes types)
+                                                                           Akonadi::StorageInterface::FetchDepth depth)
 {
     auto job = new AkonadiFakeCollectionFetchJob;
     auto children = Akonadi::Collection::List();
@@ -357,19 +349,7 @@ Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akona
         break;
     }
 
-    auto collections = Akonadi::Collection::List();
-
-    if (types == Akonadi::StorageInterface::AllContent) {
-        collections = children;
-    } else {
-        std::copy_if(children.constBegin(), children.constEnd(),
-                     std::back_inserter(collections),
-                     [types] (const Akonadi::Collection &col) {
-                         const auto mime = col.contentMimeTypes();
-                         return ((types & Akonadi::StorageInterface::Tasks) && mime.contains(KCalCore::Todo::todoMimeType()))
-                             || ((types & Akonadi::StorageInterface::Notes) && mime.contains(Akonadi::NoteUtils::noteMimeType()));
-                     });
-    }
+    auto collections = children;
 
     if (depth != Base) {
         // Replace the dummy parents in the ancestor chain with proper ones

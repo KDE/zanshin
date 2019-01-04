@@ -153,14 +153,9 @@ Storage::~Storage()
 {
 }
 
-Collection Storage::defaultTaskCollection()
+Collection Storage::defaultCollection()
 {
-    return StorageSettings::instance().defaultTaskCollection();
-}
-
-Collection Storage::defaultNoteCollection()
-{
-    return StorageSettings::instance().defaultNoteCollection();
+    return StorageSettings::instance().defaultCollection();
 }
 
 KJob *Storage::createItem(Item item, Collection collection)
@@ -228,16 +223,12 @@ KJob *Storage::removeTag(Tag tag)
     return new Akonadi::TagDeleteJob(tag);
 }
 
-CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
+CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
 {
-    QStringList contentMimeTypes;
-    if (types & Tasks)
-        contentMimeTypes << KCalCore::Todo::todoMimeType();
-
     auto job = new CollectionJob(collection, jobTypeFromDepth(depth));
 
     auto scope = job->fetchScope();
-    scope.setContentMimeTypes(contentMimeTypes);
+    scope.setContentMimeTypes({KCalCore::Todo::todoMimeType()});
     scope.setIncludeStatistics(true);
     scope.setAncestorRetrieval(CollectionFetchScope::All);
     scope.setListFilter(Akonadi::CollectionFetchScope::Display);

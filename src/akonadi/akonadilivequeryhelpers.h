@@ -44,11 +44,11 @@ public:
     LiveQueryHelpers(const SerializerInterface::Ptr &serializer,
                      const StorageInterface::Ptr &storage);
 
-    CollectionFetchFunction fetchAllCollections(StorageInterface::FetchContentTypes contentTypes) const;
-    CollectionFetchFunction fetchCollections(const Collection &root, StorageInterface::FetchContentTypes contentTypes) const;
+    CollectionFetchFunction fetchAllCollections() const;
+    CollectionFetchFunction fetchCollections(const Collection &root) const;
     CollectionFetchFunction fetchItemCollection(const Item &item) const;
 
-    ItemFetchFunction fetchItems(StorageInterface::FetchContentTypes contentTypes) const;
+    ItemFetchFunction fetchItems() const;
     ItemFetchFunction fetchItems(const Collection &collection) const;
     ItemFetchFunction fetchItems(const Tag &tag) const;
 

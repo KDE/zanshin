@@ -28,12 +28,10 @@
 
 using namespace Akonadi;
 
-DataSourceQueries::DataSourceQueries(StorageInterface::FetchContentTypes contentTypes,
-                                     const StorageInterface::Ptr &storage,
+DataSourceQueries::DataSourceQueries(const StorageInterface::Ptr &storage,
                                      const SerializerInterface::Ptr &serializer,
                                      const MonitorInterface::Ptr &monitor)
-    : m_contentTypes(contentTypes),
-      m_serializer(serializer),
+    : m_serializer(serializer),
       m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
@@ -45,27 +43,18 @@ DataSourceQueries::DataSourceQueries(StorageInterface::FetchContentTypes content
 bool DataSourceQueries::isDefaultSource(Domain::DataSource::Ptr source) const
 {
     auto sourceCollection = m_serializer->createCollectionFromDataSource(source);
-    if (m_contentTypes == StorageInterface::Tasks)
-        return sourceCollection == StorageSettings::instance().defaultTaskCollection();
-    else if (m_contentTypes == StorageInterface::Notes)
-        return sourceCollection == StorageSettings::instance().defaultNoteCollection();
-    else
-        return false;
+    return sourceCollection == StorageSettings::instance().defaultCollection();
 }
 
 void DataSourceQueries::changeDefaultSource(Domain::DataSource::Ptr source)
 {
     auto sourceCollection = m_serializer->createCollectionFromDataSource(source);
-    if (m_contentTypes == StorageInterface::Tasks) {
-        StorageSettings::instance().setDefaultTaskCollection(sourceCollection);
-    } else if (m_contentTypes == StorageInterface::Notes) {
-        StorageSettings::instance().setDefaultNoteCollection(sourceCollection);
-    }
+    StorageSettings::instance().setDefaultCollection(sourceCollection);
 }
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
 {
-    auto fetch = m_helpers->fetchCollections(Collection::root(), m_contentTypes);
+    auto fetch = m_helpers->fetchCollections(Collection::root());
     auto predicate = createFetchPredicate(Collection::root());
     m_integrator->bind("DataSourceQueries::findTopLevel", m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
@@ -75,7 +64,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findChildren[root.id()];
-    auto fetch = m_helpers->fetchCollections(root, m_contentTypes);
+    auto fetch = m_helpers->fetchCollections(root);
     auto predicate = createFetchPredicate(root);
     m_integrator->bind("DataSourceQueries::findChildren", query, fetch, predicate);
     return query->result();
@@ -83,7 +72,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findAllSelected() const
 {
-    auto fetch = m_helpers->fetchAllCollections(m_contentTypes);
+    auto fetch = m_helpers->fetchAllCollections();
     auto predicate = [this] (const Akonadi::Collection &collection) {
         return collection.isValid() && m_serializer->isSelectedCollection(collection);
     };

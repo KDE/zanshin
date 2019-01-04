@@ -40,38 +40,20 @@ StorageSettings &StorageSettings::instance()
     return i;
 }
 
-Collection StorageSettings::defaultNoteCollection()
-{
-    KConfigGroup config(KSharedConfig::openConfig(), "General");
-    Collection::Id id = config.readEntry("defaultNoteCollection", -1);
-    return Collection(id);
-}
-
-Collection StorageSettings::defaultTaskCollection()
+Collection StorageSettings::defaultCollection()
 {
     KConfigGroup config(KSharedConfig::openConfig(), "General");
     Collection::Id id = config.readEntry("defaultCollection", -1);
     return Collection(id);
 }
 
-void StorageSettings::setDefaultNoteCollection(const Collection &collection)
+void StorageSettings::setDefaultCollection(const Collection &collection)
 {
-    if (defaultNoteCollection() == collection)
-        return;
-
-    KConfigGroup config(KSharedConfig::openConfig(), "General");
-    config.writeEntry("defaultNoteCollection", QString::number(collection.id()));
-    config.sync();
-    emit defaultNoteCollectionChanged(collection);
-}
-
-void StorageSettings::setDefaultTaskCollection(const Collection &collection)
-{
-    if (defaultTaskCollection() == collection)
+    if (defaultCollection() == collection)
         return;
 
     KConfigGroup config(KSharedConfig::openConfig(), "General");
     config.writeEntry("defaultCollection", QString::number(collection.id()));
     config.sync();
-    emit defaultTaskCollectionChanged(collection);
+    emit defaultCollectionChanged(collection);
 }

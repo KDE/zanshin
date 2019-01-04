@@ -38,7 +38,7 @@ ProjectQueries::ProjectQueries(const StorageInterface::Ptr &storage, const Seria
 
 ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
 {
-    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto fetch = m_helpers->fetchItems();
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->isProjectItem(item);
     };

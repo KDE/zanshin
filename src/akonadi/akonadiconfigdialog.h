@@ -38,7 +38,7 @@ class ConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ConfigDialog(StorageInterface::FetchContentTypes types, QWidget *parent = 0);
+    explicit ConfigDialog(QWidget *parent = 0);
 
 private slots:
     void onAddTriggered();
@@ -49,7 +49,6 @@ private:
     void applyContentTypes(AgentFilterProxyModel *model);
 
     Akonadi::AgentInstanceWidget *m_agentInstanceWidget;
-    const StorageInterface::FetchContentTypes m_types;
 };
 
 }

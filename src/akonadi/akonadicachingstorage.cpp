@@ -42,15 +42,13 @@ public:
                               const Cache::Ptr &cache,
                               const Collection &collection,
                               StorageInterface::FetchDepth depth,
-                              StorageInterface::FetchContentTypes types,
                               QObject *parent = nullptr)
         : KCompositeJob(parent),
           m_started(false),
           m_storage(storage),
           m_cache(cache),
           m_collection(collection),
-          m_depth(depth),
-          m_types(types)
+          m_depth(depth)
     {
         QTimer::singleShot(0, this, &CachingCollectionFetchJob::start);
     }
@@ -60,12 +58,11 @@ public:
         if (m_started)
             return;
 
-        if (m_cache->isContentTypesPopulated(m_types)) {
+        if (m_cache->isCollectionListPopulated()) {
             QTimer::singleShot(0, this, &CachingCollectionFetchJob::retrieveFromCache);
         } else {
             auto job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                   Akonadi::StorageInterface::Recursive,
-                                                   m_types);
+                                                   Akonadi::StorageInterface::Recursive);
             job->setResource(m_resource);
             addSubjob(job->kjob());
         }
@@ -136,14 +133,14 @@ private:
                 parent = parent.parentCollection();
             }
         }
-        m_cache->setCollections(m_types, cachedCollections);
+        m_cache->setCollections(cachedCollections);
         m_collections = job->collections();
         emitResult();
     }
 
     void retrieveFromCache()
     {
-        m_collections = m_cache->collections(m_types);
+        m_collections = m_cache->collections();
         emitResult();
     }
 
@@ -153,7 +150,6 @@ private:
     QString m_resource;
     const Collection m_collection;
     const StorageInterface::FetchDepth m_depth;
-    const StorageInterface::FetchContentTypes m_types;
     Collection::List m_collections;
 };
 
@@ -448,14 +444,9 @@ CachingStorage::~CachingStorage()
 {
 }
 
-Collection CachingStorage::defaultTaskCollection()
+Collection CachingStorage::defaultCollection()
 {
-    return m_storage->defaultTaskCollection();
-}
-
-Collection CachingStorage::defaultNoteCollection()
-{
-    return m_storage->defaultNoteCollection();
+    return m_storage->defaultCollection();
 }
 
 KJob *CachingStorage::createItem(Item item, Collection collection)
@@ -523,9 +514,9 @@ KJob *CachingStorage::removeTag(Tag tag)
     return m_storage->removeTag(tag);
 }
 
-CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, FetchContentTypes types)
+CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
 {
-    return new CachingCollectionFetchJob(m_storage, m_cache, collection, depth, types);
+    return new CachingCollectionFetchJob(m_storage, m_cache, collection, depth);
 }
 
 ItemFetchJobInterface *CachingStorage::fetchItems(Collection collection)

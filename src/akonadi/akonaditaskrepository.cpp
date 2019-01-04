@@ -45,14 +45,13 @@ TaskRepository::TaskRepository(const StorageInterface::Ptr &storage,
 
 KJob *TaskRepository::createItem(const Item &item)
 {
-    const Akonadi::Collection defaultCollection = m_storage->defaultTaskCollection();
+    const Akonadi::Collection defaultCollection = m_storage->defaultCollection();
     if (defaultCollection.isValid()) {
         return m_storage->createItem(item, defaultCollection);
     } else {
         auto job = new CompositeJob();
         CollectionFetchJobInterface *fetchCollectionJob = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                      StorageInterface::Recursive,
-                                                                                      StorageInterface::Tasks);
+                                                                                      StorageInterface::Recursive);
         job->install(fetchCollectionJob->kjob(), [fetchCollectionJob, item, job, this] {
             if (fetchCollectionJob->kjob()->error() != KJob::NoError)
                 return;

@@ -60,7 +60,7 @@ void TaskQueries::setWorkdayPollInterval(int interval)
 
 TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 {
-    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto fetch = m_helpers->fetchItems();
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->isTaskItem(item);
     };
@@ -108,7 +108,7 @@ TaskQueries::DataSourceResult::Ptr TaskQueries::findDataSource(Domain::Task::Ptr
 
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
-    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto fetch = m_helpers->fetchItems();
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->relatedUidFromItem(item).isEmpty() && m_serializer->isTaskItem(item);
     };
@@ -118,7 +118,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 
 TaskQueries::TaskResult::Ptr TaskQueries::findInboxTopLevel() const
 {
-    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto fetch = m_helpers->fetchItems();
     auto predicate = [this] (const Akonadi::Item &item) {
         const bool excluded = !m_serializer->isTaskItem(item)
                            || !m_serializer->relatedUidFromItem(item).isEmpty();
@@ -136,7 +136,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
         m_today = Utils::DateTime::currentDate();
     }
 
-    auto fetch = m_helpers->fetchItems(StorageInterface::Tasks);
+    auto fetch = m_helpers->fetchItems();
     auto isWorkdayItem = [this] (const Akonadi::Item &item) {
         if (!m_serializer->isTaskItem(item))
             return false;

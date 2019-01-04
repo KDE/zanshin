@@ -71,7 +71,7 @@ private slots:
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().thenReturn(col);
+        storageMock(&Akonadi::StorageInterface::defaultCollection).when().thenReturn(col);
         storageMock(&Akonadi::StorageInterface::createItem).when(item, col)
                                                            .thenReturn(itemCreateJob);
 
@@ -86,7 +86,7 @@ private slots:
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultCollection).when().exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col).exactly(1));
     }
 
@@ -95,11 +95,11 @@ private slots:
         // GIVEN
 
         // A few collections
-        auto col1 = Akonadi::Collection(42);
+        auto col1 = Akonadi::Collection(GenCollection().withId(42).withRootAsParent().withTaskContent());
         col1.setRights(Akonadi::Collection::ReadOnly);
-        auto col2 = Akonadi::Collection(43);
+        auto col2 = Akonadi::Collection(GenCollection().withId(43).withRootAsParent().withTaskContent());
         col2.setRights(Akonadi::Collection::CanCreateItem);
-        auto col3 = Akonadi::Collection(44);
+        auto col3 = Akonadi::Collection(GenCollection().withId(44).withRootAsParent().withTaskContent());
         col3.setRights(Akonadi::Collection::CanCreateItem
                      | Akonadi::Collection::CanChangeItem
                      | Akonadi::Collection::CanDeleteItem);
@@ -115,10 +115,9 @@ private slots:
 
         // Storage mock returning the create job and with no default collection
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().thenReturn(Akonadi::Collection());
+        storageMock(&Akonadi::StorageInterface::defaultCollection).when().thenReturn(Akonadi::Collection());
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Recursive)
                                                                  .thenReturn(collectionFetchJob);
         storageMock(&Akonadi::StorageInterface::createItem).when(item, col3)
                                                            .thenReturn(itemCreateJob);
@@ -134,7 +133,7 @@ private slots:
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultCollection).when().exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(item, col3).exactly(1));
     }
 
@@ -158,10 +157,9 @@ private slots:
 
         // Storage mock returning the create job and with no default collection
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().thenReturn(Akonadi::Collection());
+        storageMock(&Akonadi::StorageInterface::defaultCollection).when().thenReturn(Akonadi::Collection());
         storageMock(&Akonadi::StorageInterface::fetchCollections).when(Akonadi::Collection::root(),
-                                                                       Akonadi::StorageInterface::Recursive,
-                                                                       Akonadi::StorageInterface::Tasks)
+                                                                       Akonadi::StorageInterface::Recursive)
                                                                  .thenReturn(collectionFetchJob);
 
         // Serializer mock returning the item for the task
@@ -176,7 +174,7 @@ private slots:
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultCollection).when().exactly(1));
         QVERIFY(job->error());
         QVERIFY(!job->errorText().isEmpty());
     }
@@ -291,7 +289,7 @@ private slots:
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
 
-        storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().thenReturn(defaultCollection);
+        storageMock(&Akonadi::StorageInterface::defaultCollection).when().thenReturn(defaultCollection);
         storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, defaultCollection).thenReturn(itemCreateJob);
 
         // WHEN
@@ -305,7 +303,7 @@ private slots:
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
 
-        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultTaskCollection).when().exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::defaultCollection).when().exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, defaultCollection).exactly(1));
     }
 

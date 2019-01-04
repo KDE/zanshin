@@ -77,7 +77,6 @@ private slots:
     {
         QTest::addColumn<Akonadi::Collection>("rootCollection");
         QTest::addColumn<Akonadi::StorageInterface::FetchDepth>("fetchDepth");
-        QTest::addColumn<int>("contentTypesInt");
         QTest::addColumn<QStringList>("expectedFetchNames");
         QTest::addColumn<QStringList>("expectedCachedNames");
 
@@ -93,24 +92,16 @@ private slots:
                                                    << "50Stuff" << "51Task"
                                                    << "54Task" << "55Task" << "56Task";
 
-        QTest::newRow("rootRecursiveAll") << Akonadi::Collection::root() << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::AllContent)
-                                          << allCollections << allCollections;
-        QTest::newRow("rootRecursiveTask") << Akonadi::Collection::root() << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::Tasks)
-                                          << onlyWithSuffix(taskCollections, "Task") << taskCollections;
+        QTest::newRow("rootRecursiveTask") << Akonadi::Collection::root() << Akonadi::StorageInterface::Recursive
+                                           << onlyWithSuffix(taskCollections, "Task") << taskCollections;
 
-        QTest::newRow("60RecursiveAll") << Akonadi::Collection(60) << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::AllContent)
-                                        << (QStringList() << "61Stuff" << "62Stuff") << allCollections;
-        QTest::newRow("54RecursiveTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Recursive << int(Akonadi::StorageInterface::Tasks)
+        QTest::newRow("54RecursiveTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Recursive
                                          << (QStringList() << "55Task" << "56Task") << taskCollections;
 
-        QTest::newRow("60FirstLevelAll") << Akonadi::Collection(60) << Akonadi::StorageInterface::FirstLevel << int(Akonadi::StorageInterface::AllContent)
-                                         << (QStringList() << "61Stuff") << allCollections;
-        QTest::newRow("54FirstLevelTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::FirstLevel << int(Akonadi::StorageInterface::Tasks)
+        QTest::newRow("54FirstLevelTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::FirstLevel
                                           << (QStringList() << "55Task") << taskCollections;
 
-        QTest::newRow("60BaseAll") << Akonadi::Collection(60) << Akonadi::StorageInterface::Base << int(Akonadi::StorageInterface::AllContent)
-                                   << (QStringList() << "60Stuff") << allCollections;
-        QTest::newRow("54BaseTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Base << int(Akonadi::StorageInterface::Tasks)
+        QTest::newRow("54BaseTask") << Akonadi::Collection(54) << Akonadi::StorageInterface::Base
                                     << (QStringList() << "54Task") << taskCollections;
     }
 
@@ -153,9 +144,7 @@ private slots:
         // WHEN
         QFETCH(Akonadi::Collection, rootCollection);
         QFETCH(Akonadi::StorageInterface::FetchDepth, fetchDepth);
-        QFETCH(int, contentTypesInt);
-        const auto contentTypes = Akonadi::StorageInterface::FetchContentTypes(contentTypesInt);
-        auto job = storage.fetchCollections(rootCollection, fetchDepth, contentTypes);
+        auto job = storage.fetchCollections(rootCollection, fetchDepth);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
@@ -176,7 +165,7 @@ private slots:
             const auto collectionFetchNames = toCollectionNames(job->collections());
             QCOMPARE(collectionFetchNames, expectedFetchNames);
 
-            const auto collections = cache->collections(Akonadi::StorageInterface::AllContent);
+            const auto collections = cache->allCollections();
             const auto collectionCachedNames = toCollectionNames(collections);
             QCOMPARE(collectionCachedNames, expectedCachedNames);
         }
@@ -184,14 +173,14 @@ private slots:
         // WHEN (second time shouldn't hit the original storage)
         data.storageBehavior().setFetchCollectionsBehavior(rootCollection.id(), AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchCollectionsErrorCode(rootCollection.id(), 128);
-        job = storage.fetchCollections(rootCollection, fetchDepth, contentTypes);
+        job = storage.fetchCollections(rootCollection, fetchDepth);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
             const auto collectionFetchNames = toCollectionNames(job->collections());
             QCOMPARE(collectionFetchNames, expectedFetchNames);
 
-            const auto collections = cache->collections(Akonadi::StorageInterface::AllContent);
+            const auto collections = cache->allCollections();
             const auto collectionCachedNames = toCollectionNames(collections);
             QCOMPARE(collectionCachedNames, expectedCachedNames);
         }

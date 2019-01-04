@@ -35,8 +35,7 @@ class AkonadiFakeStorage : public Akonadi::StorageInterface
 public:
     explicit AkonadiFakeStorage(AkonadiFakeData *data);
 
-    Akonadi::Collection defaultTaskCollection() Q_DECL_OVERRIDE;
-    Akonadi::Collection defaultNoteCollection() Q_DECL_OVERRIDE;
+    Akonadi::Collection defaultCollection() Q_DECL_OVERRIDE;
 
     KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) Q_DECL_OVERRIDE;
     KJob *updateItem(Akonadi::Item item, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
@@ -55,7 +54,7 @@ public:
     KJob *updateTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
     KJob *removeTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
 
-    Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) Q_DECL_OVERRIDE;
+    Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) Q_DECL_OVERRIDE;
     Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) Q_DECL_OVERRIDE;
     Akonadi::ItemFetchJobInterface *fetchItem(Akonadi::Item item) Q_DECL_OVERRIDE;
     Akonadi::ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) Q_DECL_OVERRIDE;

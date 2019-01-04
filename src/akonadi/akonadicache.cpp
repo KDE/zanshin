@@ -30,6 +30,7 @@ Cache::Cache(const SerializerInterface::Ptr &serializer, const MonitorInterface:
     : QObject(parent),
       m_serializer(serializer),
       m_monitor(monitor),
+      m_collectionListPopulated(false),
       m_tagListPopulated(false)
 {
     connect(m_monitor.data(), &MonitorInterface::collectionAdded,
@@ -54,25 +55,27 @@ Cache::Cache(const SerializerInterface::Ptr &serializer, const MonitorInterface:
             this, &Cache::onItemRemoved);
 }
 
-bool Cache::isContentTypesPopulated(StorageInterface::FetchContentTypes contentTypes) const
+bool Cache::isCollectionListPopulated() const
 {
-    return m_populatedContentTypes.contains(contentTypes);
+    return m_collectionListPopulated;
 }
 
-Collection::List Cache::collections(StorageInterface::FetchContentTypes contentTypes) const
+Collection::List Cache::collections() const
 {
     using namespace std::placeholders;
-
-    if (contentTypes == StorageInterface::AllContent)
-        return m_collections;
 
     auto res = Collection::List();
     std::copy_if(m_collections.cbegin(), m_collections.cend(),
                  std::back_inserter(res),
-                 [this, contentTypes] (const Collection &collection) {
-                     return matchCollection(contentTypes, collection);
+                 [this] (const Collection &collection) {
+                     return m_serializer->isTaskCollection(collection);
                  });
     return res;
+}
+
+Collection::List Cache::allCollections() const
+{
+    return m_collections;
 }
 
 bool Cache::isCollectionKnown(Collection::Id id) const
@@ -105,16 +108,10 @@ Item::List Cache::items(const Collection &collection) const
     return items;
 }
 
-void Cache::setCollections(StorageInterface::FetchContentTypes contentTypes, const Collection::List &collections)
+void Cache::setCollections(const Collection::List &collections)
 {
-    m_populatedContentTypes.insert(contentTypes);
-    for (const auto &collection : collections) {
-        const auto index = m_collections.indexOf(collection);
-        if (index >= 0)
-            m_collections[index] = collection;
-        else
-            m_collections.append(collection);
-    }
+    m_collections = collections;
+    m_collectionListPopulated = true;
 }
 
 void Cache::populateCollection(const Collection &collection, const Item::List &items)
@@ -196,18 +193,8 @@ void Cache::onCollectionAdded(const Collection &collection)
         return;
     }
 
-    const auto types = std::initializer_list<StorageInterface::FetchContentTypes>{
-            StorageInterface::AllContent,
-            StorageInterface::Tasks,
-            StorageInterface::Notes,
-            (StorageInterface::Tasks|StorageInterface::Notes)
-    };
-
-    for (const auto &type : types) {
-        if (isContentTypesPopulated(type) && matchCollection(type, collection)) {
-            m_collections << collection;
-            return;
-        }
+    if (m_collectionListPopulated && m_serializer->isTaskCollection(collection)) {
+        m_collections << collection;
     }
 }
 
@@ -317,10 +304,4 @@ void Cache::onItemRemoved(const Item &item)
         itemList.removeAll(item.id());
     for (auto &itemList : m_tagItems)
         itemList.removeAll(item.id());
-}
-
-bool Cache::matchCollection(StorageInterface::FetchContentTypes contentTypes, const Collection &collection) const
-{
-    return (contentTypes == StorageInterface::AllContent)
-        || ((contentTypes & StorageInterface::Tasks) && m_serializer->isTaskCollection(collection));
 }

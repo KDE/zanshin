@@ -23,6 +23,8 @@
 
 #include "akonadifakejobs.h"
 
+#include <KCalCore/Todo>
+
 #include <QTimer>
 
 using namespace Testlib;
@@ -34,7 +36,18 @@ void AkonadiFakeCollectionFetchJob::setCollections(const Akonadi::Collection::Li
 
 Akonadi::Collection::List AkonadiFakeCollectionFetchJob::collections() const
 {
-    return isDone() ? m_collections : Akonadi::Collection::List();
+    auto result = isDone() ? m_collections : Akonadi::Collection::List();
+
+    if (m_resource.isEmpty()) {
+        auto it = std::remove_if(result.begin(), result.end(),
+                                 [] (const Akonadi::Collection &col) {
+                                     const auto mime = col.contentMimeTypes();
+                                     return !mime.contains(KCalCore::Todo::todoMimeType());
+                                 });
+        result.erase(it, std::end(result));
+    }
+
+    return result;
 }
 
 QString AkonadiFakeCollectionFetchJob::resource() const

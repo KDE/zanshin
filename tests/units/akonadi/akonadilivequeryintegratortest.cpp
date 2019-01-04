@@ -87,7 +87,7 @@ private:
 
     auto fetchCollectionsFunction(Akonadi::StorageInterface::Ptr storage) {
         return [storage] (const Domain::LiveQueryInput<Akonadi::Collection>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
             Utils::JobHandler::install(job->kjob(), [add, job] {
                 foreach (const auto &col, job->collections()) {
                     add(col);
@@ -98,7 +98,7 @@ private:
 
     auto fetchItemsInAllCollectionsFunction(Akonadi::StorageInterface::Ptr storage) {
         return [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
             Utils::JobHandler::install(job->kjob(), [add, job, storage] {
                 foreach (const auto &col, job->collections()) {
                     auto itemJob = storage->fetchItems(col);
@@ -114,7 +114,7 @@ private:
     auto fetchItemsInSelectedCollectionsFunction(Akonadi::StorageInterface::Ptr storage, Akonadi::SerializerInterface::Ptr serializer)
     {
         return [storage, serializer] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, Akonadi::Storage::AllContent);
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
             Utils::JobHandler::install(job->kjob(), [add, job, storage, serializer] {
                 foreach (const auto &col, job->collections()) {
                     if (!serializer->isSelectedCollection(col))
@@ -137,7 +137,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
 
         // Three artifacts in the collection, one not matching the predicate
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
@@ -248,7 +248,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
 
         // Two tasks: one which shows in one query and not the other
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
@@ -512,9 +512,9 @@ private slots:
         AkonadiFakeData data;
 
         // Three top level collections, one not matching the predicate
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42-in")));
-        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43-in")));
-        data.createCollection(GenCollection().withId(44).withRootAsParent().withName(QStringLiteral("44-ex")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42-in")).withTaskContent());
+        data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43-in")).withTaskContent());
+        data.createCollection(GenCollection().withId(44).withRootAsParent().withName(QStringLiteral("44-ex")).withTaskContent());
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -616,7 +616,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection which shows in one query not the other
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42-in")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42-in")).withTaskContent());
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -659,7 +659,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
 
         // Three projects in the collection, one not matching the predicate
         data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle(QStringLiteral("42-in")));
@@ -770,7 +770,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
 
         // One project which shows in one query and not the other
         data.createItem(GenTodo().withId(42).withParent(42).asProject().withTitle(QStringLiteral("42-in")));
@@ -863,7 +863,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
 
         // Three tasks in the collection, one not matching the predicate
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));
@@ -974,7 +974,7 @@ private slots:
         AkonadiFakeData data;
 
         // One top level collection
-        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")));
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
 
         // One task which shows in one query and not the other
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42-in")));

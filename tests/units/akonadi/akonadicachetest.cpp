@@ -33,8 +33,6 @@
 
 using namespace Testlib;
 
-Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchContentTypes);
-
 class AkonadiCacheTest : public QObject
 {
     Q_OBJECT
@@ -47,21 +45,14 @@ private slots:
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer), monitor);
 
         // THEN
-        QVERIFY(!cache->isContentTypesPopulated(Akonadi::StorageInterface::AllContent));
-        QVERIFY(!cache->isContentTypesPopulated(Akonadi::StorageInterface::Tasks));
-        QVERIFY(!cache->isContentTypesPopulated(Akonadi::StorageInterface::Notes));
-        QVERIFY(!cache->isContentTypesPopulated(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks));
-
-        QVERIFY(cache->collections(Akonadi::StorageInterface::AllContent).isEmpty());
-        QVERIFY(cache->collections(Akonadi::StorageInterface::Tasks).isEmpty());
-        QVERIFY(cache->collections(Akonadi::StorageInterface::Notes).isEmpty());
-        QVERIFY(cache->collections(Akonadi::StorageInterface::Notes|Akonadi::StorageInterface::Tasks).isEmpty());
+        QVERIFY(!cache->isCollectionListPopulated());
+        QVERIFY(cache->collections().isEmpty());
 
         QVERIFY(!cache->isTagListPopulated());
         QVERIFY(cache->tags().isEmpty());
     }
 
-    void shouldStoreCollectionsForTypesAndUpdate()
+    void shouldStoreCollectionsAndUpdate()
     {
         // GIVEN
         const auto noteCollection = Akonadi::Collection(GenCollection().withRootAsParent()
@@ -85,18 +76,19 @@ private slots:
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
 
         // WHEN
-        cache->setCollections(Akonadi::StorageInterface::AllContent,
-                              Akonadi::Collection::List() << stuffCollection << noteTaskCollection
+        cache->setCollections(Akonadi::Collection::List() << stuffCollection << noteTaskCollection
                                                           << taskCollection << noteCollection);
 
         // THEN
-        QVERIFY(cache->isContentTypesPopulated(Akonadi::StorageInterface::AllContent));
+        QVERIFY(cache->isCollectionListPopulated());
         QVERIFY(cache->isCollectionKnown(stuffCollection.id()));
         QVERIFY(!cache->isCollectionPopulated(stuffCollection.id()));
         QVERIFY(cache->items(stuffCollection).isEmpty());
-        QCOMPARE(cache->collections(Akonadi::StorageInterface::AllContent),
+        QCOMPARE(cache->collections(),
+                 Akonadi::Collection::List() << noteTaskCollection << taskCollection);
+        QCOMPARE(cache->allCollections(),
                  Akonadi::Collection::List() << stuffCollection << noteTaskCollection
-                                             << taskCollection << noteCollection);
+                 << taskCollection << noteCollection);
         QCOMPARE(cache->collection(stuffCollection.id()), stuffCollection);
         QCOMPARE(cache->collection(stuffCollection.id()).name(), stuffCollection.name());
 
@@ -113,20 +105,6 @@ private slots:
         QCOMPARE(cache->collection(noteTaskCollection.id()).name(), QStringLiteral("note+task2"));
 
         // WHEN
-        cache->setCollections(Akonadi::StorageInterface::Tasks,
-                              Akonadi::Collection::List() << noteTaskCollection << taskCollection);
-
-        // THEN
-        QVERIFY(cache->isContentTypesPopulated(Akonadi::StorageInterface::Tasks));
-        QVERIFY(cache->isCollectionKnown(taskCollection.id()));
-        QVERIFY(!cache->isCollectionPopulated(taskCollection.id()));
-        QVERIFY(cache->items(taskCollection).isEmpty());
-        QCOMPARE(cache->collections(Akonadi::StorageInterface::Tasks),
-                 Akonadi::Collection::List() << noteTaskCollection << taskCollection);
-        QCOMPARE(cache->collection(taskCollection.id()), taskCollection);
-        QCOMPARE(cache->collection(taskCollection.id()).name(), taskCollection.name());
-
-        // WHEN
         monitor->changeCollection(GenCollection(taskCollection).withName("task2"));
 
         // THEN
@@ -135,11 +113,8 @@ private slots:
 
     void shouldHandleCollectionAdds_data()
     {
-        QTest::addColumn<Akonadi::StorageInterface::FetchContentTypes>("contentTypes");
         QTest::addColumn<Akonadi::Collection>("collection");
         QTest::addColumn<bool>("seen");
-
-        const auto taskContent = Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
 
         const auto none = Akonadi::Collection(GenCollection().withRootAsParent()
                                                              .withId(2)
@@ -148,16 +123,15 @@ private slots:
         const auto note = Akonadi::Collection(GenCollection(none).withNoteContent());
         const auto taskNote = Akonadi::Collection(GenCollection(none).withNoteContent().withTaskContent());
 
-        QTest::newRow("tasks vs none") << taskContent << none << false;
-        QTest::newRow("tasks vs task") << taskContent << task << true;
-        QTest::newRow("tasks vs note") << taskContent << note << false;
-        QTest::newRow("tasks vs taskNote") << taskContent << taskNote << true;
+        QTest::newRow("tasks vs none") << none << false;
+        QTest::newRow("tasks vs task") << task << true;
+        QTest::newRow("tasks vs note") << note << false;
+        QTest::newRow("tasks vs taskNote") << taskNote << true;
     }
 
     void shouldHandleCollectionAdds()
     {
         // GIVEN
-        QFETCH(Akonadi::StorageInterface::FetchContentTypes, contentTypes);
         QFETCH(Akonadi::Collection, collection);
 
         auto monitor = AkonadiFakeMonitor::Ptr::create();
@@ -167,23 +141,23 @@ private slots:
         monitor->addCollection(collection);
 
         // THEN
-        QVERIFY(!cache->isContentTypesPopulated(contentTypes));
-        QVERIFY(cache->collections(contentTypes).isEmpty());
+        QVERIFY(!cache->isCollectionListPopulated());
+        QVERIFY(cache->collections().isEmpty());
         QCOMPARE(cache->collection(collection.id()), Akonadi::Collection());
 
         // WHEN
-        cache->setCollections(contentTypes, Akonadi::Collection::List());
+        cache->setCollections(Akonadi::Collection::List());
         monitor->addCollection(collection);
 
         // THEN
-        QVERIFY(cache->isContentTypesPopulated(contentTypes));
+        QVERIFY(cache->isCollectionListPopulated());
         QFETCH(bool, seen);
         if (seen) {
-            QVERIFY(!cache->collections(contentTypes).isEmpty());
+            QVERIFY(!cache->collections().isEmpty());
             QCOMPARE(cache->collection(collection.id()), collection);
             QCOMPARE(cache->collection(collection.id()).name(), collection.name());
         } else {
-            QVERIFY(cache->collections(contentTypes).isEmpty());
+            QVERIFY(cache->collections().isEmpty());
             QCOMPARE(cache->collection(collection.id()), Akonadi::Collection());
         }
     }
@@ -198,7 +172,7 @@ private slots:
 
         auto monitor = AkonadiFakeMonitor::Ptr::create();
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
-        cache->setCollections(Akonadi::StorageInterface::Tasks, Akonadi::Collection::List() << collection);
+        cache->setCollections(Akonadi::Collection::List() << collection);
 
         // WHEN
         const auto collection2 = Akonadi::Collection(GenCollection().withRootAsParent()
@@ -331,8 +305,7 @@ private slots:
         auto monitor = AkonadiFakeMonitor::Ptr::create();
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, monitor);
-        cache->setCollections(Akonadi::StorageInterface::Tasks,
-                              Akonadi::Collection::List() << taskCollection1 << taskCollection2);
+        cache->setCollections(Akonadi::Collection::List() << taskCollection1 << taskCollection2);
 
         // WHEN
         cache->populateCollection(taskCollection1, items1);
@@ -372,8 +345,7 @@ private slots:
 
         auto monitor = AkonadiFakeMonitor::Ptr::create();
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
-        cache->setCollections(Akonadi::StorageInterface::Tasks,
-                              Akonadi::Collection::List() << collection1 << collection2);
+        cache->setCollections(Akonadi::Collection::List() << collection1 << collection2);
         cache->populateCollection(collection1, items1);
         cache->populateCollection(collection2, items2);
         cache->populateTag(tag, items1 + items2);
@@ -495,8 +467,7 @@ private slots:
         auto monitor = AkonadiFakeMonitor::Ptr::create();
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, monitor);
-        cache->setCollections(Akonadi::StorageInterface::Tasks,
-                              Akonadi::Collection::List() << collection1 << collection2 << collection3);
+        cache->setCollections(Akonadi::Collection::List() << collection1 << collection2 << collection3);
         cache->populateCollection(collection1, items);
         cache->populateCollection(collection2, Akonadi::Item::List());
         cache->populateTag(tag1, items);
@@ -605,8 +576,7 @@ private slots:
         auto monitor = AkonadiFakeMonitor::Ptr::create();
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, monitor);
-        cache->setCollections(Akonadi::StorageInterface::Tasks,
-                              Akonadi::Collection::List() << collection1 << collection2);
+        cache->setCollections(Akonadi::Collection::List() << collection1 << collection2);
         cache->populateCollection(collection1, Akonadi::Item::List());
         cache->populateTag(tag1, Akonadi::Item::List());
 
@@ -656,8 +626,7 @@ private slots:
 
         auto monitor = AkonadiFakeMonitor::Ptr::create();
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
-        cache->setCollections(Akonadi::StorageInterface::Tasks,
-                              Akonadi::Collection::List() << collection);
+        cache->setCollections(Akonadi::Collection::List() << collection);
         cache->setTags(Akonadi::Tag::List() << tag);
         cache->populateCollection(collection, items);
         cache->populateTag(tag, items);

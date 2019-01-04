@@ -32,8 +32,7 @@
 void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &storage)
 {
     auto colJob = storage->fetchCollections(Akonadi::Collection::root(),
-                                            Akonadi::StorageInterface::Recursive,
-                                            Akonadi::StorageInterface::AllContent);
+                                            Akonadi::StorageInterface::Recursive);
     colJob->kjob()->exec();
     foreach (const auto &col, colJob->collections()) {
         qDebug() << "COL:" << col.id() << col.name() << col.remoteId();

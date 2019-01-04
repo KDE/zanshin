@@ -62,8 +62,7 @@ private slots:
     void shouldNotifyTagAdded();
     void shouldNotifyTagRemoved();
     void shouldNotifyTagChanged();
-    void shouldReadDefaultNoteCollectionFromSettings();
-    void shouldReadDefaultTaskCollectionFromSettings();
+    void shouldReadDefaultCollectionFromSettings();
 
     // This test must be run before shouldCreateItem because createItem
     // sometimes notifies an itemChanged with a delay. So this test might

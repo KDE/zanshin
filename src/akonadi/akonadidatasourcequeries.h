@@ -46,8 +46,7 @@ public:
     typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
 
-    DataSourceQueries(StorageInterface::FetchContentTypes contentTypes,
-                      const StorageInterface::Ptr &storage,
+    DataSourceQueries(const StorageInterface::Ptr &storage,
                       const SerializerInterface::Ptr &serializer,
                       const MonitorInterface::Ptr &monitor);
 
@@ -64,7 +63,6 @@ public:
 private:
     CollectionInputQuery::PredicateFunction createFetchPredicate(const Collection &root) const;
 
-    StorageInterface::FetchContentTypes m_contentTypes;
     SerializerInterface::Ptr m_serializer;
     LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;

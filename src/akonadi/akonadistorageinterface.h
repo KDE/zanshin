@@ -51,18 +51,10 @@ public:
         Recursive
     };
 
-    enum FetchContentType {
-        AllContent = 0x0,
-        Tasks = 0x1,
-        Notes = 0x2
-    };
-    Q_DECLARE_FLAGS(FetchContentTypes, FetchContentType)
-
     StorageInterface();
     virtual ~StorageInterface();
 
-    virtual Akonadi::Collection defaultTaskCollection() = 0;
-    virtual Akonadi::Collection defaultNoteCollection() = 0;
+    virtual Akonadi::Collection defaultCollection() = 0;
 
     virtual KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) = 0;
     virtual KJob *updateItem(Akonadi::Item item, QObject *parent = Q_NULLPTR) = 0;
@@ -81,7 +73,7 @@ public:
     virtual KJob *updateTag(Akonadi::Tag tag) = 0;
     virtual KJob *removeTag(Akonadi::Tag tag) = 0;
 
-    virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, FetchContentTypes types) = 0;
+    virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) = 0;
     virtual ItemFetchJobInterface *fetchItem(Akonadi::Item item) = 0;
     virtual ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) = 0;
@@ -89,7 +81,5 @@ public:
 };
 
 }
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(Akonadi::StorageInterface::FetchContentTypes)
 
 #endif // AKONADI_STORAGEINTERFACE_H

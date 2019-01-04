@@ -43,8 +43,6 @@ using namespace Testlib;
 
 using namespace std::placeholders;
 
-Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchContentTypes)
-
 static QString titleFromItem(const Akonadi::Item &item)
 {
     if (item.hasPayload<KCalCore::Todo::Ptr>()) {
@@ -82,17 +80,7 @@ private:
     }
 
 private slots:
-    void shouldFetchAllCollectionsForType_data()
-    {
-        QTest::addColumn<Akonadi::StorageInterface::FetchContentTypes>("contentTypes");
-
-        QTest::newRow("task collections only") << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
-        QTest::newRow("note collections only") << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes);
-        QTest::newRow("task and note collections only") << (Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
-        QTest::newRow("all collections") << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::AllContent);
-    }
-
-    void shouldFetchAllCollectionsForType()
+    void shouldFetchAllCollections()
     {
         // GIVEN
         auto data = AkonadiFakeData();
@@ -121,8 +109,7 @@ private slots:
         };
 
         // WHEN
-        QFETCH(Akonadi::StorageInterface::FetchContentTypes, contentTypes);
-        auto fetch = helpers->fetchAllCollections(contentTypes);
+        auto fetch = helpers->fetchAllCollections();
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -134,18 +121,7 @@ private slots:
 
         // THEN
         auto expected = QStringList();
-
-        if (contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << QStringLiteral("42") << QStringLiteral("45") << QStringLiteral("48") << QStringLiteral("51");
-        }
-
-        if ((contentTypes & Akonadi::StorageInterface::Tasks) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << QStringLiteral("43") << QStringLiteral("46") << QStringLiteral("49") << QStringLiteral("52");
-        }
-
-        if ((contentTypes & Akonadi::StorageInterface::Notes) || contentTypes == Akonadi::StorageInterface::AllContent) {
-            expected << QStringLiteral("44") << QStringLiteral("47") << QStringLiteral("50") << QStringLiteral("53");
-        }
+        expected << QStringLiteral("43") << QStringLiteral("46") << QStringLiteral("49") << QStringLiteral("52");
 
         expected.sort();
         QCOMPARE(result, expected);
@@ -165,49 +141,17 @@ private slots:
         QCOMPARE(result, expected);
     }
 
-    void shouldFetchCollectionsForRootAndType_data()
+    void shouldFetchCollectionsForRoot_data()
     {
         QTest::addColumn<Akonadi::Collection>("root");
-        QTest::addColumn<Akonadi::StorageInterface::FetchContentTypes>("contentTypes");
 
-        QTest::newRow("task collections only from root") << Akonadi::Collection::root()
-                                                         << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
-        QTest::newRow("note collections only from root") << Akonadi::Collection::root()
-                                                         << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes);
-        QTest::newRow("task and note collections only from root") << Akonadi::Collection::root()
-                                                                  << (Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
-        QTest::newRow("all collections from root") << Akonadi::Collection::root()
-                                                   << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::AllContent);
-
-        QTest::newRow("task collections only from 'all branch'") << Akonadi::Collection(42)
-                                                                 << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
-        QTest::newRow("note collections only from 'all branch'") << Akonadi::Collection(42)
-                                                                 << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes);
-        QTest::newRow("task and note collections only from 'all branch'") << Akonadi::Collection(42)
-                                                                          << (Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
-        QTest::newRow("all collections from 'all branch'") << Akonadi::Collection(42)
-                                                           << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::AllContent);
-
-        QTest::newRow("task collections only from 'task branch'") << Akonadi::Collection(43)
-                                                                  << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
-        QTest::newRow("note collections only from 'task branch'") << Akonadi::Collection(43)
-                                                                  << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes);
-        QTest::newRow("task and note collections only from 'task branch'") << Akonadi::Collection(43)
-                                                                           << (Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
-        QTest::newRow("all collections from 'task branch'") << Akonadi::Collection(43)
-                                                            << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::AllContent);
-
-        QTest::newRow("task collections only from 'note branch'") << Akonadi::Collection(44)
-                                                                  << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Tasks);
-        QTest::newRow("note collections only from 'note branch'") << Akonadi::Collection(44)
-                                                                  << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::Notes);
-        QTest::newRow("task and note collections only from 'note branch'") << Akonadi::Collection(44)
-                                                                           << (Akonadi::StorageInterface::Tasks | Akonadi::StorageInterface::Notes);
-        QTest::newRow("all collections from 'note branch'") << Akonadi::Collection(44)
-                                                            << Akonadi::StorageInterface::FetchContentTypes(Akonadi::StorageInterface::AllContent);
+        QTest::newRow("all collections from root") << Akonadi::Collection::root();
+        QTest::newRow("all collections from 'all branch'") << Akonadi::Collection(42);
+        QTest::newRow("all collections from 'task branch'") << Akonadi::Collection(43);
+        QTest::newRow("all collections from 'note branch'") << Akonadi::Collection(44);
     }
 
-    void shouldFetchCollectionsForRootAndType()
+    void shouldFetchCollectionsForRoot()
     {
         // GIVEN
         auto data = AkonadiFakeData();
@@ -237,8 +181,7 @@ private slots:
 
         // WHEN
         QFETCH(Akonadi::Collection, root);
-        QFETCH(Akonadi::StorageInterface::FetchContentTypes, contentTypes);
-        auto fetch = helpers->fetchCollections(root, contentTypes);
+        auto fetch = helpers->fetchCollections(root);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -260,17 +203,7 @@ private slots:
                                 : -1;
             QVERIFY(baseId > 0);
 
-            if (contentTypes == Akonadi::StorageInterface::AllContent) {
-                expected << QString::number(baseId);
-            }
-
-            if ((contentTypes & Akonadi::StorageInterface::Tasks) || contentTypes == Akonadi::StorageInterface::AllContent) {
-                expected << QString::number(baseId + 1);
-            }
-
-            if ((contentTypes & Akonadi::StorageInterface::Notes) || contentTypes == Akonadi::StorageInterface::AllContent) {
-                expected << QString::number(baseId + 2);
-            }
+            expected << QString::number(baseId + 1);
         }
 
         expected.sort();
@@ -291,7 +224,7 @@ private slots:
         QCOMPARE(result, expected);
     }
 
-    void shouldFetchItemsByContentTypes()
+    void shouldFetchItems()
     {
         // GIVEN
         auto data = AkonadiFakeData();
@@ -325,7 +258,7 @@ private slots:
         };
 
         // WHEN
-        auto fetch = helpers->fetchItems(Akonadi::StorageInterface::Tasks);
+        auto fetch = helpers->fetchItems();
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 

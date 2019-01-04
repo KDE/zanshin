@@ -70,15 +70,13 @@ void App::initializeDependencies()
                                         Akonadi::SerializerInterface*)>();
 
     deps.add<Domain::DataSourceQueries>([] (Utils::DependencyManager *deps) {
-        return new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Tasks,
-                                              deps->create<Akonadi::StorageInterface>(),
+        return new Akonadi::DataSourceQueries(deps->create<Akonadi::StorageInterface>(),
                                               deps->create<Akonadi::SerializerInterface>(),
                                               deps->create<Akonadi::MonitorInterface>());
     });
 
     deps.add<Domain::DataSourceRepository>([] (Utils::DependencyManager *deps) {
-        return new Akonadi::DataSourceRepository(Akonadi::StorageInterface::Tasks,
-                                                 deps->create<Akonadi::StorageInterface>(),
+        return new Akonadi::DataSourceRepository(deps->create<Akonadi::StorageInterface>(),
                                                  deps->create<Akonadi::SerializerInterface>());
     });
 

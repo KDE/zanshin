@@ -44,15 +44,15 @@ public:
                    const MonitorInterface::Ptr &monitor,
                    QObject *parent = nullptr);
 
-    bool isContentTypesPopulated(StorageInterface::FetchContentTypes contentTypes) const;
-    Akonadi::Collection::List collections(StorageInterface::FetchContentTypes contentTypes) const;
+    bool isCollectionListPopulated() const;
+    Akonadi::Collection::List collections() const;
+    Akonadi::Collection::List allCollections() const;
     bool isCollectionKnown(Collection::Id id) const;
     Collection collection(Collection::Id id) const;
     bool isCollectionPopulated(Collection::Id id) const;
     Item::List items(const Collection &collection) const;
 
-    void setCollections(StorageInterface::FetchContentTypes contentTypes,
-                        const Collection::List &collections);
+    void setCollections(const Collection::List &collections);
     void populateCollection(const Collection &collection, const Item::List &items);
 
 
@@ -82,14 +82,10 @@ private slots:
     void onItemRemoved(const Item &item);
 
 private:
-    bool matchCollection(StorageInterface::FetchContentTypes contentTypes,
-                         const Collection &collection) const;
-
     SerializerInterface::Ptr m_serializer;
     MonitorInterface::Ptr m_monitor;
 
-    QSet<StorageInterface::FetchContentTypes> m_populatedContentTypes;
-
+    bool m_collectionListPopulated;
     Collection::List m_collections;
     QHash<Collection::Id, QVector<Item::Id>> m_collectionItems;
 
