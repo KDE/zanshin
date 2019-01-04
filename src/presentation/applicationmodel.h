@@ -32,6 +32,7 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
+#include "presentation/runningtaskmodelinterface.h"
 
 namespace Presentation {
 
@@ -44,6 +45,7 @@ class ApplicationModel : public QObject
     Q_PROPERTY(QObject* availablePages READ availablePages)
     Q_PROPERTY(QObject* currentPage READ currentPage WRITE setCurrentPage NOTIFY currentPageChanged)
     Q_PROPERTY(QObject* editor READ editor)
+    Q_PROPERTY(RunningTaskModelInterface* runningTaskModel READ runningTaskModel)
     Q_PROPERTY(Presentation::ErrorHandler* errorHandler READ errorHandler WRITE setErrorHandler)
 public:
     typedef QSharedPointer<ApplicationModel> Ptr;
@@ -55,6 +57,7 @@ public:
     QObject *availablePages();
     QObject *currentPage();
     QObject *editor();
+    Presentation::RunningTaskModelInterface *runningTaskModel();
 
     ErrorHandler *errorHandler() const;
 
@@ -70,6 +73,7 @@ private:
     QObjectPtr m_availablePages;
     QObjectPtr m_currentPage;
     QObjectPtr m_editor;
+    RunningTaskModelInterface::Ptr m_runningTaskModel;
 
     ErrorHandler *m_errorHandler;
 };

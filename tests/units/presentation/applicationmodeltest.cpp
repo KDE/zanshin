@@ -33,6 +33,7 @@
 #include "presentation/editormodel.h"
 #include "presentation/pagemodel.h"
 #include "presentation/errorhandler.h"
+#include "presentation/runningtaskmodel.h"
 
 #include "testlib/fakejob.h"
 
@@ -90,6 +91,11 @@ public:
             [] (Utils::DependencyManager *) {
                 return new Presentation::AvailableSourcesModel(Domain::DataSourceQueries::Ptr(),
                                                                Domain::DataSourceRepository::Ptr());
+        });
+        Utils::DependencyManager::globalInstance().add<Presentation::RunningTaskModel>(
+            [] (Utils::DependencyManager *) {
+                return new Presentation::RunningTaskModel(Domain::TaskQueries::Ptr(),
+                                                         Domain::TaskRepository::Ptr());
         });
     }
 
@@ -184,6 +190,18 @@ private slots:
         QVERIFY(qobject_cast<Presentation::EditorModel*>(page));
     }
 
+    void shouldProvideRunningTaskModel()
+    {
+        // GIVEN
+        Presentation::ApplicationModel app;
+
+        // WHEN
+        QObject *model = app.runningTaskModel();
+
+        // THEN
+        QVERIFY(qobject_cast<Presentation::RunningTaskModel*>(model));
+    }
+
     void shouldSetErrorHandlerToAllModels()
     {
         // GIVEN
@@ -201,10 +219,12 @@ private slots:
         auto availablePages = static_cast<Presentation::AvailablePagesModel*>(app.availablePages());
         auto editor = static_cast<Presentation::EditorModel*>(app.editor());
         auto page = static_cast<Presentation::PageModel*>(app.currentPage());
+        auto runningTask = static_cast<Presentation::RunningTaskModel*>(app.runningTaskModel());
         QCOMPARE(availableSource->errorHandler(), &errorHandler);
         QCOMPARE(availablePages->errorHandler(), &errorHandler);
         QCOMPARE(editor->errorHandler(), &errorHandler);
         QCOMPARE(page->errorHandler(), &errorHandler);
+        QCOMPARE(runningTask->errorHandler(), &errorHandler);
 
         // WHEN
         FakeErrorHandler errorHandler2;
@@ -216,6 +236,7 @@ private slots:
         QCOMPARE(availablePages->errorHandler(), &errorHandler2);
         QCOMPARE(editor->errorHandler(), &errorHandler2);
         QCOMPARE(page->errorHandler(), &errorHandler2);
+        QCOMPARE(runningTask->errorHandler(), &errorHandler2);
     }
 
     void shouldClearJobHandlersOnExit()

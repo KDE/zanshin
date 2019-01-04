@@ -34,7 +34,7 @@
 #include "../app/aboutdata.h"
 #include "../app/dependencies.h"
 
-#include "presentation/taskapplicationmodel.h"
+#include "presentation/applicationmodel.h"
 
 #include "widgets/taskapplicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -57,7 +57,7 @@ Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     auto sidebar = new QSplitter(Qt::Vertical, parentWidget);
 
     auto components = new Widgets::TaskApplicationComponents(parentWidget);
-    components->setModel(Presentation::TaskApplicationModel::Ptr::create());
+    components->setModel(Presentation::ApplicationModel::Ptr::create());
 
     sidebar->addWidget(components->availablePagesView());
     sidebar->addWidget(components->availableSourcesView());

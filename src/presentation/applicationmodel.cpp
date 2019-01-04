@@ -29,6 +29,7 @@
 #include "presentation/editormodel.h"
 #include "presentation/errorhandler.h"
 #include "presentation/pagemodel.h"
+#include "presentation/runningtaskmodel.h"
 
 #include "utils/dependencymanager.h"
 #include "utils/jobhandler.h"
@@ -83,6 +84,16 @@ QObject *ApplicationModel::editor()
     return m_editor.data();
 }
 
+RunningTaskModelInterface *ApplicationModel::runningTaskModel()
+{
+    if (!m_runningTaskModel) {
+        auto model = Utils::DependencyManager::globalInstance().create<RunningTaskModel>();
+        m_runningTaskModel = model;
+        m_runningTaskModel->setErrorHandler(errorHandler());
+    }
+    return m_runningTaskModel.data();
+}
+
 ErrorHandler *ApplicationModel::errorHandler() const
 {
     return m_errorHandler;
@@ -115,6 +126,8 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
         m_availablePages.staticCast<AvailablePagesModel>()->setErrorHandler(errorHandler);
     if (m_editor)
         m_editor.staticCast<EditorModel>()->setErrorHandler(errorHandler);
+    if (m_runningTaskModel)
+        m_runningTaskModel.staticCast<RunningTaskModel>()->setErrorHandler(errorHandler);
     if (m_currentPage)
         m_currentPage.staticCast<PageModel>()->setErrorHandler(errorHandler);
 }

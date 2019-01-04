@@ -12,7 +12,6 @@ zanshin_auto_tests(
   projectpagemodeltest
   querytreemodeltest
   runningtaskmodeltest
-  taskapplicationmodeltest
   taskfilterproxymodeltest
   contextpagemodeltest
   workdaypagemodeltest

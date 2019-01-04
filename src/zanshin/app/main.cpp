@@ -37,7 +37,7 @@
 #include "widgets/editorview.h"
 #include "widgets/pageview.h"
 
-#include "presentation/taskapplicationmodel.h"
+#include "presentation/applicationmodel.h"
 
 #include "utils/dependencymanager.h"
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
     auto widget = new QWidget;
     auto components = new Widgets::TaskApplicationComponents(widget);
-    components->setModel(Presentation::TaskApplicationModel::Ptr::create());
+    components->setModel(Presentation::ApplicationModel::Ptr::create());
 
     auto layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
