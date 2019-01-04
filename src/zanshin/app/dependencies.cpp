@@ -69,16 +69,14 @@ void App::initializeDependencies()
              Akonadi::ContextRepository(Akonadi::StorageInterface*,
                                         Akonadi::SerializerInterface*)>();
 
-    deps.add<Domain::DataSourceQueries>([] (Utils::DependencyManager *deps) {
-        return new Akonadi::DataSourceQueries(deps->create<Akonadi::StorageInterface>(),
-                                              deps->create<Akonadi::SerializerInterface>(),
-                                              deps->create<Akonadi::MonitorInterface>());
-    });
+    deps.add<Domain::DataSourceQueries,
+             Akonadi::DataSourceQueries(Akonadi::StorageInterface*,
+                                        Akonadi::SerializerInterface*,
+                                        Akonadi::MonitorInterface*)>();
 
-    deps.add<Domain::DataSourceRepository>([] (Utils::DependencyManager *deps) {
-        return new Akonadi::DataSourceRepository(deps->create<Akonadi::StorageInterface>(),
-                                                 deps->create<Akonadi::SerializerInterface>());
-    });
+    deps.add<Domain::DataSourceRepository,
+             Akonadi::DataSourceRepository(Akonadi::StorageInterface*,
+                                           Akonadi::SerializerInterface*)>();
 
     deps.add<Domain::ProjectQueries,
              Akonadi::ProjectQueries(Akonadi::StorageInterface*,
