@@ -25,15 +25,19 @@
 #ifndef DOMAIN_TASK_H
 #define DOMAIN_TASK_H
 
-#include "artifact.h"
 #include <QDate>
+#include <QMetaType>
+#include <QSharedPointer>
+#include <QString>
 #include <QUrl>
 
 namespace Domain {
 
-class Task : public Artifact
+class Task : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+    Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
     Q_PROPERTY(bool done READ isDone WRITE setDone NOTIFY doneChanged)
     Q_PROPERTY(QDate startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
@@ -95,6 +99,8 @@ public:
     explicit Task(QObject *parent = Q_NULLPTR);
     virtual ~Task();
 
+    QString text() const;
+    QString title() const;
     bool isRunning() const;
     bool isDone() const;
     QDate startDate() const;
@@ -104,6 +110,8 @@ public:
     Attachments attachments() const;
 
 public slots:
+    void setText(const QString &text);
+    void setTitle(const QString &title);
     void setRunning(bool running);
     void setDone(bool done);
     void setDoneDate(const QDate &doneDate);
@@ -113,6 +121,8 @@ public slots:
     void setAttachments(const Domain::Task::Attachments &attachments);
 
 signals:
+    void textChanged(const QString &text);
+    void titleChanged(const QString &title);
     void runningChanged(bool isRunning);
     void doneChanged(bool isDone);
     void doneDateChanged(const QDate &doneDate);
@@ -122,6 +132,8 @@ signals:
     void attachmentsChanged(const Domain::Task::Attachments &attachments);
 
 private:
+    QString m_text;
+    QString m_title;
     bool m_running;
     bool m_done;
     QDate m_startDate;

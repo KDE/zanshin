@@ -29,7 +29,7 @@
 using namespace Domain;
 
 Task::Task(QObject *parent)
-    : Artifact(parent),
+    : QObject(parent),
       m_running(false),
       m_done(false),
       m_recurrence(NoRecurrence)
@@ -38,6 +38,16 @@ Task::Task(QObject *parent)
 
 Task::~Task()
 {
+}
+
+QString Task::text() const
+{
+    return m_text;
+}
+
+QString Task::title() const
+{
+    return m_title;
 }
 
 bool Task::isRunning() const
@@ -105,6 +115,24 @@ Task::Recurrence Task::recurrence() const
 Task::Attachments Task::attachments() const
 {
     return m_attachments;
+}
+
+void Task::setText(const QString &text)
+{
+    if (m_text == text)
+        return;
+
+    m_text = text;
+    emit textChanged(text);
+}
+
+void Task::setTitle(const QString &title)
+{
+    if (m_title == title)
+        return;
+
+    m_title = title;
+    emit titleChanged(title);
 }
 
 void Task::setRunning(bool running)

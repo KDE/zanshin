@@ -1,5 +1,4 @@
 set(domain_SRCS
-    artifact.cpp
     context.cpp
     contextqueries.cpp
     contextrepository.cpp

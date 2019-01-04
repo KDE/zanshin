@@ -54,6 +54,42 @@ private slots:
         QVERIFY(t.attachments().isEmpty());
     }
 
+    void shouldNotifyTextChanges()
+    {
+        Task t;
+        QSignalSpy spy(&t, &Task::textChanged);
+        t.setText(QStringLiteral("foo"));
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("foo"));
+    }
+
+    void shouldNotNotifyIdenticalTextChanges()
+    {
+        Task t;
+        t.setText(QStringLiteral("foo"));
+        QSignalSpy spy(&t, &Task::textChanged);
+        t.setText(QStringLiteral("foo"));
+        QCOMPARE(spy.count(), 0);
+    }
+
+    void shouldNotifyTitleChanges()
+    {
+        Task t;
+        QSignalSpy spy(&t, &Task::titleChanged);
+        t.setTitle(QStringLiteral("foo"));
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().first().toString(), QStringLiteral("foo"));
+    }
+
+    void shouldNotNotifyIdenticalTitleChanges()
+    {
+        Task t;
+        t.setTitle(QStringLiteral("foo"));
+        QSignalSpy spy(&t, &Task::titleChanged);
+        t.setTitle(QStringLiteral("foo"));
+        QCOMPARE(spy.count(), 0);
+    }
+
     void shouldHaveValueBasedAttachment()
     {
         Task::Attachment a;
