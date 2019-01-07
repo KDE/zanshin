@@ -52,8 +52,8 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
       m_addProjectAction(new QAction(this)),
       m_addContextAction(new QAction(this)),
       m_removeAction(new QAction(this)),
-      m_model(Q_NULLPTR),
-      m_sources(Q_NULLPTR),
+      m_model(nullptr),
+      m_sources(nullptr),
       m_pagesView(new QTreeView(this))
 {
     m_pagesView->setObjectName(QStringLiteral("pagesView"));
@@ -168,7 +168,7 @@ void AvailablePagesView::setModel(QObject *model)
         return;
 
     if (m_pagesView->selectionModel()) {
-        disconnect(m_pagesView->selectionModel(), Q_NULLPTR, this, Q_NULLPTR);
+        disconnect(m_pagesView->selectionModel(), nullptr, this, nullptr);
     }
 
     if (m_pagesView->model()) {
@@ -177,7 +177,7 @@ void AvailablePagesView::setModel(QObject *model)
         disconnect(m_pagesView->model(), &QAbstractItemModel::modelReset, m_pagesView, &QTreeView::expandAll);
     }
 
-    m_pagesView->setModel(Q_NULLPTR);
+    m_pagesView->setModel(nullptr);
 
     m_model = model;
 
@@ -228,7 +228,7 @@ void AvailablePagesView::setMessageBoxInterface(const MessageBoxInterface::Ptr &
 
 void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 {
-    QObject *page = Q_NULLPTR;
+    QObject *page = nullptr;
     QMetaObject::invokeMethod(m_model, "createPageForIndex",
                               Q_RETURN_ARG(QObject*, page),
                               Q_ARG(QModelIndex, current));

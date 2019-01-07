@@ -167,7 +167,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
 
     auto drag = [](const Domain::Task::List &tasks) -> QMimeData* {
         if (tasks.isEmpty())
-            return Q_NULLPTR;
+            return nullptr;
 
         auto data = new QMimeData;
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");

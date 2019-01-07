@@ -45,7 +45,7 @@ class QuickSelectDialog : public QDialog, public QuickSelectDialogInterface
 {
     Q_OBJECT
 public:
-    explicit QuickSelectDialog(QWidget *parent = Q_NULLPTR);
+    explicit QuickSelectDialog(QWidget *parent = nullptr);
 
     int exec() override;
 

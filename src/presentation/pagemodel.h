@@ -41,7 +41,7 @@ class PageModel : public QObject, public ErrorHandlingModelBase
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
-    explicit PageModel(QObject *parent = Q_NULLPTR);
+    explicit PageModel(QObject *parent = nullptr);
 
     QAbstractItemModel *centralListModel();
 

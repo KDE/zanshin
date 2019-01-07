@@ -71,7 +71,7 @@ public:
         return &itemModel;
     }
 
-    QStandardItem *addStubItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
+    QStandardItem *addStubItem(const QString &title, QStandardItem *parentItem = nullptr)
     {
         QStandardItem *item = new QStandardItem;
         item->setData(title, Qt::DisplayRole);
@@ -84,7 +84,7 @@ public:
         return item;
     }
 
-    Domain::Task::Ptr addTaskItem(const QString &title, QStandardItem *parentItem = Q_NULLPTR)
+    Domain::Task::Ptr addTaskItem(const QString &title, QStandardItem *parentItem = nullptr)
     {
         auto item = addStubItem(title, parentItem);
         auto task = Domain::Task::Ptr::create();
@@ -257,7 +257,7 @@ private slots:
         QCOMPARE(proxyModel->sourceModel(), &model);
 
         // WHEN
-        page.setModel(Q_NULLPTR);
+        page.setModel(nullptr);
 
         // THEN
         QVERIFY(!page.model());

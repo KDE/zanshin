@@ -106,7 +106,7 @@ private slots:
                 object->setProperty("id", id);
                 return object;
             } else {
-                return Q_NULLPTR;
+                return nullptr;
             }
         });
         query.setPredicateFunction([] (const QString &s) {

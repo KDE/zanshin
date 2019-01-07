@@ -35,7 +35,7 @@ class AkonadiStorageTestBase : public QObject
 {
     Q_OBJECT
 public:
-    explicit AkonadiStorageTestBase(QObject *parent = Q_NULLPTR);
+    explicit AkonadiStorageTestBase(QObject *parent = nullptr);
 
 protected:
     virtual Akonadi::StorageInterface::Ptr createStorage() = 0;

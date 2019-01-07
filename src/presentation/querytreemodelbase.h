@@ -96,7 +96,7 @@ public:
 
 protected:
     explicit QueryTreeModelBase(QueryTreeNodeBase *rootNode,
-                                QObject *parent = Q_NULLPTR);
+                                QObject *parent = nullptr);
     virtual QMimeData *createMimeData(const QModelIndexList &indexes) const = 0;
     virtual void fetchAdditionalInfo(const QModelIndex &) {}
     QueryTreeNodeBase *nodeFromIndex(const QModelIndex &index) const;

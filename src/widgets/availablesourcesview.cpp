@@ -46,7 +46,7 @@ using namespace Widgets;
 AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     : QWidget(parent),
       m_defaultAction(new QAction(this)),
-      m_model(Q_NULLPTR),
+      m_model(nullptr),
       m_sortProxy(new QSortFilterProxyModel(this)),
       m_sourcesView(new QTreeView(this))
 {
@@ -114,7 +114,7 @@ void AvailableSourcesView::setModel(QObject *model)
     if (model == m_model)
         return;
 
-    m_sortProxy->setSourceModel(Q_NULLPTR);
+    m_sortProxy->setSourceModel(nullptr);
 
     m_model = model;
 

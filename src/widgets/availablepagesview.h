@@ -53,7 +53,7 @@ public:
     typedef QSharedPointer<QuickSelectDialogInterface> QuickSelectDialogPtr;
     typedef std::function<QuickSelectDialogPtr(QWidget*)> QuickSelectDialogFactory;
 
-    explicit AvailablePagesView(QWidget *parent = Q_NULLPTR);
+    explicit AvailablePagesView(QWidget *parent = nullptr);
 
     QHash<QString, QAction*> globalActions() const;
 

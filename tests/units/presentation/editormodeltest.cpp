@@ -52,7 +52,7 @@ class EditorModelTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit EditorModelTest(QObject *parent = Q_NULLPTR)
+    explicit EditorModelTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         qRegisterMetaType<Domain::Task::Recurrence>();

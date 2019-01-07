@@ -96,7 +96,7 @@ public:
 
     typedef QList<Attachment> Attachments;
 
-    explicit Task(QObject *parent = Q_NULLPTR);
+    explicit Task(QObject *parent = nullptr);
     virtual ~Task();
 
     QString text() const;

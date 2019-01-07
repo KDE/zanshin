@@ -87,7 +87,7 @@ private slots:
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the project
@@ -101,7 +101,7 @@ private slots:
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr).exactly(1));
     }
 
     void shouldRemoveExistingProject()
@@ -247,7 +247,7 @@ private slots:
             storageMock(&Akonadi::StorageInterface::moveItems).when(movedList, parentItem.parentCollection(), transactionJob)
                                                               .thenReturn(itemsMoveJob);
         } else {
-            storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, Q_NULLPTR)
+            storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, nullptr)
                                                                .thenReturn(itemModifyJob);
         }
 
@@ -279,7 +279,7 @@ private slots:
                     QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, transactionJob).exactly(1));
                     QVERIFY(storageMock(&Akonadi::StorageInterface::moveItems).when(movedList, parentItem.parentCollection(), transactionJob).exactly(1));
                 } else {
-                    QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, Q_NULLPTR).exactly(1));
+                    QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, nullptr).exactly(1));
                 }
             }
         }
@@ -321,7 +321,7 @@ private slots:
 
         // Storage mock returning the delete job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, Q_NULLPTR)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, nullptr)
                                                            .thenReturn(itemModifyJob);
         storageMock(&Akonadi::StorageInterface::fetchItem).when(childItem)
                                                           .thenReturn(itemFetchJob);
@@ -342,7 +342,7 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(childItem).exactly(1));
         if (!fetchJobFailed) {
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::removeItemParent).when(childItem).exactly(1));;
-            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, Q_NULLPTR).exactly(1));
+            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, nullptr).exactly(1));
         }
 
         // Give a chance to job to delete themselves

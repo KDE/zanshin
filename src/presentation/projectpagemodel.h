@@ -43,7 +43,7 @@ public:
                               const Domain::ProjectRepository::Ptr &projectRepository,
                               const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
-                              QObject *parent = Q_NULLPTR);
+                              QObject *parent = nullptr);
 
     Domain::Project::Ptr project() const;
 

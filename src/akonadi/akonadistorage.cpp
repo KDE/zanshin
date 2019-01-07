@@ -56,7 +56,7 @@ class CollectionJob : public CollectionFetchJob, public CollectionFetchJobInterf
 {
     Q_OBJECT
 public:
-    CollectionJob(const Collection &collection, Type type = FirstLevel, QObject *parent = Q_NULLPTR)
+    CollectionJob(const Collection &collection, Type type = FirstLevel, QObject *parent = nullptr)
         : CollectionFetchJob(collection, type, parent),
           m_collection(collection),
           m_type(type)

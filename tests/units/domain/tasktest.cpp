@@ -33,7 +33,7 @@ class TaskTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit TaskTest(QObject *parent = Q_NULLPTR)
+    explicit TaskTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         qRegisterMetaType<Task::Recurrence>();

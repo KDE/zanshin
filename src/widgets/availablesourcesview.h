@@ -40,7 +40,7 @@ class AvailableSourcesView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AvailableSourcesView(QWidget *parent = Q_NULLPTR);
+    explicit AvailableSourcesView(QWidget *parent = nullptr);
 
     QHash<QString, QAction*> globalActions() const;
 

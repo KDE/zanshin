@@ -146,7 +146,7 @@ void EditorModel::setTask(const Domain::Task::Ptr &task)
     m_attachmentModel->setTask(Domain::Task::Ptr());
 
     if (m_task)
-        disconnect(m_task.data(), Q_NULLPTR, this, Q_NULLPTR);
+        disconnect(m_task.data(), nullptr, this, nullptr);
 
     m_task = task;
 

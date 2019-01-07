@@ -31,7 +31,7 @@ class FakeJob : public KJob
     Q_OBJECT
 public:
     static const int DURATION = 50;
-    explicit FakeJob(QObject *parent = Q_NULLPTR);
+    explicit FakeJob(QObject *parent = nullptr);
 
     void setExpectedError(int errorCode, const QString &errorText = QString());
 

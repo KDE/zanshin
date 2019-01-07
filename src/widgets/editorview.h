@@ -55,7 +55,7 @@ class EditorView : public QWidget
 public:
     typedef std::function<QString(QWidget*)> RequestFileNameFunction;
 
-    explicit EditorView(QWidget *parent = Q_NULLPTR);
+    explicit EditorView(QWidget *parent = nullptr);
     ~EditorView();
 
     QObject *model() const;

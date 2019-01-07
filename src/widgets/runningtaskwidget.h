@@ -41,7 +41,7 @@ class RunningTaskWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RunningTaskWidget(QWidget *parent = Q_NULLPTR);
+    explicit RunningTaskWidget(QWidget *parent = nullptr);
 
     void setModel(Presentation::RunningTaskModelInterface *model);
 

@@ -93,7 +93,7 @@ public:
 
     LiveQueryIntegrator(const SerializerInterface::Ptr &serializer,
                         const MonitorInterface::Ptr &monitor,
-                        QObject *parent = Q_NULLPTR);
+                        QObject *parent = nullptr);
 
 
 

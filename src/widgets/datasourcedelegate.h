@@ -37,7 +37,7 @@ class DataSourceDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit DataSourceDelegate(QObject *parent = Q_NULLPTR);
+    explicit DataSourceDelegate(QObject *parent = nullptr);
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;

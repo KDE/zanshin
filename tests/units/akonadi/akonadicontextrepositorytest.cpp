@@ -178,7 +178,7 @@ private slots:
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
                                                           .thenReturn(itemFetchJob);
-        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the task
@@ -200,7 +200,7 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
         if (execJob) {
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
-            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr).exactly(1));
         }
     }
 
@@ -244,7 +244,7 @@ private slots:
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
                                                           .thenReturn(itemFetchJob);
-        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the task
@@ -267,7 +267,7 @@ private slots:
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
         if (execJob) {
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
-            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr).exactly(1));
         }
     }
 
@@ -304,7 +304,7 @@ private slots:
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
                                                           .thenReturn(itemFetchJob);
-        storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR)
+        storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the task
@@ -324,7 +324,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
         if (execJob) {
-            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, Q_NULLPTR).exactly(1));
+            QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr).exactly(1));
         } else {
             delete dissociateJob;
         }

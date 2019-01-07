@@ -175,7 +175,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
 
         if (parentTask) {
             associate = std::bind(&Domain::TaskRepository::associate, m_taskRepository, parentTask, _1);
-            dissociate = [] (Domain::Task::Ptr) -> KJob* { return Q_NULLPTR; };
+            dissociate = [] (Domain::Task::Ptr) -> KJob* { return nullptr; };
             parentTitle = parentTask->title();
         } else {
             associate = std::bind(&Domain::ContextRepository::associate, m_contextRepository, m_context, _1);
@@ -196,7 +196,7 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
 
     auto drag = [] (const Domain::Task::List &tasks) -> QMimeData* {
         if (tasks.isEmpty())
-            return Q_NULLPTR;
+            return nullptr;
 
         auto data = new QMimeData();
         data->setData(QStringLiteral("application/x-zanshin-object"), "object");

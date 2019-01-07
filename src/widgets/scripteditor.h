@@ -38,7 +38,7 @@ class ScriptEditor : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit ScriptEditor(QWidget *parent = Q_NULLPTR);
+    explicit ScriptEditor(QWidget *parent = nullptr);
     virtual ~ScriptEditor();
 
     QObjectPtr scriptHandler() const;

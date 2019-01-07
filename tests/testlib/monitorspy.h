@@ -36,7 +36,7 @@ public:
     static int expirationDelay();
     static void setExpirationDelay(int value);
 
-    explicit MonitorSpy(Akonadi::MonitorInterface *monitor, QObject *parent = Q_NULLPTR);
+    explicit MonitorSpy(Akonadi::MonitorInterface *monitor, QObject *parent = nullptr);
 
     void waitForStableState();
 

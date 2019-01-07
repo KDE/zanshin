@@ -204,7 +204,7 @@ private slots:
     void shouldAllowOurOwnFactory()
     {
         s_firstImplFactoryCalled = false;
-        s_manager = Q_NULLPTR;
+        s_manager = nullptr;
         DependencyManager deps;
         deps.add<Interface0>(&DependencyManagerTest::firstImplFactory);
         auto object = deps.create<Interface0>();
@@ -227,7 +227,7 @@ private slots:
     void shouldAllowUniqueInstancesWithOurOwnFactory()
     {
         s_firstImplFactoryCalled = false;
-        s_manager = Q_NULLPTR;
+        s_manager = nullptr;
         DependencyManager deps;
         deps.add<Interface0, DependencyManager::UniqueInstance>(&DependencyManagerTest::firstImplFactory);
         auto object1 = deps.create<Interface0>();
@@ -243,7 +243,7 @@ private slots:
     {
 #ifdef Q_COMPILER_LAMBDA
         bool ownFactoryCalled = false;
-        DependencyManager *managerCalled = Q_NULLPTR;
+        DependencyManager *managerCalled = nullptr;
 
         DependencyManager deps;
         deps.add<Interface0>([&](DependencyManager *manager) -> Interface0* {
@@ -301,7 +301,7 @@ private slots:
 
         auto object = deps.create<AnotherInterface>();
         auto impl = object.dynamicCast<AnotherFirstImplementation>();
-        QVERIFY(impl != Q_NULLPTR);
+        QVERIFY(impl != nullptr);
         QVERIFY(impl->iface().dynamicCast<FirstImplementation0>());
     }
 
@@ -340,7 +340,7 @@ private slots:
                                                                Interface14*)>();
         auto object = deps.create<AnotherInterface>();
         auto impl = object.dynamicCast<AnotherSecondImplementation>();
-        QVERIFY(impl != Q_NULLPTR);
+        QVERIFY(impl != nullptr);
         QVERIFY(impl->iface0().dynamicCast<FirstImplementation0>());
         QVERIFY(impl->iface1().dynamicCast<Implementation1>());
         QVERIFY(impl->iface2().dynamicCast<Implementation2>());
@@ -360,7 +360,7 @@ private slots:
 };
 
 bool DependencyManagerTest::s_firstImplFactoryCalled = false;
-DependencyManager *DependencyManagerTest::s_manager = Q_NULLPTR;
+DependencyManager *DependencyManagerTest::s_manager = nullptr;
 
 ZANSHIN_TEST_MAIN(DependencyManagerTest)
 

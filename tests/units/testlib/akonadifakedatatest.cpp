@@ -76,7 +76,7 @@ class AkonadiFakeDataTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit AkonadiFakeDataTest(QObject *parent = Q_NULLPTR)
+    explicit AkonadiFakeDataTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         qRegisterMetaType<Akonadi::Collection>();

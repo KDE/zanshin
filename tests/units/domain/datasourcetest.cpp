@@ -31,7 +31,7 @@ class DataSourceTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit DataSourceTest(QObject *parent = Q_NULLPTR)
+    explicit DataSourceTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         qRegisterMetaType<DataSource::ContentTypes>();

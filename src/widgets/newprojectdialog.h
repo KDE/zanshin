@@ -42,7 +42,7 @@ class NewProjectDialog : public QDialog, public NewProjectDialogInterface
 {
     Q_OBJECT
 public:
-    explicit NewProjectDialog(QWidget *parent = Q_NULLPTR);
+    explicit NewProjectDialog(QWidget *parent = nullptr);
     ~NewProjectDialog();
 
     int exec() override;

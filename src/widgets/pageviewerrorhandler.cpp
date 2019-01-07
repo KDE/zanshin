@@ -28,7 +28,7 @@
 using namespace Widgets;
 
 PageViewErrorHandler::PageViewErrorHandler()
-    : m_pageView(Q_NULLPTR)
+    : m_pageView(nullptr)
 {
 }
 

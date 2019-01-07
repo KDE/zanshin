@@ -58,7 +58,7 @@ QueryTreeNodeBase *QueryTreeNodeBase::child(int row) const
     if (row >= 0 && row < m_childNode.size())
         return m_childNode.value(row);
     else
-        return Q_NULLPTR;
+        return nullptr;
 }
 
 void QueryTreeNodeBase::insertChild(int row, QueryTreeNodeBase *node)
@@ -220,7 +220,7 @@ bool QueryTreeModelBase::dropMimeData(const QMimeData *data, Qt::DropAction acti
 QMimeData *QueryTreeModelBase::mimeData(const QModelIndexList &indexes) const
 {
     if (indexes.isEmpty())
-        return Q_NULLPTR;
+        return nullptr;
 
     auto data = createMimeData(indexes);
     data->setData(QStringLiteral("application/x-zanshin-indexes"), "indexes");

@@ -57,8 +57,8 @@ AvailablePagesModel::AvailablePagesModel(const Domain::DataSourceQueries::Ptr &d
                                          const Domain::TaskRepository::Ptr &taskRepository,
                                          QObject *parent)
     : QObject(parent),
-      m_pageListModel(Q_NULLPTR),
-      m_sortProxyModel(Q_NULLPTR),
+      m_pageListModel(nullptr),
+      m_sortProxyModel(nullptr),
       m_dataSourceQueries(dataSourceQueries),
       m_projectQueries(projectQueries),
       m_projectRepository(projectRepository),
@@ -118,7 +118,7 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
         return contextPageModel;
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void AvailablePagesModel::addProject(const QString &name, const Domain::DataSource::Ptr &source)
@@ -310,7 +310,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
     };
 
     auto drag = [](const QObjectPtrList &) -> QMimeData* {
-        return Q_NULLPTR;
+        return nullptr;
     };
 
     return new QueryTreeModel<QObjectPtr>(query, flags, data, setData, drop, drag, nullptr, this);

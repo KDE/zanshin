@@ -100,8 +100,8 @@ class ApplicationModelStub : public QObject
 public:
     typedef QSharedPointer<ApplicationModelStub> Ptr;
 
-    explicit ApplicationModelStub(QObject *parent = Q_NULLPTR)
-        : QObject(parent), m_currentPage(Q_NULLPTR) {}
+    explicit ApplicationModelStub(QObject *parent = nullptr)
+        : QObject(parent), m_currentPage(nullptr) {}
 
     QObject *currentPage()
     {
@@ -129,7 +129,7 @@ class AvailablePagesModelStub : public QObject
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* pageListModel READ pageListModel)
 public:
-    explicit AvailablePagesModelStub(QObject *parent = Q_NULLPTR)
+    explicit AvailablePagesModelStub(QObject *parent = nullptr)
         : QObject(parent)
     {
         QStandardItem *inbox = new QStandardItem;
@@ -207,7 +207,7 @@ class EditorModelStub : public QObject
 {
     Q_OBJECT
 public:
-    explicit EditorModelStub(QObject *parent = Q_NULLPTR)
+    explicit EditorModelStub(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -269,9 +269,9 @@ public:
     typedef QSharedPointer<QuickSelectDialogStub> Ptr;
 
     explicit QuickSelectDialogStub()
-        : parent(Q_NULLPTR),
+        : parent(nullptr),
           execCount(0),
-          itemModel(Q_NULLPTR)
+          itemModel(nullptr)
     {
     }
 
@@ -301,7 +301,7 @@ class ApplicationComponentsTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApplicationComponentsTest(QObject *parent = Q_NULLPTR)
+    explicit ApplicationComponentsTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
@@ -618,7 +618,7 @@ private slots:
 
         AvailablePagesModelStub availablePagesModel;
         model->setProperty("availablePages", QVariant::fromValue<QObject*>(&availablePagesModel));
-        model->setProperty("currentPage", QVariant::fromValue<QObject*>(Q_NULLPTR));
+        model->setProperty("currentPage", QVariant::fromValue<QObject*>(nullptr));
 
         QObject editorModel;
         editorModel.setProperty("task",

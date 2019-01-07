@@ -45,7 +45,7 @@ class FilterWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FilterWidget(QWidget *parent = Q_NULLPTR);
+    explicit FilterWidget(QWidget *parent = nullptr);
     ~FilterWidget();
 
     Presentation::TaskFilterProxyModel *proxyModel() const;

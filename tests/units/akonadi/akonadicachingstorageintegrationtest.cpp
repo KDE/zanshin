@@ -35,7 +35,7 @@ class AkonadiCachingStorageIntegrationTest : public Testlib::AkonadiStorageTestB
 {
     Q_OBJECT
 public:
-    explicit AkonadiCachingStorageIntegrationTest(QObject *parent = Q_NULLPTR)
+    explicit AkonadiCachingStorageIntegrationTest(QObject *parent = nullptr)
         : AkonadiStorageTestBase(parent)
     {
     }

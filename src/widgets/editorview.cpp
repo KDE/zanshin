@@ -43,7 +43,7 @@ using namespace Widgets;
 
 EditorView::EditorView(QWidget *parent)
     : QWidget(parent),
-      m_model(Q_NULLPTR),
+      m_model(nullptr),
       ui(new Ui::EditorView)
 {
     m_requestFileNameFunction = [](QWidget *parent) {
@@ -103,9 +103,9 @@ void EditorView::setModel(QObject *model)
     if (m_model) {
         disconnect(ui->attachmentList->selectionModel(), &QItemSelectionModel::selectionChanged,
                    this, &EditorView::onAttachmentSelectionChanged);
-        ui->attachmentList->setModel(Q_NULLPTR);
-        disconnect(m_model, Q_NULLPTR, this, Q_NULLPTR);
-        disconnect(this, Q_NULLPTR, m_model, Q_NULLPTR);
+        ui->attachmentList->setModel(nullptr);
+        disconnect(m_model, nullptr, this, nullptr);
+        disconnect(this, nullptr, m_model, nullptr);
     }
 
     m_model = model;

@@ -55,7 +55,7 @@ class PageView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PageView(QWidget *parent = Q_NULLPTR);
+    explicit PageView(QWidget *parent = nullptr);
 
     QHash<QString, QAction*> globalActions() const;
 

@@ -40,7 +40,7 @@ public:
     typedef QSharedPointer<Context> Ptr;
     typedef QList<Context::Ptr> List;
 
-    explicit Context(QObject *parent = Q_NULLPTR);
+    explicit Context(QObject *parent = nullptr);
     virtual ~Context();
 
     QString name() const;

@@ -43,7 +43,7 @@ class AvailableSourcesModelStub : public QObject
 {
     Q_OBJECT
 public:
-    explicit AvailableSourcesModelStub(QObject *parent = Q_NULLPTR)
+    explicit AvailableSourcesModelStub(QObject *parent = nullptr)
         : QObject(parent),
           settingsCalled(false)
     {
@@ -145,7 +145,7 @@ private slots:
         QTest::qWait(10);
 
         // WHEN
-        available.setModel(Q_NULLPTR);
+        available.setModel(nullptr);
         QTest::qWait(10);
 
         // THEN

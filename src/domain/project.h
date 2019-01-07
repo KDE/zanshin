@@ -40,7 +40,7 @@ public:
     typedef QSharedPointer<Project> Ptr;
     typedef QList<Project::Ptr> List;
 
-    explicit Project(QObject *parent = Q_NULLPTR);
+    explicit Project(QObject *parent = nullptr);
     virtual ~Project();
 
     QString name() const;

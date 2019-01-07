@@ -50,10 +50,10 @@ using namespace Widgets;
 ApplicationComponents::ApplicationComponents(QWidget *parent)
     : QObject(parent),
       m_parent(parent),
-      m_availableSourcesView(Q_NULLPTR),
-      m_availablePagesView(Q_NULLPTR),
-      m_pageView(Q_NULLPTR),
-      m_editorView(Q_NULLPTR),
+      m_availableSourcesView(nullptr),
+      m_availablePagesView(nullptr),
+      m_pageView(nullptr),
+      m_editorView(nullptr),
       m_errorHandler(new PageViewErrorHandler)
 {
     m_quickSelectDialogFactory = [] (QWidget *parent) {
@@ -204,21 +204,21 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
 
     if (m_availableSourcesView) {
         m_availableSourcesView->setModel(m_model ? m_model->property("availableSources").value<QObject*>()
-                                                 : Q_NULLPTR);
+                                                 : nullptr);
     }
 
     if (m_availablePagesView) {
         m_availablePagesView->setModel(m_model ? m_model->property("availablePages").value<QObject*>()
-                                               : Q_NULLPTR);
+                                               : nullptr);
         m_availablePagesView->setProjectSourcesModel(m_model ? m_model->property("dataSourcesModel").value<QAbstractItemModel*>()
-                                                             : Q_NULLPTR);
+                                                             : nullptr);
     }
 
     if (m_pageView) {
         m_pageView->setModel(m_model ? m_model->property("currentPage").value<QObject*>()
-                                     : Q_NULLPTR);
+                                     : nullptr);
         m_pageView->setRunningTaskModel(m_model ? m_model->property("runningTaskModel").value<Presentation::RunningTaskModelInterface*>()
-                                                : Q_NULLPTR);
+                                                : nullptr);
 
         if (m_model) {
             connect(m_model.data(), SIGNAL(currentPageChanged(QObject*)),
@@ -228,12 +228,12 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
 
     if (m_editorView) {
         m_editorView->setModel(m_model ? m_model->property("editor").value<QObject*>()
-                                       : Q_NULLPTR);
+                                       : nullptr);
     }
 
     if (m_runningTaskView) {
         m_runningTaskView->setModel(m_model ? m_model->property("runningTaskModel").value<Presentation::RunningTaskModelInterface*>()
-                                            : Q_NULLPTR);
+                                            : nullptr);
     } else if (m_model) {
         runningTaskView(); // We got a model so make sure this view exists now
     }

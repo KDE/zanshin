@@ -113,7 +113,7 @@ class EditorViewTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit EditorViewTest(QObject *parent = Q_NULLPTR)
+    explicit EditorViewTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
@@ -194,7 +194,7 @@ private slots:
         QVERIFY(removeAttachmentButton);
 
         // WHEN
-        editor.setModel(Q_NULLPTR);
+        editor.setModel(nullptr);
 
         // THEN
         QVERIFY(!editor.isEnabled());

@@ -36,7 +36,7 @@ class AkonadiFakeStorageTest : public Testlib::AkonadiStorageTestBase
 {
     Q_OBJECT
 public:
-    explicit AkonadiFakeStorageTest(QObject *parent = Q_NULLPTR)
+    explicit AkonadiFakeStorageTest(QObject *parent = nullptr)
         : Testlib::AkonadiStorageTestBase(parent)
     {
         MonitorSpy::setExpirationDelay(100);

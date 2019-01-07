@@ -54,7 +54,7 @@ public:
                                  const Domain::ContextRepository::Ptr &contextRepository,
                                  const Domain::TaskQueries::Ptr &taskQueries,
                                  const Domain::TaskRepository::Ptr &taskRepository,
-                                 QObject *parent = Q_NULLPTR);
+                                 QObject *parent = nullptr);
 
     QAbstractItemModel *pageListModel();
 

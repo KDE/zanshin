@@ -81,7 +81,7 @@ class PassivePopup : public QFrame
 {
     Q_OBJECT
 public:
-    explicit PassivePopup(QWidget *parent = Q_NULLPTR)
+    explicit PassivePopup(QWidget *parent = nullptr)
         : QFrame(parent),
           m_hideTimer(new QTimer(this)),
           m_label(new QLabel(this))
@@ -123,7 +123,7 @@ using namespace Widgets;
 PageView::PageView(QWidget *parent)
     : QWidget(parent),
       m_cancelAction(new QAction(this)),
-      m_model(Q_NULLPTR),
+      m_model(nullptr),
       m_messageWidget(new KMessageWidget(this)),
       m_filterWidget(new FilterWidget(this)),
       m_centralView(new PageTreeView(this)),
@@ -258,10 +258,10 @@ void PageView::setModel(QObject *model)
         return;
 
     if (m_centralView->selectionModel()) {
-        disconnect(m_centralView->selectionModel(), Q_NULLPTR, this, Q_NULLPTR);
+        disconnect(m_centralView->selectionModel(), nullptr, this, nullptr);
     }
 
-    m_filterWidget->proxyModel()->setSourceModel(Q_NULLPTR);
+    m_filterWidget->proxyModel()->setSourceModel(nullptr);
 
     m_model = model;
 

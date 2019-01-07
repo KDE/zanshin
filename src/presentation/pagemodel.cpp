@@ -28,7 +28,7 @@ using namespace Presentation;
 
 PageModel::PageModel(QObject *parent)
     : QObject(parent),
-      m_centralListModel(Q_NULLPTR)
+      m_centralListModel(nullptr)
 {
 }
 

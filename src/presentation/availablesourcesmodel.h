@@ -44,7 +44,7 @@ class AvailableSourcesModel : public QObject, public ErrorHandlingModelBase
 public:
     explicit AvailableSourcesModel(const Domain::DataSourceQueries::Ptr &dataSourceQueries,
                                    const Domain::DataSourceRepository::Ptr &dataSourceRepository,
-                                   QObject *parent = Q_NULLPTR);
+                                   QObject *parent = nullptr);
 
     QAbstractItemModel *sourceListModel();
 

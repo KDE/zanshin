@@ -38,7 +38,7 @@ class WorkdayPageModel : public PageModel
 public:
     explicit WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
                               const Domain::TaskRepository::Ptr &taskRepository,
-                              QObject *parent = Q_NULLPTR);
+                              QObject *parent = nullptr);
 
     Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) override;
     void removeItem(const QModelIndex &index) override;

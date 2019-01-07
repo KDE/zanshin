@@ -31,10 +31,10 @@ class FakePageModel : public Presentation::PageModel
 {
     Q_OBJECT
 public:
-    explicit FakePageModel(QObject *parent = Q_NULLPTR)
+    explicit FakePageModel(QObject *parent = nullptr)
         : Presentation::PageModel(parent),
           createCount(0),
-          itemModel(Q_NULLPTR)
+          itemModel(nullptr)
     {
     }
 

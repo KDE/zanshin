@@ -50,8 +50,8 @@ public:
                             const FlagsFunction &flagsFunction,
                             const DataFunction &dataFunction,
                             const SetDataFunction &setDataFunction,
-                            QObject *parent = Q_NULLPTR)
-        : QueryTreeModelBase(new QueryTreeNode<ItemType, AdditionalInfo>(ItemType(), Q_NULLPTR, this,
+                            QObject *parent = nullptr)
+        : QueryTreeModelBase(new QueryTreeNode<ItemType, AdditionalInfo>(ItemType(), nullptr, this,
                                                          queryGenerator, flagsFunction,
                                                          dataFunction, setDataFunction),
                              parent)
@@ -65,8 +65,8 @@ public:
                             const DropFunction &dropFunction,
                             const DragFunction &dragFunction,
                             const FetchAdditionalInfoFunction &fetchAdditionalInfoFunction,
-                            QObject *parent = Q_NULLPTR)
-        : QueryTreeModelBase(new QueryTreeNode<ItemType, AdditionalInfo>(ItemType(), Q_NULLPTR, this,
+                            QObject *parent = nullptr)
+        : QueryTreeModelBase(new QueryTreeNode<ItemType, AdditionalInfo>(ItemType(), nullptr, this,
                                                          queryGenerator, flagsFunction,
                                                          dataFunction, setDataFunction,
                                                          dropFunction),
@@ -88,7 +88,7 @@ protected:
                            });
             return m_dragFunction(items);
         } else {
-            return Q_NULLPTR;
+            return nullptr;
         }
     }
 

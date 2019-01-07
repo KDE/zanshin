@@ -38,7 +38,7 @@ using namespace Presentation;
 
 ApplicationModel::ApplicationModel(QObject *parent)
     : QObject(parent),
-      m_errorHandler(Q_NULLPTR)
+      m_errorHandler(nullptr)
 {
     MetaTypes::registerAll();
 }
@@ -107,7 +107,7 @@ void ApplicationModel::setCurrentPage(QObject *page)
     m_currentPage = QObjectPtr(page);
 
     if (m_currentPage) {
-        m_currentPage->setParent(Q_NULLPTR);
+        m_currentPage->setParent(nullptr);
 
         auto pageModel = m_currentPage.staticCast<PageModel>();
         Q_ASSERT(pageModel);

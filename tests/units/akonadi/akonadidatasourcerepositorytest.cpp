@@ -53,7 +53,7 @@ private slots:
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, Q_NULLPTR)
+        storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, nullptr)
                                                                  .thenReturn(collectionModifyJob);
 
         // Serializer mock returning the item for the project
@@ -67,7 +67,7 @@ private slots:
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, Q_NULLPTR).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, nullptr).exactly(1));
     }
 };
 

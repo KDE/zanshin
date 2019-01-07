@@ -39,8 +39,8 @@ class UserInputSimulator : public QObject
 {
     Q_OBJECT
 public:
-    explicit UserInputSimulator(QObject *parent = Q_NULLPTR)
-        : QObject(parent), dialog(Q_NULLPTR), reject(false), sourceComboIndex(-1) {}
+    explicit UserInputSimulator(QObject *parent = nullptr)
+        : QObject(parent), dialog(nullptr), reject(false), sourceComboIndex(-1) {}
 
     void exec()
     {
@@ -78,7 +78,7 @@ class NewProjectDialogTest : public QObject
 {
     Q_OBJECT
 private:
-    QStandardItem *createSourceItem(const QString &name, QStandardItem *parent = Q_NULLPTR)
+    QStandardItem *createSourceItem(const QString &name, QStandardItem *parent = nullptr)
     {
         auto source = Domain::DataSource::Ptr::create();
         source->setName(name);
@@ -90,7 +90,7 @@ private:
         return item;
     }
 
-    QStandardItem *createTaskSourceItem(const QString &name, QStandardItem *parent = Q_NULLPTR)
+    QStandardItem *createTaskSourceItem(const QString &name, QStandardItem *parent = nullptr)
     {
         auto item = createSourceItem(name, parent);
         auto source = item->data(Presentation::QueryTreeModelBase::ObjectRole).value<Domain::DataSource::Ptr>();
@@ -98,7 +98,7 @@ private:
         return item;
     }
 
-    QStandardItem *createDefaultSourceItem(const QString &name, QStandardItem *parent = Q_NULLPTR)
+    QStandardItem *createDefaultSourceItem(const QString &name, QStandardItem *parent = nullptr)
     {
         auto item = createTaskSourceItem(name, parent);
         item->setData(true, Presentation::QueryTreeModelBase::IsDefaultRole);

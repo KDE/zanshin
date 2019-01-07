@@ -85,15 +85,15 @@ class ZanshinContext : public QObject
 {
     Q_OBJECT
 public:
-    explicit ZanshinContext(QObject *parent = Q_NULLPTR)
+    explicit ZanshinContext(QObject *parent = nullptr)
         : QObject(parent),
           app(),
-          presentation(Q_NULLPTR),
-          editor(Q_NULLPTR),
+          presentation(nullptr),
+          editor(nullptr),
           proxyModel(new QSortFilterProxyModel(this)),
-          m_model(Q_NULLPTR),
-          m_sourceModel(Q_NULLPTR),
-          monitorSpy(Q_NULLPTR)
+          m_model(nullptr),
+          m_sourceModel(nullptr),
+          monitorSpy(nullptr)
     {
         qputenv("ZANSHIN_OVERRIDE_DATE", "2015-03-10");
 
@@ -380,7 +380,7 @@ GIVEN("^I display the \"(.*)\" page$") {
     QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageName);
     VERIFY(pageIndex.isValid());
 
-    QObject *page = Q_NULLPTR;
+    QObject *page = nullptr;
     QMetaObject::invokeMethod(availablePages, "createPageForIndex",
                               Q_RETURN_ARG(QObject*, page),
                               Q_ARG(QModelIndex, pageIndex));

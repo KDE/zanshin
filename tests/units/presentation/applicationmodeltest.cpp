@@ -55,7 +55,7 @@ class FakePageModel : public Presentation::PageModel
 {
     Q_OBJECT
 public:
-    explicit FakePageModel(QObject *parent = Q_NULLPTR)
+    explicit FakePageModel(QObject *parent = nullptr)
         : Presentation::PageModel(parent) {}
 
     Domain::Task::Ptr addItem(const QString &, const QModelIndex &) override { return {}; }
@@ -70,7 +70,7 @@ class ApplicationModelTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApplicationModelTest(QObject *parent = Q_NULLPTR)
+    explicit ApplicationModelTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         Utils::DependencyManager::globalInstance().add<Presentation::AvailablePagesModel>(
@@ -151,7 +151,7 @@ private slots:
         QSignalSpy spy(&app, &Presentation::ApplicationModel::currentPageChanged);
 
         // WHEN
-        app.setCurrentPage(Q_NULLPTR);
+        app.setCurrentPage(nullptr);
 
         // THEN
         QVERIFY(!app.currentPage());

@@ -40,7 +40,7 @@ using namespace Widgets;
 
 QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     : QDialog(parent),
-      m_model(Q_NULLPTR),
+      m_model(nullptr),
       m_filterProxyModel(new KRecursiveFilterProxyModel(this)),
       m_label(new QLabel(this)),
       m_tree(new QTreeView(this))

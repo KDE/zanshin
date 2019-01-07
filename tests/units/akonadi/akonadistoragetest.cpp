@@ -33,7 +33,7 @@ class AkonadiStorageTest : public Testlib::AkonadiStorageTestBase
 {
     Q_OBJECT
 public:
-    explicit AkonadiStorageTest(QObject *parent = Q_NULLPTR)
+    explicit AkonadiStorageTest(QObject *parent = nullptr)
         : AkonadiStorageTestBase(parent)
     {
     }

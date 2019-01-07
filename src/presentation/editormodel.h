@@ -57,7 +57,7 @@ class EditorModel : public QObject, public ErrorHandlingModelBase
 public:
     typedef std::function<KJob*(const Domain::Task::Ptr &)> SaveFunction;
 
-    explicit EditorModel(QObject *parent = Q_NULLPTR);
+    explicit EditorModel(QObject *parent = nullptr);
     ~EditorModel();
 
     Domain::Task::Ptr task() const;

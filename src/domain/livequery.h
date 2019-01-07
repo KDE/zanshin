@@ -217,7 +217,7 @@ private:
     template<typename T>
     bool isValidOutput(T *output)
     {
-        return output != Q_NULLPTR;
+        return output != nullptr;
     }
 
     void addToProvider(const typename Provider::Ptr &provider, const InputType &input)
@@ -387,7 +387,7 @@ private:
     template<typename T>
     bool isValidOutput(T *output)
     {
-        return output != Q_NULLPTR;
+        return output != nullptr;
     }
 
     void addToProvider(const typename Provider::Ptr &provider, const InputType &input)

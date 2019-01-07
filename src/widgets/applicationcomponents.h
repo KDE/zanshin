@@ -61,7 +61,7 @@ public:
     typedef QSharedPointer<QuickSelectDialogInterface> QuickSelectDialogPtr;
     typedef std::function<QuickSelectDialogPtr(QWidget*)> QuickSelectDialogFactory;
 
-    explicit ApplicationComponents(QWidget *parent = Q_NULLPTR);
+    explicit ApplicationComponents(QWidget *parent = nullptr);
     ~ApplicationComponents();
 
     QHash<QString, QAction*> globalActions() const;

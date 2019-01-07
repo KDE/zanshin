@@ -50,9 +50,9 @@ public:
     typedef QSharedPointer<NewProjectDialogStub> Ptr;
 
     explicit NewProjectDialogStub()
-        : parent(Q_NULLPTR),
+        : parent(nullptr),
           execCount(0),
-          sourceModel(Q_NULLPTR),
+          sourceModel(nullptr),
           source(Domain::DataSource::Ptr::create())
     {
     }
@@ -90,9 +90,9 @@ public:
     typedef QSharedPointer<QuickSelectDialogStub> Ptr;
 
     explicit QuickSelectDialogStub()
-        : parent(Q_NULLPTR),
+        : parent(nullptr),
           execCount(0),
-          itemModel(Q_NULLPTR)
+          itemModel(nullptr)
     {
     }
 
@@ -122,7 +122,7 @@ class AvailablePagesModelStub : public QObject
 {
     Q_OBJECT
 public:
-    explicit AvailablePagesModelStub(QObject *parent = Q_NULLPTR)
+    explicit AvailablePagesModelStub(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -149,7 +149,7 @@ public slots:
     }
 
 public Q_SLOTS:
-    QObject *createPageForIndex(const QModelIndex &) { return Q_NULLPTR; }
+    QObject *createPageForIndex(const QModelIndex &) { return nullptr; }
 
 public:
     QStringList projectNames;
@@ -264,7 +264,7 @@ private slots:
         QCOMPARE(pagesView->model(), &model);
 
         // WHEN
-        available.setModel(Q_NULLPTR);
+        available.setModel(nullptr);
         QTest::qWait(10);
 
         // THEN

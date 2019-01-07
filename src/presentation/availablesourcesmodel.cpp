@@ -39,7 +39,7 @@ AvailableSourcesModel::AvailableSourcesModel(const Domain::DataSourceQueries::Pt
                                              const Domain::DataSourceRepository::Ptr &dataSourceRepository,
                                              QObject *parent)
     : QObject(parent),
-      m_sourceListModel(Q_NULLPTR),
+      m_sourceListModel(nullptr),
       m_dataSourceQueries(dataSourceQueries),
       m_dataSourceRepository(dataSourceRepository)
 {
@@ -125,7 +125,7 @@ QAbstractItemModel *AvailableSourcesModel::createSourceListModel()
     };
 
     auto drag = [](const Domain::DataSource::List &) -> QMimeData* {
-        return Q_NULLPTR;
+        return nullptr;
     };
 
     connect(m_dataSourceQueries->notifier(), &Domain::DataSourceQueriesNotifier::defaultSourceChanged,

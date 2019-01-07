@@ -56,7 +56,7 @@ class AvailableSourcesModelTest : public QObject
 {
     Q_OBJECT
 public:
-    explicit AvailableSourcesModelTest(QObject *parent = Q_NULLPTR)
+    explicit AvailableSourcesModelTest(QObject *parent = nullptr)
         : QObject(parent)
     {
         qRegisterMetaType<QModelIndex>();
@@ -123,7 +123,7 @@ private slots:
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
                                                     sourceRepositoryMock.getInstance(),
-                                                    Q_NULLPTR);
+                                                    nullptr);
 
         // WHEN
         QAbstractItemModel *model = sources.sourceListModel();
@@ -238,7 +238,7 @@ private slots:
 
         Presentation::AvailableSourcesModel sources(sourceQueriesMock.getInstance(),
                                                     sourceRepositoryMock.getInstance(),
-                                                    Q_NULLPTR);
+                                                    nullptr);
         FakeErrorHandler errorHandler;
         sources.setErrorHandler(&errorHandler);
 

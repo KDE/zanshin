@@ -39,7 +39,7 @@ public:
         DateSort
     };
 
-    explicit TaskFilterProxyModel(QObject *parent = Q_NULLPTR);
+    explicit TaskFilterProxyModel(QObject *parent = nullptr);
 
     SortType sortType() const;
     void setSortType(SortType type);

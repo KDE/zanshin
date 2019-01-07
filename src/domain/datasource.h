@@ -52,7 +52,7 @@ public:
     };
     Q_DECLARE_FLAGS(ContentTypes, ContentType)
 
-    explicit DataSource(QObject *parent = Q_NULLPTR);
+    explicit DataSource(QObject *parent = nullptr);
     virtual ~DataSource();
 
     QString name() const;
