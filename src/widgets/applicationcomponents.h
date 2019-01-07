@@ -50,6 +50,7 @@ class AvailableSourcesView;
 class EditorView;
 class PageView;
 class PageViewErrorHandler;
+class RunningTaskWidget;
 
 class QuickSelectDialogInterface;
 
@@ -71,18 +72,13 @@ public:
     AvailablePagesView *availablePagesView() const;
     virtual PageView *pageView() const;
     EditorView *editorView() const;
+    RunningTaskWidget *runningTaskView() const;
 
     QuickSelectDialogFactory quickSelectDialogFactory() const;
-
-protected:
-    QWidget *parentWidget() const;
 
 public slots:
     virtual void setModel(const QObjectPtr &model);
     void setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory);
-
-protected:
-    QPointer<PageView> m_pageView;
 
 private slots:
     void onCurrentPageChanged(QObject *page);
@@ -99,7 +95,9 @@ private:
     QWidget *m_parent;
     QPointer<AvailableSourcesView> m_availableSourcesView;
     QPointer<AvailablePagesView> m_availablePagesView;
+    QPointer<PageView> m_pageView;
     QPointer<EditorView> m_editorView;
+    QPointer<RunningTaskWidget> m_runningTaskView;
 
     QScopedPointer<PageViewErrorHandler> m_errorHandler;
     QuickSelectDialogFactory m_quickSelectDialogFactory;

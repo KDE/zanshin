@@ -41,15 +41,18 @@
 #include "pageview.h"
 #include "pageviewerrorhandler.h"
 #include "quickselectdialog.h"
+#include "runningtaskwidget.h"
+
+#include "presentation/runningtaskmodelinterface.h"
 
 using namespace Widgets;
 
 ApplicationComponents::ApplicationComponents(QWidget *parent)
     : QObject(parent),
-      m_pageView(Q_NULLPTR),
       m_parent(parent),
       m_availableSourcesView(Q_NULLPTR),
       m_availablePagesView(Q_NULLPTR),
+      m_pageView(Q_NULLPTR),
       m_editorView(Q_NULLPTR),
       m_errorHandler(new PageViewErrorHandler)
 {
@@ -128,6 +131,7 @@ PageView *ApplicationComponents::pageView() const
         auto pageView = new PageView(m_parent);
         if (m_model) {
             pageView->setModel(m_model->property("currentPage").value<QObject*>());
+            pageView->setRunningTaskModel(m_model->property("runningTaskModel").value<Presentation::RunningTaskModelInterface*>());
             connect(m_model.data(), SIGNAL(currentPageChanged(QObject*)),
                     pageView, SLOT(setModel(QObject*)));
         }
@@ -157,14 +161,24 @@ EditorView *ApplicationComponents::editorView() const
     return m_editorView;
 }
 
+RunningTaskWidget *ApplicationComponents::runningTaskView() const
+{
+    if (!m_runningTaskView) {
+        auto runningTaskView = new RunningTaskWidget(m_parent);
+        if (m_model) {
+            runningTaskView->setModel(m_model->property("runningTaskModel").value<Presentation::RunningTaskModelInterface*>());
+        }
+
+        auto self = const_cast<ApplicationComponents*>(this);
+        self->m_runningTaskView = runningTaskView;
+    }
+
+    return m_runningTaskView;
+}
+
 ApplicationComponents::QuickSelectDialogFactory ApplicationComponents::quickSelectDialogFactory() const
 {
     return m_quickSelectDialogFactory;
-}
-
-QWidget *ApplicationComponents::parentWidget() const
-{
-    return m_parent;
 }
 
 void ApplicationComponents::setModel(const QObjectPtr &model)
@@ -184,8 +198,9 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
 
     m_model = model;
 
-    if (m_model)
+    if (m_model) {
         m_model->setProperty("errorHandler", QVariant::fromValue(errorHandler()));
+    }
 
     if (m_availableSourcesView) {
         m_availableSourcesView->setModel(m_model ? m_model->property("availableSources").value<QObject*>()
@@ -202,6 +217,9 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
     if (m_pageView) {
         m_pageView->setModel(m_model ? m_model->property("currentPage").value<QObject*>()
                                      : Q_NULLPTR);
+        m_pageView->setRunningTaskModel(m_model ? m_model->property("runningTaskModel").value<Presentation::RunningTaskModelInterface*>()
+                                                : Q_NULLPTR);
+
         if (m_model) {
             connect(m_model.data(), SIGNAL(currentPageChanged(QObject*)),
                     m_pageView, SLOT(setModel(QObject*)));
@@ -211,6 +229,13 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
     if (m_editorView) {
         m_editorView->setModel(m_model ? m_model->property("editor").value<QObject*>()
                                        : Q_NULLPTR);
+    }
+
+    if (m_runningTaskView) {
+        m_runningTaskView->setModel(m_model ? m_model->property("runningTaskModel").value<Presentation::RunningTaskModelInterface*>()
+                                            : Q_NULLPTR);
+    } else if (m_model) {
+        runningTaskView(); // We got a model so make sure this view exists now
     }
 }
 

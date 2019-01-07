@@ -16,7 +16,6 @@ set(widgets_SRCS
     quickselectdialog.cpp
     quickselectdialoginterface.cpp
     scripteditor.cpp
-    taskapplicationcomponents.cpp
 )
 
 ki18n_wrap_ui(widgets_SRCS

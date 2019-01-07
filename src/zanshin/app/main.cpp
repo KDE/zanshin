@@ -31,7 +31,7 @@
 
 #include <KXmlGuiWindow>
 
-#include "widgets/taskapplicationcomponents.h"
+#include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
 #include "widgets/availablesourcesview.h"
 #include "widgets/editorview.h"
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     aboutData.processCommandLine(&parser);
 
     auto widget = new QWidget;
-    auto components = new Widgets::TaskApplicationComponents(widget);
+    auto components = new Widgets::ApplicationComponents(widget);
     components->setModel(Presentation::ApplicationModel::Ptr::create());
 
     auto layout = new QVBoxLayout;

@@ -37,6 +37,7 @@
 
 #include "presentation/taskfilterproxymodel.h"
 #include "presentation/querytreemodelbase.h"
+#include "presentation/runningtaskmodelinterface.h"
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"
@@ -46,6 +47,7 @@
 #include "widgets/pageview.h"
 #include "widgets/pageviewerrorhandler.h"
 #include "widgets/quickselectdialog.h"
+#include "widgets/runningtaskwidget.h"
 
 
 class CustomModelStub : public QStandardItemModel
@@ -245,6 +247,22 @@ signals:
     void dueDateChanged(const QDate &due);
 };
 
+class RunningTaskModelStub : public Presentation::RunningTaskModelInterface
+{
+    Q_OBJECT
+public:
+    explicit RunningTaskModelStub(QObject *parent = nullptr)
+        : Presentation::RunningTaskModelInterface(parent)
+    {
+    }
+
+    Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE { return {}; }
+    void setRunningTask(const Domain::Task::Ptr &) Q_DECL_OVERRIDE {}
+    void taskDeleted(const Domain::Task::Ptr &) Q_DECL_OVERRIDE {}
+    void stopTask() Q_DECL_OVERRIDE {}
+    void doneTask() Q_DECL_OVERRIDE {}
+};
+
 class QuickSelectDialogStub : public Widgets::QuickSelectDialogInterface
 {
 public:
@@ -423,6 +441,39 @@ private slots:
         QCOMPARE(components.pageView()->model(), &currentPage);
     }
 
+    void shouldApplyRunningTaskModelToPageView()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+        auto model = QObjectPtr::create();
+        auto runningTaskModel = new RunningTaskModelStub(model.data());
+        model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
+
+        // WHEN
+        components.setModel(model);
+
+        // THEN
+        QCOMPARE(components.pageView()->runningTaskModel(), runningTaskModel);
+    }
+
+    void shouldApplyRunningTaskModelAlsoToCreatedPageView()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+        // Force creation
+        components.pageView();
+
+        auto model = QObjectPtr::create();
+        auto runningTaskModel = new RunningTaskModelStub(model.data());
+        model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
+
+        // WHEN
+        components.setModel(model);
+
+        // THEN
+        QCOMPARE(components.pageView()->runningTaskModel(), runningTaskModel);
+    }
+
     void shouldApplyEditorModelToEditorView()
     {
         // GIVEN
@@ -438,7 +489,7 @@ private slots:
         QCOMPARE(components.editorView()->model(), editorModel);
     }
 
-    void shouldApplyEditorModelAltoToCreatedPageView()
+    void shouldApplyEditorModelAlsoToCreatedPageView()
     {
         // GIVEN
         Widgets::ApplicationComponents components;
@@ -456,6 +507,40 @@ private slots:
         QCOMPARE(components.editorView()->model(), editorModel);
     }
 
+    void shouldApplyRunningTaskModelToRunningTaskView()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+        auto model = QObjectPtr::create();
+        auto runningTaskModel = new RunningTaskModelStub(model.data());
+        model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
+
+        // WHEN
+        components.setModel(model);
+
+        // THEN
+        QCOMPARE(components.runningTaskView()->model(), runningTaskModel);
+    }
+
+    void shouldApplyRunningTaskModelAlsoToCreatedRunningTaskView()
+    {
+        // GIVEN
+        Widgets::ApplicationComponents components;
+        // Force creation
+        components.runningTaskView();
+
+        auto model = QObjectPtr::create();
+        auto runningTaskModel = new RunningTaskModelStub(model.data());
+        model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
+
+        // WHEN
+        components.setModel(model);
+
+        // THEN
+        QCOMPARE(components.runningTaskView()->model(), runningTaskModel);
+    }
+
+
     void shouldPropageNullModelsToViews()
     {
         // GIVEN
@@ -470,6 +555,8 @@ private slots:
         model->setProperty("currentPage", QVariant::fromValue(currentPage));
         auto editorModel = new EditorModelStub(model.data());
         model->setProperty("editor", QVariant::fromValue<QObject*>(editorModel));
+        auto runningTaskModel = new RunningTaskModelStub(model.data());
+        model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
         components.setModel(model);
 
@@ -479,12 +566,14 @@ private slots:
         components.availablePagesView();
         components.pageView();
         components.editorView();
+        components.runningTaskView();
 
         // THEN
         QVERIFY(!components.availableSourcesView()->model());
         QVERIFY(!components.availablePagesView()->model());
         QVERIFY(!components.pageView()->model());
         QVERIFY(!components.editorView()->model());
+        QVERIFY(!components.runningTaskView()->model());
     }
 
     void shouldPropageNullModelsToCreatedViews()
@@ -495,6 +584,7 @@ private slots:
         components.availablePagesView();
         components.pageView();
         components.editorView();
+        components.runningTaskView();
 
         auto model = QObjectPtr::create();
         auto availableSources = new QObject(model.data());
@@ -505,6 +595,8 @@ private slots:
         model->setProperty("currentPage", QVariant::fromValue(currentPage));
         auto editorModel = new EditorModelStub(model.data());
         model->setProperty("editor", QVariant::fromValue<QObject*>(editorModel));
+        auto runningTaskModel = new RunningTaskModelStub(model.data());
+        model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
         components.setModel(model);
 
@@ -516,6 +608,7 @@ private slots:
         QVERIFY(!components.availablePagesView()->model());
         QVERIFY(!components.pageView()->model());
         QVERIFY(!components.editorView()->model());
+        QVERIFY(!components.runningTaskView()->model());
     }
 
     void shouldApplyAvailablePagesSelectionToApplicationModel()
