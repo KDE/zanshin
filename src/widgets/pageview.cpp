@@ -127,7 +127,8 @@ PageView::PageView(QWidget *parent)
       m_messageWidget(new KMessageWidget(this)),
       m_filterWidget(new FilterWidget(this)),
       m_centralView(new PageTreeView(this)),
-      m_quickAddEdit(new QLineEdit(this))
+      m_quickAddEdit(new QLineEdit(this)),
+      m_runningTaskModel(nullptr)
 {
     m_messageWidget->setObjectName(QStringLiteral("messageWidget"));
     m_messageWidget->setCloseButtonVisible(true);
