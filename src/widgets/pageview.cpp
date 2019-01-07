@@ -60,7 +60,7 @@ public:
     using QTreeView::QTreeView;
 
 protected:
-    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE
+    void keyPressEvent(QKeyEvent *event) override
     {
         if (event->key() == Qt::Key_Escape && state() != EditingState) {
             selectionModel()->clear();
@@ -69,7 +69,7 @@ protected:
         QTreeView::keyPressEvent(event);
     }
 
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE
+    void resizeEvent(QResizeEvent *event) override
     {
         header()->resizeSection(0, event->size().width());
         QTreeView::resizeEvent(event);
@@ -100,7 +100,7 @@ public:
         connect(m_hideTimer, &QTimer::timeout, this, &QWidget::hide);
     }
 
-    void setVisible(bool visible) Q_DECL_OVERRIDE
+    void setVisible(bool visible) override
     {
         if (visible) {
             m_hideTimer->start(2000);

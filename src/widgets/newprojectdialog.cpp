@@ -45,7 +45,7 @@ public:
     }
 
 protected:
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &) const Q_DECL_OVERRIDE
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &) const override
     {
         auto sourceIndex = sourceModel()->index(sourceRow, 0);
         auto source = sourceIndex.data(Presentation::QueryTreeModelBase::ObjectRole)

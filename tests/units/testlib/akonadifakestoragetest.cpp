@@ -44,12 +44,12 @@ public:
         loader.load(SOURCE_DIR "/../akonadi/testenv/data/testdata.xml");
     }
 
-    Akonadi::StorageInterface::Ptr createStorage() Q_DECL_OVERRIDE
+    Akonadi::StorageInterface::Ptr createStorage() override
     {
         return Akonadi::StorageInterface::Ptr(m_data.createStorage());
     }
 
-    Akonadi::MonitorInterface::Ptr createMonitor() Q_DECL_OVERRIDE
+    Akonadi::MonitorInterface::Ptr createMonitor() override
     {
         return Akonadi::MonitorInterface::Ptr(m_data.createMonitor());
     }

@@ -35,30 +35,30 @@ class AkonadiFakeStorage : public Akonadi::StorageInterface
 public:
     explicit AkonadiFakeStorage(AkonadiFakeData *data);
 
-    Akonadi::Collection defaultCollection() Q_DECL_OVERRIDE;
+    Akonadi::Collection defaultCollection() override;
 
-    KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) Q_DECL_OVERRIDE;
-    KJob *updateItem(Akonadi::Item item, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *removeItem(Akonadi::Item item) Q_DECL_OVERRIDE;
-    KJob *removeItems(Akonadi::Item::List items, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
+    KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) override;
+    KJob *updateItem(Akonadi::Item item, QObject *parent = Q_NULLPTR) override;
+    KJob *removeItem(Akonadi::Item item) override;
+    KJob *removeItems(Akonadi::Item::List items, QObject *parent = Q_NULLPTR) override;
+    KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection, QObject *parent = Q_NULLPTR) override;
+    KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection, QObject *parent = Q_NULLPTR) override;
 
-    KJob *createCollection(Akonadi::Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *updateCollection(Akonadi::Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *removeCollection(Akonadi::Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
+    KJob *createCollection(Akonadi::Collection collection, QObject *parent = Q_NULLPTR) override;
+    KJob *updateCollection(Akonadi::Collection collection, QObject *parent = Q_NULLPTR) override;
+    KJob *removeCollection(Akonadi::Collection collection, QObject *parent = Q_NULLPTR) override;
 
-    KJob *createTransaction() Q_DECL_OVERRIDE;
+    KJob *createTransaction() override;
 
-    KJob *createTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
-    KJob *updateTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
-    KJob *removeTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
+    KJob *createTag(Akonadi::Tag tag) override;
+    KJob *updateTag(Akonadi::Tag tag) override;
+    KJob *removeTag(Akonadi::Tag tag) override;
 
-    Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) Q_DECL_OVERRIDE;
-    Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) Q_DECL_OVERRIDE;
-    Akonadi::ItemFetchJobInterface *fetchItem(Akonadi::Item item) Q_DECL_OVERRIDE;
-    Akonadi::ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) Q_DECL_OVERRIDE;
-    Akonadi::TagFetchJobInterface *fetchTags() Q_DECL_OVERRIDE;
+    Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
+    Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
+    Akonadi::ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;
+    Akonadi::ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) override;
+    Akonadi::TagFetchJobInterface *fetchTags() override;
 
 private:
     Akonadi::Tag::Id findId(const Akonadi::Tag &tag);

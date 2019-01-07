@@ -41,13 +41,13 @@ public:
     ContextRepository(const StorageInterface::Ptr &storage,
                       const SerializerInterface::Ptr &serializer);
 
-    KJob *create(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
-    KJob *update(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
-    KJob *remove(Domain::Context::Ptr context) Q_DECL_OVERRIDE;
+    KJob *create(Domain::Context::Ptr context) override;
+    KJob *update(Domain::Context::Ptr context) override;
+    KJob *remove(Domain::Context::Ptr context) override;
 
-    KJob *associate(Domain::Context::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
-    KJob *dissociate(Domain::Context::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
-    KJob *dissociateAll(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
+    KJob *associate(Domain::Context::Ptr parent, Domain::Task::Ptr child) override;
+    KJob *dissociate(Domain::Context::Ptr parent, Domain::Task::Ptr child) override;
+    KJob *dissociateAll(Domain::Task::Ptr child) override;
 
 private:
     StorageInterface::Ptr m_storage;

@@ -84,7 +84,7 @@ private slots:
     void onRunningTaskChanged(const Domain::Task::Ptr &task);
 
 private:
-    bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
+    bool eventFilter(QObject *object, QEvent *event) override;
     void updateRunTaskAction();
     Domain::Task::Ptr currentTask() const;
 

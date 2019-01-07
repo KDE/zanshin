@@ -57,23 +57,23 @@ public:
     {
     }
 
-    int exec() Q_DECL_OVERRIDE
+    int exec() override
     {
         execCount++;
         return QDialog::Accepted;
     }
 
-    void setDataSourcesModel(QAbstractItemModel *model) Q_DECL_OVERRIDE
+    void setDataSourcesModel(QAbstractItemModel *model) override
     {
         sourceModel = model;
     }
 
-    QString name() const Q_DECL_OVERRIDE
+    QString name() const override
     {
         return QStringLiteral("name");
     }
 
-    Domain::DataSource::Ptr dataSource() const Q_DECL_OVERRIDE
+    Domain::DataSource::Ptr dataSource() const override
     {
         return source;
     }
@@ -96,18 +96,18 @@ public:
     {
     }
 
-    int exec() Q_DECL_OVERRIDE
+    int exec() override
     {
         execCount++;
         return QDialog::Accepted;
     }
 
-    void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE
+    void setModel(QAbstractItemModel *model) override
     {
         itemModel = model;
     }
 
-    QPersistentModelIndex selectedIndex() const Q_DECL_OVERRIDE
+    QPersistentModelIndex selectedIndex() const override
     {
         return index;
     }

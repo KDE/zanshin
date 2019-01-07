@@ -38,12 +38,12 @@ public:
     {
     }
 
-    Akonadi::StorageInterface::Ptr createStorage() Q_DECL_OVERRIDE
+    Akonadi::StorageInterface::Ptr createStorage() override
     {
         return Akonadi::StorageInterface::Ptr(new Akonadi::Storage);
     }
 
-    Akonadi::MonitorInterface::Ptr createMonitor() Q_DECL_OVERRIDE
+    Akonadi::MonitorInterface::Ptr createMonitor() override
     {
         return Akonadi::MonitorInterface::Ptr(new Akonadi::MonitorImpl);
     }

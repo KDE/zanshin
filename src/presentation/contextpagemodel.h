@@ -47,12 +47,12 @@ public:
 
     Domain::Context::Ptr context() const;
 public slots:
-    Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) Q_DECL_OVERRIDE;
-    void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
-    void promoteItem(const QModelIndex &index) Q_DECL_OVERRIDE;
+    Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) override;
+    void removeItem(const QModelIndex &index) override;
+    void promoteItem(const QModelIndex &index) override;
 
 private:
-    QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
+    QAbstractItemModel *createCentralListModel() override;
 
     Domain::Context::Ptr m_context;
     Domain::ContextQueries::Ptr m_contextQueries;

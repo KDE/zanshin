@@ -43,19 +43,19 @@ public:
     TaskRepository(const StorageInterface::Ptr &storage,
                    const SerializerInterface::Ptr &serializer);
 
-    virtual KJob *create(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
-    virtual KJob *createChild(Domain::Task::Ptr task, Domain::Task::Ptr parent) Q_DECL_OVERRIDE;
-    virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project) Q_DECL_OVERRIDE;
-    virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context) Q_DECL_OVERRIDE;
+    virtual KJob *create(Domain::Task::Ptr task) override;
+    virtual KJob *createChild(Domain::Task::Ptr task, Domain::Task::Ptr parent) override;
+    virtual KJob *createInProject(Domain::Task::Ptr task, Domain::Project::Ptr project) override;
+    virtual KJob *createInContext(Domain::Task::Ptr task, Domain::Context::Ptr context) override;
 
-    virtual KJob *update(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
-    virtual KJob *remove(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
+    virtual KJob *update(Domain::Task::Ptr task) override;
+    virtual KJob *remove(Domain::Task::Ptr task) override;
 
-    virtual KJob *promoteToProject(Domain::Task::Ptr task) Q_DECL_OVERRIDE;
+    virtual KJob *promoteToProject(Domain::Task::Ptr task) override;
 
-    virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
-    virtual KJob *dissociate(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
-    virtual KJob *dissociateAll(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
+    virtual KJob *associate(Domain::Task::Ptr parent, Domain::Task::Ptr child) override;
+    virtual KJob *dissociate(Domain::Task::Ptr child) override;
+    virtual KJob *dissociateAll(Domain::Task::Ptr child) override;
 
 private:
     StorageInterface::Ptr m_storage;

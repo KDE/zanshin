@@ -58,12 +58,12 @@ public:
     explicit FakePageModel(QObject *parent = Q_NULLPTR)
         : Presentation::PageModel(parent) {}
 
-    Domain::Task::Ptr addItem(const QString &, const QModelIndex &) Q_DECL_OVERRIDE { return {}; }
-    void removeItem(const QModelIndex &) Q_DECL_OVERRIDE {}
-    void promoteItem(const QModelIndex &) Q_DECL_OVERRIDE {}
+    Domain::Task::Ptr addItem(const QString &, const QModelIndex &) override { return {}; }
+    void removeItem(const QModelIndex &) override {}
+    void promoteItem(const QModelIndex &) override {}
 
 private:
-    QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE { return {}; }
+    QAbstractItemModel *createCentralListModel() override { return {}; }
 };
 
 class ApplicationModelTest : public QObject

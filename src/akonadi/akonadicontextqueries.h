@@ -54,8 +54,8 @@ public:
                    const Cache::Ptr &cache);
 
 
-    ContextResult::Ptr findAll() const Q_DECL_OVERRIDE;
-    TaskResult::Ptr findTopLevelTasks(Domain::Context::Ptr context) const Q_DECL_OVERRIDE;
+    ContextResult::Ptr findAll() const override;
+    TaskResult::Ptr findTopLevelTasks(Domain::Context::Ptr context) const override;
 
 private:
     SerializerInterface::Ptr m_serializer;

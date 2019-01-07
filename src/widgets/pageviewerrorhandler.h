@@ -39,7 +39,7 @@ public:
     void setPageView(Widgets::PageView *pageView);
 
 private:
-    void doDisplayMessage(const QString &message) Q_DECL_OVERRIDE;
+    void doDisplayMessage(const QString &message) override;
 
     Widgets::PageView *m_pageView;
 };

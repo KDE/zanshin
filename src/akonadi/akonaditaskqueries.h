@@ -62,14 +62,14 @@ public:
     int workdayPollInterval() const;
     void setWorkdayPollInterval(int interval);
 
-    TaskResult::Ptr findAll() const Q_DECL_OVERRIDE;
-    TaskResult::Ptr findChildren(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
-    TaskResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
-    TaskResult::Ptr findInboxTopLevel() const Q_DECL_OVERRIDE;
-    TaskResult::Ptr findWorkdayTopLevel() const Q_DECL_OVERRIDE;
-    ContextResult::Ptr findContexts(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
-    ProjectResult::Ptr findProject(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
-    DataSourceResult::Ptr findDataSource(Domain::Task::Ptr task) const Q_DECL_OVERRIDE;
+    TaskResult::Ptr findAll() const override;
+    TaskResult::Ptr findChildren(Domain::Task::Ptr task) const override;
+    TaskResult::Ptr findTopLevel() const override;
+    TaskResult::Ptr findInboxTopLevel() const override;
+    TaskResult::Ptr findWorkdayTopLevel() const override;
+    ContextResult::Ptr findContexts(Domain::Task::Ptr task) const override;
+    ProjectResult::Ptr findProject(Domain::Task::Ptr task) const override;
+    DataSourceResult::Ptr findDataSource(Domain::Task::Ptr task) const override;
 
 
 private slots:

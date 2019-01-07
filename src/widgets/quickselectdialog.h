@@ -47,14 +47,14 @@ class QuickSelectDialog : public QDialog, public QuickSelectDialogInterface
 public:
     explicit QuickSelectDialog(QWidget *parent = Q_NULLPTR);
 
-    int exec() Q_DECL_OVERRIDE;
+    int exec() override;
 
-    QPersistentModelIndex selectedIndex() const Q_DECL_OVERRIDE;
-    void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
+    QPersistentModelIndex selectedIndex() const override;
+    void setModel(QAbstractItemModel *model) override;
 
 private slots:
     void applyFilterChanged(const QString &textFilter);
-    bool eventFilter(QObject *object, QEvent *ev) Q_DECL_OVERRIDE;
+    bool eventFilter(QObject *object, QEvent *ev) override;
 
 private:
     QString m_filter;

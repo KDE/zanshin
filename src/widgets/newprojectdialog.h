@@ -45,14 +45,14 @@ public:
     explicit NewProjectDialog(QWidget *parent = Q_NULLPTR);
     ~NewProjectDialog();
 
-    int exec() Q_DECL_OVERRIDE;
+    int exec() override;
 
-    void accept() Q_DECL_OVERRIDE;
+    void accept() override;
 
-    void setDataSourcesModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
+    void setDataSourcesModel(QAbstractItemModel *model) override;
 
-    QString name() const Q_DECL_OVERRIDE;
-    Domain::DataSource::Ptr dataSource() const Q_DECL_OVERRIDE;
+    QString name() const override;
+    Domain::DataSource::Ptr dataSource() const override;
 
 private slots:
     void onUserInputChanged();

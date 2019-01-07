@@ -50,15 +50,15 @@ public:
                       const SerializerInterface::Ptr &serializer,
                       const MonitorInterface::Ptr &monitor);
 
-    bool isDefaultSource(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
+    bool isDefaultSource(Domain::DataSource::Ptr source) const override;
 private:
-    void changeDefaultSource(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
+    void changeDefaultSource(Domain::DataSource::Ptr source) override;
 
 public:
-    DataSourceResult::Ptr findTopLevel() const Q_DECL_OVERRIDE;
-    DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
-    DataSourceResult::Ptr findAllSelected() const Q_DECL_OVERRIDE;
-    ProjectResult::Ptr findProjects(Domain::DataSource::Ptr source) const Q_DECL_OVERRIDE;
+    DataSourceResult::Ptr findTopLevel() const override;
+    DataSourceResult::Ptr findChildren(Domain::DataSource::Ptr source) const override;
+    DataSourceResult::Ptr findAllSelected() const override;
+    ProjectResult::Ptr findProjects(Domain::DataSource::Ptr source) const override;
 
 private:
     CollectionInputQuery::PredicateFunction createFetchPredicate(const Collection &root) const;

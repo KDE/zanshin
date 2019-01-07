@@ -130,11 +130,11 @@ class RunningTaskModelStub : public Presentation::RunningTaskModelInterface
 {
     Q_OBJECT
 public:
-    Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE { return m_runningTask; }
-    void setRunningTask(const Domain::Task::Ptr &task) Q_DECL_OVERRIDE { m_runningTask = task; }
-    void taskDeleted(const Domain::Task::Ptr &task) Q_DECL_OVERRIDE { m_deletedTask = task; }
-    void stopTask() Q_DECL_OVERRIDE {}
-    void doneTask() Q_DECL_OVERRIDE {}
+    Domain::Task::Ptr runningTask() const override { return m_runningTask; }
+    void setRunningTask(const Domain::Task::Ptr &task) override { m_runningTask = task; }
+    void taskDeleted(const Domain::Task::Ptr &task) override { m_deletedTask = task; }
+    void stopTask() override {}
+    void doneTask() override {}
 private:
     Domain::Task::Ptr m_runningTask;
     Domain::Task::Ptr m_deletedTask;

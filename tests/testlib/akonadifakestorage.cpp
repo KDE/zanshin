@@ -44,7 +44,7 @@ public:
     }
 
 private slots:
-    void onTimeout() Q_DECL_OVERRIDE
+    void onTimeout() override
     {
         auto jobs = childJobs();
         if (m_nextIdx == 0) {

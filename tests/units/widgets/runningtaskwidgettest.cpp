@@ -31,27 +31,27 @@ class RunningTaskModelStub : public Presentation::RunningTaskModelInterface
 {
     Q_OBJECT
 public:
-    Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE { return m_runningTask; }
-    void setRunningTask(const Domain::Task::Ptr &runningTask) Q_DECL_OVERRIDE
+    Domain::Task::Ptr runningTask() const override { return m_runningTask; }
+    void setRunningTask(const Domain::Task::Ptr &runningTask) override
     {
         m_runningTask = runningTask;
         emit runningTaskChanged(m_runningTask);
     }
 
-    void stopTask() Q_DECL_OVERRIDE
+    void stopTask() override
     {
         Q_ASSERT(m_runningTask);
         setRunningTask(Domain::Task::Ptr());
     }
 
-    void doneTask() Q_DECL_OVERRIDE
+    void doneTask() override
     {
         Q_ASSERT(m_runningTask);
         m_runningTask->setDone(true);
         stopTask();
     }
 
-    void taskDeleted(const Domain::Task::Ptr &task) Q_DECL_OVERRIDE
+    void taskDeleted(const Domain::Task::Ptr &task) override
     {
         Q_ASSERT(task);
         if (m_runningTask == task)

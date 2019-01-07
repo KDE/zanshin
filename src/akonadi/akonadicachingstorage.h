@@ -36,30 +36,30 @@ public:
     explicit CachingStorage(const Cache::Ptr &cache, const StorageInterface::Ptr &storage);
     virtual ~CachingStorage();
 
-    Akonadi::Collection defaultCollection() Q_DECL_OVERRIDE;
+    Akonadi::Collection defaultCollection() override;
 
-    KJob *createItem(Item item, Collection collection) Q_DECL_OVERRIDE;
-    KJob *updateItem(Item item, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *removeItem(Akonadi::Item item) Q_DECL_OVERRIDE;
-    KJob *removeItems(Item::List items, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *moveItem(Item item, Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *moveItems(Item::List item, Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
+    KJob *createItem(Item item, Collection collection) override;
+    KJob *updateItem(Item item, QObject *parent = Q_NULLPTR) override;
+    KJob *removeItem(Akonadi::Item item) override;
+    KJob *removeItems(Item::List items, QObject *parent = Q_NULLPTR) override;
+    KJob *moveItem(Item item, Collection collection, QObject *parent = Q_NULLPTR) override;
+    KJob *moveItems(Item::List item, Collection collection, QObject *parent = Q_NULLPTR) override;
 
-    KJob *createCollection(Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *updateCollection(Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
-    KJob *removeCollection(Collection collection, QObject *parent = Q_NULLPTR) Q_DECL_OVERRIDE;
+    KJob *createCollection(Collection collection, QObject *parent = Q_NULLPTR) override;
+    KJob *updateCollection(Collection collection, QObject *parent = Q_NULLPTR) override;
+    KJob *removeCollection(Collection collection, QObject *parent = Q_NULLPTR) override;
 
-    KJob *createTransaction() Q_DECL_OVERRIDE;
+    KJob *createTransaction() override;
 
-    KJob *createTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
-    KJob *updateTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
-    KJob *removeTag(Akonadi::Tag tag) Q_DECL_OVERRIDE;
+    KJob *createTag(Akonadi::Tag tag) override;
+    KJob *updateTag(Akonadi::Tag tag) override;
+    KJob *removeTag(Akonadi::Tag tag) override;
 
-    CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) Q_DECL_OVERRIDE;
-    ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) Q_DECL_OVERRIDE;
-    ItemFetchJobInterface *fetchItem(Akonadi::Item item) Q_DECL_OVERRIDE;
-    ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) Q_DECL_OVERRIDE;
-    TagFetchJobInterface *fetchTags() Q_DECL_OVERRIDE;
+    CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
+    ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
+    ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;
+    ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) override;
+    TagFetchJobInterface *fetchTags() override;
 
 private:
     Cache::Ptr m_cache;

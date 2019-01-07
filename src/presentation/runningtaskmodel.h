@@ -42,14 +42,14 @@ public:
                               QObject *parent = nullptr);
     ~RunningTaskModel();
 
-    Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE;
-    void setRunningTask(const Domain::Task::Ptr &runningTask) Q_DECL_OVERRIDE;
+    Domain::Task::Ptr runningTask() const override;
+    void setRunningTask(const Domain::Task::Ptr &runningTask) override;
 
-    void taskDeleted(const Domain::Task::Ptr &task) Q_DECL_OVERRIDE;
+    void taskDeleted(const Domain::Task::Ptr &task) override;
 
 public slots:
-    void stopTask() Q_DECL_OVERRIDE;
-    void doneTask() Q_DECL_OVERRIDE;
+    void stopTask() override;
+    void doneTask() override;
 
 private:
     void taskTitleChanged(const QString &title);

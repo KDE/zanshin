@@ -49,8 +49,8 @@ public:
                    const SerializerInterface::Ptr &serializer,
                    const MonitorInterface::Ptr &monitor);
 
-    ProjectResult::Ptr findAll() const Q_DECL_OVERRIDE;
-    TaskResult::Ptr findTopLevel(Domain::Project::Ptr project) const Q_DECL_OVERRIDE;
+    ProjectResult::Ptr findAll() const override;
+    TaskResult::Ptr findTopLevel(Domain::Project::Ptr project) const override;
 
 private:
     SerializerInterface::Ptr m_serializer;

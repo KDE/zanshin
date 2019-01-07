@@ -90,7 +90,7 @@ public:
         clear();
     }
 
-    typename Result::Ptr result() Q_DECL_OVERRIDE
+    typename Result::Ptr result() override
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -135,13 +135,13 @@ public:
         m_represents = represents;
     }
 
-    void reset() Q_DECL_OVERRIDE
+    void reset() override
     {
         clear();
         doFetch();
     }
 
-    void onAdded(const InputType &input) Q_DECL_OVERRIDE
+    void onAdded(const InputType &input) override
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -152,7 +152,7 @@ public:
             addToProvider(provider, input);
     }
 
-    void onChanged(const InputType &input) Q_DECL_OVERRIDE
+    void onChanged(const InputType &input) override
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -185,7 +185,7 @@ public:
         }
     }
 
-    void onRemoved(const InputType &input) Q_DECL_OVERRIDE
+    void onRemoved(const InputType &input) override
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -293,7 +293,7 @@ public:
         clear();
     }
 
-    typename Result::Ptr result() Q_DECL_OVERRIDE
+    typename Result::Ptr result() override
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -337,13 +337,13 @@ public:
         m_represents = represents;
     }
 
-    void reset() Q_DECL_OVERRIDE
+    void reset() override
     {
         clear();
         doFetch();
     }
 
-    void onAdded(const InputType &input) Q_DECL_OVERRIDE
+    void onAdded(const InputType &input) override
     {
         typename Provider::Ptr provider(m_provider.toStrongRef());
 
@@ -355,7 +355,7 @@ public:
             addToProvider(provider, input);
     }
 
-    void onChanged(const InputType &input) Q_DECL_OVERRIDE
+    void onChanged(const InputType &input) override
     {
         Q_ASSERT(m_compare);
         const bool found = std::any_of(m_intermediaryResults.constBegin(), m_intermediaryResults.constEnd(),
@@ -366,7 +366,7 @@ public:
             reset();
     }
 
-    void onRemoved(const InputType &input) Q_DECL_OVERRIDE
+    void onRemoved(const InputType &input) override
     {
         onChanged(input);
     }

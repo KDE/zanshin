@@ -43,10 +43,10 @@ public:
     DataSourceRepository(const StorageInterface::Ptr &storage,
                          const SerializerInterface::Ptr &serializer);
 
-    KJob *update(Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
+    KJob *update(Domain::DataSource::Ptr source) override;
 
-    void showConfigDialog() Q_DECL_OVERRIDE;
-    void windowNeedsDataBackend(QWidget *window) Q_DECL_OVERRIDE;
+    void showConfigDialog() override;
+    void windowNeedsDataBackend(QWidget *window) override;
 
 private:
     StorageInterface::Ptr m_storage;

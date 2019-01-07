@@ -256,11 +256,11 @@ public:
     {
     }
 
-    Domain::Task::Ptr runningTask() const Q_DECL_OVERRIDE { return {}; }
-    void setRunningTask(const Domain::Task::Ptr &) Q_DECL_OVERRIDE {}
-    void taskDeleted(const Domain::Task::Ptr &) Q_DECL_OVERRIDE {}
-    void stopTask() Q_DECL_OVERRIDE {}
-    void doneTask() Q_DECL_OVERRIDE {}
+    Domain::Task::Ptr runningTask() const override { return {}; }
+    void setRunningTask(const Domain::Task::Ptr &) override {}
+    void taskDeleted(const Domain::Task::Ptr &) override {}
+    void stopTask() override {}
+    void doneTask() override {}
 };
 
 class QuickSelectDialogStub : public Widgets::QuickSelectDialogInterface
@@ -275,18 +275,18 @@ public:
     {
     }
 
-    int exec() Q_DECL_OVERRIDE
+    int exec() override
     {
         execCount++;
         return QDialog::Accepted;
     }
 
-    void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE
+    void setModel(QAbstractItemModel *model) override
     {
         itemModel = model;
     }
 
-    QPersistentModelIndex selectedIndex() const Q_DECL_OVERRIDE
+    QPersistentModelIndex selectedIndex() const override
     {
         return index;
     }

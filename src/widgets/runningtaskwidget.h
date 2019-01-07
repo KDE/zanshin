@@ -59,8 +59,8 @@ private slots:
     void setCollapsed(bool b);
 
 protected:
-    void enterEvent(QEvent *ev) Q_DECL_OVERRIDE;
-    void leaveEvent(QEvent *ev) Q_DECL_OVERRIDE;
+    void enterEvent(QEvent *ev) override;
+    void leaveEvent(QEvent *ev) override;
 
 private:
     void resize();

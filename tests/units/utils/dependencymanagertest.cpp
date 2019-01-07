@@ -95,7 +95,7 @@ public:
     explicit AnotherFirstImplementation(const Interface0::Ptr &iface)
         : m_iface(iface) {}
 
-    void doSomethingDelegated() Q_DECL_OVERRIDE { m_iface->doSomething(); }
+    void doSomethingDelegated() override { m_iface->doSomething(); }
 
     Interface0::Ptr iface() const { return m_iface; }
 
@@ -139,7 +139,7 @@ public:
     {
     }
 
-    void doSomethingDelegated() Q_DECL_OVERRIDE { m_iface1->doSomething(); }
+    void doSomethingDelegated() override { m_iface1->doSomething(); }
 
     Interface0::Ptr iface0() const { return m_iface0; }
     Interface1::Ptr iface1() const { return m_iface1; }

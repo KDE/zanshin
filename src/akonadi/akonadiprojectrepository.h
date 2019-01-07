@@ -40,12 +40,12 @@ public:
     ProjectRepository(const StorageInterface::Ptr &storage,
                       const SerializerInterface::Ptr &serializer);
 
-    KJob *create(Domain::Project::Ptr project, Domain::DataSource::Ptr source) Q_DECL_OVERRIDE;
-    KJob *update(Domain::Project::Ptr project) Q_DECL_OVERRIDE;
-    KJob *remove(Domain::Project::Ptr project) Q_DECL_OVERRIDE;
+    KJob *create(Domain::Project::Ptr project, Domain::DataSource::Ptr source) override;
+    KJob *update(Domain::Project::Ptr project) override;
+    KJob *remove(Domain::Project::Ptr project) override;
 
-    KJob *associate(Domain::Project::Ptr parent, Domain::Task::Ptr child) Q_DECL_OVERRIDE;
-    KJob *dissociate(Domain::Task::Ptr child) Q_DECL_OVERRIDE;
+    KJob *associate(Domain::Project::Ptr parent, Domain::Task::Ptr child) override;
+    KJob *dissociate(Domain::Task::Ptr child) override;
 
 private:
     StorageInterface::Ptr m_storage;

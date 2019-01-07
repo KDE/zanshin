@@ -33,12 +33,12 @@ public:
 
     MessageBoxStub() : m_called(false) {}
 
-    QMessageBox::Button askConfirmation(QWidget *, const QString &, const QString &) Q_DECL_OVERRIDE {
+    QMessageBox::Button askConfirmation(QWidget *, const QString &, const QString &) override {
         m_called = true;
         return QMessageBox::Yes;
     }
 
-    QString askTextInput(QWidget *, const QString &, const QString &) Q_DECL_OVERRIDE {
+    QString askTextInput(QWidget *, const QString &, const QString &) override {
         m_called = true;
         return m_textInput;
     }

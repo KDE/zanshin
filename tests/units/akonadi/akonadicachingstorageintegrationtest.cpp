@@ -40,7 +40,7 @@ public:
     {
     }
 
-    Akonadi::StorageInterface::Ptr createStorage() Q_DECL_OVERRIDE
+    Akonadi::StorageInterface::Ptr createStorage() override
     {
         auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
         return Akonadi::StorageInterface::Ptr(new Akonadi::CachingStorage(Akonadi::Cache::Ptr::create(serializer,
@@ -48,7 +48,7 @@ public:
                                                                           Akonadi::StorageInterface::Ptr(new Akonadi::Storage)));
     }
 
-    Akonadi::MonitorInterface::Ptr createMonitor() Q_DECL_OVERRIDE
+    Akonadi::MonitorInterface::Ptr createMonitor() override
     {
         return Akonadi::MonitorInterface::Ptr(new Akonadi::MonitorImpl);
     }

@@ -40,12 +40,12 @@ public:
                             const Domain::TaskRepository::Ptr &taskRepository,
                             QObject *parent = Q_NULLPTR);
 
-    Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) Q_DECL_OVERRIDE;
-    void removeItem(const QModelIndex &index) Q_DECL_OVERRIDE;
-    void promoteItem(const QModelIndex &index) Q_DECL_OVERRIDE;
+    Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) override;
+    void removeItem(const QModelIndex &index) override;
+    void promoteItem(const QModelIndex &index) override;
 
 private:
-    QAbstractItemModel *createCentralListModel() Q_DECL_OVERRIDE;
+    QAbstractItemModel *createCentralListModel() override;
 
     Domain::TaskQueries::Ptr m_taskQueries;
     Domain::TaskRepository::Ptr m_taskRepository;

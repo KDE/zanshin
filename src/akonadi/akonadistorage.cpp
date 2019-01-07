@@ -63,7 +63,7 @@ public:
     {
     }
 
-    Collection::List collections() const Q_DECL_OVERRIDE
+    Collection::List collections() const override
     {
         auto collections = CollectionFetchJob::collections();
 
@@ -112,7 +112,7 @@ public:
         return collections;
     }
 
-    void setResource(const QString &resource) Q_DECL_OVERRIDE
+    void setResource(const QString &resource) override
     {
         fetchScope().setResource(resource);
     }
@@ -128,9 +128,9 @@ class ItemJob : public ItemFetchJob, public ItemFetchJobInterface
 public:
     using ItemFetchJob::ItemFetchJob;
 
-    Item::List items() const Q_DECL_OVERRIDE { return ItemFetchJob::items(); }
+    Item::List items() const override { return ItemFetchJob::items(); }
 
-    void setCollection(const Collection &collection) Q_DECL_OVERRIDE
+    void setCollection(const Collection &collection) override
     {
         ItemFetchJob::setCollection(collection);
     }
@@ -142,7 +142,7 @@ class TagJob : public TagFetchJob, public TagFetchJobInterface
 public:
     using TagFetchJob::TagFetchJob;
 
-    Tag::List tags() const Q_DECL_OVERRIDE { return TagFetchJob::tags(); }
+    Tag::List tags() const override { return TagFetchJob::tags(); }
 };
 
 Storage::Storage()
