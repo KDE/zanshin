@@ -22,7 +22,6 @@ MACRO(ZANSHIN_MANUAL_TESTS)
       akonadi
       domain
       presentation
-      scripting
       utils
       widgets
     )
@@ -49,7 +48,6 @@ MACRO(ZANSHIN_AUTO_TESTS)
       akonadi
       domain
       presentation
-      scripting
       utils
       widgets
       KF5::AkonadiXml

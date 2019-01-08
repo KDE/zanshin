@@ -11,7 +11,6 @@ target_link_libraries(zanshin_part
     akonadi
     domain
     presentation
-    scripting
     utils
     widgets
 )

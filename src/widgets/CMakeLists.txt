@@ -15,7 +15,6 @@ set(widgets_SRCS
     runningtaskwidget.cpp
     quickselectdialog.cpp
     quickselectdialoginterface.cpp
-    scripteditor.cpp
 )
 
 ki18n_wrap_ui(widgets_SRCS
@@ -26,7 +25,6 @@ ki18n_wrap_ui(widgets_SRCS
 
 add_library(widgets STATIC ${widgets_SRCS})
 target_link_libraries(widgets
-    Qt5::Qml
     Qt5::Widgets
     presentation
     zanshinkdepimstatic
