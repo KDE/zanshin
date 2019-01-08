@@ -37,6 +37,7 @@ using namespace Widgets;
 
 RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     : QWidget(parent),
+      m_model(nullptr),
       m_layout(new QHBoxLayout(this)),
       m_titleLabel(new QLabel(this)),
       m_stopButton(new QPushButton(this)),
@@ -77,10 +78,16 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
 
 void RunningTaskWidget::setModel(Presentation::RunningTaskModelInterface *model)
 {
-    Q_ASSERT(model);
+    if (m_model) {
+        disconnect(m_model, nullptr, this, nullptr);
+    }
+
     m_model = model;
-    connect(m_model, &Presentation::RunningTaskModelInterface::runningTaskChanged,
-            this, &RunningTaskWidget::onRunningTaskChanged);
+
+    if (m_model) {
+        connect(m_model, &Presentation::RunningTaskModelInterface::runningTaskChanged,
+                this, &RunningTaskWidget::onRunningTaskChanged);
+    }
 }
 
 void RunningTaskWidget::setCollapsed(bool b)
