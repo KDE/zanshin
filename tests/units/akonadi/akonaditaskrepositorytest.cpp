@@ -142,11 +142,11 @@ private slots:
         // GIVEN
 
         // A few collections
-        auto col1 = Akonadi::Collection(42);
+        auto col1 = Akonadi::Collection(GenCollection().withId(42).withRootAsParent().withTaskContent());
         col1.setRights(Akonadi::Collection::ReadOnly);
-        auto col2 = Akonadi::Collection(43);
-        col2.setRights(Akonadi::Collection::ReadOnly);
-        auto col3 = Akonadi::Collection(44);
+        auto col2 = Akonadi::Collection(GenCollection().withId(43).withRootAsParent().withTaskContent());
+        col2.setRights(Akonadi::Collection::CanCreateItem);
+        auto col3 = Akonadi::Collection(GenCollection().withId(44).withRootAsParent().withTaskContent());
         col3.setRights(Akonadi::Collection::ReadOnly);
         auto collectionFetchJob = new Testlib::AkonadiFakeCollectionFetchJob;
         collectionFetchJob->setCollections(Akonadi::Collection::List() << col1 << col2 << col3);
