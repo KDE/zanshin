@@ -324,17 +324,12 @@ private slots:
 
         const auto noType = Domain::DataSource::ContentTypes(Domain::DataSource::NoContent);
         const auto taskType = Domain::DataSource::ContentTypes(Domain::DataSource::Tasks);
-        const auto noteType = Domain::DataSource::ContentTypes(Domain::DataSource::Notes);
-        const auto allTypes = taskType | noteType;
 
-        QTest::newRow("nominal case") << "name" << "icon-name" << allTypes << true;
-
-        QTest::newRow("only notes") << "name" << "icon-name" << noteType << true;
         QTest::newRow("only tasks") << "name" << "icon-name" << taskType << true;
         QTest::newRow("only nothing ;)") << "name" << "icon-name" << noType << true;
 
-        QTest::newRow("not selected") << "name" << "icon-name" << allTypes << false;
-        QTest::newRow("selected") << "name" << "icon-name" << allTypes << true;
+        QTest::newRow("not selected") << "name" << "icon-name" << taskType << false;
+        QTest::newRow("selected") << "name" << "icon-name" << taskType << true;
 
         QTest::newRow("empty case") << QString() << QString() << noType << true;
     }
@@ -353,8 +348,6 @@ private slots:
         QStringList mimeTypes;
         if (contentTypes & Domain::DataSource::Tasks)
             mimeTypes << QStringLiteral("application/x-vnd.akonadi.calendar.todo");
-        if (contentTypes & Domain::DataSource::Notes)
-            mimeTypes << QStringLiteral("text/x-vnd.akonadi.note");
 
 
         // ... stored in a data source
@@ -411,9 +404,6 @@ private slots:
         QFETCH(bool, isSelected);
 
         Domain::DataSource::ContentTypes expectedContentTypes;
-        if (mimeTypes.contains(QStringLiteral("text/x-vnd.akonadi.note"))) {
-            expectedContentTypes |= Domain::DataSource::Notes;
-        }
         if (mimeTypes.contains(QStringLiteral("application/x-vnd.akonadi.calendar.todo"))) {
             expectedContentTypes |= Domain::DataSource::Tasks;
         }

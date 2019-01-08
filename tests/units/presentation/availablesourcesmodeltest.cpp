@@ -85,11 +85,11 @@ private slots:
         auto source3 = Domain::DataSource::Ptr::create();
         source3->setName(QStringLiteral("Source 3"));
         source3->setSelected(false);
-        source3->setContentTypes(Domain::DataSource::Notes);
+        source3->setContentTypes(Domain::DataSource::Tasks);
         auto source4 = Domain::DataSource::Ptr::create();
         source4->setSelected(true);
         source4->setName(QStringLiteral("Source 4"));
-        source4->setContentTypes(Domain::DataSource::Notes | Domain::DataSource::Tasks);
+        source4->setContentTypes(Domain::DataSource::Tasks);
         auto source1Provider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
         auto source1Result = Domain::QueryResult<Domain::DataSource::Ptr>::create(source1Provider);
         source1Provider->append(source3);

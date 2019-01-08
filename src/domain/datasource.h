@@ -48,7 +48,6 @@ public:
     enum ContentType {
         NoContent = 0,
         Tasks,
-        Notes
     };
     Q_DECLARE_FLAGS(ContentTypes, ContentType)
 

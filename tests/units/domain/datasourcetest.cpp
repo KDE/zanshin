@@ -87,18 +87,18 @@ private slots:
     {
         DataSource ds;
         QSignalSpy spy(&ds, &DataSource::contentTypesChanged);
-        ds.setContentTypes(Domain::DataSource::Notes);
+        ds.setContentTypes(Domain::DataSource::Tasks);
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.first().first().value<Domain::DataSource::ContentTypes>(),
-                 Domain::DataSource::Notes);
+                 Domain::DataSource::Tasks);
     }
 
     void shouldNotNotifyIdenticalContentTypesChanges()
     {
         DataSource ds;
-        ds.setContentTypes(Domain::DataSource::Notes);
+        ds.setContentTypes(Domain::DataSource::Tasks);
         QSignalSpy spy(&ds, &DataSource::contentTypesChanged);
-        ds.setContentTypes(Domain::DataSource::Notes);
+        ds.setContentTypes(Domain::DataSource::Tasks);
         QCOMPARE(spy.count(), 0);
     }
 
