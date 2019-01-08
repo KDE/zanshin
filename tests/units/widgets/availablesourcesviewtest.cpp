@@ -31,8 +31,6 @@
 #include <QToolBar>
 #include <QTreeView>
 
-#include <KLineEdit>
-
 #include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
