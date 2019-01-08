@@ -121,16 +121,20 @@ QueryTreeModelBase::QueryTreeModelBase(QueryTreeNodeBase *rootNode, QObject *par
       m_rootIndexFlag(Qt::ItemIsDropEnabled),
       m_rootNode(rootNode)
 {
-    auto roles = roleNames();
-    roles.insert(ObjectRole, "object");
-    roles.insert(IconNameRole, "icon");
-    roles.insert(IsDefaultRole, "default");
-    setRoleNames(roles);
 }
 
 QueryTreeModelBase::~QueryTreeModelBase()
 {
     delete m_rootNode;
+}
+
+QHash<int, QByteArray> QueryTreeModelBase::roleNames() const
+{
+    auto roles = QAbstractItemModel::roleNames();
+    roles.insert(ObjectRole, "object");
+    roles.insert(IconNameRole, "icon");
+    roles.insert(IsDefaultRole, "default");
+    return roles;
 }
 
 Qt::ItemFlags QueryTreeModelBase::flags(const QModelIndex &index) const
