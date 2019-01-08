@@ -32,6 +32,7 @@
 
 #include <KConfig>
 #include <KConfigGroup>
+#include <KSharedConfig>
 
 #include <AkonadiCore/AttributeFactory>
 

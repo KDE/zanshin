@@ -25,6 +25,7 @@
 
 #include <KConfig>
 #include <KConfigGroup>
+#include <KSharedConfig>
 
 #include "akonadi/akonadistoragesettings.h"
 
