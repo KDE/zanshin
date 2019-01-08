@@ -31,7 +31,6 @@ target_link_libraries(akonadi
     KF5::AkonadiCalendar
     KF5::AkonadiCore
     KF5::AkonadiWidgets
-    KF5::Mime
     KF5::CalendarCore
     KF5::IdentityManagement
     KF5::ConfigCore

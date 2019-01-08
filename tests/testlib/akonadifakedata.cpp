@@ -25,7 +25,6 @@
 #include "akonadifakemonitor.h"
 #include "akonadifakestorage.h"
 
-#include <Akonadi/Notes/NoteUtils>
 #include <KCalCore/Todo>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
@@ -136,8 +135,7 @@ void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
     m_monitor->changeCollection(notifiedCollection);
 
     const auto mimeTypes = collection.contentMimeTypes();
-    if (mimeTypes.contains(KCalCore::Todo::todoMimeType())
-     || mimeTypes.contains(Akonadi::NoteUtils::noteMimeType())) {
+    if (mimeTypes.contains(KCalCore::Todo::todoMimeType())) {
         const auto oldAttribute = oldCollection.attribute<Akonadi::ApplicationSelectedAttribute>();
         const auto oldSelected = oldAttribute ? oldAttribute->isSelected() : true;
         const auto newAttribute = newCollection.attribute<Akonadi::ApplicationSelectedAttribute>();

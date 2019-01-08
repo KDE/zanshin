@@ -24,8 +24,6 @@
 #include <testlib/qtest_zanshin.h>
 
 #include <KCalCore/Todo>
-#include <KMime/Message>
-#include <Akonadi/Notes/NoteUtils>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
@@ -50,12 +48,6 @@ static QString titleFromItem(const Akonadi::Item &item)
     if (item.hasPayload<KCalCore::Todo::Ptr>()) {
         const auto todo = item.payload<KCalCore::Todo::Ptr>();
         return todo->summary();
-
-    } else if (item.hasPayload<KMime::Message::Ptr>()) {
-        const auto message = item.payload<KMime::Message::Ptr>();
-        const Akonadi::NoteUtils::NoteMessageWrapper note(message);
-        return note.title();
-
     } else {
         return QString();
     }

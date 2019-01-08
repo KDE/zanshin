@@ -24,7 +24,6 @@
 #include "gencollection.h"
 
 #include <AkonadiCore/EntityDisplayAttribute>
-#include <Akonadi/Notes/NoteUtils>
 
 #include <KCalCore/Todo>
 
@@ -98,11 +97,12 @@ GenCollection &GenCollection::withTaskContent(bool value)
 
 GenCollection &GenCollection::withNoteContent(bool value)
 {
+    const auto noteMime = QString("text/x-vnd.akonadi.note");
     auto mimeTypes = m_collection.contentMimeTypes();
     if (!value) {
-        mimeTypes.removeAll(Akonadi::NoteUtils::noteMimeType());
-    } else if (!mimeTypes.contains(Akonadi::NoteUtils::noteMimeType())) {
-        mimeTypes.append(Akonadi::NoteUtils::noteMimeType());
+        mimeTypes.removeAll(noteMime);
+    } else if (!mimeTypes.contains(noteMime)) {
+        mimeTypes.append(noteMime);
     }
     m_collection.setContentMimeTypes(mimeTypes);
     return *this;

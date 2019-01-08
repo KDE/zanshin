@@ -68,7 +68,6 @@ include_directories (
 
 find_package(KF5 REQUIRED COMPONENTS
     AkonadiCalendar
-    AkonadiNotes
     AkonadiSearch
     IdentityManagement
     KontactInterface

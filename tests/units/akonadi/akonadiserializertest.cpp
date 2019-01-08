@@ -31,10 +31,8 @@
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Item>
-#include <Akonadi/Notes/NoteUtils>
 #include <AkonadiCore/Tag>
 #include <KCalCore/Todo>
-#include <KMime/Message>
 
 Q_DECLARE_METATYPE(Akonadi::Item*)
 
@@ -114,16 +112,8 @@ private slots:
         todo2->setUid(QStringLiteral("1"));
         item2.setPayload<KCalCore::Todo::Ptr>(todo2);
 
-        Akonadi::Item item3;
-        KMime::Message::Ptr message(new KMime::Message);
-        message->subject(true)->fromUnicodeString(QStringLiteral("foo"), "utf-8");
-        message->mainBodyPart()->fromUnicodeString(QStringLiteral("bar"));
-        item3.setMimeType(Akonadi::NoteUtils::noteMimeType());
-        item3.setPayload<KMime::Message::Ptr>(message);
-
         QTest::newRow("task without uid") << item1 << QString();
         QTest::newRow("task with uid") << item2 << "1";
-        QTest::newRow("note") << item3 << QString();
     }
 
     void shouldKnowTaskItemUid()
@@ -1614,15 +1604,6 @@ private slots:
             auto todo = item.payload<KCalCore::Todo::Ptr>();
             const QString relatedUid = todo->relatedTo();
             QCOMPARE(relatedUid, expectedRelatedToUid);
-        } else if (item.hasPayload<KMime::Message::Ptr>()) {
-            auto note = item.payload<KMime::Message::Ptr>();
-            const auto relatedHeader = note->headerByType("X-Zanshin-RelatedProjectUid");
-            const QString relatedUid = relatedHeader ? relatedHeader->asUnicodeString() : QString();
-            QCOMPARE(relatedUid, expectedRelatedToUid);
-            if (!expectedRelatedToUid.isEmpty())
-                QVERIFY(note->encodedContent().contains(QStringLiteral("X-Zanshin-RelatedProjectUid: %1").arg(expectedRelatedToUid).toUtf8()));
-            else
-                QVERIFY(!note->encodedContent().contains("X-Zanshin-RelatedProjectUid:"));
         }
     }
 

@@ -29,7 +29,6 @@
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Item>
 #include <KCalCore/Todo>
-#include <KMime/Message>
 #include <QMimeDatabase>
 
 #include <numeric>
