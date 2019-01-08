@@ -59,7 +59,7 @@ private slots:
         Widgets::PageViewErrorHandler errorHandler;
         Widgets::PageView page;
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
         QTest::qWait(100);
 
         errorHandler.setPageView(&page);

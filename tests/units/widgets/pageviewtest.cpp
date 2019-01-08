@@ -275,7 +275,7 @@ private slots:
         auto filterEdit = filter->findChild<QLineEdit*>();
         QVERIFY(filterEdit);
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -333,7 +333,7 @@ private slots:
         auto filterEdit = filter->findChild<QLineEdit*>();
         QVERIFY(filterEdit);
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -555,7 +555,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -582,7 +582,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -614,7 +614,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -653,7 +653,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -686,7 +686,7 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
         QTest::qWait(100);
 
         // WHEN
@@ -810,7 +810,7 @@ private slots:
         // GIVEN
         Widgets::PageView page;
         page.show();
-        QVERIFY(QTest::qWaitForWindowShown(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
         QTest::qWait(100);
 
         auto messageWidget = page.findChild<KMessageWidget*>(QStringLiteral("messageWidget"));

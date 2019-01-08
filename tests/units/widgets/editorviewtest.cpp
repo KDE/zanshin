@@ -303,7 +303,7 @@ private slots:
 
         // WHEN
         editor.show();
-        QVERIFY(QTest::qWaitForWindowShown(&editor));
+        QVERIFY(QTest::qWaitForWindowExposed(&editor));
         editor.activateWindow();
         textEdit->setFocus();
         model.setTitle("New title");
