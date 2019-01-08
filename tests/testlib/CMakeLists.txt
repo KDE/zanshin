@@ -23,6 +23,5 @@ target_link_libraries(testlib
     KF5::AkonadiXml
     KF5::CalendarCore
     Qt5::Test
-    KF5::KDELibs4Support
 )
 

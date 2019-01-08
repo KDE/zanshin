@@ -13,7 +13,7 @@ include(ECMInstallIcons)
 include(ECMMarkAsTest)
 include(ECMPoQmTools)
 
-find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Qml Test)
+find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 macro(assert_min_ver version)
@@ -68,15 +68,10 @@ include_directories (
 
 find_package(KF5 REQUIRED COMPONENTS
     AkonadiCalendar
-    AkonadiSearch
-    IdentityManagement
     KontactInterface
-    Ldap
     Runner
-    Wallet
     WindowSystem
     I18n
-    KDELibs4Support
 )
 find_package(KF5Akonadi "5.1" CONFIG REQUIRED)
 

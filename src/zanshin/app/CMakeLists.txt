@@ -9,6 +9,7 @@ qt5_add_resources(app_SRCS zanshin.qrc)
 add_executable(zanshin ${app_SRCS})
 kde_enable_exceptions()
 target_link_libraries(zanshin
+    KF5::XmlGui
     akonadi
     domain
     presentation
