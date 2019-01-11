@@ -171,6 +171,7 @@
     <screenshot type="default">
       <caption>Zanshin main window</caption>
       <caption xml:lang="ca">Finestra principal del Zanshin</caption>
+      <caption xml:lang="es">Ventana principal de Zanshin</caption>
       <caption xml:lang="nl">Hoofdvenster van Zanshin</caption>
       <caption xml:lang="pt">Janela principal do Zanshin</caption>
       <caption xml:lang="sv">Huvudfönstret i Zanshin</caption>
