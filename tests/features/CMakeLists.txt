@@ -1,1 +1,7 @@
 add_subdirectory(inbox)
+add_subdirectory(workday)
+add_subdirectory(editing)
+add_subdirectory(contexts)
+add_subdirectory(datasource)
+add_subdirectory(pages)
+add_subdirectory(projects)

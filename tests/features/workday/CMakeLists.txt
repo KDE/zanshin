@@ -1,0 +1,12 @@
+zanshin_feature_tests(
+    workdaydisplayfeature
+    workdaypostponingfeature
+    workdaystartdateeditfeature
+    workdaydropfeature
+    workdaystartbuttonfeature
+    workdaytaskaddfeature
+    workdayduedateeditfeature
+    workdaydisplaycompletedfeature
+    workdaydraganddropfeature
+    workdaytaskremovefeature
+)
