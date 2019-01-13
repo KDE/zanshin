@@ -1,6 +1,6 @@
 zanshin_feature_tests(
+    addingtaskfeature
     completingtaskfeature
     editingtaskfeature
+    removingtaskfeature
 )
-# TODO addingtaskfeature, broken by the "Examples" thing
-# TODO removingtaskfeature, broken by the "Examples" thing
