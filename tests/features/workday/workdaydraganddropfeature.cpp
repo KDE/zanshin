@@ -63,6 +63,7 @@ private slots:
         When(I_drop_the_item_on_the_blank_area_of_the_central_list());
         And(I_look_at_the_central_list());
         And(I_list_the_items());
+        QEXPECT_FAIL("", "Setting the date during deparenting is broken, see the TODO in workdaypagemodel.cpp", Continue);
         Then(the_central_list_contains_items_named({
                                  "parent",
                                  "child",

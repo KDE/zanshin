@@ -166,6 +166,9 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
                 installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTask->title()));
             } else {
                 childTask->setStartDate(Utils::DateTime::currentDate());
+                // TODO something like m_taskRepository->update(childTask) is missing here
+                // It was removed in commit c97a99bf because it led to a LLCONFLICT in akonadi (due to dissociate below).
+                // The removal broke tests-features-workday-workdaydraganddropfeature (date not changed).
 
                 auto job = m_taskRepository->dissociate(childTask);
                 installHandler(job, i18n("Cannot deparent task %1 from its parent", childTask->title()));
