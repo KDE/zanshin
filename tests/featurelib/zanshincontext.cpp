@@ -319,6 +319,10 @@ bool ZanshinContext::I_display_the_available_pages()
 
 bool ZanshinContext::I_display_the_page(const QString &pageName)
 {
+    if (m_editor) {
+        // save pending changes
+        VERIFY(m_editor->setProperty("task", QVariant::fromValue(Domain::Task::Ptr())));
+    }
     auto availablePages = m_appModel->property("availablePages").value<QObject*>();
     VERIFY(availablePages);
 
