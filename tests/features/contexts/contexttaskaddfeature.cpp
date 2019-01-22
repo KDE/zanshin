@@ -31,7 +31,6 @@ using namespace Testlib;
 //     As someone collecting tasks
 //     I can add a task directly associated to a context
 //     In order to give my tasks some semantic
-// @wip
 class ContextTaskAddFeature : public QObject
 {
     Q_OBJECT
@@ -39,7 +38,7 @@ private slots:
     void Task_added_from_a_context_appear_in_its_list()
     {
         ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Context / Online"));
+        Given(I_display_the_page("Contexts / Online"));
         When(I_add_a_task("Checking mail"));
         And(I_look_at_the_central_list());
         When(I_list_the_items());
