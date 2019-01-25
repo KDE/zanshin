@@ -1107,36 +1107,6 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSelectionChanges()
     QVERIFY(!notifiedCollection.attribute<Akonadi::ApplicationSelectedAttribute>()->isSelected());
 }
 
-void AkonadiStorageTestBase::shouldNotNotifyCollectionSelectionChangesForIrrelevantCollections()
-{
-    // GIVEN
-
-    // A storage implementation
-    auto storage = createStorage();
-
-    // An existing collection
-    Akonadi::Collection collection = emails();
-
-    // A spied monitor
-    auto monitor = createMonitor();
-    QSignalSpy changeSpy(monitor.data(), &Akonadi::MonitorInterface::collectionChanged);
-    QSignalSpy selectionSpy(monitor.data(), &Akonadi::MonitorInterface::collectionSelectionChanged);
-    MonitorSpy monitorSpy(monitor.data());
-
-    // WHEN
-    auto attr = new Akonadi::ApplicationSelectedAttribute;
-    attr->setSelected(false);
-    collection.addAttribute(attr);
-    auto job = storage->updateCollection(collection);
-    AKVERIFYEXEC(job);
-    monitorSpy.waitForStableState();
-    QTRY_VERIFY(!changeSpy.isEmpty());
-
-    // THEN
-    QCOMPARE(changeSpy.size(), 1);
-    QVERIFY(selectionSpy.isEmpty());
-}
-
 Akonadi::Item AkonadiStorageTestBase::fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection)
 {
     Akonadi::Item item;
