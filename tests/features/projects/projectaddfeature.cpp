@@ -37,11 +37,11 @@ class ProjectAddFeature : public QObject
 private slots:
     void New_projects_appear_in_the_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_available_pages());
-        When(I_add_a_project("Birthday", "TestData / Calendar1"));
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_available_pages());
+        When(c.I_add_a_project("Birthday", "TestData / Calendar1"));
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display", "icon" },
                              {
                                  { "Inbox", "mail-folder-inbox" },

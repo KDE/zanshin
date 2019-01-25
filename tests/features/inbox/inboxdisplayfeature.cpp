@@ -36,11 +36,11 @@ class InboxDisplayFeature : public QObject
 private slots:
     void Unorganized_tasks_appear_in_the_inbox()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(I_look_at_the_central_list());
-        When(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.I_look_at_the_central_list());
+        When(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Errands" },

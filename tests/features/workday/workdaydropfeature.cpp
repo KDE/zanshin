@@ -37,33 +37,33 @@ class WorkdayDropFeature : public QObject
 private slots:
     void Dropping_a_task_on_Workday_page()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(I_add_a_task("Buy Pineapples"));
-        And(there_is_an_item_in_the_central_list("Buy Pineapples"));
-        When(I_drop_the_item_on_the_page_list("Workday"));
-        And(I_display_the_page("Workday"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_contains("Buy Pineapples"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.I_add_a_task("Buy Pineapples"));
+        And(c.there_is_an_item_in_the_central_list("Buy Pineapples"));
+        When(c.I_drop_the_item_on_the_page_list("Workday"));
+        And(c.I_display_the_page("Workday"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_contains("Buy Pineapples"));
     }
 
     void Dropping_two_tasks_on_Workday_page()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(I_add_a_task("Don't eat the cake"));
-        And(I_add_a_task("The cake is a lie"));
-        And(the_central_list_contains_items_named({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.I_add_a_task("Don't eat the cake"));
+        And(c.I_add_a_task("The cake is a lie"));
+        And(c.the_central_list_contains_items_named({
                                  "Don't eat the cake",
                                  "The cake is a lie",
                              }));
-        When(I_drop_items_on_the_page_list("Workday"));
-        And(I_display_the_page("Workday"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_contains("Don't eat the cake"));
-        And(the_list_contains("The cake is a lie"));
+        When(c.I_drop_items_on_the_page_list("Workday"));
+        And(c.I_display_the_page("Workday"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_contains("Don't eat the cake"));
+        And(c.the_list_contains("The cake is a lie"));
     }
 };
 

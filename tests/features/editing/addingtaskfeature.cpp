@@ -49,12 +49,12 @@ private slots:
         QFETCH(QString, page);
         QFETCH(QString, title);
 
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page(page));
-        And(I_look_at_the_central_list());
-        When(I_add_a_task(title));
-        And(I_list_the_items());
-        Then(the_list_contains(title));
+        ZanshinContext c;
+        Given(c.I_display_the_page(page));
+        And(c.I_look_at_the_central_list());
+        When(c.I_add_a_task(title));
+        And(c.I_list_the_items());
+        Then(c.the_list_contains(title));
     }
 
     void Adding_a_task_as_a_child_of_another_task_in_a_page_data()
@@ -73,14 +73,14 @@ private slots:
         QFETCH(QString, parent);
         QFETCH(QString, title);
 
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page(page));
-        And(I_add_a_task(parent));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        When(I_add_a_task_child(title, parent));
-        And(I_list_the_items());
-        Then(the_list_contains(parent + " / " + title));
+        ZanshinContext c;
+        Given(c.I_display_the_page(page));
+        And(c.I_add_a_task(parent));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        When(c.I_add_a_task_child(title, parent));
+        And(c.I_list_the_items());
+        Then(c.the_list_contains(parent + " / " + title));
     }
 };
 

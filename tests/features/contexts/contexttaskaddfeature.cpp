@@ -37,12 +37,12 @@ class ContextTaskAddFeature : public QObject
 private slots:
     void Task_added_from_a_context_appear_in_its_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Contexts / Online"));
-        When(I_add_a_task("Checking mail"));
-        And(I_look_at_the_central_list());
-        When(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Contexts / Online"));
+        When(c.I_add_a_task("Checking mail"));
+        And(c.I_look_at_the_central_list());
+        When(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Checking mail" },

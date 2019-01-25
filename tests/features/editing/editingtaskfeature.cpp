@@ -37,58 +37,58 @@ class EditingTaskFeature : public QObject
 private slots:
     void Editing_a_task_text()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy cheese"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("text", "More information"));
-        And(I_open_the_item_in_the_editor_again());
-        Then(the_editor_shows_the_field("text", "More information"));
-        And(the_editor_shows_the_field("title", "Buy cheese"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy cheese"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("text", "More information"));
+        And(c.I_open_the_item_in_the_editor_again());
+        Then(c.the_editor_shows_the_field("text", "More information"));
+        And(c.the_editor_shows_the_field("title", "Buy cheese"));
     }
 
     void Editing_a_task_title_using_the_editor()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy cheese"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("title", "Borrow cheese"));
-        And(I_open_the_item_in_the_editor_again());
-        Then(the_editor_shows_the_field("title", "Borrow cheese"));
-        And(there_is_an_item_in_the_central_list("Borrow cheese"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy cheese"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("title", "Borrow cheese"));
+        And(c.I_open_the_item_in_the_editor_again());
+        Then(c.the_editor_shows_the_field("title", "Borrow cheese"));
+        And(c.there_is_an_item_in_the_central_list("Borrow cheese"));
     }
 
     void Editing_a_task_title_in_the_central_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy cheese"));
-        When(I_open_the_item_in_the_editor());
-        And(I_rename_the_item("Buy better cheese"));
-        Then(the_editor_shows_the_field("title", "Buy better cheese"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy cheese"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_rename_the_item("Buy better cheese"));
+        Then(c.the_editor_shows_the_field("title", "Buy better cheese"));
     }
 
     void Editing_a_task_start_date()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy cheese"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("start date", "2014-06-20"));
-        And(I_open_the_item_in_the_editor_again());
-        Then(the_editor_shows_the_field("start date", "2014-06-20"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy cheese"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("start date", "2014-06-20"));
+        And(c.I_open_the_item_in_the_editor_again());
+        Then(c.the_editor_shows_the_field("start date", "2014-06-20"));
     }
 
     void Editing_a_task_due_date()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy cheese"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("due date", "2014-07-20"));
-        And(I_open_the_item_in_the_editor_again());
-        Then(the_editor_shows_the_field("due date", "2014-07-20"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy cheese"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("due date", "2014-07-20"));
+        And(c.I_open_the_item_in_the_editor_again());
+        Then(c.the_editor_shows_the_field("due date", "2014-07-20"));
     }
 };
 

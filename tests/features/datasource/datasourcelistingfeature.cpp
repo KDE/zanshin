@@ -37,10 +37,10 @@ class DatasourceListingFeature : public QObject
 private slots:
     void All_task_sources_appear_in_the_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_available_data_sources());
-        When(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_available_data_sources());
+        When(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display", "icon" },
                              {
                                  { "TestData", "folder" },

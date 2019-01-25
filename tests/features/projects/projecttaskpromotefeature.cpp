@@ -37,15 +37,15 @@ class ProjectTaskPromoteFeature : public QObject
 private slots:
     void Task_promoted_into_a_project_appears_in_the_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Projects / TestData » Calendar1 » Calendar2 / Backlog"));
-        And(I_add_a_task("Design a present"));
-        And(I_look_at_the_central_list());
-        And(there_is_an_item_in_the_central_list("Design a present"));
-        When(I_promote_the_item());
-        And(I_display_the_available_pages());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Projects / TestData » Calendar1 » Calendar2 / Backlog"));
+        And(c.I_add_a_task("Design a present"));
+        And(c.I_look_at_the_central_list());
+        And(c.there_is_an_item_in_the_central_list("Design a present"));
+        When(c.I_promote_the_item());
+        And(c.I_display_the_available_pages());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display", "icon" },
                              {
                                  { "Inbox", "mail-folder-inbox" },

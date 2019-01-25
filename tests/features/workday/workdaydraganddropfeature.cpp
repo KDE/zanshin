@@ -37,16 +37,16 @@ class WorkdayDragAndDropFeature : public QObject
 private slots:
     void Parenting_a_task_in_the_Workday_page()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Workday"));
-        And(I_add_a_task("parent"));
-        And(I_add_a_task("child"));
-        And(there_is_an_item_in_the_central_list("parent"));
-        And(there_is_an_item_in_the_central_list("child"));
-        When(I_drop_the_item_on_the_central_list("parent"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_central_list_contains_items_named({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Workday"));
+        And(c.I_add_a_task("parent"));
+        And(c.I_add_a_task("child"));
+        And(c.there_is_an_item_in_the_central_list("parent"));
+        And(c.there_is_an_item_in_the_central_list("child"));
+        When(c.I_drop_the_item_on_the_central_list("parent"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_central_list_contains_items_named({
                                  "parent",
                                  "parent / child",
                              }));
@@ -54,17 +54,17 @@ private slots:
 
     void Deparenting_a_task_in_the_Workday_page()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Workday"));
-        And(I_add_a_task("parent"));
-        And(there_is_an_item_in_the_central_list("parent"));
-        And(I_add_a_task_child("child", "parent"));
-        And(there_is_an_item_in_the_central_list("parent / child"));
-        When(I_drop_the_item_on_the_blank_area_of_the_central_list());
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
+        ZanshinContext c;
+        Given(c.I_display_the_page("Workday"));
+        And(c.I_add_a_task("parent"));
+        And(c.there_is_an_item_in_the_central_list("parent"));
+        And(c.I_add_a_task_child("child", "parent"));
+        And(c.there_is_an_item_in_the_central_list("parent / child"));
+        When(c.I_drop_the_item_on_the_blank_area_of_the_central_list());
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
         QEXPECT_FAIL("", "Setting the date during deparenting is broken, see the TODO in workdaypagemodel.cpp", Continue);
-        Then(the_central_list_contains_items_named({
+        Then(c.the_central_list_contains_items_named({
                                  "parent",
                                  "child",
                              }));

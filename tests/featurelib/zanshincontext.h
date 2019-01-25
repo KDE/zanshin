@@ -42,11 +42,10 @@ public:
     void doDisplayMessage(const QString &) override;
 };
 
-#define ZANSHIN_CONTEXT ZanshinContext context
-#define Given(a) QVERIFY(context.a)
-#define When(a) QVERIFY(context.a)
-#define Then(a) QVERIFY(context.a)
-#define And(a) QVERIFY(context.a)
+#define Given(a) QVERIFY(a)
+#define When(a) QVERIFY(a)
+#define Then(a) QVERIFY(a)
+#define And(a) QVERIFY(a)
 
 class ZanshinContext : public QObject
 {

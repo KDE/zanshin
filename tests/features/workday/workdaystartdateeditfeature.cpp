@@ -37,32 +37,32 @@ class WorkdayStartdateEditFeature : public QObject
 private slots:
     void Setting_a_date_s_start_date_to_today_makes_it_appear_in_the_workday_view()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy rutabagas"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("start date", "2015-03-10"));
-        And(I_display_the_page("Workday"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_contains("Buy rutabagas"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy rutabagas"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("start date", "2015-03-10"));
+        And(c.I_display_the_page("Workday"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_contains("Buy rutabagas"));
     }
 
     void Setting_a_date_s_start_date_to_a_date_in_the_past_makes_it_appear_in_the_workday_view()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Workday"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        And(the_list_does_not_contain("Buy rutabagas"));
-        And(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy rutabagas"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("start date", "2014-03-10"));
-        And(I_display_the_page("Workday"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_contains("Buy rutabagas"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Workday"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        And(c.the_list_does_not_contain("Buy rutabagas"));
+        And(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy rutabagas"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("start date", "2014-03-10"));
+        And(c.I_display_the_page("Workday"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_contains("Buy rutabagas"));
     }
 };
 

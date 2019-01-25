@@ -37,10 +37,10 @@ class PagesDisplayFeature : public QObject
 private slots:
     void Inbox_projects_contexts_and_tags_appear_in_the_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_available_pages());
-        When(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_available_pages());
+        When(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display", "icon" },
                              {
                                  { "Inbox", "mail-folder-inbox" },

@@ -37,11 +37,11 @@ class ContextRemoveFeature : public QObject
 private slots:
     void Removed_context_disappear_from_the_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_available_pages());
-        When(I_remove_a_page("Contexts", "Online"));
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_available_pages());
+        When(c.I_remove_a_page("Contexts", "Online"));
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display", "icon" },
                              {
                                  { "Inbox", "mail-folder-inbox" },

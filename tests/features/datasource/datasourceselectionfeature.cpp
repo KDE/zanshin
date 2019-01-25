@@ -37,13 +37,13 @@ class DatasourceSelectionFeature : public QObject
 private slots:
     void Unchecking_impacts_the_inbox()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
-        When(I_uncheck_the_item());
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
+        When(c.I_uncheck_the_item());
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Buy apples" },
@@ -55,13 +55,13 @@ private slots:
 
     void Checking_impacts_the_inbox()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
-        When(I_check_the_item());
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
+        When(c.I_check_the_item());
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "\"Capital in the Twenty-First Century\" by Thomas Piketty" },
@@ -78,12 +78,12 @@ private slots:
 
     void Unchecking_impacts_project_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
-        When(I_uncheck_the_item());
-        And(I_display_the_available_pages());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
+        When(c.I_uncheck_the_item());
+        And(c.I_display_the_available_pages());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Inbox" },
@@ -100,12 +100,12 @@ private slots:
 
     void Checking_impacts_project_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
-        When(I_check_the_item());
-        And(I_display_the_available_pages());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.there_is_an_item_in_the_available_data_sources("TestData / Calendar1"));
+        When(c.I_check_the_item());
+        And(c.I_display_the_available_pages());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Inbox" },

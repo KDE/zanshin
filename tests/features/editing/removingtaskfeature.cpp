@@ -49,12 +49,12 @@ private slots:
         QFETCH(QString, page);
         QFETCH(QString, title);
 
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page(page));
-        And(there_is_an_item_in_the_central_list(title));
-        When(I_remove_the_item());
-        And(I_list_the_items());
-        Then(the_list_does_not_contain(title));
+        ZanshinContext c;
+        Given(c.I_display_the_page(page));
+        And(c.there_is_an_item_in_the_central_list(title));
+        When(c.I_remove_the_item());
+        And(c.I_list_the_items());
+        Then(c.the_list_does_not_contain(title));
     }
 };
 

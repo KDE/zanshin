@@ -37,14 +37,14 @@ class ContextDragAndDropFeature : public QObject
 private slots:
     void Dropping_a_task_on_a_context_from_the_inbox()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy rutabagas"));
-        When(I_drop_the_item_on_the_page_list("Contexts / Errands"));
-        And(I_display_the_page("Contexts / Errands"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy rutabagas"));
+        When(c.I_drop_the_item_on_the_page_list("Contexts / Errands"));
+        And(c.I_display_the_page("Contexts / Errands"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Buy kiwis" },
@@ -55,14 +55,14 @@ private slots:
 
     void Dropping_a_task_on_a_context_from_the_project_central_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
-        And(there_is_an_item_in_the_central_list("Create examples and exercices"));
-        When(I_drop_the_item_on_the_page_list("Contexts / Online"));
-        And(I_display_the_page("Contexts / Online"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
+        And(c.there_is_an_item_in_the_central_list("Create examples and exercices"));
+        When(c.I_drop_the_item_on_the_page_list("Contexts / Online"));
+        And(c.I_display_the_page("Contexts / Online"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Create examples and exercices" },

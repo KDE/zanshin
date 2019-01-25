@@ -36,12 +36,12 @@ class InboxDragAndDropFeature : public QObject
 private slots:
     void Dropping_a_task_on_another_one_makes_it_a_child()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy apples"));
-        When(I_drop_the_item_on_the_central_list("Errands"));
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy apples"));
+        When(c.I_drop_the_item_on_the_central_list("Errands"));
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Errands" },
@@ -58,14 +58,14 @@ private slots:
 
     void Dropping_a_child_task_on_the_inbox_makes_it_top_level()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy apples"));
-        And(I_drop_the_item_on_the_central_list("Errands"));
-        And(there_is_an_item_in_the_central_list("Errands / Buy apples"));
-        When(I_drop_the_item_on_the_page_list("Inbox"));
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy apples"));
+        And(c.I_drop_the_item_on_the_central_list("Errands"));
+        And(c.there_is_an_item_in_the_central_list("Errands / Buy apples"));
+        When(c.I_drop_the_item_on_the_page_list("Inbox"));
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Errands" },
@@ -82,12 +82,12 @@ private slots:
 
     void Dropping_two_tasks_on_another_one_makes_them_children()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(the_central_list_contains_items_named({"Buy apples", "Buy pears"}));
-        When(I_drop_items_on_the_central_list("Errands"));
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.the_central_list_contains_items_named({"Buy apples", "Buy pears"}));
+        When(c.I_drop_items_on_the_central_list("Errands"));
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Errands" },
@@ -104,14 +104,14 @@ private slots:
 
     void Dropping_two_child_tasks_on_the_inbox_makes_them_top_level()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(the_central_list_contains_items_named({"Buy apples", "Buy pears"}));
-        And(I_drop_items_on_the_central_list("Errands"));
-        And(the_central_list_contains_items_named({"Errands / Buy apples", "Errands / Buy pears"}));
-        When(I_drop_items_on_the_page_list("Inbox"));
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.the_central_list_contains_items_named({"Buy apples", "Buy pears"}));
+        And(c.I_drop_items_on_the_central_list("Errands"));
+        And(c.the_central_list_contains_items_named({"Errands / Buy apples", "Errands / Buy pears"}));
+        When(c.I_drop_items_on_the_page_list("Inbox"));
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Errands" },
@@ -128,14 +128,14 @@ private slots:
 
     void Dropping_a_task_on_the_inbox_removes_it_from_its_associated_project()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
-        And(there_is_an_item_in_the_central_list("Create Sozi SVG"));
-        When(I_drop_the_item_on_the_page_list("Inbox"));
-        And(I_display_the_page("Inbox"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
+        And(c.there_is_an_item_in_the_central_list("Create Sozi SVG"));
+        When(c.I_drop_the_item_on_the_page_list("Inbox"));
+        And(c.I_display_the_page("Inbox"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Errands" },
@@ -153,16 +153,16 @@ private slots:
 
     void Deparenting_a_task_by_dropping_on_the_central_list_blank_area()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(I_look_at_the_central_list());
-        And(there_is_an_item_in_the_central_list("Buy apples"));
-        And(I_drop_the_item_on_the_central_list("Errands"));
-        And(I_look_at_the_central_list());
-        And(there_is_an_item_in_the_central_list("Errands / Buy apples"));
-        When(I_drop_the_item_on_the_blank_area_of_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.I_look_at_the_central_list());
+        And(c.there_is_an_item_in_the_central_list("Buy apples"));
+        And(c.I_drop_the_item_on_the_central_list("Errands"));
+        And(c.I_look_at_the_central_list());
+        And(c.there_is_an_item_in_the_central_list("Errands / Buy apples"));
+        When(c.I_drop_the_item_on_the_blank_area_of_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_is({
                              { "display" },
                              {
                                  { "Errands" },
@@ -179,13 +179,13 @@ private slots:
 
     void Dropping_a_task_on_the_inbox_removes_it_from_all_its_contexts()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Contexts / Errands"));
-        And(there_is_an_item_in_the_central_list("Buy kiwis"));
-        When(I_drop_the_item_on_the_page_list("Inbox"));
-        And(I_display_the_page("Contexts / Errands"));
-        And(I_look_at_the_central_list());
-        Then(the_list_does_not_contain("Buy kiwis"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Contexts / Errands"));
+        And(c.there_is_an_item_in_the_central_list("Buy kiwis"));
+        When(c.I_drop_the_item_on_the_page_list("Inbox"));
+        And(c.I_display_the_page("Contexts / Errands"));
+        And(c.I_look_at_the_central_list());
+        Then(c.the_list_does_not_contain("Buy kiwis"));
     }
 };
 

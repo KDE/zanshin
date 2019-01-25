@@ -37,26 +37,26 @@ class WorkdayPostponingFeature : public QObject
 private slots:
     void Setting_a_date_s_start_date_to_a_date_in_the_future_makes_it_disappear_in_the_Workday_page()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Workday"));
-        And(there_is_an_item_in_the_central_list("Errands"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("start date", "2015-03-20"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_does_not_contain("Errands"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Workday"));
+        And(c.there_is_an_item_in_the_central_list("Errands"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("start date", "2015-03-20"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_does_not_contain("Errands"));
     }
 
     void Setting_a_date_s_due_date_to_a_date_in_the_future_makes_it_disappear_in_the_Workday_page()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Workday"));
-        And(there_is_an_item_in_the_central_list("Buy kiwis"));
-        When(I_open_the_item_in_the_editor());
-        And(I_change_the_editor_field("due date", "2015-03-20"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_does_not_contain("Buy kiwis"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Workday"));
+        And(c.there_is_an_item_in_the_central_list("Buy kiwis"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_change_the_editor_field("due date", "2015-03-20"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_does_not_contain("Buy kiwis"));
     }
 };
 

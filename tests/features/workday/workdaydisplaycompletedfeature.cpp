@@ -37,14 +37,14 @@ class WorkdayDisplayCompletedFeature : public QObject
 private slots:
     void The_tasks_that_have_been_done_today_appear_in_the_Workday_list()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(there_is_an_item_in_the_central_list("Buy rutabagas"));
-        When(I_check_the_item());
-        And(I_display_the_page("Workday"));
-        And(I_look_at_the_central_list());
-        And(I_list_the_items());
-        Then(the_list_contains("Buy rutabagas"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.there_is_an_item_in_the_central_list("Buy rutabagas"));
+        When(c.I_check_the_item());
+        And(c.I_display_the_page("Workday"));
+        And(c.I_look_at_the_central_list());
+        And(c.I_list_the_items());
+        Then(c.the_list_contains("Buy rutabagas"));
     }
 };
 

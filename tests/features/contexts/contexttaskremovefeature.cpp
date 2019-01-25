@@ -37,36 +37,36 @@ class ContextTaskRemoveFeature : public QObject
 private slots:
     void Removing_a_task_from_a_context_keeps_it_in_the_project_page_it_s_linked_to()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
-        And(there_is_an_item_in_the_central_list("Create examples and exercices"));
-        And(I_drop_the_item_on_the_page_list("Contexts / Online"));
-        And(I_display_the_page("Contexts / Online"));
-        And(there_is_an_item_in_the_central_list("Create examples and exercices"));
-        When(I_remove_the_item());
-        And(I_look_at_the_central_list());
-        Then(the_list_does_not_contain("Create examples and exercices"));
-        And(I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
-        Then(there_is_an_item_in_the_central_list("Create examples and exercices"));
+        ZanshinContext c;
+        Given(c.I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
+        And(c.there_is_an_item_in_the_central_list("Create examples and exercices"));
+        And(c.I_drop_the_item_on_the_page_list("Contexts / Online"));
+        And(c.I_display_the_page("Contexts / Online"));
+        And(c.there_is_an_item_in_the_central_list("Create examples and exercices"));
+        When(c.I_remove_the_item());
+        And(c.I_look_at_the_central_list());
+        Then(c.the_list_does_not_contain("Create examples and exercices"));
+        And(c.I_display_the_page("Projects / TestData » Calendar1 / Prepare talk about TDD"));
+        Then(c.there_is_an_item_in_the_central_list("Create examples and exercices"));
     }
 
     void Removing_a_task_linked_only_to_a_context_moves_it_back_to_the_inbox()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_page("Inbox"));
-        And(I_look_at_the_central_list());
-        Then(the_list_is({
+        ZanshinContext c;
+        Given(c.I_display_the_page("Inbox"));
+        And(c.I_look_at_the_central_list());
+        Then(c.the_list_is({
                              { "display" },
                              {
                              }
                          }));
-        And(I_display_the_page("Contexts / Errands"));
-        And(there_is_an_item_in_the_central_list("Buy kiwis"));
-        When(I_remove_the_item());
-        And(I_look_at_the_central_list());
-        Then(the_list_does_not_contain("Buy kiwis"));
-        And(I_display_the_page("Inbox"));
-        Then(there_is_an_item_in_the_central_list("Buy kiwis"));
+        And(c.I_display_the_page("Contexts / Errands"));
+        And(c.there_is_an_item_in_the_central_list("Buy kiwis"));
+        When(c.I_remove_the_item());
+        And(c.I_look_at_the_central_list());
+        Then(c.the_list_does_not_contain("Buy kiwis"));
+        And(c.I_display_the_page("Inbox"));
+        Then(c.there_is_an_item_in_the_central_list("Buy kiwis"));
     }
 };
 

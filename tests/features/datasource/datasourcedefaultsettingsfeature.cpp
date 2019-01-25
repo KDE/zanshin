@@ -37,19 +37,19 @@ class DatasourceDefaultSettingsFeature : public QObject
 private slots:
     void Have_a_default_data_source_for_tasks_in_the_inbox()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_available_data_sources());
-        When(I_change_the_setting("defaultCollection", 7));
-        Then(the_default_data_source_is("TestData / Calendar1 / Calendar2"));
+        ZanshinContext c;
+        Given(c.I_display_the_available_data_sources());
+        When(c.I_change_the_setting("defaultCollection", 7));
+        Then(c.the_default_data_source_is("TestData / Calendar1 / Calendar2"));
     }
 
     void Change_the_default_data_source_for_tasks_in_the_inbox()
     {
-        ZANSHIN_CONTEXT;
-        Given(I_display_the_available_data_sources());
-        And(I_change_the_setting("defaultCollection", 42));
-        When(I_change_the_default_data_source("TestData / Calendar1 / Calendar2"));
-        Then(the_setting_is("defaultCollection", 7));
+        ZanshinContext c;
+        Given(c.I_display_the_available_data_sources());
+        And(c.I_change_the_setting("defaultCollection", 42));
+        When(c.I_change_the_default_data_source("TestData / Calendar1 / Calendar2"));
+        Then(c.the_setting_is("defaultCollection", 7));
     }
 };
 
