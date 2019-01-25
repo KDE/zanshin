@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QPersistentModelIndex>
 #include <QSharedPointer>
+#include <QPointer>
 #include <QVector>
 
 #include "domain/task.h"
@@ -128,7 +129,7 @@ private:
 
     QSortFilterProxyModel *m_proxyModel;
     QAbstractItemModel *m_model;
-    QAbstractItemModel *m_sourceModel;
+    QPointer<QAbstractItemModel> m_sourceModel;
     MonitorSpy *m_monitorSpy;
     FakeErrorHandler m_errorHandler;
 };
