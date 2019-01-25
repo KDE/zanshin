@@ -147,7 +147,9 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
                                             "{1d33862f-f274-4c67-ab6c-362d56521ff5}",
                                             "{1d33862f-f274-4c67-ab6c-362d56521ff6}",
                                             "{7824df00-2fd6-47a4-8319-52659dc82005}",
-                                            "{7824df00-2fd6-47a4-8319-52659dc82006}" };
+                                            "{7824df00-2fd6-47a4-8319-52659dc82006}",
+                                            "{d0159c99-0d23-41fa-bb5f-tasktoremove}",
+                                          };
 
     // WHEN
     auto job = storage->fetchItems(calendar2());
@@ -395,8 +397,7 @@ void AkonadiStorageTestBase::shouldNotifyItemRemoved()
     QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
     MonitorSpy monitorSpy(monitor.data());
 
-    const Akonadi::Collection notesCol = fetchCollectionByRID(QStringLiteral("{f5e3f1be-b998-4c56-aa3d-e3a6e7e5493a}"));
-    Akonadi::Item item = fetchItemByRID(QStringLiteral("{d0159c99-0d23-41fa-bb5f-436570140f8b}"), notesCol);
+    Akonadi::Item item = fetchItemByRID(QStringLiteral("{d0159c99-0d23-41fa-bb5f-tasktoremove}"), calendar2());
     QVERIFY(item.isValid());
 
     // WHEN

@@ -245,6 +245,26 @@ END:VCALENDAR</payload>
           <flag>\SEEN</flag>
           <tag>change-me</tag>
         </item>
+        <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{d0159c99-0d23-41fa-bb5f-tasktoremove}">
+          <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+DTSTAMP:20140317T162551Z&#xd;
+CREATED:20140317T162551Z&#xd;
+UID:d0159c99-0d23-41fa-bb5f-436570140f8b&#xd;
+LAST-MODIFIED:20140317T162551Z&#xd;
+SUMMARY:delete-me&#xd;
+DUE;VALUE=DATE:20140324&#xd;
+PERCENT-COMPLETE:0&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+          <attribute type="ForTestingPurpose">bar</attribute>
+          <flag>\SEEN</flag>
+          <tag>change-me</tag>
+        </item>
         <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{c9a13610-a9f6-433d-96f2-3b8fdb728fe5}" name="Calendar3">
           <attribute type="AccessRights">a</attribute>
         </collection>
