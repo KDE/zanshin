@@ -45,7 +45,9 @@ public:
 
     Akonadi::MonitorInterface::Ptr createMonitor() override
     {
-        return Akonadi::MonitorInterface::Ptr(new Akonadi::MonitorImpl);
+        Akonadi::MonitorInterface::Ptr ptr(new Akonadi::MonitorImpl);
+        QTest::qWait(10); // give Monitor time to upload settings
+        return ptr;
     }
 
 private slots:
