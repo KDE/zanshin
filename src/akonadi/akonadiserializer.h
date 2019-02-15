@@ -74,8 +74,6 @@ public:
     bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const override;
     bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const override;
 
-    bool hasContextTags(Akonadi::Item item) const override;
-
 private:
     bool isContext(const Akonadi::Tag &tag) const;
 };

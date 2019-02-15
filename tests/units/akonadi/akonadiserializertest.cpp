@@ -1908,49 +1908,6 @@ private slots:
         QCOMPARE(value, isChild);
     }
 
-    void shouldCheckIfAnItemHasContexts_data()
-    {
-        QTest::addColumn<Akonadi::Item>("item");
-        QTest::addColumn<bool>("contextsExpected");
-
-        Akonadi::Tag unrelatedTag(QStringLiteral("Foo"));
-        unrelatedTag.setType("unrelated");
-        Akonadi::Tag contextTag(QStringLiteral("Bar"));
-        contextTag.setType(Akonadi::Serializer::contextTagType());
-        Akonadi::Tag akonadiTag(QStringLiteral("Baz"));
-        akonadiTag.setType(Akonadi::Tag::PLAIN);
-
-        Akonadi::Item item;
-        QTest::newRow("no tags") << item << false;
-
-        item.setTags({ unrelatedTag });
-        QTest::newRow("unrelated tags") << item << false;
-
-        item.setTags({ unrelatedTag, contextTag });
-        QTest::newRow("has contexts") << item << true;
-
-        item.setTags({ unrelatedTag, akonadiTag });
-        QTest::newRow("has tags") << item << false;
-
-        item.setTags({ unrelatedTag, contextTag, akonadiTag });
-        QTest::newRow("has both") << item << true;
-    }
-
-    void shouldCheckIfAnItemHasContexts()
-    {
-        // GIVEN
-        QFETCH(Akonadi::Item, item);
-        QFETCH(bool, contextsExpected);
-
-        Akonadi::Serializer serializer;
-
-        // WHEN
-        const bool hasContexts = serializer.hasContextTags(item);
-
-        // THEN
-        QCOMPARE(hasContexts, contextsExpected);
-    }
-
     void shouldCreateTagFromContext_data()
     {
         QTest::addColumn<QString>("name");
