@@ -39,45 +39,43 @@ ContextRepository::ContextRepository(const StorageInterface::Ptr &storage,
 
 }
 
-KJob *ContextRepository::create(Domain::Context::Ptr context)
+KJob *ContextRepository::create(Domain::Context::Ptr context, Domain::DataSource::Ptr source)
 {
-    auto tag = m_serializer->createTagFromContext(context);
-    Q_ASSERT(!tag.isValid());
-    return m_storage->createTag(tag);
+    auto item = m_serializer->createItemFromContext(context);
+    Q_ASSERT(!item.isValid());
+    auto collection = m_serializer->createCollectionFromDataSource(source);
+    Q_ASSERT(collection.isValid());
+    return m_storage->createItem(item, collection);
 }
 
 KJob *ContextRepository::update(Domain::Context::Ptr context)
 {
-    auto tag = m_serializer->createTagFromContext(context);
-    Q_ASSERT(tag.isValid());
-    return m_storage->updateTag(tag);
+    auto item = m_serializer->createItemFromContext(context);
+    Q_ASSERT(item.isValid());
+    return m_storage->updateItem(item);
 }
 
 KJob *ContextRepository::remove(Domain::Context::Ptr context)
 {
-    auto tag = m_serializer->createTagFromContext(context);
-    Q_ASSERT(tag.isValid());
-    return m_storage->removeTag(tag);
+    auto item = m_serializer->createItemFromContext(context);
+    Q_ASSERT(item.isValid());
+    return m_storage->removeItem(item);
 }
 
-KJob *ContextRepository::associate(Domain::Context::Ptr parent, Domain::Task::Ptr child)
+KJob *ContextRepository::associate(Domain::Context::Ptr context, Domain::Task::Ptr child)
 {
-    Item childItem;
-
-    childItem = m_serializer->createItemFromTask(child);
+    Item childItem = m_serializer->createItemFromTask(child);
     Q_ASSERT(childItem.isValid());
 
     auto job = new Utils::CompositeJob();
     ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
-    job->install(fetchItemJob->kjob(), [fetchItemJob, parent, job, this] {
+    job->install(fetchItemJob->kjob(), [fetchItemJob, context, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
         auto childItem = fetchItemJob->items().at(0);
-        auto tag = m_serializer->createTagFromContext(parent);
-        Q_ASSERT(tag.isValid());
-        childItem.setTag(tag);
+        m_serializer->addContextToTask(context, childItem);
 
         auto updateJob = m_storage->updateItem(childItem);
         job->addSubjob(updateJob);

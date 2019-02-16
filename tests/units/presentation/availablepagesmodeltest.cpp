@@ -619,9 +619,11 @@ private slots:
     void shouldAddContexts()
     {
         // GIVEN
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName(QStringLiteral("Source1"));
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
-        contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
+        contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>(), any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(new FakeJob(this));
 
         Presentation::AvailablePagesModel pages(Domain::DataSourceQueries::Ptr(),
@@ -633,21 +635,23 @@ private slots:
                                                     Domain::TaskRepository::Ptr());
 
         // WHEN
-        pages.addContext(QStringLiteral("Foo"));
+        pages.addContext(QStringLiteral("Foo"), source);
 
         // THEN
-        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
+        QVERIFY(contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>(), any<Domain::DataSource::Ptr>())
                                                                        .exactly(1));
     }
 
     void shouldGetAnErrorMessageWhenAddContextFailed()
     {
         // GIVEN
+        auto source = Domain::DataSource::Ptr::create();
+        source->setName(QStringLiteral("Source1"));
 
         Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
         auto job = new FakeJob(this);
         job->setExpectedError(KJob::KilledJobError, QStringLiteral("Foo"));
-        contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>())
+        contextRepositoryMock(&Domain::ContextRepository::create).when(any<Domain::Context::Ptr>(), any<Domain::DataSource::Ptr>())
                                                                  .thenReturn(job);
 
         Presentation::AvailablePagesModel pages(Domain::DataSourceQueries::Ptr(),
@@ -661,7 +665,7 @@ private slots:
         pages.setErrorHandler(&errorHandler);
 
         // WHEN
-        pages.addContext(QStringLiteral("Foo"));
+        pages.addContext(QStringLiteral("Foo"), source);
 
         // THEN
         QTest::qWait(150);

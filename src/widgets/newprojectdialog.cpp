@@ -92,6 +92,11 @@ void NewProjectDialog::accept()
     QDialog::accept();
 }
 
+void NewProjectDialog::setWindowTitle(const QString &title)
+{
+    QDialog::setWindowTitle(title);
+}
+
 void NewProjectDialog::setDataSourcesModel(QAbstractItemModel *model)
 {
     m_flattenProxy->setSourceModel(model);

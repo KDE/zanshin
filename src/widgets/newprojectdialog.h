@@ -49,6 +49,7 @@ public:
 
     void accept() override;
 
+    void setWindowTitle(const QString &title) override;
     void setDataSourcesModel(QAbstractItemModel *model) override;
 
     QString name() const override;

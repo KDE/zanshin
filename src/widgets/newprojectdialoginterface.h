@@ -33,6 +33,7 @@ class QAbstractItemModel;
 
 namespace Widgets {
 
+// This is used to create both Projects and Contexts
 class NewProjectDialogInterface
 {
 public:
@@ -42,6 +43,7 @@ public:
 
     virtual int exec() = 0;
 
+    virtual void setWindowTitle(const QString &text) = 0;
     virtual void setDataSourcesModel(QAbstractItemModel *model) = 0;
     virtual QString name() const = 0;
     virtual Domain::DataSource::Ptr dataSource() const = 0;

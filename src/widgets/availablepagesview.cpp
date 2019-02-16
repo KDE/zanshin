@@ -254,10 +254,15 @@ void AvailablePagesView::onAddProjectTriggered()
 
 void AvailablePagesView::onAddContextTriggered()
 {
-    const QString name = m_messageBoxInterface->askTextInput(this, i18n("Add Context"), i18n("Context name"));
-    if (!name.isEmpty()) {
+    NewProjectDialogInterface::Ptr dialog = m_projectDialogFactory(this);
+    dialog->setWindowTitle(i18n("Add a context"));
+    dialog->setDataSourcesModel(m_sources);
+
+    if (dialog->exec() == QDialog::Accepted) {
+        m_defaultSource = dialog->dataSource();
         QMetaObject::invokeMethod(m_model, "addContext",
-                                  Q_ARG(QString, name));
+                                  Q_ARG(QString, dialog->name()),
+                                  Q_ARG(Domain::DataSource::Ptr, dialog->dataSource()));
     }
 }
 

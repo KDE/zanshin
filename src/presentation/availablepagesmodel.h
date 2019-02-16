@@ -62,7 +62,7 @@ public:
 
 public slots:
     void addProject(const QString &name, const Domain::DataSource::Ptr &source);
-    void addContext(const QString &name);
+    void addContext(const QString &name, const Domain::DataSource::Ptr &source);
     void removeItem(const QModelIndex &index);
 
 private:

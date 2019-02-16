@@ -262,12 +262,11 @@ private slots:
     void shouldCreateNewItemsInContext()
     {
         // GIVEN
-        // a tag
-        Akonadi::Tag tag;
-        tag.setName(QStringLiteral("tag42"));
-        tag.setId(42);
+        // a context item
+        Akonadi::Item contextItem;
+        contextItem.setId(42);
 
-        // the context related to the tag
+        // the context related to the item
         auto context = Domain::Context::Ptr::create();
 
         // a default collection
@@ -283,8 +282,8 @@ private slots:
         // serializer mock returning the item for the task
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
 
-        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).thenReturn(tag);
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).thenReturn(taskItem);
+        serializerMock(&Akonadi::SerializerInterface::addContextToTask).when(context, taskItem).thenReturn();
 
         // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
@@ -301,7 +300,7 @@ private slots:
         // THEN
 
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
-        QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
+        QVERIFY(serializerMock(&Akonadi::SerializerInterface::addContextToTask).when(context, taskItem).exactly(1));
 
         QVERIFY(storageMock(&Akonadi::StorageInterface::defaultCollection).when().exactly(1));
         QVERIFY(storageMock(&Akonadi::StorageInterface::createItem).when(taskItem, defaultCollection).exactly(1));

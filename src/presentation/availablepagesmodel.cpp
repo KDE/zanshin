@@ -129,11 +129,11 @@ void AvailablePagesModel::addProject(const QString &name, const Domain::DataSour
     installHandler(job, i18n("Cannot add project %1 in dataSource %2", name, source->name()));
 }
 
-void AvailablePagesModel::addContext(const QString &name)
+void AvailablePagesModel::addContext(const QString &name, const Domain::DataSource::Ptr &source)
 {
     auto context = Domain::Context::Ptr::create();
     context->setName(name);
-    const auto job = m_contextRepository->create(context);
+    const auto job = m_contextRepository->create(context, source);
     installHandler(job, i18n("Cannot add context %1", name));
 }
 

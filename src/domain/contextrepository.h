@@ -25,6 +25,7 @@
 #define DOMAIN_CONTEXTREPOSITORY_H
 
 #include "context.h"
+#include "datasource.h"
 #include "task.h"
 
 class KJob;
@@ -39,7 +40,7 @@ public:
     ContextRepository();
     virtual ~ContextRepository();
 
-    virtual KJob *create(Context::Ptr context) = 0;
+    virtual KJob *create(Context::Ptr context, DataSource::Ptr source) = 0;
     virtual KJob *update(Context::Ptr context) = 0;
     virtual KJob *remove(Context::Ptr context) = 0;
 

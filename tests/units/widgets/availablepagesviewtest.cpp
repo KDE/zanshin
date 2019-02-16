@@ -78,10 +78,16 @@ public:
         return source;
     }
 
+    void setWindowTitle(const QString &title) override
+    {
+        windowTitle = title;
+    }
+
     QWidget *parent;
     int execCount;
     QAbstractItemModel *sourceModel;
     Domain::DataSource::Ptr source;
+    QString windowTitle;
 };
 
 class QuickSelectDialogStub : public Widgets::QuickSelectDialogInterface
@@ -133,9 +139,10 @@ public slots:
         sources << source;
     }
 
-    void addContext(const QString &name)
+    void addContext(const QString &name, const Domain::DataSource::Ptr &source)
     {
         contextNames << name;
+        sources << source;
     }
 
     void addTag(const QString &name)
@@ -299,14 +306,14 @@ private slots:
 
         auto source = Domain::DataSource::Ptr::create();
 
-        auto msgBoxStub = MessageBoxStub::Ptr::create();
-        msgBoxStub->setTextInput(QStringLiteral("Foo"));
-
         Widgets::AvailablePagesView available;
         available.setModel(&model);
         available.setProjectSourcesModel(&sourceModel);
         available.setDefaultProjectSource(source);
-        available.setMessageBoxInterface(msgBoxStub);
+        available.setProjectDialogFactory([dialogStub] (QWidget *parent) {
+            dialogStub->parent = parent;
+            return dialogStub;
+        });
 
         auto addContextAction = available.findChild<QAction*>(QStringLiteral("addContextAction"));
 
@@ -314,9 +321,15 @@ private slots:
         addContextAction->trigger();
 
         // THEN
-        QVERIFY(msgBoxStub->called());
+        QCOMPARE(dialogStub->execCount, 1);
+        QCOMPARE(dialogStub->parent, &available);
+        QCOMPARE(dialogStub->sourceModel, &sourceModel);
+        QCOMPARE(dialogStub->windowTitle, QStringLiteral("Add a context"));
         QCOMPARE(model.contextNames.size(), 1);
-        QCOMPARE(model.contextNames.first(), QStringLiteral("Foo"));
+        QCOMPARE(model.contextNames.first(), QStringLiteral("name"));
+        QCOMPARE(model.sources.size(), 1);
+        QCOMPARE(model.sources.first(), dialogStub->dataSource());
+        QCOMPARE(available.defaultProjectSource(), dialogStub->dataSource());
     }
 
     void shouldRemoveAPage_data()
