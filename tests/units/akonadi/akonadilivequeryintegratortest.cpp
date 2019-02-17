@@ -176,7 +176,7 @@ private slots:
 
         // Reacts to remove
         // WHEN
-        data.removeTag(Akonadi::Tag(45));
+        data.removeItem(Akonadi::Item(45));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
@@ -877,26 +877,6 @@ private slots:
         QCOMPARE(removedId, qint64(42));
     }
 
-    void shouldCallTagRemoveHandlers()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        // One tag
-        data.createItem(GenTodo().withId(42).withUid("ctx-42").withTitle(QStringLiteral("42")));
-
-        auto integrator = createIntegrator(data);
-        qint64 removedId = -1;
-        integrator->addRemoveHandler([&removedId] (const Akonadi::Tag &tag) {
-            removedId = tag.id();
-        });
-
-        // WHEN
-        data.removeTag(Akonadi::Tag(42));
-
-        // THEN
-        QCOMPARE(removedId, qint64(42));
-    }
 };
 
 ZANSHIN_TEST_MAIN(AkonadiLiveQueryIntegratorTest)

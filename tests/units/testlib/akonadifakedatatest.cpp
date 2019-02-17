@@ -23,8 +23,11 @@
 
 #include "testlib/akonadifakedata.h"
 #include "akonadi/akonadimonitorinterface.h"
+#include "akonadi/akonadiserializer.h"
 
 #include <testlib/qtest_zanshin.h>
+
+#include <akonadiserializer.h>
 
 namespace QTest {
 
@@ -50,16 +53,6 @@ inline bool qCompare(const Akonadi::Collection &left, const Akonadi::Collection 
                           left, right, actual, expected, file, line);
 }
 
-// More aggressive compare to make sure we just don't get tags with ids out
-template <>
-inline bool qCompare(const Akonadi::Tag &left, const Akonadi::Tag &right,
-                     const char *actual, const char *expected,
-                     const char *file, int line)
-{
-    return zCompareHelper((left == right) && (left.name() == right.name()),
-                          left, right, actual, expected, file, line);
-}
-
 // More aggressive compare to make sure we just don't get items with ids out
 template <>
 inline bool qCompare(const Akonadi::Item &left, const Akonadi::Item &right,
@@ -80,7 +73,6 @@ public:
         : QObject(parent)
     {
         qRegisterMetaType<Akonadi::Collection>();
-        qRegisterMetaType<Akonadi::Tag>();
         qRegisterMetaType<Akonadi::Item>();
     }
 
@@ -92,7 +84,7 @@ private slots:
 
         // THEN
         QVERIFY(data.collections().isEmpty());
-        QVERIFY(data.tags().isEmpty());
+        QVERIFY(data.contexts().isEmpty());
         QVERIFY(data.items().isEmpty());
     }
 
@@ -148,7 +140,7 @@ private slots:
         QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Collection>(), c2);
     }
 
-    void shouldNotLooseParentCollectionOnModifyCollection()
+    void shouldNotLoseParentCollectionOnModifyCollection()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
@@ -227,6 +219,7 @@ private slots:
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::collectionRemoved);
+        Akonadi::Serializer serializer;
 
         auto c1 = Akonadi::Collection(42);
         c1.setName(QStringLiteral("42"));
@@ -242,13 +235,15 @@ private slots:
         c3.setParentCollection(Akonadi::Collection(43));
         data.createCollection(c3);
 
-        auto i1 = Akonadi::Item(42);
-        i1.setPayloadFromData("42");
+        auto task1 = Domain::Task::Ptr::create();
+        auto i1 = serializer.createItemFromTask(task1);
+        i1.setId(42);
         i1.setParentCollection(Akonadi::Collection(43));
         data.createItem(i1);
 
-        auto i2 = Akonadi::Item(43);
-        i2.setPayloadFromData("43");
+        auto task2 = Domain::Task::Ptr::create();
+        auto i2 = serializer.createItemFromTask(task2);
+        i2.setId(43);
         i2.setParentCollection(Akonadi::Collection(44));
         data.createItem(i2);
 
@@ -279,117 +274,139 @@ private slots:
         QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Collection>(), c2);
     }
 
-    void shouldCreateTags()
+    void shouldCreateContexts()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagAdded);
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemAdded);
+        Akonadi::Serializer serializer;
 
-        auto t1 = Akonadi::Tag(42);
-        t1.setName(QStringLiteral("42"));
-        auto t2 = Akonadi::Tag(43);
-        t2.setName(QStringLiteral("43"));
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName(QStringLiteral("42"));
+        context1->setProperty("todoUid", "ctx-42");
+        auto t1 = serializer.createItemFromContext(context1);
+
+        auto context2 = Domain::Context::Ptr::create();
+        context2->setName(QStringLiteral("43"));
+        context2->setProperty("todoUid", "ctx-43");
+        auto t2 = serializer.createItemFromContext(context2);
 
         // WHEN
-        data.createTag(t1);
-        data.createTag(t2);
+        data.createContext(t1);
+        data.createContext(t2);
 
         // THEN
-        QCOMPARE(data.tags().size(), 2);
-        QVERIFY(data.tags().contains(t1));
-        QVERIFY(data.tags().contains(t2));
-        QCOMPARE(data.tag(t1.id()), t1);
-        QCOMPARE(data.tag(t2.id()), t2);
+        QCOMPARE(data.contexts().size(), 2);
+        QVERIFY(data.contexts().contains(t1));
+        QVERIFY(data.contexts().contains(t2));
+        QCOMPARE(data.contextItem("ctx-42"), t1);
+        QCOMPARE(data.contextItem("ctx-43"), t2);
 
         QCOMPARE(spy.size(), 2);
-        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Tag>(), t1);
-        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Tag>(), t2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), t1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), t2);
     }
 
-    void shouldModifyTags()
+    void shouldModifyContexts()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::tagChanged);
+        QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
+        Akonadi::Serializer serializer;
 
-        auto t1 = Akonadi::Tag(42);
-        t1.setName(QStringLiteral("42"));
-        data.createTag(t1);
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName(QStringLiteral("42"));
+        context1->setProperty("todoUid", "ctx-42");
+        auto t1 = serializer.createItemFromContext(context1);
+        data.createContext(t1);
 
-        auto t2 = Akonadi::Tag(t1.id());
-        t2.setName(QStringLiteral("42-bis"));
+        auto context2 = Domain::Context::Ptr::create();
+        context2->setName(QStringLiteral("42-bis"));
+        context2->setProperty("todoUid", "ctx-42");
+        auto t2 = serializer.createItemFromContext(context2);
 
         // WHEN
-        data.modifyTag(t2);
+        data.modifyContext(t2);
 
         // THEN
-        QCOMPARE(data.tags().size(), 1);
-        QCOMPARE(data.tag(t1.id()), t2);
+        QCOMPARE(data.contexts().size(), 1);
+        QCOMPARE(data.contextItem("ctx-42"), t2);
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Tag>(), t2);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), t2);
     }
 
-    void shouldRemoveTags()
+    void shouldRemoveContexts()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
-        QSignalSpy tagSpy(monitor.data(), &Akonadi::MonitorInterface::tagRemoved);
+        QSignalSpy contextSpy(monitor.data(), &Akonadi::MonitorInterface::itemRemoved);
         QSignalSpy itemSpy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
+        Akonadi::Serializer serializer;
 
         auto c1 = Akonadi::Collection(42);
         data.createCollection(c1);
 
-        auto t1 = Akonadi::Tag(42);
-        t1.setName(QStringLiteral("42"));
-        data.createTag(t1);
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName(QStringLiteral("1"));
+        context1->setProperty("todoUid", "ctx-1");
+        auto t1 = serializer.createItemFromContext(context1);
+        data.createContext(t1);
 
-        auto t2 = Akonadi::Tag(43);
-        t2.setName(QStringLiteral("43"));
-        data.createTag(t2);
+        auto context2 = Domain::Context::Ptr::create();
+        context2->setName(QStringLiteral("2"));
+        context2->setProperty("todoUid", "ctx-2");
+        auto t2 = serializer.createItemFromContext(context2);
+        data.createContext(t2);
 
-        auto i1 = Akonadi::Item(42);
-        i1.setPayloadFromData("42");
+        auto task1 = Domain::Task::Ptr::create();
+        auto i1 = serializer.createItemFromTask(task1);
         i1.setParentCollection(c1);
-        i1.setTag(Akonadi::Tag(t1.id()));
+        i1.setId(42);
+        serializer.addContextToTask(context1, i1);
         data.createItem(i1);
+        QVERIFY(serializer.isContextChild(context1, i1));
 
-        auto i2 = Akonadi::Item(43);
-        i2.setPayloadFromData("43");
+        auto task2 = Domain::Task::Ptr::create();
+        auto i2 = serializer.createItemFromTask(task2);
         i2.setParentCollection(c1);
-        i2.setTag(Akonadi::Tag(t2.id()));
+        i2.setId(43);
+        serializer.addContextToTask(context2, i2);
         data.createItem(i2);
+        QVERIFY(serializer.isContextChild(context2, i2));
 
         const auto itemSet = QSet<Akonadi::Item>() << i1 << i2;
 
         // WHEN
-        data.removeTag(t2);
+        data.removeContext(t2);
 
         // THEN
-        QCOMPARE(data.tags().size(), 1);
-        QCOMPARE(data.tags().at(0), t1);
+        QCOMPARE(data.contexts().size(), 1);
+        QCOMPARE(data.contexts().at(0), t1);
 
-        QVERIFY(!data.tag(t2.id()).isValid());
+        QVERIFY(!data.contextItem("ctx-2").isValid());
 
-        QCOMPARE(data.tagItems(t1.id()).size(), 1);
-        QCOMPARE(data.tagItems(t1.id()).at(0), i1);
-        QVERIFY(data.tagItems(t2.id()).isEmpty());
+        QCOMPARE(data.contextItems("ctx-1").size(), 1);
+        QCOMPARE(data.contextItems("ctx-1").at(0), i1);
+        QVERIFY(data.contextItems("ctx-2").isEmpty());
 
         QCOMPARE(data.items().toList().toSet(), itemSet);
 
         QVERIFY(data.item(i1.id()).isValid());
-        QVERIFY(data.item(i2.id()).isValid());
-        QVERIFY(!data.item(i2.id()).tags().contains(t2));
+        const auto item2 = data.item(i2.id());
+        QVERIFY(item2.isValid());
+        QVERIFY(!serializer.isContextChild(context2, item2));
 
-        QCOMPARE(tagSpy.size(), 1);
-        QCOMPARE(tagSpy.takeFirst().at(0).value<Akonadi::Tag>(), t2);
+        QCOMPARE(contextSpy.size(), 1);
+        QCOMPARE(contextSpy.takeFirst().at(0).value<Akonadi::Item>(), t2);
 
         QCOMPARE(itemSpy.size(), 1);
-        QCOMPARE(itemSpy.first().at(0).value<Akonadi::Item>(), i2);
-        QVERIFY(!itemSpy.first().at(0).value<Akonadi::Item>().tags().contains(t2));
+        const auto emittedItem2 = itemSpy.first().at(0).value<Akonadi::Item>();
+        QCOMPARE(emittedItem2, i2);
+        QVERIFY(!serializer.isContextChild(context2, emittedItem2));
     }
 
     void shouldCreateItems()
@@ -453,7 +470,7 @@ private slots:
         QCOMPARE(moveSpy.size(), 0);
     }
 
-    void shouldNotLooseParentCollectionOnModifyItem()
+    void shouldNotLoseParentCollectionOnModifyItem()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
@@ -537,20 +554,25 @@ private slots:
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();
-        auto t1 = Akonadi::Tag(42);
-        t1.setName(QStringLiteral("42"));
-        data.createTag(t1);
+        Akonadi::Serializer serializer;
 
-        auto i1 = Akonadi::Item(42);
-        i1.setPayloadFromData("42");
-        i1.setTag(Akonadi::Tag(42));
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName(QStringLiteral("42"));
+        context1->setProperty("todoUid", "ctx-42");
+        auto t1 = serializer.createItemFromContext(context1);
+        data.createContext(t1);
+
+        auto task1 = Domain::Task::Ptr::create();
+        auto i1 = serializer.createItemFromTask(task1);
+        i1.setId(1);
+        serializer.addContextToTask(context1, i1);
 
         // WHEN
         data.createItem(i1);
 
         // THEN
-        QCOMPARE(data.tagItems(t1.id()).size(), 1);
-        QCOMPARE(data.tagItems(t1.id()).at(0), i1);
+        QCOMPARE(data.contextItems("ctx-42").size(), 1);
+        QCOMPARE(data.contextItems("ctx-42").at(0), i1);
     }
 
     void shouldRetagItemsOnModify()
@@ -559,33 +581,39 @@ private slots:
         auto data = Testlib::AkonadiFakeData();
         QScopedPointer<Akonadi::MonitorInterface> monitor(data.createMonitor());
         QSignalSpy spy(monitor.data(), &Akonadi::MonitorInterface::itemChanged);
+        Akonadi::Serializer serializer;
 
-        auto t1 = Akonadi::Tag(42);
-        t1.setName(QStringLiteral("42"));
-        data.createTag(t1);
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setName(QStringLiteral("42"));
+        context1->setProperty("todoUid", "ctx-42");
+        auto t1 = serializer.createItemFromContext(context1);
+        data.createContext(t1);
 
-        auto t2 = Akonadi::Tag(43);
-        t2.setName(QStringLiteral("43"));
-        data.createTag(t2);
+        auto context2 = Domain::Context::Ptr::create();
+        context2->setName(QStringLiteral("43"));
+        context2->setProperty("todoUid", "ctx-43");
+        auto t2 = serializer.createItemFromContext(context2);
+        data.createContext(t2);
 
-        auto i1 = Akonadi::Item(42);
-        i1.setPayloadFromData("42");
-        i1.setTag(Akonadi::Tag(42));
+        auto task1 = Domain::Task::Ptr::create();
+        auto i1 = serializer.createItemFromTask(task1);
+        i1.setId(1);
+        serializer.addContextToTask(context1, i1);
         data.createItem(i1);
 
         // WHEN
-        i1.setPayloadFromData("42-bis");
-        i1.clearTag(Akonadi::Tag(42));
-        i1.setTag(Akonadi::Tag(43));
-        data.modifyItem(i1);
+        auto i2 = serializer.createItemFromTask(task1);
+        i2.setId(1);
+        serializer.addContextToTask(context2, i2);
+        data.modifyItem(i2);
 
         // THEN
-        QVERIFY(data.tagItems(t1.id()).isEmpty());
-        QCOMPARE(data.tagItems(t2.id()).size(), 1);
-        QCOMPARE(data.tagItems(t2.id()).at(0), i1);
+        QVERIFY(data.contextItems("ctx-42").isEmpty());
+        QCOMPARE(data.contextItems("ctx-43").size(), 1);
+        QCOMPARE(data.contextItems("ctx-43").at(0), i2);
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i2);
     }
 
     void shouldRemoveItems()

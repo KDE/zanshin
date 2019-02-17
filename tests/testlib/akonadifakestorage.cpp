@@ -286,51 +286,6 @@ KJob *AkonadiFakeStorage::createTransaction()
     return job;
 }
 
-KJob *AkonadiFakeStorage::createTag(Akonadi::Tag tag)
-{
-    Q_ASSERT(!tag.isValid());
-
-    auto job = new FakeJob;
-    if (!m_data->tag(tag.id()).isValid()) {
-        Utils::JobHandler::install(job, [=] () mutable {
-            tag.setId(m_data->maxTagId() + 1);
-            m_data->createTag(tag);
-        });
-    } else {
-        job->setExpectedError(1, QStringLiteral("The tag already exists"));
-        Utils::JobHandler::install(job, noop);
-    }
-    return job;
-}
-
-KJob *AkonadiFakeStorage::updateTag(Akonadi::Tag tag)
-{
-    auto job = new FakeJob;
-    if (m_data->tag(tag.id()).isValid()) {
-        Utils::JobHandler::install(job, [=] {
-            m_data->modifyTag(tag);
-        });
-    } else {
-        job->setExpectedError(1, QStringLiteral("The tag doesn't exist"));
-        Utils::JobHandler::install(job, noop);
-    }
-    return job;
-}
-
-KJob *AkonadiFakeStorage::removeTag(Akonadi::Tag tag)
-{
-    auto job = new FakeJob;
-    if (m_data->tag(tag.id()).isValid()) {
-        Utils::JobHandler::install(job, [=] {
-            m_data->removeTag(tag);
-        });
-    } else {
-        job->setExpectedError(1, QStringLiteral("The tag doesn't exist"));
-        Utils::JobHandler::install(job, noop);
-    }
-    return job;
-}
-
 Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akonadi::Collection collection,
                                                                            Akonadi::StorageInterface::FetchDepth depth)
 {
@@ -408,7 +363,7 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItem(Akonadi::Item item
 
 Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchTagItems(Akonadi::Tag tag)
 {
-    auto items = m_data->tagItems(findId(tag));
+    Akonadi::Item::List items; // TODO PORT = m_data->contextItems(findId(tag));
     std::transform(items.begin(), items.end(),
                    items.begin(),
                    [this] (const Akonadi::Item &item) {
@@ -433,25 +388,11 @@ Akonadi::TagFetchJobInterface *AkonadiFakeStorage::fetchTags()
 {
     auto job = new AkonadiFakeTagFetchJob;
     const auto behavior = m_data->storageBehavior().fetchTagsBehavior();
-    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
-        job->setTags(m_data->tags());
+    //if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
+    // TODO PORT    job->setTags(m_data->contexts());
     job->setExpectedError(m_data->storageBehavior().fetchTagsErrorCode());
     Utils::JobHandler::install(job, noop);
     return job;
-}
-
-Akonadi::Tag::Id AkonadiFakeStorage::findId(const Akonadi::Tag &tag)
-{
-    if (tag.isValid() || tag.gid().isEmpty())
-        return tag.id();
-
-    const auto gid = tag.gid();
-    auto tags = m_data->tags();
-    auto result = std::find_if(tags.constBegin(), tags.constEnd(),
-                               [gid] (const Akonadi::Tag &tag) {
-                                   return tag.gid() == gid;
-                               });
-    return (result != tags.constEnd()) ? result->id() : tag.id();
 }
 
 Akonadi::Collection::Id AkonadiFakeStorage::findId(const Akonadi::Collection &collection)

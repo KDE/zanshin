@@ -57,11 +57,6 @@ private slots:
     void shouldNotifyItemAdded();
     void shouldNotifyItemRemoved();
     void shouldNotifyItemChanged();
-    void shouldNotifyItemTagAdded();
-    void shouldNotifyItemTagRemoved();
-    void shouldNotifyTagAdded();
-    void shouldNotifyTagRemoved();
-    void shouldNotifyTagChanged();
     void shouldReadDefaultCollectionFromSettings();
 
     // This test must be run before shouldCreateItem because createItem
@@ -80,9 +75,6 @@ private slots:
     void shouldMoveItems();
     void shouldDeleteItem();
     void shouldDeleteItems();
-    void shouldCreateTag();
-    void shouldRemoveTag();
-    void shouldUpdateTag();
     void shouldUpdateCollection();
     void shouldNotifyCollectionTimestampChanges();
     void shouldNotifyCollectionSelectionChanges();

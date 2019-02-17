@@ -589,8 +589,10 @@ void Serializer::updateContextFromItem(Domain::Context::Ptr context, Item item)
 
 void Serializer::addContextToTask(Domain::Context::Ptr context, Item item)
 {
-    if (!isTaskItem(item))
+    if (!isTaskItem(item)) {
+        qWarning() << "Cannot add context to a non-task" << item.id();
         return;
+    }
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
 
@@ -608,8 +610,10 @@ void Serializer::addContextToTask(Domain::Context::Ptr context, Item item)
 
 void Serializer::removeContextFromTask(Domain::Context::Ptr context, Item item)
 {
-    if (!isTaskItem(item))
+    if (!isTaskItem(item)) {
+        qWarning() << "Cannot remove context from a non-task" << item.id();
         return;
+    }
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
 

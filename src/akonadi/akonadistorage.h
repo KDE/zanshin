@@ -52,10 +52,6 @@ public:
 
     KJob *createTransaction() override;
 
-    KJob *createTag(Akonadi::Tag tag) override;
-    KJob *updateTag(Akonadi::Tag tag) override;
-    KJob *removeTag(Akonadi::Tag tag) override;
-
     CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
     ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
     ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;

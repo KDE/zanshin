@@ -41,6 +41,51 @@ static Akonadi::Collection::Id findParentId(const Entity &entity)
                             : Akonadi::Collection::root().id();
 }
 
+static const char s_contextListProperty[] = "ContextList";
+static const char s_appName[] = "Zanshin";
+
+// Should be in the serializer ideally ... but we don't link to that from here anyway.
+static QStringList extractContextUids(const Akonadi::Item &taskItem)
+{
+    if (!taskItem.hasPayload<KCalCore::Todo::Ptr>())
+        return {};
+    auto todo = taskItem.payload<KCalCore::Todo::Ptr>();
+    const QString contexts = todo->customProperty(s_appName, s_contextListProperty);
+    return contexts.split(',', QString::SkipEmptyParts);
+}
+
+// Duplicated from the serializer
+static QString contextUid(const Akonadi::Item &contextItem)
+{
+    auto contextTodo = contextItem.payload<KCalCore::Todo::Ptr>();
+    return contextTodo->uid();
+}
+
+// Somewhat duplicated from the serializer
+static void removeContextFromTask(const QString &contextUid, Akonadi::Item &item)
+{
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    const QString contexts = todo->customProperty(s_appName, s_contextListProperty);
+    QStringList contextList = contexts.split(',', QString::SkipEmptyParts);
+    contextList.removeAll(contextUid);
+    if (contextList.isEmpty())
+        todo->removeCustomProperty(s_appName, s_contextListProperty);
+    else
+        todo->setCustomProperty(s_appName, s_contextListProperty, contextList.join(','));
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    Q_ASSERT(contextList == extractContextUids(item));
+}
+
+// Duplicate from the serializer
+static bool isContext(const Akonadi::Item &item)
+{
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return false;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    return !todo->customProperty(s_appName, "Context").isEmpty();
+}
+
 AkonadiFakeData::AkonadiFakeData()
     : m_monitor(new AkonadiFakeMonitor)
 {
@@ -170,53 +215,58 @@ void AkonadiFakeData::removeCollection(const Akonadi::Collection &collection)
     m_monitor->removeCollection(col);
 }
 
-Akonadi::Tag::List AkonadiFakeData::tags() const
+QStringList AkonadiFakeData::contextsUids() const
 {
-    return m_tags.values().toVector();
+    return m_contexts.keys();
 }
 
-Akonadi::Tag AkonadiFakeData::tag(Akonadi::Tag::Id id) const
+Akonadi::Item::List AkonadiFakeData::contexts() const
 {
-    if (!m_tags.contains(id))
-        return Akonadi::Tag();
-
-    return m_tags.value(id);
+    return m_contexts.values().toVector();
 }
 
-void AkonadiFakeData::createTag(const Akonadi::Tag &tag)
+Akonadi::Item AkonadiFakeData::contextItem(const QString &uid) const
 {
-    Q_ASSERT(!m_tags.contains(tag.id()));
-    m_tags[tag.id()] = tag;
-    m_monitor->addTag(tag);
+    return m_contexts.value(uid);
 }
 
-void AkonadiFakeData::modifyTag(const Akonadi::Tag &tag)
+void AkonadiFakeData::createContext(const Akonadi::Item &contextItem)
 {
-    Q_ASSERT(m_tags.contains(tag.id()));
-    const auto oldTag = m_tags.take(tag.id());
-    auto newTag = tag;
-    newTag.setGid(oldTag.gid());
-    newTag.setRemoteId(oldTag.remoteId());
-    m_tags[tag.id()] = newTag;
-    m_monitor->changeTag(newTag);
+    const QString uid = contextUid(contextItem);
+    Q_ASSERT(!m_contexts.contains(uid));
+    m_contexts[uid] = contextItem;
+    m_monitor->addItem(contextItem);
 }
 
-void AkonadiFakeData::removeTag(const Akonadi::Tag &tag)
+void AkonadiFakeData::modifyContext(const Akonadi::Item &contextItem)
 {
-    Q_ASSERT(m_tags.contains(tag.id()));
+    const QString uid = contextUid(contextItem);
+    Q_ASSERT(m_contexts.contains(uid));
+    const auto oldContextItem = m_contexts.take(uid);
+    auto newItem = contextItem;
+    newItem.setGid(oldContextItem.gid());
+    newItem.setRemoteId(oldContextItem.remoteId());
+    m_contexts[uid] = newItem;
+    m_monitor->changeItem(newItem);
+}
 
-    const auto ids = m_tagItems[tag.id()];
+void AkonadiFakeData::removeContext(const Akonadi::Item &contextItem)
+{
+    const QString uid = contextUid(contextItem);
+    Q_ASSERT(m_contexts.contains(uid));
+
+    const auto ids = m_contextItems[uid];
     foreach (const auto &id, ids) {
         Q_ASSERT(m_items.contains(id));
         auto item = m_items.value(id);
-        item.clearTag(tag);
+        removeContextFromTask(uid, item);
         m_items[id] = item;
         m_monitor->changeItem(item);
     }
-    m_tagItems.remove(tag.id());
+    m_contextItems.remove(uid);
 
-    m_tags.remove(tag.id());
-    m_monitor->removeTag(tag);
+    m_contexts.remove(uid);
+    m_monitor->removeItem(contextItem);
 }
 
 Akonadi::Item::List AkonadiFakeData::items() const
@@ -240,13 +290,11 @@ Akonadi::Item::List AkonadiFakeData::childItems(Akonadi::Collection::Id parentId
     return result;
 }
 
-Akonadi::Item::List AkonadiFakeData::tagItems(Akonadi::Tag::Id tagId) const
+Akonadi::Item::List AkonadiFakeData::contextItems(const QString &contextUid) const
 {
-    if (!m_tagItems.contains(tagId))
-        return {};
-
-    const auto ids = m_tagItems.value(tagId);
+    const auto ids = m_contextItems.value(contextUid);
     auto result = Akonadi::Item::List();
+    result.reserve(ids.size());
     std::transform(std::begin(ids), std::end(ids),
                    std::back_inserter(result),
                    [this] (Akonadi::Item::Id id) {
@@ -266,25 +314,33 @@ Akonadi::Item AkonadiFakeData::item(Akonadi::Item::Id id) const
 
 void AkonadiFakeData::createItem(const Akonadi::Item &item)
 {
+    Q_ASSERT(item.isValid());
     Q_ASSERT(!m_items.contains(item.id()));
     m_items[item.id()] = item;
 
     const auto parentId = findParentId(item);
     m_childItems[parentId] << item.id();
 
-    foreach (const auto &tag, item.tags()) {
-        Q_ASSERT(m_tags.contains(tag.id()));
-        m_tagItems[tag.id()] << item.id();
+    const QStringList contextUids = extractContextUids(item);
+    foreach (const auto &contextUid, contextUids) {
+        Q_ASSERT(m_contexts.contains(contextUid));
+        m_contextItems[contextUid] << item.id();
     }
 
-    m_monitor->addItem(reconstructItemDependencies(item));
+    if (isContext(item)) {
+        createContext(item);
+    } else {
+        m_monitor->addItem(reconstructItemDependencies(item));
+    }
 }
 
 void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
 {
     Q_ASSERT(m_items.contains(item.id()));
+    Q_ASSERT(item.isValid());
 
-    const auto oldTags = m_items[item.id()].tags();
+    const auto oldContexts = extractContextUids(m_items[item.id()]);
+    const auto newContexts = extractContextUids(item);
     const auto oldParentId = findParentId(m_items[item.id()]);
     const auto oldItem = m_items.take(item.id());
     auto newItem = item;
@@ -301,30 +357,39 @@ void AkonadiFakeData::modifyItem(const Akonadi::Item &item)
         m_monitor->moveItem(reconstructItemDependencies(newItem));
     }
 
-    foreach (const auto &tag, oldTags) {
-        m_tagItems[tag.id()].removeAll(newItem.id());
+    foreach (const auto &contextUid, oldContexts) {
+        m_contextItems[contextUid].removeAll(newItem.id());
     }
 
-    foreach (const auto &tag, newItem.tags()) {
-        Q_ASSERT(m_tags.contains(tag.id()));
-        m_tagItems[tag.id()] << newItem.id();
+    foreach (const auto &contextUid, newContexts) {
+        Q_ASSERT(m_contexts.contains(contextUid));
+        m_contextItems[contextUid] << newItem.id();
     }
 
-    m_monitor->changeItem(reconstructItemDependencies(newItem));
+    if (isContext(item)) {
+        modifyContext(item);
+    } else {
+        m_monitor->changeItem(reconstructItemDependencies(newItem));
+    }
 }
 
 void AkonadiFakeData::removeItem(const Akonadi::Item &item)
 {
+    Q_ASSERT(item.isValid());
     Q_ASSERT(m_items.contains(item.id()));
     const auto parentId = findParentId(m_items[item.id()]);
     const auto i = m_items.take(item.id());
     m_childItems[parentId].removeAll(item.id());
 
-    foreach (const Akonadi::Tag &tag, item.tags()) {
-        m_tagItems[tag.id()].removeAll(item.id());
+    foreach (const auto &contextUid, extractContextUids(item)) {
+        m_contextItems[contextUid].removeAll(item.id());
     }
 
-    m_monitor->removeItem(reconstructItemDependencies(i));
+    if (isContext(item)) {
+        removeContext(item);
+    } else {
+        m_monitor->removeItem(reconstructItemDependencies(i));
+    }
 }
 
 Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
@@ -338,12 +403,6 @@ Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
                      monitor, &AkonadiFakeMonitor::changeCollectionSelection);
     QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::collectionRemoved,
                      monitor, &AkonadiFakeMonitor::removeCollection);
-    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::tagAdded,
-                     monitor, &AkonadiFakeMonitor::addTag);
-    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::tagChanged,
-                     monitor, &AkonadiFakeMonitor::changeTag);
-    QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::tagRemoved,
-                     monitor, &AkonadiFakeMonitor::removeTag);
     QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::itemAdded,
                      monitor, &AkonadiFakeMonitor::addItem);
     QObject::connect(m_monitor.data(), &AkonadiFakeMonitor::itemChanged,
@@ -386,16 +445,6 @@ Akonadi::Item::Id AkonadiFakeData::maxItemId() const
     return it.key();
 }
 
-Akonadi::Tag::Id AkonadiFakeData::maxTagId() const
-{
-    if (m_tags.isEmpty())
-        return 0;
-
-    auto it = std::max_element(m_tags.constBegin(), m_tags.constEnd(),
-                               idLessThan<Akonadi::Tag>);
-    return it.key();
-}
-
 Akonadi::Collection AkonadiFakeData::reconstructAncestors(const Akonadi::Collection &collection,
                                                           const Akonadi::Collection &root) const
 {
@@ -417,15 +466,6 @@ Akonadi::Item AkonadiFakeData::reconstructItemDependencies(const Akonadi::Item &
 {
     auto result = item;
     result.setParentCollection(reconstructAncestors(item.parentCollection(), root));
-
-    auto tags = item.tags();
-    std::transform(tags.constBegin(), tags.constEnd(),
-                   tags.begin(),
-                   [=] (const Akonadi::Tag &t) {
-                       return tag(t.id());
-                   });
-    result.setTags(tags);
-
     return result;
 }
 

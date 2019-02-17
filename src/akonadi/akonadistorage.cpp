@@ -39,11 +39,8 @@
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/ItemMoveJob>
 #include <AkonadiCore/TransactionSequence>
-#include <AkonadiCore/TagCreateJob>
-#include <AkonadiCore/TagDeleteJob>
 #include <AkonadiCore/TagFetchJob>
 #include <AkonadiCore/TagFetchScope>
-#include <AkonadiCore/TagModifyJob>
 #include <AkonadiCore/TagAttribute>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
@@ -206,21 +203,6 @@ KJob *Storage::removeCollection(Collection collection, QObject *parent)
 KJob *Storage::createTransaction()
 {
     return new TransactionSequence();
-}
-
-KJob *Storage::createTag(Tag tag)
-{
-    return new TagCreateJob(tag);
-}
-
-KJob *Storage::updateTag(Tag tag)
-{
-    return new TagModifyJob(tag);
-}
-
-KJob *Storage::removeTag(Tag tag)
-{
-    return new Akonadi::TagDeleteJob(tag);
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)

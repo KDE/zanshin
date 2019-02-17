@@ -49,7 +49,7 @@ private slots:
         // THEN
         QVERIFY(data.collections().size() > 1);
         QVERIFY(data.items().size() > 1);
-        QVERIFY(data.tags().size() > 1);
+        QVERIFY(data.contexts().size() > 1);
 
         // Do a bit of sanity checking, no need to do much more than that as
         // the xml loading will be extensively used in the AkonadiFakeStorageTest

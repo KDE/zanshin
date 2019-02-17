@@ -499,21 +499,6 @@ KJob *CachingStorage::createTransaction()
     return m_storage->createTransaction();
 }
 
-KJob *CachingStorage::createTag(Tag tag)
-{
-    return m_storage->createTag(tag);
-}
-
-KJob *CachingStorage::updateTag(Tag tag)
-{
-    return m_storage->updateTag(tag);
-}
-
-KJob *CachingStorage::removeTag(Tag tag)
-{
-    return m_storage->removeTag(tag);
-}
-
 CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
 {
     return new CachingCollectionFetchJob(m_storage, m_cache, collection, depth);

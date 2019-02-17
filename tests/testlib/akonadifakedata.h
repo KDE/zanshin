@@ -28,7 +28,6 @@
 
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
-#include <AkonadiCore/Tag>
 
 #include "testlib/akonadifakestoragebehavior.h"
 
@@ -57,15 +56,16 @@ public:
     void modifyCollection(const Akonadi::Collection &collection);
     void removeCollection(const Akonadi::Collection &collection);
 
-    Akonadi::Tag::List tags() const;
-    Akonadi::Tag tag(Akonadi::Tag::Id id) const;
-    void createTag(const Akonadi::Tag &tag);
-    void modifyTag(const Akonadi::Tag &tag);
-    void removeTag(const Akonadi::Tag &tag);
+    QStringList contextsUids() const;
+    Akonadi::Item::List contexts() const;
+    Akonadi::Item contextItem(const QString &uid) const;
+    void createContext(const Akonadi::Item &item);
+    void modifyContext(const Akonadi::Item &item);
+    void removeContext(const Akonadi::Item &item);
 
     Akonadi::Item::List items() const;
     Akonadi::Item::List childItems(Akonadi::Collection::Id parentId) const;
-    Akonadi::Item::List tagItems(Akonadi::Tag::Id tagId) const;
+    Akonadi::Item::List contextItems(const QString& contextUid) const;
     Akonadi::Item item(Akonadi::Item::Id id) const;
     void createItem(const Akonadi::Item &item);
     void modifyItem(const Akonadi::Item &item);
@@ -76,7 +76,6 @@ public:
 
     Akonadi::Collection::Id maxCollectionId() const;
     Akonadi::Item::Id maxItemId() const;
-    Akonadi::Tag::Id maxTagId() const;
 
     Akonadi::Collection reconstructAncestors(const Akonadi::Collection &collection,
                                              const Akonadi::Collection &root = Akonadi::Collection::root()) const;
@@ -90,11 +89,12 @@ private:
     QHash<Akonadi::Collection::Id, Akonadi::Collection> m_collections;
     QHash<Akonadi::Collection::Id, QList<Akonadi::Collection::Id>> m_childCollections;
 
-    QHash<Akonadi::Tag::Id, Akonadi::Tag> m_tags;
+    using ContextUid = QString;
+    QHash<ContextUid, Akonadi::Item> m_contexts;
 
     QHash<Akonadi::Item::Id, Akonadi::Item> m_items;
     QHash<Akonadi::Collection::Id, QList<Akonadi::Item::Id>> m_childItems;
-    QHash<Akonadi::Tag::Id, QList<Akonadi::Item::Id>> m_tagItems;
+    QHash<ContextUid, QList<Akonadi::Item::Id>> m_contextItems;
 
     QScopedPointer<AkonadiFakeMonitor> m_monitor;
 

@@ -50,10 +50,6 @@ public:
 
     KJob *createTransaction() override;
 
-    KJob *createTag(Akonadi::Tag tag) override;
-    KJob *updateTag(Akonadi::Tag tag) override;
-    KJob *removeTag(Akonadi::Tag tag) override;
-
     Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
     Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
     Akonadi::ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;
@@ -61,7 +57,6 @@ public:
     Akonadi::TagFetchJobInterface *fetchTags() override;
 
 private:
-    Akonadi::Tag::Id findId(const Akonadi::Tag &tag);
     Akonadi::Collection::Id findId(const Akonadi::Collection &collection);
     Akonadi::Item::Id findId(const Akonadi::Item &item);
     Akonadi::Collection::List collectChildren(const Akonadi::Collection &root);

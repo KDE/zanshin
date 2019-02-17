@@ -41,18 +41,8 @@ void AkonadiFakeDataXmlLoader::load(const QString &fileName) const
     Akonadi::XmlDocument doc(fileName);
     Q_ASSERT(doc.isValid());
 
-    Akonadi::Tag::Id tagId = m_data->maxTagId() + 1;
     Akonadi::Collection::Id collectionId = m_data->maxCollectionId() + 1;
     Akonadi::Item::Id itemId = m_data->maxItemId() + 1;
-
-    QHash<QString, Akonadi::Tag> tagByRid;
-
-    foreach (const Akonadi::Tag &tag, doc.tags()) {
-        auto t = tag;
-        t.setId(tagId++);
-        m_data->createTag(t);
-        tagByRid[t.remoteId()] = t;
-    }
 
     QHash<QString, Akonadi::Collection> collectionByRid;
 
@@ -90,13 +80,6 @@ void AkonadiFakeDataXmlLoader::load(const QString &fileName) const
             i.setId(itemId++);
             i.setParentCollection(c);
             i.setModificationTime(QDateTime::currentDateTime());
-            auto tags = i.tags();
-            std::transform(tags.constBegin(), tags.constEnd(),
-                           tags.begin(),
-                           [&tagByRid] (const Akonadi::Tag &tag) {
-                               return tagByRid.value(tag.remoteId());
-                           });
-            i.setTags(tags);
             m_data->createItem(i);
         }
     }
