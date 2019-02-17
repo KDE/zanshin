@@ -26,7 +26,6 @@
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
-#include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonadistorageinterface.h"
 
 #include "utils/jobhandler.h"
@@ -214,18 +213,6 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &
                 foreach (const auto &item, job->items())
                     add(item);
             });
-        });
-    };
-}
-
-LiveQueryHelpers::TagFetchFunction LiveQueryHelpers::fetchTags() const
-{
-    auto storage = m_storage;
-    return [storage] (const Domain::LiveQueryInput<Tag>::AddFunction &add) {
-        auto job = storage->fetchTags();
-        Utils::JobHandler::install(job->kjob(), [job, add] {
-            foreach (const auto &tag, job->tags())
-                add(tag);
         });
     };
 }

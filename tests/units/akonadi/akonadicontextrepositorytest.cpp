@@ -37,7 +37,6 @@ using namespace mockitopp;
 using namespace mockitopp::matcher;
 
 Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
-Q_DECLARE_METATYPE(Testlib::AkonadiFakeTagFetchJob*)
 
 class AkonadiContextRepositoryTest : public QObject
 {

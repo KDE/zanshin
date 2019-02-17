@@ -512,53 +512,6 @@ private slots:
         result.sort();
         QCOMPARE(result, expected);
     }
-
-    void shouldFetchTags()
-    {
-        // GIVEN
-        auto data = AkonadiFakeData();
-        auto helpers = createHelpers(data);
-
-        // Two contexts
-        data.createItem(GenTodo().withUid("ctx-42").asContext());
-        data.createItem(GenTodo().withUid("ctx-43").asContext());
-
-        // The list which will be filled by the fetch function
-        auto tags = Akonadi::Tag::List();
-        auto add = [&tags] (const Akonadi::Tag &tag) {
-            tags.append(tag);
-        };
-
-        // WHEN
-        auto fetch = helpers->fetchTags();
-        fetch(add);
-        TestHelpers::waitForEmptyJobQueue();
-
-        auto result = QStringList();
-        std::transform(tags.constBegin(), tags.constEnd(),
-                       std::back_inserter(result),
-                       std::bind(&Akonadi::Tag::name, _1));
-        result.sort();
-
-        // THEN
-        auto expected = QStringList({"42", "43"});
-        expected.sort();
-        QCOMPARE(result, expected);
-
-        // WHEN (should not crash when the helpers object is deleted)
-        helpers.clear();
-        tags.clear();
-        fetch(add);
-        TestHelpers::waitForEmptyJobQueue();
-
-        // THEN
-        result.clear();
-        std::transform(tags.constBegin(), tags.constEnd(),
-                       std::back_inserter(result),
-                       std::bind(&Akonadi::Tag::name, _1));
-        result.sort();
-        QCOMPARE(result, expected);
-    }
 };
 
 ZANSHIN_TEST_MAIN(AkonadiLiveQueryHelpersTest)

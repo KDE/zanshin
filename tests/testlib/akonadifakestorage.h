@@ -53,8 +53,6 @@ public:
     Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
     Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
     Akonadi::ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;
-    Akonadi::ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) override;
-    Akonadi::TagFetchJobInterface *fetchTags() override;
 
 private:
     Akonadi::Collection::Id findId(const Akonadi::Collection &collection);

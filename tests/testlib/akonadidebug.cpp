@@ -27,7 +27,6 @@
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
-#include "akonadi/akonaditagfetchjobinterface.h"
 
 void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &storage)
 {
@@ -44,12 +43,6 @@ void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &stora
                 summary = item.payload<KCalCore::Todo::Ptr>()->summary();
             qDebug() << "\tITEM:" << item.id() << item.remoteId() << summary;
         }
-    }
-
-    auto tagJob = storage->fetchTags();
-    tagJob->kjob()->exec();
-    foreach (const auto &tag, tagJob->tags()) {
-        qDebug() << "TAG:" << tag.id() << tag.name();
     }
 }
 

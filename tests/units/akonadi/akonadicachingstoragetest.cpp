@@ -28,7 +28,6 @@
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
-#include "akonadi/akonaditagfetchjobinterface.h"
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
@@ -48,7 +47,6 @@ public:
     {
         qRegisterMetaType<Akonadi::Collection>();
         qRegisterMetaType<Akonadi::Item>();
-        qRegisterMetaType<Akonadi::Tag>();
     }
 
     QStringList onlyWithSuffix(const QStringList &list, const QString &suffix)
@@ -301,125 +299,6 @@ private slots:
             const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
             QVERIFY(cache->item(44).isValid());
-        }
-    }
-
-    void shouldCacheAllItemsPerTag()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Col")).withRootAsParent().withTaskContent());
-        data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Col")).withRootAsParent().withTaskContent());
-
-        data.createItem(GenTodo().withUid("ctx-42").withTitle(QStringLiteral("42Context")).asContext());
-        data.createItem(GenTodo().withUid("ctx-43").withTitle(QStringLiteral("43Context")).asContext());
-
-        data.createItem(GenTodo().withId(42).withTitle(QStringLiteral("42Task")).withParent(42).withContexts({"ctx-42"}));
-        data.createItem(GenTodo().withId(45).withTitle(QStringLiteral("45Task")).withParent(42).withContexts({"ctx-42", "ctx-43"}));
-        data.createItem(GenTodo().withId(52).withTitle(QStringLiteral("52Task")).withParent(42).withContexts({"ctx-43"}));
-
-        data.createItem(GenTodo().withId(44).withTitle(QStringLiteral("44Task")).withParent(43).withContexts({"ctx-42"}));
-        data.createItem(GenTodo().withId(48).withTitle(QStringLiteral("48Task")).withParent(43).withContexts({"ctx-42", "ctx-43"}));
-        data.createItem(GenTodo().withId(50).withTitle(QStringLiteral("50Task")).withParent(43).withContexts({"ctx-43"}));
-
-        auto cache = Akonadi::Cache::Ptr::create(Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                 Akonadi::MonitorInterface::Ptr(data.createMonitor()));
-        Akonadi::CachingStorage storage(cache, Akonadi::StorageInterface::Ptr(data.createStorage()));
-
-        // WHEN
-        auto job = storage.fetchTagItems(Akonadi::Tag(43));
-        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
-
-        // THEN
-        const auto toItemIds = [](const Akonadi::Item::List &items) {
-            auto res = QVector<Akonadi::Item::Id>();
-            res.reserve(items.size());
-            std::transform(items.cbegin(), items.cend(),
-                           std::back_inserter(res),
-                           std::mem_fn(&Akonadi::Item::id));
-            std::sort(res.begin(), res.end());
-            return res;
-        };
-
-        auto expectedIds = QVector<Akonadi::Item::Id>() << 45 << 48 << 50 << 52;
-        {
-            const auto itemFetchIds = toItemIds(job->items());
-            QCOMPARE(itemFetchIds, expectedIds);
-
-            const auto items = cache->items(Akonadi::Tag(43));
-            const auto itemCachedIds = toItemIds(items);
-            QCOMPARE(itemCachedIds, expectedIds);
-        }
-
-        // WHEN (second time shouldn't hit the original storage)
-        data.storageBehavior().setFetchTagItemsBehavior(43, AkonadiFakeStorageBehavior::EmptyFetch);
-        data.storageBehavior().setFetchTagItemsErrorCode(43, 128);
-        job = storage.fetchTagItems(Akonadi::Tag(43));
-        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
-
-        {
-            const auto itemFetchIds = toItemIds(job->items());
-            QCOMPARE(itemFetchIds, expectedIds);
-
-            const auto items = cache->items(Akonadi::Tag(43));
-            const auto itemCachedIds = toItemIds(items);
-            QCOMPARE(itemCachedIds, expectedIds);
-        }
-    }
-
-    void shouldCacheTags()
-    {
-        // GIVEN
-        AkonadiFakeData data;
-
-        data.createItem(GenTodo().withUid("ctx-42").withTitle(QStringLiteral("42Context")).asContext());
-        data.createItem(GenTodo().withUid("ctx-43").withTitle(QStringLiteral("43Context")).asContext());
-        data.createItem(GenTodo().withUid("ctx-44").withTitle(QStringLiteral("44Context")).asContext());
-
-        auto cache = Akonadi::Cache::Ptr::create(Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
-                                                 Akonadi::MonitorInterface::Ptr(data.createMonitor()));
-        Akonadi::CachingStorage storage(cache, Akonadi::StorageInterface::Ptr(data.createStorage()));
-
-        // WHEN
-        auto job = storage.fetchTags();
-        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
-
-        // THEN
-        const auto toTagNames = [](const Akonadi::Tag::List &tags) {
-            auto res = QStringList();
-            res.reserve(tags.size());
-            std::transform(tags.cbegin(), tags.cend(),
-                           std::back_inserter(res),
-                           std::mem_fn(&Akonadi::Tag::name));
-            res.sort();
-            return res;
-        };
-
-        auto expectedNames = QStringList() << "42Context" << "43Context" << "44Context";
-
-        {
-            const auto tagFetchNames = toTagNames(job->tags());
-            QCOMPARE(tagFetchNames, expectedNames);
-
-            const auto tags = cache->tags();
-            const auto tagCachedNames = toTagNames(tags);
-            QCOMPARE(tagCachedNames, expectedNames);
-        }
-
-        // WHEN (second time shouldn't hit the original storage)
-        data.storageBehavior().setFetchTagsBehavior(AkonadiFakeStorageBehavior::EmptyFetch);
-        data.storageBehavior().setFetchTagsErrorCode(128);
-        job = storage.fetchTags();
-        QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
-
-        {
-            const auto tagFetchNames = toTagNames(job->tags());
-            QCOMPARE(tagFetchNames, expectedNames);
-
-            const auto tags = cache->tags();
-            const auto tagCachedNames = toTagNames(tags);
-            QCOMPARE(tagCachedNames, expectedNames);
         }
     }
 };

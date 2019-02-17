@@ -361,40 +361,6 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItem(Akonadi::Item item
     return job;
 }
 
-Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchTagItems(Akonadi::Tag tag)
-{
-    Akonadi::Item::List items; // TODO PORT = m_data->contextItems(findId(tag));
-    std::transform(items.begin(), items.end(),
-                   items.begin(),
-                   [this] (const Akonadi::Item &item) {
-                       auto collection = m_data->reconstructAncestors(item.parentCollection());
-                       auto result = item;
-                       result.setParentCollection(collection);
-                       // Force payload detach
-                       result.setPayloadFromData(result.payloadData());
-                       return result;
-                   });
-
-    auto job = new AkonadiFakeItemFetchJob;
-    const auto behavior = m_data->storageBehavior().fetchTagItemsBehavior(tag.id());
-    if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
-        job->setItems(items);
-    job->setExpectedError(m_data->storageBehavior().fetchTagItemsErrorCode(tag.id()));
-    Utils::JobHandler::install(job, noop);
-    return job;
-}
-
-Akonadi::TagFetchJobInterface *AkonadiFakeStorage::fetchTags()
-{
-    auto job = new AkonadiFakeTagFetchJob;
-    const auto behavior = m_data->storageBehavior().fetchTagsBehavior();
-    //if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
-    // TODO PORT    job->setTags(m_data->contexts());
-    job->setExpectedError(m_data->storageBehavior().fetchTagsErrorCode());
-    Utils::JobHandler::install(job, noop);
-    return job;
-}
-
 Akonadi::Collection::Id AkonadiFakeStorage::findId(const Akonadi::Collection &collection)
 {
     if (collection.isValid() || collection.remoteId().isEmpty())

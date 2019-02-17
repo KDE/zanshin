@@ -55,8 +55,6 @@ public:
     CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
     ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
     ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;
-    ItemFetchJobInterface *fetchTagItems(Akonadi::Tag tag) override;
-    TagFetchJobInterface *fetchTags() override;
 
 private:
     CollectionFetchJob::Type jobTypeFromDepth(StorageInterface::FetchDepth depth);

@@ -27,7 +27,6 @@
 #include "fakejob.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
-#include "akonadi/akonaditagfetchjobinterface.h"
 
 namespace Testlib {
 
@@ -65,19 +64,6 @@ public:
 private:
     Akonadi::Item::List m_items;
     Akonadi::Collection m_collection;
-};
-
-class AkonadiFakeTagFetchJob : public FakeJob, public Akonadi::TagFetchJobInterface
-{
-    Q_OBJECT
-public:
-    using FakeJob::FakeJob;
-
-    void setTags(const Akonadi::Tag::List &tags);
-    Akonadi::Tag::List tags() const override;
-
-private:
-    Akonadi::Tag::List m_tags;
 };
 
 }

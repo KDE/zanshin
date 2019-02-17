@@ -27,7 +27,6 @@
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
-#include "akonadi/akonaditagfetchjobinterface.h"
 
 #include "akonadi/akonadilivequeryintegrator.h"
 #include "akonadi/akonadiserializer.h"
@@ -127,25 +126,30 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
+        // One toplevel collection
+        const auto collection = Akonadi::Collection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("folder")).withTaskContent());
+        data.createCollection(collection);
+
         // Three context todos, one not matching the predicate
-        data.createItem(GenTodo().withUid("ctx-42").asContext().withTitle(QStringLiteral("42-in")));
-        data.createItem(GenTodo().withUid("ctx-43").asContext().withTitle(QStringLiteral("43-in")));
-        data.createItem(GenTodo().withUid("ctx-44").asContext().withTitle(QStringLiteral("44-ex")));
+        data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").asContext().withTitle(QStringLiteral("42-in")));
+        data.createItem(GenTodo().withParent(42).withId(43).withUid("ctx-43").asContext().withTitle(QStringLiteral("43-in")));
+        data.createItem(GenTodo().withParent(42).withId(44).withUid("ctx-44").asContext().withTitle(QStringLiteral("44-ex")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::Context::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Tag>::AddFunction &add) {
-            auto job = storage->fetchTags();
+        auto fetch = [storage, collection] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
+            auto job = storage->fetchItems(collection);
             Utils::JobHandler::install(job->kjob(), [add, job] {
-                foreach (const auto &tag, job->tags()) {
-                    add(tag);
+                foreach (const auto &item, job->items()) {
+                    add(item);
                 }
             });
         };
-        auto predicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith(QLatin1String("-in"));
+        auto predicate = [] (const Akonadi::Item &contextItem) {
+            auto todo = contextItem.payload<KCalCore::Todo::Ptr>();
+            return todo->summary().endsWith(QLatin1String("-in"));
         };
 
         // Initial listing
@@ -238,27 +242,33 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
+        // One toplevel collection
+        const auto collection = Akonadi::Collection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("folder")).withTaskContent());
+        data.createCollection(collection);
+
         // One context tag which shows in one query not the other
-        data.createItem(GenTodo().withId(42).withUid("ctx-42").asContext().withTitle(QStringLiteral("42-in")));
+        data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").asContext().withTitle(QStringLiteral("42-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
 
         auto inQuery = Domain::LiveQueryOutput<Domain::Context::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Context::Ptr>::Ptr();
-        auto fetch = [storage] (const Domain::LiveQueryInput<Akonadi::Tag>::AddFunction &add) {
-            auto job = storage->fetchTags();
+        auto fetch = [storage, collection] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
+            auto job = storage->fetchItems(collection);
             Utils::JobHandler::install(job->kjob(), [add, job] {
-                foreach (const auto &tag, job->tags()) {
-                    add(tag);
+                foreach (const auto &item, job->items()) {
+                    add(item);
                 }
             });
         };
-        auto inPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith(QLatin1String("-in"));
+        auto inPredicate = [] (const Akonadi::Item &contextItem) {
+            auto todo = contextItem.payload<KCalCore::Todo::Ptr>();
+            return todo->summary().endsWith(QLatin1String("-in"));
         };
-        auto exPredicate = [] (const Akonadi::Tag &tag) {
-            return tag.name().endsWith(QLatin1String("-ex"));
+        auto exPredicate = [] (const Akonadi::Item &contextItem) {
+            auto todo = contextItem.payload<KCalCore::Todo::Ptr>();
+            return todo->summary().endsWith(QLatin1String("-ex"));
         };
 
         integrator->bind("context-in", inQuery, fetch, inPredicate);

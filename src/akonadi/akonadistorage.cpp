@@ -39,12 +39,8 @@
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/ItemMoveJob>
 #include <AkonadiCore/TransactionSequence>
-#include <AkonadiCore/TagFetchJob>
-#include <AkonadiCore/TagFetchScope>
-#include <AkonadiCore/TagAttribute>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
-#include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonadistoragesettings.h"
 
 using namespace Akonadi;
@@ -131,15 +127,6 @@ public:
     {
         ItemFetchJob::setCollection(collection);
     }
-};
-
-class TagJob : public TagFetchJob, public TagFetchJobInterface
-{
-    Q_OBJECT
-public:
-    using TagFetchJob::TagFetchJob;
-
-    Tag::List tags() const override { return TagFetchJob::tags(); }
 };
 
 Storage::Storage()
@@ -237,20 +224,6 @@ ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item)
     return job;
 }
 
-ItemFetchJobInterface *Storage::fetchTagItems(Tag tag)
-{
-    auto job = new ItemJob(tag);
-
-    configureItemFetchJob(job);
-
-    return job;
-}
-
-TagFetchJobInterface *Storage::fetchTags()
-{
-    return new TagJob;
-}
-
 CollectionFetchJob::Type Storage::jobTypeFromDepth(StorageInterface::FetchDepth depth)
 {
     auto jobType = CollectionJob::Base;
@@ -279,7 +252,6 @@ void Storage::configureItemFetchJob(ItemJob *job)
     scope.fetchFullPayload();
     scope.fetchAllAttributes();
     scope.setFetchTags(true);
-    scope.tagFetchScope().setFetchIdOnly(false);
     scope.setAncestorRetrieval(ItemFetchScope::All);
     job->setFetchScope(scope);
 }

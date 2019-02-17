@@ -49,8 +49,6 @@ private slots:
     void shouldListCollections();
     void shouldRetrieveAllCollectionAncestors();
     void shouldListFullItemsInACollection();
-    void shouldListTags();
-    void shouldListItemsAssociatedWithTag();
     void shouldNotifyCollectionAdded();
     void shouldNotifyCollectionRemoved();
     void shouldNotifyCollectionChanged();
@@ -82,7 +80,6 @@ private slots:
 private:
     Akonadi::Item fetchItemByRID(const QString &remoteId, const Akonadi::Collection &collection);
     Akonadi::Collection fetchCollectionByRID(const QString &remoteId);
-    Akonadi::Tag fetchTagByGID(const QString &gid);
 
     Akonadi::Collection calendar1();
     Akonadi::Collection calendar2();

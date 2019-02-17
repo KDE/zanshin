@@ -44,7 +44,6 @@
 #include "akonadi/akonadimonitorimpl.h"
 #include "akonadi/akonadistorage.h"
 #include "akonadi/akonadistoragesettings.h"
-#include "akonadi/akonaditagfetchjobinterface.h"
 #include "akonadi/akonaditimestampattribute.h"
 
 using namespace Testlib;
@@ -166,85 +165,11 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
         QVERIFY(item.modificationTime().isValid());
         QVERIFY(!item.flags().isEmpty());
 
-        Akonadi::Tag::List tags = item.tags();
-        QVERIFY(!item.tags().isEmpty());
-        foreach (const auto &tag, tags) {
-            QVERIFY(tag.isValid());
-            QVERIFY(!tag.name().isEmpty());
-            QVERIFY(!tag.type().isEmpty());
-        }
-
         auto parent = item.parentCollection();
         while (parent != Akonadi::Collection::root()) {
             QVERIFY(parent.isValid());
             parent = parent.parentCollection();
         }
-    }
-    itemRemoteIds.sort();
-
-    QCOMPARE(itemRemoteIds, expectedRemoteIds);
-}
-
-void AkonadiStorageTestBase::shouldListTags()
-{
-    // GIVEN
-    auto storage = createStorage();
-    const QStringList expectedGids = { "change-me",
-                                       "delete-me",
-                                       "errands-context",
-                                       "online-context",
-                                       "philosophy-tag",
-                                       "physics-tag" };
-
-    // WHEN
-    auto job = storage->fetchTags();
-    AKVERIFYEXEC(job->kjob());
-
-    // THEN
-    auto tags = job->tags();
-    QStringList tagGids;
-    tagGids.reserve(tags.size());
-    foreach (const auto &tag, tags) {
-        tagGids << tag.gid();
-        QVERIFY(!tag.name().isEmpty());
-        QVERIFY(!tag.type().isEmpty());
-    }
-    tagGids.sort();
-
-    QCOMPARE(tagGids, expectedGids);
-}
-
-void AkonadiStorageTestBase::shouldListItemsAssociatedWithTag()
-{
-    // GIVEN
-    auto storage = createStorage();
-    Akonadi::Tag tag = fetchTagByGID(QStringLiteral("errands-context"));
-    const QStringList expectedRemoteIds = { "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
-                                            "{7824df00-2fd6-47a4-8319-52659dc82005}"
-                                          };
-
-    // WHEN
-    auto job = storage->fetchTagItems(tag);
-    AKVERIFYEXEC(job->kjob());
-
-    // THEN
-    auto items = job->items();
-    QStringList itemRemoteIds;
-    itemRemoteIds.reserve(items.size());
-    foreach (const auto &item, items) {
-        itemRemoteIds << item.remoteId();
-
-        QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
-        QVERIFY(!item.attributes().isEmpty());
-        QVERIFY(item.modificationTime().isValid());
-        QVERIFY(!item.flags().isEmpty());
-
-        auto parent = item.parentCollection();
-        while (parent != Akonadi::Collection::root()) {
-            QVERIFY(parent.isValid());
-            parent = parent.parentCollection();
-        }
-
     }
     itemRemoteIds.sort();
 
@@ -879,23 +804,6 @@ Akonadi::Collection AkonadiStorageTestBase::fetchCollectionByRID(const QString &
     }
 
     return job->collections().at(0);
-}
-
-Akonadi::Tag AkonadiStorageTestBase::fetchTagByGID(const QString &gid)
-{
-    auto job = createStorage()->fetchTags();
-    if (!job->kjob()->exec()) {
-        qWarning() << job->kjob()->errorString();
-        return Akonadi::Tag();
-    }
-
-    auto tags = job->tags();
-    foreach (const auto &tag, tags) {
-        if (tag.gid() == gid)
-            return tag;
-    }
-
-    return Akonadi::Tag();
 }
 
 Akonadi::Collection AkonadiStorageTestBase::calendar1()

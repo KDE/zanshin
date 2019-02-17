@@ -58,8 +58,6 @@ public:
 
     ItemFetchFunction fetchSiblings(const Item &item) const;
 
-    TagFetchFunction fetchTags() const;
-
 private:
     SerializerInterface::Ptr m_serializer;
     StorageInterface::Ptr m_storage;

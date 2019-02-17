@@ -20,7 +20,6 @@ set(akonadi_SRCS
     akonadistorage.cpp
     akonadistorageinterface.cpp
     akonadistoragesettings.cpp
-    akonaditagfetchjobinterface.cpp
     akonaditaskqueries.cpp
     akonaditaskrepository.cpp
     akonaditimestampattribute.cpp
