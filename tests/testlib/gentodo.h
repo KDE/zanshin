@@ -41,6 +41,7 @@ public:
     GenTodo &withParent(Akonadi::Collection::Id id);
     GenTodo &withTags(const QList<Akonadi::Tag::Id> &ids);
     GenTodo &asProject(bool value = true);
+    GenTodo &asContext(bool value = true);
     GenTodo &withUid(const QString &uid);
     GenTodo &withParentUid(const QString &uid);
     GenTodo &withTitle(const QString &title);

@@ -75,6 +75,16 @@ GenTodo &GenTodo::asProject(bool value)
     return *this;
 }
 
+GenTodo &GenTodo::asContext(bool value)
+{
+    auto todo = m_item.payload<KCalCore::Todo::Ptr>();
+    if (value)
+        todo->setCustomProperty("Zanshin", "Context", QStringLiteral("1"));
+    else
+        todo->removeCustomProperty("Zanshin", "Context");
+    return *this;
+}
+
 GenTodo &GenTodo::withUid(const QString &uid)
 {
     m_item.payload<KCalCore::Todo::Ptr>()->setUid(uid);

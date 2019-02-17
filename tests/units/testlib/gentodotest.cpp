@@ -93,6 +93,21 @@ private slots:
         QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Project").isEmpty());
     }
 
+    void shouldAllowToSetContextType()
+    {
+        // GIVEN
+        Akonadi::Item item = GenTodo().asContext();
+
+        // THEN
+        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Context").isEmpty());
+
+        // WHEN
+        item = GenTodo(item).asContext(false);
+
+        // THEN
+        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Context").isEmpty());
+    }
+
     void shouldAllowToSetUid()
     {
         // GIVEN
