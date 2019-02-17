@@ -69,13 +69,15 @@ private slots:
     void shouldAllowToSetTags()
     {
         // GIVEN
-        Akonadi::Item item = GenTodo().withTags({42, 43, 44});
+        Akonadi::Item item = GenTodo().withContexts({"42", "43", "44"});
 
         // THEN
-        QCOMPARE(item.tags().size(), 3);
-        QCOMPARE(item.tags().at(0).id(), 42LL);
-        QCOMPARE(item.tags().at(1).id(), 43LL);
-        QCOMPARE(item.tags().at(2).id(), 44LL);
+        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        QStringList contextUids = todo->customProperty("Zanshin", "ContextList").split(',');
+        QCOMPARE(contextUids.size(), 3);
+        QCOMPARE(contextUids.at(0), "42");
+        QCOMPARE(contextUids.at(1), "43");
+        QCOMPARE(contextUids.at(2), "44");
     }
 
     void shouldAllowToSetProjectType()

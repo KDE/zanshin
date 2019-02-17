@@ -459,9 +459,9 @@ private slots:
         const auto tag1 = Akonadi::Tag(GenTag().withId(1).withName("tag1"));
         const auto tag2 = Akonadi::Tag(GenTag().withId(2).withName("tag2"));
         const auto tag3 = Akonadi::Tag(GenTag().withId(3).withName("tag3"));
-        const auto items = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(1).withParent(1).withTags({1}).withTitle("item1"))
-                                                 << Akonadi::Item(GenTodo().withId(2).withParent(1).withTags({1}).withTitle("item2"));
-        const auto item3 = Akonadi::Item(GenTodo().withId(3).withParent(1).withTags({1}).withTitle("item3"));
+        const auto items = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(1).withParent(1).withContexts({"ctx-1"}).withTitle("item1"))
+                                                 << Akonadi::Item(GenTodo().withId(2).withParent(1).withContexts({"ctx-1"}).withTitle("item2"));
+        const auto item3 = Akonadi::Item(GenTodo().withId(3).withParent(1).withContexts({"ctx-1"}).withTitle("item3"));
 
 
         auto monitor = AkonadiFakeMonitor::Ptr::create();
@@ -531,7 +531,7 @@ private slots:
         QVERIFY(!cache->items(tag3).contains(items.at(0)));
 
         // WHEN
-        monitor->changeItem(GenTodo().withId(1).withParent(2).withTags({2}).withTitle("item1"));
+        monitor->changeItem(GenTodo().withId(1).withParent(2).withContexts({"ctx-2"}).withTitle("item1"));
 
         // THEN
         QVERIFY(cache->isCollectionPopulated(collection1.id()));
@@ -569,8 +569,8 @@ private slots:
                                                      .withTaskContent());
         const auto tag1 = Akonadi::Tag(GenTag().withId(1).withName("tag1"));
         const auto tag2 = Akonadi::Tag(GenTag().withId(2).withName("tag2"));
-        const auto item1 = Akonadi::Item(GenTodo().withId(1).withParent(1).withTags({1}).withTitle("item1"));
-        const auto item2 = Akonadi::Item(GenTodo().withId(2).withParent(2).withTags({2}).withTitle("item2"));
+        const auto item1 = Akonadi::Item(GenTodo().withId(1).withParent(1).withContexts({"ctx-1"}).withTitle("item1"));
+        const auto item2 = Akonadi::Item(GenTodo().withId(2).withParent(2).withContexts({"ctx-2"}).withTitle("item2"));
 
 
         auto monitor = AkonadiFakeMonitor::Ptr::create();

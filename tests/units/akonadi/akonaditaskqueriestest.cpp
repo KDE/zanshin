@@ -30,7 +30,6 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
-#include "testlib/gentag.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
 
@@ -1182,15 +1181,15 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(1).withUid("ctx-42").withTitle(QStringLiteral("Context 42")).asContext());
 
         // One item in the collection
         QFETCH(bool, hasContexts);
-        auto tagIds = QList<Akonadi::Tag::Id>();
-        if (hasContexts) tagIds << 42;
+        auto contextUids = QStringList();
+        if (hasContexts) contextUids << "ctx-42";
 
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags(tagIds));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withContexts(contextUids));
 
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -1231,8 +1230,8 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(1).withUid("ctx-42").withTitle(QStringLiteral("Context 1")).asContext());
 
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -1245,10 +1244,10 @@ private slots:
         // WHEN
         QFETCH(QString, relatedUid);
         QFETCH(bool, hasContexts);
-        auto tagIds = QList<Akonadi::Tag::Id>();
-        if (hasContexts) tagIds << 42;
+        auto contextUids = QStringList();
+        if (hasContexts) contextUids << "ctx-42";
 
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags(tagIds).withParentUid(relatedUid));
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withContexts(contextUids).withParentUid(relatedUid));
 
         // THEN
         QFETCH(bool, reactionExpected);
@@ -1306,8 +1305,8 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(1).withUid("ctx-42").withTitle(QStringLiteral("Context 1")).asContext());
 
         // Task data
         QFETCH(QString, relatedUidBefore);
@@ -1578,8 +1577,8 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(1).withUid("ctx-42").withTitle(QStringLiteral("Context 1")).asContext());
 
         // Five tasks in the collection, two start today, three not, all forming an ancestry line
         data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withUid("42"));

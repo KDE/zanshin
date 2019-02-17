@@ -227,6 +227,24 @@ private:
 };
 
 template<>
+inline Domain::Context::Ptr LiveQueryIntegrator::create<Item, Domain::Context::Ptr>(const Item &input)
+{
+    return m_serializer->createContextFromItem(input);
+}
+
+template<>
+inline void LiveQueryIntegrator::update<Item, Domain::Context::Ptr>(const Item &input, Domain::Context::Ptr &output)
+{
+    m_serializer->updateContextFromItem(output, input);
+}
+
+template<>
+inline bool LiveQueryIntegrator::represents<Item, Domain::Context::Ptr>(const Item &input, const Domain::Context::Ptr &output)
+{
+    return m_serializer->itemRepresentsContext(output, input);
+}
+
+template<>
 inline Domain::Context::Ptr LiveQueryIntegrator::create<Tag, Domain::Context::Ptr>(const Tag &input)
 {
     return m_serializer->createContextFromTag(input);

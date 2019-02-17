@@ -208,7 +208,6 @@ private slots:
 
     void shoudDissociateTaskFromContext_data()
     {
-        QTest::addColumn<Akonadi::Tag>("associatedTag");
         QTest::addColumn<Akonadi::Item>("item");
         QTest::addColumn<Domain::Context::Ptr>("context");
         QTest::addColumn<Domain::Task::Ptr>("task");
@@ -218,21 +217,19 @@ private slots:
         Akonadi::Item item(42);
         Domain::Task::Ptr task(new Domain::Task);
 
-        Akonadi::Tag associatedTag(qint64(43));
         auto associatedContext = Domain::Context::Ptr::create();
 
         auto itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setItems(Akonadi::Item::List() << item);
-        QTest::newRow("nominal case") << associatedTag << item << associatedContext << task << itemFetchJob << true;
+        QTest::newRow("nominal case") << item << associatedContext << task << itemFetchJob << true;
 
         itemFetchJob = new Testlib::AkonadiFakeItemFetchJob(this);
         itemFetchJob->setExpectedError(KJob::KilledJobError);
-        QTest::newRow("task job error, cannot find task") << associatedTag << item << associatedContext << task << itemFetchJob << false;
+        QTest::newRow("task job error, cannot find task") << item << associatedContext << task << itemFetchJob << false;
     }
 
     void shoudDissociateTaskFromContext()
     {
-        QFETCH(Akonadi::Tag,associatedTag);
         QFETCH(Akonadi::Item,item);
         QFETCH(Domain::Context::Ptr,context);
         QFETCH(Domain::Task::Ptr,task);
@@ -253,8 +250,8 @@ private slots:
         Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task)
                                                                          .thenReturn(item);
-        serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context)
-                                                                           .thenReturn(associatedTag);
+        serializerMock(&Akonadi::SerializerInterface::removeContextFromTask).when(context, item)
+                                                                            .thenReturn();
 
         // WHEN
         QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
@@ -268,7 +265,7 @@ private slots:
         // THEN
         QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
         if (execJob) {
-            QVERIFY(serializerMock(&Akonadi::SerializerInterface::createTagFromContext).when(context).exactly(1));
+            QVERIFY(serializerMock(&Akonadi::SerializerInterface::removeContextFromTask).when(context, item).exactly(1));
             QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr).exactly(1));
         }
     }

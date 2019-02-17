@@ -50,7 +50,7 @@ public:
 
     ItemFetchFunction fetchItems() const;
     ItemFetchFunction fetchItems(const Collection &collection) const;
-    ItemFetchFunction fetchItems(const Tag &tag) const;
+    ItemFetchFunction fetchItemsForContext(const Domain::Context::Ptr &context) const;
 
     /// Returns a fetch function which calls a LiveQueryInput::AddFunction (provided as argument to the fetch function)
     /// with the given task, then its parent, its grandparent etc. up until the project.

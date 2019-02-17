@@ -33,7 +33,6 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
-#include "testlib/gentag.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
 
@@ -354,15 +353,20 @@ private slots:
         QCOMPARE(result, expected);
     }
 
-    void shouldFetchItemsByTag_data()
+    void shouldFetchItemsForContext_data()
     {
-        QTest::addColumn<Akonadi::Tag>("tag");
+        QTest::addColumn<Domain::Context::Ptr>("context");
 
-        QTest::newRow("first tag") << Akonadi::Tag(42);
-        QTest::newRow("second tag") << Akonadi::Tag(43);
+        auto context1 = Domain::Context::Ptr::create();
+        context1->setProperty("todoUid", "ctx-42");
+        auto context2 = Domain::Context::Ptr::create();
+        context2->setProperty("todoUid", "ctx-43");
+
+        QTest::newRow("first") << context1;
+        QTest::newRow("second") << context2;
     }
 
-    void shouldFetchItemsByTag()
+    void shouldFetchItemsForContext()
     {
         // GIVEN
         auto data = AkonadiFakeData();
@@ -372,20 +376,20 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("42")).withTaskContent());
         data.createCollection(GenCollection().withId(43).withRootAsParent().withName(QStringLiteral("43")).withTaskContent());
 
-        // Two tags
-        data.createTag(GenTag().withId(42));
-        data.createTag(GenTag().withId(43));
+        // Two contexts
+        data.createItem(GenTodo().withId(142).withUid("ctx-42").asContext());
+        data.createItem(GenTodo().withId(143).withUid("ctx-43").asContext());
 
         // Four items in each collection, one with no tag, one with the first tag,
         // one with the second tag, last one with both tags
-        data.createItem(GenTodo().withId(42).withParent(42).withTags({}).withTitle(QStringLiteral("42")));
-        data.createItem(GenTodo().withId(43).withParent(42).withTags({42}).withTitle(QStringLiteral("43")));
-        data.createItem(GenTodo().withId(44).withParent(42).withTags({43}).withTitle(QStringLiteral("44")));
-        data.createItem(GenTodo().withId(45).withParent(42).withTags({42, 43}).withTitle(QStringLiteral("45")));
-        data.createItem(GenTodo().withId(46).withParent(43).withTags({}).withTitle(QStringLiteral("46")));
-        data.createItem(GenTodo().withId(47).withParent(43).withTags({42}).withTitle(QStringLiteral("47")));
-        data.createItem(GenTodo().withId(48).withParent(43).withTags({43}).withTitle(QStringLiteral("48")));
-        data.createItem(GenTodo().withId(49).withParent(43).withTags({42, 43}).withTitle(QStringLiteral("49")));
+        data.createItem(GenTodo().withId(42).withParent(42).withContexts({}).withTitle(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(43).withParent(42).withContexts({"ctx-42"}).withTitle(QStringLiteral("43")));
+        data.createItem(GenTodo().withId(44).withParent(42).withContexts({"ctx-43"}).withTitle(QStringLiteral("44")));
+        data.createItem(GenTodo().withId(45).withParent(42).withContexts({"ctx-42", "ctx-43"}).withTitle(QStringLiteral("45")));
+        data.createItem(GenTodo().withId(46).withParent(43).withContexts({}).withTitle(QStringLiteral("46")));
+        data.createItem(GenTodo().withId(47).withParent(43).withContexts({"ctx-42"}).withTitle(QStringLiteral("47")));
+        data.createItem(GenTodo().withId(48).withParent(43).withContexts({"ctx-43"}).withTitle(QStringLiteral("48")));
+        data.createItem(GenTodo().withId(49).withParent(43).withContexts({"ctx-42", "ctx-43"}).withTitle(QStringLiteral("49")));
 
         // The list which will be filled by the fetch function
         auto items = Akonadi::Item::List();
@@ -394,8 +398,8 @@ private slots:
         };
 
         // WHEN
-        QFETCH(Akonadi::Tag, tag);
-        auto fetch = helpers->fetchItems(tag);
+        QFETCH(Domain::Context::Ptr, context);
+        auto fetch = helpers->fetchItemsForContext(context);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -408,14 +412,10 @@ private slots:
         // THEN
         auto expected = QStringList();
 
-        switch (tag.id()) {
-        case 42:
+        if (context->property("todoUid") == "ctx-42")
             expected << QStringLiteral("43") << QStringLiteral("45") << QStringLiteral("47") << QStringLiteral("49");
-            break;
-        case 43:
+        else if (context->property("todoUid") == "ctx-43")
             expected << QStringLiteral("44") << QStringLiteral("45") << QStringLiteral("48") << QStringLiteral("49");
-            break;
-        }
         QVERIFY(!expected.isEmpty());
 
         expected.sort();
@@ -519,9 +519,9 @@ private slots:
         auto data = AkonadiFakeData();
         auto helpers = createHelpers(data);
 
-        // Two tags (one plain, one context)
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asPlain());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asContext());
+        // Two contexts
+        data.createItem(GenTodo().withUid("ctx-42").asContext());
+        data.createItem(GenTodo().withUid("ctx-43").asContext());
 
         // The list which will be filled by the fetch function
         auto tags = Akonadi::Tag::List();

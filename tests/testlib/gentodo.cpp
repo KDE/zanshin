@@ -28,6 +28,9 @@
 
 using namespace Testlib;
 
+static const char s_contextListProperty[] = "ContextList";
+static const char s_appName[] = "Zanshin";
+
 GenTodo::GenTodo(const Akonadi::Item &item)
     : m_item(item)
 {
@@ -53,15 +56,14 @@ GenTodo &GenTodo::withParent(Akonadi::Collection::Id id)
     return *this;
 }
 
-GenTodo &GenTodo::withTags(const QList<Akonadi::Tag::Id> &ids)
+GenTodo &GenTodo::withContexts(const QStringList &contextUids)
 {
-    auto tags = Akonadi::Tag::List();
-    std::transform(ids.constBegin(), ids.constEnd(),
-                   std::back_inserter(tags),
-                   [] (Akonadi::Tag::Id id) {
-                       return Akonadi::Tag(id);
-                   });
-    m_item.setTags(tags);
+    auto todo = m_item.payload<KCalCore::Todo::Ptr>();
+    if (contextUids.isEmpty())
+        todo->removeCustomProperty(s_appName, s_contextListProperty);
+    else
+        todo->setCustomProperty(s_appName, s_contextListProperty, contextUids.join(','));
+    m_item.setPayload<KCalCore::Todo::Ptr>(todo);
     return *this;
 }
 

@@ -33,7 +33,6 @@
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
 #include "testlib/gentodo.h"
-#include "testlib/gentag.h"
 #include "testlib/testhelpers.h"
 
 Q_DECLARE_METATYPE(Akonadi::StorageInterface::FetchDepth)
@@ -313,16 +312,16 @@ private slots:
         data.createCollection(GenCollection().withId(42).withName(QStringLiteral("42Col")).withRootAsParent().withTaskContent());
         data.createCollection(GenCollection().withId(43).withName(QStringLiteral("43Col")).withRootAsParent().withTaskContent());
 
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42Plain")).asPlain());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43Context")).asContext());
+        data.createItem(GenTodo().withUid("ctx-42").withTitle(QStringLiteral("42Context")).asContext());
+        data.createItem(GenTodo().withUid("ctx-43").withTitle(QStringLiteral("43Context")).asContext());
 
-        data.createItem(GenTodo().withId(42).withTitle(QStringLiteral("42Task")).withParent(42).withTags({42}));
-        data.createItem(GenTodo().withId(45).withTitle(QStringLiteral("45Task")).withParent(42).withTags({42, 43}));
-        data.createItem(GenTodo().withId(52).withTitle(QStringLiteral("52Task")).withParent(42).withTags({43}));
+        data.createItem(GenTodo().withId(42).withTitle(QStringLiteral("42Task")).withParent(42).withContexts({"ctx-42"}));
+        data.createItem(GenTodo().withId(45).withTitle(QStringLiteral("45Task")).withParent(42).withContexts({"ctx-42", "ctx-43"}));
+        data.createItem(GenTodo().withId(52).withTitle(QStringLiteral("52Task")).withParent(42).withContexts({"ctx-43"}));
 
-        data.createItem(GenTodo().withId(44).withTitle(QStringLiteral("44Task")).withParent(43).withTags({42}));
-        data.createItem(GenTodo().withId(48).withTitle(QStringLiteral("48Task")).withParent(43).withTags({42, 43}));
-        data.createItem(GenTodo().withId(50).withTitle(QStringLiteral("50Task")).withParent(43).withTags({43}));
+        data.createItem(GenTodo().withId(44).withTitle(QStringLiteral("44Task")).withParent(43).withContexts({"ctx-42"}));
+        data.createItem(GenTodo().withId(48).withTitle(QStringLiteral("48Task")).withParent(43).withContexts({"ctx-42", "ctx-43"}));
+        data.createItem(GenTodo().withId(50).withTitle(QStringLiteral("50Task")).withParent(43).withContexts({"ctx-43"}));
 
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                  Akonadi::MonitorInterface::Ptr(data.createMonitor()));
@@ -374,9 +373,9 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42Plain")).asPlain());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43Context")).asContext());
-        data.createTag(GenTag().withId(44).withName(QStringLiteral("44Plain")).asPlain());
+        data.createItem(GenTodo().withUid("ctx-42").withTitle(QStringLiteral("42Context")).asContext());
+        data.createItem(GenTodo().withUid("ctx-43").withTitle(QStringLiteral("43Context")).asContext());
+        data.createItem(GenTodo().withUid("ctx-44").withTitle(QStringLiteral("44Context")).asContext());
 
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                  Akonadi::MonitorInterface::Ptr(data.createMonitor()));
@@ -397,7 +396,7 @@ private slots:
             return res;
         };
 
-        auto expectedNames = QStringList() << "42Plain" << "43Context" << "44Plain";
+        auto expectedNames = QStringList() << "42Context" << "43Context" << "44Context";
 
         {
             const auto tagFetchNames = toTagNames(job->tags());

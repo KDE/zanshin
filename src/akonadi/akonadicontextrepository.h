@@ -46,7 +46,7 @@ public:
     KJob *remove(Domain::Context::Ptr context) override;
 
     KJob *associate(Domain::Context::Ptr context, Domain::Task::Ptr child) override;
-    KJob *dissociate(Domain::Context::Ptr parent, Domain::Task::Ptr child) override;
+    KJob *dissociate(Domain::Context::Ptr context, Domain::Task::Ptr child) override;
     KJob *dissociateAll(Domain::Task::Ptr child) override;
 
 private:

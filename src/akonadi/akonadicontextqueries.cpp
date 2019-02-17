@@ -35,16 +35,18 @@ ContextQueries::ContextQueries(const StorageInterface::Ptr &storage,
       m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor))
 {
-    m_integrator->addRemoveHandler([this] (const Tag &tag) {
-        m_findToplevel.remove(tag.id());
+    m_integrator->addRemoveHandler([this] (const Item &contextItem) {
+        const auto uid = m_serializer->contextUid(contextItem);
+        if (!uid.isEmpty())
+            m_findToplevel.remove(uid);
     });
 }
 
 ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
 {
-    auto fetch = m_helpers->fetchTags();
-    auto predicate = [this] (const Akonadi::Tag &tag) {
-        return tag.type() == Akonadi::SerializerInterface::contextTagType();
+    auto fetch = m_helpers->fetchItems();
+    auto predicate = [this] (const Akonadi::Item &item) {
+        return m_serializer->isContext(item);
     };
     m_integrator->bind("ContextQueries::findAll", m_findAll, fetch, predicate);
     return m_findAll->result();
@@ -52,8 +54,8 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
 
 ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Context::Ptr context) const
 {
-    Akonadi::Tag tag = m_serializer->createTagFromContext(context);
-    auto fetch = m_helpers->fetchItems(tag);
+    Q_ASSERT(context);
+    auto fetch = m_helpers->fetchItemsForContext(context);
     auto predicate = [this, context] (const Akonadi::Item &item) {
         if (!m_serializer->isContextChild(context, item))
             return false;
@@ -78,7 +80,8 @@ ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Contex
 
         return true;
     };
-    auto &query = m_findToplevel[tag.id()];
+    auto contextUid = context->property("todoUid").toString();
+    auto &query = m_findToplevel[contextUid];
     m_integrator->bind("ContextQueries::findTopLevelTasks", query, fetch, predicate);
     return query->result();
 }

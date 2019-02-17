@@ -35,7 +35,6 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
-#include "testlib/gentag.h"
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
 
@@ -128,14 +127,10 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
-        // Three context tags, one not matching the predicate
-        data.createTag(GenTag().withId(42).asContext().withName(QStringLiteral("42-in")));
-        data.createTag(GenTag().withId(43).asContext().withName(QStringLiteral("43-in")));
-        data.createTag(GenTag().withId(44).asContext().withName(QStringLiteral("44-ex")));
-
-        // Couple of plain tags which should not appear or create trouble
-        data.createTag(GenTag().withId(40).asPlain().withName(QStringLiteral("40")));
-        data.createTag(GenTag().withId(41).asPlain().withName(QStringLiteral("41-in")));
+        // Three context todos, one not matching the predicate
+        data.createItem(GenTodo().withUid("ctx-42").asContext().withTitle(QStringLiteral("42-in")));
+        data.createItem(GenTodo().withUid("ctx-43").asContext().withTitle(QStringLiteral("43-in")));
+        data.createItem(GenTodo().withUid("ctx-44").asContext().withTitle(QStringLiteral("44-ex")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -171,7 +166,7 @@ private slots:
 
         // Reacts to add
         // WHEN
-        data.createTag(GenTag().withId(45).asContext().withName(QStringLiteral("45-in")));
+        data.createItem(GenTodo().withId(45).withUid("ctx-45").asContext().withTitle(QStringLiteral("45-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
@@ -190,7 +185,7 @@ private slots:
 
         // Reacts to change
         // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-bis-in")));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-bis-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
@@ -199,7 +194,7 @@ private slots:
 
         // Reacts to change (which adds)
         // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-in")));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-in")));
 
         // THEN
         QCOMPARE(result->data().size(), 3);
@@ -209,7 +204,7 @@ private slots:
 
         // Reacts to change (which removes)
         // WHEN
-        data.modifyTag(GenTag(data.tag(44)).withName(QStringLiteral("44-ex")));
+        data.modifyItem(GenTodo(data.item(44)).withTitle(QStringLiteral("44-ex")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
@@ -244,12 +239,7 @@ private slots:
         AkonadiFakeData data;
 
         // One context tag which shows in one query not the other
-        data.createTag(GenTag().withId(42).asContext().withName(QStringLiteral("42-in")));
-
-        // Couple of plain tags which should not appear or create trouble
-        data.createTag(GenTag().withId(39).asPlain().withName(QStringLiteral("39")));
-        data.createTag(GenTag().withId(40).asPlain().withName(QStringLiteral("40-ex")));
-        data.createTag(GenTag().withId(41).asPlain().withName(QStringLiteral("41-in")));
+        data.createItem(GenTodo().withId(42).withUid("ctx-42").asContext().withTitle(QStringLiteral("42-in")));
 
         auto integrator = createIntegrator(data);
         auto storage = createStorage(data);
@@ -283,7 +273,7 @@ private slots:
         QCOMPARE(exResult->data().size(), 0);
 
         // WHEN
-        data.modifyTag(GenTag(data.tag(42)).withName(QStringLiteral("42-ex")));
+        data.modifyItem(GenTodo(data.item(42)).withTitle(QStringLiteral("42-ex")));
 
         // THEN
         QCOMPARE(inResult->data().size(), 0);
@@ -893,7 +883,7 @@ private slots:
         AkonadiFakeData data;
 
         // One tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")));
+        data.createItem(GenTodo().withId(42).withUid("ctx-42").withTitle(QStringLiteral("42")));
 
         auto integrator = createIntegrator(data);
         qint64 removedId = -1;

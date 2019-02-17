@@ -122,32 +122,18 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Collectio
     };
 }
 
-LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Tag &tag) const
+LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItemsForContext(const Domain::Context::Ptr &context) const
 {
-    // TODO: Qt5, use the proper implementation once we got a working akonadi
-#if 0
-    auto storage = m_storage;
-    return [storage, tag] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = storage->fetchTagItems(tag);
-        Utils::JobHandler::install(job->kjob(), [job, add] {
-            if (job->kjob()->error() != KJob::NoError)
-                return;
-
-            foreach (const auto &item, job->items())
-                add(item);
-        });
-    };
-#else
     auto fetchFunction = fetchItems();
+    auto serializer = m_serializer;
 
-    return [tag, fetchFunction] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto filterAdd = [tag, add] (const Item &item) {
-            if (item.tags().contains(tag))
+    return [context, fetchFunction, serializer] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
+        auto filterAdd = [context, add, serializer] (const Item &item) {
+            if (serializer->isContextChild(context, item))
                 add(item);
         };
         fetchFunction(filterAdd);
     };
-#endif
 }
 
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchTaskAndAncestors(Domain::Task::Ptr task) const

@@ -30,7 +30,6 @@
 #include "testlib/akonadifakedata.h"
 #include "testlib/gencollection.h"
 #include "testlib/gentodo.h"
-#include "testlib/gentag.h"
 #include "testlib/testhelpers.h"
 
 using namespace Testlib;
@@ -46,7 +45,7 @@ private:
     }
 
 private slots:
-    void shouldDealWithEmptyTagList()
+    void shouldDealWithEmptyContextList()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -70,9 +69,12 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
-        // Two context tags
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asContext());
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Two contexts
+        data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").withTitle(QStringLiteral("42")).asContext());
+        data.createItem(GenTodo().withParent(42).withId(43).withUid("ctx-43").withTitle(QStringLiteral("43")).asContext());
 
         // WHEN
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -92,14 +94,17 @@ private slots:
         QCOMPARE(result->data().at(1)->name(), QStringLiteral("43"));
     }
 
-    void shouldIgnoreWrongTagType()
+    void shouldIgnoreNonContexts()
     {
         // GIVEN
         AkonadiFakeData data;
 
-        // One context tag and one plain tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asPlain());
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Two items, one of which not a context
+        data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").withTitle(QStringLiteral("42")).asContext());
+        data.createItem(GenTodo().withParent(42).withId(43).withUid("ctx-43").withTitle(QStringLiteral("43")));
 
         // WHEN
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
@@ -118,10 +123,13 @@ private slots:
         QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
     }
 
-    void shouldReactToTagAdded()
+    void shouldReactToContextAdded()
     {
         // GIVEN
         AkonadiFakeData data;
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                    Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -132,8 +140,8 @@ private slots:
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asContext());
+        data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").withTitle(QStringLiteral("42")).asContext());
+        data.createItem(GenTodo().withParent(42).withId(43).withUid("ctx-43").withTitle(QStringLiteral("43")).asContext());
 
         // THEN
         QCOMPARE(result->data().size(), 2);
@@ -141,14 +149,17 @@ private slots:
         QCOMPARE(result->data().at(1)->name(), QStringLiteral("43"));
     }
 
-    void shouldReactToTagRemoved()
+    void shouldReactToContextRemoved()
     {
         // GIVEN
         AkonadiFakeData data;
 
-        // Two context tags
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asContext());
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Two contexts
+        data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").withTitle(QStringLiteral("42")).asContext());
+        data.createItem(GenTodo().withParent(42).withId(43).withUid("ctx-43").withTitle(QStringLiteral("43")).asContext());
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                    Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -160,21 +171,24 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.removeTag(Akonadi::Tag(43));
+        data.removeItem(Akonadi::Item(43));
 
         // THEN
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->name(), QStringLiteral("42"));
     }
 
-    void shouldReactToTagChanges()
+    void shouldReactToContextChanges()
     {
         // GIVEN
         AkonadiFakeData data;
 
-        // Two context tags
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asContext());
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // Two contexts
+        data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").withTitle(QStringLiteral("42")).asContext());
+        data.createItem(GenTodo().withParent(42).withId(43).withUid("ctx-43").withTitle(QStringLiteral("43")).asContext());
 
         QScopedPointer<Domain::ContextQueries> queries(new Akonadi::ContextQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                    Akonadi::Serializer::Ptr(new Akonadi::Serializer),
@@ -186,7 +200,7 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyTag(GenTag(data.tag(43)).withName(QStringLiteral("43bis")));
+        data.modifyItem(GenTodo(data.item(43)).withTitle(QStringLiteral("43bis")));
 
         // THEN
         QCOMPARE(result->data().size(), 2);
@@ -202,13 +216,13 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+        // One context
+        data.createItem(GenTodo().withParent(42).withId(40).withUid("ctx").withTitle(QStringLiteral("Context")).asContext());
 
         // Three tasks in the collection, two related to context, one not
-        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withContexts({"ctx"}));
         data.createItem(GenTodo().withParent(42).withId(43).withTitle(QStringLiteral("43")));
-        data.createItem(GenTodo().withParent(42).withId(44).withTitle(QStringLiteral("44")).withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(44).withTitle(QStringLiteral("44")).withContexts({"ctx"}));
 
         // WHEN
         auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
@@ -218,7 +232,7 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context = serializer->createContextFromTag(data.tag(42));
+        auto context = serializer->createContextFromItem(data.item(40));
         auto result = queries->findTopLevelTasks(context);
         result->data();
         result = queries->findTopLevelTasks(context); // Should not cause any problem or wrong data
@@ -248,14 +262,14 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(40).withUid("ctx").withTitle(QStringLiteral("Context")).asContext());
 
         // Five tasks in the collection, two related to context, three not, all forming an ancestry line
         data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withUid("42"));
-        data.createItem(GenTodo().withParent(42).withId(43).withTitle(QStringLiteral("43")).withUid("43").withParentUid("42").withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(43).withTitle(QStringLiteral("43")).withUid("43").withParentUid("42").withContexts({"ctx"}));
         data.createItem(GenTodo().withParent(42).withId(44).withTitle(QStringLiteral("44")).withUid("44").withParentUid("43"));
-        data.createItem(GenTodo().withParent(42).withId(45).withTitle(QStringLiteral("45")).withUid("45").withParentUid("44").withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(45).withTitle(QStringLiteral("45")).withUid("45").withParentUid("44").withContexts({"ctx"}));
         data.createItem(GenTodo().withParent(42).withId(46).withTitle(QStringLiteral("46")).withUid("46").withParentUid("45"));
 
         // WHEN
@@ -266,7 +280,7 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context = serializer->createContextFromTag(data.tag(42));
+        auto context = serializer->createContextFromItem(data.item(40));
         auto result = queries->findTopLevelTasks(context);
         result->data();
         result = queries->findTopLevelTasks(context); // Should not cause any problem or wrong data
@@ -294,8 +308,8 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(40).withUid("ctx").withTitle(QStringLiteral("Context")).asContext());
 
         auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
@@ -304,13 +318,13 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context = serializer->createContextFromTag(data.tag(42));
+        auto context = serializer->createContextFromItem(data.item(40));
         auto result = queries->findTopLevelTasks(context);
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withContexts({"ctx"}));
 
         // THEN
         QCOMPARE(result->data().size(), 1);
@@ -325,11 +339,11 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+        // One context
+        data.createItem(GenTodo().withParent(42).withId(40).withUid("ctx").withTitle(QStringLiteral("Context")).asContext());
 
         // One task related to the context
-        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withContexts({"ctx"}));
 
         auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
@@ -338,7 +352,7 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context = serializer->createContextFromTag(data.tag(42));
+        auto context = serializer->createContextFromItem(data.item(40));
         auto result = queries->findTopLevelTasks(context);
 
         bool replaceHandlerCalled = false;
@@ -358,7 +372,7 @@ private slots:
         QVERIFY(replaceHandlerCalled);
     }
 
-    void shouldAddItemToCorrespondingResultWhenTagAddedToTopLevelTask()
+    void shouldAddItemToCorrespondingResultWhenContextAddedToTopLevelTask()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -366,8 +380,8 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(40).withUid("ctx").withTitle(QStringLiteral("Context")).asContext());
 
         // One task not related to the context
         data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")));
@@ -379,20 +393,20 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context = serializer->createContextFromTag(data.tag(42));
+        auto context = serializer->createContextFromItem(data.item(40));
         auto result = queries->findTopLevelTasks(context);
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTags({42}));
+        data.modifyItem(GenTodo(data.item(42)).withContexts({"ctx"}));
 
         // THEN
         QCOMPARE(result->data().size(), 1);
         QCOMPARE(result->data().at(0)->title(), QStringLiteral("42"));
     }
 
-    void shouldRemoveItemFromCorrespondingResultWhenTagRemovedFromTopLevelTask()
+    void shouldRemoveItemFromCorrespondingResultWhenContextRemovedFromTopLevelTask()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -400,11 +414,11 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(40).withUid("ctx").withTitle(QStringLiteral("Context")).asContext());
 
         // One task related to the context
-        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withContexts({"ctx"}));
 
         auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
@@ -413,19 +427,20 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context = serializer->createContextFromTag(data.tag(42));
+        auto context = serializer->createContextFromItem(data.item(40));
+        QVERIFY(context);
         auto result = queries->findTopLevelTasks(context);
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTags({}));
+        data.modifyItem(GenTodo(data.item(42)).withContexts({}));
 
         // THEN
         QVERIFY(result->data().isEmpty());
     }
 
-    void shouldMoveItemToCorrespondingResultWhenTagChangedOnTopLevelTask()
+    void shouldMoveItemToCorrespondingResultWhenContextChangedOnTopLevelTask()
     {
         // GIVEN
         AkonadiFakeData data;
@@ -433,12 +448,12 @@ private slots:
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // Two context tags
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("42")).asContext());
-        data.createTag(GenTag().withId(43).withName(QStringLiteral("43")).asContext());
+        // Two context items
+        data.createItem(GenTodo().withParent(42).withId(1).withUid("ctx-1").withTitle(QStringLiteral("Context 1")).asContext());
+        data.createItem(GenTodo().withParent(42).withId(2).withUid("ctx-2").withTitle(QStringLiteral("Context 2")).asContext());
 
         // One task related to the first context
-        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withTags({42}));
+        data.createItem(GenTodo().withParent(42).withId(42).withTitle(QStringLiteral("42")).withContexts({"ctx-1"}));
 
         auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
@@ -447,9 +462,9 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context1 = serializer->createContextFromTag(data.tag(42));
+        auto context1 = serializer->createContextFromItem(data.item(1));
         auto result1 = queries->findTopLevelTasks(context1);
-        auto context2 = serializer->createContextFromTag(data.tag(43));
+        auto context2 = serializer->createContextFromItem(data.item(2));
         auto result2 = queries->findTopLevelTasks(context2);
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result1->data().size(), 1);
@@ -457,7 +472,7 @@ private slots:
         QVERIFY(result2->data().isEmpty());
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(42)).withTags({43}));
+        data.modifyItem(GenTodo(data.item(42)).withContexts({"ctx-2"}));
 
         // THEN
         QVERIFY(result1->data().isEmpty());
@@ -470,15 +485,14 @@ private slots:
         // GIVEN
         AkonadiFakeData data;
 
-        // One context tag
-        data.createTag(GenTag().withId(42).withName(QStringLiteral("tag-42")).asContext());
-
         // One top level collection
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // A task related to the context
-        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withTags({42}));
+        // One context item
+        data.createItem(GenTodo().withParent(42).withId(1).withUid("ctx-1").withTitle(QStringLiteral("Context 1")).asContext());
 
+        // A task related to the context
+        data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")).withContexts({"ctx-1"}));
 
         auto serializer = Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
         auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
@@ -487,7 +501,8 @@ private slots:
                                                                                    Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                                    cache));
 
-        auto context = serializer->createContextFromTag(data.tag(42));
+        auto context = serializer->createContextFromItem(data.item(1));
+        QVERIFY(context);
         auto result = queries->findTopLevelTasks(context);
 
         bool removeHandlerCalled = false;

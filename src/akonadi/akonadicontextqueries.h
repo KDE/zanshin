@@ -64,7 +64,8 @@ private:
     LiveQueryIntegrator::Ptr m_integrator;
 
     mutable ContextQueryOutput::Ptr m_findAll;
-    mutable QHash<Akonadi::Tag::Id, TaskQueryOutput::Ptr> m_findToplevel;
+    using ContextUid = QString;
+    mutable QHash<ContextUid, TaskQueryOutput::Ptr> m_findToplevel;
 };
 
 } // akonadi namespace

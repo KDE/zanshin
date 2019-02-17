@@ -85,23 +85,19 @@ KJob *ContextRepository::associate(Domain::Context::Ptr context, Domain::Task::P
 }
 
 
-KJob *ContextRepository::dissociate(Domain::Context::Ptr parent, Domain::Task::Ptr child)
+KJob *ContextRepository::dissociate(Domain::Context::Ptr context, Domain::Task::Ptr child)
 {
-    Item childItem;
-
-    childItem = m_serializer->createItemFromTask(child);
+    Item childItem = m_serializer->createItemFromTask(child);
     Q_ASSERT(childItem.isValid());
     auto job = new Utils::CompositeJob();
     ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
-    job->install(fetchItemJob->kjob(), [fetchItemJob, parent, job, this] {
+    job->install(fetchItemJob->kjob(), [fetchItemJob, context, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;
 
         Q_ASSERT(fetchItemJob->items().size() == 1);
         auto childItem = fetchItemJob->items().at(0);
-        auto tag = m_serializer->createTagFromContext(parent);
-        Q_ASSERT(tag.isValid());
-        childItem.clearTag(tag);
+        m_serializer->removeContextFromTask(context, childItem);
 
         auto updateJob = m_storage->updateItem(childItem);
         job->addSubjob(updateJob);
